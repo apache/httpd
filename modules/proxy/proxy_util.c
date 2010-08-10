@@ -19,6 +19,7 @@
 #include "ap_mpm.h"
 #include "scoreboard.h"
 #include "apr_version.h"
+#include "apr_hash.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
@@ -1335,6 +1336,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     (*balancer)->name = uri;
     (*balancer)->lbmethod = lbmethod;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
+    (*balancer)->updated = apr_time_now();
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
     if (apr_thread_mutex_create(&((*balancer)->mutex),
@@ -1471,6 +1473,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
     (*worker)->port = uri.port;
     if (id < 0) {
         (*worker)->id   = proxy_lb_workers;
+        /* Increase the total worker count */
         proxy_lb_workers++;
     } else {
         (*worker)->id   = id;
@@ -1478,11 +1481,20 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
     (*worker)->flush_packets = flush_off;
     (*worker)->flush_wait = PROXY_FLUSH_WAIT;
     (*worker)->smax = -1;
-    /* Increase the total worker count */
+    (*worker)->our_hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_PROXY);
+    (*worker)->apr_hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_APR);
     (*worker)->cp = NULL;
     (*worker)->mutex = NULL;
 
     return NULL;
+}
+
+PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
+                                                apr_pool_t *p,
+                                                proxy_server_conf *conf,
+                                                const char *url)
+{
+    return ap_proxy_add_worker_wid(worker, p, conf, url, -1);
 }
 
 PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker_wid(apr_pool_t *p, int id)
@@ -1504,6 +1516,11 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker_wid(apr_pool_t *p, int id)
     return worker;
 }
 
+PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
+{
+    return ap_proxy_create_worker_wid(p, -1);
+}
+
 PROXY_DECLARE(void)
 ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool, proxy_balancer *balancer,
                                 proxy_worker *worker, int id)
@@ -1519,20 +1536,8 @@ ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool, proxy_balancer *balancer,
     } else {
         (*runtime)->id = id;
     }
+    balancer->updated = apr_time_now();
 
-}
-
-PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
-                                                apr_pool_t *p,
-                                                proxy_server_conf *conf,
-                                                const char *url)
-{
-    return ap_proxy_add_worker_wid(worker, p, conf, url, -1);
-}
-
-PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
-{
-    return ap_proxy_create_worker_wid(p, -1);
 }
 
 PROXY_DECLARE(void)
@@ -1896,6 +1901,8 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
     }
 
     worker->s->status |= (worker->status | PROXY_WORKER_INITIALIZED);
+    worker->s->apr_hash = worker->apr_hash;
+    worker->s->our_hash = worker->our_hash;
 
 }
 
@@ -2743,4 +2750,28 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
         }
     }
     return rv;
+}
+
+/*
+ * Provide a string hashing function for the proxy.
+ * We offer 2 method: one is the APR model but we
+ * also provide our own, based on SDBM. The reason
+ * is in case we want to use both to ensure no
+ * collisions
+ */
+PROXY_DECLARE(unsigned int)
+ap_proxy_hashfunc(const char *str, proxy_hash_t method)
+{
+    if (method == PROXY_HASHFUNC_APR) {
+        apr_ssize_t slen = strlen(str);
+        return apr_hashfunc_default(str, &slen);
+    } else {
+        /* SDBM model */
+        unsigned int hash;
+        for(hash = 0; *str; str++) {
+            hash = (*str) + (hash << 6) + (hash << 16) - hash;
+        }
+        return hash;
+    }
+    
 }

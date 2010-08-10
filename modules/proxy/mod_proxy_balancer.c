@@ -22,10 +22,16 @@
 #include "apr_version.h"
 #include "apr_hooks.h"
 #include "apr_uuid.h"
+#include "apr_date.h"
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
 static char balancer_nonce[APR_UUID_FORMATTED_LENGTH + 1];
+
+#if 0
+extern void proxy_update_members(proxy_balancer **balancer, request_rec *r,
+                                  proxy_server_conf *conf);
+#endif
 
 static int proxy_balancer_canon(request_rec *r, char *url)
 {
@@ -467,6 +473,10 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
     /* Step 3: force recovery */
     force_recovery(*balancer, r->server);
+    
+    /* Step 3.5: Update member list for the balancer */
+    /* TODO: Implement as provider! */
+    /* proxy_update_members(balancer, r, conf); */
 
     /* Step 4: find the session route */
     runtime = find_session_route(*balancer, r, &route, &sticky, url);

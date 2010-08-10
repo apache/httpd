@@ -251,11 +251,13 @@ struct proxy_conn_pool {
 /* worker status flags */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
+#define PROXY_WORKER_DRAIN          0x0004
 #define PROXY_WORKER_IN_SHUTDOWN    0x0010
 #define PROXY_WORKER_DISABLED       0x0020
 #define PROXY_WORKER_STOPPED        0x0040
 #define PROXY_WORKER_IN_ERROR       0x0080
 #define PROXY_WORKER_HOT_STANDBY    0x0100
+#define PROXY_WORKER_FREE           0x0200
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
@@ -290,6 +292,8 @@ typedef struct {
     void            *context;   /* general purpose storage */
     apr_size_t      busy;       /* busyness factor */
     int             lbset;      /* load balancer cluster set */
+    unsigned int    apr_hash;      /* hash #0 of worker name */
+    unsigned int    our_hash;      /* hash #1 of worker name. Why 2? hash collisions. */
 } proxy_worker_stat;
 
 /* Worker configuration */
@@ -343,6 +347,8 @@ struct proxy_worker {
     char            io_buffer_size_set;
     char            keepalive_set;
     char            disablereuse_set;
+    unsigned int    apr_hash;      /* hash #0 of worker name */
+    unsigned int    our_hash;      /* hash #1 of worker name. Why 2? hash collisions. */
 };
 
 /*
@@ -375,6 +381,7 @@ struct proxy_balancer {
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
     void            *context;         /* general purpose storage */
+    apr_time_t      updated;   /* timestamp of last update */
 };
 
 struct proxy_balancer_method {
@@ -796,6 +803,17 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
 PROXY_DECLARE(apr_status_t)
 ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
                                         apr_bucket_brigade *to);
+/**
+ * Return a hash based on the passed string
+ * @param str     string to produce hash from
+ * @param method  hashing method to use
+ * @return        hash as unsigned int
+ */
+
+typedef enum { PROXY_HASHFUNC_PROXY, PROXY_HASHFUNC_APR } proxy_hash_t;
+
+PROXY_DECLARE(unsigned int)
+ap_proxy_hashfunc(const char *str, proxy_hash_t method);
 
 #define PROXY_LBMETHOD "proxylbmethod"
 
