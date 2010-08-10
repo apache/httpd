@@ -87,12 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: use memmove instead of memcpy for overlapping buffers
-     PR 45444
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=683280
-     2.2 patch: trunk patch works with offset
-     +1: sf, rpluem, trawick, jim
-
    * core: (re)-introduce -T commandline option to suppress documentroot
      check at startup
      PR 41887
