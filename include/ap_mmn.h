@@ -241,6 +241,8 @@
  * 20100719.0 (2.3.7-dev)  Add symbol name parameter to ap_add_module and
  *                         ap_add_loaded_module. Add ap_find_module_short_name
  * 20100723.0 (2.3.7-dev)  Remove ct_output_filters from core rec
+ * 20100723.1 (2.3.7-dev)  Added ap_proxy_hashfunc() and hash elements to
+ *                         proxy worker structs
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
