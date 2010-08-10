@@ -87,12 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_dir: fold in the two fixups to a single hooked function
-     to avoid possible ordering issues with other modules
-     Trunk: http://svn.apache.org/viewvc?view=revision&revision=978903
-     2.2.x: trunk patch works with offset
-     +1: niq, rpluem, sf, jim
-
    * mod_ssl: use memmove instead of memcpy for overlapping buffers
      PR 45444
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=683280
