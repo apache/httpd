@@ -290,30 +290,6 @@ VirtualScriptAliasIP  /www/hosts/%0/cgi-bin<br />
 
 </section>
 
-<section id="oldversion"><title>Using older versions of Apache</title>
-
-    <p>The examples above rely on <code>mod_vhost_alias</code>
-    which appeared after version 1.3.6. If you are using a version
-    of Apache without <code>mod_vhost_alias</code> then you can
-    implement this technique with <code>mod_rewrite</code> as
-    illustrated below, but only for Host:-header-based virtual
-    hosts.</p>
-
-    <p>In addition there are some things to beware of with logging.
-    Apache 1.3.6 is the first version to include the
-    <code>%V</code> log format directive; in versions 1.3.0 - 1.3.3
-    the <code>%v</code> option did what <code>%V</code> does;
-    version 1.3.4 has no equivalent. In all these versions of
-    Apache the <code>UseCanonicalName</code> directive can appear
-    in <code>.htaccess</code> files which means that customers can
-    cause the wrong thing to be logged. Therefore the best thing to
-    do is use the <code>%{Host}i</code> directive which logs the
-    <code>Host:</code> header directly; note that this may include
-    <code>:port</code> on the end which is not the case for
-    <code>%V</code>.</p>
-
-</section>
-
 <section id="simple.rewrite"><title>Simple dynamic
     virtual hosts using <code>mod_rewrite</code></title>
 
