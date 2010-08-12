@@ -190,7 +190,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
 #endif
 
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE, APR_NONBLOCK_READ, remaining);
-            if (rv != APR_SUCCESS) {
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
                 break;
             }
 
