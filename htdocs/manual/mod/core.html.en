@@ -218,7 +218,7 @@
     available in Apache 1.3.22 and later
 
     <P><strong>Current documentation for this directive may be found <a
-    href="/docs/2.2/mod/core.html#acceptfilter">here</a></strong</p>
+    href="/docs/current/mod/core.html#acceptfilter">here</a></strong></p>
  
     <p><code>AcceptFilter</code> controls a BSD specific filter
     optimization. It is compiled in by default - and switched on by
@@ -255,7 +255,7 @@
     available in Apache 1.3.21 and later.
 
     <P><strong>Current documentation for this directive may be found <a
-    href="/docs/2.2/mod/core.html#acceptmutex">here</a></strong</p>
+    href="/docs/current/mod/core.html#acceptmutex">here</a></strong></p>
 
     <p><code>AcceptMutex</code> controls which accept() mutex
     method Apache will use. Not all methods are available on all
@@ -359,6 +359,9 @@
     rel="Help"><strong>Compatibility:</strong></a> AccessFileName
     can accept more than one filename only in Apache 1.3 and later 
 
+    <P><strong>Current documentation for this directive may be found <a
+    href="/docs/current/mod/core.html#accessfilename">here</a></strong></p>
+ 
     <p>When returning a document to the client the server looks for
     the first existing access control file from this list of names
     in every directory of the path to the document, if access
@@ -399,6 +402,9 @@
     rel="Help"><strong>Compatibility:</strong></a>
     AddDefaultCharset is only available in Apache 1.3.12 and later 
 
+    <P><strong>Current documentation for this directive may be found <a
+    href="/docs/current/mod/core.html#adddefaultcharset">here</a></strong></p>
+ 
     <p>This directive specifies the name of the character set that
     will be added to any response that does not have any parameter
     on the content type in the HTTP headers. This will override any
@@ -437,6 +443,10 @@
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> AddModule is
     only available in Apache 1.2 and later 
+
+    <P><strong>This directive has been removed in current versions of
+    the server. See <a
+    href="/docs/current/mod/core.html#loadmodule">LoadModule</a></strong</p>
 
     <p>The server can have modules compiled in which are not
     actively in use. This directive can be used to enable the use
@@ -479,6 +489,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <P><strong>Current documentation for this directive may be found <a
+    href="/docs/current/mod/core.html#allowoverride">here</a></strong></p>
+ 
     <p>When the server finds an .htaccess file (as specified by <a
     href="#accessfilename">AccessFileName</a>) it needs to know
     which directives declared in that file can override earlier
@@ -586,6 +599,11 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <P><strong>Current documentation for this directive may be found <a
+    href="/docs/current/mod/core.html#authname">here</a>. See
+    <a href="http://httpd.apache.org/docs/current/howto/auth.html">the
+    authentication howto</a> for more details.</strong></p>
+ 
     <p>This directive sets the name of the authorization realm for
     a directory. This realm is given to the client so that the user
     knows which username and password to send.
