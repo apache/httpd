@@ -770,7 +770,7 @@
     rel="Help"><strong>Compatibility:</strong></a> BS2000Account is
     only available for BS2000 machines, as of Apache 1.3 and later.
     
-    <p><strong>This directive is no longer available in current versions
+    <p class="currentdocs"><strong>This directive is no longer available in current versions
     of the server.</strong></p>
 
     <p>The <code>BS2000Account</code> directive is available for
