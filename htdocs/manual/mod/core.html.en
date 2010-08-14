@@ -217,7 +217,7 @@
     rel="Help"><strong>Compatibility:</strong></a> AcceptFilter is
     available in Apache 1.3.22 and later
 
-    <P><strong>Current documentation for this directive may be found <a
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#acceptfilter">here</a></strong></p>
  
     <p><code>AcceptFilter</code> controls a BSD specific filter
@@ -254,7 +254,7 @@
     rel="Help"><strong>Compatibility:</strong></a> AcceptMutex is 
     available in Apache 1.3.21 and later.
 
-    <P><strong>Current documentation for this directive may be found <a
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#acceptmutex">here</a></strong></p>
 
     <p><code>AcceptMutex</code> controls which accept() mutex
@@ -359,7 +359,7 @@
     rel="Help"><strong>Compatibility:</strong></a> AccessFileName
     can accept more than one filename only in Apache 1.3 and later 
 
-    <P><strong>Current documentation for this directive may be found <a
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#accessfilename">here</a></strong></p>
  
     <p>When returning a document to the client the server looks for
@@ -402,7 +402,7 @@
     rel="Help"><strong>Compatibility:</strong></a>
     AddDefaultCharset is only available in Apache 1.3.12 and later 
 
-    <P><strong>Current documentation for this directive may be found <a
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#adddefaultcharset">here</a></strong></p>
  
     <p>This directive specifies the name of the character set that
@@ -444,7 +444,7 @@
     rel="Help"><strong>Compatibility:</strong></a> AddModule is
     only available in Apache 1.2 and later 
 
-    <P><strong>This directive has been removed in current versions of
+    <P class="currentdocs"><strong>This directive has been removed in current versions of
     the server. See <a
     href="http://httpd.apache.org/docs/current/mod/core.html#loadmodule">LoadModule</a></strong</p>
 
@@ -489,7 +489,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
-    <P><strong>Current documentation for this directive may be found <a
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#allowoverride">here</a></strong></p>
  
     <p>When the server finds an .htaccess file (as specified by <a
@@ -599,7 +599,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
-    <P><strong>Current documentation for this directive may be found <a
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#authname">here</a>. See
     <a href="http://httpd.apache.org/docs/current/howto/auth.html">the
     authentication howto</a> for more details.</strong></p>
@@ -677,7 +677,7 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
-    <P><strong>Current documentation for this directive may be found <a
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#authtype">here</a></strong></p>
  
     <p>This directive selects the type of user authentication for a
@@ -715,7 +715,7 @@
     rel="Help"><strong>Compatibility:</strong></a> BindAddress is
     deprecated and will be eliminated in Apache 2.0.
 
-    <p><strong>This directive no longer exists in current versions of
+    <p class="currentdocs"><strong>This directive no longer exists in current versions of
     the server. See the <a
     href="http://httpd.apache.org/docs/current/mod/core.html#listen">Listen</a>
     and <a
