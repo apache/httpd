@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 420990 -->
+<!-- English Revision : 981084 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -88,9 +88,12 @@ identifiant unique pour chaque requ&ecirc;te</description>
     <p>Ces hypoth&egrave;ses pos&eacute;es, &agrave; un instant donn&eacute;, nous pouvons
     distinguer tout processus httpd sur toute machine du cluster de tous
     les autres processus httpd. Pour ce faire, il suffit d'utiliser
-    l'adresse IP de la machine et le pid du processus httpd. Ainsi, afin
-    de g&eacute;n&eacute;rer des identifiants uniques pour chaque requ&ecirc;te, il suffit
-    d'effectuer une distinction en fonction du temps.</p>
+    l'adresse IP de la machine et le pid du processus httpd. Un
+    processus httpd peut traiter plusieurs requ&ecirc;tes simultan&eacute;ment si
+    vous utilisez un module MPM multi-thread&eacute;. Pour identifier les
+    threads, Apache httpd utilise en interne un index de threads. Ainsi,
+    afin de g&eacute;n&eacute;rer des identifiants uniques pour chaque requ&ecirc;te, il
+    suffit d'effectuer une distinction en fonction du temps.</p>
 
     <p>Pour d&eacute;terminer le temps, nous utiliserons un rep&egrave;re de temps
     Unix (les secondes &eacute;coul&eacute;es depuis le 1er janvier 1970 UTC), et un
@@ -171,12 +174,14 @@ identifiant unique pour chaque requ&ecirc;te</description>
     utilisez NTP, votre temps UTC sera correct peu apr&egrave;s le
     red&eacute;marrage.</p>
 
+    <!-- FIXME: thread_index is unsigned int, so not always 32bit.-->
     <p>La variable d'environnement <code>UNIQUE_ID</code> est construite
-    par codage du quadruplet de 112 bits (adresse IP sur 32 bits, pid
-    sur 32 bits, rep&egrave;re de temps sur 32 bits et compteur 16 bits) en
+    par codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid
+    sur 32 bits, rep&egrave;re de temps sur 32 bits, compteur 16 bits et index
+    de threads sur 32 bits) en
     utilisant l'alphabet <code>[A-Za-z0-9@-]</code> d'une mani&egrave;re
     similaire &agrave; celle du codage MIME base64, et sa valeur se pr&eacute;sente
-    sous la forme d'une cha&icirc;ne de 19 caract&egrave;res. L'alphabet MIME base64
+    sous la forme d'une cha&icirc;ne de 24 caract&egrave;res. L'alphabet MIME base64
     est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caract&egrave;res
     <code>+</code> et <code>/</code> n&eacute;cessitent un codage particulier
     dans les URLs, ce qui rend leur utilisation peu commode. Toutes les
@@ -205,8 +210,7 @@ identifiant unique pour chaque requ&ecirc;te</description>
     codages.</p>
 
     <p>Nous pensons que ceci apporte une solution relativement portable
-    au probl&egrave;me. Elle peut &ecirc;tre &eacute;tendue aux syst&egrave;mes multithread&eacute;s comme
-    Windows NT, et peut &eacute;voluer en fonction des besoins futurs. Les
+    au probl&egrave;me. Les
     identifiants g&eacute;n&eacute;r&eacute;s poss&egrave;dent une dur&eacute;e de vie pratiquement infinie
     car les identifiants futurs pourront &ecirc;tre allong&eacute;s selon les
     besoins. Pratiquement aucune communication n'est requise entre les

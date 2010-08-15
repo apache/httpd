@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 932384 -->
+<!-- English Revision : 981041 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -652,17 +652,16 @@ r&eacute;pertoire</description>
 
       <dt><a name="indexoptions.htmltable"
                id="indexoptions.htmltable">HTMLTable</a>
-	       (<em>Exp&eacute;rimental, versions 2.0.23 et sup&eacute;rieures
+	       (<em>Versions 2.0.23 et sup&eacute;rieures
 	       du serveur HTTP Apache</em>)</dt>
 
-      <dd>Cette option exp&eacute;rimentale pour l'affichage
+      <dd>Cette option pour l'affichage
       <code>FancyIndexing</code> permet de construire une table simple
-      pour l'affichage de l'index du r&eacute;pertoire. Notez que cela risque
-      de perturber les anciens navigateurs. Cette option s'av&egrave;rera
-      particuli&egrave;rement n&eacute;cessaire si les noms de fichiers ou les cha&icirc;nes
+      pour l'affichage de l'index du r&eacute;pertoire. Cette option s'av&egrave;rera
+      particuli&egrave;rement n&eacute;cessaire pour les plates-formes o&ugrave; utf-8 est
+      activ&eacute; et dans le cas o&ugrave; les noms de fichiers ou les cha&icirc;nes
       de description alternent entre les ordres de lecture gauche &agrave;
-      droite et droite &agrave; gauche, comme cela peut arriver sous WinNT ou
-      d'autres plate-formes o&ugrave; utf-8 est activ&eacute;.</dd>
+      droite et droite &agrave; gauche.</dd>
 
       <dt><a name="indexoptions.iconsarelinks"
                id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
