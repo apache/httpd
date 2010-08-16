@@ -6,6 +6,10 @@ Changes with Apache 2.3.7
      mod_dav, mod_cache, mod_session: Fix Handling of requests without a path 
      segment. PR: 49246 [Mark Drayton, Jeff Trawick]
 
+  *) mod_proxy_http: Support the 'ping' property for backend HTTP/1.1 servers
+     via leveraging 100-Continue as the initial "request".
+     [Jim Jagielski]
+
   *) core/mod_authz_core: Introduce new access_checker_ex hook that enables
      mod_authz_core to bypass authentication if access should be allowed by
      IP address/env var/... [Stefan Fritsch]

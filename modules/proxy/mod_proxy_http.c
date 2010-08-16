@@ -669,7 +669,7 @@ static int spool_reqbody_cl(apr_pool_t *p,
 
 static
 int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
-                                   proxy_conn_rec *p_conn, conn_rec *origin,
+                                   proxy_conn_rec *p_conn, proxy_worker *worker,
                                    proxy_server_conf *conf,
                                    apr_uri_t *uri,
                                    char *url, char *server_portstr)
@@ -694,6 +694,8 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     int force10, rv;
     apr_table_t *headers_in_copy;
     proxy_dir_conf *dconf;
+    conn_rec *origin = p_conn->connection;
+    int do_100_continue;
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
@@ -702,6 +704,11 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * Send the HTTP/1.1 request to the remote server
      */
 
+    do_100_continue = (worker->ping_timeout_set
+                       && !r->header_only
+                       && (PROXYREQ_REVERSE == r->proxyreq)
+                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
+    
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         /*
          * According to RFC 2616 8.2.3 we are not allowed to forward an
@@ -789,6 +796,14 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                         HTTP_VERSION_MINOR(r->proto_num),
                                         server_name, server_portstr)
         );
+    }
+
+    /* Use HTTP/1.1 100-Continue as quick "HTTP ping" test
+     * to backend
+     */
+    if (do_100_continue) {
+		apr_table_mergen(r->headers_in, "Expect", "100-Continue");
+        r->expecting_100 = 1;
     }
 
     /* X-Forwarded-*: handling
@@ -1350,7 +1365,7 @@ apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_conn_rec *backend,
-                                            conn_rec *origin,
+                                            proxy_worker *worker,
                                             proxy_server_conf *conf,
                                             char *server_portstr) {
     conn_rec *c = r->connection;
@@ -1375,9 +1390,32 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     int proxy_status = OK;
     const char *original_status_line = r->status_line;
     const char *proxy_status_line = NULL;
+    conn_rec *origin = backend->connection;
+    apr_interval_time_t old_timeout = 0;
 
+    int do_100_continue;
+    
+    do_100_continue = (worker->ping_timeout_set
+                       && !r->header_only
+                       && (PROXYREQ_REVERSE == r->proxyreq)
+                       && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
+    
+    
     bb = apr_brigade_create(p, c->bucket_alloc);
     pass_bb = apr_brigade_create(p, c->bucket_alloc);
+    
+    /* Setup for 100-Continue timeout if appropriate */
+    if (do_100_continue) {
+        apr_socket_timeout_get(backend->sock, &old_timeout);
+        if (worker->ping_timeout != old_timeout) {
+            apr_status_t rc;
+        	rc = apr_socket_timeout_set(backend->sock, worker->ping_timeout);
+        	if (rc != APR_SUCCESS) {
+            	ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                          "proxy: could not set 100-Continue timeout");
+        	}
+        }
+    }
 
     /* Get response from the remote server, and pass it up the
      * filter chain
@@ -1406,6 +1444,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             if (APR_STATUS_IS_TIMEUP(rc)) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "proxy: read timeout");
+                if (do_100_continue) {
+                    return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, "Timeout on 100-Continue");
+                }
             }
             /*
              * If we are a reverse proxy request shutdown the connection
@@ -1641,6 +1682,12 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
         if (ap_is_HTTP_INFO(proxy_status)) {
             interim_response++;
+            /* Reset to old timeout iff we've adjusted it */
+            if (do_100_continue
+                && (r->status == HTTP_CONTINUE)
+                && (worker->ping_timeout != old_timeout)) {
+                    apr_socket_timeout_set(backend->sock, old_timeout);
+            }
         }
         else {
             interim_response = 0;
@@ -1923,6 +1970,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     proxy_conn_rec *backend = NULL;
     int is_ssl = 0;
     conn_rec *c = r->connection;
+    int retry = 0;
     /*
      * Use a shorter-lived pool to reduce memory usage
      * and avoid a memory leak
@@ -1990,48 +2038,68 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         backend->close = 1;
     }
 
-    /* Step One: Determine Who To Connect To */
-    if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
-                                                uri, &url, proxyname,
+    while (retry < 2) {
+        char *locurl = url;
+
+    	/* Step One: Determine Who To Connect To */
+		if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
+                                                uri, &locurl, proxyname,
                                                 proxyport, server_portstr,
                                                 sizeof(server_portstr))) != OK)
-        goto cleanup;
+        	break;
 
-    /* Step Two: Make the Connection */
-    if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
-        status = HTTP_SERVICE_UNAVAILABLE;
-        goto cleanup;
-    }
+    	/* Step Two: Make the Connection */
+    	if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                         "proxy: HTTP: failed to make connection to backend: %s",
+                         backend->hostname);
+        	status = HTTP_SERVICE_UNAVAILABLE;
+        	break;
+    	}
 
-    /* Step Three: Create conn_rec */
-    if (!backend->connection) {
-        if ((status = ap_proxy_connection_create(proxy_function, backend,
-                                                 c, r->server)) != OK)
-            goto cleanup;
-        /*
-         * On SSL connections set a note on the connection what CN is
-         * requested, such that mod_ssl can check if it is requested to do
-         * so.
+    	/* Step Three: Create conn_rec */
+    	if (!backend->connection) {
+			if ((status = ap_proxy_connection_create(proxy_function, backend,
+                                                     c, r->server)) != OK)
+				break;
+			/*
+             * On SSL connections set a note on the connection what CN is
+         	 * requested, such that mod_ssl can check if it is requested to do
+         	 * so.
+         	 */
+			if (is_ssl) {
+				apr_table_set(backend->connection->notes, "proxy-request-hostname",
+                          	  uri->hostname);
+			}
+    	}
+
+    	/* Step Four: Send the Request
+         * On the off-chance that we forced a 100-Continue as a
+         * kinda HTTP ping test, allow for retries
          */
-        if (is_ssl) {
-            apr_table_set(backend->connection->notes, "proxy-request-hostname",
-                          uri->hostname);
+    	if ((status = ap_proxy_http_request(p, r, backend, worker,
+                                        conf, uri, locurl, server_portstr)) != OK) {
+            if ((status == HTTP_SERVICE_UNAVAILABLE) && worker->ping_timeout_set) {
+            	backend->close = 1;
+        		ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
+                     	     "proxy: HTTP: 100-Continue failed to %pI (%s)",
+                     	     worker->cp->addr, worker->hostname);
+        		retry++;
+        		continue;
+            } else {
+                break;
+            }
+
         }
+
+    	/* Step Five: Receive the Response... Fall thru to cleanup */
+    	status = ap_proxy_http_process_response(p, r, backend, worker,
+                                                conf, server_portstr);
+
+        break;
     }
-
-    /* Step Four: Send the Request */
-    if ((status = ap_proxy_http_request(p, r, backend, backend->connection,
-                                        conf, uri, url, server_portstr)) != OK)
-        goto cleanup;
-
-    /* Step Five: Receive the Response */
-    if ((status = ap_proxy_http_process_response(p, r, backend,
-                                                 backend->connection,
-                                                 conf, server_portstr)) != OK)
-        goto cleanup;
 
     /* Step Six: Clean Up */
-
 cleanup:
     if (backend) {
         if (status != OK)

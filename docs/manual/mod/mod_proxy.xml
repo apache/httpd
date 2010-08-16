@@ -743,17 +743,20 @@ expressions</description>
     </td></tr>
     <tr><td>ping</td>
         <td>0</td>
-        <td>Ping property tells webserver to send a <code>CPING</code>
-        request on ajp13 connection before forwarding a request.
-        The parameter is the delay in seconds to wait for the
-        <code>CPONG</code> reply.
-        This features has been added to avoid problem with hung and
-        busy Tomcat's and require ajp13 ping/pong support which has
-        been implemented on Tomcat 3.3.2+, 4.1.28+ and 5.0.13+.
+        <td>Ping property tells the webserver to "test" the connection to
+        the backend before forwarding the request. For AJP, it causes
+        <module>mod_proxy_ajp</module>to send a <code>CPING</code>
+        request on the ajp13 connection (implemented on Tomcat 3.3.2+, 4.1.28+
+        and 5.0.13+). For HTTP, it causes <module>mod_proxy_http</module>
+        to send a <code>100-Continue</code> to the backend (only valid for
+        HTTP/1.1 - for non HTTP/1.1 backends, this property has no
+        effect). In both cases the parameter is the delay in seconds to wait
+        for the reply.
+        This feature has been added to avoid problems with hung and
+        busy backends.
         This will increase the network traffic during the normal operation
         which could be an issue, but it will lower the
         traffic in case some of the cluster nodes are down or busy.
-        Currently this has an effect only for AJP.
         By adding a postfix of ms the delay can be also set in
         milliseconds.
     </td></tr>
