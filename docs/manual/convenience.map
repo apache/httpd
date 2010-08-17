@@ -25,7 +25,7 @@ addinputfilter	mod/mod_mime.html#addinputfilter
 addlanguage	mod/mod_mime.html#addlanguage
 addmoduleinfo	mod/mod_info.html#addmoduleinfo
 addoutputfilter	mod/mod_mime.html#addoutputfilter
-addoutputfilterbytype	mod/core.html#addoutputfilterbytype
+addoutputfilterbytype	mod/mod_filter.html#addoutputfilterbytype
 addtype	mod/mod_mime.html#addtype
 alias	mod/mod_alias.html#alias
 aliasmatch	mod/mod_alias.html#aliasmatch
@@ -90,6 +90,10 @@ authldapsubgroupclass	mod/mod_authnz_ldap.html#authldapsubgroupclass
 authldapurl	mod/mod_authnz_ldap.html#authldapurl
 authmerging	mod/mod_authz_core.html#authmerging
 authname	mod/mod_authn_core.html#authname
+authncachecontext	mod/mod_authn_socache.html#authncachecontext
+authncacheprovider	mod/mod_authn_socache.html#authncacheprovider
+authncachesocache	mod/mod_authn_socache.html#authncachesocache
+authncachetimeout	mod/mod_authn_socache.html#authncachetimeout
 authnprovideralias	mod/mod_authn_core.html#authnprovideralias
 authtype	mod/mod_authn_core.html#authtype
 authuserfile	mod/mod_authn_file.html#authuserfile

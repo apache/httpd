@@ -96,9 +96,12 @@ identifiant unique pour chaque requête</td></tr>
     <p>Ces hypothèses posées, à un instant donné, nous pouvons
     distinguer tout processus httpd sur toute machine du cluster de tous
     les autres processus httpd. Pour ce faire, il suffit d'utiliser
-    l'adresse IP de la machine et le pid du processus httpd. Ainsi, afin
-    de générer des identifiants uniques pour chaque requête, il suffit
-    d'effectuer une distinction en fonction du temps.</p>
+    l'adresse IP de la machine et le pid du processus httpd. Un
+    processus httpd peut traiter plusieurs requêtes simultanément si
+    vous utilisez un module MPM multi-threadé. Pour identifier les
+    threads, Apache httpd utilise en interne un index de threads. Ainsi,
+    afin de générer des identifiants uniques pour chaque requête, il
+    suffit d'effectuer une distinction en fonction du temps.</p>
 
     <p>Pour déterminer le temps, nous utiliserons un repère de temps
     Unix (les secondes écoulées depuis le 1er janvier 1970 UTC), et un
@@ -179,12 +182,14 @@ identifiant unique pour chaque requête</td></tr>
     utilisez NTP, votre temps UTC sera correct peu après le
     redémarrage.</p>
 
+    
     <p>La variable d'environnement <code>UNIQUE_ID</code> est construite
-    par codage du quadruplet de 112 bits (adresse IP sur 32 bits, pid
-    sur 32 bits, repère de temps sur 32 bits et compteur 16 bits) en
+    par codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid
+    sur 32 bits, repère de temps sur 32 bits, compteur 16 bits et index
+    de threads sur 32 bits) en
     utilisant l'alphabet <code>[A-Za-z0-9@-]</code> d'une manière
     similaire à celle du codage MIME base64, et sa valeur se présente
-    sous la forme d'une chaîne de 19 caractères. L'alphabet MIME base64
+    sous la forme d'une chaîne de 24 caractères. L'alphabet MIME base64
     est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caractères
     <code>+</code> et <code>/</code> nécessitent un codage particulier
     dans les URLs, ce qui rend leur utilisation peu commode. Toutes les
@@ -213,8 +218,7 @@ identifiant unique pour chaque requête</td></tr>
     codages.</p>
 
     <p>Nous pensons que ceci apporte une solution relativement portable
-    au problème. Elle peut être étendue aux systèmes multithreadés comme
-    Windows NT, et peut évoluer en fonction des besoins futurs. Les
+    au problème. Les
     identifiants générés possèdent une durée de vie pratiquement infinie
     car les identifiants futurs pourront être allongés selon les
     besoins. Pratiquement aucune communication n'est requise entre les
