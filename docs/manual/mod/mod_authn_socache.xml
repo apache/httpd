@@ -113,9 +113,9 @@ the load on backends</description>
 <name>AuthnCacheProvider</name>
 <description>Specify which authn provider(s) to cache for</description>
 <syntax>AuthnCacheProvider <var>authn-provider</var> [...]</syntax>
+<default>None</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
-<default>None</default>
 
 <usage>
     <p>This directive specifies an authentication provider or providers
@@ -135,9 +135,9 @@ the load on backends</description>
 <name>AuthnCacheTimeout</name>
 <description>Set a timeout for cache entries</description>
 <syntax>AuthnCacheTimeout <var>timeout</var> (seconds)</syntax>
+<default>300 (5 minutes)</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
-<default>300 (5 minutes)</default>
 
 <usage>
     <p>Cacheing authentication data can be a security issue, though short-term
@@ -159,8 +159,8 @@ the load on backends</description>
 <name>AuthnCacheContext</name>
 <description>Specify a context string for use in the cache key</description>
 <syntax>AuthnCacheContext <var>directory|server|custom-string</var></syntax>
-<contextlist><context>directory</context></contextlist>
 <default>directory</default>
+<contextlist><context>directory</context></contextlist>
 
 <usage>
     <p>This directive specifies a string to be used along with the supplied
