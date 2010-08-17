@@ -705,14 +705,14 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      */
 
     /*
-     * To be compliant, we only use 100-Continue for requests with no bodies.
+     * To be compliant, we only use 100-Continue for requests with bodies.
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
     do_100_continue = (worker->ping_timeout_set
                        && !r->header_only
-                       && !r->kept_body
-                       && !(apr_table_get(r->headers_in, "Content-Length"))
-                       && !(apr_table_get(r->headers_in, "Transfer-Encoding"))
+                       && (r->kept_body
+                          || apr_table_get(r->headers_in, "Content-Length")
+                          || apr_table_get(r->headers_in, "Transfer-Encoding"))
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
     
@@ -1404,9 +1404,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     
     do_100_continue = (worker->ping_timeout_set
                        && !r->header_only
-                       && !r->kept_body
-                       && !(apr_table_get(r->headers_in, "Content-Length"))
-                       && !(apr_table_get(r->headers_in, "Transfer-Encoding"))
+                       && (r->kept_body
+                          || apr_table_get(r->headers_in, "Content-Length")
+                          || apr_table_get(r->headers_in, "Transfer-Encoding"))
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
     
