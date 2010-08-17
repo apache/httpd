@@ -872,7 +872,7 @@
     rel="Help"><strong>Compatibility:</strong></a> ContentDigest is
     only available in Apache 1.1 and later.
 
-    <p class="currentodcs"><strong>Current documentation for this
+    <p class="currentodocs"><strong>Current documentation for this
     directive may be found <a
     href="http://httpd.apache.org/docs/current/mod/core.html#contentdigest">here</a>.</strong></p>
 
