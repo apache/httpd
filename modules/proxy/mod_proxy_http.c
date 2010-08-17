@@ -802,7 +802,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * to backend
      */
     if (do_100_continue) {
-		apr_table_mergen(r->headers_in, "Expect", "100-Continue");
+        apr_table_mergen(r->headers_in, "Expect", "100-Continue");
         r->expecting_100 = 1;
     }
 
@@ -1409,11 +1409,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         apr_socket_timeout_get(backend->sock, &old_timeout);
         if (worker->ping_timeout != old_timeout) {
             apr_status_t rc;
-        	rc = apr_socket_timeout_set(backend->sock, worker->ping_timeout);
-        	if (rc != APR_SUCCESS) {
-            	ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
-                          "proxy: could not set 100-Continue timeout");
-        	}
+            rc = apr_socket_timeout_set(backend->sock, worker->ping_timeout);
+            if (rc != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                             "proxy: could not set 100-Continue timeout");
+            }
         }
     }
 
@@ -2041,59 +2041,59 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     while (retry < 2) {
         char *locurl = url;
 
-    	/* Step One: Determine Who To Connect To */
-		if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
+        /* Step One: Determine Who To Connect To */
+        if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
                                                 uri, &locurl, proxyname,
                                                 proxyport, server_portstr,
                                                 sizeof(server_portstr))) != OK)
-        	break;
+            break;
 
-    	/* Step Two: Make the Connection */
-    	if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
+        /* Step Two: Make the Connection */
+        if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                          "proxy: HTTP: failed to make connection to backend: %s",
                          backend->hostname);
-        	status = HTTP_SERVICE_UNAVAILABLE;
-        	break;
-    	}
+            status = HTTP_SERVICE_UNAVAILABLE;
+            break;
+        }
 
-    	/* Step Three: Create conn_rec */
-    	if (!backend->connection) {
-			if ((status = ap_proxy_connection_create(proxy_function, backend,
+        /* Step Three: Create conn_rec */
+        if (!backend->connection) {
+            if ((status = ap_proxy_connection_create(proxy_function, backend,
                                                      c, r->server)) != OK)
-				break;
-			/*
+                break;
+            /*
              * On SSL connections set a note on the connection what CN is
-         	 * requested, such that mod_ssl can check if it is requested to do
-         	 * so.
-         	 */
-			if (is_ssl) {
-				apr_table_set(backend->connection->notes, "proxy-request-hostname",
-                          	  uri->hostname);
-			}
-    	}
+             * requested, such that mod_ssl can check if it is requested to do
+             * so.
+             */
+            if (is_ssl) {
+                apr_table_set(backend->connection->notes, "proxy-request-hostname",
+                              uri->hostname);
+            }
+        }
 
-    	/* Step Four: Send the Request
+        /* Step Four: Send the Request
          * On the off-chance that we forced a 100-Continue as a
          * kinda HTTP ping test, allow for retries
          */
-    	if ((status = ap_proxy_http_request(p, r, backend, worker,
+        if ((status = ap_proxy_http_request(p, r, backend, worker,
                                         conf, uri, locurl, server_portstr)) != OK) {
             if ((status == HTTP_SERVICE_UNAVAILABLE) && worker->ping_timeout_set) {
-            	backend->close = 1;
-        		ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
-                     	     "proxy: HTTP: 100-Continue failed to %pI (%s)",
-                     	     worker->cp->addr, worker->hostname);
-        		retry++;
-        		continue;
+                backend->close = 1;
+                ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
+                             "proxy: HTTP: 100-Continue failed to %pI (%s)",
+                             worker->cp->addr, worker->hostname);
+                retry++;
+                continue;
             } else {
                 break;
             }
 
         }
 
-    	/* Step Five: Receive the Response... Fall thru to cleanup */
-    	status = ap_proxy_http_process_response(p, r, backend, worker,
+        /* Step Five: Receive the Response... Fall thru to cleanup */
+        status = ap_proxy_http_process_response(p, r, backend, worker,
                                                 conf, server_portstr);
 
         break;
