@@ -446,7 +446,7 @@
 
     <P class="currentdocs"><strong>This directive has been removed in current versions of
     the server. See <a
-    href="http://httpd.apache.org/docs/current/mod/core.html#loadmodule">LoadModule</a></strong</p>
+    href="http://httpd.apache.org/docs/current/mod/mod_so.html#loadmodule">LoadModule</a></strong</p>
 
     <p>The server can have modules compiled in which are not
     actively in use. This directive can be used to enable the use
@@ -804,6 +804,10 @@
     rel="Help"><strong>Compatibility:</strong></a> Available in Apache
        1.3.24 and later.
 
+   <p class="currentdocs"><strong>This directive is no longer available
+   in current versions of the server. See <a
+   href="http://httpd.apache.org/docs/current/mod/mod_cgi.html">mod_cgi</a>.</strong></p>
+
     <p>Way back when the internet was a safer, more naive place, it
     was convenient for the server to take a query string that did not
     contain an '=' sign and to parse and pass it to a CGI program as
@@ -832,6 +836,10 @@
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> ClearModuleList
     is only available in Apache 1.2 and later 
+
+    <p class="currentdocs"><strong>This directive is no longer available
+    in current versions of the server. See <a
+    href="http://httpd.apache.org/docs/current/mod/mod_so.html">mod_so</a>.</strong></p>
 
     <p>The server comes with a built-in list of active modules.
     This directive clears the list. It is assumed that the list
@@ -862,7 +870,11 @@
     rel="Help"><strong>Status:</strong></a> experimental<br />
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> ContentDigest is
-    only available in Apache 1.1 and later 
+    only available in Apache 1.1 and later.
+
+    <p class="currentodcs"><strong>Current documentation for this
+    directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#contentdigest">here</a>.</strong></p>
 
     <p>This directive enables the generation of
     <code>Content-MD5</code> headers as defined in RFC1864
@@ -905,6 +917,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mpm_common.html#coredumpdirectory">here</a></strong></p>
+
     <p>This controls the directory to which Apache attempts to
     switch before dumping core. The default is in the <a
     href="#serverroot">ServerRoot</a> directory, however since this
@@ -938,6 +953,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#defaulttype">here</a></strong></p>
+
     <p>There will be times when the server is asked to provide a
     document whose type cannot be determined by its MIME types
     mappings.</p>
@@ -970,6 +988,9 @@
     host<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> Core. 
+
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#directory">here</a></strong></p>
 
     <p>&lt;Directory&gt; and &lt;/Directory&gt; are used to enclose
     a group of directives which will apply only to the named
@@ -1098,6 +1119,12 @@
    &lt;/Directory&gt;
    </pre>
 
+   <p class="currentdocs"><strong>The &lt;Directory proxy:*&gt; syntax is no
+   longer valid in current versions of the server, and has been replaced
+   by the <a
+   href="http://httpd.apache.org/docs/current/mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a>
+   directive.</strong></o>
+
     <p><strong>See also</strong>: <a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
@@ -1120,6 +1147,9 @@
     rel="Help"><strong>Compatibility:</strong></a> Available in
     Apache 1.3 and later 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#directorymatch">here</a></strong></p>
+ 
     <p>&lt;DirectoryMatch&gt; and &lt;/DirectoryMatch&gt; are used
     to enclose a group of directives which will apply only to the
     named directory and sub-directories of that directory, the same
