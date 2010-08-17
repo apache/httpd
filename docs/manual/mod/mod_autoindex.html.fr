@@ -652,17 +652,16 @@ répertoire</td></tr>
       est aussi activé.</strong></dd>
 
       <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a>
-	       (<em>Expérimental, versions 2.0.23 et supérieures
+	       (<em>Versions 2.0.23 et supérieures
 	       du serveur HTTP Apache</em>)</dt>
 
-      <dd>Cette option expérimentale pour l'affichage
+      <dd>Cette option pour l'affichage
       <code>FancyIndexing</code> permet de construire une table simple
-      pour l'affichage de l'index du répertoire. Notez que cela risque
-      de perturber les anciens navigateurs. Cette option s'avèrera
-      particulièrement nécessaire si les noms de fichiers ou les chaînes
+      pour l'affichage de l'index du répertoire. Cette option s'avèrera
+      particulièrement nécessaire pour les plates-formes où utf-8 est
+      activé et dans le cas où les noms de fichiers ou les chaînes
       de description alternent entre les ordres de lecture gauche à
-      droite et droite à gauche, comme cela peut arriver sous WinNT ou
-      d'autres plate-formes où utf-8 est activé.</dd>
+      droite et droite à gauche.</dd>
 
       <dt><a name="indexoptions.iconsarelinks" id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
 
