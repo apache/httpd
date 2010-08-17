@@ -850,16 +850,16 @@ host</context>
     <li>Sur certains systèmes multi-processeurs, la projection en
     mémoire peut dégrader les performances du programme
     <program>httpd</program>.</li>
-    
+    <li>S'il fait l'objet d'une projection en mémoire par
+    <program>httpd</program>, la suppression ou la troncature d'un
+    fichier peut provoquer un crash de <program>httpd</program> avec une
+    erreur de segmentation.</li>
     </ul>
 
     <p>Pour les configurations de serveur sujettes à ce genre de
     problème, il est préférable de désactiver la projection en mémoire
     des fichiers servis en spécifiant :</p>
-    <li>S'il fait l'objet d'une projection en mémoire par
-    <program>httpd</program>, la suppression ou la troncature d'un
-    fichier peut provoquer un crash de <program>httpd</program> avec une
-    erreur de segmentation.</li>
+
     <example>
       EnableMMAP Off
     </example>
