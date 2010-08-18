@@ -1187,6 +1187,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#documentroot">here</a></strong></p>
+
     <p>This directive sets the directory from which httpd will
     serve files. Unless matched by a directive like Alias, the
     server appends the path from the requested URL to the document
@@ -1222,6 +1225,9 @@
     rel="Help"><strong>Compatibility:</strong></a> The configurable
     EBCDIC conversion is only available in Apache 1.3.19 and later,
     and on EBCDIC based platforms. 
+
+    <p class="currentdocs"><strong>This directive is no longer available
+    in current versions of the server.</strong></p>
 
     <p>The EBCDICConvert directive maps the given filename
     extensions to the specified conversion setting (<samp>On</samp>
@@ -1287,7 +1293,10 @@
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> The configurable
     EBCDIC conversion is only available in Apache 1.3.19 and later,
-    and on EBCDIC based platforms. 
+    and on EBCDIC based platforms.
+
+    <p class="currentdocs"><strong>This directive is no longer available
+    in current versions of the server.</strong></p>
 
     <p>The EBCDICConvertByType directive maps the given MIME type
     (optionally containing wildcards) to the specified conversion
@@ -1350,6 +1359,8 @@
     platforms. It is deprecated and will be withdrawn in a future
     version.<br />
      
+    <p class="currentdocs"><strong>This directive is no longer available
+    in current versions of the server.</strong></p>
 
     <p>The EBCDICKludge is provided for the backward compatible
     behavior with apache versions 1.3.0 through 1.3.18. In these
@@ -1410,6 +1421,9 @@
     rel="Help"><strong>Compatibility:</strong></a> EnableExceptionHook
     is available in Apache 1.3.30 and later
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mpm_common.html#enableexceptionhook">here</a></strong></p>
+
     <p><code>EnableExceptionHook</code> controls whether or not an
     exception hook implemented by a module will be called after a
     child process crash.  The exception hook allows modules to log
@@ -1435,6 +1449,9 @@
     and .htaccess contexts are only available in Apache 1.1 and
     later. 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#errordocument">here</a></strong></p>
+ 
     <p>In the event of a problem or error, Apache can be configured
     to do one of four things,</p>
 
@@ -1522,6 +1539,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#errorlog">here</a></strong></p>
+ 
     <p>The error log directive sets the name of the file to which
     the server will log any errors it encounters. If the
     <em>file-path</em> does not begin with a slash (/) then it is
