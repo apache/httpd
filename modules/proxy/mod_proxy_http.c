@@ -696,7 +696,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     proxy_dir_conf *dconf;
     conn_rec *origin = p_conn->connection;
     int do_100_continue;
-
+    
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
 
@@ -709,10 +709,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
     do_100_continue = (worker->ping_timeout_set
-                       && !r->header_only
-                       && (r->kept_body
-                          || apr_table_get(r->headers_in, "Content-Length")
-                          || apr_table_get(r->headers_in, "Transfer-Encoding"))
+                       && ap_request_has_body(r)
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
     
@@ -1403,10 +1400,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     int do_100_continue;
     
     do_100_continue = (worker->ping_timeout_set
-                       && !r->header_only
-                       && (r->kept_body
-                          || apr_table_get(r->headers_in, "Content-Length")
-                          || apr_table_get(r->headers_in, "Transfer-Encoding"))
+                       && ap_request_has_body(r)
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
     

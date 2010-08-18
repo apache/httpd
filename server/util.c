@@ -2221,3 +2221,27 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     return APR_SUCCESS;
 }
 
+/**
+ * Determine if a request has a request body or not.
+ *
+ * @param r the request_rec of the request
+ * @return truth value
+ */
+AP_DECLARE(int) ap_request_has_body(request_rec *r)
+{
+    apr_off_t cl;
+    char *estr;
+    const char *cls;
+    int has_body;
+            
+    has_body = (!r->header_only
+                && (r->kept_body
+                    || apr_table_get(r->headers_in, "Transfer-Encoding")
+                    || ( (cls = apr_table_get(r->headers_in, "Content-Length"))
+                        && (apr_strtoff(&cl, cls, &estr, 10) == APR_SUCCESS)
+                        && (!*estr)
+                        && (cl > 0) )
+                    )
+                );
+    return has_body;
+}

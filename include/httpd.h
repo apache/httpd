@@ -1806,6 +1806,14 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
                                                apr_interval_time_t *timeout,
                                                const char *default_time_unit);
 
+/**
+ * Determine if a request has a request body or not.
+ *
+ * @param r the request_rec of the request
+ * @return truth value
+ */
+AP_DECLARE(int) ap_request_has_body(request_rec *r);
+    
 /* Misc system hackery */
 /**
  * Given the name of an object in the file system determine if it is a directory
