@@ -1527,8 +1527,6 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "mod_rewrite: can't access text RewriteMap file %s",
                           s->checkfile);
-            rewritelog((r, 1, NULL,
-                        "can't open RewriteMap file, see error log"));
             return NULL;
         }
 
@@ -1585,8 +1583,6 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             }
         }
         if(rv != APR_SUCCESS) {
-            rewritelog((r, 1, NULL,
-                        "can't open DBM RewriteMap file, see error log"));
             return NULL;
         }
 
