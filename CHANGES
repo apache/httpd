@@ -6,6 +6,9 @@ Changes with Apache 2.3.7
      mod_dav, mod_cache, mod_session: Fix Handling of requests without a path 
      segment. PR: 49246 [Mark Drayton, Jeff Trawick]
 
+  *) mod_ldap: Properly check the result returned by apr_ldap_init. PR 46076.
+     [Stefan Fritsch]
+
   *) mod_rewrite: Log errors if rewrite map files cannot be opened. PR 49639.
      [Stefan Fritsch]
 

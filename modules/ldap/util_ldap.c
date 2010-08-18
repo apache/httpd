@@ -317,6 +317,8 @@ static int uldap_connection_init(request_rec *r,
 
     if (result->rc) {
         ldc->reason = result->reason;
+        ldc->bound = 0;
+        return result->rc;
     }
 
     if (NULL == ldc->ldap)
