@@ -471,7 +471,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     }
                     if (ap_pass_brigade(r->output_filters,
                                         output_brigade) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                                       "proxy: error processing body.%s",
                                       r->connection->aborted ?
                                       " Client aborted connection." : "");
@@ -489,7 +489,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 APR_BRIGADE_INSERT_TAIL(output_brigade, e);
                 if (ap_pass_brigade(r->output_filters,
                                     output_brigade) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                                   "proxy: error processing end");
                     output_failed = 1;
                 }
