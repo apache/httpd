@@ -31,13 +31,21 @@
 <section id="requirements"><title>System requirements</title>
 
     <p>As the term <cite>IP-based</cite> indicates, the server
-    <strong>must have a different IP address for each IP-based
+    <strong>must have a different IP address/port combination for each IP-based
     virtual host</strong>. This can be achieved by the machine
     having several physical network connections, or by use of
     virtual interfaces which are supported by most modern operating
     systems (see system documentation for details, these are
     frequently called "ip aliases", and the "ifconfig" command is
-    most commonly used to set them up).</p>
+    most commonly used to set them up), and/or using multiple
+    port numbers.</p>
+
+    <p>In many cases, <a href="name-based.html">name-based
+    virtual hosts</a> are more convenient, because they allow
+    many virtual hosts to share a single address/port.
+    See <a href="name-based.html#namevip">Name-based vs. IP-based
+    Virtual Hosts</a> to help you decide.
+    </p>
 
 </section>
 
