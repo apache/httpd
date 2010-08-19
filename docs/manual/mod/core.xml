@@ -3079,10 +3079,12 @@ to name-virtual hosts</description>
       ServerName server.domain.com<br />
       ServerAlias server server2.domain.com server2<br />
       ServerAlias *.example.com<br />
+      UseCanonicalName Off<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
 </usage>
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></seealso>
 </directivesynopsis>
 
