@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>API Changes in Apache HTTP Server 2.4 since 2.2 - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>API Changes in Apache HTTP Server 2.4 since 2.2</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/developer/new_api_2_4.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+  <p>This document describes changes to the Apache HTTPD API from
+     version 2.2 to 2.4, that may be of interest to module/application
+     developers and core hacks.  At the time of writing, the 2.4 API
+     is not finalised, and this document may serve to highlight
+     points that call for further review.</p>
+  <p>API changes fall into two categories: APIs that are altogether new,
+     and existing APIs that are expanded or changed.  The latter are
+     further divided into those where all changes are back-compatible
+     (so existing modules can ignore them), and those that might
+     require attention by maintainers.  As with the transition from
+     HTTPD 2.0 to 2.2, existing modules and applications will require
+     recompiling and may call for some attention, but most should not
+     require any substantial updating (although some may be able to
+     take advantage of API changes to offer significant improvements).</p>
+  <p>For the purpose of this document, the API is split according
+     to the public header files.  These headers are themselves the
+     reference documentation, and can be used to generate a browsable 
+     HTML reference with <code>make docs</code>.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#ap_expr">ap_expr (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ap_listen">ap_listen (changed; back-compatible)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ap_mpm">ap_mpm (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ap_slotmem">ap_slotmem (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ap_socache">ap_socache (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#heartbeat">heartbeat (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#http_config">http_config (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#http_core">http_core (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#httpd">httpd (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#http_log">http_log (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#http_request">http_request (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mod_auth">mod_auth (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mod_core">mod_core (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mod_request">mod_request (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mpm_common">mpm_common (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#scoreboard">scoreboard (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#util_cookies">util_cookies (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#util_ldap">util_ldap (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#util_mutex">util_mutex (NEW!)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#util_script">util_script (changed)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#util_time">util_time (changed)</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ap_expr" id="ap_expr">ap_expr (NEW!)</a></h2>
+    
+    <p>Introduces a new API to parse and evaluate boolean and algebraic
+       expressions, including provision for a standard syntax and
+       customised variants.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ap_listen" id="ap_listen">ap_listen (changed; back-compatible)</a></h2>
+    
+    <p>Introduces new API to enable apache child processes to serve different purposes.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ap_mpm" id="ap_mpm">ap_mpm (changed)</a></h2>
+    
+  <p><code>ap_mpm_run</code> is replaced by a new <code>mpm</code> hook.
+  Also <code>ap_graceful_stop_signalled</code> is lost, and
+  <code>ap_mpm_register_timed_callback</code> is new.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ap_slotmem" id="ap_slotmem">ap_slotmem (NEW!)</a></h2>
+    
+    <p>Introduces an API for modules to allocate and manage memory slots
+    (normally) for shared memory.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ap_socache" id="ap_socache">ap_socache (NEW!)</a></h2>
+    
+    <p>API to manage a shared object cache.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="heartbeat" id="heartbeat">heartbeat (NEW!)</a></h2>
+    
+    <p>common structures for heartbeat modules (should this be public API?)</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="http_config" id="http_config">http_config (changed)</a></h2>
+    
+    <ul>
+      <li>Introduces per-module, per-directory loglevels, including macro wrappers.</li>
+      <li>New AP_DECLARE_MODULE macro to declare all modules.</li>
+      <li>New APLOG_USE_MODULE macro necessary for per-module loglevels in
+          multi-file modules.</li>
+      <li>New API to retain data across module unload/load</li>
+      <li>New check_config hook</li>
+      <li>New ap_process_fnmatch_configs() to process wildcards</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="http_core" id="http_core">http_core (changed)</a></h2>
+    
+    <ul>
+      <li>REMOVED ap_default_type, ap_requires, all 2.2 authnz API</li>
+      <li>Introduces Optional Functions for logio and authnz</li>
+      <li>New function ap_get_server_name_for_url to support ipv6 literals.</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="httpd" id="httpd">httpd (changed)</a></h2>
+    
+    <ul>
+      <li>Introduce per-directory, per-module loglevel</li>
+      <li>New loglevels APLOG_TRACEn</li>
+      <li>Support for mod_request kept_body</li>
+      <li>Support buffering filter data for async requests</li>
+      <li>New CONN_STATE values</li>
+      <li>Function changes: ap_escape_html updated; ap_unescape_all, ap_escape_path_segment_buffer</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="http_log" id="http_log">http_log (changed)</a></h2>
+    
+    <ul>
+      <li>Introduce per-directory, per-module loglevel</li>
+      <li>New loglevels APLOG_TRACEn</li>
+      <li>ap_log_*error become macro wrappers (fully back-compatible if
+          APLOG_MARK macro is used)</li>
+      <li>piped logging revamped</li>
+      <li>module_index added to error_log hook</li>
+      <li>new function: ap_log_command_line</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="http_request" id="http_request">http_request (changed)</a></h2>
+    
+    <ul>
+      <li>New auth_internal API and auth_provider API</li>
+      <li>New EOR bucket type</li>
+      <li>New function ap_process_async_request</li>
+      <li>New flags AP_AUTH_INTERNAL_PER_CONF and AP_AUTH_INTERNAL_PER_URI</li>
+      <li>New access_checker_ex hook to apply additional access control and/or
+          bypass authentication.</li>
+      <li>New functions ap_hook_check_access_ex, ap_hook_check_access,
+          ap_hook_check_authn, ap_hook_check_authz which accept
+          AP_AUTH_INTERNAL_PER_* flags</li>
+      <li>DEPRECATED direct use of ap_hook_access_checker, access_checker_ex,
+          ap_hook_check_user_id, ap_hook_auth_checker</li>
+    </ul>
+    <p>When possible, registering all access control hooks (including
+       authentication and authorization hooks) using AP_AUTH_INTERNAL_PER_CONF
+       is recommended.  If all modules' access control hooks are registered
+       with this flag, then whenever the server handles an internal
+       sub-request that matches the same set of access control configuration
+       directives as the initial request (which is the common case), it can
+       avoid invoking the access control hooks another time.</p>
+    <p>If your module requires the old behavior and must perform access
+       control checks on every sub-request with a different URI from the
+       initial request, even if that URI matches the same set of access
+       control configuration directives, then use AP_AUTH_INTERNAL_PER_URI.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mod_auth" id="mod_auth">mod_auth (NEW!)</a></h2>
+    
+    <p>Introduces the new provider framework for authn and authz</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mod_core" id="mod_core">mod_core (NEW!)</a></h2>
+    
+    <p>This introduces low-level APIs to send arbitrary headers,
+    and exposes functions to handle HTTP OPTIONS and TRACE.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mod_request" id="mod_request">mod_request (NEW!)</a></h2>
+    
+    <p>The API for <code class="module"><a href="../mod/mod_request.html">mod_request</a></code>, to make input data
+    available to multiple application/handler modules where required,
+    and to parse HTML form data.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mpm_common" id="mpm_common">mpm_common (changed)</a></h2>
+    
+    <ul>
+      <li>REMOVES: accept, lockfile, lock_mech, set_scoreboard (locking uses the new ap_mutex API)</li>
+      <li>NEW API to drop privileges (delegates this platform-dependent
+          function to modules)</li>
+      <li>NEW Hooks: mpm_query, mpm_note_child_killed, timed_callback, get_name, and function ap_mpm_note_child_killed</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="scoreboard" id="scoreboard">scoreboard (changed)</a></h2>
+    
+    <p>ap_get_scoreboard_worker is gratuitously made non-back-compatible
+    as an alternative version is introduced.  Additional proxy_balancer
+    support.  Child status stuff revamped.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="util_cookies" id="util_cookies">util_cookies (NEW!)</a></h2>
+    
+    <p>Introduces a new API for managing HTTP Cookies.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="util_ldap" id="util_ldap">util_ldap (changed)</a></h2>
+    
+    <p>I have yet to get a handle on this update.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="util_mutex" id="util_mutex">util_mutex (NEW!)</a></h2>
+    
+    <p>A wrapper for APR proc and global mutexes in httpd.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="util_script" id="util_script">util_script (changed)</a></h2>
+    
+    <p>NEW: ap_args_to_table</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="util_time" id="util_time">util_time (changed)</a></h2>
+    
+    <p>NEW: ap_recent_ctime_ex</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/developer/new_api_2_4.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

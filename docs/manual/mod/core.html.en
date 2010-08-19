@@ -2645,6 +2645,10 @@ are necessary.</p>
 
     </code></p></div>
 
+    <p>If no matching virtual host is found, then the first listed
+    virtual host that matches the IP address and port will be used.</p>
+
+
     <p>IPv6 addresses must be enclosed in square brackets, as shown
     in the following example:</p>
 
@@ -3127,6 +3131,11 @@ itself</td></tr>
     <div class="example"><p><code>
       ServerName www.example.com:80
     </code></p></div>
+
+    <p>The <code class="directive">ServerName</code> directive
+    may appear anywhere within the definition of a server. However,
+    each appearance overrides the previous appearance (within that
+    server).</p>
 
     <p>If no <code class="directive">ServerName</code> is specified, then the
     server attempts to deduce the hostname by performing a reverse
@@ -3731,6 +3740,11 @@ hostname or IP address</td></tr>
     specified inside each <code class="directive">&lt;VirtualHost&gt;</code> block. If it is absent, the
     <code class="directive"><a href="#servername">ServerName</a></code> from the "main"
     server configuration will be inherited.</p>
+
+    <p>If no matching virtual host is found, then the first listed
+    virtual host that matches the IP address will be used.  As a
+    consequence, the first listed virtual host is the default virtual
+    host.</p>
 
     <div class="warning"><h3>Security</h3>
     <p>See the <a href="../misc/security_tips.html">security tips</a>
