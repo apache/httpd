@@ -124,7 +124,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     char *pw;
     apr_md5_ctx_t context;
     unsigned char digest[16];
-    char string[3 * MAX_STRING_LEN];
+    char string[3 * MAX_STRING_LEN]; /* this includes room for 2 * ':' + '\0' */
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     unsigned int i;
@@ -144,7 +144,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     apr_file_printf(f, "%s:%s:", user, realm);
 
     /* Do MD5 stuff */
-    sprintf(string, "%s:%s:%s", user, realm, pw);
+    apr_snprintf(string, sizeof(string), "%s:%s:%s", user, realm, pw);
 
     apr_md5_init(&context);
 #if APR_CHARSET_EBCDIC
