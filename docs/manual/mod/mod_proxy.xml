@@ -864,6 +864,12 @@ expressions</description>
         <td>Balancer timeout in seconds. If set this will be the maximum time
         to wait for a free worker. Default is not to wait. 
     </td></tr>
+    <tr><td>failonstatus</td>
+        <td>-</td>
+        <td>A single or comma-separated list of HTTP status codes. If set this will
+        force the worker into error state when the backend returns any status code
+        in the list. Worker recovery behaves the same as other worker errors.
+    </td></tr>
     
     </table>
     <p>A sample balancer setup</p>

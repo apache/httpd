@@ -628,7 +628,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
             int val = ((int *)balancer->errstatuses->elts)[i];
             if (r->status == val) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                             "proxy: BALANCER: (%s).  Forcing recovery for worker (%s), erroronstatus %d",
+                             "proxy: BALANCER: (%s).  Forcing recovery for worker (%s), failonstatus %d",
                              balancer->name, worker->name, val);
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
