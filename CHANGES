@@ -5,6 +5,12 @@ Changes with Apache 2.3.8
   *) mod_proxy: Rename erroronstatus to failonstatus.
      [Daniel Ruggeri <DRuggeri primary.net>]
 
+  *) mod_dav_fs: Fix broken "creationdate" property.
+     Regression in version 2.3.7. [Rainer Jung]
+
+  *) mod_dav, mod_dav_fs: Replace remaining uses of sprintf()
+     by apr_snprintf(). [Rainer Jung]
+
 Changes with Apache 2.3.7
 
   *) SECURITY: CVE-2010-1452 (cve.mitre.org)

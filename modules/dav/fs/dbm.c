@@ -311,7 +311,7 @@ static apr_datum_t dav_build_key(dav_db *db, const dav_prop_name *name)
             return key;         /* zeroed */
         }
 
-        l_ns = sprintf(nsbuf, "%ld", ns_id - 1);
+        l_ns = apr_snprintf(nsbuf, sizeof(nsbuf), "%ld", ns_id - 1);
     }
 
     /* assemble: #:name */

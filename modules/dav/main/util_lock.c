@@ -21,10 +21,6 @@
 #include "apr.h"
 #include "apr_strings.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for sprintf() */
-#endif
-
 #include "mod_dav.h"
 #include "http_log.h"
 #include "http_config.h"
@@ -118,8 +114,8 @@ DAV_DECLARE(const char *) dav_lock_get_activelock(request_rec *r,
             break;
         }
         dav_buffer_append(p, pbuf, "</D:lockscope>" DEBUG_CR);
-        sprintf(tmp, "<D:depth>%s</D:depth>" DEBUG_CR,
-                lock->depth == DAV_INFINITY ? "infinity" : "0");
+        apr_snprintf(tmp, sizeof(tmp), "<D:depth>%s</D:depth>" DEBUG_CR,
+                     lock->depth == DAV_INFINITY ? "infinity" : "0");
         dav_buffer_append(p, pbuf, tmp);
 
         if (lock->owner) {
@@ -137,7 +133,7 @@ DAV_DECLARE(const char *) dav_lock_get_activelock(request_rec *r,
         }
         else {
             time_t now = time(NULL);
-            sprintf(tmp, "Second-%lu", (long unsigned int)(lock->timeout - now));
+            apr_snprintf(tmp, sizeof(tmp), "Second-%lu", (long unsigned int)(lock->timeout - now));
             dav_buffer_append(p, pbuf, tmp);
         }
 

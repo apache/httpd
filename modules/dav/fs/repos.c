@@ -293,7 +293,7 @@ dav_error * dav_fs_dir_file_name(
 
 /* Note: picked up from ap_gm_timestr_822() */
 /* NOTE: buf must be at least DAV_TIMEBUF_SIZE chars in size */
-static void dav_format_time(int style, apr_time_t sec, char *buf)
+static void dav_format_time(int style, apr_time_t sec, char *buf, apr_size_t buflen)
 {
     apr_time_exp_t tms;
 
@@ -304,7 +304,7 @@ static void dav_format_time(int style, apr_time_t sec, char *buf)
         /* ### should we use "-00:00" instead of "Z" ?? */
 
         /* 20 chars plus null term */
-        apr_snprintf(buf, sizeof(buf), "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
+        apr_snprintf(buf, buflen, "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
                      tms.tm_year + 1900, tms.tm_mon + 1, tms.tm_mday,
                      tms.tm_hour, tms.tm_min, tms.tm_sec);
         return;
@@ -313,12 +313,11 @@ static void dav_format_time(int style, apr_time_t sec, char *buf)
     /* RFC 822 date format; as strftime '%a, %d %b %Y %T GMT' */
 
     /* 29 chars plus null term */
-    sprintf(buf,
-            "%s, %.2d %s %d %.2d:%.2d:%.2d GMT",
-           apr_day_snames[tms.tm_wday],
-           tms.tm_mday, apr_month_snames[tms.tm_mon],
-           tms.tm_year + 1900,
-           tms.tm_hour, tms.tm_min, tms.tm_sec);
+    apr_snprintf(buf, buflen, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT",
+                 apr_day_snames[tms.tm_wday],
+                 tms.tm_mday, apr_month_snames[tms.tm_mon],
+                 tms.tm_year + 1900,
+                 tms.tm_hour, tms.tm_min, tms.tm_sec);
 }
 
 /* Copy or move src to dst; src_finfo is used to propagate permissions
@@ -1940,7 +1939,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
         */
         dav_format_time(DAV_STYLE_ISO8601,
                         resource->info->finfo.ctime,
-                        buf);
+                        buf, sizeof(buf));
         value = buf;
         break;
 
@@ -1949,7 +1948,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
         if (resource->collection)
             return DAV_PROP_INSERT_NOTDEF;
 
-        (void) sprintf(buf, "%" APR_OFF_T_FMT, resource->info->finfo.size);
+        apr_snprintf(buf, sizeof(buf), "%" APR_OFF_T_FMT, resource->info->finfo.size);
         value = buf;
         break;
 
@@ -1960,7 +1959,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     case DAV_PROPID_getlastmodified:
         dav_format_time(DAV_STYLE_RFC822,
                         resource->info->finfo.mtime,
-                        buf);
+                        buf, sizeof(buf));
         value = buf;
         break;
 
