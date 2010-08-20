@@ -381,7 +381,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         else
             return "scolonpathdelim must be On|Off";
     }
-    else if (!strcasecmp(key, "erroronstatus")) {
+    else if (!strcasecmp(key, "failonstatus")) {
         char *val_split;
         char *status;
         char *tok_state;
@@ -397,7 +397,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
                 *(int *)apr_array_push(balancer->errstatuses) = ival;
             }
             else {
-                return "erroronstatus must be one or more HTTP response code";
+                return "failonstatus must be one or more HTTP response codes";
             }
             status = apr_strtok(NULL, ", ", &tok_state);
         }
