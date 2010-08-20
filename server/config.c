@@ -1186,7 +1186,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
             sub_tree = *curr_parent;
         }
 
-        if (sub_tree == NULL && current != NULL) {
+        if (sub_tree == NULL) {
             sub_tree = *current;
         }
     }
