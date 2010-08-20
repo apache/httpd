@@ -238,6 +238,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works
      +1: sf
 
+   * rotatelogs: Fix possible buffer overflow if admin configures a
+     mongo log file path.
+     Trunk already has a fix.
+     2.2.x patch: http://people.apache.org/~trawick/rotatelogs.overflow.txt
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
