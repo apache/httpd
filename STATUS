@@ -87,11 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * rotatelogs: Fix possible buffer overflow if admin configures a
-     mongo log file path.
-     Trunk already has a fix.
-     2.2.x patch: http://people.apache.org/~trawick/rotatelogs.overflow.txt
-     +1: trawick, rpluem, lars, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
