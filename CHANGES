@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.8
 
+  *) core: Abort with sensible error message if no or more than one MPM is
+     loaded. [Stefan Fritsch]
+
   *) mod_proxy: Rename erroronstatus to failonstatus.
      [Daniel Ruggeri <DRuggeri primary.net>]
 

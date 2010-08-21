@@ -49,6 +49,7 @@
 #include "http_main.h"
 #include "http_vhost.h"
 #include "util_cfgtree.h"
+#include "mpm_common.h"
 
 #define APLOG_UNSET   (APLOG_NO_MODULE - 1)
 APLOG_USE_MODULE(core);
@@ -2239,6 +2240,13 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
     if (error) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL,
                      "%s: %s", ap_server_argv0, error);
+        return NULL;
+    }
+
+    error = ap_check_mpm();
+    if (error) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL,
+                     "%s: Configuration error: %s", ap_server_argv0, error);
         return NULL;
     }
 

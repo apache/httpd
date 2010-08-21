@@ -375,3 +375,13 @@ AP_DECLARE(const char *)ap_show_mpm(void)
 
     return name;
 }
+
+AP_DECLARE(const char *)ap_check_mpm(void)
+{
+    if (!_hooks.link_mpm || _hooks.link_mpm->nelts == 0)
+        return "No MPM loaded.";
+    else if (_hooks.link_mpm->nelts > 1)
+        return "More than one MPM loaded.";
+    else
+        return NULL;
+}

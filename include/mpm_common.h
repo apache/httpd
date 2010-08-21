@@ -242,6 +242,12 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod);
  */
 AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num);
 
+/**
+ * Check that exactly one MPM is loaded
+ * Returns NULL if yes, error string if not.
+ */
+AP_DECLARE(const char *) ap_check_mpm(void);
+
 /*
  * These data members are common to all mpms. Each new mpm
  * should either use the appropriate ap_mpm_set_* function
