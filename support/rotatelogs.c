@@ -248,7 +248,7 @@ int main (int argc, const char * const argv[])
                 apr_strftime(buf2, &rs, sizeof(buf2), szLogRoot, &e);
             }
             else {
-                sprintf(buf2, "%s.%010d", szLogRoot, tLogStart);
+                apr_snprintf(buf2, sizeof(buf2), "%s.%010d", szLogRoot, tLogStart);
             }
             tLogEnd = tLogStart + tRotation;
             pfile_prev = pfile;
