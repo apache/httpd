@@ -242,7 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      mongo log file path.
      Trunk already has a fix.
      2.2.x patch: http://people.apache.org/~trawick/rotatelogs.overflow.txt
-     +1: trawick, rpluem
+     +1: trawick, rpluem, lars
 
 PATCHES/ISSUES THAT ARE STALLED
 
