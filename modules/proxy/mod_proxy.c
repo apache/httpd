@@ -446,7 +446,7 @@ static int alias_match(const char *uri, const char *alias_fakename)
    /* We reach the end of the uri before the end of "alias_fakename"
     * for example uri is "/" and alias_fakename "/examples"
     */
-   if (urip == end_uri && aliasp!=end_fakename) {
+   if (urip == end_uri && aliasp != end_fakename) {
        return 0;
    }
 
@@ -1162,7 +1162,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->maxfwd_set = overrides->maxfwd_set || base->maxfwd_set;
     ps->error_override = (overrides->error_override_set == 0) ? base->error_override : overrides->error_override;
     ps->error_override_set = overrides->error_override_set || base->error_override_set;
-    ps->timeout= (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
+    ps->timeout = (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
     ps->timeout_set = overrides->timeout_set || base->timeout_set;
     ps->badopt = (overrides->badopt_set == 0) ? base->badopt : overrides->badopt;
     ps->badopt_set = overrides->badopt_set || base->badopt_set;
@@ -1668,12 +1668,12 @@ static const char*
     ap_get_module_config(parms->server->module_config, &proxy_module);
     int timeout;
 
-    timeout=atoi(arg);
+    timeout = atoi(arg);
     if (timeout<1) {
         return "Proxy Timeout must be at least 1 second.";
     }
-    psf->timeout_set=1;
-    psf->timeout=apr_time_from_sec(timeout);
+    psf->timeout_set = 1;
+    psf->timeout = apr_time_from_sec(timeout);
 
     return NULL;
 }
@@ -1945,7 +1945,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                            "> directive missing closing '>'", NULL);
     }
 
-    arg=apr_pstrndup(cmd->pool, arg, endp-arg);
+    arg = apr_pstrndup(cmd->pool, arg, endp-arg);
 
     if (!arg) {
         if (thiscmd->cmd_data)
@@ -2339,7 +2339,7 @@ static void register_hooks(apr_pool_t *p)
     /* fixup before mod_rewrite, so that the proxied url will not
      * escaped accidentally by our fixup.
      */
-    static const char * const aszSucc[]={ "mod_rewrite.c", NULL };
+    static const char * const aszSucc[] = { "mod_rewrite.c", NULL};
     /* Only the mpm_winnt has child init hook handler.
      * make sure that we are called after the mpm
      * initializes.
