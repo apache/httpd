@@ -423,7 +423,8 @@ initgroups \
 bindprocessor \
 prctl \
 timegm \
-getpgid
+getpgid \
+fopen64
 )
 
 dnl confirm that a void pointer is large enough to store a long integer

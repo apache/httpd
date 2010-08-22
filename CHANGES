@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.8
 
+  *) suexec: Support large log files. PR 45856. [Stefan Fritsch]
+
   *) core: Abort with sensible error message if no or more than one MPM is
      loaded. [Stefan Fritsch]
 
