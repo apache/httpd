@@ -1735,11 +1735,8 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     arg = apr_pstrndup(cmd->pool, arg, endp - arg);
 
-    if (!arg || !arg[0]) {
-        if (thiscmd->cmd_data)
-            return "<DirectoryMatch > block must specify a path";
-        else
-            return "<Directory > block must specify a path";
+    if (!arg[0]) {
+        return missing_container_arg(cmd);
     }
 
     cmd->path = ap_getword_conf(cmd->pool, &arg);
