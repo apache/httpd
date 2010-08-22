@@ -148,6 +148,121 @@
     </section> <!-- /examples -->
 
 
+    <section id="workers"><title>Workers</title>
+      <p>The proxy manages the configuration of origin servers and their
+      communication parameters in objects called <dfn>workers</dfn>.
+      There are two built-in workers, the default forward proxy worker and the
+      default reverse proxy worker. Additional workers can be configured
+      explicitly.</p>
+
+      <p>The two default workers have a fixed configuration
+      and will be used if no other worker matches the request.
+      They do not use HTTP Keep-Alive or connection pooling.
+      The TCP connections to the origin server will instead be
+      opened and closed for each request.</p>
+
+      <p>Explicitly configured workers are identified by their URL.
+      They are usually created and configured using
+      <directive module="mod_proxy">ProxyPass</directive> or
+      <directive module="mod_proxy">ProxyPassMatch</directive> when used
+      for a reverse proxy:</p>
+
+      <example>
+          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
+      </example>
+
+      <p>This will create a worker associated with the origin server URL
+      <code>http://backend.example.com</code> and using the given timeout
+      values. When used in a forward proxy, workers are usually defined
+      via the <directive module="mod_proxy">ProxySet</directive> directive:</p>
+
+      <example>
+          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+      </example>
+
+      <p>or alternatively using <directive module="mod_proxy">Proxy</directive>
+      and <directive module="mod_proxy">ProxySet</directive>:</p>
+
+      <example>
+        &lt;Proxy http://backend.example.com&gt;<br />
+        <indent>
+          ProxySet connectiontimeout=5 timeout=30
+        </indent>
+        &lt;/Proxy&gt;
+      </example>
+
+      <p>Using explicitly configured workers in the forward mode is
+      not very common, because forward proxies usually communicate with many
+      different origin servers. Creating explicit workers for some of the
+      origin servers can still be useful, if they are used very often.
+      Explicitly configured workers have no concept of forward or reverse
+      proxying by themselves. They encapsulate a common concept of
+      communication with origin servers. A worker created by
+      <directive module="mod_proxy">ProxyPass</directive> for use in a
+      reverse proxy will be also used for forward proxy requests whenever
+      the URL to the origin server matches the worker URL and vice versa.</p>
+
+      <p>The URL identifying a direct worker is the URL of its
+      origin server including any path components given:</p>
+
+      <example>
+          ProxyPass /examples http://backend.example.com/examples<br />
+          ProxyPass /docs http://backend.example.com/docs
+      </example>
+
+      <p>This example defines two different workers, each using a separate
+      connection pool and configuration.</p>
+
+      <note type="warning"><title>Worker Sharing</title>
+        <p>Worker sharing happens if the worker URLs overlap, which occurs when
+        the URL of some worker is a leading substring of the URL of another
+        worker defined later in the configuration file. In the following example</p>
+
+        <example>
+            ProxyPass /apps http://backend.example.com/ timeout=60<br />
+            ProxyPass /examples http://backend.example.com/examples timeout=10
+        </example>
+
+        <p>the second worker isn't actually created. Instead the first
+        worker is used. The benefit is, that there is only one connection pool,
+        so connections are more often reused. Note that all configuration attributes
+        given explicitly for the later worker will be ignored. This will be logged
+        as a warning. In the above example the resulting timeout value
+        for the URL <code>/examples</code> will be <code>60</code> instead
+        of <code>10</code>!</p>
+
+        <p>If you want to avoid worker sharing, sort your worker definitions
+        by URL length, starting with the longest worker URLs. If you want to maximize
+        worker sharing use the reverse sort order. See also the related warning about
+        ordering <directive module="mod_proxy">ProxyPass</directive> directives.</p>
+
+      </note> <!-- /worker_sharing -->
+
+      <p>Explicitly configured workers come in two flavors:
+      <dfn>direct workers</dfn> and <dfn>(load) balancer workers</dfn>.
+      They support many important configuration attributes which are
+      described below in the <directive module="mod_proxy">ProxyPass</directive>
+      directive. The same attributes can also be set using
+      <directive module="mod_proxy">ProxySet</directive>.</p>
+
+      <p>The set of options available for a direct worker
+      depends on the protocol, which is specified in the origin server URL.
+      Available protocols include <code>ajp</code>, <code>fcgi</code>,
+      <code>ftp</code>, <code>http</code> and <code>scgi</code>.</p>
+
+      <p>Balancer workers are virtual workers that use direct workers known
+      as their members to actually handle the requests. Each balancer can
+      have multiple members. When it handles a request, it chooses a member
+      based on the configured load balancing algorithm.</p>
+
+      <p>A balancer worker is created if its worker URL uses
+      <code>balancer</code> as the protocol scheme.
+      The balancer URL uniquely identifies the balancer worker.
+      Members are added to a balancer using
+      <directive module="mod_proxy">BalancerMember</directive>.</p>
+
+    </section> <!-- /workers -->
+
     <section id="access"><title>Controlling access to your proxy</title>
       <p>You can control who can access your proxy via the <directive
       module="mod_proxy" type="section">Proxy</directive> control block as in
@@ -626,10 +741,20 @@ expressions</description>
     <code>backend.example.com</code> <em>except</em> requests made to
     <code>/mirror/foo/i</code>.</p>
 
-    <note><title>Note</title>
-      <p>Order is important: exclusions must come <em>before</em> the
-      general <directive>ProxyPass</directive> directive.</p>
-    </note>
+    <note type="warning"><title>Ordering ProxyPass Directives</title>
+      <p>The configured <directive module="mod_proxy">ProxyPass</directive>
+      and <directive module="mod_proxy">ProxyPassMatch</directive>
+      rules are checked in the order of configuration. The first rule that
+      matches wins. So usually you should sort conflicting
+      <directive module="mod_proxy">ProxyPass</directive> rules starting with the
+      longest URLs first. Otherwise later rules for longer URLS will be hidden
+      by any earlier rule which uses a leading substring of the URL. Note that
+      there is some relation with worker sharing.</p>
+
+      <p>For the same reasons exclusions must come <em>before</em> the
+      general <directive>ProxyPass</directive> directives.</p>
+
+    </note> <!-- /ordering_proxypass -->
 
     <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
     connections to a backend server.  Connections created on demand
