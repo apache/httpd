@@ -94,6 +94,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward Proxies and Reverse 
        Proxies/Gateways</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
@@ -184,6 +185,121 @@
     </span>
     &lt;/Proxy&gt;
     </code></p></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="workers" id="workers">Workers</a></h2>
+      <p>The proxy manages the configuration of origin servers and their
+      communication parameters in objects called <dfn>workers</dfn>.
+      There are two built-in workers, the default forward proxy worker and the
+      default reverse proxy worker. Additional workers can be configured
+      explicitly.</p>
+
+      <p>The two default workers have a fixed configuration
+      and will be used if no other worker matches the request.
+      They do not use HTTP Keep-Alive or connection pooling.
+      The TCP connections to the origin server will instead be
+      opened and closed for each request.</p>
+
+      <p>Explicitly configured workers are identified by their URL.
+      They are usually created and configured using
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> or
+      <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> when used
+      for a reverse proxy:</p>
+
+      <div class="example"><p><code>
+          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>This will create a worker associated with the origin server URL
+      <code>http://backend.example.com</code> and using the given timeout
+      values. When used in a forward proxy, workers are usually defined
+      via the <code class="directive"><a href="#proxyset">ProxySet</a></code> directive:</p>
+
+      <div class="example"><p><code>
+          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>or alternatively using <code class="directive"><a href="#proxy">Proxy</a></code>
+      and <code class="directive"><a href="#proxyset">ProxySet</a></code>:</p>
+
+      <div class="example"><p><code>
+        &lt;Proxy http://backend.example.com&gt;<br />
+        <span class="indent">
+          ProxySet connectiontimeout=5 timeout=30
+        </span>
+        &lt;/Proxy&gt;
+      </code></p></div>
+
+      <p>Using explicitly configured workers in the forward mode is
+      not very common, because forward proxies usually communicate with many
+      different origin servers. Creating explicit workers for some of the
+      origin servers can still be useful, if they are used very often.
+      Explicitly configured workers have no concept of forward or reverse
+      proxying by themselves. They encapsulate a common concept of
+      communication with origin servers. A worker created by
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> for use in a
+      reverse proxy will be also used for forward proxy requests whenever
+      the URL to the origin server matches the worker URL and vice versa.</p>
+
+      <p>The URL identifying a direct worker is the URL of its
+      origin server including any path components given:</p>
+
+      <div class="example"><p><code>
+          ProxyPass /examples http://backend.example.com/examples<br />
+          ProxyPass /docs http://backend.example.com/docs
+      </code></p></div>
+
+      <p>This example defines two different workers, each using a separate
+      connection pool and configuration.</p>
+
+      <div class="warning"><h3>Worker Sharing</h3>
+        <p>Worker sharing happens if the worker URLs overlap, which occurs when
+        the URL of some worker is a leading substring of the URL of another
+        worker defined later in the configuration file. In the following example</p>
+
+        <div class="example"><p><code>
+            ProxyPass /apps http://backend.example.com/ timeout=60<br />
+            ProxyPass /examples http://backend.example.com/examples timeout=10
+        </code></p></div>
+
+        <p>the second worker isn't actually created. Instead the first
+        worker is used. The benefit is, that there is only one connection pool,
+        so connections are more often reused. Note that all configuration attributes
+        given explicitly for the later worker will be ignored. This will be logged
+        as a warning. In the above example the resulting timeout value
+        for the URL <code>/examples</code> will be <code>60</code> instead
+        of <code>10</code>!</p>
+
+        <p>If you want to avoid worker sharing, sort your worker definitions
+        by URL length, starting with the longest worker URLs. If you want to maximize
+        worker sharing use the reverse sort order. See also the related warning about
+        ordering <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
+
+      </div> 
+
+      <p>Explicitly configured workers come in two flavors:
+      <dfn>direct workers</dfn> and <dfn>(load) balancer workers</dfn>.
+      They support many important configuration attributes which are
+      described below in the <code class="directive"><a href="#proxypass">ProxyPass</a></code>
+      directive. The same attributes can also be set using
+      <code class="directive"><a href="#proxyset">ProxySet</a></code>.</p>
+
+      <p>The set of options available for a direct worker
+      depends on the protocol, which is specified in the origin server URL.
+      Available protocols include <code>ajp</code>, <code>fcgi</code>,
+      <code>ftp</code>, <code>http</code> and <code>scgi</code>.</p>
+
+      <p>Balancer workers are virtual workers that use direct workers known
+      as their members to actually handle the requests. Each balancer can
+      have multiple members. When it handles a request, it chooses a member
+      based on the configured load balancing algorithm.</p>
+
+      <p>A balancer worker is created if its worker URL uses
+      <code>balancer</code> as the protocol scheme.
+      The balancer URL uniquely identifies the balancer worker.
+      Members are added to a balancer using
+      <code class="directive"><a href="#balancermember">BalancerMember</a></code>.</p>
+
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="access" id="access">Controlling access to your proxy</a></h2>
@@ -754,10 +870,20 @@ through</td></tr>
     <code>backend.example.com</code> <em>except</em> requests made to
     <code>/mirror/foo/i</code>.</p>
 
-    <div class="note"><h3>Note</h3>
-      <p>Order is important: exclusions must come <em>before</em> the
-      general <code class="directive">ProxyPass</code> directive.</p>
-    </div>
+    <div class="warning"><h3>Ordering ProxyPass Directives</h3>
+      <p>The configured <code class="directive"><a href="#proxypass">ProxyPass</a></code>
+      and <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code>
+      rules are checked in the order of configuration. The first rule that
+      matches wins. So usually you should sort conflicting
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> rules starting with the
+      longest URLs first. Otherwise later rules for longer URLS will be hidden
+      by any earlier rule which uses a leading substring of the URL. Note that
+      there is some relation with worker sharing.</p>
+
+      <p>For the same reasons exclusions must come <em>before</em> the
+      general <code class="directive">ProxyPass</code> directives.</p>
+
+    </div> 
 
     <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
     connections to a backend server.  Connections created on demand
@@ -991,6 +1117,12 @@ through</td></tr>
         <td>0</td>
         <td>Balancer timeout in seconds. If set this will be the maximum time
         to wait for a free worker. Default is not to wait. 
+    </td></tr>
+    <tr><td>failonstatus</td>
+        <td>-</td>
+        <td>A single or comma-separated list of HTTP status codes. If set this will
+        force the worker into error state when the backend returns any status code
+        in the list. Worker recovery behaves the same as other worker errors.
     </td></tr>
     
     </table>
