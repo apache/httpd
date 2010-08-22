@@ -3100,12 +3100,14 @@ to name-virtual hosts</td></tr>
       ServerName server.domain.com<br />
       ServerAlias server server2.domain.com server2<br />
       ServerAlias *.example.com<br />
+      UseCanonicalName Off<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </code></p></div>
 
 <h3>See also</h3>
 <ul>
+<li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></li>
 </ul>
 </div>
