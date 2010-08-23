@@ -157,6 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          code from a backend.  PR 48939.  [Daniel Ruggeri <DRuggeri primary.net>]
    Submitted by: Daniel Ruggeri <DRuggeri primary.net>
    +1: trawick
+   niq: +1 to the 2.2.x patch, but why r951900 and r987379 in trunk patches?
 
   * mod_disk_cache: Decline the opportunity to cache if the response is
     a 206 Partial Content. This stops a reverse proxied partial response
@@ -208,24 +209,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Core: fix symlinks ownership tests
      PR 36783
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=632947
+                  http://svn.apache.org/viewvc?view=revision&revision=633174
      2.2 patch: trunk patch Works with offset.
-     +1: niq
-     rpluem says: This patch is incomplete without
-     http://svn.apache.org/viewvc?view=revision&revision=633174
-     If this is added to the proposal I am +1.
-
-   * Protocol: Reject requests containing (invalid) NULL characters
-     in request line or request headers.
-     PR 43039
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=892678
-     2.2 patch: trunk patch Works with offset.
-     +1: niq
-     -1: fielding: this routine is hand-optimized for speed, and the
-         "solution" is to add an if (strlen(*s) < bytes_handled - 1)
-         to every single line read?  Seriously?  If we want to have
-         ap_rgetline_core() enforce validity, then we should be using a
-         stop character array and error on all control characters not
-         allowed by HTTP.
+     +1: niq, rpluem
 
    * config: fix/optimize SSL connections for IE6 browsers
      PR 49484
