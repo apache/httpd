@@ -1035,12 +1035,15 @@ in case of an error</td></tr>
     </code></p></div>
 
     <p>If the <var>file-path</var>
-    begins with a pipe (|) then it is assumed to be a command to spawn
-    to handle the error log.</p>
+    begins with a pipe character "<code>|</code>" then it is assumed to be a
+    command to spawn to handle the error log.</p>
 
     <div class="example"><h3>Example</h3><p><code>
     ErrorLog "|/usr/local/bin/httpd_errors"
     </code></p></div>
+
+    <p>See the notes on <a href="../logs.html#piped">piped logs</a> for
+    more information.</p>
 
     <p>Using <code>syslog</code> instead of a filename enables logging
     via syslogd(8) if the system supports it. The default is to use
