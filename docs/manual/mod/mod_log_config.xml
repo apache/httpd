@@ -391,7 +391,8 @@
       <dt><var>pipe</var></dt>
       <dd>The pipe character "<code>|</code>", followed by the path
       to a program to receive the log information on its standard
-      input.
+      input. See the notes on <a href="../logs.html#piped">piped logs</a>
+      for more information.
 
       <note type="warning"><title>Security:</title>
       <p>If a program is used, then it will be run as the user who
