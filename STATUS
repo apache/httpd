@@ -334,3 +334,8 @@ PATCHES/ISSUES THAT ARE STALLED
      Trunk version of patch:
        http://svn.apache.org/viewvc?view=rev&revision=986591
    +1: jfclere
+
+ * mod_proxy: Prevent race condition.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=988038
+   +1: jfclere
