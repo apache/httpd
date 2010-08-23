@@ -109,7 +109,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=834013&view=rev
                  http://svn.apache.org/viewvc?rev=834500&view=rev
     2.2.x patch: http://people.apache.org/~sf/log_cookie_28037.diff
-    +1: sf, jim
+    +1: sf, jim, rpluem
 
   * mod_req-timeout/core: Backport bugfixes from trunk up to r935339:
     - Do not wrongly enforce timeouts for mod_proxy's backend
@@ -131,6 +131,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     sf: It would be nice if someone could review this specifically WRT Windows
         compatibility.
     +1: sf
+    rpluem says: The proposed patch fails with conflicts in 2.2.x. Please
+                 update the patch.
 
   * prefork MPM: Run cleanups for final request when process exits gracefully.
     PR: 43857
@@ -209,6 +211,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=632947
      2.2 patch: trunk patch Works with offset.
      +1: niq
+     rpluem says: This patch is incomplete without
+     http://svn.apache.org/viewvc?view=revision&revision=633174
+     If this is added to the proposal I am +1.
 
    * Protocol: Reject requests containing (invalid) NULL characters
      in request line or request headers.
@@ -238,7 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      UTF-8.
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=902654
      2.2 patch: trunk patch works
-     +1: sf
+     +1: sf, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
