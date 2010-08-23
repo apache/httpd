@@ -532,6 +532,24 @@
     <p>As with conditional logging, piped logs are a very powerful
     tool, but they should not be used where a simpler solution like
     off-line post-processing is available.</p>
+
+    <p>By default the piped log process is spawned without invoking
+    a shell. Use "<code>|$</code>" instead of "<code>|</code>"
+    to spawn using a shell (usually with <code>/bin/sh -c</code>):</p>
+
+    <div class="example"><p><code>
+      # Invoke "rotatelogs" using a shell
+      CustomLog "|$/usr/local/apache/bin/rotatelogs
+      /var/log/access_log 86400" common
+    </code></p></div>
+
+    <p>This was the default behaviour for Apache 2.2.
+    Depending on the shell specifics this might lead to
+    an additional shell process for the lifetime of the logging
+    pipe program and signal handling problems during restart.
+    For compatibility reasons with Apache 2.2 the notation
+    "<code>||</code>" is also supported and equivalent to using
+    "<code>|</code>".</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a></h2>
