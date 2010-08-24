@@ -1165,8 +1165,10 @@ static int read_types_multi(negotiation_state *neg)
 
         /* Double check, we still don't multi-resolve non-ordinary files
          */
-        if (sub_req->finfo.filetype != APR_REG)
+        if (sub_req->finfo.filetype != APR_REG) {
+            /* XXX sub req not destroyed -- may be a bug/unintentional ? */
             continue;
+        }
 
         /* If it has a handler, we'll pretend it's a CGI script,
          * since that's a good indication of the sort of thing it
@@ -2712,7 +2714,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
     if (!variant->sub_req) {
         int status;
 
-        sub_req = ap_sub_req_lookup_file(variant->file_name, r, NULL);
+        sub_req = ap_sub_req_lookup_file(variant->file_name, r, r->output_filters);
         status = sub_req->status;
 
         if (status != HTTP_OK &&
@@ -3123,7 +3125,7 @@ static int handle_multi(request_rec *r)
          * a sub_req structure yet.  Get one now.
          */
 
-        sub_req = ap_sub_req_lookup_file(best->file_name, r, NULL);
+        sub_req = ap_sub_req_lookup_file(best->file_name, r, r->output_filters);
         if (sub_req->status != HTTP_OK) {
             res = sub_req->status;
             ap_destroy_sub_req(sub_req);

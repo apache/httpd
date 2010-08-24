@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.17
 
+  *) mod_dir, mod_negotiation: Pass the output filter information
+     to newly created sub requests; as these are later on used
+     as true requests with an internal redirect. This allows for
+     mod_cache et.al. to trap the results of the redirect.
+     PR 17629, 43939
+     [Dirk-Willem van Gulik, Jim Jagielski, Joe Orton, Ruediger Pluem]
+
   *) rotatelogs: Fix possible buffer overflow if admin configures a
      mongo log file path. [Jeff Trawick]
 

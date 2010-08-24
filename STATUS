@@ -97,27 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~sf/log_cookie_28037.diff
     +1: sf, jim, rpluem
 
-  * core: Pass the output filter information to newly created sub requests;
-    as these are later on used as true requests with an internal redirect.
-    This allows for mod_cache et.al. to trap the results of the redirect.
-    Furthermore adjust the output filter chain correctly in an internal
-    redirect from a subrequest, preserving filters from the main request as
-    necessary.
-    PR 17629, PR 43939
-    Hint: Both PR need all revisions applied neither can be fixed by a subset
-    of the revisions below.
-     Trunk version of patch:
-        http://svn.apache.org/viewcvs.cgi?rev=620133&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=724515&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=724805&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=725077&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=952828&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-        For convenience (CHANGES might need some addition):
-        http://people.apache.org/~rjung/patches/pr17629-2_2_x.patch
-     +1: rpluem, jim, niq
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
