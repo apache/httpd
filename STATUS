@@ -187,6 +187,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966055
      2.2 patch: should apply cleanly
      +1: gstein
+     -0: sf: If we change it, then change it to something that will be OK for
+         MSIE 10, too. Also, some people recommend keeping ssl-unclean-shutdown
+         for newer versions of MSIE.
+         See http://marc.info/?l=apache-httpd-dev&m=127970632901262&w=2 and
+         the links therein.
 
    * mod_proxy_scgi: Add module to build on Windows.
      It already gets build for other platforms and for Windows in trunk.
@@ -198,6 +203,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=902654
      2.2 patch: trunk patch works
      +1: sf, rpluem
+
+ * mod_proxy_ajp: Don't log error when client disconnects.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=986591
+   +1: jfclere, sf
+
+ * mod_proxy: Prevent race condition.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=988038
+   +1: jfclere, sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
@@ -289,12 +304,3 @@ PATCHES/ISSUES THAT ARE STALLED
    2.2.x patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
    +1: niq
- * mod_proxy_ajp: Don't log error when client disconnects.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=986591
-   +1: jfclere
-
- * mod_proxy: Prevent race condition.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=988038
-   +1: jfclere
