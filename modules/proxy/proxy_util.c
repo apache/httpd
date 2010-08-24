@@ -2025,9 +2025,6 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
                                          server_rec *s)
 {
     if (worker->s->status & PROXY_WORKER_IN_ERROR) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                    "proxy: %s: retrying the worker for (%s)",
-                     proxy_function, worker->hostname);
         if (apr_time_now() > worker->s->error_time + worker->retry) {
             ++worker->s->retries;
             worker->s->status &= ~PROXY_WORKER_IN_ERROR;
@@ -2037,6 +2034,9 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
             return OK;
         }
         else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "proxy: %s: too soon to retry worker for (%s)",
+                         proxy_function, worker->hostname);
             return DECLINED;
         }
     }
