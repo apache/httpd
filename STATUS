@@ -139,8 +139,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 48939
     Trunk patches: http://svn.apache.org/viewvc?rev=930125&view=rev
                    http://svn.apache.org/viewvc?rev=930254&view=rev
-                   http://svn.apache.org/viewvc?rev=951900&view=rev
-                   http://svn.apache.org/viewvc?rev=987379&view=rev
+                   http://svn.apache.org/viewvc?rev=986090&view=rev
+                   http://svn.apache.org/viewvc?rev=962972&view=rev
                    http://svn.apache.org/viewvc?rev=987359&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=25923
       plus this CHANGES entry:
