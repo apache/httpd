@@ -232,7 +232,7 @@ static int fixup_dir(request_rec *r)
             name_ptr = apr_pstrcat(r->pool, name_ptr, "?", r->args, NULL);
         }
 
-        rr = ap_sub_req_lookup_uri(name_ptr, r, NULL);
+        rr = ap_sub_req_lookup_uri(name_ptr, r, r->output_filters);
 
         /* The sub request lookup is very liberal, and the core map_to_storage
          * handler will almost always result in HTTP_OK as /foo/index.html
