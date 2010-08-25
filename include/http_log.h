@@ -109,6 +109,15 @@ extern "C" {
 #define DEFAULT_LOGLEVEL	APLOG_WARNING
 #endif
 
+/**
+ * APLOG_NO_MODULE may be passed as module_index to ap_log_error() and related
+ * functions if the module causing the log message is not known. Normally this
+ * should not be used directly. Use APLOG_MARK or APLOG_MODULE_INDEX instead.
+ *
+ * @see APLOG_MARK
+ * @see APLOG_MODULE_INDEX
+ * @see ap_log_error
+ */
 #define APLOG_NO_MODULE         -1
 
 /*
@@ -116,15 +125,32 @@ extern "C" {
  * initialized explicitly. This means if aplog_module_index
  * is not initalized using the APLOG_USE_MODULE or the
  * AP_DECLARE_MODULE macro, we can safely fall back to
- * use APLOG_NO_MODULE.
+ * use APLOG_NO_MODULE. This variable will usually be optimized away.
  */
 static int * const aplog_module_index;
+
+/**
+ * APLOG_MODULE_INDEX contains the module_index of the current module if
+ * it has been set via the APLOG_USE_MODULE or AP_DECLARE_MODULE macro.
+ * Otherwise it contains APLOG_NO_MODULE (for example in unmodified httpd 2.2
+ * modules).
+ *
+ * If APLOG_MARK is used in ap_log_error() and related functions,
+ * APLOG_MODULE_INDEX will be passed as module_index. In cases where
+ * APLOG_MARK cannot be used, APLOG_MODULE_INDEX should normally be passed as
+ * module_index.
+ *
+ * @see APLOG_MARK
+ * @see ap_log_error
+ */
 #define APLOG_MODULE_INDEX  \
     (aplog_module_index ? *aplog_module_index : APLOG_NO_MODULE)
 
-/*
- * APLOG_MAX_LOGLEVEL can be used to remove logging above some
+/**
+ * APLOG_MAX_LOGLEVEL can be defined to remove logging above some
  * specified level at compile time.
+ *
+ * This requires a C99 compiler.
  */
 #ifndef APLOG_MAX_LOGLEVEL
 #define APLOG_MODULE_IS_LEVEL(s,module_index,level)              \
@@ -213,6 +239,21 @@ static int * const aplog_module_index;
 
 extern int AP_DECLARE_DATA ap_default_loglevel;
 
+/**
+ * APLOG_MARK is a convenience macro for use as the first three parameters in
+ * ap_log_error() and related functions, i.e. file, line, and module_index.
+ *
+ * The module_index parameter was introduced in version 2.3.6. Before that
+ * version, APLOG_MARK only replaced the file and line parameters.
+ * This means that APLOG_MARK can be used with ap_log_*error in all versions
+ * of Apache httpd.
+ *
+ * @see APLOG_MODULE_INDEX
+ * @see ap_log_error
+ * @see ap_log_cerror
+ * @see ap_log_rerror
+ * @see ap_log_cserror
+ */
 #define APLOG_MARK     __FILE__,__LINE__,APLOG_MODULE_INDEX
 
 /**
@@ -273,6 +314,7 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * @param s The server on which we are logging
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
+ * @note ap_log_error is implemented as a macro
  * @note Use APLOG_MARK to fill out file and line
  * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function.  Otherwise, if a conn_rec is
@@ -285,6 +327,11 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
+#ifdef DOXYGEN
+AP_DECLARE(void) ap_log_error(const char *file, int line, int module_index,
+                              int level, apr_status_t status,
+                              const server_rec *s, const char *fmt, ...);
+#else
 #if __STDC_VERSION__ >= 199901L
 /* need additional step to expand APLOG_MARK first */
 #define ap_log_error(...) ap_log_error__(__VA_ARGS__)
@@ -300,6 +347,7 @@ AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
                                int level, apr_status_t status,
                                const server_rec *s, const char *fmt, ...)
                               __attribute__((format(printf,7,8)));
+#endif
 
 /**
  * ap_log_perror() - log messages which are not related to a particular
@@ -313,7 +361,8 @@ AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
  * @param p The pool which we are logging for
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @note Use APLOG_MARK to fill out file and line
+ * @note ap_log_perror is implemented as a macro
+ * @note Use APLOG_MARK to fill out file, line, and module_index
  * @warning It is VERY IMPORTANT that you not include any raw data from 
  * the network, such as the request-URI or request header fields, within 
  * the format string.  Doing so makes the server vulnerable to a 
@@ -321,6 +370,11 @@ AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
+#ifdef DOXYGEN
+AP_DECLARE(void) ap_log_perror(const char *file, int line, int module_index,
+                               int level, apr_status_t status, apr_pool_t *p,
+                               const char *fmt, ...);
+#else
 #if __STDC_VERSION__ >= 199901L && defined(APLOG_MAX_LOGLEVEL)
 /* need additional step to expand APLOG_MARK first */
 #define ap_log_perror(...) ap_log_perror__(__VA_ARGS__)
@@ -335,6 +389,7 @@ AP_DECLARE(void) ap_log_perror_(const char *file, int line, int module_index,
                                 int level, apr_status_t status, apr_pool_t *p,
                                 const char *fmt, ...)
                                __attribute__((format(printf,7,8)));
+#endif
 
 /**
  * ap_log_rerror() - log messages which are related to a particular
@@ -348,7 +403,8 @@ AP_DECLARE(void) ap_log_perror_(const char *file, int line, int module_index,
  * @param r The request which we are logging for
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @note Use APLOG_MARK to fill out file and line
+ * @note ap_log_rerror is implemented as a macro
+ * @note Use APLOG_MARK to fill out file, line, and module_index
  * @warning It is VERY IMPORTANT that you not include any raw data from 
  * the network, such as the request-URI or request header fields, within 
  * the format string.  Doing so makes the server vulnerable to a 
@@ -356,6 +412,11 @@ AP_DECLARE(void) ap_log_perror_(const char *file, int line, int module_index,
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
+#ifdef DOXYGEN
+AP_DECLARE(void) ap_log_rerror(const char *file, int line, int module_index,
+                               int level, apr_status_t status,
+                               const request_rec *r, const char *fmt, ...);
+#else
 #if __STDC_VERSION__ >= 199901L
 /* need additional step to expand APLOG_MARK first */
 #define ap_log_rerror(...) ap_log_rerror__(__VA_ARGS__)
@@ -369,7 +430,8 @@ AP_DECLARE(void) ap_log_perror_(const char *file, int line, int module_index,
 AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
                                 int level, apr_status_t status,
                                 const request_rec *r, const char *fmt, ...)
-			    __attribute__((format(printf,7,8)));
+                                __attribute__((format(printf,7,8)));
+#endif
 
 /**
  * ap_log_cerror() - log messages which are related to a particular
@@ -383,7 +445,8 @@ AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
  * @param c The connection which we are logging for
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @note Use APLOG_MARK to fill out file and line
+ * @note ap_log_cerror is implemented as a macro
+ * @note Use APLOG_MARK to fill out file, line, and module_index
  * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function.
  * @warning It is VERY IMPORTANT that you not include any raw data from 
@@ -393,6 +456,11 @@ AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
+#ifdef DOXYGEN
+AP_DECLARE(void) ap_log_cerror(const char *file, int line, int module_index,
+                               int level, apr_status_t status,
+                               const conn_rec *c, const char *fmt, ...);
+#else
 #if __STDC_VERSION__ >= 199901L
 /* need additional step to expand APLOG_MARK first */
 #define ap_log_cerror(...) ap_log_cerror__(__VA_ARGS__)
@@ -403,10 +471,11 @@ AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
 #else
 #define ap_log_cerror ap_log_cerror_
 #endif
-AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_level,
+AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_index,
                                 int level, apr_status_t status,
                                 const conn_rec *c, const char *fmt, ...)
-			    __attribute__((format(printf,7,8)));
+                                __attribute__((format(printf,7,8)));
+#endif
 
 /**
  * ap_log_cserror() - log messages which are related to a particular
@@ -421,7 +490,8 @@ AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_level,
  * @param s The server which we are logging for
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
- * @note Use APLOG_MARK to fill out file and line
+ * @note ap_log_cserror is implemented as a macro
+ * @note Use APLOG_MARK to fill out file, line, and module_index
  * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function. This function is mainly useful for
  * modules like mod_ssl to use before the request_rec is created.
@@ -432,6 +502,12 @@ AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_level,
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
+#ifdef DOXYGEN
+AP_DECLARE(void) ap_log_cserror(const char *file, int line, int module_index,
+                                int level, apr_status_t status,
+                                const conn_rec *c, const server_rec *s,
+                                const char *fmt, ...);
+#else
 #if __STDC_VERSION__ >= 199901L
 /* need additional step to expand APLOG_MARK first */
 #define ap_log_cserror(...) ap_log_cserror__(__VA_ARGS__)
@@ -443,11 +519,12 @@ AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_level,
 #else
 #define ap_log_cserror ap_log_cserror_
 #endif
-AP_DECLARE(void) ap_log_cserror_(const char *file, int line, int module_level,
+AP_DECLARE(void) ap_log_cserror_(const char *file, int line, int module_index,
                                  int level, apr_status_t status,
                                  const conn_rec *c, const server_rec *s,
                                  const char *fmt, ...)
                              __attribute__((format(printf,8,9)));
+#endif
 
 /**
  * Convert stderr to the error log

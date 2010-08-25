@@ -395,13 +395,30 @@ struct module_struct {
     void (*register_hooks) (apr_pool_t *p);
 };
 
-/*
- * Macro to choose which module a file belongs to, for logging.
+/**
+ * The APLOG_USE_MODULE macro is used choose which module a file belongs to.
+ * This is necessary to allow per-module loglevel configuration.
+ *
+ * APLOG_USE_MODULE indirectly sets APLOG_MODULE_INDEX and APLOG_MARK.
+ *
+ * If a module should be backward compatible with versions before 2.3.6,
+ * APLOG_USE_MODULE needs to be enclosed in a #ifdef APLOG_USE_MODULE block.
+ *
+ * @param foo name of the module symbol of the current module, without the
+ *            trailing "_module" part
+ * @see APLOG_MARK
  */
 #define APLOG_USE_MODULE(foo) \
     extern module AP_MODULE_DECLARE_DATA foo##_module;                  \
     static int * const aplog_module_index = &(foo##_module.module_index)
 
+/**
+ * AP_DECLARE_MODULE is a convenience macro that combines a call of
+ * APLOG_USE_MODULE with the definition of the module symbol.
+ *
+ * If a module should be backward compatible with versions before 2.3.6,
+ * APLOG_USE_MODULE should be used explicitly instead of AP_DECLARE_MODULE.
+ */
 #define AP_DECLARE_MODULE(foo) \
     APLOG_USE_MODULE(foo);                         \
     module AP_MODULE_DECLARE_DATA foo##_module
@@ -520,7 +537,7 @@ AP_DECLARE(int) ap_get_request_module_loglevel(const request_rec *r, int index);
 /**
  * Accessor to set module-specific loglevel
  * @param p A pool
- * @param s The server for which to set the loglevel.
+ * @param l The ap_logconf struct to modify.
  * @param index The module_index of the module to set the loglevel for.
  * @param level The new log level
  */
