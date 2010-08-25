@@ -351,7 +351,8 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     /* Save the name from the valid bits. */
     savename = (lfi->valid & APR_FINFO_NAME) ? lfi->name : NULL;
 
-    if (opts & OPT_SYM_LINKS) {
+    /* if OPT_SYM_OWNER is unset, we only need to check target accessible */
+    if (!(opts & OPT_SYM_OWNER)) {
         if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME
                                                  | APR_FINFO_LINK), p))
                  != APR_SUCCESS) {
@@ -373,7 +374,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
      * owner of the symlink, then get the info of the target.
      */
     if (!(lfi->valid & APR_FINFO_OWNER)) {
-        if ((res = apr_stat(&fi, d,
+        if ((res = apr_stat(lfi, d,
                             lfi->valid | APR_FINFO_LINK | APR_FINFO_OWNER, p))
             != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
