@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.17
 
+  *) mod_headers: Enable multi-match-and-replace edit option
+     PR 46594 [Nick Kew]
+
   *) mod_log_config: Make ${cookie}C correctly match whole cookie names
      instead of substrings. PR 28037. [Dan Franklin <dan dan-franklin.com>,
      Stefan Fritsch]
