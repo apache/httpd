@@ -27,7 +27,7 @@
 
 
     <p>This document attempts to answer the commonly-asked questions about
-    setting up virtual hosts. These scenarios are those involving multiple
+    setting up <a href="index.html">virtual hosts</a>. These scenarios are those involving multiple
     web sites running on a single server, via <a href="name-based.html">name-based</a> or <a href="ip-based.html">IP-based</a> virtual hosts.
     </p>
 
