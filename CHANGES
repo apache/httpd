@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.17
 
+  *) core: check symlink ownership if both FollowSymlinks and
+     SymlinksIfOwnerMatch are set [Nick Kew]
+
+  *) core: fix origin checking in SymlinksIfOwnerMatch
+     PR 36783 [Robert L Mathews <rob-apache.org.bugs tigertech.net>]
+
   *) mod_headers: Enable multi-match-and-replace edit option
      PR 46594 [Nick Kew]
 

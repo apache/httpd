@@ -87,13 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * Core: fix symlinks ownership tests
-     PR 36783
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=632947
-                  http://svn.apache.org/viewvc?view=revision&revision=633174
-     2.2 patch: trunk patch Works with offset.
-     +1: niq, rpluem, jim
-
  * mod_proxy_ajp: Don't log error when client disconnects.
      Trunk version of patch:
        http://svn.apache.org/viewvc?view=rev&revision=986591
