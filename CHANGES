@@ -385,7 +385,7 @@ Changes with Apache 2.3.5
      PR 48422 [Cyril Bonté <cyril.bonte free.fr>, Nick Kew>]
 
   *) mod_headers: Enable multi-match-and-replace edit option
-     PR 47066 [Nick Kew]
+     PR 46594 [Nick Kew]
 
   *) mod_filter: enable it to act on non-200 responses.
      PR 48377 [Nick Kew]
