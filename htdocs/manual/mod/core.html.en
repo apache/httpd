@@ -1599,6 +1599,9 @@
     rel="Help"><strong>Compatibility:</strong></a> only available
     in Apache 1.3.23 versions and later. 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#fileetag">here</a></strong></p>
+ 
     <p>
     The FileETag directive configures the file attributes that are
     used to create the ETag (entity tag) response header field
@@ -1654,6 +1657,9 @@
     rel="Help"><strong>Compatibility:</strong></a> only available
     in Apache 1.2 and above. 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#files">here</a></strong></p>
+ 
     <p>The &lt;Files&gt; directive provides for access control by
     filename. It is comparable to the <a
     href="#directory">&lt;Directory&gt;</a> directive and <a
@@ -1722,6 +1728,9 @@
     rel="Help"><strong>Compatibility:</strong></a> only available
     in Apache 1.3 and above. 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#filesmatch">here</a></strong></p>
+ 
     <p>The &lt;FilesMatch&gt; directive provides for access control
     by filename, just as the <a href="#files">&lt;Files&gt;</a>
     directive does. However, it accepts a regular expression. For
@@ -1751,6 +1760,13 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mpm_common.html#group">here</a></strong></p>
+
+    <p class="note">Note: This directive moves to <a
+    href="http://httpd.apache.org/docs/trunk/mod/mod_unixd.html#group">mod_unixd</a>
+    in 2.3.</p>
+ 
     <p>The Group directive sets the group under which the server
     will answer requests. In order to use this directive, the
     stand-alone server must be run initially as root.
@@ -1810,6 +1826,9 @@
     rel="Help"><strong>Compatibility:</strong></a> Default was
     <code>on</code> prior to Apache 1.3. 
 
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#hostnamelookups">here</a></strong></p>
+
     <p>This directive enables DNS lookups so that host names can be
     logged (and passed to CGIs/SSIs in <code>REMOTE_HOST</code>).
     The value <code>double</code> refers to doing double-reverse
@@ -1859,6 +1878,9 @@
     host, directory<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <P class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_ident.html#identitycheck">here</a></strong></p>
 
     <p>This directive enables RFC1413-compliant logging of the
     remote user name for each connection, where the client machine
