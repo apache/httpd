@@ -538,7 +538,7 @@
     to spawn using a shell (usually with <code>/bin/sh -c</code>):</p>
 
     <div class="example"><p><code>
-      # Invoke "rotatelogs" using a shell
+      # Invoke "rotatelogs" using a shell<br />
       CustomLog "|$/usr/local/apache/bin/rotatelogs
       /var/log/access_log 86400" common
     </code></p></div>

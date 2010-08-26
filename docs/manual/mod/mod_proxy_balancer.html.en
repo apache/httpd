@@ -100,7 +100,7 @@
     </p>
 
     <div class="example"><p><code>
-    Header add Set-Cookie: "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/"
+    Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/"
            env=BALANCER_ROUTE_CHANGED<br />
     &lt;Proxy balancer://mycluster&gt;<br />
     BalancerMember http://192.168.1.50:80 route=1<br />
