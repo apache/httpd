@@ -56,7 +56,8 @@
      [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
-     [ -<strong>X</strong> ] [ -<strong>M</strong> ]</code></p>
+     [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
+     </code></p>
 
      <p>On <a href="../platform/windows.html">Windows systems</a>, the
      following additional arguments are available:</p>
@@ -146,7 +147,7 @@ places where the directive is valid. Directives provided by shared modules are n
 <dd>Show the settings as parsed from the config file (currently only
 shows the virtualhost settings).</dd>
 
-<dt><code>-T</code></dt>
+<dt><code>-T</code> (Availabe in 2.3.8 and later)</dt>
 
 <dd>Skip document root check at startup/restart.</dd>
 
