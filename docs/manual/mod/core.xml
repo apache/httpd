@@ -688,8 +688,7 @@ named file-system directory and sub-directories</description>
 <directivesynopsis type="section">
 <name>DirectoryMatch</name>
 <description>Enclose directives that apply to
-file-system directories matching a regular expression and their
-subdirectories</description>
+file-system directories matching a regular expression.</description>
 <syntax>&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/DirectoryMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
