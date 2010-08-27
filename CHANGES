@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.9
 
+  *) core: DirectoryMatch can now match on the end of line character ($),
+     and sub-directories of matched directories are no longer implicitly
+     matched.  PR49809 [Eric Covener]
 
 Changes with Apache 2.3.8
 

@@ -698,11 +698,10 @@ subdirectories</description>
 <usage>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory and
-    sub-directories of that directory, the same as <directive
-    module="core" type="section">Directory</directive>. However, it
-    takes as an argument a <glossary ref="regex">regular 
-    expression</glossary>. For example:</p>
+    of directives which will apply only to the named directory, 
+    the same as <directive module="core" type="section">Directory</directive>. 
+    However, it takes as an argument a 
+    <glossary ref="regex">regular expression</glossary>.  For example:</p>
 
     <example>
       &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
@@ -710,6 +709,20 @@ subdirectories</description>
 
     <p>would match directories in <code>/www/</code> that consisted of three
     numbers.</p>
+
+   <note><title>Compatability</title>
+      Prior to 2.3.9, this directive implicitly applied to sub-directories
+      (like <directive module="core" type="section">Directory</directive>) and
+      could not match the end of line symbol ($).  In 2.3.9 and later,
+      only directories that match the expression are affected by the enclosed
+      directives.
+    </note>
+
+    <note><title>Trailing Slash</title>
+      This directive applies to requests for directories that may or may 
+      not end in a trailing slash, so expressions that are anchored to the 
+      end of line ($) must be written with care.
+    </note>
 </usage>
 <seealso><directive type="section" module="core">Directory</directive> for
 a description of how regular expressions are mixed in with normal

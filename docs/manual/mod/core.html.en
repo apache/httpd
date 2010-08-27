@@ -742,10 +742,10 @@ subdirectories</td></tr>
 </table>
     <p><code class="directive">&lt;DirectoryMatch&gt;</code> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory and
-    sub-directories of that directory, the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. However, it
-    takes as an argument a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
-    expression</a>. For example:</p>
+    of directives which will apply only to the named directory, 
+    the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. 
+    However, it takes as an argument a 
+    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.  For example:</p>
 
     <div class="example"><p><code>
       &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
@@ -753,6 +753,20 @@ subdirectories</td></tr>
 
     <p>would match directories in <code>/www/</code> that consisted of three
     numbers.</p>
+
+   <div class="note"><h3>Compatability</h3>
+      Prior to 2.3.9, this directive implicitly applied to sub-directories
+      (like <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>) and
+      could not match the end of line symbol ($).  In 2.3.9 and later,
+      only directories that match the expression are affected by the enclosed
+      directives.
+    </div>
+
+    <div class="note"><h3>Trailing Slash</h3>
+      This directive applies to requests for directories that may or may 
+      not end in a trailing slash, so expressions that are anchored to the 
+      end of line ($) must be written with care.
+    </div>
 
 <h3>See also</h3>
 <ul>
