@@ -59,6 +59,11 @@ has a long and short form. While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
 long form, so that you remember what each flag is supposed to do.</p>
 
+<p>Flags that alter metadata associated with the request (T=, H=, E=)
+have no affect in per-directory and htaccess context, when a substitution
+(other than '-') is performed during the same round of rewrite processing.
+</p>
+
 <p>Presented here are each of the available flags, along with an example
 of how you might use them.</p>
 </section>
