@@ -801,7 +801,7 @@ subdirectories</description>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
     of directives which will apply only to the named directory and
-    sub-directories of that directory, the same as <directive
+    <em>sub-directories of that directory</em>, the same as <directive
     module="core" type="section">Directory</directive>. However, it
     takes as an argument a <glossary ref="regex">regular 
     expression</glossary>. For example:</p>
@@ -812,6 +812,11 @@ subdirectories</description>
 
     <p>would match directories in <code>/www/</code> that consisted of three
     numbers.</p>
+
+    <note><title>End-of-line character</title>
+      <p>The end-of-line character ($) cannot be matched with this directive.</p>
+    </note>
+
 </usage>
 <seealso><directive type="section" module="core">Directory</directive> for
 a description of how regular expressions are mixed in with normal
