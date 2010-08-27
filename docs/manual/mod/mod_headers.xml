@@ -447,7 +447,7 @@ headers</description>
     <directive>Header</directive> directives are processed just
     before the response is sent to the network. These means that it is
     possible to set and/or override most headers, except for those headers
-    added by the header filter.</p>
+    added by the HTTP header filter, such as Content-Type.</p>
 </usage>
 </directivesynopsis>
 

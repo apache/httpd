@@ -1276,6 +1276,12 @@ media type in the HTTP Content-Type header field</description>
       </indent>
       &lt;/Location&gt;
     </example>
+
+    <p>This directive primarily overrides the content types generated for
+    static files served out of the filesystem.  For resources other than 
+    static files, where the generator of the response typically specifies 
+    a Content-Type, this directive has no effect.</p>
+
 </usage>
 </directivesynopsis>
 
