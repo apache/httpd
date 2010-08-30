@@ -2,6 +2,14 @@
 
 Changes with Apache 2.3.9
 
+  *) vhosts: Do not allow _default_ in NameVirtualHost, or mixing *
+     and non-* ports on NameVirtualHost, or multiple NameVirtualHost
+     directives for the same address:port, or NameVirtualHost
+     directives with no matching VirtualHosts, or multiple ip-based
+     VirtualHost sections for the same address:port.  These were
+     previously accepted with a warning, but the behavior was
+     undefined.  [Dan Poirier]
+
   *) mod_remoteip: Fix a segfaulti when using mod_remoteip in conjunction with
      Allow/Deny. PR 49838.  [Andrew Skalski <voltara gmail.com>]
 

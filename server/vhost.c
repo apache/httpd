@@ -97,6 +97,13 @@ static ipaddr_chain *default_list;
 static server_addr_rec *name_vhost_list;
 static server_addr_rec **name_vhost_list_tail;
 
+/* whether a config error was seen */
+static int config_error = 0;
+
+/* config check function */
+static int vhost_check_config(apr_pool_t *p, apr_pool_t *plog,
+                              apr_pool_t *ptemp, server_rec *s);
+
 /*
  * How it's used:
  *
@@ -127,6 +134,7 @@ AP_DECLARE(void) ap_init_vhost_config(apr_pool_t *p)
     default_list = NULL;
     name_vhost_list = NULL;
     name_vhost_list_tail = &name_vhost_list;
+    ap_hook_check_config(vhost_check_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 
@@ -255,6 +263,11 @@ AP_DECLARE_NONSTD(const char *)ap_set_name_virtual_host(cmd_parms *cmd,
                                                         void *dummy,
                                                         const char *arg)
 {
+    if (0 == strcasecmp(arg, "_default_")
+        || 0 == strncasecmp(arg, "_default_:", 10)) {
+        return "_default_ is not allowed in NameVirtualHost directive";
+    }
+
     /* use whatever port the main server has at this point */
     return get_addresses(cmd->pool, arg, &name_vhost_list_tail,
                          cmd->server->port);
@@ -510,9 +523,9 @@ static int add_name_vhost_config(apr_pool_t *p, server_rec *main_s,
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_s,
                          "VirtualHost %s:%u -- mixing * "
                          "ports and non-* ports with "
-                         "a NameVirtualHost address is not supported,"
-                         " proceeding with undefined results",
+                         "a NameVirtualHost address is not supported",
                          sar->virthost, sar->host_port);
+            config_error = 1;
         }
         return 1;
     }
@@ -528,11 +541,12 @@ static void remove_unused_name_vhosts(server_rec *main_s, ipaddr_chain **pic)
         ipaddr_chain *ic = *pic;
 
         if (ic->server == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, main_s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_s,
                          "Either NameVirtualHost %s:%u has no VirtualHosts,"
                          " or there is more than one identical NameVirtualHost line,"
                          " or your VirtualHost declarations do not match the NameVirtualHost line",
                          ic->sar->virthost, ic->sar->host_port);
+            config_error = 1;
             *pic = ic->next;
         }
         else {
@@ -610,10 +624,10 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                 ic = find_default_server(sar->host_port);
                 if (!ic || !add_name_vhost_config(p, main_s, s, sar, ic)) {
                     if (ic && ic->sar->host_port != 0) {
-                        ap_log_error(APLOG_MARK, APLOG_WARNING,
+                        ap_log_error(APLOG_MARK, APLOG_ERR,
                                      0, main_s, "_default_ VirtualHost "
-                                     "overlap on port %u, the first has "
-                                     "precedence", sar->host_port);
+                                     "overlap on port %u", sar->host_port);
+                        config_error = 1;
                     }
                     ic = new_ipaddr_chain(p, s, sar);
                     ic->next = default_list;
@@ -633,13 +647,14 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                     *iphash_table_tail[bucket] = ic;
                 }
                 else if (!add_name_vhost_config(p, main_s, s, sar, ic)) {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING,
+                    ap_log_error(APLOG_MARK, APLOG_ERR,
                                  0, main_s, "VirtualHost %s:%u overlaps "
                                  "with VirtualHost %s:%u, the first has "
                                  "precedence, perhaps you need a "
                                  "NameVirtualHost directive",
                                  sar->virthost, sar->host_port,
                                  ic->sar->virthost, ic->sar->host_port);
+                    config_error = 1;
                     ic->sar = sar;
                     ic->server = s;
                 }
@@ -706,6 +721,11 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
     }
 }
 
+static int vhost_check_config(apr_pool_t *p, apr_pool_t *plog,
+                              apr_pool_t *ptemp, server_rec *s)
+{
+    return config_error ? !OK : OK;
+}
 
 /*****************************************************************************
  * run-time vhost matching functions
