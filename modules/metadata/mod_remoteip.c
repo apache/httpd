@@ -409,7 +409,7 @@ static int remoteip_modify_connection(request_rec *r)
      */
     c->remote_ip = apr_pstrdup(c->pool, c->remote_ip);
     conn->proxied_ip = c->remote_ip;
-    memcpy(&conn->proxied_addr, &temp_sa, sizeof(temp_sa));
+    memcpy(&conn->proxied_addr, temp_sa, sizeof(*temp_sa));
     conn->proxied_addr.pool = c->pool;
     c->remote_addr = &conn->proxied_addr;
 
