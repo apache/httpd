@@ -260,7 +260,7 @@ static int remoteip_modify_connection(request_rec *r)
     remote = apr_pstrdup(r->pool, remote);
 
 #ifdef REMOTEIP_OPTIMIZED
-    memcpy(&temp_sa, c->remote_addr, sizeof(temp_sa));
+    memcpy(temp_sa, c->remote_addr, sizeof(*temp_sa));
     temp_sa->pool = r->pool;
 #else
     temp_sa = c->remote_addr;
@@ -310,7 +310,7 @@ static int remoteip_modify_connection(request_rec *r)
 #ifdef REMOTEIP_OPTIMIZED
         /* Decode remote_addr - sucks; apr_sockaddr_vars_set isn't 'public' */
         if (inet_pton(AF_INET, parse_remote, 
-                      &temp_sa_buff->sa.sin.sin_addr) > 0) {
+                      &temp_sa->sa.sin.sin_addr) > 0) {
             apr_sockaddr_vars_set(temp_sa, APR_INET, temp_sa.port);
         }
 #if APR_HAVE_IPV6
