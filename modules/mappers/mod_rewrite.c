@@ -3167,7 +3167,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     }
 
     /* determine the pattern type */
-    newcond->ptype = 0;
+    newcond->ptype = CONDPAT_REGEX;
     if (*a2 && a2[1]) {
         if (!a2[2] && *a2 == '-') {
             switch (a2[1]) {
