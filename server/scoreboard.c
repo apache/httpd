@@ -315,7 +315,6 @@ apr_status_t ap_cleanup_scoreboard(void *d)
  */
 int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
-    int running_gen = 0;
     int i;
 #if APR_HAS_SHARED_MEMORY
     apr_status_t rv;
@@ -324,7 +323,6 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     pfn_ap_logio_get_last_bytes = APR_RETRIEVE_OPTIONAL_FN(ap_logio_get_last_bytes);
 
     if (ap_scoreboard_image) {
-        running_gen = ap_scoreboard_image->global->running_generation;
         ap_scoreboard_image->global->restart_time = apr_time_now();
         memset(ap_scoreboard_image->parent, 0,
                sizeof(process_score) * server_limit);
@@ -366,7 +364,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     }
 
     ap_scoreboard_image->global->sb_type = sb_type;
-    ap_scoreboard_image->global->running_generation = running_gen;
+    ap_scoreboard_image->global->running_generation = 0;
     ap_scoreboard_image->global->restart_time = apr_time_now();
 
     apr_pool_cleanup_register(p, NULL, ap_cleanup_scoreboard, apr_pool_cleanup_null);
