@@ -190,6 +190,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works
      +1: sf, rpluem
 
+   * ab: repeat apr_pollset_poll() while APR_STATUS_IS_EINTR(rv)
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=750094
+     2.2 patch: trunk patch works
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
