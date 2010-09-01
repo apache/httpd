@@ -195,6 +195,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works
      +1: trawick
 
+   * clean up some miscellaneous warnings from Fortify or Intel's compiler
+     Trunk revisions:
+       r991516, mod_rewrite.c::cmd_rewritecond(): use enum value instead of 
+         integer literal
+       r991515, util.c::ap_pregsub(): don't needlessly set var
+       r991507, scoreboard.c::ap_create_scoreboard(): don't needlessly set var
+       r987629+r987631, config.c::ap_build_cont_config(): don't needlessly
+         check var for NULL
+       r986901+r987860, core.c::dirsection(): remove dead error check
+       r983066, mod_cern_meta.c: remove unexpected ";" after end of block
+       r987339, main.c::usage(): don't overlay stack buffer with impossibly
+         long argv[0]
+     2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-1.txt
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
