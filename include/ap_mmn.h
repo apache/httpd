@@ -227,7 +227,7 @@
  *                         Introduce per-module loglevels
  * 20100606.1 (2.3.6-dev)  Added extended timestamp formatting via
  *                         ap_recent_ctime_ex().
- * 20100609.0 (2.3.6-dev)  Dropped ap_args_to_table due to missing constraints.
+ * 20100609.0 (2.3.6-dev)  Dropped ap_body_to_table due to missing constraints.
  * 20100609.1 (2.3.7-dev)  Introduce ap_log_cserror()
  * 20100609.2 (2.3.7-dev)  Add deferred write pool to core_output_filter_ctx
  * 20100625.0 (2.3.7-dev)  Add 'userctx' to socache iterator callback prototype
