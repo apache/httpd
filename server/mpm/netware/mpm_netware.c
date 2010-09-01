@@ -86,6 +86,8 @@
 #include <library.h>
 #include <screen.h>
 
+int nlmUnloadSignaled(int wait);
+
 /* Limit on the total --- clients will be locked out if more servers than
  * this are needed.  It is intended solely to keep the server from crashing
  * when things get out of hand.
@@ -1095,7 +1097,7 @@ static void netware_mpm_hooks(apr_pool_t *p)
     ap_hook_mpm_get_name(netware_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-void netware_rewrite_args(process_rec *process)
+static void netware_rewrite_args(process_rec *process)
 {
     char *def_server_root;
     char optbuf[3];

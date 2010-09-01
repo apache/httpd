@@ -16,9 +16,15 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "ap_mpm.h"
 
 #include <netware.h>
 #include <nks/netware.h>
+#include <nks/vm.h>
+
+void ap_down_server_cb(void *, void *);
+void ap_dummy_cb(void *, void *);
+void ap_cb_destroy(void *);
 
 int nlmUnloadSignaled(int wait);
 event_handle_t eh;
@@ -35,15 +41,15 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     return apr_proc_create(newproc, progname, args, env, attr, p);
 }
 
-int  _NonAppCheckUnload( void )
+int _NonAppCheckUnload(void)
 {
-        return nlmUnloadSignaled(1);
+    return nlmUnloadSignaled(1);
 }
 
 // down server event callback
 void ap_down_server_cb(void *, void *)
 {
-        nlmUnloadSignaled(0);
+    nlmUnloadSignaled(0);
     return;
 }
 
@@ -56,10 +62,10 @@ void ap_dummy_cb(void *, void *)
 // destroy callback resources
 void ap_cb_destroy(void *)
 {
-  // cleanup down event notification
-  UnRegisterEventNotification(eh);
-  NX_UNWRAP_INTERFACE(ref);
-  NX_UNWRAP_INTERFACE(dum);
+    // cleanup down event notification
+    UnRegisterEventNotification(eh);
+    NX_UNWRAP_INTERFACE(ref);
+    NX_UNWRAP_INTERFACE(dum);
 }
 
 int _NonAppStart

@@ -41,9 +41,11 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_connection.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "http_core.h"
+#include "http_request.h"
 #include "ap_listen.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
@@ -132,7 +134,7 @@ static ap_listen_rec *nw_old_listeners;
 #define get_nwssl_cfg(srv) (NWSSLSrvConfigRec *) ap_get_module_config(srv->module_config, &nwssl_module)
 
 
-static void build_cert_list (apr_pool_t *p)
+static void build_cert_list(apr_pool_t *p)
 {
     int i;
     char **rootcerts = (char **)certlist->elts;
@@ -307,7 +309,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     return s;
 }
 
-int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
+static int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
 {
         int rcode;
         struct tlsclientopts sWS2Opts;
@@ -370,7 +372,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
         return rcode;
 }
 
-int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
+static int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
 {
     int rcode;
     struct tlsserveropts sWS2Opts;

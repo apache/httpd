@@ -29,6 +29,7 @@
 #include "apr_optional.h"
 #include "apr_lib.h"
 #include "mod_cgi.h"
+#include "mpm_common.h"
 
 #ifdef NETWARE
 
