@@ -46,23 +46,23 @@ int _NonAppCheckUnload(void)
     return nlmUnloadSignaled(1);
 }
 
-// down server event callback
+/* down server event callback */
 void ap_down_server_cb(void *, void *)
 {
     nlmUnloadSignaled(0);
     return;
 }
 
-// Required place holder event callback
+/* Required place holder event callback */
 void ap_dummy_cb(void *, void *)
 {
     return;
 }
 
-// destroy callback resources
+/* destroy callback resources */
 void ap_cb_destroy(void *)
 {
-    // cleanup down event notification
+    /* cleanup down event notification */
     UnRegisterEventNotification(eh);
     NX_UNWRAP_INTERFACE(ref);
     NX_UNWRAP_INTERFACE(dum);
@@ -94,7 +94,7 @@ int _NonAppStart
 #pragma unused(messageCount)
 #pragma unused(messages)
 
-    // register for down server event
+    /* register for down server event */
     rtag_t rt = AllocateResourceTag(NLMHandle, "Apache2 Down Server Callback",
                                     EventSignature);
 
@@ -104,7 +104,7 @@ int _NonAppStart
                                       EVENT_PRIORITY_APPLICATION,
                                       ref, dum, NULL);
 
-    // clean-up
+    /* clean-up */
     NXVmRegisterExitHandler(ap_cb_destroy, NULL);
 
 }
