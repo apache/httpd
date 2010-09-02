@@ -165,6 +165,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     niq asks: I can see the logic of not cacheing partial responses,
     but why should mod_disk_cache worry about them if mod_cache allows
     them, as in the following proposal?
+    rpluem says: As poirier correctly mentions, the same must be done for mod_mem_cache
+    as well.
 
   *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
      Response if they so choose to do so. Previously an attempt to cache a 206
@@ -173,6 +175,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?rev=952823&view=rev
      2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
      +1: minfrin
+     -1: rpluem: Until the patch proposal above for mod_disk_cache is backported
+                 and a similar patch for mod_mem_cache is proposed (no backport
+                 possible since mod_mem_cache is no longer in trunk) and
+                 committed.
 
    * config: fix/optimize SSL connections for IE6 browsers
      PR 49484
