@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=826528
                    http://svn.apache.org/viewvc?view=revision&revision=987498
    2.2.x patch: http://people.apache.org/~trawick/htdigest-sync.txt
-   +1: trawick
+   +1: trawick, poirier
 
 PATCHES/ISSUES THAT ARE STALLED
 
