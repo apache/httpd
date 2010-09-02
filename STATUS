@@ -210,6 +210,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-1.txt
      +1: trawick
 
+  * sync htdigest with trunk to fix overflows and pick up other minor tweaks
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=826506
+                   http://svn.apache.org/viewvc?view=revision&revision=826520
+                   http://svn.apache.org/viewvc?view=revision&revision=826528
+                   http://svn.apache.org/viewvc?view=revision&revision=987498
+   2.2.x patch: http://people.apache.org/~trawick/htdigest-sync.txt
+   +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
