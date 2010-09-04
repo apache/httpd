@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_cgid: Log a warning if the ScriptSock path is truncated because
+     it is too long. PR 49388.  [Stefan Fritsch]
+
   *) vhosts: Do not allow _default_ in NameVirtualHost, or mixing *
      and non-* ports on NameVirtualHost, or multiple NameVirtualHost
      directives for the same address:port, or NameVirtualHost
