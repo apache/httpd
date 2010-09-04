@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_cache: Check the request to determine whether we are allowed
+     to return cached content at all, and respect a "Cache-Control:
+     no-cache" header from a client. Previously, "no-cache" would
+     behave like "max-age=0". [Graham Leggett]
+
   *) mod_cache: Use a proper filter context to hold filter data instead
      of misusing the per-request configuration. Fixes a segfault on trunk
      when the normal handler is used. [Graham Leggett]
