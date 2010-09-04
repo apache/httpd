@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.9
 
+  *) core: Disable sendfile by default. [Stefan Fritsch]
+
   *) mod_cache: Check the request to determine whether we are allowed
      to return cached content at all, and respect a "Cache-Control:
      no-cache" header from a client. Previously, "no-cache" would

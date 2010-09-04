@@ -343,14 +343,15 @@ LogLevel warn
 
 #
 # EnableMMAP and EnableSendfile: On systems that support it, 
-# memory-mapping or the sendfile syscall is used to deliver
+# memory-mapping or the sendfile syscall may be used to deliver
 # files.  This usually improves server performance, but must
 # be turned off when serving from networked-mounted 
 # filesystems or if support for these functions is otherwise
 # broken on your system.
+# Defaults: EnableMMAP On, EnableSendfile Off
 #
 #EnableMMAP off
-#EnableSendfile off
+#EnableSendfile on
 
 # Supplemental configuration
 #

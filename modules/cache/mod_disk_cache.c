@@ -487,8 +487,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
      * configuration, so this check only takes the globel setting of
      * the EnableSendFile directive into account.
      */
-    flags |= ((coreconf->enable_sendfile == ENABLE_SENDFILE_OFF)
-              ? 0 : APR_SENDFILE_ENABLED);
+    flags |= AP_SENDFILE_ENABLED(coreconf->enable_sendfile);
 #endif
     rc = apr_file_open(&dobj->fd, dobj->datafile, flags, 0, r->pool);
     if (rc != APR_SUCCESS) {
