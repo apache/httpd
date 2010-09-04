@@ -92,13 +92,11 @@ static int cache_quick_handler(request_rec *r, int lookup)
     }
 
     /* make space for the per request config */
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
-                                                       &cache_module);
-    if (!cache) {
-        cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
-        cache->size = -1;
-        ap_set_module_config(r->request_config, &cache_module, cache);
-    }
+    cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
+    cache->size = -1;
+
+    /* store away the per request config where the API can find it */
+    apr_pool_userdata_setn(cache, MOD_CACHE_REQUEST_REC, NULL, r->pool);
 
     /* save away the possible providers */
     cache->providers = providers;
@@ -153,14 +151,14 @@ static int cache_quick_handler(request_rec *r, int lookup)
                                 "Adding CACHE_SAVE_SUBREQ filter for %s",
                                 r->uri);
                         ap_add_output_filter_handle(cache_save_subreq_filter_handle,
-                                NULL, r, r->connection);
+                                cache, r, r->connection);
                     }
                     else {
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
                                 r->server, "Adding CACHE_SAVE filter for %s",
                                 r->uri);
                         ap_add_output_filter_handle(cache_save_filter_handle,
-                                NULL, r, r->connection);
+                                cache, r, r->connection);
                     }
 
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
@@ -191,9 +189,6 @@ static int cache_quick_handler(request_rec *r, int lookup)
 
                     r->headers_in = cache->stale_headers;
                 }
-
-                /* Delete our per-request configuration. */
-                ap_set_module_config(r->request_config, &cache_module, NULL);
             }
         }
         else {
@@ -213,9 +208,6 @@ static int cache_quick_handler(request_rec *r, int lookup)
                          "Restoring request headers.");
             r->headers_in = cache->stale_headers;
         }
-
-        /* Delete our per-request configuration. */
-        ap_set_module_config(r->request_config, &cache_module, NULL);
     }
 
     rv = ap_meets_conditions(r);
@@ -254,7 +246,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
     else {
         cache_out_handle = cache_out_filter_handle;
     }
-    ap_add_output_filter_handle(cache_out_handle, NULL, r, r->connection);
+    ap_add_output_filter_handle(cache_out_handle, cache, r, r->connection);
 
     /*
      * Remove all filters that are before the cache_out filter. This ensures
@@ -359,12 +351,11 @@ static int cache_handler(request_rec *r)
     }
 
     /* make space for the per request config */
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
-                                                       &cache_module);
-    if (!cache) {
-        cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
-        ap_set_module_config(r->request_config, &cache_module, cache);
-    }
+    cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
+    cache->size = -1;
+
+    /* store away the per request config where the API can find it */
+    apr_pool_userdata_setn(cache, MOD_CACHE_REQUEST_REC, NULL, r->pool);
 
     /* save away the possible providers */
     cache->providers = providers;
@@ -412,7 +403,7 @@ static int cache_handler(request_rec *r)
                     cache_save_handle = cache_save_filter_handle;
                 }
                 ap_add_output_filter_handle(cache_save_handle,
-                        NULL, r, r->connection);
+                        cache, r, r->connection);
 
                 /*
                  * Did the user indicate the precise location of the
@@ -481,7 +472,7 @@ static int cache_handler(request_rec *r)
     else {
         cache_out_handle = cache_out_filter_handle;
     }
-    ap_add_output_filter_handle(cache_out_handle, NULL, r, r->connection);
+    ap_add_output_filter_handle(cache_out_handle, cache, r, r->connection);
 
     /*
      * Did the user indicate the precise location of the CACHE_OUT filter by
@@ -542,16 +533,13 @@ static int cache_handler(request_rec *r)
 static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
-    cache_request_rec *cache;
-
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
-                                                       &cache_module);
+    cache_request_rec *cache = (cache_request_rec *)f->ctx;
 
     if (!cache) {
         /* user likely configured CACHE_OUT manually; they should use mod_cache
          * configuration to do that */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "CACHE_OUT enabled unexpectedly");
+                     "CACHE/CACHE_OUT filter enabled while caching is disabled, ignoring");
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);
     }
@@ -599,7 +587,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv = !OK;
     request_rec *r = f->r;
-    cache_request_rec *cache;
+    cache_request_rec *cache = (cache_request_rec *)f->ctx;
     cache_server_conf *conf;
     const char *cc_out, *cl;
     const char *exps, *lastmods, *dates, *etag;
@@ -609,20 +597,20 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     char *reason;
     apr_pool_t *p;
     apr_bucket *e;
+    void *data;
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
 
     /* Setup cache_request_rec */
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
-                                                       &cache_module);
     if (!cache) {
         /* user likely configured CACHE_SAVE manually; they should really use
          * mod_cache configuration to do that
          */
-        cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
-        ap_set_module_config(r->request_config, &cache_module, cache);
-        cache->size = -1;
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "CACHE/CACHE_SAVE filter enabled while caching is disabled, ignoring");
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, in);
     }
 
     reason = NULL;

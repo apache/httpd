@@ -72,8 +72,11 @@ int cache_create_entity(request_rec *r, apr_off_t size)
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
     char *key;
     apr_status_t rv;
-    cache_request_rec *cache = (cache_request_rec *)
-                         ap_get_module_config(r->request_config, &cache_module);
+    cache_request_rec *cache;
+    void *data;
+
+    apr_pool_userdata_get(&data, MOD_CACHE_REQUEST_REC, r->pool);
+    cache = data;
 
     rv = cache_generate_key(r, r->pool, &key);
     if (rv != APR_SUCCESS) {
@@ -108,6 +111,10 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
     return 1;
 }
 
+/**
+ * Take headers from the cache, and overlap them over the existing response
+ * headers.
+ */
 CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
                                             int preserve_orig)
 {
@@ -186,8 +193,11 @@ int cache_select(request_rec *r)
     apr_status_t rv;
     cache_handle_t *h;
     char *key;
-    cache_request_rec *cache = (cache_request_rec *)
-                         ap_get_module_config(r->request_config, &cache_module);
+    cache_request_rec *cache;
+    void *data;
+
+    apr_pool_userdata_get(&data, MOD_CACHE_REQUEST_REC, r->pool);
+    cache = data;
 
     rv = cache_generate_key(r, r->pool, &key);
     if (rv != APR_SUCCESS) {
@@ -358,9 +368,10 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
     const char *hostname, *scheme;
     int i;
     char *path, *querystring;
+    void *data;
 
-    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
-                                                       &cache_module);
+    apr_pool_userdata_get(&data, MOD_CACHE_REQUEST_REC, r->pool);
+    cache = data;
     if (!cache) {
         /* This should never happen */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
