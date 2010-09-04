@@ -820,12 +820,13 @@ Locations</a></seealso>
 <name>EnableSendfile</name>
 <description>Use the kernel sendfile support to deliver files to the client</description>
 <syntax>EnableSendfile On|Off</syntax>
-<default>EnableSendfile On</default>
+<default>EnableSendfile Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Available in version 2.0.44 and later</compatibility>
+<compatibility>Available in version 2.0.44 and later. Default changed to Off in
+version 2.3.9.</compatibility>
 
 <usage>
     <p>This directive controls whether <program>httpd</program> may use the
@@ -850,19 +851,19 @@ Locations</a></seealso>
     <li>On Linux on Itanium, sendfile may be unable to handle files
     over 2GB in size.</li>
     <li>With a network-mounted <directive
-    module="core">DocumentRoot</directive> (e.g., NFS or SMB),
+    module="core">DocumentRoot</directive> (e.g., NFS, SMB, CIFS, FUSE),
     the kernel may be unable to serve the network file through
     its own cache.</li>
     </ul>
 
-    <p>For server configurations that are vulnerable to these problems,
-    you should disable this feature by specifying:</p>
+    <p>For server configurations that are not vulnerable to these problems,
+    you may enable this feature by specifying:</p>
 
     <example>
-      EnableSendfile Off
+      EnableSendfile On
     </example>
 
-    <p>For NFS or SMB mounted files, this feature may be disabled explicitly
+    <p>For network mounted files, this feature may be disabled explicitly
     for the offending files by specifying:</p>
 
     <example>

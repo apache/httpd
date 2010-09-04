@@ -525,7 +525,7 @@ typedef struct {
 #define ENABLE_SENDFILE_OFF    (0)
 #define ENABLE_SENDFILE_ON     (1)
 #define ENABLE_SENDFILE_UNSET  (2)
-    unsigned int enable_sendfile : 2;  /* files in this dir can be mmap'ed */
+    unsigned int enable_sendfile : 2;  /* files in this dir can be sendfile'ed */
     unsigned int allow_encoded_slashes : 1; /* URLs may contain %2f w/o being
                                              * pitched indiscriminately */
 
@@ -539,6 +539,10 @@ typedef struct {
     /** per-dir log config */
     struct ap_logconf *log;
 } core_dir_config;
+
+/* macro to implement off by default behaviour */
+#define AP_SENDFILE_ENABLED(x) \
+    ((x) == ENABLE_SENDFILE_ON ? APR_SENDFILE_ENABLED : 0)
 
 /* Per-server core configuration */
 

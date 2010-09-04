@@ -161,8 +161,7 @@ dialup_handler(request_rec *r)
 
     rv = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY
 #if APR_HAS_SENDFILE
-                           | ((ccfg->enable_sendfile == ENABLE_SENDFILE_OFF)
-                              ? 0 : APR_SENDFILE_ENABLED)
+                           | AP_SENDFILE_ENABLED(ccfg->enable_sendfile)
 #endif
                        , 0, r->pool);
 
