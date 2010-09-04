@@ -222,6 +222,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-1.txt
      +1: trawick
 
+   * mod_cache: Check the request to determine whether we are allowed
+     to return cached content at all, and respect a "Cache-Control:
+     no-cache" header from a client. Previously, "no-cache" would
+     behave like "max-age=0".
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=992625
+     2.2.x patch: trunk patch works
+     +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
