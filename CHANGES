@@ -13,7 +13,7 @@ Changes with Apache 2.3.9
      previously accepted with a warning, but the behavior was
      undefined.  [Dan Poirier]
 
-  *) mod_remoteip: Fix a segfaulti when using mod_remoteip in conjunction with
+  *) mod_remoteip: Fix a segfault when using mod_remoteip in conjunction with
      Allow/Deny. PR 49838.  [Andrew Skalski <voltara gmail.com>]
 
   *) core: DirectoryMatch can now match on the end of line character ($),
