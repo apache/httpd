@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_cache: Use a proper filter context to hold filter data instead
+     of misusing the per-request configuration. Fixes a segfault on trunk
+     when the normal handler is used. [Graham Leggett]
+
   *) mod_cgid: Log a warning if the ScriptSock path is truncated because
      it is too long. PR 49388.  [Stefan Fritsch]
 

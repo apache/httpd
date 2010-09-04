@@ -374,10 +374,13 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
 /**
  * cache_storage.c
  */
+#define MOD_CACHE_REQUEST_REC "mod_cache_request_rec"
 int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
 int cache_create_entity(request_rec *r, apr_off_t size);
 int cache_select(request_rec *r);
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
+
+
 /**
  * create a key for the cache based on the request record
  * this is the 'default' version, which can be overridden by a default function
