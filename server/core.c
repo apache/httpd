@@ -42,6 +42,7 @@
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "util_mutex.h"
+#include "util_time.h"
 #include "mpm_common.h"
 #include "scoreboard.h"
 #include "mod_core.h"
@@ -52,6 +53,9 @@
 
 #if defined(RLIMIT_CPU) || defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS) || defined (RLIMIT_NPROC)
 #include "unixd.h"
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 /* LimitRequestBody handling */
@@ -459,6 +463,15 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
 
     if (virt->gprof_dir)
         conf->gprof_dir = virt->gprof_dir;
+
+    if (virt->error_log_format)
+        conf->error_log_format = virt->error_log_format;
+
+    if (virt->error_log_conn)
+        conf->error_log_conn = virt->error_log_conn;
+
+    if (virt->error_log_req)
+        conf->error_log_req = virt->error_log_req;
 
     return conf;
 }
@@ -3100,6 +3113,229 @@ static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static apr_hash_t *errorlog_hash;
+
+static int log_constant_item(const ap_errorlog_info *info, const char *arg,
+                             char *buf, int buflen)
+{
+    char *end = apr_cpystrn(buf, arg, buflen);
+    return end - buf;
+}
+
+static char *parse_errorlog_misc_string(apr_pool_t *p,
+                                        ap_errorlog_format_item *it,
+                                        const char **sa)
+{
+    const char *s;
+    char scratch[MAX_STRING_LEN];
+    char *d = scratch;
+    /*
+     * non-leading white space terminates this string to allow the next field
+     * separator to be inserted
+     */
+    int at_start = 1;
+
+    it->func = log_constant_item;
+    s = *sa;
+
+    while (*s && *s != '%' && (*s != ' ' || at_start) && d < scratch + MAX_STRING_LEN) {
+        if (*s != '\\') {
+            if (*s != ' ') {
+                at_start = 0;
+            }
+            *d++ = *s++;
+        }
+        else {
+            s++;
+            switch (*s) {
+            case 'r':
+                *d++ = '\r';
+                s++;
+                break;
+            case 'n':
+                *d++ = '\n';
+                s++;
+                break;
+            case 't':
+                *d++ = '\t';
+                s++;
+                break;
+            case '\0':
+                /* handle end of string */
+                *d++ = '\\';
+                break;
+            default:
+                /* copy next char verbatim */
+                *d++ = *s++;
+                break;
+            }
+        }
+    }
+    *d = '\0';
+    it->arg = apr_pstrdup(p, scratch);
+
+    *sa = s;
+    return NULL;
+}
+
+static char *parse_errorlog_item(apr_pool_t *p, ap_errorlog_format_item *it,
+                                 const char **sa)
+{
+    const char *s = *sa;
+    ap_errorlog_handler *handler;
+
+    if (*s != '%') {
+        if (*s == ' ') {
+            it->flags |= AP_ERRORLOG_FLAG_FIELD_SEP;
+        }
+        return parse_errorlog_misc_string(p, it, sa);
+    }
+
+    ++s;
+
+    if (*s == ' ') {
+        /* percent-space (% ) is a field separator */
+        it->flags |= AP_ERRORLOG_FLAG_FIELD_SEP;
+        *sa = ++s;
+        /* recurse */
+        return parse_errorlog_item(p, it, sa);
+    }
+    else if (*s == '%') {
+        it->arg = "%";
+        it->func = log_constant_item;
+        *sa = ++s;
+        return NULL;
+    }
+
+    while (*s) {
+        switch (*s) {
+        case '{':
+            ++s;
+            it->arg = ap_getword(p, &s, '}');
+            break;
+        case '+':
+            ++s;
+            it->flags |= AP_ERRORLOG_FLAG_REQUIRED;
+            break;
+        case '-':
+            ++s;
+            it->flags |= AP_ERRORLOG_FLAG_NULL_AS_HYPHEN;
+            break;
+        case 'M':
+            it->func = NULL;
+            it->flags |= AP_ERRORLOG_FLAG_MESSAGE;
+            *sa = ++s;
+            return NULL;
+        default:
+            handler = (ap_errorlog_handler *)apr_hash_get(errorlog_hash, s, 1);
+            if (!handler) {
+                char dummy[2];
+
+                dummy[0] = *s;
+                dummy[1] = '\0';
+                return apr_pstrcat(p, "Unrecognized error log format directive %",
+                               dummy, NULL);
+            }
+            it->func = handler->func;
+            *sa = ++s;
+            return NULL;
+        }
+    }
+
+    return "Ran off end of error log format parsing args to some directive";
+}
+
+static apr_array_header_t *parse_errorlog_string(apr_pool_t *p,
+                                                 const char *s,
+                                                 const char **err,
+                                                 int want_msg_fmt)
+{
+    apr_array_header_t *a = apr_array_make(p, 30,
+                                           sizeof(ap_errorlog_format_item));
+    char *res;
+    int seen_msg_fmt = 0;
+
+    while (s && *s) {
+        ap_errorlog_format_item *item =
+            (ap_errorlog_format_item *)apr_array_push(a);
+        memset(item, 0, sizeof(*item));
+        res = parse_errorlog_item(p, item, &s);
+        if (res) {
+            *err = res;
+            return NULL;
+        }
+        if (item->flags & AP_ERRORLOG_FLAG_MESSAGE) {
+            if (!want_msg_fmt) {
+                *err = "%M cannot be used in once-per-request or "
+                       "once-per-connection formats";
+                return NULL;
+            }
+            seen_msg_fmt = 1;
+        }
+    }
+
+    if (want_msg_fmt && !seen_msg_fmt) {
+        *err = "main ErrorLogFormat must contain message format string '%M'";
+        return NULL;
+    }
+
+    return a;
+}
+
+static const char *set_errorlog_format(cmd_parms *cmd, void *dummy,
+                                       const char *arg1, const char *arg2)
+{
+    const char *err_string = NULL;
+    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
+                                                    &core_module);
+
+    if (!arg2) {
+        conf->error_log_format = parse_errorlog_string(cmd->pool, arg1,
+                                                       &err_string, 1);
+    }
+    else if (!strcasecmp(arg1, "connection")) {
+        if (!conf->error_log_conn) {
+            conf->error_log_conn = apr_array_make(cmd->pool, 5,
+                                                  sizeof(apr_array_header_t *));
+        }
+
+        if (arg2 && *arg2) {
+            apr_array_header_t **e;
+            e = (apr_array_header_t **) apr_array_push(conf->error_log_conn);
+            *e = parse_errorlog_string(cmd->pool, arg2, &err_string, 0);
+        }
+    }
+    else if (!strcasecmp(arg1, "request")) {
+        if (!conf->error_log_req) {
+            conf->error_log_req = apr_array_make(cmd->pool, 5,
+                                                 sizeof(apr_array_header_t *));
+        }
+
+        if (arg2 && *arg2) {
+            apr_array_header_t **e;
+            e = (apr_array_header_t **) apr_array_push(conf->error_log_req);
+            *e = parse_errorlog_string(cmd->pool, arg2, &err_string, 0);
+        }
+    }
+    else {
+        err_string = "ErrorLogFormat type must be one of request, connection";
+    }
+
+    return err_string;
+}
+
+AP_DECLARE(void) ap_register_errorlog_handler(apr_pool_t *p, char *tag,
+                                              ap_errorlog_handler_fn_t *handler,
+                                              int flags)
+{
+    ap_errorlog_handler *log_struct = apr_palloc(p, sizeof(*log_struct));
+    log_struct->func = handler;
+    log_struct->flags = flags;
+
+    apr_hash_set(errorlog_hash, tag, 1, (const void *)log_struct);
+}
+
+
 /* Note --- ErrorDocument will now work from .htaccess files.
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -3199,6 +3435,8 @@ AP_INIT_TAKE1("ServerRoot", set_server_root, NULL, RSRC_CONF | EXEC_ON_READ,
 AP_INIT_TAKE1("ErrorLog", set_server_string_slot,
   (void *)APR_OFFSETOF(server_rec, error_fname), RSRC_CONF,
   "The filename of the error log"),
+AP_INIT_TAKE12("ErrorLogFormat", set_errorlog_format, NULL, RSRC_CONF,
+  "Format string for the ErrorLog"),
 AP_INIT_RAW_ARGS("ServerAlias", set_server_alias, NULL, RSRC_CONF,
   "A name or names alternately used to access the server"),
 AP_INIT_TAKE1("ServerPath", set_serverpath, NULL, RSRC_CONF,
@@ -3632,6 +3870,9 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
 static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     ap_mutex_init(pconf);
+
+    ap_register_builtin_errorlog_handlers(pconf);
+
     return APR_SUCCESS;
 }
 
@@ -3843,6 +4084,8 @@ static int core_pre_connection(conn_rec *c, void *csd)
 
 static void register_hooks(apr_pool_t *p)
 {
+    errorlog_hash = apr_hash_make(p);
+
     /* create_connection and pre_connection should always be hooked
      * APR_HOOK_REALLY_LAST by core to give other modules the opportunity
      * to install alternate network transports and stop other functions 

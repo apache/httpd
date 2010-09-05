@@ -724,7 +724,7 @@ AP_DECLARE(const char *) ap_find_module_name(module *m);
 /**
  * Find the short name of the module identified by the specified module index
  * @param module_index The module index to get the name for
- * @return the name of the module
+ * @return the name of the module, NULL if not found
  */
 AP_DECLARE(const char *) ap_find_module_short_name(int module_index);
 /**

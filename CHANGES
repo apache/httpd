@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.9
 
+  *) core: Add ErrorLogFormat to allow configuring error log format, including
+     additional information that is logged once per connection or request. Add
+     error log IDs for connections and request to allow correlating error log
+     lines and the corresponding access log entry.
+
   *) core: Disable sendfile by default. [Stefan Fritsch]
 
   *) mod_cache: Check the request to determine whether we are allowed

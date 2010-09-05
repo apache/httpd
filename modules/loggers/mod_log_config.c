@@ -116,9 +116,11 @@
  *         'X' = connection aborted before the response completed.
  *         '+' = connection may be kept alive after the response is sent.
  *         '-' = connection will be closed after the response is sent.
-           (This directive was %...c in late versions of Apache 1.3, but
-            this conflicted with the historical ssl %...{var}c syntax.)
-*
+ *         (This directive was %...c in late versions of Apache 1.3, but
+ *          this conflicted with the historical ssl %...{var}c syntax.)
+ * %...L:  Log-Id of the Request (or '-' if none)
+ * %...{c}L:  Log-Id of the Connection (or '-' if none)
+ *
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
  * indicate conditions for inclusion of the item (which will cause it
  * to be replaced with '-' if the condition is not met).  Note that
@@ -368,6 +370,15 @@ static const char *log_request_uri(request_rec *r, char *a)
 static const char *log_request_method(request_rec *r, char *a)
 {
     return ap_escape_logitem(r->pool, r->method);
+}
+static const char *log_log_id(request_rec *r, char *a)
+{
+    if (a && !strcmp(a, "c")) {
+        return r->connection->log_id ? r->connection->log_id : "-";
+    }
+    else {
+        return r->log_id ? r->log_id : "-";
+    }
 }
 static const char *log_request_protocol(request_rec *r, char *a)
 {
@@ -1613,6 +1624,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "i", log_header_in, 0);
         log_pfn_register(p, "o", log_header_out, 0);
         log_pfn_register(p, "n", log_note, 0);
+        log_pfn_register(p, "L", log_log_id, 1);
         log_pfn_register(p, "e", log_env_var, 0);
         log_pfn_register(p, "V", log_server_name, 0);
         log_pfn_register(p, "v", log_virtual_host, 0);

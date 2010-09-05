@@ -22,6 +22,9 @@
  *   */
 #define AP_CTIME_USEC_LENGTH      7
 
+/* Length of ISO 8601 date/time */
+#define AP_CTIME_COMPACT_LEN      20
+
 
 /* Cache for exploded values of recent timestamps
  */
@@ -169,7 +172,11 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
 
 
     /* Calculate the needed buffer length */
-    needed = APR_CTIME_LEN;
+    if (option & AP_CTIME_OPTION_COMPACT)
+        needed = AP_CTIME_COMPACT_LEN;
+    else
+        needed = APR_CTIME_LEN;
+
     if (option & AP_CTIME_OPTION_USEC) {
         needed += AP_CTIME_USEC_LENGTH;
     }
@@ -187,18 +194,34 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
 
     /* example without options: "Wed Jun 30 21:49:08 1993" */
     /*                           123456789012345678901234  */
+    /* example for compact format: "1993-06-30 21:49:08" */
+    /*                              1234567890123456789  */
 
     ap_explode_recent_localtime(&xt, t);
-    s = &apr_day_snames[xt.tm_wday][0];
-    *date_str++ = *s++;
-    *date_str++ = *s++;
-    *date_str++ = *s++;
-    *date_str++ = ' ';
-    s = &apr_month_snames[xt.tm_mon][0];
-    *date_str++ = *s++;
-    *date_str++ = *s++;
-    *date_str++ = *s++;
-    *date_str++ = ' ';
+    real_year = 1900 + xt.tm_year;
+    if (option & AP_CTIME_OPTION_COMPACT) {
+        int real_month = xt.tm_mon + 1;
+        *date_str++ = real_year / 1000 + '0';
+        *date_str++ = real_year % 1000 / 100 + '0';
+        *date_str++ = real_year % 100 / 10 + '0';
+        *date_str++ = real_year % 10 + '0';
+        *date_str++ = '-';
+        *date_str++ = real_month / 10 + '0';
+        *date_str++ = real_month % 10 + '0';
+        *date_str++ = '-';
+    }
+    else {
+        s = &apr_day_snames[xt.tm_wday][0];
+        *date_str++ = *s++;
+        *date_str++ = *s++;
+        *date_str++ = *s++;
+        *date_str++ = ' ';
+        s = &apr_month_snames[xt.tm_mon][0];
+        *date_str++ = *s++;
+        *date_str++ = *s++;
+        *date_str++ = *s++;
+        *date_str++ = ' ';
+    }
     *date_str++ = xt.tm_mday / 10 + '0';
     *date_str++ = xt.tm_mday % 10 + '0';
     *date_str++ = ' ';
@@ -219,12 +242,13 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
             usec = usec % div;
         }
     }
-    *date_str++ = ' ';
-    real_year = 1900 + xt.tm_year;
-    *date_str++ = real_year / 1000 + '0';
-    *date_str++ = real_year % 1000 / 100 + '0';
-    *date_str++ = real_year % 100 / 10 + '0';
-    *date_str++ = real_year % 10 + '0';
+    if (!(option & AP_CTIME_OPTION_COMPACT)) {
+        *date_str++ = ' ';
+        *date_str++ = real_year / 1000 + '0';
+        *date_str++ = real_year % 1000 / 100 + '0';
+        *date_str++ = real_year % 100 / 10 + '0';
+        *date_str++ = real_year % 10 + '0';
+    }
     *date_str++ = 0;
 
     return APR_SUCCESS;

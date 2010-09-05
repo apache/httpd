@@ -92,6 +92,7 @@
       </modulelist>
       <directivelist>
         <directive module="core">ErrorLog</directive>
+        <directive module="core">ErrorLogFormat</directive>
         <directive module="core">LogLevel</directive>
       </directivelist>
     </related>
