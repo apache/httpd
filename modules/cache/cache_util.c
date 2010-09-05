@@ -381,7 +381,7 @@ CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
 }
 
 CACHE_DECLARE(int) ap_cache_check_allowed(request_rec *r) {
-    const char *cc_cresp, *cc_req;
+    const char *cc_req;
     const char *pragma;
     cache_server_conf *conf =
       (cache_server_conf *)ap_get_module_config(r->server->module_config,
