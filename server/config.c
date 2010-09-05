@@ -747,7 +747,7 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
     ap_loaded_modules = (module **)apr_palloc(process->pool,
         sizeof(module *) * conf_vector_length);
     if (!ap_module_short_names)
-        ap_module_short_names = malloc(sizeof(char *) * conf_vector_length);
+        ap_module_short_names = calloc(sizeof(char *), conf_vector_length);
 
     if (ap_loaded_modules == NULL || ap_module_short_names == NULL) {
         return "Ouch! Out of memory in ap_setup_prelinked_modules()!";
@@ -780,8 +780,8 @@ AP_DECLARE(const char *) ap_find_module_name(module *m)
 
 AP_DECLARE(const char *) ap_find_module_short_name(int module_index)
 {
-        if (module_index < 0)
-                return "-";
+        if (module_index < 0 || module_index >= conf_vector_length)
+                return NULL;
         return ap_module_short_names[module_index];
 }
 

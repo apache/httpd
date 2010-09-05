@@ -962,6 +962,11 @@ struct request_rec {
      *  modifying */
     const struct ap_logconf *log;
 
+    /** Id to identify request in access and error log. Set when the first
+     *  error log entry for this request is generated.
+     */
+    const char *log_id;
+
     /**
      * A linked list of the .htaccess configuration directives
      * accessed by this request.
@@ -1102,6 +1107,12 @@ struct conn_rec {
     /** Optional connection log level configuration. May point to a server or
      *  per_dir config, i.e. must be copied before modifying */
     const struct ap_logconf *log;
+
+    /** Id to identify this connection in error log. Set when the first
+     *  error log entry for this connection is generated.
+     */
+    const char *log_id;
+
 
     /** This points to the current thread being used to process this request,
      * over the lifetime of a request, the value may change. Users of the connection

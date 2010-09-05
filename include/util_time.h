@@ -45,6 +45,8 @@ extern "C" {
 #define AP_CTIME_OPTION_NONE    0x0
 /* Add sub second timestamps with micro second resolution */
 #define AP_CTIME_OPTION_USEC    0x1
+/* Use more compact ISO 8601 format */
+#define AP_CTIME_OPTION_COMPACT 0x2
 
 
 /**

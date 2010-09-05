@@ -569,6 +569,15 @@ typedef struct {
     const char *protocol;
     apr_table_t *accf_map;
 
+    /* array of ap_errorlog_format_item for error log format string */
+    apr_array_header_t *error_log_format;
+    /*
+     * two arrays of arrays of ap_errorlog_format_item for additional information
+     * logged to the error log once per connection/request
+     */
+    apr_array_header_t *error_log_conn;
+    apr_array_header_t *error_log_req;
+
     /* TRACE control */
 #define AP_TRACE_UNSET    -1
 #define AP_TRACE_DISABLE   0
@@ -660,6 +669,62 @@ APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_in,
                         (conn_rec *c, apr_off_t bytes));
 
 APR_DECLARE_OPTIONAL_FN(apr_off_t, ap_logio_get_last_bytes, (conn_rec *c));
+
+/* ----------------------------------------------------------------------
+ *
+ * Error log formats
+ */
+
+/**
+ * info structure passed to callback functions of errorlog handlers
+ */
+typedef struct ap_errorlog_info {
+    const server_rec *s;
+    const conn_rec *c;
+    const request_rec *r;
+    const request_rec *rmain;
+    const char *file;
+    int line;
+    int module_index;
+    int level;
+    apr_status_t status;
+    int using_syslog;
+    int startup;
+} ap_errorlog_info;
+
+/**
+ * callback function prototype for a external errorlog handler
+ */
+typedef int ap_errorlog_handler_fn_t(const ap_errorlog_info *info,
+                                     const char *arg, char *buf, int buflen);
+
+/**
+ * Register external errorlog handler
+ * @param p config pool to use
+ * @param tag the new format specifier (i.e. the letter after the %)
+ * @param handler the handler function
+ * @param flags flags (reserved, set to 0)
+ */
+AP_DECLARE(void) ap_register_errorlog_handler(apr_pool_t *p, char *tag,
+                                              ap_errorlog_handler_fn_t *handler,
+                                              int flags);
+
+typedef struct ap_errorlog_handler {
+    ap_errorlog_handler_fn_t *func;
+    int flags;
+} ap_errorlog_handler;
+
+typedef struct {
+    ap_errorlog_handler_fn_t *func;
+    const char *arg;
+#define AP_ERRORLOG_FLAG_FIELD_SEP       1
+#define AP_ERRORLOG_FLAG_MESSAGE         2
+#define AP_ERRORLOG_FLAG_REQUIRED        4
+#define AP_ERRORLOG_FLAG_NULL_AS_HYPHEN  8
+    unsigned int flags;
+} ap_errorlog_format_item;
+
+AP_DECLARE(void) ap_register_builtin_errorlog_handlers(apr_pool_t *p);
 
 /* ----------------------------------------------------------------------
  *

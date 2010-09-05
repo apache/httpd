@@ -1044,6 +1044,153 @@ in case of an error</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ErrorLogFormat</name>
+<description>Format specification for error log entries</description>
+<syntax> ErrorLog [connection|request] <var>format</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache httpd 2.3.9 and later</compatibility>
+
+<usage>
+    <p><directive>ErrorLogFormat</directive> allows to specify what
+    supplementary information is logged in the error log in addition to the
+    actual log message.</p>
+
+    <example><title>Simple example</title>
+        ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+    </example>
+
+    <p>Specifying <code>connection</code> or <code>request</code> as first
+    paramter allows to specify additional formats, causing additional
+    information to be logged when the first message is logged for a specific
+    connection or request, respectivly. This additional information is only
+    logged once per connection/request. If a connection or request is processed
+    without causing any log message, the additional information is not logged
+    either.</p>
+
+    <p>It can happen that some format string items do not produce output.  For
+    example, the Referer header is only present if the log message is
+    associated to a request and the log message happens at a time when the
+    Referer header has already been read from the client.  If no output is
+    produced, the default behaviour is to delete everything from the preceeding
+    space character to the next space character.  This means the log line is
+    implicitly divided into fields on non-whitespace to whitespace transitions.
+    If a format string item does not produce output, the whole field is
+    ommitted.  For example, if the remote address <code>%a</code> in the log
+    format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
+    brackets are not logged either.  Space characters can be escaped with a
+    backslash to prevent them from delimiting a field.  The combination '%&nbsp;'
+    (percent space) is a zero-witdh field delimiter that does not produce any
+    output.</p>
+
+    <p>The above behaviour can be changed by adding flags to the format string
+    item. A <code>-</code> (minus) flag causes a minus to be logged if the
+    respective item does not produce any output. In once-per-connection/request
+    formats, it is also possible to use the <code>+</code> (plus) flag. If an
+    item with the plus flag does not produce any output, the whole line is
+    ommitted.</p>
+
+    <p>Some format string items accept additional parameters in braces.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+
+    <tr><th>Format&nbsp;String</th> <th>Description</th></tr>
+
+    <tr><td><code>%%</code></td>
+        <td>The percent sign</td></tr>
+
+    <tr><td><code>%...a</code></td>
+        <td>Remote IP-address and port</td></tr>
+
+    <tr><td><code>%...A</code></td>
+        <td>Local IP-address and port</td></tr>
+
+    <tr><td><code>%...E</code></td>
+        <td>APR/OS error status code and string</td></tr>
+
+    <tr><td><code>%...F</code></td>
+        <td>Source file name and line number of the log call</td></tr>
+
+    <tr><td><code>%...{name}i</code></td>
+        <td>Request header <code>name</code></td></tr>
+
+    <tr><td><code>%...k</code></td>
+        <td>Number of keep-alive requests on this connection</td></tr>
+
+    <tr><td><code>%...l</code></td>
+        <td>Loglevel of the message</td></tr>
+
+    <tr><td><code>%...L</code></td>
+        <td>Log ID of the request</td></tr>
+
+    <tr><td><code>%...{c}L</code></td>
+        <td>Log ID of the connection</td></tr>
+
+    <tr><td><code>%...{C}L</code></td>
+        <td>Log ID of the connection if used in connection scope, empty otherwise</td></tr>
+
+    <tr><td><code>%...m</code></td>
+        <td>Name of the module logging the message</td></tr>
+
+    <tr><td><code>%M</code></td>
+        <td>The actual log message</td></tr>
+
+    <tr><td><code>%...P</code></td>
+        <td>Process ID of current process</td></tr>
+
+    <tr><td><code>%...T</code></td>
+        <td>Thread ID of current thread</td></tr>
+
+    <tr><td><code>%...t</code></td>
+        <td>The current time</td></tr>
+
+    <tr><td><code>%...{u}t</code></td>
+        <td>The current time including micro-seconds</td></tr>
+
+    <tr><td><code>%...{cu}t</code></td>
+        <td>The current time in compact ISO 8601 format, including
+            micro-seconds</td></tr>
+
+    <tr><td><code>\&nbsp;</code> (backslash space)</td>
+        <td>Non-field delimiting space</td></tr>
+
+    <tr><td><code>%&nbsp;</code> (percent space)</td>
+        <td>Field delimiter (no output)</td></tr>
+    </table>
+
+    <p>The log ID format <code>%L</code> produces a unique id for a connection
+    or request. This can be used to correlate which log lines belong to the
+    same connection or request, which request happens on which connection.
+    A <code>%L</code> format string is also available in
+    <module>mod_log_config</module>, to allow to correlate access log entries
+    with error log lines.</p>
+
+    <example><title>Example (somewhat similar to default format)</title>
+        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %F: %E: [client\ %a]
+        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </example>
+
+    <example><title>Example (similar to the 2.2.x format)</title>
+        ErrorLogFormat "[%t] [%l] %F: %E: [client\ %a]
+        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </example>
+
+    <example><title>Advanced example with request/connection log IDs</title>
+        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %M"<br/>
+        ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br/>
+        ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br/>
+        ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br/>
+        ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"<br/>
+    </example>
+
+</usage>
+<seealso><directive module="core">ErrorLog</directive></seealso>
+<seealso><directive module="core">LogLevel</directive></seealso>
+<seealso><a href="../logs.html">Apache HTTP Server Log Files</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ExtendedStatus</name>
 <description>Keep track of extended status information for each 
 request</description>

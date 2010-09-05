@@ -122,6 +122,10 @@
         module="mod_ident">IdentityCheck</directive> is set
         <code>On</code>.</td></tr>
 
+    <tr><td><code>%L</code></td>
+        <td>The request log ID from the error log (or '-' if nothing has been
+            logged to the error log for this request)</td></tr>
+
     <tr><td><code>%m</code></td>
         <td>The request method</td></tr>
 

@@ -29,6 +29,7 @@
 #include "apr_lib.h"
 #include "apr_signal.h"
 #include "apr_portable.h"
+#include "apr_base64.h"
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
@@ -378,7 +379,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
             cmdtype = APR_SHELLCMD_ENV;
             ++fname;
         }
-	
+
         /* Spawn a new child logger.  If this is the main server_rec,
          * the new child must use a dummy stderr since the current
          * stderr might be a pipe to the old logger.  Otherwise, the
@@ -546,6 +547,477 @@ AP_DECLARE(void) ap_error_log2stderr(server_rec *s) {
     }
 }
 
+static int cpystrn(char *buf, const char *arg, int buflen)
+{
+    char *end;
+    if (!arg)
+        return 0;
+    end = apr_cpystrn(buf, arg, buflen);
+    return end - buf;
+}
+
+
+static int log_remote_address(const ap_errorlog_info *info, const char *arg,
+                              char *buf, int buflen)
+{
+    if (info->c)
+        return apr_snprintf(buf, buflen, "%s:%d", info->c->remote_ip,
+                            info->c->remote_addr->port);
+    else
+        return 0;
+}
+
+static int log_local_address(const ap_errorlog_info *info, const char *arg,
+                             char *buf, int buflen)
+{
+    if (info->c)
+        return apr_snprintf(buf, buflen, "%s:%d", info->c->local_ip,
+                            info->c->local_addr->port);
+    else
+        return 0;
+}
+
+static int log_pid(const ap_errorlog_info *info, const char *arg,
+                   char *buf, int buflen)
+{
+    pid_t pid = getpid();
+    return apr_snprintf(buf, buflen, "%" APR_PID_T_FMT, pid);
+}
+
+static int log_tid(const ap_errorlog_info *info, const char *arg,
+                   char *buf, int buflen)
+{
+#if APR_HAS_THREADS
+    int result;
+
+    if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == APR_SUCCESS
+        && result != AP_MPMQ_NOT_SUPPORTED)
+    {
+        apr_os_thread_t tid = apr_os_thread_current();
+        return apr_snprintf(buf, buflen, "%pT", &tid);
+    }
+#endif
+    return 0;
+}
+
+static int log_ctime(const ap_errorlog_info *info, const char *arg,
+                     char *buf, int buflen)
+{
+    int time_len = buflen;
+    int option = AP_CTIME_OPTION_NONE;
+
+    while(arg && *arg) {
+        switch (*arg) {
+            case 'u':   option |= AP_CTIME_OPTION_USEC;
+                        break;
+            case 'c':   option |= AP_CTIME_OPTION_COMPACT;
+                        break;
+        }
+        arg++;
+    }
+
+    ap_recent_ctime_ex(buf, apr_time_now(), option, &time_len);
+
+    /* ap_recent_ctime_ex includes the trailing \0 in time_len */
+    return time_len - 1;
+}
+
+static int log_loglevel(const ap_errorlog_info *info, const char *arg,
+                        char *buf, int buflen)
+{
+    if (info->level < 0)
+        return 0;
+    else
+        return cpystrn(buf, priorities[info->level].t_name, buflen);
+}
+
+static int log_log_id(const ap_errorlog_info *info, const char *arg,
+                      char *buf, int buflen)
+{
+    /*
+     * C: log conn log_id if available,
+     * c: log conn log id if available and not a once-per-request log line
+     * else: log request log id if available
+     */
+    if (arg && !strcasecmp(arg, "c")) {
+        if (info->c && (*arg != 'C' || !info->r)) {
+            return cpystrn(buf, info->c->log_id, buflen);
+        }
+    }
+    else if (info->r) {
+        return cpystrn(buf, info->r->log_id, buflen);
+    }
+    return 0;
+}
+
+static int log_keepalives(const ap_errorlog_info *info, const char *arg,
+                          char *buf, int buflen)
+{
+    if (!info->c)
+        return 0;
+
+    return apr_snprintf(buf, buflen, "%d", info->c->keepalives);
+}
+
+static int log_module_name(const ap_errorlog_info *info, const char *arg,
+                           char *buf, int buflen)
+{
+    return cpystrn(buf, ap_find_module_short_name(info->module_index), buflen);
+}
+
+static int log_file_line(const ap_errorlog_info *info, const char *arg,
+                         char *buf, int buflen)
+{
+    if (info->file == NULL) {
+        return 0;
+    }
+    else {
+        const char *file = info->file;
+#if defined(_OSD_POSIX) || defined(WIN32) || defined(__MVS__)
+        char tmp[256];
+        char *e = strrchr(file, '/');
+#ifdef WIN32
+        if (!e) {
+            e = strrchr(file, '\\');
+        }
+#endif
+
+        /* In OSD/POSIX, the compiler returns for __FILE__
+         * a string like: __FILE__="*POSIX(/usr/include/stdio.h)"
+         * (it even returns an absolute path for sources in
+         * the current directory). Here we try to strip this
+         * down to the basename.
+         */
+        if (e != NULL && e[1] != '\0') {
+            apr_snprintf(tmp, sizeof(tmp), "%s", &e[1]);
+            e = &tmp[strlen(tmp)-1];
+            if (*e == ')') {
+                *e = '\0';
+            }
+            file = tmp;
+        }
+#else /* _OSD_POSIX || WIN32 */
+        const char *p;
+        /* On Unix, __FILE__ may be an absolute path in a
+         * VPATH build. */
+        if (file[0] == '/' && (p = ap_strrchr_c(file, '/')) != NULL) {
+            file = p + 1;
+        }
+#endif /*_OSD_POSIX || WIN32 */
+        return apr_snprintf(buf, buflen, "%s(%d)", file, info->line);
+    }
+}
+
+static int log_apr_status(const ap_errorlog_info *info, const char *arg,
+                          char *buf, int buflen)
+{
+    apr_status_t status = info->status;
+    int len = 0;
+    if (!status)
+        return 0;
+
+    if (status < APR_OS_START_EAIERR) {
+        len += apr_snprintf(buf + len, buflen - len,
+                            "(%d)", status);
+    }
+    else if (status < APR_OS_START_SYSERR) {
+        len += apr_snprintf(buf + len, buflen - len,
+                            "(EAI %d)", status - APR_OS_START_EAIERR);
+    }
+    else if (status < 100000 + APR_OS_START_SYSERR) {
+        len += apr_snprintf(buf + len, buflen - len,
+                            "(OS %d)", status - APR_OS_START_SYSERR);
+    }
+    else {
+        len += apr_snprintf(buf + len, buflen - len,
+                            "(os 0x%08x)", status - APR_OS_START_SYSERR);
+    }
+    apr_strerror(status, buf + len, buflen - len);
+    len += strlen(buf + len);
+    return len;
+}
+
+static int log_header(const ap_errorlog_info *info, const char *arg,
+                      char *buf, int buflen)
+{
+    const char *header;
+    int len = 0;
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+    char scratch[MAX_STRING_LEN];
+#endif
+
+    if ( info->r && (header = apr_table_get(info->r->headers_in, arg))
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+         && ap_escape_errorlog_item(scratch, header, MAX_STRING_LEN)
+#endif
+       ) {
+        len = cpystrn(buf,
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+                           scratch,
+#else
+                           header,
+#endif
+                           buflen);
+    }
+    return len;
+}
+
+
+
+
+AP_DECLARE(void) ap_register_builtin_errorlog_handlers(apr_pool_t *p)
+{
+    ap_register_errorlog_handler(p, "a", log_remote_address, 0);
+    ap_register_errorlog_handler(p, "A", log_local_address, 0);
+    ap_register_errorlog_handler(p, "E", log_apr_status, 0);
+    ap_register_errorlog_handler(p, "F", log_file_line, 0);
+    ap_register_errorlog_handler(p, "i", log_header, 0);
+    ap_register_errorlog_handler(p, "k", log_keepalives, 0);
+    ap_register_errorlog_handler(p, "l", log_loglevel, 0);
+    ap_register_errorlog_handler(p, "L", log_log_id, 0);
+    ap_register_errorlog_handler(p, "m", log_module_name, 0);
+    ap_register_errorlog_handler(p, "P", log_pid, 0);
+    ap_register_errorlog_handler(p, "t", log_ctime, 0);
+    ap_register_errorlog_handler(p, "T", log_tid, 0);
+
+    /* XXX: TODO: envvars, notes */
+}
+
+static void add_log_id(const conn_rec *c, const request_rec *r)
+{
+    apr_uint64_t id, tmp;
+    pid_t pid;
+    int len;
+    char *encoded;
+
+    if (r && r->request_time) {
+        id = (apr_uint64_t)r->request_time;
+    }
+    else {
+        id = (apr_uint64_t)apr_time_now();
+    }
+
+    pid = getpid();
+    if (sizeof(pid_t) > 2) {
+        tmp = pid;
+        tmp = tmp << 40;
+        id ^= tmp;
+        pid = pid >> 24;
+        tmp = pid;
+        tmp = tmp << 56;
+        id ^= tmp;
+    }
+    else {
+        tmp = pid;
+        tmp = tmp << 40;
+        id ^= tmp;
+    }
+#if APR_HAS_THREADS
+    if (c) {
+        apr_uintptr_t tmp2 = (apr_uintptr_t)c->current_thread;
+        tmp = tmp2;
+        tmp = tmp << 32;
+        id ^= tmp;
+    }
+#endif
+
+    /*
+     * The apr-util docs wrongly states encoded strings are not 0-terminated.
+     * Let's be save and allocate an additional byte.
+     */
+    len = 1 + apr_base64_encode_len(sizeof(id));
+    encoded = apr_palloc(r ? r->pool : c->pool, len);
+    apr_base64_encode(encoded, (char *)&id, sizeof(id));
+    encoded[11] = '\0'; /* omit last char which is always '=' */
+
+    /* need to cast const away */
+    if (r) {
+        ((request_rec *)r)->log_id = encoded;
+    }
+    else {
+        ((conn_rec *)c)->log_id = encoded;
+    }
+}
+
+/*
+ * This is used if no error log format is defined and during startup.
+ * It automatically omits the timestamp if logging to syslog.
+ */
+static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
+                               int buflen, int *errstr_start, int *errstr_end,
+                               const char *errstr_fmt, va_list args)
+{
+    int len = 0;
+    int field_start = 0;
+    int item_len;
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+    char scratch[MAX_STRING_LEN];
+#endif
+
+    if (!info->using_syslog && !info->startup) {
+        buf[len++] = '[';
+        len += log_ctime(info, "u", buf + len, buflen - len);
+        buf[len++] = ']';
+        buf[len++] = ' ';
+    }
+
+    if (!info->startup) {
+        buf[len++] = '[';
+        len += log_module_name(info, NULL, buf + len, buflen - len);
+        buf[len++] = ':';
+        len += log_loglevel(info, NULL, buf + len, buflen - len);
+        len += cpystrn(buf + len, "] [pid ", buflen - len);
+
+        len += log_pid(info, NULL, buf + len, buflen - len);
+#if APR_HAS_THREADS
+        field_start = len;
+        len += cpystrn(buf + len, ":tid ", buflen - len);
+        item_len = log_tid(info, NULL, buf + len, buflen - len);
+        if (!item_len)
+            len = field_start;
+        else
+            len += item_len;
+#endif
+        buf[len++] = ']';
+        buf[len++] = ' ';
+    }
+
+    if (info->level >= APLOG_DEBUG) {
+        item_len = log_file_line(info, NULL, buf + len, buflen - len);
+        if (item_len) {
+            len += item_len;
+            len += cpystrn(buf + len, ": ", buflen - len);
+        }
+    }
+
+    if (info->status) {
+        item_len = log_apr_status(info, NULL, buf + len, buflen - len);
+        if (item_len) {
+            len += item_len;
+            len += cpystrn(buf + len, ": ", buflen - len);
+        }
+    }
+
+    if (info->c) {
+        /*
+         * remote_ip can be client or backend server. If we have a scoreboard
+         * handle, it is likely a client.
+         */
+        len += apr_snprintf(buf + len, buflen - len,
+                            info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+                            info->c->remote_ip, info->c->remote_addr->port);
+    }
+
+    /* the actual error message */
+    *errstr_start = len;
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+    if (apr_vsnprintf(scratch, MAX_STRING_LEN, errstr_fmt, args)) {
+        len += ap_escape_errorlog_item(buf + len, scratch,
+                                       buflen - len);
+
+    }
+#else
+    len += apr_vsnprintf(buf + len, buflen - len, errstr_fmt, args);
+#endif
+    *errstr_end = len;
+
+    field_start = len;
+    len += cpystrn(buf + len, ", referer: ", buflen - len);
+    item_len = log_header(info, "Referer", buf + len, buflen - len);
+    if (item_len)
+        len += item_len;
+    else
+        len = field_start;
+
+    return len;
+}
+
+static int do_errorlog_format(apr_array_header_t *fmt, ap_errorlog_info *info,
+                              char *buf, int buflen, int *errstr_start,
+                              int *errstr_end, const char *err_fmt, va_list args)
+{
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+    char scratch[MAX_STRING_LEN];
+#endif
+    int i;
+    int len = 0;
+    int field_start = 0;
+    int skipping = 0;
+    ap_errorlog_format_item *items = (ap_errorlog_format_item *)fmt->elts;
+
+    for (i = 0; i < fmt->nelts; ++i) {
+        ap_errorlog_format_item *item = &items[i];
+        if (item->flags & AP_ERRORLOG_FLAG_FIELD_SEP) {
+            if (skipping) {
+                skipping = 0;
+            }
+            else {
+                field_start = len;
+            }
+        }
+
+        if (item->flags & AP_ERRORLOG_FLAG_MESSAGE) {
+            /* the actual error message */
+            *errstr_start = len;
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+            if (apr_vsnprintf(scratch, MAX_STRING_LEN, err_fmt, args)) {
+                len += ap_escape_errorlog_item(buf + len, scratch,
+                                               buflen - len);
+
+            }
+#else
+            len += apr_vsnprintf(buf + len, buflen - len, err_fmt, args);
+#endif
+            *errstr_end = len;
+        }
+        else if (skipping) {
+            continue;
+        }
+        else {
+            int item_len = (*item->func)(info, item->arg, buf + len,
+                                         buflen - len);
+            if (!item_len) {
+                if (item->flags & AP_ERRORLOG_FLAG_REQUIRED) {
+                    /* required item is empty. skip whole line */
+                    buf[0] = '\0';
+                    return 0;
+                }
+                else if (item->flags & AP_ERRORLOG_FLAG_NULL_AS_HYPHEN) {
+                    buf[len++] = '-';
+                }
+                else {
+                    len = field_start;
+                    skipping = 1;
+                }
+            }
+            else {
+                len += item_len;
+            }
+        }
+    }
+    return len;
+}
+
+static void write_logline(char *errstr, apr_size_t len, apr_file_t *logf,
+                          int level)
+{
+    /* NULL if we are logging to syslog */
+    if (logf) {
+        /* Truncate for the terminator (as apr_snprintf does) */
+        if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
+            len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
+        }
+        strcpy(errstr + len, APR_EOL_STR);
+        apr_file_puts(errstr, logf);
+        apr_file_flush(logf);
+    }
+#ifdef HAVE_SYSLOG
+    else {
+        syslog(level < LOG_PRIMASK ? level : APLOG_DEBUG, "%s", errstr);
+    }
+#endif
+}
+
 static void log_error_core(const char *file, int line, int module_index,
                            int level,
                            apr_status_t status, const server_rec *s,
@@ -554,13 +1026,17 @@ static void log_error_core(const char *file, int line, int module_index,
                            const char *fmt, va_list args)
 {
     char errstr[MAX_STRING_LEN];
-#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
-    char scratch[MAX_STRING_LEN];
-#endif
-    apr_size_t len, errstrlen;
     apr_file_t *logf = NULL;
-    const char *referer;
     int level_and_mask = level & APLOG_LEVELMASK;
+    const request_rec *rmain = NULL;
+    core_server_config *sconf = NULL;
+    ap_errorlog_info info;
+
+    /* do we need to log once-per-req or once-per-conn info? */
+    int log_conn_info = 0, log_req_info = 0;
+    apr_array_header_t **lines = NULL;
+    int done = 0;
+    int line_number = 0;
 
     if (r && r->connection) {
         c = r->connection;
@@ -606,165 +1082,124 @@ static void log_error_core(const char *file, int line, int module_index,
                 return;
             }
         }
-    }
 
-    if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
-        int time_len;
+        sconf = ap_get_module_config(s->module_config, &core_module);
+        if (c && !c->log_id) {
+            add_log_id(c, NULL);
+            if (sconf->error_log_conn && sconf->error_log_conn->nelts > 0)
+                log_conn_info = 1;
+        }
+        if (r) {
+            if (r->main)
+                rmain = r->main;
+            else
+                rmain = r;
 
-        errstr[0] = '[';
-        len = 1;
-        time_len = MAX_STRING_LEN - len;
-        ap_recent_ctime_ex(errstr + len, apr_time_now(),
-                           AP_CTIME_OPTION_USEC, &time_len);
-        len += time_len -1;
-        errstr[len++] = ']';
-        errstr[len++] = ' ';
-    } else {
-        len = 0;
-    }
-
-    if ((level & APLOG_STARTUP) != APLOG_STARTUP) {
-        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            "[%s] ", priorities[level_and_mask].t_name);
-
-        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            "[pid %" APR_PID_T_FMT, getpid());
-#if APR_HAS_THREADS
-        {
-            int result;
-
-            if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == APR_SUCCESS
-                && result != AP_MPMQ_NOT_SUPPORTED) {
-                apr_os_thread_t tid = apr_os_thread_current();
-                len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                                    ":tid %pT", &tid);
+            if (!rmain->log_id) {
+                /* XXX: do we need separate log ids for subrequests? */
+                if (sconf->error_log_req && sconf->error_log_req->nelts > 0)
+                    log_req_info = 1;
+                /*
+                 * XXX: potential optimization: only create log id if %L is
+                 * XXX: actually used
+                 */
+                add_log_id(c, rmain);
             }
         }
-#endif
-        errstr[len++] = ']';
-        errstr[len++] = ' ';
     }
 
-    if (file && level_and_mask >= APLOG_DEBUG) {
-#if defined(_OSD_POSIX) || defined(WIN32) || defined(__MVS__)
-        char tmp[256];
-        char *e = strrchr(file, '/');
-#ifdef WIN32
-        if (!e) {
-            e = strrchr(file, '\\');
-        }
-#endif
+    info.s             = s;
+    info.c             = c;
+    info.file          = file;
+    info.line          = line;
+    info.status        = status;
+    info.using_syslog  = (logf == NULL);
+    info.startup       = ((level & APLOG_STARTUP) == APLOG_STARTUP);
 
-        /* In OSD/POSIX, the compiler returns for __FILE__
-         * a string like: __FILE__="*POSIX(/usr/include/stdio.h)"
-         * (it even returns an absolute path for sources in
-         * the current directory). Here we try to strip this
-         * down to the basename.
-         */
-        if (e != NULL && e[1] != '\0') {
-            apr_snprintf(tmp, sizeof(tmp), "%s", &e[1]);
-            e = &tmp[strlen(tmp)-1];
-            if (*e == ')') {
-                *e = '\0';
+
+    while (!done) {
+        apr_array_header_t *log_format;
+        int len = 0, errstr_start = 0, errstr_end = 0;
+        /* XXX: potential optimization: format common prefixes only once */
+        if (log_conn_info) {
+            /* once-per-connection info */
+            if (line_number == 0) {
+                lines = (apr_array_header_t **)sconf->error_log_conn->elts;
+                info.r = NULL;
+                info.rmain = NULL;
+                info.level = -1;
+                info.module_index = APLOG_NO_MODULE;
             }
-            file = tmp;
-        }
-#else /* _OSD_POSIX || WIN32 */
-        const char *p;
-        /* On Unix, __FILE__ may be an absolute path in a
-         * VPATH build. */
-        if (file[0] == '/' && (p = ap_strrchr_c(file, '/')) != NULL) {
-            file = p + 1;
-        }
-#endif /*_OSD_POSIX || WIN32 */
-        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            "%s(%d): ", file, line);
-    }
 
-    if (c) {
-        /* XXX: TODO: add a method of selecting whether logged remote
-         * addresses are in dotted quad or resolved form... dotted
-         * quad is the most secure, which is why I'm implementing it
-         * first. -djg
-         */
-        /*
-         * remote_ip can be client or backend server. If we have a scoreboard
-         * handle, it is likely a client.
-         */
-        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
-                            c->remote_ip, c->remote_addr->port);
-    }
-    if (status != 0) {
-        if (status < APR_OS_START_EAIERR) {
-            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                                "(%d)", status);
+            log_format = lines[line_number++];
+
+            if (line_number == sconf->error_log_conn->nelts) {
+                /* this is the last line of once-per-connection info */
+                line_number = 0;
+                log_conn_info = 0;
+            }
         }
-        else if (status < APR_OS_START_SYSERR) {
-            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                                "(EAI %d)", status - APR_OS_START_EAIERR);
-        }
-        else if (status < 100000 + APR_OS_START_SYSERR) {
-            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                                "(OS %d)", status - APR_OS_START_SYSERR);
+        else if (log_req_info) {
+            /* once-per-request info */
+            if (line_number == 0) {
+                lines = (apr_array_header_t **)sconf->error_log_req->elts;
+                info.r = rmain;
+                info.rmain = rmain;
+                info.level = -1;
+                info.module_index = APLOG_NO_MODULE;
+            }
+
+            log_format = lines[line_number++];
+
+            if (line_number == sconf->error_log_req->nelts) {
+                /* this is the last line of once-per-request info */
+                line_number = 0;
+                log_req_info = 0;
+            }
         }
         else {
-            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                                "(os 0x%08x)", status - APR_OS_START_SYSERR);
+            /* the actual error message */
+            info.r = r;
+            info.rmain = rmain;
+            info.level = level_and_mask;
+            info.module_index = module_index;
+            log_format = sconf ? sconf->error_log_format : NULL;
+            done = 1;
         }
-        apr_strerror(status, errstr + len, MAX_STRING_LEN - len);
-        len += strlen(errstr + len);
-        if (MAX_STRING_LEN - len > 2) {
-            errstr[len++] = ':';
-            errstr[len++] = ' ';
-            errstr[len] = '\0';
+
+        /*
+         * prepare and log one line
+         */
+
+        if (log_format) {
+            len += do_errorlog_format(log_format, &info, errstr + len,
+                                      MAX_STRING_LEN - len,
+                                      &errstr_start, &errstr_end, fmt, args);
         }
-    }
-
-    errstrlen = len;
-#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
-    if (apr_vsnprintf(scratch, MAX_STRING_LEN - len, fmt, args)) {
-        len += ap_escape_errorlog_item(errstr + len, scratch,
-                                       MAX_STRING_LEN - len);
-    }
-#else
-    len += apr_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
-#endif
-
-    if (   r && (referer = apr_table_get(r->headers_in, "Referer"))
-#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
-        && ap_escape_errorlog_item(scratch, referer, MAX_STRING_LEN - len)
-#endif
-        ) {
-        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            ", referer: %s",
-#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
-                            scratch
-#else
-                            referer
-#endif
-                            );
-    }
-
-    /* NULL if we are logging to syslog */
-    if (logf) {
-        /* Truncate for the terminator (as apr_snprintf does) */
-        if (len > MAX_STRING_LEN - sizeof(APR_EOL_STR)) {
-            len = MAX_STRING_LEN - sizeof(APR_EOL_STR);
+        else {
+            len += do_errorlog_default(&info, errstr + len, MAX_STRING_LEN - len,
+                                       &errstr_start, &errstr_end, fmt, args);
         }
-        strcpy(errstr + len, APR_EOL_STR);
-        apr_file_puts(errstr, logf);
-        apr_file_flush(logf);
-    }
-#ifdef HAVE_SYSLOG
-    else {
-        syslog(level_and_mask < LOG_PRIMASK ? level_and_mask : APLOG_DEBUG,
-               "%s", errstr);
-    }
-#endif
 
-    ap_run_error_log(file, line, module_index, level, status, s, r, pool,
-                     errstr + errstrlen);
+        if (!*errstr)
+        {
+            /*
+             * Don't log empty lines. This can happen with once-per-conn/req
+             * info if an item with AP_ERRORLOG_FLAG_REQUIRED is NULL.
+             */
+            continue;
+        }
+        write_logline(errstr, len, logf, level_and_mask);
+
+        if (!log_format) {
+            /* only pass the real error string to the hook */
+            errstr[errstr_end] = '\0';
+            ap_run_error_log(file, line, module_index, level, status, s, r, pool,
+                             errstr + errstr_start);
+        }
+
+        *errstr = '\0';
+    }
 }
 
 AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
