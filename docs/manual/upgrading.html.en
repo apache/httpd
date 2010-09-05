@@ -169,6 +169,9 @@
         settings to replace it in 2.4.
         </li>
 
+        <li><code class="directive"><a href="./mod/core.html#enablesendfile">EnableSendfile</a></code> now
+        defaults to Off.</li>
+
         <li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>: <a href="modules/mod_log_config.html#formats">${cookie}C</a>
         matches whole cookie names.  Previously any substring would
         match.</li>
@@ -242,6 +245,8 @@
  - load module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code>, or update configuration to 2.4 authorization directives.</li>
       <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
       and replace with other configuration settings.</li>
+      <li><code>mixing * ports and non-* ports with a NameVirtualHost address is not supported</code>, <code>Either NameVirtualHost w.x.y.z:n has no VirtualHosts, or there is more than one identical NameVirtualHost line, or your VirtualHost declarations do not match the NameVirtualHost line</code> - these are not new messages, but they now cause startup to fail</li>
+      <li><code>_default_ is not allowed in NameVirtualHost directive</code> - self-explanatory; was never valid, but now causes startup to fail.</li>
     </ul></li>
     <li>Errors serving requests:
     <ul>
