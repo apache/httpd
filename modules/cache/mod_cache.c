@@ -597,7 +597,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     char *reason;
     apr_pool_t *p;
     apr_bucket *e;
-    void *data;
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
