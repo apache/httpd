@@ -220,6 +220,7 @@
 <li><a href="core.html#enablesendfile">EnableSendfile</a></li>
 <li><a href="core.html#errordocument">ErrorDocument</a></li>
 <li><a href="core.html#errorlog">ErrorLog</a></li>
+<li><a href="core.html#errorlogformat">ErrorLogFormat</a></li>
 <li><a href="mod_example.html#example">Example</a></li>
 <li><a href="mod_expires.html#expiresactive">ExpiresActive</a></li>
 <li><a href="mod_expires.html#expiresbytype">ExpiresByType</a></li>

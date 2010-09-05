@@ -88,7 +88,7 @@
 <h2><a name="errorlog" id="errorlog">Error Log</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p>The server error log, whose name and location is set by the
     <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> directive, is the
