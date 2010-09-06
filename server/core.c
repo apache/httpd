@@ -3272,6 +3272,10 @@ static apr_array_header_t *parse_errorlog_string(apr_pool_t *p,
             }
             seen_msg_fmt = 1;
         }
+        if (want_msg_fmt && item->flags & AP_ERRORLOG_FLAG_REQUIRED) {
+            *err = "The '+' flag cannot be used in the main error log format";
+            return NULL;
+        }
     }
 
     if (want_msg_fmt && !seen_msg_fmt) {
@@ -3299,7 +3303,7 @@ static const char *set_errorlog_format(cmd_parms *cmd, void *dummy,
                                                   sizeof(apr_array_header_t *));
         }
 
-        if (arg2 && *arg2) {
+        if (*arg2) {
             apr_array_header_t **e;
             e = (apr_array_header_t **) apr_array_push(conf->error_log_conn);
             *e = parse_errorlog_string(cmd->pool, arg2, &err_string, 0);
@@ -3311,7 +3315,7 @@ static const char *set_errorlog_format(cmd_parms *cmd, void *dummy,
                                                  sizeof(apr_array_header_t *));
         }
 
-        if (arg2 && *arg2) {
+        if (*arg2) {
             apr_array_header_t **e;
             e = (apr_array_header_t **) apr_array_push(conf->error_log_req);
             *e = parse_errorlog_string(cmd->pool, arg2, &err_string, 0);
