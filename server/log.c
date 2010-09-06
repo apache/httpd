@@ -712,25 +712,24 @@ static int log_apr_status(const ap_errorlog_info *info, const char *arg,
                           char *buf, int buflen)
 {
     apr_status_t status = info->status;
-    int len = 0;
+    int len;
     if (!status)
         return 0;
 
     if (status < APR_OS_START_EAIERR) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            "(%d)", status);
+        len = apr_snprintf(buf, buflen, "(%d)", status);
     }
     else if (status < APR_OS_START_SYSERR) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            "(EAI %d)", status - APR_OS_START_EAIERR);
+        len = apr_snprintf(buf, buflen, "(EAI %d)",
+                           status - APR_OS_START_EAIERR);
     }
     else if (status < 100000 + APR_OS_START_SYSERR) {
-        len += apr_snprintf(buf + len, buflen - len,
-                            "(OS %d)", status - APR_OS_START_SYSERR);
+        len = apr_snprintf(buf, buflen, "(OS %d)",
+                           status - APR_OS_START_SYSERR);
     }
     else {
-        len += apr_snprintf(buf + len, buflen - len,
-                            "(os 0x%08x)", status - APR_OS_START_SYSERR);
+        len = apr_snprintf(buf, buflen, "(os 0x%08x)",
+                           status - APR_OS_START_SYSERR);
     }
     apr_strerror(status, buf + len, buflen - len);
     len += strlen(buf + len);
@@ -813,7 +812,7 @@ static void add_log_id(const conn_rec *c, const request_rec *r)
         id ^= tmp;
     }
 #if APR_HAS_THREADS
-    if (c) {
+    {
         apr_uintptr_t tmp2 = (apr_uintptr_t)c->current_thread;
         tmp = tmp2;
         tmp = tmp << 32;
@@ -821,14 +820,15 @@ static void add_log_id(const conn_rec *c, const request_rec *r)
     }
 #endif
 
-    /*
-     * The apr-util docs wrongly states encoded strings are not 0-terminated.
-     * Let's be save and allocate an additional byte.
-     */
-    len = 1 + apr_base64_encode_len(sizeof(id));
+    len = apr_base64_encode_len(sizeof(id));
     encoded = apr_palloc(r ? r->pool : c->pool, len);
     apr_base64_encode(encoded, (char *)&id, sizeof(id));
-    encoded[11] = '\0'; /* omit last char which is always '=' */
+
+    /*
+     * Only the first 11 chars are significant, the last (12th) char is
+     * always '='.
+     */
+    encoded[11] = '\0'; 
 
     /* need to cast const away */
     if (r) {
