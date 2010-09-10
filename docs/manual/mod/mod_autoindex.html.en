@@ -722,7 +722,9 @@ indexing</td></tr>
       causing the module to start the display with the header file
       contents. The header file must contain appropriate HTML instructions
       in this case. If there is no header file, the preamble is generated
-      as usual.</dd>
+      as usual. The closing &lt;/body&gt;&lt;/html&gt; tags are also
+      ommitted from the output, under the assumption that you'll likely
+      also want to use <code class="directive"><a href="#readmefile">ReadmeFile</a></code>.</dd>
 
       <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a> (<em>Apache HTTP Server
       2.0.23 and later</em>)</dt>
