@@ -820,15 +820,12 @@ static void add_log_id(const conn_rec *c, const request_rec *r)
     }
 #endif
 
-    len = apr_base64_encode_len(sizeof(id));
+    len = apr_base64_encode_len(sizeof(id)); /* includes trailing \0 */
     encoded = apr_palloc(r ? r->pool : c->pool, len);
     apr_base64_encode(encoded, (char *)&id, sizeof(id));
 
-    /*
-     * Only the first 11 chars are significant, the last (12th) char is
-     * always '='.
-     */
-    encoded[11] = '\0'; 
+    /* Skip the last char, it is always '=' */
+    encoded[len - 2] = '\0'; 
 
     /* need to cast const away */
     if (r) {
