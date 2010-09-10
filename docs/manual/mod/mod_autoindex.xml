@@ -740,10 +740,11 @@ indexing</description>
       causing the module to start the display with the header file
       contents. The header file must contain appropriate HTML instructions
       in this case. If there is no header file, the preamble is generated
-      as usual. The closing &lt;/body&gt;&lt;/html&gt; tags are also
+      as usual. If you also specify a <directive
+      module="mod_autoindex">ReadmeName</directive>, and if that file
+      exists, The closing &lt;/body&gt;&lt;/html&gt; tags are also
       ommitted from the output, under the assumption that you'll likely
-      also want to use <directive
-      module="mod_autoindex">ReadmeFile</directive>.</dd>
+      put those closing tags in that file.</dd>
 
       <dt><a name="indexoptions.suppressicon"
                id="indexoptions.suppressicon">SuppressIcon</a> (<em>Apache HTTP Server
