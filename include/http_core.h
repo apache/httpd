@@ -694,6 +694,10 @@ typedef struct ap_errorlog_info {
 
 /**
  * callback function prototype for a external errorlog handler
+ * @note To avoid unbounded memory usage, these functions must not allocate
+ * memory from the server, connection, or request pools. If an errorlog
+ * handler absolutely needs a pool to pass to other functions, it must create
+ * and destroy a sub-pool.
  */
 typedef int ap_errorlog_handler_fn_t(const ap_errorlog_info *info,
                                      const char *arg, char *buf, int buflen);
