@@ -56,7 +56,8 @@ module AP_MODULE_DECLARE_DATA disk_cache_module;
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
 static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *in,
+                               apr_bucket_brigade *out);
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r);
 static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
@@ -1008,13 +1009,15 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 }
 
 static apr_status_t store_body(cache_handle_t *h, request_rec *r,
-                               apr_bucket_brigade *bb)
+                               apr_bucket_brigade *in, apr_bucket_brigade *out)
 {
     apr_bucket *e;
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
+    disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &disk_cache_module);
+    int seen_eos = 0;
 
     /* We write to a temp file and then atomically rename the file over
      * in file_cache_el_final().
@@ -1028,22 +1031,65 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         }
         dobj->file_size = 0;
     }
+    if (!dobj->bb) {
+        dobj->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    }
+    if (!dobj->offset) {
+        dobj->offset = dconf->readsize;
+    }
+    if (!dobj->timeout && dconf->readtime) {
+        dobj->timeout = apr_time_now() + dconf->readtime;
+    }
 
-    for (e = APR_BRIGADE_FIRST(bb);
-         e != APR_BRIGADE_SENTINEL(bb);
-         e = APR_BUCKET_NEXT(e))
-    {
+    if (dobj->offset) {
+        apr_brigade_partition(in, dobj->offset, &e);
+    }
+
+    while (APR_SUCCESS == rv && !APR_BRIGADE_EMPTY(in)) {
         const char *str;
         apr_size_t length, written;
+
+        e = APR_BRIGADE_FIRST(in);
+
+        /* have we seen eos yet? */
+        if (APR_BUCKET_IS_EOS(e)) {
+            seen_eos = 1;
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_CONCAT(out, dobj->bb);
+            APR_BRIGADE_INSERT_TAIL(out, e);
+            continue;
+        }
+
+        /* honour flush buckets, we'll get called again */
+        if (APR_BUCKET_IS_FLUSH(e)) {
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_CONCAT(out, dobj->bb);
+            APR_BRIGADE_INSERT_TAIL(out, e);
+            break;
+        }
+
+        /* metadata buckets are preserved as is */
+        if (APR_BUCKET_IS_METADATA(e)) {
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(dobj->bb, e);
+            continue;
+        }
+
+        /* read the bucket, write to the cache */
         rv = apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
+        APR_BUCKET_REMOVE(e);
+        APR_BRIGADE_INSERT_TAIL(dobj->bb, e);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                          "disk_cache: Error when reading bucket for URL %s",
                          h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
+            APR_BRIGADE_CONCAT(out, dobj->bb);
             return rv;
         }
+
+        /* write to the cache, leave if we fail */
         rv = apr_file_write_full(dobj->tfd, str, length, &written);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -1051,6 +1097,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                          h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
+            APR_BRIGADE_CONCAT(out, dobj->bb);
             return rv;
         }
         dobj->file_size += written;
@@ -1061,14 +1108,33 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                          h->cache_obj->key, dobj->file_size, conf->maxfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
+            APR_BRIGADE_CONCAT(out, dobj->bb);
             return APR_EGENERAL;
         }
+
+        /* have we reached the limit of how much we're prepared to write in one
+         * go? If so, leave, we'll get called again. This prevents us from trying
+         * to swallow too much data at once, or taking so long to write the data
+         * the client times out.
+         */
+        dobj->offset -= length;
+        if (dobj->offset <= 0) {
+            dobj->offset = 0;
+            APR_BRIGADE_CONCAT(out, dobj->bb);
+            break;
+        }
+        if ((dconf->readtime && apr_time_now() > dobj->timeout)) {
+            dobj->timeout = 0;
+            APR_BRIGADE_CONCAT(out, dobj->bb);
+            break;
+        }
+
     }
 
     /* Was this the final bucket? If yes, close the temp file and perform
      * sanity checks.
      */
-    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+    if (seen_eos) {
         const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
 
         if (r->connection->aborted || r->no_cache) {
@@ -1109,6 +1175,29 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     }
 
     return APR_SUCCESS;
+}
+
+static void *create_dir_config(apr_pool_t *p, char *dummy)
+{
+    disk_cache_dir_conf *dconf = apr_pcalloc(p, sizeof(disk_cache_dir_conf));
+
+    dconf->readsize = DEFAULT_READSIZE;
+    dconf->readtime = DEFAULT_READTIME;
+
+    return dconf;
+}
+
+static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
+    disk_cache_dir_conf *new = (disk_cache_dir_conf *) apr_pcalloc(p, sizeof(disk_cache_dir_conf));
+    disk_cache_dir_conf *add = (disk_cache_dir_conf *) addv;
+    disk_cache_dir_conf *base = (disk_cache_dir_conf *) basev;
+
+    new->readsize = (add->readsize_set == 0) ? base->readsize : add->readsize;
+    new->readsize_set = add->readsize_set || base->readsize_set;
+    new->readtime = (add->readtime_set == 0) ? base->readtime : add->readtime;
+    new->readtime_set = add->readtime_set || base->readtime_set;
+
+    return new;
 }
 
 static void *create_config(apr_pool_t *p, server_rec *s)
@@ -1203,6 +1292,36 @@ static const char
     return NULL;
 }
 
+static const char
+*set_cache_readsize(cmd_parms *parms, void *in_struct_ptr, const char *arg)
+{
+    disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
+
+    if (apr_strtoff(&dconf->readsize, arg, NULL, 0) != APR_SUCCESS ||
+            dconf->readsize < 0)
+    {
+        return "CacheReadSize argument must be a non-negative integer representing the max amount of data to cache in go.";
+    }
+    dconf->readsize_set = 1;
+    return NULL;
+}
+
+static const char
+*set_cache_readtime(cmd_parms *parms, void *in_struct_ptr, const char *arg)
+{
+    disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
+    apr_off_t milliseconds;
+
+    if (apr_strtoff(&milliseconds, arg, NULL, 0) != APR_SUCCESS ||
+            milliseconds < 0)
+    {
+        return "CacheReadTime argument must be a non-negative integer representing the max amount of time taken to cache in go.";
+    }
+    dconf->readtime = apr_time_from_msec(milliseconds);
+    dconf->readtime_set = 1;
+    return NULL;
+}
+
 static const command_rec disk_cache_cmds[] =
 {
     AP_INIT_TAKE1("CacheRoot", set_cache_root, NULL, RSRC_CONF,
@@ -1215,6 +1334,10 @@ static const command_rec disk_cache_cmds[] =
                   "The minimum file size to cache a document"),
     AP_INIT_TAKE1("CacheMaxFileSize", set_cache_maxfs, NULL, RSRC_CONF,
                   "The maximum file size to cache a document"),
+    AP_INIT_TAKE1("CacheReadSize", set_cache_readsize, NULL, RSRC_CONF,
+                  "The maximum quantity of data to attempt to read and cache in one go"),
+    AP_INIT_TAKE1("CacheReadTime", set_cache_readtime, NULL, RSRC_CONF,
+                  "The maximum time taken to attempt to read and cache in go"),
     {NULL}
 };
 
@@ -1239,8 +1362,8 @@ static void disk_cache_register_hook(apr_pool_t *p)
 
 AP_DECLARE_MODULE(disk_cache) = {
     STANDARD20_MODULE_STUFF,
-    NULL,                       /* create per-directory config structure */
-    NULL,                       /* merge per-directory config structures */
+    create_dir_config,          /* create per-directory config structure */
+    merge_dir_config,           /* merge per-directory config structures */
     create_config,              /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
     disk_cache_cmds,            /* command apr_table_t */

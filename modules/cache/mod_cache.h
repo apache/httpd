@@ -231,7 +231,8 @@ struct cache_handle {
 typedef struct {
     int (*remove_entity) (cache_handle_t *h);
     apr_status_t (*store_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
-    apr_status_t (*store_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+    apr_status_t (*store_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *in,
+                           apr_bucket_brigade *out);
     apr_status_t (*recall_headers) (cache_handle_t *h, request_rec *r);
     apr_status_t (*recall_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
     int (*create_entity) (cache_handle_t *h, request_rec *r,
@@ -271,6 +272,7 @@ typedef struct {
                                          * request
                                          */
     apr_off_t size;                     /* the content length from the headers, or -1 */
+    apr_bucket_brigade *out;            /* brigade to reuse for upstream responses */
 } cache_request_rec;
 
 

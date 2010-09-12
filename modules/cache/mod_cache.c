@@ -94,6 +94,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
     /* make space for the per request config */
     cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
     cache->size = -1;
+    cache->out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     /* store away the per request config where the API can find it */
     apr_pool_userdata_setn(cache, MOD_CACHE_REQUEST_REC, NULL, r->pool);
@@ -353,6 +354,7 @@ static int cache_handler(request_rec *r)
     /* make space for the per request config */
     cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
     cache->size = -1;
+    cache->out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     /* store away the per request config where the API can find it */
     apr_pool_userdata_setn(cache, MOD_CACHE_REQUEST_REC, NULL, r->pool);
@@ -564,6 +566,77 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 }
 
 /*
+ * Having jumped through all the hoops and decided to cache the
+ * response, call store_body() for each brigade, handling the
+ * case where the provider can't swallow the full brigade. In this
+ * case, we write the brigade we were passed out downstream, and
+ * loop around to try and cache some more until the in brigade is
+ * completely empty.
+ */
+static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
+        cache_server_conf *conf, cache_request_rec *cache)
+{
+    int rv = APR_SUCCESS;
+
+    /* pass the brigade in into the cache provider, which is then
+     * expected to move cached buckets to the out brigade, for us
+     * to pass up the filter stack. repeat until in is empty, or
+     * we fail.
+     */
+    while (APR_SUCCESS == rv && !APR_BRIGADE_EMPTY(in)) {
+
+        rv = cache->provider->store_body(cache->handle, f->r, in, cache->out);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, f->r->server,
+                         "cache: Cache provider's store_body failed!");
+            ap_remove_output_filter(f);
+
+            /* give someone else the chance to cache the file */
+            ap_cache_remove_lock(conf, f->r, cache->handle ?
+                    (char *)cache->handle->cache_obj->key : NULL, NULL);
+
+            /* give up trying to cache, just step out the way */
+            APR_BRIGADE_PREPEND(in, cache->out);
+            return ap_pass_brigade(f->next, in);
+
+        }
+
+        /* conditionally remove the lock as soon as we see the eos bucket */
+        ap_cache_remove_lock(conf, f->r, cache->handle ?
+                (char *)cache->handle->cache_obj->key : NULL, cache->out);
+
+        if (APR_BRIGADE_EMPTY(cache->out)) {
+            if (APR_BRIGADE_EMPTY(in)) {
+                /* cache provider wants more data before passing the brigade
+                 * upstream, oblige the provider by leaving to fetch more.
+                 */
+                break;
+            }
+            else {
+                /* oops, no data out, but not all data read in either, be
+                 * safe and stand down to prevent a spin.
+                 */
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, f->r->server,
+                        "cache: Cache provider's store_body returned an "
+                         "empty brigade, but didn't consume all of the"
+                         "input brigade, standing down to prevent a spin");
+                ap_remove_output_filter(f);
+
+                /* give someone else the chance to cache the file */
+                ap_cache_remove_lock(conf, f->r, cache->handle ?
+                        (char *)cache->handle->cache_obj->key : NULL, NULL);
+
+                return ap_pass_brigade(f->next, in);
+            }
+        }
+
+        rv = ap_pass_brigade(f->next, cache->out);
+    }
+
+    return rv;
+}
+
+/*
  * CACHE_SAVE filter
  * ---------------
  *
@@ -631,28 +704,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * cached file handle?
      */
     if (cache->in_checked) {
-        /* pass the brigades into the cache, then pass them
-         * up the filter stack
-         */
-        rv = cache->provider->store_body(cache->handle, r, in);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                         "cache: Cache provider's store_body failed!");
-            ap_remove_output_filter(f);
-
-            /* give someone else the chance to cache the file */
-            ap_cache_remove_lock(conf, r, cache->handle ?
-                    (char *)cache->handle->cache_obj->key : NULL, NULL);
-        }
-        else {
-
-            /* proactively remove the lock as soon as we see the eos bucket */
-            ap_cache_remove_lock(conf, r, cache->handle ?
-                    (char *)cache->handle->cache_obj->key : NULL, in);
-
-        }
-
-        return ap_pass_brigade(f->next, in);
+        return cache_save_store(f, in, conf, cache);
     }
 
     /*
@@ -1160,21 +1212,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
 
-    rv = cache->provider->store_body(cache->handle, r, in);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                     "cache: store_body failed");
-        ap_remove_output_filter(f);
-        ap_cache_remove_lock(conf, r, cache->handle ?
-                (char *)cache->handle->cache_obj->key : NULL, NULL);
-        return ap_pass_brigade(f->next, in);
-    }
-
-    /* proactively remove the lock as soon as we see the eos bucket */
-    ap_cache_remove_lock(conf, r, cache->handle ?
-            (char *)cache->handle->cache_obj->key : NULL, in);
-
-    return ap_pass_brigade(f->next, in);
+    return cache_save_store(f, in, conf, cache);
 }
 
 /*
