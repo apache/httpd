@@ -736,38 +736,57 @@ static int log_apr_status(const ap_errorlog_info *info, const char *arg,
     return len;
 }
 
+static int log_table_entry(const apr_table_t *table, const char *name,
+                           char *buf, int buflen)
+{
+#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
+    const char *value;
+    char scratch[MAX_STRING_LEN];
+
+    if ((value = apr_table_get(table, name)) != NULL) {
+        ap_escape_errorlog_item(scratch, value, MAX_STRING_LEN);
+        return cpystrn(buf, scratch, buflen);
+    }
+
+    return 0;
+#else
+    return cpystrn(buf, apr_table_get(table, name), buflen);
+#endif
+}
+
 static int log_header(const ap_errorlog_info *info, const char *arg,
                       char *buf, int buflen)
 {
-    const char *header;
-    int len = 0;
-#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
-    char scratch[MAX_STRING_LEN];
-#endif
+    if (info->r)
+        return log_table_entry(info->r->headers_in, arg, buf, buflen);
 
-    if ( info->r && (header = apr_table_get(info->r->headers_in, arg))
-#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
-         && ap_escape_errorlog_item(scratch, header, MAX_STRING_LEN)
-#endif
-       ) {
-        len = cpystrn(buf,
-#ifndef AP_UNSAFE_ERROR_LOG_UNESCAPED
-                           scratch,
-#else
-                           header,
-#endif
-                           buflen);
-    }
-    return len;
+    return 0;
 }
 
+static int log_note(const ap_errorlog_info *info, const char *arg,
+                      char *buf, int buflen)
+{
+    /* XXX: maybe escaping the entry is not necessary for notes? */
+    if (info->r)
+        return log_table_entry(info->r->notes, arg, buf, buflen);
 
+    return 0;
+}
 
+static int log_env_var(const ap_errorlog_info *info, const char *arg,
+                      char *buf, int buflen)
+{
+    if (info->r)
+        return log_table_entry(info->r->subprocess_env, arg, buf, buflen);
+
+    return 0;
+}
 
 AP_DECLARE(void) ap_register_builtin_errorlog_handlers(apr_pool_t *p)
 {
     ap_register_errorlog_handler(p, "a", log_remote_address, 0);
     ap_register_errorlog_handler(p, "A", log_local_address, 0);
+    ap_register_errorlog_handler(p, "e", log_env_var, 0);
     ap_register_errorlog_handler(p, "E", log_apr_status, 0);
     ap_register_errorlog_handler(p, "F", log_file_line, 0);
     ap_register_errorlog_handler(p, "i", log_header, 0);
@@ -775,11 +794,10 @@ AP_DECLARE(void) ap_register_builtin_errorlog_handlers(apr_pool_t *p)
     ap_register_errorlog_handler(p, "l", log_loglevel, 0);
     ap_register_errorlog_handler(p, "L", log_log_id, 0);
     ap_register_errorlog_handler(p, "m", log_module_name, 0);
+    ap_register_errorlog_handler(p, "n", log_note, 0);
     ap_register_errorlog_handler(p, "P", log_pid, 0);
     ap_register_errorlog_handler(p, "t", log_ctime, 0);
     ap_register_errorlog_handler(p, "T", log_tid, 0);
-
-    /* XXX: TODO: envvars, notes */
 }
 
 static void add_log_id(const conn_rec *c, const request_rec *r)
