@@ -561,6 +561,12 @@ type</td></tr>
     <var>extension</var> argument will be compared against each of
     them.</p>
 
+    <p>This directive primarily configures the content types generated for
+    static files served out of the filesystem.  For resources other than 
+    static files, where the generator of the response typically specifies 
+    a Content-Type, this directive has no effect.</p>
+
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li>
