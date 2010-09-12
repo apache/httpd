@@ -1145,26 +1145,30 @@ in case of an error</td></tr>
         <td>Remote IP-address and port</td></tr>
 <tr><td><code>%...A</code></td>
         <td>Local IP-address and port</td></tr>
-<tr class="odd"><td><code>%...E</code></td>
+<tr class="odd"><td><code>%...{name}e</code></td>
+        <td>Request environment variable <code>name</code></td></tr>
+<tr><td><code>%...E</code></td>
         <td>APR/OS error status code and string</td></tr>
-<tr><td><code>%...F</code></td>
+<tr class="odd"><td><code>%...F</code></td>
         <td>Source file name and line number of the log call</td></tr>
-<tr class="odd"><td><code>%...{name}i</code></td>
+<tr><td><code>%...{name}i</code></td>
         <td>Request header <code>name</code></td></tr>
-<tr><td><code>%...k</code></td>
+<tr class="odd"><td><code>%...k</code></td>
         <td>Number of keep-alive requests on this connection</td></tr>
-<tr class="odd"><td><code>%...l</code></td>
+<tr><td><code>%...l</code></td>
         <td>Loglevel of the message</td></tr>
-<tr><td><code>%...L</code></td>
+<tr class="odd"><td><code>%...L</code></td>
         <td>Log ID of the request</td></tr>
-<tr class="odd"><td><code>%...{c}L</code></td>
+<tr><td><code>%...{c}L</code></td>
         <td>Log ID of the connection</td></tr>
-<tr><td><code>%...{C}L</code></td>
+<tr class="odd"><td><code>%...{C}L</code></td>
         <td>Log ID of the connection if used in connection scope, empty otherwise</td></tr>
-<tr class="odd"><td><code>%...m</code></td>
+<tr><td><code>%...m</code></td>
         <td>Name of the module logging the message</td></tr>
-<tr><td><code>%M</code></td>
+<tr class="odd"><td><code>%M</code></td>
         <td>The actual log message</td></tr>
+<tr><td><code>%...{name}n</code></td>
+        <td>Request note <code>name</code></td></tr>
 <tr class="odd"><td><code>%...P</code></td>
         <td>Process ID of current process</td></tr>
 <tr><td><code>%...T</code></td>

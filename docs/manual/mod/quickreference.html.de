@@ -287,6 +287,10 @@ cache</td></tr>
 <tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Allows content-negotiated documents to be 
 cached by proxy servers</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachequickhandler">CacheQuickHandler <var>on|off</var></a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachereadsize">CacheReadSize <var>bytes</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
+  before sending the data downstream</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cachereadtime">CacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
+  before data is sent downstream</td></tr>
 <tr><td><a href="mod_disk_cache.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The directory root under which cache files are
 stored</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache requests or responses that have been marked as no-store.</td></tr>

@@ -63,6 +63,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedirlevels">CacheDirLevels</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxfilesize">CacheMaxFileSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheminfilesize">CacheMinFileSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachereadsize">CacheReadSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachereadtime">CacheReadTime</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li>
 </ul>
 </div>
@@ -157,6 +159,64 @@ cache</td></tr>
 
     <div class="example"><p><code>
       CacheMinFileSize 64
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a> <a name="cachereadsize" id="cachereadsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum size (in bytes) of the document to read and be cached
+  before sending the data downstream</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheReadSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheReadSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>The <code class="directive">CacheReadSize</code> directive sets the
+    minimum amount of data, in bytes, to be read from the backend before the
+    data is sent to the client. The default of zero causes all data read of
+    any size to be passed downstream to the client immediately as it arrives.
+    Setting this to a higher value causes the disk cache to buffer at least
+    this amount before sending the result to the client. This can improve
+    performance when caching content from a reverse proxy.</p>
+
+    <p>This directive only takes effect when the data is being saved to the
+    cache, as opposed to data being served from the cache.</p>
+  
+    <div class="example"><p><code>
+      CacheReadSize 102400
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a> <a name="cachereadtime" id="cachereadtime">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum time (in milliseconds) that should elapse while reading
+  before data is sent downstream</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheReadTime <var>milliseconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheReadTime 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>The <code class="directive">CacheReadTime</code> directive sets the minimum amount
+    of elapsed time that should pass before making an attempt to send data
+    downstream to the client. During the time period, data will be buffered
+    before sending the result to the client. This can improve performance when
+    caching content from a reverse proxy.</p>
+
+    <p>The default of zero disables this option.</p>
+
+    <p>This directive only takes effect when the data is being saved to the
+    cache, as opposed to data being served from the cache. It is recommended
+    that this option be used alongside the
+    <code class="directive"><a href="#cachereadsize">CacheReadSize</a></code> directive to
+    ensure that the server does not buffer excessively should data arrive faster
+    than expected.</p>
+
+    <div class="example"><p><code>
+      CacheReadTime 1000
     </code></p></div>
 
 </div>

@@ -349,7 +349,7 @@ headers</td></tr>
     <code class="directive">Header</code> directives are processed just
     before the response is sent to the network. These means that it is
     possible to set and/or override most headers, except for those headers
-    added by the header filter.</p>
+    added by the HTTP header filter, such as Content-Type.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
