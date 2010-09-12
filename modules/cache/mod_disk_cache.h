@@ -70,6 +70,9 @@ typedef struct disk_cache_object {
     apr_file_t *tfd;         /* temporary file for data */
     apr_off_t file_size;     /*  File size of the cached data file  */
     disk_cache_info_t disk_info; /* Header information. */
+    apr_bucket_brigade *bb;      /* Set aside brigade */
+    apr_off_t offset;            /* Max size to set aside */
+    apr_time_t timeout;          /* Max time to set aside */
 } disk_cache_object_t;
 
 
@@ -82,6 +85,8 @@ typedef struct disk_cache_object {
 #define DEFAULT_DIRLENGTH 2
 #define DEFAULT_MIN_FILE_SIZE 1
 #define DEFAULT_MAX_FILE_SIZE 1000000
+#define DEFAULT_READSIZE 0
+#define DEFAULT_READTIME 0
 
 typedef struct {
     const char* cache_root;
@@ -91,5 +96,12 @@ typedef struct {
     apr_off_t minfs;             /* minimum file size for cached files */
     apr_off_t maxfs;             /* maximum file size for cached files */
 } disk_cache_conf;
+
+typedef struct {
+    apr_off_t readsize;          /* maximum data to attempt to cache in one go */
+    apr_time_t readtime;         /* maximum time taken to cache in one go */
+    int readsize_set;
+    int readtime_set;
+} disk_cache_dir_conf;
 
 #endif /*MOD_DISK_CACHE_H*/

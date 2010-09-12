@@ -175,4 +175,68 @@ cache</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CacheReadSize</name>
+<description>The minimum size (in bytes) of the document to read and be cached
+  before sending the data downstream</description>
+<syntax>CacheReadSize <var>bytes</var></syntax>
+<default>CacheReadSize 0</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+    
+<usage>
+    <p>The <directive>CacheReadSize</directive> directive sets the
+    minimum amount of data, in bytes, to be read from the backend before the
+    data is sent to the client. The default of zero causes all data read of
+    any size to be passed downstream to the client immediately as it arrives.
+    Setting this to a higher value causes the disk cache to buffer at least
+    this amount before sending the result to the client. This can improve
+    performance when caching content from a reverse proxy.</p>
+
+    <p>This directive only takes effect when the data is being saved to the
+    cache, as opposed to data being served from the cache.</p>
+  
+    <example>
+      CacheReadSize 102400
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheReadTime</name>
+<description>The minimum time (in milliseconds) that should elapse while reading
+  before data is sent downstream</description>
+<syntax>CacheReadTime <var>milliseconds</var></syntax>
+<default>CacheReadTime 0</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheReadTime</directive> directive sets the minimum amount
+    of elapsed time that should pass before making an attempt to send data
+    downstream to the client. During the time period, data will be buffered
+    before sending the result to the client. This can improve performance when
+    caching content from a reverse proxy.</p>
+
+    <p>The default of zero disables this option.</p>
+
+    <p>This directive only takes effect when the data is being saved to the
+    cache, as opposed to data being served from the cache. It is recommended
+    that this option be used alongside the
+    <directive module="mod_disk_cache">CacheReadSize</directive> directive to
+    ensure that the server does not buffer excessively should data arrive faster
+    than expected.</p>
+
+    <example>
+      CacheReadTime 1000
+    </example>
+</usage>
+</directivesynopsis>
+  
 </modulesynopsis>
