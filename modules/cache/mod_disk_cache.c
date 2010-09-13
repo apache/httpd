@@ -1051,13 +1051,21 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
 
         e = APR_BRIGADE_FIRST(in);
 
+        /* are we done completely? if so, pass any trailing buckets right through */
+        if (dobj->done) {
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(out, e);
+            continue;
+        }
+
         /* have we seen eos yet? */
         if (APR_BUCKET_IS_EOS(e)) {
             seen_eos = 1;
+            dobj->done = 1;
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_CONCAT(out, dobj->bb);
             APR_BRIGADE_INSERT_TAIL(out, e);
-            continue;
+            break;
         }
 
         /* honour flush buckets, we'll get called again */
