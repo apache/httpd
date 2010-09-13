@@ -111,6 +111,14 @@ CURRENT RELEASE NOTES:
     get feedback and votes on list or in STATUS, then merge into 
     branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
 
+  * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=891282&view=rev
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?rev=896900&view=rev
+    Backport:
+      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-backport-r891282.patch
+    +1: rjung, pgollucci (+1 2.0.64 w/ this), wrowe
 
 RELEASE SHOWSTOPPERS:
 
@@ -125,6 +133,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~trawick/CVE-2009-1891-2.0-poirier.txt
     +1: pgollucci, poirier, rjung
       PG: whomever proposed this should vote for it
+
+  * mod_ssl: Implement SSLInsecureRenegotiation
+    Trunk version of patch:
+      http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=906057&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=906485&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=906491&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=908015&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=916733&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=916817&view=rev
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?rev=917044&view=rev
+    Backport:
+      http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
+    +1: rjung, pgollucci (+1 2.0.64 w/ this), wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -165,30 +188,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              if (nLogFD == NULL) {
                  /* Uh-oh. Failed to open the new log file. Try to clear
 
-  * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=891282&view=rev
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?rev=896900&view=rev
-    Backport:
-      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-backport-r891282.patch
-    +1: rjung, pgollucci (+1 2.0.64 w/ this)
-
-  * mod_ssl: Implement SSLInsecureRenegotiation
-    Trunk version of patch:
-      http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=906057&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=906485&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=906491&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=908015&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=916733&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=916817&view=rev
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?rev=917044&view=rev
-    Backport:
-      http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
-    +1: rjung, pgollucci (+1 2.0.64 w/ this)
-
   * gen_test_char.c: enable building gen_test_char for running on build machine
     when cross-compiling. The patch doesnt introduce code changes for any
     platform unless CROSS_COMPILE is defined. 
@@ -205,12 +204,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Use recent files from http://git.savannah.gnu.org/cgit/config.git.
     +1: rjung
 
+PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
+
   * CVE-2010-1452 fix for mod_dav
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966348
       (mod_cache and mod_session portions don't apply to 2.0.x)
     2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
-
-PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
+    wrowe observes: nothing belongs in STATUS without a champion/sponsor/at least 1 +1
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
