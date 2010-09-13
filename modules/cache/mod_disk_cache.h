@@ -73,6 +73,7 @@ typedef struct disk_cache_object {
     apr_bucket_brigade *bb;      /* Set aside brigade */
     apr_off_t offset;            /* Max size to set aside */
     apr_time_t timeout;          /* Max time to set aside */
+    int done;                    /* Is the attempt to cache complete? */
 } disk_cache_object_t;
 
 
