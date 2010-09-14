@@ -122,6 +122,10 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  * CVE-2010-1452 fix for mod_dav
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966348
+      (mod_cache and mod_session portions don't apply to 2.0.x)
+    2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -205,12 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: rjung
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
-
-  * CVE-2010-1452 fix for mod_dav
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966348
-      (mod_cache and mod_session portions don't apply to 2.0.x)
-    2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
-    wrowe observes: nothing belongs in STATUS without a champion/sponsor/at least 1 +1
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
