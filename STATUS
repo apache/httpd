@@ -111,21 +111,13 @@ CURRENT RELEASE NOTES:
     get feedback and votes on list or in STATUS, then merge into 
     branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
 
-  * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=891282&view=rev
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?rev=896900&view=rev
-    Backport:
-      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-backport-r891282.patch
-    +1: rjung, pgollucci (+1 2.0.64 w/ this), wrowe
-
 RELEASE SHOWSTOPPERS:
 
   * CVE-2010-1452 fix for mod_dav
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966348
       (mod_cache and mod_session portions don't apply to 2.0.x)
     2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
+    +1: wrowe
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -151,6 +143,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=917044&view=rev
     Backport:
       http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
+    +1: rjung, pgollucci (+1 2.0.64 w/ this), wrowe
+
+  * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=891282&view=rev
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?rev=896900&view=rev
+    Backport:
+      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-backport-r891282.patch
     +1: rjung, pgollucci (+1 2.0.64 w/ this), wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
