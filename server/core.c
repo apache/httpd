@@ -96,6 +96,9 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
 
+/* Default ap_document_root_check to default value: true */
+AP_DECLARE_DATA int ap_document_root_check = 1;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
