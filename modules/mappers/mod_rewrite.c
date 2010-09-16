@@ -273,6 +273,7 @@ typedef struct {
     ap_regex_t  *regexp;  /* the precompiled regexp        */
     int          flags;   /* Flags which control the match */
     pattern_type ptype;   /* pattern type                  */
+    int          pskip;   /* back-index to display pattern */
 } rewritecond_entry;
 
 /* single linked list for env vars and cookies */
@@ -3163,6 +3164,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     }
 
     /* arg2: the pattern */
+    newcond->pattern = a2;
     if (*a2 == '!') {
         newcond->flags |= CONDFLAG_NOTMATCH;
         ++a2;
@@ -3186,23 +3188,23 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         }
         else {
             switch (*a2) {
-            case '>': if (a2[1] == '=')
+            case '>': if (*++a2 == '=')
                           ++a2, newcond->ptype = CONDPAT_STR_GE;
                       else
-                          ++a2, newcond->ptype = CONDPAT_STR_GT;
+                          newcond->ptype = CONDPAT_STR_GT;
                       break;
-            case '<': newcond->ptype = CONDPAT_STR_LT;
-                      if (a2[1] == '=')
+
+            case '<': if (*++a2 == '=')
                           ++a2, newcond->ptype = CONDPAT_STR_LE;
                       else
-                          ++a2, newcond->ptype = CONDPAT_STR_LT;
+                          newcond->ptype = CONDPAT_STR_LT;
                       break;
+
             case '=': newcond->ptype = CONDPAT_STR_EQ;
-                /* "" represents an empty string */
-                if (*++a2 == '"' && a2[1] == '"' && !a2[2]) {
-                    a2 += 2;
-                }
-                break;
+                      /* "" represents an empty string */
+                      if (*++a2 == '"' && a2[1] == '"' && !a2[2])
+                          a2 += 2;
+                      break;
             }
         }
     }
@@ -3215,7 +3217,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         newcond->flags &= ~CONDFLAG_NOCASE;
     }
 
-    newcond->pattern = a2;
+    newcond->pskip = a2 - newcond->pattern;
+    newcond->pattern += newcond->pskip;
 
     if (!newcond->ptype) {
         regexp = ap_pregcomp(cmd->pool, a2,
@@ -3672,10 +3675,10 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
         basis = 1;
 test_str_g:
         if (p->flags & CONDFLAG_NOCASE) {
-            rc = (strcasecmp(input, p->pattern+1) >= basis) ? 1 : 0;
+            rc = (strcasecmp(input, p->pattern) >= basis) ? 1 : 0;
         }
         else {
-            rc = (compare_lexicography(input, p->pattern+1) >= basis) ? 1 : 0;
+            rc = (compare_lexicography(input, p->pattern) >= basis) ? 1 : 0;
         }
         break;
 
@@ -3686,10 +3689,10 @@ test_str_g:
         basis = -1;
 test_str_l:
         if (p->flags & CONDFLAG_NOCASE) {
-            rc = (strcasecmp(input, p->pattern+1) <= basis) ? 1 : 0;
+            rc = (strcasecmp(input, p->pattern) <= basis) ? 1 : 0;
         }
         else {
-            rc = (compare_lexicography(input, p->pattern+1) <= basis) ? 1 : 0;
+            rc = (compare_lexicography(input, p->pattern) <= basis) ? 1 : 0;
         }
         break;
 
@@ -3720,9 +3723,8 @@ test_str_l:
         rc = !rc;
     }
 
-    rewritelog((r, 4, ctx->perdir, "RewriteCond: input='%s' pattern='%s%s%s'%s "
-                "=> %s", input, (p->flags & CONDFLAG_NOTMATCH) ? "!" : "",
-                (p->ptype == CONDPAT_STR_EQ) ? "=" : "", p->pattern,
+    rewritelog((r, 4, ctx->perdir, "RewriteCond: input='%s' pattern='%s'%s "
+                "=> %s", input, p->pattern - p->pskip,
                 (p->flags & CONDFLAG_NOCASE) ? " [NC]" : "",
                 rc ? "matched" : "not-matched"));
 
