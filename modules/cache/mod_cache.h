@@ -240,6 +240,7 @@ typedef struct {
     int (*open_entity) (cache_handle_t *h, request_rec *r,
                            const char *urlkey);
     int (*remove_url) (cache_handle_t *h, apr_pool_t *p);
+    apr_status_t (*commit_entity)(cache_handle_t *h, request_rec *r);
 } cache_provider;
 
 /* A linked-list of authn providers. */

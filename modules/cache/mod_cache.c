@@ -571,12 +571,14 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  * case where the provider can't swallow the full brigade. In this
  * case, we write the brigade we were passed out downstream, and
  * loop around to try and cache some more until the in brigade is
- * completely empty.
+ * completely empty. As soon as the out brigade contains eos, call
+ * commit_entity() to finalise the cached element.
  */
 static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
         cache_server_conf *conf, cache_request_rec *cache)
 {
     int rv = APR_SUCCESS;
+    apr_bucket *e;
 
     /* pass the brigade in into the cache provider, which is then
      * expected to move cached buckets to the out brigade, for us
@@ -599,6 +601,17 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
             APR_BRIGADE_PREPEND(in, cache->out);
             return ap_pass_brigade(f->next, in);
 
+        }
+
+        /* does the out brigade contain eos? if so, we're done, commit! */
+        for (e = APR_BRIGADE_FIRST(cache->out);
+             e != APR_BRIGADE_SENTINEL(cache->out);
+             e = APR_BUCKET_NEXT(e))
+        {
+            if (APR_BUCKET_IS_EOS(e)) {
+                rv = cache->provider->commit_entity(cache->handle, f->r);
+                break;
+            }
         }
 
         /* conditionally remove the lock as soon as we see the eos bucket */
@@ -1153,6 +1166,13 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         apr_bucket_brigade *bb;
         apr_bucket *bkt;
         int status;
+
+        /* We're just saving response headers, so we are done. Commit
+         * the response at this point, unless there was a previous error.
+         */
+        if (rv == APR_SUCCESS) {
+            rv = cache->provider->commit_entity(cache->handle, r);
+        }
 
         bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
