@@ -251,12 +251,14 @@
  * 20100905.1 (2.3.9-dev)  Add ap_cache_check_allowed()
  * 20100912.0 (2.3.9-dev)  Add an additional "out" brigade parameter to the
  *                         mod_cache store_body() provider function.
+ * 20100916.0 (2.3.9-dev)  Add commit_entity() to the mod_cache provider
+ *                         interface.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100912
+#define MODULE_MAGIC_NUMBER_MAJOR 20100916
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

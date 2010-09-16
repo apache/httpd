@@ -51,24 +51,29 @@ typedef struct {
     apr_time_t response_time;
 } disk_cache_info_t;
 
+typedef struct {
+    apr_pool_t *pool;
+    const char *file;
+    apr_file_t *fd;
+    char *tempfile;
+    apr_file_t *tempfd;
+} disk_cache_file_t;
+
 /*
  * disk_cache_object_t
  * Pointed to by cache_object_t::vobj
  */
 typedef struct disk_cache_object {
-    const char *root;        /* the location of the cache directory */
+    const char *root;            /* the location of the cache directory */
     apr_size_t root_len;
-    char *tempfile;    /* temp file tohold the content */
     const char *prefix;
-    const char *datafile;    /* name of file where the data will go */
-    const char *hdrsfile;    /* name of file where the hdrs will go */
-    const char *hashfile;    /* Computed hash key for this URI */
-    const char *name;   /* Requested URI without vary bits - suitable for mortals. */
-    const char *key;    /* On-disk prefix; URI with Vary bits (if present) */
-    apr_file_t *fd;          /* data file */
-    apr_file_t *hfd;         /* headers file */
-    apr_file_t *tfd;         /* temporary file for data */
-    apr_off_t file_size;     /*  File size of the cached data file  */
+    disk_cache_file_t data;      /* data file structure */
+    disk_cache_file_t hdrs;      /* headers file structure */
+    disk_cache_file_t vary;      /* vary file structure */
+    const char *hashfile;        /* Computed hash key for this URI */
+    const char *name;            /* Requested URI without vary bits - suitable for mortals. */
+    const char *key;             /* On-disk prefix; URI with Vary bits (if present) */
+    apr_off_t file_size;         /*  File size of the cached data file  */
     disk_cache_info_t disk_info; /* Header information. */
     apr_bucket_brigade *bb;      /* Set aside brigade */
     apr_off_t offset;            /* Max size to set aside */

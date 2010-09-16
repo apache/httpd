@@ -2,6 +2,20 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_cache: Add a discrete commit_entity() provider function within the
+     mod_cache provider interface which is called to indicate to the
+     provider that caching is complete, giving the provider the opportunity
+     to commit temporary files permanently to the cache in an atomic
+     fashion. Move all "rename" functionality of temporary files to permanent
+     files within mod_disk_cache from ad hoc locations in the code to the
+     commit_entity() function. Instead of reusing the same variables for
+     temporary file handling in mod_disk_cache, introduce separate discrete
+     structures for each of the three cache file types, the headers file,
+     vary file and data file, so that the atomic rename of all three file
+     types within commit_entity() becomes possible. Replace the inconsistent
+     use of error cleanups with a formal set of pool cleanups attached to
+     a subpool, which is destroyed on error. [Graham Leggett]
+
   *) mod_cache: Change the signature of the store_body() provider function
      within the mod_cache provider interface to support an "in" brigade
      and an "out" brigade instead of just a single input brigade. This
