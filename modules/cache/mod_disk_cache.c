@@ -157,7 +157,7 @@ static apr_status_t safe_file_rename(disk_cache_conf *conf,
 static apr_status_t file_cache_el_final(disk_cache_conf *conf, disk_cache_file_t *file,
                                         request_rec *r)
 {
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
 
     /* This assumes that the tempfiles are on the same file system
      * as the cache_root. If not, then we need a file copy/move
