@@ -264,7 +264,12 @@ typedef enum {
     CONDPAT_STR_LE,
     CONDPAT_STR_EQ,
     CONDPAT_STR_GT,
-    CONDPAT_STR_GE
+    CONDPAT_STR_GE,
+    CONDPAT_INT_LT,
+    CONDPAT_INT_LE,
+    CONDPAT_INT_EQ,
+    CONDPAT_INT_GT,
+    CONDPAT_INT_GE
 } pattern_type;
 
 typedef struct {
@@ -3178,12 +3183,32 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
             case 'f': newcond->ptype = CONDPAT_FILE_EXISTS; break;
             case 's': newcond->ptype = CONDPAT_FILE_SIZE;   break;
             case 'd': newcond->ptype = CONDPAT_FILE_DIR;    break;
-            case 'l': newcond->ptype = CONDPAT_FILE_LINK;   break;
             case 'x': newcond->ptype = CONDPAT_FILE_XBIT;   break;
             case 'h': newcond->ptype = CONDPAT_FILE_LINK;   break;
             case 'L': newcond->ptype = CONDPAT_FILE_LINK;   break;
             case 'U': newcond->ptype = CONDPAT_LU_URL;      break;
             case 'F': newcond->ptype = CONDPAT_LU_FILE;     break;
+            case 'l': if (a2[2] == 't')
+                          a2 += 3, newcond->ptype = CONDPAT_INT_LT;
+                      else if (a2[2] == 'e')
+                          a2 += 3, newcond->ptype = CONDPAT_INT_LE;
+                      else /* Historical; prefer -L or -h instead */
+                          newcond->ptype = CONDPAT_FILE_LINK;
+                      break;
+            case 'g': if (a2[2] == 't')
+                          a2 += 3, newcond->ptype = CONDPAT_INT_GT;
+                      else if (a2[2] == 'e')
+                          a2 += 3, newcond->ptype = CONDPAT_INT_GE;
+                      break;
+            case 'e': if (a2[2] == 'q')
+                          a2 += 3, newcond->ptype = CONDPAT_INT_EQ;
+                      break;
+            case 'n': if (a2[2] == 'e') {
+                          /* Inversion, ensure !-ne == -eq */
+                          a2 += 3, newcond->ptype = CONDPAT_INT_EQ;
+                          newcond->flags ^= CONDFLAG_NOTMATCH;
+                      }
+                      break;
             }
         }
         else {
@@ -3705,6 +3730,14 @@ test_str_l:
             rc = !strcmp(input, p->pattern);
         }
         break;
+
+    case CONDPAT_INT_GE: rc = (atoi(input) >= atoi(p->pattern)); break;
+    case CONDPAT_INT_GT: rc = (atoi(input) > atoi(p->pattern));  break;
+
+    case CONDPAT_INT_LE: rc = (atoi(input) <= atoi(p->pattern)); break;
+    case CONDPAT_INT_LT: rc = (atoi(input) < atoi(p->pattern));  break;
+
+    case CONDPAT_INT_EQ: rc = (atoi(input) == atoi(p->pattern)); break;
 
     default:
         /* it is really a regexp pattern, so apply it */
