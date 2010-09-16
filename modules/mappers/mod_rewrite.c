@@ -260,9 +260,11 @@ typedef enum {
     CONDPAT_FILE_XBIT,
     CONDPAT_LU_URL,
     CONDPAT_LU_FILE,
-    CONDPAT_STR_GT,
     CONDPAT_STR_LT,
-    CONDPAT_STR_EQ
+    CONDPAT_STR_LE,
+    CONDPAT_STR_EQ,
+    CONDPAT_STR_GT,
+    CONDPAT_STR_GE
 } pattern_type;
 
 typedef struct {
@@ -3173,17 +3175,28 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
             switch (a2[1]) {
             case 'f': newcond->ptype = CONDPAT_FILE_EXISTS; break;
             case 's': newcond->ptype = CONDPAT_FILE_SIZE;   break;
-            case 'l': newcond->ptype = CONDPAT_FILE_LINK;   break;
             case 'd': newcond->ptype = CONDPAT_FILE_DIR;    break;
+            case 'l': newcond->ptype = CONDPAT_FILE_LINK;   break;
             case 'x': newcond->ptype = CONDPAT_FILE_XBIT;   break;
+            case 'h': newcond->ptype = CONDPAT_FILE_LINK;   break;
+            case 'L': newcond->ptype = CONDPAT_FILE_LINK;   break;
             case 'U': newcond->ptype = CONDPAT_LU_URL;      break;
             case 'F': newcond->ptype = CONDPAT_LU_FILE;     break;
             }
         }
         else {
             switch (*a2) {
-            case '>': newcond->ptype = CONDPAT_STR_GT; break;
-            case '<': newcond->ptype = CONDPAT_STR_LT; break;
+            case '>': if (a2[1] == '=')
+                          ++a2, newcond->ptype = CONDPAT_STR_GE;
+                      else
+                          ++a2, newcond->ptype = CONDPAT_STR_GT;
+                      break;
+            case '<': newcond->ptype = CONDPAT_STR_LT;
+                      if (a2[1] == '=')
+                          ++a2, newcond->ptype = CONDPAT_STR_LE;
+                      else
+                          ++a2, newcond->ptype = CONDPAT_STR_LT;
+                      break;
             case '=': newcond->ptype = CONDPAT_STR_EQ;
                 /* "" represents an empty string */
                 if (*++a2 == '"' && a2[1] == '"' && !a2[2]) {
@@ -3194,7 +3207,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         }
     }
 
-    if (newcond->ptype && newcond->ptype != CONDPAT_STR_EQ &&
+    if ((newcond->ptype < CONDPAT_STR_LT || newcond->ptype > CONDPAT_STR_GE) &&
         (newcond->flags & CONDFLAG_NOCASE)) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                      "RewriteCond: NoCase option for non-regex pattern '%s' "
@@ -3583,6 +3596,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
     request_rec *rsub, *r = ctx->r;
     ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
     int rc = 0;
+    int basis;
 
     switch (p->ptype) {
     case CONDPAT_FILE_EXISTS:
@@ -3651,15 +3665,36 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
         }
         break;
 
+    case CONDPAT_STR_GE:
+        basis = 0;
+        goto test_str_g;
     case CONDPAT_STR_GT:
-        rc = (compare_lexicography(input, p->pattern+1) == 1) ? 1 : 0;
+        basis = 1;
+test_str_g:
+        if (p->flags & CONDFLAG_NOCASE) {
+            rc = (strcasecmp(input, p->pattern+1) >= basis) ? 1 : 0;
+        }
+        else {
+            rc = (compare_lexicography(input, p->pattern+1) >= basis) ? 1 : 0;
+        }
         break;
 
+    case CONDPAT_STR_LE:
+        basis = 0;
+        goto test_str_l;
     case CONDPAT_STR_LT:
-        rc = (compare_lexicography(input, p->pattern+1) == -1) ? 1 : 0;
+        basis = -1;
+test_str_l:
+        if (p->flags & CONDFLAG_NOCASE) {
+            rc = (strcasecmp(input, p->pattern+1) <= basis) ? 1 : 0;
+        }
+        else {
+            rc = (compare_lexicography(input, p->pattern+1) <= basis) ? 1 : 0;
+        }
         break;
 
     case CONDPAT_STR_EQ:
+        /* Note: the only type where the operator is dropped from p->pattern */
         if (p->flags & CONDFLAG_NOCASE) {
             rc = !strcasecmp(input, p->pattern);
         }
