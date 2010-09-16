@@ -100,7 +100,8 @@ typedef struct {
  * Compile a regular expression.
  * @param preg Returned compiled regex
  * @param regex The regular expression string
- * @param cflags Must be zero (currently).
+ * @param cflags Bitwise OR of AP_REG_* flags (ICASE and NEWLINE supported,
+ *                                             other flags are ignored)
  * @return Zero on success or non-zero on error
  */
 AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *regex, int cflags);
@@ -111,8 +112,9 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *regex, int cflags);
  * @param string The string to match
  * @param nmatch Provide information regarding the location of any matches
  * @param pmatch Provide information regarding the location of any matches
- * @param eflags Bitwise OR of any of AP_REG_* flags 
- * @return 0 for successful match, #REG_NOMATCH otherwise
+ * @param eflags Bitwise OR of AP_REG_* flags (NOTBOL and NOTEOL supported,
+ *                                             other flags are ignored)
+ * @return 0 for successful match, AP_REG_NOMATCH otherwise
  */ 
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch, int eflags);
