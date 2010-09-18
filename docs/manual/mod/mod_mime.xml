@@ -529,9 +529,13 @@ type</description>
     type</glossary> to use for filenames containing
     <var>extension</var>. This mapping is added to any already in
     force, overriding any mappings that already exist for the same
-    <var>extension</var>. This directive can be used to add mappings
-    not listed in the media types file (see the <directive
-    module="mod_mime">TypesConfig</directive> directive).</p>
+    <var>extension</var>.</p>
+
+    <note>
+      It is recommended that new media types be added using the
+      <directive>AddType</directive> directive rather than changing the 
+      <directive module="mod_mime">TypesConfig</directive> file.
+    </note>
     
     <example><title>Example</title>
       AddType image/gif .gif
@@ -543,17 +547,24 @@ type</description>
       AddType image/jpeg jpeg jpg jpe
     </example>
 
-    <note>
-      It is recommended that new media types be added using the
-      <directive>AddType</directive> directive rather than changing the 
-      <directive module="mod_mime">TypesConfig</directive> file.
-    </note>
-
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot. Filenames may have <a
     href="#multipleext">multiple extensions</a> and the
     <var>extension</var> argument will be compared against each of
     them.</p>
+
+    <p>A simmilar effect to <module>mod_negotiation</module>'s
+    <directive module="mod_negotiation">LanguagePriority</directive>
+    can be achieved by qualifying a <var>media-type</var> with
+    <code>qs</code>:</p>
+
+    <example><title>Example</title>
+      Addtype application/rss+xml;qs=0.8 .xml
+    </example>
+
+    <p>This is useful in situations, <em>e.g.</em> when a client
+    requesting <code>Accept: */*</code> can not actually processes
+    the content returned by the server.</p>
 
     <p>This directive primarily configures the content types generated for
     static files served out of the filesystem.  For resources other than 
@@ -562,6 +573,7 @@ type</description>
 
 </usage>
 <seealso><directive module="core">ForceType</directive></seealso>
+<seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

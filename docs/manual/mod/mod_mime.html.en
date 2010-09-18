@@ -537,8 +537,13 @@ type</td></tr>
     type</a> to use for filenames containing
     <var>extension</var>. This mapping is added to any already in
     force, overriding any mappings that already exist for the same
-    <var>extension</var>. This directive can be used to add mappings
-    not listed in the media types file (see the <code class="directive"><a href="#typesconfig">TypesConfig</a></code> directive).</p>
+    <var>extension</var>.</p>
+
+    <div class="note">
+      It is recommended that new media types be added using the
+      <code class="directive">AddType</code> directive rather than changing the 
+      <code class="directive"><a href="#typesconfig">TypesConfig</a></code> file.
+    </div>
     
     <div class="example"><h3>Example</h3><p><code>
       AddType image/gif .gif
@@ -550,16 +555,23 @@ type</td></tr>
       AddType image/jpeg jpeg jpg jpe
     </code></p></div>
 
-    <div class="note">
-      It is recommended that new media types be added using the
-      <code class="directive">AddType</code> directive rather than changing the 
-      <code class="directive"><a href="#typesconfig">TypesConfig</a></code> file.
-    </div>
-
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
     <var>extension</var> argument will be compared against each of
     them.</p>
+
+    <p>A simmilar effect to <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>'s
+    <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
+    can be achieved by qualifying a <var>media-type</var> with
+    <code>qs</code>:</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      Addtype application/rss+xml;qs=0.8 .xml
+    </code></p></div>
+
+    <p>This is useful in situations, <em>e.g.</em> when a client
+    requesting <code>Accept: */*</code> can not actually processes
+    the content returned by the server.</p>
 
     <p>This directive primarily configures the content types generated for
     static files served out of the filesystem.  For resources other than 
@@ -570,6 +582,7 @@ type</td></tr>
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li>
+<li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
