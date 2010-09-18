@@ -32,7 +32,7 @@ OpenSolaris platforms</compatibility>
 
 <summary>
 <p>This module enables different Virtual Hosts to run with different
-Unix&trade; <var>User</var> and <var>Group</var> IDs, and with different
+Unix <var>User</var> and <var>Group</var> IDs, and with different
 <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp"
 >Solaris Privileges</a>.  In particular, it offers a solution to the
 problem of privilege separation between different Virtual Hosts, first
