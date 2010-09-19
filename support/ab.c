@@ -1735,11 +1735,7 @@ static void test(void)
             status = apr_pollset_poll(readbits, aprtimeout, &n, &pollresults);
         } while (APR_STATUS_IS_EINTR(status));
         if (status != APR_SUCCESS)
-            apr_err("apr_poll", status);
-
-        if (!n) {
-            err("\nServer timed out\n\n");
-        }
+            apr_err("apr_pollset_poll", status);
 
         for (i = 0; i < n; i++) {
             const apr_pollfd_t *next_fd = &(pollresults[i]);
