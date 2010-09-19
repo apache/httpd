@@ -1728,7 +1728,7 @@ static void test(void)
 
     do {
         apr_int32_t n;
-        const apr_pollfd_t *pollresults;
+        const apr_pollfd_t *pollresults, *pollfd;
 
         n = concurrency;
         do {
@@ -1737,11 +1737,10 @@ static void test(void)
         if (status != APR_SUCCESS)
             apr_err("apr_pollset_poll", status);
 
-        for (i = 0; i < n; i++) {
-            const apr_pollfd_t *next_fd = &(pollresults[i]);
+        for (i = 0, pollfd = pollresults; i < n; i++, pollfd++) {
             struct connection *c;
 
-            c = next_fd->client_data;
+            c = pollfd->client_data;
 
             /*
              * If the connection isn't connected how can we check it?
@@ -1749,7 +1748,7 @@ static void test(void)
             if (c->state == STATE_UNCONNECTED)
                 continue;
 
-            rtnev = next_fd->rtnevents;
+            rtnev = pollfd->rtnevents;
 
 #ifdef USE_SSL
             if (c->state == STATE_CONNECTED && c->ssl && SSL_in_init(c->ssl)) {
