@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_include: Move the request_rec within mod_include to be
+     exposed within include_ctx_t. [Graham Leggett]
+
   *) mod_include: Reinstate support for UTF-8 character sets by allowing a
      variable being echoed or set to be decoded and then encoded as separate
      steps. PR47686 [Graham Leggett]

@@ -133,7 +133,6 @@ struct ssi_internal_ctx {
 
     apr_bucket_brigade *tmp_bb;
 
-    request_rec  *r;
     const char   *start_seq;
     bndm_t       *start_seq_pat;
     const char   *end_seq;
@@ -600,7 +599,7 @@ static const char *add_include_vars_lazy(request_rec *r, const char *var, const 
 static const char *get_include_var(const char *var, include_ctx_t *ctx)
 {
     const char *val;
-    request_rec *r = ctx->intern->r;
+    request_rec *r = ctx->r;
 
     if (apr_isdigit(*var) && !var[1]) {
         apr_size_t idx = *var - '0';
@@ -655,7 +654,7 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
 static char *ap_ssi_parse_string(include_ctx_t *ctx, const char *in, char *out,
                                  apr_size_t length, int leave_name)
 {
-    request_rec *r = ctx->intern->r;
+    request_rec *r = ctx->r;
     result_item_t *result = NULL, *current = NULL;
     apr_size_t outlen = 0, inlen, span;
     char *ret = NULL, *eout = NULL;
@@ -2290,9 +2289,9 @@ static apr_size_t find_directive(include_ctx_t *ctx, const char *data,
 
         if (!intern->directive_len) {
             intern->error = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, intern->r, "missing "
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, "missing "
                           "directive name in parsed document %s",
-                          intern->r->filename);
+                          ctx->r->filename);
         }
         else {
             char *sp = intern->directive;
@@ -2426,11 +2425,11 @@ static apr_size_t find_argument(include_ctx_t *ctx, const char *data,
             intern->current_arg->name_len = 0;
             intern->error = 1;
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, intern->r, "missing "
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, "missing "
                           "argument name for value to tag %s in %s",
-                          apr_pstrmemdup(intern->r->pool, intern->directive,
+                          apr_pstrmemdup(ctx->r->pool, intern->directive,
                                          intern->directive_len),
-                                         intern->r->filename);
+                                         ctx->r->filename);
 
             return (p - data);
 
@@ -2458,11 +2457,11 @@ static apr_size_t find_argument(include_ctx_t *ctx, const char *data,
                                                  intern->current_arg->name_len);
         if (!intern->current_arg->name_len) {
             intern->error = 1;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, intern->r, "missing "
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r, "missing "
                           "argument name for value to tag %s in %s",
-                          apr_pstrmemdup(intern->r->pool, intern->directive,
+                          apr_pstrmemdup(ctx->r->pool, intern->directive,
                                          intern->directive_len),
-                                         intern->r->filename);
+                                         ctx->r->filename);
         }
         else {
             char *sp = intern->current_arg->name;
@@ -2632,7 +2631,6 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
     /* initialization for this loop */
     intern->bytes_read = 0;
     intern->error = 0;
-    intern->r = r;
     ctx->flush_now = 0;
 
     /* loop over the current bucket brigade */
@@ -3070,6 +3068,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         /* create context for this filter */
         f->ctx = ctx = apr_palloc(r->pool, sizeof(*ctx));
+        ctx->r = r;
         ctx->intern = intern = apr_palloc(r->pool, sizeof(*ctx->intern));
         ctx->pool = r->pool;
         apr_pool_create(&ctx->dpool, ctx->pool);
