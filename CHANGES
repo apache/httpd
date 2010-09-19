@@ -13,15 +13,9 @@ Changes with Apache 2.3.9
      mod_cache provider interface which is called to indicate to the
      provider that caching is complete, giving the provider the opportunity
      to commit temporary files permanently to the cache in an atomic
-     fashion. Move all "rename" functionality of temporary files to permanent
-     files within mod_disk_cache from ad hoc locations in the code to the
-     commit_entity() function. Instead of reusing the same variables for
-     temporary file handling in mod_disk_cache, introduce separate discrete
-     structures for each of the three cache file types, the headers file,
-     vary file and data file, so that the atomic rename of all three file
-     types within commit_entity() becomes possible. Replace the inconsistent
-     use of error cleanups with a formal set of pool cleanups attached to
-     a subpool, which is destroyed on error. [Graham Leggett]
+     fashion. Replace the inconsistent use of error cleanups with a formal
+     set of pool cleanups attached to a subpool, which is destroyed on error.
+     [Graham Leggett]
 
   *) mod_cache: Change the signature of the store_body() provider function
      within the mod_cache provider interface to support an "in" brigade
@@ -29,11 +23,9 @@ Changes with Apache 2.3.9
      gives a cache provider the option to consume only part of the brigade
      passed to it, rather than the whole brigade as was required before.
      This fixes an out of memory and a request timeout condition that would
-     occur when the original document was a large file. Update the
-     mod_disk_cache provider implementation to take into account the new API.
-     Introduce CacheReadSize and CacheReadTime directives to mod_disk_cache
-     to control the amount of data to attempt to cache before sending the
-     data on to the client in the "out" brigade. [Graham Leggett]
+     occur when the original document was a large file. Introduce
+     CacheReadSize and CacheReadTime directives to mod_disk_cache to control
+     the amount of data to attempt to cache at a time. [Graham Leggett]
 
   *) core: Add ErrorLogFormat to allow configuring error log format, including
      additional information that is logged once per connection or request. Add
