@@ -1136,13 +1136,15 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
 }
 
 /*
- * <!--#echo [encoding="..."] var="..." [encoding="..."] var="..." ... -->
+ * <!--#echo [decoding="..."] [encoding="..."] var="..." [decoding="..."]
+ *  [encoding="..."] var="..." ... -->
  */
 static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                                 apr_bucket_brigade *bb)
 {
-    enum {E_NONE, E_URL, E_ENTITY} encode;
+    const char *encoding = "entity", *decoding = "none";
     request_rec *r = f->r;
+    int error = 0;
 
     if (!ctx->argc) {
         ap_log_rerror(APLOG_MARK,
@@ -1160,8 +1162,6 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
     }
-
-    encode = E_ENTITY;
 
     while (1) {
         char *tag = NULL;
@@ -1182,17 +1182,69 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                                   ctx);
 
             if (val) {
-                switch(encode) {
-                case E_NONE:
-                    echo_text = val;
-                    break;
-                case E_URL:
-                    echo_text = ap_escape_uri(ctx->dpool, val);
-                    break;
-                case E_ENTITY:
-                    /* PR#25202: escape anything non-ascii here */
-                    echo_text = ap_escape_html2(ctx->dpool, val, 1);
-                    break;
+                char *last = NULL;
+                char *e, *d, *token;
+
+                echo_text = val;
+
+                d = apr_pstrdup(ctx->pool, decoding);
+                token = apr_strtok(d, ", \t", &last);
+
+                while(token) {
+                    if (!strcasecmp(token, "none")) {
+                        /* do nothing */
+                    }
+                    else if (!strcasecmp(token, "url")) {
+                        char *buf = apr_pstrdup(ctx->pool, echo_text);
+                        ap_unescape_url(buf);
+                        echo_text = buf;
+                    }
+                    else if (!strcasecmp(token, "entity")) {
+                        char *buf = apr_pstrdup(ctx->pool, echo_text);
+                        decodehtml(buf);
+                        echo_text = buf;
+                    }
+                    else if (!strcasecmp(token, "base64")) {
+                        echo_text = ap_pbase64decode(ctx->dpool, echo_text);
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown value "
+                                      "\"%s\" to parameter \"decoding\" of tag echo in "
+                                      "%s", token, r->filename);
+                        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                        error = 1;
+                        break;
+                    }
+                    token = apr_strtok(NULL, ", \t", &last);
+                }
+
+                e = apr_pstrdup(ctx->pool, encoding);
+                token = apr_strtok(e, ", \t", &last);
+
+                while(token) {
+                    if (!strcasecmp(token, "none")) {
+                        /* do nothing */
+                    }
+                    else if (!strcasecmp(token, "url")) {
+                        echo_text = ap_escape_uri(ctx->dpool, echo_text);
+                    }
+                    else if (!strcasecmp(token, "entity")) {
+                        echo_text = ap_escape_html2(ctx->dpool, echo_text, 0);
+                    }
+                    else if (!strcasecmp(token, "base64")) {
+                        char *buf;
+                        buf = ap_pbase64encode(ctx->dpool, (char *)echo_text);
+                        echo_text = buf;
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown value "
+                                      "\"%s\" to parameter \"encoding\" of tag echo in "
+                                      "%s", token, r->filename);
+                        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                        error = 1;
+                        break;
+                    }
+                    token = apr_strtok(NULL, ", \t", &last);
                 }
 
                 e_len = strlen(echo_text);
@@ -1202,27 +1254,19 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                 e_len = ctx->intern->undefined_echo_len;
             }
 
+            if (error) {
+                break;
+            }
+
             APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_pool_create(
                                     apr_pmemdup(ctx->pool, echo_text, e_len),
                                     e_len, ctx->pool, f->c->bucket_alloc));
         }
+        else if (!strcmp(tag, "decoding")) {
+            decoding = tag_val;
+        }
         else if (!strcmp(tag, "encoding")) {
-            if (!strcasecmp(tag_val, "none")) {
-                encode = E_NONE;
-            }
-            else if (!strcasecmp(tag_val, "url")) {
-                encode = E_URL;
-            }
-            else if (!strcasecmp(tag_val, "entity")) {
-                encode = E_ENTITY;
-            }
-            else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown value "
-                              "\"%s\" to parameter \"encoding\" of tag echo in "
-                              "%s", tag_val, r->filename);
-                SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
-                break;
-            }
+            encoding = tag_val;
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter "
@@ -1690,10 +1734,12 @@ static apr_status_t handle_endif(include_ctx_t *ctx, ap_filter_t *f,
 static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                                apr_bucket_brigade *bb)
 {
+    const char *encoding = "none", *decoding = "none";
     char *var = NULL;
     request_rec *r = f->r;
     request_rec *sub = r->main;
     apr_pool_t *p = r->pool;
+    int error = 0;
 
     if (ctx->argc < 2) {
         ap_log_rerror(APLOG_MARK,
@@ -1724,15 +1770,22 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
         char *tag = NULL;
         char *tag_val = NULL;
 
-        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_DECODED);
+        ap_ssi_get_tag_and_value(ctx, &tag, &tag_val, SSI_VALUE_RAW);
 
         if (!tag || !tag_val) {
             break;
         }
 
         if (!strcmp(tag, "var")) {
+            decodehtml(tag_val);
             var = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                       SSI_EXPAND_DROP_NAME);
+        }
+        else if (!strcmp(tag, "decoding")) {
+            decoding = tag_val;
+        }
+        else if (!strcmp(tag, "encoding")) {
+            encoding = tag_val;
         }
         else if (!strcmp(tag, "value")) {
             char *parsed_string;
@@ -1747,6 +1800,77 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
 
             parsed_string = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                                 SSI_EXPAND_DROP_NAME);
+
+            if (parsed_string) {
+                char *last = NULL;
+                char *e, *d, *token;
+
+                d = apr_pstrdup(ctx->pool, decoding);
+                token = apr_strtok(d, ", \t", &last);
+
+                while(token) {
+                    if (!strcasecmp(token, "none")) {
+                        /* do nothing */
+                    }
+                    else if (!strcasecmp(token, "url")) {
+                        char *buf = apr_pstrdup(ctx->pool, parsed_string);
+                        ap_unescape_url(buf);
+                        parsed_string = buf;
+                    }
+                    else if (!strcasecmp(token, "entity")) {
+                        char *buf = apr_pstrdup(ctx->pool, parsed_string);
+                        decodehtml(buf);
+                        parsed_string = buf;
+                    }
+                    else if (!strcasecmp(token, "base64")) {
+                        parsed_string = ap_pbase64decode(ctx->dpool, parsed_string);
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown value "
+                                      "\"%s\" to parameter \"decoding\" of tag set in "
+                                      "%s", token, r->filename);
+                        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                        error = 1;
+                        break;
+                    }
+                    token = apr_strtok(NULL, ", \t", &last);
+                }
+
+                e = apr_pstrdup(ctx->pool, encoding);
+                token = apr_strtok(e, ", \t", &last);
+
+                while(token) {
+                    if (!strcasecmp(token, "none")) {
+                        /* do nothing */
+                    }
+                    else if (!strcasecmp(token, "url")) {
+                        parsed_string = ap_escape_uri(ctx->dpool, parsed_string);
+                    }
+                    else if (!strcasecmp(token, "entity")) {
+                        parsed_string = ap_escape_html2(ctx->dpool, parsed_string, 0);
+                    }
+                    else if (!strcasecmp(token, "base64")) {
+                        char *buf;
+                        buf = ap_pbase64encode(ctx->dpool, (char *)parsed_string);
+                        parsed_string = buf;
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown value "
+                                      "\"%s\" to parameter \"encoding\" of tag set in "
+                                      "%s", token, r->filename);
+                        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                        error = 1;
+                        break;
+                    }
+                    token = apr_strtok(NULL, ", \t", &last);
+                }
+
+            }
+
+            if (error) {
+                break;
+            }
+
             apr_table_setn(r->subprocess_env, apr_pstrdup(p, var),
                            apr_pstrdup(p, parsed_string));
         }

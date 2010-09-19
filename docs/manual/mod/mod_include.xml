@@ -180,13 +180,32 @@
       <dt><code>var</code></dt>
       <dd>The value is the name of the variable to print.</dd>
 
+      <dt><code>decoding</code></dt>
+      <dd><p>Specifies whether Apache should strip an encoding from
+      the variable before processing the variable further. The default
+      is <code>none</code>, where no decoding will be done. If set to
+      <code>url</code>, then URL decoding (also known as %-encoding;
+      this is appropriate for use within URLs in links, etc.) will be
+      performed. If set to <code>base64</code>, base64 will be decoded,
+      and if set to <code>entity</code>, HTML entity encoding will be
+      stripped. Decoding is done prior to any further encoding on the
+      variable. Multiple encodings can be stripped by specifying more
+      than one comma separated encoding. The decoding setting will
+      remain in effect until the next decoding attribute is encountered,
+      or the element ends.</p>
+
+      <p>The <code>decoding</code> attribute must <em>precede</em> the
+      corresponding <code>var</code> attribute to be effective.</p>
+      </dd>
+        
       <dt><code>encoding</code></dt>
       <dd><p>Specifies how Apache should encode special characters
       contained in the variable before outputting them. If set
       to <code>none</code>, no encoding will be done. If set to
       <code>url</code>, then URL encoding (also known as %-encoding;
       this is appropriate for use within URLs in links, etc.) will be
-      performed. At the start of an <code>echo</code> element,
+      performed. If set to <code>base64</code>, base64 encoding will
+      be performed. At the start of an <code>echo</code> element,
       the default is set to <code>entity</code>, resulting in entity
       encoding (which is appropriate in the context of a block-level
       HTML element, <em>e.g.</em> a paragraph of text). This can be
@@ -195,10 +214,7 @@
       is encountered or the element ends, whichever comes first.</p>
 
       <p>The <code>encoding</code> attribute must <em>precede</em> the
-      corresponding <code>var</code> attribute to be effective, and 
-      only special characters as defined in the ISO-8859-1 character
-      encoding will be encoded. This encoding process may not have the
-      desired result if a different character encoding is in use.</p>
+      corresponding <code>var</code> attribute to be effective.</p>
 
       <note type="warning">
         In order to avoid cross-site scripting issues, you should
@@ -383,6 +399,35 @@
 
       <dt><code>value</code></dt>
       <dd>The value to give a variable.</dd>
+
+      <dt><code>decoding</code></dt>
+      <dd><p>Specifies whether Apache should strip an encoding from
+      the variable before processing the variable further. The default
+      is <code>none</code>, where no decoding will be done. If set to
+      <code>url</code>, <code>base64</code> or <code>entity</code>,
+      URL decoding, base64 decoding or HTML entity decoding will be
+      performed respectively. More than one decoding can be specified
+      by separating with commas. The decoding setting will remain in
+      effect until the next decoding attribute is encountered, or the
+      element ends. The <code>decoding</code> attribute must
+      <em>precede</em> the corresponding <code>var</code> attribute to
+      be effective.</p>
+      </dd>
+      
+      <dt><code>encoding</code></dt>
+      <dd><p>Specifies how Apache should encode special characters
+      contained in the variable before setting them. The default is
+      <code>none</code>, where no encoding will be done. If set to
+      <code>url</code>, <code>base64</code> or <code>entity</code>,
+      URL encoding, base64 encoding or HTML entity encoding will be
+      performed respectively. More than one encoding can be specified
+      by separating with commas. The encoding setting will remain in
+      effect until the next encoding attribute is encountered, or the
+      element ends. The <code>encoding</code> attribute must
+      <em>precede</em> the corresponding <code>var</code> attribute
+      to be effective. Encodings are applied after all decodings have
+      been stripped.</p>
+      </dd>
       </dl>
 
       <example><title>Example</title>

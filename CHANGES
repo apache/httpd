@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_include: Reinstate support for UTF-8 character sets by allowing a
+     variable being echoed or set to be decoded and then encoded as separate
+     steps. PR47686 [Graham Leggett]
+
   *) mod_cache: Add a discrete commit_entity() provider function within the
      mod_cache provider interface which is called to indicate to the
      provider that caching is complete, giving the provider the opportunity
