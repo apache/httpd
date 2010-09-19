@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 752951:987242 (outdated) -->
+<!-- English Revision: 987242 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 
 <!--
@@ -32,13 +32,23 @@
 <section id="requirements"><title>Système requis</title>
 
     <p>Comme l'indique le terme <cite>par IP</cite>, le serveur
-    <strong>doit disposer de différentes adresses IP pour chaque
+    <strong>doit disposer de différentes paires adresses IP/port pour chaque
     serveur virtuel par IP</strong>. La machine peut posséder
     plusieurs connexions physiques au réseau, ou utiliser des
     interfaces virtuelles qui sont supportées par la plupart des
     systèmes d'exploitation modernes (Consultez la documentation des
     systèmes d'exploitation pour plus de détails, notamment les "alias
-    IP" et la commande "ifconfig" pour les activer).</p>
+    IP" et la commande "ifconfig" pour les activer), et/ou utiliser
+    plusieurs numéros de port.</p>
+
+    <p>Dans la plupart des cas, les <a href="name-based.html">serveurs
+    virtuels à base de nom</a> sont plus appropriés, car ils permettent
+    de partager une seule paire adresse/port entre de nombreux serveurs
+    virtuels. Voir le document <a
+    href="name-based.html#namevip">Serveurs virtuels à base de noms ou
+    serveurs virtuels à base d'adresse IP</a> pour vous aider à prendre
+    une décision.
+    </p>
 
 </section>
 
