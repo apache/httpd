@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 421100 -->
+<!-- LastChangedRevision English document : 990096 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2007080301 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -495,10 +494,10 @@ sont interpr&eacute;t&eacute;es.</p>
     sur celles qui les pr&eacute;c&egrave;dent.</p>
 
 <note><title>Note technique</title>
-      Une s&eacute;quence
-      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
-      est r&eacute;ellement trait&eacute;e juste avant la phase de traduction du nom
-      (o&ugrave; <code>Aliases</code> et <code>DocumentRoots</code>
+	Une s&eacute;quence
+	<code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+	est r&eacute;ellement trait&eacute;e juste avant la phase de traduction du nom
+	(o&ugrave; <code>Aliases</code> et <code>DocumentRoots</code>
       sont utilis&eacute;s pour faire correspondre les URLs aux noms de fichiers).
       Les effets de cette s&eacute;quence disparaissent totalement lorsque
       la traduction est termin&eacute;e.
@@ -526,7 +525,7 @@ B<br />
 &lt;/Directory&gt;<br />
 &lt;/VirtualHost&gt;<br />
 <br />
-&lt;DirectoryMatch "^.*b$"&gt;<br />
+&lt;DirectoryMatch "^.*b/"&gt;<br />
 C<br />
 &lt;/DirectoryMatch&gt;<br />
 <br />
