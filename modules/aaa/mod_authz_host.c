@@ -90,7 +90,9 @@ static int in_domain(const char *domain, const char *what)
     }
 }
 
-static authz_status env_check_authorization(request_rec *r, const char *require_line)
+static authz_status env_check_authorization(request_rec *r,
+                                            const char *require_line,
+                                            const void *parsed_require_line)
 {
     const char *t, *w;
 
@@ -112,7 +114,9 @@ static authz_status env_check_authorization(request_rec *r, const char *require_
     return AUTHZ_DENIED;
 }
 
-static authz_status ip_check_authorization(request_rec *r, const char *require_line)
+static authz_status ip_check_authorization(request_rec *r,
+                                           const char *require_line,
+                                           const void *parsed_require_line)
 {
     const char *t, *w;
 
@@ -170,7 +174,9 @@ static authz_status ip_check_authorization(request_rec *r, const char *require_l
     return AUTHZ_DENIED;
 }
 
-static authz_status host_check_authorization(request_rec *r, const char *require_line)
+static authz_status host_check_authorization(request_rec *r,
+                                             const char *require_line,
+                                             const void *parsed_require_line)
 {
     const char *t, *w;
     const char *remotehost = NULL;
@@ -206,37 +212,60 @@ static authz_status host_check_authorization(request_rec *r, const char *require
     return AUTHZ_DENIED;
 }
 
-static authz_status all_check_authorization(request_rec *r, const char *require_line)
+static authz_status all_check_authorization(request_rec *r,
+                                            const char *require_line,
+                                            const void *parsed_require_line)
 {
-    /* If the argument to the 'all' provider is 'granted' then just let 
-        everybody in. This would be equivalent to the previous syntax of
-        'allow from all'. If the argument is anything else, this would
-        be equivalent to 'deny from all' Of course the opposite would be 
-        true if the 'all' provider is invoked by the 'reject' directive */
-    if (strcasecmp(require_line, "granted") == 0) {
+    if (parsed_require_line) {
         return AUTHZ_GRANTED;
     }
     return AUTHZ_DENIED;
 }
 
+static const char *all_parse_config(cmd_parms *cmd, const char *require_line,
+                                    const void **parsed_require_line)
+{
+    /*
+     * If the argument to the 'all' provider is 'granted' then just let 
+     * everybody in. This would be equivalent to the previous syntax of
+     * 'allow from all'. If the argument is 'denied' we reject everbody,
+     * which is equivalent to 'deny from all'.
+     */
+    if (strcasecmp(require_line, "granted") == 0) {
+        *parsed_require_line = (void *)1;
+        return NULL;
+    }
+    else if (strcasecmp(require_line, "denied") == 0) {
+        /* *parsed_require_line is already NULL */
+        return NULL;
+    }
+    else {
+        return "Argument for 'Require all' must be 'granted' or 'denied'";
+    }
+}
+
 static const authz_provider authz_env_provider =
 {
     &env_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_ip_provider =
 {
     &ip_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_host_provider =
 {
     &host_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_all_provider =
 {
     &all_check_authorization,
+    &all_parse_config,
 };
 
 static void register_hooks(apr_pool_t *p)

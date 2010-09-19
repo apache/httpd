@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_authz_core: Allow authz providers to check args while reading the
+     config and allow to cache parsed args. [Stefan Fritsch]
+
   *) mod_include: Move the request_rec within mod_include to be
      exposed within include_ctx_t. [Graham Leggett]
 

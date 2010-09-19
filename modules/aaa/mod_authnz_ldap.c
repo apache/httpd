@@ -597,7 +597,8 @@ start_over:
 }
 
 static authz_status ldapuser_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                                 const char *require_args,
+                                                 const void *parsed_require_args)
 {
     int result = 0;
     authn_ldap_request_t *req =
@@ -733,7 +734,8 @@ static authz_status ldapuser_check_authorization(request_rec *r,
 }
 
 static authz_status ldapgroup_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                                  const char *require_args,
+                                                  const void *parsed_require_args)
 {
     int result = 0;
     authn_ldap_request_t *req =
@@ -948,7 +950,8 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
 }
 
 static authz_status ldapdn_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                               const char *require_args,
+                                               const void *parsed_require_args)
 {
     int result = 0;
     authn_ldap_request_t *req =
@@ -1056,7 +1059,8 @@ static authz_status ldapdn_check_authorization(request_rec *r,
 }
 
 static authz_status ldapattribute_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                                      const char *require_args,
+                                                      const void *parsed_require_args)
 {
     int result = 0;
     authn_ldap_request_t *req =
@@ -1171,7 +1175,8 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
 }
 
 static authz_status ldapfilter_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                                   const char *require_args,
+                                                   const void *parsed_require_args)
 {
     int result = 0;
     authn_ldap_request_t *req =
@@ -1730,25 +1735,30 @@ static const authn_provider authn_ldap_provider =
 static const authz_provider authz_ldapuser_provider =
 {
     &ldapuser_check_authorization,
+    NULL,
 };
 static const authz_provider authz_ldapgroup_provider =
 {
     &ldapgroup_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_ldapdn_provider =
 {
     &ldapdn_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_ldapattribute_provider =
 {
     &ldapattribute_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_ldapfilter_provider =
 {
     &ldapfilter_check_authorization,
+    NULL,
 };
 
 static void ImportULDAPOptFn(void)

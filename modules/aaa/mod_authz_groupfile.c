@@ -138,7 +138,8 @@ static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
 }
 
 static authz_status group_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                              const char *require_args,
+                                              const void *parsed_require_args)
 {
     authz_groupfile_config_rec *conf = ap_get_module_config(r->per_dir_config,
             &authz_groupfile_module);
@@ -197,7 +198,8 @@ static authz_status group_check_authorization(request_rec *r,
 APR_OPTIONAL_FN_TYPE(authz_owner_get_file_group) *authz_owner_get_file_group;
 
 static authz_status filegroup_check_authorization(request_rec *r,
-                                              const char *require_args)
+                                                  const char *require_args,
+                                                  const void *parsed_require_args)
 {
     authz_groupfile_config_rec *conf = ap_get_module_config(r->per_dir_config,
             &authz_groupfile_module);
@@ -263,11 +265,13 @@ static authz_status filegroup_check_authorization(request_rec *r,
 static const authz_provider authz_group_provider =
 {
     &group_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_filegroup_provider =
 {
     &filegroup_check_authorization,
+    NULL,
 };
 
 static void register_hooks(apr_pool_t *p)

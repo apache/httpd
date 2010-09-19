@@ -39,7 +39,8 @@ static const command_rec authz_owner_cmds[] =
 module AP_MODULE_DECLARE_DATA authz_owner_module;
 
 static authz_status fileowner_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                                  const char *require_args,
+                                                  const void *parsed_require_args)
 {
     char *reason = NULL;
     apr_status_t status = 0;
@@ -165,6 +166,7 @@ static char *authz_owner_get_file_group(request_rec *r)
 static const authz_provider authz_fileowner_provider =
 {
     &fileowner_check_authorization,
+    NULL,
 };
 
 static void register_hooks(apr_pool_t *p)

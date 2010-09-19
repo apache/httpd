@@ -131,7 +131,8 @@ static apr_status_t get_dbm_grp(request_rec *r, char *key1, char *key2,
 }
 
 static authz_status dbmgroup_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                                 const char *require_args,
+                                                 const void *parsed_require_args)
 {
     authz_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authz_dbm_module);
@@ -201,7 +202,8 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
 APR_OPTIONAL_FN_TYPE(authz_owner_get_file_group) *authz_owner_get_file_group;
 
 static authz_status dbmfilegroup_check_authorization(request_rec *r,
-                                              const char *require_args)
+                                                     const char *require_args,
+                                                     const void *parsed_require_args)
 {
     authz_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authz_dbm_module);
@@ -268,11 +270,13 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
 static const authz_provider authz_dbmgroup_provider =
 {
     &dbmgroup_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_dbmfilegroup_provider =
 {
     &dbmfilegroup_check_authorization,
+    NULL,
 };
 
 

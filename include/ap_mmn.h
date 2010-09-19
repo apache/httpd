@@ -255,12 +255,15 @@
  *                         interface.
  * 20100918.0 (2.3.9-dev)  Move the request_rec within mod_include to be
  *                         exposed within include_ctx_t.
+ * 20100919.0 (2.3.9-dev)  Authz providers: Add parsed_require_line parameter
+ *                         to check_authorization() function. Add
+ *                         parse_require_line() function.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100918
+#define MODULE_MAGIC_NUMBER_MAJOR 20100919
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
