@@ -253,12 +253,14 @@
  *                         mod_cache store_body() provider function.
  * 20100916.0 (2.3.9-dev)  Add commit_entity() to the mod_cache provider
  *                         interface.
+ * 20100918.0 (2.3.9-dev)  Move the request_rec within mod_include to be
+ *                         exposed within include_ctx_t.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100916
+#define MODULE_MAGIC_NUMBER_MAJOR 20100918
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

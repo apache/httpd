@@ -94,6 +94,9 @@ typedef struct {
     /* currently configured time format */
     const char  *time_str;
 
+    /* the current request */
+    request_rec  *r;
+
     /* pointer to internal (non-public) data, don't touch */
     struct ssi_internal_ctx *intern;
 
