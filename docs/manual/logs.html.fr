@@ -575,6 +575,25 @@
     <p>Comme la journalisation conditionnelle, la journalisation redirigée est
     un outil très puissant, mais si elle existe, il est préférable d'utiliser
     une solution plus simple comme le traitement à posteriori hors ligne.</p>
+
+  <p>Par défaut, le processus de redirection du journal est lancé sans
+  invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"
+  au lieu de "<code>|</code>" (en général avec <code>/bin/sh -c</code>)
+  :</p>
+
+    <div class="example"><p><code>
+      # Invocation de "rotatelogs" en utilisant un shell<br />
+      CustomLog "|$/usr/local/apache/bin/rotatelogs
+      /var/log/access_log 86400" common
+    </code></p></div>
+
+    <p>Il s'agissait du comportement par défaut sous Apache 2.2. Selon
+    les spécificités du shell, ceci peut générer un processus shell
+    supplémentaire pour toute la durée du programme de redirection du
+    journal, et induire des problèmes de gestion de signaux au cours du
+    redémarrage. La notation "<code>||</code>" est aussi supportée pour
+    des raisons de compatibilité avec Apache 2.2 et est équivalente à
+    "<code>|</code>".</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Hôtes virtuels</a></h2>

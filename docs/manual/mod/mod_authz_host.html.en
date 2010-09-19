@@ -209,6 +209,33 @@ address)</td></tr>
 
 
 
+<h3><a name="reqmethod" id="reqmethod">Require method</a></h3>
+
+    <p>The <code>method</code> provider allows to use the HTTP method in
+    authorization decisions. The GET and HEAD methods are treated as
+    equivalent. The TRACE method is not available to this provider,
+    use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
+
+    <p>The following example will only allow GET, HEAD, POST, and OPTIONS
+    requests:</p>
+
+    <div class="example"><p><code>
+        Require method GET POST OPTIONS<br />
+    </code></p></div>
+
+    <p>The following example will allow GET, HEAD, POST, and OPTIONS
+    requests without authentication, and require a valid user for all other
+    methods:</p>
+
+    <div class="example"><p><code>
+        &lt;RequireAny&gt;<br />
+        &nbsp;Require method GET POST OPTIONS<br />
+        &nbsp;Require valid-user<br />
+        &lt;/RequireAny&gt;<br />
+    </code></p></div>
+
+
+
 
 </div>
 </div>

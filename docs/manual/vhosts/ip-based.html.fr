@@ -24,8 +24,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
@@ -40,13 +38,22 @@ résident pour des serveurs virtuels</a></li>
 <h2><a name="requirements" id="requirements">Système requis</a></h2>
 
     <p>Comme l'indique le terme <cite>par IP</cite>, le serveur
-    <strong>doit disposer de différentes adresses IP pour chaque
+    <strong>doit disposer de différentes paires adresses IP/port pour chaque
     serveur virtuel par IP</strong>. La machine peut posséder
     plusieurs connexions physiques au réseau, ou utiliser des
     interfaces virtuelles qui sont supportées par la plupart des
     systèmes d'exploitation modernes (Consultez la documentation des
     systèmes d'exploitation pour plus de détails, notamment les "alias
-    IP" et la commande "ifconfig" pour les activer).</p>
+    IP" et la commande "ifconfig" pour les activer), et/ou utiliser
+    plusieurs numéros de port.</p>
+
+    <p>Dans la plupart des cas, les <a href="name-based.html">serveurs
+    virtuels à base de nom</a> sont plus appropriés, car ils permettent
+    de partager une seule paire adresse/port entre de nombreux serveurs
+    virtuels. Voir le document <a href="name-based.html#namevip">Serveurs virtuels à base de noms ou
+    serveurs virtuels à base d'adresse IP</a> pour vous aider à prendre
+    une décision.
+    </p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
