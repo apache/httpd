@@ -384,7 +384,8 @@ est nécessaire de spécifier <code>always</code> comme premier paramètre.</p>
     directives <code class="directive">Header</code> sont traitées juste avant
     l'envoi de la réponse sur le réseau. Cela signifie qu'il est
     possible de définir et/ou modifier la plupart des en-têtes, à
-    l'exception de ceux qui sont ajoutés par le filtre d'en-tête.</p>
+    l'exception de ceux qui sont ajoutés par le filtre HTTP
+    d'en-tête, comme Content-Type.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

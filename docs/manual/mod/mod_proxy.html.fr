@@ -100,6 +100,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Mandataires directs et
     mandataires/passerelles inverses</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples simples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workers">Workers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#access">Contrôler l'accès à votre
     mandataire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#startup">Ralentissement au démarrage</a></li>
@@ -201,6 +202,131 @@
     </span>
     &lt;/Proxy&gt;
     </code></p></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="workers" id="workers">Workers</a></h2>
+      <p>Le mandataire gère la configuration et les paramètres de
+      communication des serveurs originaux au sein d'objets nommés
+      <dfn>workers</dfn>. Deux types de worker sont fournis : le worker
+      par défaut du mandataire direct et le worker par défaut du
+      mandataire inverse. Il est aussi possible de définir explicitement
+      des workers supplémentaires.</p>
+
+      <p>Les deux workers par défaut possèdent une configuration figée
+      et seront utilisés si aucun autre worker ne correspond à la
+      requête. Ils n'utilisent ni les jeux de connexions (connection
+      pooling), ni les
+      connexions HTTP persistantes (Keep-Alive). En effet, les
+      connexions TCP vers le serveur original sont fermées et ouvertes
+      pour chaque requête.</p>
+
+      <p>Les workers définis explicitement sont identifiés par leur URL.
+      Ils sont en général définis via les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> lorsqu'on les
+      utilise dans le cadre d'un mandataire inverse :</p>
+
+      <div class="example"><p><code>
+          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>Cette directive va créer un worker associé à l'URL du serveur
+      original <code>http://backend.example.com</code>, et utilisant les
+      valeurs de timeout données. Lorsqu'ils sont utilisés dans le cadre
+      d'un mandataire direct, les workers sont en général définis via la
+      directive <code class="directive"><a href="#proxyset">ProxySet</a></code>,</p>
+
+      <div class="example"><p><code>
+          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+      </code></p></div>
+
+      <p>ou encore via les directives <code class="directive"><a href="#proxy">Proxy</a></code> et <code class="directive"><a href="#proxyset">ProxySet</a></code> :</p>
+
+      <div class="example"><p><code>
+        &lt;Proxy http://backend.example.com&gt;<br />
+        <span class="indent">
+          ProxySet connectiontimeout=5 timeout=30
+        </span>
+        &lt;/Proxy&gt;
+      </code></p></div>
+
+      <p>L'utilisation de workers définis explicitement dans le mode
+      mandataire direct n'est pas très courante, car les mandataires
+      directs communiquent en général avec de nombreux serveurs
+      originaux. La création explicite de workers pour certains serveurs
+      originaux peut cependant s'avérer utile si ces serveurs sont
+      très souvent sollicités. A leur niveau, les workers explicitement
+      définis ne possèdent aucune notion de mandataire direct ou
+      inverse. Ils encapsulent un concept de communication commun avec
+      les serveurs originaux. Un worker créé via la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> pour être utilisé dans le
+      cadre d'un mandataire inverse sera aussi utilisé dans le cadre
+      d'un mandataire directe chaque fois que l'URL vers le serveur
+      original correspondra à l'URL du worker, et vice versa.</p>
+
+      <p>L'URL qui identifie un worker correspond à l'URL de son serveur
+      original, y compris un éventuel chemin donné :</p>
+
+      <div class="example"><p><code>
+          ProxyPass /exemples http://backend.example.com/exemples<br />
+          ProxyPass /docs http://backend.example.com/docs
+      </code></p></div>
+
+      <p>Dans cet exemple, deux workers différents sont définis, chacun
+      d'eux utilisant des configurations et jeux de connexions
+      séparés.</p>
+
+      <div class="warning"><h3>Partage de workers</h3>
+        <p>Le partage de workers intervient lorsque les URLs des workers
+	s'entrecoupent, ce qui arrive lorsque l'URL d'un worker
+	correspond au début de l'URL d'un autre worker défini plus loin
+	dans le fichier de configuration. Dans l'exemple suivant,</p>
+
+        <div class="example"><p><code>
+            ProxyPass /apps http://backend.example.com/ timeout=60<br />
+            ProxyPass /examples http://backend.example.com/exemples timeout=10
+        </code></p></div>
+
+        <p>le second worker n'est pas vraiment créé. C'est le premier
+	worker qui est en fait utilisé. L'avantage de ceci réside dans
+	le fait qu'il n'existe qu'un seul jeu de connexions, ces
+	dernières étant donc réutilisées plus souvent. Notez que tous
+	les attributs de configuration définis explicitement pour le
+	deuxième worker seront ignorés, ce qui sera journalisé en tant
+	qu'avertissement. Ainsi, dans l'exemple ci-dessus, la valeur de
+	timeout retenue pour l'URL <code>/exemples</code> sera
+	<code>60</code>, et non <code>10</code> !</p>
+
+        <p>Si vous voulez empêcher le partage de workers, classez vos
+	définitions de workers selon la longueur des URLs, de la plus
+	longue à la plus courte. Si au contraire vous voulez favoriser
+	ce partage, utilisez l'ordre de classement inverse. Voir aussi
+	l'avertissement à propos de l'ordre de classement des directives
+	<code class="directive"><a href="#proxypass">ProxyPass</a></code>.</p>
+
+      </div> 
+
+      <p>Les workers définis explicitement sont de deux sortes :
+      <dfn>workers directs</dfn> et <dfn>workers de répartition (de
+      charge)</dfn>. Ils supportent de nombreux attributs de
+      configuration importants décrits dans la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>. Ces mêmes attributs
+      peuvent aussi être définis via la directive <code class="directive"><a href="#proxyset">ProxySet</a></code>.</p>
+
+      <p>Le jeu d'options disponibles pour un worker direct dépend du
+      protocole spécifié dans l'URL du serveur original. Les protocoles
+      disponibles comprennent <code>ajp</code>, <code>fcgi</code>,
+      <code>ftp</code>, <code>http</code> et <code>scgi</code>.</p>
+
+      <p>Les workers de répartition sont des workers virtuels qui
+      utilisent les workers directs, connus comme faisant partie de leurs
+      membres, pour le traitement effectif des requêtes. Chaque
+      répartiteur peut comporter plusieurs membres. Lorsqu'il traite une
+      requête, il choisit un de ses membres en fonction de l'algorithme
+      de répartition de charge défini.</p>
+
+      <p>Un worker de répartition est créé si son URL de worker comporte
+      <code>balancer</code> comme indicateur de protocole. L'URL du
+      répartiteur permet d'identifier de manière unique le worker de
+      répartition. La directive <code class="directive"><a href="#balancermember">BalancerMember</a></code> permet d'ajouter des
+      membres au répartiteur.</p>
+
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="access" id="access">Contrôler l'accès à votre
@@ -838,11 +964,21 @@ l'espace d'URLs du serveur local</td></tr>
     vers <code>backend.example.com</code>, <em>sauf</em> les requêtes
     pour <code>/miroir/foo/i</code>.</p>
 
-    <div class="note"><h3>Note</h3>
-      <p>L'ordre est important : les exclusions doivent apparaître
-      <em>avant</em> la directive <code class="directive">ProxyPass</code> plus
-      générale.</p>
-    </div>
+    <div class="warning"><h3>Ordre de classement des directives ProxyPass</h3>
+      <p>Les directives <code class="directive"><a href="#proxypass">ProxyPass</a></code> et <code class="directive"><a href="#proxypassmatch">ProxyPassMatch</a></code> sont évaluées dans
+      l'ordre de leur apparition dans le fichier de configuration. La
+      première règle qui correspond s'applique. Vous devez donc en
+      général classer les règles <code class="directive"><a href="#proxypass">ProxyPass</a></code> qui entrent en conflit de
+      l'URL la plus longue à la plus courte. Dans le cas contraire, les
+      règles situées après une règle dont l'URL correspond au début de
+      leur propre URL seront ignorées. Notez que tout ceci est en
+      relation avec le partage de workers.</p>
+
+      <p>Pour les mêmes raisons, les exclusions doivent se situer
+      <em>avant</em> les directives <code class="directive">ProxyPass</code>
+      générales.</p>
+
+    </div> 
 
     <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
     les groupements de connexions vers un serveur d'arrière-plan. Les
@@ -971,17 +1107,24 @@ l'espace d'URLs du serveur local</td></tr>
     </td></tr>
     <tr><td>ping</td>
         <td>0</td>
-        <td>Avec la clé ping, le serveur web envoie une requête
-	<code>CPING</code> sur la connexion ajp13 avant de rediriger une
-	requête. La valeur correspond au délai d'attente de la réponse
-	<code>CPONG</code>. Cette fonctionnalité a été ajoutée afin de
-	pallier aux problèmes de blocage et de surcharge des serveurs
-	Tomcat, et nécessite le support de ping/pong ajp13 qui a été
-	implémenté dans Tomcat 3.3.2+, 4.1.28+ et 5.0.13+. Le trafic
+        <td>Avec la clé Ping, le serveur web va "tester" la connexion
+	vers le serveur d'arrière-plan avant de transmettre la requête.
+	Avec AJP, <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code> envoie une requête
+	<code>CPING</code> sur la connexion ajp13 (implémenté sur Tomcat
+	3.3.2+, 4.1.28+ et 5.0.13+). Avec HTTP,
+	<code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> envoie <code>100-Continue</code>
+	au serveur d'arrière-plan (seulement avecHTTP/1.1 - pour les
+	serveurs d'arrière-plan non HTTP/1.1, cette clé ne produit
+	aucun effet). Dans les deux cas, ce paramètre correspond au
+	délai en secondes pour l'attente de la réponse. Cette
+	fonctionnalité a été ajoutée pour éviter les problèmes avec les
+	serveurs d'arrière-plan bloqués ou surchargés.
+	
+	Le trafic
 	réseau peut s'en trouver augmenté en fonctionnement normal, ce
 	qui peut poser problème, mais peut s'en trouver diminué dans les
-	cas où les noeuds de cluster sont arrêtés ou surchargés. Cette
-	clé n'est actuellement utilisable qu'avec AJP. Le délai peut
+	cas où les noeuds de cluster sont arrêtés ou
+	surchargés. Le délai peut
 	aussi être défini en millisecondes en ajoutant le suffixe
 	ms.
     </td></tr>
@@ -1109,6 +1252,14 @@ l'espace d'URLs du serveur local</td></tr>
 	défini, sa valeur correspond à la durée maximale d'attente pour
 	un serveur cible libre. Le comportement par défaut est de ne pas
 	attendre.
+    </td></tr>
+    <tr><td>failonstatus</td>
+        <td>-</td>
+        <td>Une liste de codes d'état HTTP séparés par des virgules. Si
+	ce paramètre est présent, le worker se mettra en erreur si le
+	serveur d'arrière-plan renvoie un des codes d'état spécifiés
+	dans la liste. La récupération du worker s'effectue comme dans
+	le cas des autres erreurs de worker.
     </td></tr>
 
     </table>
