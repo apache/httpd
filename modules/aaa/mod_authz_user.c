@@ -46,7 +46,8 @@ static const command_rec authz_user_cmds[] =
 module AP_MODULE_DECLARE_DATA authz_user_module;
 
 static authz_status user_check_authorization(request_rec *r,
-                                             const char *require_args)
+                                             const char *require_args,
+                                             const void *parsed_require_args)
 {
     const char *t, *w;
 
@@ -69,7 +70,9 @@ static authz_status user_check_authorization(request_rec *r,
     return AUTHZ_DENIED;
 }
 
-static authz_status validuser_check_authorization(request_rec *r, const char *require_line)
+static authz_status validuser_check_authorization(request_rec *r,
+                                                  const char *require_line,
+                                                  const void *parsed_require_line)
 {
     if (!r->user) {
         return AUTHZ_DENIED_NO_USER;
@@ -81,10 +84,12 @@ static authz_status validuser_check_authorization(request_rec *r, const char *re
 static const authz_provider authz_user_provider =
 {
     &user_check_authorization,
+    NULL,
 };
 static const authz_provider authz_validuser_provider =
 {
     &validuser_check_authorization,
+    NULL,
 };
 
 static void register_hooks(apr_pool_t *p)

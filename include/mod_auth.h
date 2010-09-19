@@ -103,9 +103,23 @@ struct authn_provider_list {
 typedef struct {
     /* Given a request_rec, expected to return AUTHZ_GRANTED
      * if we can authorize user access.
+     * @param r the request record
+     * @param require_line the argument to the authz provider
+     * @param parsed_require_line the value set by parse_require_line(), if any
      */
     authz_status (*check_authorization)(request_rec *r,
-                                        const char *require_line);
+                                        const char *require_line,
+                                        const void *parsed_require_line);
+
+    /** Check the syntax of a require line and optionally cache the parsed
+     * line. This function may be NULL.
+     * @param cmd the config directive
+     * @param require_line the argument to the authz provider
+     * @param parsed_require_line place to store parsed require_line for use by provider
+     * @return Error message or NULL on success
+     */
+    const char *(*parse_require_line)(cmd_parms *cmd, const char *require_line,
+                                      const void **parsed_require_line);
 } authz_provider;
 
 /* ap_authn_cache_store: Optional function for authn providers

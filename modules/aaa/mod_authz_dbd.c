@@ -244,7 +244,8 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
 }
 
 static authz_status dbdgroup_check_authorization(request_rec *r,
-                                              const char *require_args)
+                                                 const char *require_args,
+                                                 const void *parsed_require_args)
 {
     int i, rv;
     const char *w;
@@ -279,7 +280,8 @@ static authz_status dbdgroup_check_authorization(request_rec *r,
 }
 
 static authz_status dbdlogin_check_authorization(request_rec *r,
-                                              const char *require_args)
+                                                 const char *require_args,
+                                                 const void *parsed_require_args)
 {
     authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                               &authz_dbd_module);
@@ -292,7 +294,8 @@ static authz_status dbdlogin_check_authorization(request_rec *r,
 }
 
 static authz_status dbdlogout_check_authorization(request_rec *r,
-                                              const char *require_args)
+                                                  const char *require_args,
+                                                  const void *parsed_require_args)
 {
     authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                               &authz_dbd_module);
@@ -307,17 +310,20 @@ static authz_status dbdlogout_check_authorization(request_rec *r,
 static const authz_provider authz_dbdgroup_provider =
 {
     &dbdgroup_check_authorization,
+    NULL,
 };
 
 static const authz_provider authz_dbdlogin_provider =
 {
     &dbdlogin_check_authorization,
+    NULL,
 };
 
 
 static const authz_provider authz_dbdlogout_provider =
 {
     &dbdlogout_check_authorization,
+    NULL,
 };
 
 static void authz_dbd_hooks(apr_pool_t *p)

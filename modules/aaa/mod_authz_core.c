@@ -50,6 +50,7 @@ typedef struct provider_alias_rec {
     char *provider_name;
     char *provider_alias;
     char *provider_args;
+    const void *provider_parsed_args;
     ap_conf_vector_t *sec_auth;
     const authz_provider *provider;
 } provider_alias_rec;
@@ -65,6 +66,7 @@ typedef struct authz_section_conf authz_section_conf;
 struct authz_section_conf {
     const char *provider_name;
     const char *provider_args;
+    const void *provider_parsed_args;
     const authz_provider *provider;
     apr_int64_t limited;
     authz_logic_op op;
@@ -159,7 +161,8 @@ static void *create_authz_core_svr_config(apr_pool_t *p, server_rec *s)
  * configurations and then invokes them.
  */
 static authz_status authz_alias_check_authorization(request_rec *r,
-                                                    const char *require_args)
+                                                    const char *require_args,
+                                                    const void *parsed_require_args)
 {
     const char *provider_name;
     authz_status ret = AUTHZ_DENIED;
@@ -192,7 +195,8 @@ static authz_status authz_alias_check_authorization(request_rec *r,
                                          prvdraliasrec->sec_auth);
 
             ret = prvdraliasrec->provider->
-                check_authorization(r, prvdraliasrec->provider_args);
+                check_authorization(r, prvdraliasrec->provider_args,
+                                    prvdraliasrec->provider_parsed_args);
 
             r->per_dir_config = orig_dir_config;
         }
@@ -203,7 +207,8 @@ static authz_status authz_alias_check_authorization(request_rec *r,
 
 static const authz_provider authz_alias_provider =
 {
-    &authz_alias_check_authorization
+    &authz_alias_check_authorization,
+    NULL,
 };
 
 static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
@@ -369,6 +374,13 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     }
 
     section->limited = cmd->limited;
+
+    if (section->provider->parse_require_line) {
+        const char *err = section->provider->parse_require_line(cmd, args,
+                                                                &section->provider_parsed_args);
+        if (err)
+            return err;
+    }
 
     if (!conf->section) {
         conf->section = create_default_section(cmd->pool);
@@ -670,7 +682,8 @@ static authz_status apply_authz_sections(request_rec *r,
                        section->provider_name);
 
         auth_result =
-            section->provider->check_authorization(r, section->provider_args);
+            section->provider->check_authorization(r, section->provider_args,
+                                                   section->provider_parsed_args);
 
         apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
     }
