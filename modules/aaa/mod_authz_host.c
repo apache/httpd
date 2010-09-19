@@ -244,6 +244,38 @@ static const char *all_parse_config(cmd_parms *cmd, const char *require_line,
     }
 }
 
+static authz_status method_check_authorization(request_rec *r,
+                                               const char *require_line,
+                                               const void *parsed_require_line)
+{
+    const apr_int64_t *allowed = parsed_require_line;
+    if (*allowed & (AP_METHOD_BIT << r->method_number))
+        return AUTHZ_GRANTED;
+    else
+        return AUTHZ_DENIED;
+}
+
+static const char *method_parse_config(cmd_parms *cmd, const char *require_line,
+                                       const void **parsed_require_line)
+{
+    const char *w, *t;
+    apr_int64_t *allowed = apr_pcalloc(cmd->pool, sizeof(apr_int64_t));
+
+    t = require_line;
+
+    while ((w = ap_getword_conf(cmd->temp_pool, &t)) && w[0]) {
+        int m = ap_method_number_of(w);
+        if (m == M_INVALID) {
+            return apr_pstrcat(cmd->pool, "Invalid Method '", w, "'", NULL);
+        }
+
+        *allowed |= (AP_METHOD_BIT << m);
+    }
+
+    *parsed_require_line = allowed;
+    return NULL;
+}
+
 static const authz_provider authz_env_provider =
 {
     &env_check_authorization,
@@ -268,6 +300,12 @@ static const authz_provider authz_all_provider =
     &all_parse_config,
 };
 
+static const authz_provider authz_method_provider =
+{
+    &method_check_authorization,
+    &method_parse_config,
+};
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "env",
@@ -282,6 +320,9 @@ static void register_hooks(apr_pool_t *p)
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "all",
                               AUTHZ_PROVIDER_VERSION,
                               &authz_all_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "method",
+                              AUTHZ_PROVIDER_VERSION,
+                              &authz_method_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
 AP_DECLARE_MODULE(authz_host) =
