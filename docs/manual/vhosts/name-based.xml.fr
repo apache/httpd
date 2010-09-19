@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 930608:987242 (outdated) -->
+<!-- English Revision: 987242 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -38,12 +38,13 @@
 
 <section id="namevip"><title>Serveurs virtuels par nom vs. par IP</title>
 
-    <p>Les hébergements virtuels par IP utilisent l'adresse IP 
+    <p>Les <a href="ip-based.html">serveurs virtuels</a> par IP utilisent l'adresse IP 
     de la connexion afin de déterminer quel serveur virtuel doit 
     répondre. Par conséquent, vous devez disposer d'adresses IP 
-    différentes pour chaque serveur. 
-    Avec un hébergement 
-    virtuel par nom, le serveur s'appuit sur les informations 
+    différentes pour chaque serveur.</p>
+
+    <p>Avec un hébergement 
+    virtuel par nom, le serveur s'appuie sur les informations 
     transmises par le client dans les en-têtes HTTP de ses requêtes. 
     La technique présentée ici vous permet de disposer de serveurs 
     virtuels différents partagés sur une même adresse IP.</p>
@@ -59,8 +60,8 @@
     sont exposées ci-après&nbsp;:</p>
 
     <ul>
-        <li>L'hébergement virtuel par nom ne peut pas être utilisé 
-        avec des serveurs sécurisés SSL à cause de la nature même 
+        <li>L'hébergement virtuel par nom <a href="../ssl/ssl_faq.html#vhosts">ne peut pas être utilisé 
+        avec des serveurs sécurisés SSL</a> à cause de la nature même 
         du protocole SSL.</li>
 
         <li>Certains systèmes d'exploitation et équipements réseaux 
@@ -89,22 +90,25 @@
 
     <p>Pour utiliser des serveurs virtuels par nom, vous devez 
     désigner l'adresse IP (et si possible le port) sur le serveur 
-    devant accepter les requêtes pour des domaines. Cette 
+    devant accepter les requêtes qui doivent être redirigées en fonction
+    du nom d'hôte. Cette 
     configuration utilise la directive 
     <directive module="core">NameVirtualHost</directive>. Dans un 
     cas normal où n'importe quelle adresse IP peut être utilisée, 
     vous pouvez ajouter <code>*</code> comme argument de la directive 
     <directive module="core">NameVirtualHost</directive>. Si vous 
     prévoyez d'utiliser de multiples ports (comme l'emploi de SSL), 
-    vous devriez ajouter le port à cet argument tel que 
-    <code>*:80</code>. Notez que la simple mention d'une adresse 
+    vous devez ajouter le port à cet argument tel que 
+    <code>*:80</code>.</p>
+    
+    <note><p>Notez que la simple mention d'une adresse 
     IP dans une directive 
     <directive module="core">NameVirtualHost</directive> ne suffit 
-    pas à faire écouter le serveur sur cette IP. Consultez 
+    pas à faire <em>écouter</em> le serveur sur cette IP. Consultez 
     <a href="../bind.html">Définition des adresses et ports qu'utilise
     Apache</a> pour plus 
     de détails. Par ailleurs, chaque adresse IP spécifiée ici doit 
-    être associée avec une interface réseau sur le serveur.</p>
+    être associée avec une interface réseau sur le serveur.</p></note>
 
     <p>L'étape suivante est la création d'une section 
     <directive type="section" module="core">VirtualHost</directive> 

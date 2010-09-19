@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 946617 -->
+<!-- English Revision : 990109 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -494,7 +494,8 @@ est nécessaire de spécifier <code>always</code> comme premier paramètre.</p>
     directives <directive>Header</directive> sont trait&eacute;es juste avant
     l'envoi de la r&eacute;ponse sur le r&eacute;seau. Cela signifie qu'il est
     possible de d&eacute;finir et/ou modifier la plupart des en-t&ecirc;tes, &agrave;
-    l'exception de ceux qui sont ajout&eacute;s par le filtre d'en-t&ecirc;te.</p>
+    l'exception de ceux qui sont ajout&eacute;s par le filtre HTTP
+    d'en-t&ecirc;te, comme Content-Type.</p>
 </usage>
 </directivesynopsis>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 956059 -->
+<!-- English Revision : 987858 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -161,6 +161,138 @@
     </example>
     </section> <!-- /examples -->
 
+    <section id="workers"><title>Workers</title>
+      <p>Le mandataire g&egrave;re la configuration et les param&egrave;tres de
+      communication des serveurs originaux au sein d'objets nomm&eacute;s
+      <dfn>workers</dfn>. Deux types de worker sont fournis : le worker
+      par d&eacute;faut du mandataire direct et le worker par d&eacute;faut du
+      mandataire inverse. Il est aussi possible de d&eacute;finir explicitement
+      des workers suppl&eacute;mentaires.</p>
+
+      <p>Les deux workers par d&eacute;faut poss&egrave;dent une configuration fig&eacute;e
+      et seront utilis&eacute;s si aucun autre worker ne correspond &agrave; la
+      requ&ecirc;te. Ils n'utilisent ni les jeux de connexions (connection
+      pooling), ni les
+      connexions HTTP persistantes (Keep-Alive). En effet, les
+      connexions TCP vers le serveur original sont ferm&eacute;es et ouvertes
+      pour chaque requ&ecirc;te.</p>
+
+      <p>Les workers d&eacute;finis explicitement sont identifi&eacute;s par leur URL.
+      Ils sont en g&eacute;n&eacute;ral d&eacute;finis via les directives <directive
+      module="mod_proxy">ProxyPass</directive> ou <directive
+      module="mod_proxy">ProxyPassMatch</directive> lorsqu'on les
+      utilise dans le cadre d'un mandataire inverse :</p>
+
+      <example>
+          ProxyPass /example http://backend.example.com connectiontimeout=5 timeout=30
+      </example>
+
+      <p>Cette directive va cr&eacute;er un worker associ&eacute; &agrave; l'URL du serveur
+      original <code>http://backend.example.com</code>, et utilisant les
+      valeurs de timeout donn&eacute;es. Lorsqu'ils sont utilis&eacute;s dans le cadre
+      d'un mandataire direct, les workers sont en g&eacute;n&eacute;ral d&eacute;finis via la
+      directive <directive module="mod_proxy">ProxySet</directive>,</p>
+
+      <example>
+          ProxySet http://backend.example.com connectiontimeout=5 timeout=30
+      </example>
+
+      <p>ou encore via les directives <directive
+      module="mod_proxy">Proxy</directive> et <directive
+      module="mod_proxy">ProxySet</directive> :</p>
+
+      <example>
+        &lt;Proxy http://backend.example.com&gt;<br />
+        <indent>
+          ProxySet connectiontimeout=5 timeout=30
+        </indent>
+        &lt;/Proxy&gt;
+      </example>
+
+      <p>L'utilisation de workers d&eacute;finis explicitement dans le mode
+      mandataire direct n'est pas tr&egrave;s courante, car les mandataires
+      directs communiquent en g&eacute;n&eacute;ral avec de nombreux serveurs
+      originaux. La cr&eacute;ation explicite de workers pour certains serveurs
+      originaux peut cependant s'av&eacute;rer utile si ces serveurs sont
+      tr&egrave;s souvent sollicit&eacute;s. A leur niveau, les workers explicitement
+      d&eacute;finis ne poss&egrave;dent aucune notion de mandataire direct ou
+      inverse. Ils encapsulent un concept de communication commun avec
+      les serveurs originaux. Un worker cr&eacute;&eacute; via la directive <directive
+      module="mod_proxy">ProxyPass</directive> pour &ecirc;tre utilis&eacute; dans le
+      cadre d'un mandataire inverse sera aussi utilis&eacute; dans le cadre
+      d'un mandataire directe chaque fois que l'URL vers le serveur
+      original correspondra &agrave; l'URL du worker, et vice versa.</p>
+
+      <p>L'URL qui identifie un worker correspond &agrave; l'URL de son serveur
+      original, y compris un &eacute;ventuel chemin donn&eacute; :</p>
+
+      <example>
+          ProxyPass /exemples http://backend.example.com/exemples<br />
+          ProxyPass /docs http://backend.example.com/docs
+      </example>
+
+      <p>Dans cet exemple, deux workers diff&eacute;rents sont d&eacute;finis, chacun
+      d'eux utilisant des configurations et jeux de connexions
+      s&eacute;par&eacute;s.</p>
+
+      <note type="warning"><title>Partage de workers</title>
+        <p>Le partage de workers intervient lorsque les URLs des workers
+	s'entrecoupent, ce qui arrive lorsque l'URL d'un worker
+	correspond au d&eacute;but de l'URL d'un autre worker d&eacute;fini plus loin
+	dans le fichier de configuration. Dans l'exemple suivant,</p>
+
+        <example>
+            ProxyPass /apps http://backend.example.com/ timeout=60<br />
+            ProxyPass /examples http://backend.example.com/exemples timeout=10
+        </example>
+
+        <p>le second worker n'est pas vraiment cr&eacute;&eacute;. C'est le premier
+	worker qui est en fait utilis&eacute;. L'avantage de ceci r&eacute;side dans
+	le fait qu'il n'existe qu'un seul jeu de connexions, ces
+	derni&egrave;res &eacute;tant donc r&eacute;utilis&eacute;es plus souvent. Notez que tous
+	les attributs de configuration d&eacute;finis explicitement pour le
+	deuxi&egrave;me worker seront ignor&eacute;s, ce qui sera journalis&eacute; en tant
+	qu'avertissement. Ainsi, dans l'exemple ci-dessus, la valeur de
+	timeout retenue pour l'URL <code>/exemples</code> sera
+	<code>60</code>, et non <code>10</code> !</p>
+
+        <p>Si vous voulez emp&ecirc;cher le partage de workers, classez vos
+	d&eacute;finitions de workers selon la longueur des URLs, de la plus
+	longue &agrave; la plus courte. Si au contraire vous voulez favoriser
+	ce partage, utilisez l'ordre de classement inverse. Voir aussi
+	l'avertissement &agrave; propos de l'ordre de classement des directives
+	<directive module="mod_proxy">ProxyPass</directive>.</p>
+
+      </note> <!-- /worker_sharing -->
+
+      <p>Les workers d&eacute;finis explicitement sont de deux sortes :
+      <dfn>workers directs</dfn> et <dfn>workers de r&eacute;partition (de
+      charge)</dfn>. Ils supportent de nombreux attributs de
+      configuration importants d&eacute;crits dans la directive <directive
+      module="mod_proxy">ProxyPass</directive>. Ces m&ecirc;mes attributs
+      peuvent aussi &ecirc;tre d&eacute;finis via la directive <directive
+      module="mod_proxy">ProxySet</directive>.</p>
+
+      <p>Le jeu d'options disponibles pour un worker direct d&eacute;pend du
+      protocole sp&eacute;cifi&eacute; dans l'URL du serveur original. Les protocoles
+      disponibles comprennent <code>ajp</code>, <code>fcgi</code>,
+      <code>ftp</code>, <code>http</code> et <code>scgi</code>.</p>
+
+      <p>Les workers de r&eacute;partition sont des workers virtuels qui
+      utilisent les workers directs, connus comme faisant partie de leurs
+      membres, pour le traitement effectif des requ&ecirc;tes. Chaque
+      r&eacute;partiteur peut comporter plusieurs membres. Lorsqu'il traite une
+      requ&ecirc;te, il choisit un de ses membres en fonction de l'algorithme
+      de r&eacute;partition de charge d&eacute;fini.</p>
+
+      <p>Un worker de r&eacute;partition est cr&eacute;&eacute; si son URL de worker comporte
+      <code>balancer</code> comme indicateur de protocole. L'URL du
+      r&eacute;partiteur permet d'identifier de mani&egrave;re unique le worker de
+      r&eacute;partition. La directive <directive
+      module="mod_proxy">BalancerMember</directive> permet d'ajouter des
+      membres au r&eacute;partiteur.</p>
+
+    </section> <!-- /workers -->
 
     <section id="access"><title>Contr&ocirc;ler l'acc&egrave;s &agrave; votre
     mandataire</title>
@@ -689,11 +821,24 @@ l'espace d'URLs du serveur local</description>
     vers <code>backend.example.com</code>, <em>sauf</em> les requ&ecirc;tes
     pour <code>/miroir/foo/i</code>.</p>
 
-    <note><title>Note</title>
-      <p>L'ordre est important : les exclusions doivent appara&icirc;tre
-      <em>avant</em> la directive <directive>ProxyPass</directive> plus
-      g&eacute;n&eacute;rale.</p>
-    </note>
+    <note type="warning"><title>Ordre de classement des directives ProxyPass</title>
+      <p>Les directives <directive
+      module="mod_proxy">ProxyPass</directive> et <directive
+      module="mod_proxy">ProxyPassMatch</directive> sont &eacute;valu&eacute;es dans
+      l'ordre de leur apparition dans le fichier de configuration. La
+      premi&egrave;re r&egrave;gle qui correspond s'applique. Vous devez donc en
+      g&eacute;n&eacute;ral classer les r&egrave;gles <directive
+      module="mod_proxy">ProxyPass</directive> qui entrent en conflit de
+      l'URL la plus longue &agrave; la plus courte. Dans le cas contraire, les
+      r&egrave;gles situ&eacute;es apr&egrave;s une r&egrave;gle dont l'URL correspond au d&eacute;but de
+      leur propre URL seront ignor&eacute;es. Notez que tout ceci est en
+      relation avec le partage de workers.</p>
+
+      <p>Pour les m&ecirc;mes raisons, les exclusions doivent se situer
+      <em>avant</em> les directives <directive>ProxyPass</directive>
+      g&eacute;n&eacute;rales.</p>
+
+    </note> <!-- /ordering_proxypass -->
 
     <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
     les groupements de connexions vers un serveur d'arri&egrave;re-plan. Les
@@ -822,17 +967,24 @@ l'espace d'URLs du serveur local</description>
     </td></tr>
     <tr><td>ping</td>
         <td>0</td>
-        <td>Avec la cl&eacute; ping, le serveur web envoie une requ&ecirc;te
-	<code>CPING</code> sur la connexion ajp13 avant de rediriger une
-	requ&ecirc;te. La valeur correspond au d&eacute;lai d'attente de la r&eacute;ponse
-	<code>CPONG</code>. Cette fonctionnalit&eacute; a &eacute;t&eacute; ajout&eacute;e afin de
-	pallier aux probl&egrave;mes de blocage et de surcharge des serveurs
-	Tomcat, et n&eacute;cessite le support de ping/pong ajp13 qui a &eacute;t&eacute;
-	impl&eacute;ment&eacute; dans Tomcat 3.3.2+, 4.1.28+ et 5.0.13+. Le trafic
+        <td>Avec la cl&eacute; Ping, le serveur web va "tester" la connexion
+	vers le serveur d'arri&egrave;re-plan avant de transmettre la requ&ecirc;te.
+	Avec AJP, <module>mod_proxy_ajp</module> envoie une requ&ecirc;te
+	<code>CPING</code> sur la connexion ajp13 (impl&eacute;ment&eacute; sur Tomcat
+	3.3.2+, 4.1.28+ et 5.0.13+). Avec HTTP,
+	<module>mod_proxy_http</module> envoie <code>100-Continue</code>
+	au serveur d'arri&egrave;re-plan (seulement avecHTTP/1.1 - pour les
+	serveurs d'arri&egrave;re-plan non HTTP/1.1, cette cl&eacute; ne produit
+	aucun effet). Dans les deux cas, ce param&egrave;tre correspond au
+	d&eacute;lai en secondes pour l'attente de la r&eacute;ponse. Cette
+	fonctionnalit&eacute; a &eacute;t&eacute; ajout&eacute;e pour &eacute;viter les probl&egrave;mes avec les
+	serveurs d'arri&egrave;re-plan bloqu&eacute;s ou surcharg&eacute;s.
+	
+	Le trafic
 	r&eacute;seau peut s'en trouver augment&eacute; en fonctionnement normal, ce
 	qui peut poser probl&egrave;me, mais peut s'en trouver diminu&eacute; dans les
-	cas o&ugrave; les noeuds de cluster sont arr&ecirc;t&eacute;s ou surcharg&eacute;s. Cette
-	cl&eacute; n'est actuellement utilisable qu'avec AJP. Le d&eacute;lai peut
+	cas o&ugrave; les noeuds de cluster sont arr&ecirc;t&eacute;s ou
+	surcharg&eacute;s. Le d&eacute;lai peut
 	aussi &ecirc;tre d&eacute;fini en millisecondes en ajoutant le suffixe
 	ms.
     </td></tr>
@@ -960,6 +1112,14 @@ l'espace d'URLs du serveur local</description>
 	d&eacute;fini, sa valeur correspond &agrave; la dur&eacute;e maximale d'attente pour
 	un serveur cible libre. Le comportement par d&eacute;faut est de ne pas
 	attendre.
+    </td></tr>
+    <tr><td>failonstatus</td>
+        <td>-</td>
+        <td>Une liste de codes d'&eacute;tat HTTP s&eacute;par&eacute;s par des virgules. Si
+	ce param&egrave;tre est pr&eacute;sent, le worker se mettra en erreur si le
+	serveur d'arri&egrave;re-plan renvoie un des codes d'&eacute;tat sp&eacute;cifi&eacute;s
+	dans la liste. La r&eacute;cup&eacute;ration du worker s'effectue comme dans
+	le cas des autres erreurs de worker.
     </td></tr>
 
     </table>
