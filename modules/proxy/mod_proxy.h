@@ -810,7 +810,7 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
  * @return        hash as unsigned int
  */
 
-typedef enum { PROXY_HASHFUNC_PROXY, PROXY_HASHFUNC_APR } proxy_hash_t;
+typedef enum { PROXY_HASHFUNC_DEFAULT, PROXY_HASHFUNC_APR,  PROXY_HASHFUNC_FNV } proxy_hash_t;
 
 PROXY_DECLARE(unsigned int)
 ap_proxy_hashfunc(const char *str, proxy_hash_t method);
