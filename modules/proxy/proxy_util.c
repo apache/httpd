@@ -1481,7 +1481,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
     (*worker)->flush_packets = flush_off;
     (*worker)->flush_wait = PROXY_FLUSH_WAIT;
     (*worker)->smax = -1;
-    (*worker)->our_hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_PROXY);
+    (*worker)->our_hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_DEFAULT);
     (*worker)->apr_hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_APR);
     (*worker)->cp = NULL;
     (*worker)->mutex = NULL;
@@ -2766,10 +2766,10 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
 
 /*
  * Provide a string hashing function for the proxy.
- * We offer 2 method: one is the APR model but we
- * also provide our own, based on SDBM. The reason
- * is in case we want to use both to ensure no
- * collisions
+ * We offer 2 methods: one is the APR model but we
+ * also provide our own, based on either FNV or SDBM.
+ * The reason is in case we want to use both to ensure no
+ * collisions.
  */
 PROXY_DECLARE(unsigned int)
 ap_proxy_hashfunc(const char *str, proxy_hash_t method)
@@ -2777,13 +2777,21 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
     if (method == PROXY_HASHFUNC_APR) {
         apr_ssize_t slen = strlen(str);
         return apr_hashfunc_default(str, &slen);
-    } else {
+    } else if (method == PROXY_HASHFUNC_FNV) {
+        /* FNV model */
+        unsigned int hash;
+        const unsigned int fnv_prime = 0x811C9DC5;
+        for (hash = 0; *str; str++) {
+            hash *= fnv_prime;
+            hash ^= (*str);
+        }
+        return hash;
+    } else { /* method == PROXY_HASHFUNC_DEFAULT */
         /* SDBM model */
         unsigned int hash;
-        for(hash = 0; *str; str++) {
+        for (hash = 0; *str; str++) {
             hash = (*str) + (hash << 6) + (hash << 16) - hash;
         }
         return hash;
     }
-    
 }
