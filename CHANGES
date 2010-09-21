@@ -64,6 +64,10 @@ Changes with Apache 2.3.9
      and sub-directories of matched directories are no longer implicitly
      matched.  PR49809 [Eric Covener]
 
+  *) Regexps: introduce new higher-level regexp utility including parsing
+     and executing perl-style regexp ops (e.g s/foo/bar/i) and regexp memory
+     [Nick Kew]
+
 Changes with Apache 2.3.8
 
   *) suexec: Support large log files. PR 45856. [Stefan Fritsch]

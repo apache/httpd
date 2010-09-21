@@ -128,6 +128,7 @@ int options = 0;
 
 if ((cflags & AP_REG_ICASE) != 0) options |= PCRE_CASELESS;
 if ((cflags & AP_REG_NEWLINE) != 0) options |= PCRE_MULTILINE;
+if ((cflags & AP_REG_DOTALL) != 0) options |= PCRE_DOTALL;
 
 preg->re_pcre = pcre_compile(pattern, options, &errorptr, &erroffset, NULL);
 preg->re_erroffset = erroffset;
