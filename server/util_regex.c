@@ -134,7 +134,6 @@ AP_DECLARE(int) ap_rxplus_exec(apr_pool_t *pool, ap_rxplus_t *rx,
                                const char *pattern, char **newpattern)
                                //int max_iterations)
 {
-#if 1
     int ret = 1;
     int startl, oldl, newl, diffsz;
     const char *remainder;
@@ -173,61 +172,6 @@ AP_DECLARE(int) ap_rxplus_exec(apr_pool_t *pool, ap_rxplus_t *rx,
         *newpattern = subs;
     }
     return ret;
-        
-
-
-
-#else
-
-
-
-
-
-
-
-
-
-
-
-
-    if (!(rx->flags & AP_REG_MULTI) || (rx->subs == NULL)) {
-        max_iterations = 1;
-    }
-    /* FIXME: multi-matching is incorrect */
-    while (max_iterations-- > 0) {
-        if (ap_regexec(&rx->rx, pattern, rx->nmatch, rx->pmatch, rx->flags)
-            == 0) {
-            ret++;
-            if (rx->subs) {
-                rx->match = pattern;
-                *newpattern = ap_pregsub(pool, rx->subs, pattern,
-                                         rx->nmatch, rx->pmatch);
-                pattern = *newpattern;
-                if (pattern == NULL) {
-                    max_iterations = 0;
-                }
-            }
-        }
-        else {
-            max_iterations = 0;
-        }
-    }
-
-    if (ret == 0 || rx->flags&AP_REG_NOMEM) {
-        rx->match = NULL;  /* no match, so don't pretend to remember a match */
-    }
-    else {
-#if 0
-        /* FIXME - should we be 'safe' and take the performance hit,
-         * or just document thou-shalt-keep-pattern-in-scope?
-         */
-        if (rx->match == inpattern) {
-            rx->match = apr_pstrdup(pool, inpattern);
-        }
-#endif
-    }
-    return ret;
-#endif
 }
 #ifdef DOXYGEN
 AP_DECLARE(int) ap_rxplus_nmatch(ap_rxplus_t *rx)
