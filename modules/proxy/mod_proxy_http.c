@@ -555,8 +555,11 @@ static int spool_reqbody_cl(apr_pool_t *p,
     apr_bucket *e;
     apr_off_t bytes, bytes_spooled = 0, fsize = 0;
     apr_file_t *tmpfile = NULL;
+    apr_off_t limit;
 
     body_brigade = apr_brigade_create(p, bucket_alloc);
+
+    limit = ap_get_limit_req_body(r);
 
     while (!APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(input_brigade)))
     {
@@ -572,6 +575,18 @@ static int spool_reqbody_cl(apr_pool_t *p,
         apr_brigade_length(input_brigade, 1, &bytes);
 
         if (bytes_spooled + bytes > MAX_MEM_SPOOL) {
+            /*
+             * LimitRequestBody does not affect Proxy requests (Should it?).
+             * Let it take effect if we decide to store the body in a
+             * temporary file on disk.
+             */
+            if (bytes_spooled + bytes > limit) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "proxy: Request body is larger than the"
+                             " configured limit of %" APR_OFF_T_FMT ".",
+                             limit);
+                return HTTP_REQUEST_ENTITY_TOO_LARGE;
+            }
             /* can't spool any more in memory; write latest brigade to disk */
             if (tmpfile == NULL) {
                 const char *temp_dir;
