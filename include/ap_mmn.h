@@ -259,6 +259,8 @@
  *                         to check_authorization() function. Add
  *                         parse_require_line() function.
  * 20100919.1 (2.3.9-dev)  Introduce ap_rxplus util/API
+ * 20100921.0 (2.3.9-dev)  Add an apr_bucket_brigade to the create_entity
+ *                         provider interface for mod_cache.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
