@@ -557,9 +557,10 @@ RewriteRule ^index\.html$  newsite.html
       <em>TestString</em> is first evaluated, before being matched against
       <em>CondPattern</em>.</p>
 
-      <p><strong>Remember:</strong> <em>CondPattern</em> is a
-      <em>perl compatible regular expression</em> with some
-      additions:</p>
+      <p><em>CondPattern</em> is usually a
+      <em>perl compatible regular expression</em>, but there is
+      additional syntax available to perform other useful tests against
+      the <em>Teststring</em>:</p>
 
       <ol>
         <li>You can prefix the pattern string with a
@@ -567,9 +568,7 @@ RewriteRule ^index\.html$  newsite.html
         <strong>non</strong>-matching pattern.</li>
 
         <li>
-          There are some special variants of <em>CondPatterns</em>.
-          Instead of real regular expression strings you can also
-          use one of the following:
+          You can perform lexicographical string comparisons:
 
           <ul>
             <li>'<strong>&lt;CondPattern</strong>' (lexicographically
@@ -611,7 +610,55 @@ RewriteRule ^index\.html$  newsite.html
             if <em>TestString</em> lexicographically follows
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
             (the two strings are equal, character for character).</li>
+        </ul></li>
 
+        <li>
+          You can perform integer comparisons:
+          <ul>
+
+            <li>'<strong>-eq</strong>' (is numerically
+            <strong>eq</strong>ual to)<br />
+            The <em>TestString</em> is treated as an integer, and is
+            numerically compared to the <em>CondPattern</em>. True if
+            the two are numerically equal.</li>
+
+            <li>'<strong>-ge</strong>' (is numerically
+            <strong>g</strong>reater than or <strong>e</strong>qual to)<br />
+            The <em>TestString</em> is treated as an integer, and is
+            numerically compared to the <em>CondPattern</em>. True if
+            the <em>TestString</em> is numerically greater than or equal
+            to the <em>CondPattern</em>.</li>
+            
+             <li>'<strong>-gt</strong>' (is numerically
+            <strong>g</strong>reater <strong>t</strong>han)<br />
+            The <em>TestString</em> is treated as an integer, and is
+            numerically compared to the <em>CondPattern</em>. True if
+            the <em>TestString</em> is numerically greater than
+            the <em>CondPattern</em>.</li>
+
+            <li>'<strong>-le</strong>' (is numerically
+            <strong>l</strong>ess than or <strong>e</strong>qual to)<br />
+            The <em>TestString</em> is treated as an integer, and is
+            numerically compared to the <em>CondPattern</em>. True if
+            the <em>TestString</em> is numerically less than or equal
+            to the <em>CondPattern</em>. Avoid confusion with the
+            <strong>-l</strong> by using the <strong>-L</strong> or
+            <strong>-h</strong> variant.</li>
+            
+             <li>'<strong>-lt</strong>' (is numerically
+            <strong>l</strong>ess <strong>t</strong>han)<br />
+            The <em>TestString</em> is treated as an integer, and is
+            numerically compared to the <em>CondPattern</em>. True if
+            the <em>TestString</em> is numerically less than
+            the <em>CondPattern</em>. Avoid confusion with the
+            <strong>-l</strong> by using the <strong>-L</strong> or
+            <strong>-h</strong> variant.</li>
+
+           </ul>
+        </li>
+
+        <li>You can perform various file attribute tests:
+          <ul>
             <li>'<strong>-d</strong>' (is
             <strong>d</strong>irectory)<br />
              Treats the <em>TestString</em> as a pathname and tests
@@ -639,7 +686,8 @@ RewriteRule ^index\.html$  newsite.html
             whether or not it exists, and is a symbolic link. May also
             use the bash convention of <strong>-L</strong> or
             <strong>-h</strong> if there's a possibility of confusion
-            such as when using the <strong>-lt</strong> test.</li>
+            such as when using the <strong>-lt</strong> or
+            <strong>-le</strong> tests.</li>
 
             <li>'<strong>-L</strong>' (is symbolic link, bash convention)<br />
             See <strong>-l</strong>.</li>
