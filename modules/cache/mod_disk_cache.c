@@ -331,7 +331,8 @@ static void tokens_to_array(apr_pool_t *p, const char *data,
 /*
  * Hook and mod_cache callback functions
  */
-static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr_off_t len)
+static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr_off_t len,
+                         apr_bucket_brigade *bb)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
