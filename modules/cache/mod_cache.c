@@ -1004,7 +1004,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* no cache handle, create a new entity only for non-HEAD requests */
     if (!cache->handle && !r->header_only) {
-        rv = cache_create_entity(r, size);
+        rv = cache_create_entity(r, size, in);
         info = apr_pcalloc(r->pool, sizeof(cache_info));
         /* We only set info->status upon the initial creation. */
         info->status = r->status;

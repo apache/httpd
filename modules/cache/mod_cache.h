@@ -236,7 +236,7 @@ typedef struct {
     apr_status_t (*recall_headers) (cache_handle_t *h, request_rec *r);
     apr_status_t (*recall_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
     int (*create_entity) (cache_handle_t *h, request_rec *r,
-                           const char *urlkey, apr_off_t len);
+                           const char *urlkey, apr_off_t len, apr_bucket_brigade *bb);
     int (*open_entity) (cache_handle_t *h, request_rec *r,
                            const char *urlkey);
     int (*remove_url) (cache_handle_t *h, apr_pool_t *p);
@@ -388,7 +388,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
  */
 #define MOD_CACHE_REQUEST_REC "mod_cache_request_rec"
 int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
-int cache_create_entity(request_rec *r, apr_off_t size);
+int cache_create_entity(request_rec *r, apr_off_t size, apr_bucket_brigade *in);
 int cache_select(request_rec *r);
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
 

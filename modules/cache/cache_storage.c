@@ -66,7 +66,7 @@ int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
  * decide whether or not it wants to cache this particular entity.
  * If the size is unknown, a size of -1 should be set.
  */
-int cache_create_entity(request_rec *r, apr_off_t size)
+int cache_create_entity(request_rec *r, apr_off_t size, apr_bucket_brigade *in)
 {
     cache_provider_list *list;
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
@@ -86,7 +86,7 @@ int cache_create_entity(request_rec *r, apr_off_t size)
     list = cache->providers;
     /* for each specified cache type, delete the URL */
     while (list) {
-        switch (rv = list->provider->create_entity(h, r, key, size)) {
+        switch (rv = list->provider->create_entity(h, r, key, size, in)) {
         case OK: {
             cache->handle = h;
             cache->provider = list->provider;
