@@ -967,7 +967,7 @@ cannot use <code>$N</code> in the substitution string!
       brackets, of any of the flags in the following table. More
       details, and examples, for each flag, are available in the <a href="../rewrite/flags.html">Rewrite Flags document</a>.</p>
 
-    <table>
+    <table class="bordered">
     <tr><th>Flag and syntax</th>
         <th>Function</th>
     </tr>
@@ -1136,39 +1136,72 @@ should never be necessary and is unsupported.</p>
       /somepath/pathinfo</code>'':</strong><br />
       </p>
 
-<div class="note"><pre>
-<strong>Given Rule</strong>                                      <strong>Resulting Substitution</strong>
-----------------------------------------------  ----------------------------------
-^/somepath(.*) otherpath$1                      invalid, not supported
+<table class="bordered">
+<tr>
+<th>Given Rule</th>
+<th>Resulting Substitution</th>
+</tr>
 
-^/somepath(.*) otherpath$1  [R]                 invalid, not supported
+<tr>
+<td>^/somepath(.*) otherpath$1</td>
+<td>invalid, not supported</td>
+</tr>
 
-^/somepath(.*) otherpath$1  [P]                 invalid, not supported
-----------------------------------------------  ----------------------------------
-^/somepath(.*) /otherpath$1                     /otherpath/pathinfo
+<tr>
+<td>^/somepath(.*) otherpath$1  [R]</td>
+<td>invalid, not supported</td>
+</tr>
 
-^/somepath(.*) /otherpath$1 [R]                 http://thishost/otherpath/pathinfo
-                                                via external redirection
+<tr>
+<td>^/somepath(.*) otherpath$1  [P]</td>
+<td>invalid, not supported</td>
+</tr>
 
-^/somepath(.*) /otherpath$1 [P]                 doesn't make sense, not supported
-----------------------------------------------  ----------------------------------
-^/somepath(.*) http://thishost/otherpath$1      /otherpath/pathinfo
+<tr>
+<td>^/somepath(.*) /otherpath$1</td>
+<td>/otherpath/pathinfo</td>
+</tr>
 
-^/somepath(.*) http://thishost/otherpath$1 [R]  http://thishost/otherpath/pathinfo
-                                                via external redirection
+<tr>
+<td>^/somepath(.*) /otherpath$1 [R]</td>
+<td>http://thishost/otherpath/pathinfo via external redirection</td>
+</tr>
 
-^/somepath(.*) http://thishost/otherpath$1 [P]  doesn't make sense, not supported
-----------------------------------------------  ----------------------------------
-^/somepath(.*) http://otherhost/otherpath$1     http://otherhost/otherpath/pathinfo
-                                                via external redirection
+<tr>
+<td>^/somepath(.*) /otherpath$1 [P]</td>
+<td>doesn't make sense, not supported</td>
+</tr>
 
-^/somepath(.*) http://otherhost/otherpath$1 [R] http://otherhost/otherpath/pathinfo
-                                                via external redirection
-                                                (the [R] flag is redundant)
+<tr>
+<td>^/somepath(.*) http://thishost/otherpath$1</td>
+<td>/otherpath/pathinfo</td>
+</tr>
 
-^/somepath(.*) http://otherhost/otherpath$1 [P] http://otherhost/otherpath/pathinfo
-                                                via internal proxy
-</pre></div>
+<tr>
+<td>^/somepath(.*) http://thishost/otherpath$1 [R]</td>
+<td>http://thishost/otherpath/pathinfo via external redirection</td>
+</tr>
+
+<tr>
+<td>^/somepath(.*) http://thishost/otherpath$1 [P]</td>
+<td>doesn't make sense, not supported</td>
+</tr>
+
+<tr>
+<td>^/somepath(.*) http://otherhost/otherpath$1</td>
+<td>http://otherhost/otherpath/pathinfo via external redirection</td>
+</tr>
+
+<tr>
+<td>^/somepath(.*) http://otherhost/otherpath$1 [R]</td>
+<td>http://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
+</tr>
+
+<tr>
+<td>^/somepath(.*) http://otherhost/otherpath$1 [P]</td>
+<td>http://otherhost/otherpath/pathinfo via internal proxy</td>
+</tr>
+</table>
 
       <p><strong>Inside per-directory configuration for
       <code>/somepath</code><br />
@@ -1178,40 +1211,76 @@ should never be necessary and is unsupported.</p>
       /somepath/localpath/pathinfo</code>'':</strong><br />
      </p>
 
-<div class="note"><pre>
-<strong>Given Rule</strong>                                      <strong>Resulting Substitution</strong>
-----------------------------------------------  ----------------------------------
-^localpath(.*) otherpath$1                      /somepath/otherpath/pathinfo
+<table class="bordered">
 
-^localpath(.*) otherpath$1  [R]                 http://thishost/somepath/otherpath/pathinfo
-                                                via external redirection
+<tr>
+<th>Given Rule</th>
+<th>Resulting Substitution</th>
+</tr>
 
-^localpath(.*) otherpath$1  [P]                 doesn't make sense, not supported
-----------------------------------------------  ----------------------------------
-^localpath(.*) /otherpath$1                     /otherpath/pathinfo
+<tr>
+<td>^localpath(.*) otherpath$1</td>
+<td>/somepath/otherpath/pathinfo</td>
+</tr>
 
-^localpath(.*) /otherpath$1 [R]                 http://thishost/otherpath/pathinfo
-                                                via external redirection
+<tr>
+<td>^localpath(.*) otherpath$1  [R]</td>
+<td>http://thishost/somepath/otherpath/pathinfo via external
+redirection</td>
+</tr>
 
-^localpath(.*) /otherpath$1 [P]                 doesn't make sense, not supported
-----------------------------------------------  ----------------------------------
-^localpath(.*) http://thishost/otherpath$1      /otherpath/pathinfo
+<tr>
+<td>^localpath(.*) otherpath$1  [P]</td>
+<td>doesn't make sense, not supported</td>
+</tr>
 
-^localpath(.*) http://thishost/otherpath$1 [R]  http://thishost/otherpath/pathinfo
-                                                via external redirection
+<tr>
+<td>^localpath(.*) /otherpath$1</td>
+<td>/otherpath/pathinfo</td>
+</tr>
 
-^localpath(.*) http://thishost/otherpath$1 [P]  doesn't make sense, not supported
-----------------------------------------------  ----------------------------------
-^localpath(.*) http://otherhost/otherpath$1     http://otherhost/otherpath/pathinfo
-                                                via external redirection
+<tr>
+<td>^localpath(.*) /otherpath$1 [R]</td>
+<td>http://thishost/otherpath/pathinfo via external redirection</td>
+</tr>
 
-^localpath(.*) http://otherhost/otherpath$1 [R] http://otherhost/otherpath/pathinfo
-                                                via external redirection
-                                                (the [R] flag is redundant)
+<tr>
+<td>^localpath(.*) /otherpath$1 [P]</td>
+<td>doesn't make sense, not supported</td>
+</tr>
 
-^localpath(.*) http://otherhost/otherpath$1 [P] http://otherhost/otherpath/pathinfo
-                                                via internal proxy
-</pre></div>
+<tr>
+<td>^localpath(.*) http://thishost/otherpath$1</td>
+<td>/otherpath/pathinfo</td>
+</tr>
+
+<tr>
+<td>^localpath(.*) http://thishost/otherpath$1 [R]</td>
+<td>http://thishost/otherpath/pathinfo via external redirection</td>
+</tr>
+
+<tr>
+<td>^localpath(.*) http://thishost/otherpath$1 [P]</td>
+<td>doesn't make sense, not supported</td>
+</tr>
+
+<tr>
+<td>^localpath(.*) http://otherhost/otherpath$1</td>
+<td>http://otherhost/otherpath/pathinfo via external redirection</td>
+</tr>
+
+<tr>
+<td>^localpath(.*) http://otherhost/otherpath$1 [R]</td>
+<td>http://otherhost/otherpath/pathinfo via external redirection (the [R] flag is redundant)</td>
+</tr>
+
+<tr>
+<td>^localpath(.*) http://otherhost/otherpath$1 [P]</td>
+<td>http://otherhost/otherpath/pathinfo via internal proxy</td>
+</tr>
+
+</table>
+
   
 </div>
 </div>
