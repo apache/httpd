@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_cache: Give the cache provider the opportunity to choose to cache
+     or not cache based on the buckets present in the brigade, such as the
+     presence of a FILE bucket.
+     [Graham Leggett]
+
   *) mod_authz_core: Allow authz providers to check args while reading the
      config and allow to cache parsed args. [Stefan Fritsch]
 
