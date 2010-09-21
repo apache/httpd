@@ -383,30 +383,6 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
                                                         apr_table_t *t,
                                                         server_rec *s);
 
-/**
- * cache_storage.c
- */
-#define MOD_CACHE_REQUEST_REC "mod_cache_request_rec"
-int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
-int cache_create_entity(request_rec *r, apr_off_t size, apr_bucket_brigade *in);
-int cache_select(request_rec *r);
-apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key );
-
-
-/**
- * create a key for the cache based on the request record
- * this is the 'default' version, which can be overridden by a default function
- */
-const char* cache_create_key( request_rec*r );
-
-/*
-apr_status_t cache_store_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info);
-apr_status_t cache_store_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *bb);
-
-apr_status_t cache_recall_entity_headers(cache_handle_t *h, request_rec *r);
-apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
-*/
-
 /* hooks */
 
 APR_DECLARE_OPTIONAL_FN(apr_status_t,

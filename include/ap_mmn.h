@@ -261,14 +261,16 @@
  * 20100919.1 (2.3.9-dev)  Introduce ap_rxplus util/API
  * 20100921.0 (2.3.9-dev)  Add an apr_bucket_brigade to the create_entity
  *                         provider interface for mod_cache.h.
+ * 20100922.0 (2.3.9-dev)  Move cache_* functions from mod_cache.h to a
+ *                         private header file.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100919
+#define MODULE_MAGIC_NUMBER_MAJOR 20100922
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

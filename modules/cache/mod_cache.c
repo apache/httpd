@@ -16,6 +16,8 @@
 
 #include "mod_cache.h"
 
+#include "cache_storage.h"
+
 module AP_MODULE_DECLARE_DATA cache_module;
 APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 
