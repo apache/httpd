@@ -63,7 +63,7 @@ POSSIBILITY OF SUCH DAMAGE.
 extern "C" {
 #endif
 
-/* Options for ap_regexec: */
+/* Options for ap_regcomp, ap_regexec, and ap_rxplus versions: */
 
 #define AP_REG_ICASE    0x01 /** use a case-insensitive match */
 #define AP_REG_NEWLINE  0x02 /** don't match newlines against '.' etc */
@@ -72,6 +72,10 @@ extern "C" {
 
 #define AP_REG_EXTENDED (0)  /** unused */
 #define AP_REG_NOSUB    (0)  /** unused */
+
+#define AP_REG_MULTI 0x10    /* perl's /g (needs fixing) */
+#define AP_REG_NOMEM 0x20    /* nomem in our code */
+#define AP_REG_DOTALL 0x40   /* perl's /s flag */
 
 /* Error values: */
 enum {
@@ -133,6 +137,80 @@ AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg,
  * @param preg The pre-compiled regex to free.
  */
 AP_DECLARE(void) ap_regfree(ap_regex_t *preg);
+
+/* ap_rxplus: higher-level regexps */
+
+typedef struct {
+    ap_regex_t rx;
+    apr_uint32_t flags;
+    const char *subs;
+    const char *match;
+    apr_size_t nmatch;
+    ap_regmatch_t *pmatch;
+} ap_rxplus_t;
+
+/**
+ * Compile a pattern into a regexp.
+ * supports perl-like formats
+ *    match-string
+ *    /match-string/flags
+ *    s/match-string/replacement-string/flags
+ *    Intended to support more perl-like stuff as and when round tuits happen
+ * match-string is anything supported by ap_regcomp
+ * replacement-string is a substitution string as supported in ap_pregsub
+ * flags should correspond with perl syntax: treat failure to do so as a bug
+ *                                           (documentation TBD)
+ * @param pool Pool to allocate from
+ * @param pattern Pattern to compile
+ * @return Compiled regexp, or NULL in case of compile/syntax error
+ */
+AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool, const char *pattern);
+/**
+ * Apply a regexp operation to a string.
+ * @param pool Pool to allocate from
+ * @param rx The regex match to apply
+ * @param pattern The string to apply it to
+ *                NOTE: This MUST be kept in scope to use regexp memory
+ * @param newpattern The modified string (ignored if the operation doesn't
+ *                                        modify the string)
+ * @return Number of times a match happens.  Normally 0 (no match) or 1
+ *         (match found), but may be greater if a transforming pattern
+ *         is applied with the 'g' flag.
+ */
+AP_DECLARE(int) ap_rxplus_exec(apr_pool_t *pool, ap_rxplus_t *rx,
+                               const char *pattern, char **newpattern);
+#ifdef DOXYGEN
+/**
+ * Number of matches in the regexp operation's memory
+ * This may be 0 if no match is in memory, or up to nmatch from compilation
+ * @param rx The regexp
+ * @return Number of matches in memory
+ */
+AP_DECLARE(int) ap_rxplus_nmatch(ap_rxplus_t *rx);
+#else
+#define ap_rxplus_nmatch(rx) (((rx)->match != NULL) ? (rx)->nmatch : 0)
+#endif
+/**
+ * Get a pointer to a match from regex memory
+ * NOTE: this relies on the match pattern from the last call to
+ *       ap_rxplus_exec still being valid (i.e. not freed or out-of-scope)
+ * @param rx The regexp
+ * @param n The match number to retrieve (must be between 0 and nmatch)
+ * @param len Returns the length of the match.
+ * @param match Returns the match pattern
+ */
+AP_DECLARE(void) ap_rxplus_match(ap_rxplus_t *rx, int n, int *len,
+                                 const char **match);
+/**
+ * Get a match from regex memory in a string copy
+ * NOTE: this relies on the match pattern from the last call to
+ *       ap_rxplus_exec still being valid (i.e. not freed or out-of-scope)
+ * @param pool Pool to allocate from
+ * @param rx The regexp
+ * @param n The match number to retrieve (must be between 0 and nmatch)
+ * @return The matched string
+ */
+AP_DECLARE(char*) ap_rxplus_pmatch(apr_pool_t *pool, ap_rxplus_t *rx, int n);
 
 #ifdef __cplusplus
 }   /* extern "C" */
