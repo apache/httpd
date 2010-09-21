@@ -592,9 +592,9 @@ RewriteRule ^index\.html$  newsite.html
           instead of the implicit AND. Typical example:
 
 <div class="example"><pre>
-RewriteCond %{REMOTE_HOST}  ^host1.*  [OR]
-RewriteCond %{REMOTE_HOST}  ^host2.*  [OR]
-RewriteCond %{REMOTE_HOST}  ^host3.*
+RewriteCond %{REMOTE_HOST}  ^host1  [OR]
+RewriteCond %{REMOTE_HOST}  ^host2  [OR]
+RewriteCond %{REMOTE_HOST}  ^host3
 RewriteRule ...some special stuff for any of these hosts...
 </pre></div>
 
@@ -622,10 +622,10 @@ RewriteRule ...some special stuff for any of these hosts...
         use the following: </p>
 
 <div class="example"><pre>
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla.*
+RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx.*
+RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
