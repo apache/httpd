@@ -442,6 +442,22 @@ RewriteRule ^index\.html$  newsite.html
             is <code>""</code> (two quotation marks) this
             compares <em>TestString</em> to the empty string.</li>
 
+            <li>'<strong>&lt;=CondPattern</strong>' (lexicographically
+            less than or equal to)<br />
+            Treats the <em>CondPattern</em> as a plain string and
+            compares it lexicographically to <em>TestString</em>. True
+            if <em>TestString</em> lexicographically precedes
+            <em>CondPattern</em>, or is equal to <em>CondPattern</em>
+            (the two strings are equal, character for character).</li>
+
+            <li>'<strong>&gt;=CondPattern</strong>' (lexicographically
+            greater than or equal to)<br />
+            Treats the <em>CondPattern</em> as a plain string and
+            compares it lexicographically to <em>TestString</em>. True
+            if <em>TestString</em> lexicographically follows
+            <em>CondPattern</em>, or is equal to <em>CondPattern</em>
+            (the two strings are equal, character for character).</li>
+
             <li>'<strong>-d</strong>' (is
             <strong>d</strong>irectory)<br />
              Treats the <em>TestString</em> as a pathname and tests
@@ -452,24 +468,6 @@ RewriteRule ^index\.html$  newsite.html
              Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a regular file.</li>
 
-            <li>'<strong>-s</strong>' (is regular file, with
-            <strong>s</strong>ize)<br />
-            Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and is a regular file with size greater
-            than zero.</li>
-
-            <li>'<strong>-l</strong>' (is symbolic
-            <strong>l</strong>ink)<br />
-            Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and is a symbolic link.</li>
-
-            <li>'<strong>-x</strong>' (has e<strong>x</strong>ecutable
-            permissions)<br />
-            Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and has executable permissions.
-            These permissions are determined according to
-            the underlying OS.</li>
-
             <li>'<strong>-F</strong>' (is existing file, via
             subrequest)<br />
             Checks whether or not <em>TestString</em> is a valid file,
@@ -478,6 +476,26 @@ RewriteRule ^index\.html$  newsite.html
             subrequest to do the check, so use it with care -
             it can impact your server's performance!</li>
 
+            <li>'<strong>-H</strong>' (is symbolic link, bash convention)<br />
+            See <strong>-l</strong>.</li>
+
+            <li>'<strong>-l</strong>' (is symbolic
+            <strong>l</strong>ink)<br />
+            Treats the <em>TestString</em> as a pathname and tests
+            whether or not it exists, and is a symbolic link. May also
+            use the bash convention of <strong>-L</strong> or
+            <strong>-h</strong> if there's a possibility of confusion
+            such as when using the <strong>-lt</strong> test.</li>
+
+            <li>'<strong>-L</strong>' (is symbolic link, bash convention)<br />
+            See <strong>-l</strong>.</li>
+
+            <li>'<strong>-s</strong>' (is regular file, with
+            <strong>s</strong>ize)<br />
+            Treats the <em>TestString</em> as a pathname and tests
+            whether or not it exists, and is a regular file with size greater
+            than zero.</li>
+
             <li>'<strong>-U</strong>' (is existing URL, via
             subrequest)<br />
             Checks whether or not <em>TestString</em> is a valid URL,
@@ -485,6 +503,14 @@ RewriteRule ^index\.html$  newsite.html
             access controls for that path. This uses an internal
             subrequest to do the check, so use it with care -
             it can impact your server's performance!</li>
+
+            <li>'<strong>-x</strong>' (has e<strong>x</strong>ecutable
+            permissions)<br />
+            Treats the <em>TestString</em> as a pathname and tests
+            whether or not it exists, and has executable permissions.
+            These permissions are determined according to
+            the underlying OS.</li>
+
           </ul>
 
 <div class="note"><h3>Note:</h3>
