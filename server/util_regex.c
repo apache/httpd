@@ -132,7 +132,6 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
 
 AP_DECLARE(int) ap_rxplus_exec(apr_pool_t *pool, ap_rxplus_t *rx,
                                const char *pattern, char **newpattern)
-                               //int max_iterations)
 {
     int ret = 1;
     int startl, oldl, newl, diffsz;

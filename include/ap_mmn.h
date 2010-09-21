@@ -258,6 +258,7 @@
  * 20100919.0 (2.3.9-dev)  Authz providers: Add parsed_require_line parameter
  *                         to check_authorization() function. Add
  *                         parse_require_line() function.
+ * 20100919.1 (2.3.9-dev)  Introduce ap_rxplus util/API
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -265,7 +266,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20100919
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
