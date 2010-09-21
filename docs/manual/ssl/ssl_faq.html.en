@@ -345,7 +345,7 @@ Certificate for testing purposes?</a></h3>
     <li>Create a RSA private key for your Apache server
        (will be Triple-DES encrypted and PEM formatted):<br />
        <br />
-       <code><strong>$ openssl genrsa -des3 -out server.key 1024</strong></code><br />
+       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
        <br />
        Please backup this <code>server.key</code> file and the
        pass-phrase you entered in a secure location.
@@ -417,7 +417,7 @@ Certificate for testing purposes?</a></h3>
     <li>Create a RSA private key for your server
        (will be Triple-DES encrypted and PEM formatted):<br />
        <br />
-       <code><strong>$ openssl genrsa -des3 -out server.key 1024</strong></code><br />
+       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
        <br />
        Please backup this <code>host.key</code> file and the
        pass-phrase you entered in a secure location.
@@ -528,17 +528,8 @@ Certificate for testing purposes?</a></h3>
     <p><code><strong>$ openssl req -noout -modulus -in server.csr | openssl md5</strong></code></p>
 
 
-<h3><a name="badcert" id="badcert">Why do connections fail with an "alert 
-bad certificate" error?</a></h3>
-<p>Errors such as <code>OpenSSL: error:14094412: SSL
-    routines:SSL3_READ_BYTES:sslv3 alert bad certificate</code> in the SSL
-    logfile, are usually caused by a browser which is unable to handle the server
-    certificate/private-key. For example, Netscape Navigator 3.x is 
-    unable to handle RSA key lengths not equal to 1024 bits.</p>
-
-
 <h3><a name="pemder" id="pemder">How can I convert a certificate from PEM to DER format?</a></h3>
-<p>The default certificate format for SSLeay/OpenSSL is PEM, which is simply
+<p>The default certificate format for OpenSSL is PEM, which is simply
     Base64 encoded DER, with header and footer lines. For some applications
     (e.g. Microsoft Internet Explorer) you need the certificate in plain DER
     format. You can convert a PEM file <code>cert.pem</code> into the
@@ -583,9 +574,6 @@ Does this mean the username/password is being sent unencrypted?</a></li>
 <li><a href="#msie">Why do I get I/O errors when connecting via
 HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer 
 (MSIE)?</a></li>
-<li><a href="#nn">Why do I get I/O errors, or the message "Netscape has 
-encountered bad data from the server", when connecting via
-HTTPS to an Apache+mod_ssl server with Netscape Navigator?</a></li>
 </ul>
 
 <h3><a name="random" id="random">Why do I get lots of random SSL protocol 
@@ -622,13 +610,9 @@ sometimes take up to 30 seconds to establish a connection?</a></h3>
     least the following ciphers are supported:</p>
     
     <ol>
-    <li>RC4 with MD5</li>
-    <li>RC4 with MD5 (export version restricted to 40-bit key)</li>
-    <li>RC2 with MD5</li>
-    <li>RC2 with MD5 (export version restricted to 40-bit key)</li>
-    <li>IDEA with MD5</li>
-    <li>DES with MD5</li>
-    <li>Triple-DES with MD5</li>
+    <li>RC4 with SHA1</li>
+    <li>AES with SHA1</li>
+    <li>Triple-DES with SHA1</li>
     </ol>
     
     <p>To determine the actual list of ciphers available, you should run 
@@ -651,7 +635,7 @@ error when connecting to my newly installed server?</a></h3>
 <p>Either you have made a mistake with your 
     <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>
     directive (compare it with the pre-configured example in
-    <code>httpd.conf-dist</code>) or you chose to use DSA/DH
+    <code>extra/httpd-ssl.conf</code>) or you chose to use DSA/DH
     algorithms instead of RSA when you generated your private key
     and ignored or overlooked the warnings. If you have chosen
     DSA/DH, then your server cannot communicate using RSA-based SSL 
@@ -777,47 +761,6 @@ HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer (MSIE)?</a></
     make these changes - they will affect <em>all</em> your clients, MSIE
     or otherwise.</p>
 
-    <p>The next problem is that 56bit export versions of MSIE 5.x 
-    browsers have a broken SSLv3 implementation, which interacts badly 
-    with OpenSSL versions greater than 0.9.4. You can accept this and 
-    require your clients to upgrade their browsers, you can downgrade to 
-    OpenSSL 0.9.4 (not advised), or you can work around this, accepting 
-    that your workaround will affect other browsers too:</p>
-    <div class="example"><p><code>SSLProtocol all -SSLv3</code></p></div>
-    <p>will completely disables the SSLv3 protocol and allow those 
-    browsers to work. A better workaround is to disable only those 
-    ciphers which cause trouble.</p>
-    <div class="example"><p><code>SSLCipherSuite
-    ALL:!ADH:<strong>!EXPORT56</strong>:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>
-    </p></div>
-
-    <p>This also allows the broken MSIE versions to work, but only removes the
-    newer 56bit TLS ciphers.</p>
-    
-    <p>Another problem with MSIE 5.x clients is that they refuse to connect to
-    URLs of the form <code>https://12.34.56.78/</code> (where IP-addresses are used
-    instead of the hostname), if the server is using the Server Gated
-    Cryptography (SGC) facility. This can only be avoided by using the fully
-    qualified domain name (FQDN) of the website in hyperlinks instead, because
-    MSIE 5.x has an error in the way it handles the SGC negotiation.</p>
-    
-    <p>And finally there are versions of MSIE which seem to require that
-    an SSL session can be reused (a totally non-standard-conforming
-    behaviour, of course). Connecting with those MSIE versions only work
-    if a SSL session cache is used. So, as a work-around, make sure you
-    are using a session cache (see the <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code> directive).</p>
-
-
-<h3><a name="nn" id="nn">Why do I get I/O errors, or the message "Netscape has
-encountered bad data from the server", when connecting via
-HTTPS to an Apache+mod_ssl server with Netscape Navigator?</a></h3>
-<p>
-    This usually occurs when you have created a new server certificate for
-    a given domain, but had previously told your browser to always accept 
-    the old server certificate. Once you clear the entry for the old 
-    certificate from your browser, everything should be fine. Netscape's SSL
-    implementation is correct, so when you encounter I/O errors with Netscape
-    Navigator it is usually caused by the configured certificates.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -846,11 +789,6 @@ for my core dump?</a></li>
         one, it may have been answered several times before, and been included
         in this doc.
     </dd>
-    <dt>Postings from the modssl-users Support Mailing List
-        <a href="http://www.modssl.org/support/">http://www.modssl.org/support/</a></dt>
-    <dd>Search for your problem in the archives of the modssl-users mailing list. 
-        You're probably not the first person to have had this problem!
-    </dd>
     </dl>
 
 
@@ -860,14 +798,6 @@ of mod_ssl problems?</a></h3>
          preference. Please go through these possibilities 
          <em>in this order</em> - don't just pick the one you like the look of. </p>
     <ol>
-    <li><em>Send a Problem Report to the modssl-users Support Mailing List</em><br />
-        <a href="mailto:modssl-users@modssl.org">
-        modssl-users@modssl.org</a><br />
-        This is the preferred way of submitting your problem report, because this way,
-        others can see the problem, and learn from any answers. You must subscribe to 
-        the list first, but you can then easily discuss your problem with both the 
-        author and the whole mod_ssl user community.
-        </li>
 
     <li><em>Send a Problem Report to the Apache httpd Users Support Mailing List</em><br />
         <a href="mailto:users@httpd.apache.org">
@@ -892,7 +822,7 @@ provide when writing a bug report?</a></h3>
 <p>You should always provide at least the following information:</p>
 
     <dl>
-    <dt>Apache and OpenSSL version information</dt>
+    <dt>Apache httpd and OpenSSL version information</dt>
     <dd>The Apache version can be determined
         by running <code>httpd -v</code>. The OpenSSL version can be
         determined by running <code>openssl version</code>. Alternatively, if
@@ -901,14 +831,14 @@ provide when writing a bug report?</a></h3>
         single step.
     </dd>
 
-    <dt>The details on how you built and installed Apache+mod_ssl+OpenSSL</dt>
+    <dt>The details on how you built and installed Apache httpd and OpenSSL</dt>
     <dd>For this you can provide a logfile of your terminal session which shows
     the configuration and install steps. If this is not possible, you 
     should at least provide the <code class="program"><a href="../programs/configure.html">configure</a></code> command line you used.
     </dd>
 
     <dt>In case of core dumps please include a Backtrace</dt>
-    <dd>If your Apache+mod_ssl+OpenSSL dumps its core, please attach
+    <dd>If your Apache httpd dumps its core, please attach
     a stack-frame ``backtrace'' (see <a href="#backtrace">below</a> 
     for information on how to get this). This information is required
     in order to find a reason for your core dump.
