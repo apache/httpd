@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * ab: repeat apr_pollset_poll() while APR_STATUS_IS_EINTR(rv)
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=750094
      2.2 patch: trunk patch works
-     +1: trawick
+     +1: trawick, sf
 
    * clean up some miscellaneous warnings from Fortify or Intel's compiler
      Trunk revisions:
@@ -214,6 +214,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          long argv[0]
      2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-1.txt
      +1: trawick
+     sf notes: - your patch also contains parts of r982050 in
+                 server/mpm_common.c which should be lilsted in the proposal
+               - the backport for r991515 is broken: you need to remove
+                 the '*', too
+               - +1 once this is fixed
 
    * mod_cache: Check the request to determine whether we are allowed
      to return cached content at all, and respect a "Cache-Control:
@@ -227,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      when parsing response lines.
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=999694
      2.2.x patch: trunk patch works
-     +1: trawick
+     +1: trawick, sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
