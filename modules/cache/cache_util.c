@@ -257,7 +257,7 @@ apr_status_t cache_try_lock(cache_server_conf *conf,
 
     /* create the key if it doesn't exist */
     if (!key) {
-        cache_generate_key(cache, r, r->pool, &key);
+        cache_generate_key(r, r->pool, &cache->key);
     }
 
     /* create a hashed filename from the key, and save it for later */
@@ -364,7 +364,7 @@ apr_status_t cache_remove_lock(cache_server_conf *conf,
 
         /* create the key if it doesn't exist */
         if (!key) {
-            cache_generate_key(cache, r, r->pool, &key);
+            cache_generate_key(r, r->pool, &cache->key);
         }
 
         /* create a hashed filename from the key, and save it for later */

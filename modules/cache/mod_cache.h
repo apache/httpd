@@ -133,7 +133,6 @@ struct cache_info {
 };
 
 /* cache handle information */
-
 typedef struct cache_object cache_object_t;
 struct cache_object {
     const char *key;
@@ -166,39 +165,6 @@ typedef struct {
     int (*remove_url) (cache_handle_t *h, apr_pool_t *p);
     apr_status_t (*commit_entity)(cache_handle_t *h, request_rec *r);
 } cache_provider;
-
-/* A linked-list of authn providers. */
-typedef struct cache_provider_list cache_provider_list;
-
-struct cache_provider_list {
-    const char *provider_name;
-    const cache_provider *provider;
-    cache_provider_list *next;
-};
-
-/* per request cache information */
-typedef struct {
-    cache_provider_list *providers;     /* possible cache providers */
-    const cache_provider *provider;     /* current cache provider */
-    const char *provider_name;          /* current cache provider name */
-    int fresh;                          /* is the entity fresh? */
-    cache_handle_t *handle;             /* current cache handle */
-    cache_handle_t *stale_handle;       /* stale cache handle */
-    apr_table_t *stale_headers;         /* original request headers. */
-    int in_checked;                     /* CACHE_SAVE must cache the entity */
-    int block_response;                 /* CACHE_SAVE must block response. */
-    apr_bucket_brigade *saved_brigade;  /* copy of partial response */
-    apr_off_t saved_size;               /* length of saved_brigade */
-    apr_time_t exp;                     /* expiration */
-    apr_time_t lastmod;                 /* last-modified time */
-    cache_info *info;                   /* current cache info */
-    ap_filter_t *remove_url_filter;     /* Enable us to remove the filter */
-    char *key;                          /* The cache key created for this
-                                         * request
-                                         */
-    apr_off_t size;                     /* the content length from the headers, or -1 */
-    apr_bucket_brigade *out;            /* brigade to reuse for upstream responses */
-} cache_request_rec;
 
 
 /* cache_util.c */
@@ -244,11 +210,9 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r);
 
 
 /* hooks */
-
 APR_DECLARE_OPTIONAL_FN(apr_status_t,
                         ap_cache_generate_key,
-                        (cache_request_rec *cache, request_rec *r,
-                         apr_pool_t*p, char **key));
+                        (request_rec *r, apr_pool_t*p, const char **key));
 
 
 #endif /*MOD_CACHE_H*/
