@@ -260,7 +260,7 @@ typedef struct {
     cache_provider_list *providers;     /* possible cache providers */
     const cache_provider *provider;     /* current cache provider */
     const char *provider_name;          /* current cache provider name */
-    int fresh;                          /* is the entitey fresh? */
+    int fresh;                          /* is the entity fresh? */
     cache_handle_t *handle;             /* current cache handle */
     cache_handle_t *stale_handle;       /* stale cache handle */
     apr_table_t *stale_headers;         /* original request headers. */
@@ -291,7 +291,8 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
  * @param r request_rec
  * @return 0 ==> cache object is stale, 1 ==> cache object is fresh
  */
-CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, request_rec *r);
+CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
+                                            request_rec *r);
 
 /**
  * Check the whether the request allows a cached object to be served as per RFC2616
@@ -324,7 +325,7 @@ CACHE_DECLARE(int) ap_cache_check_allowed(request_rec *r);
  * the backend.
  */
 CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
-		request_rec *r, char *key);
+        cache_request_rec *cache, request_rec *r, char *key);
 
 /**
  * Remove the cache lock, if present.
@@ -339,7 +340,8 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
  * removed if the bucket brigade contains an EOS bucket.
  */
 CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
-		request_rec *r, char *key, apr_bucket_brigade *bb);
+        cache_request_rec *cache, request_rec *r, char *key,
+        apr_bucket_brigade *bb);
 
 /**
  * Merge in cached headers into the response
@@ -390,7 +392,8 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
 
 APR_DECLARE_OPTIONAL_FN(apr_status_t,
                         ap_cache_generate_key,
-                        (request_rec *r, apr_pool_t*p, char**key ));
+                        (cache_request_rec *cache, request_rec *r,
+                         apr_pool_t*p, char **key));
 
 
 #endif /*MOD_CACHE_H*/

@@ -98,9 +98,6 @@ static int cache_quick_handler(request_rec *r, int lookup)
     cache->size = -1;
     cache->out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-    /* store away the per request config where the API can find it */
-    apr_pool_userdata_setn(cache, MOD_CACHE_REQUEST_REC, NULL, r->pool);
-
     /* save away the possible providers */
     cache->providers = providers;
 
@@ -128,7 +125,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
      *   add cache_out filter
      *   return OK
      */
-    rv = cache_select(r);
+    rv = cache_select(cache, r);
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
@@ -140,7 +137,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
                  * backend without any attempt to cache. this stops
                  * duplicated simultaneous attempts to cache an entity.
                  */
-                rv = ap_cache_try_lock(conf, r, NULL);
+                rv = ap_cache_try_lock(conf, cache, r, NULL);
                 if (APR_SUCCESS == rv) {
 
                     /*
@@ -358,9 +355,6 @@ static int cache_handler(request_rec *r)
     cache->size = -1;
     cache->out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-    /* store away the per request config where the API can find it */
-    apr_pool_userdata_setn(cache, MOD_CACHE_REQUEST_REC, NULL, r->pool);
-
     /* save away the possible providers */
     cache->providers = providers;
 
@@ -374,7 +368,7 @@ static int cache_handler(request_rec *r)
      *   add cache_out filter
      *   return OK
      */
-    rv = cache_select(r);
+    rv = cache_select(cache, r);
     if (rv != OK) {
         if (rv == DECLINED) {
 
@@ -385,7 +379,7 @@ static int cache_handler(request_rec *r)
              * backend without any attempt to cache. this stops
              * duplicated simultaneous attempts to cache an entity.
              */
-            rv = ap_cache_try_lock(conf, r, NULL);
+            rv = ap_cache_try_lock(conf, cache, r, NULL);
             if (APR_SUCCESS == rv) {
 
                 /*
@@ -596,7 +590,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
             ap_remove_output_filter(f);
 
             /* give someone else the chance to cache the file */
-            ap_cache_remove_lock(conf, f->r, cache->handle ?
+            ap_cache_remove_lock(conf, cache, f->r, cache->handle ?
                     (char *)cache->handle->cache_obj->key : NULL, NULL);
 
             /* give up trying to cache, just step out the way */
@@ -617,7 +611,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
         }
 
         /* conditionally remove the lock as soon as we see the eos bucket */
-        ap_cache_remove_lock(conf, f->r, cache->handle ?
+        ap_cache_remove_lock(conf, cache, f->r, cache->handle ?
                 (char *)cache->handle->cache_obj->key : NULL, cache->out);
 
         if (APR_BRIGADE_EMPTY(cache->out)) {
@@ -638,7 +632,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
                 ap_remove_output_filter(f);
 
                 /* give someone else the chance to cache the file */
-                ap_cache_remove_lock(conf, f->r, cache->handle ?
+                ap_cache_remove_lock(conf, cache, f->r, cache->handle ?
                         (char *)cache->handle->cache_obj->key : NULL, NULL);
 
                 return ap_pass_brigade(f->next, in);
@@ -912,7 +906,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_remove_output_filter(f);
 
         /* remove the lock file unconditionally */
-        ap_cache_remove_lock(conf, r, cache->handle ?
+        ap_cache_remove_lock(conf, cache, r, cache->handle ?
                 (char *)cache->handle->cache_obj->key : NULL, NULL);
 
         /* ship the data up the stack */
@@ -1007,7 +1001,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* no cache handle, create a new entity only for non-HEAD requests */
     if (!cache->handle && !r->header_only) {
-        rv = cache_create_entity(r, size, in);
+        rv = cache_create_entity(cache, r, size, in);
         info = apr_pcalloc(r->pool, sizeof(cache_info));
         /* We only set info->status upon the initial creation. */
         info->status = r->status;
@@ -1016,7 +1010,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (rv != OK) {
         /* Caching layer declined the opportunity to cache the response */
         ap_remove_output_filter(f);
-        ap_cache_remove_lock(conf, r, cache->handle ?
+        ap_cache_remove_lock(conf, cache, r, cache->handle ?
                 (char *)cache->handle->cache_obj->key : NULL, NULL);
         return ap_pass_brigade(f->next, in);
     }
@@ -1219,7 +1213,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
 
         /* let someone else attempt to cache */
-        ap_cache_remove_lock(conf, r, cache->handle ?
+        ap_cache_remove_lock(conf, cache, r, cache->handle ?
                 (char *)cache->handle->cache_obj->key : NULL, NULL);
 
         return ap_pass_brigade(f->next, bb);
@@ -1230,7 +1224,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                      "cache: store_headers failed");
 
         ap_remove_output_filter(f);
-        ap_cache_remove_lock(conf, r, cache->handle ?
+        ap_cache_remove_lock(conf, cache, r, cache->handle ?
                 (char *)cache->handle->cache_obj->key : NULL, NULL);
         return ap_pass_brigade(f->next, in);
     }

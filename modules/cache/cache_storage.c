@@ -68,19 +68,15 @@ int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
  * decide whether or not it wants to cache this particular entity.
  * If the size is unknown, a size of -1 should be set.
  */
-int cache_create_entity(request_rec *r, apr_off_t size, apr_bucket_brigade *in)
+int cache_create_entity(cache_request_rec *cache, request_rec *r,
+                        apr_off_t size, apr_bucket_brigade *in)
 {
     cache_provider_list *list;
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
     char *key;
     apr_status_t rv;
-    cache_request_rec *cache;
-    void *data;
 
-    apr_pool_userdata_get(&data, MOD_CACHE_REQUEST_REC, r->pool);
-    cache = data;
-
-    rv = cache_generate_key(r, r->pool, &key);
+    rv = cache_generate_key(cache, r, r->pool, &key);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -189,19 +185,14 @@ CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
  * This function returns OK if successful, DECLINED if no
  * cached entity fits the bill.
  */
-int cache_select(request_rec *r)
+int cache_select(cache_request_rec *cache, request_rec *r)
 {
     cache_provider_list *list;
     apr_status_t rv;
     cache_handle_t *h;
     char *key;
-    cache_request_rec *cache;
-    void *data;
 
-    apr_pool_userdata_get(&data, MOD_CACHE_REQUEST_REC, r->pool);
-    cache = data;
-
-    rv = cache_generate_key(r, r->pool, &key);
+    rv = cache_generate_key(cache, r, r->pool, &key);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -282,7 +273,7 @@ int cache_select(request_rec *r)
             cache->provider_name = list->provider_name;
 
             /* Is our cached response fresh enough? */
-            fresh = ap_cache_check_freshness(h, r);
+            fresh = ap_cache_check_freshness(h, cache, r);
             if (!fresh) {
                 const char *etag, *lastmod;
 
@@ -366,19 +357,15 @@ int cache_select(request_rec *r)
     return DECLINED;
 }
 
-apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
-                                        char**key)
+apr_status_t cache_generate_key_default(cache_request_rec *cache, request_rec *r,
+                                        apr_pool_t* p, char **key)
 {
     cache_server_conf *conf;
-    cache_request_rec *cache;
     char *port_str, *hn, *lcs;
     const char *hostname, *scheme;
     int i;
     char *path, *querystring;
-    void *data;
 
-    apr_pool_userdata_get(&data, MOD_CACHE_REQUEST_REC, r->pool);
-    cache = data;
     if (!cache) {
         /* This should never happen */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
