@@ -105,6 +105,39 @@ typedef struct {
     int quick_set;
 } cache_server_conf;
 
+/* A linked-list of authn providers. */
+typedef struct cache_provider_list cache_provider_list;
+
+struct cache_provider_list {
+    const char *provider_name;
+    const cache_provider *provider;
+    cache_provider_list *next;
+};
+
+/* per request cache information */
+typedef struct {
+    cache_provider_list *providers;     /* possible cache providers */
+    const cache_provider *provider;     /* current cache provider */
+    const char *provider_name;          /* current cache provider name */
+    int fresh;                          /* is the entity fresh? */
+    cache_handle_t *handle;             /* current cache handle */
+    cache_handle_t *stale_handle;       /* stale cache handle */
+    apr_table_t *stale_headers;         /* original request headers. */
+    int in_checked;                     /* CACHE_SAVE must cache the entity */
+    int block_response;                 /* CACHE_SAVE must block response. */
+    apr_bucket_brigade *saved_brigade;  /* copy of partial response */
+    apr_off_t saved_size;               /* length of saved_brigade */
+    apr_time_t exp;                     /* expiration */
+    apr_time_t lastmod;                 /* last-modified time */
+    cache_info *info;                   /* current cache info */
+    ap_filter_t *remove_url_filter;     /* Enable us to remove the filter */
+    const char *key;                    /* The cache key created for this
+                                         * request
+                                         */
+    apr_off_t size;                     /* the content length from the headers, or -1 */
+    apr_bucket_brigade *out;            /* brigade to reuse for upstream responses */
+} cache_request_rec;
+
 /**
  * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)
  * @param h cache_handle_t

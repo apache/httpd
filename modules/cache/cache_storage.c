@@ -74,10 +74,18 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
 {
     cache_provider_list *list;
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
-    char *key;
     apr_status_t rv;
 
-    rv = cache_generate_key(cache, r, r->pool, &key);
+    if (!cache) {
+        /* This should never happen */
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r->server,
+                     "cache: No cache request information available for key"
+                     " generation");
+        cache->key = "";
+        return APR_EGENERAL;
+    }
+
+    rv = cache_generate_key(r, r->pool, &cache->key);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -85,7 +93,7 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
     list = cache->providers;
     /* for each specified cache type, delete the URL */
     while (list) {
-        switch (rv = list->provider->create_entity(h, r, key, size, in)) {
+        switch (rv = list->provider->create_entity(h, r, cache->key, size, in)) {
         case OK: {
             cache->handle = h;
             cache->provider = list->provider;
@@ -191,9 +199,17 @@ int cache_select(cache_request_rec *cache, request_rec *r)
     cache_provider_list *list;
     apr_status_t rv;
     cache_handle_t *h;
-    char *key;
 
-    rv = cache_generate_key(cache, r, r->pool, &key);
+    if (!cache) {
+        /* This should never happen */
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r->server,
+                     "cache: No cache request information available for key"
+                     " generation");
+        cache->key = "";
+        return APR_EGENERAL;
+    }
+
+    rv = cache_generate_key(r, r->pool, &cache->key);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -208,7 +224,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
     list = cache->providers;
 
     while (list) {
-        switch ((rv = list->provider->open_entity(h, r, key))) {
+        switch ((rv = list->provider->open_entity(h, r, cache->key))) {
         case OK: {
             char *vary = NULL;
             int fresh;
@@ -358,8 +374,8 @@ int cache_select(cache_request_rec *cache, request_rec *r)
     return DECLINED;
 }
 
-apr_status_t cache_generate_key_default(cache_request_rec *cache, request_rec *r,
-                                        apr_pool_t* p, char **key)
+apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
+        const char **key)
 {
     cache_server_conf *conf;
     char *port_str, *hn, *lcs;
@@ -367,20 +383,10 @@ apr_status_t cache_generate_key_default(cache_request_rec *cache, request_rec *r
     int i;
     char *path, *querystring;
 
-    if (!cache) {
-        /* This should never happen */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "cache: No cache request information available for key"
-                     " generation");
-        *key = "";
-        return APR_EGENERAL;
-    }
-    if (cache->key) {
+    if (*key) {
         /*
          * We have been here before during the processing of this request.
-         * So return the key we already have.
          */
-        *key = apr_pstrdup(p, cache->key);
         return APR_SUCCESS;
     }
 
@@ -582,7 +588,6 @@ apr_status_t cache_generate_key_default(cache_request_rec *cache, request_rec *r
      * resource in the cache under a key where it is never found by the quick
      * handler during following requests.
      */
-    cache->key = apr_pstrdup(r->pool, *key);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                  "cache: Key for entity %s?%s is %s", r->uri,
                  r->parsed_uri.query, *key);

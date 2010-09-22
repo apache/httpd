@@ -31,6 +31,7 @@ extern "C" {
 #endif
 
 #include "mod_cache.h"
+#include "cache_util.h"
 
 /**
  * cache_storage.c
@@ -39,8 +40,8 @@ int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
 int cache_create_entity(cache_request_rec *cache, request_rec *r,
                         apr_off_t size, apr_bucket_brigade *in);
 int cache_select(cache_request_rec *cache, request_rec *r);
-apr_status_t cache_generate_key_default(cache_request_rec *cache, request_rec *r,
-                                        apr_pool_t* p, char **key);
+apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
+        const char **key);
 
 /**
  * Merge in cached headers into the response
