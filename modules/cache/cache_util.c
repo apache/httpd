@@ -230,7 +230,8 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
  * the backend.
  */
 CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
-        request_rec *r, char *key) {
+        cache_request_rec *cache, request_rec *r, char *key)
+{
     apr_status_t status;
     const char *lockname;
     const char *path;
@@ -255,7 +256,7 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
 
     /* create the key if it doesn't exist */
     if (!key) {
-        cache_generate_key(r, r->pool, &key);
+        cache_generate_key(cache, r, r->pool, &key);
     }
 
     /* create a hashed filename from the key, and save it for later */
@@ -322,7 +323,9 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
  * removed if the bucket brigade contains an EOS bucket.
  */
 CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
-        request_rec *r, char *key, apr_bucket_brigade *bb) {
+        cache_request_rec *cache, request_rec *r, char *key,
+        apr_bucket_brigade *bb)
+{
     void *dummy;
     const char *lockname;
 
@@ -360,7 +363,7 @@ CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
 
         /* create the key if it doesn't exist */
         if (!key) {
-            cache_generate_key(r, r->pool, &key);
+            cache_generate_key(cache, r, r->pool, &key);
         }
 
         /* create a hashed filename from the key, and save it for later */
@@ -439,6 +442,7 @@ CACHE_DECLARE(int) ap_cache_check_allowed(request_rec *r) {
 
 
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
+                                            cache_request_rec *cache,
                                             request_rec *r)
 {
     apr_status_t status;
@@ -687,7 +691,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
      * A lock that exceeds a maximum age will be deleted, and another
      * request gets to make a new lock and try again.
      */
-    status = ap_cache_try_lock(conf, r, (char *)h->cache_obj->key);
+    status = ap_cache_try_lock(conf, cache, r, (char *)h->cache_obj->key);
     if (APR_SUCCESS == status) {
         /* we obtained a lock, follow the stale path */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
