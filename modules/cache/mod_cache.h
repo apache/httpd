@@ -381,12 +381,6 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec *r);
  */
 CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r);
 
-/* Legacy call - functionally equivalent to ap_cache_cacheable_headers.
- * @deprecated @see ap_cache_cacheable_headers
- */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
-                                                        apr_table_t *t,
-                                                        server_rec *s);
 
 /* hooks */
 

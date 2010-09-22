@@ -973,17 +973,6 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
 }
 
 /*
- * Legacy call - functionally equivalent to ap_cache_cacheable_headers.
- * @deprecated @see ap_cache_cacheable_headers
- */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *p,
-                                                        apr_table_t *t,
-                                                        server_rec *s)
-{
-    return ap_cache_cacheable_headers(p,t,s);
-}
-
-/*
  * Create a new table consisting of those elements from an input
  * headers table that are allowed to be stored in a cache.
  */
