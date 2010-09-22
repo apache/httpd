@@ -141,6 +141,9 @@ typedef struct {
     /** ignore client's requests for uncached responses */
     int ignorecachecontrol;
     int ignorecachecontrol_set;
+    /** ignore expiration date from server */
+    int store_expired;
+    int store_expired_set;
     /** ignore Cache-Control: private header from server */
     int store_private;
     int store_private_set;
