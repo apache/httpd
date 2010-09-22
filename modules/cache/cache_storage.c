@@ -114,8 +114,8 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
  * Take headers from the cache, and overlap them over the existing response
  * headers.
  */
-CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
-                                            int preserve_orig)
+void cache_accept_headers(cache_handle_t *h, request_rec *r,
+        int preserve_orig)
 {
     apr_table_t *cookie_table, *hdr_copy;
     const char *v;
@@ -339,7 +339,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
             }
 
             /* Okay, this response looks okay.  Merge in our stuff and go. */
-            ap_cache_accept_headers(h, r, 0);
+            cache_accept_headers(h, r, 0);
 
             cache->handle = h;
             return OK;

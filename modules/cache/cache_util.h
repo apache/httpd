@@ -36,6 +36,75 @@ extern "C" {
  * cache_util.c
  */
 
+struct cache_enable {
+    apr_uri_t url;
+    const char *type;
+    apr_size_t pathlen;
+};
+
+struct cache_disable {
+    apr_uri_t url;
+    apr_size_t pathlen;
+};
+
+/* static information about the local cache */
+typedef struct {
+    apr_array_header_t *cacheenable;    /* URLs to cache */
+    apr_array_header_t *cachedisable;   /* URLs not to cache */
+    /* Maximum time to keep cached files in msecs */
+    apr_time_t maxex;
+    int maxex_set;
+    /* default time to keep cached file in msecs */
+    int defex_set;
+    apr_time_t defex;
+    /* factor for estimating expires date */
+    double factor;
+    int factor_set;
+    /** ignore the last-modified header when deciding to cache this request */
+    int no_last_mod_ignore_set;
+    int no_last_mod_ignore;
+    /** ignore client's requests for uncached responses */
+    int ignorecachecontrol;
+    int ignorecachecontrol_set;
+    /** ignore expiration date from server */
+    int store_expired;
+    int store_expired_set;
+    /** ignore Cache-Control: private header from server */
+    int store_private;
+    int store_private_set;
+    /** ignore Cache-Control: no-store header from client or server */
+    int store_nostore;
+    int store_nostore_set;
+    /* flag if CacheIgnoreHeader has been set */
+    #define CACHE_IGNORE_HEADERS_SET   1
+    #define CACHE_IGNORE_HEADERS_UNSET 0
+    int ignore_headers_set;
+    /** store the headers that should not be stored in the cache */
+    apr_array_header_t *ignore_headers;
+    /* Minimum time to keep cached files in msecs */
+    apr_time_t minex;
+    int minex_set;
+    /** ignore query-string when caching */
+    int ignorequerystring;
+    int ignorequerystring_set;
+    /* flag if CacheIgnoreURLSessionIdentifiers has been set */
+    #define CACHE_IGNORE_SESSION_ID_SET   1
+    #define CACHE_IGNORE_SESSION_ID_UNSET 0
+    int ignore_session_id_set;
+    /** store the identifiers that should not be used for key calculation */
+    apr_array_header_t *ignore_session_id;
+    /* thundering herd lock */
+    int lock;
+    int lock_set;
+    const char *lockpath;
+    int lockpath_set;
+    int lockmaxage_set;
+    apr_time_t lockmaxage;
+    /** run within the quick handler */
+    int quick;
+    int quick_set;
+} cache_server_conf;
+
 /**
  * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)
  * @param h cache_handle_t
@@ -84,16 +153,6 @@ apr_status_t cache_try_lock(cache_server_conf *conf,
 apr_status_t cache_remove_lock(cache_server_conf *conf,
         cache_request_rec *cache, request_rec *r, char *key,
         apr_bucket_brigade *bb);
-
-/**
- * Merge in cached headers into the response
- * @param h cache_handle_t
- * @param r request_rec
- * @param preserve_orig If 1, the values in r->headers_out are preserved.
- *        Otherwise, they are overwritten by the cached value.
- */
-void cache_accept_headers(cache_handle_t *h, request_rec *r,
-        int preserve_orig);
 
 cache_provider_list *cache_get_providers(request_rec *r,
         cache_server_conf *conf, apr_uri_t uri);

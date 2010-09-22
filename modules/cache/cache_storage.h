@@ -42,6 +42,16 @@ int cache_select(cache_request_rec *cache, request_rec *r);
 apr_status_t cache_generate_key_default(cache_request_rec *cache, request_rec *r,
                                         apr_pool_t* p, char **key);
 
+/**
+ * Merge in cached headers into the response
+ * @param h cache_handle_t
+ * @param r request_rec
+ * @param preserve_orig If 1, the values in r->headers_out are preserved.
+ *        Otherwise, they are overwritten by the cached value.
+ */
+void cache_accept_headers(cache_handle_t *h, request_rec *r,
+        int preserve_orig);
+
 #ifdef __cplusplus
 }
 #endif
