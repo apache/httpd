@@ -17,6 +17,7 @@
 #include "mod_cache.h"
 
 #include "cache_storage.h"
+#include "cache_util.h"
 
 APLOG_USE_MODULE(cache);
 
@@ -273,7 +274,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
             cache->provider_name = list->provider_name;
 
             /* Is our cached response fresh enough? */
-            fresh = ap_cache_check_freshness(h, cache, r);
+            fresh = cache_check_freshness(h, cache, r);
             if (!fresh) {
                 const char *etag, *lastmod;
 
