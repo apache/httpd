@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+#include "apr_lib.h"
 #include "apr_file_io.h"
 #include "apr_strings.h"
 #include "mod_cache.h"
 #include "mod_disk_cache.h"
+#include "http_config.h"
+#include "http_log.h"
+#include "http_core.h"
 #include "ap_provider.h"
 #include "util_filter.h"
 #include "util_script.h"

@@ -26,69 +26,9 @@
 #ifndef MOD_CACHE_H
 #define MOD_CACHE_H
 
-#include "apr_hooks.h"
-#include "apr.h"
-#include "apr_lib.h"
-#include "apr_strings.h"
-#include "apr_buckets.h"
-#include "apr_md5.h"
-#include "apr_pools.h"
-#include "apr_strings.h"
-#include "apr_optional.h"
-#define APR_WANT_STRFUNC
-#include "apr_want.h"
-
 #include "httpd.h"
-#include "http_config.h"
-#include "ap_config.h"
-#include "http_core.h"
-#include "http_protocol.h"
-#include "http_request.h"
-#include "http_vhost.h"
-#include "http_main.h"
-#include "http_log.h"
-#include "http_connection.h"
-#include "util_filter.h"
 #include "apr_date.h"
-#include "apr_uri.h"
-
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
-
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-
-#include "apr_atomic.h"
-
-#ifndef MAX
-#define MAX(a,b)                ((a) > (b) ? (a) : (b))
-#endif
-#ifndef MIN
-#define MIN(a,b)                ((a) < (b) ? (a) : (b))
-#endif
-
-#define MSEC_ONE_DAY    ((apr_time_t)(86400*APR_USEC_PER_SEC)) /* one day, in microseconds */
-#define MSEC_ONE_HR     ((apr_time_t)(3600*APR_USEC_PER_SEC))  /* one hour, in microseconds */
-#define MSEC_ONE_MIN    ((apr_time_t)(60*APR_USEC_PER_SEC))    /* one minute, in microseconds */
-#define MSEC_ONE_SEC    ((apr_time_t)(APR_USEC_PER_SEC))       /* one second, in microseconds */
-#define DEFAULT_CACHE_MAXEXPIRE MSEC_ONE_DAY
-#define DEFAULT_CACHE_MINEXPIRE 0
-#define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
-#define DEFAULT_CACHE_LMFACTOR  (0.1)
-#define DEFAULT_CACHE_MAXAGE    5
-#define DEFAULT_CACHE_LOCKPATH "/mod_cache-lock"
-#define CACHE_LOCKNAME_KEY "mod_cache-lockname"
-#define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
+#include "apr_optional.h"
 
 /* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and
  * CACHE_DECLARE_DATA with appropriate export and import tags for the platform
