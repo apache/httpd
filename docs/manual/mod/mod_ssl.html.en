@@ -1801,7 +1801,7 @@ string. In particular, this may cause the environment variable
 any of the <a href="#envvars">SSL environment variables</a>.</p>
 
 <p>Note that this directive has no effect if the
-<code>FakeBasic</code> option is used (see <a href="#ssloptions">SSLOptions</a>).</p>
+<code>FakeBasicAuth</code> option is used (see <a href="#ssloptions">SSLOptions</a>).</p>
 
 <div class="example"><h3>Example</h3><p><code>
 SSLUserName SSL_CLIENT_S_DN_CN

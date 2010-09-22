@@ -1715,7 +1715,7 @@ string. In particular, this may cause the environment variable
 any of the <a href="#envvars">SSL environment variables</a>.</p>
 
 <p>Note that this directive has no effect if the
-<code>FakeBasic</code> option is used (see <a
+<code>FakeBasicAuth</code> option is used (see <a
 href="#ssloptions">SSLOptions</a>).</p>
 
 <example><title>Example</title>
