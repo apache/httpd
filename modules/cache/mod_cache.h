@@ -276,15 +276,6 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
                                                apr_time_t now);
 
 /**
- * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)
- * @param h cache_handle_t
- * @param r request_rec
- * @return 0 ==> cache object is stale, 1 ==> cache object is fresh
- */
-CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
-                                            request_rec *r);
-
-/**
  * Check the whether the request allows a cached object to be served as per RFC2616
  * section 14.9.4 (Cache Revalidation and Reload Controls)
  * @param h cache_handle_t
@@ -293,62 +284,11 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, cache_request_rec
  */
 CACHE_DECLARE(int) ap_cache_check_allowed(request_rec *r);
 
-/**
- * Try obtain a cache wide lock on the given cache key.
- *
- * If we return APR_SUCCESS, we obtained the lock, and we are clear to
- * proceed to the backend. If we return APR_EEXISTS, the the lock is
- * already locked, someone else has gone to refresh the backend data
- * already, so we must return stale data with a warning in the mean
- * time. If we return anything else, then something has gone pear
- * shaped, and we allow the request through to the backend regardless.
- *
- * This lock is created from the request pool, meaning that should
- * something go wrong and the lock isn't deleted on return of the
- * request headers from the backend for whatever reason, at worst the
- * lock will be cleaned up when the request is dies or finishes.
- *
- * If something goes truly bananas and the lock isn't deleted when the
- * request dies, the lock will be trashed when its max-age is reached,
- * or when a request arrives containing a Cache-Control: no-cache. At
- * no point is it possible for this lock to permanently deny access to
- * the backend.
- */
-CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
-        cache_request_rec *cache, request_rec *r, char *key);
-
-/**
- * Remove the cache lock, if present.
- *
- * First, try to close the file handle, whose delete-on-close should
- * kill the file. Otherwise, just delete the file by name.
- *
- * If no lock name has yet been calculated, do the calculation of the
- * lock name first before trying to delete the file.
- *
- * If an optional bucket brigade is passed, the lock will only be
- * removed if the bucket brigade contains an EOS bucket.
- */
-CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
-        cache_request_rec *cache, request_rec *r, char *key,
-        apr_bucket_brigade *bb);
-
-/**
- * Merge in cached headers into the response
- * @param h cache_handle_t
- * @param r request_rec
- * @param preserve_orig If 1, the values in r->headers_out are preserved.
- *        Otherwise, they are overwritten by the cached value.
- */
-CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
-                                            int preserve_orig);
-
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
 CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) ap_cache_generate_name(apr_pool_t *p, int dirlevels,
                                              int dirlength,
                                              const char *name);
-CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, apr_uri_t uri);
 CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
 CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
