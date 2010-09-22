@@ -263,12 +263,18 @@
  *                         provider interface for mod_cache.h.
  * 20100922.0 (2.3.9-dev)  Move cache_* functions from mod_cache.h to a
  *                         private header file.
+ * 20100923.0 (2.3.9-dev)  Remove MOD_CACHE_REQUEST_REC, remove deprecated
+ *                         ap_cache_cacheable_hdrs_out, trim cache_object_t,
+ *                         make ap_cache_accept_headers, ap_cache_accept_headers
+ *                         ap_cache_try_lock, ap_cache_check_freshness,
+ *                         cache_server_conf, cache_enable, cache_disable,
+ *                         cache_request_rec and cache_provider_list private.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100922
+#define MODULE_MAGIC_NUMBER_MAJOR 20100923
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
