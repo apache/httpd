@@ -836,7 +836,7 @@ subdirectories</td></tr>
     <p><code class="directive">&lt;DirectoryMatch&gt;</code> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
     of directives which will apply only to the named directory and
-    sub-directories of that directory, the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. However, it
+    <em>sub-directories of that directory</em>, the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. However, it
     takes as an argument a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
     expression</a>. For example:</p>
 
@@ -846,6 +846,11 @@ subdirectories</td></tr>
 
     <p>would match directories in <code>/www/</code> that consisted of three
     numbers.</p>
+
+    <div class="note"><h3>End-of-line character</h3>
+      <p>The end-of-line character ($) cannot be matched with this directive.</p>
+    </div>
+
 
 <h3>See also</h3>
 <ul>
@@ -1131,12 +1136,15 @@ in case of an error</td></tr>
     </code></p></div>
 
     <p>If the <var>file-path</var>
-    begins with a pipe (|) then it is assumed to be a command to spawn
-    to handle the error log.</p>
+    begins with a pipe character "<code>|</code>" then it is assumed to be a
+    command to spawn to handle the error log.</p>
 
     <div class="example"><h3>Example</h3><p><code>
     ErrorLog "|/usr/local/bin/httpd_errors"
     </code></p></div>
+
+    <p>See the notes on <a href="../logs.html#piped">piped logs</a> for
+    more information.</p>
 
     <p>Using <code>syslog</code> instead of a filename enables logging
     via syslogd(8) if the system supports it. The default is to use
@@ -2829,12 +2837,14 @@ to name-virtual hosts</td></tr>
       ServerName server.domain.com<br />
       ServerAlias server server2.domain.com server2<br />
       ServerAlias *.example.com<br />
+      UseCanonicalName Off<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </code></p></div>
 
 <h3>See also</h3>
 <ul>
+<li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><a href="../vhosts/">Apache Virtual Host documentation</a></li>
 </ul>
 </div>
