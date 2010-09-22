@@ -203,12 +203,6 @@ struct cache_info {
 
 /* cache handle information */
 
-/* XXX TODO On the next structure change/MMN bump,
- * count must become an apr_off_t, representing
- * the potential size of disk cached objects.
- * Then dig for
- * "XXX Bad Temporary Cast - see cache_object_t notes"
- */
 typedef struct cache_object cache_object_t;
 struct cache_object {
     const char *key;
@@ -216,10 +210,6 @@ struct cache_object {
     cache_info info;
     /* Opaque portion (specific to the implementation) of the cache object */
     void *vobj;
-    /* FIXME: These are only required for mod_mem_cache. */
-    apr_size_t count;   /* Number of body bytes written to the cache so far */
-    int complete;
-    apr_uint32_t refcount;  /* refcount and bit flag to cleanup object */
 };
 
 typedef struct cache_handle cache_handle_t;
