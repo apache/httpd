@@ -124,7 +124,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     char *pw;
     apr_md5_ctx_t context;
     unsigned char digest[16];
-    char string[MAX_STRING_LEN];
+    char string[3 * MAX_STRING_LEN]; /* this includes room for 2 * ':' + '\0' */
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     unsigned int i;
@@ -144,7 +144,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     apr_file_printf(f, "%s:%s:", user, realm);
 
     /* Do MD5 stuff */
-    sprintf(string, "%s:%s:%s", user, realm, pw);
+    apr_snprintf(string, sizeof(string), "%s:%s:%s", user, realm, pw);
 
     apr_md5_init(&context);
 #if APR_CHARSET_EBCDIC
@@ -188,8 +188,8 @@ int main(int argc, const char * const argv[])
     char *dirname;
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
-    char line[MAX_STRING_LEN];
-    char l[MAX_STRING_LEN];
+    char line[3 * MAX_STRING_LEN];
+    char l[3 * MAX_STRING_LEN];
     char w[MAX_STRING_LEN];
     char x[MAX_STRING_LEN];
     int found;
@@ -222,9 +222,11 @@ int main(int argc, const char * const argv[])
                     apr_strerror(rv, errmsg, sizeof errmsg));
             exit(1);
         }
+        apr_cpystrn(user, argv[4], sizeof(user));
+        apr_cpystrn(realm, argv[3], sizeof(realm));
         apr_file_printf(errfile, "Adding password for %s in realm %s.\n",
-                    argv[4], argv[3]);
-        add_password(argv[4], argv[3], f);
+                    user, realm);
+        add_password(user, realm, f);
         apr_file_close(f);
         exit(0);
     }
@@ -253,7 +255,7 @@ int main(int argc, const char * const argv[])
     apr_cpystrn(realm, argv[2], sizeof(realm));
 
     found = 0;
-    while (!(get_line(line, MAX_STRING_LEN, f))) {
+    while (!(get_line(line, sizeof(line), f))) {
         if (found || (line[0] == '#') || (!line[0])) {
             putline(tfp, line);
             continue;
