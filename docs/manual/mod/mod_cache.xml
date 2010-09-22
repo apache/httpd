@@ -593,7 +593,7 @@ LastModified date.</description>
 </contextlist>
 
 <usage>
-    <p>Since httpd 2.2.4, responses which are already-expired are not 
+    <p>Since httpd 2.2.4, responses which have already expired are not
        stored in the cache.  The <directive>CacheStoreExpired</directive>
        directive allows this behavior to be overridden.
        <directive>CacheStoreExpired</directive> On
