@@ -437,7 +437,7 @@ B<br />
 &lt;/Directory&gt;<br />
 &lt;/VirtualHost&gt;<br />
 <br />
-&lt;DirectoryMatch "^.*b$"&gt;<br />
+&lt;DirectoryMatch "^.*b/"&gt;<br />
 C<br />
 &lt;/DirectoryMatch&gt;<br />
 <br />
