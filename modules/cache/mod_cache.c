@@ -817,7 +817,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if a broken Expires header is present, don't cache it */
         reason = apr_pstrcat(p, "Broken expires header: ", exps, NULL);
     }
-    else if (exp != APR_DATE_BAD && exp < r->request_time)
+    else if (!conf->store_expired && exp != APR_DATE_BAD
+                                  && exp < r->request_time)
     {
         /* if a Expires header is in the past, don't cache it */
         reason = "Expires header already expired, not cacheable";
@@ -1340,6 +1341,8 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     ps->no_last_mod_ignore = 0;
     ps->ignorecachecontrol = 0;
     ps->ignorecachecontrol_set = 0;
+    ps->store_expired = 0;
+    ps->store_expired_set = 0;
     ps->store_private = 0;
     ps->store_private_set = 0;
     ps->store_nostore = 0;
@@ -1397,6 +1400,10 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignorecachecontrol_set == 0)
         ? base->ignorecachecontrol
         : overrides->ignorecachecontrol;
+    ps->store_expired  =
+        (overrides->store_expired_set == 0)
+        ? base->store_expired
+        : overrides->store_expired;
     ps->store_private  =
         (overrides->store_private_set == 0)
         ? base->store_private
@@ -1475,6 +1482,19 @@ static const char *set_cache_ignore_cachecontrol(cmd_parms *parms,
                                                   &cache_module);
     conf->ignorecachecontrol = flag;
     conf->ignorecachecontrol_set = 1;
+    return NULL;
+}
+
+static const char *set_cache_store_expired(cmd_parms *parms, void *dummy,
+                                           int flag)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    conf->store_expired = flag;
+    conf->store_expired_set = 1;
     return NULL;
 }
 
@@ -1812,6 +1832,10 @@ static const command_rec cache_cmds[] =
     AP_INIT_FLAG("CacheIgnoreCacheControl", set_cache_ignore_cachecontrol,
                  NULL, RSRC_CONF,
                  "Ignore requests from the client for uncached content"),
+    AP_INIT_FLAG("CacheStoreExpired", set_cache_store_expired,
+                 NULL, RSRC_CONF,
+                 "Ignore expiration dates when populating cache, resulting in "
+                 "an If-Modified-Since request to the backend on retrieval"),
     AP_INIT_FLAG("CacheStorePrivate", set_cache_store_private,
                  NULL, RSRC_CONF,
                  "Ignore 'Cache-Control: private' and store private content"),

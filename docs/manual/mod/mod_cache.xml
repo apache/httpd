@@ -585,6 +585,30 @@ LastModified date.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheStoreExpired</name>
+<description>Attempt to cache responses that the server reports as expired</description>
+<syntax>CacheStoreExpired On|Off</syntax>
+<default>CacheStoreExpired Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Since httpd 2.2.4, responses which are already-expired are not stored
+       stored in the cache.  The <directive>CacheStoreExpired</directive>
+       directive allows this behavior to be overridden.
+       <directive>CacheStoreExpired</directive> On
+       tells the server to attempt to cache the resource if it is stale.
+       Subsequent requests would trigger an If-Modified-Since request of
+       the origin server, and the response may be fulfilled from cache
+       if the backend resource has not changed.</p>
+
+    <example>
+      CacheStoreExpired On
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheStorePrivate</name>
 <description>Attempt to cache responses that the server has marked as private</description>
 <syntax>CacheStorePrivate On|Off</syntax>
