@@ -1534,14 +1534,13 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
             int major, minor;
 
-            if (2 != sscanf(buffer, "HTTP/%u.%u", &major, &minor)) {
-                major = 1;
-                minor = 1;
-            }
+            major = buffer[5] - '0';
+            minor = buffer[7] - '0';
+
             /* If not an HTTP/1 message or
              * if the status line was > 8192 bytes
              */
-            else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
+            if ((major != 1) || (len >= sizeof(buffer)-1)) {
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                 apr_pstrcat(p, "Corrupt status line returned by remote "
                             "server: ", buffer, NULL));
