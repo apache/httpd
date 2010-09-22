@@ -730,7 +730,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
-    <p>Since httpd 2.2.4, responses which are already-expired are not 
+    <p>Since httpd 2.2.4, responses which have already expired are not
        stored in the cache.  The <code class="directive">CacheStoreExpired</code>
        directive allows this behavior to be overridden.
        <code class="directive">CacheStoreExpired</code> On
