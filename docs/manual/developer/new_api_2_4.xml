@@ -63,6 +63,14 @@
   <code>ap_mpm_register_timed_callback</code> is new.</p>
   </section>
 
+  <section id="ap_regex">
+    <title>ap_regex (changed)</title>
+  <p>In addition to the existing regexp wrapper, a new higher-level API
+  <code>ap_rxplus</code> is now provided.  This provides the capability to
+  compile Perl-style expressions like <code>s/regexp/replacement/flags</code>
+  and to execute them against arbitrary strings.  Also regexp memory.</p>
+  </section>
+
   <section id="ap_slotmem">
     <title>ap_slotmem (NEW!)</title>
     <p>Introduces an API for modules to allocate and manage memory slots
