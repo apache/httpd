@@ -64,6 +64,9 @@ RELEASE SHOWSTOPPERS:
     - MPM simple
     - mod_serf
 
+  * Review the example configuration. It should be based on current best
+    practices and not use deprecated features.
+
   FOR BETA:
 
   * Modules without documentation need to be moved to experimental or be
@@ -102,31 +105,6 @@ RELEASE SHOWSTOPPERS:
     pgollucci: this affects mod_perl I'm pretty sure.
 
 CURRENT VOTES:
-
-  * If the parent process dies, should the remaining child processes
-    "gracefully" self-terminate. Or maybe we should make it a runtime
-    option, or have a concept of 2 parent processes (one being a 
-    "hot spare").
-    See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
-
-    Self-destruct: Ken, Martin, Lars, sctemme (parent shouldn't die, ever)
-    Not self-destruct: BrianP, Ian, Cliff, BillS
-    Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj, nd, pgollucci
-
-    /* The below was a concept on *how* to handle the problem */
-    Have 2 parents: +1: jim
-                    -1: Justin, wrowe, rederpj, nd, pgollucci
-                    +0: Lars, Martin (while standing by, could it do
-                                      something useful?)
-
-  * Make the worker MPM the default MPM for threaded Unix boxes.
-    +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd, pgollucci, sctemme
-    +0:   BrianP, Aaron (mutex contention is looking better with the
-          latest code, let's continue tuning and testing), rederpj, jim
-    -0:   Lars
-
-    pquerna: Do we want to change this for *2.4*?
-    wrowe: Replies "yes"
 
   * Name the Server (version 2.4 or 3.0, depending on the final call)
     Recent discussion indicates we should designate a (short name).
