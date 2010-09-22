@@ -764,13 +764,12 @@ expressions</description>
     using  <code>key=value</code> parameters, described in the table
     below.</p>
 
-    <p>Setting <code>min</code> will determine how many connections to
-    the backend server will be retained after use.  Up to the
-    Soft Maximum, or <code>smax</code>, number of connections will be
-    created on demand.  Any connections above <code>smax</code> are
-    subject to a time to live, or <code>ttl</code>.  Apache httpd will
-    never create more than the Hard Maximum or, <code>max</code>,
-    connections to the backend server.</p>
+    <p>Setting <code>min</code> to non-zero allows connections to the
+    backend server to be retained after use; at least <code>min</code>
+    connections will be retained.  Any idle connections above
+    <code>smax</code> are subject to a time to live, or <code>ttl</code>.
+    Up to the hard maximum, or <code>max</code>, number of connections
+    may be created.</p>
 
     <p>The pool of connections is maintained per web server child
     process, and the <code>min</code>, <code>max</code>, and
@@ -801,9 +800,8 @@ expressions</description>
     to the backend server.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Up to the Soft Maximum
-    number of connections will be created on demand. Any connections above 
-    <code>smax</code> are subject to a time to live or <code>ttl</code>.
+        <td>Retained connections above the soft maximum, or <code>smax</code>,
+    are subject to a time to live, controlled by the <code>ttl</code> parameter.
     </td></tr>
     <tr><td>acquire</td>
         <td>-</td>
@@ -931,9 +929,9 @@ expressions</description>
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td>Time To Live for the inactive connections above the
-        <code>smax</code> connections in seconds. Apache httpd will close all
-        connections that has not been used inside that time period.
+        <td>Time to live for the inactive connections above <code>smax</code>,
+        in seconds.  Connections above <code>smax</code> will be closed
+        if they have not been used inside that time period.
     </td></tr>
 
     </table>
