@@ -16,6 +16,7 @@
 
 #include "mod_cache.h"
 
+#include "cache_util.h"
 #include <ap_provider.h>
 
 APLOG_USE_MODULE(cache);
@@ -123,9 +124,9 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
     return !strncmp(filter->path, url->path, pathlen);
 }
 
-CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
-                                                  cache_server_conf *conf,
-                                                  apr_uri_t uri)
+cache_provider_list *cache_get_providers(request_rec *r,
+        cache_server_conf *conf,
+        apr_uri_t uri)
 {
     cache_provider_list *providers = NULL;
     int i;
@@ -229,7 +230,7 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
  * no point is it possible for this lock to permanently deny access to
  * the backend.
  */
-CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
+apr_status_t cache_try_lock(cache_server_conf *conf,
         cache_request_rec *cache, request_rec *r, char *key)
 {
     apr_status_t status;
@@ -322,7 +323,7 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
  * If an optional bucket brigade is passed, the lock will only be
  * removed if the bucket brigade contains an EOS bucket.
  */
-CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
+apr_status_t cache_remove_lock(cache_server_conf *conf,
         cache_request_rec *cache, request_rec *r, char *key,
         apr_bucket_brigade *bb)
 {
@@ -441,9 +442,9 @@ CACHE_DECLARE(int) ap_cache_check_allowed(request_rec *r) {
 }
 
 
-CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
-                                            cache_request_rec *cache,
-                                            request_rec *r)
+int cache_check_freshness(cache_handle_t *h,
+        cache_request_rec *cache,
+        request_rec *r)
 {
     apr_status_t status;
     apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
@@ -691,7 +692,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
      * A lock that exceeds a maximum age will be deleted, and another
      * request gets to make a new lock and try again.
      */
-    status = ap_cache_try_lock(conf, cache, r, (char *)h->cache_obj->key);
+    status = cache_try_lock(conf, cache, r, (char *)h->cache_obj->key);
     if (APR_SUCCESS == status) {
         /* we obtained a lock, follow the stale path */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
