@@ -81,7 +81,6 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r->server,
                      "cache: No cache request information available for key"
                      " generation");
-        cache->key = "";
         return APR_EGENERAL;
     }
 
@@ -205,7 +204,6 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r->server,
                      "cache: No cache request information available for key"
                      " generation");
-        cache->key = "";
         return APR_EGENERAL;
     }
 
