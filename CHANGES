@@ -8,6 +8,11 @@ Changes with Apache 2.3.9
      overridden together as desired using PassEnv etc; see mod_env.
      [William Rowe]
 
+  *) mod_rewrite: introduce <=, >= string comparison operators, and integer
+     comparators -lt, -le, -eq, -ge, and -gt.  To help bash users and drop
+     the ambiguity of the symlink test "-ltest", introduce -h or -L as
+     symlink test operators.  [William Rowe]
+
   *) mod_cache: Give the cache provider the opportunity to choose to cache
      or not cache based on the buckets present in the brigade, such as the
      presence of a FILE bucket.
