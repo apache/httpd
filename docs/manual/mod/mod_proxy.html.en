@@ -893,21 +893,22 @@ through</td></tr>
     using  <code>key=value</code> parameters, described in the table
     below.</p>
 
-    <p>Setting <code>min</code> to non-zero allows connections to the
-    backend server to be retained after use; at least <code>min</code>
-    connections will be retained.  Any idle connections above
-    <code>smax</code> are subject to a time to live, or <code>ttl</code>.
-    Up to the hard maximum, or <code>max</code>, number of connections
-    may be created.</p>
+    <p>By default, mod_proxy will allow and retain the maximum number of
+    connections that could be used simultaneously by that web server child
+    process.  Use the <code>max</code> parameter to reduce the number from
+    the default.  Use the <code>ttl</code> parameter to set an optional
+    time to live; connections which have been unused for at least
+    <code>ttl</code> seconds will be closed.  <code>ttl</code> can be used
+    to avoid using a connection which is subject to closing because of the
+    backend server's keep-alive timeout.</p>
 
     <p>The pool of connections is maintained per web server child
-    process, and the <code>min</code>, <code>max</code>, and
-    and <code>smax</code> settings are not coordinated among all child
-    processes, except when only one child process is allowed by
-    configuration or MPM design.</p>
+    process, and <code>max</code> and other settings are not coordinated 
+    among all child processes, except when only one child process is allowed
+    by configuration or MPM design.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-        ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
+        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
     </code></p></div>
 
     <table>
@@ -916,22 +917,27 @@ through</td></tr>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Minimum number of connections to the backend server that
-            will be retained after use.</td></tr>
+        <td>Minimum number of connection pool entries, unrelated to the
+    actual number of connections.  This only needs to be modified from the
+    default for special circumstances where heap memory associated with the
+    backend connections should be preallocated or retained.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
-        <td>Hard Maximum number of connections that will be
-    allowed to the backend server. The default for a Hard Maximum
-    for the number of connections is the number of threads per process in the 
-    active MPM. In the Prefork MPM, this is always 1, while with the Worker MPM
-    it is controlled by the <code class="directive">ThreadsPerChild</code>.
-    Apache httpd will never create more than the Hard Maximum connections
-    to the backend server.</td></tr>
+        <td>Maximum number of connections that will be allowed to the
+    backend server. The default for this limit is the number of threads
+    per process in the active MPM. In the Prefork MPM, this is always 1,
+    while with other MPMs it is controlled by the
+    <code class="directive">ThreadsPerChild</code> directive.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Retained connections above the soft maximum, or <code>smax</code>,
-    are subject to a time to live, controlled by the <code>ttl</code> parameter.
-    </td></tr>
+        <td>Retained connection pool entries above this limit are freed
+    during certain operations if they have been unused for longer than
+    the time to live, controlled by the <code>ttl</code> parameter.  If
+    the connection pool entry has an associated connection, it will be
+    closed.  This only needs to be modified from the default for special
+    circumstances where connection pool entries and any associated
+    connections which have exceeded the time to live need to be freed or
+    closed more aggressively.</td></tr>
     <tr><td>acquire</td>
         <td>-</td>
         <td>If set this will be the maximum time to wait for a free
@@ -1058,9 +1064,9 @@ through</td></tr>
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td>Time to live for the inactive connections above <code>smax</code>,
-        in seconds.  Connections above <code>smax</code> will be closed
-        if they have not been used inside that time period.
+        <td>Time to live for inactive connections and associated connection
+        pool entries, in seconds.  Those which are unused for at least
+        <code>ttl</code> seconds will be destroyed.
     </td></tr>
 
     </table>
