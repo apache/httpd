@@ -8,7 +8,12 @@ Changes with Apache 2.3.9
      overridden together as desired using PassEnv etc; see mod_env.
      [William Rowe]
 
-  *) mod_rewrite: introduce <=, >= string comparison operators, and integer
+  *) mod_cache: Introduce CacheStoreExpired, to allow administrators to
+     capture a stale backend response, perform If-Modified-Since requests
+     against the backend, and serving from the cache all 304 responses.
+     This restores pre-2.2.4 cache behavior.  [William Rowe]
+
+  *) mod_rewrite: Introduce <=, >= string comparison operators, and integer
      comparators -lt, -le, -eq, -ge, and -gt.  To help bash users and drop
      the ambiguity of the symlink test "-ltest", introduce -h or -L as
      symlink test operators.  [William Rowe]
