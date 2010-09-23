@@ -1,6 +1,12 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 
 Changes with Apache 2.3.9
+
+  *) core: For process invocation (cgi, fcgid, piped loggers and so forth)
+     pass the system library path (LD_LIBRARY_PATH or platform-specific
+     variables) along with the system PATH, by default.  Both should be 
+     overridden together as desired using PassEnv etc; see mod_env.
+     [William Rowe]
 
   *) mod_cache: Give the cache provider the opportunity to choose to cache
      or not cache based on the buckets present in the brigade, such as the
