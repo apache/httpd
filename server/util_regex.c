@@ -22,6 +22,12 @@
 #include "ap_regex.h"
 #include "httpd.h"
 
+static apr_status_t rxplus_cleanup(void *preg)
+{
+    ap_regfree((ap_regex_t *) preg);
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
                                            const char *pattern)
 {
@@ -61,7 +67,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
     }
     if (!endp) { /* there's no delim  or flags */
         if (ap_regcomp(&ret->rx, pattern, 0) == 0) {
-            apr_pool_cleanup_register(pool, &ret->rx, (void*) ap_regfree,
+            apr_pool_cleanup_register(pool, &ret->rx, rxplus_cleanup,
                                       apr_pool_cleanup_null);
             return ret;
         }
@@ -100,7 +106,7 @@ AP_DECLARE(ap_rxplus_t*) ap_rxplus_compile(apr_pool_t *pool,
         }
     }
     if (ap_regcomp(&ret->rx, rxstr, ret->flags) == 0) {
-        apr_pool_cleanup_register(pool, &ret->rx, (void*) ap_regfree,
+        apr_pool_cleanup_register(pool, &ret->rx, rxplus_cleanup,
                                   apr_pool_cleanup_null);
     }
     else {
