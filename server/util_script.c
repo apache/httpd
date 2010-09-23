@@ -124,9 +124,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     conn_rec *c = r->connection;
     const char *rem_logname;
     const char *env_path;
-#if defined(WIN32) || defined(OS2)
     const char *env_temp;
-#endif
     const char *host;
     const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
     const apr_table_entry_t *hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
@@ -191,7 +189,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     }
     apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_path));
 
-#ifdef WIN32
+#if defined(WIN32)
     if (env_temp = getenv("SystemRoot")) {
         apr_table_addn(e, "SystemRoot", env_temp);
     }
@@ -204,9 +202,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     if (env_temp = getenv("WINDIR")) {
         apr_table_addn(e, "WINDIR", env_temp);
     }
-#endif
-
-#ifdef OS2
+#elif defined(OS2)
     if ((env_temp = getenv("COMSPEC")) != NULL) {
         apr_table_addn(e, "COMSPEC", env_temp);
     }
@@ -218,6 +214,30 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     }
     if ((env_temp = getenv("PERLLIB_PREFIX")) != NULL) {
         apr_table_addn(e, "PERLLIB_PREFIX", env_temp);
+    }
+#elif defined(BEOS)
+    if ((env_temp = getenv("LIBRARY_PATH")) != NULL) {
+        apr_table_addn(e, "LIBRARY_PATH", env_temp);
+    }
+#elif defined(DARWIN)
+    if ((env_temp = getenv("DYLD_LIBRARY_PATH")) != NULL) {
+        apr_table_addn(e, "DYLD_LIBRARY_PATH", env_temp);
+    }
+#elif defined(_AIX)
+    if ((env_temp = getenv("LIBPATH")) != NULL) {
+        apr_table_addn(e, "LIBPATH", env_temp);
+    }
+#elif defined(__HPUX__)
+    /* HPUX PARISC 2.0W knows both, otherwise redundancy is harmless */
+    if ((env_temp = getenv("SHLIB_PATH")) != NULL) {
+        apr_table_addn(e, "SHLIB_PATH", env_temp);
+    }
+    if ((env_temp = getenv("LD_LIBRARY_PATH")) != NULL) {
+        apr_table_addn(e, "LD_LIBRARY_PATH", env_temp);
+    }
+#else /* Some Unix */
+    if ((env_temp = getenv("LD_LIBRARY_PATH")) != NULL) {
+        apr_table_addn(e, "LD_LIBRARY_PATH", env_temp);
     }
 #endif
 
