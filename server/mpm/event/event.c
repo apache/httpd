@@ -826,29 +826,11 @@ static apr_status_t init_pollset(apr_pool_t *p)
 #if HAVE_SERF
     s_baton_t *baton = NULL;
 #endif
-    apr_status_t rv;
     ap_listen_rec *lr;
     listener_poll_type *pt;
 
-    rv = apr_thread_mutex_create(&timeout_mutex, APR_THREAD_MUTEX_DEFAULT, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                     "creation of the timeout mutex failed.");
-        return rv;
-    }
-
     APR_RING_INIT(&timeout_head, conn_state_t, timeout_list);
     APR_RING_INIT(&keepalive_timeout_head, conn_state_t, timeout_list);
-
-    /* Create the main pollset */
-    rv = apr_pollset_create(&event_pollset,
-                            threads_per_child,
-                            p, APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                     "apr_pollset_create with Thread Safety failed.");
-        return rv;
-    }
 
     for (lr = ap_listeners; lr != NULL; lr = lr->next) {
         apr_pollfd_t *pfd = apr_palloc(p, sizeof(*pfd));
@@ -1504,6 +1486,27 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "ap_queue_info_create() failed");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
+
+    /* Create the timeout mutex and main pollset before the listener
+     * thread starts.
+     */
+    rv = apr_thread_mutex_create(&timeout_mutex, APR_THREAD_MUTEX_DEFAULT,
+                                 pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                     "creation of the timeout mutex failed.");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
+
+    /* Create the main pollset */
+    rv = apr_pollset_create(&event_pollset,
+                            threads_per_child,
+                            pchild, APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                     "apr_pollset_create with Thread Safety failed.");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
