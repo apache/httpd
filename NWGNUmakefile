@@ -275,6 +275,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/util_mutex.o \
 	$(OBJDIR)/util_nw.o \
 	$(OBJDIR)/util_pcre.o \
+	$(OBJDIR)/util_regex.o \
 	$(OBJDIR)/util_script.o \
 	$(OBJDIR)/util_time.o \
 	$(OBJDIR)/util_xml.o \
