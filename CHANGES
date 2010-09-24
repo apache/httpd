@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.9
 
+  *) Event MPM: Fix crash accessing pollset on worker thread when child
+     process is exiting.  [Jeff Trawick]
+
   *) core: For process invocation (cgi, fcgid, piped loggers and so forth)
      pass the system library path (LD_LIBRARY_PATH or platform-specific
      variables) along with the system PATH, by default.  Both should be 
