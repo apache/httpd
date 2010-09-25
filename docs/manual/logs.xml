@@ -42,7 +42,6 @@
         <module>mod_log_config</module>
         <module>mod_log_forensic</module>
         <module>mod_logio</module>
-        <module>mod_rewrite</module>
         <module>mod_cgi</module>
       </modulelist>
   </related>
@@ -641,7 +640,6 @@
         <module>mod_logio</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
-        <module>mod_rewrite</module>
       </modulelist>
 
       <directivelist>
