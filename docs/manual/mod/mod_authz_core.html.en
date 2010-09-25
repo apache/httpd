@@ -53,6 +53,7 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Creating Authorization Provider Aliases</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logic">Authorization Containers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -164,6 +165,88 @@
         </span>      
         &lt;/Directory&gt;
     </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
+
+  <p><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides some generic authorization
+  providers which can be used with the
+  <code class="directive"><a href="#require">Require</a></code> directive.</p>
+
+  <h3><a name="reqenv" id="reqenv">Require env</a></h3>
+
+    <p>The <code>env</code> provider allows access to the server
+    to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Require 
+    env <var>env-variable</var></code> is specified, then the request is
+    allowed access if the environment variable <var>env-variable</var>
+    exists. The server provides the ability to set environment
+    variables in a flexible way based on characteristics of the client
+    request using the directives provided by
+    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>. Therefore, this directive can be
+    used to allow access based on such factors as the clients
+    <code>User-Agent</code> (browser type), <code>Referer</code>, or
+    other HTTP request header fields.</p>
+    
+    <div class="example"><h3>Example:</h3><p><code>
+      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
+      &lt;Directory /docroot&gt;<br />
+      <span class="indent">
+        Require env let_me_in<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+    
+    <p>In this case, browsers with a user-agent string beginning
+    with <code>KnockKnock/2.0</code> will be allowed access, and all
+    others will be denied.</p>
+
+  
+
+  <h3><a name="reqall" id="reqall">Require all</a></h3>
+
+    <p>The <code>all</code> provider mimics the functionality the
+    was previously provided by the 'Allow from all' and 'Deny from all'
+    directives.  This provider can take one of two arguments which are 
+    'granted' or 'denied'.  The following examples will grant or deny 
+    access to all requests.</p>
+
+    <div class="example"><p><code>
+    Require all granted<br />
+    </code></p></div>
+
+    <div class="example"><p><code>
+    Require all denied<br />
+    </code></p></div>
+
+  
+
+  <h3><a name="reqmethod" id="reqmethod">Require method</a></h3>
+
+    <p>The <code>method</code> provider allows to use the HTTP method in
+    authorization decisions. The GET and HEAD methods are treated as
+    equivalent. The TRACE method is not available to this provider,
+    use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
+
+    <p>The following example will only allow GET, HEAD, POST, and OPTIONS
+    requests:</p>
+
+    <div class="example"><p><code>
+        Require method GET POST OPTIONS<br />
+    </code></p></div>
+
+    <p>The following example will allow GET, HEAD, POST, and OPTIONS
+    requests without authentication, and require a valid user for all other
+    methods:</p>
+
+    <div class="example"><p><code>
+        &lt;RequireAny&gt;<br />
+        &nbsp;Require method GET POST OPTIONS<br />
+        &nbsp;Require valid-user<br />
+        &lt;/RequireAny&gt;<br />
+    </code></p></div>
+
+  
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthMerging" id="AuthMerging">AuthMerging</a> <a name="authmerging" id="authmerging">Directive</a></h2>
@@ -273,9 +356,28 @@ an authorization provider.</td></tr>
 </table>
     <p>This directive tests whether an authenticated user is authorized
     according to a particular authorization provider and the specified
-    restrictions.  Some of the allowed syntaxes provided by
-    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> and
-    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
+    restrictions. <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides the following
+    generic authorization providers:</p>
+
+    <dl>
+      <dt><code>Require all granted</code></dt>
+      <dd>Access is allowed unconditionally.</dd>
+
+      <dt><code>Require all denied</code></dt>
+      <dd>Access is denied unconditionally.</dd>
+
+      <dt><code>Require env <var>env-var</var> [<var>env-var</var>]
+      ...</code></dt>
+      <dd>Access is allowed only if one of the given environment variables is
+          set.</dd>
+
+      <dt><code>Require method <var>http-method</var> [<var>http-method</var>]
+      ...</code></dt>
+      <dd>Access is allowed only for the given HTTP methods.</dd>
+    </dl>
+
+    <p>Some of the allowed syntaxes provided by <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>
+       and <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
 
     <dl>
       <dt><code>Require user <var>userid</var> [<var>userid</var>]
@@ -296,8 +398,8 @@ an authorization provider.</td></tr>
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>, and
     <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>.</p>
 
-    <p>For a complete authentication and authorization configuration, 
-    <code class="directive">Require</code> must be accompanied by
+    <p>In most cases, for a complete authentication and authorization
+    configuration, <code class="directive">Require</code> must be accompanied by
     <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>, <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> and 
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
     <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> 
