@@ -72,6 +72,21 @@ URLs on the fly</description>
       LogLevel rewrite:trace3
     </example>
 
+    <note><title>RewriteLog</title>
+      <p>Those familiar with earlier versions of
+      <module>mod_rewrite</module> will no doubt be looking for the
+      <code>RewriteLog</code> and <code>RewriteLogLevel</code>
+      directives. This functionality has been completely replaced by the
+      new per-module logging configuration mentioned above.
+      </p>
+
+      <p>To get just the <module>mod_rewrite</module>-specific log
+      messages, pipe the log file through grep:</p>
+    <example>
+    tail -f error_log|fgrep '[rewrite:'
+    </example>
+    </note>
+
 </section>
 
 <directivesynopsis>
