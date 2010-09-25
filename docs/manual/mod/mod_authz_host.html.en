@@ -40,8 +40,7 @@ address)</td></tr>
     or <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section
     as well as <code><a href="core.html#accessfilename">.htaccess</a>
     </code> files to control access to particular parts of the server.
-    Access can be controlled based on the client hostname, IP address, or
-    other characteristics of the client request, as captured in <a href="../env.html">environment variables</a>.</p>
+    Access can be controlled based on the client hostname or IP address.</p>
 
     <p>In general, access restriction directives apply to all
     access methods (<code>GET</code>, <code>PUT</code>,
@@ -69,44 +68,13 @@ address)</td></tr>
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
     directive is used during the authorization phase to ensure that a user is allowed or
     denied access to a resource.  mod_authz_host extends the 
-    authorization types with <code>env</code>, <code>ip</code>, 
-    <code>host</code> and <code>all</code>.  Other authorization types may also be 
+    authorization types with <code>ip</code> and <code>host</code>.
+    Other authorization types may also be 
     used but may require that additional authorization modules be loaded.</p>
 
     <p>These authorization providers affect which hosts can
     access an area of the server. Access can be controlled by
-    hostname, IP Address, IP Address range, or by other
-    characteristics of the client request captured in environment
-    variables.</p>
-
-<h3><a name="reqenv" id="reqenv">Require env</a></h3>
-
-    <p>The <code>env</code> provider allows access to the server
-    to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Require 
-    env <var>env-variable</var></code> is specified, then the request is
-    allowed access if the environment variable <var>env-variable</var>
-    exists. The server provides the ability to set environment
-    variables in a flexible way based on characteristics of the client
-    request using the directives provided by
-    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>. Therefore, this directive can be
-    used to allow access based on such factors as the clients
-    <code>User-Agent</code> (browser type), <code>Referer</code>, or
-    other HTTP request header fields.</p>
-    
-    <div class="example"><h3>Example:</h3><p><code>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
-      &lt;Directory /docroot&gt;<br />
-      <span class="indent">
-        Require env let_me_in<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
-    
-    <p>In this case, browsers with a user-agent string beginning
-    with <code>KnockKnock/2.0</code> will be allowed access, and all
-    others will be denied.</p>
-
-
+    hostname, IP Address, or IP Address range.</p>
 
 <h3><a name="reqip" id="reqip">Require ip</a></h3>
 
@@ -188,52 +156,6 @@ address)</td></tr>
     that it matches the original IP address.  Only if the forward
     and reverse DNS are consistent and the hostname matches will
     access be allowed.</p>
-
-
-
-<h3><a name="reqall" id="reqall">Require all</a></h3>
-
-    <p>The <code>all</code> provider mimics the functionality the
-    was previously provided by the 'Allow from all' and 'Deny from all'
-    directives.  This provider can take one of two arguments which are 
-    'granted' or 'denied'.  The following examples will grant or deny 
-    access to all requests.</p>
-
-    <div class="example"><p><code>
-    Require all granted<br />
-    </code></p></div>
-
-    <div class="example"><p><code>
-    Require all denied<br />
-    </code></p></div>
-
-
-
-<h3><a name="reqmethod" id="reqmethod">Require method</a></h3>
-
-    <p>The <code>method</code> provider allows to use the HTTP method in
-    authorization decisions. The GET and HEAD methods are treated as
-    equivalent. The TRACE method is not available to this provider,
-    use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
-
-    <p>The following example will only allow GET, HEAD, POST, and OPTIONS
-    requests:</p>
-
-    <div class="example"><p><code>
-        Require method GET POST OPTIONS<br />
-    </code></p></div>
-
-    <p>The following example will allow GET, HEAD, POST, and OPTIONS
-    requests without authentication, and require a valid user for all other
-    methods:</p>
-
-    <div class="example"><p><code>
-        &lt;RequireAny&gt;<br />
-        &nbsp;Require method GET POST OPTIONS<br />
-        &nbsp;Require valid-user<br />
-        &lt;/RequireAny&gt;<br />
-    </code></p></div>
-
 
 
 
