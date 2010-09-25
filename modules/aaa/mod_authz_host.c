@@ -113,8 +113,9 @@ static const char *ip_parse_config(cmd_parms *cmd,
         char *mask;
         apr_status_t rv;
 
-        *ip = apr_hash_get(parsed_subnets, w, APR_HASH_KEY_STRING);
-        if (*ip) {
+        if (parsed_subnets &&
+            (*ip = apr_hash_get(parsed_subnets, w, APR_HASH_KEY_STRING)) != NULL)
+        {
             /* we already have parsed this subnet */
             ip++;
             continue;
@@ -136,7 +137,8 @@ static const char *ip_parse_config(cmd_parms *cmd,
                                 w, msgbuf);
         }
 
-        apr_hash_set(parsed_subnets, w, APR_HASH_KEY_STRING, *ip);
+        if (parsed_subnets)
+            apr_hash_set(parsed_subnets, w, APR_HASH_KEY_STRING, *ip);
         ip++;
     }
 
@@ -256,9 +258,19 @@ static int authz_host_pre_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+static int authz_host_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                  apr_pool_t *ptemp, server_rec *s)
+{
+    /* make sure we don't use this during .htaccess parsing */
+    parsed_subnets = NULL;
+
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(authz_host_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(authz_host_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ip",
                               AUTHZ_PROVIDER_VERSION,
