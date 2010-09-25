@@ -40,75 +40,58 @@
      reference documentation, and can be used to generate a browsable 
      HTML reference with <code>make docs</code>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#ap_expr">ap_expr (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ap_listen">ap_listen (changed; back-compatible)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ap_mpm">ap_mpm (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ap_regex">ap_regex (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ap_slotmem">ap_slotmem (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ap_socache">ap_socache (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#heartbeat">heartbeat (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#http_config">http_config (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#http_core">http_core (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#httpd">httpd (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#http_log">http_log (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#http_request">http_request (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mod_auth">mod_auth (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mod_core">mod_core (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mod_request">mod_request (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mpm_common">mpm_common (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#scoreboard">scoreboard (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#util_cookies">util_cookies (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#util_ldap">util_ldap (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#util_mutex">util_mutex (NEW!)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#util_script">util_script (changed)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#util_time">util_time (changed)</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#api_changes">Changed APIs</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#upgrading">Specific information on upgrading modules from 2.2</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ap_expr" id="ap_expr">ap_expr (NEW!)</a></h2>
+<h2><a name="api_changes" id="api_changes">Changed APIs</a></h2>
+  
+
+  <h3><a name="ap_expr" id="ap_expr">ap_expr (NEW!)</a></h3>
     
     <p>Introduces a new API to parse and evaluate boolean and algebraic
        expressions, including provision for a standard syntax and
        customised variants.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="ap_listen" id="ap_listen">ap_listen (changed; back-compatible)</a></h2>
+  
+
+  <h3><a name="ap_listen" id="ap_listen">ap_listen (changed; back-compatible)</a></h3>
     
     <p>Introduces new API to enable apache child processes to serve different purposes.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="ap_mpm" id="ap_mpm">ap_mpm (changed)</a></h2>
+  
+
+  <h3><a name="ap_mpm" id="ap_mpm">ap_mpm (changed)</a></h3>
     
   <p><code>ap_mpm_run</code> is replaced by a new <code>mpm</code> hook.
   Also <code>ap_graceful_stop_signalled</code> is lost, and
   <code>ap_mpm_register_timed_callback</code> is new.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="ap_regex" id="ap_regex">ap_regex (changed)</a></h2>
+  
+
+  <h3><a name="ap_regex" id="ap_regex">ap_regex (changed)</a></h3>
     
   <p>In addition to the existing regexp wrapper, a new higher-level API
   <code>ap_rxplus</code> is now provided.  This provides the capability to
   compile Perl-style expressions like <code>s/regexp/replacement/flags</code>
   and to execute them against arbitrary strings.  Also regexp memory.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="ap_slotmem" id="ap_slotmem">ap_slotmem (NEW!)</a></h2>
+  
+
+  <h3><a name="ap_slotmem" id="ap_slotmem">ap_slotmem (NEW!)</a></h3>
     
     <p>Introduces an API for modules to allocate and manage memory slots
     (normally) for shared memory.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="ap_socache" id="ap_socache">ap_socache (NEW!)</a></h2>
+  
+
+  <h3><a name="ap_socache" id="ap_socache">ap_socache (NEW!)</a></h3>
     
     <p>API to manage a shared object cache.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="heartbeat" id="heartbeat">heartbeat (NEW!)</a></h2>
+  
+
+  <h3><a name="heartbeat" id="heartbeat">heartbeat (NEW!)</a></h3>
     
     <p>common structures for heartbeat modules (should this be public API?)</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="http_config" id="http_config">http_config (changed)</a></h2>
+  
+
+  <h3><a name="http_config" id="http_config">http_config (changed)</a></h3>
     
     <ul>
       <li>Introduces per-module, per-directory loglevels, including macro wrappers.</li>
@@ -119,30 +102,33 @@
       <li>New check_config hook</li>
       <li>New ap_process_fnmatch_configs() to process wildcards</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="http_core" id="http_core">http_core (changed)</a></h2>
+  
+
+  <h3><a name="http_core" id="http_core">http_core (changed)</a></h3>
     
     <ul>
       <li>REMOVED ap_default_type, ap_requires, all 2.2 authnz API</li>
       <li>Introduces Optional Functions for logio and authnz</li>
       <li>New function ap_get_server_name_for_url to support ipv6 literals.</li>
+      <li>New function ap_register_errorlog_handler to register errorlog
+          format string handlers.</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="httpd" id="httpd">httpd (changed)</a></h2>
+  
+
+  <h3><a name="httpd" id="httpd">httpd (changed)</a></h3>
     
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
       <li>New loglevels APLOG_TRACEn</li>
+      <li>Introduce errorlog ids for requests and connections</li>
       <li>Support for mod_request kept_body</li>
       <li>Support buffering filter data for async requests</li>
       <li>New CONN_STATE values</li>
       <li>Function changes: ap_escape_html updated; ap_unescape_all, ap_escape_path_segment_buffer</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="http_log" id="http_log">http_log (changed)</a></h2>
+  
+
+  <h3><a name="http_log" id="http_log">http_log (changed)</a></h3>
     
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
@@ -153,9 +139,9 @@
       <li>module_index added to error_log hook</li>
       <li>new function: ap_log_command_line</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="http_request" id="http_request">http_request (changed)</a></h2>
+  
+
+  <h3><a name="http_request" id="http_request">http_request (changed)</a></h3>
     
     <ul>
       <li>New auth_internal API and auth_provider API</li>
@@ -181,27 +167,27 @@
        control checks on every sub-request with a different URI from the
        initial request, even if that URI matches the same set of access
        control configuration directives, then use AP_AUTH_INTERNAL_PER_URI.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="mod_auth" id="mod_auth">mod_auth (NEW!)</a></h2>
+  
+
+  <h3><a name="mod_auth" id="mod_auth">mod_auth (NEW!)</a></h3>
     
     <p>Introduces the new provider framework for authn and authz</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="mod_core" id="mod_core">mod_core (NEW!)</a></h2>
+  
+
+  <h3><a name="mod_core" id="mod_core">mod_core (NEW!)</a></h3>
     
     <p>This introduces low-level APIs to send arbitrary headers,
     and exposes functions to handle HTTP OPTIONS and TRACE.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="mod_request" id="mod_request">mod_request (NEW!)</a></h2>
+  
+
+  <h3><a name="mod_request" id="mod_request">mod_request (NEW!)</a></h3>
     
     <p>The API for <code class="module"><a href="../mod/mod_request.html">mod_request</a></code>, to make input data
     available to multiple application/handler modules where required,
     and to parse HTML form data.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="mpm_common" id="mpm_common">mpm_common (changed)</a></h2>
+  
+
+  <h3><a name="mpm_common" id="mpm_common">mpm_common (changed)</a></h3>
     
     <ul>
       <li>REMOVES: accept, lockfile, lock_mech, set_scoreboard (locking uses the new ap_mutex API)</li>
@@ -209,39 +195,72 @@
           function to modules)</li>
       <li>NEW Hooks: mpm_query, mpm_note_child_killed, timed_callback, get_name, and function ap_mpm_note_child_killed</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="scoreboard" id="scoreboard">scoreboard (changed)</a></h2>
+  
+
+  <h3><a name="scoreboard" id="scoreboard">scoreboard (changed)</a></h3>
     
     <p>ap_get_scoreboard_worker is gratuitously made non-back-compatible
     as an alternative version is introduced.  Additional proxy_balancer
     support.  Child status stuff revamped.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="util_cookies" id="util_cookies">util_cookies (NEW!)</a></h2>
+  
+
+  <h3><a name="util_cookies" id="util_cookies">util_cookies (NEW!)</a></h3>
     
     <p>Introduces a new API for managing HTTP Cookies.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="util_ldap" id="util_ldap">util_ldap (changed)</a></h2>
+  
+
+  <h3><a name="util_ldap" id="util_ldap">util_ldap (changed)</a></h3>
     
     <p>I have yet to get a handle on this update.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="util_mutex" id="util_mutex">util_mutex (NEW!)</a></h2>
+  
+
+  <h3><a name="util_mutex" id="util_mutex">util_mutex (NEW!)</a></h3>
     
     <p>A wrapper for APR proc and global mutexes in httpd.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="util_script" id="util_script">util_script (changed)</a></h2>
+  
+
+  <h3><a name="util_script" id="util_script">util_script (changed)</a></h3>
     
     <p>NEW: ap_args_to_table</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="util_time" id="util_time">util_time (changed)</a></h2>
+  
+
+  <h3><a name="util_time" id="util_time">util_time (changed)</a></h3>
     
     <p>NEW: ap_recent_ctime_ex</p>
-  </div></div>
+  
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="upgrading" id="upgrading">Specific information on upgrading modules from 2.2</a></h2>
+  
+
+  <h3><a name="upgrading_logging" id="upgrading_logging">Logging</a></h3>
+    
+    <p>In order to take advantage of per-module loglevel configuration, any
+       source file that calls the <code>ap_log_*</code> functions should declare
+       which module it belongs to. If the module's module_struct is called
+       <code>foo_module</code>, the following code can be used to remain
+       backward compatible with HTTPD 2.0 and 2.2:</p>
+    <div class="example"><p><code>
+        #include &lt;http_log.h&gt;<br />
+        <br />
+        #ifdef APLOG_USE_MODULE<br />
+        APLOG_USE_MODULE(foo)<br />
+        #endif
+    </code></p></div>
+    <p>The number of parameters of the <code>ap_log_*</code> functions and the
+       definition of <code>APLOG_MARK</code> has changed. Normally, the change
+       is completely transparent. However, if a module implements wrapper
+       functions for <code>ap_log_*</code> and uses <code>APLOG_MARK</code>
+       when calling these wrappers, some adjustments are necessary.
+       The easiest way is for the module to define and use a different macro
+       that expands to the parameters required by the log wrapper functions.
+       <code>APLOG_MARK</code> should only be used when calling
+       <code>ap_log_*</code> without additional wrappers. In this way, the
+       code will remain compatible with HTTPD 2.0 and 2.2.</p>
+  
+
+</div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/new_api_2_4.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
