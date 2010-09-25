@@ -863,6 +863,127 @@ static int authz_some_auth_required(request_rec *r)
     return 0;
 }
 
+/*
+ * env authz provider
+ */
+
+static authz_status env_check_authorization(request_rec *r,
+                                            const char *require_line,
+                                            const void *parsed_require_line)
+{
+    const char *t, *w;
+
+    /* The 'env' provider will allow the configuration to specify a list of
+        env variables to check rather than a single variable.  This is different
+        from the previous host based syntax. */
+    t = require_line;
+    while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+        if (apr_table_get(r->subprocess_env, w)) {
+            return AUTHZ_GRANTED;
+        }
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                  "access to %s failed, reason: env variable list does not meet "
+                  "'require'ments for user '%s' to be allowed access",
+                  r->uri, r->user);
+
+    return AUTHZ_DENIED;
+}
+
+static const authz_provider authz_env_provider =
+{
+    &env_check_authorization,
+    NULL,
+};
+
+
+/*
+ * all authz provider
+ */
+
+static authz_status all_check_authorization(request_rec *r,
+                                            const char *require_line,
+                                            const void *parsed_require_line)
+{
+    if (parsed_require_line) {
+        return AUTHZ_GRANTED;
+    }
+    return AUTHZ_DENIED;
+}
+
+static const char *all_parse_config(cmd_parms *cmd, const char *require_line,
+                                    const void **parsed_require_line)
+{
+    /*
+     * If the argument to the 'all' provider is 'granted' then just let 
+     * everybody in. This would be equivalent to the previous syntax of
+     * 'allow from all'. If the argument is 'denied' we reject everbody,
+     * which is equivalent to 'deny from all'.
+     */
+    if (strcasecmp(require_line, "granted") == 0) {
+        *parsed_require_line = (void *)1;
+        return NULL;
+    }
+    else if (strcasecmp(require_line, "denied") == 0) {
+        /* *parsed_require_line is already NULL */
+        return NULL;
+    }
+    else {
+        return "Argument for 'Require all' must be 'granted' or 'denied'";
+    }
+}
+
+static const authz_provider authz_all_provider =
+{
+    &all_check_authorization,
+    &all_parse_config,
+};
+
+
+/*
+ * method authz provider
+ */
+
+static authz_status method_check_authorization(request_rec *r,
+                                               const char *require_line,
+                                               const void *parsed_require_line)
+{
+    const apr_int64_t *allowed = parsed_require_line;
+    if (*allowed & (AP_METHOD_BIT << r->method_number))
+        return AUTHZ_GRANTED;
+    else
+        return AUTHZ_DENIED;
+}
+
+static const char *method_parse_config(cmd_parms *cmd, const char *require_line,
+                                       const void **parsed_require_line)
+{
+    const char *w, *t;
+    apr_int64_t *allowed = apr_pcalloc(cmd->pool, sizeof(apr_int64_t));
+
+    t = require_line;
+
+    while ((w = ap_getword_conf(cmd->temp_pool, &t)) && w[0]) {
+        int m = ap_method_number_of(w);
+        if (m == M_INVALID) {
+            return apr_pstrcat(cmd->pool, "Invalid Method '", w, "'", NULL);
+        }
+
+        *allowed |= (AP_METHOD_BIT << m);
+    }
+
+    *parsed_require_line = allowed;
+    return NULL;
+}
+
+static const authz_provider authz_method_provider =
+{
+    &method_check_authorization,
+    &method_parse_config,
+};
+
+
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authz_some_auth_required);
@@ -873,6 +994,16 @@ static void register_hooks(apr_pool_t *p)
                         AP_AUTH_INTERNAL_PER_CONF);
     ap_hook_check_access_ex(authorize_userless, NULL, NULL, APR_HOOK_LAST,
                             AP_AUTH_INTERNAL_PER_CONF);
+
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "env",
+                              AUTHZ_PROVIDER_VERSION,
+                              &authz_env_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "all",
+                              AUTHZ_PROVIDER_VERSION,
+                              &authz_all_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "method",
+                              AUTHZ_PROVIDER_VERSION,
+                              &authz_method_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
 AP_DECLARE_MODULE(authz_core) =
