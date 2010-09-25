@@ -159,6 +159,25 @@ address)</td></tr>
 
 
 
+<h3><a name="reqlocal" id="reqlocal">Require local</a></h3>
+    <p>The <code>local</code> provider allows access to the server if any
+    of the following conditions is true:</p>
+
+    <ul>
+        <li>the client address matches 127.0.0.0/8</li>
+        <li>the client address is ::1</li>
+        <li>both the client and the server address of the connection are
+        the same</li>
+    </ul>
+
+    <p>This allows a convenient way to match connections that originate from
+    the local host:</p>
+
+    <div class="example"><p><code>
+    Require local
+    </code></p></div>
+
+
 </div>
 </div>
 <div class="bottomlang">

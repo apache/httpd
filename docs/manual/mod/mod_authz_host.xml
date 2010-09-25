@@ -150,7 +150,25 @@ address)</description>
 
 </section>
 
+<section id="reqlocal"><title>Require local</title>
+    <p>The <code>local</code> provider allows access to the server if any
+    of the following conditions is true:</p>
+
+    <ul>
+        <li>the client address matches 127.0.0.0/8</li>
+        <li>the client address is ::1</li>
+        <li>both the client and the server address of the connection are
+        the same</li>
+    </ul>
+
+    <p>This allows a convenient way to match connections that originate from
+    the local host:</p>
+
+    <example>
+    Require local
+    </example>
 </section>
 
+</section>
 
 </modulesynopsis>
