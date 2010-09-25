@@ -44,25 +44,6 @@
 #include <netinet/in.h>
 #endif
 
-typedef struct {
-        int dummy;  /* just here to stop compiler warnings for now. */
-} authz_host_dir_conf;
-
-module AP_MODULE_DECLARE_DATA authz_host_module;
-
-static void *create_authz_host_dir_config(apr_pool_t *p, char *dummy)
-{
-    authz_host_dir_conf *conf =
-        (authz_host_dir_conf *)apr_pcalloc(p, sizeof(authz_host_dir_conf));
-
-    return (void *)conf;
-}
-
-static const command_rec authz_host_cmds[] =
-{
-    {NULL}
-};
-
 static int in_domain(const char *domain, const char *what)
 {
     int dl = strlen(domain);
@@ -188,6 +169,29 @@ static authz_status host_check_authorization(request_rec *r,
     return AUTHZ_DENIED;
 }
 
+static apr_ipsubnet_t *localhost_v4;
+#if APR_HAVE_IPV6
+static apr_ipsubnet_t *localhost_v6;
+#endif
+
+static authz_status local_check_authorization(request_rec *r,
+                                              const char *require_line,
+                                              const void *parsed_require_line)
+{
+     if (   apr_sockaddr_equal(r->connection->local_addr,
+                               r->connection->remote_addr)
+         || apr_ipsubnet_test(localhost_v4, r->connection->remote_addr)
+#if APR_HAVE_IPV6
+         || apr_ipsubnet_test(localhost_v6, r->connection->remote_addr) 
+#endif
+        )
+     {
+        return AUTHZ_GRANTED;
+     }
+
+     return AUTHZ_DENIED;
+}
+
 static const authz_provider authz_ip_provider =
 {
     &ip_check_authorization,
@@ -200,24 +204,46 @@ static const authz_provider authz_host_provider =
     NULL,
 };
 
+static const authz_provider authz_local_provider =
+{
+    &local_check_authorization,
+    NULL,
+};
+
+
+static int authz_host_pre_config(apr_pool_t *p, apr_pool_t *plog,
+                                 apr_pool_t *ptemp)
+{
+    apr_ipsubnet_create(&localhost_v4, "127.0.0.0", "8", p);
+#if APR_HAVE_IPV6
+    apr_ipsubnet_create(&localhost_v6, "::1", "128", p);
+#endif
+
+    return OK;
+}
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_hook_pre_config(authz_host_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ip",
                               AUTHZ_PROVIDER_VERSION,
                               &authz_ip_provider, AP_AUTH_INTERNAL_PER_CONF);
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "host",
                               AUTHZ_PROVIDER_VERSION,
                               &authz_host_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "local",
+                              AUTHZ_PROVIDER_VERSION,
+                              &authz_local_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
 AP_DECLARE_MODULE(authz_host) =
 {
     STANDARD20_MODULE_STUFF,
-    create_authz_host_dir_config,   /* dir config creater */
+    NULL,                           /* dir config creater */
     NULL,                           /* dir merger --- default is to override */
     NULL,                           /* server config */
     NULL,                           /* merge server config */
-    authz_host_cmds,
+    NULL,
     register_hooks                  /* register hooks */
 };

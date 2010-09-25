@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_authz_host: Add 'local' provider that matches connections originating
+     on the local host. PR 19938. [Stefan Fritsch]
+
   *) Event MPM: Fix crash accessing pollset on worker thread when child
      process is exiting.  [Jeff Trawick]
 
