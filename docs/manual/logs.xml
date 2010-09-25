@@ -648,8 +648,6 @@
         <directive module="mod_log_config">LogFormat</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
-        <directive module="mod_rewrite">RewriteLog</directive>
-        <directive module="mod_rewrite">RewriteLogLevel</directive>
         <directive module="mod_cgi">ScriptLog</directive>
         <directive module="mod_cgi">ScriptLogBuffer</directive>
         <directive module="mod_cgi">ScriptLogLength</directive>
@@ -700,18 +698,6 @@
       href="mod/mod_cgi.html">mod_cgi</a> documentation.</p>
     </section>
 
-    <section id="rewritelog">
-      <title>Rewrite Log</title>
-
-      <p>When using the powerful and complex features of <a
-      href="mod/mod_rewrite.html">mod_rewrite</a>, it is almost
-      always necessary to use the <directive
-      module="mod_rewrite">RewriteLog</directive> to help
-      in debugging. This log file produces a detailed analysis of how
-      the rewriting engine transforms requests. The level of detail
-      is controlled by the <directive
-      module="mod_rewrite">RewriteLogLevel</directive> directive.</p>
-    </section>
   </section>
 </manualpage>
 
