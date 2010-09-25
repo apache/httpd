@@ -44,6 +44,9 @@
      HTML reference with <code>make docs</code>.</p>
 </summary>
 
+<section id="api_changes">
+  <title>Changed APIs</title>
+
   <section id="ap_expr">
     <title>ap_expr (NEW!)</title>
     <p>Introduces a new API to parse and evaluate boolean and algebraic
@@ -106,6 +109,8 @@
       <li>REMOVED ap_default_type, ap_requires, all 2.2 authnz API</li>
       <li>Introduces Optional Functions for logio and authnz</li>
       <li>New function ap_get_server_name_for_url to support ipv6 literals.</li>
+      <li>New function ap_register_errorlog_handler to register errorlog
+          format string handlers.</li>
     </ul>
   </section>
 
@@ -114,6 +119,7 @@
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
       <li>New loglevels APLOG_TRACEn</li>
+      <li>Introduce errorlog ids for requests and connections</li>
       <li>Support for mod_request kept_body</li>
       <li>Support buffering filter data for async requests</li>
       <li>New CONN_STATE values</li>
@@ -221,5 +227,38 @@
     <title>util_time (changed)</title>
     <p>NEW: ap_recent_ctime_ex</p>
   </section>
+
+</section>
+
+<section id="upgrading">
+  <title>Specific information on upgrading modules from 2.2</title>
+
+  <section id="upgrading_logging">
+    <title>Logging</title>
+    <p>In order to take advantage of per-module loglevel configuration, any
+       source file that calls the <code>ap_log_*</code> functions should declare
+       which module it belongs to. If the module's module_struct is called
+       <code>foo_module</code>, the following code can be used to remain
+       backward compatible with HTTPD 2.0 and 2.2:</p>
+    <example>
+        #include &lt;http_log.h&gt;<br/>
+        <br/>
+        #ifdef APLOG_USE_MODULE<br/>
+        APLOG_USE_MODULE(foo)<br/>
+        #endif
+    </example>
+    <p>The number of parameters of the <code>ap_log_*</code> functions and the
+       definition of <code>APLOG_MARK</code> has changed. Normally, the change
+       is completely transparent. However, if a module implements wrapper
+       functions for <code>ap_log_*</code> and uses <code>APLOG_MARK</code>
+       when calling these wrappers, some adjustments are necessary.
+       The easiest way is for the module to define and use a different macro
+       that expands to the parameters required by the log wrapper functions.
+       <code>APLOG_MARK</code> should only be used when calling
+       <code>ap_log_*</code> without additional wrappers. In this way, the
+       code will remain compatible with HTTPD 2.0 and 2.2.</p>
+  </section>
+
+</section>
 
 </manualpage>
