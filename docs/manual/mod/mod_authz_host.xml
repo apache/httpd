@@ -39,9 +39,7 @@ address)</description>
     or <directive module="core" type="section">Location</directive> section
     as well as <code><a href="core.html#accessfilename">.htaccess</a>
     </code> files to control access to particular parts of the server.
-    Access can be controlled based on the client hostname, IP address, or
-    other characteristics of the client request, as captured in <a
-    href="../env.html">environment variables</a>.</p>
+    Access can be controlled based on the client hostname or IP address.</p>
 
     <p>In general, access restriction directives apply to all
     access methods (<code>GET</code>, <code>PUT</code>,
@@ -60,45 +58,13 @@ address)</description>
     <p>Apache's <directive module="mod_authz_core">Require</directive> 
     directive is used during the authorization phase to ensure that a user is allowed or
     denied access to a resource.  mod_authz_host extends the 
-    authorization types with <code>env</code>, <code>ip</code>, 
-    <code>host</code> and <code>all</code>.  Other authorization types may also be 
+    authorization types with <code>ip</code> and <code>host</code>.
+    Other authorization types may also be 
     used but may require that additional authorization modules be loaded.</p>
 
     <p>These authorization providers affect which hosts can
     access an area of the server. Access can be controlled by
-    hostname, IP Address, IP Address range, or by other
-    characteristics of the client request captured in environment
-    variables.</p>
-
-<section id="reqenv"><title>Require env</title>
-
-    <p>The <code>env</code> provider allows access to the server
-    to be controlled based on the existence of an <a
-    href="../env.html">environment variable</a>. When <code>Require 
-    env <var>env-variable</var></code> is specified, then the request is
-    allowed access if the environment variable <var>env-variable</var>
-    exists. The server provides the ability to set environment
-    variables in a flexible way based on characteristics of the client
-    request using the directives provided by
-    <module>mod_setenvif</module>. Therefore, this directive can be
-    used to allow access based on such factors as the clients
-    <code>User-Agent</code> (browser type), <code>Referer</code>, or
-    other HTTP request header fields.</p>
-    
-    <example><title>Example:</title>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
-      &lt;Directory /docroot&gt;<br />
-      <indent>
-        Require env let_me_in<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
-    
-    <p>In this case, browsers with a user-agent string beginning
-    with <code>KnockKnock/2.0</code> will be allowed access, and all
-    others will be denied.</p>
-
-</section>
+    hostname, IP Address, or IP Address range.</p>
 
 <section id="reqip"><title>Require ip</title>
 
@@ -183,52 +149,6 @@ address)</description>
     access be allowed.</p>
 
 </section>
-
-<section id="reqall"><title>Require all</title>
-
-    <p>The <code>all</code> provider mimics the functionality the
-    was previously provided by the 'Allow from all' and 'Deny from all'
-    directives.  This provider can take one of two arguments which are 
-    'granted' or 'denied'.  The following examples will grant or deny 
-    access to all requests.</p>
-
-    <example>
-    Require all granted<br />
-    </example>
-
-    <example>
-    Require all denied<br />
-    </example>
-
-</section>
-
-<section id="reqmethod"><title>Require method</title>
-
-    <p>The <code>method</code> provider allows to use the HTTP method in
-    authorization decisions. The GET and HEAD methods are treated as
-    equivalent. The TRACE method is not available to this provider,
-    use <directive module="core">TraceEnable</directive> instead.</p>
-
-    <p>The following example will only allow GET, HEAD, POST, and OPTIONS
-    requests:</p>
-
-    <example>
-        Require method GET POST OPTIONS<br />
-    </example>
-
-    <p>The following example will allow GET, HEAD, POST, and OPTIONS
-    requests without authentication, and require a valid user for all other
-    methods:</p>
-
-    <example>
-        &lt;RequireAny&gt;<br />
-        &nbsp;Require method GET POST OPTIONS<br />
-        &nbsp;Require valid-user<br />
-        &lt;/RequireAny&gt;<br />
-    </example>
-
-</section>
-
 
 </section>
 
