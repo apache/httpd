@@ -214,14 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          long argv[0]
        r982050, mpm_unix.c (backported to mpm_common.c): remove unused vars
      2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-2.txt
-     +1: trawick
-     sf notes: - your patch also contains parts of r982050 in
-                 server/mpm_common.c which should be listed in the proposal
-                   trawick: mpm_unix/mpm_common rev now listed
-               - the backport for r991515 is broken: you need to remove
-                 the '*', too
-                   trawick: (groan) fixed in rev 2 of the patch
-               - +1 once this is fixed
+     +1: trawick, sf
 
    * mod_cache: Check the request to determine whether we are allowed
      to return cached content at all, and respect a "Cache-Control:
