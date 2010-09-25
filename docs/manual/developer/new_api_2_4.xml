@@ -71,7 +71,8 @@
   <p>In addition to the existing regexp wrapper, a new higher-level API
   <code>ap_rxplus</code> is now provided.  This provides the capability to
   compile Perl-style expressions like <code>s/regexp/replacement/flags</code>
-  and to execute them against arbitrary strings.  Also regexp memory.</p>
+  and to execute them against arbitrary strings. Support for regexp
+  backreference.</p>
   </section>
 
   <section id="ap_slotmem">
