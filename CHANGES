@@ -27,7 +27,9 @@ Changes with Apache 2.3.9
      [Graham Leggett]
 
   *) mod_authz_core: Allow authz providers to check args while reading the
-     config and allow to cache parsed args. [Stefan Fritsch]
+     config and allow to cache parsed args. Move 'all' and 'env' authz
+     providers from mod_authz_host to mod_authz_core. Add 'method' authz
+     provider depending on the HTTP method.  [Stefan Fritsch]
 
   *) mod_include: Move the request_rec within mod_include to be
      exposed within include_ctx_t. [Graham Leggett]
