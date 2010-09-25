@@ -158,6 +158,34 @@
     </example>
   </section>
 
+  <section id="permodule">
+    <title>Per-module logging</title>
+
+    <p>The <directive module="core">LogLevel</directive> directive
+    allows you to specify a log severity level on a per-module basis. In
+    this way, if you are troubleshooting a problem with just one
+    particular module, you can turn up its logging volume without also
+    getting the details of other modules that you're not interested in.
+    This is particularly useful for modules such as
+    <module>mod_proxy</module> or <module>mod_rewrite</module> where you
+    want to know details about what it's trying to do.</p>
+
+    <p>Do this by specifying the name of the module in your
+    <directive>LogLevel</directive> directive:</p>
+
+    <example>
+    LogLevel info rewrite:trace5
+    </example>
+
+    <p>This sets the main <directive>LogLevel</directive> to info, but
+    turns it up to <code>trace5</code> for
+    <module>mod_rewrite</module>.</p>
+
+    <note>This replaces the per-module logging directives, such as
+    <code>RewriteLog</code>, that were present in earlier versions of
+    the server.</note>
+  </section>
+
   <section id="accesslog">
     <title>Access Log</title>
 
