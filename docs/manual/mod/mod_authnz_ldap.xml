@@ -781,7 +781,7 @@ authorization</description>
 
 <directivesynopsis>
 <name>AuthLDAPBindAuthoritative</name>
-<description>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</description>
+<description>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the user's credentials.</description>
 <syntax>AuthLDAPBindAuthoritative<em>off|on</em></syntax>
 <default>AuthLDAPBindAuthoritative on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -793,11 +793,11 @@ authorization</description>
     password cannot be verified with an LDAP bind.  
     If <directive module="mod_authnz_ldap">AuthLDAPBindAuthoritative</directive> 
     is set to <em>off</em>, other configured authentication modules will have 
-    a chance to validate the user if the LDAP bind (with the current users credentials) 
+    a chance to validate the user if the LDAP bind (with the current user's credentials) 
     fails for any reason.</p>
     <p> This allows users present in both LDAP and 
     <directive module="mod_authn_file">AuthUserFile</directive> to authenticate
-    when the LDAP server is available but the users account is locked or password
+    when the LDAP server is available but the user's account is locked or password
     is otherwise unusable.</p>
 </usage>
 <seealso><directive module="mod_authn_file">AuthUserFile</directive></seealso>
@@ -942,7 +942,7 @@ to perform a DN lookup</description>
 
 <directivesynopsis>
 <name>AuthLDAPCompareAsUser</name>
-<description>Use the authenticated users credentials to perform authorization comparisons</description>
+<description>Use the authenticated user's credentials to perform authorization comparisons</description>
 <syntax>AuthLDAPCompareAsUser on|off</syntax>
 <default>AuthLDAPCompareAsUser off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -1121,7 +1121,7 @@ environment variable</description>
 
 <directivesynopsis>
 <name>AuthLDAPSearchAsUser</name>
-<description>Use the authenticated users credentials to perform authorization searches</description>
+<description>Use the authenticated user's credentials to perform authorization searches</description>
 <syntax>AuthLDAPSearchAsUser on|off</syntax>
 <default>AuthLDAPSearchAsUser off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
