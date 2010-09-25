@@ -24,6 +24,7 @@
 #include "apr_strings.h"
 #include "apr_network_io.h"
 #include "apr_md5.h"
+#include "apr_hash.h"
 
 #define APR_WANT_STRFUNC
 #define APR_WANT_BYTEFUNC
@@ -42,6 +43,17 @@
 
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+
+/*
+ * To save memory if the same subnets are used in hundres of vhosts, we store
+ * each subnet only once and use this temporary hash to find it again.
+ */
+static apr_hash_t *parsed_subnets;
+
+static apr_ipsubnet_t *localhost_v4;
+#if APR_HAVE_IPV6
+static apr_ipsubnet_t *localhost_v6;
 #endif
 
 static int in_domain(const char *domain, const char *what)
@@ -71,56 +83,77 @@ static int in_domain(const char *domain, const char *what)
     }
 }
 
-static authz_status ip_check_authorization(request_rec *r,
-                                           const char *require_line,
-                                           const void *parsed_require_line)
+static const char *ip_parse_config(cmd_parms *cmd,
+                                   const char *require_line,
+                                   const void **parsed_require_line)
 {
     const char *t, *w;
+    int count = 0;
+    apr_ipsubnet_t **ip;
+    apr_pool_t *ptemp = cmd->temp_pool;
+    apr_pool_t *p = cmd->pool;
 
     /* The 'ip' provider will allow the configuration to specify a list of
         ip addresses to check rather than a single address.  This is different
         from the previous host based syntax. */
+
     t = require_line;
-    while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
-        char *where = apr_pstrdup(r->pool, w);
-        char *s;
-        char msgbuf[120];
-        apr_ipsubnet_t *ip;
+    while ((w = ap_getword_conf(ptemp, &t)) && w[0])
+        count++;
+
+    if (count == 0)
+        return "'require ip' requires an argument";
+
+    ip = apr_pcalloc(p, sizeof(apr_ipsubnet_t *) * (count + 1));
+    *parsed_require_line = ip;
+
+    t = require_line;
+    while ((w = ap_getword_conf(ptemp, &t)) && w[0]) {
+        char *addr = apr_pstrdup(ptemp, w);
+        char *mask;
         apr_status_t rv;
-        int got_ip = 0;
 
-        if ((s = ap_strchr(where, '/'))) {
-            *s++ = '\0';
-            rv = apr_ipsubnet_create(&ip, where, s, r->pool);
-            if(APR_STATUS_IS_EINVAL(rv)) {
-                /* looked nothing like an IP address */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "an ip address 'require' list appears to be invalid ");
-            }
-            else if (rv != APR_SUCCESS) {
-                apr_strerror(rv, msgbuf, sizeof msgbuf);
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "an ip address 'require' list appears to be invalid; %s ",
-                              msgbuf);
-            }
-            else
-                got_ip = 1;
-        }
-        else if (!APR_STATUS_IS_EINVAL(rv = apr_ipsubnet_create(&ip, where,
-                                                                NULL, r->pool))) {
-            if (rv != APR_SUCCESS) {
-                apr_strerror(rv, msgbuf, sizeof msgbuf);
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "an ip address 'require' list appears to be invalid; %s ",
-                              msgbuf);
-            }
-            else 
-                got_ip = 1;
+        *ip = apr_hash_get(parsed_subnets, w, APR_HASH_KEY_STRING);
+        if (*ip) {
+            /* we already have parsed this subnet */
+            ip++;
+            continue;
         }
 
-        if (got_ip && apr_ipsubnet_test(ip, r->connection->remote_addr)) {
+        if ((mask = ap_strchr(addr, '/')))
+            *mask++ = '\0';
+
+        rv = apr_ipsubnet_create(ip, addr, mask, p);
+
+        if(APR_STATUS_IS_EINVAL(rv)) {
+            /* looked nothing like an IP address */
+            return apr_psprintf(p, "ip address '%s' appears to be invalid", w);
+        }
+        else if (rv != APR_SUCCESS) {
+            char msgbuf[120];
+            apr_strerror(rv, msgbuf, sizeof msgbuf);
+            return apr_psprintf(p, "ip address '%s' appears to be invalid: %s",
+                                w, msgbuf);
+        }
+
+        apr_hash_set(parsed_subnets, w, APR_HASH_KEY_STRING, *ip);
+        ip++;
+    }
+
+    return NULL;
+}
+
+static authz_status ip_check_authorization(request_rec *r,
+                                           const char *require_line,
+                                           const void *parsed_require_line)
+{
+    /* apr_ipsubnet_test should accept const but doesn't */
+    apr_ipsubnet_t **ip = (apr_ipsubnet_t **)parsed_require_line;
+
+    while (*ip) {
+        if (apr_ipsubnet_test(*ip, r->connection->remote_addr))
             return AUTHZ_GRANTED;
-        }
+        ip++;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
@@ -169,11 +202,6 @@ static authz_status host_check_authorization(request_rec *r,
     return AUTHZ_DENIED;
 }
 
-static apr_ipsubnet_t *localhost_v4;
-#if APR_HAVE_IPV6
-static apr_ipsubnet_t *localhost_v6;
-#endif
-
 static authz_status local_check_authorization(request_rec *r,
                                               const char *require_line,
                                               const void *parsed_require_line)
@@ -195,7 +223,7 @@ static authz_status local_check_authorization(request_rec *r,
 static const authz_provider authz_ip_provider =
 {
     &ip_check_authorization,
-    NULL,
+    &ip_parse_config,
 };
 
 static const authz_provider authz_host_provider =
@@ -214,9 +242,15 @@ static const authz_provider authz_local_provider =
 static int authz_host_pre_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp)
 {
+    /* we only use this hash in the parse config phase, ptemp is enough */
+    parsed_subnets = apr_hash_make(ptemp);
+
     apr_ipsubnet_create(&localhost_v4, "127.0.0.0", "8", p);
+    apr_hash_set(parsed_subnets, "127.0.0.0/8", APR_HASH_KEY_STRING, localhost_v4);
+
 #if APR_HAVE_IPV6
-    apr_ipsubnet_create(&localhost_v6, "::1", "128", p);
+    apr_ipsubnet_create(&localhost_v6, "::1", NULL, p);
+    apr_hash_set(parsed_subnets, "::1", APR_HASH_KEY_STRING, localhost_v6);
 #endif
 
     return OK;
