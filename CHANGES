@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
 
+  *) SECURITY: CVE-2009-1891 (cve.mitre.org)
+     Fix a potential Denial-of-Service attack against mod_deflate or other 
+     modules, by forcing the server to consume CPU time in compressing a 
+     large file after a client disconnects.  PR 39605.
+     [Joe Orton, Ruediger Pluem]
+
   *) SECURITY: CVE-2009-3095 (cve.mitre.org)
      mod_proxy_ftp: sanity check authn credentials.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]

@@ -122,14 +122,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core output filter, CVE-2009-1891, consuming CPU after client disconnects
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?view=revision&revision=791454
-    Dan's patch posted last year for 2.0.x:
-      http://people.apache.org/~trawick/CVE-2009-1891-2.0-poirier.txt
-    +1: pgollucci, poirier, rjung
-      PG: whomever proposed this should vote for it
-
   * mod_ssl: Implement SSLInsecureRenegotiation
     Trunk version of patch:
       http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
