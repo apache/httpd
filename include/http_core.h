@@ -721,11 +721,12 @@ typedef struct ap_errorlog_handler {
 typedef struct {
     ap_errorlog_handler_fn_t *func;
     const char *arg;
-#define AP_ERRORLOG_FLAG_FIELD_SEP       1
-#define AP_ERRORLOG_FLAG_MESSAGE         2
-#define AP_ERRORLOG_FLAG_REQUIRED        4
-#define AP_ERRORLOG_FLAG_NULL_AS_HYPHEN  8
+#define AP_ERRORLOG_FLAG_FIELD_SEP       1  /* item starts a new field */
+#define AP_ERRORLOG_FLAG_MESSAGE         2  /* item is the actual error message */
+#define AP_ERRORLOG_FLAG_REQUIRED        4  /* skip whole line if item is zero-length */
+#define AP_ERRORLOG_FLAG_NULL_AS_HYPHEN  8  /* log zero-length item as '-' */
     unsigned int flags;
+    unsigned int min_loglevel;              /* only log if level is higher than this */
 } ap_errorlog_format_item;
 
 AP_DECLARE(void) ap_register_builtin_errorlog_handlers(apr_pool_t *p);

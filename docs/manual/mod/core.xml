@@ -1083,12 +1083,17 @@ in case of an error</description>
     (percent space) is a zero-witdh field delimiter that does not produce any
     output.</p>
 
-    <p>The above behaviour can be changed by adding flags to the format string
-    item. A <code>-</code> (minus) flag causes a minus to be logged if the
+    <p>The above behaviour can be changed by adding modifiers to the format
+    string item. A <code>-</code> (minus) modifier causes a minus to be logged if the
     respective item does not produce any output. In once-per-connection/request
-    formats, it is also possible to use the <code>+</code> (plus) flag. If an
-    item with the plus flag does not produce any output, the whole line is
+    formats, it is also possible to use the <code>+</code> (plus) modifier. If an
+    item with the plus modifier does not produce any output, the whole line is
     ommitted.</p>
+
+    <p>A number as modifier can be used to assign a log severity level to a
+    format item. The item will only be logged if the severity of the log
+    message is not higher than the specified log severity level. The number can
+    range from 1 (alert) over 4 (warn) and 7 (debug) to 15 (trace8).</p>
 
     <p>Some format string items accept additional parameters in braces.</p>
 
@@ -1173,17 +1178,17 @@ in case of an error</description>
     with error log lines.</p>
 
     <example><title>Example (somewhat similar to default format)</title>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %F: %E: [client\ %a]
+        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
         %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </example>
 
     <example><title>Example (similar to the 2.2.x format)</title>
-        ErrorLogFormat "[%t] [%l] %F: %E: [client\ %a]
+        ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
         %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </example>
 
     <example><title>Advanced example with request/connection log IDs</title>
-        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %M"<br/>
+        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"<br/>
         ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br/>
         ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br/>
         ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br/>

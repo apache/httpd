@@ -988,6 +988,10 @@ static int do_errorlog_format(apr_array_header_t *fmt, ap_errorlog_info *info,
         else if (skipping) {
             continue;
         }
+        else if (item->min_loglevel > info->level) {
+            len = field_start;
+            skipping = 1;
+        }
         else {
             int item_len = (*item->func)(info, item->arg, buf + len,
                                          buflen - len);
