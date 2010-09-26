@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_ssl: Use memmove instead of memcpy for overlapping buffers
     Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=683280
     2.0.x patch: Trunk patch works
-    +1: sf
+    +1: sf, jorton
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
