@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
            T_OS_ESCAPE_PATH,
            T_HTTP_TOKEN_STOP,
            T_ESCAPE_LOGITEM,
-	   T_ESCAPE_FORENSIC);
+           T_ESCAPE_FORENSIC);
 
     /* we explicitly dealt with NUL above
      * in case some strchr() do bogosity with it */
@@ -70,9 +70,9 @@ int main(int argc, char *argv[])
         /* Win32/OS2 have many of the same vulnerable characters
          * as Unix sh, plus the carriage return and percent char.
          * The proper escaping of these characters varies from unix
-         * since Win32/OS2 use carets or doubled-double quotes, 
-         * and neither lf nor cr can be escaped.  We escape unix 
-         * specific as well, to assure that cross-compiled unix 
+         * since Win32/OS2 use carets or doubled-double quotes,
+         * and neither lf nor cr can be escaped.  We escape unix
+         * specific as well, to assure that cross-compiled unix
          * applications behave similiarly when invoked on win32/os2.
          *
          * Rem please keep in-sync with apr's list in win32/filesys.c
