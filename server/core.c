@@ -3183,6 +3183,7 @@ static char *parse_errorlog_item(apr_pool_t *p, ap_errorlog_format_item *it,
 {
     const char *s = *sa;
     ap_errorlog_handler *handler;
+    int i;
 
     if (*s != '%') {
         if (*s == ' ') {
@@ -3221,6 +3222,21 @@ static char *parse_errorlog_item(apr_pool_t *p, ap_errorlog_format_item *it,
             ++s;
             it->flags |= AP_ERRORLOG_FLAG_NULL_AS_HYPHEN;
             break;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            i = *s - '0';
+            while (apr_isdigit(*++s))
+                i = i * 10 + (*s) - '0';
+            it->min_loglevel = i;
+            break;
         case 'M':
             it->func = NULL;
             it->flags |= AP_ERRORLOG_FLAG_MESSAGE;
@@ -3248,7 +3264,7 @@ static char *parse_errorlog_item(apr_pool_t *p, ap_errorlog_format_item *it,
 static apr_array_header_t *parse_errorlog_string(apr_pool_t *p,
                                                  const char *s,
                                                  const char **err,
-                                                 int want_msg_fmt)
+                                                 int is_main_fmt)
 {
     apr_array_header_t *a = apr_array_make(p, 30,
                                            sizeof(ap_errorlog_format_item));
@@ -3265,20 +3281,29 @@ static apr_array_header_t *parse_errorlog_string(apr_pool_t *p,
             return NULL;
         }
         if (item->flags & AP_ERRORLOG_FLAG_MESSAGE) {
-            if (!want_msg_fmt) {
+            if (!is_main_fmt) {
                 *err = "%M cannot be used in once-per-request or "
                        "once-per-connection formats";
                 return NULL;
             }
             seen_msg_fmt = 1;
         }
-        if (want_msg_fmt && item->flags & AP_ERRORLOG_FLAG_REQUIRED) {
+        if (is_main_fmt && item->flags & AP_ERRORLOG_FLAG_REQUIRED) {
             *err = "The '+' flag cannot be used in the main error log format";
+            return NULL;
+        }
+	if (!is_main_fmt && item->min_loglevel) {
+            *err = "The loglevel cannot be used as a condition in "
+		   "once-per-request or once-per-connection formats";
+            return NULL;
+        }
+	if (item->min_loglevel > APLOG_TRACE8) {
+            *err = "The specified loglevel modifier is out of range";
             return NULL;
         }
     }
 
-    if (want_msg_fmt && !seen_msg_fmt) {
+    if (is_main_fmt && !seen_msg_fmt) {
         *err = "main ErrorLogFormat must contain message format string '%M'";
         return NULL;
     }
