@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=795438
     2.2.x patch: http://svn.apache.org/viewvc?view=rev&revision=795971
     Backport: http://people.apache.org/~fuankg/diffs/gen_test_char.c_httpd_2_0_x-backport-r795971.diff
-    +1: fuankg
+    +1: fuankg, trawick
 
   * pcre: update config.guess and config.sub for better platform support.
     Trunk version of patch:
