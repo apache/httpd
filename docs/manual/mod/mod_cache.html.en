@@ -57,8 +57,10 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachedetailheader">CacheDetailHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedisable">CacheDisable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheenable">CacheEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheheader">CacheHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
@@ -81,6 +83,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Sample Configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#thunderingherd">Avoiding the Thundering Herd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#finecontrol">Fine Control with the CACHE Filter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#status">Cache Status and Logging</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="../caching.html">Caching Guide</a></li>
@@ -244,6 +247,39 @@
   served remains consistent. <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> is not in a position
   to enforce this for you.</div>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="status" id="status">Cache Status and Logging</a></h2>
+  <p>Once <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> has made a decision as to whether or not
+  an entity is to be served from cache, the detailed reason for the decision
+  is written to the subprocess environment within the request under the
+  <strong>cache-status</strong> key. This reason can be logged by the
+  <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> directive as
+  follows:</p>
+
+  <div class="example"><p><code>
+    LogFormat "%{cache-status}e ..."
+  </code></p></div>
+
+  <p>Based on the caching decision made, the reason is also written to the
+  subprocess environment under one the following three keys, as appropriate:</p>
+
+  <dl>
+    <dt>cache-hit</dt><dd>The response was served from cache.</dd>
+    <dt>cache-revalidate</dt><dd>The response was stale and was successfully
+      revalidated, then served from cache.</dd>
+    <dt>cache-miss</dt><dd>The response was served from the upstream server.</dd>
+  </dl>
+
+  <p>This makes it possible to support conditional logging of cached requests
+  as per the following example:</p>
+
+  <div class="example"><p><code>
+    CustomLog cached-requests.log common env=cache-hit<br />
+    CustomLog uncached-requests.log common env=cache-miss<br />
+    CustomLog revalidated-requests.log common env=cache-revalidate<br />
+  </code></p></div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a></h2>
@@ -263,6 +299,43 @@
     <div class="example"><p><code>
       CacheDefaultExpire 86400
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDetailHeader" id="CacheDetailHeader">CacheDetailHeader</a> <a name="cachedetailheader" id="cachedetailheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add an X-Cache-Detail header to the response.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDetailHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDetailHeader off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table>
+  <p>When the <code class="directive"><a href="#cachedetailheader">CacheDetailHeader</a></code> directive
+  is switched on, an <strong>X-Cache-Detail</strong> header will be added to the response
+  containing the detailed reason for a particular caching decision.</p>
+  
+  <p>It can be useful during development of cached RESTful services to have additional
+  information about the caching decision written to the response headers, so as to
+  confirm whether <code>Cache-Control</code> and other headers have been correctly
+  used by the service and client.</p>
+  
+  <p>If the normal handler is used, this directive may appear within a
+  <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> or
+  <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code> directive. If the quick handler
+  is used, this directive must appear within a server or virtual host context, otherwise
+  the setting will be ignored.</p>
+
+  <div class="example"><p><code>
+    # Enable the X-Cache-Detail header<br />
+    CacheDetailHeader on<br />
+  </code></p></div>
+
+  <div class="example"><p><code>
+    X-Cache-Detail: "conditional cache hit: entity refreshed" from localhost<br />
+  </code></p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -361,6 +434,45 @@ manager</td></tr>
 <ul>
 <li><a href="../env.html">Environment Variables in Apache</a></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheHeader" id="CacheHeader">CacheHeader</a> <a name="cacheheader" id="cacheheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add an X-Cache header to the response.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheHeader off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table>
+  <p>When the <code class="directive"><a href="#cacheheader">CacheHeader</a></code> directive
+  is switched on, an <strong>X-Cache</strong> header will be added to the response
+  with the cache status of this response. If the normal handler is used, this
+  directive may appear within a <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
+  or <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code> directive. If the quick
+  handler is used, this directive must appear within a server or virtual host
+  context, otherwise the setting will be ignored.</p>
+
+  <dl>
+    <dt><strong>HIT</strong></dt><dd>The entity was fresh, and was served from
+    cache.</dd>
+    <dt><strong>REVALIDATE</strong></dt><dd>The entity was stale, was successfully
+    revalidated and was served from cache.</dd>
+    <dt><strong>MISS</strong></dt><dd>The entity was fetched from the upstream
+      server and was not served from cache.</dd>
+  </dl>
+
+  <div class="example"><p><code>
+    # Enable the X-Cache header<br />
+    CacheHeader on<br />
+  </code></p></div>
+
+  <div class="example"><p><code>
+    X-Cache: HIT from localhost<br />
+  </code></p></div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2>
