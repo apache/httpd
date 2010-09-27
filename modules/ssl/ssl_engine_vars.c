@@ -183,6 +183,11 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
                 result = r->ap_auth_type;
             else if (strcEQ(var, "THE_REQUEST"))
                 result = r->the_request;
+            else if (strlen(var) > 4 && strcEQn(var, "ENV:", 4)) {
+                result = apr_table_get(r->notes, var+4);
+                if (result == NULL)
+                    result = apr_table_get(r->subprocess_env, var+4);
+            }
             break;
         }
     }
@@ -255,13 +260,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         }
         /* all other env-variables from the parent Apache process */
         else if (strlen(var) > 4 && strcEQn(var, "ENV:", 4)) {
-            if (r != NULL) {
-                result = apr_table_get(r->notes, var+4);
-                if (result == NULL)
-                    result = apr_table_get(r->subprocess_env, var+4);
-            }
-            if (result == NULL)
-                result = getenv(var+4);
+            result = getenv(var+4);
         }
     }
 
