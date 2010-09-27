@@ -29,6 +29,7 @@
 #include "httpd.h"
 #include "apr_date.h"
 #include "apr_optional.h"
+#include "apr_hooks.h"
 
 /* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and
  * CACHE_DECLARE_DATA with appropriate export and import tags for the platform
@@ -106,6 +107,17 @@ typedef struct {
     apr_status_t (*commit_entity)(cache_handle_t *h, request_rec *r);
 } cache_provider;
 
+typedef enum {
+    AP_CACHE_HIT,
+    AP_CACHE_REVALIDATE,
+    AP_CACHE_MISS
+} ap_cache_status_e;
+
+#define AP_CACHE_HIT_ENV "cache-hit"
+#define AP_CACHE_REVALIDATE_ENV "cache-revalidate"
+#define AP_CACHE_MISS_ENV "cache-miss"
+#define AP_CACHE_STATUS_ENV "cache-status"
+
 
 /* cache_util.c */
 /* do a HTTP/1.1 age calculation */
@@ -150,6 +162,22 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r);
 
 
 /* hooks */
+
+/**
+ * Cache status hook.
+ * This hook is called as soon as the cache has made a decision as to whether
+ * an entity should be served from cache (hit), should be served from cache
+ * after a successful validation (revalidate), or served from the backend
+ * and potentially cached (miss).
+ *
+ * A basic implementation of this hook exists in mod_cache which writes this
+ * information to the subprocess environment, and optionally to request
+ * headers. Further implementations may add hooks as appropriate to perform
+ * more advanced processing, or to store statistics about the cache behaviour.
+ */
+APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, cache_status, (cache_handle_t *h,
+        request_rec *r, ap_cache_status_e status, const char *reason));
+
 APR_DECLARE_OPTIONAL_FN(apr_status_t,
                         ap_cache_generate_key,
                         (request_rec *r, apr_pool_t*p, const char **key));

@@ -201,6 +201,9 @@ static int cache_quick_handler(request_rec *r, int lookup)
         return DECLINED;
     }
 
+    /* we've got a cache hit! tell everyone who cares */
+    cache_run_cache_status(cache->handle, r, AP_CACHE_HIT, "cache hit");
+
     /* if we are a lookup, we are exiting soon one way or another; Restore
      * the headers. */
     if (lookup) {
@@ -452,6 +455,9 @@ static int cache_handler(request_rec *r)
         }
         return DECLINED;
     }
+
+    /* we've got a cache hit! tell everyone who cares */
+    cache_run_cache_status(cache->handle, r, AP_CACHE_HIT, "cache hit");
 
     rv = ap_meets_conditions(r);
     if (rv != OK) {
@@ -816,7 +822,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                                   && exp < r->request_time)
     {
         /* if a Expires header is in the past, don't cache it */
-        reason = "Expires header already expired, not cacheable";
+        reason = "Expires header already expired; not cacheable";
     }
     else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL &&
              !ap_cache_liststr(NULL, cc_out, "max-age", NULL) &&
@@ -844,7 +850,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* Note: mod-include clears last_modified/expires/etags - this
          * is why we have an optional function for a key-gen ;-)
          */
-        reason = "No Last-Modified, Etag, Expires, Cache-Control:max-age or Cache-Control:s-maxage headers";
+        reason = "No Last-Modified; Etag; Expires; Cache-Control:max-age or Cache-Control:s-maxage headers";
     }
     else if (r->header_only && !cache->stale_handle) {
         /* Forbid HEAD requests unless we have it cached already */
@@ -902,6 +908,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "cache: %s not cached. Reason: %s", r->unparsed_uri,
                      reason);
+
+        /* we've got a cache miss! tell anyone who cares */
+        cache_run_cache_status(cache->handle, r, AP_CACHE_MISS, reason);
 
         /* remove this filter from the chain */
         ap_remove_output_filter(f);
@@ -1009,6 +1018,10 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     if (rv != OK) {
+        /* we've got a cache miss! tell anyone who cares */
+        cache_run_cache_status(cache->handle, r, AP_CACHE_MISS,
+                "cache miss: create_entity failed");
+
         /* Caching layer declined the opportunity to cache the response */
         ap_remove_output_filter(f);
         cache_remove_lock(conf, cache, r, cache->handle ?
@@ -1211,6 +1224,17 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                      "cache: attempt to remove url from cache unsuccessful.");
             }
 
+            /* we've got a cache conditional hit! tell anyone who cares */
+            cache_run_cache_status(cache->handle, r, AP_CACHE_REVALIDATE,
+                    "conditional cache hit: entity refresh failed");
+
+        }
+        else {
+
+            /* we've got a cache conditional hit! tell anyone who cares */
+            cache_run_cache_status(cache->handle, r, AP_CACHE_REVALIDATE,
+                    "conditional cache hit: entity refreshed");
+
         }
 
         /* let someone else attempt to cache */
@@ -1224,11 +1248,19 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "cache: store_headers failed");
 
+        /* we've got a cache miss! tell anyone who cares */
+        cache_run_cache_status(cache->handle, r, AP_CACHE_MISS,
+                "cache miss: store_headers failed");
+
         ap_remove_output_filter(f);
         cache_remove_lock(conf, cache, r, cache->handle ?
                 (char *)cache->handle->cache_obj->key : NULL, NULL);
         return ap_pass_brigade(f->next, in);
     }
+
+    /* we've got a cache miss! tell anyone who cares */
+    cache_run_cache_status(cache->handle, r, AP_CACHE_MISS,
+            "cache miss: attempting entity save");
 
     return cache_save_store(f, in, conf, cache);
 }
@@ -1309,8 +1341,101 @@ static int cache_filter(ap_filter_t *f, apr_bucket_brigade *in)
     return ap_pass_brigade(f->next, in);
 }
 
+/**
+ * If configured, add the status of the caching attempt to the subprocess
+ * environment, and if configured, to headers in the response.
+ *
+ * The status is saved below the broad category of the status (hit, miss,
+ * revalidate), as well as a single cache-status key. This can be used for
+ * conditional logging.
+ *
+ * The status is optionally saved to an X-Cache header, and the detail of
+ * why a particular cache entry was cached (or not cached) is optionally
+ * saved to an X-Cache-Detail header. This extra detail is useful for
+ * service developers who may need to know whether their Cache-Control headers
+ * are working correctly.
+ */
+static int cache_status(cache_handle_t *h, request_rec *r, ap_cache_status_e status,
+        const char *reason)
+{
+    cache_server_conf
+            *conf =
+                    (cache_server_conf *) ap_get_module_config(r->server->module_config,
+                            &cache_module);
+
+    cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &cache_module);
+    int x_cache = 0, x_cache_detail = 0;
+
+    switch (status) {
+    case AP_CACHE_HIT: {
+        apr_table_setn(r->subprocess_env, AP_CACHE_HIT_ENV, reason);
+        break;
+    }
+    case AP_CACHE_REVALIDATE: {
+        apr_table_setn(r->subprocess_env, AP_CACHE_REVALIDATE_ENV, reason);
+        break;
+    }
+    case AP_CACHE_MISS: {
+        apr_table_setn(r->subprocess_env, AP_CACHE_MISS_ENV, reason);
+        break;
+    }
+    }
+
+    apr_table_setn(r->subprocess_env, AP_CACHE_STATUS_ENV, reason);
+
+    if (dconf && dconf->x_cache_set) {
+        x_cache = dconf->x_cache;
+    }
+    else {
+        x_cache = conf->x_cache;
+    }
+    if (x_cache) {
+        apr_table_setn(r->headers_out, "X-Cache", apr_psprintf(r->pool, "%s from %s",
+                status == AP_CACHE_HIT ? "HIT" : status == AP_CACHE_REVALIDATE ?
+                        "REVALIDATE" : "MISS", r->server->server_hostname));
+    }
+
+    if (dconf && dconf->x_cache_detail_set) {
+        x_cache_detail = dconf->x_cache_detail;
+    }
+    else {
+        x_cache_detail = conf->x_cache_detail;
+    }
+    if (x_cache_detail) {
+        apr_table_setn(r->headers_out, "X-Cache-Detail", apr_psprintf(r->pool,
+                "\"%s\" from %s", reason, r->server->server_hostname));
+    }
+
+    return OK;
+}
+
 /* -------------------------------------------------------------- */
 /* Setup configurable data */
+
+static void *create_dir_config(apr_pool_t *p, char *dummy)
+{
+    cache_dir_conf *dconf = apr_pcalloc(p, sizeof(cache_dir_conf));
+
+    dconf->x_cache = DEFAULT_X_CACHE;
+    dconf->x_cache_detail = DEFAULT_X_CACHE_DETAIL;
+
+    return dconf;
+}
+
+static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
+    cache_dir_conf *new = (cache_dir_conf *) apr_pcalloc(p, sizeof(cache_dir_conf));
+    cache_dir_conf *add = (cache_dir_conf *) addv;
+    cache_dir_conf *base = (cache_dir_conf *) basev;
+
+    new->x_cache = (add->x_cache_set == 0) ? base->x_cache : add->x_cache;
+    new->x_cache_set = add->x_cache_set || base->x_cache_set;
+    new->x_cache_detail = (add->x_cache_detail_set == 0) ? base->x_cache_detail
+            : add->x_cache_detail;
+    new->x_cache_detail_set = add->x_cache_detail_set
+            || base->x_cache_detail_set;
+
+    return new;
+}
 
 static void * create_cache_config(apr_pool_t *p, server_rec *s)
 {
@@ -1361,6 +1486,8 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
         ps->lockpath = apr_pstrcat(p, tmppath, DEFAULT_CACHE_LOCKPATH, NULL);
     }
     ps->lockmaxage = apr_time_from_sec(DEFAULT_CACHE_MAXAGE);
+    ps->x_cache = DEFAULT_X_CACHE;
+    ps->x_cache_detail = DEFAULT_X_CACHE_DETAIL;
     return ps;
 }
 
@@ -1435,6 +1562,14 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->quick_set == 0)
         ? base->quick
         : overrides->quick;
+    ps->x_cache =
+        (overrides->x_cache_set == 0)
+        ? base->x_cache
+        : overrides->x_cache;
+    ps->x_cache_detail =
+        (overrides->x_cache_detail_set == 0)
+        ? base->x_cache_detail
+        : overrides->x_cache_detail;
     return ps;
 }
 
@@ -1782,6 +1917,52 @@ static const char *set_cache_lock_maxage(cmd_parms *parms, void *dummy,
     return NULL;
 }
 
+static const char *set_cache_x_cache(cmd_parms *parms, void *dummy, int flag)
+{
+
+    if (parms->path) {
+        cache_dir_conf *dconf = (cache_dir_conf *)dummy;
+
+        dconf->x_cache = flag;
+        dconf->x_cache_set = 1;
+
+    }
+    else {
+        cache_server_conf *conf =
+            (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                      &cache_module);
+
+        conf->x_cache = flag;
+        conf->x_cache_set = 1;
+
+    }
+
+    return NULL;
+}
+
+static const char *set_cache_x_cache_detail(cmd_parms *parms, void *dummy, int flag)
+{
+
+    if (parms->path) {
+        cache_dir_conf *dconf = (cache_dir_conf *)dummy;
+
+        dconf->x_cache_detail = flag;
+        dconf->x_cache_detail_set = 1;
+
+    }
+    else {
+        cache_server_conf *conf =
+            (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                      &cache_module);
+
+        conf->x_cache_detail = flag;
+        conf->x_cache_detail_set = 1;
+
+    }
+
+    return NULL;
+}
+
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -1859,6 +2040,11 @@ static const command_rec cache_cmds[] =
                   "temp directory."),
     AP_INIT_TAKE1("CacheLockMaxAge", set_cache_lock_maxage, NULL, RSRC_CONF,
                   "Maximum age of any thundering herd lock."),
+    AP_INIT_FLAG("CacheHeader", set_cache_x_cache, NULL, RSRC_CONF | ACCESS_CONF,
+                 "Add a X-Cache header to responses. Default is off."),
+    AP_INIT_FLAG("CacheDetailHeader", set_cache_x_cache_detail, NULL,
+                 RSRC_CONF | ACCESS_CONF,
+                 "Add a X-Cache-Detail header to responses. Default is off."),
     {NULL}
 };
 
@@ -1869,6 +2055,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_quick_handler(cache_quick_handler, NULL, NULL, APR_HOOK_FIRST);
     /* cache handler */
     ap_hook_handler(cache_handler, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    /* cache status */
+    cache_hook_cache_status(cache_status, NULL, NULL, APR_HOOK_MIDDLE);
     /* cache filters
      * XXX The cache filters need to run right after the handlers and before
      * any other filters. Consider creating AP_FTYPE_CACHE for this purpose.
@@ -1949,10 +2137,20 @@ static void register_hooks(apr_pool_t *p)
 AP_DECLARE_MODULE(cache) =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,                   /* create per-directory config structure */
-    NULL,                   /* merge per-directory config structures */
+    create_dir_config,      /* create per-directory config structure */
+    merge_dir_config,       /* merge per-directory config structures */
     create_cache_config,    /* create per-server config structure */
     merge_cache_config,     /* merge per-server config structures */
     cache_cmds,             /* command apr_table_t */
     register_hooks
 };
+
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(cache_status)
+)
+
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, cache_status,
+                                    (cache_handle_t *h, request_rec *r,
+                                     ap_cache_status_e status,
+                                     const char *reason), (h, r, status, reason),
+                                    OK, DECLINED)

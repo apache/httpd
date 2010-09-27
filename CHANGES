@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_cache: Add the cache_status hook to register the final cache
+     decision hit/miss/revalidate. Add optional support for an X-Cache
+     and/or an X-Cache-Detail header to add the cache status to the
+     response. PR48241 [Graham Leggett]
+
   *) mod_authz_host: Add 'local' provider that matches connections originating
      on the local host. PR 19938. [Stefan Fritsch]
 

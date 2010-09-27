@@ -92,10 +92,11 @@ extern "C" {
 #define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR  (0.1)
 #define DEFAULT_CACHE_MAXAGE    5
+#define DEFAULT_X_CACHE         0
+#define DEFAULT_X_CACHE_DETAIL  0
 #define DEFAULT_CACHE_LOCKPATH "/mod_cache-lock"
 #define CACHE_LOCKNAME_KEY "mod_cache-lockname"
 #define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
-
 
 /**
  * cache_util.c
@@ -168,7 +169,18 @@ typedef struct {
     /** run within the quick handler */
     int quick;
     int quick_set;
+    int x_cache;
+    int x_cache_set;
+    int x_cache_detail;
+    int x_cache_detail_set;
 } cache_server_conf;
+
+typedef struct {
+    int x_cache;
+    int x_cache_set;
+    int x_cache_detail;
+    int x_cache_detail_set;
+} cache_dir_conf;
 
 /* A linked-list of authn providers. */
 typedef struct cache_provider_list cache_provider_list;
