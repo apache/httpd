@@ -16,6 +16,9 @@
 
 /* Memory handler for a shared memory divided in slot.
  * This one uses shared memory.
+ *
+ * Shared memory is cleaned-up for each restart, graceful or
+ * otherwise.
  */
 
 #include  "ap_slotmem.h"
@@ -184,17 +187,20 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
 static apr_status_t cleanup_slotmem(void *param)
 {
     ap_slotmem_instance_t **mem = param;
-    apr_pool_t *pool = NULL;
 
     if (*mem) {
         ap_slotmem_instance_t *next = *mem;
-        pool = next->gpool;
+        apr_pool_t *p = next->gpool;
         while (next) {
             store_slotmem(next);
             apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
         }
-        apr_pool_destroy(pool);
+        apr_pool_destroy(p);
+    } else {
+        /* If shared mem was never called, then just remove
+         * the global pool */
+        apr_pool_destroy(gpool);
     }
     return APR_SUCCESS;
 }
@@ -593,14 +599,17 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     void *data;
     const char *userdata_key = "slotmem_shm_post_config";
 
+    slotmem_shm_initialize_cleanup(p);
+
+    /* keep this around for possible future usage */
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
         apr_pool_userdata_set((const void *)1, userdata_key,
                                apr_pool_cleanup_null, s->process->pool);
+        /* Do Stuff */
         return OK;
     }
 
-    slotmem_shm_initialize_cleanup(p);
     return OK;
 }
 
