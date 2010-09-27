@@ -176,7 +176,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r);
  * more advanced processing, or to store statistics about the cache behaviour.
  */
 APR_DECLARE_EXTERNAL_HOOK(cache, CACHE, int, cache_status, (cache_handle_t *h,
-        request_rec *r, ap_cache_status_e status, const char *reason));
+        request_rec *r, ap_cache_status_e status, const char *reason))
 
 APR_DECLARE_OPTIONAL_FN(apr_status_t,
                         ap_cache_generate_key,
