@@ -117,7 +117,7 @@ RELEASE SHOWSTOPPERS:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966348
       (mod_cache and mod_session portions don't apply to 2.0.x)
     2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
-    +1: wrowe, trawick
+    +1: wrowe, trawick, rjung
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -140,10 +140,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     HTTP_OK upon first pass through ap_die()]. PR #36090
     Trunk version of patch:
        http://svn.apache.org/viewvc?view=rev&revision=354118
+    2.2.x patch:
+       http://svn.apache.org/viewvc?view=rev&revision=355454
     Backport version for 2.0.x of patch:
        (trunk version works)
-    +1: covener
-      
+    +1: covener, rjung
+
   * Stupid-simple patch specific to give rotatelogs the same behavior
     as the core log writer;
     +1: wrowe, rjung
@@ -168,6 +170,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://svn.apache.org/viewvc?view=rev&revision=795971
     Backport: http://people.apache.org/~fuankg/diffs/gen_test_char.c_httpd_2_0_x-backport-r795971.diff
     +1: fuankg, trawick
+    rjung: Why are the defines for the apr_is* needed? Shouldn't they be
+           foudn in apr_lib.h?
 
   * pcre: update config.guess and config.sub for better platform support.
     Trunk version of patch:
@@ -175,6 +179,34 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Patch in 2.2.x branch:
       Does not apply.
     Use recent files from http://git.savannah.gnu.org/cgit/config.git.
+    +1: rjung
+
+  * mod_rewrite: PR 46428 - whitespace/encoding for proxied URL
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757427
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773351
+    Backport: http://people.apache.org/~rjung/patches/pr-46428-2_0.patch
+    Revert r1002110 and r1002161 in test framework, once this is fixed.
+    +1: rjung
+
+  * mod_negotiation: PR 33112 - Fix for query string preservation after content negotiation
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=915407
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=917017
+    Backport: http://people.apache.org/~rjung/patches/pr-33112-2_0.patch
+    Revert r1002165 in test framework, once this is fixed.
+    +1: rjung
+
+  * mod_include: PR 39369 - Fix for query string preservation after content negotiation
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773352
+    Backport: http://people.apache.org/~rjung/patches/pr-39369-2_0.patch
+    Revert r1002174 in test framework, once this is fixed.
+    +1: rjung
+
+  * mod_expires: Expires time shouldn't be in the past
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=708902
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=713142
+    Backport: http://people.apache.org/~rjung/patches/expires-in-the-past-2_0.patch
+    Revert r1002205 in test framework, once this is fixed.
     +1: rjung
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
