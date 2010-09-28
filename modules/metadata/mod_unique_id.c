@@ -281,7 +281,7 @@ static const char uuencoder[64] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '-',
 };
 
-static int gen_unique_id(request_rec *r)
+static const char *gen_unique_id(const request_rec *r)
 {
     char *str;
     /*
@@ -295,16 +295,7 @@ static int gen_unique_id(request_rec *r)
     } paddedbuf;
     unsigned char *x,*y;
     unsigned short counter;
-    const char *e;
     int i,j,k;
-
-    /* copy the unique_id if this is an internal redirect (we're never
-     * actually called for sub requests, so we don't need to test for
-     * them) */
-    if (r->prev && (e = apr_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
-        apr_table_setn(r->subprocess_env, "UNIQUE_ID", e);
-        return DECLINED;
-    }
 
     new_unique_id.in_addr = cur_unique_id.in_addr;
     new_unique_id.pid = cur_unique_id.pid;
@@ -344,13 +335,63 @@ static int gen_unique_id(request_rec *r)
     }
     str[k++] = '\0';
 
-    /* set the environment variable */
-    apr_table_setn(r->subprocess_env, "UNIQUE_ID", str);
-
     /* and increment the identifier for the next call */
 
     counter = ntohs(new_unique_id.counter) + 1;
     cur_unique_id.counter = htons(counter);
+
+    return str;
+}
+
+/*
+ * There are two ways the generation of a unique id can be triggered:
+ *
+ * - from the post_read_request hook which calls set_unique_id()
+ * - from error logging via the generate_log_id hook which calls
+ *   generate_log_id(). This may happen before or after set_unique_id()
+ *   has been called, or not at all.
+ */
+
+static int generate_log_id(const conn_rec *c, const request_rec *r,
+                           const char **id)
+{
+    /* we do not care about connection ids */
+    if (r == NULL)
+        return DECLINED;
+
+    /* XXX: do we need special handling for internal redirects? */
+
+    /* if set_unique_id() has been called for this request, use it */
+    *id = apr_table_get(r->subprocess_env, "UNIQUE_ID");
+
+    if (!*id)
+        *id = gen_unique_id(r);
+    return OK;
+}
+
+static int set_unique_id(request_rec *r)
+{
+    const char *id = NULL;
+    /* copy the unique_id if this is an internal redirect (we're never
+     * actually called for sub requests, so we don't need to test for
+     * them) */
+    if (r->prev) {
+       id = apr_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID");
+    }
+
+    if (!id) {
+        /* if we have a log id, it was set by our generate_log_id() function
+         * and we should reuse the same id
+         */
+        id = r->log_id;
+    }
+
+    if (!id) {
+        id = gen_unique_id(r);
+    }
+
+    /* set the environment variable */
+    apr_table_setn(r->subprocess_env, "UNIQUE_ID", id);
 
     return DECLINED;
 }
@@ -359,7 +400,8 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(unique_id_global_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(unique_id_child_init, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request(gen_unique_id, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(set_unique_id, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_generate_log_id(generate_log_id, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(unique_id) = {

@@ -3900,8 +3900,6 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 {
     ap_mutex_init(pconf);
 
-    ap_register_builtin_errorlog_handlers(pconf);
-
     return APR_SUCCESS;
 }
 
@@ -4114,6 +4112,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
+    ap_register_log_hooks(p);
 
     /* create_connection and pre_connection should always be hooked
      * APR_HOOK_REALLY_LAST by core to give other modules the opportunity

@@ -60,6 +60,7 @@ typedef struct {
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(error_log)
+    APR_HOOK_LINK(generate_log_id)
 )
 
 int AP_DECLARE_DATA ap_default_loglevel = DEFAULT_LOGLEVEL;
@@ -782,25 +783,8 @@ static int log_env_var(const ap_errorlog_info *info, const char *arg,
     return 0;
 }
 
-AP_DECLARE(void) ap_register_builtin_errorlog_handlers(apr_pool_t *p)
-{
-    ap_register_errorlog_handler(p, "a", log_remote_address, 0);
-    ap_register_errorlog_handler(p, "A", log_local_address, 0);
-    ap_register_errorlog_handler(p, "e", log_env_var, 0);
-    ap_register_errorlog_handler(p, "E", log_apr_status, 0);
-    ap_register_errorlog_handler(p, "F", log_file_line, 0);
-    ap_register_errorlog_handler(p, "i", log_header, 0);
-    ap_register_errorlog_handler(p, "k", log_keepalives, 0);
-    ap_register_errorlog_handler(p, "l", log_loglevel, 0);
-    ap_register_errorlog_handler(p, "L", log_log_id, 0);
-    ap_register_errorlog_handler(p, "m", log_module_name, 0);
-    ap_register_errorlog_handler(p, "n", log_note, 0);
-    ap_register_errorlog_handler(p, "P", log_pid, 0);
-    ap_register_errorlog_handler(p, "t", log_ctime, 0);
-    ap_register_errorlog_handler(p, "T", log_tid, 0);
-}
-
-static void add_log_id(const conn_rec *c, const request_rec *r)
+static int core_generate_log_id(const conn_rec *c, const request_rec *r,
+                                 const char **idstring)
 {
     apr_uint64_t id, tmp;
     pid_t pid;
@@ -843,15 +827,46 @@ static void add_log_id(const conn_rec *c, const request_rec *r)
     apr_base64_encode(encoded, (char *)&id, sizeof(id));
 
     /* Skip the last char, it is always '=' */
-    encoded[len - 2] = '\0'; 
+    encoded[len - 2] = '\0';
 
+    *idstring = encoded;
+
+    return OK;
+}
+
+static void add_log_id(const conn_rec *c, const request_rec *r)
+{
+    const char **id;
     /* need to cast const away */
     if (r) {
-        ((request_rec *)r)->log_id = encoded;
+        id = &((request_rec *)r)->log_id;
     }
     else {
-        ((conn_rec *)c)->log_id = encoded;
+        id = &((conn_rec *)c)->log_id;
     }
+
+    ap_run_generate_log_id(c, r, id);
+}
+
+AP_DECLARE(void) ap_register_log_hooks(apr_pool_t *p)
+{
+    ap_hook_generate_log_id(core_generate_log_id, NULL, NULL,
+                            APR_HOOK_REALLY_LAST);
+
+    ap_register_errorlog_handler(p, "a", log_remote_address, 0);
+    ap_register_errorlog_handler(p, "A", log_local_address, 0);
+    ap_register_errorlog_handler(p, "e", log_env_var, 0);
+    ap_register_errorlog_handler(p, "E", log_apr_status, 0);
+    ap_register_errorlog_handler(p, "F", log_file_line, 0);
+    ap_register_errorlog_handler(p, "i", log_header, 0);
+    ap_register_errorlog_handler(p, "k", log_keepalives, 0);
+    ap_register_errorlog_handler(p, "l", log_loglevel, 0);
+    ap_register_errorlog_handler(p, "L", log_log_id, 0);
+    ap_register_errorlog_handler(p, "m", log_module_name, 0);
+    ap_register_errorlog_handler(p, "n", log_note, 0);
+    ap_register_errorlog_handler(p, "P", log_pid, 0);
+    ap_register_errorlog_handler(p, "t", log_ctime, 0);
+    ap_register_errorlog_handler(p, "T", log_tid, 0);
 }
 
 /*
@@ -1694,3 +1709,8 @@ AP_IMPLEMENT_HOOK_VOID(error_log,
                         const request_rec *r, apr_pool_t *pool,
                         const char *errstr), (file, line, module_index, level,
                         status, s, r, pool, errstr))
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, generate_log_id,
+                            (const conn_rec *c, const request_rec *r,
+                             const char **id),
+                            (c, r, id), DECLINED)

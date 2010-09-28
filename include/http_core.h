@@ -729,7 +729,7 @@ typedef struct {
     unsigned int min_loglevel;              /* only log if level is higher than this */
 } ap_errorlog_format_item;
 
-AP_DECLARE(void) ap_register_builtin_errorlog_handlers(apr_pool_t *p);
+AP_DECLARE(void) ap_register_log_hooks(apr_pool_t *p);
 
 /* ----------------------------------------------------------------------
  *
