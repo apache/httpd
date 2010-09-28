@@ -176,6 +176,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->vhost_id               = NULL;  /* set during module init */
     sc->vhost_id_len           = 0;     /* set during module init */
     sc->session_cache_timeout  = UNSET;
+    sc->insecure_reneg         = UNSET;
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -260,6 +261,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(enabled);
     cfgMergeBool(proxy_enabled);
     cfgMergeInt(session_cache_timeout);
+    cfgMergeBool(insecure_reneg);
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
 
@@ -670,6 +672,19 @@ static const char *ssl_cmd_check_file(cmd_parms *parms,
                        "' does not exist or is empty", NULL);
 
 }
+
+const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag)
+{
+#ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->insecure_reneg = flag?TRUE:FALSE;
+    return NULL;
+#else
+    return "The SSLInsecureRenegotiation directive is not available "
+        "with this SSL library";
+#endif
+}
+
 
 static const char *ssl_cmd_check_dir(cmd_parms *parms,
                                      const char **dir)

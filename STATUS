@@ -122,21 +122,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: Implement SSLInsecureRenegotiation
-    Trunk version of patch:
-      http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=906057&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=906485&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=906491&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=908015&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=916733&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=916817&view=rev
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?rev=917044&view=rev
-    Backport:
-      http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
-    +1: rjung, pgollucci (+1 2.0.64 w/ this), wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new

@@ -365,6 +365,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
     SSL_METHOD *method = NULL;
     char *cp;
     int protocol = mctx->protocol;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
 
     /*
      *  Create the new per-server SSL context
@@ -413,6 +414,12 @@ static void ssl_init_ctx_protocol(server_rec *s,
     if (!(protocol & SSL_PROTOCOL_TLSV1)) {
         SSL_CTX_set_options(ctx, SSL_OP_NO_TLSv1);
     }
+
+#ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
+    if (sc->insecure_reneg == TRUE) {
+        SSL_CTX_set_options(ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);
+    }
+#endif
 
     SSL_CTX_set_app_data(ctx, s);
 
