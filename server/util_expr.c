@@ -389,6 +389,13 @@ static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token,
             return 0;
         }
         break;
+    case 'I':
+        if (**parse == 'N') {
+            TYPE_TOKEN(token, TOKEN_IN);
+            ++*parse;
+            return 0;
+        }
+        break;
     }
 
     /* It's a string or regex token
@@ -604,6 +611,7 @@ AP_DECLARE(ap_parse_node_t*) ap_expr_parse(apr_pool_t* pool, const char *expr,
         case TOKEN_GT:
         case TOKEN_LE:
         case TOKEN_LT:
+        case TOKEN_IN:
             if (current->token.type == TOKEN_STRING) {
                 current = current->parent;
 
@@ -819,6 +827,27 @@ static int expr_eval(request_rec *r, ap_parse_node_t *root,
             default: current->value = 0; break; /* should not happen */
             }
             break;
+        case TOKEN_IN:
+            if (!current->left || !current->right ||
+                current->left->token.type != TOKEN_STRING ||
+                current->right->token.type != TOKEN_STRING) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Invalid expression in file %s", r->filename);
+                *was_error = 1;
+                return 0;
+            }
+
+            lval = PARSE_STRING(r, current->left->token.value);
+            rval = PARSE_STRING(r, current->right->token.value);
+            val = strstr(rval, lval);
+            /* should be included as a complete word, not a subword
+             * as in regexp /\bLVAL\b/
+             */
+            current->value = (val != NULL
+                              && (val == rval || !isalnum(val[-1]))
+                              && !isalnum(val[strlen(val)]))
+                ? 1 : 0;
+            break;
 
         case TOKEN_NOT:
         case TOKEN_GROUP:
@@ -941,7 +970,7 @@ AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r,
         char *ch, *var;
         apr_time_exp_t tm;
 
-        var = apr_pstrndup(r->pool, str+2, p-str-3);
+        var = apr_pstrndup(r->pool, str+2, p-str-2);
         for (ch = var; *ch; ++ch) {
             *ch = apr_toupper(*ch);
         }
