@@ -65,7 +65,7 @@ changes on a per-directory basis.</p>
 
     <p>In general, <code>.htaccess</code> files use the same syntax as
     the <a href="../configuring.html#syntax">main configuration
-    files</a>.  What you can put in these files is determined by the
+    files</a>. What you can put in these files is determined by the
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive. This
     directive specifies, in categories, what directives will be
     honored if they are found in a <code>.htaccess</code> file. If a
@@ -100,7 +100,7 @@ changes on a per-directory basis.</p>
 <div class="section">
 <h2><a name="when" id="when">When (not) to use .htaccess files</a></h2>
 
-    <p>In general, you should never use <code>.htaccess</code> files unless
+    <p>In general, you should only use <code>.htaccess</code> files when
     you don't have access to the main server configuration file. There is,
     for example, a common misconception that user authentication should
     always be done in <code>.htaccess</code> files, and, in more recent years, 
@@ -259,14 +259,14 @@ changes on a per-directory basis.</p>
     <p>As discussed in the documentation on <a href="../sections.html">Configuration Sections</a>,
     <code>.htaccess</code> files can override the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections for
     the corresponding directory, but will be overriden by other types
-    of configuration sections from the main configuration files.  This
+    of configuration sections from the main configuration files. This
     fact can be used to enforce certain configurations, even in the
-    presence of a liberal <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> setting.  For example, to
+    presence of a liberal <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> setting. For example, to
     prevent script execution while allowing anything else to be set in
     <code>.htaccess</code> you can use:</p>
 
     <div class="example"><p><code>
-&lt;Directory /&gt;<br />
+&lt;Directory /www/htdocs&gt;<br />
 <span class="indent">
 Allowoverride All<br />
 </span>
@@ -278,6 +278,8 @@ Options +IncludesNoExec -ExecCGI<br />
 </span>
 &lt;/Location&gt;
     </code></p></div>
+
+    <div class="note">This example assumes that your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is <code>/www/htdocs</code>.</div>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
