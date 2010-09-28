@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2009-02-16" "Apache HTTP Sunucusu" "httpd"
+.TH "HTTPD" 8 "2010-09-28" "Apache HTTP Sunucusu" "httpd"
 .nh
 .SH İSİM
 httpd \- Apache Hiper Metin Aktarım Protokolü Sunucusu
@@ -27,7 +27,7 @@ httpd \- Apache Hiper Metin Aktarım Protokolü Sunucusu
 .SH "KULLANIM"
  
 .PP
-\fBhttpd\fR [ -\fBd\fR \fIsunucu-kök-dizini\fR ] [ -\fBf\fR \fIyapılandırma-dosyası\fR ] [ -\fBC\fR \fIyönerge\fR ] [ -\fBc\fR \fIyönerge\fR ] [ -\fBD\fR \fIparametre\fR ] [ -\fBe\fR \fIseviye\fR ] [ -\fBE\fR \fIdosya\fR ] [ \fB-k\fR start | restart | graceful | stop | graceful-stop ] [ -\fBR\fR \fIdizin\fR ] [ -\fBh\fR ] [ -\fBl\fR ] [ -\fBL\fR ] [ -\fBS\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBV\fR ] [ -\fBX\fR ] [ -\fBM\fR ]
+\fBhttpd\fR [ -\fBd\fR \fIsunucu-kök-dizini\fR ] [ -\fBf\fR \fIyapılandırma-dosyası\fR ] [ -\fBC\fR \fIyönerge\fR ] [ -\fBc\fR \fIyönerge\fR ] [ -\fBD\fR \fIparametre\fR ] [ -\fBe\fR \fIseviye\fR ] [ -\fBE\fR \fIdosya\fR ] [ \fB-k\fR start | restart | graceful | stop | graceful-stop ] [ -\fBR\fR \fIdizin\fR ] [ -\fBh\fR ] [ -\fBl\fR ] [ -\fBL\fR ] [ -\fBS\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBV\fR ] [ -\fBX\fR ] [ -\fBM\fR ] [ -\fBT\fR ]
  
 .PP
 Windows sistemlerinde, ek olarak şunlar vardır:
@@ -90,6 +90,9 @@ Sunucu SHARED_CORE kullanılarak derlendiği takdirde bu seçenek paylaşımlı 
 .TP
 \fB-S\fR
 Yapılandırma dosyasından çözümlenmiş haliyle ayarları gösterir (şu an sadece sanal konak ayarları gösterilmektedir)\&.  
+.TP
+\fB-T\fR (2\&.2\&.17 ve sonrasında kullanılabilir\&.)
+Başlatma veya yeniden başlatma sırasında belge kök dizini sınamasını yapmadan geçer\&.  
 .TP
 \fB-t\fR
 Yapılandırma dosyasını sözdizimi hatalarına karşı denetler\&. Program sözdizimini denetledikten sonra sözdizimi geçerliyse 0 ile, değilse sıfırdan farklı bir değerle çıkar\&. \fB-D\fRDUMP_VHOSTS seçeneği ile birlikte kullanılmışsa ek olarak sanal konak ayrıntıları da basılır\&. \fB-D\fRDUMP_MODULES seçeneği ile ise ek olarak tüm modüller listelenir\&.  

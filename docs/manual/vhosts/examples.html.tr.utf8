@@ -26,10 +26,10 @@
 </div>
 
 
-    <p>Bu belgede sanal konaklarla ile ilgili olarak karşılaşılması olası tüm
-      senaryolara yer verilmeye çalışılmıştır. Buradaki senaryolar, tek bir
-      sunucu üzerinde  <a href="name-based.html">isme dayalı</a> veya <a href="ip-based.html">IP’ye dayalı</a> sanal konaklar aracılığıyla çok
-      sayıda sitenin sunumu ile ilgilidir.
+    <p>Bu belgede <a href="index.html">sanal konaklar</a> ile ilgili
+      karşılaşılması olası tüm senaryolara yer verilmeye çalışılmıştır.
+      Buradaki senaryolar, tek bir sunucu üzerinde <a href="name-based.html">isme dayalı</a> veya <a href="ip-based.html">IP’ye dayalı</a> sanal
+      konaklar aracılığıyla çok sayıda sitenin sunumu ile ilgilidir.
     </p>
 
 </div>
