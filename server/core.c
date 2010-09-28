@@ -1331,7 +1331,7 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
 
     d->override = OR_NONE;
     while (l[0]) {
-        w = ap_getword_conf(cmd->pool, &l);
+        w = ap_getword_conf(cmd->temp_pool, &l);
 
         k = w;
         v = strchr(k, '=');
@@ -1382,7 +1382,7 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
     char action;
 
     while (l[0]) {
-        char *w = ap_getword_conf(cmd->pool, &l);
+        char *w = ap_getword_conf(cmd->temp_pool, &l);
         action = '\0';
 
         if (*w == '+' || *w == '-') {
@@ -1487,7 +1487,7 @@ static const char *set_etag_bits(cmd_parms *cmd, void *mconfig,
         action = '*';
         bit = ETAG_UNSET;
         valid = 1;
-        token = ap_getword_conf(cmd->pool, &args);
+        token = ap_getword_conf(cmd->temp_pool, &args);
         if ((*token == '+') || (*token == '-')) {
             action = *token;
             token++;

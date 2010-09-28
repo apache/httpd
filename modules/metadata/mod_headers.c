@@ -520,14 +520,14 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     const char *envclause;
     const char *subs;
 
-    action = ap_getword_conf(cmd->pool, &args);
+    action = ap_getword_conf(cmd->temp_pool, &args);
     if (cmd->info == &hdr_out) {
         if (!strcasecmp(action, "always")) {
             cmd->info = &hdr_err;
-            action = ap_getword_conf(cmd->pool, &args);
+            action = ap_getword_conf(cmd->temp_pool, &args);
         }
         else if (!strcasecmp(action, "onsuccess")) {
-            action = ap_getword_conf(cmd->pool, &args);
+            action = ap_getword_conf(cmd->temp_pool, &args);
         }
     }
     hdr = ap_getword_conf(cmd->pool, &args);

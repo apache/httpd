@@ -2823,10 +2823,9 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
                                       void *in_dconf, const char *option)
 {
     int options = 0;
-    char *w;
 
     while (*option) {
-        w = ap_getword_conf(cmd->pool, &option);
+        char *w = ap_getword_conf(cmd->temp_pool, &option);
 
         if (!strcasecmp(w, "inherit")) {
             options |= OPTION_INHERIT;

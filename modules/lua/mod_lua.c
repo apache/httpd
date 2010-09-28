@@ -446,7 +446,7 @@ static const char *register_named_block_function_hook(const char *name,
     else {
         const char *word;
         apr_size_t wordlen;
-        word = ap_getword_conf(cmd->pool, &line);
+        word = ap_getword_conf(cmd->temp_pool, &line);
         wordlen = strlen(word);
         if (wordlen == 0 || word[wordlen - 1] != '>') {
             return apr_pstrcat(cmd->pool, cmd->directive->directive,
