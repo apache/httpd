@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 928928:990096 (outdated) -->
+<!-- English Revision: 990096 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -788,9 +788,10 @@ kullanımı önerilmemektedir.</compatibility>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> yönergeleri <directive
       module="core" type="section">Directory</directive> gibi sadece ismi
-      belirtilen dosya sistemi dizininde ve bunun altdizinlerinde uygulanacak
-      bir yönerge grubunu sarmalamakta kullanılır. Tek farkla argüman olarak
-      bir <glossary ref="regex">düzenli ifade</glossary> alır. Örnek:</p>
+      belirtilen dosya sistemi dizininde ve bunun <em>altdizinlerinde</em>
+      uygulanacak bir yönerge grubunu sarmalamakta kullanılır. Tek farkla
+      argüman olarak bir <glossary ref="regex">düzenli ifade</glossary> alır.
+      Örnek:</p>
 
     <example>
       &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
@@ -798,6 +799,11 @@ kullanımı önerilmemektedir.</compatibility>
 
     <p>yönergesi <code>/www/</code> içindeki üç rakamdan oluşan dizinlerle
       eşleşecektir.</p>
+
+    <note><title>Satırsonu karakteri</title>
+      <p>Satırsonu karakteri ($) bu yönerge ile eşleşemez.</p>
+    </note>
+
 </usage>
 <seealso>Normal <directive type="section">Directory</directive>
   bölümlerindeki yönergelerle düzenli ifadelerin nasıl karıştırıldığının bir
@@ -867,9 +873,9 @@ kullanımı önerilmemektedir.</compatibility>
     <ul>
     <li>Bazı çok işlemcili sistemlerde bellek eşleme
       <program>httpd</program>’nin başarımını düşürebilmektedir.</li>
-    <li><program>httpd</program> bellek eşlemli çalışırken bir dosyanın silinmesi veya
-      boyutunun küçültülmesi <program>httpd</program>'nin parçalama arızası vererek
-      çökmesine yol açabilir.</li>
+    <li><program>httpd</program> bellek eşlemli çalışırken bir dosyanın
+      silinmesi veya boyutunun küçültülmesi <program>httpd</program>'nin
+      parçalama arızası vererek çökmesine yol açabilir.</li>
     </ul>
 
     <p>Bu tür sorunlardan dolayı zarar görülebilecek sunucu
@@ -1087,13 +1093,16 @@ kullanımı önerilmemektedir.</compatibility>
     ErrorLog /var/log/httpd/error_log
     </example>
 
-    <p><var>dosya-yolu</var> bir boru imi (|) ile başlatıldığı takdirde hata
-      iletilerinin hata günlüğünü işleme sokacak komuta borulanacağı
-      varsayılır.</p>
+    <p><var>dosya-yolu</var> bir boru imi "<code>|</code>"  ile başlatıldığı
+      takdirde hata iletilerinin hata günlüğünü işleme sokacak komuta
+      borulanacağı varsayılır.</p>
 
     <example><title>Örnek</title>
     ErrorLog "|/usr/local/bin/httpd_errors"
     </example>
+
+    <p>Daha fazla bilgi edinmek için <a href="../logs.html#piped">borulu
+      günlükler</a> ile ilgili ek bilgilere bakınız.</p>
 
     <p>Dosya adı yerine <code>syslog</code> kullanılırsa, sistem desteklediği
       takdirde günlük kaydı syslogd(8) üzerinden yürütülür. Öntanımlı olarak
@@ -2228,10 +2237,12 @@ uygulanır.</description>
     </example>
 
     <p>İsteklerin bütün arabirimlerden alınacağını belirtmek için değer olarak
-      <code>*</code> belirtebilirsiniz:</p>
+      <code>*:80</code> veya eğer çok sayıda portu dinliyorsanız ve belli bir
+      sanal konak kümesi üzerinden sunucunun hepsine yanıt vermesini
+      istiyorsanız <code>*</code> belirtebilirsiniz:</p>
 
     <example>
-      NameVirtualHost *
+      NameVirtualHost *:80
     </example>
 
     <note><title><directive type="section">VirtualHost</directive> yönergesinin
@@ -2717,10 +2728,12 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       ServerName sunucu.mesela.dom<br />
       ServerAlias sunucu sunucu2.mesela.dom sunucu2<br />
       ServerAlias *.mesela.dom<br />
+      UseCanonicalName Off<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
 </usage>
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><a href="../vhosts/">Apache Sanal Konak Belgeleri</a></seealso>
 </directivesynopsis>
 

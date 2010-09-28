@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 421100:990096 (outdated) -->
+<!-- English Revision: 990096 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -28,11 +28,11 @@
 
 <title>Yapılandırma Bölümleri</title>
 
-<summary> <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki 
-yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler, 
-dosyalar, konaklar veya URL’lere uygulanmakla sınırlanabilir. Bu belgede, 
-yapılandırma bölümü taşıyıcılarınının veya <code>.htaccess</code> 
-dosyalarının, yapılandırma dosyalarındaki diğer yönergelerin etki alanlarını 
+<summary> <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki
+yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler,
+dosyalar, konaklar veya URL’lere uygulanmakla sınırlanabilir. Bu belgede,
+yapılandırma bölümü taşıyıcılarınının veya <code>.htaccess</code>
+dosyalarının, yapılandırma dosyalarındaki diğer yönergelerin etki alanlarını
 değiştirtirmek için nasıl kullanılacağı açıklanmıştır.</p>
 </summary>
 
@@ -60,21 +60,21 @@ değiştirtirmek için nasıl kullanılacağı açıklanmıştır.</p>
 </directivelist>
 </related>
 
-<p>İki temel taşıyıcı türü vardır. Taşıyıcıların çoğu her istek için 
-değerlendirmeye alınır. Taşıyıcılardaki yönergeler ise sadece bu taşıyıcılarla 
-eşleşen istekler için uygulanır. Diğer yandan, <directive type="section" 
+<p>İki temel taşıyıcı türü vardır. Taşıyıcıların çoğu her istek için
+değerlendirmeye alınır. Taşıyıcılardaki yönergeler ise sadece bu taşıyıcılarla
+eşleşen istekler için uygulanır. Diğer yandan, <directive type="section"
 module="core">IfDefine</directive>, <directive type="section" module="core"
 >IfModule</directive> ve <directive type="section" module="mod_version"
->IfVersion</directive> taşıyıcıları sadece sunucu başlatılırken veya yeniden 
-başlatılırken değerlendirmeye alınır. Başlatma sırasında gerektirdikleri 
-koşullar sağlanıyorsa içerdikleri yönergeler tüm isteklere uygulanır. 
+>IfVersion</directive> taşıyıcıları sadece sunucu başlatılırken veya yeniden
+başlatılırken değerlendirmeye alınır. Başlatma sırasında gerektirdikleri
+koşullar sağlanıyorsa içerdikleri yönergeler tüm isteklere uygulanır.
 Aksi takdirde, içerdikleri yönergeler yok sayılır.</p>
 
-<p><directive type="section" module="core">IfDefine</directive> yönergesi 
-sadece <program>httpd</program> komut satırında uygun parametreler 
-tanımlanmışsa uygulanabilecek yönergeleri içerir. Örneğin, aşağıdaki 
-yapılandırma ile tüm isteklerin diğer siteye yönlendirilebilmesi sadece 
-sunucu <code>httpd -DClosedForNow</code> komut satırı ile başlatıldığı 
+<p><directive type="section" module="core">IfDefine</directive> yönergesi
+sadece <program>httpd</program> komut satırında uygun parametreler
+tanımlanmışsa uygulanabilecek yönergeleri içerir. Örneğin, aşağıdaki
+yapılandırma ile tüm isteklerin diğer siteye yönlendirilebilmesi sadece
+sunucu <code>httpd -DClosedForNow</code> komut satırı ile başlatıldığı
 takdirde mümkün olur:</p>
 
 <example>
@@ -85,19 +85,19 @@ takdirde mümkün olur:</p>
 &lt;/IfDefine&gt;
 </example>
 
-<p><directive type="section" module="core">IfModule</directive> yönergesi 
-sadece belli bir modülün sunucuda kullanılabilir durumda olması halinde 
-uygulanabilecek yönergeleri içerir. Modülün ya sunucuyla birlikte durağan 
-olarak derlenmiş olması ya da devingen olarak derlenmiş ve yapılandırma 
+<p><directive type="section" module="core">IfModule</directive> yönergesi
+sadece belli bir modülün sunucuda kullanılabilir durumda olması halinde
+uygulanabilecek yönergeleri içerir. Modülün ya sunucuyla birlikte durağan
+olarak derlenmiş olması ya da devingen olarak derlenmiş ve yapılandırma
 dosyasında yönergeden önce o modüle ilişkin bir <directive module="mod_so"
->LoadModule</directive> satırının bulunması gerekir. Bu yönergeyi sadece 
-belli bir modülün varlığının veya yokluğunun yapılandırma dosyanızın 
-çalışmasını etkilememesini istediğiniz durumlarda kullanmalısınız. Eksik 
-modüllerle ilgili hata iletilerini engellediğinden, taşıyıcı içine, her 
+>LoadModule</directive> satırının bulunması gerekir. Bu yönergeyi sadece
+belli bir modülün varlığının veya yokluğunun yapılandırma dosyanızın
+çalışmasını etkilememesini istediğiniz durumlarda kullanmalısınız. Eksik
+modüllerle ilgili hata iletilerini engellediğinden, taşıyıcı içine, her
 zaman çalışması istenen yönergeler konulmamalıdır.</p>
 
-<p>Aşağıdaki örnekte, <directive 
-module="mod_mime_magic">MimeMagicFiles</directive> yönergesi sadece 
+<p>Aşağıdaki örnekte, <directive
+module="mod_mime_magic">MimeMagicFiles</directive> yönergesi sadece
 <module>mod_mime_magic</module> modülü mevcutsa uygulanacaktır.</p>
 
 <example>
@@ -108,13 +108,13 @@ module="mod_mime_magic">MimeMagicFiles</directive> yönergesi sadece
 &lt;/IfModule&gt;
 </example>
 
-<p><directive type="section" module="mod_version">IfVersion</directive> 
-yönergesi sunucunun belli bir sürümünün çalıştırılması halinde uygulanabilecek 
+<p><directive type="section" module="mod_version">IfVersion</directive>
+yönergesi sunucunun belli bir sürümünün çalıştırılması halinde uygulanabilecek
 yönergeleri içerebilmesi dışında <directive type="section" module="core"
 >IfDefine</directive> ve <directive type="section" module="core"
->IfModule</directive> yönergeleri gibidir. <module>mod_version</module> 
-modülü farklı httpd sürümleri ve farklı yapılandırmalarla büyük ağlarda 
-çalışmayı mümkün kılmak veya sürüm denemeleri yapabilmek amacıyla 
+>IfModule</directive> yönergeleri gibidir. <module>mod_version</module>
+modülü farklı httpd sürümleri ve farklı yapılandırmalarla büyük ağlarda
+çalışmayı mümkün kılmak veya sürüm denemeleri yapabilmek amacıyla
 tasarlanmıştır.</p>
 
 <example>
@@ -128,41 +128,41 @@ tasarlanmıştır.</p>
 
 <p><directive type="section" module="core">IfDefine</directive>,
 <directive type="section" module="core">IfModule</directive> ve
-<directive type="section" module="mod_version">IfVersion</directive> 
-yönergelerinin önüne "!" konularak olumsuz koşullar için uygulanabilir. 
-Ayrıca, bu bölümler daha karmaşık sınırlamalar elde etmek amacıyla bir 
+<directive type="section" module="mod_version">IfVersion</directive>
+yönergelerinin önüne "!" konularak olumsuz koşullar için uygulanabilir.
+Ayrıca, bu bölümler daha karmaşık sınırlamalar elde etmek amacıyla bir
 diğerinin içinde kullanılabilirler.</p>
 </section>
 
 <section id="file-and-web"><title>Dosya Sistemi ve Site Alanı</title>
 
-<p>En sık kullanılan yapılandırma bölümü taşıyıcıları dosya sistemindeki 
-veya site alanındaki belli yerlerin yapılandırmalarını değiştirmekte 
-kullanılanlardır. Öncelikle, bu ikisi arasındaki farkları bilmek önemlidir. 
-Dosya sistemi disklerinizin işletim sistemi tarafından size gösterilen halidir. 
-Örneğin, öntanımlı kurulumda Apache, Unix sistemlerinde 
-<code>/usr/local/apache2</code> altındayken Windows sistemlerinde 
-<code>"c:/Program Files/Apache Group/Apache2"</code> altındadır. 
-(Bilgi: Windows için bile, Apache’de dosya yolu belirtilirken tersbölü 
-değil normal bölü karakterleri kullanılır.) Site alanı ise sunucu tarafından 
-istemciye sunulan dizin ağacıdır. Yani, site alanı içindeki <code>/dir/</code> 
-dizini, Apache’nin Unix üzerinde dosya sistemine öntanımlı olarak kurulduğu 
-yer göz önüne alınarak, dosya sistemindeki  
-<code>/usr/local/apache2/htdocs/dir/</code> dizinine karşılıktır. Site 
-sayfaları veritabanlarından veya başka yerlerden devingen olarak 
-üretilebildiğinden site alanlarının doğrudan dosya sistemine eşlenmesi 
+<p>En sık kullanılan yapılandırma bölümü taşıyıcıları dosya sistemindeki
+veya site alanındaki belli yerlerin yapılandırmalarını değiştirmekte
+kullanılanlardır. Öncelikle, bu ikisi arasındaki farkları bilmek önemlidir.
+Dosya sistemi disklerinizin işletim sistemi tarafından size gösterilen halidir.
+Örneğin, öntanımlı kurulumda Apache, Unix sistemlerinde
+<code>/usr/local/apache2</code> altındayken Windows sistemlerinde
+<code>"c:/Program Files/Apache Group/Apache2"</code> altındadır.
+(Bilgi: Windows için bile, Apache’de dosya yolu belirtilirken tersbölü
+değil normal bölü karakterleri kullanılır.) Site alanı ise sunucu tarafından
+istemciye sunulan dizin ağacıdır. Yani, site alanı içindeki <code>/dir/</code>
+dizini, Apache’nin Unix üzerinde dosya sistemine öntanımlı olarak kurulduğu
+yer göz önüne alınarak, dosya sistemindeki
+<code>/usr/local/apache2/htdocs/dir/</code> dizinine karşılıktır. Site
+sayfaları veritabanlarından veya başka yerlerden devingen olarak
+üretilebildiğinden site alanlarının doğrudan dosya sistemine eşlenmesi
 gerekli değildir.</p>
 
 <section id="filesystem"><title>Dosya Sistemi Taşıyıcıları</title>
 
 <p><directive type="section" module="core">Directory</directive>
 ve <directive type="section" module="core">Files</directive> taşıyıcıları,
-<glossary ref="regex">düzenli ifade</glossary> karşılıkları ile beraber, 
+<glossary ref="regex">düzenli ifade</glossary> karşılıkları ile beraber,
 yönergeleri dosya sisteminin parçalarına uygularlar. Bir <directive
-type="section" module="core">Directory</directive> bölümü içindeki yönergeler 
-belli bir dosya sistemi dizinine ve onun alt dizinlerine uygulanır. Aynı etki 
-<a href="howto/htaccess.html">.htaccess dosyaları</a> kullanılarak da 
-sağlanabilir. Örneğin aşağıdaki yapılandırmada, <code>/var/web/dir1</code> 
+type="section" module="core">Directory</directive> bölümü içindeki yönergeler
+belli bir dosya sistemi dizinine ve onun alt dizinlerine uygulanır. Aynı etki
+<a href="howto/htaccess.html">.htaccess dosyaları</a> kullanılarak da
+sağlanabilir. Örneğin aşağıdaki yapılandırmada, <code>/var/web/dir1</code>
 dizini ve alt dizinlerinde dizin içeriğinin listelenmesi etkin kılınmaktadır.</p>
 
 <example>
@@ -173,11 +173,11 @@ dizini ve alt dizinlerinde dizin içeriğinin listelenmesi etkin kılınmaktadı
 &lt;/Directory&gt;
 </example>
 
-<p>Bir <directive type="section" module="core">Files</directive> bölümü 
-içindeki yönergeler, hangi dizinde bulunduğuna bakılmaksızın ismi 
-belirtilen dosyalara uygulanır. Örneğin, aşağıdaki yapılandırma yönergeleri 
-yapılandırma dosyasının ana bölümüne yerleştirildiği takdirde 
-<code>gizli.html</code> isimli dosyalara nerede bulunursa bulunsun erişime 
+<p>Bir <directive type="section" module="core">Files</directive> bölümü
+içindeki yönergeler, hangi dizinde bulunduğuna bakılmaksızın ismi
+belirtilen dosyalara uygulanır. Örneğin, aşağıdaki yapılandırma yönergeleri
+yapılandırma dosyasının ana bölümüne yerleştirildiği takdirde
+<code>gizli.html</code> isimli dosyalara nerede bulunursa bulunsun erişime
 izin vermeyecektir.</p>
 
 <example>
@@ -189,14 +189,14 @@ Deny from all<br />
 &lt;/Files&gt;
 </example>
 
-<p>Dosya sisteminin belli bir yerindeki belli dosyalarla ilgili yaptırımlar 
+<p>Dosya sisteminin belli bir yerindeki belli dosyalarla ilgili yaptırımlar
 için <directive type="section" module="core">Files</directive> ve
-<directive type="section" module="core">Directory</directive> bölümleri 
-birlikte kullanılabilir. Örneğin, aşağıdaki yapılandırma 
+<directive type="section" module="core">Directory</directive> bölümleri
+birlikte kullanılabilir. Örneğin, aşağıdaki yapılandırma
 <code>/var/web/dir1/gizli.html</code>,
 <code>/var/web/dir1/subdir2/gizli.html</code>,
-<code>/var/web/dir1/subdir3/gizli.html</code> ve 
-<code>/var/web/dir1/</code> altında bulunabilecek diğer tüm 
+<code>/var/web/dir1/subdir3/gizli.html</code> ve
+<code>/var/web/dir1/</code> altında bulunabilecek diğer tüm
 <code>gizli.html</code> dosyalarına erişimi yasaklar.</p>
 
 <example>
@@ -215,14 +215,14 @@ Deny from all<br />
 
 <section id="webspace"><title>Site Alanı Taşıyıcıları</title>
 
-<p><directive type="section" module="core">Location</directive> yönergesi ve 
-yönergenin <glossary ref="regex">düzenli ifade</glossary> karşılığı site 
-alanındaki içerik için yapılandırmayı değiştirir.  Örneğin aşağıdaki 
-yapılandırma, <code>/gizli</code> ile başlayan URL yollarına erişimi engeller. 
+<p><directive type="section" module="core">Location</directive> yönergesi ve
+yönergenin <glossary ref="regex">düzenli ifade</glossary> karşılığı site
+alanındaki içerik için yapılandırmayı değiştirir.  Örneğin aşağıdaki
+yapılandırma, <code>/gizli</code> ile başlayan URL yollarına erişimi engeller.
 Özellikle, <code>http://siteniz.mesela.dom/gizli</code>,
 <code>http://siteniz.mesela.dom/gizli123</code> ve
-<code>http://siteniz.mesela.dom/gizli/dir/dosya.html</code> 
-istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de 
+<code>http://siteniz.mesela.dom/gizli/dir/dosya.html</code>
+istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de
 uygulanır.</p>
 
 <example>
@@ -234,11 +234,11 @@ Deny from all<br />
 &lt;/Location&gt;
 </example>
 
-<p>Dosya sistemi ile etkileşime girmeyen herşey için 
-<directive type="section" module="core">Location</directive> yönergesi gerekir. 
-Aşağıdaki örnekte, belli bir URL’nin <module>mod_status</module> modülü 
-tarafından sağlanan bir dahili Apache eylemcisine nasıl eşlenebileceği 
-gösterilmiştir. Bu örnek için dosya sisteminde <code>server-status</code> 
+<p>Dosya sistemi ile etkileşime girmeyen herşey için
+<directive type="section" module="core">Location</directive> yönergesi gerekir.
+Aşağıdaki örnekte, belli bir URL’nin <module>mod_status</module> modülü
+tarafından sağlanan bir dahili Apache eylemcisine nasıl eşlenebileceği
+gösterilmiştir. Bu örnek için dosya sisteminde <code>server-status</code>
 adında bir dosya veya dizin bulunması gerekli değildir.</p>
 
 <example>
@@ -254,22 +254,22 @@ SetHandler server-status<br />
 
 <p><directive type="section" module="core">Directory</directive>,
 <directive type="section" module="core">Files</directive> ve
-<directive type="section" module="core">Location</directive> yönergelerinde, 
-Standart C kütüphanesindeki <code>fnmatch</code> işlevindeki gibi kabuk tarzı 
-dosya ismi kalıpları kullanılabilir. "*" karakteri herhangi bir karakter 
+<directive type="section" module="core">Location</directive> yönergelerinde,
+Standart C kütüphanesindeki <code>fnmatch</code> işlevindeki gibi kabuk tarzı
+dosya ismi kalıpları kullanılabilir. "*" karakteri herhangi bir karakter
 dizisi ile eşleşirken "?" karakteri tek tek karakterlerle ve "[<em>seq</em>]"
-kalıbı ise <em>seq</em> içindeki her karakterle eşleşir. "/" karakteri her 
+kalıbı ise <em>seq</em> içindeki her karakterle eşleşir. "/" karakteri her
 hangi bir kalıp karakteri ile eşleşmez; açıkça belirtilmesi gerekir.</p>
 
-<p>Daha esnek bir eşleşmenin gerekli olduğu durumlar için her taşıyıcının bir 
+<p>Daha esnek bir eşleşmenin gerekli olduğu durumlar için her taşıyıcının bir
 düzenli ifade karşılığı vardır. <directive type="section" module="core"
 >DirectoryMatch</directive>, <directive type="section" module="core"
 >FilesMatch</directive> ve <directive type="section" module="core"
->LocationMatch</directive> yönergelerinde gerekli eşleşmeleri seçmek için 
-perl uyumlu <glossary ref="regex">düzenli ifadelerin</glossary> kullanımına 
+>LocationMatch</directive> yönergelerinde gerekli eşleşmeleri seçmek için
+perl uyumlu <glossary ref="regex">düzenli ifadelerin</glossary> kullanımına
 izin verilir. Ayrıca, yönergelerin uygulanışının düzenli ifade bölümleri kullanılarak nasıl değiştirileceğini öğrenmek için, aşağıda, yapılandırmanın katıştırılmasıyla ilgili bölüme de bakınız.</p>
 
-<p>Tüm kullanıcı dizinlerine ilişkin yapılandırmayı değiştirmek için dosya 
+<p>Tüm kullanıcı dizinlerine ilişkin yapılandırmayı değiştirmek için dosya
 ismi kalıpları şöyle kullanılabilirdi:</p>
 
 <example>
@@ -280,7 +280,7 @@ Options Indexes<br />
 &lt;/Directory&gt;
 </example>
 
-<p>Düzenli ifade bölümleri kullanarak çeşitli türlerdeki resim dosyalarına 
+<p>Düzenli ifade bölümleri kullanarak çeşitli türlerdeki resim dosyalarına
 erişimi bir defada yasaklayabiliriz:</p>
 <example>
 &lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
@@ -295,20 +295,20 @@ Deny from all<br />
 
 <section id="whichwhen"><title>Ne, Ne Zaman Kullanılır?</title>
 
-<p>Dosya sistemi taşıyıcıları ile site alanı taşıyıcıları arasında seçim 
-yapmak aslında oldukça kolaydır. Dosya sisteminde bulunan nesnelere 
+<p>Dosya sistemi taşıyıcıları ile site alanı taşıyıcıları arasında seçim
+yapmak aslında oldukça kolaydır. Dosya sisteminde bulunan nesnelere
 uygulanacak yönergeler için daima <directive type="section" module="core"
 >Directory</directive> veya <directive type="section" module="core"
->Files</directive> kullanılır. Dosya sisteminde bulunmayan nesnelere 
-(bir sayfanın bir veritabanı tarafından üretilmesi gibi) uygulanacak 
+>Files</directive> kullanılır. Dosya sisteminde bulunmayan nesnelere
+(bir sayfanın bir veritabanı tarafından üretilmesi gibi) uygulanacak
 yönergeler için ise <directive type="section" module="core"
 >Location</directive> kullanılır.</p>
 
-<p>Dosya sistemindeki nesnelere erişimi kısıtlarken asla <directive 
-type="section" module="core">Location</directive> kullanmamak önemlidir. 
-Bunun sebebi farklı site alanı konumlarının (URL’ler) aynı dosya sistemi 
-konumuna eşlenebilmesi dolayısıyla kısıtlamalarınızın etrafından 
-dolaşılabilmesine izin vermesidir. Örneğin, aşağıdaki yapılandırmayı 
+<p>Dosya sistemindeki nesnelere erişimi kısıtlarken asla <directive
+type="section" module="core">Location</directive> kullanmamak önemlidir.
+Bunun sebebi farklı site alanı konumlarının (URL’ler) aynı dosya sistemi
+konumuna eşlenebilmesi dolayısıyla kısıtlamalarınızın etrafından
+dolaşılabilmesine izin vermesidir. Örneğin, aşağıdaki yapılandırmayı
 ele alalım:</p>
 
 <example>
@@ -320,27 +320,27 @@ Deny from all<br />
 &lt;/Location&gt;
 </example>
 
-<p><code>http://siteniz.mesela.dom/dir/</code> için bir istek yapılmışsa 
-bu doğru çalışacaktır. Fakat dosya sistemi harf büyüklüğüne duyarsızsa 
-ne olacak? Kısıtlamanız, istek <code>http://siteniz.mesela.dom/DIR/</code> 
-şeklinde yapılarak kolayca geçersiz kılınabilir. Halbuki <directive 
-type="section" module="core">Directory</directive> yönergesi isteğin nasıl 
-yapıldığına bakılmaksızın bu konumdan sunulan her türlü içeriğe uygulanacaktı. 
-(Dosya sistemi bağlarıyla bu da aşılabilir. Sembolik bağlar kullanılarak aynı 
-dizin dosya sisteminin bir çok yerine yerleştirilebilir. <directive 
+<p><code>http://siteniz.mesela.dom/dir/</code> için bir istek yapılmışsa
+bu doğru çalışacaktır. Fakat dosya sistemi harf büyüklüğüne duyarsızsa
+ne olacak? Kısıtlamanız, istek <code>http://siteniz.mesela.dom/DIR/</code>
+şeklinde yapılarak kolayca geçersiz kılınabilir. Halbuki <directive
+type="section" module="core">Directory</directive> yönergesi isteğin nasıl
+yapıldığına bakılmaksızın bu konumdan sunulan her türlü içeriğe uygulanacaktı.
+(Dosya sistemi bağlarıyla bu da aşılabilir. Sembolik bağlar kullanılarak aynı
+dizin dosya sisteminin bir çok yerine yerleştirilebilir. <directive
 type="section" module="core">Directory</directive> yönergesi dosya yolunu
-sıfırlamaksızın sembolik bağları izleyecektir. Bu bakımdan, en yüksek 
-seviyede güvenlik için uygun <directive module="core">Options</directive> 
+sıfırlamaksızın sembolik bağları izleyecektir. Bu bakımdan, en yüksek
+seviyede güvenlik için uygun <directive module="core">Options</directive>
 yönergesi ile sembolik bağların izlenmesi devredışı bırakılabilir.)</p>
 
-<p>Belki de siz sırf harf büyüklüğüne duyarlı bir dosya sistemi 
-kullanıyorsunuz diye böyle uygulamalara ihtiyacınız olmadığını 
-düşünüyor olabilirsiniz, fakat aynı site alanını çok sayıda dosya 
-sistemi konumuna eşleyecek daha bir sürü yol bulunduğunu unutmayınız. 
-Bu bakımdan dosya sisteminde yapacağınız kısıtlamalarda daima dosya 
-sistemi taşıyıcılarını kullanmalısınız. Bununla birlikte bu kuralın da 
-bir istisnası vardır. Yapılandırma kısıtlamalarının bir 
-<code>&lt;Location/&gt;</code> bölümü içine koyulması, bu bölüme konan 
+<p>Belki de siz sırf harf büyüklüğüne duyarlı bir dosya sistemi
+kullanıyorsunuz diye böyle uygulamalara ihtiyacınız olmadığını
+düşünüyor olabilirsiniz, fakat aynı site alanını çok sayıda dosya
+sistemi konumuna eşleyecek daha bir sürü yol bulunduğunu unutmayınız.
+Bu bakımdan dosya sisteminde yapacağınız kısıtlamalarda daima dosya
+sistemi taşıyıcılarını kullanmalısınız. Bununla birlikte bu kuralın da
+bir istisnası vardır. Yapılandırma kısıtlamalarının bir
+<code>&lt;Location/&gt;</code> bölümü içine koyulması, bu bölüme konan
 yönergelerin etki alanının belli bir URL ile sınırlı olmaması nedeniyle
 mükemmelen güvenlidir.</p>
 </section>
@@ -349,9 +349,9 @@ mükemmelen güvenlidir.</p>
 
 <section id="virtualhost"><title>Sanal Konaklar</title>
 
-<p><directive type="section" module="core">VirtualHost</directive> taşıyıcısının 
-içinde belli bir konağa uygulanan yönergeler bulunur. Aynı makinede çok sayıda 
-konağı farklı yapılandırmalarla  sunuyorsanız bu taşıyıcı çok işinize yarar. 
+<p><directive type="section" module="core">VirtualHost</directive> taşıyıcısının
+içinde belli bir konağa uygulanan yönergeler bulunur. Aynı makinede çok sayıda
+konağı farklı yapılandırmalarla  sunuyorsanız bu taşıyıcı çok işinize yarar.
 Daha fazla bilgi için <a href="vhosts/">Sanal Konak Belgeleri</a> bölümüne bakınız.</p>
 </section>
 
@@ -359,9 +359,9 @@ Daha fazla bilgi için <a href="vhosts/">Sanal Konak Belgeleri</a> bölümüne b
 
 <p><directive type="section" module="mod_proxy">Proxy</directive>
 ve <directive type="section" module="mod_proxy">ProxyMatch</directive>
-taşıyıcıları, sadece belli bir URL ile eşleşen <module>mod_proxy</module> 
-vekil sunucusu üzerinden erişilen sitelere uygulanan yapılandırma 
-yönergelerini bulundururlar. Örneğin aşağıdaki yapılandırma 
+taşıyıcıları, sadece belli bir URL ile eşleşen <module>mod_proxy</module>
+vekil sunucusu üzerinden erişilen sitelere uygulanan yapılandırma
+yönergelerini bulundururlar. Örneğin aşağıdaki yapılandırma
 <code>cnn.com</code> sitesine erişim için vekil sunucunun kullanılmasını
 engelleyecektir.</p>
 
@@ -377,9 +377,9 @@ Deny from all<br />
 
 <section id="whatwhere"><title>Hangi Yönergelere İzin Veriliyor?</title>
 
-<p>Hangi yönergelere hangi yapılandırma bölümlerinde izin verildiğini 
+<p>Hangi yönergelere hangi yapılandırma bölümlerinde izin verildiğini
 öğrenmek için yönerge <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız.
-<directive type="section" module="core">Directory</directive> bölümlerinde 
+<directive type="section" module="core">Directory</directive> bölümlerinde
 izin verilen herşeye sözdizimsel olarak ayrıca
 <directive type="section" module="core">DirectoryMatch</directive>,
 <directive type="section" module="core">Files</directive>,
@@ -394,23 +394,23 @@ bölümlerinde de izin verilir. Yine de bazı istisnai durumlar mevcuttur:</p>
 <li><directive module="core">AllowOverride</directive> yönergesi sadece
 <directive type="section" module="core">Directory</directive> bölümlerinde çalışır.</li>
 
-<li><directive module="core">Options</directive> yönergesinin 
-<code>FollowSymLinks</code> ve <code>SymLinksIfOwnerMatch</code> 
+<li><directive module="core">Options</directive> yönergesinin
+<code>FollowSymLinks</code> ve <code>SymLinksIfOwnerMatch</code>
 seçenekleri sadece <directive type="section" module="core"
->Directory</directive> bölümlerinde veya <code>.htaccess</code> 
+>Directory</directive> bölümlerinde veya <code>.htaccess</code>
 dosyalarında çalışır.</li>
 
-<li><directive module="core">Options</directive> yönergesi 
-<directive type="section" module="core">Files</directive> ve 
-<directive type="section" module="core">FilesMatch</directive> 
+<li><directive module="core">Options</directive> yönergesi
+<directive type="section" module="core">Files</directive> ve
+<directive type="section" module="core">FilesMatch</directive>
 bölümlerinde kullanılamaz.</li>
 </ul>
 </section>
 
 <section id="mergin"><title>Bölümler Nasıl Katıştırılır?</title>
 
-<p>Yapılandırma bölümleri belli bir sıra ile uygulanır. Yapılandırma 
-yönergelerinin yorumlanışı üzerinde önemli etkilere sahip olabilmesi 
+<p>Yapılandırma bölümleri belli bir sıra ile uygulanır. Yapılandırma
+yönergelerinin yorumlanışı üzerinde önemli etkilere sahip olabilmesi
 nedeniyle neyin ne zaman çalıştığını anlamak çok önemlidir.</p>
 
     <p>Yapılandırma bölümlerinin katıştırılma sırası şöyledir:</p>
@@ -418,9 +418,9 @@ nedeniyle neyin ne zaman çalıştığını anlamak çok önemlidir.</p>
     <ol>
       <li><directive type="section"
       module="core">Directory</directive> (düzenli ifadeler hariç)
-      ve <code>.htaccess</code> aynı anda işleme sokulur 
-      (<code>.htaccess</code> ile eğer izin verilmişse <directive 
-      type="section" module="core">Directory</directive> içindeki bazı 
+      ve <code>.htaccess</code> aynı anda işleme sokulur
+      (<code>.htaccess</code> ile eğer izin verilmişse <directive
+      type="section" module="core">Directory</directive> içindeki bazı
       yönergeler geçersiz kılınabileceği için).</li>
 
       <li><directive type="section" module="core">DirectoryMatch</directive>
@@ -430,49 +430,49 @@ nedeniyle neyin ne zaman çalıştığını anlamak çok önemlidir.</p>
       type="section" module="core">FilesMatch</directive> aynı anda işleme sokulur.</li>
 
       <li><directive type="section" module="core">Location</directive>
-      ve <directive type="section" module="core">LocationMatch</directive> 
+      ve <directive type="section" module="core">LocationMatch</directive>
       aynı anda işleme sokulur.</li>
     </ol>
 
     <p><directive type="section" module="core">Directory</directive>
-     bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları 
-     sıraya göre işleme sokulurlar. Yukarıda 1. grup olan <directive 
-     type="section" module="core">Directory</directive> bölümü en kısa 
-     dizin elemanından en uzun dizin elemanına doğru işleme sokulur. 
-     Yani, örneğin, <code>&lt;Directory /var/web/dir&gt;</code> bölümü 
-     <code>&lt;Directory /var/web/dir/subdir&gt;</code> bölümünden önce 
-     işleme sokulacaktır. Eğer aynı uzunlukta çok sayıda dizin varsa 
-     <directive type="section" module="core">Directory</directive> bölümleri 
-     yapılandırma dosyasında bulundukları sıraya göre işleme sokulurlar. 
-     <directive module="core">Include</directive> yönergeleri ile 
-     yapılandırmaya dahil edilen dosyaların içerikleri <directive 
-     module="core">Include</directive> yönergesinin bulunduğu yere 
+     bölümündekiler hariç, her grup, yapılandırma dosyasında bulundukları
+     sıraya göre işleme sokulurlar. Yukarıda 1. grup olan <directive
+     type="section" module="core">Directory</directive> bölümü en kısa
+     dizin elemanından en uzun dizin elemanına doğru işleme sokulur.
+     Yani, örneğin, <code>&lt;Directory /var/web/dir&gt;</code> bölümü
+     <code>&lt;Directory /var/web/dir/subdir&gt;</code> bölümünden önce
+     işleme sokulacaktır. Eğer aynı uzunlukta çok sayıda dizin varsa
+     <directive type="section" module="core">Directory</directive> bölümleri
+     yapılandırma dosyasında bulundukları sıraya göre işleme sokulurlar.
+     <directive module="core">Include</directive> yönergeleri ile
+     yapılandırmaya dahil edilen dosyaların içerikleri <directive
+     module="core">Include</directive> yönergesinin bulunduğu yere
      konulduktan sonra işleme sokulurlar.</p>
 
-    <p><directive type="section" module="core">VirtualHost</directive> 
-    bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki 
+    <p><directive type="section" module="core">VirtualHost</directive>
+    bölümlerinin içindeki bölümler, sanal konak tanımı dışındaki
     karşılıklarından <em>sonra</em> uygulanırlar.</p>
 
-    <p>İstek <module>mod_proxy</module> tarafından sunulduğu takdirde, 
-    <directive module="mod_proxy" type="section">Proxy</directive> taşıyıcısı 
-    işlem sırasında <directive module="core" type="section">Directory</directive> 
+    <p>İstek <module>mod_proxy</module> tarafından sunulduğu takdirde,
+    <directive module="mod_proxy" type="section">Proxy</directive> taşıyıcısı
+    işlem sırasında <directive module="core" type="section">Directory</directive>
     taşıyıcısının yerini alır.</p>
 
     <p>Sonraki bölümler öncekileri geçersiz kılmak üzere işleme alınırlar.</p>
 
 <note><title>Bazı Teknik Bilgiler</title>
-  Aslında, isim dönüşüm aşamasından (<code>Aliases</code> ve 
-  <code>DocumentRoots</code>, URL’leri dosya isimlerine eşlemek için 
-  kullanılırken) hemen önce uygulanan bir 
-  <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code> 
-  dizisi vardır. Bu dizinin sonuçları isim dönüşüm aşaması tamamlandıktan 
+  Aslında, isim dönüşüm aşamasından (<code>Aliases</code> ve
+  <code>DocumentRoots</code>, URL’leri dosya isimlerine eşlemek için
+  kullanılırken) hemen önce uygulanan bir
+  <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+  dizisi vardır. Bu dizinin sonuçları isim dönüşüm aşaması tamamlandıktan
   sonra tamamen elden çıkarılır.
 </note>
 
 <section id="merge-examples"><title>Bazı Örnekler</title>
 
-<p>Aşağıdaki yapay örnekte katıştırma sırası gösterilmiştir. Hepsinin 
-aynı isteğe uygulandığı varsayımıyla, bu örnekteki yönergeler 
+<p>Aşağıdaki yapay örnekte katıştırma sırası gösterilmiştir. Hepsinin
+aynı isteğe uygulandığı varsayımıyla, bu örnekteki yönergeler
 A &gt; B &gt; C &gt; D &gt; E sırasıyla uygulanacaktır.</p>
 
 <example>
@@ -490,7 +490,7 @@ B<br />
 &lt;/Directory&gt;<br />
 &lt;/VirtualHost&gt;<br />
 <br />
-&lt;DirectoryMatch "^.*b$"&gt;<br />
+&lt;DirectoryMatch "^.*b/"&gt;<br />
 C<br />
 &lt;/DirectoryMatch&gt;<br />
 <br />
@@ -501,10 +501,10 @@ A<br />
 </example>
 
 <p>Daha somut bir örnek olarak aşağıdakini ele alalım. <directive module="core"
-type="section">Directory</directive> bölümlerindeki erişim sınırlamaları 
-ne olursa olsun <directive module="core" type="section">Location</directive> 
-bölümü son olarak değerlendirmeye alınacak ve sunucuya sınırsız erişim 
-verecektir. Başka bir deyişle, katıştırma sırası önemlidir, bu nedenle 
+type="section">Directory</directive> bölümlerindeki erişim sınırlamaları
+ne olursa olsun <directive module="core" type="section">Location</directive>
+bölümü son olarak değerlendirmeye alınacak ve sunucuya sınırsız erişim
+verecektir. Başka bir deyişle, katıştırma sırası önemlidir, bu nedenle
 dikkatli olmalısınız!</p>
 
 <example>
