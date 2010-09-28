@@ -618,6 +618,18 @@ AP_DECLARE_HOOK(void, error_log, (const char *file, int line,
                        const request_rec *r, apr_pool_t *pool,
                        const char *errstr))
 
+/**
+ * hook method to generate unique id for connection or request
+ * @ingroup hooks
+ * @param c the conn_rec of the connections
+ * @param r the request_req (may be NULL)
+ * @param id the place where to store the unique id
+ * @return OK or DECLINE
+ */
+AP_DECLARE_HOOK(int, generate_log_id,
+                (const conn_rec *c, const request_rec *r, const char **id))
+
+
 #ifdef __cplusplus
 }
 #endif
