@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 587444:947280 (outdated) -->
+<!-- English Revision: 947280 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -29,7 +29,7 @@
   <title>Dinleme</title>
 
   <summary>
-    <p>Apache’nin belli adresleri ve portları dinlemek üzere
+    <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
     yapılandırılması.</p>
   </summary>
 
@@ -51,16 +51,17 @@
     </related>
 
 
-    <p>Apache başlatıldığında yerel makinedeki bazı adres ve portları kendine
+    <p>httpd başlatıldığında yerel makinedeki bazı adres ve portları kendine
       bağlar ve gelecek istekleri bekler. Öntanımlı olarak makine üzerindeki
       tüm adresleri dinler. Bununla birlikte, belli portları veya sadece
       seçilmiş bazı adresleri ya da her ikisini de dinlemesi için bunun
-      belirtilmesi gerekebilir. Bu çoğunlukla, Apache’nin farklı IP
+      belirtilmesi gerekebilir. Bu çoğunlukla, httpd’nin farklı IP
       adreslerine, konak isimlerine ve portlarına nasıl yanıt vereceğinin
-      belirlendiği sanal konak özelliği ile birlikte yürür.</p>
+      belirlendiği <a href="vhosts.html">sanal konak</a> özelliği ile birlikte
+      yürür.</p>
 
     <p><directive module="mpm_common">Listen</directive> yönergesi sunucuya
-      gelen istekleri sadece belli portlardan veya belli adres ve port
+      gelen istekleri sadece belli port(lar)dan veya belli adres ve port
       birleşimlerinden kabul etmesini söyler. <directive
       module="mpm_common">Listen</directive> yönergesinde sadece port
       numarası belirtilmişse sunucu tüm arabirimlerin belirtilen portunu
@@ -70,6 +71,10 @@
       module="mpm_common">Listen</directive> yönergesi kullanılabilir. Sunucu
       böyle bir durumda belirtilen bütün adres ve portlardan gelen isteklere
       yanıt verecektir.</p>
+
+    <p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
+      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
+      sonuçlanacaktır.</p>
 
     <p>Örneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
       bağlantıları kabul etmesini sağlamak için,</p>
@@ -100,34 +105,34 @@
     <title>IPv6 Adreslerin Durumu</title>
 
     <p>IPv6’yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
-      platformların çoğunda <glossary>APR</glossary>, Apache’nin IPv6
+      platformların çoğunda <glossary>APR</glossary>, httpd’nin IPv6
       soketleri ayırmasını mümkün kılarak IPv6’yı desteklemekte ve IPv6
       üzerinden gönderilmiş istekleri elde etmektedir.</p>
 
-    <p>Apache yöneticilerinin kafasını karıştırıran tek şey IPv6 soketlerin
+    <p>httpd yöneticilerinin kafasını karıştırıran tek şey IPv6 soketlerin
       hem IPv4 hem de IPv6 bağlantılarını kabul edip etmeyeceğidir. IPv4
       bağlantılarını kabul eden IPv6 soketleri IPv4 eşlemli IPv6 adresleri
       kullanırlar. Bu çoğu sistemde öntanımlı olarak böyleyken, FreeBSD,
       NetBSD ve OpenBSD’de sistem geneline uygulanan kurallar gereğince
       öntanımlı olarak buna izin verilmez; bu sistemlerde özel bir
-      <program>configure</program> parametresi ile Apache’nin davranışı
-      değiştirilebilir.</p>
+      <program>configure</program> parametresi ile <code>httpd</code>’nin
+      davranışı değiştirilebilir.</p>
 
     <p>Diğer taraftan, Linux ve Tru64 gibi bazı platformlarda hem IPv4 hem de
       IPv6 adresleri kabul etmenin <strong>tek yolu</strong> eşlemli adresler
-      kullanmaktır. Apache’nin IPv4 ve IPv6 adresleri, IPv4 eşlemli IPv6
-      adreslerin kullanımını gerektiren en az sayıda soketle kabul etmesini
+      kullanmaktır. <code>httpd</code>’nin IPv4 ve IPv6 adresleri, IPv4 eşlemli
+      IPv6 adreslerin kullanımını gerektiren en az sayıda soketle kabul etmesini
       istiyorsanız, <program>configure</program> betiğine
       <code>--enable-v4-mapped</code> seçeneğini belirtiniz.</p>
 
     <p><code>--enable-v4-mapped</code> seçeneği, FreeBSD, NetBSD ve OpenBSD
-      hariç tüm platformlarda öntanımlıdır. Muhtemelen siz de Apache’nin
-      böyle derlenmesini isterdiniz.</p>
+      hariç tüm platformlarda öntanımlıdır. Muhtemelen siz de
+      <code>httpd</code>’nin böyle derlenmesini isterdiniz.</p>
 
-    <p>Platformunuzun ve APR’nin neyi desteklediğine bakmaksızın Apache’nin
-      sadece IPv4 adresleri kabul etmesini istiyorsanız, tüm <directive
-      module="mpm_common">Listen</directive> yönergelerinde örnekteki gibi
-      IPv4 adresleri belirtiniz:</p>
+    <p>Platformunuzun ve APR’nin neyi desteklediğine bakmaksızın
+      <code>httpd</code>’nin sadece IPv4 adresleri kabul etmesini istiyorsanız,
+      tüm <directive module="mpm_common">Listen</directive> yönergelerinde
+      örnekteki gibi IPv4 adresleri belirtiniz:</p>
 
     <example>
       Listen 0.0.0.0:80<br />
@@ -135,7 +140,7 @@
     </example>
 
     <p>Platformunuz IPv4 ve IPv6 adresleri ayrı soketlerden kabul ediyorsa ve
-      Apache’nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
+      <code>httpd</code>’nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
       adreslerin iptalini)  istiyorsanız <program>configure</program>
       betiğine <code>--disable-v4-mapped</code> seçeneğini belirtiniz. Bu
       seçenek FreeBSD, NetBSD ve OpenBSD’de öntanımlıdır.</p>
