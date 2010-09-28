@@ -202,7 +202,7 @@
       can handle at once, so be sure to set this number high enough for
       your site if you get a lot of hits. The recommended default is
       <code>ThreadsPerChild 150</code>, but this must be adjusted to
-      reflect the greatest anticipated number of simultanious
+      reflect the greatest anticipated number of simultaneous
       connections to accept.</p></li>
 
       <li><p>The directives that accept filenames as arguments must use

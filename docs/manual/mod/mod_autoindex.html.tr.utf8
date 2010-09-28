@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -598,13 +597,13 @@ belirler.</td></tr>
         olacaktır.</strong></dd>
 
       <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable"><code>HTMLTable</code></a>
-             (<em>Deneysel, Apache 2.0.23 ve sonrası</em>)</dt>
+             (<em>Apache 2.0.23 ve sonrası</em>)</dt>
 
       <dd>Bu deneysel seçenek <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>  seçeneği ile birlikte süslü listeleme
-        için basit bir tablo oluşturur. Fakat bu eski tarayıcıları yanıltır.
-        Bununla birlikte, Linux, WinNT gibi sağdan sola veya soldan sağa yazım
-        yönünün UTF-8 karakter koduna göre değiştiği platformlarda dosya
-        isimleri ve açıklamalar için bu özellikle gerekli olabilir.</dd>
+        için basit bir tablo oluşturur. UTF-8'in etkin kılndığı platformlarda
+        veya Linux, WinNT gibi sağdan sola veya soldan sağa yazım yönünün UTF-8
+        karakter koduna göre değiştiği platformlarda dosya isimleri ve
+        açıklamalar için bu seçenek gereklidir.</dd>
 
       <dt><a name="indexoptions.iconsarelinks" id="indexoptions.iconsarelinks"><code>IconsAreLinks</code></a></dt>
 

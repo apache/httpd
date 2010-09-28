@@ -453,10 +453,10 @@ sont interprétées.</p>
     sur celles qui les précèdent.</p>
 
 <div class="note"><h3>Note technique</h3>
-      Une séquence
-      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
-      est réellement traitée juste avant la phase de traduction du nom
-      (où <code>Aliases</code> et <code>DocumentRoots</code>
+	Une séquence
+	<code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+	est réellement traitée juste avant la phase de traduction du nom
+	(où <code>Aliases</code> et <code>DocumentRoots</code>
       sont utilisés pour faire correspondre les URLs aux noms de fichiers).
       Les effets de cette séquence disparaissent totalement lorsque
       la traduction est terminée.
@@ -484,7 +484,7 @@ B<br />
 &lt;/Directory&gt;<br />
 &lt;/VirtualHost&gt;<br />
 <br />
-&lt;DirectoryMatch "^.*b$"&gt;<br />
+&lt;DirectoryMatch "^.*b/"&gt;<br />
 C<br />
 &lt;/DirectoryMatch&gt;<br />
 <br />

@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2007-08-01" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2010-09-28" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -27,7 +27,7 @@ httpd \- Apache Hypertext Transfer Protocol Server
 .SH "SYNOPSIS"
  
 .PP
-\fBhttpd\fR [ -\fBd\fR \fIserverroot\fR ] [ -\fBf\fR \fIconfig\fR ] [ -\fBC\fR \fIdirective\fR ] [ -\fBc\fR \fIdirective\fR ] [ -\fBD\fR \fIparameter\fR ] [ -\fBe\fR \fIlevel\fR ] [ -\fBE\fR \fIfile\fR ] [ \fB-k\fR start|restart|graceful|stop|graceful-stop ] [ -\fBR\fR \fIdirectory\fR ] [ -\fBh\fR ] [ -\fBl\fR ] [ -\fBL\fR ] [ -\fBS\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBV\fR ] [ -\fBX\fR ] [ -\fBM\fR ]
+\fBhttpd\fR [ -\fBd\fR \fIserverroot\fR ] [ -\fBf\fR \fIconfig\fR ] [ -\fBC\fR \fIdirective\fR ] [ -\fBc\fR \fIdirective\fR ] [ -\fBD\fR \fIparameter\fR ] [ -\fBe\fR \fIlevel\fR ] [ -\fBE\fR \fIfile\fR ] [ \fB-k\fR start|restart|graceful|stop|graceful-stop ] [ -\fBR\fR \fIdirectory\fR ] [ -\fBh\fR ] [ -\fBl\fR ] [ -\fBL\fR ] [ -\fBS\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBV\fR ] [ -\fBX\fR ] [ -\fBM\fR ] [ -\fBT\fR ]
  
 .PP
 On Windows systems, the following additional arguments are available:
@@ -90,6 +90,9 @@ Dump a list of loaded Static and Shared Modules\&.
 .TP
 -S
 Show the settings as parsed from the config file (currently only shows the virtualhost settings)\&.  
+.TP
+-T (Available in 2\&.2\&.17 and later)
+Skip document root check at startup/restart\&.  
 .TP
 -t
 Run syntax tests for configuration files only\&. The program immediately exits after these syntax parsing tests with either a return code of 0 (Syntax OK) or return code not equal to 0 (Syntax Error)\&. If -D \fIDUMP\fR_\fIVHOSTS \fRis also set, details of the virtual host configuration will be printed\&. If -D \fIDUMP\fR_\fIMODULES \fR is set, all loaded modules will be printed\&.  

@@ -52,7 +52,8 @@
      [ -<strong>R</strong> <var>dizin</var> ] [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
      [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
-     [ -<strong>X</strong> ] [ -<strong>M</strong> ]</code></p>
+     [ -<strong>X</strong> ] [ -<strong>M</strong> ] [ -<strong>T</strong> ]
+     </code></p>
 
      <p><a href="../platform/windows.html">Windows sistemlerinde</a>, ek
       olarak şunlar vardır:</p>
@@ -135,6 +136,11 @@
     <dt><code><strong>-S</strong></code></dt>
     <dd>Yapılandırma dosyasından çözümlenmiş haliyle ayarları gösterir (şu an
       sadece sanal konak ayarları gösterilmektedir).</dd>
+
+    <dt><code><strong>-T</strong></code> (2.2.17 ve sonrasında
+      kullanılabilir.)</dt>
+    <dd>Başlatma veya yeniden başlatma sırasında belge kök dizini
+      sınamasını yapmadan geçer.</dd>
 
     <dt><code><strong>-t</strong></code></dt>
     <dd>Yapılandırma dosyasını sözdizimi hatalarına karşı denetler. Program
