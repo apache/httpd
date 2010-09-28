@@ -60,7 +60,7 @@
          <dd><code>$server_root/logs/file-name.slotmem</code></dd>
          <dt><code>"absolute-file-name"</code></dt>
          <dd><code>$absolute-file-name.slotmem</code></dd>
-       </dl>
+       </dl></dd>
 
       <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)</dt>
       <dd>attach to an existing slotmem. See <code>create</code> for description of <code>name</code> parameter.</dd>
