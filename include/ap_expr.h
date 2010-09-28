@@ -45,7 +45,8 @@ typedef enum {
     TOKEN_LE,
     TOKEN_GT,
     TOKEN_LT,
-    TOKEN_ACCESS
+    TOKEN_ACCESS,
+    TOKEN_IN
 } token_type_t;
 
 typedef struct {
