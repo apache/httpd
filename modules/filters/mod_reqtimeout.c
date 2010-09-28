@@ -487,7 +487,7 @@ static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
         char *word, *val;
         const char *err;
         
-        word = ap_getword_conf(cmd->pool, &arg);
+        word = ap_getword_conf(cmd->temp_pool, &arg);
         val = strchr(word, '=');
         if (!val) {
             return "Invalid RequestReadTimeout parameter. Parameter must be "

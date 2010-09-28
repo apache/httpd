@@ -1081,7 +1081,7 @@ const char *ssl_cmd_SSLOptions(cmd_parms *cmd,
     char action, *w;
 
     while (*arg) {
-        w = ap_getword_conf(cmd->pool, &arg);
+        w = ap_getword_conf(cmd->temp_pool, &arg);
         action = NUL;
 
         if ((*w == '+') || (*w == '-')) {
