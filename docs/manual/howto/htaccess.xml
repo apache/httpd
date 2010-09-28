@@ -418,7 +418,7 @@ Options +IncludesNoExec -ExecCGI<br />
     permitted.</p>
 
     <example>
-    [Sat Aug 09 16:19:20 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteLog not allowed here
+    [Fri Sep 17 18:43:16 2010] [alert] [client 192.168.200.51] /var/www/html/.htaccess: DirectoryIndex not allowed here
     </example>
 
     <p>This will indicate either that you've used a directive that is
