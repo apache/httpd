@@ -37,6 +37,7 @@
 #include "http_request.h"
 #include "http_protocol.h"
 #include "ap_provider.h"
+#include "ap_expr.h"
 
 #include "mod_auth.h"
 
@@ -983,6 +984,39 @@ static const authz_provider authz_method_provider =
     &method_parse_config,
 };
 
+static authz_status expr_check_authorization(request_rec *r,
+                                             const char *require_line,
+                                             const void *parsed_require_line)
+{
+    int err = 0;
+    const ap_parse_node_t *expr = parsed_require_line;
+
+    if (ap_expr_eval(r, expr, &err, NULL, ap_expr_string, NULL))
+        return AUTHZ_GRANTED;
+    else
+        return AUTHZ_DENIED;
+}
+
+static const char *expr_parse_config(cmd_parms *cmd, const char *require_line,
+                                     const void **parsed_require_line)
+{
+    int expr_err = 0;
+    ap_parse_node_t *expr = ap_expr_parse(cmd->pool, require_line, &expr_err);
+
+    if (expr_err)
+        return "Cannot parse expression in require line";
+
+    *parsed_require_line = expr;
+
+    return NULL;
+}
+
+static const authz_provider authz_expr_provider =
+{
+    &expr_check_authorization,
+    &expr_parse_config,
+};
+
 
 static void register_hooks(apr_pool_t *p)
 {
@@ -1004,6 +1038,9 @@ static void register_hooks(apr_pool_t *p)
     ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "method",
                               AUTHZ_PROVIDER_VERSION,
                               &authz_method_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "expr",
+                              AUTHZ_PROVIDER_VERSION,
+                              &authz_expr_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
 AP_DECLARE_MODULE(authz_core) =

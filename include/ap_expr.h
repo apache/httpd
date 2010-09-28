@@ -99,7 +99,7 @@ AP_DECLARE(ap_parse_node_t*) ap_expr_parse(apr_pool_t *pool, const char *expr,
  * @param eval_func Option evaluation function (e.g. -A filename)
  * @return the value the expression parsed to
  */
-AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
+AP_DECLARE(int) ap_expr_eval(request_rec *r, const ap_parse_node_t *root,
                              int *was_error, backref_t **reptr,
                              string_func_t string_func, opt_func_t eval_func);
 /**
