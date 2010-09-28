@@ -80,7 +80,7 @@ changes on a per-directory basis.</p>
 
     <p>In general, <code>.htaccess</code> files use the same syntax as
     the <a href="../configuring.html#syntax">main configuration
-    files</a>.  What you can put in these files is determined by the
+    files</a>. What you can put in these files is determined by the
     <directive module="core">AllowOverride</directive> directive. This
     directive specifies, in categories, what directives will be
     honored if they are found in a <code>.htaccess</code> file. If a
@@ -122,7 +122,7 @@ changes on a per-directory basis.</p>
 
     <section id="when"><title>When (not) to use .htaccess files</title>
 
-    <p>In general, you should never use <code>.htaccess</code> files unless
+    <p>In general, you should only use <code>.htaccess</code> files when
     you don't have access to the main server configuration file. There is,
     for example, a common misconception that user authentication should
     always be done in <code>.htaccess</code> files, and, in more recent years, 
@@ -288,15 +288,15 @@ changes on a per-directory basis.</p>
     <code>.htaccess</code> files can override the <directive
     type="section" module="core">Directory</directive> sections for
     the corresponding directory, but will be overriden by other types
-    of configuration sections from the main configuration files.  This
+    of configuration sections from the main configuration files. This
     fact can be used to enforce certain configurations, even in the
     presence of a liberal <directive
-    module="core">AllowOverride</directive> setting.  For example, to
+    module="core">AllowOverride</directive> setting. For example, to
     prevent script execution while allowing anything else to be set in
     <code>.htaccess</code> you can use:</p>
 
     <example>
-&lt;Directory /&gt;<br />
+&lt;Directory /www/htdocs&gt;<br />
 <indent>
 Allowoverride All<br />
 </indent>
@@ -308,6 +308,9 @@ Options +IncludesNoExec -ExecCGI<br />
 </indent>
 &lt;/Location&gt;
     </example>
+
+    <note>This example assumes that your <directive 
+    module="core">DocumentRoot</directive> is <code>/www/htdocs</code>.</note>
 </section>
 
 </section>
