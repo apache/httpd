@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 965799:989598 (outdated) -->
+<!-- English Revision: 989598 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -489,7 +489,22 @@
     <p>Borulu günlükler de şarta bağlı günlükleme kadar güçlü olmakla beraber
       çevrimdışı ardıl işlemler gibi daha basit çözümler için
       kullanılmamalıdır.</p>
-  </section>
+
+    <p>Öntanımlı olarak borulu günlük süreci bir kabuk sayesinde yeniden
+      oluşur. (normalde <code>/bin/sh -c</code> ile). Kabuk üzerinden kabuk
+      çağrılarının özelliğinden dolayı borulu günlük programı çalışırken ve
+      yeniden başlatma sırasındaki sinyal yakalama sorunlarından dolayı ek
+      bir kabuk sürecinin başlatılmasi ihtimal dahilindedir.</p>
+
+    <p>Bir kabuk oluşturmaksızın borulu günlük sürecini yeniden oluşturmak
+      için "<code>|</code>" yerine "<code>||</code>" kullanın:</p>
+
+    <example>
+      # Kabuk kullanmadan "rotatelogs" kullanımı<br />
+      CustomLog "||/usr/local/apache/bin/rotatelogs
+      /var/log/access_log 86400" common
+    </example>
+   </section>
 
   <section id="virtualhost">
     <title>Sanal Konaklar</title>

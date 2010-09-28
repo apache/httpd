@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 965799:989598 (outdated) -->
+<!-- English Revision: 989598 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -90,7 +90,7 @@
 
     <tr><td><code>%{<var>Fesmekan</var>}C</code></td>
         <td>İstek içinde sunucuya gönderilen <var>Fesmekan</var> çerezinin
-          içeriği.</td></tr>
+          içeriği. Sadece 0. sürüm çerezler tam olarak desteklenir.</td></tr>
 
     <tr><td><code>%D</code></td>
         <td>Mikrosaniye cinsinden isteği sunmak için harcanan zaman.</td></tr>
@@ -376,7 +376,8 @@ kullanılır.</description>
       <dt><var>borulu-süreç</var></dt>
       <dd>"<code>|</code>" boru karakteri ile öncelenmiş olarak günlük
         bilgisini standart girdisinden kabul edecek sürecin ismi (veya komut
-        satırı).
+        satırı) Daha fazla bilgi için <a href="../logs.html#piped">borulu
+        günlükler</a> ile ilgili ek bilgilere bakın.
 
       <note type="warning"><title>Güvenlik:</title>
       <p>Bir borulu süreç kullanılmışsa, süreç <program>httpd</program>’yi

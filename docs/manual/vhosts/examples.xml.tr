@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 618543:989156 (outdated) -->
+<!-- English Revision: 989156 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by:  Orhan Berent <berent belgeler.org>
@@ -30,11 +30,11 @@
 
 <summary>
 
-    <p>Bu belgede sanal konaklarla ile ilgili olarak karşılaşılması olası tüm
-      senaryolara yer verilmeye çalışılmıştır. Buradaki senaryolar, tek bir
-      sunucu üzerinde  <a href="name-based.html">isme dayalı</a> veya <a
-      href="ip-based.html">IP’ye dayalı</a> sanal konaklar aracılığıyla çok
-      sayıda sitenin sunumu ile ilgilidir.
+    <p>Bu belgede <a href="index.html">sanal konaklar</a> ile ilgili
+      karşılaşılması olası tüm senaryolara yer verilmeye çalışılmıştır.
+      Buradaki senaryolar, tek bir sunucu üzerinde <a href="name-based.html"
+      >isme dayalı</a> veya <a href="ip-based.html">IP’ye dayalı</a> sanal
+      konaklar aracılığıyla çok sayıda sitenin sunumu ile ilgilidir.
     </p>
 
 </summary>

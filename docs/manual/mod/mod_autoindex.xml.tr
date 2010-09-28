@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 781422:981043 (outdated) -->
+<!-- English Revision: 981043 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -604,14 +604,14 @@ belirler.</description>
       <dt><a name="indexoptions.htmltable"
                id="indexoptions.htmltable"
              ><code>HTMLTable</code></a>
-             (<em>Deneysel, Apache 2.0.23 ve sonrası</em>)</dt>
+             (<em>Apache 2.0.23 ve sonrası</em>)</dt>
 
       <dd>Bu deneysel seçenek <a href="#indexoptions.fancyindexing"
         ><code>FancyIndexing</code></a>  seçeneği ile birlikte süslü listeleme
-        için basit bir tablo oluşturur. Fakat bu eski tarayıcıları yanıltır.
-        Bununla birlikte, Linux, WinNT gibi sağdan sola veya soldan sağa yazım
-        yönünün UTF-8 karakter koduna göre değiştiği platformlarda dosya
-        isimleri ve açıklamalar için bu özellikle gerekli olabilir.</dd>
+        için basit bir tablo oluşturur. UTF-8'in etkin kılndığı platformlarda
+        veya Linux, WinNT gibi sağdan sola veya soldan sağa yazım yönünün UTF-8
+        karakter koduna göre değiştiği platformlarda dosya isimleri ve
+        açıklamalar için bu seçenek gereklidir.</dd>
 
       <dt><a name="indexoptions.iconsarelinks"
                id="indexoptions.iconsarelinks"
