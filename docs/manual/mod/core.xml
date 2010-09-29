@@ -1511,6 +1511,14 @@ satisfied by a request at runtime</description>
     <p>You may compare the value of any variable in the request headers
     ($req), response headers ($resp) or environment ($env) in your
     expression.</p>
+
+    <p>Apart from <code>=</code>, <code>If</code> can use the <code>IN</code>
+    operator to compare if the expression is in a given range:</p>
+
+    <example>
+        &lt;If %{REQUEST_METHOD} IN GET,HEAD,OPTIONS&gt;
+    </example>
+
 </usage>
 
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,

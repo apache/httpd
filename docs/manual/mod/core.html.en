@@ -1196,7 +1196,8 @@ in case of an error</td></tr>
     same connection or request, which request happens on which connection.
     A <code>%L</code> format string is also available in
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>, to allow to correlate access log entries
-    with error log lines.</p>
+    with error log lines. If <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> is loaded, its
+    unique id will be used as log ID for requests.</p>
 
     <div class="example"><h3>Example (somewhat similar to default format)</h3><p><code>
         ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
@@ -1528,6 +1529,14 @@ satisfied by a request at runtime</td></tr>
     <p>You may compare the value of any variable in the request headers
     ($req), response headers ($resp) or environment ($env) in your
     expression.</p>
+
+    <p>Apart from <code>=</code>, <code>If</code> can use the <code>IN</code>
+    operator to compare if the expression is in a given range:</p>
+
+    <div class="example"><p><code>
+        &lt;If %{REQUEST_METHOD} IN GET,HEAD,OPTIONS&gt;
+    </code></p></div>
+
 
 <h3>See also</h3>
 <ul>
