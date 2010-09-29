@@ -514,29 +514,6 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 
     dobj->data.file = data_file(r->pool, conf, dobj, nkey);
 
-    /* Open the data file */
-    flags = APR_READ|APR_BINARY;
-#ifdef APR_SENDFILE_ENABLED
-    /* When we are in the quick handler we don't have the per-directory
-     * configuration, so this check only takes the global setting of
-     * the EnableSendFile directive into account.
-     */
-    flags |= AP_SENDFILE_ENABLED(coreconf->enable_sendfile);
-#endif
-    rc = apr_file_open(&dobj->data.fd, dobj->data.file, flags, 0, r->pool);
-    if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
-                 "disk_cache: Cannot open data file %s",  dobj->data.file);
-        apr_file_close(dobj->hdrs.fd);
-        return DECLINED;
-    }
-
-    rc = apr_file_info_get(&finfo, APR_FINFO_SIZE | APR_FINFO_IDENT,
-            dobj->data.fd);
-    if (rc == APR_SUCCESS) {
-        dobj->file_size = finfo.size;
-    }
-
     /* Read the bytes to setup the cache_info fields */
     rc = file_cache_recall_mydata(dobj->hdrs.fd, info, dobj, r);
     if (rc != APR_SUCCESS) {
@@ -548,13 +525,43 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 
     apr_file_close(dobj->hdrs.fd);
 
-    /* Atomic check - does the body file belong to the header file? */
-    if (dobj->disk_info.inode == finfo.inode && dobj->disk_info.device == finfo.device) {
+    /* Open the data file */
+    if (dobj->disk_info.has_body) {
+        flags = APR_READ | APR_BINARY;
+#ifdef APR_SENDFILE_ENABLED
+        /* When we are in the quick handler we don't have the per-directory
+         * configuration, so this check only takes the global setting of
+         * the EnableSendFile directive into account.
+         */
+        flags |= AP_SENDFILE_ENABLED(coreconf->enable_sendfile);
+#endif
+        rc = apr_file_open(&dobj->data.fd, dobj->data.file, flags, 0, r->pool);
+        if (rc != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                    "disk_cache: Cannot open data file %s", dobj->data.file);
+            apr_file_close(dobj->hdrs.fd);
+            return DECLINED;
+        }
 
-        /* Initialize the cache_handle callback functions */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "disk_cache: Recalled cached URL info header %s",  dobj->name);
+        rc = apr_file_info_get(&finfo, APR_FINFO_SIZE | APR_FINFO_IDENT,
+                dobj->data.fd);
+        if (rc == APR_SUCCESS) {
+            dobj->file_size = finfo.size;
+        }
 
+        /* Atomic check - does the body file belong to the header file? */
+        if (dobj->disk_info.inode == finfo.inode &&
+                dobj->disk_info.device == finfo.device) {
+
+            /* Initialize the cache_handle callback functions */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "disk_cache: Recalled cached URL info header %s",  dobj->name);
+
+            return OK;
+        }
+
+    }
+    else {
         return OK;
     }
 
@@ -845,7 +852,9 @@ static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_bri
     apr_bucket *e;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
 
-    apr_brigade_insert_file(bb, dobj->data.fd, 0, dobj->file_size, p);
+    if (dobj->data.fd) {
+        apr_brigade_insert_file(bb, dobj->data.fd, 0, dobj->file_size, p);
+    }
 
     e = apr_bucket_eos_create(bb->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
@@ -914,6 +923,8 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
 
     disk_cache_info_t disk_info;
     struct iovec iov[2];
+
+    bzero(&disk_info, sizeof(disk_cache_info_t));
 
     if (dobj->headers_out) {
         const char *tmp;
@@ -1045,26 +1056,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &disk_cache_module);
     int seen_eos = 0;
 
-    /* We write to a temp file and then atomically rename the file over
-     * in file_cache_el_final().
-     */
-    if (!dobj->data.tempfd) {
-        apr_finfo_t finfo;
-        rv = apr_file_mktemp(&dobj->data.tempfd, dobj->data.tempfile,
-                             APR_CREATE | APR_WRITE | APR_BINARY |
-                             APR_BUFFERED | APR_EXCL, dobj->data.pool);
-        if (rv != APR_SUCCESS) {
-            return rv;
-        }
-        dobj->file_size = 0;
-        rv = apr_file_info_get(&finfo, APR_FINFO_IDENT,
-                dobj->data.tempfd);
-        if (rv != APR_SUCCESS) {
-            return rv;
-        }
-        dobj->disk_info.device = finfo.device;
-        dobj->disk_info.inode = finfo.inode;
-    }
     if (!dobj->bb) {
         dobj->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     }
@@ -1131,6 +1122,33 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             return rv;
         }
 
+        /* don't write empty buckets to the cache */
+        if (!length) {
+            continue;
+        }
+
+        /* Attempt to create the data file at the last possible moment, if
+         * the body is empty, we don't write a file at all, and save an inode.
+         */
+        if (!dobj->data.tempfd) {
+            apr_finfo_t finfo;
+            rv = apr_file_mktemp(&dobj->data.tempfd, dobj->data.tempfile,
+                                 APR_CREATE | APR_WRITE | APR_BINARY |
+                                 APR_BUFFERED | APR_EXCL, dobj->data.pool);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            dobj->file_size = 0;
+            rv = apr_file_info_get(&finfo, APR_FINFO_IDENT,
+                    dobj->data.tempfd);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            dobj->disk_info.device = finfo.device;
+            dobj->disk_info.inode = finfo.inode;
+            dobj->disk_info.has_body = 1;
+        }
+
         /* write to the cache, leave if we fail */
         rv = apr_file_write_full(dobj->data.tempfd, str, length, &written);
         if (rv != APR_SUCCESS) {
@@ -1179,7 +1197,9 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     if (seen_eos) {
         const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
 
-        apr_file_close(dobj->data.tempfd);
+        if (dobj->data.tempfd) {
+            apr_file_close(dobj->data.tempfd);
+        }
 
         if (r->connection->aborted || r->no_cache) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
