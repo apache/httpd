@@ -509,6 +509,12 @@ static int process_dir(char *path, apr_pool_t *pool)
                                         p);
                         break;
                     }
+                    else {
+                        /* We didn't recognise the format, kill the files */
+                        apr_file_close(fd);
+                        delete_entry(path, d->basename, p);
+                        break;
+                    }
                 }
                 else {
                     apr_file_close(fd);
