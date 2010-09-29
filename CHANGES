@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_ssl: Make the ssl expression parser thread-safe. It now requires
+     bison instead of yacc. [Stefan Fritsch]
+
   *) mod_disk_cache: Change on-disk header file format to support the
      link of the device/inode of the data file to the matching header
      file, and to support the option of not writing a data file when

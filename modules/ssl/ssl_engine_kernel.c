@@ -899,13 +899,14 @@ int ssl_hook_Access(request_rec *r)
 
     for (i = 0; i < requires->nelts; i++) {
         ssl_require_t *req = &ssl_requires[i];
-        ok = ssl_expr_exec(r, req->mpExpr);
+        const char *errstring;
+        ok = ssl_expr_exec(r, req->mpExpr, &errstring);
 
         if (ok < 0) {
             cp = apr_psprintf(r->pool,
                               "Failed to execute "
                               "SSL requirement expression: %s",
-                              ssl_expr_get_error());
+                              errstring);
 
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "access to %s failed, reason: %s",

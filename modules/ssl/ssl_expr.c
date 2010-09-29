@@ -35,47 +35,50 @@
 **  _________________________________________________________________
 */
 
-ssl_expr_info_type ssl_expr_info;
-char              *ssl_expr_error;
 
-ssl_expr *ssl_expr_comp(apr_pool_t *p, char *expr)
+ssl_expr *ssl_expr_comp(apr_pool_t *p, char *expr, const char **err)
 {
-    ssl_expr_info.pool       = p;
-    ssl_expr_info.inputbuf   = expr;
-    ssl_expr_info.inputlen   = strlen(expr);
-    ssl_expr_info.inputptr   = ssl_expr_info.inputbuf;
-    ssl_expr_info.expr       = FALSE;
+    ssl_expr_info_type context;
+    int rc;
 
-    ssl_expr_error = NULL;
-    if (ssl_expr_yyparse())
+    context.pool     = p;
+    context.inputbuf = expr;
+    context.inputlen = strlen(expr);
+    context.inputptr = context.inputbuf;
+    context.expr     = FALSE;
+    context.error    = NULL;
+
+    ssl_expr_yylex_init(&context.scanner);
+    ssl_expr_yyset_extra(&context, context.scanner);
+    rc = ssl_expr_yyparse(&context);
+    ssl_expr_yylex_destroy(context.scanner);
+    *err = context.error;
+
+    if (rc)
         return NULL;
-    return ssl_expr_info.expr;
+
+    return context.expr;
 }
 
-char *ssl_expr_get_error(void)
-{
-    if (ssl_expr_error == NULL)
-        return "";
-    return ssl_expr_error;
-}
-
-ssl_expr *ssl_expr_make(ssl_expr_node_op op, void *a1, void *a2)
+ssl_expr *ssl_expr_make(ssl_expr_node_op op, void *a1, void *a2,
+                        ssl_expr_info_type *context)
 {
     ssl_expr *node;
 
-    node = (ssl_expr *)apr_palloc(ssl_expr_info.pool, sizeof(ssl_expr));
+    node = (ssl_expr *)apr_palloc(context->pool, sizeof(ssl_expr));
     node->node_op   = op;
     node->node_arg1 = (char *)a1;
     node->node_arg2 = (char *)a2;
     return node;
 }
 
-int ssl_expr_exec(request_rec *r, ssl_expr *expr)
+int ssl_expr_exec(request_rec *r, ssl_expr *expr, const char **err)
 {
     BOOL rc;
 
-    rc = ssl_expr_eval(r, expr);
-    if (ssl_expr_error != NULL)
+    *err = NULL;
+    rc = ssl_expr_eval(r, expr, err);
+    if (*err != NULL)
         return (-1);
     else
         return (rc ? 1 : 0);
