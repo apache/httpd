@@ -219,34 +219,31 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
 {
     apr_status_t rv;
     char *urlbuff;
-    disk_cache_info_t disk_info;
     apr_size_t len;
 
     /* read the data from the cache file */
     len = sizeof(disk_cache_info_t);
-    rv = apr_file_read_full(fd, &disk_info, len, &len);
+    rv = apr_file_read_full(fd, &dobj->disk_info, len, &len);
     if (rv != APR_SUCCESS) {
         return rv;
     }
 
     /* Store it away so we can get it later. */
-    dobj->disk_info = disk_info;
-
-    info->status = disk_info.status;
-    info->date = disk_info.date;
-    info->expire = disk_info.expire;
-    info->request_time = disk_info.request_time;
-    info->response_time = disk_info.response_time;
+    info->status = dobj->disk_info.status;
+    info->date = dobj->disk_info.date;
+    info->expire = dobj->disk_info.expire;
+    info->request_time = dobj->disk_info.request_time;
+    info->response_time = dobj->disk_info.response_time;
 
     /* Note that we could optimize this by conditionally doing the palloc
      * depending upon the size. */
-    urlbuff = apr_palloc(r->pool, disk_info.name_len + 1);
-    len = disk_info.name_len;
+    urlbuff = apr_palloc(r->pool, dobj->disk_info.name_len + 1);
+    len = dobj->disk_info.name_len;
     rv = apr_file_read_full(fd, urlbuff, len, &len);
     if (rv != APR_SUCCESS) {
         return rv;
     }
-    urlbuff[disk_info.name_len] = '\0';
+    urlbuff[dobj->disk_info.name_len] = '\0';
 
     /* check that we have the same URL */
     /* Would strncmp be correct? */
@@ -534,7 +531,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         return DECLINED;
     }
 
-    rc = apr_file_info_get(&finfo, APR_FINFO_SIZE, dobj->data.fd);
+    rc = apr_file_info_get(&finfo, APR_FINFO_SIZE | APR_FINFO_IDENT,
+            dobj->data.fd);
     if (rc == APR_SUCCESS) {
         dobj->file_size = finfo.size;
     }
@@ -548,13 +546,24 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         return DECLINED;
     }
 
-    /* Initialize the cache_handle callback functions */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "disk_cache: Recalled cached URL info header %s",  dobj->name);
-
     apr_file_close(dobj->hdrs.fd);
 
-    return OK;
+    /* Atomic check - does the body file belong to the header file? */
+    if (dobj->disk_info.inode == finfo.inode && dobj->disk_info.device == finfo.device) {
+
+        /* Initialize the cache_handle callback functions */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: Recalled cached URL info header %s",  dobj->name);
+
+        return OK;
+    }
+
+    /* Oh dear, no luck matching header to the body */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "disk_cache: Cached URL info header '%s' didn't match body, ignoring this entry",
+                 dobj->name);
+
+    return DECLINED;
 }
 
 static int remove_entity(cache_handle_t *h)
@@ -880,6 +889,23 @@ static apr_status_t store_table(apr_file_t *fd, apr_table_t *table)
 
 static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
+    disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
+
+    memcpy(&h->cache_obj->info, info, sizeof(cache_info));
+
+    if (r->headers_out) {
+        dobj->headers_out = ap_cache_cacheable_headers_out(r);
+    }
+
+    if (r->headers_in) {
+        dobj->headers_in = ap_cache_cacheable_headers_in(r);
+    }
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
+{
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
     apr_status_t rv;
@@ -889,13 +915,10 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     disk_cache_info_t disk_info;
     struct iovec iov[2];
 
-    /* This is flaky... we need to manage the cache_info differently */
-    h->cache_obj->info = *info;
-
-    if (r->headers_out) {
+    if (dobj->headers_out) {
         const char *tmp;
 
-        tmp = apr_table_get(r->headers_out, "Vary");
+        tmp = apr_table_get(dobj->headers_out, "Vary");
 
         if (tmp) {
             apr_array_header_t* varray;
@@ -926,8 +949,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
             amt = sizeof(format);
             apr_file_write(dobj->vary.tempfd, &format, &amt);
 
-            amt = sizeof(info->expire);
-            apr_file_write(dobj->vary.tempfd, &info->expire, &amt);
+            amt = sizeof(h->cache_obj->info.expire);
+            apr_file_write(dobj->vary.tempfd, &h->cache_obj->info.expire, &amt);
 
             varray = apr_array_make(r->pool, 6, sizeof(char*));
             tokens_to_array(r->pool, tmp, varray);
@@ -936,7 +959,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
             apr_file_close(dobj->vary.tempfd);
 
-            tmp = regen_key(r->pool, r->headers_in, varray, dobj->name);
+            tmp = regen_key(r->pool, dobj->headers_in, varray, dobj->name);
             dobj->prefix = dobj->hdrs.file;
             dobj->hashfile = NULL;
             dobj->data.file = data_file(r->pool, conf, dobj, tmp);
@@ -957,12 +980,14 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
 
     disk_info.format = DISK_FORMAT_VERSION;
-    disk_info.date = info->date;
-    disk_info.expire = info->expire;
+    disk_info.date = h->cache_obj->info.date;
+    disk_info.expire = h->cache_obj->info.expire;
     disk_info.entity_version = dobj->disk_info.entity_version++;
-    disk_info.request_time = info->request_time;
-    disk_info.response_time = info->response_time;
-    disk_info.status = info->status;
+    disk_info.request_time = h->cache_obj->info.request_time;
+    disk_info.response_time = h->cache_obj->info.response_time;
+    disk_info.status = h->cache_obj->info.status;
+    disk_info.inode = dobj->disk_info.inode;
+    disk_info.device = dobj->disk_info.device;
 
     disk_info.name_len = strlen(dobj->name);
 
@@ -980,12 +1005,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         return rv;
     }
 
-    if (r->headers_out) {
-        apr_table_t *headers_out;
-
-        headers_out = ap_cache_cacheable_headers_out(r);
-
-        rv = store_table(dobj->hdrs.tempfd, headers_out);
+    if (dobj->headers_out) {
+        rv = store_table(dobj->hdrs.tempfd, dobj->headers_out);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
                "disk_cache: could not write out-headers to header file %s",
@@ -997,12 +1018,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     /* Parse the vary header and dump those fields from the headers_in. */
     /* FIXME: Make call to the same thing cache_select calls to crack Vary. */
-    if (r->headers_in) {
-        apr_table_t *headers_in;
-
-        headers_in = ap_cache_cacheable_headers_in(r);
-
-        rv = store_table(dobj->hdrs.tempfd, headers_in);
+    if (dobj->headers_in) {
+        rv = store_table(dobj->hdrs.tempfd, dobj->headers_in);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
                "disk_cache: could not write in-headers to header file %s",
@@ -1032,6 +1049,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
      * in file_cache_el_final().
      */
     if (!dobj->data.tempfd) {
+        apr_finfo_t finfo;
         rv = apr_file_mktemp(&dobj->data.tempfd, dobj->data.tempfile,
                              APR_CREATE | APR_WRITE | APR_BINARY |
                              APR_BUFFERED | APR_EXCL, dobj->data.pool);
@@ -1039,6 +1057,13 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             return rv;
         }
         dobj->file_size = 0;
+        rv = apr_file_info_get(&finfo, APR_FINFO_IDENT,
+                dobj->data.tempfd);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        dobj->disk_info.device = finfo.device;
+        dobj->disk_info.inode = finfo.inode;
     }
     if (!dobj->bb) {
         dobj->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
@@ -1199,8 +1224,13 @@ static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     apr_status_t rv;
 
+    /* write the headers to disk at the last possible moment */
+    rv = write_headers(h, r);
+
     /* move header and data tempfiles to the final destination */
-    rv = file_cache_el_final(conf, &dobj->hdrs, r);
+    if (APR_SUCCESS == rv) {
+        rv = file_cache_el_final(conf, &dobj->hdrs, r);
+    }
     if (APR_SUCCESS == rv) {
         rv = file_cache_el_final(conf, &dobj->vary, r);
     }

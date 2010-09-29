@@ -17,12 +17,14 @@
 #ifndef MOD_DISK_CACHE_H
 #define MOD_DISK_CACHE_H
 
+#include "apr_file_io.h"
+
 /*
  * include for mod_disk_cache: Disk Based HTTP 1.1 Cache.
  */
 
-#define VARY_FORMAT_VERSION 3
-#define DISK_FORMAT_VERSION 4
+#define VARY_FORMAT_VERSION 5
+#define DISK_FORMAT_VERSION 6
 
 #define CACHE_HEADER_SUFFIX ".header"
 #define CACHE_DATA_SUFFIX   ".data"
@@ -49,6 +51,12 @@ typedef struct {
     apr_time_t expire;
     apr_time_t request_time;
     apr_time_t response_time;
+    /* The ident of the body file, so we can test the body matches the header */
+    apr_ino_t inode;
+    apr_dev_t device;
+    /* Does this cached request have a body? */
+    int has_body;
+    int header_only;
 } disk_cache_info_t;
 
 typedef struct {
@@ -76,6 +84,8 @@ typedef struct disk_cache_object {
     apr_off_t file_size;         /*  File size of the cached data file  */
     disk_cache_info_t disk_info; /* Header information. */
     apr_bucket_brigade *bb;      /* Set aside brigade */
+    apr_table_t *headers_in;     /* Input headers to save */
+    apr_table_t *headers_out;    /* Output headers to save */
     apr_off_t offset;            /* Max size to set aside */
     apr_time_t timeout;          /* Max time to set aside */
     int done;                    /* Is the attempt to cache complete? */
