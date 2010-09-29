@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2010-03-29" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2010-09-29" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -27,13 +27,13 @@ htcacheclean \- Clean up the disk cache
 .SH "SYNOPSIS"
  
 .PP
-\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBr\fR ] [ -\fBn\fR ] -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
+\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBr\fR ] [ -\fBn\fR ] [ -\fBR\fR\fIround\fR ] -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
  
 .PP
-\fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] [ -\fBP\fR\fIpidfile\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
+\fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] [ -\fBP\fR\fIpidfile\fR ] [ -\fBR\fR\fIround\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
  
 .PP
-\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] -\fBp\fR\fIpath\fR \fIurl\fR
+\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBR\fR\fIround\fR ] -\fBp\fR\fIpath\fR \fIurl\fR
  
 
 .SH "SUMMARY"
@@ -69,6 +69,9 @@ Specify \fIpath\fR as the root directory of the disk cache\&. This should be the
 .TP
 -P\fIpidfile\fR
 Specify \fIpidfile\fR as the name of the file to write the process ID to when daemonized\&.  
+.TP
+-R\fIround\fR
+Specify \fIround\fR as the amount to round sizes up to, to compensate for disk block sizes\&. Set to the block size of the cache partition\&.  
 .TP
 -l\fIlimit\fR
 Specify \fIlimit\fR as the total disk cache size limit\&. The value is expressed in bytes by default (or attaching B to the number)\&. Attach K for Kbytes or M for MBytes\&.  

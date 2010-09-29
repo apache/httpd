@@ -47,6 +47,7 @@
     [ -<strong>t</strong> ]
     [ -<strong>r</strong> ]
     [ -<strong>n</strong> ]
+    [ -<strong>R</strong><var>round</var> ]
     -<strong>p</strong><var>path</var>
     -<strong>l</strong><var>limit</var></code></p>
 
@@ -55,6 +56,7 @@
     [ -<strong>t</strong> ]
     [ -<strong>i</strong> ]
     [ -<strong>P</strong><var>pidfile</var> ]
+    [ -<strong>R</strong><var>round</var> ]
     -<strong>d</strong><var>interval</var>
     -<strong>p</strong><var>path</var>
     -<strong>l</strong><var>limit</var></code></p>
@@ -63,6 +65,7 @@
     [ -<strong>D</strong> ]
     [ -<strong>v</strong> ]
     [ -<strong>t</strong> ]
+    [ -<strong>R</strong><var>round</var> ]
     -<strong>p</strong><var>path</var>
     <var>url</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -110,6 +113,11 @@
     <dt><code>-P<var>pidfile</var></code></dt>
     <dd>Specify <var>pidfile</var> as the name of the file to write the
     process ID to when daemonized.</dd>
+
+    <dt><code>-R<var>round</var></code></dt>
+    <dd>Specify <var>round</var> as the amount to round sizes up to, to
+    compensate for disk block sizes. Set to the block size of the cache
+    partition.</dd>
 
     <dt><code>-l<var>limit</var></code></dt>
     <dd>Specify <var>limit</var> as the total disk cache size limit. The value
