@@ -1151,7 +1151,7 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
     ssl_require_t *require;
     const char *errstring;
 
-    if (!(expr = ssl_expr_comp(cmd->pool, (char *)arg, &errstring))) {
+    if (!(expr = ssl_expr_comp(cmd->pool, arg, &errstring))) {
         return apr_pstrcat(cmd->pool, "SSLRequire: ", errstring, NULL);
     }
 

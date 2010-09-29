@@ -85,9 +85,9 @@ typedef ssl_expr_node ssl_expr;
 
 typedef struct {
     apr_pool_t *pool;
-    char       *inputbuf;
+    const char *inputbuf;
     int         inputlen;
-    char       *inputptr;
+    const char *inputptr;
     ssl_expr   *expr;
     void       *scanner;
     char       *error;
@@ -99,11 +99,11 @@ int  ssl_expr_yylex_init(void **scanner);
 int  ssl_expr_yylex_destroy(void *scanner);
 void ssl_expr_yyset_extra(ssl_expr_info_type *context, void *scanner);
 
-ssl_expr *ssl_expr_comp(apr_pool_t *p, char *exprstr, const char **err);
-int       ssl_expr_exec(request_rec *r, ssl_expr *expr, const char **err);
+ssl_expr *ssl_expr_comp(apr_pool_t *p, const char *exprstr, const char **err);
+int       ssl_expr_exec(request_rec *r, const ssl_expr *expr, const char **err);
 ssl_expr *ssl_expr_make(ssl_expr_node_op op, void *arg1, void *arg2,
                         ssl_expr_info_type *context);
-BOOL      ssl_expr_eval(request_rec *r, ssl_expr *expr, const char **err);
+BOOL      ssl_expr_eval(request_rec *r, const ssl_expr *expr, const char **err);
 
 #endif /* __SSL_EXPR_H__ */
 /** @} */

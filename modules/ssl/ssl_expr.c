@@ -36,7 +36,7 @@
 */
 
 
-ssl_expr *ssl_expr_comp(apr_pool_t *p, char *expr, const char **err)
+ssl_expr *ssl_expr_comp(apr_pool_t *p, const char *expr, const char **err)
 {
     ssl_expr_info_type context;
     int rc;
@@ -72,7 +72,7 @@ ssl_expr *ssl_expr_make(ssl_expr_node_op op, void *a1, void *a2,
     return node;
 }
 
-int ssl_expr_exec(request_rec *r, ssl_expr *expr, const char **err)
+int ssl_expr_exec(request_rec *r, const ssl_expr *expr, const char **err)
 {
     BOOL rc;
 
