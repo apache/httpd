@@ -233,6 +233,16 @@ static void printstats(char *path, struct stats *s)
                      (int)(s->dexpired), (int)(s->dfresh));
 }
 
+/**
+ * Round the value up to the given threshold.
+ */
+static apr_size_t round_up(apr_size_t val, apr_off_t round) {
+    if (round > 1) {
+        return ((val + round - 1) / round) * round;
+    }
+    return val;
+}
+
 /*
  * delete a single file
  */
@@ -655,7 +665,7 @@ static int process_dir(char *path, apr_pool_t *pool)
 /*
  * purge cache entries
  */
-static void purge(char *path, apr_pool_t *pool, apr_off_t max)
+static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
 {
     ENTRY *e, *n, *oldest;
 
@@ -670,8 +680,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
     for (e = APR_RING_FIRST(&root);
          e != APR_RING_SENTINEL(&root, _entry, link);
          e = APR_RING_NEXT(e, link)) {
-        s.sum += e->hsize;
-        s.sum += e->dsize;
+        s.sum += round_up(e->hsize, round);
+        s.sum += round_up(e->dsize, round);
         s.entries++;
     }
 
@@ -692,8 +702,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
         n = APR_RING_NEXT(e, link);
         if (e->response_time > now || e->htime > now || e->dtime > now) {
             delete_entry(path, e->basename, pool);
-            s.sum -= e->hsize;
-            s.sum -= e->dsize;
+            s.sum -= round_up(e->hsize, round);
+            s.sum -= round_up(e->dsize, round);
             s.entries--;
             s.dfuture++;
             APR_RING_REMOVE(e, link);
@@ -717,8 +727,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
         n = APR_RING_NEXT(e, link);
         if (e->expire != APR_DATE_BAD && e->expire < now) {
             delete_entry(path, e->basename, pool);
-            s.sum -= e->hsize;
-            s.sum -= e->dsize;
+            s.sum -= round_up(e->hsize, round);
+            s.sum -= round_up(e->dsize, round);
             s.entries--;
             s.dexpired++;
             APR_RING_REMOVE(e, link);
@@ -754,8 +764,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
         }
 
         delete_entry(path, oldest->basename, pool);
-        s.sum -= oldest->hsize;
-        s.sum -= oldest->dsize;
+        s.sum -= round_up(oldest->hsize, round);
+        s.sum -= round_up(oldest->dsize, round);
         s.entries--;
         s.dfresh++;
         APR_RING_REMOVE(oldest, link);
@@ -1000,6 +1010,8 @@ static void usage(const char *error)
                                                                              NL
     "  -P   Specify PIDFILE as the file to write the pid to."                NL
                                                                              NL
+    "  -R   Specify amount to round sizes up to."                            NL
+                                                                             NL
     "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
     "       or 'M' to the number for specifying KBytes or MBytes."           NL
                                                                              NL
@@ -1057,7 +1069,7 @@ static void log_pid(apr_pool_t *pool, const char *pidfilename, apr_file_t **pidf
  */
 int main(int argc, const char * const argv[])
 {
-    apr_off_t max;
+    apr_off_t max, round;
     apr_time_t current, repeat, delay, previous;
     apr_status_t status;
     apr_pool_t *pool, *instance;
@@ -1076,6 +1088,7 @@ int main(int argc, const char * const argv[])
     dryrun = 0;
     limit_found = 0;
     max = 0;
+    round = 0;
     verbose = 0;
     realclean = 0;
     benice = 0;
@@ -1105,7 +1118,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
-        status = apr_getopt(o, "iDnvrtd:l:L:p:P:", &opt, &arg);
+        status = apr_getopt(o, "iDnvrtd:l:L:p:P:R:", &opt, &arg);
         if (status == APR_EOF) {
             break;
         }
@@ -1113,6 +1126,8 @@ int main(int argc, const char * const argv[])
             usage(NULL);
         }
         else {
+            char *end;
+            apr_status_t rv;
             switch (opt) {
             case 'i':
                 if (intelligent) {
@@ -1174,9 +1189,6 @@ int main(int argc, const char * const argv[])
                 limit_found = 1;
 
                 do {
-                    apr_status_t rv;
-                    char *end;
-
                     rv = apr_strtoff(&max, arg, &end, 10);
                     if (rv == APR_SUCCESS) {
                         if ((*end == 'K' || *end == 'k') && !end[1]) {
@@ -1216,6 +1228,27 @@ int main(int argc, const char * const argv[])
                     usage_repeated_arg(pool, opt);
                 }
                 pidfilename = apr_pstrdup(pool, arg);
+                break;
+
+            case 'R':
+                if (round) {
+                    usage_repeated_arg(pool, opt);
+                }
+                rv = apr_strtoff(&round, arg, &end, 10);
+                if (rv == APR_SUCCESS) {
+                    if (*end) {
+                        usage(apr_psprintf(pool, "Invalid round value: %s"
+                                                 APR_EOL_STR APR_EOL_STR, arg));
+                    }
+                    else if (round < 0) {
+                        usage(apr_psprintf(pool, "Round value must be positive: %s"
+                                                 APR_EOL_STR APR_EOL_STR, arg));
+                    }
+                }
+                if (rv != APR_SUCCESS) {
+                    usage(apr_psprintf(pool, "Invalid round value: %s"
+                                             APR_EOL_STR APR_EOL_STR, arg));
+                }
                 break;
 
             } /* switch */
@@ -1368,7 +1401,7 @@ int main(int argc, const char * const argv[])
 
         if (dowork && !interrupted) {
             if (!process_dir(path, instance) && !interrupted) {
-                purge(path, instance, max);
+                purge(path, instance, max, round);
             }
             else if (!isdaemon && !interrupted) {
                 apr_file_printf(errfile, "An error occurred, cache cleaning "
