@@ -2,6 +2,12 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_ssl: Add authz providers for use with mod_authz_core and its
+     RequireAny/RequireAll containers: 'ssl' (equivalent to SSLRequireSSL),
+     'ssl-verify-client' (for use with 'SSLVerifyClient optional'), and
+     'ssl-require' (expressions with same syntax as SSLRequire).
+     [Stefan Fritsch]
+
   *) mod_ssl: Make the ssl expression parser thread-safe. It now requires
      bison instead of yacc. [Stefan Fritsch]
 

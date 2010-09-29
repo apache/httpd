@@ -51,6 +51,7 @@
 #include "apr_global_mutex.h"
 #include "apr_optional.h"
 #include "ap_socache.h"
+#include "mod_auth.h"
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
 
@@ -612,6 +613,11 @@ int          ssl_hook_Fixup(request_rec *);
 int          ssl_hook_ReadReq(request_rec *);
 int          ssl_hook_Upgrade(request_rec *);
 void         ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s);
+
+/** Apache authz provisders */
+extern const authz_provider ssl_authz_provider_require_ssl;
+extern const authz_provider ssl_authz_provider_verify_client;
+extern const authz_provider ssl_authz_provider_sslrequire;
 
 /**  OpenSSL callbacks */
 RSA         *ssl_callback_TmpRSA(SSL *, int, int);

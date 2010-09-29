@@ -1204,6 +1204,135 @@ int ssl_hook_Fixup(request_rec *r)
 
 /*  _________________________________________________________________
 **
+**  Authz providers for use with mod_authz_core
+**  _________________________________________________________________
+*/
+
+static authz_status ssl_authz_require_ssl_check(request_rec *r,
+                                                const char *require_line,
+                                                const void *parsed)
+{
+    SSLConnRec *sslconn = myConnConfig(r->connection);
+    SSL *ssl = sslconn ? sslconn->ssl : NULL;
+
+    if (ssl)
+        return AUTHZ_GRANTED;
+    else
+        return AUTHZ_DENIED;
+}
+
+static const char *ssl_authz_require_ssl_parse(cmd_parms *cmd,
+                                               const char *require_line,
+                                               const void **parsed)
+{
+    if (require_line && require_line[0])
+        return "'Require ssl' does not take arguments";
+
+    return NULL;
+}
+
+const authz_provider ssl_authz_provider_require_ssl =
+{
+    &ssl_authz_require_ssl_check,
+    &ssl_authz_require_ssl_parse,
+};
+
+static authz_status ssl_authz_verify_client_check(request_rec *r,
+                                                  const char *require_line,
+                                                  const void *parsed)
+{
+    SSLConnRec *sslconn = myConnConfig(r->connection);
+    SSL *ssl = sslconn ? sslconn->ssl : NULL;
+
+    if (!ssl)
+        return AUTHZ_DENIED;
+
+    if (sslconn->verify_error == NULL &&
+        sslconn->verify_info == NULL &&
+        SSL_get_verify_result(ssl) == X509_V_OK)
+    {
+        X509 *xs = SSL_get_peer_certificate(ssl);
+
+        if (xs) {
+            X509_free(xs);
+            return AUTHZ_GRANTED;
+        }
+        else {
+            X509_free(xs);
+        }
+    }
+
+    return AUTHZ_DENIED;
+}
+
+static const char *ssl_authz_verify_client_parse(cmd_parms *cmd,
+                                                 const char *require_line,
+                                                 const void **parsed)
+{
+    if (require_line && require_line[0])
+        return "'Require ssl-verify-client' does not take arguments";
+
+    return NULL;
+}
+
+const authz_provider ssl_authz_provider_verify_client =
+{
+    &ssl_authz_verify_client_check,
+    &ssl_authz_verify_client_parse,
+};
+
+
+static authz_status ssl_authz_sslrequire_check(request_rec *r,
+                                               const char *require_line,
+                                               const void *parsed)
+{
+    const ssl_expr *expr = parsed;
+    const char *errstring;
+    int ok = ssl_expr_exec(r, expr, &errstring);
+
+    if (ok < 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Failed to execute SSL requirement expression in "
+                      "'Require ssl-require': %s",
+                      errstring);
+        return AUTHZ_DENIED;
+    }
+
+    if (ok != 1) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                      "SSL requirement expression in 'Require ssl-require' "
+                      "not fulfilled");
+        return AUTHZ_DENIED;
+    }
+
+    return AUTHZ_GRANTED;
+}
+
+static const char *ssl_authz_sslrequire_parse(cmd_parms *cmd,
+                                              const char *require_line,
+                                              const void **parsed)
+{
+    const char *errstring;
+    ssl_expr *expr = ssl_expr_comp(cmd->pool, require_line, &errstring);
+
+    if (!expr)
+        return apr_psprintf(cmd->pool, "Error in 'Require require-ssl': %s",
+                            errstring);
+
+    *parsed = expr;
+
+    return NULL;
+}
+
+const authz_provider ssl_authz_provider_sslrequire =
+{
+    &ssl_authz_sslrequire_check,
+    &ssl_authz_sslrequire_parse,
+};
+
+
+/*  _________________________________________________________________
+**
 **  OpenSSL Callback Functions
 **  _________________________________________________________________
 */

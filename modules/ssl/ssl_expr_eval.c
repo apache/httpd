@@ -41,7 +41,7 @@ static BOOL  ssl_expr_eval_oid(request_rec *r, const char *word,
 static char *ssl_expr_eval_func_file(request_rec *, char *, const char **err);
 static int   ssl_expr_eval_strcmplex(char *, char *, const char **err);
 
-BOOL ssl_expr_eval(request_rec *r, ssl_expr *node, const char **err)
+BOOL ssl_expr_eval(request_rec *r, const ssl_expr *node, const char **err)
 {
     switch (node->node_op) {
         case op_True: {
