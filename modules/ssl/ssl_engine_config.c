@@ -1149,10 +1149,10 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     ssl_expr *expr;
     ssl_require_t *require;
+    const char *errstring;
 
-    if (!(expr = ssl_expr_comp(cmd->pool, (char *)arg))) {
-        return apr_pstrcat(cmd->pool, "SSLRequire: ",
-                           ssl_expr_get_error(), NULL);
+    if (!(expr = ssl_expr_comp(cmd->pool, (char *)arg, &errstring))) {
+        return apr_pstrcat(cmd->pool, "SSLRequire: ", errstring, NULL);
     }
 
     require = apr_array_push(dc->aRequirement);

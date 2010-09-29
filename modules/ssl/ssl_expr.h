@@ -84,29 +84,26 @@ typedef struct {
 typedef ssl_expr_node ssl_expr;
 
 typedef struct {
-	apr_pool_t *pool;
-    char     *inputbuf;
-    int       inputlen;
-    char     *inputptr;
-    ssl_expr *expr;
+    apr_pool_t *pool;
+    char       *inputbuf;
+    int         inputlen;
+    char       *inputptr;
+    ssl_expr   *expr;
+    void       *scanner;
+    char       *error;
 } ssl_expr_info_type;
 
-extern ssl_expr_info_type ssl_expr_info;
-extern char *ssl_expr_error;
+int  ssl_expr_yyparse(ssl_expr_info_type *context);
+int  ssl_expr_yyerror(ssl_expr_info_type *context, char *errstring);
+int  ssl_expr_yylex_init(void **scanner);
+int  ssl_expr_yylex_destroy(void *scanner);
+void ssl_expr_yyset_extra(ssl_expr_info_type *context, void *scanner);
 
-#define yylval  ssl_expr_yylval
-#define yyerror ssl_expr_yyerror
-#define yyinput ssl_expr_yyinput
-
-extern int ssl_expr_yyparse(void);
-extern int ssl_expr_yyerror(char *);
-extern int ssl_expr_yylex(void);
-
-extern ssl_expr *ssl_expr_comp(apr_pool_t *, char *);
-extern int       ssl_expr_exec(request_rec *, ssl_expr *);
-extern char     *ssl_expr_get_error(void);
-extern ssl_expr *ssl_expr_make(ssl_expr_node_op, void *, void *);
-extern BOOL      ssl_expr_eval(request_rec *, ssl_expr *);
+ssl_expr *ssl_expr_comp(apr_pool_t *p, char *exprstr, const char **err);
+int       ssl_expr_exec(request_rec *r, ssl_expr *expr, const char **err);
+ssl_expr *ssl_expr_make(ssl_expr_node_op op, void *arg1, void *arg2,
+                        ssl_expr_info_type *context);
+BOOL      ssl_expr_eval(request_rec *r, ssl_expr *expr, const char **err);
 
 #endif /* __SSL_EXPR_H__ */
 /** @} */

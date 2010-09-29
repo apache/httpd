@@ -34,13 +34,14 @@
 **  _________________________________________________________________
 */
 
-static BOOL  ssl_expr_eval_comp(request_rec *, ssl_expr *);
-static char *ssl_expr_eval_word(request_rec *, ssl_expr *);
-static BOOL  ssl_expr_eval_oid(request_rec *r, const char *word, const char *oidstr);
-static char *ssl_expr_eval_func_file(request_rec *, char *);
-static int   ssl_expr_eval_strcmplex(char *, char *);
+static BOOL  ssl_expr_eval_comp(request_rec *, ssl_expr *, const char **err);
+static char *ssl_expr_eval_word(request_rec *, ssl_expr *, const char **err);
+static BOOL  ssl_expr_eval_oid(request_rec *r, const char *word,
+                               const char *oidstr, const char **err);
+static char *ssl_expr_eval_func_file(request_rec *, char *, const char **err);
+static int   ssl_expr_eval_strcmplex(char *, char *, const char **err);
 
-BOOL ssl_expr_eval(request_rec *r, ssl_expr *node)
+BOOL ssl_expr_eval(request_rec *r, ssl_expr *node, const char **err)
 {
     switch (node->node_op) {
         case op_True: {
@@ -51,67 +52,67 @@ BOOL ssl_expr_eval(request_rec *r, ssl_expr *node)
         }
         case op_Not: {
             ssl_expr *e = (ssl_expr *)node->node_arg1;
-            return (!ssl_expr_eval(r, e));
+            return (!ssl_expr_eval(r, e, err));
         }
         case op_Or: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (ssl_expr_eval(r, e1) || ssl_expr_eval(r, e2));
+            return (ssl_expr_eval(r, e1, err) || ssl_expr_eval(r, e2, err));
         }
         case op_And: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (ssl_expr_eval(r, e1) && ssl_expr_eval(r, e2));
+            return (ssl_expr_eval(r, e1, err) && ssl_expr_eval(r, e2, err));
         }
         case op_Comp: {
             ssl_expr *e = (ssl_expr *)node->node_arg1;
-            return ssl_expr_eval_comp(r, e);
+            return ssl_expr_eval_comp(r, e, err);
         }
         default: {
-            ssl_expr_error = "Internal evaluation error: Unknown expression node";
+            *err = "Internal evaluation error: Unknown expression node";
             return FALSE;
         }
     }
 }
 
-static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
+static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node, const char **err)
 {
     switch (node->node_op) {
         case op_EQ: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (strcmp(ssl_expr_eval_word(r, e1), ssl_expr_eval_word(r, e2)) == 0);
+            return (strcmp(ssl_expr_eval_word(r, e1, err), ssl_expr_eval_word(r, e2, err)) == 0);
         }
         case op_NE: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (strcmp(ssl_expr_eval_word(r, e1), ssl_expr_eval_word(r, e2)) != 0);
+            return (strcmp(ssl_expr_eval_word(r, e1, err), ssl_expr_eval_word(r, e2, err)) != 0);
         }
         case op_LT: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1), ssl_expr_eval_word(r, e2)) <  0);
+            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1, err), ssl_expr_eval_word(r, e2, err), err) <  0);
         }
         case op_LE: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1), ssl_expr_eval_word(r, e2)) <= 0);
+            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1, err), ssl_expr_eval_word(r, e2, err), err) <= 0);
         }
         case op_GT: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1), ssl_expr_eval_word(r, e2)) >  0);
+            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1, err), ssl_expr_eval_word(r, e2, err), err) >  0);
         }
         case op_GE: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
-            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1), ssl_expr_eval_word(r, e2)) >= 0);
+            return (ssl_expr_eval_strcmplex(ssl_expr_eval_word(r, e1, err), ssl_expr_eval_word(r, e2, err), err) >= 0);
         }
         case op_IN: {
             ssl_expr *e1 = (ssl_expr *)node->node_arg1;
             ssl_expr *e2 = (ssl_expr *)node->node_arg2;
             ssl_expr *e3;
-            char *w1 = ssl_expr_eval_word(r, e1);
+            char *w1 = ssl_expr_eval_word(r, e1, err);
             BOOL found = FALSE;
             do {
                 ssl_expr_node_op op = e2->node_op;
@@ -119,15 +120,15 @@ static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
                 e2 = (ssl_expr *)e2->node_arg2;
 
                 if (op == op_PeerExtElement) {
-                    char *w3 = ssl_expr_eval_word(r, e3);
+                    char *w3 = ssl_expr_eval_word(r, e3, err);
 
-                    found = ssl_expr_eval_oid(r, w1, w3);
+                    found = ssl_expr_eval_oid(r, w1, w3, err);
 
                     /* There will be no more nodes on the list, so the result is authoritative */
                     break;
                 }
 
-                if (strcmp(w1, ssl_expr_eval_word(r, e3)) == 0) {
+                if (strcmp(w1, ssl_expr_eval_word(r, e3, err)) == 0) {
                     found = TRUE;
                     break;
                 }
@@ -142,7 +143,7 @@ static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
 
             e1 = (ssl_expr *)node->node_arg1;
             e2 = (ssl_expr *)node->node_arg2;
-            word = ssl_expr_eval_word(r, e1);
+            word = ssl_expr_eval_word(r, e1, err);
             regex = (ap_regex_t *)(e2->node_arg1);
             return (ap_regexec(regex, word, 0, NULL, 0) == 0);
         }
@@ -154,18 +155,18 @@ static BOOL ssl_expr_eval_comp(request_rec *r, ssl_expr *node)
 
             e1 = (ssl_expr *)node->node_arg1;
             e2 = (ssl_expr *)node->node_arg2;
-            word = ssl_expr_eval_word(r, e1);
+            word = ssl_expr_eval_word(r, e1, err);
             regex = (ap_regex_t *)(e2->node_arg1);
             return !(ap_regexec(regex, word, 0, NULL, 0) == 0);
         }
         default: {
-            ssl_expr_error = "Internal evaluation error: Unknown expression node";
+            *err = "Internal evaluation error: Unknown expression node";
             return FALSE;
         }
     }
 }
 
-static char *ssl_expr_eval_word(request_rec *r, ssl_expr *node)
+static char *ssl_expr_eval_word(request_rec *r, ssl_expr *node, const char **err)
 {
     switch (node->node_op) {
         case op_Digit: {
@@ -185,20 +186,21 @@ static char *ssl_expr_eval_word(request_rec *r, ssl_expr *node)
             char *name = (char *)node->node_arg1;
             ssl_expr *args = (ssl_expr *)node->node_arg2;
             if (strEQ(name, "file"))
-                return ssl_expr_eval_func_file(r, (char *)(args->node_arg1));
+                return ssl_expr_eval_func_file(r, (char *)(args->node_arg1), err);
             else {
-                ssl_expr_error = "Internal evaluation error: Unknown function name";
+                *err = "Internal evaluation error: Unknown function name";
                 return "";
             }
         }
         default: {
-            ssl_expr_error = "Internal evaluation error: Unknown expression node";
+            *err = "Internal evaluation error: Unknown expression node";
             return FALSE;
         }
     }
 }
 
-static BOOL ssl_expr_eval_oid(request_rec *r, const char *word, const char *oidstr)
+static BOOL ssl_expr_eval_oid(request_rec *r, const char *word,
+                              const char *oidstr, const char **err)
 {
     int j;
     BOOL result = FALSE;
@@ -220,7 +222,7 @@ static BOOL ssl_expr_eval_oid(request_rec *r, const char *word, const char *oids
 }
 
 
-static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
+static char *ssl_expr_eval_func_file(request_rec *r, char *filename, const char **err)
 {
     apr_file_t *fp;
     char *buf;
@@ -230,12 +232,12 @@ static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
 
     if (apr_file_open(&fp, filename, APR_READ|APR_BUFFERED,
                       APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
-        ssl_expr_error = "Cannot open file";
+        *err = "Cannot open file";
         return "";
     }
     apr_file_info_get(&finfo, APR_FINFO_SIZE, fp);
     if ((finfo.size + 1) != ((apr_size_t)finfo.size + 1)) {
-        ssl_expr_error = "Huge file cannot be read";
+        *err = "Huge file cannot be read";
         apr_file_close(fp);
         return "";
     }
@@ -246,14 +248,14 @@ static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
     }
     else {
         if ((buf = (char *)apr_palloc(r->pool, sizeof(char)*(len+1))) == NULL) {
-            ssl_expr_error = "Cannot allocate memory";
+            *err = "Cannot allocate memory";
             apr_file_close(fp);
             return "";
         }
         offset = 0;
         apr_file_seek(fp, APR_SET, &offset);
         if (apr_file_read(fp, buf, &len) != APR_SUCCESS) {
-            ssl_expr_error = "Cannot read from file";
+            *err = "Cannot read from file";
             apr_file_close(fp);
             return "";
         }
@@ -264,7 +266,7 @@ static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
 }
 
 /* a variant of strcmp(3) which works correctly also for number strings */
-static int ssl_expr_eval_strcmplex(char *cpNum1, char *cpNum2)
+static int ssl_expr_eval_strcmplex(char *cpNum1, char *cpNum2, const char **err)
 {
     int i, n1, n2;
 

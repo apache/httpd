@@ -33,27 +33,43 @@
 **  _________________________________________________________________
 */
 
+%pointer
+%option batch
+%option never-interactive
+%option nodefault
+%option noyywrap
+%option reentrant
+%option bison-bridge
+%option warn
+%option noinput nounput
+%x str
+%x regex regex_flags
+
 %{
 #include "ssl_private.h"
 
 #include "ssl_expr_parse.h"
-
-#define YY_NO_UNPUT 1
-int yyinput(char *buf, int max_size);
+#include "ssl_expr.h"
 
 #undef  YY_INPUT
-#define YY_INPUT(buf,result,max_size) \
-    (result = yyinput(buf, max_size))
+#define YY_INPUT(buf,result,max_size)                       \
+{                                                           \
+    if ((result = MIN(max_size, yyextra->inputbuf           \
+                              + yyextra->inputlen           \
+                              - yyextra->inputptr)) <= 0)   \
+    {                                                       \
+        result = YY_NULL;                                   \
+    }                                                       \
+    else {                                                  \
+        memcpy(buf, yyextra->inputptr, result);             \
+        yyextra->inputptr += result;                        \
+    }                                                       \
+}
 
 #define MAX_STR_LEN 2048
+#define YY_EXTRA_TYPE ssl_expr_info_type*
 %}
 
-%pointer
-/* %option stack */
-%option never-interactive
-%option noyywrap
-%x str
-%x regex regex_flags
 
 %%
   
@@ -80,23 +96,23 @@ int yyinput(char *buf, int max_size);
 <str>\" {
     BEGIN(INITIAL);
     *cpStr = NUL;
-    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caStr);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, caStr);
     return T_STRING;
 }
 <str>\n {
-    yyerror("Unterminated string");
+    ssl_expr_yyerror(yyextra, "Unterminated string");
 }
 <str>\\[0-7]{1,3} {
     int result;
 
     (void)sscanf(yytext+1, "%o", &result);
     if (result > 0xff)
-        yyerror("Escape sequence out of bound");
+        ssl_expr_yyerror(yyextra, "Escape sequence out of bound");
     else
         *cpStr++ = result;
 }
 <str>\\[0-9]+ {
-    yyerror("Bad escape sequence");
+    ssl_expr_yyerror(yyextra, "Bad escape sequence");
 }
 <str>\\n { *cpStr++ = '\n'; }
 <str>\\r { *cpStr++ = '\r'; }
@@ -133,18 +149,18 @@ int yyinput(char *buf, int max_size);
     }
 }
 <regex_flags>i {
-    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, caRegex);
     BEGIN(INITIAL);
     return T_REGEX_I;
 }
 <regex_flags>.|\n {
-    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, caRegex);
     yyless(0);
     BEGIN(INITIAL);
     return T_REGEX;
 }
 <regex_flags><<EOF>> {
-    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, caRegex);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, caRegex);
     BEGIN(INITIAL);
     return T_REGEX;
 }
@@ -190,7 +206,7 @@ int yyinput(char *buf, int max_size);
   * Digits
   */
 [0-9]+ {
-    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, yytext);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_DIGIT;
 }
 
@@ -198,7 +214,7 @@ int yyinput(char *buf, int max_size);
   * Identifiers
   */
 [a-zA-Z][a-zA-Z0-9_:-]* {
-    yylval.cpVal = apr_pstrdup(ssl_expr_info.pool, yytext);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_ID;
 }
 
@@ -211,16 +227,4 @@ int yyinput(char *buf, int max_size);
 
 %%
 
-int yyinput(char *buf, int max_size)
-{
-    int n;
-
-    if ((n = MIN(max_size, ssl_expr_info.inputbuf
-                         + ssl_expr_info.inputlen 
-                         - ssl_expr_info.inputptr)) <= 0)
-        return YY_NULL;
-    memcpy(buf, ssl_expr_info.inputptr, n);
-    ssl_expr_info.inputptr += n;
-    return n;
-}
 

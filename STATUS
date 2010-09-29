@@ -360,12 +360,6 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
   * Do we need SSL_set_read_ahead()?
 
-  * the ssl_expr api is NOT THREAD SAFE.  race conditions exist:
-     -in ssl_expr_comp() if SSLRequire is used in .htaccess
-      (ssl_expr_info is global)
-     -is ssl_expr_eval() if there is an error
-      (ssl_expr_error is global)
-
   * SSLRequire directive (parsing of) leaks memory
 
   * Diffie-Hellman-Parameters for temporary keys are hardcoded in

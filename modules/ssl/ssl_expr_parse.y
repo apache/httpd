@@ -32,6 +32,12 @@
 **  _________________________________________________________________
 */
 
+%pure-parser
+%defines
+%error-verbose
+%lex-param   { void *yyscanner }
+%parse-param { ssl_expr_info_type *context }
+
 %{
 #include "ssl_private.h"
 %}
@@ -79,76 +85,85 @@
 %type   <exVal>   wordlist
 %type   <exVal>   word
 
+%{
+#include "ssl_expr.h"
+#define yyscanner context->scanner
+
+int ssl_expr_yyerror(ssl_expr_info_type *context, char *err);
+int ssl_expr_yylex(YYSTYPE *lvalp, void *scanner);
+%}
+
+
 %%
 
-root      : expr                         { ssl_expr_info.expr = $1; }
+root      : expr                         { context->expr = $1; }
           ;
 
-expr      : T_TRUE                       { $$ = ssl_expr_make(op_True,  NULL, NULL); }
-          | T_FALSE                      { $$ = ssl_expr_make(op_False, NULL, NULL); }
-          | T_OP_NOT expr                { $$ = ssl_expr_make(op_Not,   $2,   NULL); }
-          | expr T_OP_OR expr            { $$ = ssl_expr_make(op_Or,    $1,   $3);   }
-          | expr T_OP_AND expr           { $$ = ssl_expr_make(op_And,   $1,   $3);   }
-          | comparison                   { $$ = ssl_expr_make(op_Comp,  $1,   NULL); }
+expr      : T_TRUE                       { $$ = ssl_expr_make(op_True,  NULL, NULL, context); }
+          | T_FALSE                      { $$ = ssl_expr_make(op_False, NULL, NULL, context); }
+          | T_OP_NOT expr                { $$ = ssl_expr_make(op_Not,   $2,   NULL, context); }
+          | expr T_OP_OR expr            { $$ = ssl_expr_make(op_Or,    $1,   $3,   context); }
+          | expr T_OP_AND expr           { $$ = ssl_expr_make(op_And,   $1,   $3,   context); }
+          | comparison                   { $$ = ssl_expr_make(op_Comp,  $1,   NULL, context); }
           | '(' expr ')'                 { $$ = $2; }
           ;
 
-comparison: word T_OP_EQ word            { $$ = ssl_expr_make(op_EQ,  $1, $3); }
-          | word T_OP_NE word            { $$ = ssl_expr_make(op_NE,  $1, $3); }
-          | word T_OP_LT word            { $$ = ssl_expr_make(op_LT,  $1, $3); }
-          | word T_OP_LE word            { $$ = ssl_expr_make(op_LE,  $1, $3); }
-          | word T_OP_GT word            { $$ = ssl_expr_make(op_GT,  $1, $3); }
-          | word T_OP_GE word            { $$ = ssl_expr_make(op_GE,  $1, $3); }
-          | word T_OP_IN wordlist        { $$ = ssl_expr_make(op_IN,  $1, $3); }
-          | word T_OP_REG regex          { $$ = ssl_expr_make(op_REG, $1, $3); }
-          | word T_OP_NRE regex          { $$ = ssl_expr_make(op_NRE, $1, $3); }
+comparison: word T_OP_EQ word            { $$ = ssl_expr_make(op_EQ,  $1, $3, context); }
+          | word T_OP_NE word            { $$ = ssl_expr_make(op_NE,  $1, $3, context); }
+          | word T_OP_LT word            { $$ = ssl_expr_make(op_LT,  $1, $3, context); }
+          | word T_OP_LE word            { $$ = ssl_expr_make(op_LE,  $1, $3, context); }
+          | word T_OP_GT word            { $$ = ssl_expr_make(op_GT,  $1, $3, context); }
+          | word T_OP_GE word            { $$ = ssl_expr_make(op_GE,  $1, $3, context); }
+          | word T_OP_IN wordlist        { $$ = ssl_expr_make(op_IN,  $1, $3, context); }
+          | word T_OP_REG regex          { $$ = ssl_expr_make(op_REG, $1, $3, context); }
+          | word T_OP_NRE regex          { $$ = ssl_expr_make(op_NRE, $1, $3, context); }
           ;
 
-wordlist  : T_OP_PEEREXTLIST '(' word ')' { $$ = ssl_expr_make(op_PeerExtElement, $3, NULL); }
+wordlist  : T_OP_PEEREXTLIST '(' word ')' { $$ = ssl_expr_make(op_PeerExtElement, $3, NULL, context); }
           | '{' words '}'                { $$ = $2 ; }
 	  ;
 
-words     : word                         { $$ = ssl_expr_make(op_ListElement, $1, NULL); }
-          | words ',' word               { $$ = ssl_expr_make(op_ListElement, $3, $1);   }
+words     : word                         { $$ = ssl_expr_make(op_ListElement, $1, NULL, context); }
+          | words ',' word               { $$ = ssl_expr_make(op_ListElement, $3, $1, context);   }
           ;
 
-word      : T_DIGIT                      { $$ = ssl_expr_make(op_Digit,  $1, NULL); }
-          | T_STRING                     { $$ = ssl_expr_make(op_String, $1, NULL); }
-          | '%' '{' T_ID '}'             { $$ = ssl_expr_make(op_Var,    $3, NULL); }
+word      : T_DIGIT                      { $$ = ssl_expr_make(op_Digit,  $1, NULL, context); }
+          | T_STRING                     { $$ = ssl_expr_make(op_String, $1, NULL, context); }
+          | '%' '{' T_ID '}'             { $$ = ssl_expr_make(op_Var,    $3, NULL, context); }
           | funccall                     { $$ = $1; }
           ;
 
 regex     : T_REGEX { 
                 ap_regex_t *regex;
-                if ((regex = ap_pregcomp(ssl_expr_info.pool, $1, 
+                if ((regex = ap_pregcomp(context->pool, $1, 
                                          AP_REG_EXTENDED|AP_REG_NOSUB)) == NULL) {
-                    ssl_expr_error = "Failed to compile regular expression";
+                    context->error = "Failed to compile regular expression";
                     YYERROR;
                 }
-                $$ = ssl_expr_make(op_Regex, regex, NULL);
+                $$ = ssl_expr_make(op_Regex, regex, NULL, context);
             }
           | T_REGEX_I {
                 ap_regex_t *regex;
-                if ((regex = ap_pregcomp(ssl_expr_info.pool, $1, 
+                if ((regex = ap_pregcomp(context->pool, $1, 
                                          AP_REG_EXTENDED|AP_REG_NOSUB|AP_REG_ICASE)) == NULL) {
-                    ssl_expr_error = "Failed to compile regular expression";
+                    context->error = "Failed to compile regular expression";
                     YYERROR;
                 }
-                $$ = ssl_expr_make(op_Regex, regex, NULL);
+                $$ = ssl_expr_make(op_Regex, regex, NULL, context);
             }
           ;
 
 funccall  : T_FUNC_FILE '(' T_STRING ')' { 
-               ssl_expr *args = ssl_expr_make(op_ListElement, $3, NULL);
-               $$ = ssl_expr_make(op_Func, "file", args);
+               ssl_expr *args = ssl_expr_make(op_ListElement, $3, NULL, context);
+               $$ = ssl_expr_make(op_Func, "file", args, context);
             }
           ;
 
 %%
 
-int yyerror(char *s)
+int yyerror(ssl_expr_info_type *context, char *s)
 {
-    ssl_expr_error = s;
+    context->error = s;
     return 2;
 }
 
