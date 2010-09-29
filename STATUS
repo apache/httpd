@@ -169,14 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=795438
     2.2.x patch: http://svn.apache.org/viewvc?view=rev&revision=795971
     Backport: http://people.apache.org/~fuankg/diffs/gen_test_char.c_httpd_2_0_x-backport-r795971.diff
-    +1: fuankg, trawick
-    rjung: Why are the defines for the apr_is* needed? Shouldn't they be
-           foudn in apr_lib.h?
-    fuankg: no - thats exactly the root cause why this patch is needed:
-           at the time when gen_test_char is going to be build the headers
-           are prepared for the target platform (NetWare) while I want to 
-           build gen_test_char to run natively on build platform (Win32),
-           hence its impossible at this time to include any APR headers.
+    +1: fuankg, trawick, rjung
 
   * pcre: update config.guess and config.sub for better platform support.
     Trunk version of patch:
