@@ -493,6 +493,11 @@ static int process_dir(char *path, apr_pool_t *pool)
                             e->hsize = d->hsize;
                             e->dsize = d->dsize;
                             e->basename = apr_pstrdup(pool, d->basename);
+                            if (!disk_info.has_body) {
+                                apr_file_remove(apr_pstrcat(p, path, "/", d->basename,
+                                                            CACHE_DATA_SUFFIX, NULL),
+                                                p);
+                            }
                             break;
                         }
                         else {
@@ -568,8 +573,40 @@ static int process_dir(char *path, apr_pool_t *pool)
                             break;
                         }
                     }
+                    else if (format == DISK_FORMAT_VERSION) {
+                        apr_off_t offset = 0;
+
+                        apr_file_seek(fd, APR_SET, &offset);
+
+                        len = sizeof(disk_cache_info_t);
+
+                        if (apr_file_read_full(fd, &disk_info, len,
+                                               &len) == APR_SUCCESS) {
+                            apr_file_close(fd);
+                            e = apr_palloc(pool, sizeof(ENTRY));
+                            APR_RING_INSERT_TAIL(&root, e, _entry, link);
+                            e->expire = disk_info.expire;
+                            e->response_time = disk_info.response_time;
+                            e->htime = d->htime;
+                            e->dtime = d->dtime;
+                            e->hsize = d->hsize;
+                            e->dsize = d->dsize;
+                            e->basename = apr_pstrdup(pool, d->basename);
+                            break;
+                        }
+                        else {
+                            apr_file_close(fd);
+                        }
+                    }
+                    else {
+                        apr_file_close(fd);
+                        delete_entry(path, d->basename, p);
+                        break;
+                    }
                 }
-                apr_file_close(fd);
+                else {
+                    apr_file_close(fd);
+                }
             }
 
             if (realclean || d->htime < current - deviation
