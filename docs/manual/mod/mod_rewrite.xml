@@ -53,7 +53,7 @@ URLs on the fly</description>
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
 </summary>
 
-<section><title>Logging</title>
+<section id="logging"><title>Logging</title>
 
     <p><module>mod_rewrite</module> offers detailed logging of its actions
     at the <code>trace1</code> to <code>trace8</code> log levels. The
