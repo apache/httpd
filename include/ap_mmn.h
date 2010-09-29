@@ -271,6 +271,7 @@
  *                         cache_request_rec and cache_provider_list private.
  * 20100923.1 (2.3.9-dev)  Add cache_status hook.
  * 20100923.2 (2.3.9-dev)  Add generate_log_id hook.
+ *                         Make root parameter of ap_expr_eval() const.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
