@@ -10,6 +10,10 @@ http://httpd.apache.org/docs-project/docsformat.html
 To Do List
 =======================
 
+- The dns-caveats document is largely rubbish, and needs to be
+  completely rewritten. Many of the points stopped being true over a
+  decade ago.
+
 - Rewriting the custom-error document, which is grossly outdated.
 
 - Adding to the discussion of conditional logging, which I think
