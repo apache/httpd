@@ -247,6 +247,21 @@
 
   
 
+  <h3><a name="reqexpr" id="reqexpr">Require expr</a></h3>
+
+  <p>The <code>expr</code> provider allows to base authorization
+  decisions on arbitrary expressions.</p>
+
+    <div class="example"><p><code>
+        Require expr %{TIME_HOUR} &gt;= 9 &amp; %{TIME_HOUR} &lt;= 17 <br />
+    </code></p></div>
+
+    <p>TODO: Include a link to a description of the ap_expr syntax, once we have
+        such a description.</p>
+
+  
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthMerging" id="AuthMerging">AuthMerging</a> <a name="authmerging" id="authmerging">Directive</a></h2>
@@ -374,6 +389,9 @@ an authorization provider.</td></tr>
       <dt><code>Require method <var>http-method</var> [<var>http-method</var>]
       ...</code></dt>
       <dd>Access is allowed only for the given HTTP methods.</dd>
+
+      <dt><code>Require expr <var>expression</var> </code></dt>
+      <dd>Access is allowed if <var>expression</var> evaluates to true.</dd>
     </dl>
 
     <p>Some of the allowed syntaxes provided by <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>
@@ -395,8 +413,8 @@ an authorization provider.</td></tr>
     <p>Other authorization modules that implement require options
     include <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
     <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code>, 
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>, and
-    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>.</p>
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>, 
+    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> and <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
     <p>In most cases, for a complete authentication and authorization
     configuration, <code class="directive">Require</code> must be accompanied by

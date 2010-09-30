@@ -232,6 +232,21 @@
 
   </section>
 
+  <section id="reqexpr"><title>Require expr</title>
+
+  <p>The <code>expr</code> provider allows to base authorization
+  decisions on arbitrary expressions.</p>
+
+    <example>
+        Require expr %{TIME_HOUR} &gt;= 9 &amp; %{TIME_HOUR} &lt;= 17 <br />
+    </example>
+
+    <p>TODO: Include a link to a description of the ap_expr syntax, once we have
+        such a description.</p>
+
+  </section>
+
+
 </section>
 
 <directivesynopsis>
@@ -265,6 +280,9 @@ an authorization provider.</description>
       <dt><code>Require method <var>http-method</var> [<var>http-method</var>]
       ...</code></dt>
       <dd>Access is allowed only for the given HTTP methods.</dd>
+
+      <dt><code>Require expr <var>expression</var> </code></dt>
+      <dd>Access is allowed if <var>expression</var> evaluates to true.</dd>
     </dl>
 
     <p>Some of the allowed syntaxes provided by <module>mod_authz_user</module>
@@ -286,8 +304,8 @@ an authorization provider.</description>
     <p>Other authorization modules that implement require options
     include <module>mod_authnz_ldap</module>,
     <module>mod_authz_dbm</module>, <module>mod_authz_dbd</module>, 
-    <module>mod_authz_host</module>, and
-    <module>mod_authz_owner</module>.</p>
+    <module>mod_authz_host</module>, 
+    <module>mod_authz_owner</module> and <module>mod_ssl</module>.</p>
 
     <p>In most cases, for a complete authentication and authorization
     configuration, <directive>Require</directive> must be accompanied by

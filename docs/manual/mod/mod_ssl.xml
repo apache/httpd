@@ -189,6 +189,42 @@ string in <module>mod_log_config</module>.</p>
 
 </section>
 
+<section id="authzproviders"><title>Authorization providers for use with Require</title>
+
+  <p><module>mod_ssl</module> provides a few authentication providers for use
+  with <module>mod_authz_core</module>'s
+  <directive module="mod_authz_core">Require</directive> directive.</p>
+
+  <section id="reqssl"><title>Require ssl</title>
+
+    <p>The <code>ssl</code> provider denies access if a connection is not
+       encrypted with SSL. This is similar to the
+       <directive>SSLRequireSSL</directive> directive.</p>
+
+    <example>
+      Require ssl
+    </example>
+
+  </section>
+
+  <section id="reqverifyclient"><title>Require ssl-verify-client</title>
+
+    <p>The <code>ssl</code> provider allows access if the user is
+       authenticated with a valid client certificate. This is only
+       useful if <code>SSLVerifyClient optional</code> is in effect.</p>
+
+    <p>The following example grants access if the user is authenticated
+       either with a client certificate or by username and password.</p>
+
+    <example>
+      Require ssl-verify-client<br/>
+      Require valid-user
+    </example>
+
+  </section>
+
+</section>
+
 <directivesynopsis>
 <name>SSLPassPhraseDialog</name>
 <description>Type of pass phrase dialog for encrypted private 
@@ -1192,12 +1228,6 @@ This directive specifies a general access requirement which has to be
 fulfilled in order to allow access. It is a very powerful directive because the
 requirement specification is an arbitrarily complex boolean expression
 containing any number of access checks.</p>
-<note type="warning">
-<p>The implementation of <code>SSLRequire</code> is not thread safe.  
-   Using <code>SSLRequire</code> inside <code>.htaccess</code> files
-   on a threaded <a href="../mpm.html">MPM</a> may cause random crashes.
-</p>
-</note>
 <p>
 The <em>expression</em> must match the following syntax (given as a BNF
 grammar notation):</p>
