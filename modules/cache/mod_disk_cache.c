@@ -391,6 +391,8 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
     dobj->hdrs.file = header_file(r->pool, conf, dobj, key);
     dobj->vary.file = header_file(r->pool, conf, dobj, key);
 
+    dobj->disk_info.header_only = r->header_only;
+
     return OK;
 }
 
@@ -524,6 +526,14 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
 
     apr_file_close(dobj->hdrs.fd);
+
+    /* Is this a cached HEAD request? */
+    if (dobj->disk_info.header_only && !r->header_only) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                 "disk_cache: HEAD request cached, non-HEAD requested, ignoring: %s",
+                 dobj->hdrs.file);
+        return DECLINED;
+    }
 
     /* Open the data file */
     if (dobj->disk_info.has_body) {
@@ -999,6 +1009,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
     disk_info.status = h->cache_obj->info.status;
     disk_info.inode = dobj->disk_info.inode;
     disk_info.device = dobj->disk_info.device;
+    disk_info.header_only = dobj->disk_info.header_only;
 
     disk_info.name_len = strlen(dobj->name);
 

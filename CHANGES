@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.9
 
+  *) mod_cache: Support the caching of HEAD requests. [Graham Leggett]
+
   *) htcacheclean: Allow the option to round up file sizes to a given
      block size, improving the accuracy of disk usage. [Graham Leggett]
 
