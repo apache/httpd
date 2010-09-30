@@ -143,11 +143,13 @@
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
 <li><a href="mod_buffer.html#buffersize">BufferSize</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
+<li><a href="mod_cache.html#cachedetailheader">CacheDetailHeader</a></li>
 <li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>
 <li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
 <li><a href="mod_cache.html#cachedisable">CacheDisable</a></li>
 <li><a href="mod_cache.html#cacheenable">CacheEnable</a></li>
 <li><a href="mod_file_cache.html#cachefile">CacheFile</a></li>
+<li><a href="mod_cache.html#cacheheader">CacheHeader</a></li>
 <li><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
