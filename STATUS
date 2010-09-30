@@ -199,6 +199,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Revert r1002205 in test framework, once this is fixed.
     +1: rjung
 
+  * gen_test_char.c: rename macro to a better name and sync with trunk.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
+    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
+    2.0.x patch: 2.2.x patch applies with offset.
+    +1: fuankg
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
