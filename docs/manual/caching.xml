@@ -44,7 +44,7 @@
     <p><module>mod_cache</module> and its provider modules 
     <module>mod_disk_cache</module> 
     provide intelligent, HTTP-aware caching. The content itself is stored
-    in the cache, and mod_cache aims to honour all of the various HTTP
+    in the cache, and mod_cache aims to honor all of the various HTTP
     headers and options that control the cachability of content. It can
     handle both local and proxied content. <module>mod_cache</module>
     is aimed at both simple and complex caching configurations, where
