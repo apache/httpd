@@ -136,7 +136,7 @@
     more gentle on backend servers, however the lock can be overridden if necessary.
     If the client sends a request with a Cache-Control header forcing a reload, any
     lock that may be present will be ignored, and the client's request will be
-    honoured immediately and the cached entry refreshed.</p>
+    honored immediately and the cached entry refreshed.</p>
     <p>As a further safety mechanism, locks have a configurable maximum age.
     Once this age has been reached, the lock is removed, and a new request is
     given the opportunity to create a new lock. This maximum age can be set using
