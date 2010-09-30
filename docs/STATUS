@@ -162,6 +162,11 @@ To Do List
   helpful. Additionally, a significant part of the doc consists of a
   quoted email message. This seems somewhat unprofessional.
 
+- Is it worth having a doc that discusses recommended (what does this
+  mean?) third-party modules like mod_security, mod_php, and so on - the
+  things that we all assume everyone uses, but some folks might not know
+  about.
+
 LaTeX Todo list
 ==================
 
