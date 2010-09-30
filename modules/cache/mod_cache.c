@@ -852,10 +852,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "No Last-Modified; Etag; Expires; Cache-Control:max-age or Cache-Control:s-maxage headers";
     }
-    else if (r->header_only && !cache->stale_handle) {
-        /* Forbid HEAD requests unless we have it cached already */
-        reason = "HTTP HEAD request";
-    }
     else if (!conf->store_nostore &&
              ap_cache_liststr(NULL, cc_out, "no-store", NULL)) {
         /* RFC2616 14.9.2 Cache-Control: no-store response
@@ -1039,10 +1035,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
 
     /* Did we have a stale cache entry that really is stale?
-     *
-     * Note that for HEAD requests, we won't get the body, so for a stale
-     * HEAD request, we don't remove the entity - instead we let the
-     * CACHE_REMOVE_URL filter remove the stale item from the cache.
      */
     if (cache->stale_handle) {
         if (r->status == HTTP_NOT_MODIFIED) {
@@ -1051,7 +1043,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             info = &cache->handle->cache_obj->info;
             rv = OK;
         }
-        else if (!r->header_only) {
+        else {
             /* Oh, well.  Toss it. */
             cache->provider->remove_entity(cache->stale_handle);
             /* Treat the request as if it wasn't conditional. */
@@ -1065,8 +1057,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
     }
 
-    /* no cache handle, create a new entity only for non-HEAD requests */
-    if (!cache->handle && !r->header_only) {
+    /* no cache handle, create a new entity */
+    if (!cache->handle) {
         rv = cache_create_entity(cache, r, size, in);
         info = apr_pcalloc(r->pool, sizeof(cache_info));
         /* We only set info->status upon the initial creation. */
