@@ -3322,7 +3322,6 @@ itself</td></tr>
     section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
 
-
     <p>Sometimes, the server runs behind a device that processes SSL,
     such as a reverse proxy, load balancer or SSL offload
     appliance. When this is the case, specify the
@@ -3339,6 +3338,17 @@ itself</td></tr>
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> module) will refer to the
     specified port, or to the port number given in the client's request.
     </p>
+
+    <div class="warning">
+    <p>Failure to set <code class="directive">ServerName</code> to a name that
+    your server can resolve to an IP address will result in a startup
+    warning. <code>httpd</code> will then use whatever hostname it can
+    determine, using the system's <code>hostname</code> command. This
+    will almost never be the hostname you actually want.</p>
+    <div class="example"><p><code>
+    httpd: Could not reliably determine the server's fully qualified domain name, using rocinante.local for ServerName
+    </code></p></div>
+    </div>
 
 
 <h3>See also</h3>
