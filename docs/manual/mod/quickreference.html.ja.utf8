@@ -178,11 +178,11 @@ lower level modules</td></tr>
 テキストファイルの名前を設定する</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapauthorizeprefix">AuthLDAPAuthorizePrefix <em>prefix</em></a></td><td> AUTHORIZE_ </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the prefix for environment variables set during
 authorization</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative<em>off|on</em></a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative<em>off|on</em></a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the user's credentials.</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Language to charset conversion configuration file</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapcompareasuser">AuthLDAPCompareAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the authenticated users credentials to perform authorization comparisons</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapcompareasuser">AuthLDAPCompareAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the authenticated user's credentials to perform authorization comparisons</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> always </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td> member uniquemember +</td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">LDAP attributes used to identify the user members of
@@ -199,7 +199,7 @@ evaluated before the user search is discontinued.</td></tr>
 query to set the REMOTE_USER environment variable</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the authenticated users credentials to perform authorization searches</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the authenticated user's credentials to perform authorization searches</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the attribute labels, one value per
 directive line, used to distinguish the members of the current group that
 are groups.</td></tr>

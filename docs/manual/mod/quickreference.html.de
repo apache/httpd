@@ -188,11 +188,11 @@ lower level modules</td></tr>
 of user groups for authorization</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapauthorizeprefix">AuthLDAPAuthorizePrefix <em>prefix</em></a></td><td> AUTHORIZE_ </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the prefix for environment variables set during
 authorization</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative<em>off|on</em></a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative<em>off|on</em></a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the user's credentials.</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Language to charset conversion configuration file</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcompareasuser">AuthLDAPCompareAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the authenticated users credentials to perform authorization comparisons</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcompareasuser">AuthLDAPCompareAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the authenticated user's credentials to perform authorization comparisons</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
 <tr class="odd"><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> always </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td> member uniquemember +</td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">LDAP attributes used to identify the user members of
@@ -209,7 +209,7 @@ evaluated before the user search is discontinued.</td></tr>
 query to set the REMOTE_USER environment variable</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the authenticated users credentials to perform authorization searches</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the authenticated user's credentials to perform authorization searches</td></tr>
 <tr><td><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the attribute labels, one value per
 directive line, used to distinguish the members of the current group that
 are groups.</td></tr>
@@ -258,13 +258,15 @@ respect to case</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
 <tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of levels of subdirectories in the
+<tr><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of levels of subdirectories in the
 cache.</td></tr>
-<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var>url-string</var> | <var>on</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
+<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var>url-string</var> | <var>on</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
+<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
 manager</td></tr>
-<tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
+<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
+<tr><td><a href="mod_cache.html#cacheheader">CacheHeader <var>on|off</var></a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Add an X-Cache header to the response.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore request to not serve cached content to client</td></tr>
 <tr><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
 </td></tr>
