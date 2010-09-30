@@ -14,6 +14,13 @@ To Do List
   completely rewritten. Many of the points stopped being true over a
   decade ago.
 
+- The 1.3 docs need to have links from each directive forward to the
+  /docs/current/ version of that directive, or a note that it's not
+  avaialble in this century. See core.html for examples of how this
+  might be done. This is a large undertaking, and involves a lot of
+  grunt work, but will be greatly appreciated by the folks that make it
+  to the wrong doc via Google.
+
 - Rewriting the custom-error document, which is grossly outdated.
 
 - Adding to the discussion of conditional logging, which I think
