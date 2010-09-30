@@ -51,7 +51,7 @@ Server.</p>
     added using the <directive module="core">Include</directive>
     directive, and wildcards can be used to include many configuration
     files. Any directive may be placed in any of these configuration
-    files.  Changes to the main configuration files are only
+    files. Changes to the main configuration files are only
     recognized by httpd when it is started or restarted.</p>
 
     <p>The server also reads a file containing mime document types;
@@ -82,13 +82,13 @@ Server.</p>
     If "ENVVAR" is the name of a valid environment variable, the value
     of that variable is substituted into that spot in the
     configuration file line, and processing continues as if that text
-    were found directly in the configuration file.  (If the ENVVAR
+    were found directly in the configuration file. (If the ENVVAR
     variable is not found, the characters "${ENVVAR}" are left
     unchanged for use by later stages in the config file
     processing.)</p>
 
     <p>Only environment variables defined before the server is started
-    can be used in expansions.  Variables defined in the
+    can be used in expansions. Variables defined in the
     configuration file itself, for example with <directive
     module="mod_env">SetEnv</directive>, take effect too late to be
     used for expansions in the configuration file.</p>
@@ -130,10 +130,15 @@ Server.</p>
     Otherwise, httpd must be recompiled to add or remove modules.
     Configuration directives may be included conditional on a
     presence of a particular module by enclosing them in an <directive
-    module="core" type="section">IfModule</directive> block.</p>
+    module="core" type="section">IfModule</directive> block. However,
+    <directive type="section">IfModule</directive> blocks are not
+    required, and in some cases may mask the fact that you're missing an
+    important module.</p>
 
     <p>To see which modules are currently compiled into the server,
-    you can use the <code>-l</code> command line option.</p>
+    you can use the <code>-l</code> command line option. You can also
+    see what modules are loaded dynamically using the <code>-M</code>
+    command line option.</p>
   </section>
 
   <section id="scope">
