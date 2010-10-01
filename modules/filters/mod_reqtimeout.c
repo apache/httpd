@@ -115,6 +115,41 @@ static apr_status_t have_lf_or_eos(apr_bucket_brigade *bb)
     return APR_INCOMPLETE;
 }
 
+/*
+ * Append bbIn to bbOut and merge small buckets, to avoid DoS by high memory
+ * usage
+ */
+static apr_status_t brigade_append(apr_bucket_brigade *bbOut, apr_bucket_brigade *bbIn)
+{
+    while (!APR_BRIGADE_EMPTY(bbIn)) {
+        apr_bucket *e = APR_BRIGADE_FIRST(bbIn);
+        const char *str;
+        apr_size_t len;
+        apr_status_t rv;
+
+        rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+
+        APR_BUCKET_REMOVE(e);
+        if (APR_BUCKET_IS_METADATA(e) || len > APR_BUCKET_BUFF_SIZE/4) {
+            APR_BRIGADE_INSERT_TAIL(bbOut, e);
+        }
+        else {
+            if (len > 0) {
+                rv = apr_brigade_write(bbOut, NULL, NULL, str, len);
+                if (rv != APR_SUCCESS) {
+                    apr_bucket_destroy(e);
+                    return rv;
+                }
+            }
+            apr_bucket_destroy(e);
+        }
+    }
+    return APR_SUCCESS;
+}
+
 
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
 static apr_status_t reqtimeout_filter(ap_filter_t *f,
@@ -217,7 +252,9 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
                 if (!ccfg->tmpbb) {
                     ccfg->tmpbb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
                 }
-                APR_BRIGADE_CONCAT(ccfg->tmpbb, bb);
+                rv = brigade_append(ccfg->tmpbb, bb);
+                if (rv != APR_SUCCESS)
+                    break;
             }
 
             /* ... and wait for more */
