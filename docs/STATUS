@@ -21,7 +21,8 @@ To Do List
   grunt work, but will be greatly appreciated by the folks that make it
   to the wrong doc via Google.
 
-- Rewriting the custom-error document, which is grossly outdated.
+- Update custom-error document to mention the negotiated SSI error docs
+  introduced back in 2.0.
 
 - Adding to the discussion of conditional logging, which I think
   could be turned into more of a howto than the one paragraph it's
