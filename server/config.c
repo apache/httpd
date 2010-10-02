@@ -1704,13 +1704,13 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
     const char *error;
     apr_status_t rv;
 
-    if (ap_is_directory(p, fname)) {
+    if (ap_is_directory(ptemp, fname)) {
         apr_dir_t *dirp;
         apr_finfo_t dirent;
         int current;
         apr_array_header_t *candidates = NULL;
         fnames *fnew;
-        char *path = apr_pstrdup(p, fname);
+        char *path = apr_pstrdup(ptemp, fname);
 
         if (++depth > AP_MAX_INCLUDE_DIR_DEPTH) {
             return apr_psprintf(p, "Directory %s exceeds the maximum include "
@@ -1724,20 +1724,20 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
          * entries here and store 'em away. Recall we need full pathnames
          * for this.
          */
-        rv = apr_dir_open(&dirp, path, p);
+        rv = apr_dir_open(&dirp, path, ptemp);
         if (rv != APR_SUCCESS) {
             char errmsg[120];
             return apr_psprintf(p, "Could not open config directory %s: %s",
                                 path, apr_strerror(rv, errmsg, sizeof errmsg));
         }
 
-        candidates = apr_array_make(p, 1, sizeof(fnames));
+        candidates = apr_array_make(ptemp, 1, sizeof(fnames));
         while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
             /* strip out '.' and '..' */
             if (strcmp(dirent.name, ".")
                 && strcmp(dirent.name, "..")) {
                 fnew = (fnames *) apr_array_push(candidates);
-                fnew->fname = ap_make_full_path(p, path, dirent.name);
+                fnew->fname = ap_make_full_path(ptemp, path, dirent.name);
             }
         }
 
@@ -1889,10 +1889,10 @@ AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if ((ap_server_pre_read_config->nelts
         || ap_server_post_read_config->nelts)
-        && !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
+        && !(strcmp(fname, ap_server_root_relative(ptemp, SERVER_CONFIG_FILE)))) {
         apr_finfo_t finfo;
 
-        if (apr_stat(&finfo, fname, APR_FINFO_LINK | APR_FINFO_TYPE, p) != APR_SUCCESS)
+        if (apr_stat(&finfo, fname, APR_FINFO_LINK | APR_FINFO_TYPE, ptemp) != APR_SUCCESS)
             return NULL;
     }
 
