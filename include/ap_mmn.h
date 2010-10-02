@@ -272,6 +272,7 @@
  * 20100923.1 (2.3.9-dev)  Add cache_status hook.
  * 20100923.2 (2.3.9-dev)  Add generate_log_id hook.
  *                         Make root parameter of ap_expr_eval() const.
+ * 20100923.3 (2.3.9-dev)  Add "last" member to ap_directive_t
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -279,7 +280,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20100923
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
