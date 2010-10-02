@@ -275,10 +275,11 @@ static int cache_quick_handler(request_rec *r, int lookup)
     rv = ap_pass_brigade(r->output_filters, out);
     if (rv != APR_SUCCESS) {
         if (rv != AP_FILTER_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "cache: error returned while trying to return %s "
-                         "cached data",
-                         cache->provider_name);
+            /* no way to know what type of error occurred */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                          "cache_quick_handler(%s): ap_pass_brigade returned %i",
+                          cache->provider_name, rv);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
         return rv;
     }
@@ -518,10 +519,11 @@ static int cache_handler(request_rec *r)
     rv = ap_pass_brigade(r->output_filters, out);
     if (rv != APR_SUCCESS) {
         if (rv != AP_FILTER_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "cache: error returned while trying to return %s "
-                         "cached data",
-                         cache->provider_name);
+            /* no way to know what type of error occurred */
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                          "cache_handler(%s): ap_pass_brigade returned %i",
+                          cache->provider_name, rv);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
         return rv;
     }
