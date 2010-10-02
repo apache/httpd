@@ -861,11 +861,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * indicating do not cache, or stop now if you are
          * trying to cache it.
          */
-        /* FIXME: The Cache-Control: no-store could have come in on a 304,
-         * FIXME: while the original request wasn't conditional.  IOW, we
-         * FIXME:  made the the request conditional earlier to revalidate
-         * FIXME: our cached response.
-         */
         reason = "Cache-Control: no-store present";
     }
     else if (!dconf->store_private &&
@@ -874,7 +869,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * this object is marked for this user's eyes only. Behave
          * as a tunnel.
          */
-        /* FIXME: See above (no-store) */
         reason = "Cache-Control: private present";
     }
     else if (apr_table_get(r->headers_in, "Authorization") != NULL
