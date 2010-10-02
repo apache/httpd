@@ -287,7 +287,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The default duration to cache a document when no expiry date is specified.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDefaultExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDefaultExpire 3600 (one hour)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -568,7 +568,7 @@ manager</td></tr>
 header.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -657,7 +657,7 @@ header.</td></tr>
 LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheLastModifiedFactor <var>float</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -753,7 +753,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum time in seconds to cache a document</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMaxExpire 86400 (one day)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -773,7 +773,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum time in seconds to cache a document</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheMinExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMinExpire 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -838,7 +838,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Attempt to cache responses that the server reports as expired</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheStoreExpired On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheStoreExpired Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -862,7 +862,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Attempt to cache requests or responses that have been marked as no-store.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheStoreNoStore On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheStoreNoStore Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -897,7 +897,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Attempt to cache responses that the server has marked as private</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheStorePrivate On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheStorePrivate Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
