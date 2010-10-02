@@ -1286,7 +1286,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
     const char *errmsg;
     ap_directive_t **last_ptr = NULL;
 
-    if(current) {
+    if (current != NULL) {
         /* If we have to traverse the whole tree again for every included
          * config file, the required time grows as O(n^2) with the number of
          * files. This can be a significant delay for large configurations.
@@ -1297,9 +1297,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
         if(last_ptr && *last_ptr) {
             current = *last_ptr;
         }
-    }
 
-    if (current != NULL) {
         while (current->next) {
             current = current->next;
         }
