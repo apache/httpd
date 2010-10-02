@@ -1010,6 +1010,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
     disk_info.status = h->cache_obj->info.status;
     disk_info.inode = dobj->disk_info.inode;
     disk_info.device = dobj->disk_info.device;
+    disk_info.has_body = dobj->disk_info.has_body;
     disk_info.header_only = dobj->disk_info.header_only;
 
     disk_info.name_len = strlen(dobj->name);
