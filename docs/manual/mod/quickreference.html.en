@@ -268,10 +268,10 @@ LastModified date.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge <var>integer</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
 <tr><td><a href="mod_cache.html#cachelockpath">CacheLockPath <var>directory</var></a></td><td> /tmp/mod_cache-lock +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the lock path directory.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
+<tr><td><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
 cache</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
+<tr><td><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
 cache</td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Allows content-negotiated documents to be 
 cached by proxy servers</td></tr>
