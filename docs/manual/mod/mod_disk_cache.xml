@@ -141,7 +141,10 @@ cache.</description>
 cache</description>
 <syntax>CacheMinFileSize <var>bytes</var></syntax>
 <default>CacheMinFileSize 1</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -161,9 +164,12 @@ cache</description>
 cache</description>
 <syntax>CacheMaxFileSize <var>bytes</var></syntax>
 <default>CacheMaxFileSize 1000000</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
-
+  
 <usage>
     <p>The <directive>CacheMaxFileSize</directive> directive sets the
     maximum size, in bytes, for a document to be considered for storage in

@@ -335,6 +335,7 @@ static void tokens_to_array(apr_pool_t *p, const char *data,
 static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr_off_t len,
                          apr_bucket_brigade *bb)
 {
+    disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &disk_cache_module);
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
     cache_object_t *obj;
@@ -354,18 +355,18 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
     }
 
     /* Note, len is -1 if unknown so don't trust it too hard */
-    if (len > conf->maxfs) {
+    if (len > dconf->maxfs) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "disk_cache: URL %s failed the size check "
                      "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
-                     key, len, conf->maxfs);
+                     key, len, dconf->maxfs);
         return DECLINED;
     }
-    if (len >= 0 && len < conf->minfs) {
+    if (len >= 0 && len < dconf->minfs) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "disk_cache: URL %s failed the size check "
                      "(%" APR_OFF_T_FMT " < %" APR_OFF_T_FMT ")",
-                     key, len, conf->minfs);
+                     key, len, dconf->minfs);
         return DECLINED;
     }
 
@@ -1172,11 +1173,11 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             return rv;
         }
         dobj->file_size += written;
-        if (dobj->file_size > conf->maxfs) {
+        if (dobj->file_size > dconf->maxfs) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "disk_cache: URL %s failed the size check "
                          "(%" APR_OFF_T_FMT ">%" APR_OFF_T_FMT ")",
-                         h->cache_obj->key, dobj->file_size, conf->maxfs);
+                         h->cache_obj->key, dobj->file_size, dconf->maxfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             apr_pool_destroy(dobj->data.pool);
             APR_BRIGADE_CONCAT(out, dobj->bb);
@@ -1221,11 +1222,11 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             apr_pool_destroy(dobj->data.pool);
             return APR_EGENERAL;
         }
-        if (dobj->file_size < conf->minfs) {
+        if (dobj->file_size < dconf->minfs) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "disk_cache: URL %s failed the size check "
                          "(%" APR_OFF_T_FMT "<%" APR_OFF_T_FMT ")",
-                         h->cache_obj->key, dobj->file_size, conf->minfs);
+                         h->cache_obj->key, dobj->file_size, dconf->minfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             apr_pool_destroy(dobj->data.pool);
             return APR_EGENERAL;
@@ -1291,6 +1292,8 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 {
     disk_cache_dir_conf *dconf = apr_pcalloc(p, sizeof(disk_cache_dir_conf));
 
+    dconf->maxfs = DEFAULT_MAX_FILE_SIZE;
+    dconf->minfs = DEFAULT_MIN_FILE_SIZE;
     dconf->readsize = DEFAULT_READSIZE;
     dconf->readtime = DEFAULT_READTIME;
 
@@ -1302,6 +1305,10 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
     disk_cache_dir_conf *add = (disk_cache_dir_conf *) addv;
     disk_cache_dir_conf *base = (disk_cache_dir_conf *) basev;
 
+    new->maxfs = (add->maxfs_set == 0) ? base->maxfs : add->maxfs;
+    new->maxfs_set = add->maxfs_set || base->maxfs_set;
+    new->minfs = (add->minfs_set == 0) ? base->minfs : add->minfs;
+    new->minfs_set = add->minfs_set || base->minfs_set;
     new->readsize = (add->readsize_set == 0) ? base->readsize : add->readsize;
     new->readsize_set = add->readsize_set || base->readsize_set;
     new->readtime = (add->readtime_set == 0) ? base->readtime : add->readtime;
@@ -1317,8 +1324,6 @@ static void *create_config(apr_pool_t *p, server_rec *s)
     /* XXX: Set default values */
     conf->dirlevels = DEFAULT_DIRLEVELS;
     conf->dirlength = DEFAULT_DIRLENGTH;
-    conf->maxfs = DEFAULT_MAX_FILE_SIZE;
-    conf->minfs = DEFAULT_MIN_FILE_SIZE;
 
     conf->cache_root = NULL;
     conf->cache_root_len = 0;
@@ -1378,11 +1383,10 @@ static const char
 static const char
 *set_cache_minfs(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
+    disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
 
-    if (apr_strtoff(&conf->minfs, arg, NULL, 0) != APR_SUCCESS ||
-            conf->minfs < 0) 
+    if (apr_strtoff(&dconf->minfs, arg, NULL, 0) != APR_SUCCESS ||
+            dconf->minfs < 0)
     {
         return "CacheMinFileSize argument must be a non-negative integer representing the min size of a file to cache in bytes.";
     }
@@ -1392,10 +1396,10 @@ static const char
 static const char
 *set_cache_maxfs(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
-    disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
-    if (apr_strtoff(&conf->maxfs, arg, NULL, 0) != APR_SUCCESS ||
-            conf->maxfs < 0) 
+    disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
+
+    if (apr_strtoff(&dconf->maxfs, arg, NULL, 0) != APR_SUCCESS ||
+            dconf->maxfs < 0)
     {
         return "CacheMaxFileSize argument must be a non-negative integer representing the max size of a file to cache in bytes.";
     }
@@ -1440,13 +1444,13 @@ static const command_rec disk_cache_cmds[] =
                   "The number of levels of subdirectories in the cache"),
     AP_INIT_TAKE1("CacheDirLength", set_cache_dirlength, NULL, RSRC_CONF,
                   "The number of characters in subdirectory names"),
-    AP_INIT_TAKE1("CacheMinFileSize", set_cache_minfs, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheMinFileSize", set_cache_minfs, NULL, RSRC_CONF | ACCESS_CONF,
                   "The minimum file size to cache a document"),
-    AP_INIT_TAKE1("CacheMaxFileSize", set_cache_maxfs, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheMaxFileSize", set_cache_maxfs, NULL, RSRC_CONF | ACCESS_CONF,
                   "The maximum file size to cache a document"),
-    AP_INIT_TAKE1("CacheReadSize", set_cache_readsize, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheReadSize", set_cache_readsize, NULL, RSRC_CONF | ACCESS_CONF,
                   "The maximum quantity of data to attempt to read and cache in one go"),
-    AP_INIT_TAKE1("CacheReadTime", set_cache_readtime, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheReadTime", set_cache_readtime, NULL, RSRC_CONF | ACCESS_CONF,
                   "The maximum time taken to attempt to read and cache in go"),
     {NULL}
 };
