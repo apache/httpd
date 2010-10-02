@@ -109,13 +109,15 @@ typedef struct {
     apr_size_t cache_root_len;
     int dirlevels;               /* Number of levels of subdirectories */
     int dirlength;               /* Length of subdirectory names */
-    apr_off_t minfs;             /* minimum file size for cached files */
-    apr_off_t maxfs;             /* maximum file size for cached files */
 } disk_cache_conf;
 
 typedef struct {
+    apr_off_t minfs;             /* minimum file size for cached files */
+    apr_off_t maxfs;             /* maximum file size for cached files */
     apr_off_t readsize;          /* maximum data to attempt to cache in one go */
     apr_time_t readtime;         /* maximum time taken to cache in one go */
+    int minfs_set;
+    int maxfs_set;
     int readsize_set;
     int readtime_set;
 } disk_cache_dir_conf;
