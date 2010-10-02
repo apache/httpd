@@ -117,39 +117,15 @@ struct cache_disable {
 typedef struct {
     apr_array_header_t *cacheenable;    /* URLs to cache */
     apr_array_header_t *cachedisable;   /* URLs not to cache */
-    /* Maximum time to keep cached files in msecs */
-    apr_time_t maxex;
-    int maxex_set;
-    /* default time to keep cached file in msecs */
-    int defex_set;
-    apr_time_t defex;
-    /* factor for estimating expires date */
-    double factor;
-    int factor_set;
-    /** ignore the last-modified header when deciding to cache this request */
-    int no_last_mod_ignore_set;
-    int no_last_mod_ignore;
     /** ignore client's requests for uncached responses */
     int ignorecachecontrol;
     int ignorecachecontrol_set;
-    /** ignore expiration date from server */
-    int store_expired;
-    int store_expired_set;
-    /** ignore Cache-Control: private header from server */
-    int store_private;
-    int store_private_set;
-    /** ignore Cache-Control: no-store header from client or server */
-    int store_nostore;
-    int store_nostore_set;
     /* flag if CacheIgnoreHeader has been set */
     #define CACHE_IGNORE_HEADERS_SET   1
     #define CACHE_IGNORE_HEADERS_UNSET 0
     int ignore_headers_set;
     /** store the headers that should not be stored in the cache */
     apr_array_header_t *ignore_headers;
-    /* Minimum time to keep cached files in msecs */
-    apr_time_t minex;
-    int minex_set;
     /** ignore query-string when caching */
     int ignorequerystring;
     int ignorequerystring_set;
@@ -176,6 +152,31 @@ typedef struct {
 } cache_server_conf;
 
 typedef struct {
+    /** ignore the last-modified header when deciding to cache this request */
+    int no_last_mod_ignore_set;
+    int no_last_mod_ignore;
+    /** ignore expiration date from server */
+    int store_expired;
+    int store_expired_set;
+    /** ignore Cache-Control: private header from server */
+    int store_private;
+    int store_private_set;
+    /** ignore Cache-Control: no-store header from client or server */
+    int store_nostore;
+    int store_nostore_set;
+    /* Minimum time to keep cached files in msecs */
+    apr_time_t minex;
+    int minex_set;
+    /* Maximum time to keep cached files in msecs */
+    apr_time_t maxex;
+    int maxex_set;
+    /* default time to keep cached file in msecs */
+    int defex_set;
+    apr_time_t defex;
+    /* factor for estimating expires date */
+    double factor;
+    int factor_set;
+    /* set X-Cache headers */
     int x_cache;
     int x_cache_set;
     int x_cache_detail;

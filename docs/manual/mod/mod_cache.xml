@@ -354,7 +354,10 @@ manager</description>
 <description>The maximum time in seconds to cache a document</description>
 <syntax>CacheMaxExpire <var>seconds</var></syntax>
 <default>CacheMaxExpire 86400 (one day)</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -374,7 +377,10 @@ manager</description>
 <description>The minimum time in seconds to cache a document</description>
 <syntax>CacheMinExpire <var>seconds</var></syntax>
 <default>CacheMinExpire 0</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -394,7 +400,10 @@ manager</description>
 <description>The default duration to cache a document when no expiry date is specified.</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
 <default>CacheDefaultExpire 3600 (one hour)</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -415,9 +424,12 @@ manager</description>
 header.</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
-
+    
 <usage>
     <p>Ordinarily, documents without a last-modified date are not cached.
     Under some circumstances the last-modified date is removed (during
@@ -498,9 +510,12 @@ header.</description>
 LastModified date.</description>
 <syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
-
+    
 <usage>
     <p>In the event that a document does not provide an expiry date but does
     provide a last-modified date, an expiry date can be calculated based on
@@ -622,7 +637,10 @@ LastModified date.</description>
 <description>Attempt to cache responses that the server reports as expired</description>
 <syntax>CacheStoreExpired On|Off</syntax>
 <default>CacheStoreExpired Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -646,7 +664,10 @@ LastModified date.</description>
 <description>Attempt to cache responses that the server has marked as private</description>
 <syntax>CacheStorePrivate On|Off</syntax>
 <default>CacheStorePrivate Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -677,7 +698,10 @@ LastModified date.</description>
 <description>Attempt to cache requests or responses that have been marked as no-store.</description>
 <syntax>CacheStoreNoStore On|Off</syntax>
 <default>CacheStoreNoStore Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
