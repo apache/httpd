@@ -6,6 +6,11 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_cache: CacheLastModifiedFactor, CacheStoreNoStore, CacheStorePrivate,
+     CacheStoreExpired, CacheIgnoreNoLastMod, CacheDefaultExpire,
+     CacheMinExpire and CacheMaxExpire can be set per directory/location.
+     [Graham Leggett]
+
   *) mod_disk_cache: CacheMaxFileSize, CacheMinFileSize, CacheReadSize and
      CacheReadTime can be set per directory/location. [Graham Leggett]
 

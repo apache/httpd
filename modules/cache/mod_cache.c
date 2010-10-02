@@ -678,6 +678,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     request_rec *r = f->r;
     cache_request_rec *cache = (cache_request_rec *)f->ctx;
     cache_server_conf *conf;
+    cache_dir_conf *dconf;
     const char *cc_out, *cl;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
@@ -730,6 +731,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * parameters, and decides whether this URL should be cached at
      * all. This section is* run before the above section.
      */
+
+    dconf = ap_get_module_config(r->server->module_config, &cache_module);
 
     /* read expiry date; if a bad date, then leave it so the client can
      * read it
@@ -818,8 +821,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if a broken Expires header is present, don't cache it */
         reason = apr_pstrcat(p, "Broken expires header: ", exps, NULL);
     }
-    else if (!conf->store_expired && exp != APR_DATE_BAD
-                                  && exp < r->request_time)
+    else if (!dconf->store_expired && exp != APR_DATE_BAD
+            && exp < r->request_time)
     {
         /* if a Expires header is in the past, don't cache it */
         reason = "Expires header already expired; not cacheable";
@@ -840,7 +843,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason = "HTTP Status 304 Not Modified";
     }
     else if (r->status == HTTP_OK && lastmods == NULL && etag == NULL
-             && (exps == NULL) && (conf->no_last_mod_ignore ==0) &&
+             && (exps == NULL) && (dconf->no_last_mod_ignore ==0) &&
              !ap_cache_liststr(NULL, cc_out, "max-age", NULL) &&
              !ap_cache_liststr(NULL, cc_out, "s-maxage", NULL)) {
         /* 200 OK response from HTTP/1.0 and up without Last-Modified,
@@ -852,7 +855,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "No Last-Modified; Etag; Expires; Cache-Control:max-age or Cache-Control:s-maxage headers";
     }
-    else if (!conf->store_nostore &&
+    else if (!dconf->store_nostore &&
              ap_cache_liststr(NULL, cc_out, "no-store", NULL)) {
         /* RFC2616 14.9.2 Cache-Control: no-store response
          * indicating do not cache, or stop now if you are
@@ -865,7 +868,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "Cache-Control: no-store present";
     }
-    else if (!conf->store_private &&
+    else if (!dconf->store_private &&
              ap_cache_liststr(NULL, cc_out, "private", NULL)) {
         /* RFC2616 14.9.1 Cache-Control: private response
          * this object is marked for this user's eyes only. Behave
@@ -1151,16 +1154,16 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             errno = 0;
             x = apr_atoi64(max_age_val);
             if (errno) {
-                x = conf->defex;
+                x = dconf->defex;
             }
             else {
                 x = x * MSEC_ONE_SEC;
             }
-            if (x < conf->minex) {
-                x = conf->minex;
+            if (x < dconf->minex) {
+                x = dconf->minex;
             }
-            if (x > conf->maxex) {
-                x = conf->maxex;
+            if (x > dconf->maxex) {
+                x = dconf->maxex;
             }
             exp = date + x;
         }
@@ -1169,18 +1172,18 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
              * an expiration time of now. This causes some problems with
              * freshness calculations, so we choose the else path...
              */
-            apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
+            apr_time_t x = (apr_time_t) ((date - lastmod) * dconf->factor);
 
-            if (x < conf->minex) {
-                x = conf->minex;
+            if (x < dconf->minex) {
+                x = dconf->minex;
             }
-            if (x > conf->maxex) {
-                x = conf->maxex;
+            if (x > dconf->maxex) {
+                x = dconf->maxex;
             }
             exp = date + x;
         }
         else {
-            exp = date + conf->defex;
+            exp = date + dconf->defex;
         }
     }
     info->expire = exp;
@@ -1464,6 +1467,20 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 {
     cache_dir_conf *dconf = apr_pcalloc(p, sizeof(cache_dir_conf));
 
+    dconf->no_last_mod_ignore = 0;
+    dconf->store_expired = 0;
+    dconf->store_private = 0;
+    dconf->store_nostore = 0;
+
+    /* maximum time to cache a document */
+    dconf->maxex = DEFAULT_CACHE_MAXEXPIRE;
+    dconf->minex = DEFAULT_CACHE_MINEXPIRE;
+    /* default time to cache a document */
+    dconf->defex = DEFAULT_CACHE_EXPIRE;
+
+    /* factor used to estimate Expires date from LastModified date */
+    dconf->factor = DEFAULT_CACHE_LMFACTOR;
+
     dconf->x_cache = DEFAULT_X_CACHE;
     dconf->x_cache_detail = DEFAULT_X_CACHE_DETAIL;
 
@@ -1474,6 +1491,30 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
     cache_dir_conf *new = (cache_dir_conf *) apr_pcalloc(p, sizeof(cache_dir_conf));
     cache_dir_conf *add = (cache_dir_conf *) addv;
     cache_dir_conf *base = (cache_dir_conf *) basev;
+
+    new->no_last_mod_ignore = (add->no_last_mod_ignore_set == 0) ? base->no_last_mod_ignore : add->no_last_mod_ignore;
+    new->no_last_mod_ignore_set = add->no_last_mod_ignore_set || base->no_last_mod_ignore_set;
+
+    new->store_expired = (add->store_expired_set == 0) ? base->store_expired : add->store_expired;
+    new->store_expired_set = add->store_expired_set || base->store_expired_set;
+    new->store_private = (add->store_private_set == 0) ? base->store_private : add->store_private;
+    new->store_private_set = add->store_private_set || base->store_private_set;
+    new->store_nostore = (add->store_nostore_set == 0) ? base->store_nostore : add->store_nostore;
+    new->store_nostore_set = add->store_nostore_set || base->store_nostore_set;
+
+    /* maximum time to cache a document */
+    new->maxex = (add->maxex_set == 0) ? base->maxex : add->maxex;
+    new->maxex_set = add->maxex_set || base->maxex_set;
+    new->minex = (add->minex_set == 0) ? base->minex : add->minex;
+    new->minex_set = add->minex_set || base->minex_set;
+
+    /* default time to cache a document */
+    new->defex = (add->defex_set == 0) ? base->defex : add->defex;
+    new->defex_set = add->defex_set || base->defex_set;
+
+    /* factor used to estimate Expires date from LastModified date */
+    new->factor = (add->factor_set == 0) ? base->factor : add->factor;
+    new->factor_set = add->factor_set || base->factor_set;
 
     new->x_cache = (add->x_cache_set == 0) ? base->x_cache : add->x_cache;
     new->x_cache_set = add->x_cache_set || base->x_cache_set;
@@ -1494,27 +1535,8 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     ps->cacheenable = apr_array_make(p, 10, sizeof(struct cache_enable));
     /* array of URL prefixes for which caching is disabled */
     ps->cachedisable = apr_array_make(p, 10, sizeof(struct cache_disable));
-    /* maximum time to cache a document */
-    ps->maxex = DEFAULT_CACHE_MAXEXPIRE;
-    ps->maxex_set = 0;
-    ps->minex = DEFAULT_CACHE_MINEXPIRE;
-    ps->minex_set = 0;
-    /* default time to cache a document */
-    ps->defex = DEFAULT_CACHE_EXPIRE;
-    ps->defex_set = 0;
-    /* factor used to estimate Expires date from LastModified date */
-    ps->factor = DEFAULT_CACHE_LMFACTOR;
-    ps->factor_set = 0;
-    ps->no_last_mod_ignore_set = 0;
-    ps->no_last_mod_ignore = 0;
     ps->ignorecachecontrol = 0;
     ps->ignorecachecontrol_set = 0;
-    ps->store_expired = 0;
-    ps->store_expired_set = 0;
-    ps->store_private = 0;
-    ps->store_private_set = 0;
-    ps->store_nostore = 0;
-    ps->store_nostore_set = 0;
     /* array of headers that should not be stored in cache */
     ps->ignore_headers = apr_array_make(p, 10, sizeof(char *));
     ps->ignore_headers_set = CACHE_IGNORE_HEADERS_UNSET;
@@ -1553,35 +1575,11 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->cacheenable = apr_array_append(p,
                                        base->cacheenable,
                                        overrides->cacheenable);
-    /* maximum time to cache a document */
-    ps->maxex = (overrides->maxex_set == 0) ? base->maxex : overrides->maxex;
-    ps->minex = (overrides->minex_set == 0) ? base->minex : overrides->minex;
-    /* default time to cache a document */
-    ps->defex = (overrides->defex_set == 0) ? base->defex : overrides->defex;
-    /* factor used to estimate Expires date from LastModified date */
-    ps->factor =
-        (overrides->factor_set == 0) ? base->factor : overrides->factor;
 
-    ps->no_last_mod_ignore =
-        (overrides->no_last_mod_ignore_set == 0)
-        ? base->no_last_mod_ignore
-        : overrides->no_last_mod_ignore;
     ps->ignorecachecontrol  =
         (overrides->ignorecachecontrol_set == 0)
         ? base->ignorecachecontrol
         : overrides->ignorecachecontrol;
-    ps->store_expired  =
-        (overrides->store_expired_set == 0)
-        ? base->store_expired
-        : overrides->store_expired;
-    ps->store_private  =
-        (overrides->store_private_set == 0)
-        ? base->store_private
-        : overrides->store_private;
-    ps->store_nostore  =
-        (overrides->store_nostore_set == 0)
-        ? base->store_nostore
-        : overrides->store_nostore;
     ps->ignore_headers =
         (overrides->ignore_headers_set == CACHE_IGNORE_HEADERS_UNSET)
         ? base->ignore_headers
@@ -1639,13 +1637,10 @@ static const char *set_cache_quick_handler(cmd_parms *parms, void *dummy,
 static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
                                                 int flag)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->no_last_mod_ignore = flag;
-    conf->no_last_mod_ignore_set = 1;
+    dconf->no_last_mod_ignore = flag;
+    dconf->no_last_mod_ignore_set = 1;
     return NULL;
 
 }
@@ -1666,39 +1661,30 @@ static const char *set_cache_ignore_cachecontrol(cmd_parms *parms,
 static const char *set_cache_store_expired(cmd_parms *parms, void *dummy,
                                            int flag)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->store_expired = flag;
-    conf->store_expired_set = 1;
+    dconf->store_expired = flag;
+    dconf->store_expired_set = 1;
     return NULL;
 }
 
 static const char *set_cache_store_private(cmd_parms *parms, void *dummy,
                                            int flag)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->store_private = flag;
-    conf->store_private_set = 1;
+    dconf->store_private = flag;
+    dconf->store_private_set = 1;
     return NULL;
 }
 
 static const char *set_cache_store_nostore(cmd_parms *parms, void *dummy,
                                            int flag)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->store_nostore = flag;
-    conf->store_nostore_set = 1;
+    dconf->store_nostore = flag;
+    dconf->store_nostore_set = 1;
     return NULL;
 }
 
@@ -1850,56 +1836,44 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
 static const char *set_cache_maxex(cmd_parms *parms, void *dummy,
                                    const char *arg)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->maxex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
-    conf->maxex_set = 1;
+    dconf->maxex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
+    dconf->maxex_set = 1;
     return NULL;
 }
 
 static const char *set_cache_minex(cmd_parms *parms, void *dummy,
                                    const char *arg)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->minex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
-    conf->minex_set = 1;
+    dconf->minex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
+    dconf->minex_set = 1;
     return NULL;
 }
 
 static const char *set_cache_defex(cmd_parms *parms, void *dummy,
                                    const char *arg)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->defex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
-    conf->defex_set = 1;
+    dconf->defex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
+    dconf->defex_set = 1;
     return NULL;
 }
 
 static const char *set_cache_factor(cmd_parms *parms, void *dummy,
                                     const char *arg)
 {
-    cache_server_conf *conf;
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
     double val;
 
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
     if (sscanf(arg, "%lg", &val) != 1) {
         return "CacheLastModifiedFactor value must be a float";
     }
-    conf->factor = val;
-    conf->factor_set = 1;
+    dconf->factor = val;
+    dconf->factor_set = 1;
     return NULL;
 }
 
@@ -2041,30 +2015,30 @@ static const command_rec cache_cmds[] =
                    "caching is enabled"),
     AP_INIT_TAKE1("CacheDisable", add_cache_disable, NULL, RSRC_CONF|ACCESS_CONF,
                   "A partial URL prefix below which caching is disabled"),
-    AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF|ACCESS_CONF,
                   "The maximum time in seconds to cache a document"),
-    AP_INIT_TAKE1("CacheMinExpire", set_cache_minex, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheMinExpire", set_cache_minex, NULL, RSRC_CONF|ACCESS_CONF,
                   "The minimum time in seconds to cache a document"),
-    AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF|ACCESS_CONF,
                   "The default time in seconds to cache a document"),
     AP_INIT_FLAG("CacheQuickHandler", set_cache_quick_handler, NULL,
                  RSRC_CONF,
                  "Run the cache in the quick handler, default on"),
     AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL,
-                 RSRC_CONF,
+                 RSRC_CONF|ACCESS_CONF,
                  "Ignore Responses where there is no Last Modified Header"),
     AP_INIT_FLAG("CacheIgnoreCacheControl", set_cache_ignore_cachecontrol,
                  NULL, RSRC_CONF,
                  "Ignore requests from the client for uncached content"),
     AP_INIT_FLAG("CacheStoreExpired", set_cache_store_expired,
-                 NULL, RSRC_CONF,
+                 NULL, RSRC_CONF|ACCESS_CONF,
                  "Ignore expiration dates when populating cache, resulting in "
                  "an If-Modified-Since request to the backend on retrieval"),
     AP_INIT_FLAG("CacheStorePrivate", set_cache_store_private,
-                 NULL, RSRC_CONF,
+                 NULL, RSRC_CONF|ACCESS_CONF,
                  "Ignore 'Cache-Control: private' and store private content"),
     AP_INIT_FLAG("CacheStoreNoStore", set_cache_store_nostore,
-                 NULL, RSRC_CONF,
+                 NULL, RSRC_CONF|ACCESS_CONF,
                  "Ignore 'Cache-Control: no-store' and store sensitive content"),
     AP_INIT_ITERATE("CacheIgnoreHeaders", add_ignore_header, NULL, RSRC_CONF,
                     "A space separated list of headers that should not be "
@@ -2076,7 +2050,7 @@ static const command_rec cache_cmds[] =
                     NULL, RSRC_CONF, "A space separated list of session "
                     "identifiers that should be ignored for creating the key "
                     "of the cached entity."),
-    AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF|ACCESS_CONF,
                   "The factor used to estimate Expires date from "
                   "LastModified date"),
     AP_INIT_FLAG("CacheLock", set_cache_lock,
