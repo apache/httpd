@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) core: Speed up config parsing if using a very large number of config
+     files. PR 50002 [andrew cloudaccess net]
+
   *) mod_cache: Support the caching of HEAD requests. [Graham Leggett]
 
   *) htcacheclean: Allow the option to round up file sizes to a given

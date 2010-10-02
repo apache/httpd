@@ -1284,10 +1284,29 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
     ap_directive_t *curr_parent = NULL;
     char *l = apr_palloc (temp_pool, MAX_STRING_LEN);
     const char *errmsg;
+    ap_directive_t **last_ptr = NULL;
+
+    if(current) {
+        /* If we have to traverse the whole tree again for every included
+         * config file, the required time grows as O(n^2) with the number of
+         * files. This can be a significant delay for large configurations.
+         * Therefore we cache a pointer to the last node.
+         */
+        last_ptr = &(current->last);
+
+        if(last_ptr && *last_ptr) {
+            current = *last_ptr;
+        }
+    }
 
     if (current != NULL) {
         while (current->next) {
             current = current->next;
+        }
+
+        if(last_ptr) {
+            /* update cached pointer to last node */
+            *last_ptr = current;
         }
     }
 

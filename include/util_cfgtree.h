@@ -64,6 +64,13 @@ struct ap_directive_t {
     const char *filename;
     /** The line number the directive was on */
     int line_num;
+
+    /** A short-cut towards the last directive node in the tree.
+     *  The value may not always be up-to-date but it always points to
+     *  somewhere in the tree, nearer to the tail.
+     *  This value is only set in the first node
+     */
+    struct ap_directive_t *last;
 };
 
 /**
