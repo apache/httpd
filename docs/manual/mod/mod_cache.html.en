@@ -66,6 +66,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachekeybaseurl">CacheKeyBaseURL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelock">CacheLock</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelockmaxage">CacheLockMaxAge</a></li>
@@ -647,6 +648,36 @@ header.</td></tr>
     <div class="example"><h3>Example 2</h3><p><code>
       CacheIgnoreURLSessionIdentifiers None
     </code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheKeyBaseURL" id="CacheKeyBaseURL">CacheKeyBaseURL</a> <a name="cachekeybaseurl" id="cachekeybaseurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override the base URL of reverse proxied cache keys.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheKeyBaseURL <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheKeyBaseURL http://example.com</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table>
+  <p>When the <code class="directive"><a href="#cachekeybaseurl">CacheKeyBaseURL</a></code> directive
+  is specified, the URL provided will be used as the base URL to calculate
+  the URL of the cache keys in the reverse proxy configuration. When not specified,
+  the scheme, hostname and port of the current virtual host is used to construct
+  the cache key. When a cluster of machines is present, and all cached entries
+  should be cached beneath the same cache key, a new base URL can be specified
+  with this directive.</p>
+
+  <div class="example"><p><code>
+    # Override the base URL of the cache key.<br />
+    CacheKeyBaseURL http://www.example.com/<br />
+  </code></p></div>
+
+  <div class="warning">Take care when setting this directive. If two separate virtual
+  hosts are accidentally given the same base URL, entries from one virtual host
+  will be served to the other.</div>
 
 
 </div>
