@@ -917,4 +917,35 @@ LastModified date.</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CacheKeyBaseURL</name>
+<description>Override the base URL of reverse proxied cache keys.</description>
+<syntax>CacheKeyBaseURL <var>URL</var></syntax>
+<default>CacheKeyBaseURL http://example.com</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.3.9 and later</compatibility>
+
+<usage>
+  <p>When the <directive module="mod_cache">CacheKeyBaseURL</directive> directive
+  is specified, the URL provided will be used as the base URL to calculate
+  the URL of the cache keys in the reverse proxy configuration. When not specified,
+  the scheme, hostname and port of the current virtual host is used to construct
+  the cache key. When a cluster of machines is present, and all cached entries
+  should be cached beneath the same cache key, a new base URL can be specified
+  with this directive.</p>
+
+  <example>
+    # Override the base URL of the cache key.<br />
+    CacheKeyBaseURL http://www.example.com/<br />
+  </example>
+
+  <note type="warning">Take care when setting this directive. If two separate virtual
+  hosts are accidentally given the same base URL, entries from one virtual host
+  will be served to the other.</note>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>

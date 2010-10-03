@@ -149,6 +149,8 @@ typedef struct {
     int x_cache_set;
     int x_cache_detail;
     int x_cache_detail_set;
+    apr_uri_t *base_uri;
+    int base_uri_set;
 } cache_server_conf;
 
 typedef struct {
