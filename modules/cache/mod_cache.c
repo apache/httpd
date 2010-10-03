@@ -1612,6 +1612,10 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->x_cache_detail_set == 0)
         ? base->x_cache_detail
         : overrides->x_cache_detail;
+    ps->base_uri =
+        (overrides->base_uri_set == 0)
+        ? base->base_uri
+        : overrides->base_uri;
     return ps;
 }
 
@@ -1981,6 +1985,28 @@ static const char *set_cache_x_cache_detail(cmd_parms *parms, void *dummy, int f
     return NULL;
 }
 
+static const char *set_cache_key_base_url(cmd_parms *parms, void *dummy,
+        const char *arg)
+{
+    cache_server_conf *conf;
+    apr_status_t rv;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    conf->base_uri = apr_pcalloc(parms->pool, sizeof(apr_uri_t));
+    rv = apr_uri_parse(parms->pool, arg, conf->base_uri);
+    if (rv != APR_SUCCESS) {
+        return apr_psprintf(parms->pool, "Could not parse '%s' as an URL.", arg);
+    }
+    else if (!conf->base_uri->scheme && !conf->base_uri->hostname &&
+            !conf->base_uri->port_str) {
+        return apr_psprintf(parms->pool, "URL '%s' must contain at least one of a scheme, a hostname or a port.", arg);
+    }
+    conf->base_uri_set = 1;
+    return NULL;
+}
+
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -2063,6 +2089,8 @@ static const command_rec cache_cmds[] =
     AP_INIT_FLAG("CacheDetailHeader", set_cache_x_cache_detail, NULL,
                  RSRC_CONF | ACCESS_CONF,
                  "Add a X-Cache-Detail header to responses. Default is off."),
+    AP_INIT_TAKE1("CacheKeyBaseURL", set_cache_key_base_url, NULL, RSRC_CONF,
+                  "Override the base URL of reverse proxied cache keys."),
     {NULL}
 };
 

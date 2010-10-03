@@ -414,10 +414,15 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * in the reverse proxy case.
      */
     if (!r->proxyreq || (r->proxyreq == PROXYREQ_REVERSE)) {
-        /* Use _default_ as the hostname if none present, as in mod_vhost */
-        hostname =  ap_get_server_name(r);
-        if (!hostname) {
-            hostname = "_default_";
+        if (conf->base_uri && conf->base_uri->hostname) {
+            hostname = conf->base_uri->hostname;
+        }
+        else {
+            /* Use _default_ as the hostname if none present, as in mod_vhost */
+            hostname =  ap_get_server_name(r);
+            if (!hostname) {
+                hostname = "_default_";
+            }
         }
     }
     else if(r->parsed_uri.hostname) {
@@ -449,7 +454,12 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         scheme = lcs;
     }
     else {
-        scheme = ap_http_scheme(r);
+        if (conf->base_uri && conf->base_uri->scheme) {
+            scheme = conf->base_uri->scheme;
+        }
+        else {
+            scheme = ap_http_scheme(r);
+        }
     }
 
     /*
@@ -460,7 +470,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * scheme - if available. Otherwise use the port-number of the current
      * server.
      */
-    if(r->proxyreq && (r->proxyreq != PROXYREQ_REVERSE)) {
+    if (r->proxyreq && (r->proxyreq != PROXYREQ_REVERSE)) {
         if (r->parsed_uri.port_str) {
             port_str = apr_pcalloc(p, strlen(r->parsed_uri.port_str) + 2);
             port_str[0] = ':';
@@ -481,8 +491,16 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         }
     }
     else {
-        /* Use the server port */
-        port_str = apr_psprintf(p, ":%u", ap_get_server_port(r));
+        if (conf->base_uri && conf->base_uri->port_str) {
+            port_str = conf->base_uri->port_str;
+        }
+        else if (conf->base_uri && conf->base_uri->hostname) {
+            port_str = "";
+        }
+        else {
+            /* Use the server port */
+            port_str = apr_psprintf(p, ":%u", ap_get_server_port(r));
+        }
     }
 
     /*
