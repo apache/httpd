@@ -37,14 +37,18 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-if [ -f /etc/sysconfig/htcacheclean ]; then
-        . /etc/sysconfig/htcacheclean
+# What were we called? Multiple instances of the same daemon can be
+# created by creating suitably named symlinks to this startup script
+prog=$(basename $0 | sed -e 's/^[SK][0-9][0-9]//')
+
+if [ -f /etc/sysconfig/${prog} ]; then
+        . /etc/sysconfig/${prog}
 fi
 
-# Path to the apachectl script, server binary, and short-form for messages.
+# Path to htcacheclean, server binary, and short-form for messages.
 htcacheclean=${HTTPD-/usr/sbin/htcacheclean}
-prog=htcacheclean
-lockfile=${LOCKFILE-/var/lock/subsys/htcacheclean}
+lockfile=${LOCKFILE-/var/lock/subsys/${prog}}
+pidfile=/var/log/httpd/${prog}.pid
 interval=${INTERVAL-10}
 cachepath=${CACHEPATH-/var/cache/httpd/cache-root}
 limit=${LIMIT-100M}
@@ -52,7 +56,7 @@ RETVAL=0
 
 start() {
         echo -n $"Starting $prog: "
-        daemon $htcacheclean -d "$interval" -p "$cachepath" -l "$limit" $OPTIONS
+        daemon --pidfile=${pidfile} $htcacheclean -d "$interval" -p "$cachepath" -l "$limit" -P "$pidfile" $OPTIONS
         RETVAL=$?
         echo
         [ $RETVAL = 0 ] && touch ${lockfile}
@@ -60,7 +64,7 @@ start() {
 }
 stop() {
 	echo -n $"Stopping $prog: "
-	killproc $htcacheclean
+	killproc -p ${pidfile} $htcacheclean
 	RETVAL=$?
 	echo
 	[ $RETVAL = 0 ] && rm -f ${lockfile}
@@ -75,7 +79,7 @@ case "$1" in
 	stop
 	;;
   status)
-        status $htcacheclean
+        status -p ${pidfile} $htcacheclean
 	RETVAL=$?
 	;;
   restart)
@@ -83,7 +87,7 @@ case "$1" in
 	start
 	;;
   condrestart)
-	if status $htcacheclean >&/dev/null; then
+	if status -p ${pidfile} $htcacheclean >&/dev/null; then
 		stop
 		start
 	fi
