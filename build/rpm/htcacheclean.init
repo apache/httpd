@@ -39,7 +39,7 @@
 
 # What were we called? Multiple instances of the same daemon can be
 # created by creating suitably named symlinks to this startup script
-prog=`basename $0`
+prog=$(basename $0 | sed -e 's/^[SK][0-9][0-9]//')
 
 if [ -f /etc/sysconfig/${prog} ]; then
         . /etc/sysconfig/${prog}
