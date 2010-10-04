@@ -1064,8 +1064,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     apr_bucket *e;
     apr_status_t rv = APR_SUCCESS;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
-                                                 &disk_cache_module);
     disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &disk_cache_module);
     int seen_eos = 0;
 
