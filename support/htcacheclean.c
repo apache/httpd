@@ -99,10 +99,13 @@ static int benice;      /* flag: true means nice mode is activated */
 static int dryrun;      /* flag: true means dry run, don't actually delete
                                  anything */
 static int deldirs;     /* flag: true means directories should be deleted */
+static int listurls;    /* flag: true means list cached urls */
+static int listextended;/* flag: true means list cached urls */
 static int baselen;     /* string length of the path to the proxy directory */
 static apr_time_t now;  /* start time of this processing run */
 
 static apr_file_t *errfile;   /* stderr file handle */
+static apr_file_t *outfile;   /* stdout file handle */
 static apr_off_t unsolicited; /* file size summary for deleted unsolicited
                                  files */
 static APR_RING_ENTRY(_entry) root; /* ENTRY ring anchor */
@@ -299,6 +302,195 @@ static void delete_entry(char *path, char *basename, apr_pool_t *pool)
             delcount = 0;
         }
     }
+}
+
+/*
+ * list the cache directory tree
+ */
+static int list_urls(char *path, apr_pool_t *pool, apr_off_t round)
+{
+    apr_dir_t *dir;
+    apr_finfo_t info;
+    apr_size_t len;
+    apr_pool_t *p;
+    apr_file_t *fd;
+    const char *ext, *nextpath;
+    char *url;
+    apr_uint32_t format;
+    disk_cache_info_t disk_info;
+
+    apr_pool_create(&p, pool);
+
+    if (apr_dir_open(&dir, path, p) != APR_SUCCESS) {
+        return 1;
+    }
+
+    while (apr_dir_read(&info, 0, dir) == APR_SUCCESS && !interrupted) {
+
+        if (info.filetype == APR_DIR) {
+            if (!strcmp(info.name, ".") || !strcmp(info.name, "..")) {
+                continue;
+            }
+
+            if (list_urls(apr_pstrcat(p, path, "/", info.name, NULL), pool, round)) {
+                return 1;
+            }
+        }
+
+        else if (info.filetype == APR_REG) {
+
+            ext = strchr(info.name, '.');
+
+            if (!strcasecmp(ext, CACHE_HEADER_SUFFIX)) {
+
+                nextpath = apr_pstrcat(p, path, "/", info.name, NULL);
+
+                if (apr_file_open(&fd, nextpath, APR_FOPEN_READ
+                        | APR_FOPEN_BINARY, APR_OS_DEFAULT, p) == APR_SUCCESS) {
+                    len = sizeof(format);
+                    if (apr_file_read_full(fd, &format, len, &len)
+                            == APR_SUCCESS) {
+                        if (format == DISK_FORMAT_VERSION) {
+                            apr_off_t offset = 0;
+
+                            apr_file_seek(fd, APR_SET, &offset);
+
+                            len = sizeof(disk_cache_info_t);
+
+                            if (apr_file_read_full(fd, &disk_info, len, &len)
+                                    == APR_SUCCESS) {
+                                len = disk_info.name_len;
+                                url = apr_palloc(p, len + 1);
+                                url[len] = 0;
+
+                                if (apr_file_read_full(fd, url, len, &len)
+                                        == APR_SUCCESS) {
+
+                                    if (listextended) {
+                                        apr_finfo_t hinfo, dinfo;
+
+                                        /* stat the header file */
+                                        if (APR_SUCCESS != apr_file_info_get(
+                                                &hinfo, APR_FINFO_SIZE, fd)) {
+                                            /* ignore the file */
+                                        }
+                                        else if (disk_info.has_body && APR_SUCCESS
+                                                != apr_stat(
+                                                        &dinfo,
+                                                        apr_pstrcat(
+                                                                p,
+                                                                path,
+                                                                "/",
+                                                                apr_pstrndup(
+                                                                        p,
+                                                                        info.name,
+                                                                        ext
+                                                                                - info.name),
+                                                                CACHE_DATA_SUFFIX,
+                                                                NULL),
+                                                        APR_FINFO_SIZE
+                                                                | APR_FINFO_IDENT,
+                                                        p)) {
+                                            /* ignore the file */
+                                        }
+                                        else if (disk_info.has_body && (dinfo.device
+                                                != disk_info.device
+                                                || dinfo.inode
+                                                        != disk_info.inode)) {
+                                            /* ignore the file */
+                                        }
+                                        else {
+
+                                            apr_file_printf(
+                                                    outfile,
+                                                    "%s %" APR_SIZE_T_FMT
+                                                    " %" APR_SIZE_T_FMT
+                                                    " %d %" APR_SIZE_T_FMT
+                                                    " %" APR_TIME_T_FMT
+                                                    " %" APR_TIME_T_FMT
+                                                    " %" APR_TIME_T_FMT
+                                                    " %" APR_TIME_T_FMT
+                                                    " %d %d\n",
+                                                    url,
+                                                    round_up(hinfo.size, round),
+                                                    round_up(
+                                                            disk_info.has_body ? dinfo.size
+                                                                    : 0, round),
+                                                    disk_info.status,
+                                                    disk_info.entity_version,
+                                                    disk_info.date,
+                                                    disk_info.expire,
+                                                    disk_info.request_time,
+                                                    disk_info.response_time,
+                                                    disk_info.has_body,
+                                                    disk_info.header_only);
+                                        }
+                                    }
+                                    else {
+                                        apr_finfo_t dinfo;
+
+                                        /* stat the data file */
+                                        if (disk_info.has_body && APR_SUCCESS
+                                                != apr_stat(
+                                                        &dinfo,
+                                                        apr_pstrcat(
+                                                                p,
+                                                                path,
+                                                                "/",
+                                                                apr_pstrndup(
+                                                                        p,
+                                                                        info.name,
+                                                                        ext
+                                                                                - info.name),
+                                                                CACHE_DATA_SUFFIX,
+                                                                NULL),
+                                                        APR_FINFO_SIZE
+                                                                | APR_FINFO_IDENT,
+                                                        p)) {
+                                            /* ignore the file */
+                                        }
+                                        else if (disk_info.has_body && (dinfo.device
+                                                != disk_info.device
+                                                || dinfo.inode
+                                                        != disk_info.inode)) {
+                                            /* ignore the file */
+                                        }
+                                        else {
+                                            apr_file_printf(outfile, "%s\n",
+                                                    url);
+                                        }
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                    apr_file_close(fd);
+
+                }
+            }
+        }
+
+    }
+
+    apr_dir_close(dir);
+
+    if (interrupted) {
+        return 1;
+    }
+
+    apr_pool_destroy(p);
+
+    if (benice) {
+        apr_sleep(NICE_DELAY);
+    }
+
+    if (interrupted) {
+        return 1;
+    }
+
+    return 0;
 }
 
 /*
@@ -1019,6 +1211,14 @@ static void usage(const char *error)
     "       the disk cache. This option is only possible together with the"  NL
     "       -d option."                                                      NL
                                                                              NL
+    "  -a   List the URLs currently stored in the cache. Variants of the"    NL
+    "       same URL will be listed once for each variant."                  NL
+                                                                             NL
+    "  -A   List the URLs currently stored in the cache, along with their"   NL
+    "       attributes in the following order: url, header size, body size," NL
+    "       status, entity version, date, expiry, request time,"             NL
+    "       response time, body present, head request."                      NL
+                                                                             NL
     "Should an URL be provided on the command line, the URL will be"         NL
     "deleted from the cache. A reverse proxied URL is made up as follows:"   NL
     "http://<hostname>:<port><path>?[query]. So, for the path \"/\" on the"  NL
@@ -1112,13 +1312,14 @@ int main(int argc, const char * const argv[])
     }
     apr_pool_abort_set(oom, pool);
     apr_file_open_stderr(&errfile, pool);
+    apr_file_open_stdout(&outfile, pool);
     apr_signal(SIGINT, setterm);
     apr_signal(SIGTERM, setterm);
 
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
-        status = apr_getopt(o, "iDnvrtd:l:L:p:P:R:", &opt, &arg);
+        status = apr_getopt(o, "iDnvrtd:l:p:P:R:aA", &opt, &arg);
         if (status == APR_EOF) {
             break;
         }
@@ -1212,6 +1413,21 @@ int main(int argc, const char * const argv[])
                 } while(0);
                 break;
 
+            case 'a':
+                if (listurls) {
+                    usage_repeated_arg(pool, opt);
+                }
+                listurls = 1;
+                break;
+
+            case 'A':
+                if (listurls) {
+                    usage_repeated_arg(pool, opt);
+                }
+                listurls = 1;
+                listextended = 1;
+                break;
+
             case 'p':
                 if (proxypath) {
                     usage_repeated_arg(pool, opt);
@@ -1302,8 +1518,8 @@ int main(int argc, const char * const argv[])
          usage("Option -d must be greater than zero");
     }
 
-    if (isdaemon && (verbose || realclean || dryrun)) {
-         usage("Option -d cannot be used with -v, -r or -D");
+    if (isdaemon && (verbose || realclean || dryrun || listurls)) {
+         usage("Option -d cannot be used with -v, -r, -L or -D");
     }
 
     if (!isdaemon && intelligent) {
@@ -1314,7 +1530,7 @@ int main(int argc, const char * const argv[])
          usage("Option -p must be specified");
     }
 
-    if (max <= 0) {
+    if (!listurls && max <= 0) {
          usage("Option -l must be greater than zero");
     }
 
@@ -1328,6 +1544,11 @@ int main(int argc, const char * const argv[])
         log_pid(pool, pidfilename, &pidfile); /* before daemonizing, so we
                                                * can report errors
                                                */
+    }
+
+    if (listurls) {
+        list_urls(path, instance, round);
+        return (interrupted != 0);
     }
 
 #ifndef DEBUG

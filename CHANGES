@@ -6,6 +6,10 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) htcacheclean: Allow the listing of valid URLs within the cache, with
+     the option to list entry metadata such as sizes and times. [Graham
+     Leggett]
+
   *) mod_cache: Allow control over the base URL of reverse proxied requests
      using the CacheKeyBaseURL directive, so that the cache key can be
      calculated from the endpoint URL instead of the server URL. [Graham
