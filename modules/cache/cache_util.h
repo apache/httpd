@@ -248,8 +248,8 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
  * no point is it possible for this lock to permanently deny access to
  * the backend.
  */
-apr_status_t cache_try_lock(cache_server_conf *conf,
-        cache_request_rec *cache, request_rec *r, char *key);
+apr_status_t cache_try_lock(cache_server_conf *conf, cache_request_rec *cache,
+        request_rec *r);
 
 /**
  * Remove the cache lock, if present.
@@ -264,8 +264,7 @@ apr_status_t cache_try_lock(cache_server_conf *conf,
  * removed if the bucket brigade contains an EOS bucket.
  */
 apr_status_t cache_remove_lock(cache_server_conf *conf,
-        cache_request_rec *cache, request_rec *r, char *key,
-        apr_bucket_brigade *bb);
+        cache_request_rec *cache, request_rec *r, apr_bucket_brigade *bb);
 
 cache_provider_list *cache_get_providers(request_rec *r,
         cache_server_conf *conf, apr_uri_t uri);
