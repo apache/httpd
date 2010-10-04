@@ -84,9 +84,11 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
         return APR_EGENERAL;
     }
 
-    rv = cache_generate_key(r, r->pool, &cache->key);
-    if (rv != APR_SUCCESS) {
-        return rv;
+    if (!cache->key) {
+        rv = cache_generate_key(r, r->pool, &cache->key);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
     }
 
     list = cache->providers;
@@ -207,9 +209,11 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         return APR_EGENERAL;
     }
 
-    rv = cache_generate_key(r, r->pool, &cache->key);
-    if (rv != APR_SUCCESS) {
-        return rv;
+    if (!cache->key) {
+        rv = cache_generate_key(r, r->pool, &cache->key);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
     }
 
     if (!ap_cache_check_allowed(r)) {
