@@ -110,10 +110,6 @@ int nlmUnloadSignaled(int wait);
 
 #define MPM_HARD_LIMITS_FILE "/mpm_default.h"
 
-/* config globals */
-
-server_rec *ap_server_conf;
-
 /* *Non*-shared http_main globals... */
 
 static int ap_threads_per_child=0;         /* Worker threads per child */
@@ -1145,7 +1141,7 @@ static void netware_rewrite_args(process_rec *process)
 
             optbuf[0] = '-';
             optbuf[2] = '\0';
-            apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
+            apr_getopt_init(&opt, process->pool, process->argc, process->argv);
             while (apr_getopt(opt, AP_SERVER_BASEARGS"n:", optbuf + 1, &opt_arg) == APR_SUCCESS) {
                 switch (optbuf[1]) {
                 case 'n':
