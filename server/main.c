@@ -453,7 +453,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_t *opt;
     apr_status_t rv;
     module **mod;
-    const char *optarg;
+    const char *opt_arg;
     APR_OPTIONAL_FN_TYPE(ap_signal_server) *signal_server;
 
     AP_MONCONTROL(0); /* turn off profiling of startup */
@@ -496,43 +496,43 @@ int main(int argc, const char * const argv[])
      */
     apr_getopt_init(&opt, pcommands, process->argc, process->argv);
 
-    while ((rv = apr_getopt(opt, AP_SERVER_BASEARGS, &c, &optarg))
+    while ((rv = apr_getopt(opt, AP_SERVER_BASEARGS, &c, &opt_arg))
             == APR_SUCCESS) {
         char **new;
 
         switch (c) {
         case 'c':
             new = (char **)apr_array_push(ap_server_post_read_config);
-            *new = apr_pstrdup(pcommands, optarg);
+            *new = apr_pstrdup(pcommands, opt_arg);
             break;
 
         case 'C':
             new = (char **)apr_array_push(ap_server_pre_read_config);
-            *new = apr_pstrdup(pcommands, optarg);
+            *new = apr_pstrdup(pcommands, opt_arg);
             break;
 
         case 'd':
-            def_server_root = optarg;
+            def_server_root = opt_arg;
             break;
 
         case 'D':
             new = (char **)apr_array_push(ap_server_config_defines);
-            *new = apr_pstrdup(pcommands, optarg);
+            *new = apr_pstrdup(pcommands, opt_arg);
             /* Setting -D DUMP_VHOSTS is equivalent to setting -S */
-            if (strcmp(optarg, "DUMP_VHOSTS") == 0)
+            if (strcmp(opt_arg, "DUMP_VHOSTS") == 0)
                 configtestonly = 1;
             /* Setting -D DUMP_MODULES is equivalent to setting -M */
-            if (strcmp(optarg, "DUMP_MODULES") == 0)
+            if (strcmp(opt_arg, "DUMP_MODULES") == 0)
                 configtestonly = 1;
             break;
 
         case 'e':
-            if (ap_parse_log_level(optarg, &ap_default_loglevel) != NULL)
+            if (ap_parse_log_level(opt_arg, &ap_default_loglevel) != NULL)
                 usage(process);
             break;
 
         case 'E':
-            temp_error_log = apr_pstrdup(process->pool, optarg);
+            temp_error_log = apr_pstrdup(process->pool, opt_arg);
             break;
 
         case 'X':
@@ -541,7 +541,7 @@ int main(int argc, const char * const argv[])
             break;
 
         case 'f':
-            confname = optarg;
+            confname = opt_arg;
             break;
 
         case 'v':
