@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2010-09-29" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2010-10-04" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -31,6 +31,9 @@ htcacheclean \- Clean up the disk cache
  
 .PP
 \fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] [ -\fBP\fR\fIpidfile\fR ] [ -\fBR\fR\fIround\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
+ 
+.PP
+\fBhtcacheclean\fR [ -\fBv\fR ] [ -\fBR\fR\fIround\fR ] -\fBp\fR\fIpath\fR [ -\fBa\fR ] [ -\fBA\fR ]
  
 .PP
 \fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBR\fR\fIround\fR ] -\fBp\fR\fIpath\fR \fIurl\fR
@@ -78,6 +81,12 @@ Specify \fIlimit\fR as the total disk cache size limit\&. The value is expressed
 .TP
 -i
 Be intelligent and run only when there was a modification of the disk cache\&. This option is only possible together with the -d option\&.  
+.TP
+-a
+List the URLs currently stored in the cache\&. Variants of the same URL will be listed once for each variant\&.  
+.TP
+-A
+List the URLs currently stored in the cache, along with their attributes in the following order: url, header size, body size, status, entity version, date, expiry, request time, response time, body present, head request\&.  
  
 .SH "DELETING A SPECIFIC URL"
  
@@ -86,6 +95,46 @@ If htcacheclean is passed one or more URLs, each URL will be deleted from the ca
  
 .PP
 When a reverse proxied URL is to be deleted, the effective URL is constructed from the \fBHost\fR header, the \fBport\fR, the \fBpath\fR and the \fBquery\fR\&. Note the '?' in the URL must always be specified explicitly, whether a query string is present or not\&. For example, an attempt to delete the path \fB/\fR from the server \fBlocalhost\fR, the URL to delete would be \fBhttp://localhost:80/?\fR\&.
+ 
+.SH "LISTING URLS IN THE CACHE"
+ 
+.PP
+By passing the -a or -A options to htcacheclean, the URLs within the cache will be listed as they are found, one URL per line\&. The -A option dumps the full cache entry after the URL, with fields in the following order:
+ 
+ 
+.TP
+url
+The URL of the entry\&. 
+.TP
+header size
+The size of the header in bytes\&. 
+.TP
+body size
+The size of the body in bytes\&. 
+.TP
+status
+Status of the cached response\&. 
+.TP
+entity version
+The number of times this entry has been revalidated without being deleted\&. 
+.TP
+date
+Date of the response\&. 
+.TP
+expiry
+Expiry date of the response\&. 
+.TP
+request time
+Time of the start of the request\&. 
+.TP
+response time
+Time of the end of the request\&. 
+.TP
+body present
+If 0, no body is stored with this request, 1 otherwise\&. 
+.TP
+head request
+If 1, the entry contains a cached HEAD request with no body, 0 otherwise\&. 
  
 .SH "EXIT STATUS"
  

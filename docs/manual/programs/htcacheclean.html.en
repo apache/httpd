@@ -36,6 +36,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#delete">Deleting a specific URL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#list">Listing URLs in the Cache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#exit">Exit Status</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -60,6 +61,13 @@
     -<strong>d</strong><var>interval</var>
     -<strong>p</strong><var>path</var>
     -<strong>l</strong><var>limit</var></code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>v</strong> ]
+    [ -<strong>R</strong><var>round</var> ]
+    -<strong>p</strong><var>path</var>
+    [ -<strong>a</strong> ]
+    [ -<strong>A</strong> ]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>D</strong> ]
@@ -129,7 +137,18 @@
     <dd>Be intelligent and run only when there was a modification of the disk
     cache. This option is only possible together with the <code>-d</code>
     option.</dd>
+
+    <dt><code>-a</code></dt>
+    <dd>List the URLs currently stored in the cache. Variants of the same URL
+    will be listed once for each variant.</dd>
+
+    <dt><code>-A</code></dt>
+    <dd>List the URLs currently stored in the cache, along with their
+    attributes in the following order: url, header size, body size, status,
+    entity version, date, expiry, request time, response time, body present,
+    head request.</dd>
     </dl>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="delete" id="delete">Deleting a specific URL</a></h2>
@@ -145,6 +164,32 @@
     attempt to delete the path <strong>/</strong> from the server
     <strong>localhost</strong>, the URL to delete would be
     <strong>http://localhost:80/?</strong>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="list" id="list">Listing URLs in the Cache</a></h2>
+    <p>By passing the <code>-a</code> or <code>-A</code> options to
+    <code>htcacheclean</code>, the URLs within the cache will be listed
+    as they are found, one URL per line. The <code>-A</code> option
+    dumps the full cache entry after the URL, with fields in the
+    following order:</p>
+
+    <dl>
+        <dt>url</dt><dd>The URL of the entry.</dd>
+        <dt>header size</dt><dd>The size of the header in bytes.</dd>
+        <dt>body size</dt><dd>The size of the body in bytes.</dd>
+        <dt>status</dt><dd>Status of the cached response.</dd>
+        <dt>entity version</dt><dd>The number of times this entry has been
+        revalidated without being deleted.</dd>
+        <dt>date</dt><dd>Date of the response.</dd>
+        <dt>expiry</dt><dd>Expiry date of the response.</dd>
+        <dt>request time</dt><dd>Time of the start of the request.</dd>
+        <dt>response time</dt><dd>Time of the end of the request.</dd>
+        <dt>body present</dt><dd>If 0, no body is stored with this request,
+        1 otherwise.</dd>
+        <dt>head request</dt><dd>If 1, the entry contains a cached HEAD
+        request with no body, 0 otherwise.</dd>
+    </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
