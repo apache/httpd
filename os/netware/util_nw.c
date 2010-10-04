@@ -47,20 +47,20 @@ int _NonAppCheckUnload(void)
 }
 
 /* down server event callback */
-void ap_down_server_cb(void *, void *)
+void ap_down_server_cb(void *a, void *b)
 {
     nlmUnloadSignaled(0);
     return;
 }
 
 /* Required place holder event callback */
-void ap_dummy_cb(void *, void *)
+void ap_dummy_cb(void *a, void *b)
 {
     return;
 }
 
 /* destroy callback resources */
-void ap_cb_destroy(void *)
+void ap_cb_destroy(void *a)
 {
     /* cleanup down event notification */
     UnRegisterEventNotification(eh);
@@ -107,5 +107,6 @@ int _NonAppStart
     /* clean-up */
     NXVmRegisterExitHandler(ap_cb_destroy, NULL);
 
+    return 0;
 }
 
