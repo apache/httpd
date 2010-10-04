@@ -138,7 +138,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
                  * backend without any attempt to cache. this stops
                  * duplicated simultaneous attempts to cache an entity.
                  */
-                rv = cache_try_lock(conf, cache, r, NULL);
+                rv = cache_try_lock(conf, cache, r);
                 if (APR_SUCCESS == rv) {
 
                     /*
@@ -384,7 +384,7 @@ static int cache_handler(request_rec *r)
              * backend without any attempt to cache. this stops
              * duplicated simultaneous attempts to cache an entity.
              */
-            rv = cache_try_lock(conf, cache, r, NULL);
+            rv = cache_try_lock(conf, cache, r);
             if (APR_SUCCESS == rv) {
 
                 /*
@@ -599,8 +599,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
             ap_remove_output_filter(f);
 
             /* give someone else the chance to cache the file */
-            cache_remove_lock(conf, cache, f->r, cache->handle ?
-                    (char *)cache->handle->cache_obj->key : NULL, NULL);
+            cache_remove_lock(conf, cache, f->r, NULL);
 
             /* give up trying to cache, just step out the way */
             APR_BRIGADE_PREPEND(in, cache->out);
@@ -620,8 +619,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
         }
 
         /* conditionally remove the lock as soon as we see the eos bucket */
-        cache_remove_lock(conf, cache, f->r, cache->handle ?
-                (char *)cache->handle->cache_obj->key : NULL, cache->out);
+        cache_remove_lock(conf, cache, f->r, cache->out);
 
         if (APR_BRIGADE_EMPTY(cache->out)) {
             if (APR_BRIGADE_EMPTY(in)) {
@@ -641,8 +639,7 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
                 ap_remove_output_filter(f);
 
                 /* give someone else the chance to cache the file */
-                cache_remove_lock(conf, cache, f->r, cache->handle ?
-                        (char *)cache->handle->cache_obj->key : NULL, NULL);
+                cache_remove_lock(conf, cache, f->r, NULL);
 
                 return ap_pass_brigade(f->next, in);
             }
@@ -949,8 +946,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                         reason));
 
         /* let someone else attempt to cache */
-        cache_remove_lock(conf, cache, r, cache->handle ?
-                (char *)cache->handle->cache_obj->key : NULL, NULL);
+        cache_remove_lock(conf, cache, r, NULL);
 
         return ap_pass_brigade(f->next, bb);
     }
@@ -967,8 +963,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_remove_output_filter(f);
 
         /* remove the lock file unconditionally */
-        cache_remove_lock(conf, cache, r, cache->handle ?
-                (char *)cache->handle->cache_obj->key : NULL, NULL);
+        cache_remove_lock(conf, cache, r, NULL);
 
         /* ship the data up the stack */
         return ap_pass_brigade(f->next, in);
@@ -1071,8 +1066,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         /* Caching layer declined the opportunity to cache the response */
         ap_remove_output_filter(f);
-        cache_remove_lock(conf, cache, r, cache->handle ?
-                (char *)cache->handle->cache_obj->key : NULL, NULL);
+        cache_remove_lock(conf, cache, r, NULL);
         return ap_pass_brigade(f->next, in);
     }
 
@@ -1285,8 +1279,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
 
         /* let someone else attempt to cache */
-        cache_remove_lock(conf, cache, r, cache->handle ?
-                (char *)cache->handle->cache_obj->key : NULL, NULL);
+        cache_remove_lock(conf, cache, r, NULL);
 
         return ap_pass_brigade(f->next, bb);
     }
@@ -1300,8 +1293,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 "cache miss: store_headers failed");
 
         ap_remove_output_filter(f);
-        cache_remove_lock(conf, cache, r, cache->handle ?
-                (char *)cache->handle->cache_obj->key : NULL, NULL);
+        cache_remove_lock(conf, cache, r, NULL);
         return ap_pass_brigade(f->next, in);
     }
 
