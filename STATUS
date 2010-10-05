@@ -149,9 +149,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * Stupid-simple patch specific to give rotatelogs the same behavior
     as the core log writer;
     +1: wrowe, rjung
-    rjung: this should be applied to trunk first (plus backport to 2.2.x)
-    wrowe: asks why trunk?  This is a legacy/apr 0.9 issue.  apr 1.x will always
-           default to large files where available.
 --- support/rotatelogs.c	(revision 733150)
 +++ support/rotatelogs.c	(working copy)
 @@ -208,7 +208,8 @@
@@ -205,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
     2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
     2.0.x patch: 2.2.x patch applies with offset.
-    +1: fuankg, wrowe
+    +1: fuankg, wrowe, rjung
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
