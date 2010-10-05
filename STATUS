@@ -154,7 +154,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * Stupid-simple patch specific to give rotatelogs the same behavior
     as the core log writer;
-    +1: wrowe, rjung
+    +1: wrowe, rjung, sf
 --- support/rotatelogs.c	(revision 733150)
 +++ support/rotatelogs.c	(working copy)
 @@ -208,7 +208,8 @@
@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=917017
     Backport: http://people.apache.org/~rjung/patches/pr-33112-2_0.patch
     Revert r1002165 in test framework, once this is fixed.
-    +1: rjung, wrowe
+    +1: rjung, wrowe, sf
 
   * mod_include: PR 39369 - Fix for query string preservation after content negotiation
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376
@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=713142
     Backport: http://people.apache.org/~rjung/patches/expires-in-the-past-2_0.patch
     Revert r1002205 in test framework, once this is fixed.
-    +1: rjung, wrowe
+    +1: rjung, wrowe, sf
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
