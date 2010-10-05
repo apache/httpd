@@ -82,3 +82,4 @@ mod_filter.so           0x6F9A0000    0x00010000
 mod_dav_lock.so         0x6F990000    0x00010000
 mod_substitute.so       0x6F980000    0x00010000
 mod_reqtimeout.so       0x6F970000    0x00010000
+mod_proxy_scgi.so       0x6F960000    0x00010000
