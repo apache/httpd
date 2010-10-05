@@ -1547,7 +1547,7 @@ int main(int argc, const char * const argv[])
     }
 
     if (listurls) {
-        list_urls(path, instance, round);
+        list_urls(path, pool, round);
         return (interrupted != 0);
     }
 
