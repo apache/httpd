@@ -2219,6 +2219,9 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a> Available in
     Apache 1.3.5 and later 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#limitexcept">here</a></strong></p>
+
     <p>&lt;LimitExcept&gt; and &lt;/LimitExcept&gt; are used to
     enclose a group of access control directives which will then
     apply to any HTTP access method <strong>not</strong> listed in
@@ -2254,6 +2257,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> LimitInternalRecursion
     is only available in Apache 1.3.28 and later. 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#limitinternalrecursion">here</a></strong></p>
 
     <p>An internal redirect happens, for example, when using the <a
     href="mod_actions.html#action">Action</a> directive, which internally
@@ -2299,6 +2305,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> LimitRequestBody
     is only available in Apache 1.3.2 and later. 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#limitrequestbody">here</a></strong></p>
 
     <p>This directive specifies the number of <em>bytes</em> from 0
     (meaning unlimited) to 2147483647 (2GB) that are allowed in a
@@ -2347,6 +2356,8 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a>
     LimitRequestFields is only available in Apache 1.3.2 and later.
     
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#limitrequestfields">here</a></strong></p>
 
     <p><em>Number</em> is an integer from 0 (meaning unlimited) to
     32767. The default value is defined by the compile-time
@@ -2396,6 +2407,9 @@ Syntax OK
     LimitRequestFieldsize is only available in Apache 1.3.2 and
     later. 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#limitrequestfieldsize">here</a></strong></p>
+
     <p>This directive specifies the number of <em>bytes</em> from 0
     to the value of the compile-time constant
     <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (8190 as
@@ -2441,6 +2455,9 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a> LimitRequestLine
     is only available in Apache 1.3.2 and later. 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#limitrequestline">here</a></strong></p>
+
     <p>This directive sets the number of <em>bytes</em> from 0 to
     the value of the compile-time constant
     <code>DEFAULT_LIMIT_REQUEST_LINE</code> (8190 as distributed)
@@ -2480,6 +2497,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> Listen is only
     available in Apache 1.1 and later. 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mpm_common.html#listen">here</a></strong></p>
 
     <p>The Listen directive instructs Apache to listen to more than
     one IP address or port; by default it responds to requests on
@@ -2539,6 +2559,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> ListenBacklog is
     only available in Apache versions after 1.2.0. 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mpm_common.html#listenbacklog">here</a></strong></p>
 
     <p>The maximum length of the queue of pending connections.
     Generally no tuning is needed or desired, however on some
