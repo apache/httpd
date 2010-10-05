@@ -138,20 +138,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.0.x patch: 2.2.x patch applies with offset.
     +1: fuankg, wrowe, rjung
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ please place SVN revisions from trunk here, so it is easy to
-    identify exactly what the proposed changes are!  Add all new
-    proposals to the end of this list. ]
-
-  * Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
-    proxied requests.  Basic tests by jorton and [rpluem] show that this works, 
-    nobody can actually remember why this limitation was introduced at all 
-    (r94028) and the mailing list archives also gave no hint.
-      http://svn.apache.org/viewvc?view=rev&revision=327179
-    +0: covener, wrowe
-          do we need to make people opt-in for this behavior to 
-          backport it to 2.0.x? What mechanism?
-
   * Stupid-simple patch specific to give rotatelogs the same behavior
     as the core log writer;
     +1: wrowe, rjung, sf
@@ -168,6 +154,34 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              if (nLogFD == NULL) {
                  /* Uh-oh. Failed to open the new log file. Try to clear
 
+  * mod_negotiation: PR 33112 - Fix for query string preservation after content negotiation
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=915407
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=917017
+    Backport: http://people.apache.org/~rjung/patches/pr-33112-2_0.patch
+    Revert r1002165 in test framework, once this is fixed.
+    +1: rjung, wrowe, sf
+
+  * mod_expires: Expires time shouldn't be in the past
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=708902
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=713142
+    Backport: http://people.apache.org/~rjung/patches/expires-in-the-past-2_0.patch
+    Revert r1002205 in test framework, once this is fixed.
+    +1: rjung, wrowe, sf
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ please place SVN revisions from trunk here, so it is easy to
+    identify exactly what the proposed changes are!  Add all new
+    proposals to the end of this list. ]
+
+  * Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
+    proxied requests.  Basic tests by jorton and [rpluem] show that this works, 
+    nobody can actually remember why this limitation was introduced at all 
+    (r94028) and the mailing list archives also gave no hint.
+      http://svn.apache.org/viewvc?view=rev&revision=327179
+    +0: covener, wrowe
+          do we need to make people opt-in for this behavior to 
+          backport it to 2.0.x? What mechanism?
+
   * pcre: update config.guess and config.sub for better platform support.
     Trunk version of patch:
       Does not apply.
@@ -183,26 +197,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Revert r1002110 and r1002161 in test framework, once this is fixed.
     +1: rjung, wrowe
 
-  * mod_negotiation: PR 33112 - Fix for query string preservation after content negotiation
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=915407
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=917017
-    Backport: http://people.apache.org/~rjung/patches/pr-33112-2_0.patch
-    Revert r1002165 in test framework, once this is fixed.
-    +1: rjung, wrowe, sf
-
   * mod_include: PR 39369 - Fix for query string preservation after content negotiation
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773352
     Backport: http://people.apache.org/~rjung/patches/pr-39369-2_0.patch
     Revert r1002174 in test framework, once this is fixed.
     +1: rjung, wrowe
-
-  * mod_expires: Expires time shouldn't be in the past
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=708902
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=713142
-    Backport: http://people.apache.org/~rjung/patches/expires-in-the-past-2_0.patch
-    Revert r1002205 in test framework, once this is fixed.
-    +1: rjung, wrowe, sf
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
