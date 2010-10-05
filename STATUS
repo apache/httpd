@@ -132,6 +132,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * gen_test_char.c: rename macro to a better name and sync with trunk.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
+    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
+    2.0.x patch: 2.2.x patch applies with offset.
+    +1: fuankg, wrowe, rjung
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -197,12 +203,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport: http://people.apache.org/~rjung/patches/expires-in-the-past-2_0.patch
     Revert r1002205 in test framework, once this is fixed.
     +1: rjung, wrowe
-
-  * gen_test_char.c: rename macro to a better name and sync with trunk.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
-    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
-    2.0.x patch: 2.2.x patch applies with offset.
-    +1: fuankg, wrowe, rjung
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
