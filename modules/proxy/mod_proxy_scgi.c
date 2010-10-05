@@ -246,7 +246,8 @@ static int send_headers(request_rec *r, proxy_conn_rec *conn)
     const char *ns_len;
     const apr_array_header_t *env_table;
     const apr_table_entry_t *env;
-    apr_size_t j, len, bodylen_size;
+    int j;
+    apr_size_t len, bodylen_size;
     apr_size_t headerlen =   sizeof(CONTENT_LENGTH)
                            + sizeof(SCGI_MAGIC)
                            + sizeof(SCGI_PROTOCOL_VERSION);
