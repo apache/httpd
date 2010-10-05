@@ -23,8 +23,8 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
-    2.2.17  : In maintenance
-    2.2.16  : Tagged July 21, 2010.
+    2.2.17  : T&R scheduled by wrowe Oct 7 for anticipated 10/11 announce.
+    2.2.16  : Released July 25, 2010.
     2.2.15  : Released March 6, 2010.
     2.2.14  : Released October 3, 2009.
     2.2.13  : Released August 8, 2009.
@@ -87,6 +87,54 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_proxy_balancer: Force workers into PROXY_WORKER_IN_ERROR when configured
+      statuses are found
+      PR: 48939
+      Trunk patches: http://svn.apache.org/viewvc?rev=930125&view=rev
+                     http://svn.apache.org/viewvc?rev=930254&view=rev
+                     http://svn.apache.org/viewvc?rev=962972&view=rev
+                     http://svn.apache.org/viewvc?rev=987359&view=rev
+      2.2.x patch:  https://issues.apache.org/bugzilla/attachment.cgi?id=25923
+      plus this CHANGES entry:
+      *) Proxy balancer: support setting error status according to HTTP response
+         code from a backend.  PR 48939.  [Daniel Ruggeri <DRuggeri primary.net>]
+     Submitted by: Daniel Ruggeri <DRuggeri primary.net>
+     +1: trawick, wrowe
+     niq: +1 to the 2.2.x patch, but why r951900 and r987379 in trunk patches?
+
+   * mod_authnz_ldap: If AuthLDAPCharsetConfig is set, also convert the password to
+     UTF-8.
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=902654
+     2.2 patch: trunk patch works
+     +1: sf, rpluem, wrowe
+
+   * ab: repeat apr_pollset_poll() while APR_STATUS_IS_EINTR(rv)
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=750094
+     2.2 patch: trunk patch works
+     +1: trawick, sf, wrowe
+
+   * clean up some miscellaneous warnings from Fortify or Intel's compiler
+     Trunk revisions:
+       r991516, mod_rewrite.c::cmd_rewritecond(): use enum value instead of 
+         integer literal
+       r991515, util.c::ap_pregsub(): don't needlessly set var
+       r991507, scoreboard.c::ap_create_scoreboard(): don't needlessly set var
+       r987629+r987631, config.c::ap_build_cont_config(): don't needlessly
+         check var for NULL
+       r986901+r987860, core.c::dirsection(): remove dead error check
+       r983066, mod_cern_meta.c: remove unexpected ";" after end of block
+       r987339, main.c::usage(): don't overlay stack buffer with impossibly
+         long argv[0]
+       r982050, mpm_unix.c (backported to mpm_common.c): remove unused vars
+     2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-2.txt
+     +1: trawick, sf, wrowe
+
+   * mod_proxy_http: Go a little faster by eliminating a sscanf() call
+     when parsing response lines.
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=999694
+     2.2.x patch: trunk patch works
+     +1: trawick, sf, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -100,6 +148,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               vs 2.6 kernels, potentially a suspect test for root.
    sf:        Couldn't the linux 2.4 bug be worked around by calling access
               twice? Once with R_OK and once with X_OK.
+   wrowe:     It would seem we only need to test for X_OK?
 
   * mod_req-timeout/core: Backport bugfixes from trunk up to r935339:
     - Do not wrongly enforce timeouts for mod_proxy's backend
@@ -122,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout_up_to_r983116.diff
     sf: It would be nice if someone could review this specifically WRT Windows
         compatibility.
-    +1: sf
+    +1: sf, wrowe
 
   * prefork MPM: Run cleanups for final request when process exits gracefully.
     PR: 43857
@@ -133,21 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     issue, which may have a better fix; also, this change could hide 
     other problems:
       http://www.mail-archive.com/dev@apr.apache.org/msg23090.html
-
-  * mod_proxy_balancer: Force workers into PROXY_WORKER_IN_ERROR when configured
-    statuses are found
-    PR: 48939
-    Trunk patches: http://svn.apache.org/viewvc?rev=930125&view=rev
-                   http://svn.apache.org/viewvc?rev=930254&view=rev
-                   http://svn.apache.org/viewvc?rev=962972&view=rev
-                   http://svn.apache.org/viewvc?rev=987359&view=rev
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=25923
-      plus this CHANGES entry:
-      *) Proxy balancer: support setting error status according to HTTP response
-         code from a backend.  PR 48939.  [Daniel Ruggeri <DRuggeri primary.net>]
-   Submitted by: Daniel Ruggeri <DRuggeri primary.net>
-   +1: trawick
-   niq: +1 to the 2.2.x patch, but why r951900 and r987379 in trunk patches?
 
   * mod_disk_cache: Decline the opportunity to cache if the response is
     a 206 Partial Content. This stops a reverse proxied partial response
@@ -184,38 +218,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          See http://marc.info/?l=apache-httpd-dev&m=127970632901262&w=2 and
          the links therein.
 
-   * mod_proxy_scgi: Add module to build on Windows.
-     It already gets build for other platforms and for Windows in trunk.
-     2.2 patch: http://people.apache.org/~rjung/patches/mod_proxy_scgi-win-build-2_2.patch
-     +1: rjung
-
-   * mod_authnz_ldap: If AuthLDAPCharsetConfig is set, also convert the password to
-     UTF-8.
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=902654
-     2.2 patch: trunk patch works
-     +1: sf, rpluem
-
-   * ab: repeat apr_pollset_poll() while APR_STATUS_IS_EINTR(rv)
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=750094
-     2.2 patch: trunk patch works
-     +1: trawick, sf
-
-   * clean up some miscellaneous warnings from Fortify or Intel's compiler
-     Trunk revisions:
-       r991516, mod_rewrite.c::cmd_rewritecond(): use enum value instead of 
-         integer literal
-       r991515, util.c::ap_pregsub(): don't needlessly set var
-       r991507, scoreboard.c::ap_create_scoreboard(): don't needlessly set var
-       r987629+r987631, config.c::ap_build_cont_config(): don't needlessly
-         check var for NULL
-       r986901+r987860, core.c::dirsection(): remove dead error check
-       r983066, mod_cern_meta.c: remove unexpected ";" after end of block
-       r987339, main.c::usage(): don't overlay stack buffer with impossibly
-         long argv[0]
-       r982050, mpm_unix.c (backported to mpm_common.c): remove unused vars
-     2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-2.txt
-     +1: trawick, sf
-
    * mod_cache: Check the request to determine whether we are allowed
      to return cached content at all, and respect a "Cache-Control:
      no-cache" header from a client. Previously, "no-cache" would
@@ -223,12 +225,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=992625
      2.2.x patch: trunk patch works
      +1: minfrin
-
-   * mod_proxy_http: Go a little faster by eliminating a sscanf() call
-     when parsing response lines.
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=999694
-     2.2.x patch: trunk patch works
-     +1: trawick, sf
 
   * gen_test_char.c: rename macro to a better name and sync with trunk.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
