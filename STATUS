@@ -135,6 +135,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk patch works
      +1: trawick, sf, wrowe
 
+  * gen_test_char.c: rename macro to a better name and sync with trunk.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
+    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
+    +1: fuankg, wrowe, rjung
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -228,11 +233,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=992625
      2.2.x patch: trunk patch works
      +1: minfrin
-
-  * gen_test_char.c: rename macro to a better name and sync with trunk.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
-    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
-    +1: fuankg, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
