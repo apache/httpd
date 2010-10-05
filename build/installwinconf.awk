@@ -147,6 +147,7 @@ BEGIN {
 	  print "#LoadModule proxy_connect_module modules/mod_proxy_connect.so" > dstfl;
 	  print "#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so" > dstfl;
 	  print "#LoadModule proxy_http_module modules/mod_proxy_http.so" > dstfl;
+	  print "#LoadModule proxy_scgi_module modules/mod_proxy_scgi.so" > dstfl;
 	  print "#LoadModule reqtimeout_module modules/mod_reqtimeout.so" > dstfl;
 	  print "#LoadModule rewrite_module modules/mod_rewrite.so" > dstfl;
 	  print "LoadModule setenvif_module modules/mod_setenvif.so" > dstfl;

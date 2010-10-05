@@ -403,6 +403,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_connect.mak CFG="mod_proxy_connect - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_ftp.mak   CFG="mod_proxy_ftp - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_http.mak  CFG="mod_proxy_http - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_proxy_scgi.mak  CFG="mod_proxy_scgi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !IF EXIST("srclib\openssl")
 	cd modules\ssl
@@ -580,6 +581,7 @@ _copybin:
 	copy modules\proxy\$(LONG)\mod_proxy_connect.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_ftp.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_http.$(src_so) 	"$(inst_so)" <.y
+	copy modules\proxy\$(LONG)\mod_proxy_scgi.$(src_so) 	"$(inst_so)" <.y
 !IF EXIST("srclib\openssl")
 	copy modules\ssl\$(LONG)\mod_ssl.$(src_so) 		"$(inst_so)" <.y
 	-copy srclib\openssl\$(SSLBIN)\libeay32.$(src_dll) 	"$(inst_dll)" <.y
