@@ -10,11 +10,6 @@ Changes with Apache 2.2.17
   *) mod_headers: Enable multi-match-and-replace edit option
      PR 46594 [Nick Kew]
 
-  *) mod_reqtimeout: Do not wrongly enforce timeouts for mod_proxy's backend
-     connections and other protocol handlers (like mod_ftp). Enforce the
-     timeout for AP_MODE_GETLINE. If there is a timeout, shorten the lingering
-     close time from 30 to 2 seconds. [Stefan Fritsch]
-
   *) mod_log_config: Make ${cookie}C correctly match whole cookie names
      instead of substrings. PR 28037. [Dan Franklin <dan dan-franklin.com>,
      Stefan Fritsch]
