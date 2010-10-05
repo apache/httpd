@@ -23,7 +23,7 @@ Consult the trunk/ for all new development and documentation efforts:
 
 Release history:
 
-    2.0.64  : In development
+    2.0.64  : T&R scheduled by wrowe Oct 7 for anticipated 10/11 announce.
     2.0.63  : Released January 19, 2008.
     2.0.62  : Tagged January 4, 2008. Not released.
     2.0.61  : Released September 7, 2007.
@@ -119,6 +119,16 @@ RELEASE SHOWSTOPPERS:
     2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
     +1: wrowe, trawick, rjung
 
+  * Backport 354118: Fix recursive ErrorDocument handling [when r->status isn't
+    HTTP_OK upon first pass through ap_die()]. PR #36090
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=354118
+    2.2.x patch:
+       http://svn.apache.org/viewvc?view=rev&revision=355454
+    Backport version for 2.0.x of patch:
+       (trunk version works)
+    +1: covener, rjung, wrowe
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -136,20 +146,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           do we need to make people opt-in for this behavior to 
           backport it to 2.0.x? What mechanism?
 
-  * Backport 354118: Fix recursive ErrorDocument handling [when r->status isn't
-    HTTP_OK upon first pass through ap_die()]. PR #36090
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=354118
-    2.2.x patch:
-       http://svn.apache.org/viewvc?view=rev&revision=355454
-    Backport version for 2.0.x of patch:
-       (trunk version works)
-    +1: covener, rjung
-
   * Stupid-simple patch specific to give rotatelogs the same behavior
     as the core log writer;
     +1: wrowe, rjung
     rjung: this should be applied to trunk first (plus backport to 2.2.x)
+    wrowe: asks why trunk?  This is a legacy/apr 0.9 issue.  apr 1.x will always
+           default to large files where available.
 --- support/rotatelogs.c	(revision 733150)
 +++ support/rotatelogs.c	(working copy)
 @@ -208,7 +208,8 @@
@@ -169,41 +171,41 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Patch in 2.2.x branch:
       Does not apply.
     Use recent files from http://git.savannah.gnu.org/cgit/config.git.
-    +1: rjung
+    +1: rjung, wrowe
 
   * mod_rewrite: PR 46428 - whitespace/encoding for proxied URL
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757427
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773351
     Backport: http://people.apache.org/~rjung/patches/pr-46428-2_0.patch
     Revert r1002110 and r1002161 in test framework, once this is fixed.
-    +1: rjung
+    +1: rjung, wrowe
 
   * mod_negotiation: PR 33112 - Fix for query string preservation after content negotiation
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=915407
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=917017
     Backport: http://people.apache.org/~rjung/patches/pr-33112-2_0.patch
     Revert r1002165 in test framework, once this is fixed.
-    +1: rjung
+    +1: rjung, wrowe
 
   * mod_include: PR 39369 - Fix for query string preservation after content negotiation
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773352
     Backport: http://people.apache.org/~rjung/patches/pr-39369-2_0.patch
     Revert r1002174 in test framework, once this is fixed.
-    +1: rjung
+    +1: rjung, wrowe
 
   * mod_expires: Expires time shouldn't be in the past
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=708902
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=713142
     Backport: http://people.apache.org/~rjung/patches/expires-in-the-past-2_0.patch
     Revert r1002205 in test framework, once this is fixed.
-    +1: rjung
+    +1: rjung, wrowe
 
   * gen_test_char.c: rename macro to a better name and sync with trunk.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
     2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
     2.0.x patch: 2.2.x patch applies with offset.
-    +1: fuankg
+    +1: fuankg, wrowe
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
