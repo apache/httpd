@@ -208,7 +208,8 @@ int main (int argc, const char * const argv[])
                 sprintf(buf2, "%s.%010d", szLogRoot, tLogStart);
             }
             tLogEnd = tLogStart + tRotation;
-            apr_file_open(&nLogFD, buf2, APR_READ | APR_WRITE | APR_CREATE | APR_APPEND,
+            apr_file_open(&nLogFD, buf2, 
+                          APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                           APR_OS_DEFAULT, pool);
             if (nLogFD == NULL) {
                 /* Uh-oh. Failed to open the new log file. Try to clear

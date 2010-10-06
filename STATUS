@@ -132,22 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Stupid-simple patch specific to give rotatelogs the same behavior
-    as the core log writer;
-    +1: wrowe, rjung, sf
---- support/rotatelogs.c	(revision 733150)
-+++ support/rotatelogs.c	(working copy)
-@@ -208,7 +208,8 @@
-                 sprintf(buf2, "%s.%010d", szLogRoot, tLogStart);
-             }
-             tLogEnd = tLogStart + tRotation;
--            apr_file_open(&nLogFD, buf2, APR_READ | APR_WRITE | APR_CREATE | APR_APPEND,
-+            apr_file_open(&nLogFD, buf2, 
-+                          APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
-                           APR_OS_DEFAULT, pool);
-             if (nLogFD == NULL) {
-                 /* Uh-oh. Failed to open the new log file. Try to clear
-
   * mod_negotiation: PR 33112 - Fix for query string preservation after content negotiation
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=915407
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=917017
