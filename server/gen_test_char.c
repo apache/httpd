@@ -30,7 +30,7 @@
 #include "apr_lib.h"
 
 #if defined(WIN32) || defined(OS2)
-#define WANT_WIN32_OS2
+#define NEED_ENHANCED_ESCAPES
 #endif
 
 #endif
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
             printf("\n    ");
 
         /* escape_shell_cmd */
-#if defined(WANT_WIN32_OS2)
+#ifdef NEED_ENHANCED_ESCAPES
         /* Win32/OS2 have many of the same vulnerable characters
          * as Unix sh, plus the carriage return and percent char.
          * The proper escaping of these characters varies from unix
