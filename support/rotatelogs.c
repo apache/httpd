@@ -433,7 +433,7 @@ int main (int argc, const char * const argv[])
     apr_getopt_t *opt;
     apr_status_t rv;
     char c;
-    const char *optarg;
+    const char *opt_arg;
     const char *err = NULL;
 
     apr_app_initialize(&argc, &argv, NULL);
@@ -457,13 +457,13 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
-    while ((rv = apr_getopt(opt, "lL:ftv", &c, &optarg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:ftv", &c, &opt_arg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             config.use_localtime = 1;
             break;
         case 'L':
-            config.linkfile = optarg;
+            config.linkfile = opt_arg;
             break;
         case 'f':
             config.force_open = 1;
