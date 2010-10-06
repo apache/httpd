@@ -1,6 +1,6 @@
 # Include for creating start/stop/restart NCF scripts.
 
-instscripts:: FORCE $(INSTALL)/$(BASEDIR)/ap2start.ncf $(INSTALL)/$(BASEDIR)/ap2rest.ncf $(INSTALL)/$(BASEDIR)/ap2stop.ncf $(INSTALL)/$(BASEDIR)/ap2prod.ncf
+instscripts:: FORCE $(INSTALL)/$(BASEDIR)/ap2start.ncf $(INSTALL)/$(BASEDIR)/ap2auto.ncf $(INSTALL)/$(BASEDIR)/ap2rest.ncf $(INSTALL)/$(BASEDIR)/ap2stop.ncf $(INSTALL)/$(BASEDIR)/ap2prod.ncf
 
 $(INSTALL)/$(BASEDIR)/ap2start.ncf:
 	@echo # NCF to start Apache 2.x in own address space > $@
@@ -8,6 +8,17 @@ $(INSTALL)/$(BASEDIR)/ap2start.ncf:
 	@echo # httpcloseport 80 /silent >> $@
 	@echo # search add SYS:/$(BASEDIR) >> $@
 	@echo load address space = $(BASEDIR) SYS:/$(BASEDIR)/apache2 >> $@
+	@echo # If you have problems with 3rd-party modules try to load in OS space. >> $@
+	@echo # load $(BASEDIR)/apache2 >> $@
+	@echo. >> $@
+
+$(INSTALL)/$(BASEDIR)/ap2auto.ncf:
+	@echo # NCF to start Apache 2.x in own address space > $@
+	@echo # and let automatically restart in case it crashes >> $@
+	@echo # Make sure that httpstk isn't listening on 80 >> $@
+	@echo # httpcloseport 80 /silent >> $@
+	@echo # search add SYS:/$(BASEDIR) >> $@
+	@echo restart address space = $(BASEDIR) SYS:/$(BASEDIR)/apache2 >> $@
 	@echo # If you have problems with 3rd-party modules try to load in OS space. >> $@
 	@echo # load $(BASEDIR)/apache2 >> $@
 	@echo. >> $@
