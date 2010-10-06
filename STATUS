@@ -132,13 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_negotiation: PR 33112 - Fix for query string preservation after content negotiation
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=915407
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=917017
-    Backport: http://people.apache.org/~rjung/patches/pr-33112-2_0.patch
-    Revert r1002165 in test framework, once this is fixed.
-    +1: rjung, wrowe, sf
-
   * mod_expires: Expires time shouldn't be in the past
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=708902
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=713142
