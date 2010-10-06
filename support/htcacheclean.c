@@ -341,7 +341,7 @@ static int list_urls(char *path, apr_pool_t *pool, apr_off_t round)
 
             ext = strchr(info.name, '.');
 
-            if (!strcasecmp(ext, CACHE_HEADER_SUFFIX)) {
+            if (ext && !strcasecmp(ext, CACHE_HEADER_SUFFIX)) {
 
                 nextpath = apr_pstrcat(p, path, "/", info.name, NULL);
 
