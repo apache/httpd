@@ -132,13 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_expires: Expires time shouldn't be in the past
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=708902
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=713142
-    Backport: http://people.apache.org/~rjung/patches/expires-in-the-past-2_0.patch
-    Revert r1002205 in test framework, once this is fixed.
-    +1: rjung, wrowe, sf
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
