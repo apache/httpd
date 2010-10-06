@@ -132,12 +132,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * gen_test_char.c: rename macro to a better name and sync with trunk.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001398
-    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
-    2.0.x patch: 2.2.x patch applies with offset.
-    +1: fuankg, wrowe, rjung
-
   * Stupid-simple patch specific to give rotatelogs the same behavior
     as the core log writer;
     +1: wrowe, rjung, sf
