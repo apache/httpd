@@ -1163,6 +1163,15 @@ in case of an error</description>
         <td>The current time in compact ISO 8601 format, including
             micro-seconds</td></tr>
 
+    <tr><td><code>%...v</code></td>
+        <td>The canonical <directive module="core">ServerName</directive>
+            of the current server.</td></tr>
+
+    <tr><td><code>%...V</code></td>
+        <td>The server name of the server serving the request according to the
+            <directive module="core" >UseCanonicalName</directive>
+            setting.</td></tr>
+
     <tr><td><code>\&nbsp;</code> (backslash space)</td>
         <td>Non-field delimiting space</td></tr>
 
