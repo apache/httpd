@@ -737,6 +737,25 @@ static int log_apr_status(const ap_errorlog_info *info, const char *arg,
     return len;
 }
 
+static int log_server_name(const ap_errorlog_info *info, const char *arg,
+                           char *buf, int buflen)
+{
+    if (info->r)
+        return cpystrn(buf, ap_get_server_name((request_rec *)info->r), buflen);
+
+    return 0;
+}
+
+static int log_virtual_host(const ap_errorlog_info *info, const char *arg,
+                            char *buf, int buflen)
+{
+    if (info->s)
+        return cpystrn(buf, info->s->server_hostname, buflen);
+
+    return 0;
+}
+
+
 static int log_table_entry(const apr_table_t *table, const char *name,
                            char *buf, int buflen)
 {
@@ -867,6 +886,8 @@ AP_DECLARE(void) ap_register_log_hooks(apr_pool_t *p)
     ap_register_errorlog_handler(p, "P", log_pid, 0);
     ap_register_errorlog_handler(p, "t", log_ctime, 0);
     ap_register_errorlog_handler(p, "T", log_tid, 0);
+    ap_register_errorlog_handler(p, "v", log_virtual_host, 0);
+    ap_register_errorlog_handler(p, "V", log_server_name, 0);
 }
 
 /*
