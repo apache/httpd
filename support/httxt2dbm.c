@@ -178,7 +178,7 @@ int main(int argc, const char *const argv[])
     apr_pool_t *pool;
     apr_status_t rv = APR_SUCCESS;
     apr_getopt_t *opt;
-    const char *optarg;
+    const char *opt_arg;
     char ch;
     apr_file_t *infile;
     apr_dbm_t *outdbm;
@@ -213,7 +213,7 @@ int main(int argc, const char *const argv[])
         return 1;
     }
 
-    while ((rv = apr_getopt(opt, "vf::i::o::", &ch, &optarg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "vf::i::o::", &ch, &opt_arg)) == APR_SUCCESS) {
         switch (ch) {
         case 'v':
             if (verbose) {
@@ -229,7 +229,7 @@ int main(int argc, const char *const argv[])
                 usage();
                 return 1;
             }
-            format = apr_pstrdup(pool, optarg);
+            format = apr_pstrdup(pool, opt_arg);
             break;
         case 'i':
             if (input) {
@@ -237,7 +237,7 @@ int main(int argc, const char *const argv[])
                 usage();
                 return 1;
             }
-            input = apr_pstrdup(pool, optarg);
+            input = apr_pstrdup(pool, opt_arg);
             break;
         case 'o':
             if (output) {
@@ -245,7 +245,7 @@ int main(int argc, const char *const argv[])
                 usage();
                 return 1;
             }
-            output = apr_pstrdup(pool, optarg);
+            output = apr_pstrdup(pool, opt_arg);
             break;
         }
     }
