@@ -161,7 +161,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Revert r1002110 and r1002161 in test framework, once this is fixed.
     +1: rjung, wrowe
 
-  * mod_include: PR 39369 - Fix for query string preservation after content negotiation
+  * mod_include: PR 39369 - timefmt config not working in SSI when using
+    INCLUDES output filter and XBitHack On
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=757376
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=773352
     Backport: http://people.apache.org/~rjung/patches/pr-39369-2_0.patch
