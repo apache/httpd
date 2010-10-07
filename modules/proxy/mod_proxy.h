@@ -386,6 +386,8 @@ struct proxy_balancer {
 #endif
     void            *context;   /* general purpose storage */
     int             scolonsep;  /* true if ';' seps sticky session paths */
+
+    apr_array_header_t *errstatuses; /* statuses to force members into error */
 };
 
 struct proxy_balancer_method {
