@@ -108,11 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works
      +1: sf, rpluem, wrowe
 
-   * ab: repeat apr_pollset_poll() while APR_STATUS_IS_EINTR(rv)
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=750094
-     2.2 patch: trunk patch works
-     +1: trawick, sf, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
