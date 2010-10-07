@@ -87,21 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_balancer: Force workers into PROXY_WORKER_IN_ERROR when configured
-      statuses are found
-      PR: 48939
-      Trunk patches: http://svn.apache.org/viewvc?rev=930125&view=rev
-                     http://svn.apache.org/viewvc?rev=930254&view=rev
-                     http://svn.apache.org/viewvc?rev=962972&view=rev
-                     http://svn.apache.org/viewvc?rev=987359&view=rev
-      2.2.x patch:  https://issues.apache.org/bugzilla/attachment.cgi?id=25923
-      plus this CHANGES entry:
-      *) Proxy balancer: support setting error status according to HTTP response
-         code from a backend.  PR 48939.  [Daniel Ruggeri <DRuggeri primary.net>]
-     Submitted by: Daniel Ruggeri <DRuggeri primary.net>
-     +1: trawick, wrowe
-     niq: +1 to the 2.2.x patch, but why r951900 and r987379 in trunk patches?
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
