@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1003626&view=rev
     2.2.x patch: trunk patch works on top of mod_reqtimeout_up_to_r983116.diff
     combined 2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout-2.2.x-v3.diff
-    +1: sf
+    +1: sf, wrowe
 
   * mod_disk_cache: Decline the opportunity to cache if the response is
     a 206 Partial Content. This stops a reverse proxied partial response
