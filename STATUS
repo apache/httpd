@@ -103,34 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://mail-archives.apache.org/mod_mbox/httpd-dev/201010.mbox/%3C20101007095048.GA5423@redhat.com%3E
       [/NOT/i redundant]
 
-  * mod_req-timeout/core: Backport bugfixes from trunk up to r935339:
-    - Do not wrongly enforce timeouts for mod_proxy's backend
-      connections and other protocol handlers (like mod_ftp).
-    - Enforce the timeout for AP_MODE_GETLINE.
-    - If there is a timeout, shorten the lingering close time from 30 to
-      2 seconds (involves a change in the core).
-    Trunk patch: http://svn.apache.org/viewvc?rev=921378&view=rev
-                 http://svn.apache.org/viewvc?rev=921526&view=rev
-                 http://svn.apache.org/viewvc?rev=922407&view=rev
-                 http://svn.apache.org/viewvc?rev=923418&view=rev
-                 http://svn.apache.org/viewvc?rev=923429&view=rev
-                 http://svn.apache.org/viewvc?rev=925986&view=rev
-                 http://svn.apache.org/viewvc?rev=928881&view=rev
-                 http://svn.apache.org/viewvc?rev=933341&view=rev
-                 http://svn.apache.org/viewvc?rev=933547&view=rev
-                 http://svn.apache.org/viewvc?rev=935339&view=rev
-                 http://svn.apache.org/viewvc?rev=983116&view=rev
-                 http://svn.apache.org/viewvc?rev=984985&view=rev
-    2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout_up_to_r983116.diff
-    sf: It would be nice if someone could review this specifically WRT Windows
-        compatibility.
-    +1: sf, wrowe
-
-    Additionally backport fix for CVE-2010-1623:
-    Trunk patch: http://svn.apache.org/viewvc?rev=1003626&view=rev
-    2.2.x patch: trunk patch works on top of mod_reqtimeout_up_to_r983116.diff
-    combined 2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout-2.2.x-v3.diff
-    +1: sf, wrowe
 
  PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

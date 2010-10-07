@@ -1,6 +1,15 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.17
 
+  *) SECURITY: CVE-2010-1623 (cve.mitre.org)
+     Fix a denial of service attack against mod_reqtimeout.
+     [Stefan Fritsch]
+
+  *) mod_reqtimeout: Do not wrongly enforce timeouts for mod_proxy's backend
+     connections and other protocol handlers (like mod_ftp). Enforce the
+     timeout for AP_MODE_GETLINE. If there is a timeout, shorten the lingering
+     close time from 30 to 2 seconds. [Stefan Fritsch]
+
   *) Proxy balancer: support setting error status according to HTTP response
      code from a backend.  PR 48939.  [Daniel Ruggeri <DRuggeri primary.net>]
 
