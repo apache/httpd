@@ -1,5 +1,9 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
+
+  *) SECURITY: CVE-2010-1452 (cve.mitre.org)
+     mod_dav: Fix Handling of requests without a path segment.
+     PR: 49246 [Mark Drayton, Jeff Trawick]
 
   *) SECURITY: CVE-2009-1891 (cve.mitre.org)
      Fix a potential Denial-of-Service attack against mod_deflate or other 

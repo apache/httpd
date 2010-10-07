@@ -113,12 +113,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  * CVE-2010-1452 fix for mod_dav
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966348
-      (mod_cache and mod_session portions don't apply to 2.0.x)
-    2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
-    +1: wrowe, trawick, rjung
-
   * Backport 354118: Fix recursive ErrorDocument handling [when r->status isn't
     HTTP_OK upon first pass through ap_die()]. PR #36090
     Trunk version of patch:
