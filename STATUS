@@ -103,20 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://mail-archives.apache.org/mod_mbox/httpd-dev/201010.mbox/%3C20101007095048.GA5423@redhat.com%3E
       [/NOT/i redundant]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
- * unixd: set suexec_enabled correctly when httpd is run by non-root
-   PR 42175
-   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
-   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
-   +1: niq
-   -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
-              vs 2.6 kernels, potentially a suspect test for root.
-   sf:        Couldn't the linux 2.4 bug be worked around by calling access
-              twice? Once with R_OK and once with X_OK.
-   wrowe:     It would seem we only need to test for X_OK?
-
   * mod_req-timeout/core: Backport bugfixes from trunk up to r935339:
     - Do not wrongly enforce timeouts for mod_proxy's backend
       connections and other protocol handlers (like mod_ftp).
@@ -146,7 +132,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     combined 2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout-2.2.x-v3.diff
     +1: sf, wrowe
 
-  * mod_disk_cache: Decline the opportunity to cache if the response is
+ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+ * unixd: set suexec_enabled correctly when httpd is run by non-root
+   PR 42175
+   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
+   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
+   +1: niq
+   -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
+              vs 2.6 kernels, potentially a suspect test for root.
+   sf:        Couldn't the linux 2.4 bug be worked around by calling access
+              twice? Once with R_OK and once with X_OK.
+   wrowe:     It would seem we only need to test for X_OK?
+
+ * mod_disk_cache: Decline the opportunity to cache if the response is
     a 206 Partial Content. This stops a reverse proxied partial response
     from becoming cached, and then being served in subsequent responses.
     Trunk patch: http://svn.apache.org/viewvc?rev=951222&view=rev
