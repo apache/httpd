@@ -281,18 +281,18 @@ static int add_cern_meta_data(request_rec *r)
 
     if (!dconf->metafiles) {
         return DECLINED;
-    };
+    }
 
     /* if ./.web/$1.meta exists then output 'asis' */
 
     if (r->finfo.filetype == 0) {
         return DECLINED;
-    };
+    }
 
     /* is this a directory? */
     if (r->finfo.filetype == APR_DIR || r->uri[strlen(r->uri) - 1] == '/') {
         return DECLINED;
-    };
+    }
 
     /* what directory is this file in? */
     scrap_book = apr_pstrdup(r->pool, r->filename);
@@ -311,7 +311,7 @@ static int add_cern_meta_data(request_rec *r)
             "internal error in mod_cern_meta: %s", r->filename);
         /* should really barf, but hey, let's be friends... */
         return DECLINED;
-    };
+    }
 
     metafilename = apr_pstrcat(r->pool, scrap_book, "/",
                dconf->metadir ? dconf->metadir : DEFAULT_METADIR,
@@ -345,7 +345,7 @@ static int add_cern_meta_data(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
             "meta file permissions deny server access: %s", metafilename);
         return HTTP_FORBIDDEN;
-    };
+    }
 
     /* read the headers in */
     rv = scan_meta_file(r, f);

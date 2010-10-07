@@ -1112,11 +1112,11 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
         if (retval != NULL)
             return retval;
 
-        if (sub_tree == NULL && curr_parent != NULL) {
+        if (sub_tree == NULL) {
             sub_tree = *curr_parent;
         }
 
-        if (sub_tree == NULL && current != NULL) {
+        if (sub_tree == NULL) {
             sub_tree = *current;
         }
     }

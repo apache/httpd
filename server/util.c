@@ -387,7 +387,7 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
 
         if (no > 9) {                /* Ordinary character. */
             if (c == '\\' && (*src == '$' || *src == '&'))
-                c = *src++;
+                src++;
             len++;
         }
         else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {

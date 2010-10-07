@@ -965,7 +965,6 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
     apr_status_t rv;
     pid_t otherpid;
     int running = 0;
-    int have_pid_file = 0;
     const char *status;
 
     *exit_status = 0;
@@ -983,7 +982,6 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
         status = "httpd (no pid file) not running";
     }
     else {
-        have_pid_file = 1;
         if (kill(otherpid, 0) == 0) {
             running = 1;
             status = apr_psprintf(pconf,
@@ -1058,12 +1056,10 @@ void ap_mpm_rewrite_args(process_rec *process)
     apr_getopt_t *opt;
     char optbuf[3];
     const char *optarg;
-    int fixed_args;
 
     mpm_new_argv = apr_array_make(process->pool, process->argc,
                                   sizeof(const char **));
     *(const char **)apr_array_push(mpm_new_argv) = process->argv[0];
-    fixed_args = mpm_new_argv->nelts;
     apr_getopt_init(&opt, process->pool, process->argc, process->argv);
     opt->errfn = NULL;
     optbuf[0] = '-';
