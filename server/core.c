@@ -1840,13 +1840,6 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         return missing_container_arg(cmd);
     }
 
-    if (!arg) {
-        if (thiscmd->cmd_data)
-            return "<DirectoryMatch > block must specify a path";
-        else
-            return "<Directory > block must specify a path";
-    }
-
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 

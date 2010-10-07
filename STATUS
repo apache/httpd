@@ -113,22 +113,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works
      +1: trawick, sf, wrowe
 
-   * clean up some miscellaneous warnings from Fortify or Intel's compiler
-     Trunk revisions:
-       r991516, mod_rewrite.c::cmd_rewritecond(): use enum value instead of 
-         integer literal
-       r991515, util.c::ap_pregsub(): don't needlessly set var
-       r991507, scoreboard.c::ap_create_scoreboard(): don't needlessly set var
-       r987629+r987631, config.c::ap_build_cont_config(): don't needlessly
-         check var for NULL
-       r986901+r987860, core.c::dirsection(): remove dead error check
-       r983066, mod_cern_meta.c: remove unexpected ";" after end of block
-       r987339, main.c::usage(): don't overlay stack buffer with impossibly
-         long argv[0]
-       r982050, mpm_unix.c (backported to mpm_common.c): remove unused vars
-     2.2.x patch: http://people.apache.org/~trawick/fewerwarnings-2.txt
-     +1: trawick, sf, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
