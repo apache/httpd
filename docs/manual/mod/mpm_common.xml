@@ -866,7 +866,7 @@ client connections</description>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>mpm_winnt</module>
-<module>worker</module>
+<module>worker</module> <module>event</module>
 </modulelist>
 <compatibility>Available in Apache 2.1 and later</compatibility>
 
@@ -899,7 +899,9 @@ client connections</description>
       the full set of web server processing can be exercised, as there
       may be infrequent requests which require more stack to process.
       A change in the web server configuration can invalidate the
-      current <directive>ThreadStackSize</directive> setting.</li>
+      current <directive>ThreadStackSize</directive> setting.
+      On some platforms (including Linux), a setting of 128000 is known to
+      cause crashes. A value of at least 204800 is recommended.</li>
     </ul>
 </usage>
 </directivesynopsis>
