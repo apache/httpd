@@ -102,12 +102,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      +1: trawick, wrowe
      niq: +1 to the 2.2.x patch, but why r951900 and r987379 in trunk patches?
 
-   * mod_authnz_ldap: If AuthLDAPCharsetConfig is set, also convert the password to
-     UTF-8.
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=902654
-     2.2 patch: trunk patch works
-     +1: sf, rpluem, wrowe
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
