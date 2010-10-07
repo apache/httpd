@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
+#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
 #include "http_connection.h"
 #include "http_protocol.h"
 #include "http_log.h"
+#include "http_core.h"
 #include "util_filter.h"
 #define APR_WANT_STRFUNC
 #include "apr_strings.h"
+#include "apr_version.h"
 
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
@@ -38,6 +41,7 @@ typedef struct
     apr_time_t body_rate_factor;
 } reqtimeout_srv_cfg;
 
+/* this struct is used both as conn_config and as filter context */
 typedef struct
 {
     apr_time_t timeout_at;
@@ -47,13 +51,10 @@ typedef struct
     int new_max_timeout;
     int in_keep_alive;
     char *type;
-    apr_time_t rate_factor;
-} reqtimeout_con_cfg;
-
-typedef struct
-{
     apr_socket_t *socket;
-} reqtimeout_ctx;
+    apr_time_t rate_factor;
+    apr_bucket_brigade *tmpbb;
+} reqtimeout_con_cfg;
 
 static const char *const reqtimeout_filter_name = "reqtimeout";
 
@@ -74,24 +75,95 @@ static void extend_timeout(reqtimeout_con_cfg *ccfg, apr_bucket_brigade *bb)
     }
 }
 
+static apr_status_t check_time_left(reqtimeout_con_cfg *ccfg,
+                                    apr_time_t *time_left_p)
+{
+    *time_left_p = ccfg->timeout_at - apr_time_now();
+    if (*time_left_p <= 0)
+        return APR_TIMEUP;
+    
+    if (*time_left_p < apr_time_from_sec(1)) {
+        *time_left_p = apr_time_from_sec(1);
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t have_lf_or_eos(apr_bucket_brigade *bb)
+{
+    apr_bucket *b = APR_BRIGADE_LAST(bb);
+
+    for ( ; b != APR_BRIGADE_SENTINEL(bb) ; b = APR_BUCKET_PREV(b) ) {
+    	const char *str;
+    	apr_size_t len;
+    	apr_status_t rv;
+
+        if (APR_BUCKET_IS_EOS(b))
+            return APR_SUCCESS;
+
+        if (APR_BUCKET_IS_METADATA(b))
+            continue;
+
+        rv = apr_bucket_read(b, &str, &len, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS)
+            return rv;
+
+        if (len == 0)
+            continue;
+
+        if (str[len-1] == APR_ASCII_LF)
+            return APR_SUCCESS;
+    }
+    return APR_INCOMPLETE;
+}
+
+/*
+ * Append bbIn to bbOut and merge small buckets, to avoid DoS by high memory
+ * usage
+ */
+static apr_status_t brigade_append(apr_bucket_brigade *bbOut, apr_bucket_brigade *bbIn)
+{
+    while (!APR_BRIGADE_EMPTY(bbIn)) {
+        apr_bucket *e = APR_BRIGADE_FIRST(bbIn);
+        const char *str;
+        apr_size_t len;
+        apr_status_t rv;
+
+        rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+
+        APR_BUCKET_REMOVE(e);
+        if (APR_BUCKET_IS_METADATA(e) || len > APR_BUCKET_BUFF_SIZE/4) {
+            APR_BRIGADE_INSERT_TAIL(bbOut, e);
+        }
+        else {
+            if (len > 0) {
+                rv = apr_brigade_write(bbOut, NULL, NULL, str, len);
+                if (rv != APR_SUCCESS) {
+                    apr_bucket_destroy(e);
+                    return rv;
+                }
+            }
+            apr_bucket_destroy(e);
+        }
+    }
+    return APR_SUCCESS;
+}
+
+
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
 static apr_status_t reqtimeout_filter(ap_filter_t *f,
                                       apr_bucket_brigade *bb,
                                       ap_input_mode_t mode,
                                       apr_read_type_e block,
                                       apr_off_t readbytes)
 {
-    reqtimeout_ctx *ctx;
     apr_time_t time_left;
     apr_time_t now;
     apr_status_t rv;
     apr_interval_time_t saved_sock_timeout = -1;
-    reqtimeout_con_cfg *ccfg;
-
-    ctx = f->ctx;
-    AP_DEBUG_ASSERT(ctx != NULL);
-
-    ccfg = ap_get_module_config(f->c->conn_config, &reqtimeout_module);
-    AP_DEBUG_ASSERT(ccfg != NULL);
+    reqtimeout_con_cfg *ccfg = f->ctx;
 
     if (ccfg->in_keep_alive) {
         /* For this read, the normal keep-alive timeout must be used */
@@ -114,12 +186,13 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
-    time_left = ccfg->timeout_at - now;
-    if (time_left <= 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
-                      "Request %s read timeout", ccfg->type);
-        return APR_TIMEUP;
+    if (!ccfg->socket) {
+        ccfg->socket = ap_get_module_config(f->c->conn_config, &core_module);
     }
+
+    rv = check_time_left(ccfg, &time_left);
+    if (rv != APR_SUCCESS)
+        goto out;
 
     if (block == APR_NONBLOCK_READ || mode == AP_MODE_INIT
         || mode == AP_MODE_EATCRLF) {
@@ -130,41 +203,116 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         return rv;
     }
 
-    if (time_left < apr_time_from_sec(1)) {
-        time_left = apr_time_from_sec(1);
-    }
-
-    rv = apr_socket_timeout_get(ctx->socket, &saved_sock_timeout);
+    rv = apr_socket_timeout_get(ccfg->socket, &saved_sock_timeout);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
-    if (saved_sock_timeout >= time_left) {
-        rv = apr_socket_timeout_set(ctx->socket, time_left);
-        AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+    rv = apr_socket_timeout_set(ccfg->socket, MIN(time_left, saved_sock_timeout));
+    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+
+    if (mode == AP_MODE_GETLINE) {
+        /*
+         * For a blocking AP_MODE_GETLINE read, apr_brigade_split_line()
+         * would loop until a whole line has been read. As this would make it
+         * impossible to enforce a total timeout, we only do non-blocking
+         * reads.
+         */
+        apr_off_t remaining = HUGE_STRING_LEN;
+        do {
+            apr_off_t bblen;
+#if APR_MAJOR_VERSION < 2
+            apr_int32_t nsds;
+            apr_interval_time_t poll_timeout;
+            apr_pollfd_t pollset;
+#endif
+
+            rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE, APR_NONBLOCK_READ, remaining);
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
+                break;
+            }
+
+            if (!APR_BRIGADE_EMPTY(bb)) {
+                if (ccfg->min_rate > 0) {
+                    extend_timeout(ccfg, bb);
+                }
+
+                rv = have_lf_or_eos(bb);
+                if (rv != APR_INCOMPLETE) {
+                    break;
+                }
+
+                rv = apr_brigade_length(bb, 1, &bblen);
+                if (rv != APR_SUCCESS) {
+                    break;
+                }
+                remaining -= bblen;
+                if (remaining <= 0) {
+                    break;
+                }
+
+                /* Haven't got a whole line yet, save what we have ... */
+                if (!ccfg->tmpbb) {
+                    ccfg->tmpbb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+                }
+                rv = brigade_append(ccfg->tmpbb, bb);
+                if (rv != APR_SUCCESS)
+                    break;
+            }
+
+            /* ... and wait for more */
+#if APR_MAJOR_VERSION < 2
+            pollset.p = f->c->pool;
+            pollset.desc_type = APR_POLL_SOCKET;
+            pollset.reqevents = APR_POLLIN|APR_POLLHUP;
+            pollset.desc.s = ccfg->socket;
+            apr_socket_timeout_get(ccfg->socket, &poll_timeout);
+            rv = apr_poll(&pollset, 1, &nsds, poll_timeout);
+#else
+            rv = apr_socket_wait(ccfg->socket, APR_WAIT_READ);
+#endif
+            if (rv != APR_SUCCESS)
+                break;
+
+            rv = check_time_left(ccfg, &time_left);
+            if (rv != APR_SUCCESS)
+                break;
+
+            rv = apr_socket_timeout_set(ccfg->socket,
+                                   MIN(time_left, saved_sock_timeout));
+            AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+
+        } while (1);
+
+        if (ccfg->tmpbb)
+            APR_BRIGADE_PREPEND(bb, ccfg->tmpbb);
+
     }
     else {
-        saved_sock_timeout = -1;
+        /* mode != AP_MODE_GETLINE */
+        rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
+        if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
+            extend_timeout(ccfg, bb);
+        }
     }
 
-    rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
+    apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
 
-    if (saved_sock_timeout != -1) {
-        apr_socket_timeout_set(ctx->socket, saved_sock_timeout);
-    }
-
-    if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
-        extend_timeout(ccfg, bb);
-    }
-
+out:
     if (APR_STATUS_IS_TIMEUP(rv)) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                       "Request %s read timeout", ccfg->type);
+        /*
+         * If we allow a normal lingering close, the client may keep this
+         * process/thread busy for another 30s (MAX_SECS_TO_LINGER).
+         * Therefore we tell ap_lingering_close() to shorten this period to
+         * 2s (SECONDS_TO_LINGER).
+         */
+        apr_table_setn(f->c->notes, "short-lingering-close", "1");
     }
     return rv;
 }
 
-static int reqtimeout_pre_conn(conn_rec *c, void *csd)
+static int reqtimeout_init(conn_rec *c)
 {
-    reqtimeout_ctx *ctx;
     reqtimeout_con_cfg *ccfg;
     reqtimeout_srv_cfg *cfg;
 
@@ -173,11 +321,8 @@ static int reqtimeout_pre_conn(conn_rec *c, void *csd)
     AP_DEBUG_ASSERT(cfg != NULL);
     if (cfg->header_timeout <= 0 && cfg->body_timeout <= 0) {
         /* not configured for this vhost */
-        return OK;
+        return DECLINED;
     }
-
-    ctx = apr_pcalloc(c->pool, sizeof(reqtimeout_ctx));
-    ctx->socket = csd;
 
     ccfg = apr_pcalloc(c->pool, sizeof(reqtimeout_con_cfg));
     ccfg->new_timeout = cfg->header_timeout;
@@ -187,8 +332,9 @@ static int reqtimeout_pre_conn(conn_rec *c, void *csd)
     ccfg->rate_factor = cfg->header_rate_factor;
     ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
 
-    ap_add_input_filter("reqtimeout", ctx, NULL, c);
-    return OK;
+    ap_add_input_filter("reqtimeout", ccfg, NULL, c);
+    /* we are not handling the connection, we just do initialization */
+    return DECLINED;
 }
 
 static int reqtimeout_after_headers(request_rec *r)
@@ -198,7 +344,7 @@ static int reqtimeout_after_headers(request_rec *r)
         ap_get_module_config(r->connection->conn_config, &reqtimeout_module);
 
     if (ccfg == NULL) {
-        /* not configured for this vhost */
+        /* not configured for this connection */
         return OK;
     }
 
@@ -208,11 +354,13 @@ static int reqtimeout_after_headers(request_rec *r)
 
     ccfg->timeout_at = 0;
     ccfg->max_timeout_at = 0;
-    ccfg->new_timeout = cfg->body_timeout;
-    ccfg->new_max_timeout = cfg->body_max_timeout;
-    ccfg->min_rate = cfg->body_min_rate;
-    ccfg->rate_factor = cfg->body_rate_factor;
-    ccfg->type = "body";
+    if (r->method_number != M_CONNECT) {
+        ccfg->new_timeout = cfg->body_timeout;
+        ccfg->new_max_timeout = cfg->body_max_timeout;
+        ccfg->min_rate = cfg->body_min_rate;
+        ccfg->rate_factor = cfg->body_rate_factor;
+        ccfg->type = "body";
+    }
 
     return OK;
 }
@@ -224,7 +372,7 @@ static int reqtimeout_after_body(request_rec *r)
         ap_get_module_config(r->connection->conn_config, &reqtimeout_module);
 
     if (ccfg == NULL) {
-        /* not configured for this vhost */
+        /* not configured for this connection */
         return OK;
     }
 
@@ -406,7 +554,16 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      */
     ap_register_input_filter(reqtimeout_filter_name, reqtimeout_filter, NULL,
                              AP_FTYPE_CONNECTION + 8);
-    ap_hook_pre_connection(reqtimeout_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
+
+    /*
+     * mod_reqtimeout needs to be called before ap_process_http_request (which
+     * is run at APR_HOOK_REALLY_LAST) but after all other protocol modules.
+     * This ensures that it only influences normal http connections and not
+     * e.g. mod_ftp. Also, if mod_reqtimeout used the pre_connection hook, it
+     * would be inserted on mod_proxy's backend connections.
+     */
+    ap_hook_process_connection(reqtimeout_init, NULL, NULL, APR_HOOK_LAST);
+
     ap_hook_post_read_request(reqtimeout_after_headers, NULL, NULL,
                               APR_HOOK_MIDDLE);
     ap_hook_log_transaction(reqtimeout_after_body, NULL, NULL,
