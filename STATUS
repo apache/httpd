@@ -113,15 +113,7 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  * Backport 354118: Fix recursive ErrorDocument handling [when r->status isn't
-    HTTP_OK upon first pass through ap_die()]. PR #36090
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=354118
-    2.2.x patch:
-       http://svn.apache.org/viewvc?view=rev&revision=355454
-    Backport version for 2.0.x of patch:
-       (trunk version works)
-    +1: covener, rjung, wrowe
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]

@@ -259,6 +259,7 @@ void ap_process_request(request_rec *r)
         ap_finalize_request_protocol(r);
     }
     else {
+        r->status = HTTP_OK;
         ap_die(access_status, r);
     }
     

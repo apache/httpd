@@ -57,6 +57,8 @@ Changes with Apache 2.0.64
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) Fix recursive ErrorDocument handling. PR 36090 [Chris Darroch]
+
   *) mod_ssl: Do not do overlapping memcpy. PR 45444 [Joe Orton]
 
   *) Add Set-Cookie and Set-Cookie2 to the list of headers allowed to pass 
