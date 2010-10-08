@@ -739,11 +739,15 @@ client connections</description>
       of adjustment should only be made in a test environment which allows
       the full set of web server processing can be exercised, as there
       may be infrequent requests which require more stack to process.
-      A change in the web server configuration can invalidate the
-      current <directive>ThreadStackSize</directive> setting.
-      On some platforms (including Linux), a setting of 128000 is known to
-      cause crashes. A value of at least 204800 is recommended.</li>
+      The minumum required stack size strongly depends on the modules
+      used, but any change in the web server configuration can invalidate
+      the current <directive>ThreadStackSize</directive> setting.</li>
     </ul>
+
+    <note>It is recommended to not reduce <directive>ThreadStackSize</directive>
+    unless a high number of threads per child process is needed. On some
+    platforms (including Linux), a setting of 128000 is already too low and
+    causes crashes with some common modules.</note>
 </usage>
 </directivesynopsis>
 
