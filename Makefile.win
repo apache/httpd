@@ -99,8 +99,8 @@ _tryzlib:
 _tryzlib:
 	@echo -----
 	@echo mod_deflate will not build unless zlib is installed in srclib\zlib.  
-	@echo zlib does not need to be built, we compile the sources directly.
-	@echo Available from http://www.gzip.org/zlib/
+	@echo Version 1.2.1 and later available from http://www.gzip.org/zlib/
+	@echo built w/ nmake -f win32/Makefile.msc will satisfy this requirement.
 
 !ENDIF
 
@@ -390,6 +390,9 @@ _copybin:
 	copy modules\experimental\$(LONG)\mod_auth_ldap.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\zlib\zlib1.$(src_dll)")
+	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
+!ENDIF
 !ENDIF
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y

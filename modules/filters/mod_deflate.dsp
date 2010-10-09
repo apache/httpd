@@ -43,17 +43,16 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "HAVE_ZUTIL_H" /FD /c
-# ADD CPP /nologo /MD /W3 /Zi /O2 /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/zlib" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_deflate_src" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../../include" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/zlib" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_deflate_src" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
-BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /out:"Release/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Release/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so /opt:ref
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /out:".\Release\mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
+# ADD LINK32 kernel32.lib zdll.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_deflate - Win32 Debug"
 
@@ -78,8 +77,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
+# ADD LINK32 kernel32.lib zdll.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
 
 !ENDIF 
 
@@ -87,54 +86,6 @@ LINK32=link.exe
 
 # Name "mod_deflate - Win32 Release"
 # Name "mod_deflate - Win32 Debug"
-# Begin Group "zlib"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\adler32.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\crc32.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\deflate.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\infblock.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\infcodes.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\inffast.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\inflate.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\inftrees.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\infutil.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\trees.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\zutil.c
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=.\mod_deflate.c
