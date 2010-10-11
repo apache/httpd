@@ -935,7 +935,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
     disk_cache_info_t disk_info;
     struct iovec iov[2];
 
-    bzero(&disk_info, sizeof(disk_cache_info_t));
+    memset(&disk_info, 0, sizeof(disk_cache_info_t));
 
     if (dobj->headers_out) {
         const char *tmp;
