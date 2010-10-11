@@ -6,6 +6,10 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_cache: Optionally serve stale data when a revalidation returns a
+     5xx response, controlled by the CacheStaleOnError directive.
+     [Graham Leggett]
+
   *) htcacheclean: Allow the listing of valid URLs within the cache, with
      the option to list entry metadata such as sizes and times. [Graham
      Leggett]

@@ -860,15 +860,13 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 
 static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb)
 {
-    apr_bucket *e;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
 
     if (dobj->data.fd) {
-        apr_brigade_insert_file(bb, dobj->data.fd, 0, dobj->file_size, p);
+        apr_bucket *e = apr_bucket_file_create(dobj->data.fd, 0,
+                dobj->file_size, p, bb->bucket_alloc);
+        APR_BRIGADE_INSERT_HEAD(bb, e);
     }
-
-    e = apr_bucket_eos_create(bb->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, e);
 
     return APR_SUCCESS;
 }
