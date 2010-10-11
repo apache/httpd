@@ -731,7 +731,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * all. This section is* run before the above section.
      */
 
-    dconf = ap_get_module_config(r->server->module_config, &cache_module);
+    dconf = ap_get_module_config(r->per_dir_config, &cache_module);
 
     /* read expiry date; if a bad date, then leave it so the client can
      * read it
