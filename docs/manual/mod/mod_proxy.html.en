@@ -1177,7 +1177,10 @@ through</td></tr>
     for complex rules.</p>
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
-    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
+    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same will occur inside a
+    <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section,
+    however ProxyPass does not interpret the regexp as such, so it is necessary
+    to use <code class="directive">ProxyPassMatch</code> in this situation instead.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
@@ -1255,6 +1258,13 @@ through</td></tr>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
 
+    <p>When used inside a <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section, the first argument is omitted and the
+    regexp is obtained from the <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>.</p>
+
+    <p>If you require a more flexible reverse-proxy configuration, see the
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
+    <code>[P]</code> flag.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">Directive</a></h2>
@@ -1319,7 +1329,10 @@ proxied server</td></tr>
     </p>
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
-    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
+    directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. The same occurs inside a <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section, but will probably not work as
+    intended, as ProxyPassReverse will interpret the regexp literally as a
+    path; if needed in this situation, specify the ProxyPassReverse outside
+    the section, or in a separate <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

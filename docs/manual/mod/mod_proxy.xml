@@ -1050,7 +1050,10 @@ expressions</description>
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
-    >Location</directive>.</p>
+    >Location</directive>. The same will occur inside a
+    <directive type="section" module="core">LocationMatch</directive> section,
+    however ProxyPass does not interpret the regexp as such, so it is necessary
+    to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
@@ -1100,6 +1103,15 @@ expressions</description>
     </note>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
+
+    <p>When used inside a <directive type="section" module="core"
+    >LocationMatch</directive> section, the first argument is omitted and the
+    regexp is obtained from the <directive type="section" module="core"
+    >LocationMatch</directive>.</p>
+
+    <p>If you require a more flexible reverse-proxy configuration, see the
+    <directive module="mod_rewrite">RewriteRule</directive> directive with the
+    <code>[P]</code> flag.</p>
 </usage>
 </directivesynopsis>
 
@@ -1171,7 +1183,12 @@ proxied server</description>
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
-    >Location</directive>.</p>
+    >Location</directive>. The same occurs inside a <directive type="section"
+    module="core">LocationMatch</directive> section, but will probably not work as
+    intended, as ProxyPassReverse will interpret the regexp literally as a
+    path; if needed in this situation, specify the ProxyPassReverse outside
+    the section, or in a separate <directive type="section" module="core"
+    >Location</directive> section.</p>
 </usage>
 </directivesynopsis>
 
