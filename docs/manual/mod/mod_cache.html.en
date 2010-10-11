@@ -74,6 +74,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheminexpire">CacheMinExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachequickhandler">CacheQuickHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachestaleonerror">CacheStaleOnError</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreexpired">CacheStoreExpired</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
@@ -862,6 +863,31 @@ LastModified date.</td></tr>
     apply.</p>
 
   
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheStaleOnError" id="CacheStaleOnError">CacheStaleOnError</a> <a name="cachestaleonerror" id="cachestaleonerror">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Serve stale content in place of 5xx responses.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheStaleOnError <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheStaleOnError on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table>
+  <p>When the <code class="directive"><a href="#cachestaleonerror">CacheStaleOnError</a></code> directive
+  is switched on, and when stale data is available in the cache, the cache will
+  respond to 5xx responses from the backend by returning the stale data instead of the
+  5xx response. While the Cache-Control headers sent by clients will be respected, and
+  the raw 5xx responses returned to the client on request, the response so returned to
+  the client will not invalidate the content in the cache.</p>
+
+  <div class="example"><p><code>
+    # Serve stale data on error.<br />
+    CacheStaleOnError on<br />
+  </code></p></div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreExpired" id="CacheStoreExpired">CacheStoreExpired</a> <a name="cachestoreexpired" id="cachestoreexpired">Directive</a></h2>
