@@ -70,6 +70,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
     cache_provider_list *providers;
     cache_request_rec *cache;
     apr_bucket_brigade *out;
+    apr_bucket *e;
     ap_filter_t *next;
     ap_filter_rec_t *cache_out_handle;
     cache_server_conf *conf;
@@ -151,16 +152,20 @@ static int cache_quick_handler(request_rec *r, int lookup)
                                 r->server,
                                 "Adding CACHE_SAVE_SUBREQ filter for %s",
                                 r->uri);
-                        ap_add_output_filter_handle(cache_save_subreq_filter_handle,
-                                cache, r, r->connection);
+                        cache->save_filter = ap_add_output_filter_handle(
+                                cache_save_subreq_filter_handle, cache, r,
+                                r->connection);
                     }
                     else {
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
                                 r->server, "Adding CACHE_SAVE filter for %s",
                                 r->uri);
-                        ap_add_output_filter_handle(cache_save_filter_handle,
-                                cache, r, r->connection);
+                        cache->save_filter = ap_add_output_filter_handle(
+                                cache_save_filter_handle, cache, r,
+                                r->connection);
                     }
+
+                    apr_pool_userdata_setn(cache, CACHE_CTX_KEY, NULL, r->pool);
 
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                             "Adding CACHE_REMOVE_URL filter for %s",
@@ -202,7 +207,8 @@ static int cache_quick_handler(request_rec *r, int lookup)
     }
 
     /* we've got a cache hit! tell everyone who cares */
-    cache_run_cache_status(cache->handle, r, AP_CACHE_HIT, "cache hit");
+    cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_HIT,
+            "cache hit");
 
     /* if we are a lookup, we are exiting soon one way or another; Restore
      * the headers. */
@@ -272,6 +278,8 @@ static int cache_quick_handler(request_rec *r, int lookup)
 
     /* kick off the filter stack */
     out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    e = apr_bucket_eos_create(out->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(out, e);
     rv = ap_pass_brigade(r->output_filters, out);
     if (rv != APR_SUCCESS) {
         if (rv != AP_FILTER_ERROR) {
@@ -319,6 +327,19 @@ static int cache_replace_filter(ap_filter_t *next, ap_filter_rec_t *from,
 }
 
 /**
+ * Find the given filter, and return it if found, or NULL otherwise.
+ */
+static ap_filter_t *cache_get_filter(ap_filter_t *next, ap_filter_rec_t *rec) {
+    while (next) {
+        if (next->frec == rec && next->ctx) {
+            break;
+        }
+        next = next->next;
+    }
+    return next;
+}
+
+/**
  * The cache handler is functionally similar to the cache_quick_hander,
  * however a number of steps that are required by the quick handler are
  * not required here, as the normal httpd processing has already handled
@@ -330,6 +351,7 @@ static int cache_handler(request_rec *r)
     cache_provider_list *providers;
     cache_request_rec *cache;
     apr_bucket_brigade *out;
+    apr_bucket *e;
     ap_filter_t *next;
     ap_filter_rec_t *cache_out_handle;
     ap_filter_rec_t *cache_save_handle;
@@ -405,8 +427,8 @@ static int cache_handler(request_rec *r)
                             r->uri);
                     cache_save_handle = cache_save_filter_handle;
                 }
-                ap_add_output_filter_handle(cache_save_handle,
-                        cache, r, r->connection);
+                ap_add_output_filter_handle(cache_save_handle, cache, r,
+                        r->connection);
 
                 /*
                  * Did the user indicate the precise location of the
@@ -426,6 +448,12 @@ static int cache_handler(request_rec *r)
                             r->server, "Replacing CACHE with CACHE_SAVE "
                             "filter for %s", r->uri);
                 }
+
+                /* save away the save filter stack */
+                cache->save_filter = cache_get_filter(r->output_filters,
+                        cache_save_filter_handle);
+
+                apr_pool_userdata_setn(cache, CACHE_CTX_KEY, NULL, r->pool);
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                         "Adding CACHE_REMOVE_URL filter for %s",
@@ -458,7 +486,8 @@ static int cache_handler(request_rec *r)
     }
 
     /* we've got a cache hit! tell everyone who cares */
-    cache_run_cache_status(cache->handle, r, AP_CACHE_HIT, "cache hit");
+    cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_HIT,
+            "cache hit");
 
     rv = ap_meets_conditions(r);
     if (rv != OK) {
@@ -516,6 +545,8 @@ static int cache_handler(request_rec *r)
 
     /* kick off the filter stack */
     out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    e = apr_bucket_eos_create(out->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(out, e);
     rv = ap_pass_brigade(r->output_filters, out);
     if (rv != APR_SUCCESS) {
         if (rv != AP_FILTER_ERROR) {
@@ -540,6 +571,7 @@ static int cache_handler(request_rec *r)
 static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
+    apr_bucket *e;
     cache_request_rec *cache = (cache_request_rec *)f->ctx;
 
     if (!cache) {
@@ -554,20 +586,31 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                  "cache: running CACHE_OUT filter");
 
-    /* restore status of cached response */
-    /* XXX: This exposes a bug in mem_cache, since it does not
-     * restore the status into it's handle. */
-    r->status = cache->handle->cache_obj->info.status;
+    /* clean out any previous response up to EOS, if any */
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
+        if (APR_BUCKET_IS_EOS(e)) {
 
-    /* recall_headers() was called in cache_select() */
-    cache->provider->recall_body(cache->handle, r->pool, bb);
+            /* restore status of cached response */
+            r->status = cache->handle->cache_obj->info.status;
 
-    /* This filter is done once it has served up its content */
-    ap_remove_output_filter(f);
+            /* recall_headers() was called in cache_select() */
+            cache->provider->recall_body(cache->handle, r->pool, bb);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                 "cache: serving %s", r->uri);
-    return ap_pass_brigade(f->next, bb);
+            /* This filter is done once it has served up its content */
+            ap_remove_output_filter(f);
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                         "cache: serving %s", r->uri);
+            return ap_pass_brigade(f->next, bb);
+
+        }
+        apr_bucket_delete(e);
+    }
+
+    return APR_SUCCESS;
 }
 
 /*
@@ -931,6 +974,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
         else {
             cache->provider->recall_body(cache->handle, r->pool, bb);
+
+            bkt = apr_bucket_eos_create(bb->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, bkt);
         }
 
         cache->block_response = 1;
@@ -939,6 +985,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         cache_run_cache_status(
                 cache->handle,
                 r,
+                r->headers_out,
                 AP_CACHE_REVALIDATE,
                 apr_psprintf(
                         r->pool,
@@ -957,7 +1004,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                      reason);
 
         /* we've got a cache miss! tell anyone who cares */
-        cache_run_cache_status(cache->handle, r, AP_CACHE_MISS, reason);
+        cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
+                reason);
 
         /* remove this filter from the chain */
         ap_remove_output_filter(f);
@@ -1061,7 +1109,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     if (rv != OK) {
         /* we've got a cache miss! tell anyone who cares */
-        cache_run_cache_status(cache->handle, r, AP_CACHE_MISS,
+        cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
                 "cache miss: create_entity failed");
 
         /* Caching layer declined the opportunity to cache the response */
@@ -1242,6 +1290,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
         else {
             cache->provider->recall_body(cache->handle, r->pool, bb);
+
+            bkt = apr_bucket_eos_create(bb->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(bb, bkt);
         }
 
         cache->block_response = 1;
@@ -1266,14 +1317,16 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             }
 
             /* we've got a cache conditional hit! tell anyone who cares */
-            cache_run_cache_status(cache->handle, r, AP_CACHE_REVALIDATE,
+            cache_run_cache_status(cache->handle, r, r->headers_out,
+                    AP_CACHE_REVALIDATE,
                     "conditional cache hit: entity refresh failed");
 
         }
         else {
 
             /* we've got a cache conditional hit! tell anyone who cares */
-            cache_run_cache_status(cache->handle, r, AP_CACHE_REVALIDATE,
+            cache_run_cache_status(cache->handle, r, r->headers_out,
+                    AP_CACHE_REVALIDATE,
                     "conditional cache hit: entity refreshed");
 
         }
@@ -1289,7 +1342,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                      "cache: store_headers failed");
 
         /* we've got a cache miss! tell anyone who cares */
-        cache_run_cache_status(cache->handle, r, AP_CACHE_MISS,
+        cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
                 "cache miss: store_headers failed");
 
         ap_remove_output_filter(f);
@@ -1298,7 +1351,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     /* we've got a cache miss! tell anyone who cares */
-    cache_run_cache_status(cache->handle, r, AP_CACHE_MISS,
+    cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
             "cache miss: attempting entity save");
 
     return cache_save_store(f, in, conf, cache);
@@ -1394,8 +1447,8 @@ static int cache_filter(ap_filter_t *f, apr_bucket_brigade *in)
  * service developers who may need to know whether their Cache-Control headers
  * are working correctly.
  */
-static int cache_status(cache_handle_t *h, request_rec *r, ap_cache_status_e status,
-        const char *reason)
+static int cache_status(cache_handle_t *h, request_rec *r,
+        apr_table_t *headers, ap_cache_status_e status, const char *reason)
 {
     cache_server_conf
             *conf =
@@ -1429,9 +1482,11 @@ static int cache_status(cache_handle_t *h, request_rec *r, ap_cache_status_e sta
         x_cache = conf->x_cache;
     }
     if (x_cache) {
-        apr_table_setn(r->headers_out, "X-Cache", apr_psprintf(r->pool, "%s from %s",
-                status == AP_CACHE_HIT ? "HIT" : status == AP_CACHE_REVALIDATE ?
-                        "REVALIDATE" : "MISS", r->server->server_hostname));
+        apr_table_setn(headers, "X-Cache",
+                apr_psprintf(r->pool, "%s from %s",
+                        status == AP_CACHE_HIT ? "HIT" : status
+                                == AP_CACHE_REVALIDATE ? "REVALIDATE" : "MISS",
+                        r->server->server_hostname));
     }
 
     if (dconf && dconf->x_cache_detail_set) {
@@ -1441,11 +1496,90 @@ static int cache_status(cache_handle_t *h, request_rec *r, ap_cache_status_e sta
         x_cache_detail = conf->x_cache_detail;
     }
     if (x_cache_detail) {
-        apr_table_setn(r->headers_out, "X-Cache-Detail", apr_psprintf(r->pool,
+        apr_table_setn(headers, "X-Cache-Detail", apr_psprintf(r->pool,
                 "\"%s\" from %s", reason, r->server->server_hostname));
     }
 
     return OK;
+}
+
+/**
+ * If an error has occurred, but we have a stale cached entry, restore the
+ * filter stack from the save filter onwards. The canned error message will
+ * be discarded in the process, and replaced with the cached response.
+ */
+static void cache_insert_error_filter(request_rec *r)
+{
+    void *dummy;
+    cache_dir_conf *dconf;
+
+    /* ignore everything except for 5xx errors */
+    if (r->status < HTTP_INTERNAL_SERVER_ERROR) {
+        return;
+    }
+
+    dconf = ap_get_module_config(r->per_dir_config, &cache_module);
+
+    if (!dconf->stale_on_error) {
+        return;
+    }
+
+    /* RFC2616 13.8 Errors or Incomplete Response Cache Behavior:
+     * If a cache receives a 5xx response while attempting to revalidate an
+     * entry, it MAY either forward this response to the requesting client,
+     * or act as if the server failed to respond. In the latter case, it MAY
+     * return a previously received response unless the cached entry
+     * includes the "must-revalidate" cache-control directive (see section
+     * 14.9).
+     */
+    apr_pool_userdata_get(&dummy, CACHE_CTX_KEY, r->pool);
+    if (dummy) {
+        cache_request_rec *cache = (cache_request_rec *) dummy;
+
+        if (cache->stale_handle && cache->save_filter && !ap_cache_liststr(
+                NULL, apr_table_get(cache->stale_handle->resp_hdrs,
+                        "Cache-Control"), "must-revalidate", NULL)) {
+            const char *warn_head;
+
+            /* morph the current save filter into the out filter, and serve from
+             * cache.
+             */
+            cache->handle = cache->stale_handle;
+            if (r->main) {
+                cache->save_filter->frec = cache_out_subreq_filter_handle;
+            }
+            else {
+                cache->save_filter->frec = cache_out_filter_handle;
+            }
+
+            r->output_filters = cache->save_filter;
+
+            r->err_headers_out = cache->stale_handle->resp_hdrs;
+
+            /* add a stale warning */
+            warn_head = apr_table_get(r->err_headers_out, "Warning");
+            if ((warn_head == NULL) || ((warn_head != NULL)
+                    && (ap_strstr_c(warn_head, "110") == NULL))) {
+                apr_table_mergen(r->err_headers_out, "Warning",
+                        "110 Response is stale");
+            }
+
+            ap_remove_output_filter(cache->remove_url_filter);
+
+            cache_run_cache_status(
+                    cache->handle,
+                    r,
+                    r->err_headers_out,
+                    AP_CACHE_HIT,
+                    apr_psprintf(
+                            r->pool,
+                            "cache hit: %d status; stale content returned",
+                            r->status));
+
+        }
+    }
+
+    return;
 }
 
 /* -------------------------------------------------------------- */
@@ -1471,6 +1605,8 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 
     dconf->x_cache = DEFAULT_X_CACHE;
     dconf->x_cache_detail = DEFAULT_X_CACHE_DETAIL;
+
+    dconf->stale_on_error = DEFAULT_CACHE_STALE_ON_ERROR;
 
     return dconf;
 }
@@ -1510,6 +1646,11 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
             : add->x_cache_detail;
     new->x_cache_detail_set = add->x_cache_detail_set
             || base->x_cache_detail_set;
+
+    new->stale_on_error = (add->stale_on_error_set == 0) ? base->stale_on_error
+            : add->stale_on_error;
+    new->stale_on_error_set = add->stale_on_error_set
+            || base->stale_on_error_set;
 
     return new;
 }
@@ -1999,6 +2140,16 @@ static const char *set_cache_key_base_url(cmd_parms *parms, void *dummy,
     return NULL;
 }
 
+static const char *set_cache_stale_on_error(cmd_parms *parms, void *dummy,
+        int flag)
+{
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
+
+    dconf->stale_on_error = flag;
+    dconf->stale_on_error_set = 1;
+    return NULL;
+}
+
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -2083,6 +2234,9 @@ static const command_rec cache_cmds[] =
                  "Add a X-Cache-Detail header to responses. Default is off."),
     AP_INIT_TAKE1("CacheKeyBaseURL", set_cache_key_base_url, NULL, RSRC_CONF,
                   "Override the base URL of reverse proxied cache keys."),
+    AP_INIT_FLAG("CacheStaleOnError", set_cache_stale_on_error,
+                 NULL, RSRC_CONF|ACCESS_CONF,
+                 "Serve stale content on 5xx errors if present. Defaults to on."),
     {NULL}
 };
 
@@ -2095,6 +2249,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(cache_handler, NULL, NULL, APR_HOOK_REALLY_FIRST);
     /* cache status */
     cache_hook_cache_status(cache_status, NULL, NULL, APR_HOOK_MIDDLE);
+    /* cache error handler */
+    ap_hook_insert_error_filter(cache_insert_error_filter, NULL, NULL, APR_HOOK_MIDDLE);
     /* cache filters
      * XXX The cache filters need to run right after the handlers and before
      * any other filters. Consider creating AP_FTYPE_CACHE for this purpose.
@@ -2188,7 +2344,7 @@ APR_HOOK_STRUCT(
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, cache_status,
-                                    (cache_handle_t *h, request_rec *r,
-                                     ap_cache_status_e status,
-                                     const char *reason), (h, r, status, reason),
-                                    OK, DECLINED)
+        (cache_handle_t *h, request_rec *r,
+                apr_table_t *headers, ap_cache_status_e status,
+                const char *reason), (h, r, headers, status, reason),
+        OK, DECLINED)

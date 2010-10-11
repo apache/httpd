@@ -94,9 +94,11 @@ extern "C" {
 #define DEFAULT_CACHE_MAXAGE    5
 #define DEFAULT_X_CACHE         0
 #define DEFAULT_X_CACHE_DETAIL  0
+#define DEFAULT_CACHE_STALE_ON_ERROR 1
 #define DEFAULT_CACHE_LOCKPATH "/mod_cache-lock"
 #define CACHE_LOCKNAME_KEY "mod_cache-lockname"
 #define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
+#define CACHE_CTX_KEY "mod_cache-ctx"
 
 /**
  * cache_util.c
@@ -183,6 +185,9 @@ typedef struct {
     int x_cache_set;
     int x_cache_detail;
     int x_cache_detail_set;
+    /* serve stale on error */
+    int stale_on_error;
+    int stale_on_error_set;
 } cache_dir_conf;
 
 /* A linked-list of authn providers. */
@@ -210,6 +215,7 @@ typedef struct {
     apr_time_t exp;                     /* expiration */
     apr_time_t lastmod;                 /* last-modified time */
     cache_info *info;                   /* current cache info */
+    ap_filter_t *save_filter;           /* Enable us to restore the filter on error */
     ap_filter_t *remove_url_filter;     /* Enable us to remove the filter */
     const char *key;                    /* The cache key created for this
                                          * request
