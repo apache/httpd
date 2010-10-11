@@ -716,7 +716,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return APR_SUCCESS;
     }
 
-    /* have we already run the cachability check and set up the
+    /* have we already run the cacheability check and set up the
      * cached file handle?
      */
     if (cache->in_checked) {
