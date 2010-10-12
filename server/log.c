@@ -1165,9 +1165,9 @@ static void log_error_core(const char *file, int line, int module_index,
 
     info.s             = s;
     info.c             = c;
-    info.file          = file;
-    info.line          = line;
-    info.status        = status;
+    info.file          = NULL;
+    info.line          = 0;
+    info.status        = 0;
     info.using_syslog  = (logf == NULL);
     info.startup       = ((level & APLOG_STARTUP) == APLOG_STARTUP);
 
@@ -1214,10 +1214,13 @@ static void log_error_core(const char *file, int line, int module_index,
         }
         else {
             /* the actual error message */
-            info.r = r;
-            info.rmain = rmain;
-            info.level = level_and_mask;
+            info.r            = r;
+            info.rmain        = rmain;
+            info.level        = level_and_mask;
             info.module_index = module_index;
+            info.file         = file;
+            info.line         = line;
+            info.status       = status;
             log_format = sconf ? sconf->error_log_format : NULL;
             done = 1;
         }
