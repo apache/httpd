@@ -99,12 +99,6 @@ MPM</description>
     </ul>
 </section>
 
-<section id="issues"><title>Issues</title>
-    <p>At present, this MPM is incompatible with <module>mod_ssl</module>, and
-    other input filters.</p>
-</section>
-
-
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
