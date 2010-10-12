@@ -737,7 +737,7 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
             break;
         }
 
-        /* Have we hit MaxRequestsPerChild connections? */
+        /* Have we hit MaxConnectionsPerChild connections? */
         if (ap_max_requests_per_child) {
             requests_this_child++;
             if (requests_this_child > ap_max_requests_per_child) {
@@ -1013,7 +1013,7 @@ void child_main(apr_pool_t *pconf)
      *
      * max_requests_per_child_event:
      *    This event is signaled by the worker threads to indicate that
-     *    the process has handled MaxRequestsPerChild connections.
+     *    the process has handled MaxConnectionsPerChild connections.
      *
      * TIMEOUT:
      *    To do periodic maintenance on the server (check for thread exits,
@@ -1058,12 +1058,12 @@ void child_main(apr_pool_t *pconf)
             break;
         }
         else {
-            /* MaxRequestsPerChild event set by the worker threads.
+            /* MaxConnectionsPerChild event set by the worker threads.
              * Signal the parent to restart
              */
             ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                          "Child %d: Process exiting because it reached "
-                         "MaxRequestsPerChild. Signaling the parent to "
+                         "MaxConnectionsPerChild. Signaling the parent to "
                          "restart a new child process.", my_pid);
             ap_signal_parent(SIGNAL_PARENT_RESTART);
             break;

@@ -763,7 +763,7 @@ read_request:
 }
 
 /* requests_this_child has gone to zero or below.  See if the admin coded
-   "MaxRequestsPerChild 0", and keep going in that case.  Doing it this way
+   "MaxConnectionsPerChild 0", and keep going in that case.  Doing it this way
    simplifies the hot path in worker_thread */
 static void check_infinite_requests(void)
 {
@@ -1779,7 +1779,7 @@ static void child_main(int child_num_arg)
     else {                      /* !one_process */
         /* remove SIGTERM from the set of blocked signals...  if one of
          * the other threads in the process needs to take us down
-         * (e.g., for MaxRequestsPerChild) it will send us SIGTERM
+         * (e.g., for MaxConnectionsPerChild) it will send us SIGTERM
          */
         unblock_signal(SIGTERM);
         apr_signal(SIGTERM, dummy_signal_handler);

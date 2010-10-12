@@ -701,7 +701,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
  *    translated into an ap_signal_parent(SIGNAL_PARENT_RESTART)
  *    call by code in service.c.
  * 3. The child process calling ap_signal_parent(SIGNAL_PARENT_RESTART)
- *    as a result of hitting MaxRequestsPerChild.
+ *    as a result of hitting MaxConnectionsPerChild.
  *
  * shutdown_event
  * --------------
