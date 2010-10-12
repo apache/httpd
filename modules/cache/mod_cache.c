@@ -1543,6 +1543,10 @@ static void cache_insert_error_filter(request_rec *r)
                 NULL, apr_table_get(cache->stale_handle->resp_hdrs,
                         "Cache-Control"), "must-revalidate", NULL)) {
             const char *warn_head;
+            cache_server_conf
+                    *conf =
+                            (cache_server_conf *) ap_get_module_config(r->server->module_config,
+                                    &cache_module);
 
             /* morph the current save filter into the out filter, and serve from
              * cache.
@@ -1578,6 +1582,9 @@ static void cache_insert_error_filter(request_rec *r)
                             r->pool,
                             "cache hit: %d status; stale content returned",
                             r->status));
+
+            /* give someone else the chance to cache the file */
+            cache_remove_lock(conf, cache, r, NULL);
 
         }
     }
