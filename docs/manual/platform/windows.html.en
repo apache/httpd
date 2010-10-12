@@ -247,11 +247,11 @@
 
       <p>The process management directives are also different:</p>
 
-      <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>:
-      Like the Unix directive, this controls how many requests (actually,
-      connections) which a single child process will serve before exiting.
+      <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>:
+      Like the Unix directive, this controls how many connections a single
+      child process will serve before exiting.
       However, unlike on Unix, a replacement process is not instantly
-      available.  Use the default <code>MaxRequestsPerChild 0</code>,
+      available.  Use the default <code>MaxConnectionsPerChild 0</code>,
       unless instructed to change the behavior to overcome a memory leak
       in third party modules or in-process applications.</p>
 

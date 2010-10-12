@@ -338,10 +338,10 @@
 
         <p>Therefore the "process"-management directives are different:</p>
 
-        <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code> -
-        Like the Unix directive, this controls how many requests
+        <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> -
+        Like the Unix directive, this controls how many connections
         a worker thread will serve before exiting. The recommended default,
-        <code>MaxRequestsPerChild 0</code>, causes the thread to continue servicing
+        <code>MaxConnectionsPerChild 0</code>, causes the thread to continue servicing
         request indefinitely. It is recommended on NetWare, unless there is some
         specific reason, that this directive always remain set to <code>0</code>.</p>
 

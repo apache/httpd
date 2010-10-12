@@ -1802,7 +1802,7 @@ wildcard matching available in 2.3.6 and later</td></tr>
     length over persistent connections.</p>
 
     <p>When a client uses a Keep-Alive connection it will be counted
-    as a single "request" for the <code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code> directive, regardless
+    as a single "request" for the <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> directive, regardless
     of how many requests are sent using the connection.</p>
 
 <h3>See also</h3>

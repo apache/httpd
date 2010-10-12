@@ -877,10 +877,10 @@ LastModified date.</td></tr>
 </table>
   <p>When the <code class="directive"><a href="#cachestaleonerror">CacheStaleOnError</a></code> directive
   is switched on, and when stale data is available in the cache, the cache will
-  respond to 5xx responses from the backend by returning the stale data instead of the
-  5xx response. While the Cache-Control headers sent by clients will be respected, and
-  the raw 5xx responses returned to the client on request, the response so returned to
-  the client will not invalidate the content in the cache.</p>
+  respond to 5xx responses from the backend by returning the stale data instead of
+  the 5xx response. While the Cache-Control headers sent by clients will be respected,
+  and the raw 5xx responses returned to the client on request, the 5xx response so
+  returned to the client will not invalidate the content in the cache.</p>
 
   <div class="example"><p><code>
     # Serve stale data on error.<br />

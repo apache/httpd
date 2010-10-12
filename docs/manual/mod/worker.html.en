@@ -55,8 +55,8 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
@@ -128,8 +128,8 @@
     the following:</p>
 
     <ul>
-      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxrequestsperchild">
-      MaxRequestsPerChild</a></code> to zero</li>
+      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxconnectionsperchild">
+      MaxConnectionsPerChild</a></code> to zero</li>
 
       <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxsparethreads">
       MaxSpareThreads</a></code> to the same value as
@@ -158,7 +158,7 @@
     these directives also set the privileges which will be inherited
     by CGI scripts.</p>
 
-    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
 
