@@ -334,8 +334,8 @@ Changes with Apache 2.3.6
   *) apxs -q: Stop filtering out ':' characters from the reported values.
      PR 45343.  [Bill Cole]
 
-  *) prefork MPM: Run cleanups for final request when process exits gracefully.
-     PR 43857.  [Tom Donovan]
+  *) prefork MPM: Work around possible crashes on child exit in APR reslist
+     cleanup code.  PR 43857.  [Tom Donovan]
 
   *) ab: fix number of requests sent by ab when keepalive is enabled.  PR 48497.
      [Bryn Dole <dole blekko.com>]
