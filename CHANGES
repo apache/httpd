@@ -6,6 +6,10 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) core: Rename MaxRequestsPerChild to MaxConnectionsPerChild, which
+     describes more accurately what the directive does. The old name
+     still works but logs a warning. [Stefan Fritsch]
+
   *) mod_cache: Optionally serve stale data when a revalidation returns a
      5xx response, controlled by the CacheStaleOnError directive.
      [Graham Leggett]

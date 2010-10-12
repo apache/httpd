@@ -326,22 +326,24 @@ to hold without calling <code>free()</code></description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>MaxRequestsPerChild</name>
-<description>Limit on the number of requests that an individual child server
+<name>MaxConnectionsPerChild</name>
+<description>Limit on the number of connections that an individual child server
 will handle during its life</description>
-<syntax>MaxRequestsPerChild <var>number</var></syntax>
-<default>MaxRequestsPerChild 10000</default>
+<syntax>MaxConnectionsPerChild <var>number</var></syntax>
+<default>MaxConnectionsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
 <module>prefork</module><module>worker</module></modulelist>
+<compatibility>Available Apache HTTP Server 2.3.9 and later. The old name
+<code>MaxRequestsPerChild</code> ist still supported.</compatibility>
 
 <usage>
-    <p>The <directive>MaxRequestsPerChild</directive> directive sets
-    the limit on the number of requests that an individual child
+    <p>The <directive>MaxConnectionsPerChild</directive> directive sets
+    the limit on the number of connections that an individual child
     server process will handle. After
-    <directive>MaxRequestsPerChild</directive> requests, the child
-    process will die. If <directive>MaxRequestsPerChild</directive> is
+    <directive>MaxConnectionsPerChild</directive> connections, the child
+    process will die. If <directive>MaxConnectionsPerChild</directive> is
     <code>0</code>, then the process will never expire.</p>
 
     <note><title>Different default values</title>
@@ -349,16 +351,9 @@ will handle during its life</description>
       <module>mpm_winnt</module> is <code>0</code>.</p>
     </note>
 
-    <p>Setting <directive>MaxRequestsPerChild</directive> to a
+    <p>Setting <directive>MaxConnectionsPerChild</directive> to a
     non-zero value limits the amount of memory that process can consume
     by (accidental) memory leakage.</p>
-
-    <note><title>Note</title>
-      <p>For <directive module="core">KeepAlive</directive> requests, only
-      the first request is counted towards this limit. In effect, it
-      changes the behavior to limit the number of <em>connections</em> per
-      child.</p>
-    </note>
 </usage>
 </directivesynopsis>
 

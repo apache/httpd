@@ -420,10 +420,6 @@ WISH LIST
     HTTP or SNMP?
     jerenkrantz says: Yawn.  Who cares.
 
-  * MaxRequestsPerChild measures connections, not requests.
-      Until someone has a better way, we'll probably just rename it
-      "MaxConnectionsPerChild".
-    
   * Regex containers don't work in an intutive way
       Status: No one has come up with an efficient way to fix this
       behavior. Dean has suggested getting rid of regex containers

@@ -166,6 +166,10 @@
       configurations as discussed below.</p>
 
       <ul>
+        <li><directive>MaxRequestsPerChild</directive> has been renamed to
+        <directive module="mpm_common">MaxConnectionsPerChild</directive>,
+        which describes more accurately what it does.</li>
+
         <li>The <directive module="core">DefaultType</directive>
         directive no longer has any effect, other than to emit a
         warning if it's used with any value other than

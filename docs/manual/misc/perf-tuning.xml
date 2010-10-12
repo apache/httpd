@@ -398,9 +398,9 @@
       Use the <module>mod_status</module> output as a guide.</p>
 
     <p>Related to process creation is process death induced by the
-    <directive module="mpm_common">MaxRequestsPerChild</directive>
+    <directive module="mpm_common">MaxConnectionsPerChild</directive>
     setting. By default this is <code>0</code>,
-    which means that there is no limit to the number of requests
+    which means that there is no limit to the number of connections
     handled per child. If your configuration currently has this set
     to some very low number, such as <code>30</code>, you may want to bump this
     up significantly. If you are running SunOS or an old version of

@@ -55,7 +55,7 @@
     href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
-    <p><directive module="mpm_common">MaxRequestsPerChild</directive>
+    <p><directive module="mpm_common">MaxConnectionsPerChild</directive>
     controls how frequently the server recycles processes by killing old
     ones and launching new ones. On the NetWare OS it is highly
     recommended that this directive remain set to 0. This allows worker
@@ -71,7 +71,7 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
 </directivesynopsis>

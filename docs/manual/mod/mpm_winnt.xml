@@ -44,7 +44,7 @@ NT.</description>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>
