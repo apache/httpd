@@ -159,6 +159,7 @@
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><a href="mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></li>
+<li><a href="mod_cache.html#cachekeybaseurl">CacheKeyBaseURL</a></li>
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachelock">CacheLock</a></li>
 <li><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge</a></li>
@@ -172,6 +173,7 @@
 <li><a href="mod_disk_cache.html#cachereadsize">CacheReadSize</a></li>
 <li><a href="mod_disk_cache.html#cachereadtime">CacheReadTime</a></li>
 <li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
+<li><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError</a></li>
 <li><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired</a></li>
 <li><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore</a></li>
 <li><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate</a></li>
@@ -329,9 +331,9 @@
 <li><a href="mod_lua.html#luaroot">LuaRoot</a></li>
 <li><a href="mod_lua.html#luascope">LuaScope</a></li>
 <li><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients</a></li>
+<li><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
-<li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>

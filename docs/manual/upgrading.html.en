@@ -162,6 +162,10 @@
       configurations as discussed below.</p>
 
       <ul>
+        <li><code class="directive">MaxRequestsPerChild</code> has been renamed to
+        <code class="directive"><a href="./mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>,
+        which describes more accurately what it does.</li>
+
         <li>The <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
         directive no longer has any effect, other than to emit a
         warning if it's used with any value other than

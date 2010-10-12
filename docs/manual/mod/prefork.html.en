@@ -55,8 +55,8 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxspareservers">MaxSpareServers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minspareservers">MinSpareServers</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
@@ -107,7 +107,7 @@ uses</a></li>
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible.</p>
 
-    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
 
