@@ -1,6 +1,9 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.17
 
+  *) prefork MPM: Run cleanups for final request when process exits gracefully
+     to work around a flaw in apr-util.  PR 43857.  [Tom Donovan]
+
   *) mod_reqtimeout: Do not wrongly enforce timeouts for mod_proxy's backend
      connections and other protocol handlers (like mod_ftp). Enforce the
      timeout for AP_MODE_GETLINE. If there is a timeout, shorten the lingering
