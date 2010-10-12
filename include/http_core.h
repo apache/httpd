@@ -676,19 +676,42 @@ APR_DECLARE_OPTIONAL_FN(apr_off_t, ap_logio_get_last_bytes, (conn_rec *c));
  */
 
 /**
- * info structure passed to callback functions of errorlog handlers
+ * The info structure passed to callback functions of errorlog handlers.
+ * Not all information is available in all contexts. In particular, all
+ * pointers may be NULL.
  */
 typedef struct ap_errorlog_info {
+    /** current server_rec.
+     *  Should be preferred over c->base_server and r->server
+     */
     const server_rec *s;
+
+    /** current conn_rec.
+     *  Should be preferred over r->connecction
+     */
     const conn_rec *c;
+
+    /** current request_rec. */
     const request_rec *r;
+    /** r->main if r is a subreqest, otherwise equal to r */
     const request_rec *rmain;
+
+    /** name of source file where the log message was produced. */
     const char *file;
+    /** line number in the source file, 0 if N/A */
     int line;
+
+    /** module index of module that produced the log message, APLOG_NO_MODULE if N/A. */
     int module_index;
+    /** log level of error message, -1 if N/A */
     int level;
+
+    /** apr error status related to the log message, 0 if no error */
     apr_status_t status;
+
+    /** 1 if logging to syslog, 0 otherwise */
     int using_syslog;
+    /** 1 if APLOG_STARTUP was set for the log message, 0 otherwise */
     int startup;
 } ap_errorlog_info;
 
@@ -715,18 +738,27 @@ AP_DECLARE(void) ap_register_errorlog_handler(apr_pool_t *p, char *tag,
 
 typedef struct ap_errorlog_handler {
     ap_errorlog_handler_fn_t *func;
-    int flags;
+    int flags; /* for future extensions */
 } ap_errorlog_handler;
 
+  /** item starts a new field */
+#define AP_ERRORLOG_FLAG_FIELD_SEP       1
+  /** item is the actual error message */
+#define AP_ERRORLOG_FLAG_MESSAGE         2
+  /** skip whole line if item is zero-length */
+#define AP_ERRORLOG_FLAG_REQUIRED        4
+  /** log zero-length item as '-' */
+#define AP_ERRORLOG_FLAG_NULL_AS_HYPHEN  8
+
 typedef struct {
+    /** ap_errorlog_handler function */
     ap_errorlog_handler_fn_t *func;
+    /** argument passed to item in {} */
     const char *arg;
-#define AP_ERRORLOG_FLAG_FIELD_SEP       1  /* item starts a new field */
-#define AP_ERRORLOG_FLAG_MESSAGE         2  /* item is the actual error message */
-#define AP_ERRORLOG_FLAG_REQUIRED        4  /* skip whole line if item is zero-length */
-#define AP_ERRORLOG_FLAG_NULL_AS_HYPHEN  8  /* log zero-length item as '-' */
+    /** a combination of the AP_ERRORLOG_* flags */
     unsigned int flags;
-    unsigned int min_loglevel;              /* only log if level is higher than this */
+    /** only log item if the message's log level is higher than this */
+    unsigned int min_loglevel;
 } ap_errorlog_format_item;
 
 AP_DECLARE(void) ap_register_log_hooks(apr_pool_t *p);
