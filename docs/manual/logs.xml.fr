@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1001240 -->
+<!-- English Revision: 1001240:1001245 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -405,7 +405,7 @@ logs	en-t&ecirc;tes non compris. Si aucun contenu n'a &eacute;t&eacute; retourn&
 	inclut ce dernier fichier).</dd>
 
         <dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
-        (<cologsde>\"%{User-agent}i\"</code>)</dt>
+        (<code>\"%{User-agent}i\"</code>)</dt>
 
         <dd>L'en-t&ecirc;te User-Agent de la requ&ecirc;te HTTP. C'est une information
 	d'identification que le navigateur du client envoie &agrave; propos
