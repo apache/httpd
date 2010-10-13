@@ -174,10 +174,26 @@
     <p>Introduces the new provider framework for authn and authz</p>
   </section>
 
+  <section id="mod_cache">
+    <title>mod_cache (changed)</title>
+    <p>Introduces a commit_entity() function to the cache provider interface,
+    allowing atomic writes to cache. Add a cache_status() hook to report
+    the cache decision. Remove all private structures and functions from the
+    public mod_cache.h header file.</p>
+  </section>
+
   <section id="mod_core">
     <title>mod_core (NEW!)</title>
     <p>This introduces low-level APIs to send arbitrary headers,
     and exposes functions to handle HTTP OPTIONS and TRACE.</p>
+  </section>
+
+  <section id="mod_disk_cache">
+    <title>mod_disk_cache (changed)</title>
+    <p>Changes the disk format of the disk cache to support atomic cache
+    updates without locking. The device/inode pair of the body file is
+    embedded in the header file, allowing confirmation that the header
+    and body belong to one another.</p>
   </section>
 
   <section id="mod_request">

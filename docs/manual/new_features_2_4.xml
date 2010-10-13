@@ -81,6 +81,22 @@
       <dt><module>mod_proxy_fcgi</module></dt>
 
       <dd>FastCGI Protocol backend for <module>mod_proxy</module></dd>
+
+      <dt><module>mod_cache</module></dt>
+
+      <dd><module>mod_cache</module> can now cache HEAD requests.</dd>
+
+      <dd>Where possible, <module>mod_cache</module> directives can now be set
+      per directory, instead of per server.</dd>
+
+      <dd>The base URL of cached URLs can be customised, so that a cluster of
+      caches can share the same endpoint URL prefix.</dd>
+
+      <dd><module>mod_cache</module> is now capable of serving stale cached
+      data when a backend is unavailable (error 5xx).</dd>
+
+      <dd><module>mod_cache</module> can now insert HIT/MISS/REVALIDATE into
+      an X-Cache header.</dd>
     </dl>
   </section>
 
@@ -89,6 +105,16 @@
     <dl>
         <dt>fcgistarter</dt>
         <dd>FastCGI deamon starter utility</dd>
+        <dt>htcacheclean</dt>
+        <dd>Current cached URLs can now be listed, with optional metadata
+        included.</dd>
+        <dd>Allow explicit deletion of individual cached URLs from the
+        cache.</dd>
+        <dd>File sizes can now be rounded up to the given block size, making
+        the size limits map more closely to the real size on disk.</dd>
+        <dd>Cache size can now be limited by the number of inodes, instead
+        of or in addition to being limited by the size of the files on
+        disk.</dd>
     </dl>
   </section>
 
@@ -133,6 +159,13 @@
       files, and a memcache distributed cache are currently
       supported.</dd>
 
+      <dt>Cache Status Hook Added</dt>
+      
+      <dd>The <module>mod_cache</module> module now includes a new
+      <code>cache_status</code> hook, which is called when the caching
+      decision becomes known. A default implementation is provided
+      which adds an optional <code>X-Cache</code> and
+      <code>X-Cache-Detail</code> header to the response.</dd>
     </dl>
 
     <p>The developer documentation contains a
