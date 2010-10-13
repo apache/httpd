@@ -6,6 +6,11 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) htcacheclean: Teach htcacheclean to limit cache size by number of
+     inodes in addition to size of files. Prevents a cache disk from
+     running out of space when many small files are cached.
+     [Graham Leggett]
+
   *) core: Rename MaxRequestsPerChild to MaxConnectionsPerChild, which
      describes more accurately what the directive does. The old name
      still works but logs a warning. [Stefan Fritsch]

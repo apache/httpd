@@ -27,14 +27,14 @@
 
 <summary>
     <p><code>htcacheclean</code> is used to keep the size of
-    <module>mod_disk_cache</module>'s storage within a certain limit. This
-    tool can run either manually or in daemon mode. When running in
-    daemon mode, it sleeps in the background and checks the cache directory
-    at regular intervals for cached content to be removed. You can stop the daemon
-    cleanly by sending it a TERM or INT signal. When run manually, a once off
-    check of the cache directory is made for cached content to be removed. If
-    one or more URLs are specified, each URL will be deleted from the cache, if
-    present.</p>
+    <module>mod_disk_cache</module>'s storage within a given size limit, or
+    limit on inodes in use. This tool can run either manually or in daemon mode.
+    When running in daemon mode, it sleeps in the background and checks the cache
+    directory at regular intervals for cached content to be removed. You can stop
+    the daemon cleanly by sending it a TERM or INT signal. When run manually, a
+    once off check of the cache directory is made for cached content to be
+    removed. If one or more URLs are specified, each URL will be deleted from
+    the cache, if present.</p>
 </summary>
 <seealso><module>mod_disk_cache</module></seealso>
 
@@ -47,8 +47,9 @@
     [ -<strong>n</strong> ]
     [ -<strong>R</strong><var>round</var> ]
     -<strong>p</strong><var>path</var>
-    -<strong>l</strong><var>limit</var></code></p>
-
+    [-<strong>l</strong><var>limit</var>|
+    -<strong>L</strong><var>limit</var>]</code></p>
+    
     <p><code><strong>htcacheclean</strong>
     [ -<strong>n</strong> ]
     [ -<strong>t</strong> ]
@@ -57,7 +58,8 @@
     [ -<strong>R</strong><var>round</var> ]
     -<strong>d</strong><var>interval</var>
     -<strong>p</strong><var>path</var>
-    -<strong>l</strong><var>limit</var></code></p>
+    [-<strong>l</strong><var>limit</var>|
+    -<strong>L</strong><var>limit</var>]</code></p>
 
     <p><code><strong>htcacheclean</strong>
     [ -<strong>v</strong> ]
@@ -85,7 +87,10 @@
 
     <dt><code>-D</code></dt>
     <dd>Do a dry run and don't delete anything. This option is mutually
-    exclusive with the <code>-d</code> option.</dd>
+        exclusive with the <code>-d</code> option. When doing a dry run and
+        deleting directories with <code>-t</code>, the inodes reported deleted
+        in the stats cannot take into account the directories deleted, and will
+        be marked as an estimate.</dd>
 
     <dt><code>-v</code></dt>
     <dd>Be verbose and print statistics. This option is mutually exclusive
@@ -130,6 +135,9 @@
     is expressed in bytes by default (or attaching <code>B</code> to the
     number). Attach <code>K</code> for Kbytes or <code>M</code> for
     MBytes.</dd>
+
+    <dt><code>-L<var>limit</var></code></dt>
+    <dd>Specify <var>limit</var> as the total disk cache inode limit.</dd>
 
     <dt><code>-i</code></dt>
     <dd>Be intelligent and run only when there was a modification of the disk
