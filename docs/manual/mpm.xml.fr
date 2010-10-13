@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 804678:927046 (outdated) -->
+<!-- English Revision: 927046 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -39,13 +39,14 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
     diff&eacute;rentes et environnements diff&eacute;rents signifient souvent fonctionnalit&eacute;s
     diff&eacute;rentes, ou utilisation de diff&eacute;rentes m&eacute;thodes pour
     impl&eacute;menter la m&ecirc;me fonctionnalit&eacute; le plus efficacement possible.
-    Apache s'est toujours accomod&eacute; d'une grande vari&eacute;t&eacute; d'environnements
+    Apache httpd s'est toujours accomod&eacute; d'une grande vari&eacute;t&eacute; d'environnements
     gr&acirc;ce &agrave; sa conception modulaire. Cette conception autorise le webmaster
     &agrave; choisir quelles fonctionnalit&eacute;s seront incluses
     dans le serveur en s&eacute;lectionnant les modules &agrave; charger soit &agrave; la
     compilation, soit &agrave; l'ex&eacute;cution.</p>
 
-    <p>Apache 2.0 &eacute;tend cette conception modulaire aux fonctions les plus
+    <p>Le serveur HTTP Apache 2.0 &eacute;tend cette conception modulaire aux
+    fonctions les plus
     &eacute;l&eacute;mentaires d'un serveur web. Certains Modules Multi-Processus (MPMs)
     sont responsables de l'association aux ports r&eacute;seau de la machine,
     acceptent les requ&ecirc;tes, et se chargent de r&eacute;partir ces derni&egrave;res
@@ -55,12 +56,12 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
     comporte deux avantages importants :</p>
 
     <ul>
-      <li>Apache peut supporter plus proprement et efficacement une grande
+      <li>Apache httpd peut supporter plus proprement et efficacement une grande
       vari&eacute;t&eacute; de syst&egrave;mes d'exploitation. En particulier, la version Windows
-      d'Apache est maintenant beaucoup plus efficace, depuis que
+      du serveur est maintenant beaucoup plus efficace, depuis que
       <module>mpm_winnt</module> peut utiliser les fonctionnalit&eacute;s r&eacute;seau
       natives &agrave; la place de la couche POSIX utilis&eacute;e par
-      Apache 1.3. Cet avantage s'&eacute;tend aussi aux syst&egrave;mes d'exploitation
+      Apache httpd 1.3. Cet avantage s'&eacute;tend aussi aux syst&egrave;mes d'exploitation
       qui impl&eacute;mentent des MPMs sp&eacute;cialis&eacute;s.</li>
 
       <li>le serveur est plus &agrave; m&ecirc;me de r&eacute;pondre aux besoins d'un site
@@ -73,28 +74,10 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
     </ul>
 
     <p>Du point de vue de l'utilisateur, les MPMs ne sont pas diff&eacute;rents des
-    autres modules Apache. La principale diff&eacute;rence r&eacute;side dans le fait qu'un
+    autres modules Apache httpd. La principale diff&eacute;rence r&eacute;side dans le fait qu'un
     et un seul MPM &agrave; la fois doit &ecirc;tre charg&eacute; dans le serveur. La liste des
     MPMs disponibles est fournie dans <a href="mod/">module index page</a>.</p>
 
-</section>
-
-<section id="choosing"><title>Choisir un MPM</title>
-
-    <p>Les MPMs doivent &ecirc;tre choisis &agrave; la configuration, et compil&eacute;s avec
-    le serveur. Les compilateurs peuvent optimiser de nombreuses fonctions
-    si les threads sont utilis&eacute;s, mais seulement s'ils savent que les threads
-    sont utilis&eacute;s.</p>
-
-    <p>Pour le choix proprement dit du MPM d&eacute;sir&eacute;, utiliser l'argument
-      <code>--with-mpm=<em>NOM</em></code> du script
-      <program>configure</program>. <em>NOM</em> est le nom
-      du MPM d&eacute;sir&eacute;.</p>
-
-    <p>Une fois le serveur compil&eacute;, il est possible de savoir quel MPM
-    a &eacute;t&eacute; choisi &agrave; l'aide de la commande <code>./httpd -l</code>.
-    Cette commande fournit la liste de tous les modules compil&eacute;s
-    avec le serveur, y compris le MPM.</p>
 </section>
 
 <section id="defaults"><title>MPM par d&eacute;faut</title>
@@ -103,13 +86,63 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
 syst&egrave;mes d'exploitation.  Il s'agit du MPM s&eacute;lectionn&eacute; si vous ne pr&eacute;cisez
 pas un choix diff&eacute;rent &agrave; la compilation.</p>
 
-<table>
+<table border="1" style="zebra">
 <columnspec><column width=".2"/><column width=".2"/></columnspec>
 <tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
 <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
-<tr><td>Unix</td><td><module>prefork</module></td></tr>
+<tr><td>Unix</td><td><module>prefork</module>, <module>worker</module>,
+ou <module>event</module>, selon les possibilit&eacute;s de la plate-forme</td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
 </table>
+</section>
+
+<section id="static"><title>Compiler un module MPM en tant que module
+statique</title>
+
+    <p>Les modules MPM peuvent &ecirc;tre compil&eacute;s en tant que modules
+statiques sur toutes les plates-formes. A la compilation d'Apache, un
+seul module MPM doit &ecirc;tre choisi pour &ecirc;tre compil&eacute; et li&eacute; avec le
+serveur. La recompilation du serveur sera donc n&eacute;cessaire si vous
+d&eacute;sirez changer de module MPM.</p>
+
+    <p>Pour choisir un module MPM autre que le MPM par d&eacute;faut,
+    utiliser l'argument
+      <code>--with-mpm=<em>NOM</em></code> du script
+      <program>configure</program>. <em>NOM</em> est le nom
+      du MPM d&eacute;sir&eacute;.</p>
+
+    <p>Une fois le serveur compil&eacute;, il est possible de savoir quel MPM
+    a &eacute;t&eacute; choisi &agrave; l'aide de la commande <code>./httpd -l</code>.
+    Cette commande fournit la liste de tous les modules compil&eacute;s
+    avec le serveur, y compris le MPM.</p>
+    
+</section>
+
+<section id="dynamic"><title>Compiler un module MPM en tant que module
+DSO (Dynamic Shared Object)</title>
+
+    <p>Sous Unix et les plates-formes similaires, les modules MPM
+    peuvent &ecirc;tre compil&eacute;s en tant que modules DSO et charg&eacute;s
+    dynamiquement dans le serveur comme tout module DSO. Compiler les
+    modules MPM en tant que modules DSO permet de changer de MPM en
+    modifiant la directive <directive
+    module="mod_so">LoadModule</directive> concern&eacute;e, sans avoir &agrave;
+    recompiler le serveur.</p>
+
+    <p>Cette fonctionnalit&eacute; est activ&eacute;e via l'option
+    <code>--enable-mpms-shared</code> du script
+    <program>configure</program>. Si on ajoute l'argument
+    <code><em>all</em></code>, tous les modules MPM disponibles sur la
+    plate-forme consid&eacute;r&eacute;e seront install&eacute;s. Cet argument peut aussi
+    contenir une liste de modules MPM &agrave; installer.</p>
+
+    <p>Le module MPM par d&eacute;faut, s&eacute;lectionn&eacute; automatiquement ou sp&eacute;cifi&eacute;
+    via l'option <code>--with-mpm</code> du script
+    <program>configure</program>, sera charg&eacute; via une directive
+    <directive module="mod_so">LoadModule</directive> du fichier de
+    configuration du serveur g&eacute;n&eacute;r&eacute;. Pour choisir un autre module MPM,
+    vous devrez donc modifier cette directive</p>
+
 </section>
 
 </manualpage>
