@@ -118,6 +118,9 @@ struct stats {
     apr_off_t total;
     apr_off_t sum;
     apr_off_t max;
+    apr_off_t ntotal;
+    apr_off_t nodes;
+    apr_off_t inodes;
     apr_off_t etotal;
     apr_off_t entries;
     apr_off_t dfuture;
@@ -220,20 +223,29 @@ static void printstats(char *path, struct stats *s)
         }
         apr_file_printf(errfile, "unsolicited size %d.%d%c" APR_EOL_STR,
                         (int)(unsolicited), (int)(ufrag), utype);
-     }
-     apr_file_printf(errfile, "size limit %d.0%c" APR_EOL_STR,
-                     (int)(s->max), mtype);
-     apr_file_printf(errfile, "total size was %d.%d%c, total size now "
-                              "%d.%d%c" APR_EOL_STR,
-                     (int)(s->total), (int)(tfrag), ttype,
-                     (int)(s->sum), (int)(sfrag), stype);
-     apr_file_printf(errfile, "total entries was %d, total entries now %d"
-                              APR_EOL_STR, (int)(s->etotal),
-                              (int)(s->entries));
-     apr_file_printf(errfile, "%d entries deleted (%d from future, %d "
-                              "expired, %d fresh)" APR_EOL_STR,
-                     (int)(s->etotal - s->entries), (int)(s->dfuture),
-                     (int)(s->dexpired), (int)(s->dfresh));
+    }
+    apr_file_printf(errfile, "size limit %" APR_OFF_T_FMT ".0%c" APR_EOL_STR,
+            s->max, mtype);
+    apr_file_printf(errfile, "inodes limit %" APR_OFF_T_FMT APR_EOL_STR,
+            s->inodes);
+    apr_file_printf(
+            errfile,
+            "total size was %" APR_OFF_T_FMT ".%" APR_OFF_T_FMT "%c, total size now "
+            "%" APR_OFF_T_FMT ".%" APR_OFF_T_FMT "%c" APR_EOL_STR, s->total,
+            tfrag, ttype, s->sum, sfrag, stype);
+    apr_file_printf(errfile, "total inodes was %" APR_OFF_T_FMT
+            ", total %sinodes now "
+            "%" APR_OFF_T_FMT APR_EOL_STR, s->ntotal, dryrun && deldirs ? "estimated "
+            : "", s->nodes);
+    apr_file_printf(
+            errfile,
+            "total entries was %" APR_OFF_T_FMT ", total entries now %" APR_OFF_T_FMT
+            APR_EOL_STR, s->etotal, s->entries);
+    apr_file_printf(
+            errfile,
+            "%" APR_OFF_T_FMT " entries deleted (%" APR_OFF_T_FMT " from future, %"
+            APR_OFF_T_FMT " expired, %" APR_OFF_T_FMT " fresh)" APR_EOL_STR,
+            (s->etotal - s->entries), s->dfuture, s->dexpired, s->dfresh);
 }
 
 /**
@@ -247,21 +259,50 @@ static apr_size_t round_up(apr_size_t val, apr_off_t round) {
 }
 
 /*
- * delete a single file
+ * delete parent directories
  */
-static void delete_file(char *path, char *basename, apr_pool_t *pool)
+static void delete_parent(const char *path, const char *basename,
+        apr_off_t *nodes, apr_pool_t *pool)
 {
-    char *nextpath;
+    char *nextpath, *name;
     apr_pool_t *p;
-
-    if (dryrun) {
-        return;
-    }
 
     /* temp pool, otherwise lots of memory could be allocated */
     apr_pool_create(&p, pool);
-    nextpath = apr_pstrcat(p, path, "/", basename, NULL);
-    apr_file_remove(nextpath, p);
+    name = apr_pstrdup(p, basename);
+
+    /* If asked to delete dirs, do so now. We don't care if it fails.
+     * If it fails, it likely means there was something else there.
+     */
+    if (deldirs && !dryrun) {
+        const char *vary;
+        char *end = strrchr(name, '/');
+        while (end) {
+            *end = 0;
+
+            /* remove the directory */
+            nextpath = apr_pstrcat(p, path, "/", name, NULL);
+            if (!apr_dir_remove(nextpath, p)) {
+                (*nodes)--;
+
+                /* vary directory found? */
+                vary = strstr(name, CACHE_VDIR_SUFFIX);
+                if (vary && !vary[sizeof(CACHE_VDIR_SUFFIX) - 1]) {
+                    nextpath = apr_pstrcat(p, path, "/", apr_pstrndup(p, name, vary
+                            - name), NULL);
+                    if (!apr_file_remove(nextpath, p)) {
+                        (*nodes)--;
+                    }
+                }
+
+            }
+            else {
+                break;
+            }
+            end = strrchr(name, '/');
+        }
+    }
+
     apr_pool_destroy(p);
 
     if (benice) {
@@ -270,28 +311,78 @@ static void delete_file(char *path, char *basename, apr_pool_t *pool)
             delcount = 0;
         }
     }
+
+}
+
+/*
+ * delete a single file
+ */
+static void delete_file(char *path, char *basename, apr_off_t *nodes,
+        apr_pool_t *pool)
+{
+    char *nextpath;
+    apr_pool_t *p;
+
+    /* temp pool, otherwise lots of memory could be allocated */
+    apr_pool_create(&p, pool);
+    nextpath = apr_pstrcat(p, path, "/", basename, NULL);
+
+    if (dryrun) {
+        apr_finfo_t finfo;
+        if (!apr_stat(&finfo, nextpath, APR_FINFO_NLINK, p)) {
+            (*nodes)--;
+        }
+    }
+    else if (!apr_file_remove(nextpath, p)) {
+        (*nodes)--;
+    }
+
+    apr_pool_destroy(p);
+
+    if (benice) {
+        if (++delcount >= DELETE_NICE) {
+            apr_sleep(NICE_DELAY);
+            delcount = 0;
+        }
+    }
+
+    delete_parent(path, basename, nodes, pool);
+
 }
 
 /*
  * delete cache file set
  */
-static void delete_entry(char *path, char *basename, apr_pool_t *pool)
+static void delete_entry(char *path, char *basename, apr_off_t *nodes,
+        apr_pool_t *pool)
 {
     char *nextpath;
     apr_pool_t *p;
-
-    if (dryrun) {
-        return;
-    }
 
     /* temp pool, otherwise lots of memory could be allocated */
     apr_pool_create(&p, pool);
 
     nextpath = apr_pstrcat(p, path, "/", basename, CACHE_HEADER_SUFFIX, NULL);
-    apr_file_remove(nextpath, p);
+    if (dryrun) {
+        apr_finfo_t finfo;
+        if (!apr_stat(&finfo, nextpath, APR_FINFO_NLINK, p)) {
+            (*nodes)--;
+        }
+    }
+    else if (!apr_file_remove(nextpath, p)) {
+        (*nodes)--;
+    }
 
     nextpath = apr_pstrcat(p, path, "/", basename, CACHE_DATA_SUFFIX, NULL);
-    apr_file_remove(nextpath, p);
+    if (dryrun) {
+        apr_finfo_t finfo;
+        if (!apr_stat(&finfo, nextpath, APR_FINFO_NLINK, p)) {
+            (*nodes)--;
+        }
+    }
+    else if (!apr_file_remove(nextpath, p)) {
+        (*nodes)--;
+    }
 
     apr_pool_destroy(p);
 
@@ -302,6 +393,9 @@ static void delete_entry(char *path, char *basename, apr_pool_t *pool)
             delcount = 0;
         }
     }
+
+    delete_parent(path, basename, nodes, pool);
+
 }
 
 /*
@@ -496,7 +590,7 @@ static int list_urls(char *path, apr_pool_t *pool, apr_off_t round)
 /*
  * walk the cache directory tree
  */
-static int process_dir(char *path, apr_pool_t *pool)
+static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
 {
     apr_dir_t *dir;
     apr_pool_t *p;
@@ -507,7 +601,7 @@ static int process_dir(char *path, apr_pool_t *pool)
     apr_finfo_t info;
     apr_size_t len;
     apr_time_t current, deviation;
-    char *nextpath, *base, *ext, *orig_basename;
+    char *nextpath, *base, *ext;
     APR_RING_ENTRY(_direntry) anchor;
     DIRENTRY *d, *t, *n;
     ENTRY *e;
@@ -532,6 +626,7 @@ static int process_dir(char *path, apr_pool_t *pool)
         d = apr_pcalloc(p, sizeof(DIRENTRY));
         d->basename = apr_pstrcat(p, path, "/", info.name, NULL);
         APR_RING_INSERT_TAIL(&anchor, d, _direntry, link);
+        (*nodes)++;
     }
 
     apr_dir_close(dir);
@@ -588,17 +683,8 @@ static int process_dir(char *path, apr_pool_t *pool)
         }
 
         if (info.filetype == APR_DIR) {
-            /* Make a copy of the basename, as process_dir modifies it */
-            orig_basename = apr_pstrdup(pool, d->basename);
-            if (process_dir(d->basename, pool)) {
+            if (process_dir(d->basename, pool, nodes)) {
                 return 1;
-            }
-
-            /* If asked to delete dirs, do so now. We don't care if it fails.
-             * If it fails, it likely means there was something else there.
-             */
-            if (deldirs && !dryrun) {
-                apr_dir_remove(orig_basename, pool);
             }
             continue;
         }
@@ -696,9 +782,9 @@ static int process_dir(char *path, apr_pool_t *pool)
                             e->dsize = d->dsize;
                             e->basename = apr_pstrdup(pool, d->basename);
                             if (!disk_info.has_body) {
-                                apr_file_remove(apr_pstrcat(p, path, "/", d->basename,
-                                                            CACHE_DATA_SUFFIX, NULL),
-                                                p);
+                                delete_file(path, apr_pstrcat(p, path, "/",
+                                        d->basename, CACHE_DATA_SUFFIX, NULL),
+                                        nodes, p);
                             }
                             break;
                         }
@@ -707,19 +793,29 @@ static int process_dir(char *path, apr_pool_t *pool)
                         }
                     }
                     else if (format == VARY_FORMAT_VERSION) {
+                        apr_finfo_t finfo;
+
                         /* This must be a URL that added Vary headers later,
                          * so kill the orphaned .data file
                          */
                         apr_file_close(fd);
-                        apr_file_remove(apr_pstrcat(p, path, "/", d->basename,
-                                                    CACHE_DATA_SUFFIX, NULL),
-                                        p);
+
+                        if (apr_stat(&finfo, apr_pstrcat(p, nextpath,
+                                CACHE_VDIR_SUFFIX, NULL), APR_FINFO_TYPE, p)
+                                || finfo.filetype != APR_DIR) {
+                            delete_entry(path, d->basename, nodes, p);
+                        }
+                        else {
+                            delete_file(path, apr_pstrcat(p, path, "/",
+                                    d->basename, CACHE_DATA_SUFFIX, NULL),
+                                    nodes, p);
+                        }
                         break;
                     }
                     else {
                         /* We didn't recognise the format, kill the files */
                         apr_file_close(fd);
-                        delete_entry(path, d->basename, p);
+                        delete_entry(path, d->basename, nodes, p);
                         break;
                     }
                 }
@@ -738,7 +834,7 @@ static int process_dir(char *path, apr_pool_t *pool)
             current = apr_time_now();
             if (realclean || d->htime < current - deviation
                 || d->htime > current + deviation) {
-                delete_entry(path, d->basename, p);
+                delete_entry(path, d->basename, nodes, p);
                 unsolicited += d->hsize;
                 unsolicited += d->dsize;
             }
@@ -766,12 +862,19 @@ static int process_dir(char *path, apr_pool_t *pool)
 
                         if (apr_file_read_full(fd, &expires, len,
                                                &len) == APR_SUCCESS) {
+                            apr_finfo_t finfo;
 
                             apr_file_close(fd);
 
-                            if (expires < current) {
-                                delete_entry(path, d->basename, p);
+                            if (apr_stat(&finfo, apr_pstrcat(p, nextpath,
+                                    CACHE_VDIR_SUFFIX, NULL), APR_FINFO_TYPE, p)
+                                    || finfo.filetype != APR_DIR) {
+                                delete_entry(path, d->basename, nodes, p);
                             }
+                            else if (expires < current) {
+                                delete_entry(path, d->basename, nodes, p);
+                            }
+
                             break;
                         }
                     }
@@ -802,7 +905,7 @@ static int process_dir(char *path, apr_pool_t *pool)
                     }
                     else {
                         apr_file_close(fd);
-                        delete_entry(path, d->basename, p);
+                        delete_entry(path, d->basename, nodes, p);
                         break;
                     }
                 }
@@ -813,7 +916,7 @@ static int process_dir(char *path, apr_pool_t *pool)
 
             if (realclean || d->htime < current - deviation
                 || d->htime > current + deviation) {
-                delete_entry(path, d->basename, p);
+                delete_entry(path, d->basename, nodes, p);
                 unsolicited += d->hsize;
             }
             break;
@@ -822,7 +925,7 @@ static int process_dir(char *path, apr_pool_t *pool)
             current = apr_time_now();
             if (realclean || d->dtime < current - deviation
                 || d->dtime > current + deviation) {
-                delete_entry(path, d->basename, p);
+                delete_entry(path, d->basename, nodes, p);
                 unsolicited += d->dsize;
             }
             break;
@@ -831,7 +934,7 @@ static int process_dir(char *path, apr_pool_t *pool)
          * is asserted above if a tempfile is in the hash array
          */
         case TEMP:
-            delete_file(path, d->basename, p);
+            delete_file(path, d->basename, nodes, p);
             unsolicited += d->dsize;
             break;
         }
@@ -857,7 +960,8 @@ static int process_dir(char *path, apr_pool_t *pool)
 /*
  * purge cache entries
  */
-static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
+static void purge(char *path, apr_pool_t *pool, apr_off_t max,
+        apr_off_t inodes, apr_off_t nodes, apr_off_t round)
 {
     ENTRY *e, *n, *oldest;
 
@@ -868,6 +972,9 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
     s.dexpired = 0;
     s.dfresh = 0;
     s.max = max;
+    s.nodes = nodes;
+    s.inodes = inodes;
+    s.ntotal = nodes;
 
     for (e = APR_RING_FIRST(&root);
          e != APR_RING_SENTINEL(&root, _entry, link);
@@ -880,7 +987,7 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
     s.total = s.sum;
     s.etotal = s.entries;
 
-    if (s.sum <= s.max) {
+    if ((!s.max || s.sum <= s.max) && (!s.inodes || s.nodes <= s.inodes)) {
         printstats(path, &s);
         return;
     }
@@ -893,13 +1000,13 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
          e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
         if (e->response_time > now || e->htime > now || e->dtime > now) {
-            delete_entry(path, e->basename, pool);
+            delete_entry(path, e->basename, &s.nodes, pool);
             s.sum -= round_up(e->hsize, round);
             s.sum -= round_up(e->dsize, round);
             s.entries--;
             s.dfuture++;
             APR_RING_REMOVE(e, link);
-            if (s.sum <= s.max) {
+            if ((!s.max || s.sum <= s.max) && (!s.inodes || s.nodes <= s.inodes)) {
                 if (!interrupted) {
                     printstats(path, &s);
                 }
@@ -918,13 +1025,13 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
          e != APR_RING_SENTINEL(&root, _entry, link) && !interrupted;) {
         n = APR_RING_NEXT(e, link);
         if (e->expire != APR_DATE_BAD && e->expire < now) {
-            delete_entry(path, e->basename, pool);
+            delete_entry(path, e->basename, &s.nodes, pool);
             s.sum -= round_up(e->hsize, round);
             s.sum -= round_up(e->dsize, round);
             s.entries--;
             s.dexpired++;
             APR_RING_REMOVE(e, link);
-            if (s.sum <= s.max) {
+            if ((!s.max || s.sum <= s.max) && (!s.inodes || s.nodes <= s.inodes)) {
                 if (!interrupted) {
                     printstats(path, &s);
                 }
@@ -943,8 +1050,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
      * corrupt 64bit arithmetics which happend to me once, so better safe
      * than sorry
      */
-    while (s.sum > s.max && !interrupted
-           && !APR_RING_EMPTY(&root, _entry, link)) {
+    while (!((!s.max || s.sum <= s.max) && (!s.inodes || s.nodes <= s.inodes))
+            && !interrupted && !APR_RING_EMPTY(&root, _entry, link)) {
         oldest = APR_RING_FIRST(&root);
 
         for (e = APR_RING_NEXT(oldest, link);
@@ -955,7 +1062,7 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max, apr_off_t round)
             }
         }
 
-        delete_entry(path, oldest->basename, pool);
+        delete_entry(path, oldest->basename, &s.nodes, pool);
         s.sum -= round_up(oldest->hsize, round);
         s.sum -= round_up(oldest->dsize, round);
         s.entries--;
@@ -1172,8 +1279,8 @@ static void usage(const char *error)
     }
     apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
-    "Usage: %s [-Dvtrn] -pPATH -lLIMIT [-PPIDFILE]"                          NL
-    "       %s [-nti] -dINTERVAL -pPATH -lLIMIT [-PPIDFILE]"                 NL
+    "Usage: %s [-Dvtrn] -pPATH [-lLIMIT|-LLIMIT] [-PPIDFILE]"                NL
+    "       %s [-nti] -dINTERVAL -pPATH [-lLIMIT|-LLIMIT] [-PPIDFILE]"       NL
     "       %s [-Dvt] -pPATH URL ..."                                        NL
                                                                              NL
     "Options:"                                                               NL
@@ -1182,7 +1289,10 @@ static void usage(const char *error)
     "       options."                                                        NL
                                                                              NL
     "  -D   Do a dry run and don't delete anything. This option is mutually" NL
-    "       exclusive with the -d option."                                   NL
+    "       exclusive with the -d option. When doing a dry run and deleting" NL
+    "       directories with -t, the inodes reported deleted in the stats"   NL
+    "       cannot take into account the directories deleted, and will be"   NL
+    "       marked as an estimate."                                          NL
                                                                              NL
     "  -v   Be verbose and print statistics. This option is mutually"        NL
     "       exclusive with the -d option."                                   NL
@@ -1206,6 +1316,8 @@ static void usage(const char *error)
                                                                              NL
     "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
     "       or 'M' to the number for specifying KBytes or MBytes."           NL
+                                                                             NL
+    "  -L   Specify LIMIT as the total disk cache inode limit."              NL
                                                                              NL
     "  -i   Be intelligent and run only when there was a modification of"    NL
     "       the disk cache. This option is only possible together with the"  NL
@@ -1269,14 +1381,14 @@ static void log_pid(apr_pool_t *pool, const char *pidfilename, apr_file_t **pidf
  */
 int main(int argc, const char * const argv[])
 {
-    apr_off_t max, round;
+    apr_off_t max, inodes, round;
     apr_time_t current, repeat, delay, previous;
     apr_status_t status;
     apr_pool_t *pool, *instance;
     apr_getopt_t *o;
     apr_finfo_t info;
     apr_file_t *pidfile;
-    int retries, isdaemon, limit_found, intelligent, dowork;
+    int retries, isdaemon, limit_found, inodes_found, intelligent, dowork;
     char opt;
     const char *arg;
     char *proxypath, *path, *pidfilename;
@@ -1287,7 +1399,9 @@ int main(int argc, const char * const argv[])
     isdaemon = 0;
     dryrun = 0;
     limit_found = 0;
+    inodes_found = 0;
     max = 0;
+    inodes = 0;
     round = 0;
     verbose = 0;
     realclean = 0;
@@ -1319,7 +1433,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
-        status = apr_getopt(o, "iDnvrtd:l:p:P:R:aA", &opt, &arg);
+        status = apr_getopt(o, "iDnvrtd:l:L:p:P:R:aA", &opt, &arg);
         if (status == APR_EOF) {
             break;
         }
@@ -1400,6 +1514,36 @@ int main(int argc, const char * const argv[])
                         }
                         else if ((*end == 'G' || *end == 'g') && !end[1]) {
                             max *= GBYTE;
+                        }
+                        else if (*end &&        /* neither empty nor [Bb] */
+                                 ((*end != 'B' && *end != 'b') || end[1])) {
+                            rv = APR_EGENERAL;
+                        }
+                    }
+                    if (rv != APR_SUCCESS) {
+                        usage(apr_psprintf(pool, "Invalid limit: %s"
+                                                 APR_EOL_STR APR_EOL_STR, arg));
+                    }
+                } while(0);
+                break;
+
+            case 'L':
+                if (inodes_found) {
+                    usage_repeated_arg(pool, opt);
+                }
+                inodes_found = 1;
+
+                do {
+                    rv = apr_strtoff(&inodes, arg, &end, 10);
+                    if (rv == APR_SUCCESS) {
+                        if ((*end == 'K' || *end == 'k') && !end[1]) {
+                            inodes *= KBYTE;
+                        }
+                        else if ((*end == 'M' || *end == 'm') && !end[1]) {
+                            inodes *= MBYTE;
+                        }
+                        else if ((*end == 'G' || *end == 'g') && !end[1]) {
+                            inodes *= GBYTE;
                         }
                         else if (*end &&        /* neither empty nor [Bb] */
                                  ((*end != 'B' && *end != 'b') || end[1])) {
@@ -1530,8 +1674,8 @@ int main(int argc, const char * const argv[])
          usage("Option -p must be specified");
     }
 
-    if (!listurls && max <= 0) {
-         usage("Option -l must be greater than zero");
+    if (!listurls && max <= 0 && inodes <= 0) {
+         usage("At least one of option -l or -L must be greater than zero");
     }
 
     if (apr_filepath_get(&path, 0, pool) != APR_SUCCESS) {
@@ -1621,8 +1765,9 @@ int main(int argc, const char * const argv[])
         }
 
         if (dowork && !interrupted) {
-            if (!process_dir(path, instance) && !interrupted) {
-                purge(path, instance, max, round);
+            apr_off_t nodes = 0;
+            if (!process_dir(path, instance, &nodes) && !interrupted) {
+                purge(path, instance, max, inodes, nodes, round);
             }
             else if (!isdaemon && !interrupted) {
                 apr_file_printf(errfile, "An error occurred, cache cleaning "
