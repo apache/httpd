@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 989600:1001245 (outdated) -->
+<!-- English Revision: 1001240 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,7 +44,6 @@
         <module>mod_log_config</module>
         <module>mod_log_forensic</module>
         <module>mod_logio</module>
-        <module>mod_rewrite</module>
         <module>mod_cgi</module>
       </modulelist>
   </related>
@@ -97,7 +96,7 @@
       </modulelist>
       <directivelist>
         <directive module="core">ErrorLog</directive>
-        <directive module="core">LogLevel</directive>
+logs        <directive module="core">LogLevel</directive>
       </directivelist>
     </related>
 
@@ -238,7 +237,7 @@
       pr&eacute;c&eacute;der d'un anti-slash (<code>\</code>) afin qu'elles ne soient pas
       interpr&eacute;t&eacute;es comme la fin de la cha&icirc;ne de format. La cha&icirc;ne de format
       peut aussi contenir les caract&egrave;res de contr&ocirc;le sp&eacute;ciaux
-      "<code>\n</code>" et "<code>\t</code>" pour ins&eacute;rer respectivement
+    logs  "<code>\n</code>" et "<code>\t</code>" pour ins&eacute;rer respectivement
       un passage &agrave; la ligne et une tabulation.</p>
 
       <p>La directive <directive module="mod_log_config">CustomLog</directive>
@@ -253,7 +252,7 @@
       Common Log Format (CLF) pour "Format de journalisation standard".
       Ce format standard peut &ecirc;tre produit par de nombreux serveurs web
       diff&eacute;rents et lu par de nombreux programmes d'analyse de journaux.
-      Les entr&eacute;es de fichier journal g&eacute;n&eacute;r&eacute;es selon le format CLF
+      Lelogss entr&eacute;es de fichier journal g&eacute;n&eacute;r&eacute;es selon le format CLF
       ressemblent &agrave; ceci :</p>
 
       <example>
@@ -283,7 +282,7 @@
 	celle de la machine &agrave; l'origine de la requ&ecirc;te.</dd>
 
         <dt><code>-</code> (<code>%l</code>)</dt>
-
+logs
         <dd>Le "trait d'union" indique que la portion d'information
 	correspondante n'est pas disponible. Dans le cas pr&eacute;sent, l'information
 	non disponible est l'identit&eacute; (RFC 1413) du client telle que d&eacute;termin&eacute;e
@@ -298,7 +297,7 @@
 
         <dd>Il s'agit de l'identifiant utilisateur de la personne qui a
 	demand&eacute; le document, issu d'une authentification HTTP.
-	Ce m&ecirc;me identifiant est en g&eacute;n&eacute;ral fourni aux scripts CGI par
+logs	Ce m&ecirc;me identifiant est en g&eacute;n&eacute;ral fourni aux scripts CGI par
 	l'interm&eacute;diaire de la valeur de la variable d'environnement
 	<code>REMOTE_USER</code>. Si le statut de la requ&ecirc;te (voir plus loin)
 	est 401, cette identifiant n'est pas fiable car l'utilisateur n'est
@@ -316,7 +315,7 @@
           <p class="indent">
             <code>[jour/mois/ann&eacute;e:heure:minutes:secondes zone]<br />
              jour = 2*chiffre<br />
-             mois = 3*lettre<br />
+    logs         mois = 3*lettre<br />
              ann&eacute;e = 4*chiffre<br />
              heure = 2*chiffre<br />
              minutes = 2*chiffre<br />
@@ -331,7 +330,7 @@
 	  reportez-vous aux. <a
 	  href="mod/mod_log_config.html#formats">cha&icirc;nes de format</a>
 	  de <module>mod_log_config</module>.
-        </dd>
+        logs</dd>
 
         <dt><code>"GET /apache_pb.gif HTTP/1.0"</code>
         (<code>\"%r\"</code>)</dt>
@@ -346,7 +345,7 @@
 	va enregistrer la m&eacute;thode, le chemin, la cha&icirc;ne de la requ&ecirc;te et le
 	protocole, ce qui donnera le m&ecirc;me r&eacute;sultat que
 	"<code>%r</code>".</dd>
-
+logs
         <dt><code>200</code> (<code>%&gt;s</code>)</dt>
 
         <dd>C'est le code de statut que le serveur retourne au client. Cette
@@ -361,7 +360,7 @@
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
         <dd>La derni&egrave;re partie indique la taille de l'objet retourn&eacute; au client,
-	en-t&ecirc;tes non compris. Si aucun contenu n'a &eacute;t&eacute; retourn&eacute; au client, cette
+logs	en-t&ecirc;tes non compris. Si aucun contenu n'a &eacute;t&eacute; retourn&eacute; au client, cette
 	partie contiendra "<code>-</code>". Pour indiquer l'absence de contenu
 	par "<code>0</code>", utilisez <code>%B</code> au lieu de
 	<code>%b</code>.</dd>
@@ -376,7 +375,7 @@
       comme suit :</p>
 
       <example>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+    logs    LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
         \"%{User-agent}i\"" combined<br />
          CustomLog log/access_log combined
       </example>
@@ -391,7 +390,7 @@
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
         "http://www.example.com/start.html" "Mozilla/4.08 [en]
-        (Win98; I ;Nav)"
+        logs(Win98; I ;Nav)"
       </example>
 
       <p>Les champs suppl&eacute;mentaires sont :</p>
@@ -406,7 +405,7 @@
 	inclut ce dernier fichier).</dd>
 
         <dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
-        (<code>\"%{User-agent}i\"</code>)</dt>
+        (<cologsde>\"%{User-agent}i\"</code>)</dt>
 
         <dd>L'en-t&ecirc;te User-Agent de la requ&ecirc;te HTTP. C'est une information
 	d'identification que le navigateur du client envoie &agrave; propos
@@ -421,7 +420,7 @@
       simplement plusieurs directives
       <directive module="mod_log_config">CustomLog</directive> dans le
       fichier de configuration. Par exemple, les directives suivantes vont
-      cr&eacute;er trois journaux d'acc&egrave;s. Le premier contiendra les informations
+      cr&eacute;logser trois journaux d'acc&egrave;s. Le premier contiendra les informations
       de base CLF, le second les informations du Referer, et le troisi&egrave;me
       les informations sur le navigateur. Les deux derni&egrave;res directives
       <directive module="mod_log_config">CustomLog</directive> montrent
@@ -436,7 +435,7 @@
       </example>
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
-      une cha&icirc;ne de format &agrave; un alias au moyen de la directive
+      une cha&icirc;logsne de format &agrave; un alias au moyen de la directive
       <directive module="mod_log_config">LogFormat</directive>. Elle peut
       &ecirc;tre d&eacute;finie directement dans la ligne de la directive
       <directive module="mod_log_config">CustomLog</directive>.</p>
@@ -484,7 +483,7 @@
       <example>
         SetEnv CACHE_MISS 1<br />
         LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache<br />
-        CustomLog logs/access_log common-cache
+        CustomLog logs/alogsccess_log common-cache
       </example>
 
       <p><module>mod_cache</module> va s'ex&eacute;cuter avant
@@ -514,7 +513,7 @@
     les 10000 requ&ecirc;tes. Il est par cons&eacute;quent n&eacute;cessaire d'effectuer
     p&eacute;riodiquement la rotation des journaux en d&eacute;pla&ccedil;ant ou supprimant les
     fichiers correspondants. On ne peut pas le faire pendant que le serveur
-    est en cours d'ex&eacute;cution, car Apache httpd va continuer &agrave; &eacute;crire dans l'ancien
+    est en cours d'ex&eacutelogs;cution, car Apache httpd va continuer &agrave; &eacute;crire dans l'ancien
     fichier journal aussi longtemps qu'il le maintiendra ouvert.
     C'est pourquoi le serveur doit &ecirc;tre
     <a href="stopping.html">red&eacute;marr&eacute;</a> apr&egrave;s le d&eacute;placement ou la
@@ -595,6 +594,7 @@
     <p>Comme la journalisation conditionnelle, la journalisation redirig&eacute;e est
     un outil tr&egrave;s puissant, mais si elle existe, il est pr&eacute;f&eacute;rable d'utiliser
     une solution plus simple comme le traitement &agrave; posteriori hors ligne.</p>
+  </section>
 
   <p>Par d&eacute;faut, le processus de redirection du journal est lanc&eacute; sans
   invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"
@@ -614,7 +614,6 @@
     red&eacute;marrage. La notation "<code>||</code>" est aussi support&eacute;e pour
     des raisons de compatibilit&eacute; avec Apache 2.2 et est &eacute;quivalente &agrave;
     "<code>|</code>".</p>
-  </section>
 
   <section id="virtualhost">
     <title>H&ocirc;tes virtuels</title>
@@ -669,14 +668,11 @@
         <module>mod_logio</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
-        <module>mod_rewrite</module>
       </modulelist>
       <directivelist>
         <directive module="mod_log_config">LogFormat</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
-        <directive module="mod_rewrite">RewriteLog</directive>
-        <directive module="mod_rewrite">RewriteLogLevel</directive>
         <directive module="mod_cgi">ScriptLog</directive>
         <directive module="mod_cgi">ScriptLogBuffer</directive>
         <directive module="mod_cgi">ScriptLogLength</directive>
