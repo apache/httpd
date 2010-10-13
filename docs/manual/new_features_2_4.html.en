@@ -83,6 +83,22 @@
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
 
       <dd>FastCGI Protocol backend for <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
+
+      <dt><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></dt>
+
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> can now cache HEAD requests.</dd>
+
+      <dd>Where possible, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> directives can now be set
+      per directory, instead of per server.</dd>
+
+      <dd>The base URL of cached URLs can be customised, so that a cluster of
+      caches can share the same endpoint URL prefix.</dd>
+
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> is now capable of serving stale cached
+      data when a backend is unavailable (error 5xx).</dd>
+
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> can now insert HIT/MISS/REVALIDATE into
+      an X-Cache header.</dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -91,6 +107,16 @@
     <dl>
         <dt>fcgistarter</dt>
         <dd>FastCGI deamon starter utility</dd>
+        <dt>htcacheclean</dt>
+        <dd>Current cached URLs can now be listed, with optional metadata
+        included.</dd>
+        <dd>Allow explicit deletion of individual cached URLs from the
+        cache.</dd>
+        <dd>File sizes can now be rounded up to the given block size, making
+        the size limits map more closely to the real size on disk.</dd>
+        <dd>Cache size can now be limited by the number of inodes, instead
+        of or in addition to being limited by the size of the files on
+        disk.</dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -134,6 +160,13 @@
       files, and a memcache distributed cache are currently
       supported.</dd>
 
+      <dt>Cache Status Hook Added</dt>
+      
+      <dd>The <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> module now includes a new
+      <code>cache_status</code> hook, which is called when the caching
+      decision becomes known. A default implementation is provided
+      which adds an optional <code>X-Cache</code> and
+      <code>X-Cache-Detail</code> header to the response.</dd>
     </dl>
 
     <p>The developer documentation contains a
