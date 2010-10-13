@@ -25,8 +25,6 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Configuration du serveur HTTP Apache pour l'écoute
     sur un port et une adresse IP spécifiques.</p>
@@ -65,10 +63,6 @@
     spécifier plusieurs adresses et ports à écouter. Le serveur répondra alors
     aux requêtes sur ces ports et adresses spécifiés.</p>
 
-    <p>Une directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    spÃ©cifiant plusieurs valeurs provoquera une erreur fatale qui
-    empÃªchera le serveur de dÃ©marrer.</p>
-
     <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
     sur les ports 80 et 8000, sur toutes les interfaces, utilisez :</p>
 
@@ -92,6 +86,14 @@
     <div class="example"><p><code>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
+    
+    <div class="warning"><p>Utiliser plusieurs directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> qui se chevauchent va générer une erreur fatale qui empêchera le serveur de démarrer.</p>
+
+     <div class="example"><p><code>
+     (48)Address already in use: make_sock: could not bind to address [::]:80
+     </code></p></div>
+    </div>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ipv6" id="ipv6">Remarques spécifiques à IPv6</a></h2>

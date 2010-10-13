@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 947280:1003160 (outdated) -->
+<!-- English Revision: 1003160 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -71,10 +71,6 @@
     sp&eacute;cifier plusieurs adresses et ports &agrave; &eacute;couter. Le serveur r&eacute;pondra alors
     aux requ&ecirc;tes sur ces ports et adresses sp&eacute;cifi&eacute;s.</p>
 
-    <p>Une directive <directive module="mpm_common">Listen</directive>
-    spécifiant plusieurs valeurs provoquera une erreur fatale qui
-    empêchera le serveur de démarrer.</p>
-
     <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
     sur les ports 80 et 8000, sur toutes les interfaces, utilisez :</p>
 
@@ -98,6 +94,14 @@
     <example>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
+    
+    <note type="warning"><p>Utiliser plusieurs directives <directive module="mpm_common">Listen</directive> qui se chevauchent va g&eacute;n&eacute;rer une erreur fatale qui emp&ecirc;chera le serveur de d&eacute;marrer.</p>
+
+     <example>
+     (48)Address already in use: make_sock: could not bind to address [::]:80
+     </example>
+    </note>
+
   </section>
 
   <section id="ipv6">
