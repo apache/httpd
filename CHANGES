@@ -1,4 +1,8 @@
 ﻿                                                         -*- coding: utf-8 -*-
+Changes with Apache 2.0.65
+
+
+
 Changes with Apache 2.0.64
 
   *) SECURITY: CVE-2010-1452 (cve.mitre.org)
