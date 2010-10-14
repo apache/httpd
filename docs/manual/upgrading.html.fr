@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -173,11 +171,18 @@ nécessiter une modification des fichiers de configuration de la version
       certaines configurations particulières, comme décrit ci-dessous.</p>
 
       <ul>
+	<li><code class="directive">MaxRequestsPerChild</code> a été renommée en
+	<code class="directive"><a href="./mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>;
+	ce nouveau nom reflète mieux l'usage de cette directive.</li>
+
         <li>La directive <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code> ne produit plus aucun
 	effet, si ce n'est d'émettre un avertissement si elle est
 	définie à une valeur autre que <code>none</code>. D'autres
 	directives de configuration la remplacent dans la version 2.4.
         </li>
+
+	<li><code class="directive"><a href="./mod/core.html#enablesendfile">EnableSendfile</a></code> est à présent
+        positionné à Off par défaut.</li>
 
         <li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>: <a href="modules/mod_log_config.html#formats">${cookie}C</a>
         correspond au nom du cookie dans son ensemble, alors qu'avant,
@@ -253,12 +258,17 @@ nécessiter une modification des fichiers de configuration de la version
       <li><code>Invalid command 'User', perhaps misspelled or defined by
       a module not included in the server configuration</code> - chargez
       le module <code class="module"><a href="./mod/mod_unixd.html">mod_unixd</a></code></li>
+
       <li><code>Invalid command 'Require', perhaps misspelled or defined
       by a module not included in the server configuration</code>, ou
       <code>Invalid command 'Order', perhaps misspelled or defined by a
       module not included in the server configuration</code> - chargez
       le module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code>, ou mettez à jour
       vers la version 2.4 les directives d'autorisation.</li>
+      <li><code>On ne peut pas mélanger les arguments de numéro de port des formes * et non-* avec NameVirtualHost</code>, <code>Soit la directive NameVirtualHost w.x.y.z:n n'a aucun VirtualHost correspondant, soit il existe plusieurs directives NameVirtualHost semblables, soit vos définitions de VirtualHost ne correspondent pas à la ligne NameVirtualHost</code> - ces messages ne sont pas nouveaux, mais ils bloquent désormais le démarrage en générant une erreur</li>
+
+      <li><code>L'argument _default_ n'est pas accepté pour la directive NameVirtualHost</code> - ceci a toujours été le cas, mais à présent cette erreur bloque le démarrage du serveur.</li>
+
       <li><code>Ignoring deprecated use of DefaultType in line NN of
       /path/to/httpd.conf</code> - supprimez la directive <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code> et remplacez-la par les
       directives de configuration appropriées.</li>
