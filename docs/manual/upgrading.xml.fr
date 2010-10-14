@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 959136:1021924 (outdated) -->
+<!-- English Revision: 1021924 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -177,12 +177,19 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
       certaines configurations particuli&egrave;res, comme d&eacute;crit ci-dessous.</p>
 
       <ul>
+	<li><directive>MaxRequestsPerChild</directive> a &eacute;t&eacute; renomm&eacute;e en
+	<directive module="mpm_common">MaxConnectionsPerChild</directive>;
+	ce nouveau nom refl&egrave;te mieux l'usage de cette directive.</li>
+
         <li>La directive <directive
 	module="core">DefaultType</directive> ne produit plus aucun
 	effet, si ce n'est d'&eacute;mettre un avertissement si elle est
 	d&eacute;finie &agrave; une valeur autre que <code>none</code>. D'autres
 	directives de configuration la remplacent dans la version 2.4.
         </li>
+
+	<li><directive module="core">EnableSendfile</directive> est &agrave; pr&eacute;sent
+        positionn&eacute; &agrave; Off par d&eacute;faut.</li>
 
         <li><module>mod_log_config</module>: <a
         href="modules/mod_log_config.html#formats">${cookie}C</a>
@@ -264,12 +271,17 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
       <li><code>Invalid command 'User', perhaps misspelled or defined by
       a module not included in the server configuration</code> - chargez
       le module <module>mod_unixd</module></li>
+
       <li><code>Invalid command 'Require', perhaps misspelled or defined
       by a module not included in the server configuration</code>, ou
       <code>Invalid command 'Order', perhaps misspelled or defined by a
       module not included in the server configuration</code> - chargez
       le module <module>mod_access_compat</module>, ou mettez &agrave; jour
       vers la version 2.4 les directives d'autorisation.</li>
+      <li><code>On ne peut pas m&eacute;langer les arguments de num&eacute;ro de port des formes * et non-* avec NameVirtualHost</code>, <code>Soit la directive NameVirtualHost w.x.y.z:n n'a aucun VirtualHost correspondant, soit il existe plusieurs directives NameVirtualHost semblables, soit vos d&eacute;finitions de VirtualHost ne correspondent pas &agrave; la ligne NameVirtualHost</code> - ces messages ne sont pas nouveaux, mais ils bloquent d&eacute;sormais le d&eacute;marrage en g&eacute;n&eacute;rant une erreur</li>
+
+      <li><code>L'argument _default_ n'est pas accept&eacute; pour la directive NameVirtualHost</code> - ceci a toujours &eacute;t&eacute; le cas, mais &agrave; pr&eacute;sent cette erreur bloque le d&eacute;marrage du serveur.</li>
+
       <li><code>Ignoring deprecated use of DefaultType in line NN of
       /path/to/httpd.conf</code> - supprimez la directive <directive
       module="core">DefaultType</directive> et remplacez-la par les
