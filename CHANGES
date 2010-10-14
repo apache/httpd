@@ -34,7 +34,8 @@ Changes with Apache 2.0.64
      is any buffered data readable. Any configuration which requires
      renegotiation for per-directory/location access control is still
      vulnerable, unless using openssl 0.9.8l or later.
-     [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>, Rainer Jung]
+     [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>, 
+      Rainer Jung]
 
   *) SECURITY: CVE-2010-0434 (cve.mitre.org)
      Ensure each subrequest has a shallow copy of headers_in so that the
