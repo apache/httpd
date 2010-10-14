@@ -358,6 +358,7 @@
 <li><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
 <li><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
+<li><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><a href="mod_ssl.html#sslmutex">SSLMutex</a></li>
 <li><a href="mod_ssl.html#ssloptions">SSLOptions</a></li>
 <li><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
