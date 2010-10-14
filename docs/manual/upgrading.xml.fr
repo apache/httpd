@@ -278,9 +278,9 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
       module not included in the server configuration</code> - chargez
       le module <module>mod_access_compat</module>, ou mettez &agrave; jour
       vers la version 2.4 les directives d'autorisation.</li>
-      <li><code>On ne peut pas m&eacute;langer les arguments de num&eacute;ro de port des formes * et non-* avec NameVirtualHost</code>, <code>Soit la directive NameVirtualHost w.x.y.z:n n'a aucun VirtualHost correspondant, soit il existe plusieurs directives NameVirtualHost semblables, soit vos d&eacute;finitions de VirtualHost ne correspondent pas &agrave; la ligne NameVirtualHost</code> - ces messages ne sont pas nouveaux, mais ils bloquent d&eacute;sormais le d&eacute;marrage en g&eacute;n&eacute;rant une erreur</li>
+      <li><code>mixing * ports and non-* ports with a NameVirtualHost address is not supported</code>, <code>Either NameVirtualHost w.x.y.z:n has no VirtualHosts, or there is more than one identical NameVirtualHost line, or your VirtualHost declarations do not match the NameVirtualHost line</code> - ces messages ne sont pas nouveaux, mais ils bloquent d&eacute;sormais le d&eacute;marrage en g&eacute;n&eacute;rant une erreur</li>
 
-      <li><code>L'argument _default_ n'est pas accept&eacute; pour la directive NameVirtualHost</code> - ceci a toujours &eacute;t&eacute; le cas, mais &agrave; pr&eacute;sent cette erreur bloque le d&eacute;marrage du serveur.</li>
+      <li><code>_default_ is not allowed in NameVirtualHost directive</code> - ceci a toujours &eacute;t&eacute; le cas, mais &agrave; pr&eacute;sent cette erreur bloque le d&eacute;marrage du serveur.</li>
 
       <li><code>Ignoring deprecated use of DefaultType in line NN of
       /path/to/httpd.conf</code> - supprimez la directive <directive

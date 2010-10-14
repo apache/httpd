@@ -265,9 +265,9 @@ nécessiter une modification des fichiers de configuration de la version
       module not included in the server configuration</code> - chargez
       le module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code>, ou mettez à jour
       vers la version 2.4 les directives d'autorisation.</li>
-      <li><code>On ne peut pas mélanger les arguments de numéro de port des formes * et non-* avec NameVirtualHost</code>, <code>Soit la directive NameVirtualHost w.x.y.z:n n'a aucun VirtualHost correspondant, soit il existe plusieurs directives NameVirtualHost semblables, soit vos définitions de VirtualHost ne correspondent pas à la ligne NameVirtualHost</code> - ces messages ne sont pas nouveaux, mais ils bloquent désormais le démarrage en générant une erreur</li>
+      <li><code>mixing * ports and non-* ports with a NameVirtualHost address is not supported</code>, <code>Either NameVirtualHost w.x.y.z:n has no VirtualHosts, or there is more than one identical NameVirtualHost line, or your VirtualHost declarations do not match the NameVirtualHost line</code> - ces messages ne sont pas nouveaux, mais ils bloquent désormais le démarrage en générant une erreur</li>
 
-      <li><code>L'argument _default_ n'est pas accepté pour la directive NameVirtualHost</code> - ceci a toujours été le cas, mais à présent cette erreur bloque le démarrage du serveur.</li>
+      <li><code>_default_ is not allowed in NameVirtualHost directive</code> - ceci a toujours été le cas, mais à présent cette erreur bloque le démarrage du serveur.</li>
 
       <li><code>Ignoring deprecated use of DefaultType in line NN of
       /path/to/httpd.conf</code> - supprimez la directive <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code> et remplacez-la par les
