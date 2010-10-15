@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!--English Revision : 420990 -->
+<!--English Revision : 965792 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,7 +44,7 @@ le Serveur HTTP Apache.</p>
       </directivelist>
     </related>
 
-    <p>La configuration d'Apache est effectu&eacute;e en pla&ccedil;ant des <a
+    <p>La configuration du serveur HTTP Apache est effectu&eacute;e en pla&ccedil;ant des <a
     href="mod/directives.html">directives</a> dans des fichiers de
     configuration au format texte. Le fichier de configuration principal se nomme
     en g&eacute;n&eacute;ral
@@ -57,7 +57,7 @@ le Serveur HTTP Apache.</p>
     peuvent &ecirc;tre utilis&eacute;s pour inclure de nombreux fichiers de configuration.
     Des directives de tous types peuvent &ecirc;tre plac&eacute;es dans chacun de ces fichiers
     de configuration.  Les modifications dans les fichiers de configuration
-    principaux ne sont prises en compte par Apache que lorsque le serveur
+    principaux ne sont prises en compte par httpd que lorsque le serveur
     est d&eacute;marr&eacute; ou red&eacute;marr&eacute;.</p>
 
     <p>Le serveur lit aussi un fichier contenant les types de document mime;
@@ -69,7 +69,7 @@ le Serveur HTTP Apache.</p>
   <section id="syntax">
     <title>Syntaxe des fichiers de configuration</title>
 
-    <p>Les fichiers de configuration d'Apache contiennent une directive
+    <p>Les fichiers de configuration de httpd contiennent une directive
     par ligne.
     On peut utiliser l'anti-slash "\" comme dernier caract&egrave;re d'une ligne
     pour indiquer que la directive continue &agrave; la ligne suivante.
@@ -84,6 +84,29 @@ le Serveur HTTP Apache.</p>
     de configuration. Les lignes vides et les espaces pr&eacute;c&eacute;dant une directive
     sont ignor&eacute;s; vous pouvez par cons&eacute;quent indenter les directives
     afin d'am&eacute;liorer la lisibilit&eacute;.</p>
+
+    <p>On peut utiliser les variables d'environnement du shell dans les
+    lignes du fichier de configuration en utilisant la syntaxe
+    <code>${ENVVAR}</code>. Si "ENVVAR" est le nom d'une variable
+    d'environnement valide, sa valeur remplace l'expression
+    <code>${ENVVAR}</code> dans la ligne du fichier de configuration, et
+    le traitement continue comme si cette valeur avait &eacute;t&eacute; inscrite
+    directement dans le fichier de configuration. Si la variable ENVVAR
+    n'est pas trouv&eacute;e, l'expression "${ENVVAR}" est conserv&eacute;e tel quel
+    pour une utilisation ult&eacute;rieure dans le traitement du fichier de
+    configuration.</p>
+
+    <p>Seules les variables d'environnement d&eacute;finies avant le d&eacute;marrage
+    du serveur peuvent &ecirc;tre utilis&eacute;es dans les extensions. Les variables
+    d&eacute;finies dans le fichier de configuration lui-m&ecirc;me, par exemple avec <directive
+    module="mod_env">SetEnv</directive>, prennent effet trop tard pour
+    pouvoir &ecirc;tre utilis&eacute;es dans les extensions au sein du fichier de
+    configuration.</p>
+
+    <p>La longueur maximale d'une ligne du fichier de configuration,
+    apr&egrave;s substitution des variables d'environnement, reconstitution des
+    lignes fragment&eacute;es et suppression des espaces de d&eacute;but et de fin,
+    est de 8192 caract&egrave;res.</p>
 
     <p>Vous pouvez v&eacute;rifier l'absence d'erreurs de syntaxe dans vos fichiers
     de configuration sans d&eacute;marrer le serveur &agrave; l'aide de la commande
@@ -104,10 +127,10 @@ le Serveur HTTP Apache.</p>
       </directivelist>
     </related>
 
-    <p>Apache est un serveur modulaire. Ceci implique que seules les
+    <p>httpd est un serveur modulaire. Ceci implique que seules les
     fonctionnalit&eacute;s les plus courantes sont incluses dans le serveur de base.
     Les fonctionnalit&eacute;s &eacute;tendues sont fournies &agrave; l'aide de <a
-    href="mod/">modules</a> qui peuvent &ecirc;tre charg&eacute;s dans Apache.
+    href="mod/">modules</a> qui peuvent &ecirc;tre charg&eacute;s dans httpd.
     Par d&eacute;faut, un jeu de <a
     href="mod/module-dict.html#Status">modules de base</a> est inclus dans le
     serveur &agrave; la compilation. Si le serveur est compil&eacute; de fa&ccedil;on &agrave; utiliser
@@ -115,7 +138,7 @@ le Serveur HTTP Apache.</p>
     alors les modules peuvent &ecirc;tre compil&eacute;s s&eacute;par&eacute;ment et charg&eacute;s &agrave;
     n'importe quel moment &agrave; l'aide de la directive
     <directive module="mod_so">LoadModule</directive>.
-    Dans le cas contraire, Apache doit &ecirc;tre recompil&eacute; pour ajouter ou
+    Dans le cas contraire, httpd doit &ecirc;tre recompil&eacute; pour ajouter ou
     supprimer des modules.
     Les directives de configuration peuvent &ecirc;tre incluses de mani&egrave;re
     conditionnelle selon la pr&eacute;sence ou l'absence d'un module particulier
@@ -157,7 +180,7 @@ le Serveur HTTP Apache.</p>
     Elles peuvent aussi &ecirc;tre imbriqu&eacute;es, ce qui permet
     une configuration tr&egrave;s fine.</p>
 
-    <p>Apache peut servir simultan&eacute;ment de nombreux sites web au travers des
+    <p>httpd peut servir simultan&eacute;ment de nombreux sites web au travers des
     <a href="vhosts/">H&ocirc;tes Virtuels</a>. La port&eacute;e des directives peut ainsi
     &ecirc;tre limit&eacute;e en les pla&ccedil;ant dans des sections
     <directive module="core" type="section">VirtualHost</directive>,
@@ -186,7 +209,7 @@ le Serveur HTTP Apache.</p>
       </directivelist>
     </related>
 
-    <p>Apache permet la gestion d&eacute;centralis&eacute;e de la configuration
+    <p>httpd permet la gestion d&eacute;centralis&eacute;e de la configuration
     via des fichiers sp&eacute;ciaux plac&eacute;s dans l'arborescence du site web.
     Ces fichiers sp&eacute;ciaux se nomment en g&eacute;n&eacute;ral <code>.htaccess</code>,
     mais tout autre nom peut &ecirc;tre sp&eacute;cifi&eacute; &agrave; l'aide de la directive
