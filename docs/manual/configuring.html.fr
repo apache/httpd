@@ -41,7 +41,7 @@ le Serveur HTTP Apache.</p>
     
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
-    <p>La configuration d'Apache est effectuée en plaçant des <a href="mod/directives.html">directives</a> dans des fichiers de
+    <p>La configuration du serveur HTTP Apache est effectuée en plaçant des <a href="mod/directives.html">directives</a> dans des fichiers de
     configuration au format texte. Le fichier de configuration principal se nomme
     en général
     <code>httpd.conf</code>. La localisation de ce fichier est définie
@@ -53,7 +53,7 @@ le Serveur HTTP Apache.</p>
     peuvent être utilisés pour inclure de nombreux fichiers de configuration.
     Des directives de tous types peuvent être placées dans chacun de ces fichiers
     de configuration.  Les modifications dans les fichiers de configuration
-    principaux ne sont prises en compte par Apache que lorsque le serveur
+    principaux ne sont prises en compte par httpd que lorsque le serveur
     est démarré ou redémarré.</p>
 
     <p>Le serveur lit aussi un fichier contenant les types de document mime;
@@ -64,7 +64,7 @@ le Serveur HTTP Apache.</p>
 <h2><a name="syntax" id="syntax">Syntaxe des fichiers de configuration</a></h2>
     
 
-    <p>Les fichiers de configuration d'Apache contiennent une directive
+    <p>Les fichiers de configuration de httpd contiennent une directive
     par ligne.
     On peut utiliser l'anti-slash "\" comme dernier caractère d'une ligne
     pour indiquer que la directive continue à la ligne suivante.
@@ -80,6 +80,28 @@ le Serveur HTTP Apache.</p>
     sont ignorés; vous pouvez par conséquent indenter les directives
     afin d'améliorer la lisibilité.</p>
 
+    <p>On peut utiliser les variables d'environnement du shell dans les
+    lignes du fichier de configuration en utilisant la syntaxe
+    <code>${ENVVAR}</code>. Si "ENVVAR" est le nom d'une variable
+    d'environnement valide, sa valeur remplace l'expression
+    <code>${ENVVAR}</code> dans la ligne du fichier de configuration, et
+    le traitement continue comme si cette valeur avait été inscrite
+    directement dans le fichier de configuration. Si la variable ENVVAR
+    n'est pas trouvée, l'expression "${ENVVAR}" est conservée tel quel
+    pour une utilisation ultérieure dans le traitement du fichier de
+    configuration.</p>
+
+    <p>Seules les variables d'environnement définies avant le démarrage
+    du serveur peuvent être utilisées dans les extensions. Les variables
+    définies dans le fichier de configuration lui-même, par exemple avec <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code>, prennent effet trop tard pour
+    pouvoir être utilisées dans les extensions au sein du fichier de
+    configuration.</p>
+
+    <p>La longueur maximale d'une ligne du fichier de configuration,
+    après substitution des variables d'environnement, reconstitution des
+    lignes fragmentées et suppression des espaces de début et de fin,
+    est de 8192 caractères.</p>
+
     <p>Vous pouvez vérifier l'absence d'erreurs de syntaxe dans vos fichiers
     de configuration sans démarrer le serveur à l'aide de la commande
     <code>apachectl configtest</code> ou de l'option de ligne de commande
@@ -91,16 +113,16 @@ le Serveur HTTP Apache.</p>
 
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
-    <p>Apache est un serveur modulaire. Ceci implique que seules les
+    <p>httpd est un serveur modulaire. Ceci implique que seules les
     fonctionnalités les plus courantes sont incluses dans le serveur de base.
-    Les fonctionnalités étendues sont fournies à l'aide de <a href="mod/">modules</a> qui peuvent être chargés dans Apache.
+    Les fonctionnalités étendues sont fournies à l'aide de <a href="mod/">modules</a> qui peuvent être chargés dans httpd.
     Par défaut, un jeu de <a href="mod/module-dict.html#Status">modules de base</a> est inclus dans le
     serveur à la compilation. Si le serveur est compilé de façon à utiliser
     les <a href="dso.html">modules chargés dynamiquement</a>,
     alors les modules peuvent être compilés séparément et chargés à
     n'importe quel moment à l'aide de la directive
     <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>.
-    Dans le cas contraire, Apache doit être recompilé pour ajouter ou
+    Dans le cas contraire, httpd doit être recompilé pour ajouter ou
     supprimer des modules.
     Les directives de configuration peuvent être incluses de manière
     conditionnelle selon la présence ou l'absence d'un module particulier
@@ -125,7 +147,7 @@ le Serveur HTTP Apache.</p>
     Elles peuvent aussi être imbriquées, ce qui permet
     une configuration très fine.</p>
 
-    <p>Apache peut servir simultanément de nombreux sites web au travers des
+    <p>httpd peut servir simultanément de nombreux sites web au travers des
     <a href="vhosts/">Hôtes Virtuels</a>. La portée des directives peut ainsi
     être limitée en les plaçant dans des sections
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
@@ -149,7 +171,7 @@ le Serveur HTTP Apache.</p>
 
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
 
-    <p>Apache permet la gestion décentralisée de la configuration
+    <p>httpd permet la gestion décentralisée de la configuration
     via des fichiers spéciaux placés dans l'arborescence du site web.
     Ces fichiers spéciaux se nomment en général <code>.htaccess</code>,
     mais tout autre nom peut être spécifié à l'aide de la directive
