@@ -422,6 +422,9 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
     request_rec *req;
     va_list ap;
 
+    if (!APLOG_R_IS_LEVEL(r, APLOG_DEBUG + level))
+        return;
+
     rhost = ap_get_remote_host(r->connection, r->per_dir_config,
                                REMOTE_NOLOOKUP, NULL);
     rname = ap_get_remote_logname(r);
