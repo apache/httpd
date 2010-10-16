@@ -42,9 +42,6 @@
       <dd>It is now possible to specify <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> in milliseconds.
       </dd>
  
-      <dt>Simple MPM</dt>
-      <dd>Cleanroom MPM implementation with advanced thread pool management</dd>
-      
       <dt>Loadable MPMs</dt>
       <dd>Multiple MPMs can now be built as loadable modules at compile time.  
       The MPM of choice can be configured at run time.</dd>
@@ -99,6 +96,10 @@
 
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> can now insert HIT/MISS/REVALIDATE into
       an X-Cache header.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
+      <dd>New module to restrict certain HTTP methods without interfering with
+      authentication or authorization.</dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
