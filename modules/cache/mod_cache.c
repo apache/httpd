@@ -797,7 +797,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_remove_output_filter(cache->remove_url_filter);
 
         if (cache->stale_handle
-                && cache->stale_handle->cache_obj->info.control.must_revalidate) {
+                && !cache->stale_handle->cache_obj->info.control.must_revalidate) {
             const char *warn_head;
 
             /* morph the current save filter into the out filter, and serve from
@@ -1600,9 +1600,8 @@ static void cache_insert_error_filter(request_rec *r)
     if (dummy) {
         cache_request_rec *cache = (cache_request_rec *) dummy;
 
-        if (cache->stale_handle && cache->save_filter && !ap_cache_liststr(
-                NULL, apr_table_get(cache->stale_handle->resp_hdrs,
-                        "Cache-Control"), "must-revalidate", NULL)) {
+        if (cache->stale_handle && cache->save_filter
+                && !cache->stale_handle->cache_obj->info.control.must_revalidate) {
             const char *warn_head;
             cache_server_conf
                     *conf =
