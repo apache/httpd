@@ -274,12 +274,13 @@
  *                         Make root parameter of ap_expr_eval() const.
  * 20100923.3 (2.3.9-dev)  Add "last" member to ap_directive_t
  * 20101012.0 (2.3.9-dev)  Add header to cache_status hook.
+ * 20101016.0 (2.3.9-dev)  Remove ap_cache_check_allowed().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20101012
+#define MODULE_MAGIC_NUMBER_MAJOR 20101016
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

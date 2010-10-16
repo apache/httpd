@@ -190,6 +190,31 @@ typedef struct {
     int stale_on_error_set;
 } cache_dir_conf;
 
+/* a cache control header breakdown */
+typedef struct {
+    unsigned int parsed:1;
+    unsigned int cache_control:1;
+    unsigned int pragma:1;
+    unsigned int no_cache:1;
+    unsigned int no_cache_header:1; /* no cache by header match */
+    unsigned int no_store:1;
+    unsigned int max_age:1;
+    unsigned int max_stale:1;
+    unsigned int min_fresh:1;
+    unsigned int no_transform:1;
+    unsigned int only_if_cached:1;
+    unsigned int public:1;
+    unsigned int private:1;
+    unsigned int private_header:1; /* private by header match */
+    unsigned int must_revalidate:1;
+    unsigned int proxy_revalidate:1;
+    unsigned int s_maxage:1;
+    int max_age_value; /* if positive, then set */
+    int max_stale_value; /* if positive, then set */
+    int min_fresh_value; /* if positive, then set */
+    int s_maxage_value; /* if positive, then set */
+} cache_control_t;
+
 /* A linked-list of authn providers. */
 typedef struct cache_provider_list cache_provider_list;
 
@@ -222,7 +247,25 @@ typedef struct {
                                          */
     apr_off_t size;                     /* the content length from the headers, or -1 */
     apr_bucket_brigade *out;            /* brigade to reuse for upstream responses */
+    cache_control_t control_in;         /* cache control incoming */
 } cache_request_rec;
+
+/**
+ * Parse the Cache-Control and Pragma headers in one go, marking
+ * which tokens appear within the header. Populate the structure
+ * passed in.
+ */
+int ap_cache_control(request_rec *r, cache_control_t *cc, const char *cc_header,
+        const char *pragma_header, apr_table_t *headers);
+
+/**
+ * Check the whether the request allows a cached object to be served as per RFC2616
+ * section 14.9.4 (Cache Revalidation and Reload Controls)
+ * @param h cache_handle_t
+ * @param r request_rec
+ * @return 0 ==> cache object may not be served, 1 ==> cache object may be served
+ */
+CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec *r);
 
 /**
  * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)

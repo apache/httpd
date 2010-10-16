@@ -216,7 +216,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         }
     }
 
-    if (!ap_cache_check_allowed(r)) {
+    if (!ap_cache_check_allowed(cache, r)) {
         return DECLINED;
     }
 
