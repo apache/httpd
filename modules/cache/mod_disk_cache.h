@@ -17,6 +17,7 @@
 #ifndef MOD_DISK_CACHE_H
 #define MOD_DISK_CACHE_H
 
+#include "mod_cache.h"
 #include "apr_file_io.h"
 
 /*
@@ -57,6 +58,8 @@ typedef struct {
     /* Does this cached request have a body? */
     int has_body;
     int header_only;
+    /* The parsed cache control header */
+    cache_control_t control;
 } disk_cache_info_t;
 
 typedef struct {

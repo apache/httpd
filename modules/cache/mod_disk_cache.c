@@ -235,6 +235,8 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
     info->request_time = dobj->disk_info.request_time;
     info->response_time = dobj->disk_info.response_time;
 
+    memcpy(&info->control, &dobj->disk_info.control, sizeof(cache_control_t));
+
     /* Note that we could optimize this by conditionally doing the palloc
      * depending upon the size. */
     urlbuff = apr_palloc(r->pool, dobj->disk_info.name_len + 1);
@@ -1010,6 +1012,8 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
     disk_info.header_only = dobj->disk_info.header_only;
 
     disk_info.name_len = strlen(dobj->name);
+
+    memcpy(&disk_info.control, &h->cache_obj->info.control, sizeof(cache_control_t));
 
     iov[0].iov_base = (void*)&disk_info;
     iov[0].iov_len = sizeof(disk_cache_info_t);
