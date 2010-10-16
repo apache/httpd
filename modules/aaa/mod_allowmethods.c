@@ -44,7 +44,7 @@
  */
 
 typedef struct am_conf_t {
-  int allowed;
+  apr_int64_t allowed;
 } am_conf_t;
 
 module AP_MODULE_DECLARE_DATA allowmethods_module;
