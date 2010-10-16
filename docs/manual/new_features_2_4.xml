@@ -40,9 +40,6 @@
       >KeepAliveTimeout</directive> in milliseconds.
       </dd>
  
-      <dt>Simple MPM</dt>
-      <dd>Cleanroom MPM implementation with advanced thread pool management</dd>
-      
       <dt>Loadable MPMs</dt>
       <dd>Multiple MPMs can now be built as loadable modules at compile time.  
       The MPM of choice can be configured at run time.</dd>
@@ -97,6 +94,10 @@
 
       <dd><module>mod_cache</module> can now insert HIT/MISS/REVALIDATE into
       an X-Cache header.</dd>
+
+      <dt><module>mod_allowmethods</module></dt>
+      <dd>New module to restrict certain HTTP methods without interfering with
+      authentication or authorization.</dd>
     </dl>
   </section>
 
