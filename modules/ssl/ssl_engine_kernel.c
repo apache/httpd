@@ -1557,6 +1557,35 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn,
                       "Certificate Verification: Error (%d): %s",
                       errnum, X509_verify_cert_error_string(errnum));
+        if (APLOGcinfo(conn)) {
+            X509 *cert = X509_STORE_CTX_get_current_cert(ctx);
+            BIO *bio = BIO_new(BIO_s_mem());
+            char buff[512]; /* should be plenty */
+            int n;
+
+            if (bio) {
+                BIO_puts(bio, "Failed certificate: subject: '");
+                X509_NAME_print_ex(bio, X509_get_subject_name(cert), 0,
+                                   XN_FLAG_ONELINE);
+
+                BIO_puts(bio, "', issuer: '");
+                X509_NAME_print_ex(bio, X509_get_issuer_name(cert), 0,
+                                XN_FLAG_ONELINE);
+
+                BIO_puts(bio, "', notbefore: ");
+                ASN1_UTCTIME_print(bio, X509_get_notBefore(cert));
+
+                BIO_puts(bio, ", notafter: ");
+                ASN1_UTCTIME_print(bio, X509_get_notAfter(cert));
+
+                n = BIO_read(bio, buff, sizeof(buff) - 1);
+                BIO_free(bio);
+                if (n > 0) {
+                    buff[n] = '\0';
+                    ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, conn, "%s", buff);
+                }
+            }
+        }
 
         if (sslconn->client_cert) {
             X509_free(sslconn->client_cert);
