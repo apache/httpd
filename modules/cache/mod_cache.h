@@ -124,15 +124,6 @@ typedef enum {
 CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_t age_value,
                                                apr_time_t now);
 
-/**
- * Check the whether the request allows a cached object to be served as per RFC2616
- * section 14.9.4 (Cache Revalidation and Reload Controls)
- * @param h cache_handle_t
- * @param r request_rec
- * @return 0 ==> cache object may not be served, 1 ==> cache object may be served
- */
-CACHE_DECLARE(int) ap_cache_check_allowed(request_rec *r);
-
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
 CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) ap_cache_generate_name(apr_pool_t *p, int dirlevels,
