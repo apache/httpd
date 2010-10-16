@@ -442,18 +442,16 @@ CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec 
 }
 
 
-int cache_check_freshness(cache_handle_t *h,
-        cache_request_rec *cache,
+int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
         request_rec *r)
 {
     apr_status_t status;
     apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
     apr_int64_t minfresh;
-    const char *cc_cresp, *cc_req;
+    const char *cc_req;
     const char *pragma;
     const char *agestr = NULL;
     const char *expstr = NULL;
-    char *val;
     apr_time_t age_c = 0;
     cache_info *info = &(h->cache_obj->info);
     const char *warn_head;
@@ -499,8 +497,9 @@ int cache_check_freshness(cache_handle_t *h,
     cc_req = apr_table_get(r->headers_in, "Cache-Control");
     pragma = apr_table_get(r->headers_in, "Pragma");
 
-    if (ap_cache_liststr(NULL, pragma, "no-cache", NULL)
-        || ap_cache_liststr(NULL, cc_req, "no-cache", NULL)) {
+    ap_cache_control(r, &cache->control_in, cc_req, pragma, r->headers_in);
+
+    if (cache->control_in.no_cache) {
 
         if (!conf->ignorecachecontrol) {
             /* Treat as stale, causing revalidation */
@@ -515,10 +514,9 @@ int cache_check_freshness(cache_handle_t *h,
     }
 
     /* These come from the cached entity. */
-    cc_cresp = apr_table_get(h->resp_hdrs, "Cache-Control");
     expstr = apr_table_get(h->resp_hdrs, "Expires");
 
-    if (ap_cache_liststr(NULL, cc_cresp, "no-cache", NULL)) {
+    if (h->cache_obj->info.control.no_cache) {
         /*
          * The cached entity contained Cache-Control: no-cache, so treat as
          * stale causing revalidation
@@ -534,32 +532,16 @@ int cache_check_freshness(cache_handle_t *h,
     age = ap_cache_current_age(info, age_c, r->request_time);
 
     /* extract s-maxage */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val)
-        && val != NULL) {
-        smaxage = apr_atoi64(val);
-    }
-    else {
-        smaxage = -1;
-    }
+    smaxage = h->cache_obj->info.control.s_maxage_value;
 
     /* extract max-age from request */
-    if (!conf->ignorecachecontrol
-        && cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val)
-        && val != NULL) {
-        maxage_req = apr_atoi64(val);
-    }
-    else {
-        maxage_req = -1;
+    maxage_req = -1;
+    if (!conf->ignorecachecontrol) {
+        maxage_req = cache->control_in.max_age_value;
     }
 
     /* extract max-age from response */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val)
-        && val != NULL) {
-        maxage_cresp = apr_atoi64(val);
-    }
-    else {
-        maxage_cresp = -1;
-    }
+    maxage_cresp = h->cache_obj->info.control.max_age_value;
 
     /*
      * if both maxage request and response, the smaller one takes priority
@@ -575,9 +557,9 @@ int cache_check_freshness(cache_handle_t *h,
     }
 
     /* extract max-stale */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-stale", &val)) {
-        if(val != NULL) {
-            maxstale = apr_atoi64(val);
+    if (cache->control_in.max_stale) {
+        if(cache->control_in.max_stale_value != -1) {
+            maxstale = cache->control_in.max_stale_value;
         }
         else {
             /*
@@ -596,22 +578,16 @@ int cache_check_freshness(cache_handle_t *h,
     }
 
     /* extract min-fresh */
-    if (!conf->ignorecachecontrol
-        && cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val)
-        && val != NULL) {
-        minfresh = apr_atoi64(val);
+    if (!conf->ignorecachecontrol && cache->control_in.min_fresh) {
+        minfresh = cache->control_in.min_fresh_value;
     }
     else {
         minfresh = 0;
     }
 
     /* override maxstale if must-revalidate or proxy-revalidate */
-    if (maxstale && ((cc_cresp &&
-                      ap_cache_liststr(NULL, cc_cresp,
-                                       "must-revalidate", NULL)) ||
-                     (cc_cresp &&
-                      ap_cache_liststr(NULL, cc_cresp,
-                                       "proxy-revalidate", NULL)))) {
+    if (maxstale && (h->cache_obj->info.control.must_revalidate
+            || h->cache_obj->info.control.proxy_revalidate)) {
         maxstale = 0;
     }
 
@@ -1099,14 +1075,14 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 else if (!strncasecmp(token, "max-age", 7)) {
                     if (token[7] == '=') {
                         cc->max_age = 1;
-                        cc->max_age_value = atoi(token + 8);
+                        cc->max_age_value = apr_atoi64(token + 8);
                     }
                     break;
                 }
                 else if (!strncasecmp(token, "max-stale", 9)) {
                     if (token[9] == '=') {
                         cc->max_stale = 1;
-                        cc->max_stale_value = atoi(token + 10);
+                        cc->max_stale_value = apr_atoi64(token + 10);
                     }
                     else if (!token[10]) {
                         cc->max_stale = 1;
@@ -1117,7 +1093,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 else if (!strncasecmp(token, "min-fresh", 9)) {
                     if (token[9] == '=') {
                         cc->min_fresh = 1;
-                        cc->min_fresh_value = atoi(token + 10);
+                        cc->min_fresh_value = apr_atoi64(token + 10);
                     }
                     break;
                 }
@@ -1164,7 +1140,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 if (!strncasecmp(token, "s-maxage", 8)) {
                     if (token[8] == '=') {
                         cc->s_maxage = 1;
-                        cc->s_maxage_value = atoi(token + 9);
+                        cc->s_maxage_value = apr_atoi64(token + 9);
                     }
                     break;
                 }

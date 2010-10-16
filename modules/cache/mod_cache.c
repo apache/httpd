@@ -724,7 +724,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_request_rec *cache = (cache_request_rec *)f->ctx;
     cache_server_conf *conf;
     cache_dir_conf *dconf;
-    const char *cc_out, *cl;
+    cache_control_t control;
+    const char *cc_out, *cl, *pragma;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size = -1;
@@ -732,6 +733,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     char *reason;
     apr_pool_t *p;
     apr_bucket *e;
+    apr_table_t *headers;
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
@@ -794,10 +796,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         ap_remove_output_filter(cache->remove_url_filter);
 
-        if (cache->stale_handle && !ap_cache_liststr(
-                NULL,
-                apr_table_get(cache->stale_handle->resp_hdrs, "Cache-Control"),
-                "must-revalidate", NULL)) {
+        if (cache->stale_handle
+                && cache->stale_handle->cache_obj->info.control.must_revalidate) {
             const char *warn_head;
 
             /* morph the current save filter into the out filter, and serve from
@@ -871,9 +871,17 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         etag = apr_table_get(r->headers_out, "Etag");
     }
     cc_out = apr_table_get(r->err_headers_out, "Cache-Control");
-    if (cc_out == NULL) {
+    pragma = apr_table_get(r->err_headers_out, "Pragma");
+    headers = r->err_headers_out;
+    if (cc_out == NULL && pragma == NULL) {
         cc_out = apr_table_get(r->headers_out, "Cache-Control");
+        pragma = apr_table_get(r->headers_out, "Pragma");
+        headers = r->headers_out;
     }
+
+    /* Parse the cache control header */
+    memset(&control, 0, sizeof(cache_control_t));
+    ap_cache_control(r, &control, cc_out, pragma, headers);
 
     /*
      * what responses should we not cache?
@@ -927,9 +935,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if a Expires header is in the past, don't cache it */
         reason = "Expires header already expired; not cacheable";
     }
-    else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL &&
-             !ap_cache_liststr(NULL, cc_out, "max-age", NULL) &&
-             !ap_cache_liststr(NULL, cc_out, "s-maxage", NULL)) {
+    else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL
+            && !control.max_age && !control.s_maxage) {
         /* if a query string is present but no explicit expiration time,
          * don't cache it (RFC 2616/13.9 & 13.2.1)
          */
@@ -942,10 +949,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "HTTP Status 304 Not Modified";
     }
-    else if (r->status == HTTP_OK && lastmods == NULL && etag == NULL
-             && (exps == NULL) && (dconf->no_last_mod_ignore ==0) &&
-             !ap_cache_liststr(NULL, cc_out, "max-age", NULL) &&
-             !ap_cache_liststr(NULL, cc_out, "s-maxage", NULL)) {
+    else if (r->status == HTTP_OK && lastmods == NULL && etag == NULL && (exps
+            == NULL) && (dconf->no_last_mod_ignore == 0) && !control.max_age
+            && !control.s_maxage) {
         /* 200 OK response from HTTP/1.0 and up without Last-Modified,
          * Etag, Expires, Cache-Control:max-age, or Cache-Control:s-maxage
          * headers.
@@ -955,26 +961,22 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "No Last-Modified; Etag; Expires; Cache-Control:max-age or Cache-Control:s-maxage headers";
     }
-    else if (!dconf->store_nostore &&
-             ap_cache_liststr(NULL, cc_out, "no-store", NULL)) {
+    else if (!dconf->store_nostore && control.no_store) {
         /* RFC2616 14.9.2 Cache-Control: no-store response
          * indicating do not cache, or stop now if you are
          * trying to cache it.
          */
         reason = "Cache-Control: no-store present";
     }
-    else if (!dconf->store_private &&
-             ap_cache_liststr(NULL, cc_out, "private", NULL)) {
+    else if (!dconf->store_private && control.private) {
         /* RFC2616 14.9.1 Cache-Control: private response
          * this object is marked for this user's eyes only. Behave
          * as a tunnel.
          */
         reason = "Cache-Control: private present";
     }
-    else if (apr_table_get(r->headers_in, "Authorization") != NULL
-             && !(ap_cache_liststr(NULL, cc_out, "s-maxage", NULL)
-                  || ap_cache_liststr(NULL, cc_out, "must-revalidate", NULL)
-                  || ap_cache_liststr(NULL, cc_out, "public", NULL))) {
+    else if (apr_table_get(r->headers_in, "Authorization")
+            && !(control.s_maxage || control.must_revalidate || control.public)) {
         /* RFC2616 14.8 Authorisation:
          * if authorisation is included in the request, we don't cache,
          * but we can cache if the following exceptions are true:
@@ -1196,6 +1198,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * too.
      */
 
+    /* store away the previously parsed cache control headers */
+    memcpy(&info->control, &control, sizeof(cache_control_t));
+
     /* Read the date. Generate one if one is not supplied */
     dates = apr_table_get(r->err_headers_out, "Date");
     if (dates == NULL) {
@@ -1241,14 +1246,12 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      *      expire date = date + defaultexpire
      */
     if (exp == APR_DATE_BAD) {
-        char *max_age_val;
 
-        if (ap_cache_liststr(r->pool, cc_out, "max-age", &max_age_val) &&
-            max_age_val != NULL) {
+        if (control.max_age) {
             apr_int64_t x;
 
             errno = 0;
-            x = apr_atoi64(max_age_val);
+            x = control.max_age_value;
             if (errno) {
                 x = dconf->defex;
             }

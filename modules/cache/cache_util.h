@@ -190,31 +190,6 @@ typedef struct {
     int stale_on_error_set;
 } cache_dir_conf;
 
-/* a cache control header breakdown */
-typedef struct {
-    unsigned int parsed:1;
-    unsigned int cache_control:1;
-    unsigned int pragma:1;
-    unsigned int no_cache:1;
-    unsigned int no_cache_header:1; /* no cache by header match */
-    unsigned int no_store:1;
-    unsigned int max_age:1;
-    unsigned int max_stale:1;
-    unsigned int min_fresh:1;
-    unsigned int no_transform:1;
-    unsigned int only_if_cached:1;
-    unsigned int public:1;
-    unsigned int private:1;
-    unsigned int private_header:1; /* private by header match */
-    unsigned int must_revalidate:1;
-    unsigned int proxy_revalidate:1;
-    unsigned int s_maxage:1;
-    int max_age_value; /* if positive, then set */
-    int max_stale_value; /* if positive, then set */
-    int min_fresh_value; /* if positive, then set */
-    int s_maxage_value; /* if positive, then set */
-} cache_control_t;
-
 /* A linked-list of authn providers. */
 typedef struct cache_provider_list cache_provider_list;
 
