@@ -166,6 +166,7 @@
 </ul><ul><li><a href="mod/mod_access_compat.html">아파치 모듈 mod_access_compat</a></li>
 <li><a href="mod/mod_actions.html">아파치 모듈 mod_actions</a></li>
 <li><a href="mod/mod_alias.html">아파치 모듈 mod_alias</a></li>
+<li><a href="mod/mod_allowmethods.html">아파치 모듈 mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">아파치 모듈 mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">아파치 모듈 mod_auth_basic</a></li>
 <li><a href="mod/mod_auth_digest.html">아파치 모듈 mod_auth_digest</a></li>

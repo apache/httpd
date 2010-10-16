@@ -68,6 +68,7 @@
 <li><a href="mod_access_compat.html#allow">Allow</a></li>
 <li><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
+<li><a href="mod_allowmethods.html#allowmethods">AllowMethods</a></li>
 <li><a href="core.html#allowoverride">AllowOverride</a></li>
 <li><a href="mod_authn_anon.html#anonymous">Anonymous</a></li>
 <li><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail</a></li>

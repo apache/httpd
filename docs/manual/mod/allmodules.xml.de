@@ -6,6 +6,7 @@
   <modulefile>mod_access_compat.xml</modulefile>
   <modulefile>mod_actions.xml.de</modulefile>
   <modulefile>mod_alias.xml</modulefile>
+  <modulefile>mod_allowmethods.xml</modulefile>
   <modulefile>mod_asis.xml</modulefile>
   <modulefile>mod_auth_basic.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>

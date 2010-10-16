@@ -69,6 +69,7 @@ address)</dd>
 스크립트를 실행한다.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>파일시스템의 다른 부분들을 문서 계층구조에 포함하고,
     URL 리다이렉션을 제공한다</dd>
+<dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authentication을 사용한 사용자인증.</dd>

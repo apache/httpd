@@ -6,6 +6,7 @@
   <modulefile>mod_access_compat.xml.ja</modulefile>
   <modulefile>mod_actions.xml.ja</modulefile>
   <modulefile>mod_alias.xml.ja</modulefile>
+  <modulefile>mod_allowmethods.xml</modulefile>
   <modulefile>mod_asis.xml.ja</modulefile>
   <modulefile>mod_auth_basic.xml.ja</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>

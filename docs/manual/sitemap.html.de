@@ -170,6 +170,7 @@ HPUX betreiben</a></li>
 </ul><ul><li><a href="mod/mod_access_compat.html">Apache-Modul mod_access_compat</a></li>
 <li><a href="mod/mod_actions.html">Apache-Modul mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Apache-Modul mod_alias</a></li>
+<li><a href="mod/mod_allowmethods.html">Apache-Modul mod_allowmethods</a></li>
 <li><a href="mod/mod_asis.html">Apache-Modul mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache-Modul mod_auth_basic</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache-Modul mod_auth_digest</a></li>

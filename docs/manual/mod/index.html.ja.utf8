@@ -71,6 +71,7 @@ CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>ホストファイルシステム上のいろいろな違う場所を
     ドキュメントツリーにマップする機能と、
     URL のリダイレクトを行なう機能を提供する</dd>
+<dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>自分用の HTTP ヘッダの書かれているファイルを送信する</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>基本認証</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5

@@ -262,7 +262,7 @@
         #include &lt;http_log.h&gt;<br />
         <br />
         #ifdef APLOG_USE_MODULE<br />
-        APLOG_USE_MODULE(foo)<br />
+        APLOG_USE_MODULE(foo);<br />
         #endif
     </code></p></div>
     <p>The number of parameters of the <code>ap_log_*</code> functions and the
