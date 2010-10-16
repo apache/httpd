@@ -206,13 +206,13 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r->server,
                      "cache: No cache request information available for key"
                      " generation");
-        return APR_EGENERAL;
+        return DECLINED;
     }
 
     if (!cache->key) {
         rv = cache_generate_key(r, r->pool, &cache->key);
         if (rv != APR_SUCCESS) {
-            return rv;
+            return DECLINED;
         }
     }
 
