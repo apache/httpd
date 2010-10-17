@@ -90,7 +90,25 @@ static int ssl_tmp_key_init_rsa(server_rec *s,
     }
 
 #endif
-
+#ifdef HAVE_GENERATE_EX
+    {
+        RSA *tkey;
+        BIGNUM *bn_f4;
+        if (!(tkey == RSA_new())
+          || !(bn_f4 == BN_new())
+          || !BN_set_word(bn_f4, RSA_F4)
+          || !RSA_generate_key_ex(tkey, bits, bn_f4, NULL))
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                         "Init: Failed to generate temporary "
+                         "%d bit RSA private key", bits);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+            return !OK;
+        }
+        BN_free(bn_f4);
+        mc->pTmpKeys[idx] = tkey;
+    }
+#else
     if (!(mc->pTmpKeys[idx] =
           RSA_generate_key(bits, RSA_F4, NULL, NULL)))
     {
@@ -100,6 +118,7 @@ static int ssl_tmp_key_init_rsa(server_rec *s,
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         return !OK;
     }
+#endif
 
     return OK;
 }

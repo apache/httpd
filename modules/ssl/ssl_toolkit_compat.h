@@ -48,6 +48,10 @@
 #include <openssl/ocsp.h>
 #endif
 
+#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
+#define HAVE_GENERATE_EX
+#endif
+
 /* ECC support came along in OpenSSL 1.0.0 */
 #if (OPENSSL_VERSION_NUMBER < 0x10000000)
 #define OPENSSL_NO_EC
