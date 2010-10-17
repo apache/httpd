@@ -229,11 +229,12 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         switch ((rv = list->provider->open_entity(h, r, cache->key))) {
         case OK: {
             char *vary = NULL;
-            int fresh;
+            int fresh, mismatch = 0;
 
             if (list->provider->recall_headers(h, r) != APR_SUCCESS) {
-                /* TODO: Handle this error */
-                return DECLINED;
+                /* try again with next cache type */
+                list = list->next;
+                continue;
             }
 
             /*
@@ -284,8 +285,15 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
                                 r->server,
                                 "cache_select_url(): Vary header mismatch.");
-                    return DECLINED;
+                    mismatch = 1;
                 }
+            }
+
+            /* no vary match, try next provider */
+            if (mismatch) {
+                /* try again with next cache type */
+                list = list->next;
+                continue;
             }
 
             cache->provider = list->provider;
@@ -337,6 +345,9 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                                       lastmod);
                     }
                     cache->stale_handle = h;
+
+                    /* ready to revalidate, pretend we were never here */
+                    return DECLINED;
                 }
                 else {
                     int irv;
@@ -351,9 +362,12 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, irv, r->server,
                                      "cache: attempt to remove url from cache unsuccessful.");
                     }
+
+                    /* try again with next cache type */
+                    list = list->next;
+                    continue;
                 }
 
-                return DECLINED;
             }
 
             /* Okay, this response looks okay.  Merge in our stuff and go. */
