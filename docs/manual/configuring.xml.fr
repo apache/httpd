@@ -3,7 +3,11 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
+<<<<<<< .mine
+<!--English Revision : 1003217 -->
+=======
 <!--English Revision : 965792 -->
+>>>>>>> .r1023472
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -143,10 +147,15 @@ le Serveur HTTP Apache.</p>
     Les directives de configuration peuvent &ecirc;tre incluses de mani&egrave;re
     conditionnelle selon la pr&eacute;sence ou l'absence d'un module particulier
     en les pla&ccedil;ant dans un bloc <directive
-    module="core" type="section">IfModule</directive>.</p>
+    module="core" type="section">IfModule</directive>. Les blocs
+    <directive type="section">IfModule</directive> ne sont cependant pas
+    n&eacute;cessaires et peuvent m&ecirc;me dans certains cas masquer l'absence d'un
+    module important.</p>
 
     <p>Pour voir quels modules ont &eacute;t&eacute; compil&eacute;s avec le serveur,
-    vous pouvez utiliser l'option de ligne de commande <code>-l</code>.</p>
+    vous pouvez utiliser l'option de ligne de commande <code>-l</code>.
+    En outre, l'option de ligne de commande <code>-M</code> permet de
+    voir quels modules sont charg&eacute;s dynamiquement.</p>
   </section>
 
   <section id="scope">

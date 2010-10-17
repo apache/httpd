@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 933606 -->
+<!-- English Revision : 1002119 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -131,7 +131,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     les fichiers .htaccess ?</title>
 
     <p>En principe, vous ne devriez utiliser les fichiers
-    <code>.htaccess</code> que si vous n'avez pas acc&egrave;s au fichier de
+    <code>.htaccess</code> que lorsque vous n'avez pas acc&egrave;s au fichier de
     configuration du serveur principal. Par exemple, la fausse
     id&eacute;e
     selon laquelle l'authentification de l'utilisateur devrait toujours
@@ -319,7 +319,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
     <example>
-&lt;Directory /&gt;<br />
+&lt;Directory /www/htdocs&gt;<br />
 <indent>
 Allowoverride All<br />
 </indent>
@@ -331,6 +331,10 @@ Options +IncludesNoExec -ExecCGI<br />
 </indent>
 &lt;/Location&gt;
     </example>
+
+    <note>Dans cet exemple, on consid&egrave;re que le chemin d&eacute;fini par la
+    directive <directive module="core">DocumentRoot</directive> est
+    <code>/www/htdocs</code>.</note>
 </section>
 
 </section>
@@ -451,7 +455,7 @@ Includes - SSI)</title>
     permise.</p>
 
 <example>
-	[Sat Aug 09 16:19:20 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteLog not allowed here
+	[Fri Sep 17 18:43:16 2010] [alert] [client 192.168.200.51] /var/www/html/.htaccess: DirectoryIndex not allowed here
 </example>
 	<p>Cela signifie soit que vous utilisez une directive qui n'est
 	jamais permise dans les fichiers <code>.htaccess</code>, soit

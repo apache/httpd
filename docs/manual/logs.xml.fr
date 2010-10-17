@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1001240:1001245 (outdated) -->
+<!-- English Revision: 1001245 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -164,6 +164,33 @@
       tail -f error_log
     </example>
   </section>
+
+  <section id="permodule">
+    <title>Journalisation par module</title>
+
+    <p>La directive <directive module="core">LogLevel</directive> permet
+    de spécifier un niveau de sévérité de journalisation pour chaque
+    module. Vous pouvez ainsi résoudre un problème propre à un module particulier
+    en augmentant son volume de journalisation sans augmenter ce volume
+    pour les autres modules. Ceci est particulièrement utile lorsque
+    vous voulez obtenir des détails sur le fonctionnement de modules
+    comme <module>mod_proxy</module> ou <module>mod_rewrite</module>.</p>
+
+    <p>Pour ce faire, vous devez spécifier le nom du module dans votre
+    directive <directive>LogLevel</directive> :</p>
+
+    <example>
+    LogLevel info rewrite:trace5
+    </example>
+
+    <p>Dans cet exemple, le niveau de journalisation général est défini
+    à info, et à <code>trace5</code> pour <module>mod_rewrite</module>.</p>
+
+    <note>Cette directive remplace les directives de journalisation par
+    module des versions précédentes du serveur, comme
+    <code>RewriteLog</code>.</note>
+ </section>
+
 
   <section id="accesslog">
     <title>Journal des acc&egrave;s</title>
@@ -405,7 +432,7 @@
 	inclut ce dernier fichier).</dd>
 
         <dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
-        (<code>\"%{User-agent}i\"</code>)</dt>
+        (<cologsde>\"%{User-agent}i\"</code>)</dt>
 
         <dd>L'en-t&ecirc;te User-Agent de la requ&ecirc;te HTTP. C'est une information
 	d'identification que le navigateur du client envoie &agrave; propos
