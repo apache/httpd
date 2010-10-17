@@ -179,6 +179,14 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec *r);
  */
 CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r);
 
+/**
+ * Parse the Cache-Control and Pragma headers in one go, marking
+ * which tokens appear within the header. Populate the structure
+ * passed in.
+ */
+int ap_cache_control(request_rec *r, cache_control_t *cc, const char *cc_header,
+        const char *pragma_header, apr_table_t *headers);
+
 
 /* hooks */
 

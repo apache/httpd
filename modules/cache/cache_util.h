@@ -226,14 +226,6 @@ typedef struct {
 } cache_request_rec;
 
 /**
- * Parse the Cache-Control and Pragma headers in one go, marking
- * which tokens appear within the header. Populate the structure
- * passed in.
- */
-int ap_cache_control(request_rec *r, cache_control_t *cc, const char *cc_header,
-        const char *pragma_header, apr_table_t *headers);
-
-/**
  * Check the whether the request allows a cached object to be served as per RFC2616
  * section 14.9.4 (Cache Revalidation and Reload Controls)
  * @param h cache_handle_t
