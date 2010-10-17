@@ -123,7 +123,6 @@ void cache_insert(cache_cache_t* c, void *entry)
                        CACHE_HASH_KEY_STRING,
                        NULL);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Cache Purge of %s",c->key_entry(ejected));
         c->current_size -= c->size_entry(ejected);
         c->free_entry(ejected);
         c->total_purges++;
