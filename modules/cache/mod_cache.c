@@ -148,17 +148,16 @@ static int cache_quick_handler(request_rec *r, int lookup)
                      * or not.
                      */
                     if (r->main) {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                                r->server,
-                                "Adding CACHE_SAVE_SUBREQ filter for %s",
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                                r, "Adding CACHE_SAVE_SUBREQ filter for %s",
                                 r->uri);
                         cache->save_filter = ap_add_output_filter_handle(
                                 cache_save_subreq_filter_handle, cache, r,
                                 r->connection);
                     }
                     else {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                                r->server, "Adding CACHE_SAVE filter for %s",
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                                r, "Adding CACHE_SAVE filter for %s",
                                 r->uri);
                         cache->save_filter = ap_add_output_filter_handle(
                                 cache_save_filter_handle, cache, r,
@@ -167,7 +166,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
 
                     apr_pool_userdata_setn(cache, CACHE_CTX_KEY, NULL, r->pool);
 
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
                             "Adding CACHE_REMOVE_URL filter for %s",
                             r->uri);
 
@@ -182,16 +181,16 @@ static int cache_quick_handler(request_rec *r, int lookup)
                                 cache, r, r->connection);
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv,
-                                 r->server, "Cache locked for url, not caching "
-                                 "response: %s", r->uri);
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv,
+                            r, "Cache locked for url, not caching "
+                            "response: %s", r->uri);
                 }
             }
             else {
                 if (cache->stale_headers) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                                 r->server, "Restoring request headers for %s",
-                                 r->uri);
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r, "Restoring request headers for %s",
+                            r->uri);
 
                     r->headers_in = cache->stale_headers;
                 }
@@ -212,8 +211,8 @@ static int cache_quick_handler(request_rec *r, int lookup)
      * the headers. */
     if (lookup) {
         if (cache->stale_headers) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                         "Restoring request headers.");
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+                    "Restoring request headers.");
             r->headers_in = cache->stale_headers;
         }
     }
@@ -413,15 +412,14 @@ static int cache_handler(request_rec *r)
                  * or not.
                  */
                 if (r->main) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                            r->server,
-                            "Adding CACHE_SAVE_SUBREQ filter for %s",
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r, "Adding CACHE_SAVE_SUBREQ filter for %s",
                             r->uri);
                     cache_save_handle = cache_save_subreq_filter_handle;
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                            r->server, "Adding CACHE_SAVE filter for %s",
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r, "Adding CACHE_SAVE filter for %s",
                             r->uri);
                     cache_save_handle = cache_save_filter_handle;
                 }
@@ -442,8 +440,8 @@ static int cache_handler(request_rec *r)
                  */
                 if (cache_replace_filter(r->output_filters,
                         cache_filter_handle, cache_save_handle)) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                            r->server, "Replacing CACHE with CACHE_SAVE "
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r, "Replacing CACHE with CACHE_SAVE "
                             "filter for %s", r->uri);
                 }
 
@@ -453,7 +451,7 @@ static int cache_handler(request_rec *r)
 
                 apr_pool_userdata_setn(cache, CACHE_CTX_KEY, NULL, r->pool);
 
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
                         "Adding CACHE_REMOVE_URL filter for %s",
                         r->uri);
 
@@ -469,9 +467,9 @@ static int cache_handler(request_rec *r)
 
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv,
-                             r->server, "Cache locked for url, not caching "
-                             "response: %s", r->uri);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv,
+                        r, "Cache locked for url, not caching "
+                        "response: %s", r->uri);
             }
         }
         else {
@@ -516,8 +514,8 @@ static int cache_handler(request_rec *r)
      * place.
      */
     if (cache_replace_filter(r->output_filters, cache_filter_handle, cache_out_handle)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                r->server, "Replacing CACHE with CACHE_OUT filter for %s",
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                r, "Replacing CACHE with CACHE_OUT filter for %s",
                 r->uri);
     }
 
@@ -573,14 +571,14 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (!cache) {
         /* user likely configured CACHE_OUT manually; they should use mod_cache
          * configuration to do that */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "CACHE/CACHE_OUT filter enabled while caching is disabled, ignoring");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                "CACHE/CACHE_OUT filter enabled while caching is disabled, ignoring");
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                 "cache: running CACHE_OUT filter");
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+            "cache: running CACHE_OUT filter");
 
     /* clean out any previous response up to EOS, if any */
     for (e = APR_BRIGADE_FIRST(in);
@@ -601,8 +599,8 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *in)
             /* This filter is done once it has served up its content */
             ap_remove_output_filter(f);
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                         "cache: serving %s", r->uri);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+                    "cache: serving %s", r->uri);
             return ap_pass_brigade(f->next, in);
 
         }
@@ -636,8 +634,8 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
 
         rv = cache->provider->store_body(cache->handle, f->r, in, cache->out);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, f->r->server,
-                         "cache: Cache provider's store_body failed!");
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
+                    "cache: Cache provider's store_body failed!");
             ap_remove_output_filter(f);
 
             /* give someone else the chance to cache the file */
@@ -674,10 +672,10 @@ static int cache_save_store(ap_filter_t *f, apr_bucket_brigade *in,
                 /* oops, no data out, but not all data read in either, be
                  * safe and stand down to prevent a spin.
                  */
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, f->r->server,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, f->r,
                         "cache: Cache provider's store_body returned an "
-                         "empty brigade, but didn't consume all of the"
-                         "input brigade, standing down to prevent a spin");
+                        "empty brigade, but didn't consume all of the"
+                        "input brigade, standing down to prevent a spin");
                 ap_remove_output_filter(f);
 
                 /* give someone else the chance to cache the file */
@@ -739,8 +737,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* user likely configured CACHE_SAVE manually; they should really use
          * mod_cache configuration to do that
          */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "CACHE/CACHE_SAVE filter enabled while caching is disabled, ignoring");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                "CACHE/CACHE_SAVE filter enabled while caching is disabled, ignoring");
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
@@ -1057,9 +1055,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     if (reason) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache: %s not cached. Reason: %s", r->unparsed_uri,
-                     reason);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                "cache: %s not cached. Reason: %s", r->unparsed_uri,
+                reason);
 
         /* we've got a cache miss! tell anyone who cares */
         cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
@@ -1176,14 +1174,14 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "cache: Caching url: %s", r->unparsed_uri);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            "cache: Caching url: %s", r->unparsed_uri);
 
     /* We are actually caching this response. So it does not
      * make sense to remove this entity any more.
      */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "cache: Removing CACHE_REMOVE_URL filter.");
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            "cache: Removing CACHE_REMOVE_URL filter.");
     ap_remove_output_filter(cache->remove_url_filter);
 
     /*
@@ -1229,10 +1227,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if it's in the future, then replace by date */
         lastmod = date;
         lastmods = dates;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                     r->server,
-                     "cache: Last modified is in the future, "
-                     "replacing with now");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0,
+                r, "cache: Last modified is in the future, "
+                "replacing with now");
     }
 
     /* if no expiry date then
@@ -1362,17 +1359,17 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * the body it is safe to try and remove the url from the cache.
          */
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                         "cache: updating headers with store_headers failed. "
-                         "Removing cached url.");
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                    "cache: updating headers with store_headers failed. "
+                    "Removing cached url.");
 
-            rv = cache->provider->remove_url(cache->stale_handle, r->pool);
+            rv = cache->provider->remove_url(cache->stale_handle, r);
             if (rv != OK) {
                 /* Probably a mod_disk_cache cache area has been (re)mounted
                  * read-only, or that there is a permissions problem.
                  */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                     "cache: attempt to remove url from cache unsuccessful.");
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                        "cache: attempt to remove url from cache unsuccessful.");
             }
 
             /* we've got a cache conditional hit! tell anyone who cares */
@@ -1397,8 +1394,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                     "cache: store_headers failed");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                "cache: store_headers failed");
 
         /* we've got a cache miss! tell anyone who cares */
         cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_MISS,
@@ -1451,14 +1448,14 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * 1. Remove ourselves
          * 2. Do nothing and bail out
          */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache: CACHE_REMOVE_URL enabled unexpectedly");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                "cache: CACHE_REMOVE_URL enabled unexpectedly");
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
 
     /* Now remove this cache entry from the cache */
-    cache_remove_url(cache, r->pool);
+    cache_remove_url(cache, r);
 
     /* remove ourselves */
     ap_remove_output_filter(f);
@@ -1485,9 +1482,9 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
 static int cache_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     /* we are just a marker, so let's just remove ourselves */
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, f->r->server,
-                 "cache: CACHE filter was added twice, or was added in quick "
-    		     "handler mode and will be ignored.");
+    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r,
+            "cache: CACHE filter was added twice, or was added in quick "
+            "handler mode and will be ignored.");
     ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, in);
 }

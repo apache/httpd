@@ -31,7 +31,7 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
  * delete all URL entities from the cache
  *
  */
-int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
+int cache_remove_url(cache_request_rec *cache, request_rec *r)
 {
     cache_provider_list *list;
     cache_handle_t *h;
@@ -46,12 +46,12 @@ int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
     if (!h) {
        return OK;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                  "cache: Removing url %s from the cache", h->cache_obj->key);
 
     /* for each specified cache type, delete the URL */
     while(list) {
-        list->provider->remove_url(h, p);
+        list->provider->remove_url(h, r);
         list = list->next;
     }
     return OK;
@@ -78,9 +78,9 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
 
     if (!cache) {
         /* This should never happen */
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r->server,
-                     "cache: No cache request information available for key"
-                     " generation");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+                "cache: No cache request information available for key"
+                " generation");
         return APR_EGENERAL;
     }
 
@@ -203,9 +203,9 @@ int cache_select(cache_request_rec *cache, request_rec *r)
 
     if (!cache) {
         /* This should never happen */
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r->server,
-                     "cache: No cache request information available for key"
-                     " generation");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+                "cache: No cache request information available for key"
+                " generation");
         return DECLINED;
     }
 
@@ -282,9 +282,8 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                 }
                 else {
                     /* headers do not match, so Vary failed */
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                                r->server,
-                                "cache_select_url(): Vary header mismatch.");
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r, "cache_select_url(): Vary header mismatch.");
                     mismatch = 1;
                 }
             }
@@ -318,7 +317,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                         r->headers_in);
                 cache->stale_handle = h;
 
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
                         "Cached response for %s isn't fresh.  Adding/replacing "
                         "conditional request headers.", r->uri);
 
@@ -381,7 +380,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
 
     /* if Cache-Control: only-if-cached, and not cached, return 504 */
     if (cache->control_in.only_if_cached) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
                 "cache: 'only-if-cached' requested and no cached entity, "
                 "returning 504 Gateway Timeout for: %s", r->uri);
         return HTTP_GATEWAY_TIME_OUT;
@@ -622,9 +621,9 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * resource in the cache under a key where it is never found by the quick
      * handler during following requests.
      */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                 "cache: Key for entity %s?%s is %s", r->uri,
-                 r->parsed_uri.query, *key);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+            "cache: Key for entity %s?%s is %s", r->uri,
+            r->parsed_uri.query, *key);
 
     return APR_SUCCESS;
 }

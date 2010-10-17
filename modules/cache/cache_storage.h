@@ -36,7 +36,7 @@ extern "C" {
 /**
  * cache_storage.c
  */
-int cache_remove_url(cache_request_rec *cache, apr_pool_t *p);
+int cache_remove_url(cache_request_rec *cache, request_rec *r);
 int cache_create_entity(cache_request_rec *cache, request_rec *r,
                         apr_off_t size, apr_bucket_brigade *in);
 int cache_select(cache_request_rec *cache, request_rec *r);

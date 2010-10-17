@@ -276,9 +276,9 @@ apr_status_t cache_try_lock(cache_server_conf *conf, cache_request_rec *cache,
     path = apr_pstrcat(r->pool, conf->lockpath, dir, NULL);
     if (APR_SUCCESS != (status = apr_dir_make_recursive(path,
             APR_UREAD|APR_UWRITE|APR_UEXECUTE, r->pool))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "Could not create a cache lock directory: %s",
-                     path);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                "Could not create a cache lock directory: %s",
+                path);
         return status;
     }
     lockname = apr_pstrcat(r->pool, path, "/", lockname, NULL);
@@ -288,16 +288,16 @@ apr_status_t cache_try_lock(cache_server_conf *conf, cache_request_rec *cache,
     status = apr_stat(&finfo, lockname,
                 APR_FINFO_MTIME | APR_FINFO_NLINK, r->pool);
     if (!(APR_STATUS_IS_ENOENT(status)) && APR_SUCCESS != status) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EEXIST, r->server,
-                     "Could not stat a cache lock file: %s",
-                     lockname);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EEXIST, r,
+                "Could not stat a cache lock file: %s",
+                lockname);
         return status;
     }
     if ((status == APR_SUCCESS) && (((now - finfo.mtime) > conf->lockmaxage)
                                   || (now < finfo.mtime))) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
-                     "Cache lock file for '%s' too old, removing: %s",
-                     r->uri, lockname);
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
+                "Cache lock file for '%s' too old, removing: %s",
+                r->uri, lockname);
         apr_file_remove(lockname, r->pool);
     }
 
@@ -417,10 +417,10 @@ CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec 
             return 0;
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                         "Incoming request is asking for an uncached version of "
-                         "%s, but we have been configured to ignore it and serve "
-                         "cached content anyway", r->unparsed_uri);
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                    "Incoming request is asking for an uncached version of "
+                    "%s, but we have been configured to ignore it and serve "
+                    "cached content anyway", r->unparsed_uri);
         }
     }
 
@@ -431,10 +431,10 @@ CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec 
             return 0;
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                         "Incoming request is asking for a no-store version of "
-                         "%s, but we have been configured to ignore it and serve "
-                         "cached content anyway", r->unparsed_uri);
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                    "Incoming request is asking for a no-store version of "
+                    "%s, but we have been configured to ignore it and serve "
+                    "cached content anyway", r->unparsed_uri);
         }
     }
 
@@ -506,11 +506,11 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
             return 0;
         }
 
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "Incoming request is asking for a uncached version of "
-                     "%s, but we have been configured to ignore it and "
-                     "serve a cached response anyway",
-                     r->unparsed_uri);
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                "Incoming request is asking for a uncached version of "
+                "%s, but we have been configured to ignore it and "
+                "serve a cached response anyway",
+                r->unparsed_uri);
     }
 
     /* These come from the cached entity. */
@@ -674,18 +674,18 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
     status = cache_try_lock(conf, cache, r);
     if (APR_SUCCESS == status) {
         /* we obtained a lock, follow the stale path */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "Cache lock obtained for stale cached URL, "
-                     "revalidating entry: %s",
-                     r->unparsed_uri);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                "Cache lock obtained for stale cached URL, "
+                "revalidating entry: %s",
+                r->unparsed_uri);
         return 0;
     }
     else if (APR_EEXIST == status) {
         /* lock already exists, return stale data anyway, with a warning */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "Cache already locked for stale cached URL, "
-                     "pretend it is fresh: %s",
-                     r->unparsed_uri);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                "Cache already locked for stale cached URL, "
+                "pretend it is fresh: %s",
+                r->unparsed_uri);
 
         /* make sure we don't stomp on a previous warning */
         warn_head = apr_table_get(h->resp_hdrs, "Warning");
@@ -699,10 +699,10 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
     }
     else {
         /* some other error occurred, just treat the object as stale */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
-                     "Attempt to obtain a cache lock for stale "
-                     "cached URL failed, revalidating entry anyway: %s",
-                     r->unparsed_uri);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+                "Attempt to obtain a cache lock for stale "
+                "cached URL failed, revalidating entry anyway: %s",
+                r->unparsed_uri);
         return 0;
     }
 
