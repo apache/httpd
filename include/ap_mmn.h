@@ -275,6 +275,8 @@
  * 20100923.3 (2.3.9-dev)  Add "last" member to ap_directive_t
  * 20101012.0 (2.3.9-dev)  Add header to cache_status hook.
  * 20101016.0 (2.3.9-dev)  Remove ap_cache_check_allowed().
+ * 20101017.0 (2.3.9-dev)  Make ap_cache_control() public, add cache_control_t
+ *                         to mod_disk_cache format.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
