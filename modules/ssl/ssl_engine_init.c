@@ -94,8 +94,8 @@ static int ssl_tmp_key_init_rsa(server_rec *s,
     {
         RSA *tkey;
         BIGNUM *bn_f4;
-        if (!(tkey == RSA_new())
-          || !(bn_f4 == BN_new())
+        if (!(tkey = RSA_new())
+          || !(bn_f4 = BN_new())
           || !BN_set_word(bn_f4, RSA_F4)
           || !RSA_generate_key_ex(tkey, bits, bn_f4, NULL))
         {
