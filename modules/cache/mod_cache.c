@@ -199,9 +199,7 @@ static int cache_quick_handler(request_rec *r, int lookup)
         }
         else {
             /* error */
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "cache: error returned while checking for cached "
-                         "file by '%s' cache", cache->provider_name);
+            return rv;
         }
         return DECLINED;
     }
@@ -478,9 +476,7 @@ static int cache_handler(request_rec *r)
         }
         else {
             /* error */
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "cache: error returned while checking for cached "
-                         "file by %s cache", cache->provider_name);
+            return rv;
         }
         return DECLINED;
     }
