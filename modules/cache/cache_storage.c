@@ -304,6 +304,15 @@ int cache_select(cache_request_rec *cache, request_rec *r)
             if (!fresh) {
                 const char *etag, *lastmod;
 
+                /* Cache-Control: only-if-cached and revalidation required, try
+                 * the next provider
+                 */
+                if (cache->control_in.only_if_cached) {
+                    /* try again with next cache type */
+                    list = list->next;
+                    continue;
+                }
+
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                   "Cached response for %s isn't fresh.  Adding/replacing "
                   "conditional request headers.", r->uri);
@@ -387,6 +396,15 @@ int cache_select(cache_request_rec *cache, request_rec *r)
         }
         }
     }
+
+    /* if Cache-Control: only-if-cached, and not cached, return 504 */
+    if (cache->control_in.only_if_cached) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                "cache: 'only-if-cached' requested and no cached entity, "
+                "returning 504 Gateway Timeout for: %s", r->uri);
+        return HTTP_GATEWAY_TIME_OUT;
+    }
+
     return DECLINED;
 }
 
