@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 746668 -->
+<!-- English Revision : 1003839 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -153,6 +153,7 @@ sous-r&eacute;pertoires</description>
 <syntax>CacheMinFileSize <var>octets</var></syntax>
 <default>CacheMinFileSize 1</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -173,6 +174,7 @@ sous-r&eacute;pertoires</description>
 <syntax>CacheMaxFileSize <var>octets</var></syntax>
 <default>CacheMaxFileSize 1000000</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -182,6 +184,74 @@ sous-r&eacute;pertoires</description>
 
     <example>
       CacheMaxFileSize 64000
+    </example>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>CacheReadSize</name>
+<description>La quantit&eacute; minimale (en octets) de donn&eacute;es &agrave; lire et &agrave;
+mettre en cache avant de les envoyer au client</description>
+<syntax>CacheReadSize <var>octets</var></syntax>
+<default>CacheReadSize 0</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+    
+<usage>
+    <p>La directive <directive>CacheReadSize</directive> permet de
+    d&eacute;finir la quantit&eacute; minimale de donn&eacute;es, en octets, &agrave; lire depuis le
+    serveur d'arri&egrave;re-plan avant de les envoyer au client. Avec la
+    valeur par d&eacute;faut z&eacute;ro, toute donn&eacute;e de toutes tailles est envoy&eacute;e
+    au client d&egrave;s qu'elle est disponible. Avec une valeur non nulle, le
+    cache disque met en tampon au moins la quantit&eacute; de donn&eacute;es
+    correspondante avant d'envoyer la r&eacute;ponse au client. Les
+    performances peuvent s'en trouver am&eacute;lior&eacute;es lorsqu'on met en cache
+    du contenu en provenance d'un mandataire inverse.</p>
+
+    <p>Cette directive ne prend effet que lorsque les donn&eacute;es sont
+    enregistr&eacute;es dans le cache, et non lorsque les donn&eacute;es sont servies &agrave;
+    partir du cache.</p>
+  
+    <example>
+      CacheReadSize 102400
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheReadTime</name>
+<description>Le temps minimum (en millisecondes) qui doit s'&eacute;couler
+avant d'envoyer les donn&eacute;es au client</description>
+<syntax>CacheReadTime <var>millisecondes</var></syntax>
+<default>CacheReadTime 0</default>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheReadTime</directive> permet de
+    d&eacute;finir le temps minimum qui doit s'&eacute;couler avant d'essayer
+    d'envoyer des donn&eacute;es au client. Pendant ce temps, les donn&eacute;es sont
+    mises en tampon avant de pouvoir &ecirc;tre envoy&eacute;es au client. Les
+    performances peuvent s'en trouver am&eacute;lior&eacute;es lorsqu'on met en cache
+    du contenu en provenance d'un mandataire inverse.</p>
+
+    <p>La valeur par d&eacute;faut z&eacute;ro d&eacute;sactive cette option.</p>
+
+    <p>Cette directive ne prend effet que lorsque les donn&eacute;es sont
+    enregistr&eacute;es dans le cache, et non lorsque les donn&eacute;es sont servies &agrave;
+    partir du cache. Il est recommand&eacute; d'harmoniser l'utilisation de cette
+    directive avec celle de la directive <directive
+    module="mod_disk_cache">CacheReadSize</directive>, afin de s'assurer
+    que le serveur n'effectue pas une mise en tampon excessive au cas
+    o&ugrave; les donn&eacute;es arriveraient plus vite que pr&eacute;vu.</p>
+
+    <example>
+      CacheReadTime 1000
     </example>
 </usage>
 </directivesynopsis>

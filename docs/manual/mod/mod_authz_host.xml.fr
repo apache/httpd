@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 906266 -->
+<!-- English Revision : 1001207 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,10 +43,7 @@ d'Apache</compatibility>
     module="core" type="section">Location</directive> ou de fichiers
     <code><a href="core.html#accessfilename">.htaccess</a> </code> pour
     contr&ocirc;ler l'acc&egrave;s &agrave; certaines zones du serveur. Le contr&ocirc;le d'acc&egrave;s
-    peut &ecirc;tre effectu&eacute; en fonction du nom d'h&ocirc;te, de l'adresse IP, ou
-    d'autres caract&eacute;ristiques de la requ&ecirc;te client, telles qu'elles sont
-    enregistr&eacute;es dans des <a href="../env.html">variables
-    d'environnement</a>.</p>
+    peut &ecirc;tre effectu&eacute; en fonction du nom d'h&ocirc;te ou de l'adresse IP.</p>
 
     <p>En g&eacute;n&eacute;ral, les directives de restriction d'acc&egrave;s s'appliquent &agrave;
     toutes les m&eacute;thodes d'acc&egrave;s (<code>GET</code>, <code>PUT</code>,
@@ -67,47 +64,15 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     module="mod_authz_core">Require</directive> est utilis&eacute;e au cours de
     la phase d'autorisation pour v&eacute;rifier si un utilisateur se voit
     accorder ou refuser l'acc&egrave;s &agrave; une ressource. mod_authz_host fournit
-    les types d'autorisation <code>env</code>, <code>ip</code>,
-    <code>host</code> et <code>all</code>. D'autres types d'autorisation
+    les types d'autorisation <code>ip</code>, <code>host</code. D'autres
+    types d'autorisation
     sont aussi disponibles, mais n&eacute;cessitent le chargement des modules
     d'autorisation appropri&eacute;s.</p>
 
     <p>Ces fournisseurs d'autorisation permettent de d&eacute;terminer quels
     h&ocirc;tes peuvent acc&eacute;der &agrave; une zone du serveur. On peut contr&ocirc;ler
-    l'acc&egrave;s en fonction du nom d'h&ocirc;te, de l'adresse IP, d'un intervalle
-    d'adresses IP, ou d'autres caract&eacute;ristiques de la requ&ecirc;te client
-    enregistr&eacute;es dans des variables d'environnement.</p>
-
-<section id="reqenv"><title>Require env</title>
-
-    <p>Le fournisseur <code>env</code> permet de contr&ocirc;ler l'acc&egrave;s au
-    serveur en fonction de l'existence d'une <a
-    href="../env.html">variable d'environnement</a>. Lorsque
-    <code>Require env <var>env-var</var></code> est sp&eacute;cifi&eacute;, la
-    requ&ecirc;te est autoris&eacute;e si la variable d'environnement
-    <var>env-var</var> existe. Le serveur fournit la possibilit&eacute;
-    de d&eacute;finir des variables d'environnement avec une grande souplesse
-    en fonction des caract&eacute;ristiques de la requ&ecirc;te client &agrave; l'aide des
-    directives fournies par le module <module>mod_setenvif</module>. On
-    peut ainsi utiliser cette directive pour contr&ocirc;ler l'acc&egrave;s en
-    fonction de certains en-t&ecirc;tes comme <code>User-Agent</code> (type de
-    navigateur), <code>Referer</code>, etc...</p>
-
-    <example><title>Exemple :</title>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 laisse_moi_entrer<br />
-      &lt;Directory /docroot&gt;<br />
-      <indent>
-        Require env laisse_moi_entrer<br />
-      </indent>
-      &lt;/Directory&gt;
-    </example>
-
-    <p>Dans cet exemple, les navigateurs dont la cha&icirc;ne de description
-    de l'en-t&ecirc;te user-agent commence par <code>KnockKnock/2.0</code> se
-    verront accorder l'acc&egrave;s, alors que tous les autres se le verront
-    refuser.</p>
-
-</section>
+    l'acc&egrave;s en fonction du nom d'h&ocirc;te, de l'adresse IP, ou d'un intervalle
+    d'adresses IP.</p>
 
 <section id="reqip"><title>Require ip</title>
 
@@ -195,27 +160,24 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
 
 </section>
 
-<section id="reqall"><title>Require all</title>
+<section id="reqlocal"><title>Require local</title>
+    <p>Le fournisseur <code>local</code> autorise l'acc&egrave;s au serveur si
+    l'une au moins de ces conditions est satisfaite :</p>
 
-    <p>Le fournisseur <code>all</code> imite la fonctionnalit&eacute;
-    pr&eacute;c&eacute;demment fournie par les directives 'Allow from all' et 'Deny
-    from all'. Le fournisseur accepte un des deux arguments 'granted' ou
-    'denied'. Dans les exemples suivants, le premier
-    accorde l'acc&egrave;s &agrave; toutes les requ&ecirc;tes, alors que le second le
-    refuse.</p>
+    <ul>
+        <li>l'adresse IP du client correspond &agrave; 127.0.0.0/8</li>
+        <li>l'adresse IP du client est ::1</li>
+        <li>les adresses IP du client et du serveur sont identiques</li>
+    </ul>
+
+    <p>L'exemple suivant montre une m&eacute;thode simple pour s&eacute;lectionner les
+    connexions en provenance de l'h&ocirc;te local :</p>
 
     <example>
-    Require all granted<br />
+    Require local
     </example>
-
-    <example>
-    Require all denied<br />
-    </example>
-
 </section>
 
-
 </section>
-
 
 </modulesynopsis>

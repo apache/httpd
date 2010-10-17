@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 940831 -->
+<!-- English Revision : 1021924 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -429,9 +429,9 @@
 
     <p>&Agrave; mettre en relation avec la cr&eacute;ation de processus, leur destruction
     est d&eacute;finie par la valeur de la directive
-    <directive module="mpm_common">MaxRequestsPerChild</directive>. Sa valeur
+    <directive module="mpm_common">MaxConnectionsPerChild</directive>. Sa valeur
     par d&eacute;faut est <code>0</code>, ce qui signifie qu'il n'y a pas de limite
-    au nombre de requ&ecirc;tes q'un processus enfant peut traiter. Si votre
+    au nombre de connexions qu'un processus enfant peut traiter. Si votre
     configuration actuelle a cette directive r&eacute;gl&eacute;e &agrave; une valeur tr&egrave;s basse,
     de l'ordre de <code>30</code>, il est conseill&eacute; de l'augmenter de mani&egrave;re
     significative. Si vous utilisez SunOs ou une ancienne version de Solaris,

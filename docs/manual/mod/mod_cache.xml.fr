@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 924915 -->
+<!-- English Revision : 1021546 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -259,7 +259,41 @@ cache</a></seealso>
 
 </section>
 
+<section id="status"><title>Etat du cache et journalisation</title>
+  <p>Lorsque <module>mod_cache</module> a d&eacute;cid&eacute; s'il devait ou non
+  servir une entit&eacute; depuis le cache, les raisons pr&eacute;cises de cette
+  d&eacute;cision sont enregistr&eacute;es dans l'environnement du sous-processus
+  interne &agrave; la requ&ecirc;te sous la cl&eacute; <strong>cache-status</strong>.
+  Cette information peut &ecirc;tre journalis&eacute;e via la directive <directive
+  module="mod_log_config">LogFormat</directive> comme suit :</p>
 
+  <example>
+    LogFormat "%{cache-status}e ..."
+  </example>
+
+  <p>En fonction de la d&eacute;cision prise, l'information est aussi &eacute;crite
+  dans l'environnement du sous-processus sous une des trois cl&eacute;s
+  suivantes :</p>
+
+  <dl>
+    <dt>cache-hit</dt><dd>Le contenu a &eacute;t&eacute; servi depuis le cache.</dd>
+    <dt>cache-revalidate</dt><dd>Le contenu du cache &eacute;tait p&eacute;rim&eacute;, a &eacute;t&eacute;
+    mis &agrave; jour avec succ&egrave;s, puis servi depuis le cache.</dd>
+    <dt>cache-miss</dt><dd>Le contenu n'&eacute;tait pas dans le cache et a &eacute;t&eacute;
+    servi directement depuis le serveur demand&eacute;.</dd>
+  </dl>
+
+  <p>Il est alors possible d'envisager une journalisation conditionnelle
+  du traitement des requ&ecirc;tes par rapport au cache comme dans l'exemple
+  suivant :</p>
+
+  <example>
+    CustomLog requetes-depuis-cache.log common env=cache-hit<br />
+    CustomLog requetes-hors-cache.log common env=cache-miss<br />
+    CustomLog requetes-avec-mise-a-jour-du-cache.log common env=cache-revalidate<br />
+  </example>
+
+</section>
 
 <directivesynopsis>
 <name>CacheEnable</name>
@@ -371,6 +405,7 @@ document</description>
 <syntax>CacheMaxExpire <var>secondes</var></syntax>
 <default>CacheMaxExpire 86400 (une journ&eacute;e)</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -395,6 +430,7 @@ document</description>
 <syntax>CacheMinExpire <var>secondes</var></syntax>
 <default>CacheMinExpire 0</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -418,6 +454,7 @@ lorsqu'aucune date d'expiration n'a &eacute;t&eacute; sp&eacute;cifi&eacute;e.</
 <syntax>CacheDefaultExpire <var>secondes</var></syntax>
 <default>CacheDefaultExpire 3600 (une heure)</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -442,6 +479,7 @@ Modified.</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -535,6 +573,7 @@ fonction de la date de derni&egrave;re modification.</description>
 <syntax>CacheLastModifiedFactor <var>flottant</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -665,12 +704,39 @@ l'URL lors de la mise en cache
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheStoreExpired</name>
+<description>Tente de mettre en cache les r&eacute;ponses que le serveur
+consid&egrave;re comme arriv&eacute;es &agrave; expiration</description>
+<syntax>CacheStoreExpired On|Off</syntax>
+<default>CacheStoreExpired Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>Depuis la version 2.2.4, les r&eacute;ponses qui sont arriv&eacute;es &agrave;
+    expiration ne sont pas stock&eacute;es dans le cache. La directive
+    <directive>CacheStoreExpired</directive> permet de modifier ce
+    comportement. Avec <directive>CacheStoreExpired</directive> On, le
+    serveur tente de mettre en cache la ressource si elle est p&eacute;rim&eacute;e.
+    Les requ&ecirc;tes suivantes vont d&eacute;clencher une requ&ecirc;te si-modifi&eacute;-depuis
+    de la part du serveur d'origine, et la r&eacute;ponse sera renvoy&eacute;e &agrave;
+    partir du cache si la ressource d'arri&egrave;re-plan n'a pas &eacute;t&eacute; modifi&eacute;e.</p>
+
+    <example>
+      CacheStoreExpired On
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheStorePrivate</name>
 <description>Tente de mettre en cache des r&eacute;ponses que le serveur a
 marqu&eacute;es comme priv&eacute;es</description>
 <syntax>CacheStorePrivate On|Off</syntax>
 <default>CacheStorePrivate Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -706,6 +772,7 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
 <syntax>CacheStoreNoStore On|Off</syntax>
 <default>CacheStoreNoStore Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -851,5 +918,159 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
   </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CacheHeader</name>
+<description>Ajoute un en-t&ecirc;te X-Cache &agrave; la r&eacute;ponse.</description>
+<syntax>CacheHeader <var>on|off</var></syntax>
+<default>CacheHeader off</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
+  
+<usage>
+  <p>Lorsque la directive <directive
+  module="mod_cache">CacheHeader</directive> est d&eacute;finie &agrave; on, un
+  en-t&ecirc;te <strong>X-Cache</strong> est ajout&eacute; &agrave; la r&eacute;ponse et contient
+  l'&eacute;tat du cache pour cette derni&egrave;re. Si le gestionnaire normal est
+  utilis&eacute;, cette directive peut se situer dans une section <directive
+  module="core">&lt;Directory&gt;</directive> ou <directive
+  module="core">&lt;Location&gt;</directive>. Si c'est le
+  gestionnaire rapide qui est utilis&eacute;, elle doit se situer dans un
+  contexte de serveur principal ou de serveur virtuel, sinon elle sera
+  ignor&eacute;e.</p>
+
+  <dl>
+    <dt><strong>HIT</strong></dt><dd>Le contenu &eacute;tait &agrave; jour et a &eacute;t&eacute;
+    servi depuis le cache.</dd>
+    <dt><strong>REVALIDATE</strong></dt><dd>Le contenu &eacute;tait p&eacute;rim&eacute;, a
+    &eacute;t&eacute; mis &agrave; jour, puis a &eacute;t&eacute; servi depuis le cache.</dd>
+    <dt><strong>MISS</strong></dt><dd>Le contenu n'a pas &eacute;t&eacute; servi
+    depuis le cache, mais directement depuis le serveur demand&eacute;.</dd>
+  </dl>
+
+  <example>
+    # Active l'en-t&ecirc;te X-Cache<br />
+    CacheHeader on<br />
+  </example>
+
+  <example>
+    X-Cache: HIT from localhost<br />
+  </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDetailHeader</name>
+<description>Ajoute un en-t&ecirc;te X-Cache-Detail &agrave; la r&eacute;ponse.</description>
+<syntax>CacheDetailHeader <var>on|off</var></syntax>
+<default>CacheDetailHeader off</default>
+<contextlist><context>server config</context>
+      <context>virtual host</context>
+      <context>directory</context>
+      <context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
+    
+<usage>
+  <p>Lorsque la directive <directive
+  module="mod_cache">CacheDetailHeader</directive> est d&eacute;finie &agrave; on, un
+  en-t&ecirc;te <strong>X-Cache-Detail</strong> est ajout&eacute; &agrave; la r&eacute;ponse et
+  contient les raisons pr&eacute;cises d'une d&eacute;cision d'utilisation du cache
+  vis &agrave; vis de cette derni&egrave;re.</p>
+   
+  <p>Ceci peut s'av&eacute;rer utile au cours du d&eacute;veloppement de services
+  RESTful mis en cache pour obtenir des informations suppl&eacute;mentaires &agrave;
+  propos des d&eacute;cisions vis &agrave; vis du cache &eacute;crites dans les en-t&ecirc;tes de
+  la r&eacute;ponse. Il est ainsi possible de v&eacute;rifier si
+  <code>Cache-Control</code> et d'autres en-t&ecirc;tes ont &eacute;t&eacute; correctement
+  utilis&eacute;s par le service et le client.</p>
+  
+  <p>Si le gestionnaire normal est utilis&eacute;, cette directive peut se
+  situer dans une section <directive
+  module="core">&lt;Directory&gt;</directive> ou <directive
+  module="core">&lt;Location&gt;</directive>. Si c'est le gestionnaire
+  rapide qui est utilis&eacute;, elle doit se situer dans un contexte de
+  serveur principal ou de serveur virtuel, sinon elle sera ignor&eacute;e.</p>
+
+  <example>
+    # Active l'en-t&ecirc;te X-Cache-Detail<br />
+    CacheDetailHeader on<br />
+  </example>
+
+  <example>
+    X-Cache-Detail: "conditional cache hit: entity refreshed" from localhost<br />
+  </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheKeyBaseURL</name>
+<description>Remplace l'URL de base des cl&eacute;s du cache mandat&eacute;es en
+inverse</description>
+<syntax>CacheKeyBaseURL <var>URL</var></syntax>
+<default>CacheKeyBaseURL http://example.com</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
+
+<usage>
+  <p>Lorsque la directive <directive
+  module="mod_cache">CacheKeyBaseURL</directive> est utilis&eacute;e, l'URL
+  sp&eacute;cifi&eacute;e sera utilis&eacute;e comme URL de base pour calculer l'URL des cl&eacute;s
+  du cache dans la configuration du mandataire inverse. Par d&eacute;faut,
+  c'est le protocole/nom d'h&ocirc;te/port du serveur virtuel courant qui sera
+  utilis&eacute; pour construire la cl&eacute; de cache. Dans le cas d'un cluster de
+  machines, si toutes les entr&eacute;es du cache doivent poss&eacute;der la m&ecirc;me cl&eacute;,
+  cette directive permet de sp&eacute;cifier une nouvelle URL de base.</p>
+
+  <example>
+    # Remplace l'URL de base de la cl&eacute; de cache.<br />
+    CacheKeyBaseURL http://www.example.com/<br />
+  </example>
+
+  <note type="warning">Prenez garde en d&eacute;finissant cette directive. Si
+  deux serveurs virtuels distincts poss&egrave;dent accidentellement la m&ecirc;me
+  URL de base, les entr&eacute;es en provenance d'un serveur virtuel seront
+  servies par l'autre.</note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStaleOnError</name>
+<description>Sert du contenu non &agrave; jour &agrave; la place de r&eacute;ponses 5xx.</description>
+<syntax>CacheStaleOnError <var>on|off</var></syntax>
+<default>CacheStaleOnError on</default>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
+
+<usage>
+  <p>Lorsque la directive <directive
+  module="mod_cache">CacheStaleOnError</directive> est d&eacute;finie &agrave; on, et
+  si des donn&eacute;es non mises &agrave; jour sont disponibles dans le cache, ce
+  dernier renverra ces donn&eacute;es, plut&ocirc;t qu'une &eacute;ventuelle r&eacute;ponse 5xx en
+  provenance du serveur d'arri&egrave;re-plan. Alors que l'en-t&ecirc;te
+  Cache-Control envoy&eacute; par les clients sera respect&eacute;, et que les clients
+  recevront donc dans ce cas la r&eacute;ponse 5xx brute &agrave; leur requ&ecirc;te, cette
+  r&eacute;ponse 5xx renvoy&eacute;e au client n'invalidera pas le contenu dans le
+  cache.  </p>
+
+  <example>
+    # Sert des donn&eacute;es non mises &agrave; jour en cas d'erreur.<br />
+    CacheStaleOnError on<br />
+  </example>
+
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>

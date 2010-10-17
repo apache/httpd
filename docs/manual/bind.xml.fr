@@ -94,12 +94,15 @@
     <example>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
-    
-    <note type="warning"><p>Utiliser plusieurs directives <directive module="mpm_common">Listen</directive> qui se chevauchent va g&eacute;n&eacute;rer une erreur fatale qui emp&ecirc;chera le serveur de d&eacute;marrer.</p>
 
-     <example>
-     (48)Address already in use: make_sock: could not bind to address [::]:80
-     </example>
+    <note type="warning"><p>Des directives <directive
+    module="mpm_common">Listen</directive>
+    imbriquées provoqueront une erreur fatale qui
+    empêchera le serveur de démarrer.</p>
+    
+    <example>
+    (48)Address already in use: make_sock: could not bind to address [::]:80
+    </example>
     </note>
 
   </section>

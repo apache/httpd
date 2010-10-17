@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 734691 -->
+<!-- English Revision : 1022232 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,7 +24,8 @@
 
 <manualpage metafile="new_features_2_4.xml.meta">
 
-<title>Vue d'ensemble des nouvelles fonctionnalit&eacute;s d'Apache 2.4</title>
+<title>Vue d'ensemble des nouvelles fonctionnalit&eacute;s de la version 2.4 du
+serveur HTTP Apache</title>
 
 <summary>
   <p>Ce document d&eacute;crit certaines modifications majeures entre les versions
@@ -41,16 +42,32 @@
 
       <dd>La directive <directive module="core"
       >KeepAliveTimeout</directive> permet dor&eacute;navant de
-      >pr&eacute;ciser une dur&eacute;e de vie en millisecondes.
+      pr&eacute;ciser une dur&eacute;e de vie en millisecondes.
       </dd>
+ 
+      <dt>Simple MPM</dt>
+      <dd>Une impl&eacute;mentation de MPM en "salle blanche" avec gestion
+      avanc&eacute;e du jeu de threads.</dd>
+      
+      <dt>MPMs chargeables</dt>
+      <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
+      chargeables. La configuration du MPM choisi s'effectue &agrave;
+      l'ex&eacute;cution.</dd>
+
+      <dt>Configuration du niveau de journalisation (LogLevel) par
+      module et par r&eacute;pertoire</dt>
+      <dd>La directive <directive module="core">LogLevel</directive>
+      peut maintenant &ecirc;tre d&eacute;finie par module et par r&eacute;pertoire. Les
+      nouveaux niveaux <code>trace1</code> &agrave; <code>trace8</code> ont &eacute;t&eacute;
+      ajout&eacute;s au dessus du niveau de journalisation <code>debug</code>.</dd>
+
     </dl>
   </section>
 
   <section id="module">
     <title>Am&eacute;liorations des modules</title>
     <dl>
-      <dt><module>mod_ssl</module>: support de la validation OCSP des
-      certificats clients</dt>
+      <dt><module>mod_ssl</module></dt>
 
       <dd><module>mod_ssl</module> peut maintenant v&eacute;rifier la
       validit&eacute; des certificats clients en se connectant &agrave;
@@ -58,14 +75,67 @@
       r&eacute;pondeur par d&eacute;faut, et de choisir si l'on
       pr&eacute;f&egrave;re le r&eacute;pondeur d&eacute;sign&eacute;
       dans le certificat client lui-m&ecirc;me.</dd>
+
+	<dd><module>mod_ssl</module> supporte aussi maintenant le lien
+	OCSP, par lequel le serveur obtient activement une v&eacute;rification
+	OCSP de son certificat et la transmet au client durant la phase
+	de n&eacute;gociation de la connexion.</dd>
+      
+      <dd>On peut maintenant configurer <module>mod_ssl</module> pour
+      que celui-ci partage les donn&eacute;es de session SSL entre les serveurs
+      via memcached.</dd>
+ 
+      <dt><module>mod_lua</module></dt>
+
+      <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
+      httpd, pour la configuration et des fonctions logiques simples.</dd>
+ 
+      <dt><module>mod_proxy_fcgi</module></dt>
+
+      <dd>Support du protocole FastCGI pour <module>mod_proxy</module></dd>
+
+      <dt><module>mod_cache</module></dt>
+
+      <dd><module>mod_cache</module> peut maintenant mettre en cache des
+      requ&ecirc;tes HEAD.</dd>
+
+      <dd>Chaque fois que cela est possible, les directives de
+      <module>mod_cache</module> peuvent maintenant &ecirc;tre d&eacute;finies au
+      niveau du r&eacute;pertoire, et non plus seulement au niveau du serveur
+      principal.</dd>
+
+      <dd>L'URL de base des URLs en cache peut &ecirc;tre personnalis&eacute;e de
+      fa&ccedil;on &agrave; ce qu'un cluster de caches puisse partager le m&ecirc;me pr&eacute;fixe
+      d'URL.</dd>
+
+      <dd><module>mod_cache</module> peut maintenant servir du contenu
+      non mis &agrave; jour lorsqu'un serveur d'arri&egrave;re-plan n'est pas
+      disponible (erreur 5xx).</dd>
+
+      <dd><module>mod_cache</module> peut maintenant ins&eacute;rer
+      HIT/MISS/REVALIDATE dans un en-t&ecirc;te X-Cache.</dd>
+      
     </dl>
   </section>
 
   <section id="programs">
     <title>Am&eacute;liorations des programmes</title>
-    <!-- <dl>
-    </dl> -->
-  </section>
+    <dl>
+        <dt>fcgistarter</dt>
+        <dd>Utilitaire pour le d&eacute;marrage des d&eacute;mons FastCGI</dd>
+	<dt>htcacheclean</dt>
+        <dd>Les URLs pr&eacute;sentes dans le cache peuvent maintenant &ecirc;tre
+	affich&eacute;es, accompagn&eacute;es &eacute;ventuellement de leurs m&eacute;tadonn&eacute;es.</dd>
+        <dd>Permet d'effacer explicitement des URLs individuelles
+	pr&eacute;sentes dans le cache.</dd>
+        <dd>Les tailles de fichiers peuvent maintenant &ecirc;tre arrondies au
+	multiple de la taille de bloc donn&eacute;e, les limites de taille
+	collant de ce fait d'avantage &agrave; la taille r&eacute;elle sur disque.</dd>
+        <dd>La taille du cache peut maintenant &ecirc;tre limit&eacute;e par le
+	nombre d'inodes, en plus de la possibilit&eacute; de limitation par la
+	taille des fichiers.</dd>
+    </dl>
+    </section>
 
   <section id="developer">
     <title>Modifications pour le d&eacute;veloppeur de modules</title>
@@ -100,15 +170,27 @@
       <dt>Interface de mise en cache des petits objets</dt>
 
       <dd>Le fichier d'en-t&ecirc;tes <var>ap_socache.h</var> fournit une
-      interface à base de fournisseur pour la mise en cache des petits
+      interface &agrave; base de fournisseur pour la mise en cache des petits
       objets de donn&eacute;es, en s'inspirant de
       l'impl&eacute;mentation pr&eacute;c&eacute;dente
       du cache de session par <module>mod_ssl</module>. Sont support&eacute;s
       actuellement : les fournisseurs utilisant un tampon cyclique en
       m&eacute;moire partag&eacute;e, les fichiers dbm sur disque, et les caches
-      distribu&eacute;s de type memcache.</dd>
+      distribu&eacute;s de type memcache./dd>
+
+      <dt>Ajout du point d'ancrage Cache Status</dt>
+      
+      <dd>Le module <module>mod_cache</module> inclut maintenant un
+      nouveau point d'ancrage, <code>cache_status</code>, qui est appel&eacute;
+      lorsque la d&eacute;cision &agrave; propos de la mise en cache est connue. Il en
+      existe une impl&eacute;mentation par d&eacute;faut qui ajoute les en-t&ecirc;tes
+      optionnels <code>X-Cache</code> et <code>X-Cache-Detail</code> &agrave;
+      la r&eacute;ponse.</dd>
 
       
     </dl>
+    <p>La documentation du d&eacute;veloppeur contient une <a
+    href="developer/new_api_2_4.html">liste d&eacute;taill&eacute;e des modifications
+    de l'API</a>.</p>
   </section>
 </manualpage>

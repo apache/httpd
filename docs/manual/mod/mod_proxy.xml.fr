@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 987858 -->
+<!-- English Revision : 1021468 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -849,24 +849,26 @@ l'espace d'URLs du serveur local</description>
     <code>cl&eacute;=valeur</code> dont la description fait l'objet du tableau
     ci-dessous.</p>
 
-    <p>La d&eacute;finition du param&egrave;tre <code>min</code> permet de d&eacute;terminer
-    le nombre de connexions vers le serveur d'arri&egrave;re-plan qui seront
-    conserv&eacute;es apr&egrave;s usage. Il sera possible de cr&eacute;er jusqu'&agrave;
-    <code>smax</code> (Soft Maximum) connexions &agrave; la demande. Toute
-    connexion en surnombre par rapport &agrave; <code>smax</code> aura une
-    dur&eacute;e de vie limit&eacute;e, ou <code>ttl</code>. En tout &eacute;tat de cause,
-    Apache httpd ne cr&eacute;era jamais plus de <code>max</code> (Hard
-    Maximum) connexions vers le serveur d'arri&egrave;re-plan.</p>
+    <p>Par d&eacute;faut, mod_proxy permet et met en r&eacute;serve le nombre maximum
+    de connexions pouvant &ecirc;tre utilis&eacute;es simultan&eacute;ment par le processus
+    enfant concern&eacute; du serveur web. Le param&egrave;tre <code>max</code> permet
+    de r&eacute;duire cette valeur par d&eacute;faut. Le param&egrave;tre <code>ttl</code>,
+    quant &agrave; lui, permet de d&eacute;finir une dur&eacute;e de vie optionnelle ; les
+    connexions qui n'ont pas &eacute;t&eacute; utilis&eacute;es pendant au moins
+    <code>ttl</code> secondes seront ferm&eacute;es. <code>ttl</code> permet
+    aussi d'emp&ecirc;cher l'utilisation d'une connexion susceptible d'&ecirc;tre
+    ferm&eacute;e suite &agrave; une fin de vie de connexion persistante sur le
+    serveur d'arri&egrave;re-plan.</p>
 
     <p>Le groupement de connexions est maintenu au niveau de chaque
-    processus enfant du serveur web, et les d&eacute;finitions de
-    <code>min</code>, <code>max</code>, et <code>smax</code> ne font
+    processus enfant du serveur web, et <code>max</code>, ainsi que les
+    autres param&egrave;tres, ne font
     l'objet d'aucune coordination entre les diff&eacute;rents processus
     enfants, sauf si un seul processus enfant est autoris&eacute; par la
     configuration ou la conception du module multi-processus (MPM).</p>
 
     <example><title>Exemple</title>
-        ProxyPass /exemple http://backend.example.com smax=5 max=20 ttl=120 retry=300
+        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
     </example>
 
     <table>
@@ -875,25 +877,30 @@ l'espace d'URLs du serveur local</description>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Nombre minimum de connexions vers le serveur
-	d'arri&egrave;re-plan qui seront conserv&eacute;es apr&egrave;s usage.</td></tr>
+        <td>Nombre minimum d'entr&eacute;es dans le pool de connexions,
+	distinct du nombre de connexions effectif. La valeur par d&eacute;faut
+	ne doit &ecirc;tre modifi&eacute;e que dans des circonstances particuli&egrave;res
+	o&ugrave; la m&eacute;moire associ&eacute;e aux connexions avec le serveur
+	d'arri&egrave;re-plan doit &ecirc;tre pr&eacute;allou&eacute;e ou r&eacute;serv&eacute;e dans le tas.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
-        <td>Nombre maximum absolu de connexions autoris&eacute;es vers le
-	serveur d'arri&egrave;re-plan. La valeur par d&eacute;faut du nombre maximum
-	absolu de connexions correspond au nombre de threads par
-	processus pour le MPM utilis&eacute;. Pour le MPM Prefork, la valeur
-	est toujours 1, alors que pour le MPM Worker, elle est contr&ocirc;l&eacute;e
-	par la directive <directive>ThreadsPerChild</directive>. Apache
-	httpd ne cr&eacute;era jamais plus de connexions vers le serveur
-	d'arri&egrave;re-plan que le maximum absolu.</td></tr>
+        <td>Nombre maximum de connexions autoris&eacute;es vers le serveur
+	d'arri&egrave;re-plan. La valeur par d&eacute;faut correspond au nombre de
+	threads par processus pour le MPM (Module Multi Processus)
+	actif. La valeur sera toujours 1 pour le MPM Prefork, alors
+	qu'elle d&eacute;pendra de la d&eacute;finition de la directive
+	<directive>ThreadsPerChild</directive> pour les autres MPMs.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Des connexions pourront &ecirc;tre cr&eacute;&eacute;es &agrave; la demande jusqu'au
-	maximum relatif. Toute connexion en surnombre par rapport au
-	maximum relatif se verra attribuer une dur&eacute;e de vie
-	<code>ttl</code>.
-    </td></tr>
+        <td>Les entr&eacute;es du pool de connexions conserv&eacute;es au del&agrave; de
+	cette limite sont lib&eacute;r&eacute;es au cours de certaines op&eacute;rations si
+	elles n'ont pas &eacute;t&eacute; utilis&eacute;es au cours de leur dur&eacute;e de vie,
+	d&eacute;finie par le param&egrave;tre <code>ttl</code>. Si l'entr&eacute;e du pool
+	de connexions est associ&eacute;e &agrave; une connexion, cette derni&egrave;re sera
+	ferm&eacute;e. La valeur par d&eacute;faut ne doit &ecirc;tre modifi&eacute;e que dans des
+	circonstances particuli&egrave;res o&ugrave; les entr&eacute;es du pool de connexions
+	et toutes connexions associ&eacute;es qui ont d&eacute;pass&eacute; leur dur&eacute;e de vie
+	doivent &ecirc;tre lib&eacute;r&eacute;es ou ferm&eacute;es de mani&egrave;re plus autoritaire.</td></tr>
     <tr><td>acquire</td>
         <td>-</td>
         <td>Cette cl&eacute; permet de d&eacute;finir le d&eacute;lai maximum d'attente pour
@@ -1041,10 +1048,10 @@ l'espace d'URLs du serveur local</description>
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td>Dur&eacute;e de vie des connexions inactives en surnombre par
-	rapport aux <code>smax</code> premi&egrave;res connexions en secondes.
-	Apache httpd fermera toutes les connexions qui n'ont pas &eacute;t&eacute; utilis&eacute;es
-	pendant ce laps de temps.
+        <td>Dur&eacute;e de vie des connexions inactives et des entr&eacute;es du pool
+	de connexions associ&eacute;es en secondes. Celles qui n'ont pas &eacute;t&eacute;
+	utilis&eacute;es au bout de <code>ttl</code> secondes seront lib&eacute;r&eacute;es
+	ou ferm&eacute;es.
     </td></tr>
 
     </table>
@@ -1176,7 +1183,12 @@ l'espace d'URLs du serveur local</description>
     section <directive type="section" module="core"
     >Location</directive>, le premier argument est omis et le r&eacute;pertoire
     local est obtenu &agrave; partir de la section <directive type="section"
-    module="core">Location</directive>.</p>
+    module="core">Location</directive>. Il en sera de m&ecirc;me dans une
+    section <directive type="section"
+    module="core">LocationMatch</directive> ; cependant, ProxyPass
+    n'interpr&egrave;te pas les expressions rationnelles, et il sera ici
+    n&eacute;cessaire d'utiliser la directive
+    <directive>ProxyPassMatch</directive> &agrave; la place.</p>
 
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous &agrave; la documentaion de la directive <directive
@@ -1235,6 +1247,16 @@ du serveur local en utilisant des expressions rationnelles</description>
 
     <p>Le drapeau <code>!</code> vous permet de ne pas mandater un
     sous-r&eacute;pertoire donn&eacute;.</p>
+
+    <p>Dans une section <directive type="section"
+    module="core">LocationMatch</directive>, le premier argument est
+    omis et l'expression rationnelle est obtenue &agrave; partir de la directive
+    <directive type="section" module="core">LocationMatch</directive>.</p>
+
+    <p>Si vous avez besoin d'une configuration du mandataire inverse
+    plus flexible, voyez la directive <directive
+    module="mod_rewrite">RewriteRule</directive> avec le drapeau
+    <code>[P]</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -1315,7 +1337,14 @@ par un serveur mandat&eacute; en inverse</description>
     type="section" module="core">Location</directive>, le premier
     argument est omis et le r&eacute;pertoire local est obtenu &agrave; partir de
     l'argument de la directive <directive type="section"
-    module="core">Location</directive>.</p>
+    module="core">Location</directive>. Il en est de m&ecirc;me &agrave; l'int&eacute;rieur
+    d'une section <directive type="section"
+    module="core">LocationMatch</directive>, mais le r&eacute;sultat ne sera
+    probablement pas celui attendu car ProxyPassReverse va interpr&eacute;ter
+    l'expression rationnelle litt&eacute;ralement comme un chemin ; si besoin
+    est dans ce cas, d&eacute;finissez la directive ProxyPassReverse en dehors
+    de la section, ou dans une section <directive type="section"
+    module="core">Location</directive> s&eacute;par&eacute;e.</p>
 </usage>
 </directivesynopsis>
 
