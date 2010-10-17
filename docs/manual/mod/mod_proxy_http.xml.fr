@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 910322 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_http.xml.meta">
+
+<name>mod_proxy_http</name>
+<description>Module fournissant le support HTTP &agrave;
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>mod_proxy_http.c</sourcefile>
+<identifier>proxy_http_module</identifier>
+
+<summary>
+    <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
+    chargement de <module>mod_proxy</module>. Il fournit le support du
+    mandatement des requ&ecirc;tes HTTP et HTTPS. <module>mod_proxy_http</module>
+    supporte HTTP/0.9, HTTP/1.0 et HTTP/1.1. Il ne fournit
+    <em>aucune</em> fonctionnalit&eacute; de mise en cache. Si vous souhaitez
+    mettre en oeuvre un mandataire qui assure aussi les fonctions de
+    mise en cache, vous devez utiliser les services du module
+    <module>mod_cache</module>.</p>
+
+    <p>Ainsi, pour pouvoir traiter les requ&ecirc;tes HTTP mandat&eacute;es,
+    <module>mod_proxy</module>, et <module>mod_proxy_http</module>
+    doivent &ecirc;tre charg&eacute;s dans le serveur.</p>
+
+    <note type="warning"><title>Avertissement</title>
+      <p>N'activez pas la fonctionnalit&eacute; de mandataire avant d'avoir <a
+      href="mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>. Les
+      serveurs mandataires ouverts sont dangereux non seulement pour
+      votre r&eacute;seau, mais aussi pour l'Internet au sens large.</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_connect</module></seealso>
+
+<section id="env"><title>Variables d'environnement</title>
+    <p>Outre les directives de configuration qui contr&ocirc;lent le
+    comportement de <module>mod_proxy</module>, plusieurs <dfn>variables
+    d'environnement</dfn> permettent de contr&ocirc;ler le fournisseur du
+    protocole HTTP :</p>
+    <dl>
+        <dt>proxy-sendextracrlf</dt>
+        <dd>Provoque l'envoi par le mandataire d'une nouvelle ligne
+	CR-LF suppl&eacute;mentaire &agrave; la fin de la requ&ecirc;te. Cei constitue un
+	moyen de contournement d'une bogue de certains
+	navigateurs.</dd>
+        <dt>force-proxy-request-1.0</dt>
+        <dd>Force le mandataire &agrave; envoyer des requ&ecirc;tes vers le serveur
+	cible selon le protocole HTTP/1.0 et d&eacute;sactive les
+	fonctionnalit&eacute;s propres &agrave; HTTP/1.1.</dd>
+        <dt>proxy-nokeepalive</dt>
+        <dd>Force le mandataire &agrave; fermer la connexion avec le serveur
+	cible apr&egrave;s chaque requ&ecirc;te.</dd>
+        <dt>proxy-chain-auth</dt>
+        <dd>Si le mandataire requiert une authentification, il va lire
+	et exploiter les donn&eacute;es d'authentification pour mandataire
+	envoy&eacute;es par le client. Si <var>proxy-chain-auth</var> est
+	d&eacute;finie, il va <em>aussi</em> faire suivre ces donn&eacute;es vers le
+	mandataire suivant dans la cha&icirc;ne. Ceci peut s'av&eacute;rer n&eacute;cessaire
+	si une cha&icirc;ne de mandataires partagent les informations
+	d'authentification.
+	<strong>Avertissement concernant la s&eacute;curit&eacute; :</strong>
+	Ne d&eacute;finissez cette variable que si vous &ecirc;tes s&ucirc;r d'en avoir
+	besoin, car elle peut provoquer la divulgation d'informations
+	sensibles !</dd>
+        <dt>proxy-sendcl</dt>
+        <dd>Avec HTTP/1.0, toutes les requ&ecirc;tes qui poss&egrave;dent un corps
+	(par exemple les requ&ecirc;tes POST) doivent comporter un en-t&ecirc;te
+	<var>Content-Length</var>. Cette variable d'environnement force
+	le mandataire Apache &agrave; envoyer cet en-t&ecirc;te au serveur cible,
+	sans tenir compte de ce que lui a envoy&eacute; le client. Ceci permet
+	d'assurer la compatibilit&eacute; lorsqu'on mandate un serveur cible
+	mettant en oeuvre un protocole de type HTTP/1.0 ou inconnu. Elle
+	peut cependant n&eacute;cessiter la mise en tampon de l'int&eacute;gralit&eacute; de
+	la requ&ecirc;te par le mandataire, ce qui s'av&egrave;re tr&egrave;s inefficace
+	pour les requ&ecirc;tes de grande taille.</dd>
+        <dt>proxy-sendchunks ou proxy-sendchunked</dt>
+        <dd>Cette variable constitue l'oppos&eacute; de
+	<var>proxy-sendcl</var>. Elle permet la transmission des corps
+	de requ&ecirc;tes vers le serveur cible en utilisant un codage de
+	transfert fractionn&eacute;. Ceci permet une transmission des requ&ecirc;tes
+	plus efficace, mais n&eacute;cessite que le serveur cible supporte le
+	protocole HTTP/1.1.</dd>
+        <dt>proxy-interim-response</dt>
+        <dd>Cette variable peut prendre les valeurs <code>RFC</code> ou
+	<code>Suppress</code>. Les versions pr&eacute;c&eacute;dentes de httpd
+	supprimaient les r&eacute;ponses interm&eacute;diaires HTTP (1xx) envoy&eacute;es par
+	le serveur cible. En pratique, si un serveur cible envoie une
+	r&eacute;ponse interm&eacute;diaire, il se peut qu'il &eacute;tende lui-m&ecirc;me le
+	protocole d'une mani&egrave;re dont nous n'avons pas connaissance, ou
+	tout simplement non conforme. Le comportement du mandataire est
+	donc maintenant configurable : d&eacute;finissez
+	<code>proxy-interim-response RFC</code> pour &ecirc;tre totalement
+	compatible avec le protocole, ou <code>proxy-interim-response
+	Suppress</code> pour supprimer les r&eacute;ponses interm&eacute;diaires.</dd>
+        <dt>proxy-initial-not-pooled</dt>
+        <dd>Si cette variable est d&eacute;finie, aucune connexion faisant
+	partie d'un jeu ne sera r&eacute;utilis&eacute;e si la connexion client est
+	une connexion initiale. Ceci permet d'&eacute;viter le message d'erreur
+	"proxy: error reading status line from remote server" caus&eacute; par
+	la situation de comp&eacute;tition au cours de laquelle le serveur
+	cible ferme la connexion du jeu apr&egrave;s la v&eacute;rification de la
+	connexion par le mandataire,  et avant que les donn&eacute;es envoy&eacute;es
+	par le mandataire n'atteignent le serveur cible. Il faut
+	cependant garder &agrave; l'esprit que la d&eacute;finition de cette variable
+	d&eacute;grade les performances, particuli&egrave;rement avec les clients
+	HTTP/1.0.
+        </dd>
+    </dl>
+</section>
+
+</modulesynopsis>
