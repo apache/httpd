@@ -1,4 +1,4 @@
-<?xml version=.1.0. encoding=.UTF-8. ?>
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
@@ -24,61 +24,61 @@
 
 <manualpage metafile="new_features_2_4.xml.meta">
 
-<title>Vue d'ensemble des nouvelles fonctionnalités de la version 2.4 du
+<title>Vue d'ensemble des nouvelles fonctionnalit&eacute;s de la version 2.4 du
 serveur HTTP Apache</title>
 
 <summary>
-  <p>Ce document décrit certaines modifications majeures entre les versions
-  2.2 et 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
-  ajoutées depuis la version 2.0, se référer au document
-  <a href="new_features_2_2.html">nouvelles fonctionnalités
+  <p>Ce document d&eacute;crit certaines modifications majeures entre les versions
+  2.2 et 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s
+  ajout&eacute;es depuis la version 2.0, se r&eacute;f&eacute;rer au document
+  <a href="new_features_2_2.html">nouvelles fonctionnalit&eacute;s
   de la version 2.2</a>.</p>
 </summary>
 
   <section id="core">
-    <title>Améliorations du noyau</title>
+    <title>Am&eacute;liorations du noyau</title>
     <dl>
       <dt>KeepAliveTimeout en millisecondes</dt>
 
       <dd>La directive <directive module="core"
-      >KeepAliveTimeout</directive> permet dorénavant de
-      préciser une durée de vie en millisecondes.
+      >KeepAliveTimeout</directive> permet dor&eacute;navant de
+      pr&eacute;ciser une dur&eacute;e de vie en millisecondes.
       </dd>
  
       <dt>MPMs chargeables</dt>
       <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
-      chargeables. La configuration du MPM choisi s'effectue à
-      l'exécution.</dd>
+      chargeables. La configuration du MPM choisi s'effectue &agrave;
+      l'ex&eacute;cution.</dd>
 
       <dt>Configuration du niveau de journalisation (LogLevel) par
-      module et par répertoire</dt>
+      module et par r&eacute;pertoire</dt>
       <dd>La directive <directive module="core">LogLevel</directive>
-      peut maintenant être définie par module et par répertoire. Les
-      nouveaux niveaux <code>trace1</code> à <code>trace8</code> ont été
-      ajoutés au dessus du niveau de journalisation <code>debug</code>.</dd>
+      peut maintenant &ecirc;tre d&eacute;finie par module et par r&eacute;pertoire. Les
+      nouveaux niveaux <code>trace1</code> &agrave; <code>trace8</code> ont &eacute;t&eacute;
+      ajout&eacute;s au dessus du niveau de journalisation <code>debug</code>.</dd>
 
     </dl>
   </section>
 
   <section id="module">
-    <title>Améliorations des modules</title>
+    <title>Am&eacute;liorations des modules</title>
     <dl>
       <dt><module>mod_ssl</module></dt>
 
-      <dd><module>mod_ssl</module> peut maintenant vérifier la
-      validité des certificats clients en se connectant à
-      un serveur OCSP. Il est possible de définir un
-      répondeur par défaut, et de choisir si l'on
-      préfère le répondeur désigné
-      dans le certificat client lui-même.</dd>
+      <dd><module>mod_ssl</module> peut maintenant v&eacute;rifier la
+      validit&eacute; des certificats clients en se connectant &agrave;
+      un serveur OCSP. Il est possible de d&eacute;finir un
+      r&eacute;pondeur par d&eacute;faut, et de choisir si l'on
+      pr&eacute;f&egrave;re le r&eacute;pondeur d&eacute;sign&eacute;
+      dans le certificat client lui-m&ecirc;me.</dd>
 
 	<dd><module>mod_ssl</module> supporte aussi maintenant le lien
-	OCSP, par lequel le serveur obtient activement une vérification
+	OCSP, par lequel le serveur obtient activement une v&eacute;rification
 	OCSP de son certificat et la transmet au client durant la phase
-	de négociation de la connexion.</dd>
+	de n&eacute;gociation de la connexion.</dd>
       
       <dd>On peut maintenant configurer <module>mod_ssl</module> pour
-      que celui-ci partage les données de session SSL entre les serveurs
+      que celui-ci partage les donn&eacute;es de session SSL entre les serveurs
       via memcached.</dd>
  
       <dt><module>mod_lua</module></dt>
@@ -93,104 +93,104 @@ serveur HTTP Apache</title>
       <dt><module>mod_cache</module></dt>
 
       <dd><module>mod_cache</module> peut maintenant mettre en cache des
-      requêtes HEAD.</dd>
+      requ&ecirc;tes HEAD.</dd>
 
       <dd>Chaque fois que cela est possible, les directives de
-      <module>mod_cache</module> peuvent maintenant être définies au
-      niveau du répertoire, et non plus seulement au niveau du serveur
+      <module>mod_cache</module> peuvent maintenant &ecirc;tre d&eacute;finies au
+      niveau du r&eacute;pertoire, et non plus seulement au niveau du serveur
       principal.</dd>
 
-      <dd>L'URL de base des URLs en cache peut être personnalisée de
-      façon à ce qu'un cluster de caches puisse partager le même préfixe
+      <dd>L'URL de base des URLs en cache peut &ecirc;tre personnalis&eacute;e de
+      fa&ccedil;on &agrave; ce qu'un cluster de caches puisse partager le m&ecirc;me pr&eacute;fixe
       d'URL.</dd>
 
       <dd><module>mod_cache</module> peut maintenant servir du contenu
-      non mis à jour lorsqu'un serveur d'arrière-plan n'est pas
+      non mis &agrave; jour lorsqu'un serveur d'arri&egrave;re-plan n'est pas
       disponible (erreur 5xx).</dd>
 
-      <dd><module>mod_cache</module> peut maintenant insérer
-      HIT/MISS/REVALIDATE dans un en-tête X-Cache.</dd>
+      <dd><module>mod_cache</module> peut maintenant ins&eacute;rer
+      HIT/MISS/REVALIDATE dans un en-t&ecirc;te X-Cache.</dd>
 
       <dt><module>mod_allowmethods</module></dt>
-      <dd>Nouveau module permettant de restreindre certaines méthodes
-      HTTP sans interférer avec l'authentification et l'autorisation.</dd>
+      <dd>Nouveau module permettant de restreindre certaines m&eacute;thodes
+      HTTP sans interf&eacute;rer avec l'authentification et l'autorisation.</dd>
       
     </dl>
   </section>
 
   <section id="programs">
-    <title>Améliorations des programmes</title>
+    <title>Am&eacute;liorations des programmes</title>
     <dl>
         <dt>fcgistarter</dt>
-        <dd>Utilitaire pour le démarrage des démons FastCGI</dd>
+        <dd>Utilitaire pour le d&eacute;marrage des d&eacute;mons FastCGI</dd>
 	<dt>htcacheclean</dt>
-        <dd>Les URLs présentes dans le cache peuvent maintenant être
-	affichées, accompagnées éventuellement de leurs métadonnées.</dd>
+        <dd>Les URLs pr&eacute;sentes dans le cache peuvent maintenant &ecirc;tre
+	affich&eacute;es, accompagn&eacute;es &eacute;ventuellement de leurs m&eacute;tadonn&eacute;es.</dd>
         <dd>Permet d'effacer explicitement des URLs individuelles
-	présentes dans le cache.</dd>
-        <dd>Les tailles de fichiers peuvent maintenant être arrondies au
-	multiple de la taille de bloc donnée, les limites de taille
-	collant de ce fait d'avantage à la taille réelle sur disque.</dd>
-        <dd>La taille du cache peut maintenant être limitée par le
-	nombre d'inodes, en plus de la possibilité de limitation par la
+	pr&eacute;sentes dans le cache.</dd>
+        <dd>Les tailles de fichiers peuvent maintenant &ecirc;tre arrondies au
+	multiple de la taille de bloc donn&eacute;e, les limites de taille
+	collant de ce fait d'avantage &agrave; la taille r&eacute;elle sur disque.</dd>
+        <dd>La taille du cache peut maintenant &ecirc;tre limit&eacute;e par le
+	nombre d'inodes, en plus de la possibilit&eacute; de limitation par la
 	taille des fichiers.</dd>
     </dl>
     </section>
 
   <section id="developer">
-    <title>Modifications pour le développeur de modules</title>
+    <title>Modifications pour le d&eacute;veloppeur de modules</title>
     <dl>
-      <dt>Ajout de code pour la vérification de la configuration</dt>
+      <dt>Ajout de code pour la v&eacute;rification de la configuration</dt>
 
-      <dd>Une nouvelle fonction, <code>check_config</code>, a été ajoutée et
-      s'exécute entre les fonctions <code>pre_config</code> et
-      <code>open_logs</code>. Elle s'exécute aussi avant la fonction
-      <code>test_config</code> si l'option <code>-t</code> est passée au
-      démon <program>httpd</program>. La fonction <code>check_config</code>
-      permet aux modules de vérifier l'interdépendance des valeurs des
+      <dd>Une nouvelle fonction, <code>check_config</code>, a &eacute;t&eacute; ajout&eacute;e et
+      s'ex&eacute;cute entre les fonctions <code>pre_config</code> et
+      <code>open_logs</code>. Elle s'ex&eacute;cute aussi avant la fonction
+      <code>test_config</code> si l'option <code>-t</code> est pass&eacute;e au
+      d&eacute;mon <program>httpd</program>. La fonction <code>check_config</code>
+      permet aux modules de v&eacute;rifier l'interd&eacute;pendance des valeurs des
       directives de configuration et d'ajuster ces valeurs, alors que les
-      messages du serveur peuvent encore être affichés sur la console.
+      messages du serveur peuvent encore &ecirc;tre affich&eacute;s sur la console.
       L'utilisateur est ainsi averti des erreurs de configuration avant que la
       fonction du noyau <code>open_logs</code> ne redirige les sorties de la
       console vers le journal des erreurs.</dd>
 
       <dt>Ajout d'un analyseur syntaxique d'expressions</dt>
-      <dd>Nous disposons à présent d'un analyseur générique d'expressions, dont l'API
-      est décrite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
+      <dd>Nous disposons &agrave; pr&eacute;sent d'un analyseur g&eacute;n&eacute;rique d'expressions, dont l'API
+      est d&eacute;crite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <module>mod_include</module>.</dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
-      <dd>On peut maintenant spécifier une logique d'autorisation
-      avancée à l'aide de la directive <directive
+      <dd>On peut maintenant sp&eacute;cifier une logique d'autorisation
+      avanc&eacute;e &agrave; l'aide de la directive <directive
       module="mod_authz_core">Require</directive> et des directives de
-      conteneur associées, comme <directive module="mod_authz_core"
+      conteneur associ&eacute;es, comme <directive module="mod_authz_core"
       type="section">RequireAll</directive>, toutes fournies par le module
       <module>mod_authz_core</module>.</dd>
 
       <dt>Interface de mise en cache des petits objets</dt>
 
-      <dd>Le fichier d'en-têtes <var>ap_socache.h</var> fournit une
-      interface à base de fournisseur pour la mise en cache des petits
-      objets de données, en s'inspirant de
-      l'implémentation précédente
-      du cache de session par <module>mod_ssl</module>. Sont supportés
+      <dd>Le fichier d'en-t&ecirc;tes <var>ap_socache.h</var> fournit une
+      interface &agrave; base de fournisseur pour la mise en cache des petits
+      objets de donn&eacute;es, en s'inspirant de
+      l'impl&eacute;mentation pr&eacute;c&eacute;dente
+      du cache de session par <module>mod_ssl</module>. Sont support&eacute;s
       actuellement : les fournisseurs utilisant un tampon cyclique en
-      mémoire partagée, les fichiers dbm sur disque, et les caches
-      distribués de type memcache./dd>
+      m&eacute;moire partag&eacute;e, les fichiers dbm sur disque, et les caches
+      distribu&eacute;s de type memcache./dd>
 
       <dt>Ajout du point d'ancrage Cache Status</dt>
       
       <dd>Le module <module>mod_cache</module> inclut maintenant un
-      nouveau point d'ancrage, <code>cache_status</code>, qui est appelé
-      lorsque la décision à propos de la mise en cache est connue. Il en
-      existe une implémentation par défaut qui ajoute les en-têtes
-      optionnels <code>X-Cache</code> et <code>X-Cache-Detail</code> à
-      la réponse.</dd>
+      nouveau point d'ancrage, <code>cache_status</code>, qui est appel&eacute;
+      lorsque la d&eacute;cision &agrave; propos de la mise en cache est connue. Il en
+      existe une impl&eacute;mentation par d&eacute;faut qui ajoute les en-t&ecirc;tes
+      optionnels <code>X-Cache</code> et <code>X-Cache-Detail</code> &agrave;
+      la r&eacute;ponse.</dd>
 
       
     </dl>
-    <p>La documentation du développeur contient une <a
-    href="developer/new_api_2_4.html">liste détaillée des modifications
+    <p>La documentation du d&eacute;veloppeur contient une <a
+    href="developer/new_api_2_4.html">liste d&eacute;taill&eacute;e des modifications
     de l'API</a>.</p>
   </section>
 </manualpage>
