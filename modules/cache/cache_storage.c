@@ -313,6 +313,24 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                     continue;
                 }
 
+                /* set aside the stale entry for accessing later */
+                cache->stale_headers = apr_table_copy(r->pool,
+                        r->headers_in);
+                cache->stale_handle = h;
+
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                        "Cached response for %s isn't fresh.  Adding/replacing "
+                        "conditional request headers.", r->uri);
+
+                /* We can only revalidate with our own conditionals: remove the
+                 * conditions from the original request.
+                 */
+                apr_table_unset(r->headers_in, "If-Match");
+                apr_table_unset(r->headers_in, "If-Modified-Since");
+                apr_table_unset(r->headers_in, "If-None-Match");
+                apr_table_unset(r->headers_in, "If-Range");
+                apr_table_unset(r->headers_in, "If-Unmodified-Since");
+
                 etag = apr_table_get(h->resp_hdrs, "ETag");
                 lastmod = apr_table_get(h->resp_hdrs, "Last-Modified");
 
@@ -320,30 +338,6 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                     /* If we have a cached etag and/or Last-Modified add in
                      * our own conditionals.
                      */
-
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                            "Cached response for %s isn't fresh.  Adding/replacing "
-                            "conditional request headers.", r->uri);
-
-                    /* Make response into a conditional */
-                    cache->stale_headers = apr_table_copy(r->pool,
-                            r->headers_in);
-
-                    /* We can only revalidate with our own conditionals: remove the
-                     * conditions from the original request.
-                     */
-                    apr_table_unset(r->headers_in, "If-Match");
-                    apr_table_unset(r->headers_in, "If-Modified-Since");
-                    apr_table_unset(r->headers_in, "If-None-Match");
-                    apr_table_unset(r->headers_in, "If-Range");
-                    apr_table_unset(r->headers_in, "If-Unmodified-Since");
-
-                    /*
-                     * Do not do Range requests with our own conditionals: If
-                     * we get 304 the Range does not matter and otherwise the
-                     * entity changed and we want to have the complete entity
-                     */
-                    apr_table_unset(r->headers_in, "Range");
 
                     if (etag) {
                         apr_table_set(r->headers_in, "If-None-Match", etag);
@@ -353,30 +347,18 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                         apr_table_set(r->headers_in, "If-Modified-Since",
                                 lastmod);
                     }
-                    cache->stale_handle = h;
-
-                    /* ready to revalidate, pretend we were never here */
-                    return DECLINED;
-                }
-                else {
-                    int irv;
 
                     /*
-                     * The copy isn't fresh enough, but we cannot revalidate.
-                     * So it is the same case as if there had not been a cached
-                     * entry at all. Thus delete the entry from cache.
+                     * Do not do Range requests with our own conditionals: If
+                     * we get 304 the Range does not matter and otherwise the
+                     * entity changed and we want to have the complete entity
                      */
-                    irv = cache->provider->remove_url(h, r->pool);
-                    if (irv != OK) {
-                        ap_log_error(APLOG_MARK, APLOG_DEBUG, irv, r->server,
-                                "cache: attempt to remove url from cache unsuccessful.");
-                    }
+                    apr_table_unset(r->headers_in, "Range");
 
-                    /* try again with next cache type */
-                    list = list->next;
-                    continue;
                 }
 
+                /* ready to revalidate, pretend we were never here */
+                return DECLINED;
             }
 
             /* Okay, this response looks okay.  Merge in our stuff and go. */
