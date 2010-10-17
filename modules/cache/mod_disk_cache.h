@@ -56,8 +56,8 @@ typedef struct {
     apr_ino_t inode;
     apr_dev_t device;
     /* Does this cached request have a body? */
-    int has_body;
-    int header_only;
+    int has_body:1;
+    int header_only:1;
     /* The parsed cache control header */
     cache_control_t control;
 } disk_cache_info_t;
@@ -91,7 +91,7 @@ typedef struct disk_cache_object {
     apr_table_t *headers_out;    /* Output headers to save */
     apr_off_t offset;            /* Max size to set aside */
     apr_time_t timeout;          /* Max time to set aside */
-    int done;                    /* Is the attempt to cache complete? */
+    int done:1;                  /* Is the attempt to cache complete? */
 } disk_cache_object_t;
 
 
@@ -119,10 +119,10 @@ typedef struct {
     apr_off_t maxfs;             /* maximum file size for cached files */
     apr_off_t readsize;          /* maximum data to attempt to cache in one go */
     apr_time_t readtime;         /* maximum time taken to cache in one go */
-    int minfs_set;
-    int maxfs_set;
-    int readsize_set;
-    int readtime_set;
+    int minfs_set:1;
+    int maxfs_set:1;
+    int readsize_set:1;
+    int readtime_set:1;
 } disk_cache_dir_conf;
 
 #endif /*MOD_DISK_CACHE_H*/
