@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision: 1021924 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>Mise &agrave; jour vers 2.4 depuis 2.2</title>
+
+<summary>
+  <p>Afin d'assister les utilisateurs lors de leurs op&eacute;rations de mise &agrave;
+  jour, nous maintenons un document
+  qui comporte des informations critiques &agrave; l'attention des personnes qui
+  utilisent d&eacute;j&agrave; le serveur HTTP Apache. Ces informations
+  ne sont que de br&egrave;ves notes, et vous
+  trouverez plus d'informations dans le document <a
+  href="new_features_2_4.html">Nouvelles fonctionnalit&eacute;s</a>, ou dans
+  le fichier <code>src/CHANGES</code>. Les d&eacute;veloppeurs d'applications
+  et de modules trouveront un r&eacute;sum&eacute; des modifications de l'API dans la
+  vue d'ensemble <a href="developer/new_api_2_4.html">Mises &agrave; jour de
+  l'API</a>.</p>
+
+  <p>Ce document pr&eacute;sente les changements de comportement du serveur qui
+  peuvent n&eacute;cessiter une modification de la configuration, et la mani&egrave;re
+  d'utiliser la version 2.4 du serveur en continuant d'utiliser la
+  version 2.2. Pour tirer parti des nouvelles fonctionnalit&eacute;s de la
+  version 2.4, reportez-vous au document "Nouvelles fonctionnalit&eacute;s".</p>
+
+  <p>Ce document ne d&eacute;crit que les modifications intervenues entre les versions
+  2.2 et 2.4. Si vous effectuez une mise &agrave; jour depuis la version 2.0, vous
+  devez aussi consulter le
+  <a href="http://httpd.apache.org/docs/2.2/upgrading.html">document de mise
+  &agrave; jour de 2.0 vers 2.2.</a></p>
+
+</summary>
+<seealso><a href="new_features_2_4.html">Vue d'ensemble des nouvelles
+fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
+
+  <section id="compile-time">
+    <title>Modifications de la configuration au moment de la compilation</title>
+     <p>Le processus de compilation est tr&egrave;s similaire &agrave; celui de la
+     version 2.2. Dans la plupart des cas, vous pourrez utiliser votre
+     ancienne ligne de commande <code>configure</code> (telle qu'elle
+     est enregistr&eacute;e dans le fichier <code>build/config.nice</code>
+     situ&eacute; dans le r&eacute;pertoire de compilation du serveur). Voici certains
+     changements intervenus dans la configuration par d&eacute;faut :</p>
+    
+    <ul>
+      <li>Les modules suivants ont &eacute;t&eacute; supprim&eacute;s : mod_authn_default,
+      mod_authz_default et mod_mem_cache. Si vous utilisiez
+      mod_mem_cache sous la version 2.2, reportez-vous &agrave;
+      <module>mod_disk_cache</module> dans la version 2.4.</li>
+
+      <li>Toutes les impl&eacute;mentations de r&eacute;partition de charge ont &eacute;t&eacute;
+      d&eacute;plac&eacute;es vers des sous-modules sp&eacute;cifiques de mod_proxy, comme
+      <module>mod_lbmethod_bybusyness</module>. Vous devrez compiler et
+      charg&eacute;s tous les modules correspondants que votre configuration
+      utilise.</li>
+
+      <li>Le support de BeOS, TPF, et des anciennes plates-formes telles
+      que A/UX, Next, et Tandem a &eacute;t&eacute; supprim&eacute;, car il a &eacute;t&eacute; suppos&eacute;
+      qu'elles n'&eacute;taient plus maintenues.</li>
+
+      <li>configure: les modules dynamiques (DSO) sont compil&eacute;s par
+      d&eacute;faut</li>
+
+      <li>configure: le jeu de modules "most" est compil&eacute; par d&eacute;faut</li>
+    </ul>
+
+  </section>
+
+  <section id="run-time">
+    <title>Modifications de la configuration &agrave; l'ex&eacute;cution</title>
+<p>Des changements significatifs dans la configuration de
+l'autorisation, ainsi que quelques changements mineurs, peuvent
+n&eacute;cessiter une modification des fichiers de configuration de la version
+2.2 avant de les utiliser sous la version 2.4.</p>
+
+    <section id="authz">
+      <title>Autorisation</title>
+
+      <p>Tout fichier de configuration qui g&egrave;re des autorisations devra
+      probablement &ecirc;tre modifi&eacute;.</p>
+
+    <p>Vous devez vous reporter au document <a
+    href="howto/auth.html">Authentification, autorisation et contr&ocirc;le
+    d'acc&egrave;s</a>, et plus particuli&egrave;rement &agrave; la section <a
+    href="howto/auth.html#beyond">Plus loin qu'une simple
+    autorisation</a> qui explique les nouveaux m&eacute;canismes permettant de
+    contr&ocirc;ler l'ordre dans lequel les directives d'autorisation sont
+    appliqu&eacute;es.</p>
+
+    <section id="access">
+      <title>Contr&ocirc;le d'acc&egrave;s</title>
+
+      <p>Dans la version 2.2, le contr&ocirc;le d'acc&egrave;s bas&eacute; sur le nom d'h&ocirc;te
+      du client, son adresse IP, ou d'autres caract&eacute;ristiques de la
+      requ&ecirc;te du client &eacute;tait assur&eacute; via les directives <directive
+      module="mod_access_compat">Order</directive>, <directive
+      module="mod_access_compat">Allow</directive>, <directive
+      module="mod_access_compat">Deny</directive>, et <directive
+      module="mod_access_compat">Satisfy</directive>.</p>
+
+      <p>Dans la version 2.4, ce contr&ocirc;le d'acc&egrave;s est assur&eacute;, comme tout
+      contr&ocirc;le d'autorisation, via le nouveau module
+      <module>mod_authz_host</module>. Bien que le module
+      <module>mod_access_compat</module> soit fourni &agrave; des fins de
+      compatibilit&eacute; avec les anciennes configurations, les anciennes
+      directives de contr&ocirc;le d'acc&egrave;s devront &ecirc;tre remplac&eacute;es par les
+      nouveaux m&eacute;canismes d'authentification.</p>
+
+      <p>Voici quelques exemples de contr&ocirc;le d'acc&egrave;s avec l'ancienne et
+      la nouvelle m&eacute;thode :</p>
+
+      <p>Dans cet exemple, toutes les requ&ecirc;tes sont rejet&eacute;es :</p>
+      <example>
+        <title>version 2.2 :</title>
+        Order deny,allow<br />
+        Deny from all
+      </example>
+      <example>
+        <title>version 2.4 :</title>
+        Require all denied
+      </example>
+
+      <p>Dans cet exemple, toutes les requ&ecirc;tes sont accept&eacute;es :</p>
+      <example>
+        <title>version 2.2 :</title>
+        Order allow,deny<br />
+        Allow from all
+      </example>
+      <example>
+        <title>version 2.4 :</title>
+        Require all granted
+      </example>
+
+      <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine apache.org
+      ont l'autorisation d'acc&egrave;s, tous les autres sont rejet&eacute;s :</p>
+
+      <example>
+        <title>version 2.2 :</title>
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from apache.org
+      </example>
+      <example>
+        <title>version 2.4 :</title>
+        Require host apache.org
+      </example>
+    </section>
+
+    </section>
+
+    <section id="config">
+      <title>Autres changements de configuration</title>
+
+      <p>D'autres ajustements mineurs peuvent s'av&eacute;rer n&eacute;cessaires pour
+      certaines configurations particuli&egrave;res, comme d&eacute;crit ci-dessous.</p>
+
+      <ul>
+        <li>La directive <directive>MaxRequestsPerChild</directive> a
+	été renommée en <directive
+	module="mpm_common">MaxConnectionsPerChild</directive>, ce qui
+	correspond d'avantage à ce qu'elle fait.</li>
+
+        <li>La directive <directive
+	module="core">DefaultType</directive> ne produit plus aucun
+	effet, si ce n'est d'&eacute;mettre un avertissement si elle est
+	d&eacute;finie &agrave; une valeur autre que <code>none</code>. D'autres
+	directives de configuration la remplacent dans la version 2.4.
+        </li>
+
+	<li>La valeur par défaut de la directive <directive
+	module="core">EnableSendfile</directive> est maintenant Off.</li>
+
+        <li><module>mod_log_config</module>: <a
+        href="modules/mod_log_config.html#formats">${cookie}C</a>
+        correspond au nom du cookie dans son ensemble, alors qu'avant,
+	toute sous-cha&icirc;ne pouvait correspondre.</li>
+
+        <li><module>mod_dav_fs</module>: le format du fichier <directive
+	module="dav_fs">DavLockDB</directive> a chang&eacute; pour les syst&egrave;mes
+	avec inodes. L'ancien fichier <directive
+	module="dav_fs">DavLockDB</directive> doit &ecirc;tre supprim&eacute; dans le
+	cadre de la mise &agrave; jour.
+        </li>
+
+        <li>La directive <directive module="core">KeepAlive</directive>
+	n'accepte que les valeurs <code>On</code> ou <code>Off</code>.
+	Avant, toute valeur autre que "Off" ou "0" &eacute;tait trait&eacute;e comme
+	"On".</li>
+
+        <li>Les directives AcceptMutex, LockFile, RewriteLock, SSLMutex,
+	SSLStaplingMutex et WatchdogMutexPath ont &eacute;t&eacute; remplac&eacute;es par la
+	directive unique <directive module="core">Mutex</directive>.
+	Vous devez &eacute;valuer l'impact de ces directives obsol&egrave;tes dans
+	votre configuration version 2.2 afin de d&eacute;terminer si elles
+	peuvent &ecirc;tre simplement supprim&eacute;es, ou si elles doivent &ecirc;tre
+	remplac&eacute;es par la directive <directive
+	module="core">Mutex</directive>.</li>
+
+        <li><module>mod_cache</module>: la directive <directive
+	module="cache">CacheIgnoreURLSessionIdentifiers</directive>
+	effectue maintenent une correspondance exacte dans la cha&icirc;ne de
+	param&egrave;tres au lieu d'une correspondance partielle. Si votre
+	configuration mettait en jeu des sous-cha&icirc;nes comme
+	<code>sessionid</code> pour correspondre &agrave;
+	<code>/une-application/image.gif;jsessionid=123456789</code>,
+	vous devez maintenant utiliser la cha&icirc;ne de correspondance
+	compl&egrave;te <code>jsessionid</code>.
+        </li>
+
+        <li><module>mod_ldap</module>: la directive <directive
+	module="ldap">LDAPTrustedClientCert</directive> s'utilise
+	maintenant exclusivement au sein d'une configuration de niveau
+	r&eacute;pertoire. Si vous utilisez cette directive, passez en revue
+	votre configuration pour vous assurer qu'elle est bien pr&eacute;sente
+	dans tous les contextes de r&eacute;pertoire n&eacute;cessaires.</li>
+    
+    </ul>
+    </section>
+  </section>
+
+  <section id="misc">
+    <title>Changements divers</title>
+
+    <ul>
+      <li><module>mod_auto_index</module>: extrait maintenant les titres
+      et affiche la description pour les fichiers .xhtml qui &eacute;taient
+      jusqu'alors ignor&eacute;s.</li>
+      <li><program>htpasswd</program> utilise maintenant par d&eacute;faut les
+      condens&eacute;s MD5 sur toutes les plates-formes.</li>
+    </ul>
+
+    </section>
+
+  <section id="third-party">
+    <title>Modules tiers</title>
+
+	<p>Tous les modules tiers doivent &ecirc;tre recompil&eacute;s pour la
+	version 2.4 avant d'&ecirc;tre charg&eacute;s.</p>
+
+    <p>De nombreux modules tiers con&ccedil;us pour la version 2.2
+    fonctionneront sans changement avec le serveur HTTP Apache
+    version 2.4. Certains n&eacute;cessiterons cependant des modifications ; se
+    reporter &agrave; la vue d'ensemble <a
+    href="developer/new_api_2_4.html">Mise &agrave; jour de l'API</a>.</p>
+  </section>
+<section id="commonproblems">
+    <title>Probl&egrave;mes de mise &agrave; jour courants</title>
+    <ul><li>Erreurs au d&eacute;marrage :
+    <ul>
+      <li><code>Invalid command 'User', perhaps misspelled or defined by
+      a module not included in the server configuration</code> - chargez
+      le module <module>mod_unixd</module></li>
+      <li><code>Invalid command 'Require', perhaps misspelled or defined
+      by a module not included in the server configuration</code>, ou
+      <code>Invalid command 'Order', perhaps misspelled or defined by a
+      module not included in the server configuration</code> - chargez
+      le module <module>mod_access_compat</module>, ou mettez &agrave; jour
+      vers la version 2.4 les directives d'autorisation.</li>
+      <li><code>Ignoring deprecated use of DefaultType in line NN of
+      /path/to/httpd.conf</code> - supprimez la directive <directive
+      module="core">DefaultType</directive> et remplacez-la par les
+      directives de configuration appropri&eacute;es.</li>
+      <li><code>mixing * ports and non-* ports with a NameVirtualHost
+      address is not supported</code>, <code>Either NameVirtualHost
+      w.x.y.z:n has no VirtualHosts, or there is more than one identical
+      NameVirtualHost line, or your VirtualHost declarations do not
+      match the NameVirtualHost line</code> -
+      ce ne sont pas des nouveaux messages, mais ils empêchent
+      maintenant le serveur de démarrer</li>
+      <li><code>_default_ is not allowed in NameVirtualHost
+      directive</code> - l'explication est dans le message ; cette
+      définition n'a jamais été valide, mais elle empêche maintenant le
+      serveur de démarrer.</li>
+    </ul></li>
+    <li>Erreurs de traitement des requ&ecirc;tes :
+    <ul>
+      <li><code>configuration error:  couldn't check user: /path</code> -
+      chargez le module <module>mod_authn_core</module>.</li>
+    </ul>
+    </li>
+</ul>
+
+  </section>
+</manualpage>
