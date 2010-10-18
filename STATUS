@@ -148,6 +148,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk patch works
      +1: minfrin
 
+   * mod_cache: Make sure that we never allow a 304 Not Modified response
+     that we asked for to leak to the client should the 304 response be
+     uncacheable.
+     PR45341
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
+     2.2.x patch: trunk patch works
+     +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
