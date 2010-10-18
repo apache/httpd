@@ -948,7 +948,7 @@ codées en dur pour le serveur</description>
 pour l'authentification de base lors de l'authentification auprès du
 serveur LDAP pour effectuer une recherche de DN</description>
 <syntax>AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></syntax>
-+<default>AuthLDAPInitialBindPattern (.*) $1 (nom de l'utilisateur
+<default>AuthLDAPInitialBindPattern (.*) $1 (nom de l'utilisateur
 distant utilisé tel quel)</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
