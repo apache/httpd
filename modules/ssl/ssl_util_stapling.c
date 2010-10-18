@@ -471,7 +471,7 @@ err:
  * SSLStaplingMutex operations. Similar to SSL mutex except a mutex is
  * mandatory if stapling is enabled.
  */
-int ssl_stapling_mutex_init(server_rec *s, apr_pool_t *p)
+static int ssl_stapling_mutex_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc = mySrvConfig(s);
@@ -655,6 +655,11 @@ void modssl_init_stapling(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
     if (mc->stapling_cache == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "SSLStapling: no stapling cache available");
+        ssl_die();
+    }
+    if (ssl_stapling_mutex_init(s, ptemp) == FALSE) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                     "SSLStapling: cannot initialise stapling mutex");
         ssl_die();
     }
     /* Set some default values for parameters if they are not set */

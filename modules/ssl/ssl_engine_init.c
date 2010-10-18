@@ -319,10 +319,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 #ifdef HAVE_OCSP_STAPLING
-    if (!ssl_stapling_mutex_init(base_server, p)) {
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
     ssl_stapling_ex_init();
 #endif
 

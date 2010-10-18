@@ -723,7 +723,6 @@ int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
 int          ssl_mutex_on(server_rec *);
 int          ssl_mutex_off(server_rec *);
 
-int          ssl_stapling_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
 
 /* mutex type names for Mutex directive */
