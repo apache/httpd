@@ -451,7 +451,6 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
     const char *cc_req;
     const char *pragma;
     const char *agestr = NULL;
-    const char *expstr = NULL;
     apr_time_t age_c = 0;
     cache_info *info = &(h->cache_obj->info);
     const char *warn_head;
@@ -514,8 +513,6 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
     }
 
     /* These come from the cached entity. */
-    expstr = apr_table_get(h->resp_hdrs, "Expires");
-
     if (h->cache_obj->info.control.no_cache
             || h->cache_obj->info.control.no_cache_header
             || h->cache_obj->info.control.private_header) {
@@ -620,13 +617,14 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
                                 "110 Response is stale");
             }
         }
+
         /*
          * If none of Expires, Cache-Control: max-age, or Cache-Control:
          * s-maxage appears in the response, and the response header age
          * calculated is more than 24 hours add the warning 113
          */
-        if ((maxage_cresp == -1) && (smaxage == -1) &&
-            (expstr == NULL) && (age > 86400)) {
+        if ((maxage_cresp == -1) && (smaxage == -1) && (apr_table_get(
+                h->resp_hdrs, "Expires") == NULL) && (age > 86400)) {
 
             /* Make sure we don't stomp on a previous warning, and don't dup
              * a 113 marning that is already present. Also, make sure to add
