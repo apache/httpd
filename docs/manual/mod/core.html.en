@@ -3300,7 +3300,13 @@ itself</td></tr>
     <p>The <code class="directive">ServerName</code> directive sets the
     request scheme, hostname and
     port that the server uses to identify itself.  This is used when
-    creating redirection URLs. For example, if the name of the
+    creating redirection URLs.</p>
+
+    <p>Additionally, <code class="directive">ServerName</code> is used (possibly
+    in conjunction with <code class="directive">ServerAlias</code>) to uniquely
+    identify a virtual host, when using <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+    
+    <p>For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
     but the machine also has the DNS alias <code>www.example.com</code>
     and you wish the web server to be so identified, the following
