@@ -619,7 +619,7 @@ BEGIN {
 	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib 	"$(INSTDIR)\lib" <.y
 	copy srclib\pcre\Lib$(SHORT)\pcreposix_src.pdb 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml_src.pdb "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.pdb "$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr.lib 		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr.exp 		"$(INSTDIR)\lib" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv.lib 	"$(INSTDIR)\lib" <.y
