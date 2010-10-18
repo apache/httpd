@@ -64,7 +64,7 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     module="mod_authz_core">Require</directive> est utilis&eacute;e au cours de
     la phase d'autorisation pour v&eacute;rifier si un utilisateur se voit
     accorder ou refuser l'acc&egrave;s &agrave; une ressource. mod_authz_host fournit
-    les types d'autorisation <code>ip</code>, <code>host</code. D'autres
+    les types d'autorisation <code>ip</code>, <code>host</code>. D'autres
     types d'autorisation
     sont aussi disponibles, mais n&eacute;cessitent le chargement des modules
     d'autorisation appropri&eacute;s.</p>
