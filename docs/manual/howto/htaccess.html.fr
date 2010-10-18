@@ -110,7 +110,7 @@ Includes - SSI)</a></li>
     les fichiers .htaccess ?</a></h2>
 
     <p>En principe, vous ne devriez utiliser les fichiers
-    <code>.htaccess</code> que si vous n'avez pas accès au fichier de
+    <code>.htaccess</code> que lorsque vous n'avez pas accès au fichier de
     configuration du serveur principal. Par exemple, la fausse
     idée
     selon laquelle l'authentification de l'utilisateur devrait toujours
@@ -294,7 +294,7 @@ Includes - SSI)</a></li>
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
     <div class="example"><p><code>
-&lt;Directory /&gt;<br />
+&lt;Directory /www/htdocs&gt;<br />
 <span class="indent">
 Allowoverride All<br />
 </span>
@@ -306,6 +306,10 @@ Options +IncludesNoExec -ExecCGI<br />
 </span>
 &lt;/Location&gt;
     </code></p></div>
+
+    <div class="note">Dans cet exemple, on considère que le chemin défini par la
+    directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> est
+    <code>/www/htdocs</code>.</div>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -424,7 +428,7 @@ Includes - SSI)</a></h2>
     permise.</p>
 
 <div class="example"><p><code>
-	[Sat Aug 09 16:19:20 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteLog not allowed here
+	[Fri Sep 17 18:43:16 2010] [alert] [client 192.168.200.51] /var/www/html/.htaccess: DirectoryIndex not allowed here
 </code></p></div>
 	<p>Cela signifie soit que vous utilisez une directive qui n'est
 	jamais permise dans les fichiers <code>.htaccess</code>, soit

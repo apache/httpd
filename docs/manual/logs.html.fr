@@ -24,8 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -38,6 +36,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Vue d'ensemble</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#security">Avertissement à propos de la sécurité</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Journal des erreurs</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#permodule">Journalisation par module</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Journal des accès</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#rotation">Rotation des journaux</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#piped">Journaux redirigés</a></li>
@@ -159,6 +158,32 @@
       tail -f error_log
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="permodule" id="permodule">Journalisation par module</a></h2>
+    
+
+    <p>La directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> permet
+    de spÃ©cifier un niveau de sÃ©vÃ©ritÃ© de journalisation pour chaque
+    module. Vous pouvez ainsi rÃ©soudre un problÃ¨me propre Ã&nbsp; un module particulier
+    en augmentant son volume de journalisation sans augmenter ce volume
+    pour les autres modules. Ceci est particuliÃ¨rement utile lorsque
+    vous voulez obtenir des dÃ©tails sur le fonctionnement de modules
+    comme <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> ou <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+    <p>Pour ce faire, vous devez spÃ©cifier le nom du module dans votre
+    directive <code class="directive">LogLevel</code> :</p>
+
+    <div class="example"><p><code>
+    LogLevel info rewrite:trace5
+    </code></p></div>
+
+    <p>Dans cet exemple, le niveau de journalisation gÃ©nÃ©ral est dÃ©fini
+    Ã&nbsp; info, et Ã&nbsp; <code>trace5</code> pour <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+    <div class="note">Cette directive remplace les directives de journalisation par
+    module des versions prÃ©cÃ©dentes du serveur, comme
+    <code>RewriteLog</code>.</div>
+ </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="accesslog" id="accesslog">Journal des accès</a></h2>
     
@@ -575,6 +600,7 @@
     <p>Comme la journalisation conditionnelle, la journalisation redirigée est
     un outil très puissant, mais si elle existe, il est préférable d'utiliser
     une solution plus simple comme le traitement à posteriori hors ligne.</p>
+  
 
   <p>Par défaut, le processus de redirection du journal est lancé sans
   invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"
@@ -594,7 +620,7 @@
     redémarrage. La notation "<code>||</code>" est aussi supportée pour
     des raisons de compatibilité avec Apache 2.2 et est équivalente à
     "<code>|</code>".</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Hôtes virtuels</a></h2>
     

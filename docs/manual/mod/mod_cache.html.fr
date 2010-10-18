@@ -62,13 +62,16 @@ URI.</td></tr>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachedetailheader">CacheDetailHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedisable">CacheDisable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheenable">CacheEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheheader">CacheHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachekeybaseurl">CacheKeyBaseURL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelock">CacheLock</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelockmaxage">CacheLockMaxAge</a></li>
@@ -76,6 +79,8 @@ URI.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheminexpire">CacheMinExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachequickhandler">CacheQuickHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachestaleonerror">CacheStaleOnError</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachestoreexpired">CacheStoreExpired</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
 </ul>
@@ -85,6 +90,7 @@ URI.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Exemple de configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#thunderingherd">Eviter une tempête de requête</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#finecontrol">Contrôle fin via le filtre CACHE</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#status">Etat du cache et journalisation</a></li>
 </ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../caching.html">Guide de la mise en
@@ -272,6 +278,41 @@ cache</a></li>
   servies soient à jour. En effet, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> n'est pas
   en mesure d'effectuer cette opération à votre place.</div>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="status" id="status">Etat du cache et journalisation</a></h2>
+  <p>Lorsque <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> a décidé s'il devait ou non
+  servir une entité depuis le cache, les raisons précises de cette
+  décision sont enregistrées dans l'environnement du sous-processus
+  interne à la requête sous la clé <strong>cache-status</strong>.
+  Cette information peut être journalisée via la directive <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> comme suit :</p>
+
+  <div class="example"><p><code>
+    LogFormat "%{cache-status}e ..."
+  </code></p></div>
+
+  <p>En fonction de la décision prise, l'information est aussi écrite
+  dans l'environnement du sous-processus sous une des trois clés
+  suivantes :</p>
+
+  <dl>
+    <dt>cache-hit</dt><dd>Le contenu a été servi depuis le cache.</dd>
+    <dt>cache-revalidate</dt><dd>Le contenu du cache était périmé, a été
+    mis à jour avec succès, puis servi depuis le cache.</dd>
+    <dt>cache-miss</dt><dd>Le contenu n'était pas dans le cache et a été
+    servi directement depuis le serveur demandé.</dd>
+  </dl>
+
+  <p>Il est alors possible d'envisager une journalisation conditionnelle
+  du traitement des requêtes par rapport au cache comme dans l'exemple
+  suivant :</p>
+
+  <div class="example"><p><code>
+    CustomLog requetes-depuis-cache.log common env=cache-hit<br />
+    CustomLog requetes-hors-cache.log common env=cache-miss<br />
+    CustomLog requetes-avec-mise-a-jour-du-cache.log common env=cache-revalidate<br />
+  </code></p></div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a></h2>
@@ -280,7 +321,7 @@ cache</a></li>
 lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDefaultExpire <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheDefaultExpire 3600 (une heure)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -295,6 +336,45 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
     <div class="example"><p><code>
       CacheDefaultExpire 86400
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDetailHeader" id="CacheDetailHeader">CacheDetailHeader</a> <a name="cachedetailheader" id="cachedetailheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-tête X-Cache-Detail à la réponse.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDetailHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheDetailHeader off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+</table>
+  <p>Lorsque la directive <code class="directive"><a href="#cachedetailheader">CacheDetailHeader</a></code> est définie à on, un
+  en-tête <strong>X-Cache-Detail</strong> est ajouté à la réponse et
+  contient les raisons précises d'une décision d'utilisation du cache
+  vis à vis de cette dernière.</p>
+   
+  <p>Ceci peut s'avérer utile au cours du développement de services
+  RESTful mis en cache pour obtenir des informations supplémentaires à
+  propos des décisions vis à vis du cache écrites dans les en-têtes de
+  la réponse. Il est ainsi possible de vérifier si
+  <code>Cache-Control</code> et d'autres en-têtes ont été correctement
+  utilisés par le service et le client.</p>
+  
+  <p>Si le gestionnaire normal est utilisé, cette directive peut se
+  situer dans une section <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code>. Si c'est le gestionnaire
+  rapide qui est utilisé, elle doit se situer dans un contexte de
+  serveur principal ou de serveur virtuel, sinon elle sera ignorée.</p>
+
+  <div class="example"><p><code>
+    # Active l'en-tête X-Cache-Detail<br />
+    CacheDetailHeader on<br />
+  </code></p></div>
+
+  <div class="example"><p><code>
+    X-Cache-Detail: "conditional cache hit: entity refreshed" from localhost<br />
+  </code></p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -407,6 +487,45 @@ Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheHeader" id="CacheHeader">CacheHeader</a> <a name="cacheheader" id="cacheheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-tête X-Cache à la réponse.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheHeader off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+</table>
+  <p>Lorsque la directive <code class="directive"><a href="#cacheheader">CacheHeader</a></code> est définie à on, un
+  en-tête <strong>X-Cache</strong> est ajouté à la réponse et contient
+  l'état du cache pour cette dernière. Si le gestionnaire normal est
+  utilisé, cette directive peut se situer dans une section <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code>. Si c'est le
+  gestionnaire rapide qui est utilisé, elle doit se situer dans un
+  contexte de serveur principal ou de serveur virtuel, sinon elle sera
+  ignorée.</p>
+
+  <dl>
+    <dt><strong>HIT</strong></dt><dd>Le contenu était à jour et a été
+    servi depuis le cache.</dd>
+    <dt><strong>REVALIDATE</strong></dt><dd>Le contenu était périmé, a
+    été mis à jour, puis a été servi depuis le cache.</dd>
+    <dt><strong>MISS</strong></dt><dd>Le contenu n'a pas été servi
+    depuis le cache, mais directement depuis le serveur demandé.</dd>
+  </dl>
+
+  <div class="example"><p><code>
+    # Active l'en-tête X-Cache<br />
+    CacheHeader on<br />
+  </code></p></div>
+
+  <div class="example"><p><code>
+    X-Cache: HIT from localhost<br />
+  </code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore les en-têtes de requête enjoignant de ne pas servir
@@ -507,7 +626,7 @@ le contenu au client depuis le cache</td></tr>
 Modified.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -602,13 +721,45 @@ l'URL lors de la mise en cache
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheKeyBaseURL" id="CacheKeyBaseURL">CacheKeyBaseURL</a> <a name="cachekeybaseurl" id="cachekeybaseurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Remplace l'URL de base des clés du cache mandatées en
+inverse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheKeyBaseURL <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheKeyBaseURL http://example.com</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+</table>
+  <p>Lorsque la directive <code class="directive"><a href="#cachekeybaseurl">CacheKeyBaseURL</a></code> est utilisée, l'URL
+  spécifiée sera utilisée comme URL de base pour calculer l'URL des clés
+  du cache dans la configuration du mandataire inverse. Par défaut,
+  c'est le protocole/nom d'hôte/port du serveur virtuel courant qui sera
+  utilisé pour construire la clé de cache. Dans le cas d'un cluster de
+  machines, si toutes les entrées du cache doivent posséder la même clé,
+  cette directive permet de spécifier une nouvelle URL de base.</p>
+
+  <div class="example"><p><code>
+    # Remplace l'URL de base de la clé de cache.<br />
+    CacheKeyBaseURL http://www.example.com/<br />
+  </code></p></div>
+
+  <div class="warning">Prenez garde en définissant cette directive. Si
+  deux serveurs virtuels distincts possèdent accidentellement la même
+  URL de base, les entrées en provenance d'un serveur virtuel seront
+  servies par l'autre.</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le facteur utilisé pour générer une date d'expiration en
 fonction de la date de dernière modification.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLastModifiedFactor <var>flottant</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -709,7 +860,7 @@ fonction de la date de dernière modification.</td></tr>
 document</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMaxExpire <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMaxExpire 86400 (une journée)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -733,7 +884,7 @@ document</td></tr>
 document</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMinExpire <var>secondes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMinExpire 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -799,13 +950,65 @@ document</td></tr>
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheStaleOnError" id="CacheStaleOnError">CacheStaleOnError</a> <a name="cachestaleonerror" id="cachestaleonerror">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sert du contenu non à jour à la place de réponses 5xx.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStaleOnError <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStaleOnError on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+</table>
+  <p>Lorsque la directive <code class="directive"><a href="#cachestaleonerror">CacheStaleOnError</a></code> est définie à on, et
+  si des données non mises à jour sont disponibles dans le cache, ce
+  dernier renverra ces données, plutôt qu'une éventuelle réponse 5xx en
+  provenance du serveur d'arrière-plan. Alors que l'en-tête
+  Cache-Control envoyé par les clients sera respecté, et que les clients
+  recevront donc dans ce cas la réponse 5xx brute à leur requête, cette
+  réponse 5xx renvoyée au client n'invalidera pas le contenu dans le
+  cache.  </p>
+
+  <div class="example"><p><code>
+    # Sert des données non mises à jour en cas d'erreur.<br />
+    CacheStaleOnError on<br />
+  </code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheStoreExpired" id="CacheStoreExpired">CacheStoreExpired</a> <a name="cachestoreexpired" id="cachestoreexpired">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tente de mettre en cache les réponses que le serveur
+considère comme arrivées à expiration</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStoreExpired On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStoreExpired Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>Depuis la version 2.2.4, les réponses qui sont arrivées à
+    expiration ne sont pas stockées dans le cache. La directive
+    <code class="directive">CacheStoreExpired</code> permet de modifier ce
+    comportement. Avec <code class="directive">CacheStoreExpired</code> On, le
+    serveur tente de mettre en cache la ressource si elle est périmée.
+    Les requêtes suivantes vont déclencher une requête si-modifié-depuis
+    de la part du serveur d'origine, et la réponse sera renvoyée à
+    partir du cache si la ressource d'arrière-plan n'a pas été modifiée.</p>
+
+    <div class="example"><p><code>
+      CacheStoreExpired On
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a name="cachestorenostore" id="cachestorenostore">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tente de mettre en cache les requêtes ou réponses dont
 l'entête Cache-Control: a pour valeur no-store.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStoreNoStore On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStoreNoStore Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -846,7 +1049,7 @@ l'entête Cache-Control: a pour valeur no-store.</td></tr>
 marquées comme privées</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStorePrivate On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStorePrivate Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>

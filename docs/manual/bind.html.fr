@@ -86,12 +86,14 @@
     <div class="example"><p><code>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
-    
-    <div class="warning"><p>Utiliser plusieurs directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> qui se chevauchent va générer une erreur fatale qui empêchera le serveur de démarrer.</p>
 
-     <div class="example"><p><code>
-     (48)Address already in use: make_sock: could not bind to address [::]:80
-     </code></p></div>
+    <div class="warning"><p>Des directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    imbriquÃ©es provoqueront une erreur fatale qui
+    empÃªchera le serveur de dÃ©marrer.</p>
+    
+    <div class="example"><p><code>
+    (48)Address already in use: make_sock: could not bind to address [::]:80
+    </code></p></div>
     </div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
