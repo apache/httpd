@@ -1595,6 +1595,8 @@ static void cache_insert_error_filter(request_rec *r)
     if (dummy) {
         cache_request_rec *cache = (cache_request_rec *) dummy;
 
+        ap_remove_output_filter(cache->remove_url_filter);
+
         if (cache->stale_handle && cache->save_filter
                 && !cache->stale_handle->cache_obj->info.control.must_revalidate
                 && !cache->stale_handle->cache_obj->info.control.proxy_revalidate) {
@@ -1626,8 +1628,6 @@ static void cache_insert_error_filter(request_rec *r)
                 apr_table_mergen(r->err_headers_out, "Warning",
                         "110 Response is stale");
             }
-
-            ap_remove_output_filter(cache->remove_url_filter);
 
             cache_run_cache_status(
                     cache->handle,
