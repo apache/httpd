@@ -144,6 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      to return cached content at all, and respect a "Cache-Control:
      no-cache" header from a client. Previously, "no-cache" would
      behave like "max-age=0".
+     PR49200
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=992625
      2.2.x patch: trunk patch works
      +1: minfrin
@@ -153,15 +154,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      uncacheable.
      PR45341
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
-     2.2.x patch: trunk patch works
-     +1: minfrin
-
-   * mod_cache: Check the request to determine whether we are allowed
-     to return cached content at all, and respect a "Cache-Control:
-     no-cache" header from a client. Previously, "no-cache" would
-     behave like "max-age=0".
-     PR49200
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=992625
      2.2.x patch: trunk patch works
      +1: minfrin
 
