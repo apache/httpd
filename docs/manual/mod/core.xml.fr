@@ -1987,7 +1987,7 @@ host</context>
 
     <p>Lorsqu'un client utilise une connexion persistante, elle comptera
     pour une seule requ&ecirc;te pour la directive <directive
-    module="mpm_common">MaxConnectionsPerChild<</directive>, quel
+    module="mpm_common">MaxConnectionsPerChild</directive>, quel
     que soit le nombre de requ&ecirc;tes transmises via cette connexion.</p>
 </usage>
 
