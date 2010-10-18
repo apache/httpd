@@ -64,6 +64,8 @@ d'URIs</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedirlevels">CacheDirLevels</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxfilesize">CacheMaxFileSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheminfilesize">CacheMinFileSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachereadsize">CacheReadSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachereadtime">CacheReadTime</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li>
 </ul>
 </div>
@@ -135,7 +137,7 @@ cache.</td></tr>
 être stocké dans le cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMaxFileSize <var>octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
@@ -155,7 +157,7 @@ cache.</td></tr>
 être stocké dans le cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMinFileSize <var>octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
@@ -165,6 +167,68 @@ cache.</td></tr>
 
     <div class="example"><p><code>
       CacheMinFileSize 64
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheReadSize" id="CacheReadSize">CacheReadSize</a> <a name="cachereadsize" id="cachereadsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantité minimale (en octets) de données à lire et à
+mettre en cache avant de les envoyer au client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheReadSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheReadSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>La directive <code class="directive">CacheReadSize</code> permet de
+    définir la quantité minimale de données, en octets, à lire depuis le
+    serveur d'arrière-plan avant de les envoyer au client. Avec la
+    valeur par défaut zéro, toute donnée de toutes tailles est envoyée
+    au client dès qu'elle est disponible. Avec une valeur non nulle, le
+    cache disque met en tampon au moins la quantité de données
+    correspondante avant d'envoyer la réponse au client. Les
+    performances peuvent s'en trouver améliorées lorsqu'on met en cache
+    du contenu en provenance d'un mandataire inverse.</p>
+
+    <p>Cette directive ne prend effet que lorsque les données sont
+    enregistrées dans le cache, et non lorsque les données sont servies à
+    partir du cache.</p>
+  
+    <div class="example"><p><code>
+      CacheReadSize 102400
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheReadTime" id="CacheReadTime">CacheReadTime</a> <a name="cachereadtime" id="cachereadtime">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le temps minimum (en millisecondes) qui doit s'écouler
+avant d'envoyer les données au client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheReadTime <var>millisecondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheReadTime 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>La directive <code class="directive">CacheReadTime</code> permet de
+    définir le temps minimum qui doit s'écouler avant d'essayer
+    d'envoyer des données au client. Pendant ce temps, les données sont
+    mises en tampon avant de pouvoir être envoyées au client. Les
+    performances peuvent s'en trouver améliorées lorsqu'on met en cache
+    du contenu en provenance d'un mandataire inverse.</p>
+
+    <p>La valeur par défaut zéro désactive cette option.</p>
+
+    <p>Cette directive ne prend effet que lorsque les données sont
+    enregistrées dans le cache, et non lorsque les données sont servies à
+    partir du cache. Il est recommandé d'harmoniser l'utilisation de cette
+    directive avec celle de la directive <code class="directive"><a href="#cachereadsize">CacheReadSize</a></code>, afin de s'assurer
+    que le serveur n'effectue pas une mise en tampon excessive au cas
+    où les données arriveraient plus vite que prévu.</p>
+
+    <div class="example"><p><code>
+      CacheReadTime 1000
     </code></p></div>
 
 </div>

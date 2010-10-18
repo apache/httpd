@@ -62,16 +62,22 @@ d'Apache</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapauthorizeprefix">AuthLDAPAuthorizePrefix</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapcompareasuser">AuthLDAPCompareAsUser</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
@@ -682,11 +688,16 @@ Require valid-user
 <h2><a name="exposed" id="exposed">Mise à disposition des informations de
 connexion</a></h2>
 
-    <p>Au cours du processus d'authentification, les attributs LDAP
-    spécifiés par la directive <code class="directive"><a href="#authldapurl">AuthLDAPUrl</a></code> sont enregistrés
+    <p>Au cours du processus d'<em>authentification</em>, les attributs LDAP
+    spécifiés par la directive <code class="directive"><a href="#authldapurl">authldapurl</a></code> sont enregistrés
     dans des variables d'environnement préfixées par la chaîne
     "AUTHENTICATE_".</p>
 
+    <p>Au cours du processus d'<em>autorisation</em>, les attributs LDAP
+    spécifiés par la directive <code class="directive"><a href="#authldapurl">authldapurl</a></code> sont enregistrés
+    dans des variables d'environnement préfixées par la chaîne
+    "AUTHORIZE_".</p>
+    
     <p>Si les champs attribut contiennent le nom, le CN et le numéro de
     téléphone d'un utilisateur, un programme CGI pourra accéder à ces
     informations sans devoir effectuer une autre requête LDAP pour
@@ -826,6 +837,69 @@ Require group <em>mon-fichier-de-groupes</em>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPAuthorizePrefix" id="AuthLDAPAuthorizePrefix">AuthLDAPAuthorizePrefix</a> <a name="authldapauthorizeprefix" id="authldapauthorizeprefix">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le préfixe ajouté aux variables d'environnement
+durant la phase d'autorisation</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPAuthorizePrefix <em>préfixe</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPAuthorizePrefix AUTHORIZE_</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.6</td></tr>
+</table>
+    <p>Cette directive permet de spécifier le préfixe ajouté aux
+    variables d'environnement durant la phase d'autorisation. Si la
+    valeur spécifiée est <em>AUTHENTICATE_</em>, les utilisateurs de ces
+    variables d'environnement verront les mêmes informations, que le
+    serveur effectue une authentification, une autorisation, ou les
+    deux.</p>
+
+    <div class="note"><h3>Note</h3>
+    Aucune variable d'autorisation n'est définie lorsqu'un utilisateur
+    s'est vu autoriser l'accès via la directive <code>Require
+    valid-user</code>.
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPBindAuthoritative" id="AuthLDAPBindAuthoritative">AuthLDAPBindAuthoritative</a> <a name="authldapbindauthoritative" id="authldapbindauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'on doit utiliser d'autres fournisseurs
+d'authentification lorsque le serveur ne peut pas valider les données
+d'authentification de l'utilisateur, alors que ce dernier possède un
+DN.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPBindAuthoritative<em>off|on</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPBindAuthoritative on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>Par défaut, des fournisseurs d'authentification sont appelés
+    si un utilisateur ne possède pas de DN, mais ne le sont pas si
+    l'utilisateur possède un DN et si son mot de passe ne peut pas être
+    vérifié lors d'une connexion au serveur LDAP. Si la directive
+    <code class="directive"><a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></code> est
+    définie à <em>off</em>, d'autres modules d'authentification
+    configurés auront une chance de valider le mot de passe de
+    l'utilisateur si la tentative de connexion au serveur LDAP échoue
+    pour une raison quelconque (avec les données d'authentification
+    fournies).</p>
+    <p>Ceci permet aux utilisateurs présent à la fois dans l'annuaire
+    LDAP et dans un fichier <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> de s'authentifier
+    lorsque le serveur LDAP est disponible, alors que le compte de
+    l'utilisateur est verrouillé ou que son mot de passe est
+    inutilisable pour une raison quelconque.</p>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li>
+<li><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Un DN optionnel pour se connecter au serveur
@@ -894,6 +968,46 @@ langage/jeu de caractères</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPCompareAsUser" id="AuthLDAPCompareAsUser">AuthLDAPCompareAsUser</a> <a name="authldapcompareasuser" id="authldapcompareasuser">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation des données d'authentification de l'utilisateur
+pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPCompareAsUser on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPCompareAsUser off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version version 2.3.6</td></tr>
+</table>
+    <p>Lorsque cette directive est définie, et si
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> a authentifié l'utilisateur, les
+    recherches LDAP pour les autorisations utilisent le nom distinctif
+    trouvé (DN) et le mot de passe d'authentification basique HTTP de
+    l'utilisateur authentifié au lieu des données d'authentification
+    configurées au niveau du serveur.</p>
+
+    <p>Les vérifications d'autorisation <em>ldap-attribute</em>,
+    <em>ldap-user</em>, et <em>ldap-group</em> (niveau simple seulement)
+    utilisent des comparaisons.</p>
+
+    <p>Cette directive n'a d'effet sur les comparaisons effectuées au
+    cours des traitements de groupe imbriqués, et lorsque la directive
+    <code class="directive"><a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></code>
+    est aussi activée.</p>
+    
+    <p>Cette directive ne doit être utilisée que si votre serveur LDAP
+     n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
+     utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
+     </p>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code></li>
+<li><code class="directive"><a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a> <a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise le serveur LDAP pour comparer les DNs</td></tr>
@@ -941,6 +1055,7 @@ alias</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'attribut LDAP utilisé pour vérifier l'appartenance d'un
 utilisateur à un groupe.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPGroupAttribute <em>attribut</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPGroupAttribute member uniquemember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -977,6 +1092,102 @@ appartenance à un groupe</td></tr>
     groupe. Dans le cas contraire, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>
     vérifiera si <code>bjenson</code> est un membre du groupe.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPInitialBindAsUser" id="AuthLDAPInitialBindAsUser">AuthLDAPInitialBindAsUser</a> <a name="authldapinitialbindasuser" id="authldapinitialbindasuser">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le serveur effectue la recherche initiale du
+DN en utilisant le nom propre de l'utilisateur pour l'authentification
+de base
+et non de manière anonyme, ou en utilisant des données d'authentification
+codées en dur pour le serveur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPInitialBindAsUser <em>off|on</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPInitialBindAsUser off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.6</td></tr>
+</table>
+    <p>Par défaut, le serveur convertit le nom d'utilisateur pour
+    l'authentification de base en nom distinctif LDAP (DN) soit de
+    manière anonyme, soit avec un couple nom/mot de passe dédié. Cette
+    directive permet de forcer le serveur à utiliser les véritables nom
+    d'utilisateur et mot de passe fournis par l'utilisateur pour
+    effectuer la recherche initiale du DN.</p>
+ 
+     <p>Si le nom d'utilisateur ne peut pas s'authentifier directement
+     et nécessite de légères modifications, voir la directive <code class="directive"><a href="#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></code>.</p>
+   
+     <p>Cette directive ne doit être utilisée que si votre serveur LDAP
+     n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
+     utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
+     </p>
+
+     <div class="note"><h3>Non disponible dans la cas d'une autorisation seule</h3>
+         On ne peut utiliser cette directive que si ce module
+	 effectue une authentification, et n'a aucun effet si ce module
+	 n'est utilisé que pour les processus d'autorisation.
+     </div>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></code></li>
+<li><code class="directive"><a href="#authldapcompareasuser">AuthLDAPCompareAsUser</a></code></li>
+<li><code class="directive"><a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPInitialBindPattern" id="AuthLDAPInitialBindPattern">AuthLDAPInitialBindPattern</a> <a name="authldapinitialbindpattern" id="authldapinitialbindpattern">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie la modification a apporter au nom d'utilisateur
+pour l'authentification de base lors de l'authentification auprès du
+serveur LDAP pour effectuer une recherche de DN</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPInitialBindPattern (.*) $1 (nom de l'utilisateur
+distant utilisé tel quel)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.6</td></tr>
+</table>
+    <p>Si la directive <code class="directive"><a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code> est
+    définie à <em>ON</em>, le nom utilisateur pour l'authentification de
+    base sera transformé selon l'expression rationnelle
+    <var>regex</var> et l'argument <var>substitution</var> spécifiés.</p>
+
+    <p>L'expression rationnelle est comparée au nom d'utilisateur pour
+    l'authentification de base courant. L'argument
+    <var>substitution</var> peut contenir des références arrières, mais
+    n'effectue aucune autre interpolation de variable.</p>
+     
+    <p>Cette directive ne doit être utilisée que si votre serveur LDAP
+     n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
+     utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
+     </p>
+
+    <div class="example"><p><code> AuthLDAPInitialBindPattern (.+) $1@example.com </code></p></div>
+    <div class="example"><p><code> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</code></p></div>
+
+    <div class="note"><h3>Non disponible dans la cas d'une autorisation seule</h3>
+         On ne peut utiliser cette directive que si ce module
+	 effectue une authentification, et n'a aucun effet si ce module
+	 n'est utilisé que pour les processus d'autorisation.
+     </div>
+    <div class="note"><h3>Débogage</h3>
+        Le DN de substitution est enregistré dans la variable
+	d'environnement <em>LDAP_BINDASUSER</em>. Si l'expression
+	rationnelle ne convient pas, le nom d'utilisateur est utilisé
+	tel quel.
+    </div>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPMaxSubGroupDepth" id="AuthLDAPMaxSubGroupDepth">AuthLDAPMaxSubGroupDepth</a> <a name="authldapmaxsubgroupdepth" id="authldapmaxsubgroupdepth">Directive</a></h2>
@@ -1047,12 +1258,53 @@ d'environnement REMOTE_USER</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPSearchAsUser" id="AuthLDAPSearchAsUser">AuthLDAPSearchAsUser</a> <a name="authldapsearchasuser" id="authldapsearchasuser">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise les données d'authentification de l'utilisateur
+pour la recherche des autorisations</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPSearchAsUser on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPSearchAsUser off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.6</td></tr>
+</table>
+    <p>Lorsque cette directive est définie, et si
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> a authentifié l'utilisateur, les
+    recherches LDAP pour définir les autorisations utilisent le nom
+    distinctif (DN) trouvé et le mot de passe pour l'authentification de
+    base HTTP de l'utilisateur authentifié, au lieu des données
+    d'authentification configurées au niveau du serveur.</p>
+
+    <p>Les vérifications d'autorisation <em>ldap-filter</em> et
+    <em>ldap-dn</em> utilisent des recherches.</p>
+
+    <p>Cette directive n'a d'effet sur les comparaisons effectuées au
+    cours des traitements de groupe imbriqués, et lorsque la directive
+    <code class="directive"><a href="#authldapcompareasuser">AuthLDAPCompareAsUser</a></code>
+    est aussi activée.</p>
+
+     <p>Cette directive ne doit être utilisée que si votre serveur LDAP
+     n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
+     utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
+     </p>
+
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code></li>
+<li><code class="directive"><a href="#authldapcompareasuser">AuthLDAPCompareAsUser</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPSubGroupAttribute" id="AuthLDAPSubGroupAttribute">AuthLDAPSubGroupAttribute</a> <a name="authldapsubgroupattribute" id="authldapsubgroupattribute">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie les noms d'attribut, un par directive, utilisés
 pour différencier les membres du groupe courant qui sont eux-mêmes des
 groupes.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPSubGroupAttribute <em>attribut</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPSubgroupAttribute member uniquemember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -1077,6 +1329,7 @@ groupes.</td></tr>
 objets de l'annuaire qui sont des groupes au cours du traitement des
 sous-groupes.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthLDAPSubGroupClass <em>ObjectClass-LDAP</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthLDAPSubGroupClass groupOfNames groupOfUniqueNames</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>

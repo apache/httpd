@@ -39,10 +39,7 @@ d'Apache</td></tr></table>
     utiliser cette directive à l'intérieur de sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou de fichiers
     <code><a href="core.html#accessfilename">.htaccess</a> </code> pour
     contrôler l'accès à certaines zones du serveur. Le contrôle d'accès
-    peut être effectué en fonction du nom d'hôte, de l'adresse IP, ou
-    d'autres caractéristiques de la requête client, telles qu'elles sont
-    enregistrées dans des <a href="../env.html">variables
-    d'environnement</a>.</p>
+    peut être effectué en fonction du nom d'hôte ou de l'adresse IP.</p>
 
     <p>En général, les directives de restriction d'accès s'appliquent à
     toutes les méthodes d'accès (<code>GET</code>, <code>PUT</code>,
@@ -70,46 +67,15 @@ contrôle d'accès</a></li>
     <p>La directive Apache <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> est utilisée au cours de
     la phase d'autorisation pour vérifier si un utilisateur se voit
     accorder ou refuser l'accès à une ressource. mod_authz_host fournit
-    les types d'autorisation <code>env</code>, <code>ip</code>,
-    <code>host</code> et <code>all</code>. D'autres types d'autorisation
+    les types d'autorisation <code>ip</code>, <code>host</code>. D'autres
+    types d'autorisation
     sont aussi disponibles, mais nécessitent le chargement des modules
     d'autorisation appropriés.</p>
 
     <p>Ces fournisseurs d'autorisation permettent de déterminer quels
     hôtes peuvent accéder à une zone du serveur. On peut contrôler
-    l'accès en fonction du nom d'hôte, de l'adresse IP, d'un intervalle
-    d'adresses IP, ou d'autres caractéristiques de la requête client
-    enregistrées dans des variables d'environnement.</p>
-
-<h3><a name="reqenv" id="reqenv">Require env</a></h3>
-
-    <p>Le fournisseur <code>env</code> permet de contrôler l'accès au
-    serveur en fonction de l'existence d'une <a href="../env.html">variable d'environnement</a>. Lorsque
-    <code>Require env <var>env-var</var></code> est spécifié, la
-    requête est autorisée si la variable d'environnement
-    <var>env-var</var> existe. Le serveur fournit la possibilité
-    de définir des variables d'environnement avec une grande souplesse
-    en fonction des caractéristiques de la requête client à l'aide des
-    directives fournies par le module <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>. On
-    peut ainsi utiliser cette directive pour contrôler l'accès en
-    fonction de certains en-têtes comme <code>User-Agent</code> (type de
-    navigateur), <code>Referer</code>, etc...</p>
-
-    <div class="example"><h3>Exemple :</h3><p><code>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 laisse_moi_entrer<br />
-      &lt;Directory /docroot&gt;<br />
-      <span class="indent">
-        Require env laisse_moi_entrer<br />
-      </span>
-      &lt;/Directory&gt;
-    </code></p></div>
-
-    <p>Dans cet exemple, les navigateurs dont la chaîne de description
-    de l'en-tête user-agent commence par <code>KnockKnock/2.0</code> se
-    verront accorder l'accès, alors que tous les autres se le verront
-    refuser.</p>
-
-
+    l'accès en fonction du nom d'hôte, de l'adresse IP, ou d'un intervalle
+    d'adresses IP.</p>
 
 <h3><a name="reqip" id="reqip">Require ip</a></h3>
 
@@ -197,24 +163,22 @@ contrôle d'accès</a></li>
 
 
 
-<h3><a name="reqall" id="reqall">Require all</a></h3>
+<h3><a name="reqlocal" id="reqlocal">Require local</a></h3>
+    <p>Le fournisseur <code>local</code> autorise l'accès au serveur si
+    l'une au moins de ces conditions est satisfaite :</p>
 
-    <p>Le fournisseur <code>all</code> imite la fonctionnalité
-    précédemment fournie par les directives 'Allow from all' et 'Deny
-    from all'. Le fournisseur accepte un des deux arguments 'granted' ou
-    'denied'. Dans les exemples suivants, le premier
-    accorde l'accès à toutes les requêtes, alors que le second le
-    refuse.</p>
+    <ul>
+        <li>l'adresse IP du client correspond à 127.0.0.0/8</li>
+        <li>l'adresse IP du client est ::1</li>
+        <li>les adresses IP du client et du serveur sont identiques</li>
+    </ul>
+
+    <p>L'exemple suivant montre une méthode simple pour sélectionner les
+    connexions en provenance de l'hôte local :</p>
 
     <div class="example"><p><code>
-    Require all granted<br />
+    Require local
     </code></p></div>
-
-    <div class="example"><p><code>
-    Require all denied<br />
-    </code></p></div>
-
-
 
 
 </div>

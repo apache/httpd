@@ -989,24 +989,26 @@ l'espace d'URLs du serveur local</td></tr>
     <code>clé=valeur</code> dont la description fait l'objet du tableau
     ci-dessous.</p>
 
-    <p>La définition du paramètre <code>min</code> permet de déterminer
-    le nombre de connexions vers le serveur d'arrière-plan qui seront
-    conservées après usage. Il sera possible de créer jusqu'à
-    <code>smax</code> (Soft Maximum) connexions à la demande. Toute
-    connexion en surnombre par rapport à <code>smax</code> aura une
-    durée de vie limitée, ou <code>ttl</code>. En tout état de cause,
-    Apache httpd ne créera jamais plus de <code>max</code> (Hard
-    Maximum) connexions vers le serveur d'arrière-plan.</p>
+    <p>Par défaut, mod_proxy permet et met en réserve le nombre maximum
+    de connexions pouvant être utilisées simultanément par le processus
+    enfant concerné du serveur web. Le paramètre <code>max</code> permet
+    de réduire cette valeur par défaut. Le paramètre <code>ttl</code>,
+    quant à lui, permet de définir une durée de vie optionnelle ; les
+    connexions qui n'ont pas été utilisées pendant au moins
+    <code>ttl</code> secondes seront fermées. <code>ttl</code> permet
+    aussi d'empêcher l'utilisation d'une connexion susceptible d'être
+    fermée suite à une fin de vie de connexion persistante sur le
+    serveur d'arrière-plan.</p>
 
     <p>Le groupement de connexions est maintenu au niveau de chaque
-    processus enfant du serveur web, et les définitions de
-    <code>min</code>, <code>max</code>, et <code>smax</code> ne font
+    processus enfant du serveur web, et <code>max</code>, ainsi que les
+    autres paramètres, ne font
     l'objet d'aucune coordination entre les différents processus
     enfants, sauf si un seul processus enfant est autorisé par la
     configuration ou la conception du module multi-processus (MPM).</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
-        ProxyPass /exemple http://backend.example.com smax=5 max=20 ttl=120 retry=300
+        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
     </code></p></div>
 
     <table>
@@ -1015,25 +1017,30 @@ l'espace d'URLs du serveur local</td></tr>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Nombre minimum de connexions vers le serveur
-	d'arrière-plan qui seront conservées après usage.</td></tr>
+        <td>Nombre minimum d'entrées dans le pool de connexions,
+	distinct du nombre de connexions effectif. La valeur par défaut
+	ne doit être modifiée que dans des circonstances particulières
+	où la mémoire associée aux connexions avec le serveur
+	d'arrière-plan doit être préallouée ou réservée dans le tas.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
-        <td>Nombre maximum absolu de connexions autorisées vers le
-	serveur d'arrière-plan. La valeur par défaut du nombre maximum
-	absolu de connexions correspond au nombre de threads par
-	processus pour le MPM utilisé. Pour le MPM Prefork, la valeur
-	est toujours 1, alors que pour le MPM Worker, elle est contrôlée
-	par la directive <code class="directive">ThreadsPerChild</code>. Apache
-	httpd ne créera jamais plus de connexions vers le serveur
-	d'arrière-plan que le maximum absolu.</td></tr>
+        <td>Nombre maximum de connexions autorisées vers le serveur
+	d'arrière-plan. La valeur par défaut correspond au nombre de
+	threads par processus pour le MPM (Module Multi Processus)
+	actif. La valeur sera toujours 1 pour le MPM Prefork, alors
+	qu'elle dépendra de la définition de la directive
+	<code class="directive">ThreadsPerChild</code> pour les autres MPMs.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Des connexions pourront être créées à la demande jusqu'au
-	maximum relatif. Toute connexion en surnombre par rapport au
-	maximum relatif se verra attribuer une durée de vie
-	<code>ttl</code>.
-    </td></tr>
+        <td>Les entrées du pool de connexions conservées au delà de
+	cette limite sont libérées au cours de certaines opérations si
+	elles n'ont pas été utilisées au cours de leur durée de vie,
+	définie par le paramètre <code>ttl</code>. Si l'entrée du pool
+	de connexions est associée à une connexion, cette dernière sera
+	fermée. La valeur par défaut ne doit être modifiée que dans des
+	circonstances particulières où les entrées du pool de connexions
+	et toutes connexions associées qui ont dépassé leur durée de vie
+	doivent être libérées ou fermées de manière plus autoritaire.</td></tr>
     <tr><td>acquire</td>
         <td>-</td>
         <td>Cette clé permet de définir le délai maximum d'attente pour
@@ -1181,10 +1188,10 @@ l'espace d'URLs du serveur local</td></tr>
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td>Durée de vie des connexions inactives en surnombre par
-	rapport aux <code>smax</code> premières connexions en secondes.
-	Apache httpd fermera toutes les connexions qui n'ont pas été utilisées
-	pendant ce laps de temps.
+        <td>Durée de vie des connexions inactives et des entrées du pool
+	de connexions associées en secondes. Celles qui n'ont pas été
+	utilisées au bout de <code>ttl</code> secondes seront libérées
+	ou fermées.
     </td></tr>
 
     </table>
@@ -1314,7 +1321,11 @@ l'espace d'URLs du serveur local</td></tr>
 
     <p>Lorsque la directive ProxyPass est utilisée à l'intérieur d'une
     section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier argument est omis et le répertoire
-    local est obtenu à partir de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
+    local est obtenu à partir de la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. Il en sera de même dans une
+    section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> ; cependant, ProxyPass
+    n'interprète pas les expressions rationnelles, et il sera ici
+    nécessaire d'utiliser la directive
+    <code class="directive">ProxyPassMatch</code> à la place.</p>
 
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
@@ -1402,6 +1413,14 @@ du serveur local en utilisant des expressions rationnelles</td></tr>
     <p>Le drapeau <code>!</code> vous permet de ne pas mandater un
     sous-répertoire donné.</p>
 
+    <p>Dans une section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, le premier argument est
+    omis et l'expression rationnelle est obtenue à partir de la directive
+    <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>.</p>
+
+    <p>Si vous avez besoin d'une configuration du mandataire inverse
+    plus flexible, voyez la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> avec le drapeau
+    <code>[P]</code>.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">Directive</a></h2>
@@ -1475,7 +1494,12 @@ par un serveur mandaté en inverse</td></tr>
 
     <p>Lorsque cette directive est utilisée dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier
     argument est omis et le répertoire local est obtenu à partir de
-    l'argument de la directive <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
+    l'argument de la directive <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. Il en est de même à l'intérieur
+    d'une section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, mais le résultat ne sera
+    probablement pas celui attendu car ProxyPassReverse va interpréter
+    l'expression rationnelle littéralement comme un chemin ; si besoin
+    est dans ce cas, définissez la directive ProxyPassReverse en dehors
+    de la section, ou dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> séparée.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

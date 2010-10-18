@@ -50,6 +50,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
@@ -766,8 +767,7 @@ combinent entre elles à la réception d'une requête</li>
 <div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives qui s'appliquent à des répertoires
-du système de fichiers correspondant à une expression rationnelle et à
-leurs sous-répertoires</td></tr>
+du système de fichiers correspondant à une expression rationnelle</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/DirectoryMatch&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
@@ -777,7 +777,7 @@ leurs sous-répertoires</td></tr>
     <p>Les balises <code class="directive">&lt;DirectoryMatch&gt;</code>
     et <code>&lt;/DirectoryMatch&gt;</code> permettent de regrouper un
     ensemble de directives qui ne s'appliqueront qu'au répertoire
-    précisé et à ses sous-répertoires, comme pour la section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. Cependant, le
+    précisé, comme pour la section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. Cependant, le
     répertoire est précisé sous la forme d'une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>. Par exemple :</p>
 
     <div class="example"><p><code>
@@ -786,6 +786,21 @@ leurs sous-répertoires</td></tr>
 
     <p>conviendrait pour les sous-répertoires de <code>/www/</code> dont
     le nom se compose de trois chiffres.</p>
+
+    <div class="note"><h3>Compatibilité</h3>
+      Avant la version 2.3.9, cette directive s'appliquait aussi aux
+      sous-répertoires (comme la directive <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>), et ne tenait pas compte du
+      symbole de fin de ligne ($). Depuis la version 2.3.9, seuls les
+      répertoires qui correspondent à l'expression sont affectés par les
+      directives contenues dans la section.
+    </div>
+
+    <div class="note"><h3>slash de fin</h3>
+      Cette directive s'applique aux requêtes pour des répertoires avec
+      ou sans slash de fin ; les expressions contenant un symbole de fin
+      de ligne ($) doivent donc faire l'objet d'une attention
+      particulière.
+    </div>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -863,16 +878,16 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     <li>Sur certains systèmes multi-processeurs, la projection en
     mémoire peut dégrader les performances du programme
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</li>
-    <li>S'il fait l'objet d'une projection en mémoire par
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, la suppression ou la troncature d'un
-    fichier peut provoquer un crash de <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec une
-    erreur de segmentation.</li>
+    
     </ul>
 
     <p>Pour les configurations de serveur sujettes à ce genre de
     problème, il est préférable de désactiver la projection en mémoire
     des fichiers servis en spécifiant :</p>
-
+    <li>S'il fait l'objet d'une projection en mémoire par
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, la suppression ou la troncature d'un
+    fichier peut provoquer un crash de <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec une
+    erreur de segmentation.</li>
     <div class="example"><p><code>
       EnableMMAP Off
     </code></p></div>
@@ -896,13 +911,13 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise le support sendfile du noyau pour servir les
 fichiers aux clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>EnableSendfile On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>EnableSendfile On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>EnableSendfile Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans les versions 2.0.44 et
-supérieures</td></tr>
+supérieures. Par défaut à Off depuis la version 2.3.9.</td></tr>
 </table>
     <p>Cette directive définit si le programme <code class="program"><a href="../programs/httpd.html">httpd</a></code>
     peut utiliser le support sendfile du noyau pour transmettre le
@@ -930,20 +945,21 @@ supérieures</td></tr>
     certaines cartes réseau lorsqu'on utilise IPv6.</li>
     <li>Sous Linux sur Itanium, sendfile peut s'avérer incapable de
     traiter les fichiers de plus de 2 Go.</li>
-    <li>Avec un montage réseau de <code class="directive"><a href="#documentroot">DocumentRoot</a></code> (par exemple NFS ou SMB), le
+    <li>Avec un montage réseau de <code class="directive"><a href="#documentroot">DocumentRoot</a></code> (par exemple NFS, SMB, CIFS,
+    FUSE), le
     noyau peut s'avérer incapable de servir un fichier de ce montage
     réseau en passant par son propre cache.</li>
     </ul>
 
-    <p>Pour les configurations de serveur sujettes à ce genre de
-    problème, il est recommandé de désactiver cette fonctionnalité en
+    <p>Pour les configurations de serveur non sujettes à ce genre de
+    problème, vous pouvez activer cette fonctionnalité en
     spécifiant :</p>
 
     <div class="example"><p><code>
-      EnableSendfile Off
+      EnableSendfile On
     </code></p></div>
 
-    <p>Pour les montages NFS ou SMB, cette fonctionnalité peut être
+    <p>Pour les montages réseau, cette fonctionnalité peut être
     explicitement désactivée pour les fichiers concernés en spécifiant
     :</p>
 
@@ -1101,12 +1117,15 @@ personnalisation des réponses</a></li>
     </code></p></div>
 
     <p>Si le <var>chemin fichier</var> commence par une barre verticale
-    (|), il est considéré comme une commande à lancer pour traiter la
+    "<code>(|)</code>", il est considéré comme une commande à lancer pour traiter la
     journalisation de l'erreur.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
     ErrorLog "|/usr/local/bin/erreurs_httpd"
     </code></p></div>
+
+    <p>Voir les notes à propos des <a href="../logs.html#piped">journaux
+    redirigés</a> pour plus d'informations.</p>
 
     <p>L'utilisation de <code>syslog</code> à la place d'un nom de
     fichier active la journalisation via syslogd(8) si le système le
@@ -1136,6 +1155,163 @@ personnalisation des réponses</a></li>
 
 <h3>Voir aussi</h3>
 <ul>
+<li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
+<li><a href="../logs.html">Fichiers journaux du serveur HTTP Apache</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécification du format des entrées du journal des erreurs</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog [connection|request] <var>format</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">ErrorLogFormat</code> permet de
+    spécifier quelles informations supplémentaires vont être enregistrées
+    dans le journal des erreurs en plus du message habituel.</p>
+
+    <div class="example"><h3>Exemple simple</h3><p><code>
+        ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+    </code></p></div>
+
+    <p>La spécification de <code>connection</code> ou
+    <code>request</code> comme premier paramètre permet de définir des
+    formats supplémentaires, ce qui a pour effet de journaliser des
+    informations additionnelles lorsque le premier message est
+    enregistré respectivement pour une connexion ou une requête
+    spécifique. Ces informations additionnelles ne sont enregistrées
+    qu'une seule fois par connexion/requête. Si le traitement d'une
+    connexion ou d'une requête ne génère aucun message dans le journal,
+    alors aucune information additionnelle n'est enregistrée.</p>
+
+    <p>Il peut arriver que certains items de la chaîne de format ne
+    produisent aucune sortie. Par exemple, l'en-tête Referer n'est
+    présent que si le message du journal est associé à une requête et s'il
+    est généré à un moment où l'en-tête Referer a déjà été lu par le
+    client. Si aucune sortie n'est générée, le comportement par défaut
+    consiste à supprimer tout ce qui se trouve entre l'espace précédent
+    et le suivant. Ceci implique que la ligne de journalisation est
+    divisée en champs ne contenant pas d'espace séparés par des espaces.
+    Si un item de la chaîne de format ne génère aucune sortie,
+    l'ensemble du champ est omis. Par exemple, si l'adresse distante
+    <code>%a</code> du format <code>[%t] [%l] [%a] %M&nbsp;</code> n'est
+    pas disponible, les crochets qui l'entourent ne seront eux-mêmes pas
+    enregistrés. Il est possible d'échapper les espaces par un anti-slash
+    afin qu'ils ne soient pas considérés comme séparateurs de champs.
+    La combinaison '%&nbsp;' (pourcentage espace) est un délimiteur de
+    champ de taille nulle qui ne génère aucune sortie.</p>
+
+    <p>Ce comportement peut être changé en ajoutant des modificateurs à
+    l'item de la chaîne de format. Le modificateur <code>-</code>
+    (moins) provoque l'enregistrement d'un signe moins si l'item
+    considéré ne génère aucune sortie. Pour les formats à enregistrement
+    unique par connexion/requête, il est aussi possible d'utiliser le
+    modificateur <code>+</code> (plus). Si un item ne générant aucune
+    sortie possède le modificateur plus, la ligne dans son ensemble est
+    omise.</p>
+
+    <p>Un modificateur de type entier permet d'assigner un niveau de
+    sévérité à un item de format. L'item considéré ne
+    sera journalisé que si la sévérité du message n'est pas
+    plus haute que le niveau de sévérité spécifié. Les
+    valeurs possibles vont de 1 (alert) à 15 (trace8), en passant par 4
+    (warn) ou 7 (debug).</p>
+
+    <p>Certains items de format acceptent des paramètres supplémentaires
+    entre accolades.</p>
+
+    <table class="bordered"><tr class="header"><th>Chaîne&nbsp;de&nbsp;format</th> <th>Description</th></tr>
+<tr><td><code>%%</code></td>
+        <td>Le signe pourcentage</td></tr>
+<tr class="odd"><td><code>%...a</code></td>
+        <td>Adresse IP et port distants</td></tr>
+<tr><td><code>%...A</code></td>
+        <td>Adresse IP et port locaux</td></tr>
+<tr class="odd"><td><code>%...{name}e</code></td>
+        <td>Variable d'environnement de requête <code>name</code></td></tr>
+<tr><td><code>%...E</code></td>
+        <td>Etat d'erreur APR/OS et chaîne</td></tr>
+<tr class="odd"><td><code>%...F</code></td>
+        <td>Nom du fichier source et numéro de ligne de l'appel du
+	journal</td></tr>
+<tr><td><code>%...{name}i</code></td>
+        <td>En-tête de requête <code>name</code></td></tr>
+<tr class="odd"><td><code>%...k</code></td>
+        <td>Nombre de requêtes persistantes pour cette connexion</td></tr>
+<tr><td><code>%...l</code></td>
+        <td>Sévérité du message</td></tr>
+<tr class="odd"><td><code>%...L</code></td>
+        <td>Identifiant journal de la requête</td></tr>
+<tr><td><code>%...{c}L</code></td>
+        <td>Identifiant journal de la connexion</td></tr>
+<tr class="odd"><td><code>%...{C}L</code></td>
+        <td>Identifiant journal de la connexion si utilisé dans la
+	portée de la connexion, vide sinon</td></tr>
+<tr><td><code>%...m</code></td>
+        <td>Nom du module qui effectue la journalisation du message</td></tr>
+<tr class="odd"><td><code>%M</code></td>
+        <td>Le message effectif</td></tr>
+<tr><td><code>%...{name}n</code></td>
+        <td>Note de requête <code>name</code></td></tr>
+<tr class="odd"><td><code>%...P</code></td>
+        <td>Identifiant du processus courant</td></tr>
+<tr><td><code>%...T</code></td>
+        <td>Identifiant du thread courant</td></tr>
+<tr class="odd"><td><code>%...t</code></td>
+        <td>L'heure courante</td></tr>
+<tr><td><code>%...{u}t</code></td>
+        <td>L'heure courante avec les microsecondes</td></tr>
+<tr class="odd"><td><code>%...{cu}t</code></td>
+        <td>L'heure courante au format compact ISO 8601, avec les
+	microsecondes</td></tr>
+<tr><td><code>%...v</code></td>
+        <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur courant.</td></tr>
+<tr class="odd"><td><code>%...V</code></td>
+        <td>Le nom de serveur du serveur qui sert la requête en accord
+	avec la définition de la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
+<tr><td><code>\&nbsp;</code> (anti-slash espace)</td>
+        <td>Espace non délimiteur</td></tr>
+<tr class="odd"><td><code>%&nbsp;</code> (pourcentage espace)</td>
+        <td>Délimiteur de champ (aucune sortie)</td></tr>
+</table>
+
+    <p>L'item de format identifiant journal <code>%L</code> génère un
+    identifiant unique pour une connexion ou une requête. Il peut servir
+    à déterminer quelles lignes correspondent à la même connexion ou
+    requête ou quelle requête est associée à tel connexion. Un item de
+    format <code>%L</code> est aussi disponible dans le module
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>, mais il permet dans ce contexte de
+    corréler les entrées du journal des accès avec celles du journal des
+    erreurs. Si le module <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> est chargé,
+    c'est son identifiant unique qui sera utilisé comme identifiant de
+    journal pour les requêtes.</p>
+
+    <div class="example"><h3>Exemple (assez similaire au format par défaut)</h3><p><code>
+        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
+        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </code></p></div>
+
+    <div class="example"><h3>Exemple (similaire au format 2.2.x)</h3><p><code>
+        ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
+        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </code></p></div>
+
+    <div class="example"><h3>Exemple avancé avec identifiants journal de
+    requête/connexion</h3><p><code>
+        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"<br />
+        ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br />
+        ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br />
+        ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br />
+        ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"<br />
+    </code></p></div>
+
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
 <li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
 <li><a href="../logs.html">Fichiers journaux du serveur HTTP Apache</a></li>
 </ul>
@@ -1389,6 +1565,13 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
       </span>
       &lt;/Location&gt;
     </code></p></div>
+    
+    <p>A la base, cette directive écrase le type de contenu généré pour
+    les fichiers statiques servis à partir du sytème de fichiers. Pour
+    les ressources autres que les fichiers statiques pour lesquels le
+    générateur de réponse spécifie en général un type de contenu, cette
+    directive est ignorée.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1466,6 +1649,15 @@ requête</td></tr>
     <p>Vous pouvez tester la valeur de tout en-tête de requête ($req),
     de tout en-tête de réponse ($resp) ou de toute variable
     d'environnement ($env) dans votre expression.</p>
+
+    <p>En plus de <code>=</code>, <code>If</code> peut utiliser
+    l'opérateur <code>IN</code> pour déterminer si la valeur de
+    l'expression fait partie d'une liste donnée :</p>
+
+    <div class="example"><p><code>
+        &lt;If %{REQUEST_METHOD} IN GET,HEAD,OPTIONS&gt;
+    </code></p></div>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -1746,7 +1938,7 @@ version 2.3.6</td></tr>
     persistante.</p>
 
     <p>Lorsqu'un client utilise une connexion persistante, elle comptera
-    pour une seule requête pour la directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>, quel
+    pour une seule requête pour la directive <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>, quel
     que soit le nombre de requêtes transmises via cette connexion.</p>
 
 <h3>Voir aussi</h3>
@@ -2825,6 +3017,9 @@ VirtualHost.</p>
 
    </code></p></div>
 
+   <p>Si aucun serveur virtuel ne correspond, c'est le premier serveur
+   virtuel correspondant à l'adresse IP qui sera utilisé.</p>
+
     <p>Les adresses IPv6 doivent être entourées de crochets, comme dans
     l'exemple suivant :</p>
 
@@ -3306,12 +3501,14 @@ serveurs virtuels à base de nom</td></tr>
       ServerName serveur.domaine.com<br />
       ServerAlias serveur serveur2.domaine.com serveur2<br />
       ServerAlias *.example.com<br />
+      UseCanonicalName Off<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </code></p></div>
 
 <h3>Voir aussi</h3>
 <ul>
+<li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><a href="../vhosts/">Documentation sur les serveurs virtuels
 du serveur HTTP Apache</a></li>
 </ul>
@@ -3340,6 +3537,10 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
     <div class="example"><p><code>
       ServerName www.example.com:80
     </code></p></div>
+
+    <p>La directive <code class="directive">ServerName</code> peut apparaître à
+    toutes les étapes de la définition du serveur. Toute occurrence
+    annule cependant la précédente (pour ce serveur).</p>
 
     <p>Si la directive <code class="directive">ServerName</code> n'est pas
     définie, le serveur tente de déterminer le nom d'hôte en effectuant
@@ -3372,6 +3573,18 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>) vont faire référence au port spécifié, ou
     au port indiqué dans la requête du client.
     </p>
+
+    <div class="warning">
+    <p>Si la valeur de la directive <code class="directive">ServerName</code> ne
+    peut pas être résolue en adresse IP, le démarrage du serveur
+    provoquera un avertissement. <code>httpd</code> va alors utiliser le
+    résultat de la commande système <code>hostname</code> pour
+    déterminer le nom du serveur, ce qui ne correspondra pratiquement
+    jamais au nom de serveur que vous souhaitez réellement.</p>
+    <div class="example"><p><code>
+    httpd: Could not reliably determine the server's fully qualified domain name, using rocinante.local for ServerName
+    </code></p></div>
+    </div>
 
 
 <h3>Voir aussi</h3>
@@ -3989,6 +4202,11 @@ d'hôte spécifique ou à une adresse IP</td></tr>
     contraire, le serveur virtuel héritera de la valeur de la directive
     <code class="directive"><a href="#servername">ServerName</a></code> issue de la
     configuration du serveur principal.</p>
+
+    <p>Si aucun serveur virtuel ne correspond, c'est le premier serveur
+    virtuel correspondant à l'adresse IP qui sera utilisé. Par
+    conséquent, le premier serveur virtuel défini est le serveur virtuel
+    par défaut.</p>
 
     <div class="warning"><h3>Sécurité</h3>
     <p>Voir le document sur les <a href="../misc/security_tips.html">conseils à propos de sécurité</a>
