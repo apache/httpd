@@ -839,7 +839,7 @@ static int expr_eval(request_rec *r, ap_parse_node_t *root,
 
             lval = PARSE_STRING(r, current->left->token.value);
             rval = PARSE_STRING(r, current->right->token.value);
-            val = strstr(rval, lval);
+            val = ap_strstr_c(rval, lval);
             /* should be included as a complete word, not a subword
              * as in regexp /\bLVAL\b/
              */
