@@ -755,10 +755,13 @@ static int cgi_handler(request_rec *r)
     cgi_server_conf *conf;
     apr_status_t rv;
     cgi_exec_info_t e_info;
-    conn_rec *c = r->connection;
+    conn_rec *c;
 
-    if(strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script"))
+    if (strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script")) {
         return DECLINED;
+    }
+
+    c = r->connection;
 
     is_included = !strcmp(r->protocol, "INCLUDED");
 
