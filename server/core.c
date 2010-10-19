@@ -1664,12 +1664,6 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
         return unclosed_directive(cmd);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
-                 "%s:%d: <Limit> and <LimitExcept> are deprecated and "
-                 "will likely be removed in 2.4. Use 'Require method', "
-                 "mod_allow_method, or <If> instead.",
-                 cmd->directive->filename, cmd->directive->line_num);
-
     limited_methods = apr_pstrndup(cmd->pool, arg, endp - arg);
 
     if (!limited_methods[0]) {
@@ -3392,11 +3386,11 @@ AP_INIT_RAW_ARGS("<Files", filesection, NULL, OR_ALL,
   "Container for directives affecting files matching specified patterns"),
 AP_INIT_RAW_ARGS("<Limit", ap_limit_section, NULL, OR_LIMIT | OR_AUTHCFG,
   "Container for authentication directives when accessed using specified HTTP "
-  "methods (DEPRECATED)"),
+  "methods"),
 AP_INIT_RAW_ARGS("<LimitExcept", ap_limit_section, (void*)1,
                  OR_LIMIT | OR_AUTHCFG,
   "Container for authentication directives to be applied when any HTTP "
-  "method other than those specified is used to access the resource (DEPRECATED)"),
+  "method other than those specified is used to access the resource"),
 AP_INIT_TAKE1("<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL,
   "Container for directives based on existence of specified modules"),
 AP_INIT_TAKE1("<IfDefine", start_ifdefine, NULL, EXEC_ON_READ | OR_ALL,
