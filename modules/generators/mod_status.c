@@ -187,10 +187,6 @@ static int status_handler(request_rec *r)
     apr_off_t bytes, my_bytes, conn_bytes;
     apr_off_t bcount, kbcount;
     long req_time;
-#ifdef HAVE_TIMES
-    float tick;
-    int times_per_thread = getpid() != child_pid;
-#endif
     int short_report;
     int no_table_report;
     worker_score *ws_record;
@@ -199,11 +195,19 @@ static int status_handler(request_rec *r)
     pid_t *pid_buffer, worker_pid;
     clock_t tu, ts, tcu, tcs;
     ap_generation_t mpm_generation, worker_generation;
+#ifdef HAVE_TIMES
+    float tick;
+    int times_per_thread;
+#endif
 
-    if (strcmp(r->handler, STATUS_MAGIC_TYPE) &&
-        strcmp(r->handler, "server-status")) {
+    if (strcmp(r->handler, STATUS_MAGIC_TYPE) && strcmp(r->handler,
+            "server-status")) {
         return DECLINED;
     }
+
+#ifdef HAVE_TIMES
+    times_per_thread = getpid() != child_pid;
+#endif
 
     ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
 
