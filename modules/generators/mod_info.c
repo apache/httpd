@@ -595,18 +595,18 @@ static int show_active_hooks(request_rec * r)
 
 static int display_info(request_rec * r)
 {
-    module *modp = NULL;
-    server_rec *serv = r->server;
+    module *modp;
     const char *more_info;
-    const command_rec *cmd = NULL;
-    int comma = 0;
+    const command_rec *cmd;
 
-    if (strcmp(r->handler, "server-info"))
+    if (strcmp(r->handler, "server-info")) {
         return DECLINED;
+    }
 
     r->allowed |= (AP_METHOD_BIT << M_GET);
-    if (r->method_number != M_GET)
+    if (r->method_number != M_GET) {
         return DECLINED;
+    }
 
     ap_set_content_type(r, "text/html; charset=ISO-8859-1");
 
@@ -657,6 +657,7 @@ static int display_info(request_rec * r)
             ap_rputs("</dl><hr />", r);
         }
         else {
+            int comma = 0;
             for (modp = ap_top_module; modp; modp = modp->next) {
                 if (!r->args || !strcasecmp(modp->name, r->args)) {
                     ap_rprintf(r,
@@ -742,7 +743,7 @@ static int display_info(request_rec * r)
                             ("<dt><strong>Module Directives:</strong> <tt>none</tt></dt>",
                              r);
                     }
-                    more_info = find_more_info(serv, modp->name);
+                    more_info = find_more_info(r->server, modp->name);
                     if (more_info) {
                         ap_rputs
                             ("<dt><strong>Additional Information:</strong>\n</dt><dd>",
