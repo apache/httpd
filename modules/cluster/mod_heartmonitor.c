@@ -739,7 +739,7 @@ static int hm_handler(request_rec *r)
     char *ip;
     hm_ctx_t *ctx;
 
-    if (strcmp(r->handler, "hearthbeat")) {
+    if (strcmp(r->handler, "heartbeat")) {
         return DECLINED;
     }
     if (r->method_number != M_POST) {
