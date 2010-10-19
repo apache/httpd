@@ -731,14 +731,13 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
 static int hm_handler(request_rec *r)
 {
     apr_bucket_brigade *input_brigade;
-    apr_size_t len=MAX_MSG_LEN;
+    apr_size_t len;
     char *buf;
     apr_status_t status;
     apr_table_t *tbl;
     hm_server_t hmserver;
     char *ip;
-    hm_ctx_t *ctx = ap_get_module_config(r->server->module_config,
-                                         &heartmonitor_module);
+    hm_ctx_t *ctx;
 
     if (strcmp(r->handler, "hearthbeat")) {
         return DECLINED;
@@ -746,6 +745,11 @@ static int hm_handler(request_rec *r)
     if (r->method_number != M_POST) {
         return HTTP_METHOD_NOT_ALLOWED;
     }
+
+    len = MAX_MSG_LEN;
+    ctx = ap_get_module_config(r->server->module_config,
+            &heartmonitor_module);
+
     buf = apr_pcalloc(r->pool, MAX_MSG_LEN);
     input_brigade = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
     status = ap_get_brigade(r->input_filters, input_brigade, AP_MODE_READBYTES, APR_BLOCK_READ, MAX_MSG_LEN);
