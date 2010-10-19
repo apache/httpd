@@ -699,23 +699,29 @@ static int balancer_init(apr_pool_t *p, apr_pool_t *plog,
  */
 static int balancer_handler(request_rec *r)
 {
-    void *sconf = r->server->module_config;
-    proxy_server_conf *conf = (proxy_server_conf *)
-        ap_get_module_config(sconf, &proxy_module);
+    void *sconf;
+    proxy_server_conf *conf;
     proxy_balancer *balancer, *bsel = NULL;
     proxy_worker *worker, *wsel = NULL;
     proxy_worker **workers = NULL;
-    apr_table_t *params = apr_table_make(r->pool, 10);
+    apr_table_t *params;
     int access_status;
     int i, n;
     const char *name;
 
     /* is this for us? */
-    if (strcmp(r->handler, "balancer-manager"))
+    if (strcmp(r->handler, "balancer-manager")) {
         return DECLINED;
+    }
+
     r->allowed = (AP_METHOD_BIT << M_GET);
-    if (r->method_number != M_GET)
+    if (r->method_number != M_GET) {
         return DECLINED;
+    }
+
+    sconf = r->server->module_config;
+    conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+    params = apr_table_make(r->pool, 10);
 
     if (r->args) {
         char *args = apr_pstrdup(r->pool, r->args);
