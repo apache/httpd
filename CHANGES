@@ -10,9 +10,6 @@ Changes with Apache 2.3.9
      interfering with authentication/authorization. [Paul Querna,
      Igor Galić, Stefan Fritsch]
 
-  *) core: Log a warning if <Limit> or <LimitExcept> are used. They are
-     deprecated and may go away in 2.4. [Stefan Fritsch]
-
   *) mod_ssl: Log certificate information if client cert verification
      fails. PR 50094. [Lassi Tuura <lat cern ch>, Stefan Fritsch]
 
