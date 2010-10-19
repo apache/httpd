@@ -39,7 +39,7 @@ in order for it to rebuild correctly.
 
 
 <summary>
-<p>This modules makes it easy to restrict what HTTP methods can
+<p>This module makes it easy to restrict what HTTP methods can
 used on an server. The most common configuration would be:</p>
 
 <example><title>Example</title>
