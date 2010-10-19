@@ -29,7 +29,7 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_allowmethods.c</td></tr></table>
 <h3>Summary</h3>
 
-<p>This modules makes it easy to restrict what HTTP methods can
+<p>This module makes it easy to restrict what HTTP methods can
 used on an server. The most common configuration would be:</p>
 
 <div class="example"><h3>Example</h3><p><code>
