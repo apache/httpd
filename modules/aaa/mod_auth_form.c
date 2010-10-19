@@ -1063,9 +1063,7 @@ static int authenticate_form_authn(request_rec * r)
  */
 static int authenticate_form_login_handler(request_rec * r)
 {
-
-    auth_form_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                      &auth_form_module);
+    auth_form_config_rec *conf;
 
     const char *sent_user = NULL, *sent_pw = NULL, *sent_loc = NULL;
     int rv;
@@ -1080,6 +1078,8 @@ static int authenticate_form_login_handler(request_rec * r)
                       r->uri);
         return HTTP_METHOD_NOT_ALLOWED;
     }
+
+    conf = ap_get_module_config(r->per_dir_config, &auth_form_module);
 
     rv = get_form_auth(r, conf->username, conf->password, conf->location,
                        NULL, NULL, NULL,
@@ -1124,13 +1124,13 @@ static int authenticate_form_login_handler(request_rec * r)
  */
 static int authenticate_form_logout_handler(request_rec * r)
 {
-
-    auth_form_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                      &auth_form_module);
+    auth_form_config_rec *conf;
 
     if (strcmp(r->handler, FORM_LOGOUT_HANDLER)) {
         return DECLINED;
     }
+
+    conf = ap_get_module_config(r->per_dir_config, &auth_form_module);
 
     /* remove the username and password, effectively logging the user out */
     set_session_auth(r, NULL, NULL, NULL);
