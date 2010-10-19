@@ -30,17 +30,19 @@
 
 static int asis_handler(request_rec *r)
 {
-    conn_rec *c = r->connection;
-    apr_file_t *f = NULL;
+    apr_file_t *f;
     apr_status_t rv;
     const char *location;
 
-    if(strcmp(r->handler,ASIS_MAGIC_TYPE) && strcmp(r->handler,"send-as-is"))
+    if (strcmp(r->handler, ASIS_MAGIC_TYPE) && strcmp(r->handler, "send-as-is")) {
         return DECLINED;
+    }
 
     r->allowed |= (AP_METHOD_BIT << M_GET);
-    if (r->method_number != M_GET)
+    if (r->method_number != M_GET) {
         return DECLINED;
+    }
+
     if (r->finfo.filetype == APR_NOFILE) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                     "File does not exist: %s", r->filename);
@@ -76,6 +78,7 @@ static int asis_handler(request_rec *r)
     }
 
     if (!r->header_only) {
+        conn_rec *c = r->connection;
         apr_bucket_brigade *bb;
         apr_bucket *b;
         apr_off_t pos = 0;
