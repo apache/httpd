@@ -87,7 +87,7 @@ close actions.</dd>
 
 <dt><code><var>logfile</var></code></dt>
 
-<dd>The path plus basename of the logfile.  If <var>logfile</var>
+<dd><p>The path plus basename of the logfile.  If <var>logfile</var>
 includes any '%' characters, it is treated as a format string for
 <code>strftime(3)</code>.  Otherwise, the suffix
 <var>.nnnnnnnnnn</var> is automatically added and is the time in
@@ -96,7 +96,17 @@ start time from the beginning of the current period.  For example,
 if a rotation time of 86400 is specified, the hour, minute, and
 second fields created from the <code>strftime(3)</code> format will
 all be zero, referring to the beginning of the current 24-hour
-period (midnight).</dd>
+period (midnight).</p>
+<p>When using <code>strftime(3)</code> filename formatting,
+be sure the log file format has enough granularity to produce
+a different file name each time the logs are rotated.  Otherwise
+rotation will overwrite the same file instead of starting a new
+one.  For example, if <var>logfile</var> was 
+<code>/var/logs/errorlog.%Y-%m-%d</code> with log rotation at 5
+megabytes, but 5 megabytes was reached twice in the same day, the
+same log file name would be produced and log rotation would keep
+writing to the same file.</p>
+</dd>
 
 <dt><code><var>rotationtime</var></code></dt>
 
