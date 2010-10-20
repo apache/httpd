@@ -90,7 +90,7 @@ start() {
 }
 stop() {
 	echo -n $"Stopping $prog: "
-	killproc -p ${pidfile} $httpd
+	killproc -p ${pidfile} -d 10 $httpd
 	RETVAL=$?
 	echo
 	[ $RETVAL = 0 ] && rm -f ${lockfile} ${pidfile}
