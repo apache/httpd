@@ -37,8 +37,6 @@ BEGIN {
     B["logfiledir"] = A["logfiledir"]
     B["sysconfdir"] = A["sysconfdir"]
     B["runtimedir"] = A["runtimedir"]
-    B["listen_stmt_1"] = "Listen "A["Port"]
-    B["listen_stmt_2"] = ""
 }
 
 /@@LoadModule@@/ {
