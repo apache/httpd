@@ -1341,9 +1341,8 @@ static apr_status_t cleanup_script(void *vptr)
 
 static int cgid_handler(request_rec *r)
 {
-    conn_rec *c = r->connection;
-    int retval, nph, dbpos = 0;
-    char *argv0, *dbuf = NULL;
+    int retval, nph, dbpos;
+    char *argv0, *dbuf;
     apr_bucket_brigade *bb;
     apr_bucket *b;
     cgid_server_conf *conf;
@@ -1355,39 +1354,47 @@ static int cgid_handler(request_rec *r)
     struct cleanup_script_info *info;
     apr_status_t rv;
 
-    if (strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
+    if (strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script")) {
         return DECLINED;
+    }
 
     conf = ap_get_module_config(r->server->module_config, &cgid_module);
     is_included = !strcmp(r->protocol, "INCLUDED");
 
-    if ((argv0 = strrchr(r->filename, '/')) != NULL)
+    if ((argv0 = strrchr(r->filename, '/')) != NULL) {
         argv0++;
-    else
+    }
+    else {
         argv0 = r->filename;
+    }
 
     nph = !(strncmp(argv0, "nph-", 4));
 
     argv0 = r->filename;
 
-    if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
+    if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r)) {
         return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
-                               "Options ExecCGI is off in this directory");
-    if (nph && is_included)
+                "Options ExecCGI is off in this directory");
+    }
+
+    if (nph && is_included) {
         return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
-                               "attempt to include NPH CGI script");
+                "attempt to include NPH CGI script");
+    }
 
 #if defined(OS2) || defined(WIN32)
 #error mod_cgid does not work on this platform.  If you teach it to, look
 #error at mod_cgi.c for required code in this path.
 #else
-    if (r->finfo.filetype == APR_NOFILE)
+    if (r->finfo.filetype == APR_NOFILE) {
         return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
-                               "script not found or unable to stat");
+                "script not found or unable to stat");
+    }
 #endif
-    if (r->finfo.filetype == APR_DIR)
+    if (r->finfo.filetype == APR_DIR) {
         return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
-                               "attempt to invoke directory as script");
+                "attempt to invoke directory as script");
+    }
 
     if ((r->used_path_info == AP_REQ_REJECT_PATH_INFO) &&
         r->path_info && *r->path_info)
@@ -1433,10 +1440,12 @@ static int cgid_handler(request_rec *r)
     apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
     apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
-    if ((argv0 = strrchr(r->filename, '/')) != NULL)
+    if ((argv0 = strrchr(r->filename, '/')) != NULL) {
         argv0++;
-    else
+    }
+    else {
         argv0 = r->filename;
+    }
 
     /* Transfer any put/post args, CERN style...
      * Note that we already ignore SIGPIPE in the core server.
@@ -1444,9 +1453,10 @@ static int cgid_handler(request_rec *r)
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     seen_eos = 0;
     child_stopped_reading = 0;
+    dbuf = NULL;
+    dbpos = 0;
     if (conf->logname) {
         dbuf = apr_palloc(r->pool, conf->bufbytes + 1);
-        dbpos = 0;
     }
     do {
         apr_bucket *bucket;
@@ -1529,6 +1539,7 @@ static int cgid_handler(request_rec *r)
 
     /* Handle script return... */
     if (!nph) {
+        conn_rec *c = r->connection;
         const char *location;
         char sbuf[MAX_STRING_LEN];
         int ret;
@@ -1605,6 +1616,7 @@ static int cgid_handler(request_rec *r)
     }
 
     if (nph) {
+        conn_rec *c = r->connection;
         struct ap_filter_t *cur;
 
         /* get rid of all filters up through protocol...  since we
