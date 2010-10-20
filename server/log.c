@@ -41,6 +41,9 @@
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#if APR_HAVE_PROCESS_H
+#include <process.h>            /* for getpid() on Win32 */
+#endif
 
 #include "ap_config.h"
 #include "httpd.h"
