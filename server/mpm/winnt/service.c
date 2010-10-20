@@ -33,6 +33,7 @@
 #endif
 #undef _WINUSER_
 #include <winuser.h>
+#include <time.h>
 
 APLOG_USE_MODULE(mpm_winnt);
 
@@ -821,7 +822,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                                const char * const * argv)
 {
     apr_status_t rv;
-    char **start_argv;
+    const char **start_argv;
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
 
