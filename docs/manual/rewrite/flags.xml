@@ -351,8 +351,9 @@ is already for <code>index.php</code>, the <directive
 module="mod_rewrite">RewriteRule</directive> will be skipped.</p>
 
 <example>
-RewriteCond %{REQUEST_URI} !=index.php<br />
-RewriteRule ^(.*) index.php?req=$1 [L]
+RewriteBase /<br />
+RewriteCond %{REQUEST_URI} !=/index.php<br />
+RewriteRule ^(.*) /index.php?req=$1 [L,PT]
 </example>
 </section>
 
