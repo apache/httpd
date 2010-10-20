@@ -435,7 +435,7 @@ prebuild :: FORCE
 	$(MAKE) -C srclib/pcre -f NWGNUmakefile
 	$(CHKNOT) $(PREBUILD_INST)\nul          mkdir $(PREBUILD_INST)
 	-copy $(AP_WORK)\server\$(OBJDIR)\*.nlm $(PREBUILD_INST)\*.*
-	-copy $(AP_WORK)\srclib\pcre\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
+	-copy $(PCRE)\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
 
 #
 # Any specialized rules here
