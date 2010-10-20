@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_proxy: Move the ProxyErrorOverride directive to have per
+     directory scope. [Graham Leggett]
+
   *) mod_allowmethods: New module to deny certain HTTP methods without
      interfering with authentication/authorization. [Paul Querna,
      Igor Galić, Stefan Fritsch]

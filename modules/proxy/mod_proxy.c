@@ -1122,8 +1122,6 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->io_buffer_size_set = 0;
     ps->maxfwd = DEFAULT_MAX_FORWARDS;
     ps->maxfwd_set = 0;
-    ps->error_override = 0;
-    ps->error_override_set = 0;
     ps->timeout = 0;
     ps->timeout_set = 0;
     ps->badopt = bad_error;
@@ -1160,8 +1158,6 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->io_buffer_size_set = overrides->io_buffer_size_set || base->io_buffer_size_set;
     ps->maxfwd = (overrides->maxfwd_set == 0) ? base->maxfwd : overrides->maxfwd;
     ps->maxfwd_set = overrides->maxfwd_set || base->maxfwd_set;
-    ps->error_override = (overrides->error_override_set == 0) ? base->error_override : overrides->error_override;
-    ps->error_override_set = overrides->error_override_set || base->error_override_set;
     ps->timeout = (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
     ps->timeout_set = overrides->timeout_set || base->timeout_set;
     ps->badopt = (overrides->badopt_set == 0) ? base->badopt : overrides->badopt;
@@ -1188,6 +1184,8 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->preserve_host_set = 0;
     new->preserve_host = 0;
     new->interpolate_env = -1; /* unset */
+    new->error_override = 0;
+    new->error_override_set = 0;
 
     return (void *) new;
 }
@@ -1215,6 +1213,9 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->preserve_host = (add->preserve_host_set == 0) ? base->preserve_host
                                                         : add->preserve_host;
     new->preserve_host_set = add->preserve_host_set || base->preserve_host_set;
+    new->error_override = (add->error_override_set == 0) ? base->error_override
+                                                        : add->error_override;
+    new->error_override_set = add->error_override_set || base->error_override_set;
     return new;
 }
 
@@ -1611,13 +1612,12 @@ static const char *
 }
 
 static const char *
-    set_proxy_error_override(cmd_parms *parms, void *dummy, int flag)
+    set_proxy_error_override(cmd_parms *parms, void *dconf, int flag)
 {
-    proxy_server_conf *psf =
-    ap_get_module_config(parms->server->module_config, &proxy_module);
+    proxy_dir_conf *conf = dconf;
 
-    psf->error_override = flag;
-    psf->error_override_set = 1;
+    conf->error_override = flag;
+    conf->error_override_set = 1;
     return NULL;
 }
 static const char *
@@ -2119,7 +2119,7 @@ static const command_rec proxy_cmds[] =
      "The default intranet domain name (in absence of a domain in the URL)"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
-    AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF,
+    AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF|ACCESS_CONF,
      "use our error handling pages instead of the servers' we are proxying"),
     AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF|ACCESS_CONF,
      "on if we should preserve host header while proxying"),
