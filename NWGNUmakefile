@@ -387,16 +387,21 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms instscripts FORCE
-	-copy $(OBJDIR)\Apache2.nlm     $(INSTALL)\$(BASEDIR)\*.*
-	-copy ABOUT_APACHE              $(INSTALL)\$(BASEDIR)\*.*
-	-copy README                    $(INSTALL)\$(BASEDIR)\*.*
-	-copy STATUS                    $(INSTALL)\$(BASEDIR)\*.*
-	-copy LICENSE                   $(INSTALL)\$(BASEDIR)\*.*
-	-copy CHANGES                   $(INSTALL)\$(BASEDIR)\*.*
-	-copy VERSIONING                $(INSTALL)\$(BASEDIR)\*.*
-	-copy support\dbmmanage.in      $(INSTALL)\$(BASEDIR)\bin\dbmmanage.pl
-	-copy support\logresolve.pl.in  $(INSTALL)\$(BASEDIR)\bin\logresolve.pl
-	-copy support\split-logfile.in  $(INSTALL)\$(BASEDIR)\bin\split-logfile.pl
+	-copy $(OBJDIR)\$(NLM_NAME).nlm  $(INSTALL)\$(BASEDIR)\*.*
+	-copy ABOUT_APACHE               $(INSTALL)\$(BASEDIR)\*.*
+	-copy CHANGES                    $(INSTALL)\$(BASEDIR)\*.*
+	-copy LICENSE                    $(INSTALL)\$(BASEDIR)\*.*
+	-copy README                     $(INSTALL)\$(BASEDIR)\*.*
+	-copy VERSIONING                 $(INSTALL)\$(BASEDIR)\*.*
+	-copy STATUS                     $(INSTALL)\$(BASEDIR)\*.*
+	-copy support\dbmmanage.in       $(INSTALL)\$(BASEDIR)\bin\dbmmanage.pl
+	-copy support\logresolve.pl.in   $(INSTALL)\$(BASEDIR)\bin\logresolve.pl
+	-copy support\split-logfile.in   $(INSTALL)\$(BASEDIR)\bin\split-logfile.pl
+	-copy support\check_forensic     $(INSTALL)\$(BASEDIR)\bin\check_forensic.sh
+	-copy docs\conf\magic            $(INSTALL)\$(BASEDIR)\conf\magic
+	-copy docs\conf\mime.types       $(INSTALL)\$(BASEDIR)\conf\mime.types
+	-copy docs\conf\charset.conv     $(INSTALL)\$(BASEDIR)\conf\charset.conv
+	-copy docs\cgi-examples\printenv $(INSTALL)\$(BASEDIR)\cgi-bin\printenv.pl
 	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -v SSLPORT=$(SSLPORT) -v MODSSL=$(WITH_MOD_SSL) -v BSDSKT=$(USE_STDSOCKETS) -f build\mkconfnw.awk docs\conf\httpd.conf.in >$(INSTALL)\$(BASEDIR)\conf\httpd.conf
 	$(CHKNOT) $(INSTALL)\$(BASEDIR)\conf\extra\nul mkdir $(INSTALL)\$(BASEDIR)\conf\extra
 	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-autoindex.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-autoindex.conf
@@ -410,31 +415,27 @@ install :: nlms instscripts FORCE
 	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-userdir.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-userdir.conf
 	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -f build\mkconfnw.awk docs\conf\extra\httpd-vhosts.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-vhosts.conf
 	-$(AWK) -v BDIR=$(BASEDIR) -v SSLPORT=$(SSLPORT) -f build\mkconfnw.awk docs\conf\extra\httpd-ssl.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-ssl.conf
-	-copy docs\conf\magic           $(INSTALL)\$(BASEDIR)\conf\magic
-	-copy docs\conf\mime.types      $(INSTALL)\$(BASEDIR)\conf\mime.types
-	-copy docs\conf\charset.conv    $(INSTALL)\$(BASEDIR)\conf\charset.conv
-	-copy docs\cgi-examples\printenv $(INSTALL)\$(BASEDIR)\cgi-bin\printenv.pl
-	@xcopy $(XCOPYSW) docs\error $(INSTALL)\$(BASEDIR)\error
-	@xcopy $(XCOPYSW) docs\docroot $(INSTALL)\$(BASEDIR)\htdocs
-	@xcopy $(XCOPYSW) docs\icons $(INSTALL)\$(BASEDIR)\icons
-	@xcopy $(XCOPYSW) docs\man $(INSTALL)\$(BASEDIR)\man
-	@xcopy $(XCOPYSW) docs\manual $(INSTALL)\$(BASEDIR)\manual
+	@xcopy $(XCOPYSW) docs\error     $(INSTALL)\$(BASEDIR)\error
+	@xcopy $(XCOPYSW) docs\docroot   $(INSTALL)\$(BASEDIR)\htdocs
+	@xcopy $(XCOPYSW) docs\icons     $(INSTALL)\$(BASEDIR)\icons
+	@xcopy $(XCOPYSW) docs\man       $(INSTALL)\$(BASEDIR)\man
+	@xcopy $(XCOPYSW) docs\manual    $(INSTALL)\$(BASEDIR)\manual
 
 installdev :: FORCE
-	-copy $(subst /,\,$(AP_WORK))\include\*.h           $(INSTALL)\$(BASEDIR)\include\*.*
-	-copy $(subst /,\,$(AP_WORK))\os\netware\*.h        $(INSTALL)\$(BASEDIR)\include\*.*
-	-copy $(subst /,\,$(NWOS))\*.imp                    $(INSTALL)\$(BASEDIR)\lib\*.*
-	-copy $(subst /,\,$(APR))\include\*.h               $(INSTALL)\$(BASEDIR)\include\*.*
-	-copy $(subst /,\,$(APRUTIL))\include\*.h           $(INSTALL)\$(BASEDIR)\include\*.*
-	-copy $(subst /,\,$(APR))\*.imp                     $(INSTALL)\$(BASEDIR)\lib\*.*
-	-copy $(subst /,\,$(NWOS))\*.xdc                    $(INSTALL)\$(BASEDIR)\lib\*.*
+	-copy $(subst /,\,$(AP_WORK))\include\*.h  $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(NWOS))\*.h             $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(APR))\include\*.h      $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(APRUTIL))\include\*.h  $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(APR))\*.imp            $(INSTALL)\$(BASEDIR)\lib\*.*
+	-copy $(subst /,\,$(NWOS))\*.imp           $(INSTALL)\$(BASEDIR)\lib\*.*
+	-copy $(subst /,\,$(NWOS))\*.xdc           $(INSTALL)\$(BASEDIR)\lib\*.*
 
 prebuild :: FORCE
-	$(MAKE) -C server -f NWGNUMakefile
-	$(MAKE) -C $(PCRE) -f NWGNUMakefile
+	$(MAKE) -C server -f NWGNUmakefile
+	$(MAKE) -C srclib/pcre -f NWGNUmakefile
 	$(CHKNOT) $(PREBUILD_INST)\nul          mkdir $(PREBUILD_INST)
 	-copy $(AP_WORK)\server\$(OBJDIR)\*.nlm $(PREBUILD_INST)\*.*
-	-copy $(PCRE)\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
+	-copy $(AP_WORK)\srclib\pcre\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
 
 #
 # Any specialized rules here
