@@ -157,14 +157,14 @@ typedef struct {
         status_full
     } proxy_status;             /* Status display options */
 
-    char req_set;
-    char viaopt_set;
-    char recv_buffer_size_set;
-    char io_buffer_size_set;
-    char maxfwd_set;
-    char timeout_set;
-    char badopt_set;
-    char proxy_status_set;
+    int req_set:1;
+    int viaopt_set:1;
+    int recv_buffer_size_set:1;
+    int io_buffer_size_set:1;
+    int maxfwd_set:1;
+    int timeout_set:1;
+    int badopt_set:1;
+    int proxy_status_set:1;
 } proxy_server_conf;
 
 
@@ -184,6 +184,8 @@ typedef struct {
     apr_array_header_t* cookie_domains;
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
+    signed char p_is_fnmatch; /* Is the path an fnmatch candidate? */
+    signed char interpolate_env;
 
     /**
      * the following setting masks the error page
@@ -193,11 +195,9 @@ typedef struct {
      * the error page, (so it will look like a error
      * returned from the rest of the system
      */
-    int error_override;
-    signed char p_is_fnmatch; /* Is the path an fnmatch candidate? */
-    signed char interpolate_env;
-    signed char preserve_host;
-    signed char preserve_host_set;
+    int error_override:1;
+    int preserve_host:1;
+    int preserve_host_set:1;
     int error_override_set:1;
 } proxy_dir_conf;
 
@@ -338,15 +338,15 @@ struct proxy_worker {
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
 #endif
 
-    char            retry_set;
-    char            timeout_set;
-    char            acquire_set;
-    char            ping_timeout_set;
-    char            conn_timeout_set;
-    char            recv_buffer_size_set;
-    char            io_buffer_size_set;
-    char            keepalive_set;
-    char            disablereuse_set;
+    int             retry_set:1;
+    int             timeout_set:1;
+    int             acquire_set:1;
+    int             ping_timeout_set:1;
+    int             conn_timeout_set:1;
+    int             recv_buffer_size_set:1;
+    int             io_buffer_size_set:1;
+    int             keepalive_set:1;
+    int             disablereuse_set:1;
     unsigned int    apr_hash;      /* hash #0 of worker name */
     unsigned int    our_hash;      /* hash #1 of worker name. Why 2? hash collisions. */
 };
@@ -366,11 +366,11 @@ struct proxy_balancer {
     const char      *sticky_path;     /* URL sticky session identifier */
     apr_array_header_t *errstatuses;  /* statuses to force members into error */
     const char      *sticky;          /* sticky session identifier */
-    int             sticky_force;     /* Disable failover for sticky sessions */
-    int             scolonsep;        /* true if ';' seps sticky session paths */
-
     int             max_attempts;     /* Number of attempts before failing */
-    char            max_attempts_set;
+
+    int             sticky_force:1;   /* Disable failover for sticky sessions */
+    int             scolonsep:1;      /* true if ';' seps sticky session paths */
+    int             max_attempts_set:1;
 
     /* XXX: Perhaps we will need the proc mutex too.
      * Altrough we are only using arithmetic operations
