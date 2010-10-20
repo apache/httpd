@@ -30,6 +30,7 @@
 #include "apr_shm.h"
 #include "apr_thread_mutex.h"
 #include "ap_mpm.h"
+#include "apr_general.h"
 #include "ap_config.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
@@ -38,6 +39,10 @@
 #include <malloc.h>
 #include "apr_atomic.h"
 #include "scoreboard.h"
+
+#ifdef __WATCOMC__
+#define _environ environ
+#endif
 
 /* scoreboard.c does the heavy lifting; all we do is create the child
  * score by moving a handle down the pipe into the child's stdin.
@@ -50,8 +55,6 @@ static volatile ap_generation_t my_generation=0;
 /* Definitions of WINNT MPM specific config globals */
 static HANDLE shutdown_event;  /* used to signal the parent to shutdown */
 static HANDLE restart_event;   /* used to signal the parent to restart */
-
-static char ap_coredump_dir[MAX_STRING_LEN];
 
 static int one_process = 0;
 static char const* signal_arg = NULL;
@@ -956,7 +959,7 @@ static apr_status_t service_set = SERVICE_UNSET;
 static apr_status_t service_to_start_success;
 static int inst_argc;
 static const char * const *inst_argv;
-static char *service_name = NULL;
+static const char *service_name = NULL;
 
 void winnt_rewrite_args(process_rec *process)
 {
@@ -979,7 +982,7 @@ void winnt_rewrite_args(process_rec *process)
     char *def_server_root;
     char *binpath;
     char optbuf[3];
-    const char *optarg;
+    const char *opt_arg;
     int fixed_args;
     char *pid;
     apr_getopt_t *opt;
@@ -1109,10 +1112,10 @@ void winnt_rewrite_args(process_rec *process)
 
     optbuf[0] = '-';
     optbuf[2] = '\0';
-    apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
+    apr_getopt_init(&opt, process->pool, process->argc, process->argv);
     opt->errfn = NULL;
     while ((rv = apr_getopt(opt, "wn:k:" AP_SERVER_BASEARGS,
-                            optbuf + 1, &optarg)) == APR_SUCCESS) {
+                            optbuf + 1, &opt_arg)) == APR_SUCCESS) {
         switch (optbuf[1]) {
 
         /* Shortcuts; include the -w option to hold the window open on error.
@@ -1125,11 +1128,11 @@ void winnt_rewrite_args(process_rec *process)
 
         case 'n':
             service_set = mpm_service_set_name(process->pool, &service_name,
-                                               optarg);
+                                               opt_arg);
             break;
 
         case 'k':
-            signal_arg = optarg;
+            signal_arg = opt_arg;
             break;
 
         case 'E':
@@ -1139,8 +1142,8 @@ void winnt_rewrite_args(process_rec *process)
             *(const char **)apr_array_push(mpm_new_argv) =
                 apr_pstrdup(process->pool, optbuf);
 
-            if (optarg) {
-                *(const char **)apr_array_push(mpm_new_argv) = optarg;
+            if (opt_arg) {
+                *(const char **)apr_array_push(mpm_new_argv) = opt_arg;
             }
             break;
         }
@@ -1190,7 +1193,7 @@ void winnt_rewrite_args(process_rec *process)
          * after logging begins, and the failure can land in the log.
          */
         if (!errout) {
-            mpm_nt_eventlog_stderr_open(service_name, process->pool);
+            mpm_nt_eventlog_stderr_open((char*)service_name, process->pool);
         }
         service_to_start_success = mpm_service_to_start(&service_name,
                                                         process->pool);

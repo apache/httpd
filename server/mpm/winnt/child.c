@@ -41,6 +41,8 @@
 #include "apr_buckets.h"
 #include "scoreboard.h"
 
+#include <process.h>
+
 #ifdef __MINGW32__
 #include <mswsock.h>
 #endif 
