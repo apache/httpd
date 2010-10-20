@@ -146,15 +146,6 @@ typedef struct {
     apr_size_t io_buffer_size;
     long maxfwd;
     apr_interval_time_t timeout;
-    /** 
-     * the following setting masks the error page
-     * returned from the 'proxied server' and just 
-     * forwards the status code upwards.
-     * This allows the main server (us) to generate
-     * the error page, (so it will look like a error
-     * returned from the rest of the system 
-     */
-    int error_override;
     enum {
       bad_error,
       bad_ignore,
@@ -172,7 +163,6 @@ typedef struct {
     char io_buffer_size_set;
     char maxfwd_set;
     char timeout_set;
-    char error_override_set;
     char badopt_set;
     char proxy_status_set;
 } proxy_server_conf;
@@ -195,10 +185,20 @@ typedef struct {
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
 
+    /**
+     * the following setting masks the error page
+     * returned from the 'proxied server' and just
+     * forwards the status code upwards.
+     * This allows the main server (us) to generate
+     * the error page, (so it will look like a error
+     * returned from the rest of the system
+     */
+    int error_override;
     signed char p_is_fnmatch; /* Is the path an fnmatch candidate? */
     signed char interpolate_env;
     signed char preserve_host;
     signed char preserve_host_set;
+    int error_override_set:1;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request

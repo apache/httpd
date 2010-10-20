@@ -1411,6 +1411,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     const char *proxy_status_line = NULL;
     conn_rec *origin = backend->connection;
     apr_interval_time_t old_timeout = 0;
+    proxy_dir_conf *dconf;
+
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
     int do_100_continue;
     
@@ -1742,7 +1745,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
          * ProxyPassReverse/etc from here to ap_proxy_read_headers
          */
 
-        if ((proxy_status == 401) && (conf->error_override)) {
+        if ((proxy_status == 401) && (dconf->error_override)) {
             const char *buf;
             const char *wa = "WWW-Authenticate";
             if ((buf = apr_table_get(r->headers_out, wa))) {
@@ -1779,7 +1782,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
         /* PR 41646: get HEAD right with ProxyErrorOverride */
-        if (ap_is_HTTP_ERROR(r->status) && conf->error_override) {
+        if (ap_is_HTTP_ERROR(r->status) && dconf->error_override) {
             /* clear r->status for override error, otherwise ErrorDocument
              * thinks that this is a recursive error, and doesn't find the
              * custom error page
@@ -1824,7 +1827,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if we are overriding the errors, we can't put the content
              * of the page into the brigade
              */
-            if (!conf->error_override || !ap_is_HTTP_ERROR(proxy_status)) {
+            if (!dconf->error_override || !ap_is_HTTP_ERROR(proxy_status)) {
                 /* read the body, pass it to the output filters */
                 apr_read_type_e mode = APR_NONBLOCK_READ;
                 int finish = FALSE;
@@ -1834,7 +1837,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                  * error status so that an underlying error (eg HTTP_NOT_FOUND)
                  * doesn't become an HTTP_OK.
                  */
-                if (conf->error_override && !ap_is_HTTP_ERROR(proxy_status)
+                if (dconf->error_override && !ap_is_HTTP_ERROR(proxy_status)
                         && ap_is_HTTP_ERROR(original_status)) {
                     r->status = original_status;
                     r->status_line = original_status_line;
