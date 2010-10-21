@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 737589 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_alias.xml.meta">
+
+<name>mod_authn_alias</name>
+<description>Permet de cr&eacute;er des fournisseurs d'authentification &eacute;tendus
+&agrave; partir des fournisseurs r&eacute;els</description>
+<status>Extension</status>
+<sourcefile>mod_authn_alias.c</sourcefile>
+<identifier>authn_alias_module</identifier>
+<compatibility>Disponible depuis la version 2.1 d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet de cr&eacute;er des fournisseurs d'authentification
+    &eacute;tendus dans le fichier de configuration et de leur assigner un
+    alias. Les fournisseurs alias&eacute;s peuvent ensuite &ecirc;tre r&eacute;f&eacute;renc&eacute;s via
+    les directives <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
+    module="mod_auth_digest">AuthDigestProvider</directive> de la m&ecirc;me
+    mani&egrave;re que les fournisseurs d'authentification de base. Outre la
+    possibilit&eacute; de cr&eacute;er et assigner un alias &agrave; un fournisseur
+    d'authentification &eacute;tendu, ce module permet aussi de r&eacute;f&eacute;rencer le
+    m&ecirc;me fournisseur d'authentification &eacute;tendu au sein de diff&eacute;rents
+    contextes.</p>
+
+</summary>
+
+<section id="example"><title>Exemples</title>
+
+        <p>Dans cet exemple, des mots de passe sont v&eacute;rifi&eacute;s dans deux
+	fichiers textes diff&eacute;rents.</p>
+
+        <example><title>V&eacute;rification &agrave; partir de plusieurs fichiers de
+	mots de passe au format texte</title>
+
+        # Premi&egrave;re v&eacute;rification<br />
+        &lt;AuthnProviderAlias file fichier1&gt;<br />
+        <indent>
+            AuthUserFile /www/conf/mots-de-passe1<br />
+        </indent>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        # v&eacute;rification suivante<br />
+        &lt;AuthnProviderAlias file fichier2&gt;   <br />
+        <indent>
+            AuthUserFile /www/conf/mots-de-passe2<br />
+        </indent>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        &lt;Directory /var/web/pages/secure&gt;<br />
+        <indent>
+            AuthBasicProvider fichier1 fichier2<br />
+            <br />
+            AuthType Basic<br />
+            AuthName "Zone prot&eacute;g&eacute;e"<br />
+            Require valid-user<br />
+        </indent>
+        &lt;/Directory&gt;<br />
+        </example>
+
+         <p>Dans l'exemple suivant, deux aliases de fournisseur
+	 d'authentification ldap diff&eacute;rents sont cr&eacute;&eacute;s &agrave; partir du
+	 fournisseur ldap. Ceci permet, pour un contexte donn&eacute;, de
+	 mettre en oeuvre une authentification ldap &agrave; partir de
+	 plusieurs serveurs ldap :</p>
+
+      <example><title>V&eacute;rification aupr&egrave;s de plusieurs serveurs LDAP</title>
+      LoadModule authn_alias_module modules/mod_authn_alias.so<br /><br />
+      &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
+      <indent>
+         AuthLDAPBindDN cn=votre-utilisateur,o=ctx<br />
+         AuthLDAPBindPassword votre-mot-de-passe<br />
+         AuthLDAPURL ldap://serveur.ldap/o=ctx<br />
+      </indent>
+      &lt;/AuthnProviderAlias&gt;<br /><br />
+      &lt;AuthnProviderAlias ldap ldap-autre-alias&gt;<br />
+      <indent>
+         AuthLDAPBindDN cn=un-autre-utilisateur,o=dev<br />
+         AuthLDAPBindPassword un-autre-mot-de-passe<br />
+         AuthLDAPURL ldap://autre.serveur.ldap/o=dev?cn<br />
+      </indent>
+      &lt;/AuthnProviderAlias&gt;<br /><br />
+
+      Alias /secure /webpages/secure<br />
+      &lt;Directory /webpages/secure&gt;<br />
+      <indent>
+         Order deny,allow<br />
+         Allow from all<br /><br />
+
+         AuthBasicProvider ldap-autre-alias  ldap-alias1<br /><br />
+
+         AuthType Basic<br />
+         AuthName Zone-prot&eacute;g&eacute;e-par-LDAP<br />
+         AuthzLDAPAuthoritative off<br />
+         Require valid-user<br />
+      </indent>
+      &lt;/Directory&gt;<br />
+    </example>
+</section>
+
+<directivesynopsis type="section">
+<name>AuthnProviderAlias</name>
+<description>Regroupe un ensemble de directives qui repr&eacute;sentent une
+extension d'un fournisseur d'authentification de base r&eacute;f&eacute;renc&eacute; par
+l'alias sp&eacute;cifi&eacute;</description>
+<syntax>&lt;AuthnProviderAlias <var>fournisseur-de-base Alias</var>&gt;
+... &lt;/AuthnProviderAlias&gt;</syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p>Les balises <directive
+    type="section">AuthnProviderAlias</directive> et
+    <code>&lt;/AuthnProviderAlias&gt;</code> permettent de regrouper des
+    directives qui repr&eacute;sentent une extension d'un fournisseur
+    d'authentification de base pouvant &ecirc;tre r&eacute;f&eacute;renc&eacute;e par l'alias
+    sp&eacute;cifi&eacute; dans les directives <directive module="mod_auth_basic">
+    AuthBasicProvider</directive> ou <directive module="mod_auth_digest">
+    AuthDigestProvider</directive>.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
