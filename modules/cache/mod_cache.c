@@ -808,12 +808,12 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             r->headers_out = cache->stale_handle->resp_hdrs;
 
-            /* add a stale warning */
+            /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
             if ((warn_head == NULL) || ((warn_head != NULL)
-                    && (ap_strstr_c(warn_head, "110") == NULL))) {
+                    && (ap_strstr_c(warn_head, "111") == NULL))) {
                 apr_table_mergen(r->err_headers_out, "Warning",
-                        "110 Response is stale");
+                        "111 Revalidation failed");
             }
 
             cache_run_cache_status(cache->handle, r, r->headers_out, AP_CACHE_HIT,
@@ -1621,12 +1621,12 @@ static void cache_insert_error_filter(request_rec *r)
 
             r->err_headers_out = cache->stale_handle->resp_hdrs;
 
-            /* add a stale warning */
+            /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
             if ((warn_head == NULL) || ((warn_head != NULL)
-                    && (ap_strstr_c(warn_head, "110") == NULL))) {
+                    && (ap_strstr_c(warn_head, "111") == NULL))) {
                 apr_table_mergen(r->err_headers_out, "Warning",
-                        "110 Response is stale");
+                        "111 Revalidation failed");
             }
 
             cache_run_cache_status(
