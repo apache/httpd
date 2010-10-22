@@ -714,13 +714,24 @@ expressions</description>
     then</p>
 
     <example>
-      ProxyPass /mirror/foo/ http://backend.example.com/
+        &lt;Location /mirror/foo/&gt;<br />
+        <indent>
+          ProxyPass http://backend.example.com/<br />
+        </indent>
+        &lt;/Location&gt;<br />
     </example>
 
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
 
+    <p>The following alternative syntax is possible, however carries a
+    performance penalty when present in large numbers:</p>
+
+    <example>
+        ProxyPass /mirror/foo/ http://backend.example.com/
+    </example>
+    
     <note type="warning">
     <p>If the first argument ends with a trailing <strong>/</strong>, the second
        argument should also end with a trailing <strong>/</strong> and vice
@@ -731,6 +742,19 @@ expressions</description>
 
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
+
+    <example>
+        &lt;Location /mirror/foo/&gt;<br />
+        <indent>
+          ProxyPass http://backend.example.com/<br />
+        </indent>
+        &lt;/Location&gt;<br />
+        &lt;Location /mirror/foo/i&gt;<br />
+        <indent>
+            ProxyPass !<br />
+        </indent>
+        &lt;/Location&gt;<br />
+    </example>
 
     <example>
       ProxyPass /mirror/foo/i !<br />
@@ -749,7 +773,10 @@ expressions</description>
       <directive module="mod_proxy">ProxyPass</directive> rules starting with the
       longest URLs first. Otherwise later rules for longer URLS will be hidden
       by any earlier rule which uses a leading substring of the URL. Note that
-      there is some relation with worker sharing.</p>
+      there is some relation with worker sharing. In contrast, only one
+      <directive module="mod_proxy">ProxyPass</directive> directive can be placed
+      in a <directive module="core">Location</directive> block, and the most
+      specific location will take precedence.</p>
 
       <p>For the same reasons exclusions must come <em>before</em> the
       general <directive>ProxyPass</directive> directives.</p>
