@@ -186,6 +186,7 @@ typedef struct {
     const apr_strmatch_pattern* cookie_domain_str;
     signed char p_is_fnmatch; /* Is the path an fnmatch candidate? */
     signed char interpolate_env;
+    struct proxy_alias *alias;
 
     /**
      * the following setting masks the error page
@@ -199,6 +200,7 @@ typedef struct {
     int preserve_host:1;
     int preserve_host_set:1;
     int error_override_set:1;
+    int alias_set:1;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request

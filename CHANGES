@@ -6,6 +6,10 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_proxy: Optimise ProxyPass within a Location so that it is stored
+     per-directory, and chosen during the location walk. Make ProxyPass
+     work correctly from within a LocationMatch. [Graham Leggett]
+
   *) core: Fix segfault if per-module LogLevel is on virtual host
      scope. PR 50117. [Stefan Fritsch]
 
