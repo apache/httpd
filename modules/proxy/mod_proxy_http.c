@@ -1412,11 +1412,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     conn_rec *origin = backend->connection;
     apr_interval_time_t old_timeout = 0;
     proxy_dir_conf *dconf;
+    int do_100_continue;
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
-    int do_100_continue;
-    
     do_100_continue = (worker->ping_timeout_set
                        && ap_request_has_body(r)
                        && (PROXYREQ_REVERSE == r->proxyreq)
