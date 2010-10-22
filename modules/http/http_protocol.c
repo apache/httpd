@@ -1078,14 +1078,13 @@ static const char *get_canned_error_string(int status,
                                "misconfiguration and was unable to complete\n"
                                "your request.</p>\n"
                                "<p>Please contact the server "
-                               "administrator,\n ",
+                               "administrator at \n ",
                                ap_escape_html(r->pool,
                                               r->server->server_admin),
-                               " and inform them of the time the "
+                               ", and inform them of the time this "
                                "error occurred,\n"
-                               "and anything you might have done that "
-                               "may have\n"
-                               "caused the error.</p>\n"
+                               "and the actions you performed which led to "
+                               "this error.</p>\n"
                                "<p>More information about this error "
                                "may be available\n"
                                "in the server error log.</p>\n",
