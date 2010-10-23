@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1021468 -->
+<!-- English Revision : 1026184 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -793,12 +793,24 @@ l'espace d'URLs du serveur local</description>
     <code>http://example.com/</code> ; alors la ligne</p>
 
     <example>
-      ProxyPass /miroir/foo/ http://backend.example.com/
+      &lt;Location /miroir/foo/&gt;<br />
+        <indent>
+          ProxyPass http://backend.example.com/<br />
+        </indent>
+        &lt;/Location&gt;<br />
     </example>
 
     <p>va convertir en interne toute requ&ecirc;te pour
     <code>http://example.com/miroir/foo/bar</code> en une requ&ecirc;te
     mandat&eacute;e pour <code>http://backend.example.com/bar</code>.</p>
+
+    <p>La syntaxe alternative suivante est valide, bien qu'elle induise
+    une d&eacute;gradation des performances lorsqu'elle est pr&eacute;sente en grand
+    nombre :</p>
+
+    <example>
+        ProxyPass /miroir/foo/ http://backend.example.com/
+    </example>
 
     <note type="warning">
     <p>Si le premier argument se termine par un slash
@@ -811,6 +823,19 @@ l'espace d'URLs du serveur local</description>
 
     <p>Le drapeau <code>!</code> permet de soustraire un sous-r&eacute;pertoire
     du mandat inverse, comme dans l'exemple suivant :</p>
+
+    <example>
+      &lt;Location /miroir/foo/&gt;<br />
+        <indent>
+          ProxyPass http://backend.example.com/<br />
+        </indent>
+        &lt;/Location&gt;<br />
+        &lt;Location /miroir/foo/i&gt;<br />
+        <indent>
+            ProxyPass !<br />
+        </indent>
+        &lt;/Location&gt;<br />
+    </example>
 
     <example>
       ProxyPass /miroir/foo/i !<br />
@@ -832,7 +857,11 @@ l'espace d'URLs du serveur local</description>
       l'URL la plus longue &agrave; la plus courte. Dans le cas contraire, les
       r&egrave;gles situ&eacute;es apr&egrave;s une r&egrave;gle dont l'URL correspond au d&eacute;but de
       leur propre URL seront ignor&eacute;es. Notez que tout ceci est en
-      relation avec le partage de workers.</p>
+      relation avec le partage de workers. Par contre, on ne peut placer
+      qu'une seule directive <directive
+      module="mod_proxy">ProxyPass</directive> dans une section
+      <directive module="core">Location</directive>, et c'est la section
+      la plus sp&eacute;cifique qui l'emportera.</p>
 
       <p>Pour les m&ecirc;mes raisons, les exclusions doivent se situer
       <em>avant</em> les directives <directive>ProxyPass</directive>
@@ -1750,6 +1779,7 @@ mandat&eacute;s</description>
 <syntax>ProxyErrorOverride On|Off</syntax>
 <default>ProxyErrorOverride Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.0 d'Apache</compatibility>
 
