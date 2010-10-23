@@ -6,6 +6,10 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_proxy: Release the backend connection as soon as EOS is detected,
+     so the backend isn't forced to wait for the client to eventually
+     acknowledge the data. [Graham Leggett]
+
   *) mod_proxy: Optimise ProxyPass within a Location so that it is stored
      per-directory, and chosen during the location walk. Make ProxyPass
      work correctly from within a LocationMatch. [Graham Leggett]

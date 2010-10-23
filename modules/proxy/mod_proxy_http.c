@@ -1905,8 +1905,18 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* found the last brigade? */
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+
                         /* signal that we must leave */
                         finish = TRUE;
+
+                        /* make sure we release the backend connection as soon
+                         * as we know we are done, so that the backend isn't
+                         * left waiting for a slow client to eventually
+                         * acknowledge the data.
+                         */
+                        ap_proxy_release_connection(backend->worker->scheme,
+                                backend, r->server);
+
                     }
 
                     /* try send what we read */
@@ -1929,6 +1939,14 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         else if (!interim_response) {
             ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                          "proxy: header only");
+
+            /* make sure we release the backend connection as soon
+             * as we know we are done, so that the backend isn't
+             * left waiting for a slow client to eventually
+             * acknowledge the data.
+             */
+            ap_proxy_release_connection(backend->worker->scheme,
+                    backend, r->server);
 
             /* Pass EOS bucket down the filter chain. */
             e = apr_bucket_eos_create(c->bucket_alloc);
