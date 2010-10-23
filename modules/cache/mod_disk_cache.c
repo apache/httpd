@@ -1147,12 +1147,16 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                                  APR_CREATE | APR_WRITE | APR_BINARY |
                                  APR_BUFFERED | APR_EXCL, dobj->data.pool);
             if (rv != APR_SUCCESS) {
+                apr_pool_destroy(dobj->data.pool);
+                APR_BRIGADE_CONCAT(out, dobj->bb);
                 return rv;
             }
             dobj->file_size = 0;
             rv = apr_file_info_get(&finfo, APR_FINFO_IDENT,
                     dobj->data.tempfd);
             if (rv != APR_SUCCESS) {
+                apr_pool_destroy(dobj->data.pool);
+                APR_BRIGADE_CONCAT(out, dobj->bb);
                 return rv;
             }
             dobj->disk_info.device = finfo.device;
