@@ -1706,7 +1706,8 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded);
 AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string); 
 
 /**
- * Compile a regular expression to be used later
+ * Compile a regular expression to be used later. The regex is freed when
+ * the pool is destroyed.
  * @param p The pool to allocate from
  * @param pattern the regular expression to compile
  * @param cflags The bitwise or of one or more of the following:
@@ -1724,6 +1725,8 @@ AP_DECLARE(ap_regex_t *) ap_pregcomp(apr_pool_t *p, const char *pattern,
  * Free the memory associated with a compiled regular expression
  * @param p The pool the regex was allocated from
  * @param reg The regular expression to free
+ * @note This function is only necessary if the regex should be cleaned
+ * up before the pool
  */
 AP_DECLARE(void) ap_pregfree(apr_pool_t *p, ap_regex_t *reg);
 
