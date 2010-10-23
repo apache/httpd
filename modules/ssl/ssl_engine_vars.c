@@ -623,7 +623,8 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
         result = "GENEROUS";
     else
         /* client verification failed */
-        result = apr_psprintf(p, "FAILED:%s", verr);
+        result = apr_psprintf(p, "FAILED:%s",
+                              verr ? verr : X509_verify_cert_error_string(vrc));
 
     if (xs)
         X509_free(xs);

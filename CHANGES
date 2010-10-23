@@ -24,8 +24,9 @@ Changes with Apache 2.3.9
      interfering with authentication/authorization. [Paul Querna,
      Igor Galić, Stefan Fritsch]
 
-  *) mod_ssl: Log certificate information if client cert verification
-     fails. PR 50094. [Lassi Tuura <lat cern ch>, Stefan Fritsch]
+  *) mod_ssl: Log certificate information and improve error message if client
+     cert verification fails. PR 50093, PR 50094. [Lassi Tuura <lat cern ch>,
+     Stefan Fritsch]
 
   *) htcacheclean: Teach htcacheclean to limit cache size by number of
      inodes in addition to size of files. Prevents a cache disk from
