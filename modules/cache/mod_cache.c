@@ -868,10 +868,19 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cc_out = apr_table_get(r->err_headers_out, "Cache-Control");
     pragma = apr_table_get(r->err_headers_out, "Pragma");
     headers = r->err_headers_out;
-    if (cc_out == NULL && pragma == NULL) {
+    if (!cc_out && !pragma) {
         cc_out = apr_table_get(r->headers_out, "Cache-Control");
         pragma = apr_table_get(r->headers_out, "Pragma");
         headers = r->headers_out;
+    }
+
+    /* Have we received a 304 response without any headers at all? Fall back to
+     * the original headers in the original cached request.
+     */
+    if (r->status == HTTP_NOT_MODIFIED && cache->stale_handle && !cc_out
+            && !pragma) {
+        cc_out = apr_table_get(cache->stale_handle->resp_hdrs, "Cache-Control");
+        pragma = apr_table_get(cache->stale_handle->resp_hdrs, "Pragma");
     }
 
     /* Parse the cache control header */
