@@ -214,26 +214,26 @@ typedef struct {
 
 typedef struct {
     conn_rec     *connection;
-    request_rec  *r;        /* Request record of the frontend request
-                             * which the backend currently answers. */
-    proxy_worker *worker;   /* Connection pool this connection belongs to */
-    apr_pool_t   *pool;     /* Subpool for hostname and addr data */
+    request_rec  *r;           /* Request record of the frontend request
+                                * which the backend currently answers. */
+    proxy_worker *worker;      /* Connection pool this connection belongs to */
+    apr_pool_t   *pool;        /* Subpool for hostname and addr data */
     const char   *hostname;
-    apr_sockaddr_t *addr;   /* Preparsed remote address info */
-    apr_pool_t   *scpool;   /* Subpool used for socket and connection data */
-    apr_socket_t *sock;     /* Connection socket */
-    void         *data;     /* per scheme connection data */
-    void         *forward;  /* opaque forward proxy data */
-    apr_uint32_t flags;     /* Connection flags */
+    apr_sockaddr_t *addr;      /* Preparsed remote address info */
+    apr_pool_t   *scpool;      /* Subpool used for socket and connection data */
+    apr_socket_t *sock;        /* Connection socket */
+    void         *data;        /* per scheme connection data */
+    void         *forward;     /* opaque forward proxy data */
+    apr_uint32_t flags;        /* Connection flags */
     apr_port_t   port;
-    char         is_ssl;
-    char         close;     /* Close 'this' connection */
-    char         need_flush;/* Flag to decide whether we need to flush the
-                             * filter chain or not */
+    int          is_ssl:1;
+    int          close:1;      /* Close 'this' connection */
+    int          need_flush:1; /* Flag to decide whether we need to flush the
+                                * filter chain or not */
 #if APR_HAS_THREADS
-    char         inreslist; /* connection in apr_reslist? */
+    int          inreslist:1;  /* connection in apr_reslist? */
 #endif
-    int          cleaned:1; /* connection cleaned? */
+    int          cleaned:1;    /* connection cleaned? */
 } proxy_conn_rec;
 
 typedef struct {
@@ -325,7 +325,7 @@ struct proxy_worker {
     apr_port_t      port;
     char            keepalive;
     char            disablereuse;
-    int             is_address_reusable;
+    int             is_address_reusable:1;
     proxy_conn_pool     *cp;        /* Connection pool to use */
     proxy_worker_stat   *s;         /* Shared data */
     void            *opaque;    /* per scheme worker data */
