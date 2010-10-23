@@ -1103,7 +1103,7 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
         return err;
     }
 
-    conf->gprof_dir = apr_pstrdup(cmd->pool, arg);
+    conf->gprof_dir = arg;
     return NULL;
 }
 #endif /*GPROF*/
@@ -1664,14 +1664,14 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
         return unclosed_directive(cmd);
     }
 
-    limited_methods = apr_pstrndup(cmd->pool, arg, endp - arg);
+    limited_methods = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (!limited_methods[0]) {
         return missing_container_arg(cmd);
     }
 
     while (limited_methods[0]) {
-        char *method = ap_getword_conf(cmd->pool, &limited_methods);
+        char *method = ap_getword_conf(cmd->temp_pool, &limited_methods);
         int methnum;
 
         /* check for builtin or module registered method number */
@@ -1684,7 +1684,8 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
             /* method has not been registered yet, but resorce restriction
              * is always checked before method handling, so register it.
              */
-            methnum = ap_method_register(cmd->pool, method);
+            methnum = ap_method_register(cmd->pool,
+                                         apr_pstrdup(cmd->pool, method));
         }
 
         limited |= (AP_METHOD_BIT << methnum);
@@ -1746,7 +1747,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (!arg[0]) {
         return missing_container_arg(cmd);
@@ -1842,7 +1843,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (!arg[0]) {
         return missing_container_arg(cmd);
@@ -1912,7 +1913,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (!arg[0]) {
         return missing_container_arg(cmd);
@@ -1995,7 +1996,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (!arg[0]) {
         return missing_container_arg(cmd);
@@ -2093,7 +2094,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *mconfig, const char *arg)
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (not) {
         arg++;
@@ -2147,7 +2148,7 @@ static const char *start_ifdefine(cmd_parms *cmd, void *dummy, const char *arg)
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (arg[0] == '!') {
         not = 1;
@@ -2194,7 +2195,7 @@ static const char *virtualhost_section(cmd_parms *cmd, void *dummy,
         return unclosed_directive(cmd);
     }
 
-    arg = apr_pstrndup(cmd->pool, arg, endp - arg);
+    arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (!arg[0]) {
         return missing_container_arg(cmd);
@@ -2408,7 +2409,7 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy,
 
     if ((apr_filepath_merge((char**)&ap_server_root, NULL, arg,
                             APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
-        || !ap_is_directory(cmd->pool, ap_server_root)) {
+        || !ap_is_directory(cmd->temp_pool, ap_server_root)) {
         return "ServerRoot must be a valid directory";
     }
 
