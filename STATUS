@@ -157,6 +157,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk patch works
      +1: minfrin
 
+   * mod_proxy: Release the backend connection as soon as EOS is detected,
+     so the backend isn't forced to wait for the client to eventually
+     acknowledge the data.
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1026665
+     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_proxy-closeearly22.patch
+     +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
