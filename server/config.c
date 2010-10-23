@@ -1171,7 +1171,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
      */
     l = apr_palloc(temp_pool, MAX_STRING_LEN);
 
-    bracket = apr_pstrcat(p, orig_directive + 1, ">", NULL);
+    bracket = apr_pstrcat(temp_pool, orig_directive + 1, ">", NULL);
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
         if (!memcmp(l, "</", 2)
             && (strcasecmp(l + 2, bracket) == 0)
@@ -1490,7 +1490,7 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
         args = ap_resolve_env(cmd->temp_pool, l);
 #endif
 
-        cmd_name = ap_getword_conf(cmd->pool, &args);
+        cmd_name = ap_getword_conf(cmd->temp_pool, &args);
         if (cmd_name[0] == '<') {
             if (cmd_name[1] == '/') {
                 cmd_name[strlen(cmd_name) - 1] = '\0';
@@ -1530,7 +1530,7 @@ static const char *execute_now(char *cmd_line, const char *args,
 {
     const command_rec *cmd;
     ap_mod_list *ml;
-    char *dir = apr_pstrdup(parms->pool, cmd_line);
+    char *dir = apr_pstrdup(parms->temp_pool, cmd_line);
 
     ap_str_tolower(dir);
 
