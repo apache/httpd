@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1021924 -->
+<!-- English Revision : 1023846 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -871,10 +871,10 @@ host</context>
     <p>Pour les configurations de serveur sujettes &agrave; ce genre de
     probl&egrave;me, il est pr&eacute;f&eacute;rable de d&eacute;sactiver la projection en m&eacute;moire
     des fichiers servis en sp&eacute;cifiant :</p>
-    <p>S'il fait l'objet d'une projection en m&eacute;moire par
+    <li>S'il fait l'objet d'une projection en m&eacute;moire par
     <program>httpd</program>, la suppression ou la troncature d'un
     fichier peut provoquer un crash de <program>httpd</program> avec une
-    erreur de segmentation.</p>
+    erreur de segmentation.</li>
     <example>
       EnableMMAP Off
     </example>
@@ -1987,7 +1987,7 @@ host</context>
 
     <p>Lorsqu'un client utilise une connexion persistante, elle comptera
     pour une seule requ&ecirc;te pour la directive <directive
-    module="mpm_common">MaxConnectionsPerChild</directive>, quel
+    module="mpm_common">MaxConnectionsPerChild<</directive>, quel
     que soit le nombre de requ&ecirc;tes transmises via cette connexion.</p>
 </usage>
 
@@ -3612,7 +3612,16 @@ host</context>
     <p>La directive <directive>ServerName</directive> permet de d&eacute;finir
     les protocole, nom d'h&ocirc;te et port d'une requ&ecirc;te que le serveur
     utilise pour s'authentifier lui-m&ecirc;me. Ceci est utile lors de la
-    cr&eacute;ation de redirections d'URLs. Par exemple, si le nom de la
+    cr&eacute;ation de redirections d'URLs.</p>
+
+    <p>La directive <directive>ServerName</directive> permet aussi
+    (&eacute;ventuellement en conjonction avec la directive
+    <directive>ServerAlias</directive>) d'identifier de mani&egrave;re unique
+    un serveur virtuel, lorsqu'elle est utilis&eacute;e dans un contexte de <a
+    href="../vhosts/name-based.html">serveurs virtuels &agrave; base de
+    noms</a>.</p>
+    
+    <p>Par exemple, si le nom de la
     machine h&eacute;bergeant le serveur web est
     <code>simple.example.com</code>, la machine poss&egrave;de l'alias
     DNS <code>www.example.com</code>, et si vous voulez que le serveur
