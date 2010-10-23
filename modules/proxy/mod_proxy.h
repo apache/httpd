@@ -233,6 +233,7 @@ typedef struct {
 #if APR_HAS_THREADS
     char         inreslist; /* connection in apr_reslist? */
 #endif
+    int          cleaned:1; /* connection cleaned? */
 } proxy_conn_rec;
 
 typedef struct {
