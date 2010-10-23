@@ -233,7 +233,7 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
                            "> directive missing closing '>'", NULL);
     }
 
-    args = apr_pstrndup(cmd->pool, args, endp - args);
+    args = apr_pstrndup(cmd->temp_pool, args, endp - args);
 
     if (!args[0]) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
@@ -428,7 +428,7 @@ static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
                            "> directive missing closing '>'", NULL);
     }
 
-    args = apr_pstrndup(cmd->pool, args, endp - args);
+    args = apr_pstrndup(cmd->temp_pool, args, endp - args);
 
     if (args[0]) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,

@@ -56,7 +56,7 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
     authn_provider_list *newp;
 
     newp = apr_pcalloc(cmd->pool, sizeof(authn_provider_list));
-    newp->provider_name = apr_pstrdup(cmd->pool, arg);
+    newp->provider_name = arg;
 
     /* lookup and cache the actual provider now */
     newp->provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,

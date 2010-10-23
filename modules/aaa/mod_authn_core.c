@@ -215,7 +215,7 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
                            "> directive missing closing '>'", NULL);
     }
 
-    args = apr_pstrndup(cmd->pool, arg, endp - arg);
+    args = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
     if (!args[0]) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
