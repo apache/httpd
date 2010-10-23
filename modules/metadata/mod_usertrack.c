@@ -81,8 +81,8 @@ typedef enum {
 typedef struct {
     int enabled;
     cookie_type_e style;
-    char *cookie_name;
-    char *cookie_domain;
+    const char *cookie_name;
+    const char *cookie_domain;
     char *regexp_string;  /* used to compile regexp; save for debugging */
     ap_regex_t *regexp;  /* used to find usertrack cookie in cookie header */
 } cookie_dir_rec;
@@ -352,7 +352,7 @@ static const char *set_cookie_name(cmd_parms *cmd, void *mconfig,
 {
     cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
 
-    dcfg->cookie_name = apr_pstrdup(cmd->pool, name);
+    dcfg->cookie_name = name;
 
     set_and_comp_regexp(dcfg, cmd->pool, name);
 
@@ -390,7 +390,7 @@ static const char *set_cookie_domain(cmd_parms *cmd, void *mconfig,
         return "CookieDomain values must contain at least one embedded dot";
     }
 
-    dcfg->cookie_domain = apr_pstrdup(cmd->pool, name);
+    dcfg->cookie_domain = name;
     return NULL;
 }
 
