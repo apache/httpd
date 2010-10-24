@@ -22,9 +22,9 @@
  limitations under the License.
 -->
 
-
-<parentdocument href="./">Rewrite</parentdocument>
 <manualpage metafile="flags.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
   <title>Les drapeaux de r&eacute;&eacute;criture</title>
 
 <summary>
@@ -297,7 +297,9 @@ RewriteRule ancienne-ressource - [G,NC]
 </example>
 
 <p>Lorsqu'on utilise [F], [L] est implicite - c'est &agrave; dire que la
-r&eacute;ponse est renvoy&eacute;e imm&eacute;diatement, et aucune autre r&egrave;gle n'est &eacute;valu&eacute;e.</section>
+r&eacute;ponse est renvoy&eacute;e imm&eacute;diatement, et aucune autre r&egrave;gle n'est &eacute;valu&eacute;e.</p>
+
+</section>
 
 <section id="flag_h"><title>H|handler</title>
 <p>Force le traitement de la requ&ecirc;te r&eacute;sultante par le gestionnaire
@@ -318,12 +320,12 @@ certain gestionnaire en fonction de certaines conditions. Par exemple,
 l'extrait suivant utilis&eacute; dans un contexte de niveau serveur permet de
 faire en sorte que les fichiers <code>.php</code> soient
 <em>affich&eacute;s</em> par <code>mod_php</code> dans le cas o&ugrave; ils font
-l'objet d'une requ&ecirc;te avec l'extension <code>.phps</code> :
+l'objet d'une requ&ecirc;te avec l'extension <code>.phps</code> :</p>
 
 <example>
 RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
 </example>
-</p>
+
 
 <p>L'expression rationnelle ci-dessus -
 <code>^(/source/.+\.php)s$</code> - va correspondre &agrave; toute requ&ecirc;te qui
@@ -577,8 +579,7 @@ autrement dit, la cha&icirc;ne de requ&ecirc;te (<code>query string</code>) exis
 <p>
 Lorsque l'URI de la requ&ecirc;te contient une cha&icirc;ne de param&egrave;tres, et si
 l'URI cible n'en contient pas, le comportement par d&eacute;faut de la
-directive <directive
-+module="mod_rewrite">RewriteRule</directive> consiste &agrave; copier cette
+directive <directive module="mod_rewrite">RewriteRule</directive> consiste &agrave; copier cette
 cha&icirc;ne de param&egrave;tres dans l'URI cible. Avec le drapeau [QSD], la cha&icirc;ne
 de param&egrave;tres est supprim&eacute;e.
 </p>
