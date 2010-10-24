@@ -27,9 +27,9 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/server/mpm/NetWare \
-			$(AP_WORK)/modules/dav/main \
 			$(NWOS) \
+			$(STDMOD)/dav/main \
+			$(SERVER)/mpm/NetWare \
 			$(EOLIST)
 
 #

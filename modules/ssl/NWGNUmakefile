@@ -32,16 +32,14 @@ OSSLAPP = $(OSSLSDK)/apps
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(OSSLINC) \
-			$(OSSLINC)/openssl \
-			$(AP_WORK)/include \
-			$(AP_WORK)/server/mpm/NetWare \
-			$(AP_WORK)/modules/arch/netware \
-			$(AP_WORK)/modules/generators \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(APR) \
+			$(AP_WORK)/include \
 			$(NWOS) \
+			$(STDMOD)/generators \
+			$(SERVER)/mpm/NetWare \
+			$(OSSLINC) \
+			$(OSSLINC)/openssl \
 			$(EOLIST)
 
 #

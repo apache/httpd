@@ -181,6 +181,10 @@ WIN_CFLAGS += -lMSL_All_x86.lib -lkernel32.lib -luser32.lib
 
 CFLAGS = -c -nosyspath -Cpp_exceptions off -RTTI off -align 4 -w nocmdline -proc PII 
 
+ifeq "$(REQUIRE_PROTOTYPES)" "1"
+CFLAGS += -r
+endif
+
 # -g                    generate debugging information
 # -O0                   level 0 optimizations
 

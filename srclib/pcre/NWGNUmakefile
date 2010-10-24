@@ -36,7 +36,7 @@ $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(AP_WORK)/os/netware \
+			$(NWOS) \
 			$(APR)/include/arch/netware \
 			$(EOLIST)
 
