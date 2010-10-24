@@ -1081,9 +1081,9 @@ static const char *get_canned_error_string(int status,
                                "administrator at \n ",
                                ap_escape_html(r->pool,
                                               r->server->server_admin),
-                               ", and inform them of the time this "
+                               " to inform them of the time this "
                                "error occurred,\n"
-                               "and the actions you performed which led to "
+                               " and the actions you performed just before "
                                "this error.</p>\n"
                                "<p>More information about this error "
                                "may be available\n"
