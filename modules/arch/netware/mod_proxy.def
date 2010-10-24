@@ -1,6 +1,0 @@
-EXPORT  proxy_module
-EXPORT  proxy_hook_scheme_handler
-EXPORT  proxy_hook_canon_handler
-EXPORT  ap_proxy_ssl_enable
-EXPORT  ap_proxy_ssl_disable
-EXPORT  proxy_run_fixups
