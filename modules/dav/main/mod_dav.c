@@ -802,6 +802,30 @@ static int dav_parse_range(request_rec *r,
     return 1;
 }
 
+static const char *dav_validate_content_headers(request_rec *r)
+{
+    int i, prefix_len = strlen("content-");
+    const apr_array_header_t *arr = apr_table_elts(r->headers_in);
+    const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
+
+    for (i = 0; i < arr->nelts; ++i) {
+         if (elts[i].key == NULL)
+             continue;
+         if (strncasecmp(elts[i].key, "content-", prefix_len) == 0
+             && strcasecmp(elts[i].key + prefix_len, "length") != 0
+             && strcasecmp(elts[i].key + prefix_len, "range") != 0
+             /* Content-Location may be ignored per RFC 2616 14.14 */
+             && strcasecmp(elts[i].key + prefix_len, "location") != 0
+             && strcasecmp(elts[i].key + prefix_len, "type") != 0)
+         {
+             /* XXX: content-md5? content-language? content-encoding? */
+             return apr_psprintf(r->pool, "Support for %s is not implemented.",
+                                 ap_escape_html(r->pool, elts[i].key));
+         }
+    }
+    return NULL;
+}
+
 /* handle the GET method */
 static int dav_method_get(request_rec *r)
 {
@@ -947,6 +971,14 @@ static int dav_method_put(request_rec *r)
     }
     else {
         mode = DAV_MODE_WRITE_TRUNC;
+    }
+
+    if ((body = dav_validate_content_headers(r)) != NULL) {
+        /* RFC 2616 9.6: We must not ignore any Content-* headers we do not
+         * understand.
+         * XXX: Relax this for HTTP 1.0 requests?
+         */
+        return dav_error_response(r, HTTP_NOT_IMPLEMENTED, body);
     }
 
     /* make sure the resource can be modified (if versioning repository) */
