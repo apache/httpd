@@ -658,7 +658,7 @@ static void ssl_init_ctx_verify(server_rec *s,
             ca_list = ssl_init_FindCAList(s, ptemp,
                                           mctx->auth.ca_cert_file,
                                           mctx->auth.ca_cert_path);
-        if (!ca_list) {
+        if (sk_X509_NAME_num(ca_list) == 0) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                     "Unable to determine list of acceptable "
                     "CA certificates for client authentication");
@@ -1334,6 +1334,15 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
      */
     if (ca_file) {
         ssl_init_PushCAList(ca_list, s, ca_file);
+        /*
+         * If ca_list is still empty after trying to load ca_file
+         * then the file failed to load, and users should hear about that.
+         */
+        if (sk_X509_NAME_num(ca_list) == 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                    "Failed to load SSLCACertificateFile: %s", ca_file);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        }
     }
 
     /*
