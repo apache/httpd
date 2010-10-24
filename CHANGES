@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_dav: Send 400 error if malformed Content-Range header is received for
+     a put request (RFC 2616 14.16). PR 49825. [Stefan Fritsch]
+
   *) mod_proxy: Release the backend connection as soon as EOS is detected,
      so the backend isn't forced to wait for the client to eventually
      acknowledge the data. [Graham Leggett]
