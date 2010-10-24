@@ -16,14 +16,12 @@ endif
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(AP_WORK)/include \
-			$(NWOS) \
-			$(AP_WORK)/modules/arch/netware \
-			$(AP_WORK)/modules/session \
-			$(AP_WORK)/modules/filters \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(APR) \
+			$(AP_WORK)/include \
+			$(NWOS) \
+			$(STDMOD)/session \
+			$(STDMOD)/filters \
 			$(EOLIST)
 
 #

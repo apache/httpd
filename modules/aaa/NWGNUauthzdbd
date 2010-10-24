@@ -20,7 +20,7 @@ XINCDIRS	+= \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
 			$(NWOS) \
-			$(AP_WORK)/modules/database \
+			$(STDMOD)/database \
 			$(EOLIST)
 
 #

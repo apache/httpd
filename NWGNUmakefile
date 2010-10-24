@@ -62,15 +62,15 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/modules/aaa/ \
-			$(AP_WORK)/modules/core \
-			$(AP_WORK)/modules/filters/ \
-			$(AP_WORK)/modules/generators/ \
-			$(AP_WORK)/modules/http/ \
-			$(AP_WORK)/modules/loggers/ \
-			$(AP_WORK)/modules/mappers/ \
-			$(AP_WORK)/modules/proxy/ \
-			$(AP_WORK)/modules/ssl/ \
+			$(STDMOD)/aaa \
+			$(STDMOD)/core \
+			$(STDMOD)/filters \
+			$(STDMOD)/generators \
+			$(STDMOD)/http \
+			$(STDMOD)/loggers \
+			$(STDMOD)/mappers \
+			$(STDMOD)/proxy \
+			$(STDMOD)/ssl \
 			$(AP_WORK)/server/mpm/netware \
 			$(PCRE) \
 			$(NWOS) \
@@ -158,7 +158,7 @@ NLM_DESCRIPTION	= Apache Web Server $(VERSION_STR) $(VERSION_SKT)
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= Apache
+NLM_THREAD_NAME	= $(NLM_NAME)
 
 #
 # This is used by the '-screenname' directive.  If left blank,
@@ -210,7 +210,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/Apache2.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
@@ -431,9 +431,9 @@ installdev :: FORCE
 	-copy $(subst /,\,$(NWOS))\*.xdc           $(INSTALL)\$(BASEDIR)\lib\*.*
 
 prebuild :: FORCE
-	$(MAKE) -C server -f NWGNUmakefile
-	$(MAKE) -C srclib/pcre -f NWGNUmakefile
-	$(CHKNOT) $(PREBUILD_INST)\nul          mkdir $(PREBUILD_INST)
+	$(MAKE) -C $(SERVER) -f NWGNUmakefile
+	$(MAKE) -C $(PCRE) -f NWGNUmakefile
+	$(CHKNOT) $(subst /,\,$(PREBUILD_INST))\nul mkdir $(subst /,\,$(PREBUILD_INST))
 	-copy $(AP_WORK)\server\$(OBJDIR)\*.nlm $(PREBUILD_INST)\*.*
 	-copy $(PCRE)\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
 

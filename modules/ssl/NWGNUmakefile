@@ -140,7 +140,7 @@ NLM_NAME	= mod_ssl
 ifeq "$(USE_NTLS)" "1"
 NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module (NTLS)
 else
-NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module (OpenSSL)
 endif
 
 #
