@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_ssl: Make sure to always log an error if loading of CA certificates
+     fails. PR 40312. [Paul Tiemann <issues apache org ourdetour com>]
+
   *) mod_dav: Send 501 error if unknown Content-* header is received for a PUT
      request (RFC 2616 9.6). PR 42978. [Stefan Fritsch]
 
