@@ -106,7 +106,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 </example>
 
 </section>
-<em>VAL</em>
+
 <section id="vhosts"><title>R&eacute;&eacute;criture et h&ocirc;tes virtuels</title>
 
      <p>Par d&eacute;faut, les h&ocirc;tes virtuels n'h&eacute;ritent pas de la
