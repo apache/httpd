@@ -287,7 +287,7 @@ STACK_OF(X509) *ssl_read_pkcs7(server_rec *s, const char *pkcs7)
 
     f = fopen(pkcs7, "r");
     if (!f) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "Can't open %s", pkcs7);
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "Can't open %s", pkcs7);
         ssl_die();
     }
 
@@ -313,13 +313,13 @@ STACK_OF(X509) *ssl_read_pkcs7(server_rec *s, const char *pkcs7)
         break;
 
     default:
-        ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                      "Don't understand PKCS7 file %s", pkcs7);
         ssl_die();
     }
 
     if (!certs) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                      "No certificates in %s", pkcs7);
         ssl_die();
     }
