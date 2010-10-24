@@ -865,16 +865,16 @@ host</context>
     <li>Sur certains syst&egrave;mes multi-processeurs, la projection en
     m&eacute;moire peut d&eacute;grader les performances du programme
     <program>httpd</program>.</li>
-    
+    <li>S'il fait l'objet d'une projection en m&eacute;moire par
+    <program>httpd</program>, la suppression ou la troncature d'un
+    fichier peut provoquer un crash de <program>httpd</program> avec une
+    erreur de segmentation.</li>
     </ul>
 
     <p>Pour les configurations de serveur sujettes &agrave; ce genre de
     probl&egrave;me, il est pr&eacute;f&eacute;rable de d&eacute;sactiver la projection en m&eacute;moire
     des fichiers servis en sp&eacute;cifiant :</p>
-    <li>S'il fait l'objet d'une projection en m&eacute;moire par
-    <program>httpd</program>, la suppression ou la troncature d'un
-    fichier peut provoquer un crash de <program>httpd</program> avec une
-    erreur de segmentation.</li>
+    
     <example>
       EnableMMAP Off
     </example>
@@ -1987,7 +1987,7 @@ host</context>
 
     <p>Lorsqu'un client utilise une connexion persistante, elle comptera
     pour une seule requ&ecirc;te pour la directive <directive
-    module="mpm_common">MaxConnectionsPerChild<</directive>, quel
+    module="mpm_common">MaxConnectionsPerChild</directive>, quel
     que soit le nombre de requ&ecirc;tes transmises via cette connexion.</p>
 </usage>
 
