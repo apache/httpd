@@ -62,13 +62,13 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/modules/filters \
-			$(AP_WORK)/modules/generators \
-			$(AP_WORK)/modules/http \
-			$(AP_WORK)/modules/loggers \
-			$(AP_WORK)/modules/mappers \
-			$(AP_WORK)/modules/proxy \
-			$(AP_WORK)/server/mpm/NetWare \
+			$(HTTPD) \
+			$(STDMOD)/filters \
+			$(STDMOD)/generators \
+			$(STDMOD)/loggers \
+			$(STDMOD)/mappers \
+			$(STDMOD)/proxy \
+			$(SERVER)/mpm/NetWare \
 			$(PCRE) \
 			$(NWOS) \
 			$(EOLIST)
