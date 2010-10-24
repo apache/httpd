@@ -67,7 +67,8 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         rv = mc->stapling_cache->init(mc->stapling_cache_context,
                                      "mod_ssl-stapling", &hints, s, p);
         if (rv) {
-            /* ABORT ABORT etc. */
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                         "Could not initialize stapling cache. Exiting.");
             ssl_die();
         }
     }
@@ -91,7 +92,8 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     
     rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl-session", &hints, s, p);
     if (rv) {
-        /* ABORT ABORT etc. */
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                     "Could not initialize session cache. Exiting.");
         ssl_die();
     }
 }

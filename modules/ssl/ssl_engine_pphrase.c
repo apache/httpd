@@ -186,7 +186,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
          */
         if (sc->server->pks->cert_files[0] == NULL
             && sc->server->pkcs7 == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, pServ,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, pServ,
                          "Server should be SSL-aware but has no certificate "
                          "configured [Hint: SSLCertificateFile] (%s:%d)",
                          pServ->defn_name, pServ->defn_line_number);
@@ -208,16 +208,16 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                             sizeof(szPath));
                 if ((rv = exists_and_readable(szPath, p, NULL))
                     != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                                  "Init: Can't open server certificate file %s",
                                  szPath);
                     ssl_die();
                 }
                 if ((pX509Cert = SSL_read_X509(szPath, NULL, NULL)) == NULL) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                                  "Init: Unable to read server certificate from"
                                  " file %s", szPath);
-                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     ssl_die();
                 }
             }
@@ -228,10 +228,10 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(pX509Cert, NULL);
             an = ssl_util_algotypestr(at);
             if (algoCert & at) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                              "Init: Multiple %s server certificates not "
                              "allowed", an);
-                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 ssl_die();
             }
             algoCert |= at;
@@ -304,7 +304,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  */
                 if ((rv = exists_and_readable(szPath, p,
                                               &pkey_mtime)) != APR_SUCCESS ) {
-                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                                   "Init: Can't open server private key file "
                                   "%s",szPath);
                      ssl_die();
@@ -405,7 +405,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 }
 #ifdef WIN32
                 if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                                  "Init: SSLPassPhraseDialog builtin is not "
                                  "supported on Win32 (key file "
                                  "%s)", szPath);
@@ -438,9 +438,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     }
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0,
                                  pServ, "Init: Pass phrase incorrect");
-                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, pServ);
+                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, pServ);
 
                     if (writetty) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Pass phrase incorrect.\n");
@@ -451,11 +451,11 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             }
 
             if (pPrivateKey == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                             "Init: Unable to read server private key from "
                             "file %s [Hint: Perhaps it is in a separate file? "
                             "  See SSLCertificateKeyFile]", szPath);
-                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 ssl_die();
             }
 
@@ -466,10 +466,10 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             at = ssl_util_algotypeof(NULL, pPrivateKey);
             an = ssl_util_algotypestr(at);
             if (algoKey & at) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                              "Init: Multiple %s server private keys not "
                              "allowed", an);
-                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 ssl_die();
             }
             algoKey |= at;

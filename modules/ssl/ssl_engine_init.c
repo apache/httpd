@@ -375,10 +375,10 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 
     if (mc->szCryptoDevice) {
         if (!(e = ENGINE_by_id(mc->szCryptoDevice))) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                          "Init: Failed to load Crypto Device API `%s'",
                          mc->szCryptoDevice);
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             ssl_die();
         }
 
@@ -387,10 +387,10 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
         }
 
         if (!ENGINE_set_default(e, ENGINE_METHOD_ALL)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                          "Init: Failed to enable Crypto Device API `%s'",
                          mc->szCryptoDevice);
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             ssl_die();
         }
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, 
@@ -412,7 +412,7 @@ static void ssl_init_server_check(server_rec *s,
      * possibility that the user forgot to set them.
      */
     if (!mctx->pks->cert_files[0] && !mctx->pkcs7) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "No SSL Certificate set [hint: SSLCertificateFile]");
         ssl_die();
     }
@@ -427,7 +427,7 @@ static void ssl_init_server_check(server_rec *s,
 #endif
         )
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Illegal attempt to re-initialise SSL for server "
                 "(theoretically shouldn't happen!)");
         ssl_die();
@@ -452,10 +452,10 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
     if (!SSL_CTX_set_tlsext_servername_callback(mctx->ssl_ctx,
                           ssl_callback_ServerNameIndication) ||
         !SSL_CTX_set_tlsext_servername_arg(mctx->ssl_ctx, mctx)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                      "Unable to initialize TLS servername extension "
                      "callback (incompatible OpenSSL version?)");
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 
@@ -485,7 +485,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
      *  Create the new per-server SSL context
      */
     if (protocol == SSL_PROTOCOL_NONE) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "No SSL protocols available [hint: SSLProtocol]");
         ssl_die();
     }
@@ -643,10 +643,10 @@ static void ssl_init_ctx_verify(server_rec *s,
                          MODSSL_PCHAR_CAST mctx->auth.ca_cert_file,
                          MODSSL_PCHAR_CAST mctx->auth.ca_cert_path))
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                     "Unable to configure verify locations "
                     "for client authentication");
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             ssl_die();
         }
 
@@ -659,7 +659,7 @@ static void ssl_init_ctx_verify(server_rec *s,
                                           mctx->auth.ca_cert_file,
                                           mctx->auth.ca_cert_path);
         if (!ca_list) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                     "Unable to determine list of acceptable "
                     "CA certificates for client authentication");
             ssl_die();
@@ -704,9 +704,9 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
                  suite);
 
     if (!SSL_CTX_set_cipher_list(ctx, MODSSL_PCHAR_CAST suite)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Unable to configure permitted SSL ciphers");
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 }
@@ -732,10 +732,10 @@ static void ssl_init_ctx_crl(server_rec *s,
                               (char *)mctx->crl_path);
 
     if (!mctx->crl) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Unable to configure X.509 CRL storage "
                 "for certificate revocation");
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 }
@@ -793,7 +793,7 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
                                       (char *)chain,
                                       skip_first, NULL);
     if (n < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Failed to configure CA certificate chain!");
         ssl_die();
     }
@@ -850,16 +850,16 @@ static int ssl_server_import_cert(server_rec *s,
 
     ptr = asn1->cpData;
     if (!(cert = d2i_X509(NULL, &ptr, asn1->nData))) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Unable to import %s server certificate", type);
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) <= 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Unable to configure %s server certificate", type);
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
   
@@ -906,16 +906,16 @@ static int ssl_server_import_key(server_rec *s,
     ptr = asn1->cpData;
     if (!(pkey = d2i_PrivateKey(pkey_type, NULL, &ptr, asn1->nData)))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Unable to import %s server private key", type);
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) <= 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Unable to configure %s server private key", type);
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 
@@ -1033,7 +1033,7 @@ static void ssl_init_server_certs(server_rec *s,
         || have_ecc
 #endif
 )) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
 #ifndef OPENSSL_NO_EC
                 "Oops, no RSA, DSA or ECC server certificate found "
 #else
@@ -1058,7 +1058,7 @@ static void ssl_init_server_certs(server_rec *s,
         || have_ecc
 #endif
           )) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
 #ifndef OPENSSL_NO_EC
                 "Oops, no RSA, DSA or ECC server private key found?!");
 #else
@@ -1346,7 +1346,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
         apr_status_t rv;
 
         if ((rv = apr_dir_open(&dir, ca_path, ptemp)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                     "Failed to open Certificate Path `%s'",
                     ca_path);
             ssl_die();

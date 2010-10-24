@@ -653,12 +653,12 @@ void modssl_init_stapling(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
     SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->stapling_cache == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                      "SSLStapling: no stapling cache available");
         ssl_die();
     }
     if (ssl_stapling_mutex_init(s, ptemp) == FALSE) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                      "SSLStapling: cannot initialise stapling mutex");
         ssl_die();
     }
