@@ -658,7 +658,7 @@ static void ssl_init_ctx_verify(server_rec *s,
             ca_list = ssl_init_FindCAList(s, ptemp,
                                           mctx->auth.ca_cert_file,
                                           mctx->auth.ca_cert_path);
-        if (sk_X509_NAME_num(ca_list) == 0) {
+        if (sk_X509_NAME_num(ca_list) <= 0) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                     "Unable to determine list of acceptable "
                     "CA certificates for client authentication");
