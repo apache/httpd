@@ -138,7 +138,7 @@ To Do List
 
 - How-To style documents for more of the daily tasks
     - Logging, log rotation, and log reporting
-    - ?
+    - Secure mod_dav configuration
 
 - Writing modules - Can we provide a basic intro to writing modules,
   perhaps based around mod_example, or one of the other simple example
@@ -160,12 +160,6 @@ To Do List
   few more useful exmaples.
   That would be a good place to document logging of cache hit/miss:
   https://issues.apache.org/bugzilla/show_bug.cgi?id=48241#c2
-
-- The mod_usertrack docs should describe what the module does, now,
-  rather than spending so much time comparing it to what a long-gone
-  module, which our readers never used, used to do. Examples would be
-  helpful. Additionally, a significant part of the doc consists of a
-  quoted email message. This seems somewhat unprofessional.
 
 - Is it worth having a doc that discusses recommended (what does this
   mean?) third-party modules like mod_security, mod_php, and so on - the
