@@ -82,6 +82,10 @@
     should still use your actual domain, as you would with any other top
     level domain (for example <code>.example.co.uk</code>).
     </note> 
+
+    <example>
+    CookieDomain .example.com
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -109,6 +113,10 @@
 
     <p>If this directive is not used, cookies last only for the
     current browser session.</p>
+
+    <example>
+    CookieExpires "3 weeks"
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -133,7 +141,12 @@
     <p>You must specify a valid cookie name; results are
     unpredictable if you use a name containing unusual characters.
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
+
+    <example>
+    CookieName clicktrack
+    </example>
 </usage>
+
 </directivesynopsis>
 
 <directivesynopsis>
@@ -171,6 +184,10 @@
     users' browsers. At the time of writing, most browsers support all
     three of these formats, with <code>Cookie2</code> being the
     preferred format.</p>
+
+    <example>
+    CookieStyle Cookie2
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -197,6 +214,10 @@
     per-directory basis. By default, enabling
     <module>mod_usertrack</module> will <strong>not</strong> 
     activate cookies. </p>
+
+    <example>
+    CookieTracking on
+    </example>
 
 </usage>
 </directivesynopsis>
