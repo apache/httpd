@@ -878,16 +878,16 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     <li>Sur certains systèmes multi-processeurs, la projection en
     mémoire peut dégrader les performances du programme
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</li>
-    
+    <li>S'il fait l'objet d'une projection en mémoire par
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, la suppression ou la troncature d'un
+    fichier peut provoquer un crash de <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec une
+    erreur de segmentation.</li>
     </ul>
 
     <p>Pour les configurations de serveur sujettes à ce genre de
     problème, il est préférable de désactiver la projection en mémoire
     des fichiers servis en spécifiant :</p>
-    <p>S'il fait l'objet d'une projection en mémoire par
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, la suppression ou la troncature d'un
-    fichier peut provoquer un crash de <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec une
-    erreur de segmentation.</p>
+    
     <div class="example"><p><code>
       EnableMMAP Off
     </code></p></div>
@@ -3527,7 +3527,15 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
     <p>La directive <code class="directive">ServerName</code> permet de définir
     les protocole, nom d'hôte et port d'une requête que le serveur
     utilise pour s'authentifier lui-même. Ceci est utile lors de la
-    création de redirections d'URLs. Par exemple, si le nom de la
+    création de redirections d'URLs.</p>
+
+    <p>La directive <code class="directive">ServerName</code> permet aussi
+    (éventuellement en conjonction avec la directive
+    <code class="directive">ServerAlias</code>) d'identifier de manière unique
+    un serveur virtuel, lorsqu'elle est utilisée dans un contexte de <a href="../vhosts/name-based.html">serveurs virtuels à base de
+    noms</a>.</p>
+    
+    <p>Par exemple, si le nom de la
     machine hébergeant le serveur web est
     <code>simple.example.com</code>, la machine possède l'alias
     DNS <code>www.example.com</code>, et si vous voulez que le serveur

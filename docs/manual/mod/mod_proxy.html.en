@@ -724,7 +724,7 @@ proxied</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override error pages for proxied content</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyErrorOverride On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyErrorOverride Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0 and later</td></tr>
@@ -843,13 +843,24 @@ through</td></tr>
     then</p>
 
     <div class="example"><p><code>
-      ProxyPass /mirror/foo/ http://backend.example.com/
+        &lt;Location /mirror/foo/&gt;<br />
+        <span class="indent">
+          ProxyPass http://backend.example.com/<br />
+        </span>
+        &lt;/Location&gt;<br />
     </code></p></div>
 
     <p>will cause a local request for
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
 
+    <p>The following alternative syntax is possible, however carries a
+    performance penalty when present in large numbers:</p>
+
+    <div class="example"><p><code>
+        ProxyPass /mirror/foo/ http://backend.example.com/
+    </code></p></div>
+    
     <div class="warning">
     <p>If the first argument ends with a trailing <strong>/</strong>, the second
        argument should also end with a trailing <strong>/</strong> and vice
@@ -860,6 +871,19 @@ through</td></tr>
 
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
+
+    <div class="example"><p><code>
+        &lt;Location /mirror/foo/&gt;<br />
+        <span class="indent">
+          ProxyPass http://backend.example.com/<br />
+        </span>
+        &lt;/Location&gt;<br />
+        &lt;Location /mirror/foo/i&gt;<br />
+        <span class="indent">
+            ProxyPass !<br />
+        </span>
+        &lt;/Location&gt;<br />
+    </code></p></div>
 
     <div class="example"><p><code>
       ProxyPass /mirror/foo/i !<br />
@@ -878,7 +902,10 @@ through</td></tr>
       <code class="directive"><a href="#proxypass">ProxyPass</a></code> rules starting with the
       longest URLs first. Otherwise later rules for longer URLS will be hidden
       by any earlier rule which uses a leading substring of the URL. Note that
-      there is some relation with worker sharing.</p>
+      there is some relation with worker sharing. In contrast, only one
+      <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive can be placed
+      in a <code class="directive"><a href="../mod/core.html#location">Location</a></code> block, and the most
+      specific location will take precedence.</p>
 
       <p>For the same reasons exclusions must come <em>before</em> the
       general <code class="directive">ProxyPass</code> directives.</p>

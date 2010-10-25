@@ -804,7 +804,7 @@ mandatées</td></tr>
 mandatés</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyErrorOverride On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyErrorOverride Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0 d'Apache</td></tr>
@@ -936,12 +936,24 @@ l'espace d'URLs du serveur local</td></tr>
     <code>http://example.com/</code> ; alors la ligne</p>
 
     <div class="example"><p><code>
-      ProxyPass /miroir/foo/ http://backend.example.com/
+      &lt;Location /miroir/foo/&gt;<br />
+        <span class="indent">
+          ProxyPass http://backend.example.com/<br />
+        </span>
+        &lt;/Location&gt;<br />
     </code></p></div>
 
     <p>va convertir en interne toute requête pour
     <code>http://example.com/miroir/foo/bar</code> en une requête
     mandatée pour <code>http://backend.example.com/bar</code>.</p>
+
+    <p>La syntaxe alternative suivante est valide, bien qu'elle induise
+    une dégradation des performances lorsqu'elle est présente en grand
+    nombre :</p>
+
+    <div class="example"><p><code>
+        ProxyPass /miroir/foo/ http://backend.example.com/
+    </code></p></div>
 
     <div class="warning">
     <p>Si le premier argument se termine par un slash
@@ -954,6 +966,19 @@ l'espace d'URLs du serveur local</td></tr>
 
     <p>Le drapeau <code>!</code> permet de soustraire un sous-répertoire
     du mandat inverse, comme dans l'exemple suivant :</p>
+
+    <div class="example"><p><code>
+      &lt;Location /miroir/foo/&gt;<br />
+        <span class="indent">
+          ProxyPass http://backend.example.com/<br />
+        </span>
+        &lt;/Location&gt;<br />
+        &lt;Location /miroir/foo/i&gt;<br />
+        <span class="indent">
+            ProxyPass !<br />
+        </span>
+        &lt;/Location&gt;<br />
+    </code></p></div>
 
     <div class="example"><p><code>
       ProxyPass /miroir/foo/i !<br />
@@ -972,7 +997,10 @@ l'espace d'URLs du serveur local</td></tr>
       l'URL la plus longue à la plus courte. Dans le cas contraire, les
       règles situées après une règle dont l'URL correspond au début de
       leur propre URL seront ignorées. Notez que tout ceci est en
-      relation avec le partage de workers.</p>
+      relation avec le partage de workers. Par contre, on ne peut placer
+      qu'une seule directive <code class="directive"><a href="#proxypass">ProxyPass</a></code> dans une section
+      <code class="directive"><a href="../mod/core.html#location">Location</a></code>, et c'est la section
+      la plus spécifique qui l'emportera.</p>
 
       <p>Pour les mêmes raisons, les exclusions doivent se situer
       <em>avant</em> les directives <code class="directive">ProxyPass</code>
