@@ -353,8 +353,9 @@ argument to <code>index.php</code>, however, the <code class="directive"><a href
 is already for <code>index.php</code>, the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> will be skipped.</p>
 
 <div class="example"><p><code>
-RewriteCond %{REQUEST_URI} !=index.php<br />
-RewriteRule ^(.*) index.php?req=$1 [L]
+RewriteBase /<br />
+RewriteCond %{REQUEST_URI} !=/index.php<br />
+RewriteRule ^(.*) /index.php?req=$1 [L,PT]
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
