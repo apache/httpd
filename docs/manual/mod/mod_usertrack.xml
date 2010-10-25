@@ -30,75 +30,21 @@
 <identifier>usertrack_module</identifier>
 
 <summary>
-    <p>Previous releases of Apache have included a module which
-    generates a 'clickstream' log of user activity on a site using
-    cookies. This was called the "cookies" module, mod_cookies. In
-    Apache 1.2 and later this module has been renamed the "user
-    tracking" module, mod_usertrack. This module has been
-    simplified and new directives added.</p>
+    <p>Provides tracking of a user through your website via browser
+    cookies.</p>
 </summary>
 
 
 <section id="logging">
 <title>Logging</title>
 
-    <p>Previously, the cookies module (now the user tracking
-    module) did its own logging, using the <directive>CookieLog</directive>
-    directive. In this release, this module does no logging at all.
-    Instead, a configurable log format file should be used to log
-    user click-streams. This is possible because the logging module
-    now allows multiple log files. The cookie itself is logged by
-    using the text <code>%{cookie}n</code> in the log file format. For
-    example:</p>
-<example>
-CustomLog logs/clickstream "%{cookie}n %r %t"
-</example>
+    <p><module>mod_usertrack</module> sets a cookie which can be logged
+    via <module>mod_log_config</module> configurable logging formats:</p>
 
-    <p>For backward compatibility the configurable log module
-    implements the old <directive
-    module="mod_log_config">CookieLog</directive> directive, but this
-    should be upgraded to the above <directive
-    module="mod_log_config">CustomLog</directive> directive. </p>
-</section>
-
-<section id="cookiedate">
-<title>2-digit or 4-digit dates for cookies?</title>
-
-    <p>(the following is from message
-    &lt;022701bda43d$9d32bbb0$1201a8c0@christian.office.sane.com&gt;
-    in the new-httpd archives) </p>
-<pre>
-From: "Christian Allen" &lt;christian@sane.com&gt;
-Subject: Re: Apache Y2K bug in mod_usertrack.c
-Date: Tue, 30 Jun 1998 11:41:56 -0400
-
-Did some work with cookies and dug up some info that might be useful.
-
-True, Netscape claims that the correct format NOW is four digit dates, and
-four digit dates do in fact work... for Netscape 4.x (Communicator), that
-is.  However, 3.x and below do NOT accept them.  It seems that Netscape
-originally had a 2-digit standard, and then with all of the Y2K hype and
-probably a few complaints, changed to a four digit date for Communicator.
-Fortunately, 4.x also understands the 2-digit format, and so the best way to
-ensure that your expiration date is legible to the client's browser is to
-use 2-digit dates.
-
-However, this does not limit expiration dates to the year 2000; if you use
-an expiration year of "13", for example, it is interpreted as 2013, NOT
-1913!  In fact, you can use an expiration year of up to "37", and it will be
-understood as "2037" by both MSIE and Netscape versions 3.x and up (not sure
-about versions previous to those).  Not sure why Netscape used that
-particular year as its cut-off point, but my guess is that it was in respect
-to UNIX's 2038 problem.  Netscape/MSIE 4.x seem to be able to understand
-2-digit years beyond that, at least until "50" for sure (I think they
-understand up until about "70", but not for sure).
-
-Summary:  Mozilla 3.x and up understands two digit dates up until "37"
-(2037).  Mozilla 4.x understands up until at least "50" (2050) in 2-digit
-form, but also understands 4-digit years, which can probably reach up until
-9999.  Your best bet for sending a long-life cookie is to send it for some
-time late in the year "37".
-</pre>
+    <example>
+    LogFormat "%{Apache}n %r %t" usertrack<br />
+    CustomLog logs/clickstream.log usertrack
+    </example>
 
 </section>
 
@@ -122,7 +68,7 @@ time late in the year "37".
 
     <p>The domain string <strong>must</strong> begin with a dot, and
     <strong>must</strong> include at least one embedded dot. That is,
-    <code>.example.com</code> is legal, but <code>foo.example.com</code> and 
+    <code>.example.com</code> is legal, but <code>www.example.com</code> and 
     <code>.com</code> are not.</p>
 
     <note>Most browsers in use today will not allow cookies to be set
@@ -134,7 +80,7 @@ time late in the year "37".
     <code>.com</code>, and allowing such cookies may be a security
     risk. Thus, if you are under a two-part top level domain, you
     should still use your actual domain, as you would with any other top
-    level domain (for example <code>.foo.co.uk</code>).
+    level domain (for example <code>.example.co.uk</code>).
     </note> 
 </usage>
 </directivesynopsis>
@@ -222,8 +168,9 @@ time late in the year "37".
 
     <p>Not all clients can understand all of these formats, but you
     should use the newest one that is generally acceptable to your
-    users' browsers. At the time of writing, most browsers only fully
-    support <code>CookieStyle Netscape</code>.</p>
+    users' browsers. At the time of writing, most browsers support all
+    three of these formats, with <code>Cookie2</code> being the
+    preferred format.</p>
 </usage>
 </directivesynopsis>
 
