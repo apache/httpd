@@ -92,6 +92,10 @@
     level domain (for example <code>.example.co.uk</code>).
     </div> 
 
+    <div class="example"><p><code>
+    CookieDomain .example.com
+    </code></p></div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CookieExpires" id="CookieExpires">CookieExpires</a> <a name="cookieexpires" id="cookieexpires">Directive</a></h2>
@@ -114,6 +118,10 @@
     <p>If this directive is not used, cookies last only for the
     current browser session.</p>
 
+    <div class="example"><p><code>
+    CookieExpires "3 weeks"
+    </code></p></div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CookieName" id="CookieName">CookieName</a> <a name="cookiename" id="cookiename">Directive</a></h2>
@@ -133,6 +141,10 @@
     <p>You must specify a valid cookie name; results are
     unpredictable if you use a name containing unusual characters.
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
+
+    <div class="example"><p><code>
+    CookieName clicktrack
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -168,6 +180,10 @@
     three of these formats, with <code>Cookie2</code> being the
     preferred format.</p>
 
+    <div class="example"><p><code>
+    CookieStyle Cookie2
+    </code></p></div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CookieTracking" id="CookieTracking">CookieTracking</a> <a name="cookietracking" id="cookietracking">Directive</a></h2>
@@ -187,6 +203,10 @@
     per-directory basis. By default, enabling
     <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> will <strong>not</strong> 
     activate cookies. </p>
+
+    <div class="example"><p><code>
+    CookieTracking on
+    </code></p></div>
 
 
 </div>
