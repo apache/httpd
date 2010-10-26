@@ -163,6 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1026665
      2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_proxy-closeearly22.patch
      +1: minfrin
+     +1: jim (requires mmn bump due to proxy_conn_rec)
 
 
 PATCHES/ISSUES THAT ARE STALLED
