@@ -120,7 +120,6 @@ To Do List
               process handling the requests in a single loop?
 
 - Individual docs will need some cleanup. 
-     - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
      - platform/ebcdic.xml - needs major rework for 2.0
      - dso.xml - Reads as though this is a nifty new thing we just came
        up with recently.
