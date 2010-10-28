@@ -208,10 +208,28 @@ accomplish.</p>
 
 <section id="setenv"><title>Environment Variable Testing</title>
 
-<note type="note">Parts of this section are applicable only to Apache HTTP 
-Server 2.3 and later.</note>
-
 <p>Using SetEnvIf and &lt;If&gt; (2.3 and later.)</p>
+
+<p><module>mod_rewrite</module> is frequently used to take a particular
+action based on the presence or absense of a particular environment
+variable or request header. This can be done more efficiently using the
+<directive module="core" type="section">If</directive>.</p>
+
+<p>Consider, for example, the common scenario where
+<directive>RewriteRule</directive> is used to enforce a canonical
+hostname, such as <code>www.example.com</code> instead of
+<code>example.com</code>. This can be done using the <directive
+module="core" type="section">If</directive> direct, as shown here:</p>
+
+<example>
+&lt;If "$req{Host} = 'example.com'"&gt;<br />
+RedirectMatch (.*) http://www.example.com$1
+&lt;/If&gt;
+</example>
+
+<p>This technique can be used to take actions based on any request
+header, response header, or environment variable, replacing
+<module>mod_rewrite</module> in many common scenarios.</p>
 
 </section>
 
