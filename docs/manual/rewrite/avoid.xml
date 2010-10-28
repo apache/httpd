@@ -208,8 +208,6 @@ accomplish.</p>
 
 <section id="setenv"><title>Environment Variable Testing</title>
 
-<p>Using SetEnvIf and &lt;If&gt; (2.3 and later.)</p>
-
 <p><module>mod_rewrite</module> is frequently used to take a particular
 action based on the presence or absense of a particular environment
 variable or request header. This can be done more efficiently using the
