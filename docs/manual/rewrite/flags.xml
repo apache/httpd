@@ -343,6 +343,12 @@ contexts, that you take explicit steps to avoid rules looping, and not
 count solely on the [L] flag to terminate execution of a series of
 rules, as shown below.</p>
 
+<p> An alternative flag, [END], can be used to terminate not only the
+current round of rewrite processing but prevent any subsequent
+rewrite processing from occuring in per-directory (htaccess)
+context. This does not apply to new requests resulting from external
+redirects.</p>
+
 <p>The example given here will rewrite any request to
 <code>index.php</code>, giving the original request as a query string
 argument to <code>index.php</code>, however, the <directive

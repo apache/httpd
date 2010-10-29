@@ -102,6 +102,7 @@
 
 static ap_dbd_t *(*dbd_acquire)(request_rec*) = NULL;
 static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
+static const char* really_last_key = "rewrite_really_last";
 
 /*
  * in order to improve performance on running production systems, you
@@ -163,6 +164,7 @@ static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 #define RULEFLAG_ESCAPEBACKREF      1<<14
 #define RULEFLAG_DISCARDPATHINFO    1<<15
 #define RULEFLAG_QSDISCARD          1<<16
+#define RULEFLAG_END                1<<17
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -3330,6 +3332,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             cp->next = NULL;
             cp->data = val;
         }
+        else if (!strcasecmp(key, "nd")) {                /* end */
+            cfg->flags |= RULEFLAG_END;
+        }
         else {
             ++error;
         }
@@ -4129,6 +4134,11 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
                 break;
             }
 
+            if (p->flags & RULEFLAG_END) { 
+                rewritelog((r, 8, perdir, "Rule has END flag, no further rewriting for this request"));
+                apr_pool_userdata_set("1", really_last_key, apr_pool_cleanup_null, r->pool);
+                break;
+            }
             /*
              *  Stop processing also on proxy pass-through and
              *  last-rule and new-round flags.
@@ -4293,6 +4303,7 @@ static int hook_uri2file(request_rec *r)
     const char *thisurl;
     unsigned int port;
     int rulestatus;
+    void *skipdata;
 
     /*
      *  retrieve the config structures
@@ -4316,6 +4327,13 @@ static int hook_uri2file(request_rec *r)
      *  just stop operating now.
      */
     if (conf->server != r->server) {
+        return DECLINED;
+    }
+
+    /* END flag was used as a RewriteRule flag on this request */ 
+    apr_pool_userdata_get(&skipdata, really_last_key, r->pool);
+    if (skipdata != NULL) { 
+        rewritelog((r, 8, NULL, "Declining, no further rewriting due to END flag"));
         return DECLINED;
     }
 
@@ -4569,6 +4587,7 @@ static int hook_fixup(request_rec *r)
     int n;
     char *ofilename;
     int is_proxyreq;
+    void *skipdata;
 
     dconf = (rewrite_perdir_conf *)ap_get_module_config(r->per_dir_config,
                                                         &rewrite_module);
@@ -4609,6 +4628,13 @@ static int hook_fixup(request_rec *r)
      *  for this directory, else return immediately!
      */
     if (dconf->state == ENGINE_DISABLED) {
+        return DECLINED;
+    }
+
+    /* END flag was used as a RewriteRule flag on this request */ 
+    apr_pool_userdata_get(&skipdata, really_last_key, r->pool);
+    if (skipdata != NULL) { 
+        rewritelog((r, 8, dconf->directory, "Declining, no further rewriting due to END flag"));
         return DECLINED;
     }
 
