@@ -60,7 +60,7 @@ module de chaque groupe.</p>
     </ul>
   </li>
   <li>Autorisation (voir la directive <directive
-  module="core">Require</directive> directive)
+  module="core">Require</directive>)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
       <li><module>mod_authz_dbm</module></li>
@@ -187,8 +187,8 @@ module de chaque groupe.</p>
     trouve &agrave; <code>/usr/local/apache2/bin/htpasswd</code>.</p>
 
     <p>Ensuite, vous allez devoir configurer le serveur de fa&ccedil;on &agrave; ce
-    qu'il demande un mot de passe et lui pr&eacute;ciser quels utilisateurs ont
-    l'autorisation d'acc&egrave;s. Pour ce faire, vous pouvez soit &eacute;diter le
+    qu'il demande un mot de passe et lui pr&eacute;ciser quels utilisateurs disposent
+    de droits d'acc&egrave;s. Pour ce faire, vous pouvez soit &eacute;diter le
     fichier <code>httpd.conf</code>, soit utiliser un fichier
     <code>.htaccess</code>. Par exemple, si vous voulez prot&eacute;ger le
     r&eacute;pertoire <code>/usr/local/apache/htdocs/secret</code>, vous pouvez
@@ -211,8 +211,8 @@ module de chaque groupe.</p>
     utilis&eacute;e pour authentifier l'utilisateur. La m&eacute;thode la plus
     courante est <code>Basic</code>, et elle est impl&eacute;ment&eacute;e par
     <module>mod_auth_basic</module>. Il faut cependant garder &agrave; l'esprit
-    que l'authentification Basic transmet le mot de passe depuis le
-    client vers le serveur en clair. Cette m&eacute;thode ne devra donc pas
+    que l'authentification Basic transmet le mot de passe en clair depuis le
+    client vers le serveur. Cette m&eacute;thode ne devra donc pas
     &ecirc;tre utilis&eacute;e pour la transmission de donn&eacute;es hautement sensibles si
     elle n'est pas associ&eacute;e au module <module>mod_ssl</module>. Apache
     supporte une autre m&eacute;thode d'authentification : <code>AuthType
@@ -283,14 +283,14 @@ plusieurs personnes</title>
     <p>Si vous voulez autoriser l'acc&egrave;s &agrave; plusieurs personnes, vous
     devez cr&eacute;er un fichier de groupes qui associe des noms de groupes
     avec une liste d'utilisateurs de ce groupe. Le format de ce fichier
-    est tr&egrave;s simple, et vous pouvez le cr&eacute;er avec votre &eacute;diteur favori.
+    est tr&egrave;s simple, et vous pouvez le cr&eacute;er avec votre &eacute;diteur de texte favori.
     Son contenu se pr&eacute;sente comme suit :</p>
 
    <example>
      Nom-de-groupe: rbowen dpitts sungo rshersey
    </example>
 
-    <p>Il s'agit simplement une liste des membres du groupe sous la
+    <p>Il s'agit simplement d'une liste des membres du groupe sous la
     forme d'une ligne s&eacute;par&eacute;e par des espaces.</p>
 
     <p>Pour ajouter un utilisateur &agrave; votre fichier de mots de passe
@@ -361,7 +361,7 @@ plusieurs personnes</title>
     mots de passe. Cette limite va varier en fonction des performances
     de votre serveur, mais vous commencerez &agrave; remarquer un
     ralentissement lorsque vous atteindrez quelques centaines
-    d'utilisateurs, et serez alors appel&eacute;s &agrave; utiliser une m&eacute;thode
+    d'utilisateurs, et serez alors appel&eacute; &agrave; utiliser une m&eacute;thode
     d'authentification diff&eacute;rente.</p>
 </section>
 

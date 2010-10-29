@@ -67,7 +67,7 @@ module de chaque groupe.</p>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
     </ul>
   </li>
-  <li>Autorisation (voir la directive <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive)
+  <li>Autorisation (voir la directive <code class="directive"><a href="../mod/core.html#require">Require</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
@@ -191,8 +191,8 @@ module de chaque groupe.</p>
     trouve à <code>/usr/local/apache2/bin/htpasswd</code>.</p>
 
     <p>Ensuite, vous allez devoir configurer le serveur de façon à ce
-    qu'il demande un mot de passe et lui préciser quels utilisateurs ont
-    l'autorisation d'accès. Pour ce faire, vous pouvez soit éditer le
+    qu'il demande un mot de passe et lui préciser quels utilisateurs disposent
+    de droits d'accès. Pour ce faire, vous pouvez soit éditer le
     fichier <code>httpd.conf</code>, soit utiliser un fichier
     <code>.htaccess</code>. Par exemple, si vous voulez protéger le
     répertoire <code>/usr/local/apache/htdocs/secret</code>, vous pouvez
@@ -214,8 +214,8 @@ module de chaque groupe.</p>
     utilisée pour authentifier l'utilisateur. La méthode la plus
     courante est <code>Basic</code>, et elle est implémentée par
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. Il faut cependant garder à l'esprit
-    que l'authentification Basic transmet le mot de passe depuis le
-    client vers le serveur en clair. Cette méthode ne devra donc pas
+    que l'authentification Basic transmet le mot de passe en clair depuis le
+    client vers le serveur. Cette méthode ne devra donc pas
     être utilisée pour la transmission de données hautement sensibles si
     elle n'est pas associée au module <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Apache
     supporte une autre méthode d'authentification : <code>AuthType
@@ -279,14 +279,14 @@ plusieurs personnes</a></h2>
     <p>Si vous voulez autoriser l'accès à plusieurs personnes, vous
     devez créer un fichier de groupes qui associe des noms de groupes
     avec une liste d'utilisateurs de ce groupe. Le format de ce fichier
-    est très simple, et vous pouvez le créer avec votre éditeur favori.
+    est très simple, et vous pouvez le créer avec votre éditeur de texte favori.
     Son contenu se présente comme suit :</p>
 
    <div class="example"><p><code>
      Nom-de-groupe: rbowen dpitts sungo rshersey
    </code></p></div>
 
-    <p>Il s'agit simplement une liste des membres du groupe sous la
+    <p>Il s'agit simplement d'une liste des membres du groupe sous la
     forme d'une ligne séparée par des espaces.</p>
 
     <p>Pour ajouter un utilisateur à votre fichier de mots de passe
@@ -356,7 +356,7 @@ plusieurs personnes</a></h2>
     mots de passe. Cette limite va varier en fonction des performances
     de votre serveur, mais vous commencerez à remarquer un
     ralentissement lorsque vous atteindrez quelques centaines
-    d'utilisateurs, et serez alors appelés à utiliser une méthode
+    d'utilisateurs, et serez alors appelé à utiliser une méthode
     d'authentification différente.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
