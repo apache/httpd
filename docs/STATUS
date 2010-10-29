@@ -110,7 +110,10 @@ To Do List
     - mod_suexec: very little documentation
     - mod_rewrite: explain, when which variables are actually available
       (PR 16402)
-    
+
+- mod_substitute and reverse proxies: Add example using mod_filter
+  (see: http://marc.info/?l=apache-httpd-users&m=128830729603423&w=2)
+
 - MPM documentation
      - explain what the following command line options do
        (perhaps in the developer/debugging docs):
