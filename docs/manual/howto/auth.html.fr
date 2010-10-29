@@ -50,7 +50,7 @@ d'authentification et d'autorisation. Vous devrez utiliser au moins un
 module de chaque groupe.</p>
 
 <ul>
-  <li>Type d'authentification (voir la directive <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive)
+  <li>Type d'authentification (voir la directive <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code>)
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
