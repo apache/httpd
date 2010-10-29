@@ -2068,7 +2068,8 @@ will be accepted from the client</description>
       LimitRequestFields 50
     </example>
 
-     <note><p> When name-based virtual hosting is used, the value for this 
+     <note type="warning"><title>Warning</title>
+     <p> When name-based virtual hosting is used, the value for this 
      directive is taken from the default (first-listed) virtual host for the
      <directive>NameVirtualHost</directive> the connection was mapped to.</p>
      </note>
@@ -2111,7 +2112,8 @@ client</description>
     <note>Under normal conditions, the value should not be changed from
     the default.</note>
 
-    <note><p> When name-based virtual hosting is used, the value for this 
+    <note type="warning"><title>Warning</title>
+    <p> When name-based virtual hosting is used, the value for this 
     directive is taken from the default (first-listed) virtual host for the
     <directive>NameVirtualHost</directive> the connection was mapped to.</p>
     </note>
@@ -2154,7 +2156,8 @@ from the client</description>
     <note>Under normal conditions, the value should not be changed from
     the default.</note>
 
-    <note><p> When name-based virtual hosting is used, the value for this 
+    <note type="warning"><title>Warning</title>
+    <p> When name-based virtual hosting is used, the value for this 
     directive is taken from the default (first-listed) virtual host for the
     <directive>NameVirtualHost</directive> the connection was mapped to.</p>
     </note>
