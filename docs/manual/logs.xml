@@ -666,12 +666,14 @@
     <related>
       <modulelist>
         <module>mod_logio</module>
+        <module>mod_log_config</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
       </modulelist>
 
       <directivelist>
         <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_config">BufferedLogs</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_cgi">ScriptLog</directive>
