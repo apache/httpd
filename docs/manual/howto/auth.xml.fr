@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 887984 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="auth.xml.meta">
+<parentdocument href="./">Recettes / Tutoriels</parentdocument>
+
+<title>Authentification, autorisation et contr&ocirc;le d'acc&egrave;s</title>
+
+<summary>
+    <p>L'authentification est un processus qui vous permet de v&eacute;rifier
+    qu'une personne est bien celle qu'elle pr&eacute;tend &ecirc;tre. L'autorisation
+    est un processus qui permet &agrave; une personne d'aller l&agrave; o&ugrave; elle veut
+    aller, ou d'obtenir les informations qu'elle d&eacute;sire.</p>
+</summary>
+
+<section id="related"><title>Modules et directives concern&eacute;s</title>
+
+<p>Trois groupes de modules sont concern&eacute;s par le processus
+d'authentification et d'autorisation. Vous devrez utiliser au moins un
+module de chaque groupe.</p>
+
+<ul>
+  <li>Type d'authentification (voir la directive <directive
+  module="core">AuthType</directive> directive)
+    <ul>
+      <li><module>mod_auth_basic</module></li>
+      <li><module>mod_auth_digest</module></li>
+    </ul>
+  </li>
+  <li>Fournisseur d'authentification
+    <ul>
+      <li><module>mod_authn_alias</module></li>
+      <li><module>mod_authn_anon</module></li>
+      <li><module>mod_authn_dbd</module></li>
+      <li><module>mod_authn_dbm</module></li>
+      <li><module>mod_authn_default</module></li>
+      <li><module>mod_authn_file</module></li>
+      <li><module>mod_authnz_ldap</module></li>
+    </ul>
+  </li>
+  <li>Autorisation (voir la directive <directive
+  module="core">Require</directive> directive)
+    <ul>
+      <li><module>mod_authnz_ldap</module></li>
+      <li><module>mod_authz_dbm</module></li>
+      <li><module>mod_authz_default</module></li>
+      <li><module>mod_authz_groupfile</module></li>
+      <li><module>mod_authz_owner</module></li>
+      <li><module>mod_authz_user</module></li>
+    </ul>
+  </li>
+</ul>
+
+    <p>Le module <module>mod_authnz_ldap</module> est un fournisseur
+  d'authentification et d'autorisation. Le module
+  <module>mod_authn_alias</module> n'est pas un fournisseur
+  d'authentification lui-m&ecirc;me, mais permet une configuration plus souple
+  des autres fournisseurs d'authentification.</p>
+
+  <p>Le module <module>mod_authz_host</module> fournit une autorisation
+  et un contr&ocirc;le d'acc&egrave;s bas&eacute;s sur le nom du serveur,  l'adresse IP ou
+  certaines caract&eacute;ristiques de la requ&ecirc;te, mais ne fait pas partie du
+  syst&egrave;me fournisseur d'authentification.</p>
+
+  <p>Vous devriez aussi jeter un coup d'oeil au manuel de recettes <a
+  href="access.html">Contr&ocirc;le d'acc&egrave;s</a>, qui d&eacute;crit les diff&eacute;rentes
+  m&eacute;thodes de contr&ocirc;le d'acc&egrave;s &agrave; votre serveur.</p>
+
+</section>
+
+<section id="introduction"><title>Introduction</title>
+    <p>Si votre site web contient des informations sensibles ou
+    destin&eacute;es seulement &agrave; un groupe de personnes restreint, les
+    techniques expos&eacute;es dans cet article vont vous aider &agrave; vous assurer
+    que les personnes qui ont acc&egrave;s &agrave; ces pages sont bien celles
+    auxquelles vous avez donn&eacute; l'autorisation d'acc&egrave;s.</p>
+
+    <p>Cet article d&eacute;crit les m&eacute;thodes "standards" de protection de
+    parties de votre site web que la plupart d'entre vous sont appel&eacute;s &agrave;
+    utiliser.</p>
+
+    <note><title>Note :</title>
+    <p>Si vos donn&eacute;es ont un r&eacute;el besoin de s&eacute;curisation, pr&eacute;voyez
+    l'utilisation de <module>mod_ssl</module> en plus de toute m&eacute;thode
+    d'authentification.</p>
+    </note>
+</section>
+
+<section id="theprerequisites"><title>Les pr&eacute;requis</title>
+    <p>Les directives d&eacute;crites dans cet article devront &ecirc;tre ins&eacute;r&eacute;es
+    soit au niveau de la configuration de votre serveur principal (en
+    g&eacute;n&eacute;ral dans une section <directive module="core"
+    type="section">Directory</directive>), soit au niveau de la
+    configuration des r&eacute;pertoires (fichiers <code>.htaccess</code>)</p>
+
+    <p>Si vous envisagez l'utilisation de fichiers
+    <code>.htaccess</code>, la configuration de votre serveur devra
+    permettre l'ajout de directives d'authentification dans ces
+    fichiers. Pour ce faire, on utilise la directive <directive
+    module="core">AllowOverride</directive>, qui sp&eacute;cifie quelles
+    directives pourront &eacute;ventuellement contenir les fichiers de
+    configuration de niveau r&eacute;pertoire.</p>
+
+    <p>Comme il est ici question d'authentification, vous aurez besoin
+    d'une directive <directive module="core">AllowOverride</directive>
+    du style :</p>
+
+    <example>
+      AllowOverride AuthConfig
+    </example>
+
+    <p>Or, si vous avez l'intention d'ajouter les directives directement
+    dans le fichier de configuration principal, vous devrez bien entendu
+    poss&eacute;der les droits en &eacute;criture sur ce fichier.</p>
+
+    <p>Vous devrez aussi conna&icirc;tre un tant soit peu la structure des
+    r&eacute;pertoires de votre serveur, ne serait-ce que pour savoir o&ugrave; se
+    trouvent certains fichiers. Cela ne devrait pas pr&eacute;senter de grandes
+    difficult&eacute;s, et j'essaierai de clarifier tout &ccedil;a lorsque le besoin
+    s'en fera sentir.</p>
+
+</section>
+
+<section id="gettingitworking"><title>Mise en oeuvre</title>
+    <p>Nous d&eacute;crivons ici les bases de la protection par mot de passe
+    d'un r&eacute;pertoire de votre serveur.</p>
+
+    <p>Vous devez en premier lieu cr&eacute;er un fichier de mots de passe. La
+    m&eacute;thode exacte selon laquelle vous allez cr&eacute;er ce fichier va varier
+    en fonction du fournisseur d'authentification choisi. Mais nous
+    entrerons dans les d&eacute;tails plus loin, et pour le moment, nous nous
+    contenterons d'un fichier de mots de passe en mode texte.</p>
+
+    <p>Ce fichier doit &ecirc;tre enregistr&eacute; &agrave; un endroit non accessible
+    depuis le web, de fa&ccedil;on &agrave; ce que les clients ne puissent pas le
+    t&eacute;l&eacute;charger. Par exemple, si vos documents sont servis &agrave; partir de
+    <code>/usr/local/apache/htdocs</code>, vous pouvez enregistrer le
+    fichier des mots de passe dans
+    <code>/usr/local/apache/passwd</code>.</p>
+
+    <p>L'utilitaire <program>htpasswd</program> fourni avec Apache
+    permet de cr&eacute;er ce fichier. Vous le trouverez dans le r&eacute;pertoire
+    <code>bin</code> de votre installation d'Apache. Si vous avez
+    install&eacute; Apache &agrave; partir d'un paquetage tiers, il sera probablement
+    dans le chemin par d&eacute;faut de vos ex&eacute;cutables.</p>
+
+    <p>Pour cr&eacute;er le fichier, tapez :</p>
+
+    <example>
+      htpasswd -c /usr/local/apache/passwd/passwords rbowen
+    </example>
+
+    <p><program>htpasswd</program> vous demandera d'entrer le mot de
+    passe, et de le retaper pour confirmation :</p>
+
+    <example>
+      # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
+      New password: mot-de-passe<br />
+      Re-type new password: mot-de-passe<br />
+      Adding password for user rbowen
+    </example>
+
+    <p>Si <program>htpasswd</program> n'est pas dans le chemin par
+    d&eacute;faut de vos ex&eacute;cutables, vous devrez bien entendu entrer le chemin
+    complet du fichier. Dans le cas d'une installation par d&eacute;faut, il se
+    trouve &agrave; <code>/usr/local/apache2/bin/htpasswd</code>.</p>
+
+    <p>Ensuite, vous allez devoir configurer le serveur de fa&ccedil;on &agrave; ce
+    qu'il demande un mot de passe et lui pr&eacute;ciser quels utilisateurs ont
+    l'autorisation d'acc&egrave;s. Pour ce faire, vous pouvez soit &eacute;diter le
+    fichier <code>httpd.conf</code>, soit utiliser un fichier
+    <code>.htaccess</code>. Par exemple, si vous voulez prot&eacute;ger le
+    r&eacute;pertoire <code>/usr/local/apache/htdocs/secret</code>, vous pouvez
+    utiliser les directives suivantes, soit dans le fichier
+    <code>/usr/local/apache/htdocs/secret/.htaccess</code>, soit dans le
+    fichier <code>httpd.conf</code> &agrave; l'int&eacute;rieur d'une section &lt;Directory
+    /usr/local/apache/apache/htdocs/secret&gt; :</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "Fichiers r&eacute;serv&eacute;s"<br />
+      # (La ligne suivante est facultative)<br />
+      AuthBasicProvider file<br />
+      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      Require user rbowen
+    </example>
+
+    <p>Examinons ces directives une &agrave; une. La directive <directive
+    module="core">AuthType</directive> d&eacute;finit la m&eacute;thode
+    utilis&eacute;e pour authentifier l'utilisateur. La m&eacute;thode la plus
+    courante est <code>Basic</code>, et elle est impl&eacute;ment&eacute;e par
+    <module>mod_auth_basic</module>. Il faut cependant garder &agrave; l'esprit
+    que l'authentification Basic transmet le mot de passe depuis le
+    client vers le serveur en clair. Cette m&eacute;thode ne devra donc pas
+    &ecirc;tre utilis&eacute;e pour la transmission de donn&eacute;es hautement sensibles si
+    elle n'est pas associ&eacute;e au module <module>mod_ssl</module>. Apache
+    supporte une autre m&eacute;thode d'authentification : <code>AuthType
+    Digest</code>. Cette m&eacute;thode est impl&eacute;ment&eacute;e par le module <module
+    >mod_auth_digest</module> et est beaucoup plus s&eacute;curis&eacute;e. La plupart
+    des navigateurs r&eacute;cents supportent l'authentification Digest.</p>
+
+    <p>La directive <directive module="core">AuthName</directive> d&eacute;finit
+    l'<dfn>Identificateur</dfn> (Realm) &agrave; utiliser avec
+    l'authentification. L'identificateur poss&egrave;de deux fonctions. Tout
+    d'abord, le client pr&eacute;sente en g&eacute;n&eacute;ral cette information &agrave;
+    l'utilisateur dans le cadre de la bo&icirc;te de dialogue de mot de passe.
+    Ensuite, le client l'utilise pour d&eacute;terminer quel mot de passe
+    envoyer pour une zone authentifi&eacute;e donn&eacute;e.</p>
+
+    <p>Ainsi par exemple, une fois un client authentifi&eacute; dans la zone
+    <code>"Fichiers r&eacute;serv&eacute;s"</code>, il soumettra &agrave; nouveau
+    automatiquement le m&ecirc;me mot de passe pour toute zone du m&ecirc;me serveur
+    marqu&eacute;e de l'identificateur <code>"Fichiers r&eacute;serv&eacute;s"</code>. De
+    cette fa&ccedil;on, vous pouvez &eacute;viter &agrave; un utilisateur d'avoir &agrave; saisir
+    plusieurs fois le m&ecirc;me mot de passe en faisant partager le m&ecirc;me
+    identificateur entre plusieurs zones r&eacute;serv&eacute;es. Bien entendu et pour
+    des raisons de s&eacute;curit&eacute;, le client devra redemander le mot
+    de passe chaque fois que le nom d'h&ocirc;te du serveur sera modifi&eacute;.</p>
+
+    <p>La directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> est, dans ce
+    cas, facultative, car <code>file</code> est la valeur par d&eacute;faut
+    pour cette directive. Par contre, cette directive sera obligatoire
+    si vous utilisez une autre source d'authentification comme
+    <module>mod_authn_dbm</module> ou
+    <module>mod_authn_dbd</module>.</p>
+
+    <p>La directive <directive
+    module="mod_authn_file">AuthUserFile</directive> d&eacute;finit le chemin
+    du fichier de mots de passe que nous venons de cr&eacute;er avec
+    <program>htpasswd</program>. Si vous poss&eacute;dez un grand nombre
+    d'utilisateurs, la dur&eacute;e de la recherche dans un fichier texte pour
+    authentifier un utilisateur &agrave; chaque requ&ecirc;te va augmenter
+    rapidement, et pour pallier cet inconv&eacute;nient, Apache peut aussi
+    stocker les donn&eacute;es relatives aux
+    utilisateurs dans des bases de donn&eacute;es rapides. Le module
+    <module>mod_authn_dbm</module> fournit la directive <directive
+    module="mod_authn_dbm">AuthDBMUserFile</directive>. Le programme <program>
+    dbmmanage</program> permet de cr&eacute;er et manipuler ces fichiers. Vous
+    trouverez de nombreuses options d'autres types d'authentification
+    fournies par des modules tiers dans la <a
+    href="http://modules.apache.org/">Base de donn&eacute;es des modules
+    d'Apache</a>.</p>
+
+    <p>Enfin, la directive <directive module="core">Require</directive>
+    impl&eacute;mente la partie
+    autorisation du processus en d&eacute;finissant l'utilisateur autoris&eacute; &agrave;
+    acc&eacute;der &agrave; cette zone du serveur. Dans la section suivante, nous
+    d&eacute;crirons les diff&eacute;rentes m&eacute;thodes d'utilisation de la directive
+    <directive module="core">Require</directive> directive.</p>
+</section>
+
+<section id="lettingmorethanonepersonin"><title>Autorisation d'acc&egrave;s &agrave;
+plusieurs personnes</title>
+    <p>Les directives ci-dessus n'autorisent qu'une personne (quelqu'un
+    poss&eacute;dant le nom d'utilisateur <code>rbowen</code>) &agrave; acc&eacute;der au
+    r&eacute;pertoire. Dans la plupart des cas, vous devrez autoriser
+    l'acc&egrave;s &agrave; plusieurs personnes. C'est ici
+    qu'intervient la directive <directive module="mod_authz_groupfile"
+    >AuthGroupFile</directive>.</p>
+
+    <p>Si vous voulez autoriser l'acc&egrave;s &agrave; plusieurs personnes, vous
+    devez cr&eacute;er un fichier de groupes qui associe des noms de groupes
+    avec une liste d'utilisateurs de ce groupe. Le format de ce fichier
+    est tr&egrave;s simple, et vous pouvez le cr&eacute;er avec votre &eacute;diteur favori.
+    Son contenu se pr&eacute;sente comme suit :</p>
+
+   <example>
+     Nom-de-groupe: rbowen dpitts sungo rshersey
+   </example>
+
+    <p>Il s'agit simplement une liste des membres du groupe sous la
+    forme d'une ligne s&eacute;par&eacute;e par des espaces.</p>
+
+    <p>Pour ajouter un utilisateur &agrave; votre fichier de mots de passe
+    pr&eacute;existant, entrez :</p>
+
+    <example>
+      htpasswd /usr/local/apache/passwd/passwords dpitts
+    </example>
+
+    <p>Vous obtiendrez le m&ecirc;me effet qu'auparavant, mais le mot de passe
+    sera ajout&eacute; au fichier, plut&ocirc;t que d'en cr&eacute;er un nouveau (C'est le
+    drapeau <code>-c</code> qui permet de cr&eacute;er un nouveau fichier de
+    mots de passe)..</p>
+
+    <p>Maintenant, vous devez modifier votre fichier
+    <code>.htaccess</code> comme suit :</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "By Invitation Only"<br />
+      # Ligne facultative :<br />
+      AuthBasicProvider file<br />
+      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      AuthGroupFile /usr/local/apache/passwd/groups<br />
+      Require group Nom-de-groupe
+    </example>
+
+    <p>Maintenant, quiconque appartient au groupe
+    <code>Nom-de-groupe</code>, et poss&egrave;de une entr&eacute;e dans le fichier
+    <code>password</code> pourra acc&eacute;der au r&eacute;pertoire s'il tape le bon
+    mot de passe.</p>
+
+    <p>Il existe une autre m&eacute;thode moins contraignante pour autoriser
+    l'acc&egrave;s &agrave; plusieurs personnes. Plut&ocirc;t que de cr&eacute;er un fichier de
+    groupes, il vous suffit d'ajouter la directive suivante :</p>
+
+    <example>
+      Require valid-user
+    </example>
+
+    <p>Le remplacement de la ligne <code>Require user rbowen</code> par
+    la ligne <code>Require valid-user</code> autorisera l'acc&egrave;s &agrave;
+    quiconque poss&eacute;dant une entr&eacute;e dans le fichier password, et ayant
+    tap&eacute; le bon mot de passe. Vous pouvez m&ecirc;me simuler le comportement
+    des groupes en associant un fichier de mots de passe diff&eacute;rent pour
+    chaque groupe. L'avantage de cette approche r&eacute;side dans le fait
+    qu'Apache ne doit consulter qu'un fichier au lieu de deux. Par
+    contre, vous devez maintenir un nombre plus ou moins important de
+    fichiers de mots de passe, et vous assurer de faire r&eacute;f&eacute;rence au bon
+    fichier dans la directive <directive
+    module="mod_authn_file">AuthUserFile</directive>.</p>
+</section>
+
+<section id="possibleproblems"><title>Probl&egrave;mes possibles</title>
+    <p>L'authentification Basic est sp&eacute;cifi&eacute;e d'une telle mani&egrave;re que
+    vos nom d'utilisateur et mot de passe doivent &ecirc;tre v&eacute;rifi&eacute;s chaque
+    fois que vous demandez un document au serveur, et ceci m&ecirc;me si vous
+    rechargez la m&ecirc;me page, et pour chaque image contenue dans la page
+    (si elles sont situ&eacute;es dans un r&eacute;pertoire prot&eacute;g&eacute;). Comme vous
+    pouvez l'imaginer, ceci ralentit un peu le fonctionnement. La mesure
+    dans laquelle le fonctionnement est ralenti est proportionnelle &agrave; la
+    taille du fichier des mots de passe, car ce dernier doit &ecirc;tre ouvert
+    et la liste des utilisateurs parcourue jusqu'&agrave; ce que votre nom soit
+    trouv&eacute;, et ceci chaque fois qu'une page est charg&eacute;e.</p>
+
+    <p>En cons&eacute;quence, ce ralentissement impose une limite pratique au
+    nombre d'utilisateurs que vous pouvez enregistrer dans un fichier de
+    mots de passe. Cette limite va varier en fonction des performances
+    de votre serveur, mais vous commencerez &agrave; remarquer un
+    ralentissement lorsque vous atteindrez quelques centaines
+    d'utilisateurs, et serez alors appel&eacute;s &agrave; utiliser une m&eacute;thode
+    d'authentification diff&eacute;rente.</p>
+</section>
+
+<section id="dbmdbd"><title>Autre m&eacute;thode de stockage des mots de
+passe</title>
+
+    <p>Suite au probl&egrave;me &eacute;voqu&eacute; pr&eacute;c&eacute;demment et induit par le stockage
+    des mots de passe dans un fichier texte, vous pouvez &ecirc;tre appel&eacute; &agrave;
+    stocker vos mots de passe d'une autre mani&egrave;re, par exemple dans une
+    base de donn&eacute;es.</p>
+
+    <p>Pour y parvenir, on peut utiliser les modules
+    <module>mod_authn_dbm</module> ou <module>mod_authn_dbd</module>.
+    Vous pouvez choisir comme format de stockage <code>dbm</code> ou
+    <code>dbd</code> &agrave; la place de <code>file</code> pour la directive
+    <directive module="mod_auth_basic">AuthBasicProvider</directive>.</p>
+
+    <p>Par exemple, pour s&eacute;lectionner un fichier dbm &agrave; la place d'un
+    fichier texte :</p>
+
+    <example>
+    &lt;Directory /www/docs/private&gt;<br />
+    AuthName "Private"<br />
+    AuthType Basic<br />
+    AuthBasicProvider dbm<br />
+    AuthDBMUserFile /www/passwords/passwd.dbm<br />
+    Require valid-user<br />
+    &lt;/Directory&gt;
+    </example>
+
+    <p>D'autres options sont disponibles. Consultez la documentation de
+    <module>mod_authn_dbm</module> pour plus de d&eacute;tails.</p>
+</section>
+
+
+
+<section id="moreinformation"><title>Pour aller plus loin . . .</title>
+    <p>Vous pouvez aussi lire la documentation de
+    <module>mod_auth_basic</module> et <module>mod_authz_host</module>
+    qui contient des informations suppl&eacute;mentaires &agrave; propos du
+    fonctionnement de tout ceci.
+    Certaines configurations d'authentification peuvent aussi &ecirc;tre
+    simplifi&eacute;es &agrave; l'aide du module <module>mod_authn_alias</module>.</p>
+
+    <p>Les diff&eacute;rents algorithmes de chiffrement support&eacute;s par Apache
+    pour authentifier les donn&eacute;es sont expliqu&eacute;s dans <a
+    href="../misc/password_encryptions.html">PasswordEncryptions</a>.</p>
+
+    <p>Enfin vous pouvez consulter la recette <a href="access.html">Access
+    Control</a>, qui d&eacute;crit un certain nombre de situations en relation
+    avec le sujet.</p>
+
+</section>
+
+</manualpage>
+
