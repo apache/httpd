@@ -2036,7 +2036,7 @@ from the client</description>
 will be accepted from the client</description>
 <syntax>LimitRequestFields <var>number</var></syntax>
 <default>LimitRequestFields 100</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p><var>Number</var> is an integer from 0 (meaning unlimited) to
@@ -2077,7 +2077,7 @@ will be accepted from the client</description>
 client</description>
 <syntax>LimitRequestFieldSize <var>bytes</var></syntax>
 <default>LimitRequestFieldSize 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>This directive specifies the number of <var>bytes</var>
@@ -2115,7 +2115,7 @@ client</description>
 from the client</description>
 <syntax>LimitRequestLine <var>bytes</var></syntax>
 <default>LimitRequestLine 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>This directive sets the number of <var>bytes</var> that will be 
