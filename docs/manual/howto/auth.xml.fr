@@ -42,7 +42,7 @@ module de chaque groupe.</p>
 
 <ul>
   <li>Type d'authentification (voir la directive <directive
-  module="core">AuthType</directive> directive)
+  module="core">AuthType</directive>)
     <ul>
       <li><module>mod_auth_basic</module></li>
       <li><module>mod_auth_digest</module></li>
