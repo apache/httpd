@@ -510,7 +510,7 @@ sys     0m0.000s</pre>
 
       <p>Additionally, because the operating system knows when files are 
       deleted or modified, it can automatically remove file contents from the 
-      cache when neccessary. This is a big advantage over httpd's in-memory 
+      cache when necessary. This is a big advantage over httpd's in-memory 
       caching which has no way of knowing when a file has changed.</p>
     </section>
 

@@ -31,7 +31,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</description>
 
 <summary>
 <p>This module provides SSL v2/v3 and TLS v1 support for the Apache
-HTTP Server.  It was contributed by Ralf S. Engeschall based on his
+HTTP Server.  It was contributed by Ralf S. Engelschall based on his
 mod_ssl project and originally derived from work by Ben Laurie.</p>
 
 <p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
@@ -326,7 +326,7 @@ The following <em>source</em> variants are available:</p>
     consumes minimum CPU cycles under runtime and hence can be always used
     without drawbacks. The source used for seeding the PRNG contains of the
     current time, the current process id and (when applicable) a randomly
-    choosen 1KB extract of the inter-process scoreboard structure of Apache.
+    chosen 1KB extract of the inter-process scoreboard structure of Apache.
     The drawback is that this is not really a strong source and at startup
     time (where the scoreboard is still not available) this source just
     produces a few bytes of entropy. So you should always, at least for the
@@ -342,7 +342,7 @@ The following <em>source</em> variants are available:</p>
     the first argument). Use this especially at startup time, for instance
     with an available <code>/dev/random</code> and/or
     <code>/dev/urandom</code> devices (which usually exist on modern Unix
-    derivates like FreeBSD and Linux).</p>
+    derivatives like FreeBSD and Linux).</p>
     <p>
     <em>But be careful</em>: Usually <code>/dev/random</code> provides only as
     much entropy data as it actually has, i.e. when you request 512 bytes of
@@ -415,7 +415,7 @@ OpenSSL already caches the SSL session information locally. But because modern
 clients request inlined images and other data via parallel requests (usually
 up to four parallel requests are common) those requests are served by
 <em>different</em> pre-forked server processes. Here an inter-process cache
-helps to avoid unneccessary session handshakes.</p>
+helps to avoid unnecessary session handshakes.</p>
 <p>
 The following four storage <em>type</em>s are currently supported:</p>
 <ul>
@@ -614,7 +614,7 @@ consisting of OpenSSL cipher specifications to configure the Cipher Suite the
 client is permitted to negotiate in the SSL handshake phase. Notice that this
 directive can be used both in per-server and per-directory context. In
 per-server context it applies to the standard SSL handshake when a connection
-is established. In per-directory context it forces a SSL renegotation with the
+is established. In per-directory context it forces a SSL renegotiation with the
 reconfigured Cipher Suite after the HTTP request was read but before the HTTP
 response is sent.</p>
 <p>
@@ -634,7 +634,7 @@ attributes plus a few extra minor ones:</p>
     MD5, SHA or SHA1.
 </li>
 </ul>
-<p>An SSL cipher can also be an export cipher and is either a SSLv2 or SSLv3/TLSv1
+<p>An SSL cipher can also be an export cipher and is either an SSLv2 or SSLv3/TLSv1
 cipher (here TLSv1 is equivalent to SSLv3). To specify which ciphers to use,
 one can either specify all the Ciphers, one at a time, or use aliases to
 specify the preference and order for the ciphers (see <a href="#table1">Table
@@ -1035,7 +1035,7 @@ This directive sets the Certificate verification level for the Client
 Authentication. Notice that this directive can be used both in per-server and
 per-directory context. In per-server context it applies to the client
 authentication process used in the standard SSL handshake when a connection is
-established. In per-directory context it forces a SSL renegotation with the
+established. In per-directory context it forces a SSL renegotiation with the
 reconfigured client verification level after the HTTP request was read but
 before the HTTP response is sent.</p>
 <p>
@@ -1081,7 +1081,7 @@ clients don't have a valid certificate. Notice that this directive can be
 used both in per-server and per-directory context. In per-server context it
 applies to the client authentication process used in the standard SSL
 handshake when a connection is established. In per-directory context it forces
-a SSL renegotation with the reconfigured client verification depth after the
+a SSL renegotiation with the reconfigured client verification depth after the
 HTTP request was read but before the HTTP response is sent.</p>
 <p>
 The depth actually is the maximum number of intermediate certificate issuers,
@@ -1461,7 +1461,7 @@ verification of the remote server.  Notice that this directive can be
 used both in per-server and per-directory context. In per-server
 context it applies to the remote server authentication process used in
 the standard SSL handshake when a connection is established by the
-proxy. In per-directory context it forces a SSL renegotation with the
+proxy. In per-directory context it forces a SSL renegotiation with the
 reconfigured remote server verification level after the HTTP request
 was read but before the HTTP response is sent.</p>
 
@@ -1508,7 +1508,7 @@ remote server does not have a valid certificate. Notice that this directive can 
 used both in per-server and per-directory context. In per-server context it
 applies to the client authentication process used in the standard SSL
 handshake when a connection is established. In per-directory context it forces
-a SSL renegotation with the reconfigured remote server verification depth after the
+a SSL renegotiation with the reconfigured remote server verification depth after the
 HTTP request was read but before the HTTP response is sent.</p>
 <p>
 The depth actually is the maximum number of intermediate certificate issuers,

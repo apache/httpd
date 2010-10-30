@@ -1340,7 +1340,7 @@ static void note_digest_auth_failure(request_rec *r,
 
     /* setup domain attribute. We want to send this attribute wherever
      * possible so that the client won't send the Authorization header
-     * unneccessarily (it's usually > 200 bytes!).
+     * unnecessarily (it's usually > 200 bytes!).
      */
 
 

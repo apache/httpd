@@ -191,7 +191,7 @@ MAKING APACHE REPOSITORY-AGNOSTIC
       than calling apr_dir_open/read/close(), a caller uses
       resource->repos->get_children() or somesuch.
 
-      Note that things like mod_dir, mod_autoindex, and mod_negotation
+      Note that things like mod_dir, mod_autoindex, and mod_negotiation
       need to be converted to use these mechanisms so that their
       functions will work on logical repositories rather than just
       filesystems.

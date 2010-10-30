@@ -180,7 +180,7 @@
     represents.</p>
 
     <p>The full list of headers recognized is available in the <a
-    href="mod/mod_negotiation.html#typemaps">mod_negotation
+    href="mod/mod_negotiation.html#typemaps">mod_negotiation
     typemap</a> documentation.</p>
 </section>
 

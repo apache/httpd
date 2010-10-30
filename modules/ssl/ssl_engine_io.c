@@ -684,7 +684,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * data from network filter.
                  *
                  * (This is usually the case when the client forces an SSL
-                 * renegotation which is handled implicitly by OpenSSL.)
+                 * renegotiation which is handled implicitly by OpenSSL.)
                  */
                 inctx->rc = APR_EAGAIN;
 
@@ -814,7 +814,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
              * data at the network filter.
              *
              * (This is usually the case when the client forces an SSL
-             * renegotation which is handled implicitly by OpenSSL.)
+             * renegotiation which is handled implicitly by OpenSSL.)
              */
             outctx->rc = APR_EAGAIN;
         }
