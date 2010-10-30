@@ -56,6 +56,7 @@
 </seealso>
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
+<seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
 
 <section id="socache">
 <title>Performance and Cacheing</title>
@@ -148,6 +149,11 @@ AuthDBDUserPWQuery \
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
+    <p>The encrypted password format depends on which authentication
+    frontend (e.g. <module>mod_authn_basic</module> or
+    <module>mod_authn_digest</module>) is being used.  See <a
+    href="../misc/password_encryptions.html">Password Formats</a> for
+    more information.</p>
 </usage>
 </directivesynopsis>
 
@@ -178,6 +184,11 @@ AuthDBDUserRealmQuery \
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
+    <p>The encrypted password format depends on which authentication
+    frontend (e.g. <module>mod_authn_basic</module> or
+    <module>mod_authn_digest</module>) is being used.  See <a
+    href="../misc/password_encryptions.html">Password Formats</a> for
+    more information.</p>
 </usage>
 </directivesynopsis>
 
