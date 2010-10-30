@@ -189,6 +189,9 @@ To Do List
   things that we all assume everyone uses, but some folks might not know
   about.
 
+- Clarify which directives only affect requests when they're handled
+  by the default handler.  (e.g. ForceType, TraceEnable, etc.)
+
 LaTeX Todo list
 ==================
 
