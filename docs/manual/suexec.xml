@@ -370,7 +370,7 @@
 
       <dd>The <a href="mod/mpm_common.html#user">username</a> under which
       httpd normally runs. This is the only user allowed to
-      execute this program.</dd>
+      execute the suEXEC wrapper.</dd>
 
       <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
 
