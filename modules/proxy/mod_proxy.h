@@ -543,7 +543,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * @param conf   current proxy server configuration
  * @param url    url containing worker name
  * @param id     slotnumber id or -1 for auto allocation
- * @return       error message or NULL if successfull
+ * @return       error message or NULL if successful
  */
 PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
                                                 apr_pool_t *p,
@@ -557,7 +557,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
  * @param p      memory pool to allocate worker from 
  * @param conf   current proxy server configuration
  * @param url    url containing worker name
- * @return       error message or NULL if successfull
+ * @return       error message or NULL if successful
  */
 PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
                                                 apr_pool_t *p,

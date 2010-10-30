@@ -867,7 +867,7 @@ static int find_ct(request_rec *r)
                 found = 1;
             }
             /* The following extensions are not 'Found'.  That is, they don't
-             * make any contribution to metadata negotation, so they must have
+             * make any contribution to metadata negotiation, so they must have
              * been explicitly requested by name.
              */
             if (exinfo->handler && r->proxyreq == PROXYREQ_NONE) {

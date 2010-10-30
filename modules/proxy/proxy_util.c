@@ -1766,7 +1766,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn
 
     /*
      * If we have an existing SSL connection it might be possible that the
-     * server sent some SSL message we have not read so far (e.g. a SSL
+     * server sent some SSL message we have not read so far (e.g. an SSL
      * shutdown message if the server closed the keepalive connection while
      * the connection was held unused in our pool).
      * So ensure that if present (=> APR_NONBLOCK_READ) it is read and

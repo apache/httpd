@@ -209,7 +209,7 @@ found</description>
     <p>The <directive>ForceLanguagePriority</directive> directive uses
     the given <directive
     module="mod_negotiation">LanguagePriority</directive> to satisfy
-    negotation where the server could otherwise not return a single
+    negotiation where the server could otherwise not return a single
     matching document.</p>
 
     <p><code>ForceLanguagePriority Prefer</code> uses

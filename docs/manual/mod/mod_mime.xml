@@ -599,7 +599,7 @@ a matching file with MultiViews</description>
 
     <p>The <code>NegotiatedOnly</code> option provides that every extension
     following the base name must correlate to a recognized
-    <module>mod_mime</module> extension for content negotation, <em>e.g.</em>
+    <module>mod_mime</module> extension for content negotiation, <em>e.g.</em>
     Charset, Content-Type, Language, or Encoding.  This is the strictest
     implementation with the fewest unexpected side effects, and is the
     default behavior.</p>

@@ -128,7 +128,7 @@ typedef struct HSE_SEND_HEADER_EX_INFO {
  * not passed, and a completion context was defined, we will invoke the
  * completion function immediately following the transfer, and then
  * return to the caller.  If HSE_IO_SYNC is passed, there is no call
- * neccessary to the completion context.
+ * necessary to the completion context.
  */
 #define HSE_IO_SYNC  1
 #define HSE_IO_ASYNC 2

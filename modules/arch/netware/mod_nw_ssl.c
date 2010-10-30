@@ -364,7 +364,7 @@ static int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
                      sizeof(struct tlsclientopts), NULL, 0, NULL,
                      NULL, NULL);
 
-    /* make sure that it was successfull */
+    /* make sure that it was successful */
         if(SOCKET_ERROR == rcode ){
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "Error: %d with ioctl (SO_TLS_SET_CLIENT)", WSAGetLastError());
