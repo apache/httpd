@@ -50,9 +50,7 @@
 <dt><code>-l</code></dt>
 <dd>Causes the use of local time rather than GMT as the base for the
 interval or for <code>strftime(3)</code> formatting with size-based 
-rotation.  Note that using <code>-l</code> in an environment which
-changes the GMT offset (such as for BST or DST) can lead to unpredictable
-results!</dd>
+rotation.</dd>
 
 <dt><code>-L</code> <var>linkname</var></dt>
 <dd>Causes a hard link to be made from the current logfile
