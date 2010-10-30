@@ -51,6 +51,7 @@
 <seealso>
   <directive module="mod_auth_digest">AuthDigestProvider</directive>
 </seealso>
+<seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
 
 <directivesynopsis>
 <name>AuthDBMUserFile</name>
@@ -78,6 +79,12 @@ passwords for authentication</description>
       the directory that it protects. Otherwise, clients will be able to
       download the <directive>AuthDBMUserFile</directive>.</p>
     </note>
+
+    <p>The encrypted password format depends on which authentication
+    frontend (e.g. <module>mod_authn_basic</module> or
+    <module>mod_authn_digest</module>) is being used.  See <a
+    href="../misc/password_encryptions.html">Password Formats</a> for
+    more information.</p>
 
     <p>Important compatibility note: The implementation of
     <code>dbmopen</code> in the apache modules reads the string length of

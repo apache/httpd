@@ -49,6 +49,7 @@
 </seealso>
 <seealso><program>htpasswd</program></seealso>
 <seealso><program>htdigest</program></seealso>
+<seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
  
 <directivesynopsis>
 <name>AuthUserFile</name>
@@ -71,10 +72,15 @@ passwords for authentication</description>
     ID is defined multiple times, <module>mod_authn_file</module> will
     use the first occurrence to verify the password.</p>
 
-    <p>The utility <program>htpasswd</program>
+    <p>The encrypted password format depends on which authentication
+    frontend (e.g. <module>mod_authn_basic</module> or
+    <module>mod_authn_digest</module>) is being used.  See <a
+    href="../misc/password_encryptions.html">Password Formats</a> for
+    more information.</p>
+
+    <p>For <module>mod_authn_basic</module>, use the utility <program>htpasswd</program>
     which is installed as part of the binary distribution, or which
-    can be found in <code>src/support</code>, is used to maintain
-    the password file for <em>HTTP Basic Authentication</em>. See the
+    can be found in <code>src/support</code>. See the
     <a href="../programs/htpasswd.html">man page</a> for more details.
     In short:</p>
 
@@ -98,9 +104,7 @@ passwords for authentication</description>
     module="mod_authn_dbm">AuthDBMUserFile</directive> should be used
     instead.</p>
 
-    <p>If you are using <em>HTTP Digest Authentication</em>, the <program>
-    htpasswd</program> tool is not sufficient.
-    You have to use <program>htdigest</program>
+    <p>For <module>mod_authn_digest</module>, use <program>htdigest</program>
     instead. Note that you cannot mix user data for Digest Authentication
     and Basic Authentication within the same file.</p>
 
