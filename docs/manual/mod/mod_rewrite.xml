@@ -211,6 +211,23 @@ processing</description>
           directive or use <code>RewriteLogLevel 0</code>!
 </note>
 
+    <p>The <directive>RewriteLog</directive> log file format is as
+    follows:</p>
+
+<table>
+<tr><th>Description</th><th> Example</th></tr>
+<tr>
+<td>Remote host IP address</td>
+<td>192.168.200.166</td></tr>
+<tr><td>Remote login name</td><td>Will usually be "-"</td></tr>
+<tr><td>HTTP user auth name</td><td>Username, or "-" if no auth</td></tr>
+<tr><td>Date and time of request</td><td>[28/Aug/2009:13:09:09 --0400]</td></tr>
+<tr><td>Virtualhost and virtualhost ID</td><td>[www.example.com/sid#84a650]</td></tr>
+<tr><td>Request ID, and whether it's a subrequest</td><td>[rid#9f0e58/subreq]</td></tr>
+<tr><td>Log entry severity level</td><td>(2)</td></tr>
+<tr><td>Text error message</td><td>forcing proxy-throughput with http://127.0.0.1:8080/index.html</td></tr>
+</table>
+
 <note type="securitywarning"><title>Security</title>
 
 See the <a href="../misc/security_tips.html">Apache Security Tips</a>
