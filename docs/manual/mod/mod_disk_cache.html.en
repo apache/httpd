@@ -26,21 +26,32 @@
 <a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Content cache storage manager keyed to URIs</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Disk based storage module for the HTTP caching filter.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>disk_cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_disk_cache.c</td></tr></table>
 <h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implements a disk based storage
-    manager. It is primarily of use in conjunction with
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+    manager for <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
-    <p>Content is stored in and retrieved from the cache using URI based
-    keys. Content with access protection is not cached.</p>
+    <p>The headers and bodies of cached responses are stored separately on
+    disk, in a directory structure derived from the md5 hash of the cached
+    URL.</p>
 
-    <p><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> can be used to maintain the cache
-       size at a maximum level.</p>
+    <p>Multiple content negotiated responses can be stored concurrently,
+    however the caching of partial content is not yet supported by this
+    module.</p>
+
+    <p>Atomic cache updates to both header and body files are achieved
+    without the need for locking by storing the device and inode numbers of
+    the body file within the header file. This has the side effect that
+    cache entries manually moved into the cache will be ignored.</p>
+
+    <p>The <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> tool is provided to list cached
+    URLs, remove cached URLs, or to maintain the size of the disk cache
+    within size and/or inode limits. The tool can be run on demand, or
+    can be daemonized to offer continuous monitoring of directory sizes.</p>
 
     <div class="note"><h3>Note:</h3>
       <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> requires the services of
