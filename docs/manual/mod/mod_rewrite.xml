@@ -69,7 +69,7 @@ URLs on the fly</description>
     </note>
 
     <example><title>Example</title>
-      LogLevel rewrite:trace3
+      LogLevel alert rewrite:trace3
     </example>
 
     <note><title>RewriteLog</title>
