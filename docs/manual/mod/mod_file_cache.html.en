@@ -85,7 +85,7 @@
       directive of <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> maps a list of
       statically configured files into memory through the system call
       <code>mmap()</code>. This system call is available on most modern
-      Unix derivates, but not on all. There are sometimes system-specific
+      Unix derivatives, but not on all. There are sometimes system-specific
       limits on the size and number of files that can be
       <code>mmap()</code>ed, experimentation is probably the easiest way
       to find out.</p>

@@ -96,7 +96,7 @@ address)</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</dd>
 <dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
-<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
+<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>RFC 2616 compliant HTTP caching filter.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
@@ -111,7 +111,7 @@ yaptığı gibi dizin içeriğini listeler.</dd>
 client</dd>
 <dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</dd>
-<dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
+<dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Disk based storage module for the HTTP caching filter.</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
 modules</dd>
