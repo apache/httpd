@@ -44,7 +44,7 @@
         In 2.2, the equivalent of this module is now named 
         <a
         href="http://httpd.apache.org/docs/2.2/mod/mod_auth_basic.html"
-        >mod_authz_host</a>.</p> 
+        >mod_auth_basic</a>.</p> 
 
         </div>
 
