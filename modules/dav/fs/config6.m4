@@ -18,6 +18,6 @@ case "$host" in
     ;;
 esac
 
-APACHE_MODULE(dav_fs, DAV provider for the filesystem, $dav_fs_objects, , $dav_fs_enable)
+APACHE_MODULE(dav_fs, DAV provider for the filesystem.  --enable-dav also enables mod_dav_fs., $dav_fs_objects, , $dav_fs_enable)
 
 APACHE_MODPATH_FINISH

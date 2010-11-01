@@ -10,7 +10,7 @@ else
   dav_enable=most
 fi
 
-APACHE_MODULE(dav, WebDAV protocol handling, $dav_objects, , $dav_enable)
+APACHE_MODULE(dav, WebDAV protocol handling.  --enable-dav also enables mod_dav_fs, $dav_objects., , $dav_enable)
 
 if test "$dav_enable" != "no" -o "$enable_dav" != "no"; then
   apache_need_expat=yes

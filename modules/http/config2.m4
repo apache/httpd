@@ -14,7 +14,7 @@ elif test "$enable_http" = "shared"; then
     AC_MSG_ERROR([mod_http can not be built as a shared DSO])
 fi
 
-APACHE_MODULE(http, HTTP protocol handling, $http_objects, , static)
-APACHE_MODULE(mime, mapping of file-extension to MIME, , , yes)
+APACHE_MODULE(http,[HTTP protocol handling.  The http module is a basic one that enables the server to function as an HTTP server. It is only useful to disable it if you want to use another protocol module instead. Don't disable this module unless you are really sure what you are doing. Note: This module will always be linked statically.], $http_objects, , static)
+APACHE_MODULE(mime, mapping of file-extension to MIME.  Disabling this module is normally not recommended., , , yes)
 
 APACHE_MODPATH_FINISH

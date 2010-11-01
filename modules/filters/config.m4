@@ -20,9 +20,9 @@ APACHE_MODULE(sed, filter request and/or response bodies through sed, $sed_obj)
 if test "$ac_cv_ebcdic" = "yes"; then
 # mod_charset_lite can be very useful on an ebcdic system,
 #   so include it by default
-    APACHE_MODULE(charset_lite, character set translation, , , yes)
+    APACHE_MODULE(charset_lite, character set translation.  Enabled by default only on EBCDIC systems., , , yes)
 else
-    APACHE_MODULE(charset_lite, character set translation, , , no)
+    APACHE_MODULE(charset_lite, character set translation.  Enabled by default only on EBCDIC systems., , , no)
 fi
 
 
