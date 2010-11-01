@@ -52,7 +52,8 @@
 
     <note><title>Note:</title>
       <p><module>mod_disk_cache</module> requires the services of
-      <module>mod_cache</module>.</p>
+      <module>mod_cache</module>, which must be
+      loaded before mod_disk_cache.</p>
     </note>
     <note><title>Note:</title>
       <p><module>mod_disk_cache</module> uses the sendfile feature to
