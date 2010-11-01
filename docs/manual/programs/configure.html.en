@@ -210,7 +210,7 @@
         <dd>Install the system administrator executables in <var>DIR</var>.
           Those are server programs like <code class="program"><a href="../programs/httpd.html">httpd</a></code>,
           <code class="program"><a href="../programs/apachectl.html">apachectl</a></code>, <code class="program"><a href="../programs/suexec.html">suexec</a></code>, etc. which
-          are neccessary to run the Apache HTTP Server. By default
+          are necessary to run the Apache HTTP Server. By default
           <code>sbindir</code> is set to
           <code><var>EPREFIX</var>/sbin</code>.</dd>
 

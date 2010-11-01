@@ -221,7 +221,7 @@ found</td></tr>
 </table>
     <p>The <code class="directive">ForceLanguagePriority</code> directive uses
     the given <code class="directive"><a href="#languagepriority">LanguagePriority</a></code> to satisfy
-    negotation where the server could otherwise not return a single
+    negotiation where the server could otherwise not return a single
     matching document.</p>
 
     <p><code>ForceLanguagePriority Prefer</code> uses

@@ -2071,6 +2071,12 @@ will be accepted from the client</td></tr>
       LimitRequestFields 50
     </code></p></div>
 
+     <div class="warning"><h3>Warning</h3>
+     <p> When name-based virtual hosting is used, the value for this 
+     directive is taken from the default (first-listed) virtual host for the
+     <code class="directive">NameVirtualHost</code> the connection was mapped to.</p>
+     </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2110,6 +2116,12 @@ client</td></tr>
     <div class="note">Under normal conditions, the value should not be changed from
     the default.</div>
 
+    <div class="warning"><h3>Warning</h3>
+    <p> When name-based virtual hosting is used, the value for this 
+    directive is taken from the default (first-listed) virtual host for the
+    <code class="directive">NameVirtualHost</code> the connection was mapped to.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2148,6 +2160,13 @@ from the client</td></tr>
 
     <div class="note">Under normal conditions, the value should not be changed from
     the default.</div>
+
+    <div class="warning"><h3>Warning</h3>
+    <p> When name-based virtual hosting is used, the value for this 
+    directive is taken from the default (first-listed) virtual host for the
+    <code class="directive">NameVirtualHost</code> the connection was mapped to.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

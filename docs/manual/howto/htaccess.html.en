@@ -378,7 +378,7 @@ Options +IncludesNoExec -ExecCGI<br />
     set such that your configuration directives are being honored. Make
     sure that you don't have a <code>AllowOverride None</code> in effect
     for the file scope in question. A good test for this is to put garbage
-    in your <code>.htaccess</code> file and reload. If a server error is
+    in your <code>.htaccess</code> file and reload the page. If a server error is
     not generated, then you almost certainly have <code>AllowOverride
     None</code> in effect.</p>
 

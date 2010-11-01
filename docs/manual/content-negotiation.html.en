@@ -189,7 +189,7 @@ Negotiation</a></li>
     variant depending on the nature of the resource it
     represents.</p>
 
-    <p>The full list of headers recognized is available in the <a href="mod/mod_negotiation.html#typemaps">mod_negotation
+    <p>The full list of headers recognized is available in the <a href="mod/mod_negotiation.html#typemaps">mod_negotiation
     typemap</a> documentation.</p>
 
 
