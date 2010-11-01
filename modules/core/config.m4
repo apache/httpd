@@ -43,7 +43,7 @@ if test "$sharedobjs" = "yes"; then
     fi
 fi
 
-APACHE_MODULE(so, DSO capability, , , $enable_so)
+APACHE_MODULE(so, DSO capability.  This module will be automatically enabled unless you build all modules statically., , , $enable_so)
 
 APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
 

@@ -14,7 +14,7 @@ APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
 if ap_mpm_is_threaded; then
 # if we are using a threaded MPM, we will get better performance with
 # mod_cgid, so make it the default.
-    APACHE_MODULE(cgid, CGI scripts, , , yes, [
+    APACHE_MODULE(cgid, CGI scripts.  Enabled by default with threaded MPMs, , , yes, [
     case $host in
       *-solaris2*)
         case `uname -r` in
@@ -52,13 +52,13 @@ For more info: <http://issues.apache.org/bugzilla/show_bug.cgi?id=34264>])
         ;;
     esac
   ])
-    APACHE_MODULE(cgi, CGI scripts, , , no)
+    APACHE_MODULE(cgi, CGI scripts.  Enabled by default with non-threaded MPMs, , , no)
 else
 # if we are using a non-threaded MPM, it makes little sense to use
 # mod_cgid, and it just opens up holes we don't need.  Make mod_cgi the
 # default
-    APACHE_MODULE(cgi, CGI scripts, , , yes)
-    APACHE_MODULE(cgid, CGI scripts, , , no)
+    APACHE_MODULE(cgi, CGI scripts.  Enabled by default with non-threaded MPMs, , , yes)
+    APACHE_MODULE(cgid, CGI scripts.  Enabled by default with threaded MPMs, , , no)
 fi
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
