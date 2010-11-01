@@ -181,8 +181,8 @@
     <code>/home/user/public_html/file.html</code>, use the following
     <code>AliasMatch</code> directive:</p>
 
-<example>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
-      /home/$1/public_html/$2</example>
+<example>AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$
+      /home/$1/public_html/$3</example>
 </section>
 
 <section id="redirect"><title>URL Redirection</title>
