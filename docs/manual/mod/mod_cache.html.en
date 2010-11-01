@@ -26,7 +26,7 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Content cache keyed to URIs.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>RFC 2616 compliant HTTP caching filter.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cache.c</td></tr></table>
@@ -39,18 +39,81 @@
     wish to limit access by client host name, address or environment
     variable.</div>  
 
-    <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant HTTP
-    content cache that can be used to cache either local or proxied content.
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requires the services of one or more storage
-    management modules. One storage management module is included in
+    <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant
+    <strong>HTTP content caching filter</strong>, with support for the caching
+    of content negotiated responses containing the Vary header.</p>
+
+    <p>RFC 2616 compliant caching provides a mechanism to verify whether
+    stale or expired content is still fresh, and can represent a significant
+    performance boost when the origin server supports <strong>conditional
+    requests</strong> by honouring the
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>
+    HTTP request header. Content is only regenerated from scratch when the content
+    has changed, and not when the cached entry expires.</p>
+
+    <p>As a filter, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> can be placed in front of
+    content originating from any handler, including <strong>flat
+    files</strong> (served from a slow disk cached on a fast disk), the output
+    of a <strong>CGI script</strong> or <strong>dynamic content
+    generator</strong>, or content <strong>proxied from another
+    server</strong>.</p>
+
+    <p>In the default configuration, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> inserts the
+    caching filter as far forward as possible within the filter stack,
+    utilising the <strong>quick handler</strong> to bypass all per request
+    processing when returning content to the client. In this mode of
+    operation, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> may be thought of as a caching
+    proxy server bolted to the front of the webserver, while running within
+    the webserver itself.</p>
+
+    <p>When the quick handler is switched off using the
+    <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> directive,
+    it becomes possible to insert the <strong>CACHE</strong> filter at a
+    point in the filter stack chosen by the administrator. This provides the
+    opportunity to cache content before that content is personalised by the
+    <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> filter, or optionally compressed by the
+    <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> filter.</p>
+
+    <p>Under normal operation, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> will respond to
+    and can be controlled by the
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    and
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    headers sent from a client in a request, or from a
+    server within a response. Under exceptional circumstances,
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> can be configured to override these headers
+    and force site specific behaviour, however such behaviour will be limited
+    to this cache only, and will not affect the operation of other caches
+    that may exist between the client and server, and as a result is not
+    recommended unless strictly necessary.</p>
+
+    <p>RFC 2616 allows for the cache to return stale data while the existing
+    stale entry is refreshed from the origin server, and this is supported
+    by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> when the
+    <code class="directive"><a href="#cachelock">CacheLock</a></code> directive is suitably
+    configured. Such responses will contain a
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    HTTP header with a 110 response code. RFC 2616 also allows a cache to return
+    stale data when the attempt made to refresh the stale data returns an
+    error 500 or above, and this behaviour is supported by default by
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. Such responses will contain a
+    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    HTTP header with a 111 response code.</p>
+
+    <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requires the services of one or more
+    storage management modules. One storage management module is included in
     the base Apache distribution:</p>
     <dl>
     <dt><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></dt>
-    <dd>implements a disk based storage manager.</dd>
+    <dd>Implements a disk based storage manager. Headers and bodies are
+    stored separately on disk, in a directory structure derived from the
+    md5 hash of the cached URL. Multiple content negotiated responses can
+    be stored concurrently, however the caching of partial content is not
+    supported by this module. The <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> tool is
+    provided to list cached URLs, remove cached URLs, or to maintain the size
+    of the disk cache within size and inode limits.</dd>
     </dl>
 
-    <p>Content is stored in and retrieved from the cache using URI based keys. Content with
-    access protection is not cached.</p>
     <p>Further details, discussion, and examples, are provided in the
     <a href="../caching.html">Caching Guide</a>.</p>
 </div>
@@ -192,7 +255,7 @@
   cache performance available.</p>
   
   <p>In this mode, the cache <strong>bolts onto</strong> the front of the server,
-  acting as if a free standing RFC2616 caching proxy had been placed in front of
+  acting as if a free standing RFC 2616 caching proxy had been placed in front of
   the server.</p>
   
   <p>While this mode offers the best performance, the administrator may find that

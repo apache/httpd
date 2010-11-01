@@ -74,7 +74,16 @@
 
       <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd, 
       for configuration and small business logic functions.</dd>
- 
+
+      <dt><module>mod_proxy</module></dt>
+
+      <dd>The <directive module="mod_proxy">ProxyPass</directive> directive
+      is now most optimally configured within a
+      <directive module="core">Location</directive> or
+      <directive module="core">LocationMatch</directive>
+      block, and offers a significant performance advantage over the traditional
+      two-parameter syntax when present in large numbers.</dd>
+
       <dt><module>mod_proxy_fcgi</module></dt>
 
       <dd>FastCGI Protocol backend for <module>mod_proxy</module></dd>
