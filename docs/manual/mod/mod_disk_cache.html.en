@@ -55,7 +55,8 @@
 
     <div class="note"><h3>Note:</h3>
       <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> requires the services of
-      <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+      <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, which must be
+      loaded before mod_disk_cache.</p>
     </div>
     <div class="note"><h3>Note:</h3>
       <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> uses the sendfile feature to
