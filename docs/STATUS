@@ -27,10 +27,6 @@ ApacheCon 2010 Hackathon To Do List
 To Do List
 =======================
 
-- The dns-caveats document is largely rubbish, and needs to be
-  completely rewritten. Many of the points stopped being true over a
-  decade ago.
-
 - The 1.3 docs need to have links from each directive forward to the
   /docs/current/ version of that directive, or a note that it's not
   avaialble in this century. See core.html for examples of how this
