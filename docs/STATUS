@@ -72,7 +72,7 @@ To Do List
   than a little daunting.
  
 - Windows platform docs are in desperate need of rewrites/updates for 2.x.
-    - Bill Rowe and Bill Stoddard are good contacts for tech questions.
+    - Bill Rowe is a good contact for tech questions.
     - "using apache" has been done, "compiling apache" is still open
     - hints on uninstalling apache (exit monitor, close directories,
       registry entries etc) (PR 10154)
