@@ -1163,10 +1163,10 @@ through</td></tr>
       ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mycluster&gt;<br />
       <span class="indent">
-        BalancerMember http://1.2.3.4:8009<br />
-        BalancerMember http://1.2.3.5:8009 smax=10<br />
+        BalancerMember ajp://1.2.3.4:8009<br />
+        BalancerMember ajp://1.2.3.5:8009 smax=10<br />
         # Less powerful server, don't send as many requests there<br />
-        BalancerMember http://1.2.3.6:8009 smax=1 loadfactor=20<br />
+        BalancerMember ajp://1.2.3.6:8009 smax=1 loadfactor=20<br />
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
@@ -1177,10 +1177,10 @@ through</td></tr>
       ProxyPass / balancer://hotcluster/ <br />
       &lt;Proxy balancer://hotcluster&gt;<br />
       <span class="indent">
-        BalancerMember http://1.2.3.4:8009 loadfactor=1<br />
-        BalancerMember http://1.2.3.5:8009 loadfactor=2<br />
+        BalancerMember ajp://1.2.3.4:8009 loadfactor=1<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=2<br />
         # The below is the hot standby<br />
-        BalancerMember http://1.2.3.6:8009 status=+H<br />
+        BalancerMember ajp://1.2.3.6:8009 status=+H<br />
         ProxySet lbmethod=bytraffic
       </span>
       &lt;/Proxy&gt;
@@ -1553,8 +1553,8 @@ expressions</td></tr>
     <div class="example"><p><code>
       &lt;Proxy balancer://hotcluster&gt;<br />
       <span class="indent">
-        BalancerMember http://www2.example.com:8009 loadfactor=1<br />
-        BalancerMember http://www3.example.com:8009 loadfactor=2<br />
+        BalancerMember http://www2.example.com:8080 loadfactor=1<br />
+        BalancerMember http://www3.example.com:8080 loadfactor=2<br />
         ProxySet lbmethod=bytraffic<br />
       </span>
       &lt;/Proxy&gt;
