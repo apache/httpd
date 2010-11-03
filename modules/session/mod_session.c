@@ -89,6 +89,7 @@ static int session_included(request_rec * r, session_dir_conf * conf)
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
+/* ??? We return errors but we ignore them thru-out. ??? */
 static int ap_session_load(request_rec * r, session_rec ** z)
 {
 
@@ -168,6 +169,7 @@ static int ap_session_load(request_rec * r, session_rec ** z)
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
+/* ??? We return errors but we ignore them thru-out. ??? */
 static int ap_session_save(request_rec * r, session_rec * z)
 {
     if (z) {
@@ -241,7 +243,7 @@ static int ap_session_save(request_rec * r, session_rec * z)
 static void ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value)
 {
     if (!z) {
-        ap_session_load(r, &z);
+        ap_session_load(r, &z); /* errors ignored?? */
     }
     if (z && z->entries) {
         *value = apr_table_get(z->entries, key);
@@ -264,7 +266,7 @@ static void ap_session_set(request_rec * r, session_rec * z,
                                 const char *key, const char *value)
 {
     if (!z) {
-        ap_session_load(r, &z);
+        ap_session_load(r, &z); /* errors ignored?? */
     }
     if (z) {
         if (value) {
@@ -420,7 +422,7 @@ static apr_status_t session_output_filter(ap_filter_t * f,
                                                       &session_module);
 
         /* load the session, or create one if necessary */
-        ap_session_load(r, &z);
+        ap_session_load(r, &z); /* errors ignored?? */
         if (!z || z->written) {
             r = r->next;
             continue;
@@ -439,7 +441,7 @@ static apr_status_t session_output_filter(ap_filter_t * f,
         }
 
         /* save away the session, and we're done */
-        ap_session_save(r, z);
+        ap_session_save(r, z); /* errors ignored?? */
 
         r = r->next;
     }
@@ -477,7 +479,7 @@ static int session_fixups(request_rec * r)
                                                   &session_module);
 
     session_rec *z = NULL;
-    ap_session_load(r, &z);
+    ap_session_load(r, &z); /* errors ignored?? */
 
     if (conf->env) {
         session_identity_encode(r, z);
