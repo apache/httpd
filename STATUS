@@ -79,6 +79,10 @@ RELEASE SHOWSTOPPERS:
       jim sez: Then we just ship with those... mark any others as
                 experimental
 
+  * The grammar and interface of ap_expr should be something that we are
+    comfortable with keeping for the next few years.
+    sf is working on this
+
   FOR NEXT ALPHA:
 
   * The mod_session* modules need to be checked that their hooks respect
