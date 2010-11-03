@@ -263,7 +263,7 @@
     configuring the name of the cookie and the name of the URL parameter
     separated by a vertical bar (<code>|</code>) as in the following example:</p>
     <div class="example"><p><code>
-    ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On
+    ProxyPass /test balancer://mycluster stickysession=JSESSIONID|jsessionid scolonpathdelim=On<br />
     &lt;Proxy balancer://mycluster&gt;<br />
     BalancerMember http://192.168.1.50:80 route=node1<br />
     BalancerMember http://192.168.1.51:80 route=node2<br />
