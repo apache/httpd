@@ -761,6 +761,18 @@ CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                             const char *val_start = next;
                             while (*next && !apr_isspace(*next) &&
                                    (*next != ',')) {
+                                /* EAT QUOTED STRING */
+                                if (*next == '"' || *next == '\'') {
+                                    char delim = *next;
+                                    while (*++next != delim) {
+                                        if (!*next) {
+                                            return 0;
+                                        }
+                                        else if (*next == '\\') {
+                                            ++next;
+                                        }
+                                    }
+                                }
                                 next++;
                             }
                             *val = apr_pstrmemdup(p, val_start,
@@ -777,6 +789,18 @@ CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
 
         /* skip to the next field */
         do {
+            /* EAT QUOTED STRING */
+            if (*next == '"' || *next == '\'') {
+                char delim = *next;
+                while (*++next != delim) {
+                    if (!*next) {
+                        return 0;
+                    }
+                    else if (*next == '\\') {
+                        ++next;
+                    }
+                }
+            }
             next++;
             if (!*next) {
                 return 0;

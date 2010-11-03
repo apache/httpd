@@ -58,6 +58,9 @@ Changes with Apache 2.3.9
      the option to list entry metadata such as sizes and times. [Graham
      Leggett]
 
+  *) mod_cache: correctly parse quoted strings in cache headers.
+     PR 50199 [Nick Kew]
+
   *) mod_cache: Allow control over the base URL of reverse proxied requests
      using the CacheKeyBaseURL directive, so that the cache key can be
      calculated from the endpoint URL instead of the server URL. [Graham
