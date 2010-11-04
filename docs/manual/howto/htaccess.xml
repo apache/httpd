@@ -31,9 +31,6 @@ changes on a per-directory basis.</p>
 </summary>
 
 <section id="related"><title>.htaccess files</title>
-    <note>You should avoid using <code>.htaccess</code> files completely if you have access to
-    httpd main server config file. Using <code>.htaccess</code> files slows down your Apache server.
-    Any directive that you can include in a <code>.htaccess</code> file is better set in a <directive module="core">Directory</directive> block, as it will have the same effect with better performance.</note>
     <related>
         <modulelist>
             <module>core</module>
@@ -58,6 +55,10 @@ changes on a per-directory basis.</p>
         </directivelist>
 
     </related>
+
+    <note>You should avoid using <code>.htaccess</code> files completely if you have access to
+    httpd main server config file. Using <code>.htaccess</code> files slows down your Apache server.
+    Any directive that you can include in a <code>.htaccess</code> file is better set in a <directive module="core">Directory</directive> block, as it will have the same effect with better performance.</note>
 </section>
 
 <section id="what">
