@@ -504,6 +504,22 @@
       content without it. In that case a cache hit will log
       <code>-</code>, while a cache miss will log <code>1</code>.</p>
 
+      <p>In addition to the <code>env=</code> syntax, <directive
+      module="mod_log_config">LogFormat</directive> supports logging values
+      conditional upon the HTTP response code:</p>
+
+      <example>
+      LogFormat "%400,501{User-agent}i" browserlog<br />
+      LogFormat "%!200,304,302{Referer}i" refererlog
+      </example>
+
+      <p>In the first example, the <code>User-agent</code> will be
+      logged if the HTTP status code is 400 or 501. In other cases, a
+      literal "-" will be logged instead. Likewise, in the second
+      example, the <code>Referer</code> will be logged if the HTTP
+      status code is <strong>not</strong> 200, 204, or 302. (Note the
+      "!" before the status codes.</p>
+
       <p>Although we have just shown that conditional logging is very
       powerful and flexible, it is not the only way to control the
       contents of the logs. Log files are more useful when they
