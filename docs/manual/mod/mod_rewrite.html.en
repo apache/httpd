@@ -727,7 +727,9 @@ Apache HTTP Server 2.0.41 and later</td></tr>
       key is found, the map-function construct is substituted by
       <em>SubstValue</em>. If the key is not found then it is
       substituted by <em>DefaultValue</em> or by the empty string
-      if no <em>DefaultValue</em> was specified.</p>
+      if no <em>DefaultValue</em> was specified. Empty values
+      behave as if the key was absent, therefore it is not possible
+      to distinguish between empty-valued keys and absent keys.</p>
 
       <p>For example, you might define a
       <code class="directive">RewriteMap</code> as:</p>
