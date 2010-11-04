@@ -265,7 +265,7 @@ one <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">Rewrit
 specified, they must all match for
 the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be
 applied. For example, to deny requests that contain the word "hack" in
-their query string, except if they also contain a cookie containing
+their query string, unless they also contain a cookie containing
 the word "go", you could use:</p>
 <div class="example"><p><code>
 RewriteCond %{QUERY_STRING} hack<br />
