@@ -45,63 +45,6 @@ search for your problem here before submitting a problem report to the
 author.</p>
 </summary>
 
-<section id="about"><title>About The Module</title>
-<ul>
-<li><a href="#history">What is the history of mod_ssl?</a></li>
-<li><a href="#wassenaar">mod_ssl and Wassenaar Arrangement?</a></li>
-</ul>
-
-<section id="history"><title>What is the history of mod_ssl?</title>
-<p>The mod_ssl v1 package was initially created in April 1998 by <a
-    href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> via porting <a
-    href="mailto:ben@algroup.co.uk">Ben Laurie</a>'s <a
-    href="http://www.apache-ssl.org/">Apache-SSL</a> 1.17 source patches for
-    Apache 1.2.6 to Apache 1.3b6. Because of conflicts with Ben
-    Laurie's development cycle it then was re-assembled from scratch for
-    Apache 1.3.0 by merging the old mod_ssl 1.x with the newer Apache-SSL
-    1.18. From this point on mod_ssl lived its own life as mod_ssl v2. The
-    first publicly released version was mod_ssl 2.0.0 from August 10th,
-    1998. </p>
-    
-    <p>After US export restrictions on cryptographic software were
-    loosened, <module>mod_ssl</module> became part of the Apache HTTP
-    Server with the release of Apache httpd 2.</p>
-</section>
-
-<section id="wassenaar"><title>Is mod_ssl affected by the Wassenaar Arrangement?</title>
-<p>First, let us explain what <dfn>Wassenaar</dfn> and its <dfn>Arrangement on
-    Export Controls for Conventional Arms and Dual-Use Goods and
-    Technologies</dfn> is: This is a international regime, established in 1995, to
-    control trade in conventional arms and dual-use goods and technology. It
-    replaced the previous <dfn>CoCom</dfn> regime. Further details on 
-    both the Arrangement and its signatories are available at <a
-    href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>.</p>
-
-    <p>In short, the aim of the Wassenaar Arrangement is to prevent the build up
-    of military capabilities that threaten regional and international security
-    and stability. The Wassenaar Arrangement controls the export of
-    cryptography as a dual-use good, that is, something that has both military and
-    civilian applications. However, the Wassenaar Arrangement also provides an
-    exemption from export controls for mass-market software and free software.</p>
-    
-    <p>In the current Wassenaar <cite>List of Dual Use Goods and Technologies And
-    Munitions</cite>, under <q>GENERAL SOFTWARE NOTE (GSN)</q> it says
-    <q>The Lists do not control "software" which is either: 1. [...] 2. "in
-    the public domain".</q> And under <q>DEFINITIONS OF TERMS USED IN
-    THESE LISTS</q> we find <q>In the public
-    domain</q> defined as <q>"technology" or "software" which has been made
-    available without restrictions upon its further dissemination. Note:
-    Copyright restrictions do not remove "technology" or "software" from being
-    "in the public domain".</q></p>
-    
-    <p>So, both mod_ssl and OpenSSL are <q>in the public domain</q> for the purposes
-    of the Wassenaar Arrangement and its <q>List of Dual Use Goods and
-    Technologies And Munitions List</q>, and thus not affected by its provisions.</p>
-
-</section>
-</section>
-<!-- /about -->
-
 <section id="installation"><title>Installation</title>
 <ul>
 <li><a href="#mutex">Why do I get permission errors related to 
