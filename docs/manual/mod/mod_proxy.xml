@@ -884,12 +884,15 @@ expressions</description>
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
-        <td>This parameter should be used when you have a firewall between your
+        <td><p>This parameter should be used when you have a firewall between your
     Apache httpd and the backend server, who tend to drop inactive connections.
     This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
-    messages on inactive connections (interval depends on global OS settings,
-    generally 120ms), and thus prevent the firewall to drop the connection.
-    To enable keepalive set this property value to <code>On</code>. 
+    messages on inactive connections  and thus prevent the firewall to drop the connection.
+    To enable keepalive set this property value to <code>On</code>. </p>
+    <p>The frequency of initial and subsequent TCP keepalive probes 
+    depends on global OS settings, and may be as high as 2 hours. To be useful,
+    the frequency configured in the OS must be smaller than the threshold used 
+    by the firewall.</p>
     </td></tr>
     <tr><td>lbset</td>
         <td>0</td>
