@@ -503,9 +503,9 @@ SSLSessionCacheTimeout 600
 <usage>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
-is usually used inside a <directive module="core"
+is should be used inside a <directive module="core"
 type="section">VirtualHost</directive> section to enable SSL/TLS for a
-particular virtual host. By default the SSL/TLS Protocol Engine is
+that virtual host. By default the SSL/TLS Protocol Engine is
 disabled for both the main server and all configured virtual hosts.</p>
 <example><title>Example</title>
 &lt;VirtualHost _default_:443&gt;<br />
