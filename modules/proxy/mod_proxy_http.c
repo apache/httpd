@@ -1902,9 +1902,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* Switch the allocator lifetime of the buckets */
                     ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+                    apr_brigade_cleanup(bb);
 
                     /* found the last brigade? */
-                    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+                    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pass_bb))) {
 
                         /* signal that we must leave */
                         finish = TRUE;
@@ -1928,7 +1929,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
 
                     /* make sure we always clean up after ourselves */
-                    apr_brigade_cleanup(bb);
                     apr_brigade_cleanup(pass_bb);
 
                 } while (!finish);
