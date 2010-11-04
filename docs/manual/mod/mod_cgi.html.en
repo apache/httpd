@@ -31,8 +31,6 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cgi.c</td></tr></table>
 <h3>Summary</h3>
 
-    
-
     <p>Any file that has the handler
     <code>cgi-script</code> will be treated
     as a CGI script, and run by the server, with its output being
@@ -68,7 +66,7 @@
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#options">Options</a></code> ExecCGI</li>
 <li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 <li><a href="../suexec.html">Running CGI programs under different

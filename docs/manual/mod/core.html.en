@@ -2966,7 +2966,11 @@ directory</td></tr>
       <dd>
       <a href="../content-negotiation.html">Content negotiated</a>
       "MultiViews" are allowed using
-      <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>.</dd>
+      <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>.
+      <div class="note"><h3>Note</h3> <p>This option gets ignored if set
+      anywhere other than <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, as <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>
+      needs real resources to compare against and evaluate from.</p></div>
+      </dd>
 
       <dt><code>SymLinksIfOwnerMatch</code></dt>
 
