@@ -987,7 +987,7 @@ expressions</description>
         pending request balancing. Default is <code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
-        <td>1</td>
+        <td>One less than the number of workers, or 1 with a single worker.</td>
         <td>Maximum number of failover attempts before giving up. 
     </td></tr>
     <tr><td>nofailover</td>
