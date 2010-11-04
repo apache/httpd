@@ -475,6 +475,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_remoteip.mak    CFG="mod_remoteip - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_setenvif.mak    CFG="mod_setenvif - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak   CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_usage_track.mak CFG="mod_usage_track - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak   CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_version.mak     CFG="mod_version - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -711,6 +712,7 @@ _copybin:
 	copy modules\metadata\$(LONG)\mod_remoteip.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_setenvif.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_unique_id.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_usage_track.$(src_so)	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_usertrack.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_version.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy.$(src_so) 		"$(inst_so)" <.y
