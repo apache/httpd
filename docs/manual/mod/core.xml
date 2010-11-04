@@ -76,6 +76,7 @@ available</description>
     <example>AcceptFilter nntp none</example>
 
 </usage>
+<seealso><directive>Protocol</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2591,6 +2592,35 @@ a resource</description>
 <seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>Protocol</name>
+<description>Protocol for a listening socket</description>
+<syntax>Protocol <var>protocol</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Available in Apache 2.1.5 and later.
+On Windows from Apache 2.3.3 and later.</compatibility>
+
+<usage>
+    <p>This directive specifies the protocol used for a specific listening socket.
+       The protocol is used to determine which module should handle a request, and
+       to apply protocol specific optimizations with the <directive>AcceptFilter</directive>
+       directive.</p>
+
+    <p>You only need to set the protocol if you are running on non-standard ports, otherwise <code>http</code> is assumed for port 80 and <code>https</code> for port 443.</p>
+
+    <p>For example, if you are running <code>https</code> on a non-standard port, specify the protocol explicitly:</p>
+
+    <example>
+      Protocol https
+    </example>
+
+    <p>You can also specify the protocol using the <directive module="mpm_common">Listen</directive> directive.</p>
+</usage>
+<seealso><directive>AcceptFilter</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>RLimitCPU</name>
