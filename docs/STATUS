@@ -83,6 +83,8 @@ To Do List
     - Need complete documentation for the expression syntax.
       (Is there any design doc for this?  Or do we need to
       read server/util_expr.c?)
+    - This should wait until the future of ap_expr is decided.
+      See http://mail-archives.apache.org/mod_mbox/httpd-dev/201010.mbox/%3C201010231336.33829.sf@sfritsch.de%3E
 
 - modules docs
     - the follwing modules added since 2.2 lack documentation
