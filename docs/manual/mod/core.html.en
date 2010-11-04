@@ -2493,7 +2493,9 @@ a resource</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>This directive selects which authenticated users can access a
-    resource.  The restrictions are processed by authorization
+    resource.  Multipe instances of this directive are combined with a logical
+    "OR", such that a user matching any <code class="directive">Require </code>line is 
+    granted access.  The restrictions are processed by authorization
     modules.  Some of the allowed syntaxes provided by
     <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> and
     <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
