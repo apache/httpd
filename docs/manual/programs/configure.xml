@@ -307,7 +307,7 @@
         <dd>Disable support for as-is filetypes, which is provided by
           <module>mod_asis</module>.</dd>
 
-        <dt><code>--disable-auth</code></dt>
+        <dt><code>--disable-auth-basic</code></dt>
         <dd>Disable user-based access control provided  by
           <module>mod_auth</module>. This module provides for HTTP Basic
           Authentication, where the usernames and passwords are stored in
@@ -401,13 +401,18 @@
         below.</p>
 
       <dl>
-        <dt><code>--enable-auth-anon</code></dt>
+        <dt><code>--enable-authn-anon</code></dt>
         <dd>Enable anonymous user access provided by
           <module>mod_auth_anon</module>.</dd>
 
-        <dt><code>--enable-auth-dbm</code></dt>
-        <dd><module>mod_auth_dbm</module> provides for HTTP Basic
+        <dt><code>--enable-authn-dbm</code></dt>
+        <dd><module>mod_authn_dbm</module> provides for HTTP Basic
           Authentication, where the usernames and passwords are stored in DBM
+          type database files. Use this option to enable the module.</dd>
+
+        <dt><code>--enable-authz-dbm</code></dt>
+        <dd><module>mod_authz_dbm</module> provides for HTTP Basic
+          Authorization, where the usernames and groups are stored in DBM
           type database files. Use this option to enable the module.</dd>
 
         <dt><code>--enable-auth-digest</code></dt>
@@ -788,7 +793,8 @@
       </dl>
 
       <p>Several features of the Apache HTTP Server, including
-        <module>mod_authn_dbm</module> and <module>mod_rewrite</module>'s DBM
+        <module>mod_authn_dbm</module>, <module>mod_authz_dbm</module>, and 
+        <module>mod_rewrite</module>'s DBM
         <directive module="mod_rewrite">RewriteMap</directive> use simple
         key/value databases for quick lookups of information. SDBM is included
         in the APU, so this database is always available. If you would like to
