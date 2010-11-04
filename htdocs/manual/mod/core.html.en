@@ -3464,6 +3464,9 @@ Syntax OK
     specify a directory, rather than a file name, is only available in
     Apache 1.3.13 and later.
 
+    <p class="currentdocs"><strong>This directive is not available, or
+    needed, in more recent versions of the server.</strong></p>
+
     <p>The server will read this file for more directives after
     reading the httpd.conf file. <em>File-path</em> is relative to
     the <a href="#serverroot">ServerRoot</a>. This feature can be
@@ -3521,6 +3524,9 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a> RLimitCPU is
     only available in Apache 1.2 and later 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#rlimitcpu">here</a></strong></p>
+
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
     the maximum resource limit. Either parameter can be a number,
@@ -3561,6 +3567,9 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a> RLimitMEM is
     only available in Apache 1.2 and later 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#rlimitmem">here</a></strong></p>
+
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
     the maximum resource limit. Either parameter can be a number,
@@ -3600,6 +3609,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> RLimitNPROC is
     only available in Apache 1.2 and later 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#rlimitnproc">here</a></strong></p>
 
     <p>Takes 1 or 2 parameters. The first parameter sets the soft
     resource limit for all processes and the second parameter sets
@@ -3644,6 +3656,9 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a> Satisfy is only
     available in Apache 1.2 and later 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#satisfy">here</a></strong></p>
+
     <p>Access policy if both <code>Allow</code> and
     <code>Require</code> used. The parameter can be either
     <em>'all'</em> or <em>'any'</em>. This directive is only useful
@@ -3674,6 +3689,9 @@ Syntax OK
     rel="Help"><strong>Context:</strong></a> server config<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mpm_common.html#scoreboardfile">here</a></strong></p>
 
     <p>The ScoreBoardFile directive is required on some
     architectures to place a file that the server will use to
@@ -3723,6 +3741,9 @@ Syntax OK
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core (Windows only) 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#scriptinterpretersource">here</a></strong></p>
+
     <p>This directive is used to control how Apache 1.3.5 and later
     finds the interpreter used to run CGI scripts. The default
     technique is to use the interpreter pointed to by the #! line
@@ -3742,6 +3763,9 @@ Syntax OK
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mpm_common.html#sendbuffersize">here</a></strong></p>
+
     <p>The server will set the TCP buffer size to the number of
     bytes specified. Very useful to increase past standard OS
     defaults on high speed high latency (<em>i.e.</em>, 100ms or
@@ -3759,6 +3783,9 @@ Syntax OK
     host<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#serveradmin">here</a></strong></p>
 
     <p>The ServerAdmin sets the e-mail address that the server
     includes in any error messages it returns to the client.</p>
@@ -3785,6 +3812,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> ServerAlias is
     only available in Apache 1.1 and later. 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#serveralias">here</a></strong></p>
 
     <p>The ServerAlias directive sets the alternate names for a
     host, for use with <a
@@ -3816,6 +3846,9 @@ Syntax OK
     host<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#servername">here</a></strong></p>
 
     <p>The ServerName directive sets the hostname of the server;
     this is used when creating redirection URLs. If it is not
@@ -3859,6 +3892,9 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a> ServerPath is
     only available in Apache 1.1 and later. 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#serverpath">here</a></strong></p>
+
     <p>The ServerPath directive sets the legacy URL pathname for a
     host, for use with <a href="../vhosts/">name-based virtual
     hosts</a>.</p>
@@ -3880,6 +3916,9 @@ Syntax OK
     rel="Help"><strong>Context:</strong></a> server config<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#serverroot">here</a></strong></p>
 
     <p>The ServerRoot directive sets the directory in which the
     server lives. Typically it will contain the subdirectories
@@ -3912,6 +3951,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> ServerSignature
     is only available in Apache 1.3 and later. 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#serversignature">here</a></strong></p>
 
     <p>The ServerSignature directive allows the configuration of a
     trailing footer line under server-generated documents (error
@@ -3949,6 +3991,9 @@ Syntax OK
     only available in Apache 1.3 and later; the
     <code>ProductOnly</code> keyword is only available in versions
     later than 1.3.12 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/core.html#servertokens">here</a></strong></p>
 
     <p>This directive controls whether <samp>Server</samp> response
     header field which is sent back to clients includes a
@@ -3994,6 +4039,9 @@ Syntax OK
     rel="Help"><strong>Context:</strong></a> server config<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <p class="currentdocs"><strong>This directive has been removed in
+    current versions of the server.</strong></p>
 
     <p>The ServerType directive sets how the server is executed by
     the system. <em>Type</em> is one of</p>
