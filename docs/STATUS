@@ -83,6 +83,11 @@ To Do List
     - Discussion of DBD auth, and, in particular, examples of how to set
       up auth using each of the supported databases.
 
+- Expression syntax for <If> and Require expr
+    - Need complete documentation for the expression syntax.
+      (Is there any design doc for this?  Or do we need to
+      read server/util_expr.c?)
+
 - modules docs
     - the follwing modules added since 2.2 lack documentation
         - mod_serf
