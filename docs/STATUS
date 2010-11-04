@@ -15,8 +15,10 @@ ApacheCon 2010 Hackathon To Do List
   docs and put some force behind the notion that mod_lua can replace
   mod_rewrite
 
-- FAQ - Decide what to do with the FAQ - both the 1.3 FAQ and the
-  current FAQ, if in fact we still need one.
+- The FAQ has been put into the wiki and Wiki-formatted. It would be
+  great to: 1) Remove questions/answers that are no longer relevant and
+  2) wherever possible, replace a detailed answer with a link to the
+  appropriate doc.
 
 - Scour the httpd.apache.org website for stale, inaccurate, or
   misleading information which seems to have accumulated over the years.
