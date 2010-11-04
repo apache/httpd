@@ -2096,6 +2096,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 #if APR_HAS_THREADS
     (*conn)->inreslist = 0;
 #endif
+    (*conn)->cleaned = 0;
 
     return OK;
 }
