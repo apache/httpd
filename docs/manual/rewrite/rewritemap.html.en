@@ -299,9 +299,10 @@ by many requests.
     
 
     <p>When a MapType of <code>int</code> is used, the MapSource is one
-    of the available internal RewriteMap functions. Currently there
-    is no mechanism for creating your own functions. The available
-    functions are:
+    of the available internal RewriteMap functions.  Module authors can provide 
+    additional internal functions by registring them with the
+    <code>ap_register_rewrite_mapfunc</code> API. 
+    The functions that are provided by default are:
     </p>
 
     <ul>
