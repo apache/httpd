@@ -158,8 +158,7 @@
         Alias /image /ftp/pub/image<br />
         &lt;Directory /ftp/pub/image&gt;<br />
         <span class="indent">
-            Order allow,deny<br />
-            Allow from all<br />
+            Require all granted<br />
         </span>
         &lt;/Directory&gt;
     </code></p></div>

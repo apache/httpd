@@ -2281,9 +2281,7 @@ URLs</td></tr>
       &lt;Location /status&gt;<br />
       <span class="indent">
         SetHandler server-status<br />
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from .example.com<br />
+        Require host example.com<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>

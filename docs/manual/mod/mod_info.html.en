@@ -53,9 +53,7 @@ configuration</td></tr>
       &lt;Location /server-info&gt;<br />
       <span class="indent">
         SetHandler server-info<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from yourcompany.com<br />
+        Require host yourcompany.com<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>

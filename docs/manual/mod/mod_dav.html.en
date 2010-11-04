@@ -94,8 +94,7 @@
       <br />
       &lt;Directory /usr/local/apache2/htdocs/foo&gt;<br />
       <span class="indent">
-        Order Allow,Deny<br />
-        Allow from all<br />
+        Require all granted<br />
         Dav On<br />
         <br />
         AuthType Basic<br />

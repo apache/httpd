@@ -2282,9 +2282,7 @@ URLs</description>
       &lt;Location /status&gt;<br />
       <indent>
         SetHandler server-status<br />
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from .example.com<br />
+        Require host example.com<br />
       </indent>
       &lt;/Location&gt;
     </example>

@@ -147,8 +147,7 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
         Alias /image /ftp/pub/image<br />
         &lt;Directory /ftp/pub/image&gt;<br />
         <indent>
-            Order allow,deny<br />
-            Allow from all<br />
+            Require all granted<br />
         </indent>
         &lt;/Directory&gt;
     </example>
