@@ -28,15 +28,6 @@ he poses the right questions.</p>
 <p class="cite">-- <cite>Claude Levi-Strauss</cite></p>
 
 </blockquote>
-<p>This chapter is a collection of frequently asked questions (FAQ) and
-corresponding answers following the popular USENET tradition. Most of these
-questions occurred on the Newsgroup <code><a href="news:comp.infosystems.www.servers.unix">comp.infosystems.www.servers.unix</a></code> or the mod_ssl Support
-Mailing List <code><a href="mailto:modssl-users@modssl.org">modssl-users@modssl.org</a></code>. They are collected at this place
-to avoid answering the same questions over and over.</p>
-
-<p>Please read this chapter at least once when installing mod_ssl or at least
-search for your problem here before submitting a problem report to the
-author.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#installation">Installation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aboutconfig">Configuration</a></li>
