@@ -141,7 +141,9 @@ later</compatibility>
 
       <dl>
       <dt><code>inherit</code></dt>
-      <dd>This forces the current configuration to inherit the
+      <dd>
+      
+      <p>This forces the current configuration to inherit the
       configuration of the parent. In per-virtual-server context,
       this means that the maps, conditions and rules of the main
       server are inherited. In per-directory context this means
@@ -154,7 +156,13 @@ later</compatibility>
       the local rules. The position of this directive - below or above
       of local rules - has no influence on this behavior. If local
       rules forced the rewriting to stop, the inherited rules won't
-      be processed.</dd>
+      be processed.</p>
+     
+      <note type="warning">
+      Rules inherited from the parent scope are applied
+      <strong>after</strong> rules specified in the child scope.
+      </note>
+      </dd>
       </dl>
 </usage>
 
