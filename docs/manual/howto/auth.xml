@@ -254,6 +254,36 @@ module from each group.</p>
     <directive module="core">Require</directive> directive.</p>
 </section>
 
+<section id="satisfy"><title>Satisfy</title>
+
+<p>The <directive module="core">Satisfy</directive> directive can be used to specify
+that several criteria may be considered when trying to decide if a particular user
+will be granted admission. Satisfy can take as an argument one of two options - <code>all</code>
+or <code>any</code>. By default, it is assumed that the value is <code>all</code>. This means that if several
+criteria are specified, then all of them must be met in order for someone to get in.
+However, if set to <code>any</code>, then several criteria may be specified, but if 
+the user satisfies any of these, then they will be granted entrance.</p>
+
+<p>An example of this is using access control to assure that, although a resource 
+is password protected from outside your network, all hosts inside the network
+will be given unauthenticated access to the resource. This would be accomplished
+by using the Satisfy directive, as shown below.</p>
+
+<example>
+&lt;Directory /usr/local/apache/htdocs/sekrit&gt;
+  AuthType Basic
+  AuthName intranet
+  AuthUserFile /www/passwd/users
+  AuthGroupFile /www/passwd/groups
+  Require group customers
+  Order allow,deny
+  Allow from internal.com
+  Satisfy any
+&lt;/Directory&gt;
+</example>
+
+</section>
+
 <section id="lettingmorethanonepersonin"><title>Letting more than one
 person in</title>
     <p>The directives above only let one person (specifically
@@ -369,6 +399,7 @@ person in</title>
 
     <p>Other options are available. Consult the
     <module>mod_authn_dbm</module> documentation for more details.</p>
+
 </section>
 
 <section id="moreinformation"><title>More information</title>
