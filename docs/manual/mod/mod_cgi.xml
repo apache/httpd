@@ -29,10 +29,6 @@
 <identifier>cgi_module</identifier>
 
 <summary>
-    <!-- XXX: Should mention Options ExecCGI
-          is the link to howto/cgi not sufficient? -nd
-    -->
-
     <p>Any file that has the handler
     <code>cgi-script</code> will be treated
     as a CGI script, and run by the server, with its output being
@@ -57,7 +53,7 @@
 </summary>
 
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
-<seealso><directive module="core">Options</directive></seealso>
+<seealso><directive module="core">Options</directive> ExecCGI</seealso>
 <seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 <seealso><a href="../suexec.html">Running CGI programs under different
