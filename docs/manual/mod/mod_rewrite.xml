@@ -460,8 +460,10 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
           function 
 
           <p>Here, the source is an internal Apache function.
-          Currently you cannot create your own, but the following
-          functions already exist:</p>
+          Module authors can provide additional internal functions by registring 
+          them with the <code>ap_register_rewrite_mapfunc</code> API.
+          The functions that are provided by default are:
+          </p>
 
           <ul>
             <li><strong>toupper</strong>:<br />
