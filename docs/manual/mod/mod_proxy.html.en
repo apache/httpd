@@ -1161,9 +1161,9 @@ through</td></tr>
       &lt;Proxy balancer://mycluster&gt;<br />
       <span class="indent">
         BalancerMember ajp://1.2.3.4:8009<br />
-        BalancerMember ajp://1.2.3.5:8009 smax=10<br />
-        # Less powerful server, don't send as many requests there<br />
-        BalancerMember ajp://1.2.3.6:8009 smax=1 loadfactor=20<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=20<br />
+        # Less powerful server, don't send as many requests there,<br />
+        BalancerMember ajp://1.2.3.6:8009 loadfactor=5<br />
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
