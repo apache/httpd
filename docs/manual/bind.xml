@@ -148,6 +148,25 @@
     default on FreeBSD, NetBSD, and OpenBSD.</p>
   </section>
 
+  <section id="protocol">
+    <title>Specifying the protocol with Listen</title>
+    <p>The optional second <var>protocol</var> argument of
+       <directive module="mpm_common">Listen</directive>
+       is not required for most 
+       configurations. If not specified, <code>https</code> is the default for 
+       port 443 and <code>http</code> the default for all other ports.  The 
+       protocol is used to determine which module should handle a request, and
+       to apply protocol specific optimizations with the 
+       <directive module="core">AcceptFilter</directive> directive.</p>
+
+    <p>You only need to set the protocol if you are running on non-standard 
+       ports.  For example, running an <code>https</code> site on port 8443:</p>
+
+    <example>
+      Listen 192.170.2.1:8443 https
+    </example>
+  </section>
+
   <section id="virtualhost">
     <title>How This Works With Virtual Hosts</title>
 

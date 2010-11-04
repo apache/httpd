@@ -50,6 +50,12 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
        send data first, such as <code>ftp:</code> or <code>nntp</code>:</p>
     <example>AcceptFilter nntp none</example>
 
+    <p>The default protocol names are <code>https</code> for port 443
+       and <code>http</code> for all other ports.  To specify another protocol
+       is being used with a listening port, add the <var>protocol</var>
+       argument to the <directive module="mpm_common">Listen</directive>
+       directive.</p>
+
     <p>The default values on FreeBSD are:</p>
     <example>
         AcceptFilter http httpready <br/>
