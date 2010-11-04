@@ -63,7 +63,7 @@ default: _apacher
 CTARGET=/build
 !ENDIF
 
-!IF !EXIST("srclib\apr") || !EXIST("srclib\apr-util") || !EXIST("srclib\apr-iconv")
+!IF !EXIST("srclib\apr") || (!(EXIST("srclib\apr\include\apu.hw") || !EXIST("srclib\apr-util")) && !EXIST("srclib\apr-iconv"))
 !MESSAGE Please check out or download and unpack the Apache Portability Runtime
 !MESSAGE sources (apr, apr-iconv and apr-util) into your srclib dir.
 !MESSAGE Apache cannot build without these libraries!
