@@ -2488,7 +2488,9 @@ a resource</description>
 
 <usage>
     <p>This directive selects which authenticated users can access a
-    resource.  The restrictions are processed by authorization
+    resource.  Multipe instances of this directive are combined with a logical
+    "OR", such that a user matching any <directive>Require </directive>line is 
+    granted access.  The restrictions are processed by authorization
     modules.  Some of the allowed syntaxes provided by
     <module>mod_authz_user</module> and
     <module>mod_authz_groupfile</module> are:</p>
