@@ -346,6 +346,15 @@
       <p>In addition, if your CGI program depends on other <a href="#env">environment variables</a>, you will need to
       assure that those variables are passed by Apache.</p>
 
+      <div class="warning">
+      When editing CGI scripts on Windows, end-of-line characters may be
+      appended to the interpreter path. Ensure that files are then
+      transferred to the server in ASCII mode. Failure to do so may
+      result in "Command not found" warnings from the OS, due to the
+      unrecognized end-of-line character being interpreted as a part of
+      the interpreter filename.
+      </div>
+
     
 
     <h3><a name="syntaxerrors" id="syntaxerrors">Program errors</a></h3>
