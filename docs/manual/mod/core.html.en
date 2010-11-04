@@ -79,6 +79,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
@@ -179,6 +180,10 @@ On Windows from Apache httpd 2.3.3 and later.</td></tr>
        filters.</p>  
 
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive">Protocol</code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Directive</a></h2>
@@ -3051,6 +3056,38 @@ directory</td></tr>
     <p>The default in the absence of any other settings is
     <code>All</code>.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocol for a listening socket</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Protocol <var>protocol</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1.5 and later.
+On Windows from Apache 2.3.3 and later.</td></tr>
+</table>
+    <p>This directive specifies the protocol used for a specific listening socket.
+       The protocol is used to determine which module should handle a request, and
+       to apply protocol specific optimizations with the <code class="directive">AcceptFilter</code>
+       directive.</p>
+
+    <p>You only need to set the protocol if you are running on non-standard ports, otherwise <code>http</code> is assumed for port 80 and <code>https</code> for port 443.</p>
+
+    <p>For example, if you are running <code>https</code> on a non-standard port, specify the protocol explicitly:</p>
+
+    <div class="example"><p><code>
+      Protocol https
+    </code></p></div>
+
+    <p>You can also specify the protocol using the <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> directive.</p>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive">AcceptFilter</code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2>
