@@ -42,6 +42,24 @@ stuff before you use it. Nothing is worse than using a security solution
 without knowing its restrictions and how it interacts with other systems.</p>
 </summary>
 
+<section id="configexample">
+<title>Basic Configuration Example</title>
+
+<p>Your SSL configuration will need to contain, at a minumum, the
+following directives.</p>
+
+<example>
+   Listen 443
+   &lt;VirtualHost _default_:443&gt;<br />
+        ServerName www.domain.com<br />
+        SSLEngine on<br />
+        SSLCertificateFile /path/to/www.comain.com.cert<br />
+        SSLCertificateKeyFile /path/to/www.domain.com.key<br />
+   &lt;/VirtualHost&gt;
+</example>
+
+</section>
+
 <section id="ciphersuites">
 <title>Cipher Suites and Enforcing Strong Security</title>
 <ul>
