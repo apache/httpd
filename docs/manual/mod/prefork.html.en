@@ -161,7 +161,11 @@ uses</a></li>
     desired minimum number of <em>idle</em> child server processes. An
     idle process is one which is not handling a request. If there are
     fewer than <code class="directive">MinSpareServers</code> idle, then the parent
-    process creates new children at a maximum rate of 1 per second.</p>
+    process creates new children: It will spawn one, wait a second, then spawn
+    two, wait a second, then spawn four, and it will
+    continue exponentially until it is spawning 32 children per second. It will
+    stop whenever it satisfies the <code class="directive">MinSpareServers</code>
+    setting.</p>
 
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
