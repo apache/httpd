@@ -204,9 +204,7 @@
     &lt;Location /balancer-manager&gt;<br />
     SetHandler balancer-manager<br />
 <br />
-    Order Deny,Allow<br />
-    Deny from all<br />
-    Allow from .example.com<br />
+    Require host example.com<br />
     &lt;/Location&gt;
 </code></p></div>
 

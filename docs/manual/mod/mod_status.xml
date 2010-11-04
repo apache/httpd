@@ -81,9 +81,7 @@ performance</description>
     &lt;Location /server-status&gt;<br />
     SetHandler server-status<br />
 <br />
-    Order Deny,Allow<br />
-    Deny from all<br />
-    Allow from .example.com<br />
+    Require host example.com<br />
     &lt;/Location&gt;
 </example>
 

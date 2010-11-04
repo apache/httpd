@@ -179,9 +179,7 @@
     <br />
     &lt;Proxy *&gt;<br />
     <span class="indent">
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from internal.example.com<br />
+      Require host internal.example.com<br />
     </span>
     &lt;/Proxy&gt;
     </code></p></div>
@@ -309,9 +307,7 @@
       <div class="example"><p><code>
         &lt;Proxy *&gt;<br />
         <span class="indent">
-          Order Deny,Allow<br />
-          Deny from all<br />
-          Allow from 192.168.0<br />
+          Require ip 192.168.0<br />
         </span>
         &lt;/Proxy&gt;
       </code></p></div>
@@ -600,9 +596,7 @@ directly</td></tr>
     <div class="example"><p><code>
       &lt;Proxy *&gt;<br />
       <span class="indent">
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from yournetwork.example.com<br />
+        Require host yournetwork.example.com<br />
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
