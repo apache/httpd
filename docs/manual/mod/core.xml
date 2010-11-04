@@ -1453,6 +1453,24 @@ media type in the HTTP Content-Type header field</description>
 
 </usage>
 </directivesynopsis>
+<directivesynopsis>
+<name>GprofDir</name>
+<description>Directory to write gmon.out profiling data to.  </description>
+<syntax>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>When the server has been compiled with gprof profiling suppport,
+    <directive>GprofDir</directive> causes <code>gmon.out</code> files to
+    be written to the specified directory when the process exits.  If the
+    argument ends with a percent symbol ('%'), subdirectories are created
+    for each process id.</p>
+
+    <p>This directive currently only works with the <module>prefork</module> 
+    PM.</p>
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>HostnameLookups</name>
