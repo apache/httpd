@@ -455,8 +455,8 @@ response</description>
 <usage>
     <p>The <directive>ProxyBadHeader</directive> directive determines the
     behaviour of <module>mod_proxy</module> if it receives syntactically invalid
-    header lines (<em>i.e.</em> containing no colon). The following arguments
-    are possible:</p>
+    response header lines (<em>i.e.</em> containing no colon) from the origin 
+    server. The following arguments are possible:</p>
 
     <dl>
     <dt><code>IsError</code></dt>
