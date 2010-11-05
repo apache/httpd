@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) proxy_connect: Don't give up in the middle of a CONNECT tunnel
+     when the child process is starting to exit.  PR50220. [Eric Covener]
+
   *) mod_autoindex: Fix inheritance of mod_autoindex directives into 
      contexts that don't have any mod_autoindex directives. PR47766.
      [Eric Covener]
