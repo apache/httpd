@@ -601,6 +601,9 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 
         rv = apr_poll(&pfd, 1, &n, timeout);
         if (rv != APR_SUCCESS) {
+            if (APR_STATUS_IS_EINTR(rv)) {
+                continue;
+            }
             break;
         }
 
