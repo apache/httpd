@@ -1090,10 +1090,15 @@ expressions</description>
     <directive type="section" module="core">LocationMatch</directive> section,
     however ProxyPass does not interpret the regexp as such, so it is necessary
     to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
+  
+    <p>This directive is not supported in <directive type="section" module="core"
+    >Directory</directive> or <directive type="section" module="core"
+    >Files</directive> sections.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
     <code>[P]</code> flag.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -1225,6 +1230,10 @@ proxied server</description>
     path; if needed in this situation, specify the ProxyPassReverse outside
     the section, or in a separate <directive type="section" module="core"
     >Location</directive> section.</p>
+
+    <p>This directive is not supported in <directive type="section" module="core"
+    >Directory</directive> or <directive type="section" module="core"
+    >Files</directive> sections.</p>
 </usage>
 </directivesynopsis>
 
