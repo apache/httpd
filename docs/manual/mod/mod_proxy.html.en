@@ -633,8 +633,8 @@ response</td></tr>
 </table>
     <p>The <code class="directive">ProxyBadHeader</code> directive determines the
     behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> if it receives syntactically invalid
-    header lines (<em>i.e.</em> containing no colon). The following arguments
-    are possible:</p>
+    response header lines (<em>i.e.</em> containing no colon) from the origin 
+    server. The following arguments are possible:</p>
 
     <dl>
     <dt><code>IsError</code></dt>
