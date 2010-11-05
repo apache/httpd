@@ -1028,7 +1028,9 @@ in case of an error</description>
     syslog facility <code>local7</code>, but you can override this by
     using the <code>syslog:<var>facility</var></code> syntax where
     <var>facility</var> can be one of the names usually documented in
-    syslog(1).</p>
+    syslog(1).  The facility is effectively global, and if it is changed
+    in individual virtual hosts, the final facility specified affects the
+    entire server.</p>
 
     <example><title>Example</title>
     ErrorLog syslog:user
