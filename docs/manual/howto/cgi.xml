@@ -555,20 +555,13 @@
   <section id="moreinfo">
     <title>For more information</title>
 
-    <p>There are a large number of CGI resources on the web. You
-    can discuss CGI problems with other users on the Usenet group
-    <a href="news:comp.infosystems.www.authoring.cgi"
-    >comp.infosystems.www.authoring.cgi</a>. And the -servers mailing
-    list from the HTML Writers Guild is a great source of answers
+    <p>There are a large number of CGI resources on the web. 
+    The list from the HTML Writers Guild is a great source of answers
     to your questions. You can find out more at 
     <a href="http://www.hwg.org/lists/hwg-servers/"
     >http://www.hwg.org/lists/hwg-servers/</a>.</p>
 
-    <p>And, of course, you should probably read the CGI
-    specification, which has all the details on the operation of
-    CGI programs. You can find the original version at the 
-    <a href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html"
-    >NCSA</a> and the current IETF RFC 
+    <p>The current CGI specification is available in the 
     <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
     Interface RFC</a>.</p>
 
