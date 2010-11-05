@@ -300,7 +300,7 @@ be passed through</description>
 <code>.htaccess</code> files</description>
 <syntax>AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</syntax>
-<default>AllowOverride All</default>
+<default>AllowOverride None (2.3.9 and later), AllowOverride All (2.3.8 and earlier)</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
