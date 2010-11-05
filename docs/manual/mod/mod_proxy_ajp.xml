@@ -49,6 +49,13 @@
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
+<seealso><a href="../env.html">Environment Variable documentation</a></seealso>
+
+<section id="env"><title>Environment Variables</title>
+    <p>Environment variables whose names have the prefix <code>AJP_</code> 
+    are forwarded to the origin server as AJP request attributes 
+    (with the AJP_ prefix removed from the name of the key).</p>
+</section>
 
 <section id="overviewprotocol"><title>Overview of the protocol</title>
     <p>The <code>AJP13</code> protocol is packet-oriented.  A binary format
