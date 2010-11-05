@@ -137,7 +137,7 @@ header</td></tr>
     <dd>The gateway looks for a backend response header called
     <code>X-Sendfile</code> and interprets the value as filename to serve. The
     header is removed from the final response headers. This is equivalent to
-    <code>ProxySCGIRequest X-Sendfile</code>.</dd>
+    <code>ProxySCGISendfile X-Sendfile</code>.</dd>
 
     <dt>anything else</dt>
     <dd>Similar to <code>On</code>, but instead of the hardcoded header name
