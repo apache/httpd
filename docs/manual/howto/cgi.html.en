@@ -451,7 +451,8 @@
       <p>These variables are available to the CGI programmer, and
       are half of the story of the client-server communication. The
       complete list of required variables is at 
-      <a href="http://hoohoo.ncsa.uiuc.edu/cgi/env.html">http://hoohoo.ncsa.uiuc.edu/cgi/env.html</a>.</p>
+      <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+      Interface RFC</a>.</p>
 
       <p>This simple Perl CGI program will display all of the
       environment variables that are being passed around. Two
