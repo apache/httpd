@@ -1337,6 +1337,12 @@ static const char *
     int i;
     int use_regex = is_regex;
     unsigned int flags = 0;
+    const char *err;
+
+    err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES);
+    if (err) { 
+        return err;
+    }
 
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
@@ -1490,6 +1496,12 @@ static const char * add_pass_reverse(cmd_parms *cmd, void *dconf, const char *f,
     const char *fake;
     const char *real;
     const char *interp;
+    const char *err;
+
+    err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES);
+    if (err) { 
+        return err;
+    }
 
     if (cmd->path == NULL) {
         if (r == NULL || !strcasecmp(r, "interpolate")) {
