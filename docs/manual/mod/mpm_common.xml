@@ -330,7 +330,7 @@ to hold without calling <code>free()</code></description>
 <description>Limit on the number of connections that an individual child server
 will handle during its life</description>
 <syntax>MaxConnectionsPerChild <var>number</var></syntax>
-<default>MaxConnectionsPerChild 10000</default>
+<default>MaxConnectionsPerChild 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
