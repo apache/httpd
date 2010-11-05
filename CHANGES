@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_proxy: Don't allow ProxyPass or ProxyPassReverse in
+     <Directory> or <Files>. PR47765 [Eric Covener]
+
   *) prefork/worker/event MPMS: default value (when no directive is present)
      of MaxConnectionsPerChild/MaxRequestsPerChild is changed to 0 from 10000 
      to match default configuration and manual. PR47782 [Eric Covener]
