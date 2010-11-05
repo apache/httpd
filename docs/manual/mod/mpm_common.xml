@@ -510,6 +510,13 @@ will handle during its life</description>
       changes the behavior to limit the number of <em>connections</em> per
       child.</p>
     </note>
+    <note><title>Default Configuration</title>
+      <p>The default (compiled-in) value of this setting (10000) is used when
+      no <directive>MaxRequestsPerChild</directive> directive is present in the
+      configuration.  Many default configurations provided with the server include
+      "MaxRequestsPerChild 0" as part of the <em>default configuration</em>.</p>
+</note>
+
 </usage>
 </directivesynopsis>
 
