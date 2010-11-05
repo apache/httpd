@@ -175,12 +175,11 @@ static char *get_cookie_param(request_rec *r, const char *name)
                 start_cookie += strlen(name);
                 while(*start_cookie && isspace(*start_cookie))
                     ++start_cookie;
-                if (*start_cookie == '=' && start_cookie[1]) {
+                if (*start_cookie++ == '=' && *start_cookie) {
                     /*
                      * Session cookie was found, get it's value
                      */
                     char *end_cookie, *cookie;
-                    ++start_cookie;
                     cookie = apr_pstrdup(r->pool, start_cookie);
                     if ((end_cookie = strchr(cookie, ';')) != NULL)
                         *end_cookie = '\0';
