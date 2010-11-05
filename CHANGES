@@ -6,6 +6,10 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) prefork/worker/event MPMS: default value (when no directive is present)
+     of MaxConnectionsPerChild/MaxRequestsPerChild is changed to 0 from 10000 
+     to match default configuration and manual. PR47782 [Eric Covener]
+
   *) proxy_connect: Don't give up in the middle of a CONNECT tunnel
      when the child process is starting to exit.  PR50220. [Eric Covener]
 
