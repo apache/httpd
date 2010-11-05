@@ -114,7 +114,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
-    conf->override = dir ? OR_UNSET : OR_UNSET|OR_ALL;
+    conf->override = OR_NONE;
     conf->override_opts = OPT_UNSET | OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
 
     conf->content_md5 = 2;

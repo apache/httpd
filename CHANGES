@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) core: In the absence of any AllowOverride directives, the default is now
+     "None" instead of "All".  PR49823 [Eric Covener]
+
   *) mod_proxy: Don't allow ProxyPass or ProxyPassReverse in
      <Directory> or <Files>. PR47765 [Eric Covener]
 
