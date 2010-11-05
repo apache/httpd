@@ -1359,22 +1359,14 @@ for additional information.
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of remote server Certificate verification</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyVerify <em>level</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyVerify none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 
 <p>When a proxy is configured to forward requests to a remote SSL
 server, this directive can be used to configure certificate
-verification of the remote server.  Notice that this directive can be
-used both in per-server and per-directory context. In per-server
-context it applies to the remote server authentication process used in
-the standard SSL handshake when a connection is established by the
-proxy. In per-directory context it forces a SSL renegotiation with the
-reconfigured remote server verification level after the HTTP request
-was read but before the HTTP response is sent.</p>
-
+verification of the remote server. </p>
 <p>
 The following levels are available for <em>level</em>:</p>
 <ul>
@@ -1405,19 +1397,13 @@ SSLProxyVerify require
 Certificate verification</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyVerifyDepth <em>number</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyVerifyDepth 1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 This directive sets how deeply mod_ssl should verify before deciding that the
-remote server does not have a valid certificate. Notice that this directive can be
-used both in per-server and per-directory context. In per-server context it
-applies to the client authentication process used in the standard SSL
-handshake when a connection is established. In per-directory context it forces
-a SSL renegotiation with the reconfigured remote server verification depth after the
-HTTP request was read but before the HTTP response is sent.</p>
+remote server does not have a valid certificate. </p>
 <p>
 The depth actually is the maximum number of intermediate certificate issuers,
 i.e. the number of CA certificates which are max allowed to be followed while
