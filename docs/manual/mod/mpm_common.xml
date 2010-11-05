@@ -336,7 +336,7 @@ will handle during its life</description>
 <module>mpm_winnt</module><module>mpmt_os2</module>
 <module>prefork</module><module>worker</module></modulelist>
 <compatibility>Available Apache HTTP Server 2.3.9 and later. The old name
-<code>MaxRequestsPerChild</code> ist still supported.</compatibility>
+<code>MaxRequestsPerChild</code> is still supported.</compatibility>
 
 <usage>
     <p>The <directive>MaxConnectionsPerChild</directive> directive sets
