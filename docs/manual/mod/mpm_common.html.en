@@ -488,6 +488,13 @@ will handle during its life</td></tr>
       changes the behavior to limit the number of <em>connections</em> per
       child.</p>
     </div>
+    <div class="note"><h3>Default Configuration</h3>
+      <p>The default (compiled-in) value of this setting (10000) is used when
+      no <code class="directive">MaxRequestsPerChild</code> directive is present in the
+      configuration.  Many default configurations provided with the server include
+      "MaxRequestsPerChild 0" as part of the <em>default configuration</em>.</p>
+</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
