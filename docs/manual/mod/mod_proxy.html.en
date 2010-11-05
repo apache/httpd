@@ -396,6 +396,18 @@
     <code>proxy-sendchunked</code> minimizes resource usage by using
     chunked encoding.</p>
 
+    <p>Under some circumstances, the server must spool request bodies
+    to disk to satisfy the requested handling of request bodies.  For 
+    example, this spooling will occur if the original body was sent with
+    chunked encoding (and and is large), but the administrator has
+    asked for backend requests to be sent with Content-Length or as HTTP/1.0.
+    This spooling can also occur if the request body already has a
+    Content-Length header, but the server is configured to filter incoming
+    request bodies.</p>
+
+    <p><code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> only applies to
+    request bodies that the server will spool to disk</p>
+
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="x-headers" id="x-headers">Reverse Proxy Request Headers</a></h2>

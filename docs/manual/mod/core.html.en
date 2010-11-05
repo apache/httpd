@@ -129,6 +129,12 @@ On Windows from Apache httpd 2.3.3 and later.</td></tr>
        send data first, such as <code>ftp:</code> or <code>nntp</code>:</p>
     <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
 
+    <p>The default protocol names are <code>https</code> for port 443
+       and <code>http</code> for all other ports.  To specify another protocol
+       is being used with a listening port, add the <var>protocol</var>
+       argument to the <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
+       directive.</p>
+
     <p>The default values on FreeBSD are:</p>
     <div class="example"><p><code>
         AcceptFilter http httpready <br />
@@ -2026,7 +2032,8 @@ from the client</td></tr>
 </table>
     <p>This directive specifies the number of <var>bytes</var> from 0
     (meaning unlimited) to 2147483647 (2GB) that are allowed in a
-    request body.</p>
+    request body. See the note below for the limited applicability
+    to proxy requests.</p>
 
     <p>The <code class="directive">LimitRequestBody</code> directive allows
     the user to set a limit on the allowed size of an HTTP request
@@ -2053,6 +2060,10 @@ from the client</td></tr>
     <div class="example"><p><code>
       LimitRequestBody 102400
     </code></p></div>
+    
+    <div class="note"><p>For a full description of how this directive is interpreted by 
+    proxy requests, see the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> documentation.</p>
+    </div>
 
 
 </div>
