@@ -167,6 +167,7 @@ static int fixup_dflt(request_rec *r)
     /* nothing for us to do, pass on through */
     return DECLINED;
 }
+
 static int fixup_dir(request_rec *r)
 {
     dir_config_rec *d;
@@ -304,6 +305,7 @@ static int fixup_dir(request_rec *r)
     /* nothing for us to do, pass on through */
     return DECLINED;
 }
+
 static int dir_fixups(request_rec *r)
 {
     if (r->finfo.filetype == APR_DIR) {
