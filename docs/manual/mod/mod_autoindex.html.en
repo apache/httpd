@@ -565,9 +565,10 @@ indexing</td></tr>
 
       <dd>The <code>Charset</code> keyword allows you to
       specify the character set of the generated page. The
-      default is either <var>ISO-8859-1</var> or <var>UTF-8</var>,
-      depending on whether the underlying file system is unicode
-      or not.
+      default is <code>UTF-8</code> on Windows and Mac OS X,
+      and <code>ISO-8859-1</code> elsewhere.
+      (It depends on whether the underlying file system
+      uses Unicode filenames or not.)
 
       <div class="example"><h3>Example:</h3><p><code>
         IndexOptions Charset=UTF-8

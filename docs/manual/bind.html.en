@@ -30,6 +30,7 @@
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Special IPv6 Considerations</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#protocol">Specifying the protocol with Listen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">How This Works With Virtual Hosts</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="vhosts/">Virtual Hosts</a></li><li><a href="dns-caveats.html">DNS Issues</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -136,6 +137,25 @@
     IPv6 connections on separate sockets (i.e., to disable IPv4-mapped 
     addresses), specify the <code>--disable-v4-mapped</code> <code class="program"><a href="./programs/configure.html">configure</a></code> option. <code>--disable-v4-mapped</code> is the
     default on FreeBSD, NetBSD, and OpenBSD.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="protocol" id="protocol">Specifying the protocol with Listen</a></h2>
+    
+    <p>The optional second <var>protocol</var> argument of
+       <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+       is not required for most 
+       configurations. If not specified, <code>https</code> is the default for 
+       port 443 and <code>http</code> the default for all other ports.  The 
+       protocol is used to determine which module should handle a request, and
+       to apply protocol specific optimizations with the 
+       <code class="directive"><a href="./mod/core.html#acceptfilter">AcceptFilter</a></code> directive.</p>
+
+    <p>You only need to set the protocol if you are running on non-standard 
+       ports.  For example, running an <code>https</code> site on port 8443:</p>
+
+    <div class="example"><p><code>
+      Listen 192.170.2.1:8443 https
+    </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">How This Works With Virtual Hosts</a></h2>

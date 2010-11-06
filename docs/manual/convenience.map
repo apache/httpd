@@ -212,6 +212,7 @@ filtertrace	mod/mod_filter.html#filtertrace
 forcelanguagepriority	mod/mod_negotiation.html#forcelanguagepriority
 forcetype	mod/core.html#forcetype
 forensiclog	mod/mod_log_forensic.html#forensiclog
+gprofdir	mod/core.html#gprofdir
 gracefulshutdowntimeout	mod/mpm_common.html#gracefulshutdowntimeout
 group	mod/mod_unixd.html#group
 header	mod/mod_headers.html#header
@@ -321,6 +322,7 @@ outputsed	mod/mod_sed.html#outputsed
 passenv	mod/mod_env.html#passenv
 pidfile	mod/mpm_common.html#pidfile
 privilegesmode	mod/mod_privileges.html#privilegesmode
+protocol	mod/core.html#protocol
 protocolecho	mod/mod_echo.html#protocolecho
 proxy	mod/mod_proxy.html#proxy
 proxybadheader	mod/mod_proxy.html#proxybadheader

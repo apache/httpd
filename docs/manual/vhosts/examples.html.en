@@ -106,7 +106,8 @@
     </code></p></div>
 
     <p>The asterisks match all addresses, so the main server serves no
-    requests. Due to the fact that <code>www.example.com</code> is first
+    requests. Due to the fact that the virtual host with
+    <code>ServerName www.example.com</code> is first
     in the configuration file, it has the highest priority and can be seen
     as the <cite>default</cite> or <cite>primary</cite> server. That means
     that if a request is received that does not match one of the specified
