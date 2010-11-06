@@ -884,8 +884,8 @@ static const char *misc_var_names[] = {
 static const char *misc_var_fn(ap_expr_eval_ctx *ctx, const void *data)
 {
     apr_time_exp_t tm;
-    apr_time_exp_lt(&tm, apr_time_now());
     int index = ((const char **)data - misc_var_names);
+    apr_time_exp_lt(&tm, apr_time_now());
 
     switch (index) {
     case 0:
