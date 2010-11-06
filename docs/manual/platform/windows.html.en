@@ -555,15 +555,19 @@
     shortcut starts the service. If the Apache service is running
     already, the shortcut doesn't do anything.</p>
 
-    <p>You can tell a running Apache to stop by opening another console
+    <p>If Apache is running as a service, you can tell it to stop by opening another console
     window and entering:</p>
 
     <div class="example"><p><code>
       httpd.exe -k shutdown
     </code></p></div>
 
-    <p>This should be preferred over pressing Control-C because this
-    lets Apache end any current operations and clean up gracefully.</p>
+    <p>Running as a service should be preferred over running in a
+    console window because this lets Apache end any current operations
+    and clean up gracefully.</p>
+
+    <p>But if the server is running in a console window, you can
+    only stop it by pressing Control-C in the same window.</p>
 
     <p>You can also tell Apache to restart. This forces it to reread
     the configuration file. Any operations in progress are allowed to
@@ -575,7 +579,7 @@
       httpd.exe -k restart
     </code></p></div>
 
-    <p>in any other console window.</p>
+    <p>if the server is running as a service.</p>
 
     <div class="note">Note for people familiar with the Unix version of Apache:
     these commands provide a Windows equivalent to <code>kill -TERM
