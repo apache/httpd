@@ -1,6 +1,6 @@
-#line 2 "ssl_expr_scan.c"
+#line 2 "util_expr_scan.c"
 
-#line 4 "ssl_expr_scan.c"
+#line 4 "util_expr_scan.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -153,7 +153,7 @@ typedef void* yyscan_t;
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
 
 /* Special action meaning "start processing a new file". */
-#define YY_NEW_FILE ssl_expr_yyrestart(yyin ,yyscanner )
+#define YY_NEW_FILE ap_expr_yyrestart(yyin ,yyscanner )
 
 #define YY_END_OF_BUFFER_CHAR 0
 
@@ -263,7 +263,7 @@ struct yy_buffer_state
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via ssl_expr_yyrestart()), so that the user can continue scanning by
+	 * (via ap_expr_yyrestart()), so that the user can continue scanning by
 	 * just pointing yyin at a new input file.
 	 */
 #define YY_BUFFER_EOF_PENDING 2
@@ -286,36 +286,36 @@ struct yy_buffer_state
  */
 #define YY_CURRENT_BUFFER_LVALUE yyg->yy_buffer_stack[yyg->yy_buffer_stack_top]
 
-void ssl_expr_yyrestart (FILE *input_file ,yyscan_t yyscanner );
-void ssl_expr_yy_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE ssl_expr_yy_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void ssl_expr_yy_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void ssl_expr_yy_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void ssl_expr_yypush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void ssl_expr_yypop_buffer_state (yyscan_t yyscanner );
+void ap_expr_yyrestart (FILE *input_file ,yyscan_t yyscanner );
+void ap_expr_yy_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+YY_BUFFER_STATE ap_expr_yy_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
+void ap_expr_yy_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void ap_expr_yy_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void ap_expr_yypush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+void ap_expr_yypop_buffer_state (yyscan_t yyscanner );
 
-static void ssl_expr_yyensure_buffer_stack (yyscan_t yyscanner );
-static void ssl_expr_yy_load_buffer_state (yyscan_t yyscanner );
-static void ssl_expr_yy_init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner );
+static void ap_expr_yyensure_buffer_stack (yyscan_t yyscanner );
+static void ap_expr_yy_load_buffer_state (yyscan_t yyscanner );
+static void ap_expr_yy_init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner );
 
-#define YY_FLUSH_BUFFER ssl_expr_yy_flush_buffer(YY_CURRENT_BUFFER ,yyscanner)
+#define YY_FLUSH_BUFFER ap_expr_yy_flush_buffer(YY_CURRENT_BUFFER ,yyscanner)
 
-YY_BUFFER_STATE ssl_expr_yy_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE ssl_expr_yy_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE ssl_expr_yy_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
+YY_BUFFER_STATE ap_expr_yy_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
+YY_BUFFER_STATE ap_expr_yy_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
+YY_BUFFER_STATE ap_expr_yy_scan_bytes (yyconst char *bytes,int len ,yyscan_t yyscanner );
 
-void *ssl_expr_yyalloc (yy_size_t ,yyscan_t yyscanner );
-void *ssl_expr_yyrealloc (void *,yy_size_t ,yyscan_t yyscanner );
-void ssl_expr_yyfree (void * ,yyscan_t yyscanner );
+void *ap_expr_yyalloc (yy_size_t ,yyscan_t yyscanner );
+void *ap_expr_yyrealloc (void *,yy_size_t ,yyscan_t yyscanner );
+void ap_expr_yyfree (void * ,yyscan_t yyscanner );
 
-#define yy_new_buffer ssl_expr_yy_create_buffer
+#define yy_new_buffer ap_expr_yy_create_buffer
 
 #define yy_set_interactive(is_interactive) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){ \
-        ssl_expr_yyensure_buffer_stack (yyscanner); \
+        ap_expr_yyensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            ssl_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            ap_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
 	}
@@ -323,9 +323,9 @@ void ssl_expr_yyfree (void * ,yyscan_t yyscanner );
 #define yy_set_bol(at_bol) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){\
-        ssl_expr_yyensure_buffer_stack (yyscanner); \
+        ap_expr_yyensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            ssl_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            ap_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
 	}
@@ -334,7 +334,7 @@ void ssl_expr_yyfree (void * ,yyscan_t yyscanner );
 
 /* Begin user sect3 */
 
-#define ssl_expr_yywrap(n) 1
+#define ap_expr_yywrap(n) 1
 #define YY_SKIP_YYWRAP
 
 typedef unsigned char YY_CHAR;
@@ -358,8 +358,8 @@ static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 	*yy_cp = '\0'; \
 	yyg->yy_c_buf_p = yy_cp;
 
-#define YY_NUM_RULES 47
-#define YY_END_OF_BUFFER 48
+#define YY_NUM_RULES 65
+#define YY_END_OF_BUFFER 66
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -367,19 +367,21 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[97] =
+static yyconst flex_int16_t yy_accept[119] =
     {   0,
-        0,    0,    0,    0,    0,    0,    0,    0,   48,   46,
-        1,   38,    2,   46,   44,   24,   46,   28,   45,   45,
-       45,   45,   45,   45,   45,   45,   45,   45,   45,   45,
-       46,   13,    4,    3,   14,   16,   18,   17,    1,   22,
-       32,   34,   44,   26,   20,   31,   30,   45,   45,   45,
-       19,   45,   45,   29,   27,   39,   25,   23,   15,   15,
-       21,   45,   35,   45,   36,   13,   12,    5,    6,   10,
-       11,    7,    8,    9,   45,   33,   45,   45,   37,   45,
-        5,    6,   45,   45,   41,   42,    5,   45,   43,   45,
-       45,   45,   45,   45,   40,    0
+        0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,   66,   64,    1,   41,    2,   64,   64,   63,
+       64,   42,   24,   61,   30,   28,   32,   62,   62,   62,
+       62,   62,   62,   62,   62,   62,   62,   62,   64,   13,
+        4,    3,   16,   65,   16,   21,    4,   20,   18,   19,
+       65,   15,   22,   25,   27,   26,    1,   29,   35,   17,
+       37,   61,   57,   57,   57,   57,   57,   57,   31,   28,
+       34,   33,   62,   62,   55,   62,   53,   52,   56,   51,
+       50,   23,   23,   54,   62,   38,   62,   39,   13,   14,
+       12,    5,    6,   10,   11,    7,    8,    9,   18,   58,
 
+       44,   46,   48,   43,   47,   49,   45,   36,   62,   40,
+       62,    5,    6,   62,   59,    5,   60,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -387,17 +389,17 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    2,    4,    5,    1,    1,    1,    6,    1,    1,
-        1,    1,    1,    1,    7,    1,    1,    8,    8,    8,
-        8,    8,    8,    8,    8,    9,    9,    7,    1,   10,
-       11,   12,    1,    1,   13,   13,   13,   13,   14,   13,
-       13,   13,   15,   13,   13,   16,   13,   13,   13,   17,
-       13,   18,   19,   20,   13,   13,   13,   21,   13,   13,
-        1,   22,    1,    1,    7,    1,   23,   24,   13,   25,
+        1,    2,    4,    5,    6,    6,    7,    8,    5,    9,
+        9,    1,    1,   10,   11,   12,   13,   14,   14,   14,
+       14,   14,   14,   14,   14,   15,   15,   16,    6,   17,
+       18,   19,    6,    1,   20,   20,   20,   20,   20,   20,
+       20,   20,   20,   20,   20,   20,   20,   20,   20,   20,
+       20,   20,   20,   20,   20,   20,   20,   20,   20,   20,
+        1,   21,    1,    6,   22,    1,   23,   24,   20,   25,
 
-       26,   27,   28,   13,   29,   13,   13,   30,   31,   32,
-       33,   17,   34,   35,   36,   37,   38,   13,   13,   21,
-       13,   13,    1,   39,    1,   40,    1,    1,    1,    1,
+       26,   27,   28,   20,   29,   20,   20,   30,   31,   32,
+       33,   20,   34,   35,   36,   37,   38,   20,   20,   20,
+       20,   20,   39,   40,   41,   42,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -414,100 +416,125 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[41] =
+static yyconst flex_int32_t yy_meta[43] =
     {   0,
-        1,    1,    2,    1,    3,    1,    4,    4,    4,    1,
-        1,    1,    4,    4,    4,    4,    4,    4,    4,    4,
-        4,    3,    4,    4,    4,    4,    4,    4,    4,    4,
-        4,    4,    4,    4,    4,    4,    4,    4,    1,    1
+        1,    1,    2,    1,    2,    1,    2,    1,    1,    1,
+        1,    1,    1,    3,    3,    1,    1,    1,    1,    3,
+        2,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+        3,    3,    3,    3,    3,    3,    3,    3,    1,    1,
+        2,    1
     } ;
 
-static yyconst flex_int16_t yy_base[104] =
+static yyconst flex_int16_t yy_base[128] =
     {   0,
-        0,    0,   38,   39,    0,    0,  101,  100,  128,  174,
-       43,   36,  174,  121,   40,  115,   39,  114,    0,   37,
-       92,   89,   29,   27,   90,   28,   79,   29,   82,   81,
-       76,    0,  174,  174,  112,  174,  174,  174,   54,  174,
-      174,  174,   58,  174,  174,  174,  174,    0,   45,   87,
-        0,   81,   80,    0,    0,    0,    0,    0,  174,    0,
-        0,   71,    0,   69,  174,    0,  174,   60,   64,  174,
-      174,  174,  174,  174,   52,    0,   70,   79,    0,   78,
-       66,   69,   68,   74,    0,    0,   84,   78,    0,   66,
-       72,   80,   77,   77,    0,  174,  149,  153,  157,   94,
+        0,    0,   40,   41,   82,    0,  122,  123,    0,    0,
+      138,  133,  161,  260,   47,   33,  260,  121,  151,  260,
+      151,  260,  260,   38,  140,   36,  139,    0,  124,  121,
+      131,   29,  121,   30,  180,   31,  117,  116,  110,    0,
+      260,  260,  110,  207,  260,  260,  260,  260,    0,  260,
+      260,  260,  260,  260,  260,  260,   56,  260,  260,  260,
+      260,   54,    0,  114,   34,  115,   37,  120,  260,  260,
+      260,  260,    0,  120,    0,  112,    0,    0,    0,    0,
+        0,  260,    0,    0,  104,    0,  102,  260,    0,  260,
+      260,   58,   62,  260,  260,  260,  260,  260,    0,  260,
 
-      161,  165,  169
+      260,  260,  260,  260,  260,  260,  260,    0,  103,    0,
+      112,   65,  117,  111,    0,  119,    0,  260,  244,  247,
+      250,  133,  132,  253,  256,   67,   62
     } ;
 
-static yyconst flex_int16_t yy_def[104] =
+static yyconst flex_int16_t yy_def[128] =
     {   0,
-       96,    1,   97,   97,   98,   98,   99,   99,   96,   96,
-       96,   96,   96,   96,   96,   96,   96,   96,  100,  100,
-      100,  100,  100,  100,  100,  100,  101,  100,  100,  100,
-       96,  102,   96,   96,  103,   96,   96,   96,   96,   96,
-       96,   96,   96,   96,   96,   96,   96,  100,  100,  100,
-      100,  100,  100,  100,  100,  100,  100,  100,   96,  100,
-      100,  100,  100,  100,   96,  102,   96,   96,   96,   96,
-       96,   96,   96,   96,  100,  100,  100,  100,  100,  100,
-       96,   96,  100,  100,  100,  100,   96,  100,  100,  100,
-      100,  100,  100,  100,  100,    0,   96,   96,   96,   96,
+      118,    1,  119,  119,  118,    5,  119,  119,  120,  120,
+      121,  121,  118,  118,  118,  118,  118,  118,  118,  118,
+      122,  118,  118,  118,  118,  118,  118,  123,  123,  123,
+      123,  123,  123,  123,  123,  123,  123,  123,  118,  124,
+      118,  118,  118,  125,  118,  118,  118,  118,  126,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  127,  127,  127,  127,  127,  127,  118,  118,
+      118,  118,  123,  123,  123,  123,  123,  123,  123,  123,
+      123,  118,  123,  123,  123,  123,  123,  118,  124,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  126,  118,
 
-       96,   96,   96
+      118,  118,  118,  118,  118,  118,  118,  123,  123,  123,
+      123,  118,  118,  123,  123,  118,  123,    0,  118,  118,
+      118,  118,  118,  118,  118,  118,  118
     } ;
 
-static yyconst flex_int16_t yy_nxt[215] =
+static yyconst flex_int16_t yy_nxt[303] =
     {   0,
-       10,   11,   11,   12,   13,   14,   10,   15,   15,   16,
-       17,   18,   19,   19,   19,   19,   20,   19,   19,   19,
-       19,   10,   21,   19,   19,   22,   23,   24,   25,   26,
-       27,   28,   29,   19,   19,   19,   30,   19,   31,   10,
-       33,   33,   34,   34,   39,   39,   40,   43,   43,   45,
-       49,   52,   54,   57,   61,   39,   39,   53,   75,   35,
-       35,   62,   49,   55,   58,   43,   43,   81,   82,   83,
-       75,   82,   82,   87,   82,   41,   82,   82,   46,   59,
-       59,   88,   59,   59,   59,   91,   83,   92,   59,   59,
-       59,   82,   82,   88,   93,   94,   95,   48,   90,   89,
+       14,   15,   15,   16,   17,   14,   18,   19,   20,   20,
+       21,   22,   23,   24,   24,   20,   25,   26,   27,   28,
+       14,   14,   29,   28,   28,   30,   31,   32,   33,   34,
+       35,   36,   37,   28,   28,   28,   38,   28,   20,   39,
+       20,   14,   41,   41,   42,   42,   43,   43,   57,   57,
+       58,   62,   62,   70,   77,   80,   84,   57,   57,  102,
+       44,   44,  105,   85,  100,   78,   81,   62,   62,   99,
+      103,  112,  113,  106,   59,  113,  113,   71,  116,  113,
+       45,   45,   46,   46,   47,   46,   46,   46,   46,   46,
+       46,   46,   46,   46,   46,   46,   46,   48,   46,   46,
 
-       59,   92,   91,   86,   85,   84,   80,   79,   93,   78,
-       77,   76,   94,   95,   65,   64,   63,   59,   59,   68,
-       69,   56,   51,   50,   47,   44,   42,   96,   38,   38,
-       96,   96,   96,   96,   96,   70,   96,   96,   71,   96,
-       96,   96,   96,   72,   96,   96,   73,   96,   74,   32,
-       32,   32,   32,   36,   36,   36,   36,   37,   37,   37,
-       37,   60,   96,   60,   60,   66,   96,   96,   66,   67,
-       67,   67,   67,    9,   96,   96,   96,   96,   96,   96,
-       96,   96,   96,   96,   96,   96,   96,   96,   96,   96,
-       96,   96,   96,   96,   96,   96,   96,   96,   96,   96,
+       46,   49,   46,   46,   49,   49,   49,   49,   49,   49,
+       49,   49,   49,   49,   49,   49,   49,   49,   49,   49,
+       46,   46,   50,   46,   41,   41,   51,   51,   52,   52,
+      113,  113,  113,  113,   73,   63,  117,  115,  114,  111,
+      110,  109,   44,   44,  108,  107,  104,  101,   90,   88,
+       87,   86,   79,   76,   75,   74,   72,   69,   61,   60,
+      118,   56,   53,   53,   62,   62,   56,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,   64,  118,   65,   66,
+       67,  118,   68,   82,   82,   82,   82,  118,  118,   82,
+       82,   82,   82,  118,  118,   82,  118,  118,  118,  118,
 
-       96,   96,   96,   96,   96,   96,   96,   96,   96,   96,
-       96,   96,   96,   96
+      118,   83,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,   82,
+       92,   93,  118,  118,  118,  118,  118,  118,  118,  118,
+       94,  118,  118,   95,  118,  118,  118,  118,   96,  118,
+      118,   97,  118,   98,   40,   40,   40,   54,   54,   54,
+       55,   55,   55,   89,  118,   89,   91,   91,   91,   13,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+
+      118,  118
     } ;
 
-static yyconst flex_int16_t yy_chk[215] =
+static yyconst flex_int16_t yy_chk[303] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        3,    4,    3,    4,   11,   11,   12,   15,   15,   17,
-       20,   23,   24,   26,   28,   39,   39,   23,   49,    3,
-        4,   28,   20,   24,   26,   43,   43,   68,   68,   75,
-       49,   69,   69,   81,   81,   12,   82,   82,   17,   27,
-       27,   83,   27,   27,   27,   90,   75,   91,   27,   27,
-       27,   87,   87,   83,   92,   93,   94,  100,   88,   84,
+        1,    1,    3,    4,    3,    4,    3,    4,   15,   15,
+       16,   24,   24,   26,   32,   34,   36,   57,   57,   65,
+        3,    4,   67,   36,  127,   32,   34,   62,   62,  126,
+       65,   92,   92,   67,   16,   93,   93,   26,  112,  112,
+        3,    4,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
 
-       27,   91,   90,   80,   78,   77,   64,   62,   92,   53,
-       52,   50,   93,   94,   31,   30,   29,   27,   27,   35,
-       35,   25,   22,   21,   18,   16,   14,    9,    8,    7,
-        0,    0,    0,    0,    0,   35,    0,    0,   35,    0,
-        0,    0,    0,   35,    0,    0,   35,    0,   35,   97,
-       97,   97,   97,   98,   98,   98,   98,   99,   99,   99,
-       99,  101,    0,  101,  101,  102,    0,    0,  102,  103,
-      103,  103,  103,   96,   96,   96,   96,   96,   96,   96,
-       96,   96,   96,   96,   96,   96,   96,   96,   96,   96,
-       96,   96,   96,   96,   96,   96,   96,   96,   96,   96,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
+        5,    5,    5,    5,    7,    8,    7,    8,    7,    8,
+      113,  113,  116,  116,  123,  122,  114,  111,  109,   87,
+       85,   76,    7,    8,   74,   68,   66,   64,   43,   39,
+       38,   37,   33,   31,   30,   29,   27,   25,   19,   18,
+       13,   12,    7,    8,   21,   21,   11,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,   21,    0,   21,   21,
+       21,    0,   21,   35,   35,   35,   35,    0,    0,   35,
+       35,   35,   35,    0,    0,   35,    0,    0,    0,    0,
 
-       96,   96,   96,   96,   96,   96,   96,   96,   96,   96,
-       96,   96,   96,   96
+        0,   35,    0,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,   35,
+       44,   44,    0,    0,    0,    0,    0,    0,    0,    0,
+       44,    0,    0,   44,    0,    0,    0,    0,   44,    0,
+        0,   44,    0,   44,  119,  119,  119,  120,  120,  120,
+      121,  121,  121,  124,    0,  124,  125,  125,  125,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+      118,  118,  118,  118,  118,  118,  118,  118,  118,  118,
+
+      118,  118
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -517,7 +544,7 @@ static yyconst flex_int16_t yy_chk[215] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "ssl_expr_scan.l"
+#line 1 "util_expr_scan.l"
 /* Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -533,18 +560,9 @@ static yyconst flex_int16_t yy_chk[215] =
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*                      _             _ 
- *  _ __ ___   ___   __| |    ___ ___| |  
- * | '_ ` _ \ / _ \ / _` |   / __/ __| |  
- * | | | | | | (_) | (_| |   \__ \__ \ | mod_ssl - Apache Interface to OpenSSL
- * |_| |_| |_|\___/ \__,_|___|___/___/_| http://www.modssl.org/
- *                      |_____|         
- *  ssl_expr_scan.l
- *  Expression Scanner
+/*
+ *  ap_expr_scan.l, based on ssl_expr_scan.l from mod_ssl
  */
-/* ``Killing for peace is 
-like fucking for virginity.''
--- Unknown  */
 /*  _________________________________________________________________
 **
 **  Expression Scanner
@@ -553,11 +571,11 @@ like fucking for virginity.''
 #define YY_NO_INPUT 1
 
 
-#line 49 "ssl_expr_scan.l"
-#include "ssl_private.h"
 
-#include "ssl_expr_parse.h"
-#include "ssl_expr.h"
+
+#line 43 "util_expr_scan.l"
+#include "util_expr_private.h"
+#include "util_expr_parse.h"
 
 #undef  YY_INPUT
 #define YY_INPUT(buf,result,max_size)                       \
@@ -574,14 +592,22 @@ like fucking for virginity.''
     }                                                       \
 }
 
-#define MAX_STR_LEN 2048
-#define YY_EXTRA_TYPE ssl_expr_info_type*
-#line 580 "ssl_expr_scan.c"
+#define YY_EXTRA_TYPE ap_expr_parse_ctx*
+
+#define PERROR(msg) yyextra->error2 = msg ; return ERROR;
+
+#define str_ptr     (yyextra->scan_ptr)
+#define str_buf     (yyextra->scan_buf)
+#define str_del     (yyextra->scan_del)
+
+#line 604 "util_expr_scan.c"
 
 #define INITIAL 0
 #define str 1
-#define regex 2
-#define regex_flags 3
+#define var 2
+#define vararg 3
+#define regex 4
+#define regex_flags 5
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -637,42 +663,42 @@ static int yy_init_globals (yyscan_t yyscanner );
      * from bison output in section 1.*/
     #    define yylval yyg->yylval_r
     
-int ssl_expr_yylex_init (yyscan_t* scanner);
+int ap_expr_yylex_init (yyscan_t* scanner);
 
-int ssl_expr_yylex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int ap_expr_yylex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int ssl_expr_yylex_destroy (yyscan_t yyscanner );
+int ap_expr_yylex_destroy (yyscan_t yyscanner );
 
-int ssl_expr_yyget_debug (yyscan_t yyscanner );
+int ap_expr_yyget_debug (yyscan_t yyscanner );
 
-void ssl_expr_yyset_debug (int debug_flag ,yyscan_t yyscanner );
+void ap_expr_yyset_debug (int debug_flag ,yyscan_t yyscanner );
 
-YY_EXTRA_TYPE ssl_expr_yyget_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE ap_expr_yyget_extra (yyscan_t yyscanner );
 
-void ssl_expr_yyset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void ap_expr_yyset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
 
-FILE *ssl_expr_yyget_in (yyscan_t yyscanner );
+FILE *ap_expr_yyget_in (yyscan_t yyscanner );
 
-void ssl_expr_yyset_in  (FILE * in_str ,yyscan_t yyscanner );
+void ap_expr_yyset_in  (FILE * in_str ,yyscan_t yyscanner );
 
-FILE *ssl_expr_yyget_out (yyscan_t yyscanner );
+FILE *ap_expr_yyget_out (yyscan_t yyscanner );
 
-void ssl_expr_yyset_out  (FILE * out_str ,yyscan_t yyscanner );
+void ap_expr_yyset_out  (FILE * out_str ,yyscan_t yyscanner );
 
-int ssl_expr_yyget_leng (yyscan_t yyscanner );
+int ap_expr_yyget_leng (yyscan_t yyscanner );
 
-char *ssl_expr_yyget_text (yyscan_t yyscanner );
+char *ap_expr_yyget_text (yyscan_t yyscanner );
 
-int ssl_expr_yyget_lineno (yyscan_t yyscanner );
+int ap_expr_yyget_lineno (yyscan_t yyscanner );
 
-void ssl_expr_yyset_lineno (int line_number ,yyscan_t yyscanner );
+void ap_expr_yyset_lineno (int line_number ,yyscan_t yyscanner );
 
-YYSTYPE * ssl_expr_yyget_lval (yyscan_t yyscanner );
+YYSTYPE * ap_expr_yyget_lval (yyscan_t yyscanner );
 
-void ssl_expr_yyset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
+void ap_expr_yyset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -680,9 +706,9 @@ void ssl_expr_yyset_lval (YYSTYPE * yylval_param ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int ssl_expr_yywrap (yyscan_t yyscanner );
+extern "C" int ap_expr_yywrap (yyscan_t yyscanner );
 #else
-extern int ssl_expr_yywrap (yyscan_t yyscanner );
+extern int ap_expr_yywrap (yyscan_t yyscanner );
 #endif
 #endif
 
@@ -704,6 +730,12 @@ static int input (yyscan_t yyscanner );
 
 #endif
 
+    static void yy_push_state (int new_state ,yyscan_t yyscanner);
+    
+    static void yy_pop_state (yyscan_t yyscanner );
+    
+    static int yy_top_state (yyscan_t yyscanner );
+    
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
 #ifdef __ia64__
@@ -784,10 +816,10 @@ static int input (yyscan_t yyscanner );
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int ssl_expr_yylex \
+extern int ap_expr_yylex \
                (YYSTYPE * yylval_param ,yyscan_t yyscanner);
 
-#define YY_DECL int ssl_expr_yylex \
+#define YY_DECL int ap_expr_yylex \
                (YYSTYPE * yylval_param , yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
@@ -815,19 +847,17 @@ YY_DECL
 	register int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-#line 74 "ssl_expr_scan.l"
+#line 72 "util_expr_scan.l"
 
-  
-  char  caStr[MAX_STR_LEN];
-  char *cpStr = NULL;
-  char  caRegex[MAX_STR_LEN];
-  char *cpRegex = NULL;
-  char  cRegexDel = NUL;
+
+  char  regex_buf[MAX_STRING_LEN];
+  char *regex_ptr = NULL;
+  char  regex_del = '\0';
 
  /*
   * Whitespaces
   */
-#line 831 "ssl_expr_scan.c"
+#line 861 "util_expr_scan.c"
 
     yylval = yylval_param;
 
@@ -849,12 +879,12 @@ YY_DECL
 			yyout = stdout;
 
 		if ( ! YY_CURRENT_BUFFER ) {
-			ssl_expr_yyensure_buffer_stack (yyscanner);
+			ap_expr_yyensure_buffer_stack (yyscanner);
 			YY_CURRENT_BUFFER_LVALUE =
-				ssl_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+				ap_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
 		}
 
-		ssl_expr_yy_load_buffer_state(yyscanner );
+		ap_expr_yy_load_buffer_state(yyscanner );
 		}
 
 	while ( 1 )		/* loops until end-of-file is reached */
@@ -882,13 +912,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 97 )
+				if ( yy_current_state >= 119 )
 					yy_c = yy_meta[(unsigned int) yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_current_state != 96 );
+		while ( yy_current_state != 118 );
 		yy_cp = yyg->yy_last_accepting_cpos;
 		yy_current_state = yyg->yy_last_accepting_state;
 
@@ -911,159 +941,286 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 85 "ssl_expr_scan.l"
+#line 81 "util_expr_scan.l"
 { 
     /* NOP */
 }
 	YY_BREAK
 /*
-  * C-style strings ("...")
+  * strings ("..." and '...')
   */
 case 2:
 YY_RULE_SETUP
-#line 92 "ssl_expr_scan.l"
+#line 88 "util_expr_scan.l"
 {
-    cpStr = caStr;
+    str_ptr = str_buf;
+    str_del = yytext[0];
     BEGIN(str);
+    return T_STR_BEGIN;
 }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 96 "ssl_expr_scan.l"
+#line 94 "util_expr_scan.l"
 {
-    BEGIN(INITIAL);
-    *cpStr = NUL;
-    yylval->cpVal = apr_pstrdup(yyextra->pool, caStr);
-    return T_STRING;
+    if (yytext[0] == str_del) {
+        if (YY_START == var) {
+            PERROR("Unterminated variable in string");
+        }
+        else if (str_ptr == str_buf) {
+            BEGIN(INITIAL);
+            return T_STR_END;
+        }
+        else {
+            /* return what we have so far and scan delimiter again */
+            *str_ptr = '\0';
+            yylval->cpVal = apr_pstrdup(yyextra->pool, str_buf);
+            yyless(0);
+            str_ptr = str_buf;
+            return T_STRING;
+        }
+    }
+    else {
+        *str_ptr++ = yytext[0];
+    }
 }
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 102 "ssl_expr_scan.l"
+#line 116 "util_expr_scan.l"
 {
-    ssl_expr_yyerror(yyextra, "Unterminated string");
+    PERROR("Unterminated string or variable");
+}
+	YY_BREAK
+case YY_STATE_EOF(str):
+case YY_STATE_EOF(var):
+case YY_STATE_EOF(vararg):
+#line 119 "util_expr_scan.l"
+{
+    PERROR("Unterminated string or variable");
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 105 "ssl_expr_scan.l"
+#line 122 "util_expr_scan.l"
 {
     int result;
 
     (void)sscanf(yytext+1, "%o", &result);
-    if (result > 0xff)
-        ssl_expr_yyerror(yyextra, "Escape sequence out of bound");
-    else
-        *cpStr++ = result;
+    if (result > 0xff) {
+        PERROR("Escape sequence out of bound");
+    }
+    else {
+        *str_ptr++ = result;
+    }
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 114 "ssl_expr_scan.l"
+#line 133 "util_expr_scan.l"
 {
-    ssl_expr_yyerror(yyextra, "Bad escape sequence");
+    PERROR("Bad escape sequence");
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 117 "ssl_expr_scan.l"
-{ *cpStr++ = '\n'; }
+#line 136 "util_expr_scan.l"
+{ *str_ptr++ = '\n'; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 118 "ssl_expr_scan.l"
-{ *cpStr++ = '\r'; }
+#line 137 "util_expr_scan.l"
+{ *str_ptr++ = '\r'; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 119 "ssl_expr_scan.l"
-{ *cpStr++ = '\t'; }
+#line 138 "util_expr_scan.l"
+{ *str_ptr++ = '\t'; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 120 "ssl_expr_scan.l"
-{ *cpStr++ = '\b'; }
+#line 139 "util_expr_scan.l"
+{ *str_ptr++ = '\b'; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 121 "ssl_expr_scan.l"
-{ *cpStr++ = '\f'; }
+#line 140 "util_expr_scan.l"
+{ *str_ptr++ = '\f'; }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 122 "ssl_expr_scan.l"
+#line 141 "util_expr_scan.l"
 {
-    *cpStr++ = yytext[1];
+    *str_ptr++ = yytext[1];
 }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 125 "ssl_expr_scan.l"
+#line 145 "util_expr_scan.l"
 {
     char *cp = yytext;
-    while (*cp != NUL)
-        *cpStr++ = *cp++;
+    while (*cp != '\0')
+        *str_ptr++ = *cp++;
 }
 	YY_BREAK
+/* variable inside string */
 case 14:
 YY_RULE_SETUP
-#line 130 "ssl_expr_scan.l"
+#line 152 "util_expr_scan.l"
 {
-    *cpStr++ = yytext[1];
+    if (str_ptr != str_buf) {
+        /* return what we have so far and scan '%{' again */
+        *str_ptr = '\0';
+        yylval->cpVal = apr_pstrdup(yyextra->pool, str_buf);
+        yyless(0);
+        str_ptr = str_buf;
+        return T_STRING;
+    }
+    else {
+        yy_push_state(var, yyscanner);
+        return T_VAR_BEGIN;
+    }
+}
+	YY_BREAK
+case 15:
+YY_RULE_SETUP
+#line 167 "util_expr_scan.l"
+{
+     *str_ptr++ = yytext[0];
+}
+	YY_BREAK
+case 16:
+YY_RULE_SETUP
+#line 171 "util_expr_scan.l"
+{
+     *str_ptr++ = yytext[0];
+}
+	YY_BREAK
+case 17:
+YY_RULE_SETUP
+#line 175 "util_expr_scan.l"
+{
+    yy_push_state(var, yyscanner);
+    return T_VAR_BEGIN;
+}
+	YY_BREAK
+/*
+  * fixed name variable expansion %{XXX} and function call in %{func:arg} syntax
+  */
+case 18:
+YY_RULE_SETUP
+#line 183 "util_expr_scan.l"
+{
+    yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
+    return T_ID;
+}
+	YY_BREAK
+case 19:
+YY_RULE_SETUP
+#line 188 "util_expr_scan.l"
+{
+    yy_pop_state(yyscanner);
+    return T_VAR_END;
+}
+	YY_BREAK
+case 20:
+YY_RULE_SETUP
+#line 193 "util_expr_scan.l"
+{
+    BEGIN(vararg);
+    return yytext[0];
+}
+	YY_BREAK
+case 21:
+/* rule 21 can match eol */
+YY_RULE_SETUP
+#line 198 "util_expr_scan.l"
+{
+    char c[2] = { yytext[0], '\0' };
+    char *msg = apr_psprintf(yyextra->pool,
+                             "Invalid character in variable name '%s'", c);
+    PERROR(msg);
+}
+	YY_BREAK
+case 22:
+YY_RULE_SETUP
+#line 205 "util_expr_scan.l"
+{
+    if (str_ptr != str_buf) {
+        /* return what we have so far and scan '}' again */
+        *str_ptr = '\0';
+        yylval->cpVal = apr_pstrdup(yyextra->pool, str_buf);
+        str_ptr = str_buf;
+        yyless(0);
+        return T_STRING;
+    }
+    else {
+        yy_pop_state(yyscanner);
+        return T_VAR_END;
+    }
 }
 	YY_BREAK
 /*
   * Regular Expression
   */
-case 15:
+case 23:
 YY_RULE_SETUP
-#line 137 "ssl_expr_scan.l"
+#line 223 "util_expr_scan.l"
 {
-    cRegexDel = yytext[1];
-    cpRegex = caRegex;
+    regex_del = yytext[1];
+    regex_ptr = regex_buf;
     BEGIN(regex);
 }
 	YY_BREAK
-case 16:
-/* rule 16 can match eol */
+case 24:
 YY_RULE_SETUP
-#line 142 "ssl_expr_scan.l"
+#line 228 "util_expr_scan.l"
 {
-    if (yytext[0] == cRegexDel) {
-        *cpRegex = NUL;
+    regex_del = yytext[0];
+    regex_ptr = regex_buf;
+    BEGIN(regex);
+}
+	YY_BREAK
+case 25:
+/* rule 25 can match eol */
+YY_RULE_SETUP
+#line 233 "util_expr_scan.l"
+{
+    if (yytext[0] == regex_del) {
+        *regex_ptr = '\0';
         BEGIN(regex_flags);
     }
     else {
-        *cpRegex++ = yytext[0];
+        *regex_ptr++ = yytext[0];
     }
 }
 	YY_BREAK
-case 17:
+case 26:
 YY_RULE_SETUP
-#line 151 "ssl_expr_scan.l"
+#line 242 "util_expr_scan.l"
 {
-    yylval->cpVal = apr_pstrdup(yyextra->pool, caRegex);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, regex_buf);
     BEGIN(INITIAL);
     return T_REGEX_I;
 }
 	YY_BREAK
-case 18:
-/* rule 18 can match eol */
+case 27:
+/* rule 27 can match eol */
 YY_RULE_SETUP
-#line 156 "ssl_expr_scan.l"
+#line 247 "util_expr_scan.l"
 {
-    yylval->cpVal = apr_pstrdup(yyextra->pool, caRegex);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, regex_buf);
     yyless(0);
     BEGIN(INITIAL);
     return T_REGEX;
 }
 	YY_BREAK
 case YY_STATE_EOF(regex_flags):
-#line 162 "ssl_expr_scan.l"
+#line 253 "util_expr_scan.l"
 {
-    yylval->cpVal = apr_pstrdup(yyextra->pool, caRegex);
+    yylval->cpVal = apr_pstrdup(yyextra->pool, regex_buf);
     BEGIN(INITIAL);
     return T_REGEX;
 }
@@ -1071,143 +1228,187 @@ case YY_STATE_EOF(regex_flags):
 /*
   * Operators
   */
-case 19:
-YY_RULE_SETUP
-#line 171 "ssl_expr_scan.l"
-{ return T_OP_EQ; }
-	YY_BREAK
-case 20:
-YY_RULE_SETUP
-#line 172 "ssl_expr_scan.l"
-{ return T_OP_EQ; }
-	YY_BREAK
-case 21:
-YY_RULE_SETUP
-#line 173 "ssl_expr_scan.l"
-{ return T_OP_NE; }
-	YY_BREAK
-case 22:
-YY_RULE_SETUP
-#line 174 "ssl_expr_scan.l"
-{ return T_OP_NE; }
-	YY_BREAK
-case 23:
-YY_RULE_SETUP
-#line 175 "ssl_expr_scan.l"
-{ return T_OP_LT; }
-	YY_BREAK
-case 24:
-YY_RULE_SETUP
-#line 176 "ssl_expr_scan.l"
-{ return T_OP_LT; }
-	YY_BREAK
-case 25:
-YY_RULE_SETUP
-#line 177 "ssl_expr_scan.l"
-{ return T_OP_LE; }
-	YY_BREAK
-case 26:
-YY_RULE_SETUP
-#line 178 "ssl_expr_scan.l"
-{ return T_OP_LE; }
-	YY_BREAK
-case 27:
-YY_RULE_SETUP
-#line 179 "ssl_expr_scan.l"
-{ return T_OP_GT; }
-	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 180 "ssl_expr_scan.l"
-{ return T_OP_GT; }
+#line 262 "util_expr_scan.l"
+{ return T_OP_STR_EQ; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 181 "ssl_expr_scan.l"
-{ return T_OP_GE; }
+#line 263 "util_expr_scan.l"
+{ return T_OP_STR_NE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 182 "ssl_expr_scan.l"
-{ return T_OP_GE; }
+#line 264 "util_expr_scan.l"
+{ return T_OP_STR_LT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 183 "ssl_expr_scan.l"
-{ return T_OP_REG; }
+#line 265 "util_expr_scan.l"
+{ return T_OP_STR_LE; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 184 "ssl_expr_scan.l"
-{ return T_OP_NRE; }
+#line 266 "util_expr_scan.l"
+{ return T_OP_STR_GT; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 185 "ssl_expr_scan.l"
-{ return T_OP_AND; }
+#line 267 "util_expr_scan.l"
+{ return T_OP_STR_GE; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 186 "ssl_expr_scan.l"
-{ return T_OP_AND; }
+#line 268 "util_expr_scan.l"
+{ return T_OP_REG; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 187 "ssl_expr_scan.l"
-{ return T_OP_OR; }
+#line 269 "util_expr_scan.l"
+{ return T_OP_NRE; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 188 "ssl_expr_scan.l"
-{ return T_OP_OR; }
+#line 270 "util_expr_scan.l"
+{ return T_OP_AND; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 189 "ssl_expr_scan.l"
-{ return T_OP_NOT; }
+#line 271 "util_expr_scan.l"
+{ return T_OP_AND; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 190 "ssl_expr_scan.l"
-{ return T_OP_NOT; }
+#line 272 "util_expr_scan.l"
+{ return T_OP_OR; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 191 "ssl_expr_scan.l"
-{ return T_OP_IN; }
+#line 273 "util_expr_scan.l"
+{ return T_OP_OR; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 192 "ssl_expr_scan.l"
-{ return T_OP_PEEREXTLIST; }
+#line 274 "util_expr_scan.l"
+{ return T_OP_NOT; }
 	YY_BREAK
-/*
-  * Functions
-  */
 case 41:
 YY_RULE_SETUP
-#line 197 "ssl_expr_scan.l"
-{ return T_FUNC_FILE; }
+#line 275 "util_expr_scan.l"
+{ return T_OP_NOT; }
+	YY_BREAK
+case 42:
+YY_RULE_SETUP
+#line 276 "util_expr_scan.l"
+{ return T_OP_CONCAT; }
+	YY_BREAK
+case 43:
+YY_RULE_SETUP
+#line 277 "util_expr_scan.l"
+{ return T_OP_IN; }
+	YY_BREAK
+case 44:
+YY_RULE_SETUP
+#line 278 "util_expr_scan.l"
+{ return T_OP_EQ; }
+	YY_BREAK
+case 45:
+YY_RULE_SETUP
+#line 279 "util_expr_scan.l"
+{ return T_OP_NE; }
+	YY_BREAK
+case 46:
+YY_RULE_SETUP
+#line 280 "util_expr_scan.l"
+{ return T_OP_GE; }
+	YY_BREAK
+case 47:
+YY_RULE_SETUP
+#line 281 "util_expr_scan.l"
+{ return T_OP_LE; }
+	YY_BREAK
+case 48:
+YY_RULE_SETUP
+#line 282 "util_expr_scan.l"
+{ return T_OP_GT; }
+	YY_BREAK
+case 49:
+YY_RULE_SETUP
+#line 283 "util_expr_scan.l"
+{ return T_OP_LT; }
+	YY_BREAK
+/* for compatibility with ssl_expr */
+case 50:
+YY_RULE_SETUP
+#line 286 "util_expr_scan.l"
+{ return T_OP_LT; }
+	YY_BREAK
+case 51:
+YY_RULE_SETUP
+#line 287 "util_expr_scan.l"
+{ return T_OP_LE; }
+	YY_BREAK
+case 52:
+YY_RULE_SETUP
+#line 288 "util_expr_scan.l"
+{ return T_OP_GT; }
+	YY_BREAK
+case 53:
+YY_RULE_SETUP
+#line 289 "util_expr_scan.l"
+{ return T_OP_GE; }
+	YY_BREAK
+case 54:
+YY_RULE_SETUP
+#line 290 "util_expr_scan.l"
+{ return T_OP_NE; }
+	YY_BREAK
+case 55:
+YY_RULE_SETUP
+#line 291 "util_expr_scan.l"
+{ return T_OP_EQ; }
+	YY_BREAK
+case 56:
+YY_RULE_SETUP
+#line 292 "util_expr_scan.l"
+{ return T_OP_IN; }
+	YY_BREAK
+case 57:
+YY_RULE_SETUP
+#line 294 "util_expr_scan.l"
+{
+    yylval->cpVal = apr_pstrdup(yyextra->pool, yytext + 1);
+    return T_OP_UNARY;
+}
+	YY_BREAK
+case 58:
+YY_RULE_SETUP
+#line 299 "util_expr_scan.l"
+{
+    yylval->cpVal = apr_pstrdup(yyextra->pool, yytext + 1);
+    return T_OP_BINARY;
+}
 	YY_BREAK
 /*
   * Specials
   */
-case 42:
+case 59:
 YY_RULE_SETUP
-#line 202 "ssl_expr_scan.l"
+#line 307 "util_expr_scan.l"
 { return T_TRUE; }
 	YY_BREAK
-case 43:
+case 60:
 YY_RULE_SETUP
-#line 203 "ssl_expr_scan.l"
+#line 308 "util_expr_scan.l"
 { return T_FALSE; }
 	YY_BREAK
 /*
   * Digits
   */
-case 44:
+case 61:
 YY_RULE_SETUP
-#line 208 "ssl_expr_scan.l"
+#line 313 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_DIGIT;
@@ -1216,33 +1417,44 @@ YY_RULE_SETUP
 /*
   * Identifiers
   */
-case 45:
+case 62:
 YY_RULE_SETUP
-#line 216 "ssl_expr_scan.l"
+#line 321 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_ID;
 }
 	YY_BREAK
 /*
-  * Anything else is returned as is...
+  * These are parts of the grammar and are returned as is
   */
-case 46:
-/* rule 46 can match eol */
+case 63:
 YY_RULE_SETUP
-#line 224 "ssl_expr_scan.l"
-{ 
+#line 329 "util_expr_scan.l"
+{
     return yytext[0];
 }
 	YY_BREAK
-case 47:
+/*
+  * Anything else is an error
+  */
+case 64:
+/* rule 64 can match eol */
 YY_RULE_SETUP
-#line 228 "ssl_expr_scan.l"
+#line 336 "util_expr_scan.l"
+{
+    char c[2] = { yytext[0], '\0' };
+    char *msg = apr_psprintf(yyextra->pool, "Parse error near '%s'", c);
+    PERROR(msg);
+}
+	YY_BREAK
+case 65:
+YY_RULE_SETUP
+#line 342 "util_expr_scan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1244 "ssl_expr_scan.c"
+#line 1457 "util_expr_scan.c"
 case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(str):
 case YY_STATE_EOF(regex):
 	yyterminate();
 
@@ -1260,7 +1472,7 @@ case YY_STATE_EOF(regex):
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
 			 * just pointed yyin at a new source and called
-			 * ssl_expr_yylex().  If so, then we have to assure
+			 * ap_expr_yylex().  If so, then we have to assure
 			 * consistency between YY_CURRENT_BUFFER and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
@@ -1321,7 +1533,7 @@ case YY_STATE_EOF(regex):
 				{
 				yyg->yy_did_buffer_switch_on_eof = 0;
 
-				if ( ssl_expr_yywrap(yyscanner ) )
+				if ( ap_expr_yywrap(yyscanner ) )
 					{
 					/* Note: because we've taken care in
 					 * yy_get_next_buffer() to have set up
@@ -1374,7 +1586,7 @@ case YY_STATE_EOF(regex):
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-} /* end of ssl_expr_yylex */
+} /* end of ap_expr_yylex */
 
 /* yy_get_next_buffer - try to read in a new buffer
  *
@@ -1453,7 +1665,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					ssl_expr_yyrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
+					ap_expr_yyrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
 				}
 			else
 				/* Can't grow it, we don't own it. */
@@ -1485,7 +1697,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		if ( number_to_move == YY_MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			ssl_expr_yyrestart(yyin  ,yyscanner);
+			ap_expr_yyrestart(yyin  ,yyscanner);
 			}
 
 		else
@@ -1502,7 +1714,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	if ((yy_size_t) (yyg->yy_n_chars + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
 		yy_size_t new_size = yyg->yy_n_chars + number_to_move + (yyg->yy_n_chars >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) ssl_expr_yyrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size ,yyscanner );
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) ap_expr_yyrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size ,yyscanner );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
 	}
@@ -1537,7 +1749,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 97 )
+			if ( yy_current_state >= 119 )
 				yy_c = yy_meta[(unsigned int) yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
@@ -1566,11 +1778,11 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 97 )
+		if ( yy_current_state >= 119 )
 			yy_c = yy_meta[(unsigned int) yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
-	yy_is_jam = (yy_current_state == 96);
+	yy_is_jam = (yy_current_state == 118);
 
 	return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1617,13 +1829,13 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 					 */
 
 					/* Reset buffer status. */
-					ssl_expr_yyrestart(yyin ,yyscanner);
+					ap_expr_yyrestart(yyin ,yyscanner);
 
 					/*FALLTHROUGH*/
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( ssl_expr_yywrap(yyscanner ) )
+					if ( ap_expr_yywrap(yyscanner ) )
 						return EOF;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
@@ -1655,34 +1867,34 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @note This function does not reset the start condition to @c INITIAL .
  */
-    void ssl_expr_yyrestart  (FILE * input_file , yyscan_t yyscanner)
+    void ap_expr_yyrestart  (FILE * input_file , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if ( ! YY_CURRENT_BUFFER ){
-        ssl_expr_yyensure_buffer_stack (yyscanner);
+        ap_expr_yyensure_buffer_stack (yyscanner);
 		YY_CURRENT_BUFFER_LVALUE =
-            ssl_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+            ap_expr_yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
 	}
 
-	ssl_expr_yy_init_buffer(YY_CURRENT_BUFFER,input_file ,yyscanner);
-	ssl_expr_yy_load_buffer_state(yyscanner );
+	ap_expr_yy_init_buffer(YY_CURRENT_BUFFER,input_file ,yyscanner);
+	ap_expr_yy_load_buffer_state(yyscanner );
 }
 
 /** Switch to a different input buffer.
  * @param new_buffer The new input buffer.
  * @param yyscanner The scanner object.
  */
-    void ssl_expr_yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
+    void ap_expr_yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	/* TODO. We should be able to replace this entire function body
 	 * with
-	 *		ssl_expr_yypop_buffer_state();
-	 *		ssl_expr_yypush_buffer_state(new_buffer);
+	 *		ap_expr_yypop_buffer_state();
+	 *		ap_expr_yypush_buffer_state(new_buffer);
      */
-	ssl_expr_yyensure_buffer_stack (yyscanner);
+	ap_expr_yyensure_buffer_stack (yyscanner);
 	if ( YY_CURRENT_BUFFER == new_buffer )
 		return;
 
@@ -1695,17 +1907,17 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		}
 
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
-	ssl_expr_yy_load_buffer_state(yyscanner );
+	ap_expr_yy_load_buffer_state(yyscanner );
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (ssl_expr_yywrap()) processing, but the only time this flag
-	 * is looked at is after ssl_expr_yywrap() is called, so it's safe
+	 * EOF (ap_expr_yywrap()) processing, but the only time this flag
+	 * is looked at is after ap_expr_yywrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
-static void ssl_expr_yy_load_buffer_state  (yyscan_t yyscanner)
+static void ap_expr_yy_load_buffer_state  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	yyg->yy_n_chars = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
@@ -1720,35 +1932,35 @@ static void ssl_expr_yy_load_buffer_state  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @return the allocated buffer state.
  */
-    YY_BUFFER_STATE ssl_expr_yy_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
+    YY_BUFFER_STATE ap_expr_yy_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) ssl_expr_yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) ap_expr_yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in ssl_expr_yy_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in ap_expr_yy_create_buffer()" );
 
 	b->yy_buf_size = size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) ssl_expr_yyalloc(b->yy_buf_size + 2 ,yyscanner );
+	b->yy_ch_buf = (char *) ap_expr_yyalloc(b->yy_buf_size + 2 ,yyscanner );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in ssl_expr_yy_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in ap_expr_yy_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
-	ssl_expr_yy_init_buffer(b,file ,yyscanner);
+	ap_expr_yy_init_buffer(b,file ,yyscanner);
 
 	return b;
 }
 
 /** Destroy the buffer.
- * @param b a buffer created with ssl_expr_yy_create_buffer()
+ * @param b a buffer created with ap_expr_yy_create_buffer()
  * @param yyscanner The scanner object.
  */
-    void ssl_expr_yy_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void ap_expr_yy_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
@@ -1759,28 +1971,28 @@ static void ssl_expr_yy_load_buffer_state  (yyscan_t yyscanner)
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		ssl_expr_yyfree((void *) b->yy_ch_buf ,yyscanner );
+		ap_expr_yyfree((void *) b->yy_ch_buf ,yyscanner );
 
-	ssl_expr_yyfree((void *) b ,yyscanner );
+	ap_expr_yyfree((void *) b ,yyscanner );
 }
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
- * such as during a ssl_expr_yyrestart() or at EOF.
+ * such as during a ap_expr_yyrestart() or at EOF.
  */
-    static void ssl_expr_yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
+    static void ap_expr_yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
 
 {
 	int oerrno = errno;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-	ssl_expr_yy_flush_buffer(b ,yyscanner);
+	ap_expr_yy_flush_buffer(b ,yyscanner);
 
 	b->yy_input_file = file;
 	b->yy_fill_buffer = 1;
 
-    /* If b is the current buffer, then ssl_expr_yy_init_buffer was _probably_
-     * called from ssl_expr_yyrestart() or through yy_get_next_buffer.
+    /* If b is the current buffer, then ap_expr_yy_init_buffer was _probably_
+     * called from ap_expr_yyrestart() or through yy_get_next_buffer.
      * In that case, we don't want to reset the lineno or column.
      */
     if (b != YY_CURRENT_BUFFER){
@@ -1797,7 +2009,7 @@ static void ssl_expr_yy_load_buffer_state  (yyscan_t yyscanner)
  * @param b the buffer state to be flushed, usually @c YY_CURRENT_BUFFER.
  * @param yyscanner The scanner object.
  */
-    void ssl_expr_yy_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void ap_expr_yy_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if ( ! b )
@@ -1818,7 +2030,7 @@ static void ssl_expr_yy_load_buffer_state  (yyscan_t yyscanner)
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
 	if ( b == YY_CURRENT_BUFFER )
-		ssl_expr_yy_load_buffer_state(yyscanner );
+		ap_expr_yy_load_buffer_state(yyscanner );
 }
 
 /** Pushes the new state onto the stack. The new state becomes
@@ -1827,15 +2039,15 @@ static void ssl_expr_yy_load_buffer_state  (yyscan_t yyscanner)
  *  @param new_buffer The new state.
  *  @param yyscanner The scanner object.
  */
-void ssl_expr_yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
+void ap_expr_yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if (new_buffer == NULL)
 		return;
 
-	ssl_expr_yyensure_buffer_stack(yyscanner);
+	ap_expr_yyensure_buffer_stack(yyscanner);
 
-	/* This block is copied from ssl_expr_yy_switch_to_buffer. */
+	/* This block is copied from ap_expr_yy_switch_to_buffer. */
 	if ( YY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
@@ -1849,8 +2061,8 @@ void ssl_expr_yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscann
 		yyg->yy_buffer_stack_top++;
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from ssl_expr_yy_switch_to_buffer. */
-	ssl_expr_yy_load_buffer_state(yyscanner );
+	/* copied from ap_expr_yy_switch_to_buffer. */
+	ap_expr_yy_load_buffer_state(yyscanner );
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
@@ -1858,19 +2070,19 @@ void ssl_expr_yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscann
  *  The next element becomes the new top.
  *  @param yyscanner The scanner object.
  */
-void ssl_expr_yypop_buffer_state (yyscan_t yyscanner)
+void ap_expr_yypop_buffer_state (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if (!YY_CURRENT_BUFFER)
 		return;
 
-	ssl_expr_yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner);
+	ap_expr_yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner);
 	YY_CURRENT_BUFFER_LVALUE = NULL;
 	if (yyg->yy_buffer_stack_top > 0)
 		--yyg->yy_buffer_stack_top;
 
 	if (YY_CURRENT_BUFFER) {
-		ssl_expr_yy_load_buffer_state(yyscanner );
+		ap_expr_yy_load_buffer_state(yyscanner );
 		yyg->yy_did_buffer_switch_on_eof = 1;
 	}
 }
@@ -1878,7 +2090,7 @@ void ssl_expr_yypop_buffer_state (yyscan_t yyscanner)
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-static void ssl_expr_yyensure_buffer_stack (yyscan_t yyscanner)
+static void ap_expr_yyensure_buffer_stack (yyscan_t yyscanner)
 {
 	int num_to_alloc;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -1890,11 +2102,11 @@ static void ssl_expr_yyensure_buffer_stack (yyscan_t yyscanner)
 		 * immediate realloc on the next call.
          */
 		num_to_alloc = 1;
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)ssl_expr_yyalloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)ap_expr_yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in ssl_expr_yyensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in ap_expr_yyensure_buffer_stack()" );
 								  
 		memset(yyg->yy_buffer_stack, 0, num_to_alloc * sizeof(struct yy_buffer_state*));
 				
@@ -1909,12 +2121,12 @@ static void ssl_expr_yyensure_buffer_stack (yyscan_t yyscanner)
 		int grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = yyg->yy_buffer_stack_max + grow_size;
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)ssl_expr_yyrealloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)ap_expr_yyrealloc
 								(yyg->yy_buffer_stack,
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in ssl_expr_yyensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in ap_expr_yyensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
 		memset(yyg->yy_buffer_stack + yyg->yy_buffer_stack_max, 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -1928,7 +2140,7 @@ static void ssl_expr_yyensure_buffer_stack (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object. 
  */
-YY_BUFFER_STATE ssl_expr_yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
+YY_BUFFER_STATE ap_expr_yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
     
@@ -1938,9 +2150,9 @@ YY_BUFFER_STATE ssl_expr_yy_scan_buffer  (char * base, yy_size_t  size , yyscan_
 		/* They forgot to leave room for the EOB's. */
 		return 0;
 
-	b = (YY_BUFFER_STATE) ssl_expr_yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) ap_expr_yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in ssl_expr_yy_scan_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in ap_expr_yy_scan_buffer()" );
 
 	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
@@ -1952,33 +2164,33 @@ YY_BUFFER_STATE ssl_expr_yy_scan_buffer  (char * base, yy_size_t  size , yyscan_
 	b->yy_fill_buffer = 0;
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
-	ssl_expr_yy_switch_to_buffer(b ,yyscanner );
+	ap_expr_yy_switch_to_buffer(b ,yyscanner );
 
 	return b;
 }
 
-/** Setup the input buffer state to scan a string. The next call to ssl_expr_yylex() will
+/** Setup the input buffer state to scan a string. The next call to ap_expr_yylex() will
  * scan from a @e copy of @a str.
  * @param yystr a NUL-terminated string to scan
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
- *       ssl_expr_yy_scan_bytes() instead.
+ *       ap_expr_yy_scan_bytes() instead.
  */
-YY_BUFFER_STATE ssl_expr_yy_scan_string (yyconst char * yystr , yyscan_t yyscanner)
+YY_BUFFER_STATE ap_expr_yy_scan_string (yyconst char * yystr , yyscan_t yyscanner)
 {
     
-	return ssl_expr_yy_scan_bytes(yystr,strlen(yystr) ,yyscanner);
+	return ap_expr_yy_scan_bytes(yystr,strlen(yystr) ,yyscanner);
 }
 
-/** Setup the input buffer state to scan the given bytes. The next call to ssl_expr_yylex() will
+/** Setup the input buffer state to scan the given bytes. The next call to ap_expr_yylex() will
  * scan from a @e copy of @a bytes.
  * @param yybytes the byte buffer to scan
  * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE ssl_expr_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
+YY_BUFFER_STATE ap_expr_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
 	char *buf;
@@ -1987,18 +2199,18 @@ YY_BUFFER_STATE ssl_expr_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_l
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
-	buf = (char *) ssl_expr_yyalloc(n ,yyscanner );
+	buf = (char *) ap_expr_yyalloc(n ,yyscanner );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in ssl_expr_yy_scan_bytes()" );
+		YY_FATAL_ERROR( "out of dynamic memory in ap_expr_yy_scan_bytes()" );
 
 	for ( i = 0; i < _yybytes_len; ++i )
 		buf[i] = yybytes[i];
 
 	buf[_yybytes_len] = buf[_yybytes_len+1] = YY_END_OF_BUFFER_CHAR;
 
-	b = ssl_expr_yy_scan_buffer(buf,n ,yyscanner);
+	b = ap_expr_yy_scan_buffer(buf,n ,yyscanner);
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in ssl_expr_yy_scan_bytes()" );
+		YY_FATAL_ERROR( "bad buffer in ap_expr_yy_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -2006,6 +2218,46 @@ YY_BUFFER_STATE ssl_expr_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_l
 	b->yy_is_our_buffer = 1;
 
 	return b;
+}
+
+    static void yy_push_state (int  new_state , yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+	if ( yyg->yy_start_stack_ptr >= yyg->yy_start_stack_depth )
+		{
+		yy_size_t new_size;
+
+		yyg->yy_start_stack_depth += YY_START_STACK_INCR;
+		new_size = yyg->yy_start_stack_depth * sizeof( int );
+
+		if ( ! yyg->yy_start_stack )
+			yyg->yy_start_stack = (int *) ap_expr_yyalloc(new_size ,yyscanner );
+
+		else
+			yyg->yy_start_stack = (int *) ap_expr_yyrealloc((void *) yyg->yy_start_stack,new_size ,yyscanner );
+
+		if ( ! yyg->yy_start_stack )
+			YY_FATAL_ERROR( "out of memory expanding start-condition stack" );
+		}
+
+	yyg->yy_start_stack[yyg->yy_start_stack_ptr++] = YY_START;
+
+	BEGIN(new_state);
+}
+
+    static void yy_pop_state  (yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+	if ( --yyg->yy_start_stack_ptr < 0 )
+		YY_FATAL_ERROR( "start-condition stack underflow" );
+
+	BEGIN(yyg->yy_start_stack[yyg->yy_start_stack_ptr]);
+}
+
+    static int yy_top_state  (yyscan_t yyscanner)
+{
+    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+	return yyg->yy_start_stack[yyg->yy_start_stack_ptr - 1];
 }
 
 #ifndef YY_EXIT_FAILURE
@@ -2040,7 +2292,7 @@ static void yy_fatal_error (yyconst char* msg , yyscan_t yyscanner)
 /** Get the user-defined data for this scanner.
  * @param yyscanner The scanner object.
  */
-YY_EXTRA_TYPE ssl_expr_yyget_extra  (yyscan_t yyscanner)
+YY_EXTRA_TYPE ap_expr_yyget_extra  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyextra;
@@ -2049,7 +2301,7 @@ YY_EXTRA_TYPE ssl_expr_yyget_extra  (yyscan_t yyscanner)
 /** Get the current line number.
  * @param yyscanner The scanner object.
  */
-int ssl_expr_yyget_lineno  (yyscan_t yyscanner)
+int ap_expr_yyget_lineno  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     
@@ -2062,7 +2314,7 @@ int ssl_expr_yyget_lineno  (yyscan_t yyscanner)
 /** Get the current column number.
  * @param yyscanner The scanner object.
  */
-int ssl_expr_yyget_column  (yyscan_t yyscanner)
+int ap_expr_yyget_column  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     
@@ -2075,7 +2327,7 @@ int ssl_expr_yyget_column  (yyscan_t yyscanner)
 /** Get the input stream.
  * @param yyscanner The scanner object.
  */
-FILE *ssl_expr_yyget_in  (yyscan_t yyscanner)
+FILE *ap_expr_yyget_in  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyin;
@@ -2084,7 +2336,7 @@ FILE *ssl_expr_yyget_in  (yyscan_t yyscanner)
 /** Get the output stream.
  * @param yyscanner The scanner object.
  */
-FILE *ssl_expr_yyget_out  (yyscan_t yyscanner)
+FILE *ap_expr_yyget_out  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyout;
@@ -2093,7 +2345,7 @@ FILE *ssl_expr_yyget_out  (yyscan_t yyscanner)
 /** Get the length of the current token.
  * @param yyscanner The scanner object.
  */
-int ssl_expr_yyget_leng  (yyscan_t yyscanner)
+int ap_expr_yyget_leng  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyleng;
@@ -2103,7 +2355,7 @@ int ssl_expr_yyget_leng  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  */
 
-char *ssl_expr_yyget_text  (yyscan_t yyscanner)
+char *ap_expr_yyget_text  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yytext;
@@ -2113,7 +2365,7 @@ char *ssl_expr_yyget_text  (yyscan_t yyscanner)
  * @param user_defined The data to be associated with this scanner.
  * @param yyscanner The scanner object.
  */
-void ssl_expr_yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
+void ap_expr_yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyextra = user_defined ;
@@ -2123,13 +2375,13 @@ void ssl_expr_yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
  * @param line_number
  * @param yyscanner The scanner object.
  */
-void ssl_expr_yyset_lineno (int  line_number , yyscan_t yyscanner)
+void ap_expr_yyset_lineno (int  line_number , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* lineno is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           yy_fatal_error( "ssl_expr_yyset_lineno called with no buffer" , yyscanner); 
+           yy_fatal_error( "ap_expr_yyset_lineno called with no buffer" , yyscanner); 
     
     yylineno = line_number;
 }
@@ -2138,13 +2390,13 @@ void ssl_expr_yyset_lineno (int  line_number , yyscan_t yyscanner)
  * @param line_number
  * @param yyscanner The scanner object.
  */
-void ssl_expr_yyset_column (int  column_no , yyscan_t yyscanner)
+void ap_expr_yyset_column (int  column_no , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* column is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           yy_fatal_error( "ssl_expr_yyset_column called with no buffer" , yyscanner); 
+           yy_fatal_error( "ap_expr_yyset_column called with no buffer" , yyscanner); 
     
     yycolumn = column_no;
 }
@@ -2153,27 +2405,27 @@ void ssl_expr_yyset_column (int  column_no , yyscan_t yyscanner)
  * input buffer.
  * @param in_str A readable stream.
  * @param yyscanner The scanner object.
- * @see ssl_expr_yy_switch_to_buffer
+ * @see ap_expr_yy_switch_to_buffer
  */
-void ssl_expr_yyset_in (FILE *  in_str , yyscan_t yyscanner)
+void ap_expr_yyset_in (FILE *  in_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyin = in_str ;
 }
 
-void ssl_expr_yyset_out (FILE *  out_str , yyscan_t yyscanner)
+void ap_expr_yyset_out (FILE *  out_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyout = out_str ;
 }
 
-int ssl_expr_yyget_debug  (yyscan_t yyscanner)
+int ap_expr_yyget_debug  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yy_flex_debug;
 }
 
-void ssl_expr_yyset_debug (int  bdebug , yyscan_t yyscanner)
+void ap_expr_yyset_debug (int  bdebug , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yy_flex_debug = bdebug ;
@@ -2181,13 +2433,13 @@ void ssl_expr_yyset_debug (int  bdebug , yyscan_t yyscanner)
 
 /* Accessor methods for yylval and yylloc */
 
-YYSTYPE * ssl_expr_yyget_lval  (yyscan_t yyscanner)
+YYSTYPE * ap_expr_yyget_lval  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yylval;
 }
 
-void ssl_expr_yyset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
+void ap_expr_yyset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yylval = yylval_param;
@@ -2195,12 +2447,12 @@ void ssl_expr_yyset_lval (YYSTYPE *  yylval_param , yyscan_t yyscanner)
 
 /* User-visible API */
 
-/* ssl_expr_yylex_init is special because it creates the scanner itself, so it is
+/* ap_expr_yylex_init is special because it creates the scanner itself, so it is
  * the ONLY reentrant function that doesn't take the scanner as the last argument.
  * That's why we explicitly handle the declaration, instead of using our macros.
  */
 
-int ssl_expr_yylex_init(yyscan_t* ptr_yy_globals)
+int ap_expr_yylex_init(yyscan_t* ptr_yy_globals)
 
 {
     if (ptr_yy_globals == NULL){
@@ -2208,7 +2460,7 @@ int ssl_expr_yylex_init(yyscan_t* ptr_yy_globals)
         return 1;
     }
 
-    *ptr_yy_globals = (yyscan_t) ssl_expr_yyalloc ( sizeof( struct yyguts_t ), NULL );
+    *ptr_yy_globals = (yyscan_t) ap_expr_yyalloc ( sizeof( struct yyguts_t ), NULL );
 
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
@@ -2221,27 +2473,27 @@ int ssl_expr_yylex_init(yyscan_t* ptr_yy_globals)
     return yy_init_globals ( *ptr_yy_globals );
 }
 
-/* ssl_expr_yylex_init_extra has the same functionality as ssl_expr_yylex_init, but follows the
+/* ap_expr_yylex_init_extra has the same functionality as ap_expr_yylex_init, but follows the
  * convention of taking the scanner as the last argument. Note however, that
  * this is a *pointer* to a scanner, as it will be allocated by this call (and
  * is the reason, too, why this function also must handle its own declaration).
- * The user defined value in the first argument will be available to ssl_expr_yyalloc in
+ * The user defined value in the first argument will be available to ap_expr_yyalloc in
  * the yyextra field.
  */
 
-int ssl_expr_yylex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
+int ap_expr_yylex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
 
 {
     struct yyguts_t dummy_yyguts;
 
-    ssl_expr_yyset_extra (yy_user_defined, &dummy_yyguts);
+    ap_expr_yyset_extra (yy_user_defined, &dummy_yyguts);
 
     if (ptr_yy_globals == NULL){
         errno = EINVAL;
         return 1;
     }
 	
-    *ptr_yy_globals = (yyscan_t) ssl_expr_yyalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
+    *ptr_yy_globals = (yyscan_t) ap_expr_yyalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
 	
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
@@ -2252,7 +2504,7 @@ int ssl_expr_yylex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_glo
     yy_init_globals. Leave at 0x00 for releases. */
     memset(*ptr_yy_globals,0x00,sizeof(struct yyguts_t));
     
-    ssl_expr_yyset_extra (yy_user_defined, *ptr_yy_globals);
+    ap_expr_yyset_extra (yy_user_defined, *ptr_yy_globals);
     
     return yy_init_globals ( *ptr_yy_globals );
 }
@@ -2261,7 +2513,7 @@ static int yy_init_globals (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from ssl_expr_yylex_destroy(), so don't allocate here.
+     * This function is called from ap_expr_yylex_destroy(), so don't allocate here.
      */
 
     yyg->yy_buffer_stack = 0;
@@ -2285,37 +2537,37 @@ static int yy_init_globals (yyscan_t yyscanner)
 #endif
 
     /* For future reference: Set errno on error, since we are called by
-     * ssl_expr_yylex_init()
+     * ap_expr_yylex_init()
      */
     return 0;
 }
 
-/* ssl_expr_yylex_destroy is for both reentrant and non-reentrant scanners. */
-int ssl_expr_yylex_destroy  (yyscan_t yyscanner)
+/* ap_expr_yylex_destroy is for both reentrant and non-reentrant scanners. */
+int ap_expr_yylex_destroy  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
     /* Pop the buffer stack, destroying each element. */
 	while(YY_CURRENT_BUFFER){
-		ssl_expr_yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner );
+		ap_expr_yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner );
 		YY_CURRENT_BUFFER_LVALUE = NULL;
-		ssl_expr_yypop_buffer_state(yyscanner);
+		ap_expr_yypop_buffer_state(yyscanner);
 	}
 
 	/* Destroy the stack itself. */
-	ssl_expr_yyfree(yyg->yy_buffer_stack ,yyscanner);
+	ap_expr_yyfree(yyg->yy_buffer_stack ,yyscanner);
 	yyg->yy_buffer_stack = NULL;
 
     /* Destroy the start condition stack. */
-        ssl_expr_yyfree(yyg->yy_start_stack ,yyscanner );
+        ap_expr_yyfree(yyg->yy_start_stack ,yyscanner );
         yyg->yy_start_stack = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * ssl_expr_yylex() is called, initialization will occur. */
+     * ap_expr_yylex() is called, initialization will occur. */
     yy_init_globals( yyscanner);
 
     /* Destroy the main struct (reentrant only). */
-    ssl_expr_yyfree ( yyscanner , yyscanner );
+    ap_expr_yyfree ( yyscanner , yyscanner );
     yyscanner = NULL;
     return 0;
 }
@@ -2344,12 +2596,12 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 }
 #endif
 
-void *ssl_expr_yyalloc (yy_size_t  size , yyscan_t yyscanner)
+void *ap_expr_yyalloc (yy_size_t  size , yyscan_t yyscanner)
 {
 	return (void *) malloc( size );
 }
 
-void *ssl_expr_yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
+void *ap_expr_yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 {
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
@@ -2361,14 +2613,14 @@ void *ssl_expr_yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 	return (void *) realloc( (char *) ptr, size );
 }
 
-void ssl_expr_yyfree (void * ptr , yyscan_t yyscanner)
+void ap_expr_yyfree (void * ptr , yyscan_t yyscanner)
 {
-	free( (char *) ptr );	/* see ssl_expr_yyrealloc() for (char *) cast */
+	free( (char *) ptr );	/* see ap_expr_yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 228 "ssl_expr_scan.l"
+#line 342 "util_expr_scan.l"
 
 
 

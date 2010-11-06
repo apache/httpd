@@ -1529,13 +1529,13 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
          * really try them with the most general first.
          */
         for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
-            int err = 0;
+            const char *err = NULL;
             core_dir_config *entry_core;
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
             if (entry_core->condition) {
-                if (!ap_expr_eval(r, entry_core->condition, &err, NULL,
-                                  ap_expr_string, NULL)) {
+                /* XXX: error handling */
+                if (!ap_expr_exec(r, entry_core->condition, &err)) {
                     continue;
                 }
             }

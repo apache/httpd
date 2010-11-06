@@ -6,6 +6,12 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) core, mod_include, mod_ssl: Move the expression parser derived from
+     mod_include back into mod_include. Replace ap_expr with a parser
+     derived from mod_ssl's parser. Make mod_ssl use the new parser. Rework
+     ap_expr's public interface and provide hooks for modules to add variables
+     and functions. [Stefan Fritsch]
+
   *) core: Do the hook sorting earlier so that the hooks are properly sorted
      for the pre_config hook and during parsing the config. [Stefan Fritsch] 
 

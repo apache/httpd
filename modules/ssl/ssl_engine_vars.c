@@ -29,6 +29,7 @@
                                                   -- Unknown       */
 #include "ssl_private.h"
 #include "mod_ssl.h"
+#include "ap_expr.h"
 
 #include "apr_time.h"
 
@@ -62,6 +63,45 @@ static const char var_interface[] = "mod_ssl/" MOD_SSL_VERSION;
 static char var_library_interface[] = SSL_LIBRARY_TEXT;
 static char *var_library = NULL;
 
+static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx *ctx,
+                                                 const void *dummy,
+                                                 const char *arg)
+{
+    return ssl_ext_list(ctx->p, ctx->c, 1, arg);
+}
+
+static const char *expr_var_fn(ap_expr_eval_ctx *ctx, const void *data)
+{
+    char *var = (char *)data;
+    return ssl_var_lookup_ssl(ctx->p, ctx->c, var);
+}
+
+static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
+{
+    switch (parms->type) {
+    case AP_EXPR_FUNC_VAR:
+        /* for now, we just handle everything that starts with SSL_, but
+         * register our hook as APR_HOOK_LAST
+         * XXX: This can be optimized
+         */
+        if (strcEQn(parms->name, "SSL_", 4)) {
+            *parms->func = expr_var_fn;
+            *parms->data = parms->name + 4;
+            return OK;
+        }
+        break;
+    case AP_EXPR_FUNC_LIST:
+        if (strcEQ(parms->name, "PeerExtList")) {
+            *parms->func = expr_peer_ext_list_fn;
+            *parms->data = "PeerExtList";
+            return OK;
+        }
+	break;
+    }
+    return DECLINED;
+}
+
+
 void ssl_var_register(apr_pool_t *p)
 {
     char *cp, *cp2;
@@ -84,6 +124,8 @@ void ssl_var_register(apr_pool_t *p)
         if ((cp2 = strchr(cp, ' ')) != NULL)
             *cp2 = NUL;
     }
+
+    ap_hook_expr_lookup(ssl_expr_lookup, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /* This function must remain safe to use for a non-SSL connection. */
@@ -983,4 +1025,5 @@ static const char *ssl_var_log_handler_x(request_rec *r, char *a)
         result = NULL;
     return result;
 }
+
 

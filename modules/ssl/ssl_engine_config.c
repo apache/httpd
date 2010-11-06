@@ -1147,17 +1147,21 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
                                const char *arg)
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
-    ssl_expr *expr;
+    ap_expr_info_t *info = apr_pcalloc(cmd->pool, sizeof(ap_expr_info_t));
     ssl_require_t *require;
     const char *errstring;
 
-    if (!(expr = ssl_expr_comp(cmd->pool, arg, &errstring))) {
+    info->flags = AP_EXPR_FLAGS_SSL_EXPR_COMPAT;
+    info->filename = cmd->directive->filename;
+    info->line_number = cmd->directive->line_num;
+    errstring = ap_expr_parse(cmd->pool, cmd->temp_pool, info, arg, NULL);
+    if (errstring) {
         return apr_pstrcat(cmd->pool, "SSLRequire: ", errstring, NULL);
     }
 
     require = apr_array_push(dc->aRequirement);
     require->cpExpr = apr_pstrdup(cmd->pool, arg);
-    require->mpExpr = expr;
+    require->mpExpr = info;
 
     return NULL;
 }

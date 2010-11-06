@@ -23,128 +23,193 @@
 #define AP_EXPR_H
 
 #include "httpd.h"
+#include "http_config.h"
 #include "ap_regex.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/* conditional expression parser stuff */
-typedef enum {
-    TOKEN_STRING,
-    TOKEN_RE,
-    TOKEN_AND,
-    TOKEN_OR,
-    TOKEN_NOT,
-    TOKEN_EQ,
-    TOKEN_NE,
-    TOKEN_RBRACE,
-    TOKEN_LBRACE,
-    TOKEN_GROUP,
-    TOKEN_GE,
-    TOKEN_LE,
-    TOKEN_GT,
-    TOKEN_LT,
-    TOKEN_ACCESS,
-    TOKEN_IN
-} token_type_t;
+/** A node in the expression parse tree */
+typedef struct ap_expr_node ap_expr;
 
+/** Struct describing a parsed expression */
 typedef struct {
-    token_type_t  type;
-    const char   *value;
-#ifdef DEBUG_INCLUDE
-    const char   *s;
-#endif
-} token_t;
+    /** The root of the actual expression parse tree */
+    ap_expr *root_node;
+    /** The filename where the expression has been defined (for logging).
+     *  May be NULL
+     */
+    const char *filename;
+    /** The line number where the expression has been defined (for logging). */
+    unsigned int line_number;
+#define AP_EXPR_FLAGS_SSL_EXPR_COMPAT       1
+    /** Flags relevant for the expression */
+    unsigned int flags;
+    /** The module that is used for loglevel configuration (XXX put into eval_ctx?) */
+    int module_index;
+} ap_expr_info_t;
 
-typedef struct parse_node {
-    struct parse_node *parent;
-    struct parse_node *left;
-    struct parse_node *right;
-    token_t token;
-    int value;
-    int done;
-#ifdef DEBUG_INCLUDE
-    int dump_done;
-#endif
-} ap_parse_node_t;
 
+/**
+ * Evaluate a parse tree
+ * @param r The current request
+ * @param expr The expression to be evaluated
+ * @param err A more detailed error string
+ * @return > 0 if expression evaluates to true, == 0 if false, < 0 on error
+ */
+AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
+                             const char **err);
+
+/** Context used during evaluation of a parse tree, created by ap_expr_exec */
 typedef struct {
-    const char *source;
-    const char *rexp;
-    apr_size_t  nsub;
-    ap_regmatch_t match[AP_MAX_REG_MATCH];
-    int have_match;
-} backref_t;
+    /** the current request */
+    request_rec *r;
+    /** the current connection */
+    conn_rec *c;
+    /** the current connection */
+    server_rec *s;
+    /** the pool to use */
+    apr_pool_t *p;
+    /** where to store the error string */
+    const char **err;
+    /** ap_expr_info_t for the expression */
+    const ap_expr_info_t *info;
+} ap_expr_eval_ctx;
 
-typedef const char *(*string_func_t)(request_rec*, const char*);
-typedef int (*opt_func_t)(request_rec*, ap_parse_node_t*, string_func_t);
+
+/**
+ * The parse can be extended with variable lookup, functions, and
+ * and operators.
+ *
+ * During parsing, the parser calls the lookup function to resolve a
+ * name into a function pointer and an opaque context for the function.
+ *
+ * The default lookup function is the hook 'ap_run_expr_lookup'.
+ * Modules can use it to make functions and variables generally available.
+ *
+ * An ap_expr consumer can also provide its own custom lookup function to
+ * modify the set of variables and functions that are available. The custom
+ * lookup function can in turn call 'ap_run_expr_lookup'.
+ */
+
+/** Unary operator, takes one string argument and returns a bool value.
+ * The name must have the form '-z' (one letter only).
+ * @param ctx The evaluation context
+ * @param data An opaque context provided by the lookup hook function
+ * @param arg The (right) operand
+ * @return 0 or 1
+ */
+typedef int ap_expr_op_unary_t(ap_expr_eval_ctx *ctx, const void *data,
+                               const char *arg);
+
+/** Binary operator, takes two string arguments and returns a bool value.
+ * The name must have the form '-cmp' (at least two letters).
+ * @param ctx The evaluation context
+ * @param data An opaque context provided by the lookup hook function
+ * @param arg1 The left operand
+ * @param arg2 The right operand
+ * @return 0 or 1
+ */
+typedef int ap_expr_op_binary_t(ap_expr_eval_ctx *ctx, const void *data,
+                                const char *arg1, const char *arg2);
+
+/** String valued function, takes a string argument and returns a string
+ * @param ctx The evaluation context
+ * @param data An opaque context provided by the lookup hook function
+ * @param arg The argument
+ * @return The functions result string, may be NULL for 'empty string'
+ */
+typedef const char *(ap_expr_string_func_t)(ap_expr_eval_ctx *ctx, const void *data,
+                                            const char *arg);
+
+/** List valued function, takes a string argument and returns a list of strings
+ * Can currently only be called following the builtin '-in' operator.
+ * @param ctx The evaluation context
+ * @param data An opaque context provided by the lookup hook function
+ * @param arg The argument
+ * @return The functions result list of strings, may be NULL for 'empty array'
+ */
+typedef apr_array_header_t *(ap_expr_list_func_t)(ap_expr_eval_ctx *ctx, const void *data,
+                                                  const char *arg);
+
+/** Variable lookup function, takes no argument and returns a string
+ * @param ctx The evaluation context
+ * @param data An opaque context provided by the lookup hook function
+ * @return The expanded variable
+ */
+typedef const char *(ap_expr_var_func_t)(ap_expr_eval_ctx *ctx, const void *data);
+
+/** parameter struct passed to the lookup hook functions */
+typedef struct {
+    /** type of the looked up object */
+    int type;
+#define AP_EXPR_FUNC_VAR        0
+#define AP_EXPR_FUNC_STRING     1
+#define AP_EXPR_FUNC_LIST       2
+#define AP_EXPR_FUNC_OP_UNARY   3
+#define AP_EXPR_FUNC_OP_BINARY  4
+    /** name of the looked up object */
+    const char *name;
+
+    int flags;
+
+    apr_pool_t *pool;
+    apr_pool_t *ptemp;
+
+    /** where to store the function pointer */
+    const void **func;
+    /** where to store the function's context */
+    const void **data;
+    /** Where to store the error message (if any) */
+    const char **err;
+} ap_expr_lookup_parms;
+
+/** Function for looking up the provider function for a variable, operator
+ *  or function in an expression.
+ *  @param parms The parameter struct, also determins where the result is
+ *               stored.
+ *  @return OK on success,
+ *          !OK on failure,
+ *          DECLINED if the requested name is not handled by this function
+ */
+typedef int (ap_expr_lookup_fn)(ap_expr_lookup_parms *parms);
+
+AP_DECLARE_HOOK(int, expr_lookup, (ap_expr_lookup_parms *parms))
 
 /**
  * Parse an expression into a parse tree
  * @param pool Pool
- * @param expr The expression to parse
- * @param was_error On return, set to zero if parse successful, nonzero on error
- * @return The parse tree
+ * @param ptemp temp pool
+ * @param info The ap_expr_info_t struct (with values filled in)
+ * @param expr The expression string to parse
+ * @param lookup_fn The lookup function to use, NULL for default
+ * @return NULL on success, error message on error.
+ *         A pointer to the resulting parse tree will be stored in
+ *         info->root_node.
  */
-AP_DECLARE(ap_parse_node_t*) ap_expr_parse(apr_pool_t *pool, const char *expr,
-                                           int *was_error);
-/**
- * Evaluate a parse tree
- * @param r The current request
- * @param root The root node of the parse tree
- * @param was_error On return, set to zero if parse successful, nonzero on error
- * @param reptr Regular expression memory for backreferencing if a regexp was parsed
- * @param string_func String parser function - perform variable substitutions
- *                    Use ap_expr_string where applicable
- * @param eval_func Option evaluation function (e.g. -A filename)
- * @return the value the expression parsed to
- */
-AP_DECLARE(int) ap_expr_eval(request_rec *r, const ap_parse_node_t *root,
-                             int *was_error, backref_t **reptr,
-                             string_func_t string_func, opt_func_t eval_func);
-/**
- * Evaluate an expression.  This is functionally equivalent to
- * ap_expr_parse followed by ap_expr_eval, but faster and more efficient
- * when an expression only needs to be parsed once and discarded.
- * @param r The current request
- * @param expr The expression to parse
- * @param was_error On return, set to zero if parse successful, nonzero on error
- * @param reptr Regular expression memory for backreferencing if a regexp was parsed
- * @param string_func String parser function - perform variable substitutions
- *                    Use ap_expr_string where applicable
- * @param eval_func Option evaluation function (e.g. -A filename)
- * @return the value the expression parsed to
- */
-AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
-                                   int *was_error, backref_t **reptr,
-                                   string_func_t string_func,
-                                   opt_func_t eval_func);
+AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
+                                       ap_expr_info_t *info, const char *expr,
+                                       ap_expr_lookup_fn *lookup_fn);
 
 /**
- * Internal initialisation of ap_expr (for httpd)
- * @param pool Pool
- * @return APR_SUCCESS or error
+ * High level interface to ap_expr_parse that also creates ap_expr_info_t and
+ * uses info from cmd_parms to fill in most of it.
+ * @param cmd The cmd_parms struct
+ * @param expr The expression string to parse
+ * @param err Set to NULL on success, error message on error
+ * @return The parsed expression
  */
-AP_DECLARE(apr_status_t) ap_expr_init(apr_pool_t *pool);
+AP_DECLARE(ap_expr_info_t *) ap_expr_parse_cmd(const cmd_parms *cmd,
+                                               const char *expr,
+                                               const char **err,
+                                               ap_expr_lookup_fn *lookup_fn);
 
-/**
- * Default string evaluation function for passing to ap_expr_eval and
- * ap_expr_evalstring.  Use this (and update as necessary) to offer
- * a consistent expression syntax across different modules.
- * Supports the following:
- *     $req{foo}     - request header "foo"
- *     $resp{foo}    - response header "foo"
- *     $env{foo}     - environment variable "foo"
- *     $handler      - r->handler
- *     $content-type - r->content_type
- * Other strings are returned unmodified.
- * @param r The current request
- * @param str The string to evaluate
- * @return The evaluated string
- */
-AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r, 
-                                              const char *str);
+
+ /**
+  * Internal initialisation of ap_expr (for httpd internal use)
+  */
+void ap_expr_init(apr_pool_t *pool);
 
 #ifdef __cplusplus
 }
