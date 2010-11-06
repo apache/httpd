@@ -1243,6 +1243,14 @@ AP_DECLARE_HOOK(int,quick_handler,(request_rec *r, int lookup_uri))
  */
 AP_DECLARE_HOOK(void,optional_fn_retrieve,(void))
 
+/**
+ * A generic pool cleanup that will reset a pointer to NULL. For use with
+ * apr_pool_cleanup_register.
+ * @param data The address of the pointer
+ * @return APR_SUCCESS
+ */
+AP_DECLARE(apr_status_t) ap_pool_cleanup_set_null(void *data);
+
 #ifdef __cplusplus
 }
 #endif

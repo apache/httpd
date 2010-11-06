@@ -196,16 +196,6 @@ AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl)
     return pl->write_fd;
 }
 
-/* clear_handle_list() is called when plog is cleared; at that
- * point we need to forget about our old list of pipe read
- * handles.  We let the plog cleanups close the actual pipes.
- */
-static apr_status_t clear_handle_list(void *v)
-{
-    read_handles = NULL;
-    return APR_SUCCESS;
-}
-
 /* remember to close this handle in the child process
  *
  * On Win32 this makes zero sense, because we don't
@@ -459,7 +449,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
      * between log phases, so we don't mind losing stderr's 
      * read_handle a little bit early.
      */
-    apr_pool_cleanup_register(p, NULL, clear_handle_list,
+    apr_pool_cleanup_register(p, &read_handles, ap_pool_cleanup_set_null,
                               apr_pool_cleanup_null);
 
     /* HERE we need a stdout log that outlives plog.
