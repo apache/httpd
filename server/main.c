@@ -617,6 +617,7 @@ int main(int argc, const char * const argv[])
     if (!ap_server_conf) {
         destroy_and_exit_process(process, 1);
     }
+    apr_hook_sort_all();
 
     if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
@@ -629,7 +630,6 @@ int main(int argc, const char * const argv[])
     if (rv == OK) {
         ap_fixup_virtual_hosts(pconf, ap_server_conf);
         ap_fini_vhost_config(pconf, ap_server_conf);
-        apr_hook_sort_all();
 
         if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
@@ -699,6 +699,7 @@ int main(int argc, const char * const argv[])
         if (!ap_server_conf) {
             destroy_and_exit_process(process, 1);
         }
+        apr_hook_sort_all();
 
         if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
@@ -712,7 +713,6 @@ int main(int argc, const char * const argv[])
         }
         ap_fixup_virtual_hosts(pconf, ap_server_conf);
         ap_fini_vhost_config(pconf, ap_server_conf);
-        apr_hook_sort_all();
 
         if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
