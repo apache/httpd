@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2008-05-10" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2010-11-06" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -47,7 +47,7 @@ Causes the use of local time rather than GMT as the base for the interval or for
 Causes the logfile to be opened immediately, as soon as rotatelogs starts, instead of waiting for the first logfile entry to be read (for non-busy sites, there may be a substantial delay between when the server is started and when the first request is handled, meaning that the associated logfile does not "exist" until then, which causes problems from some automated logging tools)\&. \fIAvailable in version 2\&.2\&.9 and later\&.\fR  
 .TP
 \fIlogfile\fR
-The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&.  
+.PP The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&. .PP When using strftime(3) filename formatting, be sure the log file format has enough granularity to produce a different file name each time the logs are rotated\&. Otherwise rotation will overwrite the same file instead of starting a new one\&. For example, if \fIlogfile\fR was /var/logs/errorlog\&.%Y-%m-%d with log rotation at 5 megabytes, but 5 megabytes was reached twice in the same day, the same log file name would be produced and log rotation would keep writing to the same file\&.  
 .TP
 \fIrotationtime\fR
 The time between log file rotations in seconds\&. The rotation occurs at the beginning of this interval\&. For example, if the rotation time is 3600, the log file will be rotated at the beginning of every hour; if the rotation time is 86400, the log file will be rotated every night at midnight\&. (If no data is logged during an interval, no file will be created\&.)  

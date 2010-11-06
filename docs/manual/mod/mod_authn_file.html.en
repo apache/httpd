@@ -22,6 +22,7 @@
 <div id="preamble"><h1>Apache Module mod_authn_file</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authn_file.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_authn_file.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_file.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_file.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -124,6 +125,7 @@ passwords for authentication</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authn_file.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_authn_file.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_authn_file.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_file.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
