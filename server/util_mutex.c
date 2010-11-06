@@ -139,12 +139,6 @@ typedef struct {
  */
 static apr_hash_t *mxcfg_by_type;
 
-static apr_status_t cleanup_mx_hash(void *dummy)
-{
-    mxcfg_by_type = NULL;
-    return APR_SUCCESS;
-}
-
 AP_DECLARE_NONSTD(void) ap_mutex_init(apr_pool_t *p)
 {
     mutex_cfg_t *def;
@@ -154,7 +148,8 @@ AP_DECLARE_NONSTD(void) ap_mutex_init(apr_pool_t *p)
     }
 
     mxcfg_by_type = apr_hash_make(p);
-    apr_pool_cleanup_register(p, NULL, cleanup_mx_hash, apr_pool_cleanup_null);
+    apr_pool_cleanup_register(p, &mxcfg_by_type, ap_pool_cleanup_set_null,
+        apr_pool_cleanup_null);
 
     /* initialize default mutex configuration */
     def = apr_pcalloc(p, sizeof *def);
