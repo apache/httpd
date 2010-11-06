@@ -957,7 +957,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
           function 
 
           <p>Here, the source is an internal Apache function.
-          Module authors can provide additional internal functions by registring 
+          Module authors can provide additional internal functions by registering 
           them with the <code>ap_register_rewrite_mapfunc</code> API.
           The functions that are provided by default are:
           </p>
