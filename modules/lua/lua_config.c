@@ -219,11 +219,59 @@ static int cmd_debug(lua_State *L)
     cmd_log_at(L, APLOG_DEBUG);
     return 0;
 }
+static int cmd_trace1(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE1);
+    return 0;
+}
+static int cmd_trace2(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE2);
+    return 0;
+}
+static int cmd_trace3(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE3);
+    return 0;
+}
+static int cmd_trace4(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE4);
+    return 0;
+}
+static int cmd_trace5(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE5);
+    return 0;
+}
+static int cmd_trace6(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE6);
+    return 0;
+}
+static int cmd_trace7(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE7);
+    return 0;
+}
+static int cmd_trace8(lua_State *L)
+{
+    cmd_log_at(L, APLOG_TRACE8);
+    return 0;
+}
 
 
 static const struct luaL_Reg cmd_methods[] = {
     {"foo", cmd_foo},
 
+    {"trace8", cmd_trace8},
+    {"trace7", cmd_trace7},
+    {"trace6", cmd_trace6},
+    {"trace5", cmd_trace5},
+    {"trace4", cmd_trace4},
+    {"trace3", cmd_trace3},
+    {"trace2", cmd_trace2},
+    {"trace1", cmd_trace1},
     {"debug", cmd_debug},
     {"info", cmd_info},
     {"notice", cmd_notice},
