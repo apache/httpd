@@ -759,6 +759,50 @@ static const char *unescape_func(ap_expr_eval_ctx *ctx, const char *name, const 
 
 }
 
+APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
+static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
+
+static const char *conn_var_names[] = {
+    "REMOTE_ADDR",              /*  0 */
+    "HTTPS",                    /*  1 */
+    "IPV6",                     /*  2 */
+    NULL
+};
+
+static const char *conn_var_fn(ap_expr_eval_ctx *ctx, const void *data)
+{
+    int index = ((const char **)data - conn_var_names);
+    conn_rec *c = ctx->c;
+    if (!c)
+        return "";
+
+    switch (index) {
+    case 0:
+        return c->remote_ip;
+    case 1:
+        if (is_https && is_https(c))
+            return "on";
+        else
+            return "off";
+    case 2:
+#if APR_HAVE_IPV6
+        {
+            apr_sockaddr_t *addr = c->remote_addr;
+            if (addr->family == AF_INET6
+                && !IN6_IS_ADDR_V4MAPPED((struct in6_addr *)addr->ipaddr_ptr))
+                return "on";
+            else
+                return "off";
+        }
+#else
+        return "off";
+#endif
+    default:
+        ap_assert(0);
+        return NULL;
+    }
+}
+
 static const char *request_var_names[] = {
     "REQUEST_METHOD",           /*  0 */
     "REQUEST_SCHEME",           /*  1 */
@@ -778,8 +822,7 @@ static const char *request_var_names[] = {
     "DOCUMENT_ROOT",            /* 15 */
     "AUTH_TYPE",                /* 16 */
     "THE_REQUEST",              /* 17 */
-    "REMOTE_ADDR",              /* 18 */
-    "CONTENT_TYPE",             /* 19 */
+    "CONTENT_TYPE",             /* 18 */
     NULL
 };
 
@@ -829,8 +872,6 @@ static const char *request_var_fn(ap_expr_eval_ctx *ctx, const void *data)
     case 17:
         return r->the_request;
     case 18:
-        return ctx->c->remote_ip;
-    case 19:
         return r->content_type;
     default:
         ap_assert(0);
@@ -932,6 +973,7 @@ static const struct expr_provider_multi var_providers[] = {
     { misc_var_fn, misc_var_names },
     { req_header_var_fn, req_header_var_names },
     { request_var_fn, request_var_names },
+    { conn_var_fn, conn_var_names },
     { NULL, NULL }
 };
 
@@ -963,7 +1005,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
                     *parms->data = name;
                     return OK;
                 }
-		name++;
+                name++;
             }
             prov++;
         }
@@ -1016,9 +1058,19 @@ static int expr_lookup_not_found(ap_expr_lookup_parms *parms)
     return !OK;
 }
 
+static int ap_expr_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                               apr_pool_t *ptemp, server_rec *s)
+{
+    is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
+    apr_pool_cleanup_register(pconf, &is_https, ap_pool_cleanup_set_null,
+                              apr_pool_cleanup_null);
+    return OK;
+}
+
 void ap_expr_init(apr_pool_t *p)
 {
     ap_hook_expr_lookup(core_expr_lookup, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_expr_lookup(expr_lookup_not_found, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_post_config(ap_expr_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
