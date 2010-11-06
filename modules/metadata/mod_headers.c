@@ -130,7 +130,7 @@ typedef struct {
     ap_regex_t *regex;
     const char *condition_var;
     const char *subs;
-    ap_parse_node_t *expr;
+    ap_expr_info_t *expr;
 } header_entry;
 
 /* echo_do is used for Header echo to iterate through the request headers*/
@@ -398,7 +398,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
     const char *condition_var = NULL;
     const char *colon;
     header_entry *new;
-    ap_parse_node_t *expr = NULL;
+    ap_expr_info_t *expr = NULL;
 
     apr_array_header_t *fixup = (cmd->info == &hdr_in)
         ? dirconf->fixup_in   : (cmd->info == &hdr_out_always)
@@ -491,10 +491,12 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
             condition_var = envclause + 4;
         }
         else {
-            int err = 0;
-            expr = ap_expr_parse(cmd->pool, envclause, &err);
+            const char *err = NULL;
+            expr = ap_expr_parse_cmd(cmd, envclause, &err, NULL);
             if (err) {
-                return "Can't parse envclause/expression";
+                return apr_pstrcat(cmd->pool,
+                                   "Can't parse envclause/expression: ", err,
+                                   NULL);
             }
         }
     }
@@ -645,12 +647,12 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
         }
         /* Do we have an expression to evaluate? */
         else if (hdr->expr != NULL) {
-            int err = 0;
-            int eval = ap_expr_eval(r, hdr->expr, &err, NULL,
-                                    ap_expr_string, NULL);
+            const char *err = NULL;
+            int eval = ap_expr_exec(r, hdr->expr, &err);
             if (err) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Failed to evaluate expression - ignoring");
+                              "Failed to evaluate expression (%s) - ignoring",
+                              err);
             }
             else if (!eval) {
                 continue;

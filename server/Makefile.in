@@ -12,9 +12,10 @@ LTLIBRARY_SOURCES = \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
 	connection.c listen.c util_mutex.c mpm_common.c mpm_unix.c \
 	util_charset.c util_cookies.c util_debug.c util_xml.c \
-	util_expr.c util_filter.c util_pcre.c util_regex.c exports.c \
+	util_filter.c util_pcre.c util_regex.c exports.c \
 	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c \
-	eoc_bucket.c eor_bucket.c core_filters.c
+	eoc_bucket.c eor_bucket.c core_filters.c \
+	util_expr_parse.c util_expr_scan.c util_expr_eval.c
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 
@@ -83,3 +84,19 @@ httpd.exp: exports.c export_vars.h
 	@echo "* Please do not edit by hand." >> $@
 	$(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) exports.c | grep "ap_hack_" | grep -v apr_ | sed -e 's/^.*[)]\(.*\);$$/\1/' >> $@
 	$(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) export_vars.h | grep -v apr_ | sed -e 's/^\#[^!]*//' | sed -e '/^$$/d' >> $@
+
+
+#   developer stuff
+#   (we really don't expect end users to use these targets!)
+#
+util_expr_scan.c util_expr_parse.c util_expr_parse.h: util_expr_scan.l util_expr_parse.y
+	bison -pap_expr_yy --defines=$(builddir)/util_expr_parse.h \
+	    -o $(builddir)/util_expr_parse.c $(srcdir)/util_expr_parse.y
+	flex -Pap_expr_yy -o $(builddir)/util_expr_scan.c $(srcdir)/util_expr_scan.l
+	set -e ; \
+	for f in util_expr_scan.c util_expr_parse.c util_expr_parse.h ; do \
+		sed -e "s|\"$(builddir)/|\"|g" < $(builddir)/$$f > \
+			$(builddir)/$$f.$$$$ && \
+		mv $(builddir)/$$f.$$$$ $(builddir)/$$f ; \
+	done
+

@@ -35,10 +35,6 @@ ssl_engine_mutex.lo dnl
 ssl_engine_pphrase.lo dnl
 ssl_engine_rand.lo dnl
 ssl_engine_vars.lo dnl
-ssl_expr.lo dnl
-ssl_expr_eval.lo dnl
-ssl_expr_parse.lo dnl
-ssl_expr_scan.lo dnl
 ssl_scache.lo dnl
 ssl_util_stapling.lo dnl
 ssl_util.lo dnl

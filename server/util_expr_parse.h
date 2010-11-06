@@ -41,25 +41,37 @@
    enum yytokentype {
      T_TRUE = 258,
      T_FALSE = 259,
-     T_DIGIT = 260,
-     T_ID = 261,
-     T_STRING = 262,
-     T_REGEX = 263,
-     T_REGEX_I = 264,
-     T_FUNC_FILE = 265,
-     T_OP_EQ = 266,
-     T_OP_NE = 267,
-     T_OP_LT = 268,
-     T_OP_LE = 269,
-     T_OP_GT = 270,
-     T_OP_GE = 271,
-     T_OP_REG = 272,
-     T_OP_NRE = 273,
-     T_OP_IN = 274,
-     T_OP_PEEREXTLIST = 275,
-     T_OP_OR = 276,
-     T_OP_AND = 277,
-     T_OP_NOT = 278
+     ERROR = 260,
+     T_DIGIT = 261,
+     T_ID = 262,
+     T_STRING = 263,
+     T_REGEX = 264,
+     T_REGEX_I = 265,
+     T_OP_UNARY = 266,
+     T_OP_BINARY = 267,
+     T_STR_BEGIN = 268,
+     T_STR_END = 269,
+     T_VAR_BEGIN = 270,
+     T_VAR_END = 271,
+     T_OP_EQ = 272,
+     T_OP_NE = 273,
+     T_OP_LT = 274,
+     T_OP_LE = 275,
+     T_OP_GT = 276,
+     T_OP_GE = 277,
+     T_OP_REG = 278,
+     T_OP_NRE = 279,
+     T_OP_IN = 280,
+     T_OP_STR_EQ = 281,
+     T_OP_STR_NE = 282,
+     T_OP_STR_LT = 283,
+     T_OP_STR_LE = 284,
+     T_OP_STR_GT = 285,
+     T_OP_STR_GE = 286,
+     T_OP_CONCAT = 287,
+     T_OP_OR = 288,
+     T_OP_AND = 289,
+     T_OP_NOT = 290
    };
 #endif
 
@@ -70,15 +82,15 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 45 "ssl_expr_parse.y"
+#line 35 "util_expr_parse.y"
 
-    char     *cpVal;
-    ssl_expr *exVal;
+    char    *cpVal;
+    ap_expr *exVal;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 82 "ssl_expr_parse.h"
+#line 94 "util_expr_parse.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

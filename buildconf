@@ -226,15 +226,15 @@ if [ -f `which cut` ]; then
     > httpd.spec )
 fi
 
-# ensure that the mod_ssl expression parser sources are never regenerated
+# ensure that the ap_expr expression parser sources are never regenerated
 # when running make
-echo fixing timestamps for mod_ssl sources
-cd modules/ssl
-touch ssl_expr_parse.y
+echo fixing timestamps for ap_expr sources
+cd server
+touch util_expr_parse.y
 sleep 1
-touch ssl_expr_parse.c ssl_expr_parse.h ssl_expr_scan.l
+touch util_expr_parse.c util_expr_parse.h util_expr_scan.l
 sleep 1
-touch ssl_expr_scan.c
-cd ../..
+touch util_expr_scan.c
+cd ..
 
 exit 0

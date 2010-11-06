@@ -55,9 +55,38 @@
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
 
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+#ifndef TRUE
+#define TRUE !FALSE
+#endif
+
+#ifndef YY_NULL
+#define YY_NULL 0
+#endif
+
+#ifndef MIN
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#endif
+
+#ifndef BOOL
+#define BOOL unsigned int
+#endif
+
+#ifndef NULL
+#define NULL (void *)0
+#endif
+
+#ifndef NUL
+#define NUL '\0'
+#endif
+
+
 /* mod_ssl headers */
 #include "ssl_toolkit_compat.h"
-#include "ssl_expr.h"
+#include "ap_expr.h"
 #include "ssl_util_ssl.h"
 
 /* The #ifdef macros are only defined AFTER including the above
@@ -272,8 +301,8 @@ typedef enum {
  * Define the SSL requirement structure
  */
 typedef struct {
-    char     *cpExpr;
-    ssl_expr *mpExpr;
+    char           *cpExpr;
+    ap_expr_info_t *mpExpr;
 } ssl_require_t;
 
 /**
@@ -617,7 +646,6 @@ void         ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s);
 /** Apache authz provisders */
 extern const authz_provider ssl_authz_provider_require_ssl;
 extern const authz_provider ssl_authz_provider_verify_client;
-extern const authz_provider ssl_authz_provider_sslrequire;
 
 /**  OpenSSL callbacks */
 RSA         *ssl_callback_TmpRSA(SSL *, int, int);

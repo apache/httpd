@@ -1986,7 +1986,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     const char *err = ap_check_cmd_context(cmd,
                                            NOT_IN_LOCATION | NOT_IN_LIMIT);
     const char *condition;
-    int expr_err = 0;
+    const char *expr_err;
 
     if (err != NULL) {
         return err;
@@ -2012,9 +2012,9 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf = ap_set_config_vectors(cmd->server, new_file_conf, cmd->path,
                                  &core_module, cmd->pool);
 
-    conf->condition = ap_expr_parse(cmd->pool, condition, &expr_err);
+    conf->condition = ap_expr_parse_cmd(cmd, condition, &expr_err, NULL);
     if (expr_err) {
-        return "Cannot parse condition clause";
+        return apr_psprintf(cmd->pool, "Cannot parse condition clause: %s", expr_err);
     }
 
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_file_conf);
@@ -4133,6 +4133,7 @@ static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
     ap_register_log_hooks(p);
+    ap_expr_init(p);
 
     /* create_connection and pre_connection should always be hooked
      * APR_HOOK_REALLY_LAST by core to give other modules the opportunity

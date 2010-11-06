@@ -36,7 +36,7 @@ module AP_MODULE_DECLARE_DATA filter_module;
  * (2.0-compatible) ap_filter_rec_t* frec.
  */
 struct ap_filter_provider_t {
-    ap_parse_node_t *expr;
+    ap_expr_info_t *expr;
 
     /** The filter that implements this provider */
     ap_filter_rec_t *frec;
@@ -134,7 +134,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 {
     ap_filter_provider_t *provider;
     int match;
-    int err = 0;
+    const char *err = NULL;
     unsigned int proto_flags;
     request_rec *r = f->r;
     harness_ctx *ctx = f->ctx;
@@ -146,11 +146,12 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 
     /* Check registered providers in order */
     for (provider = filter->providers; provider; provider = provider->next) {
-        match = ap_expr_eval(r, provider->expr, &err, NULL, ap_expr_string, NULL);
+        match = ap_expr_exec(r, provider->expr, &err);
         if (err) {
             /* log error but accept match value ? */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "Error evaluating filter dispatch condition");
+                          "Error evaluating filter dispatch condition: %s",
+                          err);
         }
 
         if (match) {
@@ -402,8 +403,8 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
     const char *c;
     ap_filter_rec_t* frec;
     ap_filter_rec_t* provider_frec;
-    ap_parse_node_t *node;
-    int err = 0;
+    ap_expr_info_t *node;
+    const char *err = NULL;
 
     /* fname has been declared with DeclareFilter, so we can look it up */
     frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING);
@@ -426,9 +427,11 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
     if (!provider_frec) {
         return apr_psprintf(cmd->pool, "Unknown filter provider %s", pname);
     }
-    node = ap_expr_parse(cmd->pool, expr, &err);
+    node = ap_expr_parse_cmd(cmd, expr, &err, NULL);
     if (err) {
-        return "Error parsing FilterProvider expression.";
+        return apr_pstrcat(cmd->pool,
+                           "Error parsing FilterProvider expression:", err,
+                           NULL);
     }
 
     provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t));
@@ -545,7 +548,7 @@ static const char *filter_bytype1(cmd_parms *cmd, void *CFG,
         *p++ = *type++;
     } while (*type);
     *p = 0;
-    expr = apr_psprintf(cmd->temp_pool, "$content-type = /^%s/", etype);
+    expr = apr_psprintf(cmd->temp_pool, "%%{CONTENT_TYPE} =~ m!^%s!", etype);
 
     rv = filter_provider(cmd, CFG, fname, pname, expr);
 

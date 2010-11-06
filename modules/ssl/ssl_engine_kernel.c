@@ -302,7 +302,6 @@ int ssl_hook_Access(request_rec *r)
     SSL_CTX *ctx = NULL;
     apr_array_header_t *requires;
     ssl_require_t *ssl_requires;
-    char *cp;
     int ok, i;
     BOOL renegotiate = FALSE, renegotiate_quick = FALSE;
     X509 *cert;
@@ -900,17 +899,13 @@ int ssl_hook_Access(request_rec *r)
     for (i = 0; i < requires->nelts; i++) {
         ssl_require_t *req = &ssl_requires[i];
         const char *errstring;
-        ok = ssl_expr_exec(r, req->mpExpr, &errstring);
+        ok = ap_expr_exec(r, req->mpExpr, &errstring);
 
         if (ok < 0) {
-            cp = apr_psprintf(r->pool,
-                              "Failed to execute "
-                              "SSL requirement expression: %s",
-                              errstring);
-
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "access to %s failed, reason: %s",
-                          r->filename, cp);
+                          "access to %s failed, reason: Failed to execute "
+                          "SSL requirement expression: %s",
+                          r->filename, errstring);
 
             /* remember forbidden access for strict require option */
             apr_table_setn(r->notes, "ssl-access-forbidden", "1");
@@ -1281,54 +1276,6 @@ const authz_provider ssl_authz_provider_verify_client =
     &ssl_authz_verify_client_parse,
 };
 
-
-static authz_status ssl_authz_sslrequire_check(request_rec *r,
-                                               const char *require_line,
-                                               const void *parsed)
-{
-    const ssl_expr *expr = parsed;
-    const char *errstring;
-    int ok = ssl_expr_exec(r, expr, &errstring);
-
-    if (ok < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Failed to execute SSL requirement expression in "
-                      "'Require ssl-require': %s",
-                      errstring);
-        return AUTHZ_DENIED;
-    }
-
-    if (ok != 1) {
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                      "SSL requirement expression in 'Require ssl-require' "
-                      "not fulfilled");
-        return AUTHZ_DENIED;
-    }
-
-    return AUTHZ_GRANTED;
-}
-
-static const char *ssl_authz_sslrequire_parse(cmd_parms *cmd,
-                                              const char *require_line,
-                                              const void **parsed)
-{
-    const char *errstring;
-    ssl_expr *expr = ssl_expr_comp(cmd->pool, require_line, &errstring);
-
-    if (!expr)
-        return apr_psprintf(cmd->pool, "Error in 'Require require-ssl': %s",
-                            errstring);
-
-    *parsed = expr;
-
-    return NULL;
-}
-
-const authz_provider ssl_authz_provider_sslrequire =
-{
-    &ssl_authz_sslrequire_check,
-    &ssl_authz_sslrequire_parse,
-};
 
 
 /*  _________________________________________________________________

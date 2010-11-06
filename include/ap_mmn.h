@@ -277,12 +277,16 @@
  * 20101016.0 (2.3.9-dev)  Remove ap_cache_check_allowed().
  * 20101017.0 (2.3.9-dev)  Make ap_cache_control() public, add cache_control_t
  *                         to mod_disk_cache format.
+ * 20101106.0 (2.3.9-dev)  Replace the ap_expr parser derived from
+ *                         mod_include's parser with one derived from
+ *                         mod_ssl's parser. Clean up ap_expr's public
+ *                         interface.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20101017
+#define MODULE_MAGIC_NUMBER_MAJOR 20101106
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

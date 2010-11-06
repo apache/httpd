@@ -565,11 +565,6 @@ static void ssl_register_hooks(apr_pool_t *p)
                               &ssl_authz_provider_verify_client,
                               AP_AUTH_INTERNAL_PER_CONF);
 
-    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ssl-require",
-                              AUTHZ_PROVIDER_VERSION,
-                              &ssl_authz_provider_sslrequire,
-                              AP_AUTH_INTERNAL_PER_CONF);
-
 }
 
 module AP_MODULE_DECLARE_DATA ssl_module = {
