@@ -33,6 +33,8 @@ extern "C" {
  * RFC2109 and RFC2965 compliant HTTP cookies can be read from and written
  * to using this set of functions.
  *
+ * @{
+ *
  */
 
 #include "apr_errno.h"
@@ -124,6 +126,10 @@ AP_DECLARE(apr_status_t) ap_cookie_read(request_rec * r, const char *name, const
  * It is used to sanity check the cookie names.
  */
 AP_DECLARE(apr_status_t) ap_cookie_check_string(const char *string);
+
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }

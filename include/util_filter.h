@@ -86,6 +86,8 @@ typedef enum {
  * stream" marker into the filter chain. The filters will use this to flush
  * out any internal state and to detect incomplete syntax (for example, an
  * unterminated SSI directive).
+ *
+ * @{
  */
 
 /* forward declare the filter type */
@@ -588,6 +590,10 @@ AP_DECLARE(void) ap_filter_protocol(ap_filter_t* f, unsigned int proto_flags);
 
 /** Filter is incompatible with "Cache-Control: no-transform" */
 #define AP_FILTER_PROTO_TRANSFORM 0x20
+
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }
