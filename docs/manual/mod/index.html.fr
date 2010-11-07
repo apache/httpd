@@ -100,8 +100,7 @@ fichiers</dd>
 manière similaire à la commande Unix <code>ls</code>, ou à la commande
 shell Win32 <code>dir</code></dd>
 <dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support de la mise en tampon des requêtes</dd>
-<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Mise en cache de contenu référencé par un
-URI.</dd>
+<dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Filtre de mise en cache HTTP conforme à la RFC 2616</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
@@ -118,8 +117,8 @@ client</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</dd>
-<dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Gestionnaire de stockage du cache de contenu à base
-d'URIs</dd>
+<dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Module de stockage sur disque pour le filtre de mise en
+cache HTTP.</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>Un simple serveur d'écho pour illustrer les modules de
 protocole</dd>
