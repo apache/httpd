@@ -1138,9 +1138,8 @@ case 21:
 YY_RULE_SETUP
 #line 198 "util_expr_scan.l"
 {
-    char c[2] = { yytext[0], '\0' };
     char *msg = apr_psprintf(yyextra->pool,
-                             "Invalid character in variable name '%s'", c);
+                             "Invalid character in variable name '%c'", yytext[0]);
     PERROR(msg);
 }
 	YY_BREAK
@@ -1443,8 +1442,7 @@ case 64:
 YY_RULE_SETUP
 #line 336 "util_expr_scan.l"
 {
-    char c[2] = { yytext[0], '\0' };
-    char *msg = apr_psprintf(yyextra->pool, "Parse error near '%s'", c);
+    char *msg = apr_psprintf(yyextra->pool, "Parse error near '%c'", yytext[0]);
     PERROR(msg);
 }
 	YY_BREAK
