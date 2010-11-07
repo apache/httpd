@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_proxy.xml.meta">
 
 <name>mod_proxy</name>
-<description>HTTP/1.1 proxy/gateway server</description>
+<description>Multi-protocol proxy/gateway server</description>
 <status>Extension</status>
 <sourcefile>mod_proxy.c</sourcefile>
 <identifier>proxy_module</identifier>
@@ -36,23 +36,42 @@
       network and to the Internet at large.</p>
     </note>
 
-    <p>This module implements a proxy/gateway for Apache HTTP Server. It implements
-    proxying capability for <code>AJP13</code> (Apache JServe Protocol
-    version 1.3), <code>FTP</code>, <code>CONNECT</code> (for SSL),
-    <code>HTTP/0.9</code>, <code>HTTP/1.0</code>, and <code>HTTP/1.1</code>.
-    The module can be configured to connect to other proxy modules for these
-    and other protocols.</p>
+    <p><module>mod_proxy</module> and related modules implement a
+    proxy/gateway for Apache HTTP Server, supporting a number of popular
+    protocols as well as several different load balancing algorithms.
+    Third-party modules can add support for additional protocols and
+    load balancing algorithms.</p>
 
-    <p>Apache httpd's proxy features are divided into several modules in
-    addition to <module>mod_proxy</module>:
-    <module>mod_proxy_http</module>, <module>mod_proxy_ftp</module>,
-    <module>mod_proxy_ajp</module>, <module>mod_proxy_balancer</module>,
-    and <module>mod_proxy_connect</module>.  Thus, if you want to use
-    one or more of the particular proxy functions, load
-    <module>mod_proxy</module> <em>and</em> the appropriate module(s)
-    into the server (either statically at compile-time or dynamically
-    via the <directive module="mod_so">LoadModule</directive>
-    directive).</p>
+    <p>A set of modules must be loaded into the server to provide the
+    necessary features.  These modules can be included statically at
+    build time or dynamically via the
+    <directive module="mod_so">LoadModule</directive> directive).
+    The set must include:</p>
+
+    <ul>
+      <li><module>mod_proxy</module>, which provides basic proxy
+      capabilities</li>
+
+      <li><module>mod_proxy_balancer</module> and one or more
+      balancer modules, if load balancing is required.  (See 
+      <module>mod_proxy_balancer</module> for more information.)</li>
+
+      <li>one or more proxy scheme, or protocol, modules:
+
+        <table border="1">
+        <tr><th>Protocol</th><th>Module</th></tr>
+        <tr><td>AJP13 (Apache JServe Protocol version
+          1.3)</td><td><module>mod_proxy_ajp</module></td></tr>
+        <tr><td>CONNECT (for
+          SSL)</td><td><module>mod_proxy_connect</module></td></tr> 
+        <tr><td>FastCGI</td><td><module>mod_proxy_fcgi</module></td></tr>
+        <tr><td>ftp</td><td><module>mod_proxy_ftp</module></td></tr>
+        <tr><td>HTTP/0.9, HTTP/1.0, and
+          HTTP/1.1</td><td><module>mod_proxy_http</module></td></tr> 
+        <tr><td>SCGI</td><td><module>mod_proxy_scgi</module></td></tr>
+        </table>
+      </li>
+    </ul>
 
     <p>In addition, extended features are provided by other modules.
     Caching is provided by <module>mod_cache</module> and related
@@ -62,9 +81,12 @@
     to be loaded and configured to take advantage of these features.</p>
 </summary>
 <seealso><module>mod_cache</module></seealso>
-<seealso><module>mod_proxy_http</module></seealso>
-<seealso><module>mod_proxy_ftp</module></seealso>
+<seealso><module>mod_proxy_ajp</module></seealso>
 <seealso><module>mod_proxy_connect</module></seealso>
+<seealso><module>mod_proxy_fcgi</module></seealso>
+<seealso><module>mod_proxy_ftp</module></seealso>
+<seealso><module>mod_proxy_http</module></seealso>
+<seealso><module>mod_proxy_scgi</module></seealso>
 <seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
