@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Expressions in Apache - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Expressions in Apache</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+    <p>Historically, there are several syntax variants for expressions used to express
+        a condition in the different modules of the Apache HTTP Server.
+        There is some ongoing effort to only use a single variant, called <em>ap_expr</em>,
+        for all configuration directives.
+        This document describes the <em>ap_expr</em> expression parser.
+    </p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#grammar">Grammar in BNF notation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#vars">Variables</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#binop">Binary operators</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#unnop">Unary operators</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#functions">Functions</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="grammar" id="grammar">Grammar in BNF notation</a></h2>
+    
+<blockquote>
+<pre>
+expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
+              | "<strong>!</strong>" expr
+              | expr "<strong>&amp;&amp;</strong>" expr
+              | expr "<strong>||</strong>" expr
+              | "<strong>(</strong>" expr "<strong>)</strong>"
+              | comp
+
+comp        ::= stringcomp
+              | integercomp
+              | unaryop word
+              | word binaryop word
+              | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
+              | word "<strong>in</strong>" listfunction
+              | word "<strong>=~</strong>" regex
+              | word "<strong>!~</strong>" regex
+
+
+stringcomp  ::= word "<strong>==</strong>" word | word "<strong>eq</strong>" word
+              | word "<strong>!=</strong>" word | word "<strong>ne</strong>" word
+              | word "<strong>&lt;</strong>"  word | word "<strong>lt</strong>" word
+              | word "<strong>&lt;=</strong>" word | word "<strong>le</strong>" word
+              | word "<strong>&gt;</strong>"  word | word "<strong>gt</strong>" word
+              | word "<strong>&gt;=</strong>" word | word "<strong>ge</strong>" word
+
+integercomp ::= word "<strong>-eq</strong>" word | word "<strong>eq</strong>" word
+              | word "<strong>-ne</strong>" word | word "<strong>ne</strong>" word
+              | word "<strong>-lt</strong>" word | word "<strong>lt</strong>" word
+              | word "<strong>-le</strong>" word | word "<strong>le</strong>" word
+              | word "<strong>-gt</strong>" word | word "<strong>gt</strong>" word
+              | word "<strong>-ge</strong>" word | word "<strong>ge</strong>" word
+
+wordlist    ::= word
+              | wordlist "<strong>,</strong>" word
+
+word        ::= word "<strong>.</strong>" word
+              | digit
+              | "<strong>'</strong>" string "<strong>'</strong>"
+              | "<strong>"</strong>" string "<strong>"</strong>"
+              | variable
+              | function
+
+string      ::= stringpart
+              | string stringpart
+
+stringpart  ::= cstring
+              | variable
+
+cstring     ::= ...
+digit       ::= [0-9]+
+
+variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
+              | "<strong>%{</strong>" funcname "<strong>:</strong>" funcargs "<strong>}</strong>"
+
+function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
+
+listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
+</pre>
+</blockquote>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="vars" id="vars">Variables</a></h2>
+    
+<p>XXX: not all vars are available in all request phases</p>
+    
+    <p>Request headers (XXX:see req function)</p>
+
+    <table class="bordered"><tr class="header"><th>Name</th></tr>
+<tr><td><code>HTTP_ACCEPT</code></td></tr>
+<tr class="odd"><td><code>HTTP_FORWARDED</code></td></tr>
+<tr><td><code>HTTP_HOST</code></td></tr>
+<tr class="odd"><td><code>HTTP_PROXY_CONNECTION</code></td></tr>
+<tr><td><code>HTTP_REFERER</code></td></tr>
+<tr class="odd"><td><code>HTTP_USER_AGENT</code></td></tr>
+</table>
+
+    <p>Other request related variables</p>
+
+    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
+<tr><td><code>REQUEST_METHOD</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>REQUEST_SCHEME</code></td>
+        <td /></tr>
+<tr><td><code>REQUEST_URI</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>REQUEST_FILENAME</code></td>
+        <td /></tr>
+<tr><td><code>REMOTE_HOST</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>REMOTE_IDENT</code></td>
+        <td /></tr>
+<tr><td><code>REMOTE_USER</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>SERVER_ADMIN</code></td>
+        <td /></tr>
+<tr><td><code>SERVER_NAME</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>SERVER_PORT</code></td>
+        <td /></tr>
+<tr><td><code>SERVER_PROTOCOL</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>SCRIPT_FILENAME</code></td>
+        <td /></tr>
+<tr><td><code>PATH_INFO</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>QUERY_STRING</code></td>
+        <td /></tr>
+<tr><td><code>IS_SUBREQ</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>DOCUMENT_ROOT</code></td>
+        <td /></tr>
+<tr><td><code>AUTH_TYPE</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>THE_REQUEST</code></td>
+        <td /></tr>
+<tr><td><code>CONTENT_TYPE</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>REMOTE_ADDR</code></td>
+        <td /></tr>
+<tr><td><code>HTTPS</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>IPV6</code></td>
+        <td /></tr>
+</table>
+
+    <p>Misc variables</p>
+
+    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
+<tr><td><code>TIME_YEAR</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>TIME_MON</code></td>
+        <td /></tr>
+<tr><td><code>TIME_DAY</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>TIME_HOUR</code></td>
+        <td /></tr>
+<tr><td><code>TIME_MIN</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>TIME_SEC</code></td>
+        <td /></tr>
+<tr><td><code>TIME_WDAY</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>TIME</code></td>
+        <td /></tr>
+<tr><td><code>SERVER_SOFTWARE</code></td>
+        <td /></tr>
+<tr class="odd"><td><code>API_VERSION</code></td>
+        <td /></tr>
+</table>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="binop" id="binop">Binary operators</a></h2>
+    
+
+    <p>With the exception of some built-in comparison operators, binary
+    operators have the form "<code>-[a-zA-Z][a-zA-Z0-9_]+</code>", i.e. a
+    minus and at least two characters. The name is not case sensitive.
+    Modules may register additional binary operators.</p>
+
+    <table class="bordered"><tr class="header"><th>Name</th><th>Alternative</th> <th>Description</th></tr>
+<tr><td><code>==</code></td>
+        <td><code>=</code></td>
+        <td>String equality</td></tr>
+<tr class="odd"><td><code>!=</code></td>
+        <td />
+        <td>String inequality</td></tr>
+<tr><td><code>&lt;</code></td>
+        <td />
+        <td>String less than</td></tr>
+<tr class="odd"><td><code>&lt;=</code></td>
+        <td />
+        <td>String less than or equal</td></tr>
+<tr><td><code>&gt;</code></td>
+        <td />
+        <td>String greater than</td></tr>
+<tr class="odd"><td><code>&gt;=</code></td>
+        <td />
+        <td>String greater than or equal</td></tr>
+<tr><td><code>-eq</code></td>
+        <td><code>eq</code></td>
+        <td>Integer equality</td></tr>
+<tr class="odd"><td><code>-ne</code></td>
+        <td><code>ne</code></td>
+        <td>Integer inequality</td></tr>
+<tr><td><code>-lt</code></td>
+        <td><code>lt</code></td>
+        <td>Integer less than</td></tr>
+<tr class="odd"><td><code>-le</code></td>
+        <td><code>le</code></td>
+        <td>Integer less than or equal</td></tr>
+<tr><td><code>-gt</code></td>
+        <td><code>gt</code></td>
+        <td>Integer greater than</td></tr>
+<tr class="odd"><td><code>-ge</code></td>
+        <td><code>ge</code></td>
+        <td>Integer greater than or equal</td></tr>
+</table>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="unnop" id="unnop">Unary operators</a></h2>
+    
+
+    <p>Unary operators have the form "<code>-[a-zA-Z]</code>", i.e. a
+    minus and one character. The name <em>is</em> case sensitive.
+    Modules may register additional unary operators.</p>
+
+    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
+<tr><td><code>-n</code></td>
+        <td>String is not empty (XXX: not yet implemented)</td></tr>
+<tr class="odd"><td><code>-z</code></td>
+        <td>String is empty (XXX: not yet implemented)</td></tr>
+</table>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="functions" id="functions">Functions</a></h2>
+    
+
+    <p>Normal string-valued functions take one string as argument and return
+    a string. Functions names are not case sensitive.
+    Modules may register additional functions.</p>
+
+    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
+<tr><td><code>req</code>, <code>http</code></td>
+        <td>Get HTTP request header</td></tr>
+<tr class="odd"><td><code>resp</code></td>
+        <td>Get HTTP response header</td></tr>
+<tr><td><code>osenv</code></td>
+        <td>Lookup operating system environment variable</td></tr>
+<tr class="odd"><td><code>env</code></td>
+        <td>Lookup request environment variable (XXX: will need to be changed for better ssl_expr compat)</td></tr>
+<tr><td><code>lolower</code></td>
+        <td>Convert string to lower case</td></tr>
+<tr class="odd"><td><code>toupper</code></td>
+        <td>Convert string to uppser case</td></tr>
+<tr><td><code>escape</code></td>
+        <td>Escape special characters in %hex encoding</td></tr>
+<tr class="odd"><td><code>unescape</code></td>
+        <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
+</table>
+
+    <p>In addition to string-valued functions, there are also list-valued functions which
+    take one string as argument and return a wordlist, i.e. a list of strings. The wordlist
+    can be used with the special <code>-in</code> operator.
+    Functions names are not case sensitive.
+    Modules may register additional functions.</p>
+
+    <p>There are no built-in list-valued functions. mod_ssl provides
+    <code>PeerExtList</code> (XXX: link)</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>
