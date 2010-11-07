@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="expr.xml.meta">
+
+  <title>Expressions in Apache</title>
+
+  <summary>
+    <p>Historically, there are several syntax variants for expressions used to express
+        a condition in the different modules of the Apache HTTP Server.
+        There is some ongoing effort to only use a single variant, called <em>ap_expr</em>,
+        for all configuration directives.
+        This document describes the <em>ap_expr</em> expression parser.
+    </p>
+  </summary>
+
+  <section id="grammar">
+    <title>Grammar in BNF notation</title>
+<blockquote>
+<pre>
+expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
+              | "<strong>!</strong>" expr
+              | expr "<strong>&amp;&amp;</strong>" expr
+              | expr "<strong>||</strong>" expr
+              | "<strong>(</strong>" expr "<strong>)</strong>"
+              | comp
+
+comp        ::= stringcomp
+              | integercomp
+              | unaryop word
+              | word binaryop word
+              | word "<strong>in</strong>" "<strong>{</strong>" wordlist "<strong>}</strong>"
+              | word "<strong>in</strong>" listfunction
+              | word "<strong>=~</strong>" regex
+              | word "<strong>!~</strong>" regex
+
+
+stringcomp  ::= word "<strong>==</strong>" word | word "<strong>eq</strong>" word
+              | word "<strong>!=</strong>" word | word "<strong>ne</strong>" word
+              | word "<strong>&lt;</strong>"  word | word "<strong>lt</strong>" word
+              | word "<strong>&lt;=</strong>" word | word "<strong>le</strong>" word
+              | word "<strong>&gt;</strong>"  word | word "<strong>gt</strong>" word
+              | word "<strong>&gt;=</strong>" word | word "<strong>ge</strong>" word
+
+integercomp ::= word "<strong>-eq</strong>" word | word "<strong>eq</strong>" word
+              | word "<strong>-ne</strong>" word | word "<strong>ne</strong>" word
+              | word "<strong>-lt</strong>" word | word "<strong>lt</strong>" word
+              | word "<strong>-le</strong>" word | word "<strong>le</strong>" word
+              | word "<strong>-gt</strong>" word | word "<strong>gt</strong>" word
+              | word "<strong>-ge</strong>" word | word "<strong>ge</strong>" word
+
+wordlist    ::= word
+              | wordlist "<strong>,</strong>" word
+
+word        ::= word "<strong>.</strong>" word
+              | digit
+              | "<strong>'</strong>" string "<strong>'</strong>"
+              | "<strong>"</strong>" string "<strong>"</strong>"
+              | variable
+              | function
+
+string      ::= stringpart
+              | string stringpart
+
+stringpart  ::= cstring
+              | variable
+
+cstring     ::= ...
+digit       ::= [0-9]+
+
+variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
+              | "<strong>%{</strong>" funcname "<strong>:</strong>" funcargs "<strong>}</strong>"
+
+function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
+
+listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
+</pre>
+</blockquote>
+
+</section>
+
+<section id="vars">
+    <title>Variables</title>
+<p>XXX: not all vars are available in all request phases</p>
+    
+    <p>Request headers (XXX:see req function)</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width="1"/></columnspec>
+
+    <tr><th>Name</th></tr>
+    <tr><td><code>HTTP_ACCEPT</code></td></tr>
+    <tr><td><code>HTTP_FORWARDED</code></td></tr>
+    <tr><td><code>HTTP_HOST</code></td></tr>
+    <tr><td><code>HTTP_PROXY_CONNECTION</code></td></tr>
+    <tr><td><code>HTTP_REFERER</code></td></tr>
+    <tr><td><code>HTTP_USER_AGENT</code></td></tr>
+
+    </table>
+
+    <p>Other request related variables</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".4"/><column width=".6"/></columnspec>
+
+    <tr><th>Name</th><th>Description</th></tr>
+    <tr><td><code>REQUEST_METHOD</code></td>
+        <td></td></tr>
+    <tr><td><code>REQUEST_SCHEME</code></td>
+        <td></td></tr>
+    <tr><td><code>REQUEST_URI</code></td>
+        <td></td></tr>
+    <tr><td><code>REQUEST_FILENAME</code></td>
+        <td></td></tr>
+    <tr><td><code>REMOTE_HOST</code></td>
+        <td></td></tr>
+    <tr><td><code>REMOTE_IDENT</code></td>
+        <td></td></tr>
+    <tr><td><code>REMOTE_USER</code></td>
+        <td></td></tr>
+    <tr><td><code>SERVER_ADMIN</code></td>
+        <td></td></tr>
+    <tr><td><code>SERVER_NAME</code></td>
+        <td></td></tr>
+    <tr><td><code>SERVER_PORT</code></td>
+        <td></td></tr>
+    <tr><td><code>SERVER_PROTOCOL</code></td>
+        <td></td></tr>
+    <tr><td><code>SCRIPT_FILENAME</code></td>
+        <td></td></tr>
+    <tr><td><code>PATH_INFO</code></td>
+        <td></td></tr>
+    <tr><td><code>QUERY_STRING</code></td>
+        <td></td></tr>
+    <tr><td><code>IS_SUBREQ</code></td>
+        <td></td></tr>
+    <tr><td><code>DOCUMENT_ROOT</code></td>
+        <td></td></tr>
+    <tr><td><code>AUTH_TYPE</code></td>
+        <td></td></tr>
+    <tr><td><code>THE_REQUEST</code></td>
+        <td></td></tr>
+    <tr><td><code>CONTENT_TYPE</code></td>
+        <td></td></tr>
+    <tr><td><code>REMOTE_ADDR</code></td>
+        <td></td></tr>
+    <tr><td><code>HTTPS</code></td>
+        <td></td></tr>
+    <tr><td><code>IPV6</code></td>
+        <td></td></tr>
+
+    </table>
+
+    <p>Misc variables</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".4"/><column width=".6"/></columnspec>
+
+    <tr><th>Name</th><th>Description</th></tr>
+    <tr><td><code>TIME_YEAR</code></td>
+        <td></td></tr>
+    <tr><td><code>TIME_MON</code></td>
+        <td></td></tr>
+    <tr><td><code>TIME_DAY</code></td>
+        <td></td></tr>
+    <tr><td><code>TIME_HOUR</code></td>
+        <td></td></tr>
+    <tr><td><code>TIME_MIN</code></td>
+        <td></td></tr>
+    <tr><td><code>TIME_SEC</code></td>
+        <td></td></tr>
+    <tr><td><code>TIME_WDAY</code></td>
+        <td></td></tr>
+    <tr><td><code>TIME</code></td>
+        <td></td></tr>
+    <tr><td><code>SERVER_SOFTWARE</code></td>
+        <td></td></tr>
+    <tr><td><code>API_VERSION</code></td>
+        <td></td></tr>
+    </table>
+
+</section>
+
+<section id="binop">
+    <title>Binary operators</title>
+
+    <p>With the exception of some built-in comparison operators, binary
+    operators have the form "<code>-[a-zA-Z][a-zA-Z0-9_]+</code>", i.e. a
+    minus and at least two characters. The name is not case sensitive.
+    Modules may register additional binary operators.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
+
+    <tr><th>Name</th><th>Alternative</th> <th>Description</th></tr>
+    <tr><td><code>==</code></td>
+        <td><code>=</code></td>
+        <td>String equality</td></tr>
+    <tr><td><code>!=</code></td>
+        <td></td>
+        <td>String inequality</td></tr>
+    <tr><td><code>&lt;</code></td>
+        <td></td>
+        <td>String less than</td></tr>
+    <tr><td><code>&lt;=</code></td>
+        <td></td>
+        <td>String less than or equal</td></tr>
+    <tr><td><code>&gt;</code></td>
+        <td></td>
+        <td>String greater than</td></tr>
+    <tr><td><code>&gt;=</code></td>
+        <td></td>
+        <td>String greater than or equal</td></tr>
+    <tr><td><code>-eq</code></td>
+        <td><code>eq</code></td>
+        <td>Integer equality</td></tr>
+    <tr><td><code>-ne</code></td>
+        <td><code>ne</code></td>
+        <td>Integer inequality</td></tr>
+    <tr><td><code>-lt</code></td>
+        <td><code>lt</code></td>
+        <td>Integer less than</td></tr>
+    <tr><td><code>-le</code></td>
+        <td><code>le</code></td>
+        <td>Integer less than or equal</td></tr>
+    <tr><td><code>-gt</code></td>
+        <td><code>gt</code></td>
+        <td>Integer greater than</td></tr>
+    <tr><td><code>-ge</code></td>
+        <td><code>ge</code></td>
+        <td>Integer greater than or equal</td></tr>
+    </table>
+
+</section>
+
+<section id="unnop">
+    <title>Unary operators</title>
+
+    <p>Unary operators have the form "<code>-[a-zA-Z]</code>", i.e. a
+    minus and one character. The name <em>is</em> case sensitive.
+    Modules may register additional unary operators.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
+
+    <tr><th>Name</th><th>Description</th></tr>
+    <tr><td><code>-n</code></td>
+        <td>String is not empty (XXX: not yet implemented)</td></tr>
+    <tr><td><code>-z</code></td>
+        <td>String is empty (XXX: not yet implemented)</td></tr>
+    </table>
+
+</section>
+
+<section id="functions">
+    <title>Functions</title>
+
+    <p>Normal string-valued functions take one string as argument and return
+    a string. Functions names are not case sensitive.
+    Modules may register additional functions.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+
+    <tr><th>Name</th><th>Description</th></tr>
+    <tr><td><code>req</code>, <code>http</code></td>
+        <td>Get HTTP request header</td></tr>
+    <tr><td><code>resp</code></td>
+        <td>Get HTTP response header</td></tr>
+    <tr><td><code>osenv</code></td>
+        <td>Lookup operating system environment variable</td></tr>
+    <tr><td><code>env</code></td>
+        <td>Lookup request environment variable (XXX: will need to be changed for better ssl_expr compat)</td></tr>
+    <tr><td><code>lolower</code></td>
+        <td>Convert string to lower case</td></tr>
+    <tr><td><code>toupper</code></td>
+        <td>Convert string to uppser case</td></tr>
+    <tr><td><code>escape</code></td>
+        <td>Escape special characters in %hex encoding</td></tr>
+    <tr><td><code>unescape</code></td>
+        <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
+    </table>
+
+    <p>In addition to string-valued functions, there are also list-valued functions which
+    take one string as argument and return a wordlist, i.e. a list of strings. The wordlist
+    can be used with the special <code>-in</code> operator.
+    Functions names are not case sensitive.
+    Modules may register additional functions.</p>
+
+    <p>There are no built-in list-valued functions. mod_ssl provides
+    <code>PeerExtList</code> (XXX: link)</p>
+
+</section>
+
+</manualpage>
