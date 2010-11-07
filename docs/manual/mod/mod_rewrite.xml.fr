@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 965798 -->
+<!-- English Revision : 1029508 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2010072501 $ -->
+<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -230,6 +230,26 @@ des traitements du moteur de r&eacute;&eacute;criture</description>
 	<directive>RewriteLog</directive>, soit utiliser
 	<code>RewriteLogLevel 0</code> !
 </note>
+
+    <p>Le format de fichier journal <directive>RewriteLog</directive> se
+    pr&eacute;sente comme suit :</p>
+
+<table>
+<tr><th>Description</th><th> Exemple</th></tr>
+<tr>
+<td>Adresse IP de l'h&ocirc;te distant</td>
+<td>192.168.200.166</td></tr>
+<tr><td>Nom de login didtant</td><td>en g&eacute;n&eacute;ral "-"</td></tr>
+<tr><td>nom d'authentification de l'utilisateur HTTP</td><td>nom
+d'utilisateur, ou "-" si non authentifi&eacute;</td></tr>
+<tr><td>Date et heure de la requ&ecirc;te</td><td>[28/Aug/2009:13:09:09 --0400]</td></tr>
+<tr><td>Serveur virtuel et son identifiant</td><td>[www.example.com/sid#84a650]</td></tr>
+<tr><td>Identifiant de la requ&ecirc;te et indication &eacute;ventuelle qu'il s'agit
+d'une sous-requ&ecirc;te</td><td>[rid#9f0e58/subreq]</td></tr>
+<tr><td>Niveau de s&eacute;v&eacute;rit&eacute; de l'entr&eacute;e du journal</td><td>(2)</td></tr>
+<tr><td>Message d'erreur au format texte</td><td>forcing proxy-throughput with http://127.0.0.1:8080/index.html</td></tr>
+</table>
+
 
 <note type="securitywarning"><title>S&eacute;curit&eacute;</title>
 
