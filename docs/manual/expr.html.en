@@ -157,11 +157,13 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td /></tr>
 <tr><td><code>CONTENT_TYPE</code></td>
         <td /></tr>
-<tr class="odd"><td><code>REMOTE_ADDR</code></td>
+<tr class="odd"><td><code>HANDLER</code></td>
         <td /></tr>
-<tr><td><code>HTTPS</code></td>
+<tr><td><code>REMOTE_ADDR</code></td>
         <td /></tr>
-<tr class="odd"><td><code>IPV6</code></td>
+<tr class="odd"><td><code>HTTPS</code></td>
+        <td /></tr>
+<tr><td><code>IPV6</code></td>
         <td /></tr>
 </table>
 
@@ -250,9 +252,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
 <tr><td><code>-n</code></td>
-        <td>String is not empty (XXX: not yet implemented)</td></tr>
+        <td>String is not empty</td></tr>
 <tr class="odd"><td><code>-z</code></td>
-        <td>String is empty (XXX: not yet implemented)</td></tr>
+        <td>String is empty</td></tr>
 </table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -269,11 +271,16 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Get HTTP request header</td></tr>
 <tr class="odd"><td><code>resp</code></td>
         <td>Get HTTP response header</td></tr>
-<tr><td><code>osenv</code></td>
+<tr><td><code>reqenv</code></td>
+        <td>Lookup request environment variable</td></tr>
+<tr class="odd"><td><code>osenv</code></td>
         <td>Lookup operating system environment variable</td></tr>
+<tr><td><code>note</code></td>
+        <td>Lookup request environment variable</td></tr>
 <tr class="odd"><td><code>env</code></td>
-        <td>Lookup request environment variable (XXX: will need to be changed for better ssl_expr compat)</td></tr>
-<tr><td><code>lolower</code></td>
+        <td>Reqturn first match of <code>note</code>, <code>reqenv</code>,
+            <code>osenv</code></td></tr>
+<tr><td><code>tolower</code></td>
         <td>Convert string to lower case</td></tr>
 <tr class="odd"><td><code>toupper</code></td>
         <td>Convert string to uppser case</td></tr>
@@ -281,6 +288,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Escape special characters in %hex encoding</td></tr>
 <tr class="odd"><td><code>unescape</code></td>
         <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
+<tr><td><code>file</code></td>
+        <td>Read contents from a file</td></tr>
 </table>
 
     <p>In addition to string-valued functions, there are also list-valued functions which
