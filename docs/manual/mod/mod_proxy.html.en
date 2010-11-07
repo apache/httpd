@@ -25,7 +25,7 @@
 <a href="../fr/mod/mod_proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>HTTP/1.1 proxy/gateway server</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multi-protocol proxy/gateway server</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy.c</td></tr></table>
@@ -36,23 +36,42 @@
       network and to the Internet at large.</p>
     </div>
 
-    <p>This module implements a proxy/gateway for Apache HTTP Server. It implements
-    proxying capability for <code>AJP13</code> (Apache JServe Protocol
-    version 1.3), <code>FTP</code>, <code>CONNECT</code> (for SSL),
-    <code>HTTP/0.9</code>, <code>HTTP/1.0</code>, and <code>HTTP/1.1</code>.
-    The module can be configured to connect to other proxy modules for these
-    and other protocols.</p>
+    <p><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and related modules implement a
+    proxy/gateway for Apache HTTP Server, supporting a number of popular
+    protocols as well as several different load balancing algorithms.
+    Third-party modules can add support for additional protocols and
+    load balancing algorithms.</p>
 
-    <p>Apache httpd's proxy features are divided into several modules in
-    addition to <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>:
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>,
-    <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>, <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>,
-    and <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>.  Thus, if you want to use
-    one or more of the particular proxy functions, load
-    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> <em>and</em> the appropriate module(s)
-    into the server (either statically at compile-time or dynamically
-    via the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
-    directive).</p>
+    <p>A set of modules must be loaded into the server to provide the
+    necessary features.  These modules can be included statically at
+    build time or dynamically via the
+    <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive).
+    The set must include:</p>
+
+    <ul>
+      <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, which provides basic proxy
+      capabilities</li>
+
+      <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and one or more
+      balancer modules, if load balancing is required.  (See 
+      <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> for more information.)</li>
+
+      <li>one or more proxy scheme, or protocol, modules:
+
+        <table class="bordered">
+        <tr><th>Protocol</th><th>Module</th></tr>
+        <tr><td>AJP13 (Apache JServe Protocol version
+          1.3)</td><td><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></td></tr>
+        <tr><td>CONNECT (for
+          SSL)</td><td><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></td></tr> 
+        <tr><td>FastCGI</td><td><code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></td></tr>
+        <tr><td>ftp</td><td><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></td></tr>
+        <tr><td>HTTP/0.9, HTTP/1.0, and
+          HTTP/1.1</td><td><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></td></tr> 
+        <tr><td>SCGI</td><td><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></td></tr>
+        </table>
+      </li>
+    </ul>
 
     <p>In addition, extended features are provided by other modules.
     Caching is provided by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> and related
@@ -104,9 +123,12 @@
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
-<li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
-<li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul></div>
