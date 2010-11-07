@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 421100:558632 (outdated) -->
-<!-- French translation by alain B, review by Vincent Deffontaines -->
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 558632 -->
+<!-- French translation by alain B, review by Vincent Deffontaines 
+	updated by Lucien GENTIS -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -41,7 +42,7 @@
     <p>Les hébergements virtuels par IP utilisent l'adresse IP 
     de la connexion afin de déterminer quel serveur virtuel doit 
     répondre. Par conséquent, vous devez disposer d'adresses IP 
-    différentes pour chaque nom de domaine complet (FQDN) que vous hébergez. 
+    différentes pour chaque serveur. 
     Avec un hébergement 
     virtuel par nom, le serveur s'appuit sur les informations 
     transmises par le client dans les en-têtes HTTP de ses requêtes. 
@@ -111,7 +112,8 @@
     IP dans une directive 
     <directive module="core">NameVirtualHost</directive> ne suffit 
     pas à faire écouter le serveur sur cette IP. Consultez 
-    <a href="../bind.html">la page sur les liaisons</a> pour plus 
+    <a href="../bind.html">Définition des adresses et ports qu'utilise
+    Apache</a> pour plus 
     de détails. Par ailleurs, chaque adresse IP spécifiée ici doit 
     être associée avec une interface réseau sur le serveur.</p>
 
@@ -121,8 +123,7 @@
     <directive type="section" module="core">VirtualHost</directive> 
     doit être le même que celui de la directive 
     <directive module="core">NameVirtualHost</directive> 
-    (c'est-à-dire l'adresse IP ou <code>*</code> pour toutes les 
-    adresses). Dans chaque section 
+    (dans le cas présent "*:80"). Dans chaque section 
     <directive type="section" module="core">VirtualHost</directive>, 
     vous devez définir au minimum une directive 
     <directive module="core">ServerName</directive> pour désigner 
@@ -208,8 +209,9 @@
     La plupart des directives peut être placée dans ces sections en 
     y changeant seulement la configuration du serveur virtuel associé. 
     Pour déterminer si une directive particulière est permise, 
-    consultez <a href="../mod/directive-dict.html#Context">la page de 
-    contexte</a>. Le jeu de directives configurées dans le contexte 
+    consultez le <a
+    href="../mod/directive-dict.html#Context">contexte</a> de la
+    directive. Le jeu de directives configurées dans le contexte 
     du <em>serveur principal</em> (en dehors de toutes sections 
     <directive type="section" module="core">VirtualHost</directive>) 
     sera utilisé seulement s'il n'y a pas de configuration contraire 
@@ -229,14 +231,14 @@
     dont l'adresse IP correspond sera employé.</p>
 
     <p>En conséquence, le premier serveur virtuel listé est le 
-    serveur virtuel <em>default</em>. La directive 
+    serveur virtuel <em>par défaut</em>. La directive 
     <directive module="core">DocumentRoot</directive> du 
     <em>serveur principal</em> <strong>ne</strong> sera 
     <strong>jamais</strong> employée lorsqu'une adresse IP 
-    correspond dans une directive 
+    correspond à la directive 
     <directive module="core">NameVirtualHost</directive>. Si vous 
-    ne voulez pas avoir de configuration spéciale pour les requêtes 
-    qui ne sont pas attachées à un serveur virtuel en particulier, 
+    souhaiter avoir une configuration spéciale pour les requêtes 
+    qui ne correspondent pas à un serveur virtuel en particulier, 
     mettez cette configuration dans une section 
     <directive type="section" module="core">VirtualHost</directive> 
     que vous placerez en premier dans le fichier de configuration.</p>
@@ -247,13 +249,13 @@
 
     <p>Comme mentionné plus tôt, certains clients ne transmettent 
     pas les données nécessaires pour le bon fonctionnement des 
-    serveurs virtuels. Ces clients recevront toujours les pages 
+    serveurs virtuels par nom. Ces clients recevront toujours les pages
     du premier serveur virtuel listé pour cette adresse IP (le 
     serveur virtuel par nom <cite>primaire</cite>).</p>
 
     <note><title>De combien plus anciens&nbsp;?</title>
     <p>Veuillez noter que quand nous disons plus anciens, nous 
-    disons vraiment plus anciens. Vous seriez malchanceux de rencontrer 
+    disons vraiment plus anciens. Vous avez peu de chances de rencontrer 
     de tels navigateurs encore utilisés de nos jours. Toutes les 
     versions actuelles des navigateurs transmettent leur en-tête 
     <code>Host</code> comme exigé par les serveurs virtuels par nom.</p>
