@@ -196,9 +196,8 @@
 }
 
 <var>.|\n {
-    char c[2] = { yytext[0], '\0' };
     char *msg = apr_psprintf(yyextra->pool,
-                             "Invalid character in variable name '%s'", c);
+                             "Invalid character in variable name '%c'", yytext[0]);
     PERROR(msg);
 }
 
@@ -334,8 +333,7 @@
   * Anything else is an error
   */
 .|\n {
-    char c[2] = { yytext[0], '\0' };
-    char *msg = apr_psprintf(yyextra->pool, "Parse error near '%s'", c);
+    char *msg = apr_psprintf(yyextra->pool, "Parse error near '%c'", yytext[0]);
     PERROR(msg);
 }
 

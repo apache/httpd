@@ -83,7 +83,7 @@ static const char *ap_expr_eval_var(ap_expr_eval_ctx *ctx,
 static const char *ap_expr_eval_string_func(ap_expr_eval_ctx *ctx, const ap_expr *info,
                                             const ap_expr *arg)
 {
-    ap_expr_string_func_t *func = info->node_arg1;
+    ap_expr_string_func_t *func = (ap_expr_string_func_t *)info->node_arg1;
     const void *data = info->node_arg2;
 
     AP_DEBUG_ASSERT(info->node_op == op_StringFuncInfo);
@@ -186,7 +186,7 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx *ctx, const ap_expr *node)
             else if (e2->node_op == op_ListFuncCall) {
                 const ap_expr *info = e2->node_arg1;
                 const ap_expr *arg = e2->node_arg2;
-                ap_expr_list_func_t *func = info->node_arg1;
+                ap_expr_list_func_t *func = (ap_expr_list_func_t *)info->node_arg1;
                 apr_array_header_t *haystack;
                 int i = 0;
                 AP_DEBUG_ASSERT(func != NULL);
