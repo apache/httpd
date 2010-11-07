@@ -611,6 +611,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             char writebuf[AP_IOBUFSIZE];
             apr_size_t writebuflen;
             int last_stdin = 0;
+            int nvec = 0;
 
             rv = ap_get_brigade(r->input_filters, ib,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
@@ -637,12 +638,16 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                            (apr_uint16_t) writebuflen, 0);
             fcgi_header_to_array(&header, farray);
 
-            vec[0].iov_base = farray;
-            vec[0].iov_len = sizeof(farray);
-            vec[1].iov_base = writebuf;
-            vec[1].iov_len = writebuflen;
+            vec[nvec].iov_base = farray;
+            vec[nvec].iov_len = sizeof(farray);
+            ++nvec;
+            if (writebuflen) {
+                vec[nvec].iov_base = writebuf;
+                vec[nvec].iov_len = writebuflen;
+                ++nvec;
+            }
 
-            rv = send_data(conn, vec, 2, &len, 0);
+            rv = send_data(conn, vec, nvec, &len, 0);
             if (rv != APR_SUCCESS) {
                 break;
             }
@@ -650,13 +655,15 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             if (last_stdin) {
                 pfd.reqevents = APR_POLLIN; /* Done with input data */
 
-                fill_in_header(&header, FCGI_STDIN, request_id, 0, 0);
-                fcgi_header_to_array(&header, farray);
+                if (writebuflen) { /* empty FCGI_STDIN not already sent? */
+                    fill_in_header(&header, FCGI_STDIN, request_id, 0, 0);
+                    fcgi_header_to_array(&header, farray);
 
-                vec[0].iov_base = farray;
-                vec[0].iov_len = sizeof(farray);
+                    vec[0].iov_base = farray;
+                    vec[0].iov_len = sizeof(farray);
 
-                rv = send_data(conn, vec, 1, &len, 1);
+                    rv = send_data(conn, vec, 1, &len, 1);
+                }
             }
         }
 
