@@ -166,11 +166,12 @@ typedef struct {
     const char *p;            /* The path */
     ap_regex_t  *r;            /* Is this a regex? */
 
-/* ProxyPassReverse and friends are documented as working inside
+/* FIXME
+ * ProxyPassReverse and friends are documented as working inside
  * <Location>.  But in fact they never have done in the case of
  * more than one <Location>, because the server_conf can't see it.
  * We need to move them to the per-dir config.
- * Discussed in February:
+ * Discussed in February 2005:
  * http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=110726027118798&w=2
  */
     apr_array_header_t *raliases;
@@ -242,7 +243,7 @@ struct proxy_conn_pool {
 #if APR_HAS_THREADS
     apr_reslist_t  *res;    /* Connection resource list */
 #endif
-    proxy_conn_rec *conn;   /* Single connection for prefork mpm's */
+    proxy_conn_rec *conn;   /* Single connection for prefork mpm */
 };
 
 /* worker status flags */
@@ -349,8 +350,8 @@ struct proxy_worker {
 };
 
 /*
- * Wait 10000 microseconds to find out if more data is currently
- * available at the backend. Just an arbitrary choose.
+ * Time to wait (in microseconds) to find out if more data is currently
+ * available at the backend.
  */
 #define PROXY_FLUSH_WAIT 10000
 
@@ -368,12 +369,6 @@ struct proxy_balancer {
     int             sticky_force:1;   /* Disable failover for sticky sessions */
     int             scolonsep:1;      /* true if ';' seps sticky session paths */
     int             max_attempts_set:1;
-
-    /* XXX: Perhaps we will need the proc mutex too.
-     * Altrough we are only using arithmetic operations
-     * it may lead to a incorrect calculations.
-     * For now use only the thread mutex.
-     */
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
@@ -574,7 +569,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker_wid(apr_pool_t *p, int id);
 PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p);
 
 /**
- * Initize the worker's shared data
+ * Initialize the worker's shared data
  * @param conf   current proxy server configuration
  * @param worker worker to initialize
  * @param s      current server record
@@ -586,10 +581,10 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
 
 
 /**
- * Initize the worker
+ * Initialize the worker
  * @param worker worker to initialize
  * @param s      current server record
- * @param p      memory pool used for mutex and Connection pool.
+ * @param p      memory pool used for mutex and connection pool
  * @return       APR_SUCCESS or error code
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
@@ -597,9 +592,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
                                                        apr_pool_t *p);
 /**
  * Get the balancer from proxy configuration
- * @param p     memory pool used for finding balancer
+ * @param p     memory pool used for temporary storage while finding balancer
  * @param conf  current proxy server configuration
- * @param url   url to find the worker from. Has to have balancer:// prefix
+ * @param url   url to find the worker from; must have balancer:// prefix
  * @return      proxy_balancer or NULL if not found
  */
 PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
@@ -624,7 +619,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
  * @param balancer balancer to add to
  * @param worker worker to add
  * @param id     slotnumber id or -1 for auto allocation
- * @note Single worker can be added to multiple balancers.
+ * @note A single worker can be added to multiple balancers.
  */
 PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool,
                                                     proxy_balancer *balancer,
@@ -635,13 +630,13 @@ PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool,
  * @param pool     memory pool for adding worker 
  * @param balancer balancer to add to
  * @param worker worker to add
- * @note Single worker can be added to multiple balancers.
+ * @note A single worker can be added to multiple balancers.
  */
 PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool,
                                                     proxy_balancer *balancer,
                                                     proxy_worker *worker);
 /**
- * Get the most suitable worker and(or) balancer for the request
+ * Get the most suitable worker and/or balancer for the request
  * @param worker   worker used for processing request
  * @param balancer balancer used for processing request
  * @param r        current request
@@ -663,7 +658,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
  * @param r        current request
  * @param conf     current proxy server configuration
  * @return         OK or  HTTP_XXX error
- * @note When ever the pre_request is called, the post_request has to be
+ * @note Whenever the pre_request is called, the post_request has to be
  * called too. 
  */
 PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
@@ -680,7 +675,7 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
  PROXY_DECLARE(int) ap_proxy_request_status(int *status, request_rec *r);
 
 /**
- * Deternime backend hostname and port
+ * Determine backend hostname and port
  * @param p       memory pool used for processing
  * @param r       current request
  * @param conf    current proxy server configuration
@@ -688,7 +683,7 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
  * @param conn    proxy connection struct
  * @param uri     processed uri
  * @param url     request url
- * @param proxyname are we connecting directly or via s proxy
+ * @param proxyname are we connecting directly or via a proxy
  * @param proxyport proxy host port
  * @param server_portstr Via headers server port
  * @param server_portstr_size size of the server_portstr buffer
@@ -711,23 +706,24 @@ PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
  * @param worker  worker used for retrying
  * @param s       current server record
  * @return        OK if marked for retry, DECLINED otherwise
- * @note Worker will be marker for retry if the time of the last retry
- * has been ellapsed. In case there is no retry option set, defaults to
- * number_of_retries seconds.
- */                                         
+ * @note The error status of the worker will cleared if the retry interval has
+ * elapsed since the last error.
+ */
 PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
                                          proxy_worker *worker,
                                          server_rec *s);
+
 /**
- * Acquire a connection from workers connection pool
+ * Acquire a connection from worker connection pool
  * @param proxy_function calling proxy scheme (http, ajp, ...)
  * @param conn    acquired connection
  * @param worker  worker used for obtaining connection
  * @param s       current server record
  * @return        OK or HTTP_XXX error
- * @note If the number of connections is exhaused the function will
- * block untill the timeout is reached.
- */                                         
+ * @note If the connection limit has been reached, the function will
+ * block until a connection becomes available or the timeout has
+ * elapsed.
+ */
 PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                                                proxy_conn_rec **conn,
                                                proxy_worker *worker,
@@ -764,7 +760,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
  * @param c       client connection record
  * @param s       current server record
  * @return        OK or HTTP_XXX error
- */                                         
+ * @note The function will return immediately if conn->connection
+ * is already set,
+ */
 PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
                                               conn_rec *c, server_rec *s);
@@ -818,8 +816,9 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method);
  * If this limit is reached you must stop and restart the server.
  */
 #define PROXY_DYNAMIC_BALANCER_LIMIT    16
+
 /**
- * Calculate number of maximum number of workers in scoreboard.
+ * Calculate maximum number of workers in scoreboard.
  * @return  number of workers to allocate in the scoreboard
  */
 int ap_proxy_lb_workers(void);
