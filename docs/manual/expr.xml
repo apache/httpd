@@ -161,6 +161,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td></td></tr>
     <tr><td><code>CONTENT_TYPE</code></td>
         <td></td></tr>
+    <tr><td><code>HANDLER</code></td>
+        <td></td></tr>
     <tr><td><code>REMOTE_ADDR</code></td>
         <td></td></tr>
     <tr><td><code>HTTPS</code></td>

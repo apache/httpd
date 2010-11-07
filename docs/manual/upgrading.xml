@@ -221,6 +221,11 @@
         directive, review your configuration to make sure it is
         present in all the necessary directory contexts.</li>
 
+        <li><module>mod_filter</module>: <directive
+        module="filter">FilterProvider</directive> syntax has changed and
+        now uses a boolean expression to determine if a filter is applied.
+        </li>
+
       </ul>
     </section>
   </section>
