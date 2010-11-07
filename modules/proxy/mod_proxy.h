@@ -26,12 +26,6 @@
  * @{
  */
 
-/*
-
-   Also note numerous FIXMEs and CHECKMEs which should be eliminated.
-
- */
-
 #include "apr_hooks.h"
 #include "apr.h"
 #include "apr_lib.h"
