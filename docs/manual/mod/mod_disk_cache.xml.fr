@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1003839 -->
+<!-- English Revision : 1029833 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,27 +25,40 @@
 <modulesynopsis metafile="mod_disk_cache.xml.meta">
 
 <name>mod_disk_cache</name>
-<description>Gestionnaire de stockage du cache de contenu &agrave; base
-d'URIs</description>
+<description>Module de stockage sur disque pour le filtre de mise en
+cache HTTP.</description>
 <status>Extension</status>
 <sourcefile>mod_disk_cache.c</sourcefile>
 <identifier>disk_cache_module</identifier>
 
 <summary>
     <p><module>mod_disk_cache</module> impl&eacute;mente un gestionnaire de
-    stockage sur disque. Il s'utilise principalement avec
-    <module>mod_cache</module>.</p>
+    stockage sur disque pour le module <module>mod_cache</module>.</p>
 
-    <p>Les contenus sont stock&eacute;s dans le cache et extraits de ce dernier
-    en utilisant des cl&eacute;s &agrave; base d'URIs. Les contenus dont l'acc&egrave;s est
-    prot&eacute;g&eacute; ne sont pas mis en cache.</p>
+    <p>Les en-t&ecirc;tes et corps des r&eacute;ponses mises en cache sont stock&eacute;s
+    s&eacute;par&eacute;ment sur le disque, dans une structure de r&eacute;pertoires bas&eacute;e
+    sur le condens&eacute; md5 de l'URL mise en cache.</p>
 
-    <p>Le programme <program>htcacheclean</program> permet de maintenir
-    la taille du cache &agrave; un niveau maximum.</p>
+    <p>Plusieurs r&eacute;ponses au contenu n&eacute;goci&eacute; peuvent &ecirc;tre stock&eacute;es en
+    m&ecirc;me temps, mais la mise en cache de contenus partiels n'est pas
+    support&eacute;e actuellement par ce module.</p>
+
+    <p>Les mises &agrave; jour atomiques du cache pour les fichiers d'en-t&ecirc;te
+    et de corps peuvent &ecirc;tre effectu&eacute;es sans verrouillage en
+    enregistrant les num&eacute;ros d'inode et de p&eacute;riph&eacute;rique du fichier de
+    corps dans le fichier d'en-t&ecirc;te. Ceci implique que les entr&eacute;es du
+    cache d&eacute;plac&eacute;es manuellement dans le cache seront ignor&eacute;es.</p>
+
+    <p>L'utilitaire <program>htcacheclean</program> permet de lister et
+    de supprimer les URLs du cache, ou de maintenir le cache en de&ccedil;&agrave; de
+    certaines limites de taille et/ou de nombre d'inodes. L'utilitaire
+    peut &ecirc;tre ex&eacute;cut&eacute; &agrave; la demande, ou automatiquement pour assurer un
+    contr&ocirc;le continu des tailles des r&eacute;pertoires.</p>
 
     <note><title>Note :</title>
-      <p><module>mod_cache</module> doit &ecirc;tre charg&eacute; pour que
-      <module>mod_disk_cache</module> puisse fonctionner.</p>
+      <p><module>mod_cache</module> doit &ecirc;tre charg&eacute; avant
+      <module>mod_disk_cache</module> pour que ce dernier puisse
+      fonctionner.</p>
     </note>
     <p>Lorsque la plate-forme la supporte, et si elle est activ&eacute;e via la
     directive <directive module="core">EnableSendfile</directive>,

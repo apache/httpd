@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1002119 -->
+<!-- English Revision : 1030041 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,6 +33,14 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 </summary>
 
 <section id="related"><title>Fichiers .htaccess</title>
+    <note>Les fichiers <code>.htaccess</code> ne doivent &ecirc;tre utilis&eacute;s
+    que si vous n'avez pas acc&egrave;s au fichier de configuration du serveur
+    principal. L'utilisation des fichiers <code>.htaccess</code>
+    ralentit le fonctionnement de votre serveur Apache. Il est toujours
+    pr&eacute;f&eacute;rable de d&eacute;finir les directives que vous pouvez inclure dans un
+    fichier <code>.htaccess</code> dans une section <directive
+    module="core">Directory</directive>, car elles produiront le
+    m&ecirc;me effet avec de meilleures performances.</note>
     <related>
         <modulelist>
             <module>core</module>
@@ -444,7 +452,7 @@ Includes - SSI)</title>
     <code>AllowOverride None</code> n'affecte pas le r&eacute;pertoire o&ugrave; se
     trouve votre fichier. Un bon test consiste &agrave; mettre des directives
     dont la syntaxe est erron&eacute;e dans votre ficher <code>.htaccess</code>
-    et de red&eacute;marrer le serveur. Si aucune erreur n'est g&eacute;n&eacute;r&eacute;e par le
+    et de recharger la page. Si aucune erreur n'est g&eacute;n&eacute;r&eacute;e par le
     serveur, il est pratiquement certain qu'une directive
     <code>AllowOverride None</code> affecte votre r&eacute;pertoire.</p>
 

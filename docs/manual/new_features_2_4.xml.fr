@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1022232 -->
+<!-- English Revision : 1029588 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -85,6 +85,16 @@ serveur HTTP Apache</title>
 
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
       httpd, pour la configuration et des fonctions logiques simples.</dd>
+
+      <dt><module>mod_proxy</module></dt>
+
+      <dd>La directive <directive
+      module="mod_proxy">ProxyPass</directive> est maintenant configur&eacute;e
+      de la mani&egrave;re la plus optimale dans les sections <directive
+      module="core">Location</directive> ou <directive
+      module="core">LocationMatch</directive>, et offre un gain de
+      performances important par rapport &agrave; la syntaxe traditionnelle &agrave;
+      deux param&egrave;tres lorsqu'elle est pr&eacute;sente en grand nombre.</dd>
  
       <dt><module>mod_proxy_fcgi</module></dt>
 

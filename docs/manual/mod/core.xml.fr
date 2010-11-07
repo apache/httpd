@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1023846 -->
+<!-- English Revision : 10287999 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2249,7 +2249,7 @@ host</context>
 requ&ecirc;te HTTP</description>
 <syntax>LimitRequestFields <var>nombre</var></syntax>
 <default>LimitRequestFields 100</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p><var>nombre</var> est un entier de 0 (nombre de champs illimit&eacute;)
@@ -2283,6 +2283,13 @@ requ&ecirc;te HTTP</description>
       LimitRequestFields 50
     </example>
 
+    <note type="warning"><title>Avertissement</title>
+     <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
+     cette directive est extraite du serveur virtuel par d&eacute;faut (le
+     premier de la liste) pour lequel la connexion correspondait &agrave; la
+     directive <directive>NameVirtualHost</directive>.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -2292,7 +2299,7 @@ requ&ecirc;te HTTP</description>
 requ&ecirc;te HTTP</description>
 <syntax>LimitRequestFieldSize <var>octets</var></syntax>
 <default>LimitRequestFieldSize 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>Cette directive permet de d&eacute;finir le nombre maximum
@@ -2323,6 +2330,13 @@ requ&ecirc;te HTTP</description>
     <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
     directive ne doit pas &ecirc;tre modifi&eacute;e.</note>
 
+    <note type="warning"><title>Avertissement</title>
+     <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
+     cette directive est extraite du serveur virtuel par d&eacute;faut (le
+     premier de la liste) pour lequel la connexion correspondait &agrave; la
+     directive <directive>NameVirtualHost</directive>.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -2332,7 +2346,7 @@ requ&ecirc;te HTTP</description>
 HTTP</description>
 <syntax>LimitRequestLine <var>octets</var></syntax>
 <default>LimitRequestLine 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>Cette directive permet de d&eacute;finir la taille maximale autoris&eacute;e
@@ -2362,6 +2376,14 @@ HTTP</description>
 
     <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
     directive ne doit pas &ecirc;tre modifi&eacute;e.</note>
+
+    <note type="warning"><title>Avertissement</title>
+     <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
+     cette directive est extraite du serveur virtuel par d&eacute;faut (le
+     premier de la liste) pour lequel la connexion correspondait &agrave; la
+     directive <directive>NameVirtualHost</directive>.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
