@@ -290,7 +290,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Lookup operating system environment variable</td></tr>
     <tr><td><code>env</code></td>
         <td>Lookup request environment variable (XXX: will need to be changed for better ssl_expr compat)</td></tr>
-    <tr><td><code>lolower</code></td>
+    <tr><td><code>tolower</code></td>
         <td>Convert string to lower case</td></tr>
     <tr><td><code>toupper</code></td>
         <td>Convert string to uppser case</td></tr>
@@ -298,6 +298,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Escape special characters in %hex encoding</td></tr>
     <tr><td><code>unescape</code></td>
         <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
+    <tr><td><code>file</code></td>
+        <td>Read contents from a file</td></tr>
     </table>
 
     <p>In addition to string-valued functions, there are also list-valued functions which
