@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1025748 -->
+<!-- English Revision : 1028778 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -368,6 +368,12 @@ d'&eacute;viter un bouclage infini sur les r&egrave;gles,
 et de ne pas compter seulement sur
 le drapeau [L] pour terminer l'ex&eacute;cution d'une s&eacute;rie de r&egrave;gles, comme
 d&eacute;crit ci-dessous.</p>
+
+<p>Un autre drapeau, [END], permet non seulement d'interrompre le cycle
+courant du processus de r&eacute;&eacute;criture, mais aussi d'emp&ecirc;cher toute
+r&eacute;&eacute;criture ult&eacute;rieure dans le contexte de r&eacute;pertoire (htaccess). Ceci ne
+s'applique pas aux nouvelles requ&ecirc;tes r&eacute;sultant de redirections
+externes.</p>
 
 <p>Dans l'exemple donn&eacute; ici, toute requ&ecirc;te est r&eacute;&eacute;crite en
 <code>index.php</code>, la requ&ecirc;te originale &eacute;tant ajout&eacute;e comme cha&icirc;ne

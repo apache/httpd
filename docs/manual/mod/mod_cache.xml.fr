@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1021546 -->
+<!-- English Revision : 1029587 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,8 +25,7 @@
 <modulesynopsis metafile="mod_cache.xml.meta">
 
 <name>mod_cache</name>
-<description>Mise en cache de contenu r&eacute;f&eacute;renc&eacute; par un
-URI.</description>
+<description>Filtre de mise en cache HTTP conforme &agrave; la RFC 2616</description>
 <status>Extension</status>
 <sourcefile>mod_cache.c</sourcefile>
 <identifier>cache_module</identifier>
@@ -43,21 +42,94 @@ URI.</description>
     d'h&ocirc;te du client, de l'adresse IP ou d'une variable
     d'environnement.</note>
 
-    <p><module>mod_cache</module> impl&eacute;mente une mise en cache de
-    contenu HTTP compatible <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> qui peut
-    &ecirc;tre utilis&eacute;e pour mettre en cache des contenus locaux ou mandat&eacute;s.
-    <module>mod_cache</module> requiert les services d'un ou plusieurs
-    modules de gestion de stockage. La distribution Apache de base
+    <p><module>mod_cache</module> impl&eacute;mente un <strong>filtre de mise
+    en cache de contenu HTTP</strong> conforme &agrave; la <a
+    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>, avec
+    support de la mise en cache des r&eacute;ponses dont le contenu a &eacute;t&eacute;
+    n&eacute;goci&eacute; et comportant l'en-t&ecirc;te Vary.</p>
+
+    <p>La mise en cache conforme &agrave; la RFC 2616 fournit un m&eacute;canisme
+    permettant de v&eacute;rifier si un contenu expir&eacute; ou d&eacute;pass&eacute; est encore &agrave;
+    jour, et peut apporter un gain de performances significatif si le
+    serveur original supporte les <strong>requ&ecirc;tes
+    conditionnelles</strong> en prenant en compte l'en-t&ecirc;te de requ&ecirc;te
+    HTTP <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>.
+    Le contenu n'est ainsi r&eacute;g&eacute;n&eacute;r&eacute; que lorsqu'il a &eacute;t&eacute; modifi&eacute;, et non
+    lorsqu'il a expir&eacute;.</p>
+
+    <p>En tant que filtre, <module>mod_cache</module> peut &ecirc;tre plac&eacute;
+    en face d'un contenu issu de tout gestionnaire, y compris
+    <strong>des fichiers &agrave; acc&egrave;s s&eacute;quentiel</strong> (servis depuis un
+    disque lent mis en
+    cache sur un gros disque), la sortie d'un <strong>script
+    CGI</strong> ou d'un <strong>g&eacute;n&eacute;rateur de contenu
+    dynamique</strong>, ou du contenu <strong>mandat&eacute; depuis un autre
+    serveur</strong>.</p>
+
+    <p>Dans la configuration par d&eacute;faut, <module>mod_cache</module>
+    place le filtre de mise en cache aussi loin que possible dans la
+    pile de filtres, utilisant le <strong>gestionnaire rapide</strong>
+    pour court-circuiter tout traitement par requ&ecirc;te lors de l'envoi du
+    contenu au client. Dans ce mode op&eacute;ratoire,
+    <module>mod_cache</module> peut &ecirc;tre consid&eacute;r&eacute; comme un serveur
+    mandataire avec cache fix&eacute; en t&ecirc;te du serveur web, alors qu'il
+    s'ex&eacute;cute dans ce m&ecirc;me serveur web.</p>
+
+    <p>Lorsque le gestionnaire rapide est d&eacute;sactiv&eacute; via la directive
+    <directive module="mod_cache">CacheQuickHandler</directive>, il
+    devient possible d'ins&eacute;rer le filtre <strong>CACHE</strong> &agrave; un
+    point de la pile de filtres choisi par l'administrateur. Ceci permet
+    de mettre en cache un contenu avant que celui-ci ne soit
+    personnalis&eacute; par le filtre <module>mod_include</module>, ou
+    &eacute;ventuellement compress&eacute; par le filtre <module>mod_deflate</module>.</p>
+
+    <p>Dans le mode de fonctionnement normal, <module>mod_cache</module>
+    peut &ecirc;tre contr&ocirc;l&eacute; par les en-t&ecirc;tes <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    et <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    envoy&eacute;s par un client dans une requ&ecirc;te, ou par un serveur dans une
+    r&eacute;ponse. Dans des circonstances exceptionnelles,
+    <module>mod_cache</module> peut cependant &ecirc;tre configur&eacute; pour
+    outrepasser ces en-t&ecirc;tes et forcer un comportement sp&eacute;cifique au
+    site, bien qu'un tel comportement sera limit&eacute; &agrave; ce cache seulement,
+    et n'affectera pas les op&eacute;rations des autres caches qui peuvent
+    s'ins&eacute;rer entre le client et le serveur, et ce type de configuration
+    ne doit donc &ecirc;tre utiliser qu'en cas de n&eacute;cessit&eacute; absolue.</p>
+
+    <p>La RFC 2616 permet au cache de renvoyer des donn&eacute;es p&eacute;rim&eacute;es
+    pendant que l'entr&eacute;e p&eacute;rim&eacute;e correspondante est mise &agrave; jour depuis
+    le serveur original, et <module>mod_cache</module> supporte cette
+    fonctionnalit&eacute; lorsque la directive <directive
+    module="mod_cache">CacheLock</directive> est configur&eacute;e en
+    cons&eacute;quence. De telles r&eacute;ponses comportent un en-t&ecirc;te HTTP <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    contenant un code de r&eacute;ponse 110. La RFC 2616 permet aussi au cache
+    de renvoyer des donn&eacute;es p&eacute;rim&eacute;es lorsque la tentative de mise &agrave; jour
+    des donn&eacute;es p&eacute;rim&eacute;es renvoie une erreur 500 ou sup&eacute;rieure, et cette
+    fonctionnalit&eacute; est support&eacute;e par d&eacute;faut par
+    <module>mod_cache</module>. De telles r&eacute;ponses comportent un en-t&ecirc;te HTTP <a
+    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    contenant un code de r&eacute;ponse 111.</p>
+
+    <p><module>mod_cache</module> requiert les services d'un ou
+    plusieurs modules de gestion de stockage. La distribution Apache de base
     inclut un module de gestion de stockage :</p>
     <dl>
     <dt><module>mod_disk_cache</module></dt>
-    <dd>impl&eacute;mente un gestionnaire de stockage sur disque.</dd>
+    
+    <dd>impl&eacute;mente un gestionnaire de stockage sur disque. Les en-t&ecirc;tes
+    et corps sont stock&eacute;s s&eacute;par&eacute;ment sur le disque dans une structure de
+    r&eacute;pertoires bas&eacute;e sur le condens&eacute; md5 de l'URL mise en cache.
+    Plusieurs r&eacute;ponses &agrave; contenu n&eacute;goci&eacute; peuvent &ecirc;tre stock&eacute;es en m&ecirc;me
+    temps, mais la mise en cache de contenus partiels n'est pas
+    support&eacute;e par ce module. L'utilitaire
+    <program>htcacheclean</program> permet de lister et de supprimer les
+    URLs mises en cache, et de maintenir le cache en de&ccedil;&agrave; de
+    certaines limites de taille et de nombre d'inodes.</dd>
     </dl>
 
-    <p>Les contenus sont stock&eacute;s dans le cache et extraits de ce dernier
-    en utilisant une cl&eacute; &agrave; base d'URI. Un contenu dont l'acc&egrave;s est
-    prot&eacute;g&eacute; ne sera pas mis en cache.</p>
     <p>Pour de plus amples d&eacute;tails, une description, et des exemples,
     reportez-vous au <a href="../caching.html">Guide de la mise en
     cache</a>.</p>
@@ -190,7 +262,7 @@ cache</a></seealso>
   poss&eacute;dant les plus hautes performances disponibles.</p>
 
   <p>Dans ce mode, le cache <strong>s'incruste</strong> devant le
-  serveur, comme si un mandataire de mise en cache ind&eacute;pendant RFC2616
+  serveur, comme si un mandataire de mise en cache ind&eacute;pendant RFC 2616
   &eacute;tait plac&eacute; devant ce dernier.</p>
 
   <p>Bien que que ce mode offre les meilleures performances, les

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 420990 -->
+<!-- English Revision : 1029180 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -54,6 +54,8 @@ d'Apache</compatibility>
 </seealso>
 <seealso><program>htpasswd</program></seealso>
 <seealso><program>htdigest</program></seealso>
+<seealso><a href="../misc/password_encryptions.html">Formats de mots de
+passe</a></seealso>
 
 <directivesynopsis>
 <name>AuthUserFile</name>
@@ -80,10 +82,17 @@ passe</description>
     <module>mod_authn_file</module> utilisera la premi&egrave;re occurence pour
     v&eacute;rifier le mot de passe.</p>
 
-    <p>Pour l'<em>Authentification de base HTTP</em>, on utilise
-    l'utilitaire <program>htpasswd</program>, install&eacute; avec la
-    distribution binaire ou se trouvant dans <code>src/support</code>,
-    pour maintenir le fichier des mots de passe. Voir sa <a
+     <p>Le format du mot de passe chiffr&eacute; d&eacute;pend du frontal
+     d'authentification utilis&eacute; (par exemple
+     <module>mod_authn_basic</module> ou
+     <module>mod_authn_digest</module>). Voir la documentation sur les
+     <a href="../misc/password_encryptions.html">Formats de mots de
+     passe</a> pour plus de d&eacute;tails.</p>
+
+    <p>Pour <module>mod_authn_basic</module>, utilisez le programme
+    <program>htpasswd</program> fourni avec la distribution binaire,
+    mais que vous trouverez aussi dans le r&eacute;pertoire
+    <code>src/support</code> de l'arborescence des sources. Voir sa <a
     href="../programs/htpasswd.html">page de manuel</a> pour plus de
     d&eacute;tails. En bref :</p>
 
@@ -107,9 +116,8 @@ passe</description>
     avec la directive <directive
     module="mod_authn_dbm">AuthDBMUserFile</directive>.</p>
 
-    <p>Si vous utilisez l'<em>Authentification HTTP &agrave; base de
-    condens&eacute;</em>, l'utilitaire <program>htpasswd</program> ne convient
-    pas. Vous devez utiliser <program>htdigest</program> &agrave; la place.
+    <p>Pour <module>mod_authn_digest</module>, vous devez utiliser
+    le programme <program>htdigest</program>.
     Notez que vous ne pouvez pas m&eacute;langer des donn&eacute;es utilisateur pour
     l'Authentification HTTP &agrave; base de condens&eacute; et des donn&eacute;es pour
     l'Authentification de Base dans le m&ecirc;me fichier.</p>

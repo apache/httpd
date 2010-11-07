@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 921866:1029136 (outdated) -->
+<!-- English Revision: 1029136 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -391,7 +391,7 @@
 
       <dd>L'<a href="mod/mpm_common.html#user">utilisateur</a> sous
       lequel httpd s'ex&eacute;cute habituellement. C'est le seul utilisateur
-      autoris&eacute; &agrave; utiliser suexec.</dd>
+      autoris&eacute; &agrave; ex&eacute;cuter le wrapper suEXEC.</dd>
 
       <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
 
