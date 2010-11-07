@@ -264,9 +264,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <tr><th>Name</th><th>Description</th></tr>
     <tr><td><code>-n</code></td>
-        <td>String is not empty (XXX: not yet implemented)</td></tr>
+        <td>String is not empty</td></tr>
     <tr><td><code>-z</code></td>
-        <td>String is empty (XXX: not yet implemented)</td></tr>
+        <td>String is empty</td></tr>
     </table>
 
 </section>
@@ -286,10 +286,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Get HTTP request header</td></tr>
     <tr><td><code>resp</code></td>
         <td>Get HTTP response header</td></tr>
+    <tr><td><code>reqenv</code></td>
+        <td>Lookup request environment variable</td></tr>
     <tr><td><code>osenv</code></td>
         <td>Lookup operating system environment variable</td></tr>
+    <tr><td><code>note</code></td>
+        <td>Lookup request environment variable</td></tr>
     <tr><td><code>env</code></td>
-        <td>Lookup request environment variable (XXX: will need to be changed for better ssl_expr compat)</td></tr>
+        <td>Reqturn first match of <code>note</code>, <code>reqenv</code>,
+            <code>osenv</code></td></tr>
     <tr><td><code>tolower</code></td>
         <td>Convert string to lower case</td></tr>
     <tr><td><code>toupper</code></td>

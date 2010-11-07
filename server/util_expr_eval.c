@@ -693,46 +693,55 @@ AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info, const c
         return (rc ? 1 : 0);
 }
 
-static const char *req_func(ap_expr_eval_ctx *ctx, const char *name,
+static const char *req_table_func(ap_expr_eval_ctx *ctx, const void *data,
+                                  const char *arg)
+{
+    const char *name = (const char *)data;
+    apr_table_t *t;
+    if (!ctx->r)
+        return "";
+
+    if (name[3] == 's')             /* resp */
+        t = ctx->r->headers_out;
+    else if (name[4] == 'e')        /* reqenv */
+        t = ctx->r->subprocess_env;
+    else if (name[0] == 'n')        /* notes */
+        t = ctx->r->notes;
+    else
+        t = ctx->r->headers_in;
+    return apr_table_get(t, arg);
+}
+
+static const char *env_func(ap_expr_eval_ctx *ctx, const void *data,
                             const char *arg)
 {
-    if (ctx->r)
-        return apr_table_get(ctx->r->headers_in, arg);
-    else
-        return "";
+    const char *res;
+    /* this order is for ssl_expr compatibility */
+    if (ctx->r) {
+        if ((res = apr_table_get(ctx->r->notes, arg)) != NULL)
+            return res;
+        else if ((res = apr_table_get(ctx->r->subprocess_env, arg)) != NULL)
+            return res;
+    }
+    return getenv(arg);
 }
 
-static const char *resp_func(ap_expr_eval_ctx *ctx, const char *name,
-                             const char *arg)
-{
-    if (ctx->r)
-        return apr_table_get(ctx->r->headers_out, arg);
-    else
-        return "";
-}
-
-static const char *env_func(ap_expr_eval_ctx *ctx, const char *name,
-                            const char *arg)
-{
-    if (ctx->r)
-        return apr_table_get(ctx->r->subprocess_env, arg);
-    else
-        return "";
-}
-
-static const char *osenv_func(ap_expr_eval_ctx *ctx, const char *name, const char *arg)
+static const char *osenv_func(ap_expr_eval_ctx *ctx, const void *data,
+                              const char *arg)
 {
     return getenv(arg);
 }
 
-static const char *tolower_func(ap_expr_eval_ctx *ctx, const char *name, const char *arg)
+static const char *tolower_func(ap_expr_eval_ctx *ctx, const void *data,
+                                const char *arg)
 {
     char *result = apr_pstrdup(ctx->p, arg);
     ap_str_tolower(result);
     return result;
 }
 
-static const char *toupper_func(ap_expr_eval_ctx *ctx, const char *name, const char *arg)
+static const char *toupper_func(ap_expr_eval_ctx *ctx, const void *data,
+                                const char *arg)
 {
     char *p;
     char *result = apr_pstrdup(ctx->p, arg);
@@ -744,13 +753,14 @@ static const char *toupper_func(ap_expr_eval_ctx *ctx, const char *name, const c
     return result;
 }
 
-static const char *escape_func(ap_expr_eval_ctx *ctx, const char *name, const char *arg)
+static const char *escape_func(ap_expr_eval_ctx *ctx, const void *data,
+                               const char *arg)
 {
     return ap_escape_uri(ctx->p, arg);
 }
 
 #define MAX_FILE_SIZE 10*1024*1024
-static const char *file_func(ap_expr_eval_ctx *ctx, const char *name, char *arg)
+static const char *file_func(ap_expr_eval_ctx *ctx, const void *data, char *arg)
 {
     apr_file_t *fp;
     char *buf;
@@ -794,7 +804,8 @@ static const char *file_func(ap_expr_eval_ctx *ctx, const char *name, char *arg)
 }
 
 
-static const char *unescape_func(ap_expr_eval_ctx *ctx, const char *name, const char *arg)
+static const char *unescape_func(ap_expr_eval_ctx *ctx, const void *data,
+                                 const char *arg)
 {
     char *result = apr_pstrdup(ctx->p, arg);
     if (ap_unescape_url(result))
@@ -802,6 +813,15 @@ static const char *unescape_func(ap_expr_eval_ctx *ctx, const char *name, const 
     else
         return result;
 
+}
+
+static int op_nz(ap_expr_eval_ctx *ctx, const void *data, const char *arg)
+{
+    const char *name = (const char *)data;
+    if (name[0] == 'z')
+        return (arg[0] == '\0');
+    else
+        return (arg[0] != '\0');
 }
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
@@ -1025,10 +1045,11 @@ static const struct expr_provider_multi var_providers[] = {
 static const struct expr_provider_single string_func_providers[] = {
     { osenv_func, "osenv" },
     { env_func, "env" },
-    { resp_func, "resp" },
-    { req_func, "req" },
+    { req_table_func, "resp" },
+    { req_table_func, "req" },
     /* 'http' as alias for 'req' for compatibility with ssl_expr */
-    { req_func, "http" },
+    { req_table_func, "http" },
+    { req_table_func, "note" },
     { tolower_func, "tolower" },
     { toupper_func, "toupper" },
     { escape_func, "escape" },
@@ -1038,6 +1059,11 @@ static const struct expr_provider_single string_func_providers[] = {
 };
 /* XXX: base64 encode/decode ? */
 
+static const struct expr_provider_single unary_op_providers[] = {
+    { op_nz, "n" },
+    { op_nz, "z" },
+    { NULL, NULL}
+};
 static int core_expr_lookup(ap_expr_lookup_parms *parms)
 {
     switch (parms->type) {
@@ -1059,6 +1085,18 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
     }
     case AP_EXPR_FUNC_STRING: {
         const struct expr_provider_single *prov = string_func_providers;
+        while (prov->func) {
+            if (strcasecmp(prov->name, parms->name) == 0) {
+                *parms->func = prov->func;
+                *parms->data = prov->name;
+                return OK;
+            }
+            prov++;
+        }
+        break;
+    }
+    case AP_EXPR_FUNC_OP_UNARY: {
+        const struct expr_provider_single *prov = unary_op_providers;
         while (prov->func) {
             if (strcasecmp(prov->name, parms->name) == 0) {
                 *parms->func = prov->func;
