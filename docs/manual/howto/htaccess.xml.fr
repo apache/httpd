@@ -33,14 +33,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 </summary>
 
 <section id="related"><title>Fichiers .htaccess</title>
-    <note>Les fichiers <code>.htaccess</code> ne doivent &ecirc;tre utilis&eacute;s
-    que si vous n'avez pas acc&egrave;s au fichier de configuration du serveur
-    principal. L'utilisation des fichiers <code>.htaccess</code>
-    ralentit le fonctionnement de votre serveur Apache. Il est toujours
-    pr&eacute;f&eacute;rable de d&eacute;finir les directives que vous pouvez inclure dans un
-    fichier <code>.htaccess</code> dans une section <directive
-    module="core">Directory</directive>, car elles produiront le
-    m&ecirc;me effet avec de meilleures performances.</note>
+    
     <related>
         <modulelist>
             <module>core</module>
@@ -65,6 +58,14 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
         </directivelist>
 
     </related>
+    <note>Les fichiers <code>.htaccess</code> ne doivent &ecirc;tre utilis&eacute;s
+    que si vous n'avez pas acc&egrave;s au fichier de configuration du serveur
+    principal. L'utilisation des fichiers <code>.htaccess</code>
+    ralentit le fonctionnement de votre serveur Apache. Il est toujours
+    pr&eacute;f&eacute;rable de d&eacute;finir les directives que vous pouvez inclure dans un
+    fichier <code>.htaccess</code> dans une section <directive
+    module="core">Directory</directive>, car elles produiront le
+    m&ecirc;me effet avec de meilleures performances.</note>
 </section>
 
 <section id="what">
