@@ -118,7 +118,8 @@
     headers, environment variables, or the Handler used by this request.
     Unlike earlier versions, mod_filter now supports complex expressions
     involving multiple criteria with AND / OR logic (&amp;&amp; / ||)
-    and brackets.</dd>
+    and brackets. The details of the expression syntax are described in
+    the <a href="../expr.html">ap_expr documentation</a>.</dd>
 
     <dt>Configure the Chain</dt>
     <dd>The above directives build components of a smart filter chain,
@@ -143,15 +144,14 @@
     more versatile <var>expression</var>.  In general, you can convert
     a match/dispatch pair to the two sides of an expression, using
     something like:</p>
-    <example>"dispatch = match"</example>
+    <example>"dispatch = 'match'"</example>
     <p>The Request headers, Response headers and Environment variables
-    are now interpreted from syntax <var>$req{foo}</var>,
-    <var>$resp{foo}</var> and <var>$env{foo}</var> respectively.
-    The variables <var>$handler</var> and <var>$Content-Type</var>
+    are now interpreted from syntax <var>%{req:foo}</var>,
+    <var>%{resp:foo}</var> and <var>%{env:foo}</var> respectively.
+    The variables <var>%{HANDLER}</var> and <var>%{CONTENT_TYPE}</var>
     are also supported.</p>
-    <p>Note that the match no longer supports integer comparisons
-    or substring matches.  The latter can be replaced by regular
-    expression matches.</p>
+    <p>Note that the match no longer support substring matches.  They can be
+    replaced by regular expression matches.</p>
 </section>
 
 <section id="examples"><title>Examples</title>
@@ -160,7 +160,7 @@
     <dd>A simple case of replacing <directive>AddOutputFilterByType</directive>
     <example>
       FilterDeclare SSI<br/>
-      FilterProvider SSI INCLUDES "$resp{Content-Type} = /^text\/html/"<br/>
+      FilterProvider SSI INCLUDES "%{CONTENT_TYPE} =~ m|^text/html|"<br/>
       FilterChain SSI
     </example>
     </dd>
@@ -169,7 +169,7 @@
     <dd>The same as the above but dispatching on handler (classic
     SSI behaviour; .shtml files get processed).
     <example>
-      FilterProvider SSI INCLUDES "Handler = server-parsed"<br/>
+      FilterProvider SSI INCLUDES "%{HANDLER} = 'server-parsed'"<br/>
       FilterChain SSI
     </example>
     </dd>
@@ -179,7 +179,7 @@
     Accept-Encoding header.  This filter runs with ftype CONTENT_SET.
     <example>
       FilterDeclare gzip CONTENT_SET<br/>
-      FilterProvider gzip inflate "$req{Accept-Encoding} != /gzip/"<br/>
+      FilterProvider gzip inflate "%{req:Accept-Encoding} !~ /gzip/"<br/>
       FilterChain gzip
     </example>
     </dd>
@@ -188,16 +188,16 @@
     <dd>Suppose we want to downsample all web images, and have filters
     for GIF, JPEG and PNG.
     <example>
-      FilterProvider unpack jpeg_unpack "$resp{Content-Type} = image/jpeg"<br/>
-      FilterProvider unpack gif_unpack "$resp{Content-Type} = image/gif"<br/>
-      FilterProvider unpack png_unpack "$resp{Content-Type} = image/png"<br/>
+      FilterProvider unpack jpeg_unpack "%{CONTENT_TYPE} = 'image/jpeg'"<br/>
+      FilterProvider unpack gif_unpack "%{CONTENT_TYPE} = 'image/gif'"<br/>
+      FilterProvider unpack png_unpack "%{CONTENT_TYPE} = 'image/png'"<br/>
       <br />
-      FilterProvider downsample downsample_filter "$resp{Content-Type} = /image\/(jpeg|gif|png)/"<br/>
+      FilterProvider downsample downsample_filter "%{CONTENT_TYPE} = m|^image/(jpeg|gif|png)|"<br/>
       FilterProtocol downsample "change=yes"<br/>
       <br />
-      FilterProvider repack jpeg_pack "$resp{Content-Type} = image/jpeg"<br/>
-      FilterProvider repack gif_pack "$resp{Content-Type} = image/gif"<br/>
-      FilterProvider repack png_pack "$resp{Content-Type} = image/png"<br/>
+      FilterProvider repack jpeg_pack "%{CONTENT_TYPE} = 'image/jpeg'"<br/>
+      FilterProvider repack gif_pack "%{CONTENT_TYPE} = 'image/gif'"<br/>
+      FilterProvider repack png_pack "%{CONTENT_TYPE} = 'image/png'"<br/>
       &lt;Location /image-filter&gt;<br/>
       <indent>
         FilterChain unpack downsample repack<br/>
@@ -359,50 +359,8 @@
     <code>ap_register_output_filter</code>.
     </p>
 
-    <p><var>expression</var> can be any of the following:</p>
-    <dl>
-      <dt><code><var>string</var></code></dt>
-      <dd>true if <var>string</var> is not empty</dd>
-
-      <dt><code><var>string1</var> = <var>string2</var><br />
-      <var>string1</var> == <var>string2</var><br />
-      <var>string1</var> != <var>string2</var></code></dt>
-
-      <dd><p>Compare <var>string1</var> with <var>string2</var>. If
-      <var>string2</var> has the form <code>/<var>string2</var>/</code>
-      then it is treated as a regular expression. Regular expressions are
-      implemented by the <a href="http://www.pcre.org">PCRE</a> engine and
-      have the same syntax as those in <a href="http://www.perl.com">perl
-      5</a>. Note that <code>==</code> is just an alias for <code>=</code>
-      and behaves exactly the same way.</p>
-      </dd>
-
-      <dt><code><var>string1</var> &lt; <var>string2</var><br />
-       <var>string1</var> &lt;= <var>string2</var><br />
-       <var>string1</var> &gt; <var>string2</var><br />
-       <var>string1</var> &gt;= <var>string2</var></code></dt>
-
-      <dd>Compare <var>string1</var> with <var>string2</var>. Note, that
-      strings are compared <em>literally</em> (using
-      <code>strcmp(3)</code>). Therefore the string "100" is less than
-      "20".</dd>
-
-      <dt><code>( <var>expression</var> )</code></dt>
-      <dd>true if <var>expression</var> is true</dd>
-
-      <dt><code>! <var>expression</var></code></dt>
-      <dd>true if <var>expression</var> is false</dd>
-
-      <dt><code><var>expression1</var> &amp;&amp;
-        <var>expression2</var></code></dt>
-      <dd>true if both <var>expression1</var> and
-      <var>expression2</var> are true</dd>
-
-      <dt><code><var>expression1</var> ||
-        <var>expression2</var></code></dt>
-      <dd>true if either <var>expression1</var> or
-      <var>expression2</var> is true</dd>
-    </dl>
+    <p><var>expression</var> is described in the
+    <a href="../expr.html">ap_expr documentation</a>.</p>
 
 </usage>
 </directivesynopsis>

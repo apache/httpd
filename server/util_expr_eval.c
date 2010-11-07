@@ -888,6 +888,7 @@ static const char *request_var_names[] = {
     "AUTH_TYPE",                /* 16 */
     "THE_REQUEST",              /* 17 */
     "CONTENT_TYPE",             /* 18 */
+    "HANDLER",                  /* 19 */
     NULL
 };
 
@@ -938,6 +939,8 @@ static const char *request_var_fn(ap_expr_eval_ctx *ctx, const void *data)
         return r->the_request;
     case 18:
         return r->content_type;
+    case 19:
+        return r->handler;
     default:
         ap_assert(0);
         return NULL;
