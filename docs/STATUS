@@ -7,22 +7,6 @@ http://httpd.apache.org/docs-project/docsformat.html
 
               ------------------------------
 
-ApacheCon 2010 Hackathon To Do List
-===================================
-
-- mod_lua documentation with examples. (PQuerna has tentatively agreed
-  to give us an informal session on mod_lua in order to flesh out the
-  docs and put some force behind the notion that mod_lua can replace
-  mod_rewrite
-
-- The FAQ has been put into the wiki and Wiki-formatted. It would be
-  great to: 1) Remove questions/answers that are no longer relevant and
-  2) wherever possible, replace a detailed answer with a link to the
-  appropriate doc.
-
-- Make the docs-project website more useful and actually welcoming of
-  new contributors.
-
 To Do List
 =======================
 
