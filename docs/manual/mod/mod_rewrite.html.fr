@@ -797,6 +797,26 @@ des traitements du moteur de réécriture</td></tr>
 	<code>RewriteLogLevel 0</code> !
 </div>
 
+    <p>Le format de fichier journal <code class="directive">RewriteLog</code> se
+    présente comme suit :</p>
+
+<table>
+<tr><th>Description</th><th> Exemple</th></tr>
+<tr>
+<td>Adresse IP de l'hôte distant</td>
+<td>192.168.200.166</td></tr>
+<tr><td>Nom de login didtant</td><td>en général "-"</td></tr>
+<tr><td>nom d'authentification de l'utilisateur HTTP</td><td>nom
+d'utilisateur, ou "-" si non authentifié</td></tr>
+<tr><td>Date et heure de la requête</td><td>[28/Aug/2009:13:09:09 --0400]</td></tr>
+<tr><td>Serveur virtuel et son identifiant</td><td>[www.example.com/sid#84a650]</td></tr>
+<tr><td>Identifiant de la requête et indication éventuelle qu'il s'agit
+d'une sous-requête</td><td>[rid#9f0e58/subreq]</td></tr>
+<tr><td>Niveau de sévérité de l'entrée du journal</td><td>(2)</td></tr>
+<tr><td>Message d'erreur au format texte</td><td>forcing proxy-throughput with http://127.0.0.1:8080/index.html</td></tr>
+</table>
+
+
 <div class="note"><h3>Sécurité</h3>
 
 Se référer au document
