@@ -48,6 +48,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
@@ -936,6 +937,42 @@ version 2.3.9.</td></tr>
        Only global definition of <code class="directive">EnableSendfile</code>
        is taken into account by the module.
     </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Error <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.3.9 and later</td></tr>
+</table>
+    <p>If an error can be detected within the configuration, this
+    directive can be used to generate a custom error message, and halt
+    configuration parsing.  The typical use is for reporting required
+    modules which are missing from the configuration.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      # ensure that mod_include is loaded<br />
+      &lt;IfModule !include_module&gt;<br />
+      Error mod_include is required by mod_foo.  Load it with LoadModule.<br />
+      &lt;/IfModule&gt;<br />
+      <br />
+      # ensure that exactly one of SSL,NOSSL is defined<br />
+      &lt;IfDefine SSL&gt;<br />
+      &lt;IfDefine NOSSL&gt;<br />
+      Error Both SSL and NOSSL are defined.  Define only one of them.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;IfDefine !SSL&gt;<br />
+      &lt;IfDefine !NOSSL&gt;<br />
+      Error Either SSL or NOSSL must be defined.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+    </code></p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
