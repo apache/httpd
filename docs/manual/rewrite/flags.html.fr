@@ -369,6 +369,12 @@ et de ne pas compter seulement sur
 le drapeau [L] pour terminer l'exécution d'une série de règles, comme
 décrit ci-dessous.</p>
 
+<p>Un autre drapeau, [END], permet non seulement d'interrompre le cycle
+courant du processus de réécriture, mais aussi d'empêcher toute
+réécriture ultérieure dans le contexte de répertoire (htaccess). Ceci ne
+s'applique pas aux nouvelles requêtes résultant de redirections
+externes.</p>
+
 <p>Dans l'exemple donné ici, toute requête est réécrite en
 <code>index.php</code>, la requête originale étant ajoutée comme chaîne
 de requête en argument à <code>index.php</code> ; cependant, la
