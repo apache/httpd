@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) core: Add Error directive for aborting startup or htaccess processing
+     with a specified error message.  [Jeff Trawick]
+
   *) mod_rewrite: Fix the RewriteEngine directive to work within a
      location. Previously, once RewriteEngine was switched on globally,
      it was impossible to switch off. [Graham Leggett]
