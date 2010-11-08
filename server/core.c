@@ -1092,6 +1092,25 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *generate_error(cmd_parms *cmd, void *dummy,
+                                  const char *arg)
+{
+    if (!arg || !*arg) {
+        return "The Error directive was used with no message.";
+    }
+
+    if (*arg == '"' || *arg == '\'') { /* strip off quotes */
+        apr_size_t len = strlen(arg);
+        char last = *(arg + len - 1);
+
+        if (*arg == last) {
+            return apr_pstrndup(cmd->pool, arg + 1, len - 2);
+        }
+    }
+
+    return arg;
+}
+
 #ifdef GPROF
 static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
 {
@@ -3432,6 +3451,8 @@ AP_INIT_TAKE1("Define", set_define, NULL, RSRC_CONF,
               "Define the existence of a variable.  Same as passing -D to the command line."),
 AP_INIT_TAKE1("UnDefine", unset_define, NULL, RSRC_CONF,
               "Undefine the existence of a variable. Undo a Define."),
+AP_INIT_RAW_ARGS("Error", generate_error, NULL, OR_ALL,
+                 "Generate error message from within configuration"),
 AP_INIT_RAW_ARGS("<If", ifsection, NULL, OR_ALL,
   "Container for directives to be conditionally applied"),
 

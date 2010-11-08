@@ -890,6 +890,43 @@ version 2.3.9.</compatibility>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>Error</name>
+<description>Abort configuration parsing with a custom error message</description>
+<syntax>Error <var>message</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>2.3.9 and later</compatibility>
+
+<usage>
+    <p>If an error can be detected within the configuration, this
+    directive can be used to generate a custom error message, and halt
+    configuration parsing.  The typical use is for reporting required
+    modules which are missing from the configuration.</p>
+
+    <example><title>Example</title>
+      # ensure that mod_include is loaded<br />
+      &lt;IfModule !include_module&gt;<br />
+      Error mod_include is required by mod_foo.  Load it with LoadModule.<br />
+      &lt;/IfModule&gt;<br />
+      <br />
+      # ensure that exactly one of SSL,NOSSL is defined<br />
+      &lt;IfDefine SSL&gt;<br />
+      &lt;IfDefine NOSSL&gt;<br />
+      Error Both SSL and NOSSL are defined.  Define only one of them.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;IfDefine !SSL&gt;<br />
+      &lt;IfDefine !NOSSL&gt;<br />
+      Error Either SSL or NOSSL must be defined.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ErrorDocument</name>
 <description>What the server will return to the client
 in case of an error</description>
