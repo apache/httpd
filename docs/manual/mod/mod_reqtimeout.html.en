@@ -75,6 +75,16 @@
         </code></p></div>
       </li>
 
+      <li>
+        Usually, a server should have both header and body timeouts configured.
+        If a common configuration is used for http and https virtual hosts, the
+        timeouts should not be set too low:
+
+        <div class="example"><p><code>
+          RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
+        </code></p></div>
+      </li>
+
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -97,8 +107,13 @@
     is sent.</p>
 
     <p>For SSL virtual hosts, the header timeout values include the time needed
-    to do the initial SSL handshake. The body timeout values include the time
-    needed for SSL renegotiation (if necessary).</p>
+    to do the initial SSL handshake.  If the user's browser is configured to
+    query certificate revocation lists and the CRL server is not reachable, the
+    initial SSL handshake may take a significant time until the browser gives up
+    waiting for the CRL.  Therefore the header timeout values should not be set
+    to very low values for SSL virtual hosts.
+    The body timeout values include the time needed for SSL renegotiation
+    (if necessary).</p>
 
     <p>When an <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> is in use
     (usually the case on Linux and FreeBSD), the socket is not sent to the

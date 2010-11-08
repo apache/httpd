@@ -1002,6 +1002,7 @@ ldap2.example.com/dc=..."</code></p></div>
         </dd>
 
 <dt>DN-de-</dt>
+
         <dd>Le DN de la branche de l'annuaire à partir de laquelle
 	toutes les recherches seront lancées. Il doit au moins
 	correspondre à la racine de votre annuaire, mais vous pouvez
