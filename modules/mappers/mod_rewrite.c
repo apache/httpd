@@ -310,6 +310,8 @@ typedef struct {
     apr_array_header_t *rewriteconds; /* the RewriteCond entries (temp.)    */
     apr_array_header_t *rewriterules; /* the RewriteRule entries            */
     server_rec   *server;             /* the corresponding server indicator */
+    int state_set:1;
+    int options_set:1;
 } rewrite_server_conf;
 
 typedef struct {
@@ -319,6 +321,9 @@ typedef struct {
     apr_array_header_t *rewriterules; /* the RewriteRule entries           */
     char         *directory;          /* the directory where it applies    */
     const char   *baseurl;            /* the base-URL  where it applies    */
+    int state_set:1;
+    int options_set:1;
+    int baseurl_set:1;
 } rewrite_perdir_conf;
 
 /* the (per-child) cache structures.
@@ -2721,8 +2726,11 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
     base      = (rewrite_server_conf *)basev;
     overrides = (rewrite_server_conf *)overridesv;
 
-    a->state   = overrides->state;
-    a->options = overrides->options;
+    a->state = (overrides->state_set == 0) ? base->state : overrides->state;
+    a->state_set = overrides->state_set || base->state_set;
+    a->options = (overrides->options_set == 0) ? base->options : overrides->options;
+    a->options_set = overrides->options_set || base->options_set;
+
     a->server  = overrides->server;
 
     if (a->options & OPTION_INHERIT) {
@@ -2787,10 +2795,14 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
     base      = (rewrite_perdir_conf *)basev;
     overrides = (rewrite_perdir_conf *)overridesv;
 
-    a->state     = overrides->state;
-    a->options   = overrides->options;
-    a->directory = overrides->directory;
-    a->baseurl   = overrides->baseurl;
+    a->state = (overrides->state_set == 0) ? base->state : overrides->state;
+    a->state_set = overrides->state_set || base->state_set;
+    a->options = (overrides->options_set == 0) ? base->options : overrides->options;
+    a->options_set = overrides->options_set || base->options_set;
+    a->baseurl = (overrides->baseurl_set == 0) ? base->baseurl : overrides->baseurl;
+    a->baseurl_set = overrides->baseurl_set || base->baseurl_set;
+
+    a->directory  = overrides->directory;
 
     if (a->options & OPTION_INHERIT) {
         a->rewriteconds = apr_array_append(p, overrides->rewriteconds,
@@ -2814,11 +2826,17 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
 
     sconf = ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
-    if (cmd->path == NULL) { /* is server command */
+    /* server command? set both global scope and base directory scope */
+    if (cmd->path == NULL) {
         sconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
+        sconf->state_set = 1;
+        dconf->state = sconf->state;
+        dconf->state_set = 1;
     }
-    else                   /* is per-directory command */ {
+    /* directory command? set directory scope only */
+    else {
         dconf->state = (flag ? ENGINE_ENABLED : ENGINE_DISABLED);
+        dconf->state_set = 1;
     }
 
     return NULL;
@@ -2848,18 +2866,24 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
         }
     }
 
-    /* put it into the appropriate config */
+    /* server command? set both global scope and base directory scope */
     if (cmd->path == NULL) { /* is server command */
-        rewrite_server_conf *conf =
+        rewrite_perdir_conf *dconf = in_dconf;
+        rewrite_server_conf *sconf =
             ap_get_module_config(cmd->server->module_config,
                                  &rewrite_module);
 
-        conf->options |= options;
+        sconf->options |= options;
+        sconf->options_set = 1;
+        dconf->options |= options;
+        dconf->options_set = 1;
     }
+    /* directory command? set directory scope only */
     else {                  /* is per-directory command */
-        rewrite_perdir_conf *conf = in_dconf;
+        rewrite_perdir_conf *dconf = in_dconf;
 
-        conf->options |= options;
+        dconf->options |= options;
+        dconf->options_set = 1;
     }
 
     return NULL;
@@ -3037,6 +3061,7 @@ static const char *cmd_rewritebase(cmd_parms *cmd, void *in_dconf,
     }
 
     dconf->baseurl = a1;
+    dconf->baseurl_set = 1;
 
     return NULL;
 }
@@ -4295,6 +4320,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
  */
 static int hook_uri2file(request_rec *r)
 {
+    rewrite_perdir_conf *dconf;
     rewrite_server_conf *conf;
     const char *saved_rulestatus;
     const char *var;
@@ -4310,11 +4336,14 @@ static int hook_uri2file(request_rec *r)
      */
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
+    dconf = (rewrite_perdir_conf *)ap_get_module_config(r->per_dir_config,
+                                                        &rewrite_module);
+
     /*
      *  only do something under runtime if the engine is really enabled,
      *  else return immediately!
      */
-    if (conf->state == ENGINE_DISABLED) {
+    if (!dconf || dconf->state == ENGINE_DISABLED) {
         return DECLINED;
     }
 
@@ -4627,7 +4656,7 @@ static int hook_fixup(request_rec *r)
      *  only do something under runtime if the engine is really enabled,
      *  for this directory, else return immediately!
      */
-    if (dconf->state == ENGINE_DISABLED) {
+    if (!dconf || dconf->state == ENGINE_DISABLED) {
         return DECLINED;
     }
 
