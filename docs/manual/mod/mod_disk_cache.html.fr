@@ -26,27 +26,40 @@
 <a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Gestionnaire de stockage du cache de contenu à base
-d'URIs</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de stockage sur disque pour le filtre de mise en
+cache HTTP.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>disk_cache_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_disk_cache.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implémente un gestionnaire de
-    stockage sur disque. Il s'utilise principalement avec
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+    stockage sur disque pour le module <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
-    <p>Les contenus sont stockés dans le cache et extraits de ce dernier
-    en utilisant des clés à base d'URIs. Les contenus dont l'accès est
-    protégé ne sont pas mis en cache.</p>
+    <p>Les en-têtes et corps des réponses mises en cache sont stockés
+    séparément sur le disque, dans une structure de répertoires basée
+    sur le condensé md5 de l'URL mise en cache.</p>
 
-    <p>Le programme <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> permet de maintenir
-    la taille du cache à un niveau maximum.</p>
+    <p>Plusieurs réponses au contenu négocié peuvent être stockées en
+    même temps, mais la mise en cache de contenus partiels n'est pas
+    supportée actuellement par ce module.</p>
+
+    <p>Les mises à jour atomiques du cache pour les fichiers d'en-tête
+    et de corps peuvent être effectuées sans verrouillage en
+    enregistrant les numéros d'inode et de périphérique du fichier de
+    corps dans le fichier d'en-tête. Ceci implique que les entrées du
+    cache déplacées manuellement dans le cache seront ignorées.</p>
+
+    <p>L'utilitaire <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> permet de lister et
+    de supprimer les URLs du cache, ou de maintenir le cache en deçà de
+    certaines limites de taille et/ou de nombre d'inodes. L'utilitaire
+    peut être exécuté à la demande, ou automatiquement pour assurer un
+    contrôle continu des tailles des répertoires.</p>
 
     <div class="note"><h3>Note :</h3>
-      <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> doit être chargé pour que
-      <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> puisse fonctionner.</p>
+      <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> doit être chargé avant
+      <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> pour que ce dernier puisse
+      fonctionner.</p>
     </div>
     <p>Lorsque la plate-forme la supporte, et si elle est activée via la
     directive <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code>,

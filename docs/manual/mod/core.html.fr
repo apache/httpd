@@ -2185,7 +2185,7 @@ envoyée par le client</td></tr>
 requête HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LimitRequestFields <var>nombre</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LimitRequestFields 100</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
@@ -2220,6 +2220,13 @@ requête HTTP</td></tr>
       LimitRequestFields 50
     </code></p></div>
 
+    <div class="warning"><h3>Avertissement</h3>
+     <p>Dans le cas des serveurs virtuels à base de noms, la valeur de
+     cette directive est extraite du serveur virtuel par défaut (le
+     premier de la liste) pour lequel la connexion correspondait à la
+     directive <code class="directive">NameVirtualHost</code>.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2229,7 +2236,7 @@ requête HTTP</td></tr>
 requête HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LimitRequestFieldSize <var>octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LimitRequestFieldSize 8190</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
@@ -2261,6 +2268,13 @@ requête HTTP</td></tr>
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
     directive ne doit pas être modifiée.</div>
 
+    <div class="warning"><h3>Avertissement</h3>
+     <p>Dans le cas des serveurs virtuels à base de noms, la valeur de
+     cette directive est extraite du serveur virtuel par défaut (le
+     premier de la liste) pour lequel la connexion correspondait à la
+     directive <code class="directive">NameVirtualHost</code>.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2270,7 +2284,7 @@ requête HTTP</td></tr>
 HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LimitRequestLine <var>octets</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LimitRequestLine 8190</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
@@ -2301,6 +2315,14 @@ HTTP</td></tr>
 
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
     directive ne doit pas être modifiée.</div>
+
+    <div class="warning"><h3>Avertissement</h3>
+     <p>Dans le cas des serveurs virtuels à base de noms, la valeur de
+     cette directive est extraite du serveur virtuel par défaut (le
+     premier de la liste) pour lequel la connexion correspondait à la
+     directive <code class="directive">NameVirtualHost</code>.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

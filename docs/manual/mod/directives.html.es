@@ -228,6 +228,7 @@
 <li><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook</a></li>
 <li><a href="core.html#enablemmap">EnableMMAP</a></li>
 <li><a href="core.html#enablesendfile">EnableSendfile</a></li>
+<li><a href="core.html#error">Error</a></li>
 <li><a href="core.html#errordocument">ErrorDocument</a></li>
 <li><a href="core.html#errorlog">ErrorLog</a></li>
 <li><a href="core.html#errorlogformat">ErrorLogFormat</a></li>

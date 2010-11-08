@@ -59,6 +59,8 @@ d'Apache</td></tr></table>
 </li>
 <li><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></li>
 <li><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></li>
+<li><a href="../misc/password_encryptions.html">Formats de mots de
+passe</a></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -86,10 +88,17 @@ passe</td></tr>
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> utilisera la première occurence pour
     vérifier le mot de passe.</p>
 
-    <p>Pour l'<em>Authentification de base HTTP</em>, on utilise
-    l'utilitaire <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code>, installé avec la
-    distribution binaire ou se trouvant dans <code>src/support</code>,
-    pour maintenir le fichier des mots de passe. Voir sa <a href="../programs/htpasswd.html">page de manuel</a> pour plus de
+     <p>Le format du mot de passe chiffré dépend du frontal
+     d'authentification utilisé (par exemple
+     <code class="module"><a href="../mod/mod_authn_basic.html">mod_authn_basic</a></code> ou
+     <code class="module"><a href="../mod/mod_authn_digest.html">mod_authn_digest</a></code>). Voir la documentation sur les
+     <a href="../misc/password_encryptions.html">Formats de mots de
+     passe</a> pour plus de détails.</p>
+
+    <p>Pour <code class="module"><a href="../mod/mod_authn_basic.html">mod_authn_basic</a></code>, utilisez le programme
+    <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> fourni avec la distribution binaire,
+    mais que vous trouverez aussi dans le répertoire
+    <code>src/support</code> de l'arborescence des sources. Voir sa <a href="../programs/htpasswd.html">page de manuel</a> pour plus de
     détails. En bref :</p>
 
     <p>On crée un fichier de mots de passe <code>nom-fichier</code> avec
@@ -111,9 +120,8 @@ passe</td></tr>
     très longue ; dans ce cas, il vaut mieux utiliser les fichiers DBM
     avec la directive <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>.</p>
 
-    <p>Si vous utilisez l'<em>Authentification HTTP à base de
-    condensé</em>, l'utilitaire <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> ne convient
-    pas. Vous devez utiliser <code class="program"><a href="../programs/htdigest.html">htdigest</a></code> à la place.
+    <p>Pour <code class="module"><a href="../mod/mod_authn_digest.html">mod_authn_digest</a></code>, vous devez utiliser
+    le programme <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.
     Notez que vous ne pouvez pas mélanger des données utilisateur pour
     l'Authentification HTTP à base de condensé et des données pour
     l'Authentification de Base dans le même fichier.</p>

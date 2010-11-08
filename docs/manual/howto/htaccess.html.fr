@@ -42,7 +42,15 @@ Includes - SSI)</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Fichiers .htaccess</a></h2>
+    
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
+    <div class="note">Les fichiers <code>.htaccess</code> ne doivent être utilisés
+    que si vous n'avez pas accès au fichier de configuration du serveur
+    principal. L'utilisation des fichiers <code>.htaccess</code>
+    ralentit le fonctionnement de votre serveur Apache. Il est toujours
+    préférable de définir les directives que vous pouvez inclure dans un
+    fichier <code>.htaccess</code> dans une section <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>, car elles produiront le
+    même effet avec de meilleures performances.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="what" id="what">Que sont ce fichiers, comment les utiliser ?</a></h2>
@@ -417,7 +425,7 @@ Includes - SSI)</a></h2>
     <code>AllowOverride None</code> n'affecte pas le répertoire où se
     trouve votre fichier. Un bon test consiste à mettre des directives
     dont la syntaxe est erronée dans votre ficher <code>.htaccess</code>
-    et de redémarrer le serveur. Si aucune erreur n'est générée par le
+    et de recharger la page. Si aucune erreur n'est générée par le
     serveur, il est pratiquement certain qu'une directive
     <code>AllowOverride None</code> affecte votre répertoire.</p>
 

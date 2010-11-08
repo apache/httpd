@@ -86,6 +86,13 @@ serveur HTTP Apache</h1>
 
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
       httpd, pour la configuration et des fonctions logiques simples.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
+
+      <dd>La directive <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> est maintenant configurée
+      de la manière la plus optimale dans les sections <code class="directive"><a href="./mod/core.html#location">Location</a></code> ou <code class="directive"><a href="./mod/core.html#locationmatch">LocationMatch</a></code>, et offre un gain de
+      performances important par rapport à la syntaxe traditionnelle à
+      deux paramètres lorsqu'elle est présente en grand nombre.</dd>
  
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
 
