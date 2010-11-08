@@ -175,12 +175,12 @@ relative hyperlinks?</a></li>
     manipulate relative hyperlinks, to achieve the same effect.</p>
     <div class="example"><p><code>
     RewriteEngine on<br />
-    RewriteRule   ^/(.*):SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
-    RewriteRule   ^/(.*):NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+    RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
+    RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
     </code></p></div>
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
-    <code>&lt;a href="document.html:SSL"&gt;</code>, to switch to HTTPS
+    <code>&lt;a href="document.html_SSL"&gt;</code>, to switch to HTTPS
     in a relative link. (Replace SSL with NOSSL to switch to HTTP.)</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
