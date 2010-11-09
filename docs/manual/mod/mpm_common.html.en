@@ -299,11 +299,6 @@ will handle during its life</td></tr>
     process will die. If <code class="directive">MaxConnectionsPerChild</code> is
     <code>0</code>, then the process will never expire.</p>
 
-    <div class="note"><h3>Different default values</h3>
-      <p>The default value for <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> and
-      <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> is <code>0</code>.</p>
-    </div>
-
     <p>Setting <code class="directive">MaxConnectionsPerChild</code> to a
     non-zero value limits the amount of memory that process can consume
     by (accidental) memory leakage.</p>
