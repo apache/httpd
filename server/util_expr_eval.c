@@ -831,6 +831,7 @@ static const char *conn_var_names[] = {
     "REMOTE_ADDR",              /*  0 */
     "HTTPS",                    /*  1 */
     "IPV6",                     /*  2 */
+    "CONN_LOG_ID",              /*  3 */
     NULL
 };
 
@@ -862,6 +863,8 @@ static const char *conn_var_fn(ap_expr_eval_ctx *ctx, const void *data)
 #else
         return "off";
 #endif
+    case 3:
+        return c->log_id;
     default:
         ap_assert(0);
         return NULL;
@@ -889,6 +892,7 @@ static const char *request_var_names[] = {
     "THE_REQUEST",              /* 17 */
     "CONTENT_TYPE",             /* 18 */
     "HANDLER",                  /* 19 */
+    "REQUEST_LOG_ID",           /* 20 */
     NULL
 };
 
@@ -941,6 +945,8 @@ static const char *request_var_fn(ap_expr_eval_ctx *ctx, const void *data)
         return r->content_type;
     case 19:
         return r->handler;
+    case 20:
+        return r->log_id;
     default:
         ap_assert(0);
         return NULL;
