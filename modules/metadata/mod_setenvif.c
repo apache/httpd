@@ -355,7 +355,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
             new->special_type = SPECIAL_OID_VALUE;
 
             /* Syntax check and extraction of the OID as a regex: */
-            new->pnamereg = ap_pregcomp(cmd->pool,
+            new->pnamereg = ap_pregcomp(cmd->temp_pool,
                                         "^oid\\(\"?([0-9.]+)\"?\\)$",
                                         (AP_REG_EXTENDED /* | AP_REG_NOSUB */
                                          | AP_REG_ICASE));
@@ -381,7 +381,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
              * (new->pnamereg = NULL) to avoid the overhead of searching
              * through headers_in for a regex match.
              */
-            if (is_header_regex(cmd->pool, fname)) {
+            if (is_header_regex(cmd->temp_pool, fname)) {
                 new->pnamereg = ap_pregcomp(cmd->pool, fname,
                                             (AP_REG_EXTENDED | AP_REG_NOSUB
                                              | (icase ? AP_REG_ICASE : 0)));
