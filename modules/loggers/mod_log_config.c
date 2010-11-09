@@ -265,6 +265,7 @@ typedef struct {
     apr_array_header_t *format;
     void *log_writer;
     char *condition_var;
+    ap_expr_info_t *condition_expr;
 } config_log_state;
 
 /*
@@ -1081,6 +1082,15 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
             }
         }
     }
+    else if (cls->condition_expr != NULL) {
+        const char *err;
+        int rc = ap_expr_exec(r, cls->condition_expr, &err);
+        if (rc < 0) 
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                           "Error evaluating log condition: %s", err);
+        if (rc <= 0)
+            return DECLINED;
+    }
 
     format = cls->format ? cls->format : default_format;
 
@@ -1229,15 +1239,27 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
 
     cls = (config_log_state *) apr_array_push(mls->config_logs);
     cls->condition_var = NULL;
+    cls->condition_expr = NULL;
     if (envclause != NULL) {
-        if (strncasecmp(envclause, "env=", 4) != 0) {
+        if (strncasecmp(envclause, "env=", 4) == 0) {
+            if ((envclause[4] == '\0')
+                || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
+                return "missing environment variable name";
+            }
+            cls->condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
+        }
+        else if (strncasecmp(envclause, "expr=", 5) == 0) {
+            const char *err;
+            if ((envclause[5] == '\0'))
+                return "missing condition";
+            cls->condition_expr = ap_expr_parse_cmd(cmd, &envclause[5], &err,
+                                                    NULL);
+            if (err)
+                return err;
+        }
+        else {
             return "error in condition clause";
         }
-        if ((envclause[4] == '\0')
-            || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
-            return "missing environment variable name";
-        }
-        cls->condition_var = apr_pstrdup(cmd->pool, &envclause[4]);
     }
 
     cls->fname = fn;
@@ -1277,7 +1299,7 @@ static const command_rec config_log_cmds[] =
 {
 AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
      "a file name, a custom log format string or format name, "
-     "and an optional \"env=\" clause (see docs)"),
+     "and an optional \"env=\" or \"expr=\" clause (see docs)"),
 AP_INIT_TAKE1("TransferLog", set_transfer_log, NULL, RSRC_CONF,
      "the filename of the access log"),
 AP_INIT_TAKE12("LogFormat", log_format, NULL, RSRC_CONF,
