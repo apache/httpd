@@ -31,6 +31,8 @@
 #include "apr_optional.h"
 #include "apr_hooks.h"
 
+#include "cache_common.h"
+
 /* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and
  * CACHE_DECLARE_DATA with appropriate export and import tags for the platform
  */
@@ -51,32 +53,6 @@
 #define CACHE_DECLARE_NONSTD(type)     __declspec(dllimport) type
 #define CACHE_DECLARE_DATA             __declspec(dllimport)
 #endif
-
-/* a cache control header breakdown */
-typedef struct cache_control cache_control_t;
-struct cache_control {
-    unsigned int parsed:1;
-    unsigned int cache_control:1;
-    unsigned int pragma:1;
-    unsigned int no_cache:1;
-    unsigned int no_cache_header:1; /* no cache by header match */
-    unsigned int no_store:1;
-    unsigned int max_age:1;
-    unsigned int max_stale:1;
-    unsigned int min_fresh:1;
-    unsigned int no_transform:1;
-    unsigned int only_if_cached:1;
-    unsigned int public:1;
-    unsigned int private:1;
-    unsigned int private_header:1; /* private by header match */
-    unsigned int must_revalidate:1;
-    unsigned int proxy_revalidate:1;
-    unsigned int s_maxage:1;
-    apr_int64_t max_age_value; /* if positive, then set */
-    apr_int64_t max_stale_value; /* if positive, then set */
-    apr_int64_t min_fresh_value; /* if positive, then set */
-    apr_int64_t s_maxage_value; /* if positive, then set */
-};
 
 /* cache info information */
 typedef struct cache_info cache_info;
