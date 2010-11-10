@@ -948,8 +948,9 @@ expressions</description>
         <td>Balancer load-balance method. Select the load-balancing scheduler
         method to use. Either <code>byrequests</code>, to perform weighted
         request counting, <code>bytraffic</code>, to perform weighted
-        traffic byte count balancing, or <code>bybusyness</code>, to perform 
-        pending request balancing. Default is <code>byrequests</code>.
+        traffic byte count balancing, or <code>bybusyness</code> 
+        (Apache HTTP Server 2.2.10 and later), to perform pending request 
+        balancing. Default is <code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
         <td>One less than the number of workers, or 1 with a single worker.</td>
