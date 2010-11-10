@@ -104,6 +104,8 @@ AP_DECLARE_DATA int ap_document_root_check = 1;
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
 
+static apr_array_header_t *saved_server_config_defines = NULL;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
@@ -1052,6 +1054,12 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
 
     conf->access_name = apr_pstrdup(cmd->pool, arg);
     return NULL;
+}
+
+static int reset_config_defines(void *dummy)
+{
+    ap_server_config_defines = saved_server_config_defines;
+    return OK;
 }
 
 
@@ -3940,6 +3948,16 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
 static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     ap_mutex_init(pconf);
+
+    /*
+     * Make sure we revert the effects of Define/UnDefine when restarting.
+     * We cannot use apr_array_copy_hdr because it does not protect from the
+     * way unset_define removes entries.
+     */
+    saved_server_config_defines = ap_server_config_defines;
+    ap_server_config_defines = apr_array_copy(pconf, ap_server_config_defines);
+    apr_pool_cleanup_register(pconf, NULL, reset_config_defines,
+                              apr_pool_cleanup_null);
 
     return APR_SUCCESS;
 }
