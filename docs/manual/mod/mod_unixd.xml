@@ -26,6 +26,8 @@
 <description>Basic (required) security for Unix-family platforms.</description>
 <status>Base</status>
 
+<seealso><a href="../suexec.html">suEXEC support</a></seealso>
+
 <directivesynopsis>
 <name>Group</name>
 <description>Group under which the server will answer
@@ -136,6 +138,23 @@ requests</description>
     scripts such as CGI or PHP.  Please make sure you are properly
     familiar with the operation of chroot before attempting to use
     this feature.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Suexec</name>
+<description>Enable or disable the suEXEC feature</description>
+<syntax>Suexec On|Off</syntax>
+<default>On if suexec binary exists with proper owner and mode,
+Off otherwise</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache httpd 2.3.9 and later</compatibility>
+
+<usage>
+    <p>When On, startup will fail if the suexec binary doesn't exist
+    or has an invalid owner or file mode.</p>
+    <p>When Off, suEXEC will be disabled even if the suexec binary exists
+    and has a valid owner and file mode.</p>
 </usage>
 </directivesynopsis>
 

@@ -282,6 +282,7 @@
  *                         mod_ssl's parser. Clean up ap_expr's public
  *                         interface.
  * 20101106.1 (2.3.9-dev)  Add ap_pool_cleanup_set_null() generic cleanup
+ * 20101106.2 (2.3.9-dev)  Add suexec_disabled_reason field to ap_unixd_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

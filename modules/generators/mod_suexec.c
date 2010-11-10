@@ -64,16 +64,18 @@ static const char *set_suexec_ugid(cmd_parms *cmd, void *mconfig,
     if (err != NULL) {
         return err;
     }
-    if (ap_unixd_config.suexec_enabled) {
-        cfg->ugid.uid = ap_uname2id(uid);
-        cfg->ugid.gid = ap_gname2id(gid);
-        cfg->ugid.userdir = 0;
-        cfg->active = 1;
+
+    if (!ap_unixd_config.suexec_enabled) {
+        return apr_pstrcat(cmd->pool, "SuexecUserGroup configured, but "
+                           "suEXEC is disabled: ",
+                           ap_unixd_config.suexec_disabled_reason, NULL);
     }
-    else {
-        fprintf(stderr,
-                "Warning: SuexecUserGroup directive requires SUEXEC wrapper.\n");
-    }
+
+    cfg->ugid.uid = ap_uname2id(uid);
+    cfg->ugid.gid = ap_gname2id(gid);
+    cfg->ugid.userdir = 0;
+    cfg->active = 1;
+
     return NULL;
 }
 
