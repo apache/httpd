@@ -260,6 +260,28 @@ unixd_set_chroot_dir(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *
+unixd_set_suexec(cmd_parms *cmd, void *dummy, int arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if (!ap_unixd_config.suexec_enabled && arg) {
+        return apr_pstrcat(cmd->pool, "suEXEC isn't supported: ",
+                           ap_unixd_config.suexec_disabled_reason, NULL);
+    }
+
+    if (!arg) {
+        ap_unixd_config.suexec_disabled_reason = "Suexec directive is Off";
+    }
+
+    ap_unixd_config.suexec_enabled = arg;
+    return NULL;
+}
+
 static int 
 unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                  apr_pool_t *ptemp)
@@ -278,7 +300,16 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         if ((wrapper.protection & APR_USETID) && wrapper.user == 0
             && (access(SUEXEC_BIN, R_OK|X_OK) == 0)) {
             ap_unixd_config.suexec_enabled = 1;
+            ap_unixd_config.suexec_disabled_reason = "";
         }
+        else {
+            ap_unixd_config.suexec_disabled_reason =
+                "Invalid owner or file mode for " SUEXEC_BIN;
+        }
+    }
+    else {
+        ap_unixd_config.suexec_disabled_reason =
+            "Missing suexec binary " SUEXEC_BIN;
     }
 
     ap_sys_privileges_handlers(1);
@@ -354,6 +385,8 @@ static const command_rec unixd_cmds[] = {
                   "Effective group id for this server"),
     AP_INIT_TAKE1("ChrootDir", unixd_set_chroot_dir, NULL, RSRC_CONF,
                   "The directory to chroot(2) into"),
+    AP_INIT_FLAG("Suexec", unixd_set_suexec, NULL, RSRC_CONF,
+                 "Enable or disable suEXEC support"),
     {NULL}
 };
 

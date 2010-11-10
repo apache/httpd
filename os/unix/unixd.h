@@ -77,6 +77,7 @@ typedef struct {
     gid_t group_id;
     int suexec_enabled;
     const char *chroot_dir;
+    const char *suexec_disabled_reason; /* suitable msg if !suexec_enabled */
 } unixd_config_rec;
 AP_DECLARE_DATA extern unixd_config_rec ap_unixd_config;
 
