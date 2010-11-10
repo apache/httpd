@@ -32,7 +32,7 @@
 %option reentrant
 %option bison-bridge
 %option warn
-%option noinput nounput
+%option noinput nounput noyy_top_state
 %option stack
 %x str
 %x var
