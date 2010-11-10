@@ -2092,25 +2092,25 @@ AP_DECLARE(struct ap_logconf *) ap_new_log_config(apr_pool_t *p,
     return l;
 }
 
-AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old,
-                                     struct ap_logconf *new)
+AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old_conf,
+                                     struct ap_logconf *new_conf)
 {
-    if (new->level != APLOG_UNSET) {
+    if (new_conf->level != APLOG_UNSET) {
         /* Setting the main loglevel resets all per-module log levels.
          * I.e. if new->level has been set, we must ignore old->module_levels.
          */
         return;
     }
 
-    new->level = old->level;
-    if (new->module_levels == NULL) {
-        new->module_levels = old->module_levels;
+    new_conf->level = old_conf->level;
+    if (new_conf->module_levels == NULL) {
+        new_conf->module_levels = old_conf->module_levels;
     }
-    else if (old->module_levels != NULL) {
+    else if (old_conf->module_levels != NULL) {
         int i;
         for (i = 0; i < conf_vector_length; i++) {
-            if (new->module_levels[i] == APLOG_UNSET)
-                new->module_levels[i] = old->module_levels[i];
+            if (new_conf->module_levels[i] == APLOG_UNSET)
+                new_conf->module_levels[i] = old_conf->module_levels[i];
         }
     }
 }

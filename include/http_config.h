@@ -999,11 +999,11 @@ AP_DECLARE(struct ap_logconf *) ap_new_log_config(apr_pool_t *p,
 /**
  * Merge old ap_logconf into new ap_logconf.
  * old and new must have the same life time.
- * @param old The ap_logconf to merge from
- * @param new The ap_logconf to merge into
+ * @param old_conf The ap_logconf to merge from
+ * @param new_conf The ap_logconf to merge into
  */
-AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old,
-                                     struct ap_logconf *new);
+AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old_conf,
+                                     struct ap_logconf *new_conf);
 
 /* For http_connection.c... */
 /**
