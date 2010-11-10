@@ -165,6 +165,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td /></tr>
 <tr><td><code>IPV6</code></td>
         <td /></tr>
+<tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
+        <td /></tr>
+<tr><td><code>CONN_LOG_ID</code></td>
+        <td /></tr>
 </table>
 
     <p>Misc variables</p>

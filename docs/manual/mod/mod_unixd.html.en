@@ -31,9 +31,13 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#chrootdir">ChrootDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#suexec">Suexec</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
 </ul>
-</div>
+<h3>See also</h3>
+<ul class="seealso">
+<li><a href="../suexec.html">suEXEC support</a></li>
+</ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Directive</a></h2>
@@ -102,6 +106,24 @@ requests</td></tr>
 <li><code class="directive"><a href="../mod/mod_privileges.html#vhostgroup">VHostGroup</a></code></li>
 <li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Suexec" id="Suexec">Suexec</a> <a name="suexec" id="suexec">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable the suEXEC feature</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Suexec On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>On if suexec binary exists with proper owner and mode,
+Off otherwise</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
+</table>
+    <p>When On, startup will fail if the suexec binary doesn't exist
+    or has an invalid owner or file mode.</p>
+    <p>When Off, suEXEC will be disabled even if the suexec binary exists
+    and has a valid owner and file mode.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Directive</a></h2>
