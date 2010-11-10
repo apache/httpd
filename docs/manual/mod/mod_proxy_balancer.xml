@@ -336,6 +336,8 @@ candidate lbstatus -= total factor</code></pre>
     tie. Over time, the distribution of work will come to resemble that
     characteristic of <code>byrequests</code>.</p>
 
+    <p>This algorithm is available in Apache HTTP Server 2.2.10 and later.</p>
+
 </section>
 
 <section id="environment">
