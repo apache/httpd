@@ -734,8 +734,6 @@ static int input (yyscan_t yyscanner );
     
     static void yy_pop_state (yyscan_t yyscanner );
     
-    static int yy_top_state (yyscan_t yyscanner );
-    
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
 #ifdef __ia64__
@@ -857,7 +855,7 @@ YY_DECL
  /*
   * Whitespaces
   */
-#line 861 "util_expr_scan.c"
+#line 859 "util_expr_scan.c"
 
     yylval = yylval_param;
 
@@ -1145,7 +1143,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 205 "util_expr_scan.l"
+#line 204 "util_expr_scan.l"
 {
     if (str_ptr != str_buf) {
         /* return what we have so far and scan '}' again */
@@ -1166,7 +1164,7 @@ YY_RULE_SETUP
   */
 case 23:
 YY_RULE_SETUP
-#line 223 "util_expr_scan.l"
+#line 222 "util_expr_scan.l"
 {
     regex_del = yytext[1];
     regex_ptr = regex_buf;
@@ -1175,7 +1173,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 228 "util_expr_scan.l"
+#line 227 "util_expr_scan.l"
 {
     regex_del = yytext[0];
     regex_ptr = regex_buf;
@@ -1185,7 +1183,7 @@ YY_RULE_SETUP
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 233 "util_expr_scan.l"
+#line 232 "util_expr_scan.l"
 {
     if (yytext[0] == regex_del) {
         *regex_ptr = '\0';
@@ -1198,7 +1196,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 242 "util_expr_scan.l"
+#line 241 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, regex_buf);
     BEGIN(INITIAL);
@@ -1208,7 +1206,7 @@ YY_RULE_SETUP
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 247 "util_expr_scan.l"
+#line 246 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, regex_buf);
     yyless(0);
@@ -1217,7 +1215,7 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case YY_STATE_EOF(regex_flags):
-#line 253 "util_expr_scan.l"
+#line 252 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, regex_buf);
     BEGIN(INITIAL);
@@ -1229,153 +1227,153 @@ case YY_STATE_EOF(regex_flags):
   */
 case 28:
 YY_RULE_SETUP
-#line 262 "util_expr_scan.l"
+#line 261 "util_expr_scan.l"
 { return T_OP_STR_EQ; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 263 "util_expr_scan.l"
+#line 262 "util_expr_scan.l"
 { return T_OP_STR_NE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 264 "util_expr_scan.l"
+#line 263 "util_expr_scan.l"
 { return T_OP_STR_LT; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 265 "util_expr_scan.l"
+#line 264 "util_expr_scan.l"
 { return T_OP_STR_LE; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 266 "util_expr_scan.l"
+#line 265 "util_expr_scan.l"
 { return T_OP_STR_GT; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 267 "util_expr_scan.l"
+#line 266 "util_expr_scan.l"
 { return T_OP_STR_GE; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 268 "util_expr_scan.l"
+#line 267 "util_expr_scan.l"
 { return T_OP_REG; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 269 "util_expr_scan.l"
+#line 268 "util_expr_scan.l"
 { return T_OP_NRE; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 270 "util_expr_scan.l"
+#line 269 "util_expr_scan.l"
 { return T_OP_AND; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 271 "util_expr_scan.l"
+#line 270 "util_expr_scan.l"
 { return T_OP_AND; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 272 "util_expr_scan.l"
+#line 271 "util_expr_scan.l"
 { return T_OP_OR; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 273 "util_expr_scan.l"
+#line 272 "util_expr_scan.l"
 { return T_OP_OR; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 274 "util_expr_scan.l"
+#line 273 "util_expr_scan.l"
 { return T_OP_NOT; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 275 "util_expr_scan.l"
+#line 274 "util_expr_scan.l"
 { return T_OP_NOT; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 276 "util_expr_scan.l"
+#line 275 "util_expr_scan.l"
 { return T_OP_CONCAT; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 277 "util_expr_scan.l"
+#line 276 "util_expr_scan.l"
 { return T_OP_IN; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 278 "util_expr_scan.l"
+#line 277 "util_expr_scan.l"
 { return T_OP_EQ; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 279 "util_expr_scan.l"
+#line 278 "util_expr_scan.l"
 { return T_OP_NE; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 280 "util_expr_scan.l"
+#line 279 "util_expr_scan.l"
 { return T_OP_GE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 281 "util_expr_scan.l"
+#line 280 "util_expr_scan.l"
 { return T_OP_LE; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 282 "util_expr_scan.l"
+#line 281 "util_expr_scan.l"
 { return T_OP_GT; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 283 "util_expr_scan.l"
+#line 282 "util_expr_scan.l"
 { return T_OP_LT; }
 	YY_BREAK
 /* for compatibility with ssl_expr */
 case 50:
 YY_RULE_SETUP
-#line 286 "util_expr_scan.l"
+#line 285 "util_expr_scan.l"
 { return T_OP_LT; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 287 "util_expr_scan.l"
+#line 286 "util_expr_scan.l"
 { return T_OP_LE; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 288 "util_expr_scan.l"
+#line 287 "util_expr_scan.l"
 { return T_OP_GT; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 289 "util_expr_scan.l"
+#line 288 "util_expr_scan.l"
 { return T_OP_GE; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 290 "util_expr_scan.l"
+#line 289 "util_expr_scan.l"
 { return T_OP_NE; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 291 "util_expr_scan.l"
+#line 290 "util_expr_scan.l"
 { return T_OP_EQ; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 292 "util_expr_scan.l"
+#line 291 "util_expr_scan.l"
 { return T_OP_IN; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 294 "util_expr_scan.l"
+#line 293 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext + 1);
     return T_OP_UNARY;
@@ -1383,7 +1381,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 299 "util_expr_scan.l"
+#line 298 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext + 1);
     return T_OP_BINARY;
@@ -1394,12 +1392,12 @@ YY_RULE_SETUP
   */
 case 59:
 YY_RULE_SETUP
-#line 307 "util_expr_scan.l"
+#line 306 "util_expr_scan.l"
 { return T_TRUE; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 308 "util_expr_scan.l"
+#line 307 "util_expr_scan.l"
 { return T_FALSE; }
 	YY_BREAK
 /*
@@ -1407,7 +1405,7 @@ YY_RULE_SETUP
   */
 case 61:
 YY_RULE_SETUP
-#line 313 "util_expr_scan.l"
+#line 312 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_DIGIT;
@@ -1418,7 +1416,7 @@ YY_RULE_SETUP
   */
 case 62:
 YY_RULE_SETUP
-#line 321 "util_expr_scan.l"
+#line 320 "util_expr_scan.l"
 {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext);
     return T_ID;
@@ -1429,7 +1427,7 @@ YY_RULE_SETUP
   */
 case 63:
 YY_RULE_SETUP
-#line 329 "util_expr_scan.l"
+#line 328 "util_expr_scan.l"
 {
     return yytext[0];
 }
@@ -1440,7 +1438,7 @@ YY_RULE_SETUP
 case 64:
 /* rule 64 can match eol */
 YY_RULE_SETUP
-#line 336 "util_expr_scan.l"
+#line 335 "util_expr_scan.l"
 {
     char *msg = apr_psprintf(yyextra->pool, "Parse error near '%c'", yytext[0]);
     PERROR(msg);
@@ -1448,10 +1446,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 342 "util_expr_scan.l"
+#line 340 "util_expr_scan.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1457 "util_expr_scan.c"
+#line 1453 "util_expr_scan.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(regex):
 	yyterminate();
@@ -2252,12 +2250,6 @@ YY_BUFFER_STATE ap_expr_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_le
 	BEGIN(yyg->yy_start_stack[yyg->yy_start_stack_ptr]);
 }
 
-    static int yy_top_state  (yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-	return yyg->yy_start_stack[yyg->yy_start_stack_ptr - 1];
-}
-
 #ifndef YY_EXIT_FAILURE
 #define YY_EXIT_FAILURE 2
 #endif
@@ -2618,7 +2610,7 @@ void ap_expr_yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 342 "util_expr_scan.l"
+#line 340 "util_expr_scan.l"
 
 
 
