@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 932935:1029715 (outdated) -->
+<!-- English Revision: 1029715 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -189,8 +189,8 @@ l'arborescence DocumentRoot</title>
     <code>/home/user/public_html/file.html</code>, utilisez la directive
     <code>AliasMatch</code> suivante :</p>
 
-<example>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
-      /home/$1/public_html/$2</example>
+<example>AliasMatch ^/upages/([a-zA-Z0-9]+)(/(.*))?$
+      /home/$1/public_html/$3</example>
 </section>
 
 <section id="redirect"><title>Redirection d'URL</title>
