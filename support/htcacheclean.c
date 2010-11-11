@@ -47,13 +47,6 @@
 #include <stdlib.h>
 #endif
 
-#ifdef AP_DEBUG
-/* XXX: Maybe we should link util_debug into htcacheclean? */
-#undef strchr
-#undef strrchr
-#undef strstr
-#endif
-
 /* define the following for debugging */
 #undef DEBUG
 
