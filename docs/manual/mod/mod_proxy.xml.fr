@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1021471 -->
+<!-- English Revision : 1033595 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2010101501 $ -->
+<!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -507,9 +507,9 @@ incorrectes d'une r&eacute;ponse</description>
 <usage>
     <p>La directive <directive>ProxyBadHeader</directive> permet de
     d&eacute;terminer le comportement de <module>mod_proxy</module> lorsqu'il
-    re&ccedil;oit des lignes d'en-t&ecirc;te dont la syntaxe n'est pas valide (c'est
-    &agrave; dire ne contenant pas de caract&egrave;re ':'). Les arguments disponibles
-    sont :</p>
+    re&ccedil;oit des lignes d'en-t&ecirc;te de r&eacute;ponse dont la syntaxe n'est pas valide (c'est
+    &agrave; dire ne contenant pas de caract&egrave;re ':') en provenance du serveur
+    original. Les arguments disponibles sont :</p>
 
     <dl>
     <dt><code>IsError</code></dt>
@@ -736,8 +736,8 @@ d'Apache.</compatibility>
     <example>
       &lt;Proxy balancer://hotcluster&gt;<br />
       <indent>
-        BalancerMember http://www2.example.com:8009 loadfactor=1<br />
-        BalancerMember http://www3.example.com:8009 loadfactor=2<br />
+        BalancerMember http://www2.example.com:8080 loadfactor=1<br />
+        BalancerMember http://www3.example.com:8080 loadfactor=2<br />
         ProxySet lbmethod=bytraffic<br />
       </indent>
       &lt;/Proxy&gt;
@@ -940,15 +940,18 @@ l'espace d'URLs du serveur local</description>
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
-        <td>Cette cl&eacute; doit &ecirc;tre utilis&eacute;e lorsque vous avez un pare-feu
-	entre Apache et le serveur d'arri&egrave;re-plan, et si ce dernier tend
+        <td><p>Cette cl&eacute; doit &ecirc;tre utilis&eacute;e lorsque vous avez un pare-feu
+	entre Apache httpd et le serveur d'arri&egrave;re-plan, et si ce dernier tend
 	&agrave; interrompre les connexions inactives. Cette cl&eacute; va faire en
 	sorte que le syst&egrave;me d'exploitation envoie des messages
-	<code>KEEP_ALIVE</code> sur chacune des connexions inactives
-	(selon des intervalles de temps d&eacute;pendant de la configuration
-	g&eacute;n&eacute;rale de l'OS, en g&eacute;n&eacute;ral 120ms), et ainsi &eacute;viter la
-	fermeture de la	connexion par le pare-feu. Pour activer
-	keepalive, d&eacute;finissez cette cl&eacute; &agrave; <code>On</code>.
+	<code>KEEP_ALIVE</code> sur chacune des connexions inactives et
+	ainsi &eacute;viter la	fermeture de la	connexion par le pare-feu.
+	Pour conserver les connexions persistantes, definissez cette
+	propri&eacute;t&eacute; &agrave; <code>On</code>.</p>
+    <p>La fr&eacute;quence de v&eacute;rification des connexions TCP persistantes
+    initiale et subs&eacute;quentes d&eacute;pend de la configuration globale de l'OS,
+    et peut atteindre 2 heures. Pour &ecirc;tre utile, la fr&eacute;quence configur&eacute;e
+    dans l'OS doit &ecirc;tre inf&eacute;rieure au seuil utilis&eacute; par le pare-feu.</p>
     </td></tr>
     <tr><td>lbset</td>
         <td>0</td>
@@ -1056,12 +1059,14 @@ l'espace d'URLs du serveur local</description>
 	pour effectuer un d&eacute;compte de requ&ecirc;tes pond&eacute;r&eacute;es, soit
 	<code>bytraffic</code>, pour effectuer une r&eacute;partition en
 	fonction du d&eacute;compte des octets transmis, soit
-	<code>bybusyness</code>, pour effectuer une r&eacute;partition en
+	<code>bybusyness</code> (&agrave; partir de la version 2.2.10 du
+	serveur HTTP Apache), pour effectuer une r&eacute;partition en
 	fonction des requ&ecirc;tes en attente. La valeur par d&eacute;faut est
 	<code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
-        <td>1</td>
+        <td>1 de moins que le nombre de workers, ou 1 avec un seul
+	worker</td>
         <td>Nombre maximum d'&eacute;checs avant abandon.
     </td></tr>
     <tr><td>nofailover</td>
@@ -1112,10 +1117,10 @@ l'espace d'URLs du serveur local</description>
       ProxyPass / balancer://mon-cluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mon-cluster&gt;<br />
       <indent>
-        BalancerMember http://1.2.3.4:8009<br />
-        BalancerMember http://1.2.3.5:8009 smax=10<br />
-        # Serveur moins puissant ; faites-lui traiter moins de requ&ecirc;tes<br />
-        BalancerMember http://1.2.3.6:8009 smax=1 loadfactor=20<br />
+        BalancerMember ajp://1.2.3.4:8009<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=20<br />
+        # Serveur moins puissant ; faites-lui traiter moins de requ&ecirc;tes,<br />
+        BalancerMember ajp://1.2.3.6:8009 loadfactor=5<br />
       </indent>
       &lt;/Proxy&gt;
     </example>
@@ -1126,10 +1131,10 @@ l'espace d'URLs du serveur local</description>
       ProxyPass / balancer://hotcluster/ <br />
       &lt;Proxy balancer://hotcluster&gt;<br />
       <indent>
-        BalancerMember http://1.2.3.4:8009 loadfactor=1<br />
-        BalancerMember http://1.2.3.5:8009 loadfactor=2<br />
+        BalancerMember ajp://1.2.3.4:8009 loadfactor=1<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=2<br />
         # La ligne suivante configure le serveur cible de r&eacute;serve<br />
-        BalancerMember http://1.2.3.6:8009 status=+H<br />
+        BalancerMember ajp://1.2.3.6:8009 status=+H<br />
         ProxySet lbmethod=bytraffic
       </indent>
       &lt;/Proxy&gt;
@@ -1167,10 +1172,15 @@ l'espace d'URLs du serveur local</description>
     <directive>ProxyPassMatch</directive>.
     </p>
 
+    <p>Cette directive ne peut pas &ecirc;tre plac&eacute;e dans une section
+    <directive type="section" module="core">Directory</directive> ou
+    <directive type="section" module="core">Files</directive>.</p>
+
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous &agrave; la documentaion de la directive <directive
     module="mod_rewrite">RewriteRule</directive> et son drapeau
     <code>[P]</code>.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -1327,6 +1337,10 @@ par un serveur mandat&eacute; en inverse</description>
     section <directive type="section" module="core">Location</directive>
     s&eacute;par&eacute;e.
     </p>
+
+    <p>Cette directive ne peut pas &ecirc;tre plac&eacute;e dans une section
+    <directive type="section" module="core">Directory</directive> ou
+    <directive type="section" module="core">Files</directive>.</p>
 </usage>
 </directivesynopsis>
 

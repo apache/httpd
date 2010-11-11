@@ -517,7 +517,7 @@ contenant l'index</description>
     +SuppressHTMLPreamble</code></a>, de mani&egrave;re &agrave; ce que ces balises ne
     soient pas r&eacute;p&eacute;t&eacute;es.</p>
 </usage>
-</directivesynopsis>file
+</directivesynopsis>
 
 <directivesynopsis>
 <name>IndexIgnore</name>
