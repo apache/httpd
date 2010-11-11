@@ -17,10 +17,9 @@
 #ifndef MOD_DISK_CACHE_H
 #define MOD_DISK_CACHE_H
 
-#include "mod_cache.h"
 #include "apr_file_io.h"
 
-#include "cache_common.h"
+#include "disk_cache_common.h"
 
 /*
  * include for mod_disk_cache: Disk Based HTTP 1.1 Cache.
