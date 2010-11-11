@@ -1359,7 +1359,7 @@ MIME content-type</description>
     for each process id.</p>
 
     <p>This directive currently only works with the <module>prefork</module> 
-    PM.</p>
+    MPM.</p>
 </usage>
 </directivesynopsis>
 
