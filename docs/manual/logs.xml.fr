@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1001245:1031155 (outdated) -->
+<!-- English Revision: 1031155 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -169,25 +169,25 @@
     <title>Journalisation par module</title>
 
     <p>La directive <directive module="core">LogLevel</directive> permet
-    de spécifier un niveau de sévérité de journalisation pour chaque
-    module. Vous pouvez ainsi résoudre un problème propre à un module particulier
+    de sp&eacute;cifier un niveau de s&eacute;v&eacute;rit&eacute; de journalisation pour chaque
+    module. Vous pouvez ainsi r&eacute;soudre un probl&egrave;me propre &agrave; un module particulier
     en augmentant son volume de journalisation sans augmenter ce volume
-    pour les autres modules. Ceci est particulièrement utile lorsque
-    vous voulez obtenir des détails sur le fonctionnement de modules
+    pour les autres modules. Ceci est particuli&egrave;rement utile lorsque
+    vous voulez obtenir des d&eacute;tails sur le fonctionnement de modules
     comme <module>mod_proxy</module> ou <module>mod_rewrite</module>.</p>
 
-    <p>Pour ce faire, vous devez spécifier le nom du module dans votre
+    <p>Pour ce faire, vous devez sp&eacute;cifier le nom du module dans votre
     directive <directive>LogLevel</directive> :</p>
 
     <example>
     LogLevel info rewrite:trace5
     </example>
 
-    <p>Dans cet exemple, le niveau de journalisation général est défini
-    à info, et à <code>trace5</code> pour <module>mod_rewrite</module>.</p>
+    <p>Dans cet exemple, le niveau de journalisation g&eacute;n&eacute;ral est d&eacute;fini
+    &agrave; info, et &agrave; <code>trace5</code> pour <module>mod_rewrite</module>.</p>
 
     <note>Cette directive remplace les directives de journalisation par
-    module des versions précédentes du serveur, comme
+    module des versions pr&eacute;c&eacute;dentes du serveur, comme
     <code>RewriteLog</code>.</note>
  </section>
 
@@ -520,6 +520,22 @@
       <code>-</code>, tandis que dans le cas contraire elle sera
       <code>1</code>.</p>
 
+      <p>En plus de la syntaxe <code>env=</code>, la directive <directive
+      module="mod_log_config">LogFormat</directive> supporte les
+      valeurs de journalisation conditionnelles bas&eacute;es sur le code de la
+      r&eacute;ponse HTTP :</p>
+
+      <example>
+      LogFormat "%400,501{User-agent}i" browserlog<br />
+      LogFormat "%!200,304,302{Referer}i" refererlog
+      </example>
+
+      <p>Dans le premier exemple, le <code>User-agent</code> sera
+      enregistr&eacute; si le code d'&eacute;tat HTTP est 400 ou 501. Dans le cas
+      contraire, c'est un caract&egrave;re "-" qui sera enregistr&eacute; &agrave; la place.
+      Dans le second exemple, le <code>Referer</code> sera enregistr&eacute; si
+      le code d'&eacute;tat HTTP n'est <strong>pas</strong> 200, 204, ou 302
+      (remarquez le caract&egrave;re "!" avant les codes d'&eacute;tat).</p>
 
       <p>Bien que nous venions de montrer que la journalisation conditionnelle
       est souple et tr&egrave;s puissante, cette m&eacute;thode de contr&ocirc;le du contenu des
@@ -694,11 +710,13 @@
     <related>
       <modulelist>
         <module>mod_logio</module>
+	<module>mod_log_config</module>
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
       </modulelist>
       <directivelist>
         <directive module="mod_log_config">LogFormat</directive>
+	<directive module="mod_log_config">BufferedLogs</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_cgi">ScriptLog</directive>
