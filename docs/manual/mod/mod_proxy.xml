@@ -799,8 +799,8 @@ directly</description>
     <directive module="mod_proxy">ProxyRemote</directive> proxy server(s).</p>
 
     <example><title>Example</title>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21
     </example>
 
     <p>The <var>host</var> arguments to the <directive>NoProxy</directive>
@@ -939,9 +939,9 @@ directly</description>
     will be generated.</p>
 
     <example><title>Example</title>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21<br />
-      ProxyDomain     .mycompany.com
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21<br />
+      ProxyDomain     .example.com
     </example>
 </usage>
 </directivesynopsis>

@@ -390,8 +390,8 @@ directly</td></tr>
     <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> proxy server(s).</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21
     </code></p></div>
 
     <p>The <var>host</var> arguments to the <code class="directive">NoProxy</code>
@@ -624,9 +624,9 @@ proxied</td></tr>
     will be generated.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21<br />
-      ProxyDomain     .mycompany.com
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21<br />
+      ProxyDomain     .example.com
     </code></p></div>
 
 </div>
@@ -1011,6 +1011,6 @@ header for proxied requests</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
