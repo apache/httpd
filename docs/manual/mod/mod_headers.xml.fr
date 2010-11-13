@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 990109 -->
+<!-- English Revision : 1031670 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -328,6 +328,8 @@ tardif</title>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
+<compatibility>La condition par d&eacute;faut passe de "onsuccess" &agrave; "always" &agrave;
+partir de la version 2.3.9</compatibility>
 
 <usage>
     <p>Cette directive permet de remplacer, fusionner, ou
@@ -336,23 +338,19 @@ tardif</title>
     s'ex&eacute;cutent, ce qui permet la modification des en-t&ecirc;tes
     sortants.</p>
 
-    <p>Par d&eacute;faut, cette directive n'affecte que les r&eacute;ponses positives
-    (r&eacute;ponses dont le code de statut est dans la gamme
-    <code>2<var>xx</var></code>). Le param&egrave;tre optionnel
-    <var>condition</var> peut prendre pour valeur soit
-    <code>onsuccess</code> (valeur par d&eacute;faut), soit <code>always</code>
-    (tous les codes de statut, y compris les r&eacute;ponses positives).
-    D&eacute;finir cette valeur &agrave; <code>always</code> permet d'affecter des
-    en-t&ecirc;tes d&eacute;finis par certains modules internes, y compris dans le
-    cas d'une r&eacute;ponse positive, et s'av&egrave;re m&ecirc;me n&eacute;cessaire pour affecter
-    des en-t&ecirc;tes de r&eacute;ponses dont le code de statut n'est pas dans la
-    gamme <code>2<var>xx</var></code> comme les redirections ou les
-    erreurs client.</p>
+    <p>A partir de la version 2.3.9, la condition par d&eacute;faut est
+    "always", ce qui implique que cette directive agit sans tenir compte
+    du code d'&eacute;tat de la r&eacute;ponse. Dans les versions 2.3.8 et
+    ant&eacute;rieures, "onsuccess" &eacute;tait la condition par d&eacute;faut, ce qui
+    impliquait que les en-t&ecirc;tes n'&eacute;taient modifi&eacute;s que pour les r&eacute;ponses
+    avec code d'&eacute;tat <code>2<var>xx</var></code>.</p>
 
-    <note><title>CGI</title>
-      <p>Pour manipuler les en-têtes définis par les scripts CGI, il
-est nécessaire de spécifier <code>always</code> comme premier paramètre.</p>
-    </note>
+    <p>Une valeur effective <code>always</code> peut &ecirc;tre n&eacute;cessaire
+    pour forcer la d&eacute;finition des en-t&ecirc;tes par certains modules internes
+    (tels que <module>mod_cgi</module>), m&ecirc;me dans le cas de r&eacute;ponses
+    positives, et doit toujours &ecirc;tre pr&eacute;sente pour modifier les r&eacute;ponses avec un code
+    d'&eacute;tat autre que <code>2<var>xx</var></code>, comme les redirections
+    ou les erreurs clients.</p>
 
     <p>L'action que cette directive provoque est d&eacute;termin&eacute;e par le
     premier argument (ou par le second argument si une

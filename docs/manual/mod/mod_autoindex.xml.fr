@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 981041 -->
+<!-- English Revision : 1031303 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -595,8 +595,10 @@ r&eacute;pertoire</description>
 
       <dd>Le mot-cl&eacute; <code>Charset</code> vous permet de sp&eacute;cifier le
       jeu de caract&egrave;res de la page g&eacute;n&eacute;r&eacute;e. La valeur par d&eacute;faut est
-      soit <var>UTF-8</var>, <var>ISO-8859-1</var>, selon que le
-      syst&egrave;me de fichiers sous-jacent est unicode ou non.
+      <var>UTF-8</var> sous Windows et MAC OS X, et
+      <var>ISO-8859-1</var> dans les autres cas (en fait selon que le
+      syst&egrave;me de fichiers sous-jacent utilise les noms de fichiers en
+      Unicode ou non).
 
       <example><title>Exemple :</title>
         IndexOptions Charset=UTF-8
@@ -799,7 +801,13 @@ r&eacute;pertoire</description>
       directement par le contenu du fichier d'en-t&ecirc;te. Dans ce cas par
       contre, le fichier d'en-t&ecirc;te doit contenir des instructions HTML
       appropri&eacute;es. S'il n'y a pas de fichier d'en-t&ecirc;te, le pr&eacute;ambule est
-      g&eacute;n&eacute;r&eacute; comme dans le cas g&eacute;n&eacute;ral.</dd>
+      g&eacute;n&eacute;r&eacute; comme dans le cas g&eacute;n&eacute;ral. Si vous sp&eacute;cifiez aussi une
+      directive <directive
+      module="mod_autoindex">ReadmeName</directive>, et si ce
+      fichier existe, les balises de fermeture closing
+      &lt;/body&gt;&lt;/html&gt; seront aussi omises dans la sortie, en
+      supposant que vous ayez plac&eacute; ces balises de fermeture dans ce
+      fichier.</dd>
 
       <dt><a name="indexoptions.suppressicon"
                id="indexoptions.suppressicon">SuppressIcon</a>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 903777 -->
+<!-- English Revision : 1031084 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -85,9 +85,7 @@ du serveur</description>
     &lt;Location /etat-serveur&gt;<br />
     SetHandler server-status<br />
 <br />
-    Order Deny,Allow<br />
-    Deny from all<br />
-    Allow from .example.com<br />
+    Require host example.com<br />
     &lt;/Location&gt;
 </example>
 
