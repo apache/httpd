@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1029508 -->
+<!-- English Revision : 1031389 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -190,13 +190,22 @@ la version version 2.1</compatibility>
 
       <dl>
       <dt><code>inherit</code></dt>
-      <dd>Ceci force la configuration locale &agrave; h&eacute;riter de la
+      <dd>
+
+      <p>Ceci force la configuration locale &agrave; h&eacute;riter de la
       configuration du niveau sup&eacute;rieur. Dans le contexte des h&ocirc;tes
       virtuels, cela signifie que les correspondances, conditions et
       r&egrave;gles du serveur principal sont h&eacute;rit&eacute;es. Dans le contexte des
       r&eacute;pertoires, cela signifie que les conditions et r&egrave;gles de la
       configuration <code>.htaccess</code> du r&eacute;pertoire parent sont
-      h&eacute;rit&eacute;es.</dd>
+      h&eacute;rit&eacute;es.</p>
+
+      <note type="warning">
+      Les r&egrave;gles h&eacute;rit&eacute;es du niveau parent sont appliqu&eacute;es
+      <strong>after</strong> apr&egrave;s les r&egrave;gles sp&eacute;cifi&eacute;es dans le niveau
+      enfant.
+      </note>
+      </dd>
       </dl>
 </usage>
 
@@ -368,7 +377,9 @@ bases de donn&eacute;es depuis la version 2.0.41 d'Apache</compatibility>
       la <em>valeur de remplacement</em>. Si la cl&eacute; n'est pas trouv&eacute;e,
       elle est remplac&eacute;e par la <em>valeur par d&eacute;faut</em>, ou par une
       cha&icirc;ne vide si aucune <em>valeur par d&eacute;faut</em> n'est
-      sp&eacute;cifi&eacute;e.</p>
+      sp&eacute;cifi&eacute;e. La valeur vide se comporte comme si la
+      cl&eacute; &eacute;tait absente ; il est donc impossible de distinguer une
+      valeur vide d'une absence de cl&eacute;.</p>
 
       <p>Par exemple, vous pouvez d&eacute;finir une directive
       <directive>RewriteMap</directive> comme suit </p>
@@ -499,9 +510,11 @@ $ httxt2dbm -i fichier-source.txt -o fichier-dbm.map
 	   source de la correspondance : fonction interne &agrave; Apache
 
           <p>Ici, la source de la correspondance est une fonction
-	  interne &agrave; Apache. Actuellement, vous ne pouvez pas cr&eacute;er
-	  votre propre fonction, mais les fonctions suivantes
-	  existent d&eacute;j&agrave; :</p>
+	  interne &agrave; Apache. Les d&eacute;veloppeurs de modules peuvent
+	  fournir des fonctions internes suppl&eacute;mentaires en les
+	  enregistrant via l'API
+	  <code>ap_register_rewrite_mapfunc</code>. Les fonctions
+	  fournies par d&eacute;faut sont :</p>
 
           <ul>
             <li><strong>toupper</strong>:<br />
