@@ -1682,6 +1682,15 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                       "proxy: %s: fam %d socket created to connect to %s",
                       proxy_function, backend_addr->family, backend_name);
 
+        if (conf->source_address) {
+            rv = apr_socket_bind(*newsock, conf->source_address);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                    "proxy: %s: failed to bind socket to local address",
+                    proxy_function);
+            }
+        }
+
         /* make the connection out of the socket */
         rv = apr_socket_connect(*newsock, backend_addr);
 
@@ -2453,6 +2462,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     int connected = 0;
     int loglevel;
     apr_sockaddr_t *backend_addr = conn->addr;
+    /* the local address to use for the outgoing connection */
+    apr_sockaddr_t *local_addr;
     apr_socket_t *newsock;
     void *sconf = s->module_config;
     proxy_server_conf *conf =
@@ -2526,6 +2537,18 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                      "proxy: %s: fam %d socket created to connect to %s",
                      proxy_function, backend_addr->family, worker->hostname);
+
+        if (conf->source_address_set == 1) {
+            local_addr = apr_pcalloc(conn->pool, sizeof(apr_sockaddr_t));
+            memcpy(local_addr, conf->source_address, sizeof(apr_sockaddr_t));
+            local_addr->pool = conn->pool;
+            rv = apr_socket_bind(newsock, local_addr);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                    "proxy: %s: failed to bind socket to local address", 
+                    proxy_function);
+            }
+        }
 
         /* make the connection out of the socket */
         rv = apr_socket_connect(newsock, backend_addr);
