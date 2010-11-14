@@ -378,7 +378,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     ctx->remaining = get_chunk_size(ctx->chunk_ln);
                     if (ctx->remaining == INVALID_CHAR) {
                         rv = APR_EGENERAL;
-                        http_error = HTTP_SERVICE_UNAVAILABLE;
+                        http_error = HTTP_BAD_REQUEST;
                     }
                 }
             }
@@ -483,7 +483,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ctx->remaining = get_chunk_size(ctx->chunk_ln);
                             if (ctx->remaining == INVALID_CHAR) {
                                 rv = APR_EGENERAL;
-                                http_error = HTTP_SERVICE_UNAVAILABLE;
+                                http_error = HTTP_BAD_REQUEST;
                             }
                         }
                     }

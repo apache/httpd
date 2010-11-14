@@ -248,6 +248,9 @@ Changes with Apache 2.3.9
       Aron Ujvari <xanco nikhok.hu>, Aleksey Midenkov <asm uezku.kemsu.ru>,
       <dan listening-station.net; trunk version Nick Kew]
 
+  *) HTTP protocol: return 400 not 503 if we have to abort due to malformed
+     chunked encoding. [Nick Kew]
+
 Changes with Apache 2.3.8
 
   *) suexec: Support large log files. PR 45856. [Stefan Fritsch]
