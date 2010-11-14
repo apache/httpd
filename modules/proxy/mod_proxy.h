@@ -150,6 +150,7 @@ typedef struct {
         status_on,
         status_full
     } proxy_status;             /* Status display options */
+    apr_sockaddr_t *source_address;
 
     int req_set:1;
     int viaopt_set:1;
@@ -159,6 +160,7 @@ typedef struct {
     int timeout_set:1;
     int badopt_set:1;
     int proxy_status_set:1;
+    int source_address_set:1;
 } proxy_server_conf;
 
 

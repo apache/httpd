@@ -1150,6 +1150,8 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->timeout_set = 0;
     ps->badopt = bad_error;
     ps->badopt_set = 0;
+    ps->source_address = NULL;
+    ps->source_address_set = 0;
     ps->pool = p;
 
     return ps;
@@ -1188,8 +1190,28 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->badopt_set = overrides->badopt_set || base->badopt_set;
     ps->proxy_status = (overrides->proxy_status_set == 0) ? base->proxy_status : overrides->proxy_status;
     ps->proxy_status_set = overrides->proxy_status_set || base->proxy_status_set;
+    ps->source_address = (overrides->source_address_set == 0) ? base->source_address : overrides->source_address;
+    ps->source_address_set = overrides->source_address_set || base->source_address_set;
     ps->pool = p;
     return ps;
+}
+static const char *set_source_address(cmd_parms *parms, void *dummy,
+                                      const char *arg)
+{
+    proxy_server_conf *psf =
+        ap_get_module_config(parms->server->module_config, &proxy_module);
+    struct apr_sockaddr_t *addr;
+
+    if (APR_SUCCESS == apr_sockaddr_info_get(&addr, arg, APR_UNSPEC, 0, 0,
+                                             psf->pool)) {
+        psf->source_address = addr;
+        psf->source_address_set = 1;
+    }
+    else {
+        return "ProxySourceAddress invalid value";
+    }
+
+    return NULL;
 }
 
 static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
@@ -2190,6 +2212,8 @@ static const command_rec proxy_cmds[] =
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer or worker name with list of params"),
+    AP_INIT_TAKE1("ProxySourceAddress", set_source_address, NULL, RSRC_CONF,
+     "Configure local source IP used for request forward"),
     {NULL}
 };
 

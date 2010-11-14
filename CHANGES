@@ -243,6 +243,11 @@ Changes with Apache 2.3.9
      and executing perl-style regexp ops (e.g s/foo/bar/i) and regexp memory
      [Nick Kew]
 
+  *) Proxy: support setting source address.  PR 29404
+     [Multiple contributors iterating through bugzilla,
+      Aron Ujvari <xanco nikhok.hu>, Aleksey Midenkov <asm uezku.kemsu.ru>,
+      <dan listening-station.net; trunk version Nick Kew]
+
 Changes with Apache 2.3.8
 
   *) suexec: Support large log files. PR 45856. [Stefan Fritsch]
