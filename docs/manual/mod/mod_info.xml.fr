@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 932389 -->
+<!-- English Revision : 1031084 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,9 +52,7 @@ serveur</description>
       &lt;Location /infos-serveur&gt;<br />
       <indent>
         SetHandler server-info<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from votre-entreprise.com<br />
+        Require host votre-entreprise.com<br />
       </indent>
       &lt;/Location&gt;
     </example>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 10287999 -->
+<!-- English Revision : 1034057 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -56,6 +56,12 @@ sur les autres plates-formes.</compatibility>
     protocoles qui n&eacute;cessitent l'envoi de donn&eacute;es par le serveur en
     premier, comme <code>ftp:</code> ou <code>nntp</code>:</p>
     <example>AcceptFilter nntp none</example>
+
+    <p>Les noms de protocoles par d&eacute;faut sont <code>https</code> pour le
+    port 443 et <code>http</code> pour tous les autres ports. Pour
+    sp&eacute;cifier un autre protocole &agrave; utiliser avec un port en &eacute;coute,
+    ajoutez l'argument <var>protocol</var> &agrave; la directive <directive
+    module="mpm_common">Listen</directive>.</p>
 
     <p>Sous FreeBSD, les valeurs par d&eacute;faut sont :</p>
     <example>
@@ -113,6 +119,7 @@ sur les autres plates-formes.</compatibility>
     anti-spyware.</p>
 
 </usage>
+<seealso><directive>Protocol</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -326,7 +333,8 @@ sup&eacute;rieures</compatibility>
 <code>.htaccess</code></description>
 <syntax>AllowOverride All|None|<var>type directive</var>
 [<var>type directive</var>] ...</syntax>
-<default>AllowOverride All</default>
+<default>AllowOverride None &agrave; partir de la version 2.3.9, AllowOverride
+All pour les versions ant&eacute;rieures</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
@@ -971,6 +979,46 @@ sup&eacute;rieures. Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</com
 </directivesynopsis>
 
 <directivesynopsis>
+<name>Error</name>
+<description>Interrompt la lecture de la configuration avec un message
+d'erreur personnalis&eacute;</description>
+<syntax>Error <var>message</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>&agrave; partir de la version 2.3.9</compatibility>
+
+<usage>
+    <p>Si une erreur peut &ecirc;tre d&eacute;tect&eacute;e dans la configuration, souvent
+    un module manquant, cette
+    directive peut &ecirc;tre utilis&eacute;e pour g&eacute;n&eacute;rer un message d'erreur
+    personnalis&eacute;, et interrompre la lecture de la configuration. </p>
+
+    <example><title>Exemple</title>
+      # v&eacute;rification du chargement de mod_include<br />
+      &lt;IfModule !include_module&gt;<br />
+      Error mod_foo n&eacute;cessite mod_include. Chargez-le via LoadModule.<br />
+      &lt;/IfModule&gt;<br />
+      <br />
+      # v&eacute;rification de la d&eacute;finition de SSL ou (exclusif) NOSSL<br />
+      &lt;IfDefine SSL&gt;<br />
+      &lt;IfDefine NOSSL&gt;<br />
+      Error SSL et NOSSL sont d&eacute;finies. Vous devez d&eacute;finir soit l'une,
+      soit l'autre.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;IfDefine !SSL&gt;<br />
+      &lt;IfDefine !NOSSL&gt;<br />
+      Error Vous devez d&eacute;finir une et une seule des deux variables SSL
+      ou NOSSL.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ErrorDocument</name>
 <description>Document que le serveur renvoie au client en cas
 d'erreur</description>
@@ -1128,7 +1176,9 @@ host</context>
     mais vous pouvez le modifier &agrave; l'aide de la syntaxe
     <code>syslog:<var>facility</var></code>, o&ugrave; <var>facility</var> peut
     &ecirc;tre remplac&eacute; par un des noms habituellement document&eacute;s dans la page
-    de man syslog(1).</p>
+    de man syslog(1). Le dispositif syslog <code>local7</code> est
+    global, et si il est modifi&eacute; dans un serveur virtuel, le dispositif
+    final sp&eacute;cifi&eacute; affecte l'ensemble du serveur</p>
 
     <example><title>Exemple</title>
     ErrorLog syslog:user
@@ -1606,6 +1656,26 @@ HTTP Content-Type pour les fichiers correspondants</description>
     g&eacute;n&eacute;rateur de r&eacute;ponse sp&eacute;cifie en g&eacute;n&eacute;ral un type de contenu, cette
     directive est ignor&eacute;e.</p>
 
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>GprofDir</name>
+<description>R&eacute;pertoire dans lequel &eacute;crire les donn&eacute;es de profiling
+gmon.out.</description>
+<syntax>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Lorsque le serveur a &eacute;t&eacute; compil&eacute; avec le support du profiling
+    gprof, la directive <directive>GprofDir</directive> permet de
+    sp&eacute;cifier dans quel r&eacute;pertoire les fichiers <code>gmon.out</code>
+    doivent &ecirc;tre &eacute;crits lorsque le processus s'arr&ecirc;te. Si l'argument se
+    termine par un caract&egrave;re pourcentage ('%'), des sous-r&eacute;pertoires
+    sont cr&eacute;&eacute;s pour chaque identifiant de processus.</p>
+
+    <p>Cette directive ne fonctionne actuellement qu'avec le MPM
+    <module>prefork</module>.</p>
 </usage>
 </directivesynopsis>
 
@@ -2209,7 +2279,8 @@ host</context>
 <usage>
     <p>Cette directive sp&eacute;cifie la taille maximale autoris&eacute;e pour le
     corps d'une requ&ecirc;te ; la valeur de l'argument <var>octets</var> va
-    de 0 (pour une taille illimit&eacute;e), &agrave; 2147483647 (2Go).</p>
+    de 0 (pour une taille illimit&eacute;e), &agrave; 2147483647 (2Go). Voir la note
+    ci-dessous pour la limite d'applicabilit&eacute; aux requ&ecirc;tes mandat&eacute;es.</p>
 
     <p>La directive <directive>LimitRequestBody</directive> permet de
     d&eacute;finir une limite pour la taille maximale autoris&eacute;e du corps d'une
@@ -2239,6 +2310,11 @@ host</context>
     <example>
       LimitRequestBody 102400
     </example>
+
+    <note><p>Pour une description d&eacute;taill&eacute;e de la mani&egrave;re dont cette
+    directive est interpr&eacute;t&eacute;e par les requ&ecirc;tes mandat&eacute;es, voir la
+    documentation du module <module>mod_proxy</module>.</p>
+    </note>
 
 </usage>
 </directivesynopsis>
@@ -2501,9 +2577,7 @@ host</context>
       &lt;Location /status&gt;<br />
       <indent>
         SetHandler server-status<br />
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from .example.com<br />
+        Require host example.com<br />
       </indent>
       &lt;/Location&gt;
     </example>
@@ -3236,7 +3310,14 @@ host</context>
       <dd>
       Les vues multiples ("multiviews") &agrave; <a
       href="../content-negotiation.html">contenu n&eacute;goci&eacute;</a> &agrave; l'aide du
-      module <module>mod_negotiation</module> sont autoris&eacute;es.</dd>
+      module <module>mod_negotiation</module> sont autoris&eacute;es.
+      <note><title>Note</title> <p>Cette option est ignor&eacute;e si elle est
+      d&eacute;finie en tout autre endroit qu'une section <directive
+      module="core" type="section">Directory</directive>, car
+      <module>mod_negotiation</module> a besoin de ressources r&eacute;elles
+      pour effectuer ses comparaisons et ses &eacute;valuations.</p></note>
+      
+      </dd>
 
       <dt><code>SymLinksIfOwnerMatch</code></dt>
 
@@ -3325,6 +3406,42 @@ host</context>
     est <code>All</code>.</p>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>Protocol</name>
+<description>Protocole pour une socket d'&eacute;coute</description>
+<syntax>Protocol <var>protocole</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.1.5 d'Apache, mais
+seulement depuis la version 2.3.3 sous Windows.</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier le protocole utilis&eacute; pour une
+    socket d'&eacute;coute particuli&egrave;re. Le protocole sert &agrave; d&eacute;terminer quel
+    module doit traiter une requ&ecirc;te, et d'appliquer les optimisations
+    sp&eacute;cifiques au protocole via la directive
+    <directive>AcceptFilter</directive>.</p>
+
+    <p>Vous ne devez d&eacute;finir le protocole que si vous travaillez avec
+    des ports non standards ; dans le cas g&eacute;n&eacute;ral, le protocole
+    <code>http</code> est associ&eacute; au port 80 et le protocole
+    <code>https</code> au port 443.</p>
+
+    <p>Par exemple, si vous travaillez avec le protocole
+    <code>https</code> sur un port non standard, sp&eacute;cifiez le protocole
+    de mani&egrave;re explicite :</p>
+
+    <example>
+      Protocol https
+    </example>
+
+    <p>Vous pouvez aussi sp&eacute;cifier le protocole via la directive
+    <directive module="mpm_common">Listen</directive>.</p>
+</usage>
+<seealso><directive>AcceptFilter</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>RLimitCPU</name>
