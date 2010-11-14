@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 951904 -->
+<!-- English revision : 1031028 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -45,6 +45,24 @@ probl&egrave;me avant d'utiliser la solution. Rien n'est pire que d'utiliser une
 solution de s&eacute;curit&eacute; sans conna&icirc;tre ses restrictions et la mani&egrave;re dont elle
 interagit avec les autres syst&egrave;mes.</p>
 </summary>
+
+<section id="configexample">
+<title>Exemple de configuration basique</title>
+
+<p>Votre configuration SSL doit comporter au moins les directives
+suivantes :</p>
+
+<example>
+   Listen 443
+   &lt;VirtualHost _default_:443&gt;<br />
+        ServerName www.domain.com<br />
+        SSLEngine on<br />
+        SSLCertificateFile /chemin/vers/www.comain.com.cert<br />
+        SSLCertificateKeyFile /chemin/vers/www.domain.com.key<br />
+   &lt;/VirtualHost&gt;
+</example>
+
+</section>
 
 <section id="ciphersuites">
 <title>Suites de chiffrement et mise en application de la s&eacute;curit&eacute;
