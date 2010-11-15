@@ -49,7 +49,7 @@ without knowing its restrictions and how it interacts with other systems.</p>
 following directives.</p>
 
 <example>
-   Listen 443
+   Listen 443<br />
    &lt;VirtualHost _default_:443&gt;<br />
         ServerName www.domain.com<br />
         SSLEngine on<br />
