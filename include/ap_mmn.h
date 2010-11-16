@@ -284,12 +284,13 @@
  * 20101106.1 (2.3.9-dev)  Add ap_pool_cleanup_set_null() generic cleanup
  * 20101106.2 (2.3.9-dev)  Add suexec_disabled_reason field to ap_unixd_config
  * 20101113.0 (2.3.9-dev)  Add source address to mod_proxy.h
+ * 20101116.0 (2.3.9-dev)  Remove ap_proxy_buckets_lifetime_transform()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20101113
+#define MODULE_MAGIC_NUMBER_MAJOR 20101116
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

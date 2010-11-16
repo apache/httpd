@@ -779,28 +779,6 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);
 
 /**
- * Transform buckets from one bucket allocator to another one by creating a
- * transient bucket for each data bucket and let it use the data read from
- * the old bucket. Metabuckets are transformed by just recreating them.
- * Attention: Currently only the following bucket types are handled:
- *
- * All data buckets
- * FLUSH
- * EOS
- *
- * If an other bucket type is found its type is logged as a debug message
- * and APR_EGENERAL is returned.
- * @param r    current request record of client request. Only used for logging
- *             purposes
- * @param from the brigade that contains the buckets to transform
- * @param to   the brigade that will receive the transformed buckets
- * @return     APR_SUCCESS if all buckets could be transformed APR_EGENERAL
- *             otherwise
- */
-PROXY_DECLARE(apr_status_t)
-ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
-                                        apr_bucket_brigade *to);
-/**
  * Return a hash based on the passed string
  * @param str     string to produce hash from
  * @param method  hashing method to use
