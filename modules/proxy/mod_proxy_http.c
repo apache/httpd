@@ -1902,13 +1902,29 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* Switch the allocator lifetime of the buckets */
                     ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
-                    apr_brigade_cleanup(bb);
 
                     /* found the last brigade? */
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pass_bb))) {
 
                         /* signal that we must leave */
                         finish = TRUE;
+
+                        /* the brigade may contain transient buckets that contain
+                         * data that lives only as long as the backend connection.
+                         * Force a setaside so these transient buckets become heap
+                         * buckets that live as long as the request.
+                         */
+                        for (e = APR_BRIGADE_FIRST(pass_bb); e
+                                != APR_BRIGADE_SENTINEL(pass_bb); e
+                                = APR_BUCKET_NEXT(e)) {
+                            apr_bucket_setaside(e, r->pool);
+                        }
+
+                        /* finally it is safe to clean up the brigade from the
+                         * connection pool, as we have forced a setaside on all
+                         * buckets.
+                         */
+                        apr_brigade_cleanup(bb);
 
                         /* make sure we release the backend connection as soon
                          * as we know we are done, so that the backend isn't
@@ -1930,6 +1946,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* make sure we always clean up after ourselves */
                     apr_brigade_cleanup(pass_bb);
+                    apr_brigade_cleanup(bb);
 
                 } while (!finish);
             }
