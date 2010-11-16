@@ -1394,7 +1394,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     request_rec *rp;
     apr_bucket *e;
     apr_bucket_brigade *bb, *tmp_bb;
-    apr_bucket_brigade *pass_bb;
     int len, backasswards;
     int interim_response = 0; /* non-zero whilst interim 1xx responses
                                * are being read. */
@@ -1422,8 +1421,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
     
     bb = apr_brigade_create(p, c->bucket_alloc);
-    pass_bb = apr_brigade_create(p, c->bucket_alloc);
-    
+
     /* Setup for 100-Continue timeout if appropriate */
     if (do_100_continue) {
         apr_socket_timeout_get(backend->sock, &old_timeout);
@@ -1900,15 +1898,22 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         break;
                     }
 
-                    /* Switch the allocator lifetime of the buckets */
-                    ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
-                    apr_brigade_cleanup(bb);
-
                     /* found the last brigade? */
-                    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pass_bb))) {
+                    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
 
                         /* signal that we must leave */
                         finish = TRUE;
+
+                        /* the brigade may contain transient buckets that contain
+                         * data that lives only as long as the backend connection.
+                         * Force a setaside so these transient buckets become heap
+                         * buckets that live as long as the request.
+                         */
+                        for (e = APR_BRIGADE_FIRST(bb); e
+                                != APR_BRIGADE_SENTINEL(bb); e
+                                = APR_BUCKET_NEXT(e)) {
+                            apr_bucket_setaside(e, r->pool);
+                        }
 
                         /* make sure we release the backend connection as soon
                          * as we know we are done, so that the backend isn't
@@ -1921,7 +1926,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
 
                     /* try send what we read */
-                    if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
+                    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS
                         || c->aborted) {
                         /* Ack! Phbtt! Die! User aborted! */
                         backend->close = 1;  /* this causes socket close below */
@@ -1929,7 +1934,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
 
                     /* make sure we always clean up after ourselves */
-                    apr_brigade_cleanup(pass_bb);
+                    apr_brigade_cleanup(bb);
 
                 } while (!finish);
             }
