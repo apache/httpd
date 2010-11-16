@@ -163,7 +163,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1026665
                   http://svn.apache.org/viewvc?view=revision&revision=1030850
                   http://svn.apache.org/viewvc?view=revision&revision=1030855
-     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_proxy-closeearly22-3.patch
+                  http://svn.apache.org/viewvc?view=revision&revision=1035605
+     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_proxy-closeearly22-4.patch
      +1: minfrin
      +1: jim (requires mmn bump due to proxy_conn_rec)
      -1: rpluem says: There are still regressions in trunk and unsolved problems regarding
