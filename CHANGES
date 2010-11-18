@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_proxy: Fix ProxyPassInterpolateEnv directive. PR 50292.
+     [Stefan Fritsch]
+
   *) suEXEC: Add Suexec directive to disable suEXEC without renaming the
      binary (Suexec Off), or force startup failure if suEXEC is required
      but not supported (Suexec On).  Change SuexecUserGroup to fail 

@@ -640,7 +640,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
                                                          void *struct_ptr, 
                                                          const char *arg);
 /**
- * Generic command handling function for flags
+ * Generic command handling function for flags stored in an int
  * @param cmd The command parameters for this directive
  * @param struct_ptr pointer into a given type
  * @param arg The argument to the directive (either 1 or 0)
@@ -649,6 +649,16 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
 AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd, 
                                                  void *struct_ptr, 
                                                  int arg);
+/**
+ * Generic command handling function for flags stored in a char
+ * @param cmd The command parameters for this directive
+ * @param struct_ptr pointer into a given type
+ * @param arg The argument to the directive (either 1 or 0)
+ * @return An error string or NULL on success
+ */
+AP_DECLARE_NONSTD(const char *) ap_set_flag_slot_char(cmd_parms *cmd, 
+                                                      void *struct_ptr, 
+                                                      int arg);
 /**
  * Generic command handling function for files
  * @param cmd The command parameters for this directive
