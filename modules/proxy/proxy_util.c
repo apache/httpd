@@ -2538,7 +2538,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                      "proxy: %s: fam %d socket created to connect to %s",
                      proxy_function, backend_addr->family, worker->hostname);
 
-        if (conf->source_address_set == 1) {
+        if (conf->source_address_set) {
             local_addr = apr_pcalloc(conn->pool, sizeof(apr_sockaddr_t));
             memcpy(local_addr, conf->source_address, sizeof(apr_sockaddr_t));
             local_addr->pool = conn->pool;
