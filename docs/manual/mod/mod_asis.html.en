@@ -70,7 +70,9 @@ HTTP headers</td></tr>
     changes. In particular, HTTP headers are derived from the file
     itself according to <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> rules, so an asis
     file must include valid headers, and may also use the CGI
-    Status: header to determine the HTTP response code.</p>
+    <code>Status:</code> header to determine the HTTP response
+    code. The <code>Content-Length:</code> header will automatically
+    be inserted or, if included, corrected by httpd.</p>
 
     <p>Here's an example of a file whose contents are sent <em>as
     is</em> so as to tell the client that a file has
