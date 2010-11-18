@@ -1537,7 +1537,7 @@ media type in the HTTP Content-Type header field</td></tr>
     for each process id.</p>
 
     <p>This directive currently only works with the <code class="module"><a href="../mod/prefork.html">prefork</a></code> 
-    PM.</p>
+    MPM.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

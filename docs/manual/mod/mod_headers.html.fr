@@ -228,6 +228,8 @@ tardif</a></h2>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La condition par défaut passe de "onsuccess" à "always" à
+partir de la version 2.3.9</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, ou
     supprimer des en-têtes de réponse HTTP. L'en-tête est modifié juste
@@ -235,23 +237,19 @@ tardif</a></h2>
     s'exécutent, ce qui permet la modification des en-têtes
     sortants.</p>
 
-    <p>Par défaut, cette directive n'affecte que les réponses positives
-    (réponses dont le code de statut est dans la gamme
-    <code>2<var>xx</var></code>). Le paramètre optionnel
-    <var>condition</var> peut prendre pour valeur soit
-    <code>onsuccess</code> (valeur par défaut), soit <code>always</code>
-    (tous les codes de statut, y compris les réponses positives).
-    Définir cette valeur à <code>always</code> permet d'affecter des
-    en-têtes définis par certains modules internes, y compris dans le
-    cas d'une réponse positive, et s'avère même nécessaire pour affecter
-    des en-têtes de réponses dont le code de statut n'est pas dans la
-    gamme <code>2<var>xx</var></code> comme les redirections ou les
-    erreurs client.</p>
+    <p>A partir de la version 2.3.9, la condition par défaut est
+    "always", ce qui implique que cette directive agit sans tenir compte
+    du code d'état de la réponse. Dans les versions 2.3.8 et
+    antérieures, "onsuccess" était la condition par défaut, ce qui
+    impliquait que les en-têtes n'étaient modifiés que pour les réponses
+    avec code d'état <code>2<var>xx</var></code>.</p>
 
-    <div class="note"><h3>CGI</h3>
-      <p>Pour manipuler les en-têtes définis par les scripts CGI, il
-est nécessaire de spécifier <code>always</code> comme premier paramètre.</p>
-    </div>
+    <p>Une valeur effective <code>always</code> peut être nécessaire
+    pour forcer la définition des en-têtes par certains modules internes
+    (tels que <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>), même dans le cas de réponses
+    positives, et doit toujours être présente pour modifier les réponses avec un code
+    d'état autre que <code>2<var>xx</var></code>, comme les redirections
+    ou les erreurs clients.</p>
 
     <p>L'action que cette directive provoque est déterminée par le
     premier argument (ou par le second argument si une

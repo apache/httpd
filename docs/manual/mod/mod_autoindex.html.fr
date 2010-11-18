@@ -602,8 +602,10 @@ répertoire</td></tr>
 
       <dd>Le mot-clé <code>Charset</code> vous permet de spécifier le
       jeu de caractères de la page générée. La valeur par défaut est
-      soit <var>UTF-8</var>, <var>ISO-8859-1</var>, selon que le
-      système de fichiers sous-jacent est unicode ou non.
+      <var>UTF-8</var> sous Windows et MAC OS X, et
+      <var>ISO-8859-1</var> dans les autres cas (en fait selon que le
+      système de fichiers sous-jacent utilise les noms de fichiers en
+      Unicode ou non).
 
       <div class="example"><h3>Exemple :</h3><p><code>
         IndexOptions Charset=UTF-8
@@ -776,7 +778,12 @@ répertoire</td></tr>
       directement par le contenu du fichier d'en-tête. Dans ce cas par
       contre, le fichier d'en-tête doit contenir des instructions HTML
       appropriées. S'il n'y a pas de fichier d'en-tête, le préambule est
-      généré comme dans le cas général.</dd>
+      généré comme dans le cas général. Si vous spécifiez aussi une
+      directive <code class="directive"><a href="#readmename">ReadmeName</a></code>, et si ce
+      fichier existe, les balises de fermeture closing
+      &lt;/body&gt;&lt;/html&gt; seront aussi omises dans la sortie, en
+      supposant que vous ayez placé ces balises de fermeture dans ce
+      fichier.</dd>
 
       <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a>
 	       (<em>Versions 2.0.23 et supérieures du serveur

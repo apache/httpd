@@ -788,7 +788,9 @@ bases de données depuis la version 2.0.41 du serveur HTTP Apache</td></tr>
       la <em>valeur de remplacement</em>. Si la clé n'est pas trouvée,
       elle est remplacée par la <em>valeur par défaut</em>, ou par une
       chaîne vide si aucune <em>valeur par défaut</em> n'est
-      spécifiée.</p>
+      spécifiée. La valeur vide se comporte comme si la
+      clé était absente ; il est donc impossible de distinguer une
+      valeur vide d'une absence de clé.</p>
 
       <p>Par exemple, vous pouvez définir une directive
       <code class="directive">RewriteMap</code> comme suit </p>
@@ -862,7 +864,9 @@ la version version 2.1</td></tr>
 
       <dl>
       <dt><code>inherit</code></dt>
-      <dd>Ceci force la configuration locale à hériter de la
+      <dd>
+
+      <p>Ceci force la configuration locale à hériter de la
       configuration du niveau supérieur. Dans le contexte des hôtes
       virtuels, cela signifie que les correspondances, conditions et
       règles du serveur principal sont héritées. Dans le contexte des
@@ -874,7 +878,13 @@ la version version 2.1</td></tr>
       placées après ces dernières. La place de cette directive - avant
       ou après les règles locales - n'a aucune influance sur ce
       comportement. Si des règles locales ont forcé l'arrêt de la
-      réécriture, les règles héritées ne seront pas traitées.
+      réécriture, les règles héritées ne seront pas traitées.</p>
+
+      <div class="warning">
+      Les règles héritées du niveau parent sont appliquées
+      <strong>after</strong> après les règles spécifiées dans le niveau
+      enfant.
+      </div>
       </dd>
       </dl>
 

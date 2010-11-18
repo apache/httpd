@@ -24,8 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -165,25 +163,25 @@
     
 
     <p>La directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> permet
-    de spÃ©cifier un niveau de sÃ©vÃ©ritÃ© de journalisation pour chaque
-    module. Vous pouvez ainsi rÃ©soudre un problÃ¨me propre Ã&nbsp; un module particulier
+    de spécifier un niveau de sévérité de journalisation pour chaque
+    module. Vous pouvez ainsi résoudre un problème propre à un module particulier
     en augmentant son volume de journalisation sans augmenter ce volume
-    pour les autres modules. Ceci est particuliÃ¨rement utile lorsque
-    vous voulez obtenir des dÃ©tails sur le fonctionnement de modules
+    pour les autres modules. Ceci est particulièrement utile lorsque
+    vous voulez obtenir des détails sur le fonctionnement de modules
     comme <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> ou <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <p>Pour ce faire, vous devez spÃ©cifier le nom du module dans votre
+    <p>Pour ce faire, vous devez spécifier le nom du module dans votre
     directive <code class="directive">LogLevel</code> :</p>
 
     <div class="example"><p><code>
     LogLevel info rewrite:trace5
     </code></p></div>
 
-    <p>Dans cet exemple, le niveau de journalisation gÃ©nÃ©ral est dÃ©fini
-    Ã&nbsp; info, et Ã&nbsp; <code>trace5</code> pour <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    <p>Dans cet exemple, le niveau de journalisation général est défini
+    à info, et à <code>trace5</code> pour <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <div class="note">Cette directive remplace les directives de journalisation par
-    module des versions prÃ©cÃ©dentes du serveur, comme
+    module des versions précédentes du serveur, comme
     <code>RewriteLog</code>.</div>
  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -501,6 +499,21 @@
       <code>-</code>, tandis que dans le cas contraire elle sera
       <code>1</code>.</p>
 
+      <p>En plus de la syntaxe <code>env=</code>, la directive <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> supporte les
+      valeurs de journalisation conditionnelles basées sur le code de la
+      réponse HTTP :</p>
+
+      <div class="example"><p><code>
+      LogFormat "%400,501{User-agent}i" browserlog<br />
+      LogFormat "%!200,304,302{Referer}i" refererlog
+      </code></p></div>
+
+      <p>Dans le premier exemple, le <code>User-agent</code> sera
+      enregistré si le code d'état HTTP est 400 ou 501. Dans le cas
+      contraire, c'est un caractère "-" qui sera enregistré à la place.
+      Dans le second exemple, le <code>Referer</code> sera enregistré si
+      le code d'état HTTP n'est <strong>pas</strong> 200, 204, ou 302
+      (remarquez le caractère "!" avant les codes d'état).</p>
 
       <p>Bien que nous venions de montrer que la journalisation conditionnelle
       est souple et très puissante, cette méthode de contrôle du contenu des
@@ -668,7 +681,7 @@
 <h2><a name="other" id="other">Autres fichiers journaux</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
 
     <h3>Enregistrement du nombre réel d'octets envoyés et reçus</h3>
       
