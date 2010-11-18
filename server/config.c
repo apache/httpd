@@ -1396,6 +1396,18 @@ AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
     return NULL;
 }
 
+AP_DECLARE_NONSTD(const char *) ap_set_flag_slot_char(cmd_parms *cmd,
+                                                      void *struct_ptr_v, int arg)
+{
+    int offset = (int)(long)cmd->info;
+    char *struct_ptr = (char *)struct_ptr_v;
+
+    *(struct_ptr + offset) = arg ? 1 : 0;
+
+    return NULL;
+}
+
+
 AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_ptr,
                                                  const char *arg)
 {

@@ -2170,7 +2170,7 @@ static const command_rec proxy_cmds[] =
      "a scheme, partial URL or '*' and a proxy server"),
     AP_INIT_TAKE2("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
      "a regex pattern and a proxy server"),
-    AP_INIT_FLAG("ProxyPassInterpolateEnv", ap_set_flag_slot,
+    AP_INIT_FLAG("ProxyPassInterpolateEnv", ap_set_flag_slot_char,
         (void*)APR_OFFSETOF(proxy_dir_conf, interpolate_env),
         RSRC_CONF|ACCESS_CONF, "Interpolate Env Vars in reverse Proxy") ,
     AP_INIT_RAW_ARGS("ProxyPass", add_pass_noregex, NULL, RSRC_CONF|ACCESS_CONF,
