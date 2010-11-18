@@ -173,8 +173,7 @@ de fichiers</td></tr>
         Alias /image /ftp/pub/image<br />
         &lt;Directory /ftp/pub/image&gt;<br />
         <span class="indent">
-            Order allow,deny<br />
-            Allow from all<br />
+            Require all granted<br />
         </span>
         &lt;/Directory&gt;
     </code></p></div>
@@ -205,11 +204,59 @@ en faisant intervenir les expressions rationnelles</td></tr>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
     </code></p></div>
 
-    <p>On peut aussi construire un alias qui met en correspondance le
-    chemin URL sans tenir compte de la casse :</p>
+    <p>Toute la puissance des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions
+    rationnelles</a> peut être mise à contribution. Par exemple,
+    il est possible de construire un alias avec un modèle de chemin URL
+    insensible à la casse :</p>
 
     <div class="example"><p><code>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
+    </code></p></div>
+
+    <p>Il existe une différence subtile entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> : <code class="directive"><a href="#alias">Alias</a></code> copie automatiquement toute
+    portion supplémentaire de l'URI située après la partie du modèle qui
+    correspond, à la fin du chemin du fichier de la partie droite, alors
+    que <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> ne le fait
+    pas. Cela signifie qu'il sera préférable dans la plupart des cas de
+    comparer l'expression rationnelle du modèle à la totalité de l'URI
+    de la requête, et d'utiliser les substitutions dans la partie
+    droite.</p>
+
+    <p>En d'autres termes, le remplacement d'<code class="directive"><a href="#alias">Alias</a></code> par <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> ne produira pas le même
+    résultat. Au minimum, vous devez ajouter <code>^</code> au début de
+    l'expression rationnelle, <code>(.*)$</code> à sa fin et
+    <code>$1</code> à la fin de la chaîne de remplacement.</p>
+
+    <p>Par exemple, supposons que nous voulions reformuler cet alias
+    avec AliasMatch :</p>
+
+    <div class="example"><p><code>
+      Alias /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>Le simple remplacement d'Alias par AliasMatch ne produira pas le
+    même résultat. Ainsi, ce qui suit va rediriger toutes les requêtes
+    qui contiennent /image/ vers /ftp/pub/image/ :</p>
+
+    <div class="example"><p><code>
+      AliasMatch /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>Voici la directive AliasMatch qui produira le même résultat que
+    la directive Alias ci-dessus :</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
+    </code></p></div>
+
+    <p>Bien entendu, il n'y a aucune raison d'utiliser <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> dans le cas où <code class="directive"><a href="#alias">Alias</a></code> suffit. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> vous permet d'effectuer
+    des choses beaucoup plus sophistiquées. Par exemple, vous pouvez
+    servir différentes sortes de fichiers à partir de répertoires
+    différents :</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br />
+      AliasMatch ^/image/(.*)\.gif$ /fichiers/gif.images/$1.gif
     </code></p></div>
 
 
@@ -256,7 +303,13 @@ d'effectuer une autre requête avec une URL différente</td></tr>
     <p>Si le client effectue une requête pour l'URL
     <code>http://example.com/service/foo.txt</code>, il lui sera demandé
     d'en effectuer une autre pour l'URL
-    <code>http://foo2.example.com/service/foo.txt</code>. Seuls les
+    <code>http://foo2.example.com/service/foo.txt</code>. Ceci concerne
+    les requêtes avec paramètres <code>GET</code>, comme
+    <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>, qui
+    seront redirigées vers
+    <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
+    Notez que les <code>POST</code>s seront ignorés.<br />
+    Seuls les
     éléments de chemin complets sont testés, si bien que l'exemple
     précédent ne s'appliquera pas à l'URL
     <code>http://example.com/servicefoo.txt</code>. Pour des mises en
@@ -339,6 +392,12 @@ courante</td></tr>
     <div class="example"><p><code>
       RedirectMatch (.*)\.gif$ http://www.autre-serveur.com$1.jpg
     </code></p></div>
+
+    <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
+    différence entre les directives <code class="directive"><a href="#redirect">Redirect</a></code> et <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>. Voir la directive
+    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> pour plus de
+    détails.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -480,6 +539,20 @@ comme un script CGI</td></tr>
     <div class="example"><p><code>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </code></p></div>
+
+    <p>Comme dans le cas d'AliasMatch, toute la puissance des <a class="glossarylink" href="../glossary.html#rexex" title="voir glossaire">expressions rationnelles</a> peut être mise à
+    contribution. Par exemple, il est possible de construire un alias
+    avec une comparaison du modèle du chemin URL insensible à la casse :</p>
+
+    <div class="example"><p><code>
+      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </code></p></div>
+
+    <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la
+    différence entre les directives <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> et <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>. Voir la directive
+    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> pour plus de
+    détails.</p>
+
 
 </div>
 </div>

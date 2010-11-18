@@ -95,9 +95,7 @@ du serveur</td></tr>
     &lt;Location /etat-serveur&gt;<br />
     SetHandler server-status<br />
 <br />
-    Order Deny,Allow<br />
-    Deny from all<br />
-    Allow from .example.com<br />
+    Require host example.com<br />
     &lt;/Location&gt;
 </code></p></div>
 

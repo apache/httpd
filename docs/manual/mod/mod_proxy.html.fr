@@ -25,7 +25,7 @@
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle HTTP/1.1</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy.c</td></tr></table>
@@ -39,26 +39,46 @@
       mais aussi pour l'Internet au sens large.</p>
     </div>
 
-    <p>Ce module implémente un mandataire/passerelle pour le serveur
-    HTTP Apache. Il
-    implémente la fonctionnalité de mandataire pour <code>AJP13</code>
-    (Apache JServe Protocol version 1.3), <code>FTP</code>,
-    <code>CONNECT</code> (pour SSL), <code>HTTP/0.9</code>,
-    <code>HTTP/1.0</code>, et <code>HTTP/1.1</code>. Le module peut être
-    configuré pour se connecter aux autres modules mandataires qui
-    gèrent ces protocoles ou d'autres.</p>
+    <p><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et ses modules associés implémentent
+    un mandataire/passerelle pour le serveur HTTP Apache, et supportent
+    de nombreux protocoles courants, ainsi que plusieurs algorithmes de
+    répartition de charge. Le support de protocoles et d'algorithmes de
+    répartition de charge supplémentaires peut être assuré par des
+    modules tiers.</p>
 
-    <p>Les diverses fonctionnalités de
-    mandataire d'Apache httpd sont réparties entre plusieurs modules
-    complémentaires de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> :
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>,
-    <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>, <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>,
-    et <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>. Ainsi, si vous voulez
-    utiliser une ou plusieurs fonctionnalités de mandataire
-    particulières, chargez <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> <em>et</em> le(s)
-    module(s) approprié(s) dans le serveur (soit statiquement à la
-    compilation, soit dynamiquement via la directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>).</p>
+    <p>Un jeu de modules chargés dans le serveur permet de fournir les
+    fonctionnalités souhaitées. Ces modules peuvent être inclus
+    statiquement à la compilation, ou dynamiquement via la directive
+    <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>. Ce jeu de module
+    doit comporter :</p>
 
+    <ul>
+      <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, qui fournit les fonctionnalités de
+      base d'un mandataire</li>
+
+      <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> et un ou plusieurs modules
+      de répartition, si la répartition de charge doit être mise en
+      oeuvre (Voir la documentation de
+      <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> pour plus de détails).</li>
+
+      <li>un ou plusieurs modules de types de mandataire, ou protocoles
+      :
+
+        <table class="bordered">
+        <tr><th>Protocole</th><th>Module</th></tr>
+        <tr><td>AJP13 (Protocole Apache JServe version
+          1.3)</td><td><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></td></tr>
+        <tr><td>CONNECT (pour
+          SSL)</td><td><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></td></tr> 
+        <tr><td>FastCGI</td><td><code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></td></tr>
+        <tr><td>ftp</td><td><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></td></tr>
+        <tr><td>HTTP/0.9, HTTP/1.0, et
+          HTTP/1.1</td><td><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></td></tr> 
+        <tr><td>SCGI</td><td><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></td></tr>
+        </table>
+      </li>
+    </ul>
+    
     <p>En outre, d'autres modules fournissent des fonctionnalités
     étendues. <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> et ses modules associés
     fournissent la mise en cache. Les directives <code>SSLProxy*</code>
@@ -113,9 +133,12 @@
 </ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
-<li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
-<li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
 <li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></li>
 </ul></div>
@@ -196,9 +219,7 @@
     <br />
     &lt;Proxy *&gt;<br />
     <span class="indent">
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from interne.example.com<br />
+      Require host internal.example.com<br />
     </span>
     &lt;/Proxy&gt;
     </code></p></div>
@@ -338,9 +359,7 @@
       <div class="example"><p><code>
         &lt;Proxy *&gt;<br />
         <span class="indent">
-          Order Deny,Allow<br />
-          Deny from all<br />
-          Allow from 192.168.0<br />
+          Require ip 192.168.0<br />
         </span>
         &lt;/Proxy&gt;
       </code></p></div>
@@ -444,6 +463,20 @@
     <code>Content-Length</code>, alors que
     <code>proxy-sendchunked</code> diminue la consommation de ressources
     en imposant l'utilisation d'un codage à fractionnement.</p>
+
+    <p>Dans certaines circonstances, le serveur doit mettre en file
+    d'attente sur disque les corps de requêtes afin de satisfaire le
+    traitement demandé des corps de requêtes. Par exemple, cette mise en
+    file d'attente se produira si le corps original a été envoyé selon un
+    codage morcelé (et possède une taille importante), alors que
+    l'administrateur a demandé que les requêtes du serveur
+    d'arrière-plan soient envoyées avec l'en-tête Content-Length ou en
+    HTTP/1.0. Cette mise en file d'attente se produira aussi si le corps
+    de la requête contient déjà un en-tête Content-Length, alors que le
+    serveur est configuré pour filtrer les corps des requêtes entrantes.</p>
+
+    <p>La directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> ne s'applique qu'aux
+    corps de requêtes que le serveur met en file d'attente sur disque.</p>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -669,9 +702,7 @@ mandatées</td></tr>
     <div class="example"><p><code>
       &lt;Proxy *&gt;<br />
       <span class="indent">
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from votre-reseau.example.com<br />
+        Require host votre-reseau.example.com<br />
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
@@ -709,9 +740,9 @@ incorrectes d'une réponse</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyBadHeader</code> permet de
     déterminer le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> lorsqu'il
-    reçoit des lignes d'en-tête dont la syntaxe n'est pas valide (c'est
-    à dire ne contenant pas de caractère ':'). Les arguments disponibles
-    sont :</p>
+    reçoit des lignes d'en-tête de réponse dont la syntaxe n'est pas valide (c'est
+    à dire ne contenant pas de caractère ':') en provenance du serveur
+    original. Les arguments disponibles sont :</p>
 
     <dl>
     <dt><code>IsError</code></dt>
@@ -1123,15 +1154,19 @@ l'espace d'URLs du serveur local</td></tr>
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
-        <td>Cette clé doit être utilisée lorsque vous avez un pare-feu
+        <td><p>Cette clé doit être utilisée lorsque vous avez un pare-feu
 	entre Apache httpd et le serveur d'arrière-plan, et si ce dernier tend
 	à interrompre les connexions inactives. Cette clé va faire en
 	sorte que le système d'exploitation envoie des messages
-	<code>KEEP_ALIVE</code> sur chacune des connexions inactives
-	(selon des intervalles de temps dépendant de la configuration
-	générale de l'OS, en général 120ms), et ainsi éviter la
-	fermeture de la	connexion par le pare-feu. Pour activer
-	keepalive, définissez cette clé à <code>On</code>.
+	<code>KEEP_ALIVE</code> sur chacune des connexions inactives et
+	ainsi éviter la	fermeture de la	connexion par le pare-feu.
+	Pour conserver les connexions persistantes, definissez cette
+	propriété à <code>On</code>.</p>
+    <p>La fréquence de vérification des connexions TCP persistantes
+    initiale et subséquentes dépend de la configuration globale de l'OS,
+    et peut atteindre 2 heures. Pour être utile, la fréquence configurée
+    dans l'OS doit être inférieure au seuil utilisé par le pare-feu.</p>
+
     </td></tr>
     <tr><td>lbset</td>
         <td>0</td>
@@ -1252,7 +1287,8 @@ l'espace d'URLs du serveur local</td></tr>
 	<code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
-        <td>1</td>
+        <td>1 de moins que le nombre de workers, ou 1 avec un seul
+	worker</td>
         <td>Nombre maximum d'échecs avant abandon.
     </td></tr>
     <tr><td>nofailover</td>
@@ -1304,10 +1340,10 @@ l'espace d'URLs du serveur local</td></tr>
       ProxyPass / balancer://mon-cluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mon-cluster&gt;<br />
       <span class="indent">
-        BalancerMember http://1.2.3.4:8009<br />
-        BalancerMember http://1.2.3.5:8009 smax=10<br />
-        # Serveur moins puissant ; faites-lui traiter moins de requêtes<br />
-        BalancerMember http://1.2.3.6:8009 smax=1 loadfactor=20<br />
+        BalancerMember ajp://1.2.3.4:8009<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=20<br />
+        # Serveur moins puissant ; faites-lui traiter moins de requêtes,<br />
+        BalancerMember ajp://1.2.3.6:8009 loadfactor=5<br />
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
@@ -1318,10 +1354,10 @@ l'espace d'URLs du serveur local</td></tr>
       ProxyPass / balancer://hotcluster/ <br />
       &lt;Proxy balancer://hotcluster&gt;<br />
       <span class="indent">
-        BalancerMember http://1.2.3.4:8009 loadfactor=1<br />
-        BalancerMember http://1.2.3.5:8009 loadfactor=2<br />
+        BalancerMember ajp://1.2.3.4:8009 loadfactor=1<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=2<br />
         # La ligne suivante configure le serveur cible de réserve<br />
-        BalancerMember http://1.2.3.6:8009 status=+H<br />
+        BalancerMember ajp://1.2.3.6:8009 status=+H<br />
         ProxySet lbmethod=bytraffic
       </span>
       &lt;/Proxy&gt;
@@ -1355,9 +1391,14 @@ l'espace d'URLs du serveur local</td></tr>
     nécessaire d'utiliser la directive
     <code class="directive">ProxyPassMatch</code> à la place.</p>
 
+    <p>Cette directive ne peut pas être placée dans une section
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
+
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
     <code>[P]</code>.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1528,6 +1569,10 @@ par un serveur mandaté en inverse</td></tr>
     l'expression rationnelle littéralement comme un chemin ; si besoin
     est dans ce cas, définissez la directive ProxyPassReverse en dehors
     de la section, ou dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> séparée.</p>
+
+    <p>Cette directive ne peut pas être placée dans une section
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1739,8 +1784,8 @@ du serveur HTTP Apache.</td></tr>
     <div class="example"><p><code>
       &lt;Proxy balancer://hotcluster&gt;<br />
       <span class="indent">
-        BalancerMember http://www2.example.com:8009 loadfactor=1<br />
-        BalancerMember http://www3.example.com:8009 loadfactor=2<br />
+        BalancerMember http://www2.example.com:8080 loadfactor=1<br />
+        BalancerMember http://www3.example.com:8080 loadfactor=2<br />
         ProxySet lbmethod=bytraffic<br />
       </span>
       &lt;/Proxy&gt;

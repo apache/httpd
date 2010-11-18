@@ -48,6 +48,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
@@ -56,6 +57,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
@@ -78,6 +80,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
@@ -130,6 +133,11 @@ sur les autres plates-formes.</td></tr>
     premier, comme <code>ftp:</code> ou <code>nntp</code>:</p>
     <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
 
+    <p>Les noms de protocoles par défaut sont <code>https</code> pour le
+    port 443 et <code>http</code> pour tous les autres ports. Pour
+    spécifier un autre protocole à utiliser avec un port en écoute,
+    ajoutez l'argument <var>protocol</var> à la directive <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
+
     <p>Sous FreeBSD, les valeurs par défaut sont :</p>
     <div class="example"><p><code>
         AcceptFilter http httpready <br />
@@ -180,6 +188,10 @@ sur les autres plates-formes.</td></tr>
     anti-spyware.</p>
 
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive">Protocol</code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Directive</a></h2>
@@ -391,7 +403,8 @@ supérieures</td></tr>
 <code>.htaccess</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowOverride All|None|<var>type directive</var>
 [<var>type directive</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowOverride All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowOverride None à partir de la version 2.3.9, AllowOverride
+All pour les versions antérieures</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -980,6 +993,45 @@ supérieures. Par défaut à Off depuis la version 2.3.9.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interrompt la lecture de la configuration avec un message
+d'erreur personnalisé</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Error <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>à partir de la version 2.3.9</td></tr>
+</table>
+    <p>Si une erreur peut être détectée dans la configuration, souvent
+    un module manquant, cette
+    directive peut être utilisée pour générer un message d'erreur
+    personnalisé, et interrompre la lecture de la configuration. </p>
+
+    <div class="example"><h3>Exemple</h3><p><code>
+      # vérification du chargement de mod_include<br />
+      &lt;IfModule !include_module&gt;<br />
+      Error mod_foo nécessite mod_include. Chargez-le via LoadModule.<br />
+      &lt;/IfModule&gt;<br />
+      <br />
+      # vérification de la définition de SSL ou (exclusif) NOSSL<br />
+      &lt;IfDefine SSL&gt;<br />
+      &lt;IfDefine NOSSL&gt;<br />
+      Error SSL et NOSSL sont définies. Vous devez définir soit l'une,
+      soit l'autre.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;IfDefine !SSL&gt;<br />
+      &lt;IfDefine !NOSSL&gt;<br />
+      Error Vous devez définir une et une seule des deux variables SSL
+      ou NOSSL.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+    </code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Document que le serveur renvoie au client en cas
@@ -1133,7 +1185,9 @@ personnalisation des réponses</a></li>
     mais vous pouvez le modifier à l'aide de la syntaxe
     <code>syslog:<var>facility</var></code>, où <var>facility</var> peut
     être remplacé par un des noms habituellement documentés dans la page
-    de man syslog(1).</p>
+    de man syslog(1). Le dispositif syslog <code>local7</code> est
+    global, et si il est modifié dans un serveur virtuel, le dispositif
+    final spécifié affecte l'ensemble du serveur</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
     ErrorLog syslog:user
@@ -1572,6 +1626,27 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
     générateur de réponse spécifie en général un type de contenu, cette
     directive est ignorée.</p>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire dans lequel écrire les données de profiling
+gmon.out.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>Lorsque le serveur a été compilé avec le support du profiling
+    gprof, la directive <code class="directive">GprofDir</code> permet de
+    spécifier dans quel répertoire les fichiers <code>gmon.out</code>
+    doivent être écrits lorsque le processus s'arrête. Si l'argument se
+    termine par un caractère pourcentage ('%'), des sous-répertoires
+    sont créés pour chaque identifiant de processus.</p>
+
+    <p>Cette directive ne fonctionne actuellement qu'avec le MPM
+    <code class="module"><a href="../mod/prefork.html">prefork</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2145,7 +2220,8 @@ envoyée par le client</td></tr>
 </table>
     <p>Cette directive spécifie la taille maximale autorisée pour le
     corps d'une requête ; la valeur de l'argument <var>octets</var> va
-    de 0 (pour une taille illimitée), à 2147483647 (2Go).</p>
+    de 0 (pour une taille illimitée), à 2147483647 (2Go). Voir la note
+    ci-dessous pour la limite d'applicabilité aux requêtes mandatées.</p>
 
     <p>La directive <code class="directive">LimitRequestBody</code> permet de
     définir une limite pour la taille maximale autorisée du corps d'une
@@ -2175,6 +2251,11 @@ envoyée par le client</td></tr>
     <div class="example"><p><code>
       LimitRequestBody 102400
     </code></p></div>
+
+    <div class="note"><p>Pour une description détaillée de la manière dont cette
+    directive est interprétée par les requêtes mandatées, voir la
+    documentation du module <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
+    </div>
 
 
 </div>
@@ -2428,9 +2509,7 @@ spécifiées</td></tr>
       &lt;Location /status&gt;<br />
       <span class="indent">
         SetHandler server-status<br />
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from .example.com<br />
+        Require host example.com<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -3149,7 +3228,13 @@ particulier</td></tr>
 
       <dd>
       Les vues multiples ("multiviews") à <a href="../content-negotiation.html">contenu négocié</a> à l'aide du
-      module <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> sont autorisées.</dd>
+      module <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> sont autorisées.
+      <div class="note"><h3>Note</h3> <p>Cette option est ignorée si elle est
+      définie en tout autre endroit qu'une section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, car
+      <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> a besoin de ressources réelles
+      pour effectuer ses comparaisons et ses évaluations.</p></div>
+      
+      </dd>
 
       <dt><code>SymLinksIfOwnerMatch</code></dt>
 
@@ -3235,6 +3320,45 @@ particulier</td></tr>
     <p>En l'absence de toute définition d'options, la valeur par défaut
     est <code>All</code>.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocole pour une socket d'écoute</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Protocol <var>protocole</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.1.5 d'Apache, mais
+seulement depuis la version 2.3.3 sous Windows.</td></tr>
+</table>
+    <p>Cette directive permet de spécifier le protocole utilisé pour une
+    socket d'écoute particulière. Le protocole sert à déterminer quel
+    module doit traiter une requête, et d'appliquer les optimisations
+    spécifiques au protocole via la directive
+    <code class="directive">AcceptFilter</code>.</p>
+
+    <p>Vous ne devez définir le protocole que si vous travaillez avec
+    des ports non standards ; dans le cas général, le protocole
+    <code>http</code> est associé au port 80 et le protocole
+    <code>https</code> au port 443.</p>
+
+    <p>Par exemple, si vous travaillez avec le protocole
+    <code>https</code> sur un port non standard, spécifiez le protocole
+    de manière explicite :</p>
+
+    <div class="example"><p><code>
+      Protocol https
+    </code></p></div>
+
+    <p>Vous pouvez aussi spécifier le protocole via la directive
+    <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive">AcceptFilter</code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2>

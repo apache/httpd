@@ -27,83 +27,14 @@
 <p class="cite">-- <cite>Claude Levi-Strauss</cite></p>
 
 </blockquote>
-<p>Ce chapitre propose une Foire Aux Questions (FAQ) et les réponses
-correspondantes selon la tradition populaire USENET. La plupart des questions
-ont été posés dans le Newsgroup
-<code><a href="news:comp.infosystems.www.servers.unix">comp.infosystems.www.servers.unix</a></code> ou dans la liste de diffusion du
-support mod_ssl <code><a href="mailto:modssl-users@modssl.org">modssl-users@modssl.org</a></code>. Elles ont été rassemblées ici afin
-de ne pas avoir à répondre encore et encore aux mêmes questions.</p>
-
-<p>Vous êtes prié de lire ce chapitre au moins une fois avant d'installer
-mod_ssl, ou d'y rechercher la solution à votre problème avant de le soumettre
-à l'auteur.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#about">A propos de mod_ssl</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#installation">Installation</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#installation">Installation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aboutconfig">Configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aboutcerts">Certificats</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aboutssl">Le protocole SSL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#support">Support de mod_ssl</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="about" id="about">A propos de mod_ssl</a></h2>
-<ul>
-<li><a href="#history">Quel est l'historique de mod_ssl ?</a></li>
-<li><a href="#wassenaar">mod_ssl et l'arrangement Wassenaar</a></li>
-</ul>
-
-<h3><a name="history" id="history">Quel est l'historique de mod_ssl ?</a></h3>
-<p>Le paquet mod_ssl version 1 a été créé en avril 1998 par <a href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> par portage des
-    patches sources 1.17 du module <a href="http://www.apache-ssl.org/">Apache-SSL</a> de <a href="mailto:ben@algroup.co.uk">Ben Laurie</a> pour Apache 1.2.6 vers
-    Apache 1.3b6. Il fut ensuite entièrement réassemblé pour Apache 1.3.0 en
-    fusionnant l'ancien mod_ssl 1.x avec le nouveau Apache-SSL 1.18 pour cause
-    de conflits avec le cycle de développement du module de Ben Laurie. Depuis
-    lors, mod_ssl vole de ses propres ailes sous le nom de mod_ssl v2. La
-    première version distribuée au public fut mod_ssl 2.0.0 à partir du
-    10 août 1998. </p>
-
-    <p>Quand les restrictions à l'exportation des US sur les logiciels de
-    cryptographie furent assouplis, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> devint partie
-    intégrante du serveur HTTP Apache à partir de la distribution de
-    Apache httpd 2.</p>
-
-
-<h3><a name="wassenaar" id="wassenaar">mod_ssl est-il concerné par
-l'arrangement Wassenaar ?</a></h3>
-<p>Tout d'abord, examinons en quoi consiste <dfn>Wassenaar</dfn> et son
-<dfn>Arrangement sur le contrôle de l'exportation des armes conventionnelles
-et le double usage des biens et des technologies</dfn> : c'est un
-règlement international, établi en 1995, qui contrôle le commerce des armes
-conventionnelles et le double usage des biens et des technologies. Il
-remplace le règlement précédent <dfn>CoCom</dfn>. Pour plus de détails sur
-l'arrangement et ses signataires, se référer à <a href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>.</p>
-
-    <p>En bref, l'Arrangement Wassenaar a pour but d'empêcher la constitution
-    de puissances militaires qui pourraient menacer la sécurité et la
-    stabilité régionales et internationales. L'Arrangement Wassenaar contrôle
-    l'exportation de logiciels de cryptographie comme biens à double usage,
-    c'est à dire ayant des applications à la fois militaires et civiles.
-    Cependant, l'Arrangement Wassenaar exempte les logiciels grand public et
-    les logiciels libres du contrôle à l'exportation.</p>
-
-    <p>Dans l'actuelle <cite>List of Dual Use Goods and Technologies And
-    Munitions</cite>, sous <q>GENERAL SOFTWARE NOTE (GSN)</q>, il est écrit
-    <q>La liste ne prend pas en compte les "logiciels" qui sont soit :
-    1. [...] 2. "dans le domaine public".</q> Et sous
-    <q>DEFINITIONS OF TERMS USED IN THESE LISTS</q>, <q>In the public
-    domain</q> est défini comme <q>"technologie" ou "logiciel" qui a été
-    fourni sans restrictions à propos de sa redistribution ultérieure. Note:
-    les restrictions de Copyright ne privent pas la "technologie" ou le
-    "logiciel" de leur appartenance au "domaine public".</q></p>
-
-    <p>Ainsi, selon l'Arrangement Wassenaar et sa <q>List of Dual Use Goods and
-    Technologies And Munitions List</q>, mod_ssl et OpenSSL appartiennent au
-    <q>domaine public</q>, et ne sont donc pas concernés
-    par les dispositions de l'arrangement.</p>
-
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="installation" id="installation">Installation</a></h2>
 <ul>
@@ -255,12 +186,12 @@ Cependant, à l'aide du module <code class="module"><a href="../mod/mod_rewrite.h
 manipuler des hyperliens relatifs, pour obtenir le même effet.</p>
     <div class="example"><p><code>
     RewriteEngine on<br />
-    RewriteRule   ^/(.*):SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
-    RewriteRule   ^/(.*):NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+    RewriteRule   ^/(.*)_SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
+    RewriteRule   ^/(.*)_NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
     </code></p></div>
 
     <p>Ce jeu de règles rewrite vous permet d'utiliser des hyperliens de la
-    forme <code>&lt;a href="document.html:SSL"&gt;</code> pour passer en HTTPS
+    forme <code>&lt;a href="document.html_SSL"&gt;</code> pour passer en HTTPS
     dans les liens relatifs. (Remplacez SSL par NOSSL pour passer en HTTP.)</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -284,19 +215,8 @@ mot de passe ?</a></li>
 à son certificat ?</a></li>
 <li><a href="#badcert">Pour quelle raison une connexion échoue-t-elle avec
 l'erreur "alert bad certificate" ?</a></li>
-<li><a href="#keysize">Pourquoi ma clé privée de 2048 bits ne
-fonctionne-t-elle pas ?</a></li>
-<li><a href="#hashsymlinks">Pourquoi l'authentification des clients ne
-fonctionne-t-elle plus après une mise à jour de SSLeay version 0.8
-vers la version 0.9 ?</a></li>
 <li><a href="#pemder">Comment convertir un certificat du format PEM
 au format DER ?</a></li>
-<li><a href="#verisign">Pourquoi ne trouve-t-on pas les programmes
-<code>getca</code> ou <code>getverisign</code> mentionnés par Verisign
-pour installer un certificat Verisign ?</a></li>
-<li><a href="#sgc">Puis-je utiliser la fonctionnalité "Cryptographie Transmise
-par Serveur" (Server Gated Cryptography - SGC), aussi connue sous le nom
-d'Identifiant Global Verisign (Verisign Global ID) avec mod_ssl ?</a></li>
 <li><a href="#gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
 vérifier mon certificat de serveur Verisign Global ID ?</a></li>
 </ul>
@@ -377,7 +297,7 @@ fins de test ?</a></h3>
     <li>Créez une clé privée RSA pour votre serveur Apache
     	(elle sera au format PEM et chiffrée en Triple-DES):<br />
        <br />
-       <code><strong>$ openssl genrsa -des3 -out server.key 1024</strong></code><br />
+       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
        <br />
        Enregistrez le fichier <code>server.key</code> et le mot de passe
        éventuellement défini en lieu sûr.
@@ -454,7 +374,7 @@ certification (CA) ?</a></h3>
     <li>Créez une clé privée RSA pour votre serveur
     	(elle sera au format PEM et chiffrée en Triple-DES) :<br />
        <br />
-       <code><strong>$ openssl genrsa -des3 -out server.key 1024</strong></code><br />
+       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
        <br />
        Sauvegardez le fichier <code>host.key</code> et le mot de passe
        éventuellement défini en lieu sûr.
@@ -573,43 +493,9 @@ conséquent partie du certificat associé.</p>
     <p><code><strong>$ openssl req -noout -modulus -in server.csr | openssl md5</strong></code></p>
 
 
-<h3><a name="badcert" id="badcert">&gt;Pour quelle raison une connexion échoue-t-elle avec
-l'erreur "alert bad certificate" ?</a></h3>
-<p>Les erreurs du type <code>OpenSSL: error:14094412: SSL
-    routines:SSL3_READ_BYTES:sslv3 alert bad certificate</code> dans le fichier
-    journal de SSL sont souvent causées par un navigateur qui ne sait pas
-    manipuler le certificat ou la clé privée du serveur. Par exemple,
-    Netscape Navigator 3.x ne reconnaît pas une clé RSA dont la longueur
-    est différente de 1024 bits.</p>
-
-
-<h3><a name="keysize" id="keysize">Pourquoi ma clé privée de 2048 bits ne
-fonctionne-t-elle pas ?</a></h3>
-<p>La longueur des clés privées pour SSL doit être de 512 ou 1024 bits, pour
-des raison de compatibilité avec certains navigateurs. Une longueur de 1024
-bits est recommandée car des clés d'une longueur supérieure sont incompatibles
-avec certaines versions de Netscape Navigator et Microsoft Internet Explorer,
-ainsi qu'avec d'autres navigateurs qui utilisent le kit de chiffrement
-BSAFE de RSA.</p>
-
-
-<h3><a name="hashsymlinks" id="hashsymlinks">Pourquoi l'authentification des clients ne
-fonctionne-t-elle plus après une mise à jour de SSLeay version 0.8
-vers la version 0.9 ?</a></h3>
-<p>Les certificats de CA situés dans le chemin que vous avez
-défini à l'aide de <code>SSLCACertificatePath</code> sont localisés par
-SSLeay au moyen de liens symboliques représentant l'empreinte du certificat
-(hash symlinks). Ces empreintes sont générées à l'aide de la commande
-`<code>openssl x509 -noout -hash</code>'. Cependant, SSLeay 0.8 et 0.9
-utilisent des algorithmes différents pour calculer l'empreinte d'un
-certificat. Vous devrez supprimer les anciens liens symboliques et en créer
-de nouveau après la mise à jour. Utilisez le <code>Makefile</code> fourni par
-<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
-
-
 <h3><a name="pemder" id="pemder">Comment convertir un certificat du format PEM
 au format DER ?</a></h3>
-<p>Le format des certificats par défaut pour SSLeay/OpenSSL est le format PEM,
+<p>Le format des certificats par défaut pour OpenSSL est le format PEM,
 qui est tout simplement un format DER codé en Base64, avec des lignes
 d'en-têtes et des annotations. Certaines applications, comme
 Microsoft Internet Explorer, ont besoin d'un certificat au format DER de base.
@@ -617,28 +503,6 @@ Vous pouvez convertir un fichier PEM <code>cert.pem</code> en son équivalent
 au format DER <code>cert.der</code> à l'aide de la commande suivante :
 <code><strong>$ openssl x509 -in cert.pem -out cert.der
 -outform DER</strong></code></p>
-
-
-<h3><a name="verisign" id="verisign">Pourquoi ne trouve-t-on pas les programmes
-<code>getca</code> ou <code>getverisign</code> mentionnés par Verisign
-pour installer un certificat Verisign ?</a></h3>
-<p>Verisign n'a jamais fourni d'instructions spécifiques à Apache+mod_ssl.
-Les instructions fournies concernent Stronghold de C2Net (un serveur
-commercial basé sur Apache avec support SSL).</p>
-<p>Pour installer votre certificat, il vous suffit d'enregistrer le
-certificat dans un fichier, et de fournir le nom de ce fichier à la directive
-<code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code>. Vous devez aussi
-fournir le nom du fichier contenant la clé privée. Pour plus de détails, voir
-la directive <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>.</p>
-
-
-<h3><a name="sgc" id="sgc">Puis-je utiliser la fonctionnalité "Cryptographie Transmise
-par Serveur" (Server Gated Cryptography - SGC), aussi connue sous le nom
-d'Identifiant Global Verisign (Verisign Global ID) avec mod_ssl ?</a></h3>
-<p>Oui. <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> supporte SGC depuis la version 2.1. Aucune
-configuration spécifique n'est nécessaire - utilisez simplement le
-Global ID comme certificat de serveur. La <em>mise à niveau</em> des clients
-est gérée automatiquement par <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> à l'exécution.</p>
 
 
 <h3><a name="gid" id="gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
@@ -672,7 +536,7 @@ apparaît-elle lorsqu'on se connecte à mon serveur
 fraîchement installé ?</a></li>
 <li><a href="#vhosts">Pourquoi ne peut-on pas utiliser SSL avec des hôtes
 virtuels identifiés par un nom et non par une adresse IP ?</a></li>
-<li><a href="#vhosts2">Pourquoi n'est-il pas possible d'utiliser
+<li><a href="#vhosts2">Est-il possible d'utiliser
 l'hébergement virtuel basé sur le nom d'hôte
 pour différencier plusieurs hôtes virtuels ?</a></li>
 <li><a href="#comp">Comment mettre en oeuvre la compression SSL ?</a></li>
@@ -683,10 +547,6 @@ et mot de passe sont envoyés en clair ?</a></li>
 <li><a href="#msie">Pourquoi des erreurs d'entrée/sortie apparaissent-elles
 lorsqu'on se connecte à un serveur Apache+mod_ssl avec
 Microsoft Internet Explorer (MSIE) ?</a></li>
-<li><a href="#nn">Pourquoi des erreurs d'entrée/sortie apparaissent-elles, ou
-le message "Netscape a reçu des données erronées du serveur" s'affiche-t-il,
-lorsqu'on se connecte à un serveur Apache+mod_ssl
-avec Netscape Navigator ?</a></li>
 </ul>
 
 <h3><a name="random" id="random">Pourquoi de nombreuses et aléatoires erreurs de
@@ -724,13 +584,9 @@ algorithmes disponibles peut dépendre de la manière dont vous avez installé
 OpenSSL. Typiquement, au moins les algorithmes suivants sont supportés :</p>
 
     <ol>
-    <li>RC4 avec MD5</li>
-    <li>RC4 avec MD5 (version d'exportation limitée à une clé de 40 bits)</li>
-    <li>RC2 avec MD5</li>
-    <li>RC2 avec MD5 (version d'exportation limitée à une clé de 40 bits)</li>
-    <li>IDEA avec MD5</li>
-    <li>DES avec MD5</li>
-    <li>Triple-DES avec MD5</li>
+    <li>RC4 avec SHA1</li>
+    <li>AES avec SHA1</li>
+    <li>Triple-DES avec SHA1</li>
     </ol>
 
     <p>Pour déterminer la liste réelle des algorithmes disponibles, vous
@@ -756,7 +612,7 @@ apparaît-elle lorsqu'on se connecte à mon serveur
 fraîchement installé ?</a></h3>
 <p>Soit vous avez fait une erreur en définissant votre directive
 <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> (comparez-la avec
-l'exemple préconfiguré dans <code>httpd.conf-dist</code>), soit vous avez
+l'exemple préconfiguré dans <code>extra/httpd-ssl.conf</code>), soit vous avez
 choisi d'utiliser des algorithmes DSA/DH au lieu de RSA lorsque vous avez
 généré votre clé privée, et avez ignoré ou êtes passé outre les
 avertissements. Si vous avez choisi DSA/DH, votre serveur est incapable de
@@ -782,10 +638,11 @@ sélectionner le bon serveur virtuel, Apache doit connaître le contenu du champ
 d'en-tête HTTP <code>Host</code>. Pour cela, il doit lire l'en-tête de la
 requête HTTP. Mais il ne peut le faire tant que la négociation SSL n'est pas
 terminée, or, la phase de négociation SSL a besoin du nom d'hôte contenu
-dans l'en-tête de la requête. Bingo !</p>
+dans l'en-tête de la requête. Voir la question suivante pour
+contourner ce problème.</p>
 
 
-<h3><a name="vhosts2" id="vhosts2">Pourquoi n'est-il pas possible d'utiliser
+<h3><a name="vhosts2" id="vhosts2">Est-il possible d'utiliser
 l'hébergement virtuel basé sur le nom d'hôte
 pour différencier plusieurs hôtes virtuels ?</a></h3>
     <p>L'hébergement virtuel basé sur le nom est une méthode très populaire
@@ -795,16 +652,30 @@ pour différencier plusieurs hôtes virtuels ?</a></h3>
     que l'on peut appliquer la même méthode pour gérer plusieurs hôtes
     virtuels SSL sur le même serveur.</p>
 
-    <p>Et là, on reçoit un choc en apprenant que ce n'est pas possible.</p>
+    <p>C'est possible, mais seulement si on utilise une version 2.2.12
+    ou supérieure du serveur web compilée avec OpenSSL
+    version 0.9.8j ou supérieure. Ceci est du au fait que
+    l'utilisation de l'hébergement virtuel à base de nom
+    avec SSL nécessite une fonctionnalité appelée
+    Indication du Nom de Serveur (Server Name Indication - SNI) que
+    seules les révisions les plus récentes de la
+    spécification SSL supportent.</p>
 
     <p>La raison en est que le protocole SSL constitue une couche séparée qui
     encapsule le protocole HTTP. Aini, la session SSL nécessite une
     transaction séparée qui prend place avant que la session HTTP n'ait débuté.
     Le serveur reçoit une requête SSL sur l'adresse IP X et le port Y
-    (habituellement 443). Comme la requête SSL ne contient aucun champ relatif
-    à l'hôte, le serveur n'a aucun moyen de déterminer quel hôte virtuel SSL il
-    doit utiliser. En général, il utilisera le premier qu'il trouve et qui
-    correspond à l'adresse IP et au port spécifiés.</p>
+    (habituellement 443). Comme la requête SSL ne contenait aucun
+    en-tête Host:, le serveur n'avait aucun moyen de déterminer quel hôte virtuel SSL il
+    devait utiliser. En général, il utilisait le premier
+    qu'il trouvait et qui
+    correspondait à l'adresse IP et au port spécifiés.</p>
+
+    <p>Par contre, si vous utilisez des versions du serveur web et
+    d'OpenSSL qui supportent SNI, et si le navigateur du client le
+    supporte aussi, alors le nom d'hôte sera inclus dans la
+    requête SSL originale, et le serveur web pourra
+    sélectionner le bon serveur virtuel SSL.</p>
 
     <p>Bien entendu, vous pouvez utiliser l'hébergement virtuel basé sur le nom
     pour identifier de nombreux hôtes virtuels non-SSL
@@ -888,58 +759,7 @@ dans votre section d'hôte virtuel avec support SSL :</p>
     ils affecteront <em>tous</em> vos clients, ceux utilisant MSIE,
     mais aussi les autres.</p>
 
-    <p>Un autre problème vient du fait que les versions d'exportation
-    56 bits de MSIE 5.x présentent une mauvaise implémentation de
-    SSLv3, qui interagit de manière inappropriée avec les versions
-    d'OpenSSL supérieures à 0.9.4. Vous pouvez ignorer ce problème et
-    demander à vos clients de mettre à jour leurs navigateurs, vous
-    pouvez revenir à OpenSSL 0.9.4 (non recommandé), ou vous pouvez
-    contourner le problème, en sachant que vos modifications
-    affecteront tous les types de navigateurs :</p>
-    <div class="example"><p><code>SSLProtocol all -SSLv3</code></p></div>
-    <p>va désactiver complètement le protocole SSLv3 et ainsi permettre
-    aux navigateurs concernés de fonctionner. Une meilleure solution
-    consiste à ne désactiver que les algorithmes de chiffrement qui
-    posent problème.</p>
-    <div class="example"><p><code>SSLCipherSuite
-    ALL:!ADH:<strong>!EXPORT56</strong>:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>
-    </p></div>
 
-    <p>Ceci permet aussi aux versions de MSIE incriminées de
-    fonctionner, mais n'enlève que le support des derniers algorithmes
-    de chiffrement TLS 56 bits.</p>
-
-    <p>Autre problème avec les clients MSIE 5.x : ils refusent de se
-    connecter à des URLs de la forme <code>https://12.34.56.78/</code>
-    (où une adresse IP est utilisée à la place d'un nom d'hôte), si le
-    serveur utilise le dispositif de cryptographie transmise par le
-    serveur (SGC). Le problème ne peut être contourné qu'en utilisant
-    le nom de domaine pleinement qualifié (FQDN) du site web dans les
-    hyperliens à la place de l'adresse IP, car MSIE 5.x gère la
-    négociation SGC de manière inappropriée.</p>
-
-    <p>Enfin, pour certaines versions de MSIE, il semble nécessaire
-    qu'une session SSL puisse être réutilisée (un comportement tout à
-    fait non conforme aux standard, bien entendu). Les connections avec
-    ces versions de MSIE ne fonctionnent que si un cache de session SSL
-    est mis en oeuvre. Ainsi, pour contourner le problème, assurez-vous
-    d'utiliser un cache de session (voir la directive
-    <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>).</p>
-
-
-<h3><a name="nn" id="nn">Pourquoi des erreurs d'entrée/sortie apparaissent-elles, ou
-le message "Netscape a reçu des données erronées du serveur" s'affiche-t-il,
-lorsqu'on se connecte à un serveur Apache+mod_ssl
-avec Netscape Navigator ?</a></h3>
-<p>
-    Ceci arrive en général quand vous avez créé un nouveau certificat
-    de serveur pour un domaine donné, mais aviez auparavant configuré
-    votre navigateur pour toujours accepter l'ancien certificat du
-    serveur. Si vous supprimez de votre navigateur l'entrée
-    correspondant à l'ancien certificat, tout devrait rentrer dans
-    l'ordre. L'implémentation de SSL dans Netscape étant correcte, les
-    erreurs d'entrées/sorties avec Netscape Navigator sont en général
-    causées par les certificats installés.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -973,12 +793,6 @@ ici en cas de problème.</p>
 	répondre de nombreuses fois, et elle fait probablement partie
 	de ce document.
     </dd>
-    <dt>Les archives de la liste de diffusion de support modssl-users
-    	<a href="http://www.modssl.org/support/">http://www.modssl.org/support/</a></dt>
-    <dd>Vous pouvez chercher la solution à votre problème dans les
-    archives de la liste de diffusion modssl-users. Vous n'êtes
-    probablement pas la première personne à rencontrer ce problème !
-    </dd>
     </dl>
 
 
@@ -989,18 +803,6 @@ problème avec mod_ssl ?</a></h3>
  <em>dans cet ordre</em> - ne vous précipitez pas sur celle qui vous
  paraît la plus alléchante. </p>
     <ol>
-    <li><em>Envoyez un rapport de problème à la liste de diffusion de
-    support modssl-users</em><br />
-        <a href="mailto:modssl-users@modssl.org">
-        modssl-users@modssl.org</a><br />
-        C'est la manière la plus efficace de soumettre votre rapport de
-	problème, car ainsi, les autres en sont informés, et pourront
-	bénéficier des réponses apportées. Vous devez tout d'abord vous
-	abonner à la liste, mais vous pourrez ensuite discuter
-	facilement de votre problème avec l'auteur et l'ensemble de la
-	communauté d'utilisateurs de mod_ssl.
-        </li>
-
     <li><em>Envoyez un rapport de problème à la liste de diffusion de
     support des utilisateurs d'Apache httpd</em><br />
         <a href="mailto:users@httpd.apache.org">
@@ -1031,7 +833,7 @@ de l'écriture d'un rapport de bogue ?</a></h3>
 suivantes :</p>
 
     <dl>
-    <dt>Les versions d'Apache et OpenSSL installées</dt>
+    <dt>Les versions d'Apache httpd et OpenSSL installées</dt>
     <dd>La version d'Apache peut être déterminée en exécutant
     <code>httpd -v</code>. La version d'OpenSSL peut être déterminée
     en exécutant <code>openssl version</code>. Si Lynx est installé,
@@ -1040,7 +842,7 @@ suivantes :</p>
     informations en une seule fois.
     </dd>
 
-    <dt>Les détails de votre installation d'Apache+mod_ssl+OpenSSL</dt>
+    <dt>Les détails de votre installation d'Apache httpd et OpenSSL</dt>
     <dd>A cet effet, vous pouvez fournir un fichier journal de votre
     session de terminal qui montre les étapes de la configuration et
     de l'installation. En cas d'impossibilité, vous devez au moins
@@ -1050,7 +852,7 @@ suivantes :</p>
 
     <dt>En cas de vidage mémoire, inclure une trace de ce qui s'est
     passé</dt>
-    <dd>Si votre serveur Apache+mod_ssl+OpenSSL fait un vidage de sa
+    <dd>Si votre serveur Apache httpd fait un vidage de sa
     mémoire, merci de fournir en pièce jointe un fichier contenant
     une trace de la zone dédiée à la pile (voir
     <a href="#backtrace">ci-dessous</a> pour des informations sur la manière

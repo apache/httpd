@@ -52,9 +52,7 @@ serveur</td></tr>
       &lt;Location /infos-serveur&gt;<br />
       <span class="indent">
         SetHandler server-info<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from votre-entreprise.com<br />
+        Require host votre-entreprise.com<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>

@@ -25,14 +25,13 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Configuration du serveur HTTP Apache pour l'écoute
     sur un port et une adresse IP spécifiques.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Vue d'ensemble</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Remarques spécifiques à IPv6</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#protocol">Spécification du protocole avec Listen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Comment tout ceci fonctionne-t-il avec les hôtes virtuels</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">Hôtes virtuels</a></li><li><a href="dns-caveats.html">Problèmes liés à DNS</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -90,8 +89,8 @@
     </code></p></div>
 
     <div class="warning"><p>Des directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    imbriquÃ©es provoqueront une erreur fatale qui
-    empÃªchera le serveur de dÃ©marrer.</p>
+    imbriquées provoqueront une erreur fatale qui
+    empêchera le serveur de démarrer.</p>
     
     <div class="example"><p><code>
     (48)Address already in use: make_sock: could not bind to address [::]:80
@@ -147,6 +146,25 @@
     utilisez l'option <code>--disable-v4-mapped</code> du script
     <code class="program"><a href="./programs/configure.html">configure</a></code>. <code>--disable-v4-mapped</code> est
     utilisé par défaut sur FreeBSD, NetBSD, et OpenBSD.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="protocol" id="protocol">Spécification du protocole avec Listen</a></h2>
+    
+    <p>Dans la plupart des configurations, le second paramètre optionnel
+    <var>protocol</var> de la directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> n'est pas obligatoire. S'il
+    n'est pas spécifié, les protocoles par défaut
+    sont <code>https</code> pour le port 443, et <code>http</code> pour
+    tous les autres ports. Le protocole sert à déterminer quel module
+    doit traiter une requête, et à appliquer les optimisations
+    spécifiques au protocole via la directive <code class="directive"><a href="./mod/core.html#acceptfilter">AcceptFilter</a></code>.</p>
+
+    <p>Vous ne devez définir le protocole que si vous travaillez avec
+    des ports non standards. Par exemple, pour travailler en
+    <code>https</code> sur le port 8443 :</p>
+
+    <div class="example"><p><code>
+      Listen 192.170.2.1:8443 https
+    </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Comment tout ceci fonctionne-t-il avec les hôtes virtuels</a></h2>
