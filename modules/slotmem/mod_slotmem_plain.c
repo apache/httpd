@@ -153,7 +153,7 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *score, unsigned int id, 
 
     if (!score)
         return APR_ENOSHMAVAIL;
-    if (id < 0 || id >= score->num)
+    if (id >= score->num)
         return APR_ENOSHMAVAIL;
 
     ptr = score->base + score->size * id;
