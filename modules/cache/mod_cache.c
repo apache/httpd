@@ -2374,7 +2374,7 @@ static void register_hooks(apr_pool_t *p)
      * CACHE_OUT must go into the filter chain after a possible DEFLATE
      * filter to ensure that already compressed cache objects do not
      * get compressed again. Incrementing filter type by 1 ensures
-     * his happens.
+     * this happens.
      */
     cache_out_filter_handle =
         ap_register_output_filter("CACHE_OUT",
