@@ -66,7 +66,7 @@ struct cache_info {
     apr_time_t expire;
     /** r->request_time from the same request */
     apr_time_t request_time;
-    /** apr_time_now() at the time the entity was acutally cached */
+    /** apr_time_now() at the time the entity was actually cached */
     apr_time_t response_time;
     /**
      * HTTP status code of the cached entity. Though not necessarily the
