@@ -331,9 +331,10 @@
       scripts are invoked as normal using the complete URL given in
       the command, including any query string.</p>
 
-      <p>An attribute defines the location of the document; the
-      inclusion is done for each attribute given to the include
-      command. The valid attributes are:</p>
+      <p>An attribute defines the location of the document, and may
+      appear more than once in an include element; an inclusion is
+      done for each attribute given to the include command in turn.
+      The valid attributes are:</p>
 
       <dl>
       <dt><code>file</code></dt>
@@ -359,11 +360,11 @@
       <p>If the specified URL is a CGI program, the program will be
       executed and its output inserted in place of the directive in the
       parsed file. You may include a query string in a CGI url:</p>
- 
+
       <example>
         &lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;
       </example>
- 
+
       <p><code>include virtual</code> should be used in preference
       to <code>exec cgi</code> to include the output of CGI programs
       into an HTML document.</p>
@@ -374,6 +375,26 @@
       will be passed through to subrequests as POST requests as well.
       Without the directive, all subrequests are processed as GET
       requests.</p>
+
+      </dd>
+
+      <dt><code>onerror</code></dt>
+      <dd><p>The value is a (%-encoded) URL-path which is shown should a
+      previous attempt to include a file or virtual attribute failed.
+      To be effective, this attribute must be specified after the
+      file or virtual attributes being covered. If the attempt to
+      include the onerror path fails, or if onerror is not specified, the
+      default error message will be included.</p>
+
+      <example>
+        # Simple example<br />
+        &lt;!--#include virtual="/not-exist.html" onerror="/error.html" --&gt;
+      </example>
+
+      <example>
+        # Dedicated onerror paths<br />
+        &lt;!--#include virtual="/path-a.html" onerror="/error-a.html" virtual="/path-b.html" onerror="/error-b.html" --&gt;
+      </example>
 
       </dd>
       </dl>
