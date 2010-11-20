@@ -1256,6 +1256,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
                                                     NULL);
             if (err)
                 return err;
+	    cls->condition_expr->module_index = APLOG_MODULE_INDEX;
         }
         else {
             return "error in condition clause";

@@ -433,6 +433,7 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
                            "Error parsing FilterProvider expression:", err,
                            NULL);
     }
+    node->module_index = APLOG_MODULE_INDEX;
 
     provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t));
     provider->expr = node;

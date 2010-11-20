@@ -2043,6 +2043,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     if (expr_err) {
         return apr_psprintf(cmd->pool, "Cannot parse condition clause: %s", expr_err);
     }
+    conf->condition->module_index = APLOG_MODULE_INDEX;
 
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_file_conf);
     if (errmsg != NULL)

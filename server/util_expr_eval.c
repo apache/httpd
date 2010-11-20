@@ -687,10 +687,18 @@ AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info, const c
 
     *err = NULL;
     rc = ap_expr_eval(&ctx, info->root_node);
-    if (*err != NULL)
-        return (-1);
-    else
-        return (rc ? 1 : 0);
+    if (*err != NULL) {
+        ap_log_rerror(__FILE__, __LINE__, info->module_index, APLOG_ERR, 0,
+                      r, "Evaluation of expression from %s:%d failed: %s",
+                      info->filename, info->line_number, *err);
+        return -1;
+    } else {
+        rc = rc ? 1 : 0;
+        ap_log_rerror(__FILE__, __LINE__, info->module_index, APLOG_TRACE4, 0,
+                      r, "Evaluation of expression from %s:%d gave: %d",
+                      info->filename, info->line_number, rc);
+        return rc;
+    }
 }
 
 static const char *req_table_func(ap_expr_eval_ctx *ctx, const void *data,

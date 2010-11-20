@@ -1008,6 +1008,7 @@ static const char *expr_parse_config(cmd_parms *cmd, const char *require_line,
     if (expr_err)
         return "Cannot parse expression in require line";
 
+    expr->module_index = APLOG_MODULE_INDEX;
     *parsed_require_line = expr;
 
     return NULL;

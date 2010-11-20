@@ -498,6 +498,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
                                    "Can't parse envclause/expression: ", err,
                                    NULL);
             }
+            expr->module_index = APLOG_MODULE_INDEX;
         }
     }
 
