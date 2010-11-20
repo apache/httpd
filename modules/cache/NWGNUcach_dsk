@@ -174,7 +174,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/mod_disk_cache.o \
+	$(OBJDIR)/mod_cache_disk.o \
 	$(EOLIST)
 
 #
@@ -224,7 +224,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	disk_cache_module \
+	cache_disk_module \
 	$(EOLIST)
 
 #

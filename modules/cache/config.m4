@@ -12,18 +12,18 @@ mod_cache.lo dnl
 cache_storage.lo dnl
 cache_util.lo dnl
 "
-disk_cache_objs="mod_disk_cache.lo"
+cache_disk_objs="mod_cache_disk.lo"
 
 case "$host" in
   *os2*)
     # OS/2 DLLs must resolve all symbols at build time
     # and we need some from main cache module
-    disk_cache_objs="$disk_cache_objs mod_cache.la"
+    cache_disk_objs="$cache_disk_objs mod_cache.la"
     ;;
 esac
 
-APACHE_MODULE(cache, dynamic file caching.  At least one storage management module (e.g. mod_disk_cache) is also necessary., $cache_objs, , most)
-APACHE_MODULE(disk_cache, disk caching module, $disk_cache_objs, , most)
+APACHE_MODULE(cache, dynamic file caching.  At least one storage management module (e.g. mod_cache_disk) is also necessary., $cache_objs, , most)
+APACHE_MODULE(cache_disk, disk caching module, $cache_disk_objs, , most)
 
 AC_DEFUN([CHECK_DISTCACHE], [
   AC_CHECK_HEADER(

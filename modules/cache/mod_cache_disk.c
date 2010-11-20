@@ -18,7 +18,7 @@
 #include "apr_file_io.h"
 #include "apr_strings.h"
 #include "mod_cache.h"
-#include "mod_disk_cache.h"
+#include "mod_cache_disk.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_core.h"
@@ -55,7 +55,7 @@
  *   CRLF
  */
 
-module AP_MODULE_DECLARE_DATA disk_cache_module;
+module AP_MODULE_DECLARE_DATA cache_disk_module;
 
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
@@ -337,9 +337,9 @@ static void tokens_to_array(apr_pool_t *p, const char *data,
 static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr_off_t len,
                          apr_bucket_brigade *bb)
 {
-    disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &disk_cache_module);
+    disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &cache_disk_module);
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
-                                                 &disk_cache_module);
+                                                 &cache_disk_module);
     cache_object_t *obj;
     disk_cache_object_t *dobj;
     apr_pool_t *pool;
@@ -407,7 +407,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     apr_status_t rc;
     static int error_logged = 0;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
-                                                 &disk_cache_module);
+                                                 &cache_disk_module);
 #ifdef APR_SENDFILE_ENABLED
     core_dir_config *coreconf = ap_get_module_config(r->per_dir_config,
                                                      &core_module);
@@ -925,7 +925,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
-                                                 &disk_cache_module);
+                                                 &cache_disk_module);
     apr_status_t rv;
     apr_size_t amt;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
@@ -1064,7 +1064,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     apr_bucket *e;
     apr_status_t rv = APR_SUCCESS;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-    disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &disk_cache_module);
+    disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &cache_disk_module);
     int seen_eos = 0;
 
     if (!dobj->bb) {
@@ -1255,7 +1255,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
 static apr_status_t commit_entity(cache_handle_t *h, request_rec *r)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
-                                                 &disk_cache_module);
+                                                 &cache_disk_module);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     apr_status_t rv;
 
@@ -1341,7 +1341,7 @@ static const char
 *set_cache_root(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
+                                                 &cache_disk_module);
     conf->cache_root = arg;
     conf->cache_root_len = strlen(arg);
     /* TODO: canonicalize cache_root and strip off any trailing slashes */
@@ -1359,7 +1359,7 @@ static const char
 *set_cache_dirlevels(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
+                                                 &cache_disk_module);
     int val = atoi(arg);
     if (val < 1)
         return "CacheDirLevels value must be an integer greater than 0";
@@ -1372,7 +1372,7 @@ static const char
 *set_cache_dirlength(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &disk_cache_module);
+                                                 &cache_disk_module);
     int val = atoi(arg);
     if (val < 1)
         return "CacheDirLength value must be an integer greater than 0";
@@ -1478,7 +1478,7 @@ static void disk_cache_register_hook(apr_pool_t *p)
                          &cache_disk_provider);
 }
 
-AP_DECLARE_MODULE(disk_cache) = {
+AP_DECLARE_MODULE(cache_disk) = {
     STANDARD20_MODULE_STUFF,
     create_dir_config,          /* create per-directory config structure */
     merge_dir_config,           /* merge per-directory config structures */

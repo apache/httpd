@@ -38,7 +38,7 @@
 #include "apr_buckets.h"
 
 #include "../modules/cache/cache_common.h"
-#include "../modules/cache/disk_cache_common.h"
+#include "../modules/cache/cache_disk_common.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
