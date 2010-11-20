@@ -24,7 +24,7 @@
 </div>
 
     <p>Ce document complète la documentation de référence des modules
-    <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>,
+    <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>,
     <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> et du programme <a href="programs/htcacheclean.html">htcacheclean</a>.
     Il décrit l'utilisation des fonctionnalités de mise en
     cache du serveur HTTP Apache
@@ -52,7 +52,7 @@
     que comme mandataire.</p>
 
     <p>Le module <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> et son module de soutien
-    <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>
+    <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>
     permettent une mise en cache intelligente du point de vue HTTP.
     Le contenu proprement dit est stocké dans le cache,
     et mod_cache tente d'honorer tous les en-têtes HTTP et les options
@@ -95,7 +95,7 @@
 
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
 
     <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> peut faire intervenir deux phases
     principales pendant la durée de vie d'une requête.
@@ -226,7 +226,7 @@
       depuis le cache s'il n'a pas été modifié, parce que la lecture depuis le
       cache est plus rapide que la lecture depuis le processus en arrière-plan
       (à comparer à la différence de vitesse entre la lecture depuis un cache en
-      mémoire avec <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> et la lecture depuis un disque).</p>
+      mémoire avec <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> et la lecture depuis un disque).</p>
     
 
     <h3>Que peut-on mettre en cache ?</h3>
@@ -386,11 +386,11 @@ Vary: negotiate,accept-language,accept-charset
       faille de sécurité dans un processus CGI, il est possible que le cache
       fasse l'objet d'une attaque. Il est relativement aisé d'insérer ou de
       modifier une entité dans le cache en utilisant le module
-      <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>.</p>
+      <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>.</p>
 
       <p>Cela représente un risque relativement élévé par rapport aux autres
       types d'attaques qu'il est possible de mener sous l'utilisateur apache.
-      Si vous utilisez <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, vous devez garder ceci
+      Si vous utilisez <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, vous devez garder ceci
       à l'esprit : effectuez toujours les mises à jour de
       httpdquand des
       correctifs de sécurité sont annoncés et exécutez les processus CGI sous
@@ -591,9 +591,9 @@ sys     0m0.000s</pre></div>
 <h2><a name="disk" id="disk">Mise en cache sur disque</a></h2>
     
 
-     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
+     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
 
-    <p>Le module <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> fournit un mécanisme de mise
+    <p>Le module <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> fournit un mécanisme de mise
     en cache sur disque au module <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>. Cette mise en cache est
     intelligente et le contenu ne sera servi qu'à partir du cache tant qu'il
     sera considéré comme valide.</p>
@@ -617,7 +617,7 @@ CacheDirLength 1</pre></div>
       
 
       <p>Pour stocker des entités dans le cache,
-      le module <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> crée une empreinte (hash) de 22
+      le module <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> crée une empreinte (hash) de 22
       caractères de l'URL qui a fait l'objet d'une requête. Cette empreinte
       comprend le nom d'hôte, le protocole, le port, le chemin et tout argument
       de type CGI associé à l'URL, afin d'être sur que plusieurs URLs
@@ -630,13 +630,13 @@ CacheDirLength 1</pre></div>
       utilisée pour préfixer les noms de fichiers spécifiques à cette URL à
       l'intérieur du cache; cependant, elle est tout d'abord placée dans les
       répertoires du cache selon les directives
-      <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code> et
-      <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code>.</p>
+      <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code> et
+      <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code>.</p>
 
       <p>La directive
-      <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code>
+      <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code>
       définit le nombre de niveaux de sous-répertoires, et
-      <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code>
+      <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code>
       le nombre de caractères composant le nom des sous-répertoires. Dans
       l'exemple donné plus haut, l'empreinte se trouvera à :
       <code>/var/cache/apache/x/y/TGxSMO2b68mBCykqkp1w</code>.</p>
@@ -645,16 +645,16 @@ CacheDirLength 1</pre></div>
       sous-répertoires ou de fichiers contenus dans un répertoire particulier,
       car le fonctionnement de la plupart des systèmes de fichiers est ralenti
       quand ce nombre augmente. Avec la valeur "1" pour la directive
-      <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code>,
+      <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code>,
       il peut y avoir au plus 64 sous-répertoires à un niveau quelconque.
       Avec la valeur "2", il peut y en avoir 64 * 64, etc...
       A moins d'avoir une bonne raison pour ne pas le faire, l'utilisation de
       la valeur "1" pour la directive
-      <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code>
+      <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code>
       est recommandée.</p>
 
       <p>Le paramétrage de la directive
-      <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code>
+      <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code>
       dépend du nombre de fichiers que vous pensez stocker dans le cache.
       Avec une valeur de "2" comme dans l'exemple donné plus haut,
       4096 sous-répertoires peuvent être créés au total. Avec 1 million de
@@ -675,7 +675,7 @@ CacheDirLength 1</pre></div>
     <h3>Maintenance du cache sur disque</h3>
       
 
-      <p>Bien que le module <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> supprime un contenu
+      <p>Bien que le module <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> supprime un contenu
       du cache lorsqu'il est arrivé à expiration, il ne maintient aucune
       information à propos de la taille totale du cache ou de l'espace restant
       disponible.</p>
@@ -702,7 +702,7 @@ CacheDirLength 1</pre></div>
       <a id="figure1" name="figure1"><dfn>Figure 1</dfn></a>: Croissance
       typique du cache / séquence de nettoyage.</p>
 
-      <p>Comme <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> ne tient pas compte de l'espace
+      <p>Comme <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> ne tient pas compte de l'espace
       utilisé dans le cache, vous devez vous assurer que
       <a href="programs/htcacheclean.html">htcacheclean</a> est configuré de
       façon à laisser suffisamment d'"espace de croissance"

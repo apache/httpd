@@ -971,7 +971,7 @@ sup&eacute;rieures. Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</com
     <p>Veuillez noter que la configuration de la directive
     <directive>EnableSendfile</directive> dans un contexte de r&eacute;pertoire
     ou de fichier .htaccess n'est pas support&eacute;e par
-    <module>mod_disk_cache</module>. Le module ne prend en compte la
+    <module>mod_cache_disk</module>. Le module ne prend en compte la
     d&eacute;finition de <directive>EnableSendfile</directive> que dans un
     contexte global.
     </p>
@@ -1839,7 +1839,7 @@ host</context>
           &lt;/IfDefine&gt;<br />
           &lt;IfDefine !MemCache&gt;<br />
           <indent>
-            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
           </indent>
           &lt;/IfDefine&gt;
         </indent>

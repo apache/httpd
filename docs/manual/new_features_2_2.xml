@@ -45,10 +45,10 @@
           writers.</dd>
 
       <dt>Caching</dt>
-      <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, and
+      <dd><module>mod_cache</module>, <module>mod_cache_disk</module>, and
           mod_mem_cache(already removed from 2.3/2.4) have undergone a lot of changes, and
           are now considered production-quality. <program>htcacheclean</program>
-          has been introduced to clean up <module>mod_disk_cache</module>
+          has been introduced to clean up <module>mod_cache_disk</module>
           setups.</dd>
 
       <dt>Configuration</dt>

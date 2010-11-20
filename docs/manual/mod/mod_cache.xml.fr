@@ -117,7 +117,7 @@
     plusieurs modules de gestion de stockage. La distribution Apache de base
     inclut un module de gestion de stockage :</p>
     <dl>
-    <dt><module>mod_disk_cache</module></dt>
+    <dt><module>mod_cache_disk</module></dt>
     
     <dd>impl&eacute;mente un gestionnaire de stockage sur disque. Les en-t&ecirc;tes
     et corps sont stock&eacute;s s&eacute;par&eacute;ment sur le disque dans une structure de
@@ -140,14 +140,14 @@ cache</a></seealso>
 <section id="related"><title>Modules apparent&eacute;s et directives</title>
     <related>
       <modulelist>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
       </modulelist>
       <directivelist>
-        <directive module="mod_disk_cache">CacheRoot</directive>
-        <directive module="mod_disk_cache">CacheDirLevels</directive>
-        <directive module="mod_disk_cache">CacheDirLength</directive>
-        <directive module="mod_disk_cache">CacheMinFileSize</directive>
-        <directive module="mod_disk_cache">CacheMaxFileSize</directive>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_disk">CacheMinFileSize</directive>
+        <directive module="mod_cache_disk">CacheMaxFileSize</directive>
       </directivelist>
     </related>
 </section>
@@ -161,8 +161,8 @@ cache</a></seealso>
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <indent>
-        LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        &lt;IfModule mod_disk_cache.c&gt;<br />
+        LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
         <indent>
           CacheRoot c:/cacheroot<br />
           CacheEnable disk  /<br />
@@ -386,7 +386,7 @@ gestionnaire de stockage pr&eacute;cis&eacute;</description>
     <var>url-string</var> devient optionnel. Si <var>type de cache</var>
     a pour valeur <code>disk</code>, <module>mod_cache</module>
     utilisera le gestionnaire de stockage sur disque impl&eacute;ment&eacute; par
-    <module>mod_disk_cache</module>.</p>
+    <module>mod_cache_disk</module>.</p>
     <p>Si les diff&eacute;rentes directives <directive>CacheEnable</directive>
     sp&eacute;cifient des URLs qui se recoupent (comme dans l'exemple
     ci-dessous), tous les gestionnaires de stockage possibles seront

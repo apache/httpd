@@ -68,7 +68,7 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
       <li>Les modules suivants ont &eacute;t&eacute; supprim&eacute;s : mod_authn_default,
       mod_authz_default et mod_mem_cache. Si vous utilisiez
       mod_mem_cache sous la version 2.2, reportez-vous &agrave;
-      <module>mod_disk_cache</module> dans la version 2.4.</li>
+      <module>mod_cache_disk</module> dans la version 2.4.</li>
 
       <li>Toutes les impl&eacute;mentations de r&eacute;partition de charge ont &eacute;t&eacute;
       d&eacute;plac&eacute;es vers des sous-modules sp&eacute;cifiques de mod_proxy, comme

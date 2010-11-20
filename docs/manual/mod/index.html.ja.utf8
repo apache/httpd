@@ -100,6 +100,7 @@ address)</dd>
     ディレクトリインデックスを生成する</dd>
 <dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI をキーにしたコンテンツのキャッシュ</dd>
+<dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>URI をキーにしたコンテンツキャッシュストレージ管理</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI スクリプトの実行</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>外部 CGI デーモンを使った CGI スクリプトの実行</dd>
@@ -113,7 +114,6 @@ address)</dd>
 <dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</dd>
-<dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>URI をキーにしたコンテンツキャッシュストレージ管理</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>望むようにすべての I/O をエラーログにダンプする</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>プロトコルモジュールの概要を示すための単純なエコーサーバ
 </dd>

@@ -192,6 +192,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_autoindex.html">Apache-Modul mod_autoindex</a></li>
 <li><a href="mod/mod_buffer.html">Apache-Modul mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache-Modul mod_cache</a></li>
+<li><a href="mod/mod_cache_disk.html">Apache-Modul mod_cache_disk</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache-Modul mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Apache-Modul mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache-Modul mod_cgid</a></li>
@@ -203,7 +204,6 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_deflate.html">Apache-Modul mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Apache-Modul mod_dialup</a></li>
 <li><a href="mod/mod_dir.html">Apache-Modul mod_dir</a></li>
-<li><a href="mod/mod_disk_cache.html">Apache-Modul mod_disk_cache</a></li>
 <li><a href="mod/mod_dumpio.html">Apache-Modul mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Apache-Modul mod_echo</a></li>
 <li><a href="mod/mod_env.html">Apache-Modul mod_env</a></li>

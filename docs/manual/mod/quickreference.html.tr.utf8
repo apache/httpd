@@ -251,8 +251,8 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
 <tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
 <tr><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of levels of subdirectories in the
+<tr class="odd"><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
+<tr><td><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of levels of subdirectories in the
 cache.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var>url-string</var> | <var>on</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
 <tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
@@ -274,19 +274,19 @@ LastModified date.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge <var>integer</var></a></td><td> 5 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
 <tr><td><a href="mod_cache.html#cachelockpath">CacheLockPath <var>directory</var></a></td><td> /tmp/mod_cache-lock +</td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the lock path directory.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
+<tr><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
 cache</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
+<tr><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
 cache</td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Allows content-negotiated documents to be 
 cached by proxy servers</td></tr>
 <tr><td><a href="mod_cache.html#cachequickhandler">CacheQuickHandler <var>on|off</var></a></td><td> on </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachereadsize">CacheReadSize <var>bytes</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
+<tr class="odd"><td><a href="mod_cache_disk.html#cachereadsize">CacheReadSize <var>bytes</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of the document to read and be cached
   before sending the data downstream</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachereadtime">CacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
+<tr><td><a href="mod_cache_disk.html#cachereadtime">CacheReadTime <var>milliseconds</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The directory root under which cache files are
+<tr class="odd"><td><a href="mod_cache_disk.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The directory root under which cache files are
 stored</td></tr>
 <tr><td><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError <var>on|off</var></a></td><td> on </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Serve stale content in place of 5xx responses.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache responses that the server reports as expired</td></tr>

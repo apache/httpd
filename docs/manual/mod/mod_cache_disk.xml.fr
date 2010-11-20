@@ -22,17 +22,17 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_disk_cache.xml.meta">
+<modulesynopsis metafile="mod_cache_disk.xml.meta">
 
-<name>mod_disk_cache</name>
+<name>mod_cache_disk</name>
 <description>Module de stockage sur disque pour le filtre de mise en
 cache HTTP.</description>
 <status>Extension</status>
-<sourcefile>mod_disk_cache.c</sourcefile>
-<identifier>disk_cache_module</identifier>
+<sourcefile>mod_cache_disk.c</sourcefile>
+<identifier>cache_disk_module</identifier>
 
 <summary>
-    <p><module>mod_disk_cache</module> impl&eacute;mente un gestionnaire de
+    <p><module>mod_cache_disk</module> impl&eacute;mente un gestionnaire de
     stockage sur disque pour le module <module>mod_cache</module>.</p>
 
     <p>Les en-t&ecirc;tes et corps des r&eacute;ponses mises en cache sont stock&eacute;s
@@ -57,14 +57,14 @@ cache HTTP.</description>
 
     <note><title>Note :</title>
       <p><module>mod_cache</module> doit &ecirc;tre charg&eacute; avant
-      <module>mod_disk_cache</module> pour que ce dernier puisse
+      <module>mod_cache_disk</module> pour que ce dernier puisse
       fonctionner.</p>
     </note>
     <p>Lorsque la plate-forme la supporte, et si elle est activ&eacute;e via la
     directive <directive module="core">EnableSendfile</directive>,
-    <module>mod_disk_cache</module> utilise la fonctionnalit&eacute; sendfile
+    <module>mod_cache_disk</module> utilise la fonctionnalit&eacute; sendfile
     pour servir les fichiers &agrave; partir du cache. Cependant,
-    <module>mod_disk_cache</module> ignore la configuration de la
+    <module>mod_cache_disk</module> ignore la configuration de la
     directive <directive module="core">EnableSendfile</directive> dans
     un contexte de r&eacute;pertoire ou de fichier .htaccess, car le module ne
     dispose pas des d&eacute;finitions correspondantes lorsque la requ&ecirc;te est
@@ -82,13 +82,13 @@ seront stock&eacute;s</description>
 <usage>
     <p>La directive <directive>CacheRoot</directive> permet de d&eacute;finir
     le nom du r&eacute;pertoire sur disque qui contiendra les fichiers du
-    cache. Si le module <module>mod_disk_cache</module> a &eacute;t&eacute; charg&eacute; ou
+    cache. Si le module <module>mod_cache_disk</module> a &eacute;t&eacute; charg&eacute; ou
     compil&eacute; dans le serveur Apache, cette directive <em>doit</em> &ecirc;tre
     d&eacute;finie. L'absence de d&eacute;finition de la directive
     <directive>CacheRoot</directive> provoquera une erreur de traitement
     du fichier de configuration. Les directives <directive
-    module="mod_disk_cache">CacheDirLevels</directive> et <directive
-    module="mod_disk_cache">CacheDirLength</directive> permettent de
+    module="mod_cache_disk">CacheDirLevels</directive> et <directive
+    module="mod_cache_disk">CacheDirLength</directive> permettent de
     d&eacute;finir la structure des sous-r&eacute;pertoires du r&eacute;pertoire racine
     sp&eacute;cifi&eacute;.</p>
 
@@ -111,7 +111,7 @@ cache.</description>
     <p>La directive <directive>CacheDirLevels</directive> permet de
     d&eacute;finir le nombre de niveaux de sous-r&eacute;pertoires que comportera le
     cache. Les donn&eacute;es du cache seront stok&eacute;es au niveau correspondant
-    par rapport au r&eacute;pertoire <directive module="mod_disk_cache"
+    par rapport au r&eacute;pertoire <directive module="mod_cache_disk"
     >CacheRoot</directive>.</p>
     <p>Une valeur haute pour <directive>CacheDirLevels</directive>
     combin&eacute;e avec une valeur basse pour
@@ -121,7 +121,7 @@ cache.</description>
 
     <note>
       <p>La valeur du produit <directive>CacheDirLevels</directive> *
-      <directive module="mod_disk_cache">CacheDirLength</directive> ne
+      <directive module="mod_cache_disk">CacheDirLength</directive> ne
       doit pas d&eacute;passer 20.</p>
     </note>
 
@@ -152,7 +152,7 @@ sous-r&eacute;pertoires</description>
 
     <note>
       <p>La valeur du produit <directive>CacheDirLevels</directive> *
-      <directive module="mod_disk_cache">CacheDirLength</directive> ne
+      <directive module="mod_cache_disk">CacheDirLength</directive> ne
       doit pas d&eacute;passer 20.</p>
     </note>
 
@@ -259,7 +259,7 @@ avant d'envoyer les donn&eacute;es au client</description>
     enregistr&eacute;es dans le cache, et non lorsque les donn&eacute;es sont servies &agrave;
     partir du cache. Il est recommand&eacute; d'harmoniser l'utilisation de cette
     directive avec celle de la directive <directive
-    module="mod_disk_cache">CacheReadSize</directive>, afin de s'assurer
+    module="mod_cache_disk">CacheReadSize</directive>, afin de s'assurer
     que le serveur n'effectue pas une mise en tampon excessive au cas
     o&ugrave; les donn&eacute;es arriveraient plus vite que pr&eacute;vu.</p>
 

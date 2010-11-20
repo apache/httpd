@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_disk_cache - Apache HTTP Server</title>
+<title>mod_cache_disk - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -19,20 +19,20 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Module mod_disk_cache</h1>
+<div id="preamble"><h1>Apache Module mod_cache_disk</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_disk_cache.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_disk_cache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_cache_disk.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache_disk.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_cache_disk.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cache_disk.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Disk based storage module for the HTTP caching filter.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>disk_cache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_disk_cache.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>cache_disk_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cache_disk.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implements a disk based storage
+    <p><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> implements a disk based storage
     manager for <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
     <p>The headers and bodies of cached responses are stored separately on
@@ -54,17 +54,17 @@
     can be daemonized to offer continuous monitoring of directory sizes.</p>
 
     <div class="note"><h3>Note:</h3>
-      <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> requires the services of
+      <p><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> requires the services of
       <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, which must be
-      loaded before mod_disk_cache.</p>
+      loaded before mod_cache_disk.</p>
     </div>
     <div class="note"><h3>Note:</h3>
-      <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> uses the sendfile feature to
+      <p><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> uses the sendfile feature to
       serve files from the cache when supported by the platform, and
       when enabled with <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code>.
       However, per-directory and .htaccess configuration of
       <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> are ignored by
-      <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> as the corresponding settings are not
+      <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> as the corresponding settings are not
       available to the module when a request is being served from the
       cache.</p>
     </div>
@@ -89,7 +89,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDirLength 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p>The <code class="directive">CacheDirLength</code> directive sets the number
     of characters for each subdirectory name in the cache hierarchy. It can
@@ -116,7 +116,7 @@ cache.</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDirLevels 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p>The <code class="directive">CacheDirLevels</code> directive sets the number
     of subdirectory levels in the cache. Cached data will be saved this
@@ -143,7 +143,7 @@ cache</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p>The <code class="directive">CacheMaxFileSize</code> directive sets the
     maximum size, in bytes, for a document to be considered for storage in
@@ -163,7 +163,7 @@ cache</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p>The <code class="directive">CacheMinFileSize</code> directive sets the
     minimum size, in bytes, for a document to be considered for storage
@@ -183,7 +183,7 @@ cache</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheReadSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p>The <code class="directive">CacheReadSize</code> directive sets the
     minimum amount of data, in bytes, to be read from the backend before the
@@ -210,7 +210,7 @@ cache</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheReadTime 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p>The <code class="directive">CacheReadTime</code> directive sets the minimum amount
     of elapsed time that should pass before making an attempt to send data
@@ -240,10 +240,10 @@ stored</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p>The <code class="directive">CacheRoot</code> directive defines the name of
-    the directory on the disk to contain cache files. If the <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> module has been loaded or compiled in to the
+    the directory on the disk to contain cache files. If the <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> module has been loaded or compiled in to the
     Apache server, this directive <em>must</em> be defined. Failing to
     provide a value for <code class="directive">CacheRoot</code> will result in
     a configuration file processing error. The <code class="directive"><a href="#cachedirlevels">CacheDirLevels</a></code> and <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> directives define
@@ -256,10 +256,10 @@ stored</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_disk_cache.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_disk_cache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_cache_disk.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache_disk.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_cache_disk.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cache_disk.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

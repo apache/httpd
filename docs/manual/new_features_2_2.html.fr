@@ -57,13 +57,13 @@
 	  modules.</dd>
 
       <dt>Mise en cache</dt>
-      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, et
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, et
           mod_mem_cache (supprimés dans la version 2.3/2.4) ont subi de nombreuses
 	  modifications, et l'on considère qu'ils ont maintenant atteint
 	  un degré de qualité suffisant pour leur mise en production. Le programme
 	  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> a été ajouté afin de rendre
 	  plus propre la configuration du module
-	  <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>.</dd>
+	  <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>.</dd>
 
       <dt>Configuration</dt>
       <dd>L'agencement de la configuration par défaut a été simplifié

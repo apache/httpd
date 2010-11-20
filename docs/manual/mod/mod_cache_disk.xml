@@ -20,16 +20,16 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_disk_cache.xml.meta">
+<modulesynopsis metafile="mod_cache_disk.xml.meta">
 
-<name>mod_disk_cache</name>
+<name>mod_cache_disk</name>
 <description>Disk based storage module for the HTTP caching filter.</description>
 <status>Extension</status>
-<sourcefile>mod_disk_cache.c</sourcefile>
-<identifier>disk_cache_module</identifier>
+<sourcefile>mod_cache_disk.c</sourcefile>
+<identifier>cache_disk_module</identifier>
 
 <summary>
-    <p><module>mod_disk_cache</module> implements a disk based storage
+    <p><module>mod_cache_disk</module> implements a disk based storage
     manager for <module>mod_cache</module>.</p>
 
     <p>The headers and bodies of cached responses are stored separately on
@@ -51,17 +51,17 @@
     can be daemonized to offer continuous monitoring of directory sizes.</p>
 
     <note><title>Note:</title>
-      <p><module>mod_disk_cache</module> requires the services of
+      <p><module>mod_cache_disk</module> requires the services of
       <module>mod_cache</module>, which must be
-      loaded before mod_disk_cache.</p>
+      loaded before mod_cache_disk.</p>
     </note>
     <note><title>Note:</title>
-      <p><module>mod_disk_cache</module> uses the sendfile feature to
+      <p><module>mod_cache_disk</module> uses the sendfile feature to
       serve files from the cache when supported by the platform, and
       when enabled with <directive module="core">EnableSendfile</directive>.
       However, per-directory and .htaccess configuration of
       <directive module="core">EnableSendfile</directive> are ignored by
-      <module>mod_disk_cache</module> as the corresponding settings are not
+      <module>mod_cache_disk</module> as the corresponding settings are not
       available to the module when a request is being served from the
       cache.</p>
     </note>
@@ -78,12 +78,12 @@ stored</description>
 <usage>
     <p>The <directive>CacheRoot</directive> directive defines the name of
     the directory on the disk to contain cache files. If the <module
-    >mod_disk_cache</module> module has been loaded or compiled in to the
+    >mod_cache_disk</module> module has been loaded or compiled in to the
     Apache server, this directive <em>must</em> be defined. Failing to
     provide a value for <directive>CacheRoot</directive> will result in
     a configuration file processing error. The <directive
-    module="mod_disk_cache">CacheDirLevels</directive> and <directive
-    module="mod_disk_cache">CacheDirLength</directive> directives define
+    module="mod_cache_disk">CacheDirLevels</directive> and <directive
+    module="mod_cache_disk">CacheDirLength</directive> directives define
     the structure of the directories under the specified root directory.</p>
 
     <example>
@@ -104,7 +104,7 @@ cache.</description>
 <usage>
     <p>The <directive>CacheDirLevels</directive> directive sets the number
     of subdirectory levels in the cache. Cached data will be saved this
-    many directory levels below the <directive module="mod_disk_cache"
+    many directory levels below the <directive module="mod_cache_disk"
     >CacheRoot</directive> directory.</p>
     <p>A high value for <directive>CacheDirLevels</directive> combined
     with a low value for <directive>CacheDirLength</directive> will result in
@@ -113,7 +113,7 @@ cache.</description>
 
     <note>
       <p>The result of <directive>CacheDirLevels</directive>*
-      <directive module="mod_disk_cache">CacheDirLength</directive> must
+      <directive module="mod_cache_disk">CacheDirLength</directive> must
       not be higher than 20.</p>
     </note>
 
@@ -139,7 +139,7 @@ cache.</description>
     level.</p>
 
     <note>
-      <p>The result of <directive module="mod_disk_cache"
+      <p>The result of <directive module="mod_cache_disk"
       >CacheDirLevels</directive>* <directive>CacheDirLength</directive>
       must not be higher than 20.</p>
     </note>
@@ -247,7 +247,7 @@ cache</description>
     <p>This directive only takes effect when the data is being saved to the
     cache, as opposed to data being served from the cache. It is recommended
     that this option be used alongside the
-    <directive module="mod_disk_cache">CacheReadSize</directive> directive to
+    <directive module="mod_cache_disk">CacheReadSize</directive> directive to
     ensure that the server does not buffer excessively should data arrive faster
     than expected.</p>
 

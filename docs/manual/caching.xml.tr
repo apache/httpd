@@ -30,7 +30,7 @@
 
   <summary>
     <p>Bu belge <module>mod_cache</module>,
-      <module>mod_disk_cache</module>, <module>mod_file_cache</module>
+      <module>mod_cache_disk</module>, <module>mod_file_cache</module>
       modülleri ve <a href="programs/htcacheclean.html">htcacheclean</a>
       için bir başvuru kılavuzu niteliğindedir. HTTP sunucusu ve vekil
       olarak çalışmada işlemleri hızlandırmak için bilinen sorunlar ve
@@ -49,7 +49,7 @@
       güç katarlar.</p>
 
     <p><module>mod_cache</module>, ortam sağlayıcı modülü olan
-      <module>mod_disk_cache</module> ile birlikte HTTP önbelleklemesini
+      <module>mod_cache_disk</module> ile birlikte HTTP önbelleklemesini
       akıllıca yerine getirir. İçeriğin kendisi önbellekte saklanırken
       <module>mod_cache</module> içeriğin önbelleklenebilmesini denetim
       altında tutan HTTP başlıkları ve seçenekleri ile ilgilenir. Yerel ve
@@ -89,7 +89,7 @@
     <related>
       <modulelist>
         <module>mod_cache</module>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
         <module>mod_file_cache</module>
       </modulelist>
       <directivelist>
@@ -360,12 +360,12 @@
 
       <p>Eğer Apache kullanıcısı, örneğin bir CGI sürecindeki açık nedeniyle
         tehlikeye atılırsa, önbellek hedef alınabilir.
-        <module>mod_disk_cache</module> kullanılırken önbellekteki bir öğeyi
+        <module>mod_cache_disk</module> kullanılırken önbellekteki bir öğeyi
         değiştirmek veya önbelleğe yeni bir öğe eklemek görece daha
         kolaydır.</p>
 
       <p>Bu risk, Apache kullanıcısını kullanan diğer saldırı türleriyle
-        karşılaştırıldığında daha yüksektir. <module>mod_disk_cache</module>
+        karşılaştırıldığında daha yüksektir. <module>mod_cache_disk</module>
         kullanıyorsanız şunları aklınızdan çıkarmayın: (1) httpd güvenlik
         güncellemelerini takip edin ve sunucunuzu buna göre güncelleyin. (2)
         Mümkünse <a href="suexec.html">suEXEC</a> kullanarak CGI süreçlerini
@@ -561,7 +561,7 @@
 
      <related>
       <modulelist>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
       </modulelist>
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
@@ -569,7 +569,7 @@
       </directivelist>
     </related>
 
-    <p><module>mod_disk_cache</module> modülü önbelleklemenin
+    <p><module>mod_cache_disk</module> modülü önbelleklemenin
       <module>mod_cache</module> için disk üzerinde yapılmasını mümkün
       kılar. Bbu önbellekleme akıllıca yapılır ve önbellekteki içerik
       sadece geçerli kabul edildiği sürece sunulabilir.</p>
@@ -592,7 +592,7 @@
     <section>
       <title>Önbellekte Saklamanın Anlamı</title>
 
-      <p><module>mod_disk_cache</module> öğeleri önbellekte saklamak için
+      <p><module>mod_cache_disk</module> öğeleri önbellekte saklamak için
         istek yapılan URL’nin 22 karakterlik özetini oluşturur. Bu özet, çok
         sayıda URL’nin aynı özeti oluşturmaması için konak ismi, protokol,
         port ve varsa CGI argümanlarından oluşur.</p>
@@ -603,11 +603,11 @@
         özeti olabilir. Bu özet, bu URL ile erişilen dosyalar önbellek içinde
         saklanırken dosya ismi öneki olarak kullanılır. Ancak bununla
         yetinilmez ve içerik <directive
-        module="mod_disk_cache">CacheDirLevels</directive> ve <directive
-        module="mod_disk_cache">CacheDirLength</directive> yönergelerinin
+        module="mod_cache_disk">CacheDirLevels</directive> ve <directive
+        module="mod_cache_disk">CacheDirLength</directive> yönergelerinin
         değerlerine göre önce dizinlere ayrılır.</p>
 
-      <p><directive module="mod_disk_cache">CacheDirLevels</directive>
+      <p><directive module="mod_cache_disk">CacheDirLevels</directive>
         yönergesi kaç alt seviye dizin olacağını belirler. Örneğin, yukarıdaki
         özete sahip bir dosyanın isminin başına yukarıdaki yapılandırma
         örneğine uygun olarak
@@ -617,15 +617,15 @@
       <p>Bu tekniğin asıl amacı belli bir dizin içinde bulunabilecek
         dosyaların ve alt dizinlerin sayısını düşük tutmaktır. Bu sayının
         büyük olması çoğu işletim sisteminde başarımın düşmesine sebep olur.
-        <directive module="mod_disk_cache">CacheDirLength</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
         yönergesi "1" değeriyle kullanıldığında her dizin altında en fazla 64
         alt dizin veya dosya açılabilir. "2" değeriyle kullanıldığında ise bu
         sayı 64^2’ye yükselir ve böyle artarak gider. İyi bir sebebiniz
         olmadıkça <directive
-        module="mod_disk_cache">CacheDirLength</directive> için değer olarak
+        module="mod_cache_disk">CacheDirLength</directive> için değer olarak
         "1" belirtmenizi öneririz.</p>
 
-      <p><directive module="mod_disk_cache">CacheDirLevels</directive>
+      <p><directive module="mod_cache_disk">CacheDirLevels</directive>
         yönergesine atanacak değer önbellekte saklamayı düşündüğünüz olası
         dosya sayısı ile ilgilidir. Yukarıdaki örnekte olduğu gibi "2"
         değerini belirtirseniz, toplamda en fazla 4096 dizin oluşturulabilir.
@@ -644,7 +644,7 @@
     <section>
       <title>Disk Önbelleğinin Bakımı</title>
 
-      <p><module>mod_disk_cache</module> zaman aşımına uğrayan önbellekli
+      <p><module>mod_cache_disk</module> zaman aşımına uğrayan önbellekli
         içeriği silse de önbelleğin toplam boyu ve ne kadar boş bellek kaldığı
         hakkında bilgi vermez.</p>
 
@@ -670,7 +670,7 @@
       <a id="figure1" name="figure1"><dfn>Şekil 1</dfn></a>:
  Önbelleğin büyümesi ve düzenli aralıklarla temizlenmesi.</p>
 
-      <p><module>mod_disk_cache</module> ne kadar önbellek alanı kullandığı
+      <p><module>mod_cache_disk</module> ne kadar önbellek alanı kullandığı
         ile ilgili bir bilgi vermediğinden <program>htcacheclean</program>’in
         bir temizlik sonrası yeterince büyük bir genişleme alanı kalacak
         şekilde yapılandırılması önemlidir.</p>

@@ -108,7 +108,7 @@
     plusieurs modules de gestion de stockage. La distribution Apache de base
     inclut un module de gestion de stockage :</p>
     <dl>
-    <dt><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></dt>
+    <dt><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></dt>
     
     <dd>implémente un gestionnaire de stockage sur disque. Les en-têtes
     et corps sont stockés séparément sur le disque dans une structure de
@@ -165,7 +165,7 @@ cache</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Modules apparentés et directives</a></h2>
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a></h2>
@@ -177,8 +177,8 @@ cache</a></li>
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
-        LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        &lt;IfModule mod_disk_cache.c&gt;<br />
+        LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
           CacheEnable disk  /<br />
@@ -503,7 +503,7 @@ gestionnaire de stockage précisé</td></tr>
     <var>url-string</var> devient optionnel. Si <var>type de cache</var>
     a pour valeur <code>disk</code>, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
     utilisera le gestionnaire de stockage sur disque implémenté par
-    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.</p>
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>.</p>
     <p>Si les différentes directives <code class="directive">CacheEnable</code>
     spécifient des URLs qui se recoupent (comme dans l'exemple
     ci-dessous), tous les gestionnaires de stockage possibles seront

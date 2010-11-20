@@ -144,8 +144,8 @@
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
 <li><a href="mod_buffer.html#buffersize">BufferSize</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
-<li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>
-<li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
+<li><a href="mod_cache_disk.html#cachedirlength">CacheDirLength</a></li>
+<li><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></li>
 <li><a href="mod_cache.html#cachedisable">CacheDisable</a></li>
 <li><a href="mod_cache.html#cacheenable">CacheEnable</a></li>
 <li><a href="mod_file_cache.html#cachefile">CacheFile</a></li>
@@ -155,11 +155,11 @@
 <li><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
-<li><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></li>
+<li><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></li>
 <li><a href="mod_cache.html#cacheminexpire">CacheMinExpire</a></li>
-<li><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></li>
+<li><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
-<li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
+<li><a href="mod_cache_disk.html#cacheroot">CacheRoot</a></li>
 <li><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore</a></li>
 <li><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate</a></li>
 <li><a href="core.html#cgimapextension">CGIMapExtension</a></li>

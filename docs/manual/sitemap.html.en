@@ -192,6 +192,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_autoindex.html">Apache Module mod_autoindex</a></li>
 <li><a href="mod/mod_buffer.html">Apache Module mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache Module mod_cache</a></li>
+<li><a href="mod/mod_cache_disk.html">Apache Module mod_cache_disk</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache Module mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Apache Module mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache Module mod_cgid</a></li>
@@ -203,7 +204,6 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_deflate.html">Apache Module mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Apache Module mod_dialup</a></li>
 <li><a href="mod/mod_dir.html">Apache Module mod_dir</a></li>
-<li><a href="mod/mod_disk_cache.html">Apache Module mod_disk_cache</a></li>
 <li><a href="mod/mod_dumpio.html">Apache Module mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Apache Module mod_echo</a></li>
 <li><a href="mod/mod_env.html">Apache Module mod_env</a></li>

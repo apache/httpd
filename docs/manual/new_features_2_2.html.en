@@ -51,10 +51,10 @@
           writers.</dd>
 
       <dt>Caching</dt>
-      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, and
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, and
           mod_mem_cache(already removed from 2.3/2.4) have undergone a lot of changes, and
           are now considered production-quality. <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code>
-          has been introduced to clean up <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>
+          has been introduced to clean up <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>
           setups.</dd>
 
       <dt>Configuration</dt>

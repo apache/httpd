@@ -49,11 +49,11 @@
         >geliştirici değişikliklerine</a> bakabilirsiniz.</dd>
 
       <dt>Önbellekleme</dt>
-      <dd><module>mod_cache</module>, <module>mod_disk_cache</module> ve
+      <dd><module>mod_cache</module>, <module>mod_cache_disk</module> ve
         <code>mod_mem_cache</code> (2.3/2.4 sürümlerinde kaldırılmıştır)
         modüllerinde büyük oranda değişikliğe gidilerek bunlar deneysel
         olmaktan çıkarılıp üretim amaçlı modüller haline getirildiler.
-        <module>mod_disk_cache</module> tarafından kullanılan disk
+        <module>mod_cache_disk</module> tarafından kullanılan disk
         alanının  <program>htcacheclean</program> tarafından
         düzenli aralıklarla temizlenebilmesi sağlandı.</dd>
 

@@ -44,7 +44,7 @@
     Apache 配布には二つストレージ管理モジュールが含まれています:</p>
     
     <dl>
-    <dt><module>mod_disk_cache</module></dt>
+    <dt><module>mod_cache_disk</module></dt>
     <dd>ディスクを使用したストレージ管理機構を実装しています。</dd>
 
     <dt><module>mod_mem_cache</module></dt>
@@ -69,15 +69,15 @@
 <section id="related"><title>関連モジュールとディレクティブ</title>
     <related>
       <modulelist>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
         <module>mod_mem_cache</module>
       </modulelist>
       <directivelist>
-        <directive module="mod_disk_cache">CacheRoot</directive>
-        <directive module="mod_disk_cache">CacheDirLevels</directive>
-        <directive module="mod_disk_cache">CacheDirLength</directive>
-        <directive module="mod_disk_cache">CacheMinFileSize</directive>
-        <directive module="mod_disk_cache">CacheMaxFileSize</directive>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_disk">CacheMinFileSize</directive>
+        <directive module="mod_cache_dist">CacheMaxFileSize</directive>
         <directive module="mod_mem_cache">MCacheSize</directive>
         <directive module="mod_mem_cache">MCacheMaxObjectCount</directive>
         <directive module="mod_mem_cache">MCacheMinObjectSize</directive>
@@ -97,10 +97,10 @@
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <indent>
-        #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        # If you want to use mod_disk_cache instead of mod_mem_cache,<br />
+        #LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        # If you want to use mod_cache_disk instead of mod_mem_cache,<br />
         # uncomment the line above and comment out the LoadModule line below.<br />
-        &lt;IfModule mod_disk_cache.c&gt;<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
         <indent>
           CacheRoot c:/cacheroot<br />
           CacheEnable disk  /<br />
@@ -142,7 +142,7 @@
     <module>mod_mem_cache</module> で実装されているメモリを使ったストレージ
     管理方式を使うように <module>mod_cache</module> に指示します。
     <var>cache_type</var> <code>disk</code> で、
-    <module>mod_disk_cache</module> で実装されているディスクを使ったストレージ
+    <module>mod_cache_disk</module> で実装されているディスクを使ったストレージ
     管理を使うように <module>mod_cache</module> に指示します。
     <var>cache_type</var> <code>fd</code> は <module>mod_cache</module> に
     <module>mod_mem_cache</module> により実装されているファイル記述子の

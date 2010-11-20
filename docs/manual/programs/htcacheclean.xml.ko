@@ -26,14 +26,14 @@
 <title>htcacheclean - 디스크 캐쉬를 청소한다</title>
 
 <summary>
-    <p><code>htcacheclean</code>은 <module>mod_disk_cache</module>가
+    <p><code>htcacheclean</code>은 <module>mod_cache_disk</module>가
     사용하는 저장소 용량을 일정 한도로 유지한다. 이 도구는 직접
     실행하거나 데몬(daemon)으로 실행할 수 있다. 프로그램을 데몬으로
     실행하면 백그라운드에서 잠자고 있다가 일정 주기로 캐쉬
     디렉토리에서 지울 것이 있는지 검사한다. 데몬에게 TERM이나
     INT 시그널을 보내면 안전하게 종료한다.</p>
 </summary>
-<seealso><module>mod_disk_cache</module></seealso>
+<seealso><module>mod_cache_disk</module></seealso>
 
 <section id="synopsis"><title>개요</title>
     <p><code><strong>htcacheclean</strong>
@@ -82,7 +82,7 @@
 
     <dt><code>-p<var>path</var></code></dt>
     <dd><var>path</var>를 디스크 캐쉬의 최상위 디렉토리로 지정한다.
-    <directive module="mod_disk_cache">CacheRoot</directive>
+    <directive module="mod_cache_disk">CacheRoot</directive>
     지시어에 사용한 값과 동일한 값을 사용해야 한다.</dd>
 
     <dt><code>-l<var>limit</var></code></dt>

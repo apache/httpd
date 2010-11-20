@@ -986,7 +986,7 @@ supérieures. Par défaut à Off depuis la version 2.3.9.</td></tr>
     <p>Veuillez noter que la configuration de la directive
     <code class="directive">EnableSendfile</code> dans un contexte de répertoire
     ou de fichier .htaccess n'est pas supportée par
-    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>. Le module ne prend en compte la
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>. Le module ne prend en compte la
     définition de <code class="directive">EnableSendfile</code> que dans un
     contexte global.
     </p>
@@ -1804,7 +1804,7 @@ test retourne "vrai" au démarrage du serveur</td></tr>
           &lt;/IfDefine&gt;<br />
           &lt;IfDefine !MemCache&gt;<br />
           <span class="indent">
-            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
           </span>
           &lt;/IfDefine&gt;
         </span>

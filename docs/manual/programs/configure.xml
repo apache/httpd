@@ -422,7 +422,7 @@
             ./configure \<br />
             <indent>
                 --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock disk_cache"
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock cache_disk"
             </indent>
           </example>
         </dd>

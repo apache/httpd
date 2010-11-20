@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 105989:1029833 (outdated) -->
+<!-- English Revision: 105989:-1 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,20 +20,20 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_disk_cache.xml.meta">
+<modulesynopsis metafile="mod_cache_disk.xml.meta">
 
-<name>mod_disk_cache</name>
+<name>mod_cache_disk</name>
 <description>Content cache storage manager keyed to URIs</description>
 <status>Experimental</status>
-<sourcefile>mod_disk_cache.c</sourcefile>
-<identifier>disk_cache_module</identifier>
+<sourcefile>mod_cache_disk.c</sourcefile>
+<identifier>cache_disk_module</identifier>
 
 <summary>
     <note type="warning">
       이 모듈은 실험적인 상태이다. 문서는 아직 작업중이다...
     </note>
 
-    <p><module>mod_disk_cache</module>는 디스크기반 저장관리자를
+    <p><module>mod_cache_disk</module>는 디스크기반 저장관리자를
     구현한다. 이 모듈은 기본적으로 <module>mod_proxy</module>와
     같이 사용한다.</p>
 
@@ -41,7 +41,7 @@
     접근보호가 된 내용은 캐쉬하지않는다.</p>
 
     <note><title>주의:</title>
-      <p><module>mod_disk_cache</module>는
+      <p><module>mod_cache_disk</module>는
       <module>mod_cache</module>가 필요하다.</p>
     </note>
 </summary>
@@ -56,12 +56,12 @@
 <usage>
     <p><directive>CacheRoot</directive> 지시어는 디스크에서
     캐쉬 파일을 저장할 디렉토리를 지정한다. <module
-    >mod_disk_cache</module> 모듈을 아파치 서버와 같이 컴파일하였거나
+    >mod_cache_disk</module> 모듈을 아파치 서버와 같이 컴파일하였거나
     읽어들인 경우 <em>반드시</em> 이 지시어를 정의해야 한다.
     <directive>CacheRoot</directive>에 값이 없으면 설정파일을
     처리하지 않는다. <directive
-    module="mod_disk_cache">CacheDirLevels</directive>와 <directive
-    module="mod_disk_cache">CacheDirLength</directive> 지시어는
+    module="mod_cache_disk">CacheDirLevels</directive>와 <directive
+    module="mod_cache_disk">CacheDirLength</directive> 지시어는
     이 지시어로 지정한 root 디렉토리의 하위디렉토리 구조를 지시한다.</p>
 
     <example>
@@ -81,12 +81,12 @@
 <usage>
     <p><directive>CacheDirLevels</directive> 지시어는 캐쉬의
     하위디렉토리 깊이를 지정한다. 캐쉬된 자료를 <directive
-    module="mod_disk_cache">CacheRoot</directive> 디렉토리
+    module="mod_cache_disk">CacheRoot</directive> 디렉토리
     아래 이 깊이까지 저장한다.</p>
 
     <note>
       <p><directive>CacheDirLevels</directive>와 <directive
-      module="mod_disk_cache">CacheDirLength</directive>를
+      module="mod_cache_disk">CacheDirLength</directive>를
       곱하여 20 보다 크면 안된다.</p>
     </note>
 
@@ -109,7 +109,7 @@
     계층구조에서 각 하위디렉토리명의 문자수를 지정한다.</p>
 
     <note>
-      <p><directive module="mod_disk_cache">CacheDirLevels</directive>와
+      <p><directive module="mod_cache_disk">CacheDirLevels</directive>와
       <directive>CacheDirLength</directive>를 곱하여 20 보다
       크면 안된다.</p>
     </note>

@@ -104,7 +104,7 @@
     storage management modules. One storage management module is included in
     the base Apache distribution:</p>
     <dl>
-    <dt><module>mod_disk_cache</module></dt>
+    <dt><module>mod_cache_disk</module></dt>
     <dd>Implements a disk based storage manager. Headers and bodies are
     stored separately on disk, in a directory structure derived from the
     md5 hash of the cached URL. Multiple content negotiated responses can
@@ -122,14 +122,14 @@
 <section id="related"><title>Related Modules and Directives</title>
     <related>
       <modulelist>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
       </modulelist>
       <directivelist>
-        <directive module="mod_disk_cache">CacheRoot</directive>
-        <directive module="mod_disk_cache">CacheDirLevels</directive>
-        <directive module="mod_disk_cache">CacheDirLength</directive>
-        <directive module="mod_disk_cache">CacheMinFileSize</directive>
-        <directive module="mod_disk_cache">CacheMaxFileSize</directive>
+        <directive module="mod_cache_disk">CacheRoot</directive>
+        <directive module="mod_cache_disk">CacheDirLevels</directive>
+        <directive module="mod_cache_disk">CacheDirLength</directive>
+        <directive module="mod_cache_disk">CacheMinFileSize</directive>
+        <directive module="mod_cache_disk">CacheMaxFileSize</directive>
       </directivelist>
     </related>
 </section>
@@ -143,8 +143,8 @@
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <indent>
-        LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        &lt;IfModule mod_disk_cache.c&gt;<br />
+        LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
         <indent>
           CacheRoot c:/cacheroot<br />
           CacheEnable disk  /<br />
@@ -339,7 +339,7 @@ manager</description>
     directive, the <var>url-string</var> becomes optional.
     <var>cache_type</var> <code>disk</code> instructs
     <module>mod_cache</module> to use the disk based storage manager
-    implemented by <module>mod_disk_cache</module>.</p>
+    implemented by <module>mod_cache_disk</module>.</p>
     <p>In the event that the URL space overlaps between different
     <directive>CacheEnable</directive> directives (as in the example below),
     each possible storage manager will be run until the first one that

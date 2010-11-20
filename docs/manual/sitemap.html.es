@@ -190,6 +190,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_autoindex.html">Módulo Apache mod_autoindex</a></li>
 <li><a href="mod/mod_buffer.html">Módulo Apache mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Módulo Apache mod_cache</a></li>
+<li><a href="mod/mod_cache_disk.html">Módulo Apache mod_cache_disk</a></li>
 <li><a href="mod/mod_cern_meta.html">Módulo Apache mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Módulo Apache mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Módulo Apache mod_cgid</a></li>
@@ -201,7 +202,6 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_deflate.html">Módulo Apache mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Módulo Apache mod_dialup</a></li>
 <li><a href="mod/mod_dir.html">Módulo Apache mod_dir</a></li>
-<li><a href="mod/mod_disk_cache.html">Módulo Apache mod_disk_cache</a></li>
 <li><a href="mod/mod_dumpio.html">Módulo Apache mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Módulo Apache mod_echo</a></li>
 <li><a href="mod/mod_env.html">Módulo Apache mod_env</a></li>

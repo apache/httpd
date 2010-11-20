@@ -993,7 +993,7 @@ edilmiştir.</td></tr>
       &lt;/Directory&gt;
     </code></p></div>
     <p><code class="directive">EnableSendfile</code> yönergesinin .htaccess ve diziniçi
-      yapılandırmalarınını <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> tarafından
+      yapılandırmalarınını <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> tarafından
       desteklenmediğini lütfen aklınızdan çıkarmayın.
       <code class="directive">EnableSendfile</code> yönergesinin sadece küresel
       tanımları hesaba katılır.</p>
@@ -1489,7 +1489,7 @@ sokulacak yönergeleri sarmalar.</td></tr>
           &lt;/IfDefine&gt;<br />
           &lt;IfDefine !MemCache&gt;<br />
           <span class="indent">
-            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
           </span>
           &lt;/IfDefine&gt;
         </span>

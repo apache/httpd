@@ -44,7 +44,7 @@
     사용하려면 저장관리모듈(storage management module)이 필요하다.
     기본 아파치 배포본에는 두가지 저장관리모듈이 있다:</p>
     <dl>
-    <dt><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></dt>
+    <dt><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></dt>
     <dd>는 디스크기반 저장관리자를 구현한다.</dd>
 
     <dt><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></dt>
@@ -80,7 +80,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">관련된 모듈과 지시어</a></h2>
-    <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcinterval">CacheGcInterval</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachetimemargin">CacheTimeMargin</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcdaily">CacheGcDaily</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcunused">CacheGcUnused</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcclean">CacheGcClean</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachegcinterval">CacheGcInterval</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheexpirycheck">CacheExpiryCheck</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachetimemargin">CacheTimeMargin</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachegcdaily">CacheGcDaily</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachegcunused">CacheGcUnused</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachegcclean">CacheGcClean</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachegcmemusage">CacheGcMemUsage</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">설정예</a></h2>
@@ -92,8 +92,8 @@
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
-        #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        &lt;IfModule mod_disk_cache.c&gt;<br />
+        #LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
           CacheSize 256<br />
@@ -170,7 +170,7 @@
     아규먼트로 지정한다. <var>cache_type</var> <code>mem</code>은
     <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>가 구현하는 메모리기반
     저장관리자를 사용한다. <var>cache_type</var> <code>disk</code>는
-    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>가 구현하는 디스크기반
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>가 구현하는 디스크기반
     저장관리자를 사용한다. <var>cache_type</var> <code>fd</code>는
     <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>가 구현하는 파일기술자 캐쉬를
     사용한다.</p>

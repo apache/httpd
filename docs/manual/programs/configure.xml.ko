@@ -423,7 +423,7 @@
           파일의 캐싱 기능을 사용한다. 매우 부하가 많거나 프록시
           서버를 캐싱하는 서버에게 이 실험적인 모듈이 유용할
           수 있다. 최소한 한가지 저장관리모듈(storage management
-          module)을 (예를 들어, <module>mod_disk_cache</module>나
+          module)을 (예를 들어, <module>mod_cache_disk</module>나
           <module>mod_mem_cache</module>) 같이 사용해야 한다.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
@@ -455,7 +455,7 @@
           인코딩 기능을 사용한다.</dd>
 
         <dt><code>--enable-disk-cache</code></dt>
-        <dd><module>mod_disk_cache</module>가 제공하는 디스크
+        <dd><module>mod_cache_disk</module>가 제공하는 디스크
           캐싱 기능을 사용한다.</dd>
 
         <dt><code>--enable-expires</code></dt>

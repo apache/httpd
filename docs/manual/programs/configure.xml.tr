@@ -451,7 +451,7 @@
           dosya önbelleklemesi etkin kılınır. Bu deneysel modülün kullanımı,
           aşırı yüklü sunucularda ya da önbellekli vekillerde ilginç sonuçlar
           verebilir. Bunun yanında en azından bir saklama alanı yönetim modülü
-          (örn, <module>mod_disk_cache</module>) gerekebilir.</dd>
+          (örn, <module>mod_cache_disk</module>) gerekebilir.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
         <dd><module>mod_cern_meta</module> modülü tarafından sağlanan CERN
@@ -491,7 +491,7 @@
           sıkıştırılmış aktarım kodlaması etkin kılınır.</dd>
 
         <dt><code>--enable-disk-cache</code></dt>
-        <dd><module>mod_disk_cache</module> modülü tarafından sağlanan diskte
+        <dd><module>mod_cache_disk</module> modülü tarafından sağlanan diskte
           önbellekleme etkin kılınır.</dd>
 
         <dt><code>--enable-expires</code></dt>
@@ -743,7 +743,7 @@
             <indent>
                 --with-ldap \<br />
                 --enable-mods-shared="all ssl ldap cache proxy authn_alias
-                file_cache authnz_ldap charset_lite dav_lock disk_cache"
+                file_cache authnz_ldap charset_lite dav_lock cache_disk"
             </indent>
           </example>
         </dd>
