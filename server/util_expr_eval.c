@@ -298,13 +298,22 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
     ctx.inputlen = strlen(expr);
     ctx.inputptr = ctx.inputbuf;
     ctx.expr     = NULL;
-    ctx.error    = NULL;        /* generic bison error message (usually not very useful) */
+    ctx.error    = NULL;        /* generic bison error message (XXX: usually not very useful, should be axed) */
     ctx.error2   = NULL;        /* additional error message */
     ctx.flags    = info->flags;
     ctx.scan_del    = '\0';
     ctx.scan_buf[0] = '\0';
     ctx.scan_ptr    = ctx.scan_buf;
     ctx.lookup_fn   = lookup_fn ? lookup_fn : ap_run_expr_lookup;
+
+
+    /*
+     * Be sure to avoid overflows in the scanner. In practice the input length
+     * will be limited by the config file parser, anyway.
+     * XXX: The scanner really should do proper buffer overflow checks
+     */
+    if (ctx.inputlen >= MAX_STRING_LEN)
+        return "Expression too long";
 
     ap_expr_yylex_init(&ctx.scanner);
     ap_expr_yyset_extra(&ctx, ctx.scanner);
