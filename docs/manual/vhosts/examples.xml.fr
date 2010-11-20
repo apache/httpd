@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 931524:1031197 (outdated) -->
+<!-- English Revision: 1031197 -->
 <!-- French translation by Vincent Deffontaines, Alain B., review by  -->
 <!-- updated by Lucien Gentis -->
 
@@ -29,7 +29,7 @@
 <summary>
 
     <p>Le but de ce document est d'essayer de répondre aux questions 
-    les plus répandues sur la configuration des serveurs virtuels. 
+    les plus répandues sur la configuration des <a href="index.html">serveurs virtuels</a>. 
     Les scénarios présentés ici se rencontrent quand plusieurs 
     serveurs Webs doivent tourner sur une seule et même machine au 
     moyen de serveurs virtuels <a href="name-based.html">par nom</a> 
@@ -87,8 +87,9 @@
     </example>
 
     <p>Les astérisques correspondent à toutes les adresses, si bien que 
-    le serveur principal ne répondra jamais à aucune requête. Comme 
-    <code>www.example.com</code> se trouve en premier dans le fichier 
+    le serveur principal ne répondra jamais à aucune requête. Comme le
+    serveur virtuel
+    <code>ServerName www.example.com</code> se trouve en premier dans le fichier 
     de configuration, il a la plus grande priorité et peut être vu 
     comme serveur <cite>par défaut</cite> ou <cite>primaire</cite>&nbsp;; 
     ce qui signifie que toute requête reçue ne correspondant à aucune 

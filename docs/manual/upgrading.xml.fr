@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1021924:1032413 (outdated) -->
+<!-- English Revision: 1021924 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -177,10 +177,9 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
       certaines configurations particuli&egrave;res, comme d&eacute;crit ci-dessous.</p>
 
       <ul>
-        <li>La directive <directive>MaxRequestsPerChild</directive> a
-	été renommée en <directive
-	module="mpm_common">MaxConnectionsPerChild</directive>, ce qui
-	correspond d'avantage à ce qu'elle fait.</li>
+        <li><directive>MaxRequestsPerChild</directive> a &eacute;t&eacute; renomm&eacute;e en
+	<directive module="mpm_common">MaxConnectionsPerChild</directive>;
+	ce nouveau nom refl&egrave;te mieux l'usage de cette directive.</li>
 
         <li>La directive <directive
 	module="core">DefaultType</directive> ne produit plus aucun
@@ -189,7 +188,7 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
 	directives de configuration la remplacent dans la version 2.4.
         </li>
 
-	<li>La valeur par défaut de la directive <directive
+	<li>La valeur par d&eacute;faut de la directive <directive
 	module="core">EnableSendfile</directive> est maintenant Off.</li>
 
         <li><module>mod_log_config</module>: <a
@@ -235,6 +234,12 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
 	r&eacute;pertoire. Si vous utilisez cette directive, passez en revue
 	votre configuration pour vous assurer qu'elle est bien pr&eacute;sente
 	dans tous les contextes de r&eacute;pertoire n&eacute;cessaires.</li>
+
+	<li><module>mod_filter</module>: la syntaxe de la directive
+	<directive module="filter">FilterProvider</directive> utilise
+	maintenant une expression bool&eacute;enne pour d&eacute;terminer si un filtre
+	s'applique.
+        </li>
     
     </ul>
     </section>
@@ -272,12 +277,17 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
       <li><code>Invalid command 'User', perhaps misspelled or defined by
       a module not included in the server configuration</code> - chargez
       le module <module>mod_unixd</module></li>
+
       <li><code>Invalid command 'Require', perhaps misspelled or defined
       by a module not included in the server configuration</code>, ou
       <code>Invalid command 'Order', perhaps misspelled or defined by a
       module not included in the server configuration</code> - chargez
       le module <module>mod_access_compat</module>, ou mettez &agrave; jour
       vers la version 2.4 les directives d'autorisation.</li>
+      <li><code>mixing * ports and non-* ports with a NameVirtualHost address is not supported</code>, <code>Either NameVirtualHost w.x.y.z:n has no VirtualHosts, or there is more than one identical NameVirtualHost line, or your VirtualHost declarations do not match the NameVirtualHost line</code> - ces messages ne sont pas nouveaux, mais ils bloquent d&eacute;sormais le d&eacute;marrage en g&eacute;n&eacute;rant une erreur</li>
+
+      <li><code>_default_ is not allowed in NameVirtualHost directive</code> - ceci a toujours &eacute;t&eacute; le cas, mais &agrave; pr&eacute;sent cette erreur bloque le d&eacute;marrage du serveur.</li>
+
       <li><code>Ignoring deprecated use of DefaultType in line NN of
       /path/to/httpd.conf</code> - supprimez la directive <directive
       module="core">DefaultType</directive> et remplacez-la par les
@@ -287,12 +297,12 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
       w.x.y.z:n has no VirtualHosts, or there is more than one identical
       NameVirtualHost line, or your VirtualHost declarations do not
       match the NameVirtualHost line</code> -
-      ce ne sont pas des nouveaux messages, mais ils empêchent
-      maintenant le serveur de démarrer</li>
+      ce ne sont pas des nouveaux messages, mais ils emp&ecirc;chent
+      maintenant le serveur de d&eacute;marrer</li>
       <li><code>_default_ is not allowed in NameVirtualHost
       directive</code> - l'explication est dans le message ; cette
-      définition n'a jamais été valide, mais elle empêche maintenant le
-      serveur de démarrer.</li>
+      d&eacute;finition n'a jamais &eacute;t&eacute; valide, mais elle emp&ecirc;che maintenant le
+      serveur de d&eacute;marrer.</li>
     </ul></li>
     <li>Erreurs de traitement des requ&ecirc;tes :
     <ul>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 926536 -->
+<!-- English Revision : 1036315 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,8 +61,9 @@ d'Apache httpd</a></seealso>
     quel. En particulier, les en-t&ecirc;tes HTTP seront d&eacute;duits du fichier
     lui-m&ecirc;me selon les r&egrave;gles du module <module>mod_cgi</module>, si
     bien qu'un fichier asis doit inclure des en-t&ecirc;tes valides, et
-    utiliser l'en-t&ecirc;te CGI Status: pour d&eacute;terminer le code de r&eacute;ponse
-    HTTP.</p>
+    utiliser l'en-t&ecirc;te CGI <code>Status:</code> pour d&eacute;terminer le code de r&eacute;ponse
+    HTTP. L'en-t&ecirc;te <code>Content-Length:</code> sera automatiquement
+    ins&eacute;r&eacute; ou, s'il est d&eacute;j&agrave; pr&eacute;sent, corrig&eacute; par httpd.</p>
 
     <p>Voici un exemple de fichier dont le contenu est envoy&eacute; <em>tel
     quel</em> pour informer un client qu'un fichier a &eacute;t&eacute; d&eacute;plac&eacute;.</p>
