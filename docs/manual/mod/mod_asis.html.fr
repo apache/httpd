@@ -70,8 +70,9 @@ d'Apache httpd</a></li>
     quel. En particulier, les en-têtes HTTP seront déduits du fichier
     lui-même selon les règles du module <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, si
     bien qu'un fichier asis doit inclure des en-têtes valides, et
-    utiliser l'en-tête CGI Status: pour déterminer le code de réponse
-    HTTP.</p>
+    utiliser l'en-tête CGI <code>Status:</code> pour déterminer le code de réponse
+    HTTP. L'en-tête <code>Content-Length:</code> sera automatiquement
+    inséré ou, s'il est déjà présent, corrigé par httpd.</p>
 
     <p>Voici un exemple de fichier dont le contenu est envoyé <em>tel
     quel</em> pour informer un client qu'un fichier a été déplacé.</p>

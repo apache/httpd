@@ -56,6 +56,7 @@ on characteristics of the request</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvifexpr">SetEnvIfExpr</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li>
 </ul>
 <h3>See also</h3>
@@ -259,6 +260,47 @@ of</p>
 <li><a href="../env.html">Environment Variables in Apache HTTP Server</a>,
 for additional examples.
 </li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a> <a name="setenvifexpr" id="setenvifexpr">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables based on an expression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnvIfExpr <em>expr
+    [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
+</table>
+    <p>The <code class="directive">SetEnvIfExpr</code> directive defines
+    environment variables based on an <code class="directive">&lt;If&gt;</code>
+    <code>ap_expr</code>. These expressions will be evaluated at runtime,
+    and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
+
+<div class="example"><p><code>
+    SetEnvIfExpr "tolower(%req['X-Sendfile']) = 'D:\images\very_big.iso')" iso_delivered
+</code></p></div>
+
+    <p>This would set the environment variable <code>iso_delivered</code>
+    every time our application attempts to send it via <code>X-Sendfile</code></p>
+
+    <p>For a more useful example, consider the <code>Referer</code>
+    example from above for a site with more than one domain:</p>
+
+<div class="example"><p><code>
+    SetEnvIfExpr "${HTTP_REFERER} in www.example.com,example.com,w2.example3.org" intra_site_referral
+</code></p></div>
+
+<h3>See also</h3>
+<ul>
+<li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and more examples.</li>
+<li><code class="directive">&lt;If&gt;</code> can be used to achive similar
+results.</li>
+<li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
+<li><code class="module"><a href="../mod/mod_include&gt;.html">mod_include&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
