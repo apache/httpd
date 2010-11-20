@@ -107,6 +107,13 @@
       <dt><module>mod_allowmethods</module></dt>
       <dd>New module to restrict certain HTTP methods without interfering with
       authentication or authorization.</dd>
+
+      <dt><module>mod_include</module></dt>
+
+      <dd>Support for the 'onerror' attribute within an 'include' element,
+      allowing an error document to be served on error instead of the default
+      error string.</dd>
+
     </dl>
   </section>
 

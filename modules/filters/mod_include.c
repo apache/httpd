@@ -1648,12 +1648,19 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 }
 
 /*
- * <!--#include virtual|file="..." [virtual|file="..."] ... -->
+ * <!--#include virtual|file="..." [onerror|virtual|file="..."] ... -->
+ *
+ * Output each file/virtual in turn until one of them returns an error.
+ * On error, ignore all further file/virtual attributes until we reach
+ * an onerror attribute, where we make an attempt to serve the onerror
+ * virtual url. If onerror fails, or no onerror is present, the default
+ * error string is inserted into the stream.
  */
 static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
                                    apr_bucket_brigade *bb)
 {
     request_rec *r = f->r;
+    char *last_error;
 
     if (!ctx->argc) {
         ap_log_rerror(APLOG_MARK,
@@ -1672,6 +1679,7 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
         return APR_SUCCESS;
     }
 
+    last_error = NULL;
     while (1) {
         char *tag     = NULL;
         char *tag_val = NULL;
@@ -1684,7 +1692,8 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
             break;
         }
 
-        if (strcmp(tag, "virtual") && strcmp(tag, "file")) {
+        if (strcmp(tag, "virtual") && strcmp(tag, "file") && strcmp(tag,
+                "onerror")) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unknown parameter "
                           "\"%s\" to tag include in %s", tag, r->filename);
             SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
@@ -1709,13 +1718,17 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
                 rr = ap_sub_req_lookup_file(newpath, r, f->next);
             }
         }
-        else {
+        else if ((tag[0] == 'v' && !last_error)
+                || (tag[0] == 'o' && last_error)) {
             if (r->kept_body) {
                 rr = ap_sub_req_method_uri(r->method, parsed_string, r, f->next);
             }
             else {
                 rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
             }
+        }
+        else {
+            continue;
         }
 
         if (!error_fmt && rr->status != HTTP_OK) {
@@ -1743,8 +1756,15 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
 
         if (error_fmt) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error_fmt, tag_val,
-                          r->filename);
-            SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+                    r->filename);
+            if (last_error) {
+                /* onerror threw an error, give up completely */
+                break;
+            }
+            last_error = error_fmt;
+        }
+        else {
+            last_error = NULL;
         }
 
         /* Do *not* destroy the subrequest here; it may have allocated
@@ -1752,9 +1772,10 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
          * r->pool, so that pool must survive as long as this request.
          * Yes, this is a memory leak. */
 
-        if (error_fmt) {
-            break;
-        }
+    }
+
+    if (last_error) {
+        SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
     }
 
     return APR_SUCCESS;
