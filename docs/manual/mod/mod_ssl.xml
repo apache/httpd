@@ -1323,6 +1323,9 @@ the left-hand-side expression.</p></li>
 </note>
 
 </usage>
+<seealso><a href="../env.html">Environment Variables in Apache HTTP Server</a>,
+for additional examples.
+</seealso>
 </directivesynopsis>
 
 <directivesynopsis>

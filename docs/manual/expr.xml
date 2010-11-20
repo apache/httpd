@@ -319,8 +319,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     Functions names are not case sensitive.
     Modules may register additional functions.</p>
 
-    <p>There are no built-in list-valued functions. mod_ssl provides
-    <code>PeerExtList</code> (XXX: link)</p>
+    <p>There are no built-in list-valued functions. <module>mod_ssl</module>'s
+    <directive module="mod_ssl">SSLRequire</directive> provides
+    <code>PeerExtList</code>.</p>
 
 </section>
 
