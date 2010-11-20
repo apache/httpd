@@ -468,6 +468,7 @@
 <li><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></li>
 <li><a href="mod_env.html#setenv">SetEnv</a></li>
 <li><a href="mod_setenvif.html#setenvif">SetEnvIf</a></li>
+<li><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></li>
 <li><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></li>
 <li><a href="core.html#sethandler">SetHandler</a></li>
 <li><a href="core.html#setinputfilter">SetInputFilter</a></li>

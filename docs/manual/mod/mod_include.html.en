@@ -719,6 +719,11 @@
      <p>All slashes which are not intended to act as delimiters in your regex must
      be escaped.  This is regardless of their meaning to the regex engine.</p>
     </div>
+
+    <div class="note"><h3>Reference Documentation</h3>
+    <p>See also: <a href="../expr.html">Expressions in Apache HTTP Server</a>,
+    for a complete reference and examples.</p>
+    </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSIAccessEnable" id="SSIAccessEnable">SSIAccessEnable</a> <a name="ssiaccessenable" id="ssiaccessenable">Directive</a></h2>
