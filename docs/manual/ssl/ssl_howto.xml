@@ -65,10 +65,7 @@ following directives.</p>
 <section id="ciphersuites">
 <title>Cipher Suites and Enforcing Strong Security</title>
 <ul>
-<li><a href="#realssl">How can I create a real SSLv2-only server?</a></li>
 <li><a href="#onlystrong">How can I create an SSL server which accepts strong encryption only?</a></li>
-<li><a href="#upgradeenc">How can I create an SSL server which accepts strong encryption only, but allows
-export browsers to upgrade to stronger encryption?</a></li>
 <li><a href="#strongurl">How can I create an SSL server which accepts all types of ciphers in general, but 
 requires a strong cipher for access to a particular URL?</a></li>
 </ul>
@@ -78,7 +75,7 @@ requires a strong cipher for access to a particular URL?</a></li>
 only?</title>
     <p>The following enables only the strongest ciphers:</p>
     <example><title>httpd.conf</title>
-      SSLProtocol all -SSLv3<br />
+      SSLProtocol all -SSLv2<br />
       SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
     </example>
 
@@ -86,7 +83,7 @@ only?</title>
     which are resonably secure, and fast:</p>
 
     <example><title>httpd.conf</title>
-      SSLProtocol all -SSLv3<br />
+      SSLProtocol all -SSLv2<br />
       SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
       SSLHonorCipherOrder on
     </example>
