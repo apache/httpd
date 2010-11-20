@@ -74,9 +74,6 @@ de haut niveau</a></h2>
 <ul>
 <li><a href="#onlystrong">Comment créer un serveur SSL
 qui n'accepte que le chiffrement fort ?</a></li>
-<li><a href="#upgradeenc">Comment créer un serveur SSL qui n'accepte que le
-chiffrement fort, mais permet aux navigateurs importés des USA
-d'évoluer vers un chiffrement plus fort ?</a></li>
 <li><a href="#strongurl">Comment créer un serveur qui accepte tous les types de
 chiffrement en général, mais exige un chiffrement fort pour pouvoir
 accéder à une URL particulière ?</a></li>
@@ -89,7 +86,7 @@ que le chiffrement fort ?</a></h3>
     <p>Les directives suivantes ne permettent que les
     chiffrements de plus haut niveau :</p>
     <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLProtocol all -SSLv3<br />
+      SSLProtocol all -SSLv2<br />
       SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
     </code></p></div>
 
@@ -98,7 +95,7 @@ que le chiffrement fort ?</a></h3>
  <p>Avec la configuration qui suit, vous pouvez activer deux mÃ©thodes de chiffrement relativement sÃ©curisÃ©es, et rapides :</p>
 
     <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLProtocol all -SSLv3<br />
+      SSLProtocol all -SSLv2<br />
       SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
       SSLHonorCipherOrder on
       <br />
