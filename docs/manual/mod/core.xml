@@ -1594,6 +1594,8 @@ satisfied by a request at runtime</description>
 
 </usage>
 
+<seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and more examples.</seealso>
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
     &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received.

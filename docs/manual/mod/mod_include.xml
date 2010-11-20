@@ -712,6 +712,11 @@
      <p>All slashes which are not intended to act as delimiters in your regex must
      be escaped.  This is regardless of their meaning to the regex engine.</p>
     </note>
+
+    <note><title>Reference Documentation</title>
+    <p>See also: <a href="../expr.html">Expressions in Apache HTTP Server</a>,
+    for a complete reference and examples.</p>
+    </note>
 </section>
 
 <directivesynopsis>
