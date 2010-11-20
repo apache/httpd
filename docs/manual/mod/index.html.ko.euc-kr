@@ -96,6 +96,7 @@ address)</dd>
     <code>dir</code> 쉘명령어와 유사한 디렉토리 목록을 만든다</dd>
 <dt><a href="mod_buffer.html" id="B" name="B">mod_buffer</a></dt><dd>Support for request buffering</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>URI를 키로 사용하여 내용을 캐쉬한다.</dd>
+<dt><a href="mod_cache_disk.html">mod_cache_disk</a></dt><dd>Content cache storage manager keyed to URIs</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN 웹서버 메타파일 지원</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI 스크립트 실행</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>외부 CGI 데몬을 사용하여 CGI 스크립트를 실행</dd>
@@ -109,7 +110,6 @@ address)</dd>
 <dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
 index 파일을 서비스한다</dd>
-<dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>프로토콜 모듈을 설명하기위한 간단한 echo 서버</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를

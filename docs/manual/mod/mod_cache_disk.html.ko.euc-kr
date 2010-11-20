@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_disk_cache - Apache HTTP Server</title>
+<title>mod_cache_disk - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -19,26 +19,26 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
-<div id="preamble"><h1>아파치 모듈 mod_disk_cache</h1>
+<div id="preamble"><h1>아파치 모듈 mod_cache_disk</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_disk_cache.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_disk_cache.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/mod_cache_disk.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache_disk.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_cache_disk.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cache_disk.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>Content cache storage manager keyed to URIs</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>disk_cache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_disk_cache.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>cache_disk_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_cache_disk.c</td></tr></table>
 <h3>요약</h3>
 
     <div class="warning">
       이 모듈은 실험적인 상태이다. 문서는 아직 작업중이다...
     </div>
 
-    <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>는 디스크기반 저장관리자를
+    <p><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>는 디스크기반 저장관리자를
     구현한다. 이 모듈은 기본적으로 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>와
     같이 사용한다.</p>
 
@@ -46,7 +46,7 @@
     접근보호가 된 내용은 캐쉬하지않는다.</p>
 
     <div class="note"><h3>주의:</h3>
-      <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>는
+      <p><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>는
       <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>가 필요하다.</p>
     </div>
 </div>
@@ -68,7 +68,7 @@
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheDirLength 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheDirLength</code> 지시어는 캐쉬
     계층구조에서 각 하위디렉토리명의 문자수를 지정한다.</p>
@@ -92,7 +92,7 @@
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheDirLevels 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheDirLevels</code> 지시어는 캐쉬의
     하위디렉토리 깊이를 지정한다. 캐쉬된 자료를 <code class="directive"><a href="#cacheroot">CacheRoot</a></code> 디렉토리
@@ -116,7 +116,7 @@
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheMaxFileSize</code> 지시어는 캐쉬에
     저장할 문서의 최대크기를 바이트 단위로 지정한다.</p>
@@ -134,7 +134,7 @@
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheMinFileSize</code> 지시어는 캐쉬에
     저장할 문서의 최소크기를 바이트 단위로 지정한다.</p>
@@ -151,10 +151,10 @@
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheRoot</code> 지시어는 디스크에서
-    캐쉬 파일을 저장할 디렉토리를 지정한다. <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> 모듈을 아파치 서버와 같이 컴파일하였거나
+    캐쉬 파일을 저장할 디렉토리를 지정한다. <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> 모듈을 아파치 서버와 같이 컴파일하였거나
     읽어들인 경우 <em>반드시</em> 이 지시어를 정의해야 한다.
     <code class="directive">CacheRoot</code>에 값이 없으면 설정파일을
     처리하지 않는다. <code class="directive"><a href="#cachedirlevels">CacheDirLevels</a></code>와 <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> 지시어는
@@ -167,10 +167,10 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_disk_cache.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
-<a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_disk_cache.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/mod/mod_cache_disk.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache_disk.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_cache_disk.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cache_disk.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>

@@ -52,13 +52,13 @@
 	  modules.</dd>
 
       <dt>Mise en cache</dt>
-      <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, et
+      <dd><module>mod_cache</module>, <module>mod_cache_disk</module>, et
           mod_mem_cache (supprim&eacute;s dans la version 2.3/2.4) ont subi de nombreuses
 	  modifications, et l'on consid&egrave;re qu'ils ont maintenant atteint
 	  un degr&eacute; de qualit&eacute; suffisant pour leur mise en production. Le programme
 	  <program>htcacheclean</program> a &eacute;t&eacute; ajout&eacute; afin de rendre
 	  plus propre la configuration du module
-	  <module>mod_disk_cache</module>.</dd>
+	  <module>mod_cache_disk</module>.</dd>
 
       <dt>Configuration</dt>
       <dd>L'agencement de la configuration par d&eacute;faut a &eacute;t&eacute; simplifi&eacute;

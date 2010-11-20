@@ -24,7 +24,7 @@
 </div>
 
     <p><code>htcacheclean</code> is used to keep the size of
-    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>'s storage within a given size limit, or
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>'s storage within a given size limit, or
     limit on inodes in use. This tool can run either manually or in daemon mode.
     When running in daemon mode, it sleeps in the background and checks the cache
     directory at regular intervals for cached content to be removed. You can stop
@@ -38,7 +38,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#delete">Deleting a specific URL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#list">Listing URLs in the Cache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#exit">Exit Status</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
@@ -121,7 +121,7 @@
 
     <dt><code>-p<var>path</var></code></dt>
     <dd>Specify <var>path</var> as the root directory of the disk cache. This
-    should be the same value as specified with the <code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code> directive.</dd>
+    should be the same value as specified with the <code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code> directive.</dd>
 
     <dt><code>-P<var>pidfile</var></code></dt>
     <dd>Specify <var>pidfile</var> as the name of the file to write the

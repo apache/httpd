@@ -188,12 +188,19 @@
     and exposes functions to handle HTTP OPTIONS and TRACE.</p>
   </section>
 
-  <section id="mod_disk_cache">
-    <title>mod_disk_cache (changed)</title>
+  <section id="mod_cache_disk">
+    <title>mod_cache_disk (changed)</title>
     <p>Changes the disk format of the disk cache to support atomic cache
     updates without locking. The device/inode pair of the body file is
     embedded in the header file, allowing confirmation that the header
     and body belong to one another.</p>
+  </section>
+
+  <section id="mod_disk_cache">
+    <title>mod_disk_cache (renamed)</title>
+    <p>The mod_disk_cache module has been renamed to mod_cache_disk in
+    order to be consistent with the naming of other modules within the
+    server.</p>
   </section>
 
   <section id="mod_request">

@@ -47,7 +47,7 @@
     Apache 配布には二つストレージ管理モジュールが含まれています:</p>
     
     <dl>
-    <dt><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></dt>
+    <dt><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></dt>
     <dd>ディスクを使用したストレージ管理機構を実装しています。</dd>
 
     <dt><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></dt>
@@ -93,7 +93,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">関連モジュールとディレクティブ</a></h2>
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_dist.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">サンプル設定</a></h2>
@@ -105,10 +105,10 @@
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
-        #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        # If you want to use mod_disk_cache instead of mod_mem_cache,<br />
+        #LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        # If you want to use mod_cache_disk instead of mod_mem_cache,<br />
         # uncomment the line above and comment out the LoadModule line below.<br />
-        &lt;IfModule mod_disk_cache.c&gt;<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
           CacheEnable disk  /<br />
@@ -188,7 +188,7 @@
     <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> で実装されているメモリを使ったストレージ
     管理方式を使うように <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> に指示します。
     <var>cache_type</var> <code>disk</code> で、
-    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> で実装されているディスクを使ったストレージ
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> で実装されているディスクを使ったストレージ
     管理を使うように <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> に指示します。
     <var>cache_type</var> <code>fd</code> は <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> に
     <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> により実装されているファイル記述子の

@@ -927,7 +927,7 @@ Dateien an den Client auszuliefern</description>
     </example>
     <p>Beachten Sie bitte, dass die verzeichnisbasierte und
        .htaccess-Konfiguration von <directive>EnableSendfile</directive>
-       nicht vom <module>mod_disk_cache</module>-Modul unterst&uuml;tzt wird.
+       nicht vom <module>mod_cache_disk</module>-Modul unterst&uuml;tzt wird.
        Nur die globale Konfiguration von <directive>EnableSendfile</directive>
        wird vom Modul beachtet.
     </p>

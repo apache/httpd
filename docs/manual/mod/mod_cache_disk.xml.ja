@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 515267:1029833 (outdated) -->
+<!-- English Revision: 515267:-1 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,16 +20,16 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_disk_cache.xml.meta">
+<modulesynopsis metafile="mod_cache_disk.xml.meta">
 
-<name>mod_disk_cache</name>
+<name>mod_cache_disk</name>
 <description>URI をキーにしたコンテンツキャッシュストレージ管理</description>
 <status>Extension</status>
-<sourcefile>mod_disk_cache.c</sourcefile>
-<identifier>disk_cache_module</identifier>
+<sourcefile>mod_cache_disk.c</sourcefile>
+<identifier>cache_disk_module</identifier>
 
 <summary>
-    <p><module>mod_disk_cache</module> はディスクを使用したストレージ
+    <p><module>mod_cache_disk</module> はディスクを使用したストレージ
     管理機構を実装しています。主に
     <module>mod_cache</module> と組み合わせて使われます。</p>
 
@@ -40,7 +40,7 @@
     <program>htcacheclean</program> を使うことができます。</p>
 
     <note><title>注:</title>
-      <p><module>mod_disk_cache</module> は
+      <p><module>mod_cache_disk</module> は
       <module>mod_cache</module> を必要とします</p>
     </note>
 </summary>
@@ -55,13 +55,13 @@
 <usage>
     <p><directive>CacheRoot</directive> ディレクティブはキャッシュファイルを
     保管するためのディスク上のディレクトリを指定します。<module
-    >mod_disk_cache</module> モジュールが Apache サーバにロードされて
+    >mod_cache_disk</module> モジュールが Apache サーバにロードされて
     いるか、組み込まれていれば、このディレクティブは<em>必ず</em>
     定義しなければなりません。
     <directive>CacheRoot</directive> の値を指定しなければ、
     設定ファイルの処理でエラーになります。<directive
-    module="mod_disk_cache">CacheDirLevels</directive> ディレクティブと <directive
-    module="mod_disk_cache">CacheDirLength</directive> ディレクティブが
+    module="mod_cache_disk">CacheDirLevels</directive> ディレクティブと <directive
+    module="mod_cache_disk">CacheDirLength</directive> ディレクティブが
     指定されたルートディレクトリ下のディレクトリ構成を定義します。</p>
 
     <example>
@@ -81,7 +81,7 @@
 <usage>
     <p><directive>CacheDirLevels</directive> ディレクティブはキャッシュの
     サブディレクトリの深さを設定します。キャッシュデータは <directive
-    module="mod_disk_cache">CacheRoot</directive> ディレクトリから
+    module="mod_cache_disk">CacheRoot</directive> ディレクトリから
     このディレクトリの深さ分下のディレクトリに保存されます。</p>
     <p><directive>CacheDirLevels</directive> が大きくて
     <directive>CacheDirLength</directive> が小さい場合、
@@ -90,7 +90,7 @@
 
     <note>
       <p><directive>CacheDirLevels</directive>*
-      <directive module="mod_disk_cache">CacheDirLength</directive> の
+      <directive module="mod_cache_disk">CacheDirLength</directive> の
       結果は 20 以内でなければなりません。</p>
     </note>
 
@@ -117,7 +117,7 @@
 
     <note>
       <p><directive>CacheDirLevels</directive>*
-      <directive module="mod_disk_cache">CacheDirLength</directive> の
+      <directive module="mod_cache_disk">CacheDirLength</directive> の
       結果は 20 以内でなければなりません。</p>
     </note>
 

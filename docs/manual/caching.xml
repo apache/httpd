@@ -26,7 +26,7 @@
 
   <summary>
     <p>This document supplements the <module>mod_cache</module>,
-    <module>mod_disk_cache</module>, <module>mod_file_cache</module> and <a 
+    <module>mod_cache_disk</module>, <module>mod_file_cache</module> and <a 
     href="programs/htcacheclean.html">htcacheclean</a> reference documentation.
     It describes how to use the Apache HTTP Server's caching features to accelerate web and 
     proxy serving, while avoiding common problems and misconfigurations.</p>
@@ -42,7 +42,7 @@
     handling, both as an origin webserver and as a proxy.</p>
 
     <p><module>mod_cache</module> and its provider modules 
-    <module>mod_disk_cache</module> 
+    <module>mod_cache_disk</module> 
     provide intelligent, HTTP-aware caching. The content itself is stored
     in the cache, and mod_cache aims to honor all of the various HTTP
     headers and options that control the cachability of content. It can
@@ -82,7 +82,7 @@
     <related>
       <modulelist>
         <module>mod_cache</module>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
         <module>mod_file_cache</module>
       </modulelist>
       <directivelist>
@@ -213,7 +213,7 @@
       caching local content, even expired content may still be served faster
       from the cache if it has not changed. As long as reading from the cache
       store is faster than reading from the backend (e.g. <module
-      >mod_disk_cache</module> with memory disk
+      >mod_cache_disk</module> with memory disk
       compared to reading from disk).</p> 
     </section>
 
@@ -355,12 +355,12 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>If the Apache user is compromised, for example through a flaw in
       a CGI process, it is possible that the cache may be targeted. When
-      using <module>mod_disk_cache</module>, it is relatively easy to 
+      using <module>mod_cache_disk</module>, it is relatively easy to 
       insert or modify a cached entity.</p>
 
       <p>This presents a somewhat elevated risk in comparison to the other 
       types of attack it is possible to make as the Apache user. If you are 
-      using <module>mod_disk_cache</module> you should bear this in mind - 
+      using <module>mod_cache_disk</module> you should bear this in mind - 
       ensure you upgrade httpd when security upgrades are announced and 
       run CGI processes as a non-Apache user using <a 
       href="suexec.html">suEXEC</a> if possible.</p>
@@ -550,7 +550,7 @@ sys     0m0.000s</pre>
 
      <related>
       <modulelist>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
       </modulelist>
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
@@ -558,7 +558,7 @@ sys     0m0.000s</pre>
       </directivelist>
     </related>
        
-    <p><module>mod_disk_cache</module> provides a disk-based caching mechanism 
+    <p><module>mod_cache_disk</module> provides a disk-based caching mechanism 
     for <module>mod_cache</module>. This cache is intelligent and content will
     be served from the cache only as long as it is considered valid.</p>
 
@@ -581,7 +581,7 @@ CacheDirLength 1</pre>
     <section>
       <title>Understanding the Cache-Store</title>
 
-      <p>To store items in the cache, <module>mod_disk_cache</module> creates
+      <p>To store items in the cache, <module>mod_cache_disk</module> creates
       a 22 character hash of the URL being requested. This hash incorporates
       the hostname, protocol, port, path and any CGI arguments to the URL,
       to ensure that multiple URLs do not collide.</p>
@@ -591,13 +591,13 @@ CacheDirLength 1</pre>
       be hashed to <code>xyTGxSMO2b68mBCykqkp1w</code>. This hash is used
       as a prefix for the naming of the files specific to that URL within
       the cache, however first it is split up into directories as per
-      the <directive module="mod_disk_cache">CacheDirLevels</directive> and
-      <directive module="mod_disk_cache">CacheDirLength</directive> 
+      the <directive module="mod_cache_disk">CacheDirLevels</directive> and
+      <directive module="mod_cache_disk">CacheDirLength</directive> 
       directives.</p>
 
-      <p><directive module="mod_disk_cache">CacheDirLevels</directive> 
+      <p><directive module="mod_cache_disk">CacheDirLevels</directive> 
       specifies how many levels of subdirectory there should be, and
-      <directive module="mod_disk_cache">CacheDirLength</directive>
+      <directive module="mod_cache_disk">CacheDirLength</directive>
       specifies how many characters should be in each directory. With
       the example settings given above, the hash would be turned into
       a filename prefix as 
@@ -607,15 +607,15 @@ CacheDirLength 1</pre>
       subdirectories or files that may be in a particular directory,
       as most file-systems slow down as this number increases. With
       setting of "1" for 
-      <directive module="mod_disk_cache">CacheDirLength</directive>
+      <directive module="mod_cache_disk">CacheDirLength</directive>
       there can at most be 64 subdirectories at any particular level. 
       With a setting of 2 there can be 64 * 64 subdirectories, and so on.
       Unless you have a good reason not to, using a setting of "1"
-      for <directive module="mod_disk_cache">CacheDirLength</directive>
+      for <directive module="mod_cache_disk">CacheDirLength</directive>
       is recommended.</p>
 
       <p>Setting 
-      <directive module="mod_disk_cache">CacheDirLevels</directive>
+      <directive module="mod_cache_disk">CacheDirLevels</directive>
       depends on how many files you anticipate to store in the cache.
       With the setting of "2" used in the above example, a grand
       total of 4096 subdirectories can ultimately be created. With
@@ -636,7 +636,7 @@ CacheDirLength 1</pre>
     <section>
       <title>Maintaining the Disk Cache</title>
     
-      <p>Although <module>mod_disk_cache</module> will remove cached content
+      <p>Although <module>mod_cache_disk</module> will remove cached content
       as it is expired, it does not maintain any information on the total
       size of the cache or how little free space may be left.</p>
 
@@ -662,7 +662,7 @@ CacheDirLength 1</pre>
       <a id="figure1" name="figure1"><dfn>Figure 1</dfn></a>: Typical
       cache growth / clean sequence.</p>
 
-      <p>Because <module>mod_disk_cache</module> does not itself pay attention
+      <p>Because <module>mod_cache_disk</module> does not itself pay attention
       to how much space is used you should ensure that 
       <a href="programs/htcacheclean.html">htcacheclean</a> is configured to 
       leave enough "grow room" following a clean.</p>

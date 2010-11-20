@@ -28,6 +28,7 @@
   <modulefile>mod_autoindex.xml</modulefile>
   <modulefile>mod_buffer.xml</modulefile>
   <modulefile>mod_cache.xml</modulefile>
+  <modulefile>mod_cache_disk.xml</modulefile>
   <modulefile>mod_cern_meta.xml</modulefile>
   <modulefile>mod_cgi.xml</modulefile>
   <modulefile>mod_cgid.xml</modulefile>
@@ -39,7 +40,6 @@
   <modulefile>mod_deflate.xml</modulefile>
   <modulefile>mod_dialup.xml</modulefile>
   <modulefile>mod_dir.xml</modulefile>
-  <modulefile>mod_disk_cache.xml</modulefile>
   <modulefile>mod_dumpio.xml</modulefile>
   <modulefile>mod_echo.xml</modulefile>
   <modulefile>mod_env.xml</modulefile>

@@ -61,7 +61,7 @@
     <ul>
       <li>These modules have been removed: mod_authn_default,
       mod_authz_default, mod_mem_cache.  If you were using
-      mod_mem_cache in 2.2, look at <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> in
+      mod_mem_cache in 2.2, look at <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> in
       2.4.</li>
 
       <li>All load balancing implementations have been moved to

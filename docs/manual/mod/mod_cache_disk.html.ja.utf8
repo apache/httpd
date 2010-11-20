@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_disk_cache - Apache HTTP サーバ</title>
+<title>mod_cache_disk - Apache HTTP サーバ</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -20,22 +20,22 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン
             2.3</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache モジュール mod_disk_cache</h1>
+<div id="preamble"><h1>Apache モジュール mod_cache_disk</h1>
 <div class="toplang">
-<p><span>言語: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_disk_cache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../ja/mod/mod_disk_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>言語: </span><a href="../en/mod/mod_cache_disk.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache_disk.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_cache_disk.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cache_disk.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
           更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツキャッシュストレージ管理</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>disk_cache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_disk_cache.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>cache_disk_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_cache_disk.c</td></tr></table>
 <h3>概要</h3>
 
-    <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> はディスクを使用したストレージ
+    <p><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> はディスクを使用したストレージ
     管理機構を実装しています。主に
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> と組み合わせて使われます。</p>
 
@@ -46,7 +46,7 @@
     <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> を使うことができます。</p>
 
     <div class="note"><h3>注:</h3>
-      <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> は
+      <p><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> は
       <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> を必要とします</p>
     </div>
 </div>
@@ -68,7 +68,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLength 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheDirLength</code> ディレクティブはキャッシュ
     階層の各サブディレクトリの文字数を設定します。
@@ -95,7 +95,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLevels 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheDirLevels</code> ディレクティブはキャッシュの
     サブディレクトリの深さを設定します。キャッシュデータは <code class="directive"><a href="#cacheroot">CacheRoot</a></code> ディレクトリから
@@ -121,7 +121,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheMaxFileSize</code> ディレクティブは、ドキュメントを
     キャッシュするかどうかを判定する、最大のサイズをバイト数で設定します。</p>
@@ -139,7 +139,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheMinFileSize</code> ディレクティブは、ドキュメントを
     キャッシュするかどうかを判定する、最小のサイズをバイト数で設定します。</p>
@@ -156,10 +156,10 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache_disk</td></tr>
 </table>
     <p><code class="directive">CacheRoot</code> ディレクティブはキャッシュファイルを
-    保管するためのディスク上のディレクトリを指定します。<code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> モジュールが Apache サーバにロードされて
+    保管するためのディスク上のディレクトリを指定します。<code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> モジュールが Apache サーバにロードされて
     いるか、組み込まれていれば、このディレクティブは<em>必ず</em>
     定義しなければなりません。
     <code class="directive">CacheRoot</code> の値を指定しなければ、
@@ -173,10 +173,10 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>言語: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_disk_cache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../ja/mod/mod_disk_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>言語: </span><a href="../en/mod/mod_cache_disk.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache_disk.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_cache_disk.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_cache_disk.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>

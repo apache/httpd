@@ -104,7 +104,7 @@
     storage management modules. One storage management module is included in
     the base Apache distribution:</p>
     <dl>
-    <dt><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></dt>
+    <dt><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></dt>
     <dd>Implements a disk based storage manager. Headers and bodies are
     stored separately on disk, in a directory structure derived from the
     md5 hash of the cached URL. Multiple content negotiated responses can
@@ -156,7 +156,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Related Modules and Directives</a></h2>
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
@@ -168,8 +168,8 @@
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
-        LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        &lt;IfModule mod_disk_cache.c&gt;<br />
+        LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        &lt;IfModule mod_cache_disk.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
           CacheEnable disk  /<br />
@@ -458,7 +458,7 @@ manager</td></tr>
     directive, the <var>url-string</var> becomes optional.
     <var>cache_type</var> <code>disk</code> instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to use the disk based storage manager
-    implemented by <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.</p>
+    implemented by <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>.</p>
     <p>In the event that the URL space overlaps between different
     <code class="directive">CacheEnable</code> directives (as in the example below),
     each possible storage manager will be run until the first one that

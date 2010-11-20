@@ -938,7 +938,7 @@ edilmiştir.</compatibility>
       &lt;/Directory&gt;
     </example>
     <p><directive>EnableSendfile</directive> yönergesinin .htaccess ve diziniçi
-      yapılandırmalarınını <module>mod_disk_cache</module> tarafından
+      yapılandırmalarınını <module>mod_cache_disk</module> tarafından
       desteklenmediğini lütfen aklınızdan çıkarmayın.
       <directive>EnableSendfile</directive> yönergesinin sadece küresel
       tanımları hesaba katılır.</p>
@@ -1439,7 +1439,7 @@ sokulacak yönergeleri sarmalar.</description>
           &lt;/IfDefine&gt;<br />
           &lt;IfDefine !MemCache&gt;<br />
           <indent>
-            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
           </indent>
           &lt;/IfDefine&gt;
         </indent>

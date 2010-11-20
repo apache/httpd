@@ -28,7 +28,7 @@
 
   <summary>
     <p>Ce document compl&egrave;te la documentation de r&eacute;f&eacute;rence des modules
-    <module>mod_cache</module>, <module>mod_disk_cache</module>,
+    <module>mod_cache</module>, <module>mod_cache_disk</module>,
     <module>mod_file_cache</module> et du programme <a
     href="programs/htcacheclean.html">htcacheclean</a>.
     Il d&eacute;crit l'utilisation des fonctionnalit&eacute;s de mise en
@@ -49,7 +49,7 @@
     que comme mandataire.</p>
 
     <p>Le module <module>mod_cache</module> et son module de soutien
-    <module>mod_disk_cache</module>
+    <module>mod_cache_disk</module>
     permettent une mise en cache intelligente du point de vue HTTP.
     Le contenu proprement dit est stock&eacute; dans le cache,
     et mod_cache tente d'honorer tous les en-t&ecirc;tes HTTP et les options
@@ -97,7 +97,7 @@
     <related>
       <modulelist>
         <module>mod_cache</module>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
         <module>mod_file_cache</module>
       </modulelist>
       <directivelist>
@@ -243,7 +243,7 @@
       depuis le cache s'il n'a pas &eacute;t&eacute; modifi&eacute;, parce que la lecture depuis le
       cache est plus rapide que la lecture depuis le processus en arri&egrave;re-plan
       (&agrave; comparer &agrave; la diff&eacute;rence de vitesse entre la lecture depuis un cache en
-      m&eacute;moire avec <module>mod_disk_cache</module> et la lecture depuis un disque).</p>
+      m&eacute;moire avec <module>mod_cache_disk</module> et la lecture depuis un disque).</p>
     </section>
 
     <section>
@@ -405,11 +405,11 @@ Vary: negotiate,accept-language,accept-charset
       faille de s&eacute;curit&eacute; dans un processus CGI, il est possible que le cache
       fasse l'objet d'une attaque. Il est relativement ais&eacute; d'ins&eacute;rer ou de
       modifier une entit&eacute; dans le cache en utilisant le module
-      <module>mod_disk_cache</module>.</p>
+      <module>mod_cache_disk</module>.</p>
 
       <p>Cela repr&eacute;sente un risque relativement &eacute;l&eacute;v&eacute; par rapport aux autres
       types d'attaques qu'il est possible de mener sous l'utilisateur apache.
-      Si vous utilisez <module>mod_disk_cache</module>, vous devez garder ceci
+      Si vous utilisez <module>mod_cache_disk</module>, vous devez garder ceci
       &agrave; l'esprit : effectuez toujours les mises &agrave; jour de
       httpdquand des
       correctifs de s&eacute;curit&eacute; sont annonc&eacute;s et ex&eacute;cutez les processus CGI sous
@@ -633,7 +633,7 @@ sys     0m0.000s</pre>
 
      <related>
       <modulelist>
-        <module>mod_disk_cache</module>
+        <module>mod_cache_disk</module>
       </modulelist>
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
@@ -641,7 +641,7 @@ sys     0m0.000s</pre>
       </directivelist>
     </related>
 
-    <p>Le module <module>mod_disk_cache</module> fournit un m&eacute;canisme de mise
+    <p>Le module <module>mod_cache_disk</module> fournit un m&eacute;canisme de mise
     en cache sur disque au module <module>mod_cache</module>. Cette mise en cache est
     intelligente et le contenu ne sera servi qu'&agrave; partir du cache tant qu'il
     sera consid&eacute;r&eacute; comme valide.</p>
@@ -667,7 +667,7 @@ CacheDirLength 1</pre>
       <title>Comprendre le stockage dans le cache</title>
 
       <p>Pour stocker des entit&eacute;s dans le cache,
-      le module <module>mod_disk_cache</module> cr&eacute;e une empreinte (hash) de 22
+      le module <module>mod_cache_disk</module> cr&eacute;e une empreinte (hash) de 22
       caract&egrave;res de l'URL qui a fait l'objet d'une requ&ecirc;te. Cette empreinte
       comprend le nom d'h&ocirc;te, le protocole, le port, le chemin et tout argument
       de type CGI associ&eacute; &agrave; l'URL, afin d'&ecirc;tre sur que plusieurs URLs
@@ -680,13 +680,13 @@ CacheDirLength 1</pre>
       utilis&eacute;e pour pr&eacute;fixer les noms de fichiers sp&eacute;cifiques &agrave; cette URL &agrave;
       l'int&eacute;rieur du cache; cependant, elle est tout d'abord plac&eacute;e dans les
       r&eacute;pertoires du cache selon les directives
-      <directive module="mod_disk_cache">CacheDirLevels</directive> et
-      <directive module="mod_disk_cache">CacheDirLength</directive>.</p>
+      <directive module="mod_cache_disk">CacheDirLevels</directive> et
+      <directive module="mod_cache_disk">CacheDirLength</directive>.</p>
 
       <p>La directive
-      <directive module="mod_disk_cache">CacheDirLevels</directive>
+      <directive module="mod_cache_disk">CacheDirLevels</directive>
       d&eacute;finit le nombre de niveaux de sous-r&eacute;pertoires, et
-      <directive module="mod_disk_cache">CacheDirLength</directive>
+      <directive module="mod_cache_disk">CacheDirLength</directive>
       le nombre de caract&egrave;res composant le nom des sous-r&eacute;pertoires. Dans
       l'exemple donn&eacute; plus haut, l'empreinte se trouvera &agrave; :
       <code>/var/cache/apache/x/y/TGxSMO2b68mBCykqkp1w</code>.</p>
@@ -695,16 +695,16 @@ CacheDirLength 1</pre>
       sous-r&eacute;pertoires ou de fichiers contenus dans un r&eacute;pertoire particulier,
       car le fonctionnement de la plupart des syst&egrave;mes de fichiers est ralenti
       quand ce nombre augmente. Avec la valeur "1" pour la directive
-      <directive module="mod_disk_cache">CacheDirLength</directive>,
+      <directive module="mod_cache_disk">CacheDirLength</directive>,
       il peut y avoir au plus 64 sous-r&eacute;pertoires &agrave; un niveau quelconque.
       Avec la valeur "2", il peut y en avoir 64 * 64, etc...
       A moins d'avoir une bonne raison pour ne pas le faire, l'utilisation de
       la valeur "1" pour la directive
-      <directive module="mod_disk_cache">CacheDirLength</directive>
+      <directive module="mod_cache_disk">CacheDirLength</directive>
       est recommand&eacute;e.</p>
 
       <p>Le param&eacute;trage de la directive
-      <directive module="mod_disk_cache">CacheDirLevels</directive>
+      <directive module="mod_cache_disk">CacheDirLevels</directive>
       d&eacute;pend du nombre de fichiers que vous pensez stocker dans le cache.
       Avec une valeur de "2" comme dans l'exemple donn&eacute; plus haut,
       4096 sous-r&eacute;pertoires peuvent &ecirc;tre cr&eacute;&eacute;s au total. Avec 1 million de
@@ -725,7 +725,7 @@ CacheDirLength 1</pre>
     <section>
       <title>Maintenance du cache sur disque</title>
 
-      <p>Bien que le module <module>mod_disk_cache</module> supprime un contenu
+      <p>Bien que le module <module>mod_cache_disk</module> supprime un contenu
       du cache lorsqu'il est arriv&eacute; &agrave; expiration, il ne maintient aucune
       information &agrave; propos de la taille totale du cache ou de l'espace restant
       disponible.</p>
@@ -755,7 +755,7 @@ CacheDirLength 1</pre>
       <a id="figure1" name="figure1"><dfn>Figure 1</dfn></a>: Croissance
       typique du cache / s&eacute;quence de nettoyage.</p>
 
-      <p>Comme <module>mod_disk_cache</module> ne tient pas compte de l'espace
+      <p>Comme <module>mod_cache_disk</module> ne tient pas compte de l'espace
       utilis&eacute; dans le cache, vous devez vous assurer que
       <a href="programs/htcacheclean.html">htcacheclean</a> est configur&eacute; de
       fa&ccedil;on &agrave; laisser suffisamment d'"espace de croissance"

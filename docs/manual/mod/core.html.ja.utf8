@@ -1435,7 +1435,7 @@
           &lt;/IfDefine&gt;<br />
           &lt;IfDefine !MemCache&gt;<br />
           <span class="indent">
-            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
           </span>
       &lt;/IfDefine&gt;
         </span>

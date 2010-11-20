@@ -27,7 +27,7 @@
 
 <summary>
     <p><code>htcacheclean</code> is used to keep the size of
-    <module>mod_disk_cache</module>'s storage within a given size limit, or
+    <module>mod_cache_disk</module>'s storage within a given size limit, or
     limit on inodes in use. This tool can run either manually or in daemon mode.
     When running in daemon mode, it sleeps in the background and checks the cache
     directory at regular intervals for cached content to be removed. You can stop
@@ -36,7 +36,7 @@
     removed. If one or more URLs are specified, each URL will be deleted from
     the cache, if present.</p>
 </summary>
-<seealso><module>mod_disk_cache</module></seealso>
+<seealso><module>mod_cache_disk</module></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
     <p><code><strong>htcacheclean</strong>
@@ -119,7 +119,7 @@
     <dt><code>-p<var>path</var></code></dt>
     <dd>Specify <var>path</var> as the root directory of the disk cache. This
     should be the same value as specified with the <directive
-    module="mod_disk_cache">CacheRoot</directive> directive.</dd>
+    module="mod_cache_disk">CacheRoot</directive> directive.</dd>
 
     <dt><code>-P<var>pidfile</var></code></dt>
     <dd>Specify <var>pidfile</var> as the name of the file to write the

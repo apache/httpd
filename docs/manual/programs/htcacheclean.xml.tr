@@ -31,14 +31,14 @@
 
 <summary>
     <p><code><strong>htcacheclean</strong></code>,
-    <module>mod_disk_cache</module> deposunun boyutlarını belli sınırlar
+    <module>mod_cache_disk</module> deposunun boyutlarını belli sınırlar
     içinde tutmak için kullanılır. Bu araç ya elle ya da bir artalan süreci
     olarak çalıştırılır. Artalan süreci olarak çalıştırıldığında, silinecek
     arabellek içeriğini tespit etmek için arabellek dizinlerine belli
     aralıklarla bakmak dışında uykuda olur. Artalan sürecini temiz olarak
     durdurmak için TERM veya INT sinyali göndermeniz yeterlidir.</p>
 </summary>
-<seealso><module>mod_disk_cache</module></seealso>
+<seealso><module>mod_cache_disk</module></seealso>
 
 <section id="synopsis"><title>Kullanım</title>
     <p><code><strong>htcacheclean</strong>
@@ -98,7 +98,7 @@
 
     <dt><code><strong>-p</strong><var> yol</var></code></dt>
     <dd><code><var>yol</var></code>, disk arabelleğinin kök dizini olarak
-    belirtilir. <directive module="mod_disk_cache">CacheRoot</directive>
+    belirtilir. <directive module="mod_cache_disk">CacheRoot</directive>
     yönergesinde belirtilen dizin olmalıdır.</dd>
 
     <dt><code><strong>-l</strong><var> sınır</var></code></dt>

@@ -149,8 +149,8 @@
 <li><a href="mod_buffer.html#buffersize">BufferSize</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
 <li><a href="mod_cache.html#cachedetailheader">CacheDetailHeader</a></li>
-<li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>
-<li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
+<li><a href="mod_cache_disk.html#cachedirlength">CacheDirLength</a></li>
+<li><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></li>
 <li><a href="mod_cache.html#cachedisable">CacheDisable</a></li>
 <li><a href="mod_cache.html#cacheenable">CacheEnable</a></li>
 <li><a href="mod_file_cache.html#cachefile">CacheFile</a></li>
@@ -166,14 +166,14 @@
 <li><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge</a></li>
 <li><a href="mod_cache.html#cachelockpath">CacheLockPath</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
-<li><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></li>
+<li><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></li>
 <li><a href="mod_cache.html#cacheminexpire">CacheMinExpire</a></li>
-<li><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></li>
+<li><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
 <li><a href="mod_cache.html#cachequickhandler">CacheQuickHandler</a></li>
-<li><a href="mod_disk_cache.html#cachereadsize">CacheReadSize</a></li>
-<li><a href="mod_disk_cache.html#cachereadtime">CacheReadTime</a></li>
-<li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
+<li><a href="mod_cache_disk.html#cachereadsize">CacheReadSize</a></li>
+<li><a href="mod_cache_disk.html#cachereadtime">CacheReadTime</a></li>
+<li><a href="mod_cache_disk.html#cacheroot">CacheRoot</a></li>
 <li><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError</a></li>
 <li><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired</a></li>
 <li><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore</a></li>

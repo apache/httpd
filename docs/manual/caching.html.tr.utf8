@@ -25,7 +25,7 @@
 <div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
-      <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>
+      <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>
       modülleri ve <a href="programs/htcacheclean.html">htcacheclean</a>
       için bir başvuru kılavuzu niteliğindedir. HTTP sunucusu ve vekil
       olarak çalışmada işlemleri hızlandırmak için bilinen sorunlar ve
@@ -52,7 +52,7 @@
       güç katarlar.</p>
 
     <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, ortam sağlayıcı modülü olan
-      <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> ile birlikte HTTP önbelleklemesini
+      <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> ile birlikte HTTP önbelleklemesini
       akıllıca yerine getirir. İçeriğin kendisi önbellekte saklanırken
       <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> içeriğin önbelleklenebilmesini denetim
       altında tutan HTTP başlıkları ve seçenekleri ile ilgilenir. Yerel ve
@@ -89,7 +89,7 @@
 
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
 
     <p>Bir istek sonuçlanıncaya kadar <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülünde iki
       aşamadan geçer. İlkinde <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir URL eşleme modülü
@@ -342,12 +342,12 @@
 
       <p>Eğer Apache kullanıcısı, örneğin bir CGI sürecindeki açık nedeniyle
         tehlikeye atılırsa, önbellek hedef alınabilir.
-        <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> kullanılırken önbellekteki bir öğeyi
+        <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> kullanılırken önbellekteki bir öğeyi
         değiştirmek veya önbelleğe yeni bir öğe eklemek görece daha
         kolaydır.</p>
 
       <p>Bu risk, Apache kullanıcısını kullanan diğer saldırı türleriyle
-        karşılaştırıldığında daha yüksektir. <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>
+        karşılaştırıldığında daha yüksektir. <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>
         kullanıyorsanız şunları aklınızdan çıkarmayın: (1) httpd güvenlik
         güncellemelerini takip edin ve sunucunuzu buna göre güncelleyin. (2)
         Mümkünse <a href="suexec.html">suEXEC</a> kullanarak CGI süreçlerini
@@ -521,9 +521,9 @@
 <h2><a name="disk" id="disk">Disk Üzerinde Önbellekleme</a></h2>
     
 
-     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
+     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
 
-    <p><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> modülü önbelleklemenin
+    <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> modülü önbelleklemenin
       <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> için disk üzerinde yapılmasını mümkün
       kılar. Bbu önbellekleme akıllıca yapılır ve önbellekteki içerik
       sadece geçerli kabul edildiği sürece sunulabilir.</p>
@@ -546,7 +546,7 @@
     <h3>Önbellekte Saklamanın Anlamı</h3>
       
 
-      <p><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> öğeleri önbellekte saklamak için
+      <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> öğeleri önbellekte saklamak için
         istek yapılan URL’nin 22 karakterlik özetini oluşturur. Bu özet, çok
         sayıda URL’nin aynı özeti oluşturmaması için konak ismi, protokol,
         port ve varsa CGI argümanlarından oluşur.</p>
@@ -556,10 +556,10 @@
         Örneğin, bir URL’nin <code>xyTGxSMO2b68mBCykqkp1w</code> gibi bir
         özeti olabilir. Bu özet, bu URL ile erişilen dosyalar önbellek içinde
         saklanırken dosya ismi öneki olarak kullanılır. Ancak bununla
-        yetinilmez ve içerik <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code> ve <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code> yönergelerinin
+        yetinilmez ve içerik <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code> ve <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code> yönergelerinin
         değerlerine göre önce dizinlere ayrılır.</p>
 
-      <p><code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code>
+      <p><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code>
         yönergesi kaç alt seviye dizin olacağını belirler. Örneğin, yukarıdaki
         özete sahip bir dosyanın isminin başına yukarıdaki yapılandırma
         örneğine uygun olarak
@@ -569,14 +569,14 @@
       <p>Bu tekniğin asıl amacı belli bir dizin içinde bulunabilecek
         dosyaların ve alt dizinlerin sayısını düşük tutmaktır. Bu sayının
         büyük olması çoğu işletim sisteminde başarımın düşmesine sebep olur.
-        <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code>
+        <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code>
         yönergesi "1" değeriyle kullanıldığında her dizin altında en fazla 64
         alt dizin veya dosya açılabilir. "2" değeriyle kullanıldığında ise bu
         sayı 64^2’ye yükselir ve böyle artarak gider. İyi bir sebebiniz
-        olmadıkça <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code> için değer olarak
+        olmadıkça <code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code> için değer olarak
         "1" belirtmenizi öneririz.</p>
 
-      <p><code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code>
+      <p><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code>
         yönergesine atanacak değer önbellekte saklamayı düşündüğünüz olası
         dosya sayısı ile ilgilidir. Yukarıdaki örnekte olduğu gibi "2"
         değerini belirtirseniz, toplamda en fazla 4096 dizin oluşturulabilir.
@@ -595,7 +595,7 @@
     <h3>Disk Önbelleğinin Bakımı</h3>
       
 
-      <p><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> zaman aşımına uğrayan önbellekli
+      <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> zaman aşımına uğrayan önbellekli
         içeriği silse de önbelleğin toplam boyu ve ne kadar boş bellek kaldığı
         hakkında bilgi vermez.</p>
 
@@ -620,7 +620,7 @@
       <a id="figure1" name="figure1"><dfn>Şekil 1</dfn></a>:
  Önbelleğin büyümesi ve düzenli aralıklarla temizlenmesi.</p>
 
-      <p><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> ne kadar önbellek alanı kullandığı
+      <p><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> ne kadar önbellek alanı kullandığı
         ile ilgili bir bilgi vermediğinden <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code>’in
         bir temizlik sonrası yeterince büyük bir genişleme alanı kalacak
         şekilde yapılandırılması önemlidir.</p>

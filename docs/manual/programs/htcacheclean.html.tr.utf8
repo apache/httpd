@@ -25,7 +25,7 @@
 <div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>htcacheclean</strong></code>,
-    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> deposunun boyutlarını belli sınırlar
+    <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> deposunun boyutlarını belli sınırlar
     içinde tutmak için kullanılır. Bu araç ya elle ya da bir artalan süreci
     olarak çalıştırılır. Artalan süreci olarak çalıştırıldığında, silinecek
     arabellek içeriğini tespit etmek için arabellek dizinlerine belli
@@ -35,7 +35,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#exit">Çıkış Durumu</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></div>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
@@ -96,7 +96,7 @@
 
     <dt><code><strong>-p</strong><var> yol</var></code></dt>
     <dd><code><var>yol</var></code>, disk arabelleğinin kök dizini olarak
-    belirtilir. <code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code>
+    belirtilir. <code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code>
     yönergesinde belirtilen dizin olmalıdır.</dd>
 
     <dt><code><strong>-l</strong><var> sınır</var></code></dt>

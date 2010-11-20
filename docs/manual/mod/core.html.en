@@ -933,7 +933,7 @@ version 2.3.9.</td></tr>
     </code></p></div>
     <p>Please note that the per-directory and .htaccess configuration
        of <code class="directive">EnableSendfile</code> is not supported by
-       <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.
+       <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>.
        Only global definition of <code class="directive">EnableSendfile</code>
        is taken into account by the module.
     </p>
@@ -1683,7 +1683,7 @@ if a test is true at startup</td></tr>
           &lt;/IfDefine&gt;<br />
           &lt;IfDefine !MemCache&gt;<br />
           <span class="indent">
-            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
           </span>
           &lt;/IfDefine&gt;
         </span>

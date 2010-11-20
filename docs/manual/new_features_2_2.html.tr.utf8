@@ -50,11 +50,11 @@
         <a href="#module">modül değişikliklerine</a> ve <a href="#developer">geliştirici değişikliklerine</a> bakabilirsiniz.</dd>
 
       <dt>Önbellekleme</dt>
-      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> ve
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> ve
         <code>mod_mem_cache</code> (2.3/2.4 sürümlerinde kaldırılmıştır)
         modüllerinde büyük oranda değişikliğe gidilerek bunlar deneysel
         olmaktan çıkarılıp üretim amaçlı modüller haline getirildiler.
-        <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> tarafından kullanılan disk
+        <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> tarafından kullanılan disk
         alanının  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> tarafından
         düzenli aralıklarla temizlenebilmesi sağlandı.</dd>
 
