@@ -79,10 +79,6 @@ RELEASE SHOWSTOPPERS:
       jim sez: Then we just ship with those... mark any others as
                 experimental
 
-  * The grammar and interface of ap_expr should be something that we are
-    comfortable with keeping for the next few years.
-    sf is working on this
-
   FOR NEXT ALPHA:
 
   * The mod_session* modules need to be checked that their hooks respect
@@ -120,8 +116,8 @@ CURRENT VOTES:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-  * Add mod_allow_method or some other (usable) functionality to replace
-    Limit/LimitExcept.
+  * Maybe remove Limit/LimitExcept or at least make it log warnings when
+    mis-used.
 
   * Sort out modules selections for most/all/reallyall. Maybe rename
     all -> most, reallyall -> all, and remove the old 'most'.
