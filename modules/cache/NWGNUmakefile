@@ -153,7 +153,7 @@ XDCDATA		=
 #
 TARGET_nlm = \
 	$(OBJDIR)/mod_cach.nlm \
-	$(OBJDIR)/dsk_cach.nlm \
+	$(OBJDIR)/cach_dsk.nlm \
 	$(OBJDIR)/socachdbm.nlm \
 	$(OBJDIR)/socachshmcb.nlm \
 	$(EOLIST)
