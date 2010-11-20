@@ -22,7 +22,7 @@
 
 <manualpage metafile="expr.xml.meta">
 
-  <title>Expressions in Apache</title>
+  <title>Expressions in Apache HTTP Server</title>
 
   <summary>
     <p>Historically, there are several syntax variants for expressions used to express
@@ -299,7 +299,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>note</code></td>
         <td>Lookup request environment variable</td></tr>
     <tr><td><code>env</code></td>
-        <td>Reqturn first match of <code>note</code>, <code>reqenv</code>,
+        <td>Return first match of <code>note</code>, <code>reqenv</code>,
             <code>osenv</code></td></tr>
     <tr><td><code>tolower</code></td>
         <td>Convert string to lower case</td></tr>

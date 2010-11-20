@@ -359,10 +359,13 @@
     <code>ap_register_output_filter</code>.
     </p>
 
-    <p><var>expression</var> is described in the
+    <p><var>expression</var> is an
     <a href="../expr.html">ap_expr documentation</a>.</p>
 
 </usage>
+<seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and examples.</seealso>
+<seealso><module>mod_include</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
