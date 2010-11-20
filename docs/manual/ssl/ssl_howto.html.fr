@@ -42,6 +42,9 @@ interagit avec les autres systèmes.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Exemple de configuration basique</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites de chiffrement et mise en application de la sécurité
 de haut niveau</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#strongurl">Comment créer un serveur qui accepte tous les types de
+chiffrement en général, mais exige un chiffrement fort pour pouvoir
+accéder à une URL particulière ?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accesscontrol">Authentification du client et contrôle d'accès</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation</a></li>
 </ul></div>
@@ -69,8 +72,6 @@ suivantes :</p>
 de haut niveau</a></h2>
 
 <ul>
-<li><a href="#realssl">Comment créer un véritable serveur
-SSLv2 seulement ?</a></li>
 <li><a href="#onlystrong">Comment créer un serveur SSL
 qui n'accepte que le chiffrement fort ?</a></li>
 <li><a href="#upgradeenc">Comment créer un serveur SSL qui n'accepte que le
@@ -81,16 +82,6 @@ chiffrement en général, mais exige un chiffrement fort pour pouvoir
 accéder à une URL particulière ?</a></li>
 </ul>
 
-<h3><a name="realssl" id="realssl">Comment créer un véritable serveur SSLv2 seulement ?</a></h3>
-
-    <p>Les directives suivantes créent un serveur SSL qui ne communique que
-    selon le protocole SSLv2 et ses modes de chiffrement.</p>
-
-    <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLProtocol -all +SSLv2<br />
-      SSLCipherSuite SSLv2:+HIGH:+MEDIUM:+LOW:+EXP<br />
-    </code></p></div>
-
 
 <h3><a name="onlystrong" id="onlystrong">Comment créer un serveur SSL qui n'accepte
 que le chiffrement fort ?</a></h3>
@@ -98,51 +89,27 @@ que le chiffrement fort ?</a></h3>
     <p>Les directives suivantes ne permettent que les
     chiffrements de plus haut niveau :</p>
     <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLProtocol all<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLProtocol all -SSLv3<br />
+      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
     </code></p></div>
 
 
-<h3><a name="upgradeenc" id="upgradeenc">Comment créer un serveur SSL qui n'accepte que le
-chiffrement fort, mais permet aux navigateurs importés des USA
-d'évoluer vers un chiffrement plus fort ?</a></h3>
 
-    <p>Cette fonctionnalité se nomme Cryptographie Transférée par Serveur
-    (Server Gated Cryptography - SGC) et nécessite un certificat de serveur
-    à identifiant global, signé par un certificat de CA spécial de chez
-    Verisign. Ceci permet d'activer le chiffrement fort dans les versions des
-    navigateurs importés des US, qui n'en avaient habituellement pas la
-    possibilité (à cause des restrictions à l'exportation imposées par les
-    US).</p>
-    <p>Quand un navigateur se connecte avec un mode de chiffrement importé
-    des US, le serveur présente son certificat à identifiant global. le
-    navigateur le vérifie, et peut ensuite faire évoluer sa suite de
-    chiffrement avant que la communication HTTP ne se mette en place. Le
-    problème consiste à permettre au navigateur de se mettre à jour de cette
-    façon, mais de nécessiter encore un chiffrement fort. En d'autres termes,
-    nous voulons que les navigateurs démarrent une connexion soit avec
-    chiffrement fort, soit avec une version export du chiffrement mais que
-    dans ce dernier cas, le navigateur fasse évoluer sa suite de chiffrement
-    vers un chiffrement fort avant de démarrer la communication HTTP.</p>
-    <p>Il est possible de parvenir à ceci de cette façon:</p>
+ <p>Avec la configuration qui suit, vous pouvez activer deux mÃ©thodes de chiffrement relativement sÃ©curisÃ©es, et rapides :</p>
+
     <div class="example"><h3>httpd.conf</h3><p><code>
-      # autorise tout mode de chiffrement pour l'échange de données
-      initial,<br />
-      # les navigateurs non US peuvent ainsi se mettre à jour
-      via la fonctionnalité SGC<br />
-      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLProtocol all -SSLv3<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLHonorCipherOrder on
       <br />
-      &lt;Directory /usr/local/apache2/htdocs&gt;<br />
-      # et enfin interdit l'accès à tous les navigateurs qui n'ont pas fait
-      évoluer leur suite de chiffrement<br />
-      SSLRequire %{SSL_CIPHER_USEKEYSIZE} &gt;= 128<br />
-      &lt;/Directory&gt;
     </code></p></div>
-
-
-<h3><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte tous les types de
+    <p>Ceci correspond largement Ã&nbsp; la valeur par dÃ©faut de la directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>,
+    et reprÃ©sente la pratique Ã&nbsp; conseiller.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte tous les types de
 chiffrement en général, mais exige un chiffrement fort pour pouvoir
-accéder à une URL particulière ?</a></h3>
+accéder à une URL particulière ?</a></h2>
 
     <p>Dans ce cas bien évidemment, une directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> au niveau du serveur principal
     qui restreint le choix des suites de chiffrement aux versions les plus
@@ -159,10 +126,9 @@ accéder à une URL particulière ?</a></h3>
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-répertoires<br />
       # qui exigent des chiffrements forts<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
       &lt;/Location&gt;
     </code></p></div>
-
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="accesscontrol" id="accesscontrol">Authentification du client et contrôle d'accès</a></h2>
