@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1031028 -->
+<!-- English revision : 1037224 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -68,8 +68,6 @@ suivantes :</p>
 <title>Suites de chiffrement et mise en application de la s&eacute;curit&eacute;
 de haut niveau</title>
 <ul>
-<li><a href="#realssl">Comment cr&eacute;er un v&eacute;ritable serveur
-SSLv2 seulement ?</a></li>
 <li><a href="#onlystrong">Comment cr&eacute;er un serveur SSL
 qui n'accepte que le chiffrement fort ?</a></li>
 <li><a href="#upgradeenc">Comment cr&eacute;er un serveur SSL qui n'accepte que le
@@ -80,16 +78,6 @@ chiffrement en g&eacute;n&eacute;ral, mais exige un chiffrement fort pour pouvoi
 acc&eacute;der &agrave; une URL particuli&egrave;re ?</a></li>
 </ul>
 
-<section id="realssl">
-<title>Comment cr&eacute;er un v&eacute;ritable serveur SSLv2 seulement ?</title>
-    <p>Les directives suivantes cr&eacute;ent un serveur SSL qui ne communique que
-    selon le protocole SSLv2 et ses modes de chiffrement.</p>
-
-    <example><title>httpd.conf</title>
-      SSLProtocol -all +SSLv2<br />
-      SSLCipherSuite SSLv2:+HIGH:+MEDIUM:+LOW:+EXP<br />
-    </example>
-</section>
 
 <section id="onlystrong">
 <title>Comment cr&eacute;er un serveur SSL qui n'accepte
@@ -97,46 +85,22 @@ que le chiffrement fort ?</title>
     <p>Les directives suivantes ne permettent que les
     chiffrements de plus haut niveau :</p>
     <example><title>httpd.conf</title>
-      SSLProtocol all<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLProtocol all -SSLv3<br />
+      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
     </example>
 </section>
 
-<section id="upgradeenc">
-<title>Comment cr&eacute;er un serveur SSL qui n'accepte que le
-chiffrement fort, mais permet aux navigateurs import&eacute;s des USA
-d'&eacute;voluer vers un chiffrement plus fort ?</title>
-    <p>Cette fonctionnalit&eacute; se nomme Cryptographie Transf&eacute;r&eacute;e par Serveur
-    (Server Gated Cryptography - SGC) et n&eacute;cessite un certificat de serveur
-    &agrave; identifiant global, sign&eacute; par un certificat de CA sp&eacute;cial de chez
-    Verisign. Ceci permet d'activer le chiffrement fort dans les versions des
-    navigateurs import&eacute;s des US, qui n'en avaient habituellement pas la
-    possibilit&eacute; (&agrave; cause des restrictions &agrave; l'exportation impos&eacute;es par les
-    US).</p>
-    <p>Quand un navigateur se connecte avec un mode de chiffrement import&eacute;
-    des US, le serveur pr&eacute;sente son certificat &agrave; identifiant global. le
-    navigateur le v&eacute;rifie, et peut ensuite faire &eacute;voluer sa suite de
-    chiffrement avant que la communication HTTP ne se mette en place. Le
-    probl&egrave;me consiste &agrave; permettre au navigateur de se mettre &agrave; jour de cette
-    fa&ccedil;on, mais de n&eacute;cessiter encore un chiffrement fort. En d'autres termes,
-    nous voulons que les navigateurs d&eacute;marrent une connexion soit avec
-    chiffrement fort, soit avec une version export du chiffrement mais que
-    dans ce dernier cas, le navigateur fasse &eacute;voluer sa suite de chiffrement
-    vers un chiffrement fort avant de d&eacute;marrer la communication HTTP.</p>
-    <p>Il est possible de parvenir &agrave; ceci de cette fa&ccedil;on:</p>
+
+ <p>Avec la configuration qui suit, vous pouvez activer deux méthodes de chiffrement relativement sécurisées, et rapides :</p>
+
     <example><title>httpd.conf</title>
-      # autorise tout mode de chiffrement pour l'&eacute;change de donn&eacute;es
-      initial,<br />
-      # les navigateurs non US peuvent ainsi se mettre &agrave; jour
-      via la fonctionnalit&eacute; SGC<br />
-      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLProtocol all -SSLv3<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLHonorCipherOrder on
       <br />
-      &lt;Directory /usr/local/apache2/htdocs&gt;<br />
-      # et enfin interdit l'acc&egrave;s &agrave; tous les navigateurs qui n'ont pas fait
-      &eacute;voluer leur suite de chiffrement<br />
-      SSLRequire %{SSL_CIPHER_USEKEYSIZE} &gt;= 128<br />
-      &lt;/Directory&gt;
     </example>
+    <p>Ceci correspond largement à la valeur par défaut de la directive <directive module="mod_ssl">SSLCipherSuite</directive>,
+    et représente la pratique à conseiller.</p>
 </section>
 
 <section id="strongurl">
@@ -159,7 +123,7 @@ acc&eacute;der &agrave; une URL particuli&egrave;re ?</title>
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-r&eacute;pertoires<br />
       # qui exigent des chiffrements forts<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
       &lt;/Location&gt;
     </example>
 </section>
