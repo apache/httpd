@@ -41,7 +41,12 @@ static const char *ap_expr_eval_string_func(ap_expr_eval_ctx *ctx, const ap_expr
 static const char *ap_expr_eval_var(ap_expr_eval_ctx *ctx,
                                     const ap_expr_var_func_t *func,
                                     const void *data);
+
+/* define AP_EXPR_DEBUG to log the parse tree when parsing an expression */
+/*#define AP_EXPR_DEBUG */ 
+#ifdef AP_EXPR_DEBUG
 static void expr_dump_tree(const ap_expr *e, const server_rec *s, int loglevel, int indent);
+#endif
 
 static const char *ap_expr_eval_word(ap_expr_eval_ctx *ctx, const ap_expr *node)
 {
@@ -332,13 +337,10 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
     if (rc) /* XXX can this happen? */
         return "syntax error";
 
-    /* XXX Make this properly depend on the loglevel, which requires
-     * XXX having a server_rec
-     */
-    /*
+#ifdef AP_EXPR_DEBUG
     if (ctx.expr)
         expr_dump_tree(ctx.expr, NULL, APLOG_NOTICE, 2);
-    */
+#endif
 
     info->root_node = ctx.expr;
 
@@ -446,6 +448,7 @@ ap_expr *ap_expr_var_make(const char *name, ap_expr_parse_ctx *ctx)
     return node;
 }
 
+#ifdef AP_EXPR_DEBUG
 
 #define MARK                        APLOG_MARK,loglevel,0,s
 #define DUMP_E_E(op, e1, e2)                                                \
@@ -606,6 +609,8 @@ static void expr_dump_tree(const ap_expr *e, const server_rec *s, int loglevel, 
         break;
     }
 }
+#endif /* AP_EXPR_DEBUG */
+
 static int ap_expr_eval_unary_op(ap_expr_eval_ctx *ctx, const ap_expr *info,
                                  const ap_expr *arg)
 {
