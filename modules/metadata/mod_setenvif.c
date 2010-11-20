@@ -112,6 +112,7 @@ typedef struct {
     char *regex;                /* regex to match against */
     ap_regex_t *preg;           /* compiled regex */
     const apr_strmatch_pattern *pattern; /* non-regex pattern to match */
+    ap_expr_info_t *expr;       /* parsed expression */
     apr_table_t *features;      /* env vars to set (or unset) */
     enum special special_type;  /* is it a "special" header ? */
     int icase;                  /* ignoring case? */
@@ -252,18 +253,48 @@ static const char *non_regex_pattern(apr_pool_t *p, const char *s)
     }
 }
 
+static const char *add_envvars(cmd_parms *cmd, const char *args, sei_entry *new)
+{
+    const char *feature;
+    int beenhere = 0;
+    char *var;
+
+    for ( ; ; ) {
+        feature = ap_getword_conf(cmd->pool, &args);
+        if (!*feature) {
+            break;
+        }
+        beenhere++;
+
+        var = ap_getword(cmd->pool, &feature, '=');
+        if (*feature) {
+            apr_table_setn(new->features, var, feature);
+        }
+        else if (*var == '!') {
+            apr_table_setn(new->features, var + 1, "!");
+        }
+        else {
+            apr_table_setn(new->features, var, "1");
+        }
+    }
+
+    if (!beenhere) {
+        return apr_pstrcat(cmd->pool, "Missing envariable expression for ",
+                           cmd->cmd->name, NULL);
+    }
+
+    return NULL;
+}
+
 static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
                                      char *fname, const char *args)
 {
     char *regex;
     const char *simple_pattern;
-    const char *feature;
     sei_cfg_rec *sconf;
     sei_entry *new;
     sei_entry *entries;
-    char *var;
     int i;
-    int beenhere = 0;
     int icase;
 
     /*
@@ -399,31 +430,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
         new = &entries[i];
     }
 
-    for ( ; ; ) {
-        feature = ap_getword_conf(cmd->pool, &args);
-        if (!*feature) {
-            break;
-        }
-        beenhere++;
-
-        var = ap_getword(cmd->pool, &feature, '=');
-        if (*feature) {
-            apr_table_setn(new->features, var, feature);
-        }
-        else if (*var == '!') {
-            apr_table_setn(new->features, var + 1, "!");
-        }
-        else {
-            apr_table_setn(new->features, var, "1");
-        }
-    }
-
-    if (!beenhere) {
-        return apr_pstrcat(cmd->pool, "Missing envariable expression for ",
-                           cmd->cmd->name, NULL);
-    }
-
-    return NULL;
+    return add_envvars(cmd, args, new);
 }
 
 static const char *add_setenvif(cmd_parms *cmd, void *mconfig,
@@ -438,6 +445,47 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig,
                            cmd->cmd->name, NULL);
     }
     return add_setenvif_core(cmd, mconfig, fname, args);
+}
+
+static const char *add_setenvifexpr(cmd_parms *cmd, void *mconfig,
+                                    const char *args)
+{
+    char *expr;
+    sei_cfg_rec *sconf;
+    sei_entry *new;
+    sei_entry *entries;
+    const char *err;
+
+    /*
+     * Determine from our context into which record to put the entry.
+     * cmd->path == NULL means we're in server-wide context; otherwise,
+     * we're dealing with a per-directory setting.
+     */
+    sconf = (cmd->path != NULL)
+      ? (sei_cfg_rec *) mconfig
+      : (sei_cfg_rec *) ap_get_module_config(cmd->server->module_config,
+                                               &setenvif_module);
+    entries = (sei_entry *) sconf->conditionals->elts;
+    /* get expr */
+    expr = ap_getword_conf(cmd->pool, &args);
+    if (!*expr) {
+        return apr_pstrcat(cmd->pool, "Missing expression for ",
+                           cmd->cmd->name, NULL);
+    }
+
+    new = apr_array_push(sconf->conditionals);
+    new->features = apr_table_make(cmd->pool, 2);
+    new->name = NULL;
+    new->regex = NULL;
+    new->pattern = NULL;
+    new->preg = NULL;
+    new->expr = ap_expr_parse_cmd(cmd, expr, &err, NULL);
+    new->expr->module_index = setenvif_module.module_index;
+    if (err)
+        return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
+                            expr, err);
+
+    return add_envvars(cmd, args, new);
 }
 
 /*
@@ -456,6 +504,8 @@ static const command_rec setenvif_module_cmds[] =
                      "A header-name, regex and a list of variables."),
     AP_INIT_RAW_ARGS("SetEnvIfNoCase", add_setenvif, ICASE_MAGIC, OR_FILEINFO,
                      "a header-name, regex and a list of variables."),
+    AP_INIT_RAW_ARGS("SetEnvIfExpr", add_setenvifexpr, NULL, OR_FILEINFO,
+                     "an expression and a list of variables."),
     AP_INIT_RAW_ARGS("BrowserMatch", add_browser, NULL, OR_FILEINFO,
                      "A browser regex and a list of variables."),
     AP_INIT_RAW_ARGS("BrowserMatchNoCase", add_browser, ICASE_MAGIC,
@@ -478,7 +528,7 @@ static int match_headers(request_rec *r)
     sei_cfg_rec *sconf;
     sei_entry *entries;
     const apr_table_entry_t *elts;
-    const char *val;
+    const char *val, *err;
     apr_size_t val_len = 0;
     int i, j;
     char *last_name;
@@ -500,106 +550,108 @@ static int match_headers(request_rec *r)
     for (i = 0; i < sconf->conditionals->nelts; ++i) {
         sei_entry *b = &entries[i];
 
-        /* Optimize the case where a bunch of directives in a row use the
-         * same header.  Remember we don't need to strcmp the two header
-         * names because we made sure the pointers were equal during
-         * configuration.
-         * In the case of SPECIAL_OID_VALUE values, each oid string is
-         * dynamically allocated, thus there are no duplicates.
-         */
-        if (b->name != last_name) {
-            last_name = b->name;
-            switch (b->special_type) {
-            case SPECIAL_REMOTE_ADDR:
-                val = r->connection->remote_ip;
-                break;
-            case SPECIAL_SERVER_ADDR:
-                val = r->connection->local_ip;
-                break;
-            case SPECIAL_REMOTE_HOST:
-                val =  ap_get_remote_host(r->connection, r->per_dir_config,
-                                          REMOTE_NAME, NULL);
-                break;
-            case SPECIAL_REQUEST_URI:
-                val = r->uri;
-                break;
-            case SPECIAL_REQUEST_METHOD:
-                val = r->method;
-                break;
-            case SPECIAL_REQUEST_PROTOCOL:
-                val = r->protocol;
-                break;
-            case SPECIAL_OID_VALUE:
-                /* If mod_ssl is not loaded, the accessor function is NULL */
-                if (ssl_ext_list_func != NULL)
-                {
-                    apr_array_header_t *oid_array;
-                    char **oid_value;
-                    int j, len = 0;
-                    char *retval = NULL;
+        if (!b->expr) {
+            /* Optimize the case where a bunch of directives in a row use the
+             * same header.  Remember we don't need to strcmp the two header
+             * names because we made sure the pointers were equal during
+             * configuration.
+             * In the case of SPECIAL_OID_VALUE values, each oid string is
+             * dynamically allocated, thus there are no duplicates.
+             */
+            if (b->name != last_name) {
+                last_name = b->name;
+                switch (b->special_type) {
+                case SPECIAL_REMOTE_ADDR:
+                    val = r->connection->remote_ip;
+                    break;
+                case SPECIAL_SERVER_ADDR:
+                    val = r->connection->local_ip;
+                    break;
+                case SPECIAL_REMOTE_HOST:
+                    val =  ap_get_remote_host(r->connection, r->per_dir_config,
+                                              REMOTE_NAME, NULL);
+                    break;
+                case SPECIAL_REQUEST_URI:
+                    val = r->uri;
+                    break;
+                case SPECIAL_REQUEST_METHOD:
+                    val = r->method;
+                    break;
+                case SPECIAL_REQUEST_PROTOCOL:
+                    val = r->protocol;
+                    break;
+                case SPECIAL_OID_VALUE:
+                    /* If mod_ssl is not loaded, the accessor function is NULL */
+                    if (ssl_ext_list_func != NULL)
+                    {
+                        apr_array_header_t *oid_array;
+                        char **oid_value;
+                        int j, len = 0;
+                        char *retval = NULL;
 
-                    /* The given oid can occur multiple times. Concatenate the values */
-                    if ((oid_array = ssl_ext_list_func(r->pool, r->connection, 1,
-                                                       b->name)) != NULL) {
-                        oid_value = (char **) oid_array->elts;
-                        /* pass 1: determine the size of the string */
-                        for (len=j=0; j < oid_array->nelts; j++) {
-                          len += strlen(oid_value[j]) + 1; /* +1 for ',' or terminating NIL */
+                        /* The given oid can occur multiple times. Concatenate the values */
+                        if ((oid_array = ssl_ext_list_func(r->pool, r->connection, 1,
+                                                           b->name)) != NULL) {
+                            oid_value = (char **) oid_array->elts;
+                            /* pass 1: determine the size of the string */
+                            for (len=j=0; j < oid_array->nelts; j++) {
+                              len += strlen(oid_value[j]) + 1; /* +1 for ',' or terminating NIL */
+                            }
+                            retval = apr_palloc(r->pool, len);
+                            /* pass 2: fill the string */
+                            for (j=0; j < oid_array->nelts; j++) {
+                              if (j > 0) {
+                                  strcat(retval, ",");
+                              }
+                              strcat(retval, oid_value[j]);
+                            }
                         }
-                        retval = apr_palloc(r->pool, len);
-                        /* pass 2: fill the string */
-                        for (j=0; j < oid_array->nelts; j++) {
-                          if (j > 0) {
-                              strcat(retval, ",");
-                          }
-                          strcat(retval, oid_value[j]);
-                        }
+                        val = retval;
                     }
-                    val = retval;
-                }
-                break;
-            case SPECIAL_NOT:
-                if (b->pnamereg) {
-                    /* Matching headers_in against a regex. Iterate through
-                     * the headers_in until we find a match or run out of
-                     * headers.
-                     */
-                    const apr_array_header_t
-                        *arr = apr_table_elts(r->headers_in);
+                    break;
+                case SPECIAL_NOT:
+                    if (b->pnamereg) {
+                        /* Matching headers_in against a regex. Iterate through
+                         * the headers_in until we find a match or run out of
+                         * headers.
+                         */
+                        const apr_array_header_t
+                            *arr = apr_table_elts(r->headers_in);
 
-                    elts = (const apr_table_entry_t *) arr->elts;
-                    val = NULL;
-                    for (j = 0; j < arr->nelts; ++j) {
-                        if (!ap_regexec(b->pnamereg, elts[j].key, 0, NULL, 0)) {
-                            val = elts[j].val;
+                        elts = (const apr_table_entry_t *) arr->elts;
+                        val = NULL;
+                        for (j = 0; j < arr->nelts; ++j) {
+                            if (!ap_regexec(b->pnamereg, elts[j].key, 0, NULL, 0)) {
+                                val = elts[j].val;
+                            }
+                        }
+                    }
+                    else {
+                        /* Not matching against a regex */
+                        val = apr_table_get(r->headers_in, b->name);
+                        if (val == NULL) {
+                            val = apr_table_get(r->subprocess_env, b->name);
                         }
                     }
                 }
-                else {
-                    /* Not matching against a regex */
-                    val = apr_table_get(r->headers_in, b->name);
-                    if (val == NULL) {
-                        val = apr_table_get(r->subprocess_env, b->name);
-                    }
-                }
+                val_len = val ? strlen(val) : 0;
             }
-            val_len = val ? strlen(val) : 0;
-        }
 
-        /*
-         * A NULL value indicates that the header field or special entity
-         * wasn't present or is undefined.  Represent that as an empty string
-         * so that REs like "^$" will work and allow envariable setting
-         * based on missing or empty field.
-         */
-        if (val == NULL) {
-            val = "";
-            val_len = 0;
+            /*
+             * A NULL value indicates that the header field or special entity
+             * wasn't present or is undefined.  Represent that as an empty string
+             * so that REs like "^$" will work and allow envariable setting
+             * based on missing or empty field.
+             */
+            if (val == NULL) {
+                val = "";
+                val_len = 0;
+            }
         }
 
         if ((b->pattern && apr_strmatch(b->pattern, val, val_len)) ||
-            (!b->pattern && !ap_regexec(b->preg, val, AP_MAX_REG_MATCH, regm,
-                                        0))) {
+            (b->preg && !ap_regexec(b->preg, val, AP_MAX_REG_MATCH, regm, 0)) ||
+            (b->expr && (ap_expr_exec(r, b->expr, &err) > 0))) {
             const apr_array_header_t *arr = apr_table_elts(b->features);
             elts = (const apr_table_entry_t *) arr->elts;
 
@@ -608,7 +660,7 @@ static int match_headers(request_rec *r)
                     apr_table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
-                    if (!b->pattern) {
+                    if (b->preg) {
                         char *replaced = ap_pregsub(r->pool, elts[j].val, val,
                                                     AP_MAX_REG_MATCH, regm);
                         if (replaced) {

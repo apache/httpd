@@ -6,6 +6,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_setenvif: Add SetEnvIfExpr directive to set env var depending on
+     expression. [Stefan Fritsch]
+
   *) mod_proxy: Fix ProxyPassInterpolateEnv directive. PR 50292.
      [Stefan Fritsch]
 
