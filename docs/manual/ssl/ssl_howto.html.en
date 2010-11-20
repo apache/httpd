@@ -75,53 +75,25 @@ export browsers to upgrade to stronger encryption?</a></li>
 requires a strong cipher for access to a particular URL?</a></li>
 </ul>
 
-<h3><a name="realssl" id="realssl">How can I create a real SSLv2-only server?</a></h3>
-
-    <p>The following creates an SSL server which speaks only the SSLv2 protocol and
-    its ciphers.</p>
-
-    <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLProtocol -all +SSLv2<br />
-      SSLCipherSuite SSLv2:+HIGH:+MEDIUM:+LOW:+EXP<br />
-    </code></p></div>
-
-
 <h3><a name="onlystrong" id="onlystrong">How can I create an SSL server which accepts strong encryption
 only?</a></h3>
 
-    <p>The following enables only the seven strongest ciphers:</p>
+    <p>The following enables only the strongest ciphers:</p>
     <div class="example"><h3>httpd.conf</h3><p><code>
-      SSLProtocol all<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLProtocol all -SSLv3<br />
+      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
     </code></p></div>
 
+    <p>While with the following configuration you enable two ciphers
+    which are resonably secure, and fast:</p>
 
-<h3><a name="upgradeenc" id="upgradeenc">How can I create an SSL server which accepts strong encryption
-only, but allows export browsers to upgrade to stronger encryption?</a></h3>
-
-    <p>This facility is called Server Gated Cryptography (SGC) and requires 
-    a Global ID server certificate, signed by a special CA certificate 
-    from Verisign. This enables strong encryption in 'export' versions of 
-    browsers, which traditionally could not support it (because of US export 
-    restrictions).</p>
-    <p>When a browser connects with an export cipher, the server sends its Global
-    ID certificate. The browser verifies this, and can then upgrade its
-    cipher suite before any HTTP communication takes place. The problem 
-    lies in allowing browsers to upgrade in this fashion, but still requiring
-    strong encryption. In other words, we want browsers to either start a 
-    connection with strong encryption, or to start with export ciphers but 
-    upgrade to strong encryption before beginning HTTP communication.</p>
-    <p>This can be done as follows:</p>
     <div class="example"><h3>httpd.conf</h3><p><code>
-      # allow all ciphers for the initial handshake,<br />
-      # so export browsers can upgrade via SGC facility<br />
-      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
-      <br />
-      &lt;Directory /usr/local/apache2/htdocs&gt;<br />
-      # but finally deny all browsers which haven't upgraded<br />
-      SSLRequire %{SSL_CIPHER_USEKEYSIZE} &gt;= 128<br />
-      &lt;/Directory&gt;
+      SSLProtocol all -SSLv3<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLHonorCipherOrder on
     </code></p></div>
+
+    <p>This strongly reflects the default value of <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> and is the recommanded way to configure it.</p>
 
 
 <h3><a name="strongurl" id="strongurl">How can I create an SSL server which accepts all types of ciphers
@@ -141,7 +113,7 @@ URL?</a></h3>
       &lt;Location /strong/area&gt;<br />
       # but https://hostname/strong/area/ and below<br />
       # requires strong ciphers<br />
-      SSLCipherSuite HIGH:MEDIUM<br />
+      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
       &lt;/Location&gt;
     </code></p></div>
 
