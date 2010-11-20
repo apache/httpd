@@ -15,7 +15,7 @@
  */
 
 /**
- * @file disk_cache_common.h
+ * @file cache_disk_common.h
  * @brief Common Disk Cache vars/structs
  *
  * @defgroup Cache_cache  Cache Functions
@@ -23,8 +23,8 @@
  * @{
  */
 
-#ifndef DISK_CACHE_COMMON_H
-#define DISK_CACHE_COMMON_H
+#ifndef CACHE_DIST_COMMON_H
+#define CACHE_DIST_COMMON_H
 
 #define VARY_FORMAT_VERSION 5
 #define DISK_FORMAT_VERSION 6
@@ -64,4 +64,5 @@ typedef struct {
     cache_control_t control;
 } disk_cache_info_t;
 
-#endif /* DISK_CACHE_COMMON_H */
+#endif /* CACHE_DIST_COMMON_H */
+

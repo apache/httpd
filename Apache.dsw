@@ -186,7 +186,7 @@ Package=<4>
     Project_Dep_Name mod_dir
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_disk_cache
+    Project_Dep_Name mod_cache_disk
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_dumpio
@@ -1687,7 +1687,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_disk_cache"=.\modules\cache\mod_disk_cache.dsp - Package Owner=<4>
+Project: "mod_cache_disk"=.\modules\cache\mod_cache_disk.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
