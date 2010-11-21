@@ -33,6 +33,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#binop">Binary operators</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#unnop">Unary operators</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#functions">Functions</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#other">Other</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -57,12 +58,12 @@ comp        ::= stringcomp
               | word "<strong>!~</strong>" regex
 
 
-stringcomp  ::= word "<strong>==</strong>" word | word "<strong>eq</strong>" word
-              | word "<strong>!=</strong>" word | word "<strong>ne</strong>" word
-              | word "<strong>&lt;</strong>"  word | word "<strong>lt</strong>" word
-              | word "<strong>&lt;=</strong>" word | word "<strong>le</strong>" word
-              | word "<strong>&gt;</strong>"  word | word "<strong>gt</strong>" word
-              | word "<strong>&gt;=</strong>" word | word "<strong>ge</strong>" word
+stringcomp  ::= word "<strong>==</strong>" word
+              | word "<strong>!=</strong>" word
+              | word "<strong>&lt;</strong>"  word
+              | word "<strong>&lt;=</strong>" word
+              | word "<strong>&gt;</strong>"  word
+              | word "<strong>&gt;=</strong>" word
 
 integercomp ::= word "<strong>-eq</strong>" word | word "<strong>eq</strong>" word
               | word "<strong>-ne</strong>" word | word "<strong>ne</strong>" word
@@ -79,6 +80,7 @@ word        ::= word "<strong>.</strong>" word
               | "<strong>'</strong>" string "<strong>'</strong>"
               | "<strong>"</strong>" string "<strong>"</strong>"
               | variable
+              | rebackref
               | function
 
 string      ::= stringpart
@@ -86,12 +88,15 @@ string      ::= stringpart
 
 stringpart  ::= cstring
               | variable
+              | rebackref
 
 cstring     ::= ...
 digit       ::= [0-9]+
 
 variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
               | "<strong>%{</strong>" funcname "<strong>:</strong>" funcargs "<strong>}</strong>"
+
+rebackref   ::= "<strong>$</strong>" [0-9]
 
 function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
 
@@ -302,9 +307,40 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     Functions names are not case sensitive.
     Modules may register additional functions.</p>
 
-    <p>There are no built-in list-valued functions. <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>'s
-    <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> provides
-    <code>PeerExtList</code>.</p>
+    <p>There are no built-in list-valued functions. <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>
+    provides <code>PeerExtList</code>.  See the description of
+    <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> for details
+    (but <code>PeerExtList</code> is also usable outside
+    of <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>).</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="other" id="other">Other</a></h2>
+    
+
+    <table class="bordered"><tr class="header"><th>Name</th><th>Alternative</th> <th>Description</th></tr>
+<tr><td><code>-in</code></td>
+        <td><code>in</code></td>
+        <td>string contained in string list</td></tr>
+<tr class="odd"><td><code>/regexp/</code></td>
+        <td><code>m#regexp#</code></td>
+        <td>Regular expression (the second form allows different delimiters than /)</td></tr>
+<tr><td><code>/regexp/i</code></td>
+        <td><code>m#regexp#i</code></td>
+        <td>Case insensitive regular expression</td></tr>
+<tr class="odd"><td><code>$0 ... $9</code></td>
+        <td />
+        <td>Regular expression backreferences</td></tr>
+</table>
+
+    <h3><a name="rebackref" id="rebackref">Regular expression backreferences</a></h3>
+        
+        <p>The strings <code>$0</code> ... <code>$9</code> allow to reference
+        the capture groups form a previously executed, successfully
+        matching regular expressions. They can normally only be used in the
+        same expression as the matching regex, but some modules allow special
+        uses.</p>
+    
 
 </div></div>
 <div class="bottomlang">

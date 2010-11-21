@@ -280,7 +280,7 @@ for additional examples.
     and applied <em>env-variable</em> in the same fashion as <code class="directive">SetEnvIf</code>.</p>
 
 <div class="example"><p><code>
-    SetEnvIfExpr "tolower(%req['X-Sendfile']) = 'D:\images\very_big.iso')" iso_delivered
+    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
 </code></p></div>
 
     <p>This would set the environment variable <code>iso_delivered</code>
@@ -290,7 +290,7 @@ for additional examples.
     example from above for a site with more than one domain:</p>
 
 <div class="example"><p><code>
-    SetEnvIfExpr "${HTTP_REFERER} in www.example.com,example.com,w2.example3.org" intra_site_referral
+    SetEnvIfExpr "${HTTP_REFERER} in { 'www.example.com','example.com','w2.example3.org' }" intra_site_referral
 </code></p></div>
 
 <h3>See also</h3>
@@ -300,7 +300,6 @@ for a complete reference and more examples.</li>
 <li><code class="directive">&lt;If&gt;</code> can be used to achive similar
 results.</li>
 <li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
-<li><code class="module"><a href="../mod/mod_include&gt;.html">mod_include&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

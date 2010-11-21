@@ -1596,15 +1596,9 @@ function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"
 </pre>
 </blockquote>
 <p>For <code>varname</code> any of the variables described in <a href="#envvars">Environment Variables</a> can be used.  For
-<code>funcname</code> the following functions are available:</p>
-<ul>
-<li><code>file(</code><em>filename</em><code>)</code>
-    <p>
-    This function takes one string argument and expands to the contents of the
-    file. This is especially useful for matching this contents against a
-    regular expression, etc.</p>
-</li>
-</ul>
+<code>funcname</code> the available functions are listed in
+the <a href="../expr.html#functions">ap_expr documentation</a>.</p>
+
 <p>Notice that <em>expression</em> is first parsed into an internal machine
 representation and then evaluated in a second step. Actually, in Global and
 Per-Server Class context <em>expression</em> is parsed at startup time and
