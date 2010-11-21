@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1034057 -->
+<!-- English Revision : 1037339 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1767,6 +1767,8 @@ host</context>
 
 </usage>
 
+<seealso><a href="../expr.html">Les expressions dans le serveur HTTP
+Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemples.</seealso>
 <seealso><a href="../sections.html">Comment fonctionnent les sections
 &lt;Directory&gt;, &lt;Location&gt; et &lt;Files&gt;</a> pour une
 explication de la mani&egrave;re dont ces diff&eacute;rentes sections se combinent
