@@ -38,12 +38,12 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, expr_lookup, (ap_expr_lookup_parms *parms),
 
 static const char *ap_expr_eval_string_func(ap_expr_eval_ctx *ctx, const ap_expr *info,
                                             const ap_expr *args);
+static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx *ctx, int n);
 static const char *ap_expr_eval_var(ap_expr_eval_ctx *ctx,
                                     const ap_expr_var_func_t *func,
                                     const void *data);
 
 /* define AP_EXPR_DEBUG to log the parse tree when parsing an expression */
-/*#define AP_EXPR_DEBUG */ 
 #ifdef AP_EXPR_DEBUG
 static void expr_dump_tree(const ap_expr *e, const server_rec *s, int loglevel, int indent);
 #endif
@@ -61,14 +61,30 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx *ctx, const ap_expr *node)
         case op_Var:
             result = ap_expr_eval_var(ctx, node->node_arg1, node->node_arg2);
             break;
+        case op_Concat: {
+            const char *s1 = ap_expr_eval_word(ctx, node->node_arg1);
+            const char *s2 = ap_expr_eval_word(ctx, node->node_arg2);
+            if (!*s1)
+                result = s2;
+            else if (!*s2)
+                result = s1;
+            else
+                result = apr_pstrcat(ctx->p, s1, s2, NULL);
+            break;
+        }
         case op_StringFuncCall: {
             const ap_expr *info = node->node_arg1;
             const ap_expr *args = node->node_arg2;
             result = ap_expr_eval_string_func(ctx, info, args);
             break;
         }
+        case op_RegexBackref: {
+            const int *np = node->node_arg1;
+            result = ap_expr_eval_re_backref(ctx, *np);
+            break;
+        }
         default:
-            *ctx->err = "Internal evaluation error: Unknown expression node";
+            *ctx->err = "Internal evaluation error: Unknown word expression node";
             break;
     }
     if (!result)
@@ -83,6 +99,21 @@ static const char *ap_expr_eval_var(ap_expr_eval_ctx *ctx,
     AP_DEBUG_ASSERT(func != NULL);
     AP_DEBUG_ASSERT(data != NULL);
     return (*func)(ctx, data);
+}
+
+static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx *ctx, int n)
+{
+    int len;
+
+    if (!ctx->re_pmatch || !ctx->re_source || *ctx->re_source == '\0' ||
+        ctx->re_nmatch < n + 1)
+        return "";
+
+    len = ctx->re_pmatch[n].rm_eo - ctx->re_pmatch[n].rm_so;
+    if (len == 0)
+        return "";
+
+    return apr_pstrndup(ctx->p, *ctx->re_source + ctx->re_pmatch[n].rm_so, len);
 }
 
 static const char *ap_expr_eval_string_func(ap_expr_eval_ctx *ctx, const ap_expr *info,
@@ -206,32 +237,39 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx *ctx, const ap_expr *node)
             }
             return 0;
         }
-        case op_REG: {
-            const ap_expr *e1;
-            const ap_expr *e2;
-            const char *word;
-            const ap_regex_t *regex;
-
-            e1 = node->node_arg1;
-            e2 = node->node_arg2;
-            word = ap_expr_eval_word(ctx, e1);
-            regex = e2->node_arg1;
-            return (ap_regexec(regex, word, 0, NULL, 0) == 0);
-        }
+        case op_REG:
         case op_NRE: {
             const ap_expr *e1;
             const ap_expr *e2;
             const char *word;
             const ap_regex_t *regex;
+            int result;
 
             e1 = node->node_arg1;
             e2 = node->node_arg2;
             word = ap_expr_eval_word(ctx, e1);
             regex = e2->node_arg1;
-            return !(ap_regexec(regex, word, 0, NULL, 0) == 0);
+
+            /*
+             * $0 ... $9 may contain stuff the user wants to keep. Therefore
+             * we only set them if there are capturing parens in the regex.
+             */
+            if (regex->re_nsub > 0) {
+                result = (0 == ap_regexec(regex, word, ctx->re_nmatch,
+                                          ctx->re_pmatch, 0));
+                *ctx->re_source = result ? word : NULL;
+            }
+            else {
+                result = (0 == ap_regexec(regex, word, 0, NULL, 0));
+            }
+
+            if (node->node_op == op_REG)
+                return result;
+            else
+                return !result;
         }
         default: {
-            *ctx->err = "Internal evaluation error: Unknown expression node";
+            *ctx->err = "Internal evaluation error: Unknown comp expression node";
             return -1;
         }
     }
@@ -468,6 +506,8 @@ ap_expr *ap_expr_var_make(const char *name, ap_expr_parse_ctx *ctx)
     ap_log_error(MARK,"%*s%s: '%s' '%s'", indent, " ", op, (char *)s1, (char *)s2)
 #define DUMP_P(op, p1)                                                      \
     ap_log_error(MARK,"%*s%s: %pp", indent, " ", op, p1);
+#define DUMP_IP(op, p1)                                                      \
+    ap_log_error(MARK,"%*s%s: %d", indent, " ", op, *(int *)p1);
 #define DUMP_S(op, s1)                                                      \
     ap_log_error(MARK,"%*s%s: '%s'", indent, " ", op, (char *)s1)
 
@@ -604,6 +644,10 @@ static void expr_dump_tree(const ap_expr *e, const server_rec *s, int loglevel, 
     case op_Regex:
         DUMP_P("op_Regex", e->node_arg1);
         break;
+    /* arg1: pointer to int */
+    case op_RegexBackref:
+        DUMP_IP("op_RegexBackref", e->node_arg1);
+        break;
     default:
         ap_log_error(MARK, "%*sERROR: INVALID OP %d", indent, " ", e->node_op);
         break;
@@ -687,8 +731,14 @@ static int ap_expr_eval(ap_expr_eval_ctx *ctx, const ap_expr *node)
     }
 }
 
-
 AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info, const char **err)
+{
+    return ap_expr_exec_re(r, info, 0, NULL, NULL, err);
+}
+
+AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
+                                apr_size_t nmatch, ap_regmatch_t *pmatch,
+                                const char **source, const char **err)
 {
     ap_expr_eval_ctx ctx;
     int rc;
@@ -698,6 +748,22 @@ AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info, const c
     ctx.p = r->pool;
     ctx.err  = err;
     ctx.info = info;
+    ctx.re_nmatch = nmatch;
+    ctx.re_pmatch = pmatch;
+    ctx.re_source = source;
+    ap_regmatch_t tmp_pmatch[10];
+    const char *tmp_source;
+
+    if (!pmatch) {
+        ctx.re_nmatch = 10;
+        ctx.re_pmatch = tmp_pmatch;
+        ctx.re_source = &tmp_source;
+        tmp_source = NULL;
+    }
+    else {
+        AP_DEBUG_ASSERT(source != NULL);
+        AP_DEBUG_ASSERT(nmatch > 0);
+    }
 
     *err = NULL;
     rc = ap_expr_eval(&ctx, info->root_node);

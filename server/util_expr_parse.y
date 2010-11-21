@@ -35,6 +35,7 @@
 %union {
     char    *cpVal;
     ap_expr *exVal;
+    int      num;
 }
 
 %token  T_TRUE
@@ -47,6 +48,7 @@
 %token  <cpVal> T_STRING
 %token  <cpVal> T_REGEX
 %token  <cpVal> T_REGEX_I
+%token  <num>   T_REGEX_BACKREF
 %token  <cpVal> T_OP_UNARY
 %token  <cpVal> T_OP_BINARY
 
@@ -92,6 +94,7 @@
 %type   <exVal>   string
 %type   <exVal>   strpart
 %type   <exVal>   var
+%type   <exVal>   backref
 
 %{
 #include "util_expr_private.h"
@@ -147,9 +150,9 @@ string    : string strpart               { $$ = ap_expr_make(op_Concat, $1, $2, 
           | strpart                      { $$ = $1; }
           ;
 
-
 strpart   : T_STRING                     { $$ = ap_expr_make(op_String, $1, NULL, ctx); }
           | var                          { $$ = $1; }
+          | backref                      { $$ = $1; }
           ;
 
 var       : T_VAR_BEGIN T_ID T_VAR_END            { $$ = ap_expr_var_make($2, ctx); }
@@ -159,6 +162,7 @@ var       : T_VAR_BEGIN T_ID T_VAR_END            { $$ = ap_expr_var_make($2, ct
 word      : T_DIGIT                      { $$ = ap_expr_make(op_Digit,  $1, NULL, ctx); }
           | word T_OP_CONCAT word        { $$ = ap_expr_make(op_Concat, $1, $3,   ctx); }
           | var                          { $$ = $1; }
+          | backref                      { $$ = $1; }
           | strfunccall                  { $$ = $1; }
           | T_STR_BEGIN string T_STR_END { $$ = $2; }
           | T_STR_BEGIN T_STR_END        { $$ = ap_expr_make(op_String, "", NULL, ctx); }
@@ -183,6 +187,13 @@ regex     : T_REGEX {
                 $$ = ap_expr_make(op_Regex, regex, NULL, ctx);
             }
           ;
+
+backref     : T_REGEX_BACKREF   {
+                int *n = apr_palloc(ctx->pool, sizeof(int));
+                *n = $1;
+                $$ = ap_expr_make(op_RegexBackref, n, NULL, ctx);
+            }
+            ;
 
 lstfunccall : T_ID '(' word ')' { $$ = ap_expr_list_func_make($1, $3, ctx); }
             ;

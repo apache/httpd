@@ -142,14 +142,30 @@
     *str_ptr++ = yytext[1];
 }
 
-<str,vararg>[^\\\n"'%}]+ {
+ /* regexp backref inside string/arg */
+<str,vararg>[$][0-9] {
+    if (str_ptr != str_buf) {
+        /* return what we have so far and scan '$x' again */
+        *str_ptr = '\0';
+        yylval->cpVal = apr_pstrdup(yyextra->pool, str_buf);
+        str_ptr = str_buf;
+        yyless(0);
+        return T_STRING;
+    }
+    else {
+        yylval->num = yytext[1] - '0';
+        return T_REGEX_BACKREF;
+    }
+}
+
+<str,vararg>[^\\\n"'%}$]+ {
     char *cp = yytext;
     while (*cp != '\0')
         *str_ptr++ = *cp++;
 }
 
- /* variable inside string */
-<str>%\{ {
+ /* variable inside string/arg */
+<str,vararg>%\{ {
     if (str_ptr != str_buf) {
         /* return what we have so far and scan '%{' again */
         *str_ptr = '\0';
@@ -164,17 +180,22 @@
     }
 }
 
-<vararg>% {
+<vararg>[%$] {
      *str_ptr++ = yytext[0];
 }
 
-<str>[%}] {
+<str>[%}$] {
      *str_ptr++ = yytext[0];
 }
 
 %\{ {
     yy_push_state(var, yyscanner);
     return T_VAR_BEGIN;
+}
+
+[$][0-9] {
+    yylval->num = yytext[1] - '0';
+    return T_REGEX_BACKREF;
 }
 
  /*

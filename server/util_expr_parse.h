@@ -47,31 +47,32 @@
      T_STRING = 263,
      T_REGEX = 264,
      T_REGEX_I = 265,
-     T_OP_UNARY = 266,
-     T_OP_BINARY = 267,
-     T_STR_BEGIN = 268,
-     T_STR_END = 269,
-     T_VAR_BEGIN = 270,
-     T_VAR_END = 271,
-     T_OP_EQ = 272,
-     T_OP_NE = 273,
-     T_OP_LT = 274,
-     T_OP_LE = 275,
-     T_OP_GT = 276,
-     T_OP_GE = 277,
-     T_OP_REG = 278,
-     T_OP_NRE = 279,
-     T_OP_IN = 280,
-     T_OP_STR_EQ = 281,
-     T_OP_STR_NE = 282,
-     T_OP_STR_LT = 283,
-     T_OP_STR_LE = 284,
-     T_OP_STR_GT = 285,
-     T_OP_STR_GE = 286,
-     T_OP_CONCAT = 287,
-     T_OP_OR = 288,
-     T_OP_AND = 289,
-     T_OP_NOT = 290
+     T_REGEX_BACKREF = 266,
+     T_OP_UNARY = 267,
+     T_OP_BINARY = 268,
+     T_STR_BEGIN = 269,
+     T_STR_END = 270,
+     T_VAR_BEGIN = 271,
+     T_VAR_END = 272,
+     T_OP_EQ = 273,
+     T_OP_NE = 274,
+     T_OP_LT = 275,
+     T_OP_LE = 276,
+     T_OP_GT = 277,
+     T_OP_GE = 278,
+     T_OP_REG = 279,
+     T_OP_NRE = 280,
+     T_OP_IN = 281,
+     T_OP_STR_EQ = 282,
+     T_OP_STR_NE = 283,
+     T_OP_STR_LT = 284,
+     T_OP_STR_LE = 285,
+     T_OP_STR_GT = 286,
+     T_OP_STR_GE = 287,
+     T_OP_CONCAT = 288,
+     T_OP_OR = 289,
+     T_OP_AND = 290,
+     T_OP_NOT = 291
    };
 #endif
 
@@ -86,11 +87,12 @@ typedef union YYSTYPE
 
     char    *cpVal;
     ap_expr *exVal;
+    int      num;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 94 "util_expr_parse.h"
+#line 96 "util_expr_parse.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

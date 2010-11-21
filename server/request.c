@@ -1535,7 +1535,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
 
             if (entry_core->condition) {
                 /* XXX: error handling */
-                if (!ap_expr_exec(r, entry_core->condition, &err)) {
+                if (ap_expr_exec(r, entry_core->condition, &err) <= 0) {
                     continue;
                 }
             }

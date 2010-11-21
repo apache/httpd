@@ -44,7 +44,7 @@ typedef enum {
     op_REG, op_NRE,
     op_STR_EQ, op_STR_NE, op_STR_LT, op_STR_LE, op_STR_GT, op_STR_GE,
     op_Concat,
-    op_Digit, op_String, op_Regex,
+    op_Digit, op_String, op_Regex, op_RegexBackref,
     op_Var,
     op_ListElement,
     /*
