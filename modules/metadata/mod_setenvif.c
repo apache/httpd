@@ -651,7 +651,8 @@ static int match_headers(request_rec *r)
 
         if ((b->pattern && apr_strmatch(b->pattern, val, val_len)) ||
             (b->preg && !ap_regexec(b->preg, val, AP_MAX_REG_MATCH, regm, 0)) ||
-            (b->expr && (ap_expr_exec(r, b->expr, &err) > 0))) {
+            (b->expr && ap_expr_exec_re(r, b->expr, AP_MAX_REG_MATCH, regm, &val, &err) > 0))
+        {
             const apr_array_header_t *arr = apr_table_elts(b->features);
             elts = (const apr_table_entry_t *) arr->elts;
 
@@ -660,7 +661,7 @@ static int match_headers(request_rec *r)
                     apr_table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
-                    if (b->preg) {
+                    if (!b->pattern) {
                         char *replaced = ap_pregsub(r->pool, elts[j].val, val,
                                                     AP_MAX_REG_MATCH, regm);
                         if (replaced) {

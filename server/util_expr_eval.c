@@ -742,6 +742,8 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
 {
     ap_expr_eval_ctx ctx;
     int rc;
+    int dont_vary = (info->flags & AP_EXPR_FLAGS_DONT_VARY);
+    const char *vary_this = NULL;
     ctx.r = r;
     ctx.c = r->connection;
     ctx.s = r->server;
@@ -751,6 +753,7 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     ctx.re_nmatch = nmatch;
     ctx.re_pmatch = pmatch;
     ctx.re_source = source;
+    ctx.vary_this = dont_vary ? NULL : &vary_this;
     ap_regmatch_t tmp_pmatch[10];
     const char *tmp_source;
 
@@ -777,7 +780,25 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
         ap_log_rerror(__FILE__, __LINE__, info->module_index, APLOG_TRACE4, 0,
                       r, "Evaluation of expression from %s:%d gave: %d",
                       info->filename, info->line_number, rc);
+
+        if (vary_this)
+            apr_table_merge(r->headers_out, "Vary", vary_this);
+
         return rc;
+    }
+}
+
+static void add_vary(ap_expr_eval_ctx *ctx, const char *name)
+{
+    if (!ctx->vary_this)
+        return;
+
+    if (*ctx->vary_this) {
+        *ctx->vary_this = apr_pstrcat(ctx->p, *ctx->vary_this, ", ", name,
+                                      NULL);
+    }
+    else {
+        *ctx->vary_this = name;
     }
 }
 
@@ -789,14 +810,16 @@ static const char *req_table_func(ap_expr_eval_ctx *ctx, const void *data,
     if (!ctx->r)
         return "";
 
-    if (name[3] == 's')             /* resp */
+    if (name[2] == 's')             /* resp */
         t = ctx->r->headers_out;
-    else if (name[4] == 'e')        /* reqenv */
-        t = ctx->r->subprocess_env;
     else if (name[0] == 'n')        /* notes */
         t = ctx->r->notes;
-    else
+    else if (name[3] == 'e')        /* reqenv */
+        t = ctx->r->subprocess_env;
+    else {                          /* req, http */
         t = ctx->r->headers_in;
+        add_vary(ctx, arg);
+    }
     return apr_table_get(t, arg);
 }
 
@@ -1042,8 +1065,8 @@ static const char *request_var_fn(ap_expr_eval_ctx *ctx, const void *data)
 }
 
 static const char *req_header_var_names[] = {
-    "HTTP_USER_AGENT",          /* 0 */
-    "HTTP_PROXY_CONNECTION",    /* 1 */
+    "HTTP_USER_AGENT",
+    "HTTP_PROXY_CONNECTION",
     "HTTP_REFERER",
     "HTTP_COOKIE",
     "HTTP_FORWARDED",
@@ -1052,22 +1075,29 @@ static const char *req_header_var_names[] = {
     NULL
 };
 
+static const char *req_header_header_names[] = {
+    "User-Agent",
+    "Proxy-Connection",
+    "Referer",
+    "Cookie",
+    "Forwarded",
+    "Host",
+    "Accept"
+};
+
 static const char *req_header_var_fn(ap_expr_eval_ctx *ctx, const void *data)
 {
-    const char **name = (const char **)data;
-    int index = (name - req_header_var_names);
+    const char **varname = (const char **)data;
+    int index = (varname - req_header_var_names);
+    const char *name;
+
+    AP_DEBUG_ASSERT(index < 6);
     if (!ctx->r)
         return "";
 
-    switch (index) {
-    case 0:
-        return apr_table_get(ctx->r->headers_in, "User-Agent");
-    case 1:
-        return apr_table_get(ctx->r->headers_in, "Proxy-Connection");
-    default:
-        /* apr_table_get is case insensitive, just skip leading "HTTP_" */
-        return apr_table_get(ctx->r->headers_in, *name + 5);
-    }
+    name = req_header_header_names[index];
+    add_vary(ctx, name);
+    return apr_table_get(ctx->r->headers_in, name);
 }
 
 static const char *misc_var_names[] = {
@@ -1147,6 +1177,7 @@ static const struct expr_provider_single string_func_providers[] = {
     /* 'http' as alias for 'req' for compatibility with ssl_expr */
     { req_table_func, "http" },
     { req_table_func, "note" },
+    { req_table_func, "reqenv" },
     { tolower_func, "tolower" },
     { toupper_func, "toupper" },
     { escape_func, "escape" },
