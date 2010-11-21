@@ -43,27 +43,37 @@ typedef struct {
     const char *filename;
     /** The line number where the expression has been defined (for logging). */
     unsigned int line_number;
-#define AP_EXPR_FLAGS_SSL_EXPR_COMPAT       1
-    /** Flags relevant for the expression */
+    /** Flags relevant for the expression, see AP_EXPR_FLAGS_* */
     unsigned int flags;
     /** The module that is used for loglevel configuration (XXX put into eval_ctx?) */
     int module_index;
 } ap_expr_info_t;
 
+/** Use ssl_expr compatibility mode (changes the meaning of the comparison
+ * operators)
+ */
+#define AP_EXPR_FLAGS_SSL_EXPR_COMPAT       1
+/** If using the simple ap_expr_exec(), don't add siginificant request headers
+ * to the Vary response header
+ */
+#define AP_EXPR_FLAGS_DONT_VARY             2
+
 
 /**
- * Evaluate a parse tree
+ * Evaluate a parse tree, simple interface
  * @param r The current request
  * @param expr The expression to be evaluated
  * @param err Where an error message should be stored
  * @return > 0 if expression evaluates to true, == 0 if false, < 0 on error
  * @note err will be set to NULL on success, or to an error message on error
+ * @note request headers used during evaluation will be added to the Vary:
+ *       response header, unless AP_EXPR_FLAGS_DONT_VARY is set.
  */
 AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
                              const char **err);
 
 /**
- * Evaluate a parse tree, with regexp backreferences
+ * Evaluate a parse tree, with access to regexp backreference
  * @param r The current request
  * @param expr The expression to be evaluated
  * @param nmatch size of the regex match vector pmatch
@@ -75,6 +85,8 @@ AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
  * @note nmatch/pmatch/source can be used both to make previous matches
  *       available to ap_expr_exec_re and to use ap_expr_exec_re's matches
  *       later on.
+ * @note request headers used during evaluation will be added to the Vary:
+ *       response header, unless AP_EXPR_FLAGS_DONT_VARY is set.
  */
 AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *expr,
                                 apr_size_t nmatch, ap_regmatch_t *pmatch,
@@ -98,8 +110,13 @@ typedef struct {
     ap_regmatch_t *re_pmatch;
     /** size of the vector pointed to by re_pmatch */
     apr_size_t re_nmatch;
-    /** the string corresponding to the re_pmatch*/
+    /** the string corresponding to the re_pmatch */
     const char **re_source;
+    /** A string where the comma separated names of headers are stored
+     * to be later added to the Vary: header. If NULL, the caller is not
+     * interested in this information.
+     */
+    const char **vary_this;
 } ap_expr_eval_ctx;
 
 
