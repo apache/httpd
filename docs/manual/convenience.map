@@ -111,8 +111,8 @@ bufferedlogs	mod/mod_log_config.html#bufferedlogs
 buffersize	mod/mod_buffer.html#buffersize
 cachedefaultexpire	mod/mod_cache.html#cachedefaultexpire
 cachedetailheader	mod/mod_cache.html#cachedetailheader
-cachedirlength	mod/mod_disk_cache.html#cachedirlength
-cachedirlevels	mod/mod_disk_cache.html#cachedirlevels
+cachedirlength	mod/mod_cache_disk.html#cachedirlength
+cachedirlevels	mod/mod_cache_disk.html#cachedirlevels
 cachedisable	mod/mod_cache.html#cachedisable
 cacheenable	mod/mod_cache.html#cacheenable
 cachefile	mod/mod_file_cache.html#cachefile
@@ -128,14 +128,14 @@ cachelock	mod/mod_cache.html#cachelock
 cachelockmaxage	mod/mod_cache.html#cachelockmaxage
 cachelockpath	mod/mod_cache.html#cachelockpath
 cachemaxexpire	mod/mod_cache.html#cachemaxexpire
-cachemaxfilesize	mod/mod_disk_cache.html#cachemaxfilesize
+cachemaxfilesize	mod/mod_cache_disk.html#cachemaxfilesize
 cacheminexpire	mod/mod_cache.html#cacheminexpire
-cacheminfilesize	mod/mod_disk_cache.html#cacheminfilesize
+cacheminfilesize	mod/mod_cache_disk.html#cacheminfilesize
 cachenegotiateddocs	mod/mod_negotiation.html#cachenegotiateddocs
 cachequickhandler	mod/mod_cache.html#cachequickhandler
-cachereadsize	mod/mod_disk_cache.html#cachereadsize
-cachereadtime	mod/mod_disk_cache.html#cachereadtime
-cacheroot	mod/mod_disk_cache.html#cacheroot
+cachereadsize	mod/mod_cache_disk.html#cachereadsize
+cachereadtime	mod/mod_cache_disk.html#cachereadtime
+cacheroot	mod/mod_cache_disk.html#cacheroot
 cachestaleonerror	mod/mod_cache.html#cachestaleonerror
 cachestoreexpired	mod/mod_cache.html#cachestoreexpired
 cachestorenostore	mod/mod_cache.html#cachestorenostore
@@ -190,6 +190,7 @@ dumpiooutput	mod/mod_dumpio.html#dumpiooutput
 enableexceptionhook	mod/mpm_common.html#enableexceptionhook
 enablemmap	mod/core.html#enablemmap
 enablesendfile	mod/core.html#enablesendfile
+error	mod/core.html#error
 errordocument	mod/core.html#errordocument
 errorlog	mod/core.html#errorlog
 errorlogformat	mod/core.html#errorlogformat
@@ -429,6 +430,7 @@ sessioninclude	mod/mod_session.html#sessioninclude
 sessionmaxage	mod/mod_session.html#sessionmaxage
 setenv	mod/mod_env.html#setenv
 setenvif	mod/mod_setenvif.html#setenvif
+setenvifexpr	mod/mod_setenvif.html#setenvifexpr
 setenvifnocase	mod/mod_setenvif.html#setenvifnocase
 sethandler	mod/core.html#sethandler
 setinputfilter	mod/core.html#setinputfilter
@@ -488,6 +490,7 @@ sslverifydepth	mod/mod_ssl.html#sslverifydepth
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
 substitute	mod/mod_substitute.html#substitute
+suexec	mod/mod_unixd.html#suexec
 suexecusergroup	mod/mod_suexec.html#suexecusergroup
 threadlimit	mod/mpm_common.html#threadlimit
 threadsperchild	mod/mpm_common.html#threadsperchild

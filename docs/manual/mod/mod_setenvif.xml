@@ -275,7 +275,7 @@ for additional examples.
     >SetEnvIf</directive>.</p>
 
 <example>
-    SetEnvIfExpr "tolower(%req['X-Sendfile']) = 'D:\images\very_big.iso')" iso_delivered
+    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
 </example>
 
     <p>This would set the environment variable <code>iso_delivered</code>
@@ -285,7 +285,7 @@ for additional examples.
     example from above for a site with more than one domain:</p>
 
 <example>
-    SetEnvIfExpr "${HTTP_REFERER} in www.example.com,example.com,w2.example3.org" intra_site_referral
+    SetEnvIfExpr "${HTTP_REFERER} in { 'www.example.com','example.com','w2.example3.org' }" intra_site_referral
 </example>
 </usage>
 
@@ -294,7 +294,6 @@ for a complete reference and more examples.</seealso>
 <seealso><directive type="section">If</directive> can be used to achive similar
 results.</seealso>
 <seealso><module>mod_filter</module></seealso>
-<seealso><module>mod_include></module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

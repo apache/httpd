@@ -54,12 +54,12 @@ comp        ::= stringcomp
               | word "<strong>!~</strong>" regex
 
 
-stringcomp  ::= word "<strong>==</strong>" word | word "<strong>eq</strong>" word
-              | word "<strong>!=</strong>" word | word "<strong>ne</strong>" word
-              | word "<strong>&lt;</strong>"  word | word "<strong>lt</strong>" word
-              | word "<strong>&lt;=</strong>" word | word "<strong>le</strong>" word
-              | word "<strong>&gt;</strong>"  word | word "<strong>gt</strong>" word
-              | word "<strong>&gt;=</strong>" word | word "<strong>ge</strong>" word
+stringcomp  ::= word "<strong>==</strong>" word
+              | word "<strong>!=</strong>" word
+              | word "<strong>&lt;</strong>"  word
+              | word "<strong>&lt;=</strong>" word
+              | word "<strong>&gt;</strong>"  word
+              | word "<strong>&gt;=</strong>" word
 
 integercomp ::= word "<strong>-eq</strong>" word | word "<strong>eq</strong>" word
               | word "<strong>-ne</strong>" word | word "<strong>ne</strong>" word
@@ -76,6 +76,7 @@ word        ::= word "<strong>.</strong>" word
               | "<strong>'</strong>" string "<strong>'</strong>"
               | "<strong>"</strong>" string "<strong>"</strong>"
               | variable
+              | rebackref
               | function
 
 string      ::= stringpart
@@ -83,12 +84,15 @@ string      ::= stringpart
 
 stringpart  ::= cstring
               | variable
+              | rebackref
 
 cstring     ::= ...
 digit       ::= [0-9]+
 
 variable    ::= "<strong>%{</strong>" varname "<strong>}</strong>"
               | "<strong>%{</strong>" funcname "<strong>:</strong>" funcargs "<strong>}</strong>"
+
+rebackref   ::= "<strong>$</strong>" [0-9]
 
 function     ::= funcname "<strong>(</strong>" word "<strong>)</strong>"
 
@@ -319,9 +323,43 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     Functions names are not case sensitive.
     Modules may register additional functions.</p>
 
-    <p>There are no built-in list-valued functions. <module>mod_ssl</module>'s
-    <directive module="mod_ssl">SSLRequire</directive> provides
-    <code>PeerExtList</code>.</p>
+    <p>There are no built-in list-valued functions. <module>mod_ssl</module>
+    provides <code>PeerExtList</code>.  See the description of
+    <directive module="mod_ssl">SSLRequire</directive> for details
+    (but <code>PeerExtList</code> is also usable outside
+    of <directive module="mod_ssl">SSLRequire</directive>).</p>
+
+</section>
+
+<section id="other">
+    <title>Other</title>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
+
+    <tr><th>Name</th><th>Alternative</th> <th>Description</th></tr>
+    <tr><td><code>-in</code></td>
+        <td><code>in</code></td>
+        <td>string contained in string list</td></tr>
+    <tr><td><code>/regexp/</code></td>
+        <td><code>m#regexp#</code></td>
+        <td>Regular expression (the second form allows different delimiters than /)</td></tr>
+    <tr><td><code>/regexp/i</code></td>
+        <td><code>m#regexp#i</code></td>
+        <td>Case insensitive regular expression</td></tr>
+    <tr><td><code>$0 ... $9</code></td>
+        <td></td>
+        <td>Regular expression backreferences</td></tr>
+    </table>
+
+    <section id="rebackref">
+        <title>Regular expression backreferences</title>
+        <p>The strings <code>$0</code> ... <code>$9</code> allow to reference
+        the capture groups form a previously executed, successfully
+        matching regular expressions. They can normally only be used in the
+        same expression as the matching regex, but some modules allow special
+        uses.</p>
+    </section>
 
 </section>
 

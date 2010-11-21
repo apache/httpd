@@ -713,10 +713,12 @@
      be escaped.  This is regardless of their meaning to the regex engine.</p>
     </note>
 
+    <!-- mod_include does not use ap_expr, yet
     <note><title>Reference Documentation</title>
     <p>See also: <a href="../expr.html">Expressions in Apache HTTP Server</a>,
     for a complete reference and examples.</p>
     </note>
+    -->
 </section>
 
 <directivesynopsis>
