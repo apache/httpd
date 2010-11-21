@@ -992,7 +992,7 @@ static authz_status expr_check_authorization(request_rec *r,
     const ap_expr_info_t *expr = parsed_require_line;
     int rc = ap_expr_exec(r, expr, &err);
 
-    if (err || !rc)
+    if (rc <= 0)
 	    /* XXX: real error handling? */
         return AUTHZ_DENIED;
     else

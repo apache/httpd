@@ -55,11 +55,30 @@ typedef struct {
  * Evaluate a parse tree
  * @param r The current request
  * @param expr The expression to be evaluated
- * @param err A more detailed error string
+ * @param err Where an error message should be stored
  * @return > 0 if expression evaluates to true, == 0 if false, < 0 on error
+ * @note err will be set to NULL on success, or to an error message on error
  */
 AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
                              const char **err);
+
+/**
+ * Evaluate a parse tree, with regexp backreferences
+ * @param r The current request
+ * @param expr The expression to be evaluated
+ * @param nmatch size of the regex match vector pmatch
+ * @param pmatch information about regex matches
+ * @param source the string that pmatch applies to
+ * @param err Where an error message should be stored
+ * @return > 0 if expression evaluates to true, == 0 if false, < 0 on error
+ * @note err will be set to NULL on success, or to an error message on error
+ * @note nmatch/pmatch/source can be used both to make previous matches
+ *       available to ap_expr_exec_re and to use ap_expr_exec_re's matches
+ *       later on.
+ */
+AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *expr,
+                                apr_size_t nmatch, ap_regmatch_t *pmatch,
+                                const char **source, const char **err);
 
 /** Context used during evaluation of a parse tree, created by ap_expr_exec */
 typedef struct {
@@ -75,6 +94,12 @@ typedef struct {
     const char **err;
     /** ap_expr_info_t for the expression */
     const ap_expr_info_t *info;
+    /** regex match information for back references */
+    ap_regmatch_t *re_pmatch;
+    /** size of the vector pointed to by re_pmatch */
+    apr_size_t re_nmatch;
+    /** the string corresponding to the re_pmatch*/
+    const char **re_source;
 } ap_expr_eval_ctx;
 
 
