@@ -360,7 +360,7 @@
     </p>
 
     <p><var>expression</var> is an
-    <a href="../expr.html">ap_expr documentation</a>.</p>
+    <a href="../expr.html">ap_expr</a>.</p>
 
 </usage>
 <seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
