@@ -92,7 +92,7 @@ que le chiffrement fort ?</a></h3>
 
 
 
- <p>Avec la configuration qui suit, vous pouvez activer deux mÃ©thodes de chiffrement relativement sÃ©curisÃ©es, et rapides :</p>
+ <p>Avec la configuration qui suit, vous pouvez activer deux méthodes de chiffrement relativement sécurisées, et rapides :</p>
 
     <div class="example"><h3>httpd.conf</h3><p><code>
       SSLProtocol all -SSLv2<br />
@@ -100,8 +100,8 @@ que le chiffrement fort ?</a></h3>
       SSLHonorCipherOrder on
       <br />
     </code></p></div>
-    <p>Ceci correspond largement Ã&nbsp; la valeur par dÃ©faut de la directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>,
-    et reprÃ©sente la pratique Ã&nbsp; conseiller.</p>
+    <p>Ceci correspond largement à la valeur par défaut de la directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>,
+    et représente la pratique à conseiller.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="strongurl" id="strongurl">Comment créer un serveur qui accepte tous les types de
