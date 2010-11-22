@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1029588 -->
+<!-- English Revision : 1037335 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -124,6 +124,12 @@ serveur HTTP Apache</title>
       <dt><module>mod_allowmethods</module></dt>
       <dd>Nouveau module permettant de restreindre certaines m&eacute;thodes
       HTTP sans interf&eacute;rer avec l'authentification et l'autorisation.</dd>
+
+      <dt><module>mod_include</module></dt>
+
+      <dd>Support de l'attribut 'onerror' dans un &eacute;l&eacute;ment 'include',
+      permettant de servir un message d'erreur personnalis&eacute; &agrave; la place
+      du message d'erreur par d&eacute;faut.</dd>
       
     </dl>
   </section>
