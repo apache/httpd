@@ -743,7 +743,9 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     ap_expr_eval_ctx ctx;
     int rc;
     int dont_vary = (info->flags & AP_EXPR_FLAGS_DONT_VARY);
-    const char *vary_this = NULL;
+    const char *tmp_source = NULL, *vary_this = NULL;
+    ap_regmatch_t tmp_pmatch[10];
+
     ctx.r = r;
     ctx.c = r->connection;
     ctx.s = r->server;
@@ -754,14 +756,11 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     ctx.re_pmatch = pmatch;
     ctx.re_source = source;
     ctx.vary_this = dont_vary ? NULL : &vary_this;
-    ap_regmatch_t tmp_pmatch[10];
-    const char *tmp_source;
 
     if (!pmatch) {
         ctx.re_nmatch = 10;
         ctx.re_pmatch = tmp_pmatch;
         ctx.re_source = &tmp_source;
-        tmp_source = NULL;
     }
     else {
         AP_DEBUG_ASSERT(source != NULL);
