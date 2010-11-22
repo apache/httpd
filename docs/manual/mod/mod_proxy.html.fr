@@ -731,9 +731,9 @@ incorrectes d'une réponse</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyBadHeader</code> permet de
     déterminer le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> lorsqu'il
-    reçoit des lignes d'en-tête dont la syntaxe n'est pas valide (c'est
-    à dire ne contenant pas de caractère ':'). Les arguments disponibles
-    sont :</p>
+    reçoit des lignes d'en-tête de réponse dont la syntaxe n'est pas valide (c'est
+    à dire ne contenant pas de caractère ':') en provenance du serveur
+    original. Les arguments disponibles sont :</p>
 
     <dl>
     <dt><code>IsError</code></dt>
@@ -1105,15 +1105,18 @@ l'espace d'URLs du serveur local</td></tr>
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
-        <td>Cette clé doit être utilisée lorsque vous avez un pare-feu
-	entre Apache et le serveur d'arrière-plan, et si ce dernier tend
+        <td><p>Cette clé doit être utilisée lorsque vous avez un pare-feu
+	entre Apache httpd et le serveur d'arrière-plan, et si ce dernier tend
 	à interrompre les connexions inactives. Cette clé va faire en
 	sorte que le système d'exploitation envoie des messages
-	<code>KEEP_ALIVE</code> sur chacune des connexions inactives
-	(selon des intervalles de temps dépendant de la configuration
-	générale de l'OS, en général 120ms), et ainsi éviter la
-	fermeture de la	connexion par le pare-feu. Pour activer
-	keepalive, définissez cette clé à <code>On</code>.
+	<code>KEEP_ALIVE</code> sur chacune des connexions inactives et
+	ainsi éviter la	fermeture de la	connexion par le pare-feu.
+	Pour conserver les connexions persistantes, definissez cette
+	propriété à <code>On</code>.</p>
+    <p>La fréquence de vérification des connexions TCP persistantes
+    initiale et subséquentes dépend de la configuration globale de l'OS,
+    et peut atteindre 2 heures. Pour être utile, la fréquence configurée
+    dans l'OS doit être inférieure au seuil utilisé par le pare-feu.</p>
     </td></tr>
     <tr><td>lbset</td>
         <td>0</td>
@@ -1221,12 +1224,14 @@ l'espace d'URLs du serveur local</td></tr>
 	pour effectuer un décompte de requêtes pondérées, soit
 	<code>bytraffic</code>, pour effectuer une répartition en
 	fonction du décompte des octets transmis, soit
-	<code>bybusyness</code>, pour effectuer une répartition en
+	<code>bybusyness</code> (à partir de la version 2.2.10 du
+	serveur HTTP Apache), pour effectuer une répartition en
 	fonction des requêtes en attente. La valeur par défaut est
 	<code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
-        <td>1</td>
+        <td>1 de moins que le nombre de workers, ou 1 avec un seul
+	worker</td>
         <td>Nombre maximum d'échecs avant abandon.
     </td></tr>
     <tr><td>nofailover</td>
@@ -1277,10 +1282,10 @@ l'espace d'URLs du serveur local</td></tr>
       ProxyPass / balancer://mon-cluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mon-cluster&gt;<br />
       <span class="indent">
-        BalancerMember http://1.2.3.4:8009<br />
-        BalancerMember http://1.2.3.5:8009 smax=10<br />
-        # Serveur moins puissant ; faites-lui traiter moins de requêtes<br />
-        BalancerMember http://1.2.3.6:8009 smax=1 loadfactor=20<br />
+        BalancerMember ajp://1.2.3.4:8009<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=20<br />
+        # Serveur moins puissant ; faites-lui traiter moins de requêtes,<br />
+        BalancerMember ajp://1.2.3.6:8009 loadfactor=5<br />
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
@@ -1291,10 +1296,10 @@ l'espace d'URLs du serveur local</td></tr>
       ProxyPass / balancer://hotcluster/ <br />
       &lt;Proxy balancer://hotcluster&gt;<br />
       <span class="indent">
-        BalancerMember http://1.2.3.4:8009 loadfactor=1<br />
-        BalancerMember http://1.2.3.5:8009 loadfactor=2<br />
+        BalancerMember ajp://1.2.3.4:8009 loadfactor=1<br />
+        BalancerMember ajp://1.2.3.5:8009 loadfactor=2<br />
         # La ligne suivante configure le serveur cible de réserve<br />
-        BalancerMember http://1.2.3.6:8009 status=+H<br />
+        BalancerMember ajp://1.2.3.6:8009 status=+H<br />
         ProxySet lbmethod=bytraffic
       </span>
       &lt;/Proxy&gt;
@@ -1329,9 +1334,14 @@ l'espace d'URLs du serveur local</td></tr>
     <code class="directive">ProxyPassMatch</code>.
     </p>
 
+    <p>Cette directive ne peut pas être placée dans une section
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
+
     <p>Si vous avez besoin d'un configuration de mandataire inverse plus
     souple, reportez-vous à la documentaion de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et son drapeau
     <code>[P]</code>.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1508,6 +1518,10 @@ par un serveur mandaté en inverse</td></tr>
     section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
     séparée.
     </p>
+
+    <p>Cette directive ne peut pas être placée dans une section
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1718,8 +1732,8 @@ d'Apache.</td></tr>
     <div class="example"><p><code>
       &lt;Proxy balancer://hotcluster&gt;<br />
       <span class="indent">
-        BalancerMember http://www2.example.com:8009 loadfactor=1<br />
-        BalancerMember http://www3.example.com:8009 loadfactor=2<br />
+        BalancerMember http://www2.example.com:8080 loadfactor=1<br />
+        BalancerMember http://www3.example.com:8080 loadfactor=2<br />
         ProxySet lbmethod=bytraffic<br />
       </span>
       &lt;/Proxy&gt;
