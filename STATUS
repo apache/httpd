@@ -85,6 +85,9 @@ RELEASE SHOWSTOPPERS:
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
     and any anomolies fixed.
 
+  * mod_ssl's proxy support only allows one proxy client certificate per
+    frontend virtual host. Lift this restriction.
+
 
   OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.2 BUT OBVIOUSLY WEREN'T:
 
