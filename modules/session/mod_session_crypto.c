@@ -23,7 +23,7 @@
 
 #if APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION < 4
 
-#error session_crypto_module requires APR v1.4.0 or later
+#error session_crypto_module requires APU v1.4.0 or later
 
 #elif APU_HAVE_CRYPTO == 0
 
