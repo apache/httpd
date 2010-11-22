@@ -1736,6 +1736,8 @@ requête</td></tr>
 
 <h3>Voir aussi</h3>
 <ul>
+<li><a href="../expr.html">Les expressions dans le serveur HTTP
+Apache</a>, pour une référence complète et d'autres exemples.</li>
 <li><a href="../sections.html">Comment fonctionnent les sections
 &lt;Directory&gt;, &lt;Location&gt; et &lt;Files&gt;</a> pour une
 explication de la manière dont ces différentes sections se combinent

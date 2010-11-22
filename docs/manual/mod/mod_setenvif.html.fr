@@ -58,6 +58,7 @@ de caractéristiques de la requête</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvifexpr">SetEnvIfExpr</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li>
 </ul>
 <h3>Voir aussi</h3>
@@ -269,6 +270,49 @@ peuvent se présenter sous les formes suivantes :</p>
 <li><a href="../env.html">Les variables d'environnement et le
 serveur HTTP Apache</a> pour des exemples supplémentaires.
 </li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a> <a name="setenvifexpr" id="setenvifexpr">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction d'une expression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIfExpr <em>expr
+    [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
+</table>
+    <p>La directive <code class="directive">SetEnvIfExpr</code> permet de
+    définir des variables d'environnement en fonction d'une expression
+    <code class="directive">&lt;If&gt;</code> <code>ap_expr</code>. Cette
+    expression est évaluée à l'exécution, et utilise les variables
+    d'environnement <em>env-variable</em> de la même manière que la
+    directive <code class="directive">SetEnvIf</code>.</p>
+
+<div class="example"><p><code>
+    SetEnvIfExpr "tolower(req('X-Sendfile')) == 'd:\images\very_big.iso')" iso_delivered
+</code></p></div>
+
+    <p>Dans cet exemple, la variable d'environnement
+    <code>iso_delivered</code> est définie chaque fois que notre
+    application tente de l'envoyer via <code>X-Sendfile</code>.</p>
+
+    <p>Pour un exemple plus utile, voir le cas de
+    <code>Referer</code> pour un site comportant plusieurs domaines :</p>
+
+<div class="example"><p><code>
+    SetEnvIfExpr "${HTTP_REFERER} in { 'www.example.com','example.com','w2.example3.org' }" intra_site_referral
+</code></p></div>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><a href="../expr.html">Les expressions dans le serveur HTTP
+Apache</a>, pour une référence complète et davantage d'exemples.</li>
+<li>La directive <code class="directive">&lt;If&gt;</code> peut être
+utilisée pour obtenir des résultats similaires.</li>
+<li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
