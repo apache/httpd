@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1037224 -->
+<!-- English revision : 1037337 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -88,7 +88,7 @@ que le chiffrement fort ?</title>
 </section>
 
 
- <p>Avec la configuration qui suit, vous pouvez activer deux méthodes de chiffrement relativement sécurisées, et rapides :</p>
+ <p>Avec la configuration qui suit, vous pouvez activer deux m&eacute;thodes de chiffrement relativement s&eacute;curis&eacute;es, et rapides :</p>
 
     <example><title>httpd.conf</title>
       SSLProtocol all -SSLv2<br />
@@ -96,8 +96,8 @@ que le chiffrement fort ?</title>
       SSLHonorCipherOrder on
       <br />
     </example>
-    <p>Ceci correspond largement à la valeur par défaut de la directive <directive module="mod_ssl">SSLCipherSuite</directive>,
-    et représente la pratique à conseiller.</p>
+    <p>Ceci correspond largement &agrave; la valeur par d&eacute;faut de la directive <directive module="mod_ssl">SSLCipherSuite</directive>,
+    et repr&eacute;sente la pratique &agrave; conseiller.</p>
 </section>
 
 <section id="strongurl">
