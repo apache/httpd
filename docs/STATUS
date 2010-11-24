@@ -46,10 +46,13 @@ To Do List
     two-httpd dav setup covered in Rich Bowen's DAV Apachecon
     presentation.
 
-- Performance doc is way too low-level. Several people have said that
-  they might help out here, but it's a significant undertaking, and more
-  than a little daunting.
- 
+- Performance doc "drop-in replace" wikified by Igor from Sander's
+  presentation: http://wiki.apache.org/httpd/PerformanceScalingUp
+  What's missing are reviews regarding statements made about Windows,
+  as well as: http://wiki.apache.org/httpd/PerformanceScalingOut for
+  a follow up -- these days it's *all* about scaling, really.
+
+
 - Windows platform docs are in desperate need of rewrites/updates for 2.x.
     - Bill Rowe is a good contact for tech questions.
     - "using apache" has been done, "compiling apache" is still open
@@ -100,7 +103,7 @@ To Do List
               one-process-mode == no threads, i.e. only one
               process handling the requests in a single loop?
 
-- Individual docs will need some cleanup. 
+- Individual docs will need some cleanup.
      - platform/ebcdic.xml - needs major rework for 2.0
      - dso.xml - Reads as though this is a nifty new thing we just came
        up with recently.
@@ -126,10 +129,10 @@ To Do List
     are available for each AllowOverride setting.
   - New index: backout modules by type (aaa, mappers, loggers etc.)
     probably by introducing a <category> element in modulesynopsis
-  - Use a tag like <var> in place of <em> for things like the 
+  - Use a tag like <var> in place of <em> for things like the
     <syntax> listing.
     - in progress
-  - add letter links to glossary and quickreference, 
+  - add letter links to glossary and quickreference,
     perhaps also a term overview (sidebar)
   - remove <pre> elements. Use <br /> and <indent> elements to get
     a similar effect.
