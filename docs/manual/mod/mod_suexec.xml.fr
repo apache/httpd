@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 948398 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_suexec.xml.meta">
+
+<name>mod_suexec</name>
+<description>Permet l'ex&eacute;cution des scripts CGI sous l'identit&eacute; des utilisateur et
+groupe sp&eacute;cifi&eacute;s</description>
+<status>Extension</status>
+<sourcefile>mod_suexec.c</sourcefile>
+<identifier>suexec_module</identifier>
+<compatibility>Disponible depuis la version 2.0 d'Apache</compatibility>
+
+
+<summary>
+    <p>Ce module permet, en s'interfa&ccedil;ant avec le binaire
+    <program>suexec</program>, l'ex&eacute;cution des scripts CGI avec les
+    identifiants utilisateur et groupe sp&eacute;cifi&eacute;s.</p>
+</summary>
+
+<seealso><a href="../suexec.html">Support de SuEXEC</a></seealso>
+
+<directivesynopsis>
+
+<name>SuexecUserGroup</name>
+<description>L'utilisateur et le groupe sous lesquels les programmes CGI
+doivent s'ex&eacute;cuter</description>
+<syntax>SuexecUserGroup <em>Utilisateur Groupe</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible depuis la version 2.0 d'Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>SuexecUserGroup</directive> permet de
+    sp&eacute;cifier l'utilisateur et le groupe sous les identifiants desquels les programmes
+    CGI doivent s'ex&eacute;cuter. Les requ&ecirc;tes non CGI seront toujours
+    trait&eacute;es avec l'utilisateur sp&eacute;cifi&eacute; par la directive <directive
+    module="mpm_common">User</directive>. Cette directive remplace
+    l'utilisation des directives <code>User</code> et <code>Group</code>
+    &agrave; l'int&eacute;rieur d'un serveur virtuel dans la configuration d'Apache
+    1.3.</p>
+
+    <example>
+    <title>Exemple</title>
+    SuexecUserGroup nobody nogroup
+    </example>
+
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+
