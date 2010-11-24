@@ -202,7 +202,7 @@ de suEXEC</a></li>
 
 
         <p class="indent">
-          Actuellement, suEXEc ne permet pas à
+          suEXEc ne permet pas à
 	  <code><em>root</em></code> d'exécuter des programmes CGI/SSI.
         </p>
       </li>
