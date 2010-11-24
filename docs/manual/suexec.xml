@@ -182,7 +182,7 @@
 
 
         <p class="indent">
-          Presently, suEXEC does not allow <code><em>root</em></code>
+          suEXEC does not allow <code><em>root</em></code>
           to execute CGI/SSI programs.
         </p>
       </li>
