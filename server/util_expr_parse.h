@@ -41,7 +41,7 @@
    enum yytokentype {
      T_TRUE = 258,
      T_FALSE = 259,
-     ERROR = 260,
+     T_ERROR = 260,
      T_DIGIT = 261,
      T_ID = 262,
      T_STRING = 263,
