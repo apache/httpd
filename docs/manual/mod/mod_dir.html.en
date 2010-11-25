@@ -200,6 +200,17 @@ a directory</td></tr>
     </code></p></div>
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
+    <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
+    <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
+    <div class="example"><p><code>
+         <code>
+             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
+	     <span class="indent">
+		     FallbackResource /blog/index.php<br />
+             </span>
+             &lt;/Directory&gt;
+         </code>
+    </code></p></div>
 
 </div>
 </div>
