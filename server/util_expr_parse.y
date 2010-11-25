@@ -41,7 +41,7 @@
 %token  T_TRUE
 %token  T_FALSE
 
-%token  <cpVal> ERROR
+%token  <cpVal> T_ERROR
 
 %token  <cpVal> T_DIGIT
 %token  <cpVal> T_ID
@@ -107,7 +107,7 @@ int ap_expr_yylex(YYSTYPE *lvalp, void *scanner);
 %%
 
 root      : expr                         { ctx->expr = $1; }
-          | ERROR                        { YYABORT; }
+          | T_ERROR                      { YYABORT; }
           ;
 
 expr      : T_TRUE                       { $$ = ap_expr_make(op_True,        NULL, NULL, ctx); }

@@ -2249,7 +2249,7 @@ AP_DECLARE(int) ap_request_has_body(request_rec *r)
     return has_body;
 }
 
-AP_DECLARE(apr_status_t) ap_pool_cleanup_set_null(void *data_)
+AP_DECLARE_NONSTD(apr_status_t) ap_pool_cleanup_set_null(void *data_)
 {
     void **ptr = (void **)data_;
     *ptr = NULL;

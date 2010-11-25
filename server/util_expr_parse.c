@@ -111,7 +111,7 @@
    enum yytokentype {
      T_TRUE = 258,
      T_FALSE = 259,
-     ERROR = 260,
+     T_ERROR = 260,
      T_DIGIT = 261,
      T_ID = 262,
      T_STRING = 263,
@@ -502,8 +502,8 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "T_TRUE", "T_FALSE", "ERROR", "T_DIGIT",
-  "T_ID", "T_STRING", "T_REGEX", "T_REGEX_I", "T_REGEX_BACKREF",
+  "$end", "error", "$undefined", "T_TRUE", "T_FALSE", "T_ERROR",
+  "T_DIGIT", "T_ID", "T_STRING", "T_REGEX", "T_REGEX_I", "T_REGEX_BACKREF",
   "T_OP_UNARY", "T_OP_BINARY", "T_STR_BEGIN", "T_STR_END", "T_VAR_BEGIN",
   "T_VAR_END", "T_OP_EQ", "T_OP_NE", "T_OP_LT", "T_OP_LE", "T_OP_GT",
   "T_OP_GE", "T_OP_REG", "T_OP_NRE", "T_OP_IN", "T_OP_STR_EQ",

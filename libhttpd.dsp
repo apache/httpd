@@ -97,6 +97,41 @@ PostBuild_Desc=Embed .manifest
 PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
 # End Special Build Tool
 
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Lexical"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "Release"
+# PROP BASE Intermediate_Dir "Release"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Release"
+# PROP Intermediate_Dir "Release"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd_cl" /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo"Release/libhttpd.res" /i "./include" /i "./srclib/apr/include" /d "NDEBUG" /d BIN_NAME="libhttpd.dll" /d LONG_NAME="Apache HTTP Server Core"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll
+# ADD LINK32 pcre.lib kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /debug /libpath:"./srclib/pcre" /base:@"os\win32\BaseAddr.ref",libhttpd.dll /opt:ref
+# Begin Special Build Tool
+TargetPath=.\Release\libhttpd.dll
+SOURCE="$(InputPath)"
+PreLink_Desc=Compiling buildmark
+PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /Oy- /Zi /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"Release\buildmark.obj"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
+
+
 !ENDIF 
 
 # Begin Target
@@ -479,7 +514,27 @@ SOURCE=.\include\util_ebcdic.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\server\util_expr.c
+SOURCE=.\server\util_expr_private.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_expr_eval.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_expr_scan.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_expr_scan.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_expr_parse.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_expr_parse.c
 # End Source File
 # Begin Source File
 
@@ -651,9 +706,82 @@ InputPath=.\server\gen_test_char.exe
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Lexical"
+
+# PROP Ignore_Default_Tool 1
+USERDEP__GEN_T=".\include\os.h"
+# Begin Custom Build - Generating test_char.h from gen_test_char.exe
+InputPath=.\server\gen_test_char.exe
+
+".\server\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\server\gen_test_char.exe >.\server\test_char.h
+
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
+# Begin Group "Generated Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\server\util_expr_parse.y
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Lexical"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating util_expr_parse.c/.h from util_expr_parse.y
+InputPath=.\server\util_expr_parse.y
+
+BuildCmds= \
+	bison -pap_expr_yy --defines=.\server\util_expr_parse.h -o .\server\util_expr_parse.c .\server\util_expr_parse.y
+
+".\server\util_expr_parse.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+".\server\util_expr_parse.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_expr_scan.l
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Lexical"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating util_expr_scan.c from util_expr_scan.l
+InputPath=.\server\util_expr_scan.l
+
+".\server\util_expr_scan.c" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	flex -Pap_expr_yy -o .\server\util_expr_scan.c .\server\util_expr_scan.l
+
+# End Custom Build
+
+!ENDIF
+
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\build\win32\httpd.rc

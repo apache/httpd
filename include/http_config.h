@@ -1259,7 +1259,7 @@ AP_DECLARE_HOOK(void,optional_fn_retrieve,(void))
  * @param data The address of the pointer
  * @return APR_SUCCESS
  */
-AP_DECLARE(apr_status_t) ap_pool_cleanup_set_null(void *data);
+AP_DECLARE_NONSTD(apr_status_t) ap_pool_cleanup_set_null(void *data);
 
 #ifdef __cplusplus
 }

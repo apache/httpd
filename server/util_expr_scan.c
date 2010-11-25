@@ -599,7 +599,7 @@ static yyconst flex_int16_t yy_chk[319] =
 
 #define YY_EXTRA_TYPE ap_expr_parse_ctx*
 
-#define PERROR(msg) yyextra->error2 = msg ; return ERROR;
+#define PERROR(msg) yyextra->error2 = msg ; return T_ERROR;
 
 #define str_ptr     (yyextra->scan_ptr)
 #define str_buf     (yyextra->scan_buf)
