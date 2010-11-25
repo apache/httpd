@@ -187,6 +187,17 @@ a directory</description>
     </example>
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
+    <p>In a sub-URI, such as <em>http://example.com/blog/</em> this
+    <em>sub-URI</em> has to be supplied as <var>local-url</var>:</p>
+    <example>
+         <code>
+             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
+	     <indent>
+		     FallbackResource /blog/index.php<br />
+             </indent>
+             &lt;/Directory&gt;
+         </code>
+    </example>
 </usage>
 </directivesynopsis>
 
