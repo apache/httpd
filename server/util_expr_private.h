@@ -30,6 +30,10 @@
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #endif
 
+#if !APR_HAVE_UNISTD_H
+#define YY_NO_UNISTD_H
+#endif
+
 #ifndef YYDEBUG
 #define YYDEBUG 0
 #endif
