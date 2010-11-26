@@ -13,7 +13,7 @@ our %LANGS = (
         'de' => 'German',
         );
 
-getopt("xlm:");
+getopts("xl:m:");
 HELP_MESSAGE() unless $opt_m;
 
 $opt_m =~ s/\.xml$//;
@@ -27,7 +27,7 @@ my $eng_xml = $xs->XMLin( $eng );
 
 print "This document defines the following directives:\n";
 my @directives;
-foreach my $directive ( keys %{ $eng_xml->{directivesynopsis} } ) {
+foreach my $directive ( sort( keys %{ $eng_xml->{directivesynopsis} } ) ) {
     push @directives, $directive;
     print $directive . "\n";
 }
@@ -47,12 +47,33 @@ foreach my $file (@files) {
     my $lang_xml = $xs->XMLin( $file );
 
     foreach my $d ( @directives ) {
-        print "Translation does not define $d\n" unless defined( $lang_xml->{directivesynopsis}->{$d} );
+        unless ( defined( $lang_xml->{directivesynopsis}->{$d} ) ) {
+            print "Translation does not define $d\n";
+            directive_doc( $d, $eng_xml ) if $opt_x;
+        }
     }
     
     print "\n\n";
 }
 
+sub directive_doc {
+    my ($d, $eng_xml) = @_;
+# print Dumper( $eng_xml->{directivesynopsis}->{$d} );
+
+    print "\nPaste the following into the XML:\n\n";
+    print "<directivesynopsis>\n";
+    print "<name>" . $d . "</name>\n";
+    print "<description>" .
+        $eng_xml->{directivesynopsis}->{$d}->{description} .
+        "</description>\n";
+    print "<contextlist>";
+    foreach my $c ( @{ $eng_xml->{directivesynopsis}->{$d}->{contextlist}->{context} } ) {
+        print "<context>".$c."</context>";
+    }
+    print "</contextlist>\n";
+    print "<usage>Documentation not yet translated. Please see English version of document.</usage>\n";
+    print "</directivesynopsis>\n\n";
+}
 
 sub HELP_MESSAGE {
     print STDERR qq~
