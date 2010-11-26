@@ -1374,7 +1374,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             rv = cache->provider->remove_url(cache->stale_handle, r);
             if (rv != OK) {
-                /* Probably a mod_disk_cache cache area has been (re)mounted
+                /* Probably a mod_cache_disk cache area has been (re)mounted
                  * read-only, or that there is a permissions problem.
                  */
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,

@@ -18,7 +18,7 @@ dbmmanage
 	DBM format used by mod_auth_db.
 
 htcacheclean
-    Keep the size of mod_disk_cache store within a certain limit.
+    Keep the size of mod_cache_disk store within a certain limit.
 
 htdigest
 	Create and update user authentication files used in

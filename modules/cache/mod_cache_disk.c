@@ -1335,7 +1335,7 @@ static void *create_config(apr_pool_t *p, server_rec *s)
 }
 
 /*
- * mod_disk_cache configuration directives handlers.
+ * mod_cache_disk configuration directives handlers.
  */
 static const char
 *set_cache_root(cmd_parms *parms, void *in_struct_ptr, const char *arg)
