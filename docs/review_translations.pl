@@ -11,6 +11,7 @@ our %LANGS = (
         'fr' => 'French',
         'ja' => 'Japanese',
         'de' => 'German',
+        'ko' => 'Korean',
         );
 
 getopts("xl:m:");
