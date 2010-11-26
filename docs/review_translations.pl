@@ -5,14 +5,19 @@ use File::Glob;
 use Data::Dumper;
 use strict;
 
-our ( $opt_m, $opt_x );
+our ( $opt_m, $opt_x, $opt_l );
 our $VERSION = '0.01';
 our %LANGS = (
         'fr' => 'French',
+        'ja' => 'Japanese',
+        'de' => 'German',
         );
 
-getopt("m:");
+getopt("xlm:");
 HELP_MESSAGE() unless $opt_m;
+
+$opt_m =~ s/\.xml$//;
+HELP_MESSAGE() unless -f $opt_m . '.xml';
 
 my $eng = $opt_m . '.xml';
 my @files = glob $opt_m . '.xml.*';
@@ -29,9 +34,15 @@ foreach my $directive ( keys %{ $eng_xml->{directivesynopsis} } ) {
 print "\n";
 
 foreach my $file (@files) {
+
     next if $file =~ m/\.meta$/;
     my $lang = $file;
     $lang =~ s/.*\.([^.]+)$/$1/;
+
+    if ( $opt_l ) {
+        next unless $lang eq $opt_l;
+    }
+
     print "Translation available in ". ($LANGS{$lang}?$LANGS{$lang}:$lang) ."\n";
     my $lang_xml = $xs->XMLin( $file );
 
@@ -59,7 +70,11 @@ directives are missing from each translation.
 -x - Generate XML for missing directives, to be pasted into the
 translation XML.
 
+-l xx - Only look at document in language xx
+
 ~;
+
+    exit();
 }
 
 
