@@ -2336,15 +2336,6 @@ int ap_expr_yyget_lineno  (yyscan_t yyscanner)
 /** Get the current column number.
  * @param yyscanner The scanner object.
  */
-int ap_expr_yyget_column  (yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    
-        if (! YY_CURRENT_BUFFER)
-            return 0;
-    
-    return yycolumn;
-}
 
 /** Get the input stream.
  * @param yyscanner The scanner object.
@@ -2412,16 +2403,6 @@ void ap_expr_yyset_lineno (int  line_number , yyscan_t yyscanner)
  * @param line_number
  * @param yyscanner The scanner object.
  */
-void ap_expr_yyset_column (int  column_no , yyscan_t yyscanner)
-{
-    struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-
-        /* column is only valid if an input buffer exists. */
-        if (! YY_CURRENT_BUFFER )
-           yy_fatal_error( "ap_expr_yyset_column called with no buffer" , yyscanner); 
-    
-    yycolumn = column_no;
-}
 
 /** Set the input stream. This does not discard the current
  * input buffer.
