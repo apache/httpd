@@ -112,6 +112,7 @@ BEGIN {
 	  print "LoadModule authz_user_module modules/mod_authz_user.so" > dstfl;
 	  print "LoadModule autoindex_module modules/mod_autoindex.so" > dstfl;
 	  print "#LoadModule cache_module modules/mod_cache.so" > dstfl;
+	  print "#LoadModule cache_disk_module modules/mod_cache_disk.so" > dstfl;
 	  print "#LoadModule cern_meta_module modules/mod_cern_meta.so" > dstfl;
 	  print "LoadModule cgi_module modules/mod_cgi.so" > dstfl;
 	  print "#LoadModule charset_lite_module modules/mod_charset_lite.so" > dstfl;
@@ -121,7 +122,6 @@ BEGIN {
 	  print "#LoadModule dbd_module modules/mod_dbd.so" > dstfl;
 	  print "#LoadModule deflate_module modules/mod_deflate.so" > dstfl;
 	  print "LoadModule dir_module modules/mod_dir.so" > dstfl;
-	  print "#LoadModule disk_cache_module modules/mod_disk_cache.so" > dstfl;
 	  print "#LoadModule dumpio_module modules/mod_dumpio.so" > dstfl;
 	  print "LoadModule env_module modules/mod_env.so" > dstfl;
 	  print "#LoadModule expires_module modules/mod_expires.so" > dstfl;
