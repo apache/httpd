@@ -67,6 +67,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
 </div>
 
@@ -173,6 +174,16 @@
     ディレクトリの内容一覧を返してしまいます。</strong></p>
     </div>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Define a default URL for requests that don't map to a file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dir</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 </div>
 <div class="bottomlang">
