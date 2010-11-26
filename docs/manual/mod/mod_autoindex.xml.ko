@@ -458,6 +458,14 @@
 </directivesynopsis>
 
 <directivesynopsis>
+<name>IndexHeadInsert</name>
+<description>Inserts text in the HEAD section of an index page.</description>
+<contextlist><context>server config</context><context>virtual
+host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>IndexIgnore</name>
 <description>디렉토리 목록에서 숨길 파일목록을 추가한다</description>
 <syntax>IndexIgnore <var>file</var> [<var>file</var>] ...</syntax>
