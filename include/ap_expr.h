@@ -121,14 +121,15 @@ typedef struct {
 
 
 /**
- * The parse can be extended with variable lookup, functions, and
+ * The parser can be extended with variable lookup, functions, and
  * and operators.
  *
  * During parsing, the parser calls the lookup function to resolve a
  * name into a function pointer and an opaque context for the function.
  *
- * The default lookup function is the hook 'ap_run_expr_lookup'.
- * Modules can use it to make functions and variables generally available.
+ * The default lookup function is the hook 'ap_expr_lookup_default' which just
+ * calls ap_expr_lookup_default. Modules can use it to make functions and
+ * variables generally available.
  *
  * An ap_expr consumer can also provide its own custom lookup function to
  * modify the set of variables and functions that are available. The custom
@@ -216,6 +217,12 @@ typedef struct {
  *          DECLINED if the requested name is not handled by this function
  */
 typedef int (ap_expr_lookup_fn)(ap_expr_lookup_parms *parms);
+
+/** Default lookup function which just calls ap_run_expr_lookup().
+ *  ap_run_expr_lookup cannot be used directly because it has the wrong
+ *  calling convention under Windows.
+ */
+AP_DECLARE_NONSTD(int) ap_expr_lookup_default(ap_expr_lookup_parms *parms);
 
 AP_DECLARE_HOOK(int, expr_lookup, (ap_expr_lookup_parms *parms))
 
