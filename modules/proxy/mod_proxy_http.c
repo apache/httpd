@@ -1468,6 +1468,12 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     return ap_proxyerror(r, HTTP_SERVICE_UNAVAILABLE, "Timeout on 100-Continue");
                 }
             }
+            else if (strcmp(apr_table_get(backend->connection->notes, 
+                                          "SSL_connect_rv"), "err") == 0) {
+                     return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR,
+                                          "Error during SSL Handshake with"
+                                          " remote server");
+            }
             /*
              * If we are a reverse proxy request shutdown the connection
              * WITHOUT ANY response to trigger a retry by the client
