@@ -159,6 +159,8 @@
 <li><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></li>
 <li><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
+<li><a href="mod_cache_disk.html#cachereadsize">CacheReadSize</a></li>
+<li><a href="mod_cache_disk.html#cachereadtime">CacheReadTime</a></li>
 <li><a href="mod_cache_disk.html#cacheroot">CacheRoot</a></li>
 <li><a href="core.html#cgimapextension">CGIMapExtension</a></li>
 <li><a href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
@@ -252,6 +254,7 @@
 <li><a href="mod_imagemap.html#imapdefault">ImapDefault</a></li>
 <li><a href="mod_imagemap.html#imapmenu">ImapMenu</a></li>
 <li><a href="core.html#include">Include</a></li>
+<li><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert</a></li>
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
 <li><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
