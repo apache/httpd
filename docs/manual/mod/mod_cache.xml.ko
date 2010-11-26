@@ -156,6 +156,13 @@
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheHeader</name>
+<description>Add an X-Cache header to the response.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheDisable</name>
 <description>특정 URL을 캐쉬하지 않는다</description>
 <syntax>CacheDisable <var> url-string</var></syntax>
@@ -194,6 +201,13 @@
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheMinExpire</name>
+<description>The minimum time in seconds to cache a document</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheDefaultExpire</name>
 <description>만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
@@ -211,6 +225,48 @@
       CacheDefaultExpire 86400
     </example>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheQuickHandler</name>
+<description>Run the cache from the quick handler.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStaleOnError</name>
+<description>Serve stale content in place of 5xx responses.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreExpired</name>
+<description>Attempt to cache responses that the server reports as expired</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreNoStore</name>
+<description>Attempt to cache requests or responses that have been marked as no-store.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStorePrivate</name>
+<description>Attempt to cache responses that the server has marked as private</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDetailHeader</name>
+<description>Add an X-Cache-Detail header to the response.</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -237,6 +293,21 @@
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheIgnoreQueryString</name>
+<description>Ignore query string when caching</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreURLSessionIdentifiers</name>
+<description>Ignore defined session identifiers encoded in the URL when caching
+</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
 <description>클라이언트가 캐쉬하지않는 내용을 요청함을 무시한다.</description>
 <syntax>CacheIgnoreCacheControl On|Off</syntax>
@@ -257,6 +328,13 @@
       CacheIgnoreCacheControl On
     </example>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheKeyBaseURL</name>
+<description>Override the base URL of reverse proxied cache keys.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -289,6 +367,27 @@
       CacheLastModifiedFactor 0.5
     </example>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLock</name>
+<description>Enable the thundering herd lock.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLockMaxAge</name>
+<description>Set the maximum possible age of a cache lock.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLockPath</name>
+<description>Set the lock path directory.</description>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
 </directivesynopsis>
 
 <directivesynopsis>
