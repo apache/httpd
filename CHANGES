@@ -1,6 +1,10 @@
-﻿                                                         -*- coding: utf-8 -*-
+                                                         -*- coding: utf-8 -*-
 
 Changes with Apache 2.3.10
+
+  *) mod_proxy: Put the worker in error state if the SSL handshake with the
+     backend fails. PR 50332.
+     [Daniel Ruggeri <DRuggeri primary.net>, Ruediger Pluem]
 
   *) mod_cache_disk: Fix Windows build which was broken after renaming
      the module. [Gregg L. Smith]
