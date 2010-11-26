@@ -327,6 +327,10 @@ static int ssl_expr_eval_comp(ap_expr_eval_ctx *ctx, const ap_expr *node)
     }
 }
 
+AP_DECLARE_NONSTD(int) ap_expr_lookup_default(ap_expr_lookup_parms *parms)
+{
+    return ap_run_expr_lookup(parms);
+}
 
 AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
                                        ap_expr_info_t *info, const char *expr,
@@ -347,7 +351,7 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
     ctx.scan_del    = '\0';
     ctx.scan_buf[0] = '\0';
     ctx.scan_ptr    = ctx.scan_buf;
-    ctx.lookup_fn   = lookup_fn ? lookup_fn : ap_run_expr_lookup;
+    ctx.lookup_fn   = lookup_fn ? lookup_fn : ap_expr_lookup_default;
 
 
     /*
