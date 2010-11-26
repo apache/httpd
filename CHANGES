@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.10
 
+  *) mod_cache_disk: Fix Windows build which was broken after renaming
+     the module. [Gregg L. Smith]
 
 Changes with Apache 2.3.9
 
