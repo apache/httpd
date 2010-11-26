@@ -101,5 +101,5 @@ util_expr_scan.c util_expr_parse.c util_expr_parse.h: util_expr_scan.l util_expr
 	done
 	# work around flex bug
 	# http://sourceforge.net/tracker/?func=detail&aid=3029024&group_id=97492&atid=618177
-	perl -0777 -p -i -e 's,\n(void|int) ap_expr_yy[gs]et_column.*?\n\},,gs' \
+	perl -0777 -p -i -e 's,\n(void|int) ap_expr_yy[gs]et_column[^\n]+\)\n.*?\n\},,gs' \
 		$(builddir)/util_expr_scan.c
