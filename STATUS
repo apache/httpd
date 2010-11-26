@@ -394,7 +394,7 @@ WISH LIST
     line server hooks (Ryan really hated this. It is great for
     performance, but bad because of the complications listed above).
 
-    mod_cache/mod_mem_cache/mod_disk_cache:
+    mod_cache/mod_mem_cache/mod_cache_disk:
 
   * mod_mem_cache: Consider adding a RevalidateTimeout directive to
     specify time at which local cached content is to be revalidated
@@ -404,7 +404,7 @@ WISH LIST
     jerenkrantz says: Too slow.  Get regexs away from speedy caches by
                       default.  Introduce a new CacheEnableRegex if you want.
 
-  * mod_mem_cache/mod_disk_cache: Need to be able to query cache
+  * mod_mem_cache/mod_cache_disk: Need to be able to query cache
     status (num of entries, cache object properties, etc.).
     mod_status could be extended to query optional hooks defined
     by modules for the purpose of reporting module status.
