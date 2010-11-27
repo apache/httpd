@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 822458 -->
+<!-- English Revision : 915660 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -514,10 +514,35 @@ valides.</description>
 
 <directivesynopsis>
 <name>LDAPLibraryDebug</name>
-<description>Enable debugging in the LDAP SDK</description>
+<description>Active le d&eacute;bogage dans le SDK LDAP</description>
+<syntax>LDAPLibraryDebug <var>7</var></syntax>
+<default>disabled</default>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of
-document.</usage>
+
+<usage>
+    <p>Active les options de d&eacute;bogage LDAP sp&eacute;cifiques au SDK, qui
+    entra&icirc;nent en g&eacute;n&eacute;ral une journalisation d'informations verbeuses du
+    SDK LDAP dans le journal principal des erreurs d'Apache. Les
+    messages de traces en provenance du SDK LDAP fournissent des
+    informations tr&egrave;s d&eacute;taill&eacute;es qui peuvent s'av&eacute;rer utiles lors du
+    d&eacute;bogage des probl&egrave;mes de connexion avec des serveurs LDAP
+    d'arri&egrave;re-plan.</p>
+
+    <p>Cette option n'est configurable que lorsque le serveur HTTP
+    Apache est li&eacute; avec un SDK LDAP qui impl&eacute;mente
+    <code>LDAP_OPT_DEBUG</code> ou <code>LDAP_OPT_DEBUG_LEVEL</code>,
+    comme OpenLDAP (une valeur de 7 est verbeuse) ou Tivoli Directory
+    Server (une valeur de 65535 est verbeuse).</p>
+
+    <note type="warning">
+    <p>Les informations journalis&eacute;es peuvent contenir des donn&eacute;es
+    d'authentification en clair utilis&eacute;es ou valid&eacute;es lors de
+    l'authentification LDAP ; vous devez donc prendre soin de prot&eacute;ger
+    et de purger le journal des erreurs lorsque cette directive est
+    utilis&eacute;e.</p>
+    </note>
+    
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -643,9 +668,30 @@ clients globaux</description>
 
 <directivesynopsis>
 <name>LDAPTimeout</name>
-<description>Specifies the timeout for LDAP search and bind operations, in seconds</description>
+<description>Sp&eacute;cifie le d&eacute;lai d'attente pour les op&eacute;rations de
+recherche et d'identification LDAP en secondes</description>
+<syntax>LDAPTimeout <var>secondes</var></syntax>
+<default>LDAPTimeout 60</default>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier le d&eacute;lai d'attente pour les
+    op&eacute;rations de recherche et d'identification, ainsi que l'option
+    LDAP_OPT_TIMEOUT dans la biblioth&egrave;que LDAP client sous-jacente,
+    lorsqu'elle est disponible.</p>
+
+    <p>Lorsque le d&eacute;lai est atteint, httpd va refaire un essai dans le
+    cas o&ugrave; une connexion existante a &eacute;t&eacute; silencieusement ferm&eacute;e par un
+    pare-feu. Les performances seront cependant bien meilleures si le
+    pare-feu est configur&eacute; pour envoyer des paquets TCP RST au lieu de
+    rejeter silencieusement les paquets.</p>
+
+    <note>
+    <p>Les d&eacute;lais pour les op&eacute;rations de comparaison LDAP n&eacute;cessitent un
+    SDK avec LDAP_OPT_TIMEOUT, comme OpenLDAP &gt;= 2.4.4.</p>
+    </note>
+
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
