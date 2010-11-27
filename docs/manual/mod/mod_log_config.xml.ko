@@ -261,6 +261,13 @@
 </section>
 
 <directivesynopsis>
+<name>BufferedLogs</name>
+<description>Buffer log entries in memory before writing to disk</description>
+<contextlist><context>server config</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CookieLog</name>
 <description>쿠키를 로그에 남기기위해 사용할 파일명을 설정한다</description>
 <syntax>CookieLog <var>filename</var></syntax>
