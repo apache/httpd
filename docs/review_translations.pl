@@ -48,9 +48,17 @@ foreach my $file (@files) {
     print "Translation available in ". ($LANGS{$lang}?$LANGS{$lang}:$lang) ."\n";
     my $lang_xml = $xs->XMLin( $file );
 
+    my @missing;
     foreach my $d ( @directives ) {
         unless ( defined( $lang_xml->{directivesynopsis}->{$d} ) ) {
             print "Translation does not define $d\n";
+            push @missing, $d;
+        }
+    }
+
+    if ( $opt_x && @missing ) {
+        print "\nPaste the following into the XML:\n\n";
+        foreach my $d ( @missing ) {
             directive_doc( $d, $eng_xml ) if $opt_x;
         }
     }
@@ -60,9 +68,7 @@ foreach my $file (@files) {
 
 sub directive_doc {
     my ($d, $eng_xml) = @_;
-# print Dumper( $eng_xml->{directivesynopsis}->{$d} );
 
-    print "\nPaste the following into the XML:\n\n";
     print "<directivesynopsis>\n";
     print "<name>" . $d . "</name>\n";
     print "<description>" .
