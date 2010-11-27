@@ -173,6 +173,10 @@ To Do List
 - Clarify which directives only affect requests when they're handled
   by the default handler.  (e.g. ForceType, TraceEnable, etc.)
 
+- Order directives alphabetically. Some modules, particularly in
+  translations, have directives in random order, rather than
+  alphabetically.
+
 LaTeX Todo list
 ==================
 
