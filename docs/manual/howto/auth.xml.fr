@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 887984 -->
+<!-- English Revision : 1031039 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -271,6 +271,40 @@ module de chaque groupe.</p>
     <directive module="core">Require</directive> directive.</p>
 </section>
 
+<section id="satisfy"><title>Satisfy</title>
+
+<p>La directive <directive module="core">Satisfy</directive> permet de
+sp&eacute;cifier que plusieurs crit&egrave;res peuvent &ecirc;tre consid&eacute;r&eacute;s pour d&eacute;cider si
+l'on peut accorder l'acc&egrave;s &agrave; un utilisateur particulier. Satisfy accepte
+comme argument une des deux options - <code>all</code> ou
+<code>any</code>. La valeur par d&eacute;faut est <code>all</code>, ce qui
+signifie que dans le cas o&ugrave; plusieurs crit&egrave;res sont sp&eacute;cifi&eacute;s,
+l'ensemble de ces derniers doit &ecirc;tre satisfait pour que l'acc&egrave;s soit
+accord&eacute;. Par contre, si la valeur est <code>any</code>, si plusieurs
+crit&egrave;res sont sp&eacute;cifi&eacute;s et si l'utilisateur satisfait &agrave; au moins un
+d'entre eux, l'acc&egrave;s lui sera accord&eacute;.</p>
+
+<p>Un exemple d'utilisation de cette directive est un contr&ocirc;le d'acc&egrave;s
+afin de s'assurer que, bien qu'une ressource soit prot&eacute;g&eacute;e par mot de
+passe depuis l'ext&eacute;rieur de votre r&eacute;seau, tous les h&ocirc;tes de votre r&eacute;seau
+pourront y acc&eacute;der sans authentification. Voici comment y parvenir en
+utilisant la directive Satisfy :</p>
+
+<example>
+&lt;Directory /usr/local/apache/htdocs/sekrit&gt;
+  AuthType Basic
+  AuthName intranet
+  AuthUserFile /www/passwd/users
+  AuthGroupFile /www/passwd/groups
+  Require group customers
+  Order allow,deny
+  Allow from internal.com
+  Satisfy any
+&lt;/Directory&gt;
+</example>
+
+</section>
+
 <section id="lettingmorethanonepersonin"><title>Autorisation d'acc&egrave;s &agrave;
 plusieurs personnes</title>
     <p>Les directives ci-dessus n'autorisent qu'une personne (quelqu'un
@@ -394,6 +428,7 @@ passe</title>
 
     <p>D'autres options sont disponibles. Consultez la documentation de
     <module>mod_authn_dbm</module> pour plus de d&eacute;tails.</p>
+
 </section>
 
 

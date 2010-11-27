@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1030017 -->
+<!-- English Revision : 1032347 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,6 +33,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 </summary>
 
 <section id="related"><title>Fichiers .htaccess</title>
+    
     <related>
         <modulelist>
             <module>core</module>
@@ -57,6 +58,7 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
         </directivelist>
 
     </related>
+
     <note>Les fichiers <code>.htaccess</code> ne doivent &ecirc;tre utilis&eacute;s
     que si vous n'avez pas acc&egrave;s au fichier de configuration du serveur
     principal. L'utilisation des fichiers <code>.htaccess</code>
