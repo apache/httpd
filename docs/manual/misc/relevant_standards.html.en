@@ -34,8 +34,8 @@
         http://purl.org/NET/http-errata</a> - HTTP/1.1 Specification Errata
       </li>
       <li>
-        <a href="http://www.rfc-editor.org/errata.html">
-        http://www.rfc-editor.org/errata.html</a> - RFC Errata
+        <a href="http://www.rfc-editor.org/errata.php">
+        http://www.rfc-editor.org/errata.php</a> - RFC Errata
       </li>
       <li>
         <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
@@ -123,7 +123,7 @@
 
       <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML 1.1 -
       Module-based XHTML</a>
-      (<a href="http://www.w3.org/2001/04/REC-xhtml-modularization-20060410-errata">Errata</a>)
+      (<a href="http://www.w3.org/MarkUp/2009/xhtml11-2nd-edition-errata.html">Errata</a>)
       </dt>
 
       <dd>This Recommendation defines a new XHTML document type
@@ -132,7 +132,7 @@
 
       <dt><a href="http://www.w3.org/TR/xhtml1">XHTML 1.0 The
       Extensible HyperText Markup Language (Second Edition)</a>
-      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20060801-errata">Errata</a>)
+      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20020801-errata/">Errata</a>)
       </dt>
 
       <dd>This specification defines the Second Edition of XHTML 1.0,
@@ -149,7 +149,7 @@
 
     <dl>
       <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
-      (Draft standard)</dt>
+      (Standards Track)</dt>
 
       <dd>"HTTP/1.0", includes the specification for a Basic
       Access Authentication scheme.</dd>
