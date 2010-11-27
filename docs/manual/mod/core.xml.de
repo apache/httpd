@@ -597,8 +597,17 @@ nicht auf andere Weise ermitteln kann.</description>
 <directivesynopsis>
 <name>Define</name>
 <description>Define the existence of a variable</description>
+<syntax>Define <var>Parametername</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+
+<usage>
+    <p>Equivalent zum &uuml;bergeben von <var>Parametername</var> mittels des
+    <code>-D</code> Arguments an <program>httpd</program>.</p>
+    <p>Diese Directive kann verwendet werden, um die Nutzung von <directive module="core"
+    type="section">IfDefine</directive> Sectionen umzuschalten, ohne die
+    <code>-D</code> Argumentente in etwaigen Start-Skripten &auml;ndern
+    zu m&uuml;ssen.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
