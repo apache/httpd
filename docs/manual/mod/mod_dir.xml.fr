@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 815782 -->
+<!-- English Revision : 1039209 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -213,6 +213,18 @@ aucun fichier</description>
     </example>
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront trait&eacute;s normalement.</p>
+    <p>Pour un URI interm&eacute;diaire tel que
+    <em>http://example.com/blog/</em>, cet URI interm&eacute;diaire doit &ecirc;tre
+    sp&eacute;cifi&eacute; en tant que <var>url-locale</var> :</p>
+    <example>
+         <code>
+             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
+	     <indent>
+		     FallbackResource /blog/index.php<br />
+             </indent>
+             &lt;/Directory&gt;
+         </code>
+    </example>
 </usage>
 </directivesynopsis>
 
