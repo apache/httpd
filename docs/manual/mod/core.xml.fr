@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1034058 -->
+<!-- English Revision : 1038636 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -984,13 +984,9 @@ lire les fichiers pendant qu'ils sont servis</description>
       </indent>
       &lt;/Directory&gt;
     </example>
-    <p>Veuillez noter que la configuration de la directive
-    <directive>EnableSendfile</directive> dans un contexte de r&eacute;pertoire
-    ou de fichier .htaccess n'est pas support&eacute;e par
-    <module>mod_disk_cache</module>. Le module ne prend en compte la
-    d&eacute;finition de <directive>EnableSendfile</directive> que dans un
-    contexte global.
-    </p>
+
+
+    
 </usage>
 </directivesynopsis>
 
@@ -1059,6 +1055,13 @@ sup&eacute;rieures</compatibility>
       </indent>
       &lt;/Directory&gt;
     </example>
+    <p>Veuillez noter que la configuration de la directive
+    <directive>EnableSendfile</directive> dans un contexte de r&eacute;pertoire
+    ou de fichier .htaccess n'est pas support&eacute;e par
+    <module>mod_disk_cache</module>. Le module ne prend en compte la
+    d&eacute;finition de <directive>EnableSendfile</directive> que dans un
+    contexte global.
+    </p>
 </usage>
 </directivesynopsis>
 
