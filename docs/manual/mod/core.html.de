@@ -36,6 +36,7 @@ Servers</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Direktiven</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#acceptfilter">AcceptFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
@@ -47,18 +48,24 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#define">Define</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#if">If</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
@@ -76,14 +83,17 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveralias">ServerAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#servername">ServerName</a></li>
@@ -95,11 +105,24 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 </ul>
 </div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a>-<a name="acceptfilter" id="acceptfilter">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Configures optimizations for a Protocol's Listener Sockets</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a>-<a name="acceptpathinfo" id="acceptpathinfo">Direktive</a></h2>
 <table class="directive">
@@ -642,6 +665,16 @@ nicht auf andere Weise ermitteln kann.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Define" id="Define">Define</a>-<a name="define" id="define">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Define the existence of a variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a>-<a name="directory" id="directory">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Umschließt eine Gruppe von Direktiven, die nur auf
@@ -988,6 +1021,16 @@ Dateien an den Client auszuliefern</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Error" id="Error">Error</a>-<a name="error" id="error">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a>-<a name="errordocument" id="errordocument">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Das, was der Server im Fehlerfall an den Client
@@ -1155,6 +1198,27 @@ Fehlermeldungen</a></li>
 <li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
 <li><a href="../logs.html">Apache-Log-Dateien</a></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a>-<a name="errorlogformat" id="errorlogformat">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Format specification for error log entries</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a>-<a name="extendedstatus" id="extendedstatus">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Keep track of extended status information for each 
+request</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a>-<a name="fileetag" id="fileetag">Direktive</a></h2>
@@ -1348,6 +1412,16 @@ angegebenen MIME-Content-Type</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a>-<a name="gprofdir" id="gprofdir">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Directory to write gmon.out profiling data to.  </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a>-<a name="hostnamelookups" id="hostnamelookups">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Aktiviert DNS-Lookups auf Client-IP-Adressen</td></tr>
@@ -1390,6 +1464,17 @@ angegebenen MIME-Content-Type</td></tr>
     kompiliert wird, kann dazu verwendet werden, um offline Hostnamen von
     protokollierten IP-Adressen nachzuschlagen.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="If" id="If">If</a>-<a name="if" id="if">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Contains directives that apply only if a condition is
+satisfied by a request at runtime</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a>-<a name="ifdefine" id="ifdefine">Direktive</a></h2>
@@ -2239,6 +2324,17 @@ zulässig sind</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a>-<a name="mutex" id="mutex">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Configures mutex mechanism and lock file directory for all
+or specified mutexes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a>-<a name="namevirtualhost" id="namevirtualhost">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Bestimmt eine IP-Adresse für den Betrieb namensbasierter
@@ -2461,6 +2557,16 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
     <p>Die Voreinstellung ist <code>All</code>, sofern keine anderen Angaben
     gemacht wurden.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a>-<a name="protocol" id="protocol">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Protocol for a listening socket</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Require" id="Require">Require</a>-<a name="require" id="require">Direktive</a></h2>
@@ -2754,6 +2860,18 @@ Die Option <code>Registry-Strict</code> ist verfügbar seit Apache
     manuell eingerichtet werden und schützt Ihr System so for
     versehentlichen Programmaufrufen.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a>-<a name="seerequesttail" id="seerequesttail">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Determine if mod_status displays the first 63 characters
+of a request or the last 63, assuming the request itself is greater than
+63 chars.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a>-<a name="serveradmin" id="serveradmin">Direktive</a></h2>
@@ -3164,6 +3282,26 @@ bevor er die Anfrage abbricht</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a>-<a name="traceenable" id="traceenable">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Determines the behaviour on <code>TRACE</code> requests</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a>-<a name="undefine" id="undefine">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Undefine the existence of a variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a>-<a name="usecanonicalname" id="usecanonicalname">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Bestimmt, wie der Server seinen eigenen Namen und Port
@@ -3232,6 +3370,16 @@ ermittelt</td></tr>
 <li><code class="directive"><a href="#servername">ServerName</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a>-<a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Configures how the server determines its own name and port</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a>-<a name="virtualhost" id="virtualhost">Direktive</a></h2>

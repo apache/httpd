@@ -3791,8 +3791,7 @@ certain events before failing a request</description>
 
 <directivesynopsis>
 <name>TraceEnable</name>
-<description>Determines the behaviour on <code>TRACE</code>
-requests</description>
+<description>Determines the behaviour on <code>TRACE</code> requests</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context></contextlist>

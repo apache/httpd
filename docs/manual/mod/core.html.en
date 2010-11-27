@@ -3813,8 +3813,7 @@ certain events before failing a request</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines the behaviour on <code>TRACE</code>
-requests</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines the behaviour on <code>TRACE</code> requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TraceEnable on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
