@@ -513,6 +513,14 @@ valides.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LDAPLibraryDebug</name>
+<description>Enable debugging in the LDAP SDK</description>
+<contextlist><context>server config</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of
+document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LDAPOpCacheEntries</name>
 <description>Nombre d'entr&eacute;es utilis&eacute;es pour mettre en cache les
 op&eacute;rations de comparaison LDAP</description>
@@ -717,13 +725,6 @@ connexion</description>
     secondaire s'il en a &eacute;t&eacute; sp&eacute;cifi&eacute; un. La valeur par d&eacute;faut est de 10
     secondes.</p>
 </usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>UseCanonicalPhysicalPort</name>
-<description>Configures how the server determines its own name and port</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
 </directivesynopsis>
 
 <directivesynopsis>
