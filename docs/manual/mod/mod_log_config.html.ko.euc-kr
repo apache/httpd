@@ -48,6 +48,7 @@
 </div>
 <div id="quickview"><h3 class="directives">지시어들</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cookielog">CookieLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
@@ -237,6 +238,16 @@
     디렉토리에 쓰기 권한을 가질때 왜 보안에 문제가 생기는지
     <a href="../misc/security_tips.html#serverroot">보안 팁</a>
     문서를 참고하라.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_log_config</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CookieLog" id="CookieLog">CookieLog</a> <a name="cookielog" id="cookielog">지시어</a></h2>
