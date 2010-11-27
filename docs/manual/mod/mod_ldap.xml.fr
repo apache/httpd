@@ -634,6 +634,13 @@ clients globaux</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LDAPTimeout</name>
+<description>Specifies the timeout for LDAP search and bind operations, in seconds</description>
+<contextlist><context>server config</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LDAPTrustedClientCert</name>
 <description>D&eacute;finit le nom de fichier contenant un certificat client ou
 un alias renvoyant vers un certificat client sp&eacute;cifique &agrave; une connexion.
@@ -710,6 +717,13 @@ connexion</description>
     secondaire s'il en a &eacute;t&eacute; sp&eacute;cifi&eacute; un. La valeur par d&eacute;faut est de 10
     secondes.</p>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UseCanonicalPhysicalPort</name>
+<description>Configures how the server determines its own name and port</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
 </directivesynopsis>
 
 <directivesynopsis>
