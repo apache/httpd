@@ -69,6 +69,13 @@ sub directive_doc {
         $eng_xml->{directivesynopsis}->{$d}->{description} .
         "</description>\n";
     print "<contextlist>";
+
+    # If there's only one context, this is a scalar, not an arrayref.
+    if ( !ref( $eng_xml->{directivesynopsis}->{$d}->{contextlist}->{context}) ) {
+        $eng_xml->{directivesynopsis}->{$d}->{contextlist}->{context} 
+            = [ $eng_xml->{directivesynopsis}->{$d}->{contextlist}->{context} ]
+    }
+
     foreach my $c ( @{ $eng_xml->{directivesynopsis}->{$d}->{contextlist}->{context} } ) {
         print "<context>".$c."</context>";
     }
