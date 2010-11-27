@@ -668,11 +668,17 @@ nicht auf andere Weise ermitteln kann.</td></tr>
 <div class="directive-section"><h2><a name="Define" id="Define">Define</a>-<a name="define" id="define">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Define the existence of a variable</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Define <var>Parametername</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table>
+    <p>Equivalent zum übergeben von <var>Parametername</var> mittels des
+    <code>-D</code> Arguments an <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
+    <p>Diese Directive kann verwendet werden, um die Nutzung von <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> Sectionen umzuschalten, ohne die
+    <code>-D</code> Argumentente in etwaigen Start-Skripten ändern
+    zu müssen.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a>-<a name="directory" id="directory">Direktive</a></h2>
