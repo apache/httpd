@@ -65,10 +65,12 @@ d'Apache</td></tr></table>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapreferrals">LDAPReferrals</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldaptimeout">LDAPTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedmode">LDAPTrustedMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapverifyservercert">LDAPVerifyServerCert</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 </ul>
 <h3>Sujets</h3>
 <ul id="topics">
@@ -627,6 +629,16 @@ partagée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPTimeout" id="LDAPTimeout">LDAPTimeout</a> <a name="ldaptimeout" id="ldaptimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the timeout for LDAP search and bind operations, in seconds</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPTrustedClientCert" id="LDAPTrustedClientCert">LDAPTrustedClientCert</a> <a name="ldaptrustedclientcert" id="ldaptrustedclientcert">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier contenant un certificat client ou
@@ -749,6 +761,16 @@ serveur</td></tr>
     vérification d'un certificat de serveur lors de l'établissement
     d'une connexion SSL avec un serveur LDAP.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures how the server determines its own name and port</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 </div>
 <div class="bottomlang">
