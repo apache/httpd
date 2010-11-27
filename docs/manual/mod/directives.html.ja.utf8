@@ -139,7 +139,8 @@
 <li><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
 <li><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
-<li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
+<li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
+<li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
 <li><a href="mod_buffer.html#buffersize">BufferSize</a></li>
@@ -370,6 +371,8 @@
 <li><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><a href="mod_proxy.html#proxypass">ProxyPass</a></li>
+<li><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></li>
+<li><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch</a></li>
 <li><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse</a></li>
 <li><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></li>
 <li><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></li>
@@ -380,6 +383,8 @@
 <li><a href="mod_proxy.html#proxyrequests">ProxyRequests</a></li>
 <li><a href="mod_proxy_scgi.html#proxyscgiinternalredirect">ProxySCGIInternalRedirect</a></li>
 <li><a href="mod_proxy_scgi.html#proxyscgisendfile">ProxySCGISendfile</a></li>
+<li><a href="mod_proxy.html#proxyset">ProxySet</a></li>
+<li><a href="mod_proxy.html#proxystatus">ProxyStatus</a></li>
 <li><a href="mod_proxy.html#proxytimeout">ProxyTimeout</a></li>
 <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
 <li><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName</a></li>
