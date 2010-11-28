@@ -468,14 +468,14 @@ static const yytype_int8 yyrhs[] =
 {
       44,     0,    -1,    45,    -1,     5,    -1,     3,    -1,     4,
       -1,    36,    45,    -1,    45,    34,    45,    -1,    45,    35,
-      45,    -1,    46,    -1,    12,    52,    -1,    37,    45,    38,
-      -1,    52,    18,    52,    -1,    52,    19,    52,    -1,    52,
-      20,    52,    -1,    52,    21,    52,    -1,    52,    22,    52,
-      -1,    52,    23,    52,    -1,    52,    27,    52,    -1,    52,
-      28,    52,    -1,    52,    29,    52,    -1,    52,    30,    52,
-      -1,    52,    31,    52,    -1,    52,    32,    52,    -1,    52,
-      26,    47,    -1,    52,    24,    53,    -1,    52,    25,    53,
-      -1,    52,    13,    52,    -1,    55,    -1,    39,    48,    40,
+      45,    -1,    46,    -1,    12,    52,    -1,    52,    13,    52,
+      -1,    37,    45,    38,    -1,    52,    18,    52,    -1,    52,
+      19,    52,    -1,    52,    20,    52,    -1,    52,    21,    52,
+      -1,    52,    22,    52,    -1,    52,    23,    52,    -1,    52,
+      27,    52,    -1,    52,    28,    52,    -1,    52,    29,    52,
+      -1,    52,    30,    52,    -1,    52,    31,    52,    -1,    52,
+      32,    52,    -1,    52,    26,    47,    -1,    52,    24,    53,
+      -1,    52,    25,    53,    -1,    55,    -1,    39,    48,    40,
       -1,    52,    -1,    48,    41,    52,    -1,    49,    50,    -1,
       50,    -1,     8,    -1,    51,    -1,    54,    -1,    16,     7,
       17,    -1,    16,     7,    42,    49,    17,    -1,     6,    -1,
@@ -489,7 +489,7 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint8 yyrline[] =
 {
        0,   109,   109,   110,   113,   114,   115,   116,   117,   118,
-     119,   120,   123,   124,   125,   126,   127,   128,   129,   130,
+     119,   120,   121,   124,   125,   126,   127,   128,   129,   130,
      131,   132,   133,   134,   135,   136,   137,   138,   141,   142,
      145,   146,   149,   150,   153,   154,   155,   158,   159,   162,
      163,   164,   165,   166,   167,   168,   171,   180,   191,   198,
@@ -532,7 +532,7 @@ static const yytype_uint16 yytoknum[] =
 static const yytype_uint8 yyr1[] =
 {
        0,    43,    44,    44,    45,    45,    45,    45,    45,    45,
-      45,    45,    46,    46,    46,    46,    46,    46,    46,    46,
+      45,    45,    45,    46,    46,    46,    46,    46,    46,    46,
       46,    46,    46,    46,    46,    46,    46,    46,    47,    47,
       48,    48,    49,    49,    50,    50,    50,    51,    51,    52,
       52,    52,    52,    52,    52,    52,    53,    53,    54,    55,
@@ -560,9 +560,9 @@ static const yytype_uint8 yydefact[] =
       10,    34,    45,     0,    33,    35,    36,     0,     6,     0,
        1,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    44,    32,    37,     0,    11,     7,     8,    27,    12,
-      13,    14,    15,    16,    17,    46,    47,    25,    26,     0,
-       0,    24,    28,    18,    19,    20,    21,    22,    23,    40,
+       0,    44,    32,    37,     0,    12,     7,     8,    11,    13,
+      14,    15,    16,    17,    18,    46,    47,    26,    27,     0,
+       0,    25,    28,    19,    20,    21,    22,    23,    24,    40,
       50,     0,     0,     0,    30,    38,     0,    29,     0,    49,
       31
 };
@@ -1533,119 +1533,119 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 120 "util_expr_parse.y"
-    { (yyval.exVal) = (yyvsp[(2) - (3)].exVal); ;}
+    { (yyval.exVal) = ap_expr_binary_op_make((yyvsp[(2) - (3)].cpVal),   (yyvsp[(1) - (3)].exVal),   (yyvsp[(3) - (3)].exVal),   ctx); ;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 123 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_EQ,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+#line 121 "util_expr_parse.y"
+    { (yyval.exVal) = (yyvsp[(2) - (3)].exVal); ;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
 #line 124 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_NE,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_EQ,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
 #line 125 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_LT,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_NE,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
 #line 126 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_LE,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_LT,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
 #line 127 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_GT,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_LE,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
 #line 128 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_GE,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_GT,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
 #line 129 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_STR_EQ,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_GE,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
 #line 130 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_STR_NE,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_STR_EQ,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
 #line 131 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_STR_LT,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_STR_NE,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
 #line 132 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_STR_LE,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_STR_LT,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
 #line 133 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_STR_GT,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_STR_LE,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
 #line 134 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_STR_GE,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_STR_GT,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
 #line 135 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_IN,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_STR_GE,  (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
 #line 136 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_REG,     (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_IN,      (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
 #line 137 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_make(op_NRE,     (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_REG,     (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
 #line 138 "util_expr_parse.y"
-    { (yyval.exVal) = ap_expr_binary_op_make((yyvsp[(2) - (3)].cpVal), (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
+    { (yyval.exVal) = ap_expr_make(op_NRE,     (yyvsp[(1) - (3)].exVal), (yyvsp[(3) - (3)].exVal), ctx); ;}
     break;
 
   case 28:
@@ -2049,7 +2049,8 @@ yyreturn:
 
 void yyerror(ap_expr_parse_ctx *ctx, char *s)
 {
-    ctx->error = s;
+    /* s is allocated on the stack */
+    ctx->error = apr_pstrdup(ctx->ptemp, s);
 }
 
 
