@@ -53,9 +53,7 @@ typedef struct {
  * operators)
  */
 #define AP_EXPR_FLAGS_SSL_EXPR_COMPAT       1
-/** If using the simple ap_expr_exec(), don't add siginificant request headers
- * to the Vary response header
- */
+/** Don't add siginificant request headers to the Vary response header */
 #define AP_EXPR_FLAGS_DONT_VARY             2
 
 
@@ -126,6 +124,8 @@ typedef struct {
  *
  * During parsing, the parser calls the lookup function to resolve a
  * name into a function pointer and an opaque context for the function.
+ * If the argument to a function or operator is constant, the lookup function
+ * may also parse that argument and store the parsed data in the context.
  *
  * The default lookup function is the hook 'ap_expr_lookup_default' which just
  * calls ap_expr_lookup_default. Modules can use it to make functions and
@@ -204,8 +204,12 @@ typedef struct {
     const void **func;
     /** where to store the function's context */
     const void **data;
-    /** Where to store the error message (if any) */
+    /** where to store the error message (if any) */
     const char **err;
+
+    /** arg for pre-parsing (only if a simple string).
+     *  For binary ops, this is the right argument. */
+    const char *arg;
 } ap_expr_lookup_parms;
 
 /** Function for looking up the provider function for a variable, operator
