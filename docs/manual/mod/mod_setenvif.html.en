@@ -265,7 +265,7 @@ for additional examples.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a> <a name="setenvifexpr" id="setenvifexpr">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables based on an expression</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables based on an ap_expr expression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnvIfExpr <em>expr
     [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
@@ -286,11 +286,11 @@ for additional examples.
     <p>This would set the environment variable <code>iso_delivered</code>
     every time our application attempts to send it via <code>X-Sendfile</code></p>
 
-    <p>For a more useful example, consider the <code>Referer</code>
-    example from above for a site with more than one domain:</p>
+    <p>A more useful example would be to set the variable rfc1918 if the
+    remote IP address is a private address according to RFC 1918:</p>
 
 <div class="example"><p><code>
-    SetEnvIfExpr "${HTTP_REFERER} in { 'www.example.com','example.com','w2.example3.org' }" intra_site_referral
+    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
 </code></p></div>
 
 <h3>See also</h3>
