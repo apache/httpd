@@ -328,7 +328,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>osenv</code></td>
         <td>Lookup operating system environment variable</td></tr>
     <tr><td><code>note</code></td>
-        <td>Lookup request environment variable</td></tr>
+        <td>Lookup request note</td></tr>
     <tr><td><code>env</code></td>
         <td>Return first match of <code>note</code>, <code>reqenv</code>,
             <code>osenv</code></td></tr>
