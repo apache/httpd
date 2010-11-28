@@ -316,7 +316,7 @@
     return T_OP_UNARY;
 }
 
-"-"[a-zA-Z_][a-zA-Z_0-9] {
+"-"[a-zA-Z_][a-zA-Z_0-9]+ {
     yylval->cpVal = apr_pstrdup(yyextra->pool, yytext + 1);
     return T_OP_BINARY;
 }

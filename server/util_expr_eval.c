@@ -26,6 +26,7 @@
 #include "util_expr_private.h"
 
 #include "apr_lib.h"
+#include "apr_fnmatch.h"
 
 APLOG_USE_MODULE(core);
 
@@ -53,8 +54,6 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx *ctx, const ap_expr *node)
     const char *result = "";
     switch (node->node_op) {
         case op_Digit:
-            result = node->node_arg1;
-            break;
         case op_String:
             result = node->node_arg1;
             break;
@@ -415,8 +414,9 @@ ap_expr *ap_expr_make(ap_expr_node_op op, const void *a1, const void *a2,
     return node;
 }
 
-
-static ap_expr *ap_expr_info_make(int type, const char *name, ap_expr_parse_ctx *ctx)
+static ap_expr *ap_expr_info_make(int type, const char *name,
+                                  ap_expr_parse_ctx *ctx,
+                                  const ap_expr *arg)
 {
     ap_expr *info = apr_palloc(ctx->pool, sizeof(ap_expr));
     ap_expr_lookup_parms parms;
@@ -428,6 +428,7 @@ static ap_expr *ap_expr_info_make(int type, const char *name, ap_expr_parse_ctx 
     parms.func  = &info->node_arg1;
     parms.data  = &info->node_arg2;
     parms.err   = &ctx->error2;
+    parms.arg   = (arg && arg->node_op == op_String) ? arg->node_arg1 : NULL;
     if (ctx->lookup_fn(&parms) != OK)
         return NULL;
     return info;
@@ -436,7 +437,7 @@ static ap_expr *ap_expr_info_make(int type, const char *name, ap_expr_parse_ctx 
 ap_expr *ap_expr_str_func_make(const char *name, const ap_expr *arg,
                                ap_expr_parse_ctx *ctx)
 {
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_STRING, name, ctx);
+    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_STRING, name, ctx, arg);
     if (!info)
         return NULL;
 
@@ -447,7 +448,7 @@ ap_expr *ap_expr_str_func_make(const char *name, const ap_expr *arg,
 ap_expr *ap_expr_list_func_make(const char *name, const ap_expr *arg,
                                 ap_expr_parse_ctx *ctx)
 {
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_LIST, name, ctx);
+    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_LIST, name, ctx, arg);
     if (!info)
         return NULL;
 
@@ -458,7 +459,7 @@ ap_expr *ap_expr_list_func_make(const char *name, const ap_expr *arg,
 ap_expr *ap_expr_unary_op_make(const char *name, const ap_expr *arg,
                                ap_expr_parse_ctx *ctx)
 {
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_OP_UNARY, name, ctx);
+    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_OP_UNARY, name, ctx, arg);
     if (!info)
         return NULL;
 
@@ -470,7 +471,7 @@ ap_expr *ap_expr_binary_op_make(const char *name, const ap_expr *arg1,
                                 const ap_expr *arg2, ap_expr_parse_ctx *ctx)
 {
     ap_expr *args;
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_OP_UNARY, name, ctx);
+    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_OP_BINARY, name, ctx, arg2);
     if (!info)
         return NULL;
 
@@ -482,7 +483,7 @@ ap_expr *ap_expr_binary_op_make(const char *name, const ap_expr *arg1,
 
 ap_expr *ap_expr_var_make(const char *name, ap_expr_parse_ctx *ctx)
 {
-    ap_expr *node = ap_expr_info_make(AP_EXPR_FUNC_VAR, name, ctx);
+    ap_expr *node = ap_expr_info_make(AP_EXPR_FUNC_VAR, name, ctx, NULL);
     if (!node)
         return NULL;
 
@@ -1155,10 +1156,87 @@ static const char *misc_var_fn(ap_expr_eval_ctx *ctx, const void *data)
     return NULL;
 }
 
+static int subnet_parse_arg(ap_expr_lookup_parms *parms)
+{
+    apr_ipsubnet_t *subnet;
+    const char *addr = parms->arg;
+    const char *mask;
+    apr_status_t ret;
+
+    if (!parms->arg) {
+        *parms->err = apr_psprintf(parms->ptemp,
+                                   "-%s requires subnet/netmask as constant argument",
+                                   parms->name);
+        return !OK;
+    }
+
+    mask = ap_strchr_c(addr, '/');
+    if (mask) {
+        addr = apr_pstrmemdup(parms->ptemp, addr, mask - addr);
+        mask++;
+    }
+
+    ret = apr_ipsubnet_create(&subnet, addr, mask, parms->pool);
+    if (ret != APR_SUCCESS) {
+        *parms->err = "parsing of subnet/netmask failed";
+        return !OK;
+    }
+
+    *parms->data = subnet;
+    return OK;
+}
+
+static int op_ipmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
+                const char *arg2)
+{
+    apr_ipsubnet_t *subnet = (apr_ipsubnet_t *)data;
+    apr_sockaddr_t *saddr;
+
+    AP_DEBUG_ASSERT(subnet != NULL);
+
+    /* maybe log an error if this goes wrong? */
+    if (apr_sockaddr_info_get(&saddr, arg1, APR_UNSPEC, 0, 0, ctx->p) != APR_SUCCESS)
+        return FALSE;
+
+    return apr_ipsubnet_test(subnet, saddr);
+}
+
+static int op_R(ap_expr_eval_ctx *ctx, const void *data, const char *arg1)
+{
+    apr_ipsubnet_t *subnet = (apr_ipsubnet_t *)data;
+
+    AP_DEBUG_ASSERT(subnet != NULL);
+
+    if (!ctx->c)
+        return FALSE;
+
+    return apr_ipsubnet_test(subnet, ctx->c->remote_addr);
+}
+
+static int op_fnmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
+                       const char *arg2)
+{
+    return (APR_SUCCESS == apr_fnmatch(arg2, arg1, APR_FNM_PATHNAME));
+}
+
+static int op_strmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
+                       const char *arg2)
+{
+    return (APR_SUCCESS == apr_fnmatch(arg2, arg1, 0));
+}
+
+static int op_strcmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
+                       const char *arg2)
+{
+    return (APR_SUCCESS == apr_fnmatch(arg2, arg1, APR_FNM_CASE_BLIND));
+}
+
 struct expr_provider_single {
     const void *func;
     const char *name;
+    ap_expr_lookup_fn *arg_parsing_func;
 };
+
 struct expr_provider_multi {
     const void *func;
     const char **names;
@@ -1173,71 +1251,89 @@ static const struct expr_provider_multi var_providers[] = {
 };
 
 static const struct expr_provider_single string_func_providers[] = {
-    { osenv_func, "osenv" },
-    { env_func, "env" },
-    { req_table_func, "resp" },
-    { req_table_func, "req" },
+    { osenv_func,           "osenv",          NULL },
+    { env_func,             "env",            NULL },
+    { req_table_func,       "resp",           NULL },
+    { req_table_func,       "req",            NULL },
     /* 'http' as alias for 'req' for compatibility with ssl_expr */
-    { req_table_func, "http" },
-    { req_table_func, "note" },
-    { req_table_func, "reqenv" },
-    { tolower_func, "tolower" },
-    { toupper_func, "toupper" },
-    { escape_func, "escape" },
-    { unescape_func, "unescape" },
-    { file_func, "file" },
-    { NULL, NULL}
+    { req_table_func,       "http",           NULL },
+    { req_table_func,       "note",           NULL },
+    { req_table_func,       "reqenv",         NULL },
+    { tolower_func,         "tolower",        NULL },
+    { toupper_func,         "toupper",        NULL },
+    { escape_func,          "escape",         NULL },
+    { unescape_func,        "unescape",       NULL },
+    { file_func,            "file",           NULL },
+    { NULL, NULL, NULL}
 };
 /* XXX: base64 encode/decode ? */
 
 static const struct expr_provider_single unary_op_providers[] = {
-    { op_nz, "n" },
-    { op_nz, "z" },
-    { NULL, NULL}
+    { op_nz, "n", NULL },
+    { op_nz, "z", NULL },
+    { op_R,  "R", subnet_parse_arg },
+    { NULL, NULL, NULL }
 };
+
+static const struct expr_provider_single binary_op_providers[] = {
+    { op_ipmatch,   "ipmatch",      subnet_parse_arg },
+    { op_fnmatch,   "fnmatch",      NULL },
+    { op_strmatch,  "strmatch",     NULL },
+    { op_strcmatch, "strcmatch",    NULL },
+    { NULL, NULL, NULL }
+};
+
 static int core_expr_lookup(ap_expr_lookup_parms *parms)
 {
     switch (parms->type) {
     case AP_EXPR_FUNC_VAR: {
-        const struct expr_provider_multi *prov = var_providers;
-        while (prov->func) {
-            const char **name = prov->names;
-            while (*name) {
-                if (strcasecmp(*name, parms->name) == 0) {
-                    *parms->func = prov->func;
-                    *parms->data = name;
-                    return OK;
+            const struct expr_provider_multi *prov = var_providers;
+            while (prov->func) {
+                const char **name = prov->names;
+                while (*name) {
+                    if (strcasecmp(*name, parms->name) == 0) {
+                        *parms->func = prov->func;
+                        *parms->data = name;
+                        return OK;
+                    }
+                    name++;
                 }
-                name++;
+                prov++;
             }
-            prov++;
         }
         break;
-    }
-    case AP_EXPR_FUNC_STRING: {
-        const struct expr_provider_single *prov = string_func_providers;
-        while (prov->func) {
-            if (strcasecmp(prov->name, parms->name) == 0) {
-                *parms->func = prov->func;
-                *parms->data = prov->name;
-                return OK;
+    case AP_EXPR_FUNC_STRING:
+    case AP_EXPR_FUNC_OP_UNARY:
+    case AP_EXPR_FUNC_OP_BINARY: {
+            const struct expr_provider_single *prov;
+            switch (parms->type) {
+            case AP_EXPR_FUNC_STRING:
+                prov = string_func_providers;
+                break;
+            case AP_EXPR_FUNC_OP_UNARY:
+                prov = unary_op_providers;
+                break;
+            case AP_EXPR_FUNC_OP_BINARY:
+                prov = binary_op_providers;
+                break;
+            default:
+                ap_assert(0);
             }
-            prov++;
+            while (prov->func) {
+                if (strcasecmp(prov->name, parms->name) == 0) {
+                    *parms->func = prov->func;
+                    if (prov->arg_parsing_func) {
+                        return prov->arg_parsing_func(parms);
+                    }
+                    else {
+                        *parms->data = prov->name;
+                        return OK;
+                    }
+                }
+                prov++;
+            }
         }
         break;
-    }
-    case AP_EXPR_FUNC_OP_UNARY: {
-        const struct expr_provider_single *prov = unary_op_providers;
-        while (prov->func) {
-            if (strcasecmp(prov->name, parms->name) == 0) {
-                *parms->func = prov->func;
-                *parms->data = prov->name;
-                return OK;
-            }
-            prov++;
-        }
-        break;
-    }
     default:
         break;
     }

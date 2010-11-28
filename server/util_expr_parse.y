@@ -117,6 +117,7 @@ expr      : T_TRUE                       { $$ = ap_expr_make(op_True,        NUL
           | expr T_OP_AND expr           { $$ = ap_expr_make(op_And,         $1,   $3,   ctx); }
           | comparison                   { $$ = ap_expr_make(op_Comp,        $1,   NULL, ctx); }
           | T_OP_UNARY word              { $$ = ap_expr_unary_op_make(       $1,   $2,   ctx); }
+          | word T_OP_BINARY word        { $$ = ap_expr_binary_op_make($2,   $1,   $3,   ctx); }
           | '(' expr ')'                 { $$ = $2; }
           ;
 
@@ -135,7 +136,6 @@ comparison: word T_OP_EQ word            { $$ = ap_expr_make(op_EQ,      $1, $3,
           | word T_OP_IN wordlist        { $$ = ap_expr_make(op_IN,      $1, $3, ctx); }
           | word T_OP_REG regex          { $$ = ap_expr_make(op_REG,     $1, $3, ctx); }
           | word T_OP_NRE regex          { $$ = ap_expr_make(op_NRE,     $1, $3, ctx); }
-          | word T_OP_BINARY word        { $$ = ap_expr_binary_op_make($2, $1, $3, ctx); }
           ;
 
 wordlist  : lstfunccall                  { $$ = $1; }
@@ -205,6 +205,7 @@ strfunccall : T_ID '(' word ')' { $$ = ap_expr_str_func_make($1, $3, ctx); }
 
 void yyerror(ap_expr_parse_ctx *ctx, char *s)
 {
-    ctx->error = s;
+    /* s is allocated on the stack */
+    ctx->error = apr_pstrdup(ctx->ptemp, s);
 }
 
