@@ -211,6 +211,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     minus and at least two characters. The name is not case sensitive.
     Modules may register additional binary operators.</p>
 
+    <h3><a name="comp" id="comp">Comparison operators</a></h3>
+    
+
     <table class="bordered"><tr class="header"><th>Name</th><th>Alternative</th> <th>Description</th></tr>
 <tr><td><code>==</code></td>
         <td><code>=</code></td>
@@ -249,6 +252,24 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td><code>ge</code></td>
         <td>Integer greater than or equal</td></tr>
 </table>
+    
+
+    <h3><a name="binaryother" id="binaryother">Other binary operators</a></h3>
+    
+
+    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
+<tr><td><code>-ipmatch</code></td>
+        <td>IP address matches address/netmask</td></tr>
+<tr class="odd"><td><code>-strmatch</code></td>
+        <td>left string matches pattern given by right string (containing
+            wildcards *, ?, [])</td></tr>
+<tr><td><code>-strcmatch</code></td>
+        <td>same as <code>-strmatch</code>, but case insensitive</td></tr>
+<tr class="odd"><td><code>-fnmatch</code></td>
+        <td>same as <code>-strmatch</code>, but slashes are not matched by
+            wildcards</td></tr>
+</table>
+    
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -264,6 +285,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>String is not empty</td></tr>
 <tr class="odd"><td><code>-z</code></td>
         <td>String is empty</td></tr>
+<tr><td><code>-R</code></td>
+        <td>Same as "<code>%{REMOTE_ADDR} -ipmatch ...</code>", but more efficient
+        </td></tr>
 </table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

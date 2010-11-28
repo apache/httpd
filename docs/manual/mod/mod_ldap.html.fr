@@ -519,13 +519,36 @@ connexion</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPLibraryDebug" id="LDAPLibraryDebug">LDAPLibraryDebug</a> <a name="ldaplibrarydebug" id="ldaplibrarydebug">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable debugging in the LDAP SDK</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le débogage dans le SDK LDAP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPLibraryDebug <var>7</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-</table>Documentation not yet translated. Please see English version of
-document.
+</table>
+    <p>Active les options de débogage LDAP spécifiques au SDK, qui
+    entraînent en général une journalisation d'informations verbeuses du
+    SDK LDAP dans le journal principal des erreurs d'Apache. Les
+    messages de traces en provenance du SDK LDAP fournissent des
+    informations très détaillées qui peuvent s'avérer utiles lors du
+    débogage des problèmes de connexion avec des serveurs LDAP
+    d'arrière-plan.</p>
+
+    <p>Cette option n'est configurable que lorsque le serveur HTTP
+    Apache est lié avec un SDK LDAP qui implémente
+    <code>LDAP_OPT_DEBUG</code> ou <code>LDAP_OPT_DEBUG_LEVEL</code>,
+    comme OpenLDAP (une valeur de 7 est verbeuse) ou Tivoli Directory
+    Server (une valeur de 65535 est verbeuse).</p>
+
+    <div class="warning">
+    <p>Les informations journalisées peuvent contenir des données
+    d'authentification en clair utilisées ou validées lors de
+    l'authentification LDAP ; vous devez donc prendre soin de protéger
+    et de purger le journal des erreurs lorsque cette directive est
+    utilisée.</p>
+    </div>
+    
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPOpCacheEntries" id="LDAPOpCacheEntries">LDAPOpCacheEntries</a> <a name="ldapopcacheentries" id="ldapopcacheentries">Directive</a></h2>
@@ -642,12 +665,31 @@ partagée</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPTimeout" id="LDAPTimeout">LDAPTimeout</a> <a name="ldaptimeout" id="ldaptimeout">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the timeout for LDAP search and bind operations, in seconds</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le délai d'attente pour les opérations de
+recherche et d'identification LDAP en secondes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPTimeout 60</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table>
+    <p>Cette directive permet de spécifier le délai d'attente pour les
+    opérations de recherche et d'identification, ainsi que l'option
+    LDAP_OPT_TIMEOUT dans la bibliothèque LDAP client sous-jacente,
+    lorsqu'elle est disponible.</p>
+
+    <p>Lorsque le délai est atteint, httpd va refaire un essai dans le
+    cas où une connexion existante a été silencieusement fermée par un
+    pare-feu. Les performances seront cependant bien meilleures si le
+    pare-feu est configuré pour envoyer des paquets TCP RST au lieu de
+    rejeter silencieusement les paquets.</p>
+
+    <div class="note">
+    <p>Les délais pour les opérations de comparaison LDAP nécessitent un
+    SDK avec LDAP_OPT_TIMEOUT, comme OpenLDAP &gt;= 2.4.4.</p>
+    </div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPTrustedClientCert" id="LDAPTrustedClientCert">LDAPTrustedClientCert</a> <a name="ldaptrustedclientcert" id="ldaptrustedclientcert">Directive</a></h2>

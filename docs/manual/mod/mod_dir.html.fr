@@ -223,6 +223,18 @@ aucun fichier</td></tr>
     </code></p></div>
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront traités normalement.</p>
+    <p>Pour un URI intermédiaire tel que
+    <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
+    spécifié en tant que <var>url-locale</var> :</p>
+    <div class="example"><p><code>
+         <code>
+             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
+	     <span class="indent">
+		     FallbackResource /blog/index.php<br />
+             </span>
+             &lt;/Directory&gt;
+         </code>
+    </code></p></div>
 
 </div>
 </div>
