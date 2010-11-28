@@ -637,16 +637,19 @@ static int match_headers(request_rec *r)
                 val_len = val ? strlen(val) : 0;
             }
 
-            /*
-             * A NULL value indicates that the header field or special entity
-             * wasn't present or is undefined.  Represent that as an empty string
-             * so that REs like "^$" will work and allow envariable setting
-             * based on missing or empty field.
-             */
-            if (val == NULL) {
-                val = "";
-                val_len = 0;
-            }
+        }
+
+        /*
+         * A NULL value indicates that the header field or special entity
+         * wasn't present or is undefined.  Represent that as an empty string
+         * so that REs like "^$" will work and allow envariable setting
+         * based on missing or empty field. This is also necessary to make
+         * ap_pregsub work after evaluating an ap_expr which does set the
+         * regexp backref data.
+         */
+        if (val == NULL) {
+            val = "";
+            val_len = 0;
         }
 
         if ((b->pattern && apr_strmatch(b->pattern, val, val_len)) ||
@@ -674,6 +677,12 @@ static int match_headers(request_rec *r)
                                        elts[j].val);
                     }
                 }
+            }
+            if (APLOGrtrace2(r)) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                              "Setting envvar(s): %s",
+                              apr_array_pstrcat(r->pool, arr, ' '));
+
             }
         }
     }
