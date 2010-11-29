@@ -204,7 +204,12 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      *   THEN we can be persistent, which requires more headers be output.
      *
      * Note that the condition evaluation order is extremely important.
+     *
+     * Silent compiler warnings for (r->chunked = 1) with #pragma 
      */
+#ifdef __WATCOMC__
+#pragma disable_message(105)
+#endif
     if ((r->connection->keepalive != AP_CONN_CLOSE)
         && !r->expecting_100
         && ((r->status == HTTP_NOT_MODIFIED)
@@ -229,6 +234,9 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         && ((ka_sent = ap_find_token(r->pool, conn, "keep-alive"))
             || (r->proto_num >= HTTP_VERSION(1,1)))
         && is_mpm_running()) {
+#ifdef __WATCOMC__
+#pragma enable_message(105)
+#endif
 
         r->connection->keepalive = AP_CONN_KEEPALIVE;
         r->connection->keepalives++;
