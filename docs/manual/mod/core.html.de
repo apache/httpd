@@ -1517,7 +1517,7 @@ Server-Konfigurationsdatei ein</td></tr>
     <p>Die Direktive erlaubt das Einfügen anderer Konfigurationsdateien
     in die Konfigurationsdatei des Servers.</p>
 
-    <p>Shell-typische (<code>fnmatch()</code>) Platzhlaterzeichen können
+    <p>Shell-typische (<code>fnmatch()</code>) Platzhalterzeichen können
     dazu verwendet werden, mehrere Dateien auf einmal in alphabetischer
     Reihenfolge einzufügen. Wenn <code class="directive">Include</code>
     darüber hinaus auf ein Verzeichnis anstatt auf eine Datei zeigt,

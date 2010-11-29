@@ -1003,13 +1003,9 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
-    <p>Veuillez noter que la configuration de la directive
-    <code class="directive">EnableSendfile</code> dans un contexte de répertoire
-    ou de fichier .htaccess n'est pas supportée par
-    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>. Le module ne prend en compte la
-    définition de <code class="directive">EnableSendfile</code> que dans un
-    contexte global.
-    </p>
+
+
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1076,6 +1072,13 @@ supérieures</td></tr>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
+    <p>Veuillez noter que la configuration de la directive
+    <code class="directive">EnableSendfile</code> dans un contexte de répertoire
+    ou de fichier .htaccess n'est pas supportée par
+    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>. Le module ne prend en compte la
+    définition de <code class="directive">EnableSendfile</code> que dans un
+    contexte global.
+    </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
