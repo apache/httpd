@@ -610,6 +610,7 @@ void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
 }
 
 static const char *dash_k_arg = NULL;
+static const char *dash_k_arg_noarg = "noarg";
 
 static int send_signal(pid_t pid, int sig)
 {
@@ -656,7 +657,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
         }
     }
 
-    if (!strcmp(dash_k_arg, "start")) {
+    if (!strcmp(dash_k_arg, "start") || dash_k_arg == dash_k_arg_noarg) {
         if (running) {
             printf("%s\n", status);
             return 1;
@@ -755,10 +756,12 @@ void ap_mpm_rewrite_args(process_rec *process)
 
     process->argc = mpm_new_argv->nelts;
     process->argv = (const char * const *)mpm_new_argv->elts;
-
-    if (dash_k_arg) {
-        APR_REGISTER_OPTIONAL_FN(ap_signal_server);
+  
+    if (NULL == dash_k_arg) { 
+        dash_k_arg = dash_k_arg_noarg;
     }
+
+    APR_REGISTER_OPTIONAL_FN(ap_signal_server);
 }
 
 static pid_t parent_pid, my_pid;
