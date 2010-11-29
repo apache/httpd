@@ -260,7 +260,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
                     break;
                 }
                 ap_unescape_url(w);
-                prep_string(&w, p);
+                prep_string((const char**)&w, p);
                 arg = (const char**)apr_array_push(args);
                 *arg = ap_escape_shell_cmd(p, w);
             }
@@ -353,7 +353,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
                 break;
             }
             ap_unescape_url(w);
-            prep_string(&w, p);
+            prep_string((const char**)&w, p);
             arg = (const char**)apr_array_push(args);
             *arg = ap_escape_shell_cmd(p, w);
         }

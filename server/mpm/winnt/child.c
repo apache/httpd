@@ -106,8 +106,8 @@ static apr_thread_mutex_t  *child_lock;
 static apr_thread_mutex_t  *qlock;
 static winnt_conn_ctx_t *qhead = NULL;
 static winnt_conn_ctx_t *qtail = NULL;
-static int num_completion_contexts = 0;
-static int max_num_completion_contexts = 0;
+static apr_uint32_t num_completion_contexts = 0;
+static apr_uint32_t max_num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
 static HANDLE qwait_event = NULL;
 
@@ -716,7 +716,7 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
  * Main entry point for the worker threads. Worker threads block in
  * win*_get_connection() awaiting a connection to service.
  */
-static unsigned int __stdcall worker_main(void *thread_num_val)
+static DWORD __stdcall worker_main(void *thread_num_val)
 {
     static int requests_this_child = 0;
     winnt_conn_ctx_t *context = NULL;
@@ -851,7 +851,7 @@ static void cleanup_thread(HANDLE *handles, int *thread_cnt,
  */
 static void create_listener_thread()
 {
-    int tid;
+    unsigned tid;
     int num_listeners = 0;
     /* Start an accept thread per listener
      * XXX: Why would we have a NULL sd in our listeners?
@@ -896,7 +896,7 @@ void child_main(apr_pool_t *pconf)
     int watch_thread;
     int time_remains;
     int cld;
-    int tid;
+    DWORD tid;
     int rv;
     int i;
 

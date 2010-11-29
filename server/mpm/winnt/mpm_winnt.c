@@ -616,7 +616,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     env[envc] = pidbuf;
     env[envc + 1] = NULL;
 
-    rv = apr_proc_create(&new_child, cmd, args, env, attr, ptemp);
+    rv = apr_proc_create(&new_child, cmd, (const char * const *)args,
+                         (const char * const *)env, attr, ptemp);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Parent: Failed to create the child process.");
