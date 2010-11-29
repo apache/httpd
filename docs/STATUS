@@ -177,6 +177,15 @@ To Do List
   translations, have directives in random order, rather than
   alphabetically.
 
+- Run review_translations.pl on each of the files in the mod directory,
+  and determine which directives are missing from the translation docs.
+  Add them. This makes them show up in the directives listing for that
+  language, and also encourages translators to provide translations for
+  those directives.
+
+- Write a script that generates a table of modules and available
+  translations. Put this on the docs-project website.
+
 LaTeX Todo list
 ==================
 
