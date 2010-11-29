@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.10
 
+  *) httpd: When no -k option is provided on the httpd command line, the server
+     was starting without checking for an existing pidfile.  PR 50350 
+     [Eric Covener] 
+ 
   *) mod_proxy: Put the worker in error state if the SSL handshake with the
      backend fails. PR 50332.
      [Daniel Ruggeri <DRuggeri primary.net>, Ruediger Pluem]
