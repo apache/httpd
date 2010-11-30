@@ -1081,7 +1081,7 @@ in case of an error</description>
     anyone other than the user that starts the server.</p>
     <note type="warning"><title>Note</title>
       <p>When entering a file path on non-Unix platforms, care should be taken
-      to make sure that only forward slashed are used even though the platform
+      to make sure that only forward slashes are used even though the platform
       may allow the use of back slashes. In general it is a good idea to always 
       use forward slashes throughout the configuration files.</p>
     </note>
@@ -2286,6 +2286,34 @@ URLs</description>
     directives should not be used to control access to filesystem
     locations.  Since several different URLs may map to the same
     filesystem location, such access controls may by circumvented.</p>
+
+    <p>The enclosed directives will be applied to the request if the path component
+    of the URL meets <em>any</em> of the following criteria:
+    <ul>
+      <li>The specified location matches exactly the path component of the URL.
+      </li>
+      <li>The specified location, which ends in a forward slash, is a prefix 
+      of the path component of the URL (treated as a context root).
+      </li>
+      <li>The specified location, with the addition of a trailing slash, is a 
+      prefix of the path component of the URL (also treated as a context root).
+      </li>
+    </ul>
+    In the example below, where no trailing slash is used, requests to 
+    /private1, /private1/ and /private1/file.txt will have the enclosed
+    directives applied, but /private1other would not. 
+    <example>
+      &lt;Location /private1&gt;
+          ...
+    </example>
+    In the example below, where a trailing slash is used, requests to 
+    /private2/ and /private2/file.txt will have the enclosed
+    directives applied, but /private2 and /private2other would not. 
+    <example>
+      &lt;Location /private2<em>/</em>&gt;
+          ...
+    </example>
+    </p>
 
     <note><title>When to use <directive 
     type="section">Location</directive></title>
