@@ -216,6 +216,13 @@ href="http://www.pcre.org/">Perl 호환 정규표현식</a>이다.
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SetEnvIfExpr</name>
+<description>Sets environment variables based on an ap_expr expression</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SetEnvIfNoCase</name>
 <description>대소문자를 구별하지않고 요청의 성질에 따라 환경변수를
 설정한다</description>

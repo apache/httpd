@@ -251,6 +251,13 @@
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SetEnvIfExpr</name>
+<description>Sets environment variables based on an ap_expr expression</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage>Documentation not yet translated. Please see English version of document.</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SetEnvIfNoCase</name>
 <description>リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</description>
 <syntax>SetEnvIfNoCase <em>attribute regex 
