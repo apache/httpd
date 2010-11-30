@@ -165,6 +165,9 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 #if OPENSSL_VERSION_NUMBER >= 0x00908080 && defined(HAVE_OCSP) \
     && !defined(OPENSSL_NO_TLSEXT)
 #define HAVE_OCSP_STAPLING
+#if (OPENSSL_VERSION_NUMBER < 0x10000000)
+#define sk_OPENSSL_STRING_pop sk_pop
+#endif
 #endif
 
 #if (OPENSSL_VERSION_NUMBER >= 0x009080a0) && defined(OPENSSL_FIPS)
