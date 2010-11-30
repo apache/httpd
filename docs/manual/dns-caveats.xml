@@ -111,18 +111,18 @@
     <p>Suppose that you've assigned 192.0.2.1 to
     <code>www.example1.dom</code> and 192.0.2.2 to
     <code>www.example2.dom</code>. Furthermore, suppose that
-    <code>example2.dom</code> has control of their own DNS. With this
-    config you have put <code>example2.dom</code> into a position where
-    they can steal all traffic destined to <code>example1.dom</code>. To
-    do so, all they have to do is set <code>www.example2.dom</code> to
-    192.0.2.1. Since they control their own DNS you can't stop them
-    from pointing the <code>www.example2.dom</code> record wherever they
+    <code>example1.dom</code> has control of their own DNS. With this
+    config you have put <code>example1.dom</code> into a position where
+    they can steal all traffic destined to <code>example2.dom</code>. To
+    do so, all they have to do is set <code>www.example1.dom</code> to
+    192.0.2.2. Since they control their own DNS you can't stop them
+    from pointing the <code>www.example1.dom</code> record wherever they
     wish.</p>
 
-    <p>Requests coming in to 192.0.2.1 (including all those where
+    <p>Requests coming in to 192.0.2.2 (including all those where
     users typed in URLs of the form
-    <code>http://www.example1.dom/whatever</code>) will all be served by
-    the <code>example2.dom</code> virtual host. To better understand why
+    <code>http://www.example2.dom/whatever</code>) will all be served by
+    the <code>example1.dom</code> virtual host. To better understand why
     this happens requires a more in-depth discussion of how httpd 
     matches up incoming requests with the virtual host that will
     serve it. A rough document describing this <a
