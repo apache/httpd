@@ -29,13 +29,15 @@ SSI pages</description>
 <sourcefile>mod_env.c</sourcefile>
 <identifier>env_module</identifier>
 <summary>
-    <p>This module allows for control of the environment that will
-    be provided to CGI scripts and SSI pages. Environment variables
-    may be passed from the shell which invoked the <program>httpd</program>
-    process. Alternatively, environment variables may be set or unset within
-    the configuration process.</p>
+    <p>This module allows for control of internal environment variables that
+    are used by various Apache HTTP Server modules. These variables are also
+    provided to CGI scripts as native system environment variables, and available
+    for use in SSI pages. Environment variables may be passed from the shell 
+    which invoked the <program>httpd</program> process. Alternatively, 
+    environment variables may be set or unset within the configuration process.</p>
 </summary>
 <seealso><a href="../env.html">Environment Variables</a></seealso>
+<seealso><directive module="mod_setenvif">SetEnvIf</directive></seealso>
 
 <directivesynopsis>
 <name>PassEnv</name>
@@ -47,9 +49,11 @@ SSI pages</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Specifies one or more environment variables to pass to CGI
-    scripts and SSI pages from the environment of the shell which
-    invoked the <program>httpd</program> process.</p>
+    <p>Specifies one or more native system environment variables to make available
+    as internal environment variables, which are available to Apache HTTP Server modules
+    as well as propogated to CGI scripts and SSI pages. Values come from the 
+    native OS environment of the shell which invoked the 
+    <program>httpd</program> process.</p>
 
     <example><title>Example</title>
       PassEnv LD_LIBRARY_PATH
@@ -66,8 +70,8 @@ SSI pages</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Sets an environment variable, which is then passed on to CGI
-    scripts and SSI pages.</p>
+    <p>Sets an internal environment variable, which is then available to Apache 
+    HTTP Server modules, and passed on to CGI scripts and SSI pages.</p>
 
     <example><title>Example</title>
       SetEnv SPECIAL_PATH /foo/bin
@@ -83,6 +87,7 @@ SSI pages</description>
     </note>
      
 </usage>
+<seealso><a href="../env.html">Environment Variables</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -95,7 +100,7 @@ SSI pages</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Removes one or more environment variables from those passed
+    <p>Removes one or more internal environment variables from those passed
     on to CGI scripts and SSI pages.</p>
 
     <example><title>Example</title>
