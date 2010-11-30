@@ -181,6 +181,7 @@
 <li><a href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
 <li><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</a></li>
+<li><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
 <li><a href="mod_unixd.html#chrootdir">ChrootDir</a></li>
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
@@ -467,6 +468,7 @@
 <li><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></li>
 <li><a href="mod_env.html#setenv">SetEnv</a></li>
 <li><a href="mod_setenvif.html#setenvif">SetEnvIf</a></li>
+<li><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></li>
 <li><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></li>
 <li><a href="core.html#sethandler">SetHandler</a></li>
 <li><a href="core.html#setinputfilter">SetInputFilter</a></li>
