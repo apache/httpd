@@ -1382,7 +1382,7 @@ EC_KEY *ssl_callback_TmpECDH(SSL *ssl, int export, int keylen)
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     SSLModConfigRec *mc = myModConfig(c->base_server);
     static EC_KEY *ecdh = NULL;
-    static init = 0;
+    static int init = 0;
 
     /* XXX Uses 256-bit key for now. TODO: support other sizes. */
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
