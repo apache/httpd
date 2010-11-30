@@ -554,7 +554,7 @@ which no other media type configuration could be found.
 <directivesynopsis type="section">
 <name>Directory</name>
 <description>Enclose a group of directives that apply only to the
-named file-system directory and sub-directories</description>
+named file-system directory, sub-directories, and their contents.</description>
 <syntax>&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -563,8 +563,9 @@ named file-system directory and sub-directories</description>
 <usage>
     <p><directive type="section">Directory</directive> and
     <code>&lt;/Directory&gt;</code> are used to enclose a group of
-    directives that will apply only to the named directory and
-    sub-directories of that directory. Any directive that is allowed
+    directives that will apply only to the named directory,
+    sub-directories of that directory, and the files within the respective 
+    directories.  Any directive that is allowed
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
     Unix shell-style matching. In a wild-card string, <code>?</code> matches
@@ -695,7 +696,7 @@ named file-system directory and sub-directories</description>
 <directivesynopsis type="section">
 <name>DirectoryMatch</name>
 <description>Enclose directives that apply to
-file-system directories matching a regular expression.</description>
+the contents of file-system directories matching a regular expression.</description>
 <syntax>&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/DirectoryMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -704,7 +705,7 @@ file-system directories matching a regular expression.</description>
 <usage>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory, 
+    of directives which will apply only to the named directory (and the files within), 
     the same as <directive module="core" type="section">Directory</directive>. 
     However, it takes as an argument a 
     <glossary ref="regex">regular expression</glossary>.  For example:</p>
