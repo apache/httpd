@@ -607,7 +607,7 @@ which no other media type configuration could be found.
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that apply only to the
-named file-system directory and sub-directories</td></tr>
+named file-system directory, sub-directories, and their contents.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -616,8 +616,9 @@ named file-system directory and sub-directories</td></tr>
 </table>
     <p><code class="directive">&lt;Directory&gt;</code> and
     <code>&lt;/Directory&gt;</code> are used to enclose a group of
-    directives that will apply only to the named directory and
-    sub-directories of that directory. Any directive that is allowed
+    directives that will apply only to the named directory,
+    sub-directories of that directory, and the files within the respective 
+    directories.  Any directive that is allowed
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
     Unix shell-style matching. In a wild-card string, <code>?</code> matches
@@ -746,7 +747,7 @@ named file-system directory and sub-directories</td></tr>
 <div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose directives that apply to
-file-system directories matching a regular expression.</td></tr>
+the contents of file-system directories matching a regular expression.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/DirectoryMatch&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -755,7 +756,7 @@ file-system directories matching a regular expression.</td></tr>
 </table>
     <p><code class="directive">&lt;DirectoryMatch&gt;</code> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory, 
+    of directives which will apply only to the named directory (and the files within), 
     the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. 
     However, it takes as an argument a 
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.  For example:</p>
