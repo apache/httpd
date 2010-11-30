@@ -271,7 +271,7 @@
 <name>BalancerMember</name>
 <description>Add a member to a load balancing group</description>
 <contextlist><context>directory</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -470,14 +470,14 @@
 <name>ProxySet</name>
 <description>Set various Proxy balancer or member parameters</description>
 <contextlist><context>directory</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyStatus</name>
 <description>Show Proxy LoadBalancer status in mod_status</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -699,14 +699,14 @@
 <name>ProxyPassInterpolateEnv</name>
 <description>Enable Environment Variable interpolation in Reverse Proxy configurations</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyPassMatch</name>
 <description>Maps remote servers into the local server URL-space using regular expressions</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>

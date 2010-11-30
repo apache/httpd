@@ -50,7 +50,7 @@
 <name>CacheReadSize</name>
 <description>The minimum size (in bytes) of the document to read and be cached before sending the data downstream</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -58,7 +58,7 @@
 <description>The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>

@@ -180,7 +180,7 @@
 <name>CacheHeader</name>
 <description>Add an X-Cache header to the response.</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -246,21 +246,21 @@
 <name>CacheQuickHandler</name>
 <description>Run the cache from the quick handler.</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheStaleOnError</name>
 <description>Serve stale content in place of 5xx responses.</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheStoreExpired</name>
 <description>Attempt to cache responses that the server reports as expired</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -287,7 +287,7 @@
 <name>CacheDetailHeader</name>
 <description>Add an X-Cache-Detail header to the response.</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -377,14 +377,14 @@
 <name>CacheIgnoreURLSessionIdentifiers</name>
 <description>Ignore defined session identifiers encoded in the URL when caching </description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheKeyBaseURL</name>
 <description>Override the base URL of reverse proxied cache keys.</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -427,21 +427,21 @@
 <name>CacheLock</name>
 <description>Enable the thundering herd lock.</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheLockMaxAge</name>
 <description>Set the maximum possible age of a cache lock.</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheLockPath</name>
 <description>Set the lock path directory.</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
