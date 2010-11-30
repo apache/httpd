@@ -59,10 +59,21 @@
 </div>
 <div id="quickview"><h3 class="directives">지시어들</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#checkcaseonly">CheckCaseOnly</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
 </ul>
 </div>
 
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CheckCaseOnly" id="CheckCaseOnly">CheckCaseOnly</a> <a name="checkcaseonly" id="checkcaseonly">지시어</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Limits the action of the speling module to case corrections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_speling</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a> <a name="checkspelling" id="checkspelling">지시어</a></h2>
 <table class="directive">
