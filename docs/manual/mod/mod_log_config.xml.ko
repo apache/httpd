@@ -264,7 +264,7 @@
 <name>BufferedLogs</name>
 <description>Buffer log entries in memory before writing to disk</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>

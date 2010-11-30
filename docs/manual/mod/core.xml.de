@@ -31,7 +31,7 @@ Servers</description>
 <name>AcceptFilter</name>
 <description>Configures optimizations for a Protocol's Listener Sockets</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -961,7 +961,7 @@ Dateien an den Client auszuliefern</description>
 <name>Error</name>
 <description>Abort configuration parsing with a custom error message</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1139,7 +1139,7 @@ Fehlermeldungen</a></seealso>
 <name>ErrorLogFormat</name>
 <description>Format specification for error log entries</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1147,7 +1147,7 @@ Fehlermeldungen</a></seealso>
 <description>Keep track of extended status information for each 
 request</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1351,7 +1351,7 @@ angegebenen MIME-Content-Type</description>
 <name>GprofDir</name>
 <description>Directory to write gmon.out profiling data to.  </description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1404,7 +1404,7 @@ angegebenen MIME-Content-Type</description>
 <description>Contains directives that apply only if a condition is
 satisfied by a request at runtime</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -2274,7 +2274,7 @@ zul&auml;ssig sind</description>
 <description>Configures mutex mechanism and lock file directory for all
 or specified mutexes</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2565,7 +2565,7 @@ Ressource zugreifen k&ouml;nnen</description>
 <name>Protocol</name>
 <description>Protocol for a listening socket</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2802,7 +2802,7 @@ Die Option <code>Registry-Strict</code> ist verf&uuml;gbar seit Apache
 of a request or the last 63, assuming the request itself is greater than
 63 chars.</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3200,14 +3200,14 @@ bevor er die Anfrage abbricht</description>
 <name>TraceEnable</name>
 <description>Determines the behaviour on <code>TRACE</code> requests</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>UnDefine</name>
 <description>Undefine the existence of a variable</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3283,7 +3283,7 @@ ermittelt</description>
 <name>UseCanonicalPhysicalPort</name>
 <description>Configures how the server determines its own name and port</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">

@@ -219,7 +219,7 @@ href="http://www.pcre.org/">Perl 호환 정규표현식</a>이다.
 <name>SetEnvIfExpr</name>
 <description>Sets environment variables based on an ap_expr expression</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
