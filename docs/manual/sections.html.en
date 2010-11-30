@@ -135,7 +135,8 @@ directives, along with their <a class="glossarylink" href="./glossary.html#regex
 counterparts, apply directives to
 parts of the filesystem.  Directives enclosed in a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> section apply to
 the named filesystem directory and all subdirectories of that
-directory.  The same effect can be obtained using <a href="howto/htaccess.html">.htaccess files</a>.  For example, in the
+directory (as well as the files in those directories).  
+The same effect can be obtained using <a href="howto/htaccess.html">.htaccess files</a>.  For example, in the
 following configuration, directory indexes will be enabled for the
 <code>/var/web/dir1</code> directory and all subdirectories.</p>
 
