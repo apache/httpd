@@ -103,7 +103,7 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
 {
     certinfo *cinf;
     X509 *issuer = NULL;
-    STACK_OF(STRING) *aia = NULL;
+    STACK_OF(OPENSSL_STRING) *aia = NULL;
 
     if (x == NULL)
         return 0;
@@ -139,7 +139,7 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
 
     aia = X509_get1_ocsp(x);
     if (aia)
-        cinf->uri = sk_STRING_pop(aia);
+        cinf->uri = sk_OPENSSL_STRING_pop(aia);
     if (!cinf->uri && !mctx->stapling_force_url) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "ssl_stapling_init_cert: no responder URL");
