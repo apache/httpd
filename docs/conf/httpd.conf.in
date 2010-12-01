@@ -177,7 +177,7 @@ DocumentRoot "@exp_htdocsdir@"
 # The following lines prevent .htaccess and .htpasswd files from being 
 # viewed by Web clients. 
 #
-<FilesMatch "^\.ht">
+<Files ".ht*">
     Require all denied
 </FilesMatch>
 
