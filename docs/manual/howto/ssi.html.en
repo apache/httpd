@@ -360,15 +360,6 @@ modified?</a></h3>
     the option of setting variables, and using those variables in
     comparisons and conditionals.</p>
 
-<h3><a name="caveat" id="caveat">Caveat</a></h3>
-
-    <p>Most of the features discussed in this article are only
-    available to you if you are running Apache 1.2 or later. Of
-    course, if you are not running Apache 1.2 or later, you need to
-    upgrade immediately, if not sooner. Go on. Do it now. We'll
-    wait.</p>
-
-
 <h3><a name="variables" id="variables">Setting variables</a></h3>
 
     <p>Using the <code>set</code> directive, you can set variables
