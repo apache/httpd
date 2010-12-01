@@ -943,8 +943,8 @@ extensions</description>
     configuration file. <var>File-path</var> is relative to the
     <directive module="core">ServerRoot</directive>. This file sets
     the default list of mappings from filename extensions to content
-    types. Most administrators use the provided
-    <code>mime.types</code> file, which associates common filename
+    types. Most administrators use the <code>mime.types</code> file
+    provided by their OS, which associates common filename
     extensions with the official list of IANA registered media types
     maintained at <a href=
     "http://www.iana.org/assignments/media-types/index.html"
@@ -964,7 +964,11 @@ extensions</description>
     </example>
 
     <p>The case of the extension does not matter. Blank lines, and lines
-    beginning with a hash character (<code>#</code>) are ignored.</p>
+    beginning with a hash character (<code>#</code>) are ignored.
+    Empty lines are there for completeness (of the mime.types file).
+    Apache httpd can still determine these types with <module
+    >mod_mime_magic</module>.
+    </p>
 
     <note>
       Please do <strong>not</strong> send requests to the Apache HTTP
