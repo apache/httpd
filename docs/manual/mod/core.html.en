@@ -693,7 +693,7 @@ server cannot determine a type in any other way</td></tr>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that apply only to the
-named file-system directory and sub-directories</td></tr>
+named file-system directory, sub-directories, and their contents</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -702,8 +702,9 @@ named file-system directory and sub-directories</td></tr>
 </table>
     <p><code class="directive">&lt;Directory&gt;</code> and
     <code>&lt;/Directory&gt;</code> are used to enclose a group of
-    directives that will apply only to the named directory and
-    sub-directories of that directory. Any directive that is allowed
+    directives that will apply only to the named directory,
+    sub-directories of that directory, and the files within the respective 
+    directories.  Any directive that is allowed
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
     Unix shell-style matching. In a wild-card string, <code>?</code> matches
@@ -842,8 +843,8 @@ subdirectories</td></tr>
 </table>
     <p><code class="directive">&lt;DirectoryMatch&gt;</code> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory and
-    <em>sub-directories of that directory</em>, the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. However, it
+    of directives which will apply only to the named directory  and
+    <em>sub-directories of that directory</em> (and the files within), the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. However, it
     takes as an argument a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
     expression</a>. For example:</p>
 
@@ -1171,7 +1172,7 @@ in case of an error</td></tr>
     anyone other than the user that starts the server.</p>
     <div class="warning"><h3>Note</h3>
       <p>When entering a file path on non-Unix platforms, care should be taken
-      to make sure that only forward slashed are used even though the platform
+      to make sure that only forward slashes are used even though the platform
       may allow the use of back slashes. In general it is a good idea to always 
       use forward slashes throughout the configuration files.</p>
     </div>
@@ -2019,6 +2020,34 @@ URLs</td></tr>
     directives should not be used to control access to filesystem
     locations.  Since several different URLs may map to the same
     filesystem location, such access controls may by circumvented.</p>
+
+    <p>The enclosed directives will be applied to the request if the path component
+    of the URL meets <em>any</em> of the following criteria:
+    <ul>
+      <li>The specified location matches exactly the path component of the URL.
+      </li>
+      <li>The specified location, which ends in a forward slash, is a prefix 
+      of the path component of the URL (treated as a context root).
+      </li>
+      <li>The specified location, with the addition of a trailing slash, is a 
+      prefix of the path component of the URL (also treated as a context root).
+      </li>
+    </ul>
+    In the example below, where no trailing slash is used, requests to 
+    /private1, /private1/ and /private1/file.txt will have the enclosed
+    directives applied, but /private1other would not. 
+    <div class="example"><p><code>
+      &lt;Location /private1&gt;
+          ...
+    </code></p></div>
+    In the example below, where a trailing slash is used, requests to 
+    /private2/ and /private2/file.txt will have the enclosed
+    directives applied, but /private2 and /private2other would not. 
+    <div class="example"><p><code>
+      &lt;Location /private2<em>/</em>&gt;
+          ...
+    </code></p></div>
+    </p>
 
     <div class="note"><h3>When to use <code class="directive">&lt;Location&gt;</code></h3>
 

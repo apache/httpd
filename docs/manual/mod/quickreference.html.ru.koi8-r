@@ -298,7 +298,7 @@ server cannot determine a type in any other way</td></tr>
 server</td></tr>
 <tr><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that apply only to the
-named file-system directory and sub-directories</td></tr>
+named file-system directory, sub-directories, and their contents</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
     <var>local-url</var> [<var>local-url</var>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">List of resources to look for when the client requests
 a directory</td></tr>

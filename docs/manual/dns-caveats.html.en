@@ -128,18 +128,18 @@
     <p>Suppose that you've assigned 192.0.2.1 to
     <code>www.abc.dom</code> and 192.0.2.2 to
     <code>www.def.dom</code>. Furthermore, suppose that
-    <code>def.dom</code> has control of their own DNS. With this
-    config you have put <code>def.dom</code> into a position where
-    they can steal all traffic destined to <code>abc.dom</code>. To
-    do so, all they have to do is set <code>www.def.dom</code> to
-    192.0.2.1. Since they control their own DNS you can't stop them
-    from pointing the <code>www.def.dom</code> record wherever they
+    <code>abc.dom</code> has control of their own DNS. With this
+    config you have put <code>abc.dom</code> into a position where
+    they can steal all traffic destined to <code>def.dom</code>. To
+    do so, all they have to do is set <code>www.abc.dom</code> to
+    192.0.2.2. Since they control their own DNS you can't stop them
+    from pointing the <code>www.abc.dom</code> record wherever they
     wish.</p>
 
-    <p>Requests coming in to 192.0.2.1 (including all those where
+    <p>Requests coming in to 192.0.2.2 (including all those where
     users typed in URLs of the form
-    <code>http://www.abc.dom/whatever</code>) will all be served by
-    the <code>def.dom</code> virtual host. To better understand why
+    <code>http://www.def.dom/whatever</code>) will all be served by
+    the <code>abc.dom</code> virtual host. To better understand why
     this happens requires a more in-depth discussion of how Apache
     matches up incoming requests with the virtual host that will
     serve it. A rough document describing this <a href="vhosts/details.html">is available</a>.</p>
