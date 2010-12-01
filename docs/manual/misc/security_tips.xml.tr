@@ -419,7 +419,7 @@
     <p>Bu, sunucu yapılandırma dosyanızda aşağıdaki yapılandırmayı iptal ettiğiniz anlamına gelir:</p>
 
     <example>
-      &lt;Files ~ "^\.ht"&gt;
+      &lt;Files "^.ht*"&gt;
       <indent>
         Order allow,deny <br />
         Deny from all
