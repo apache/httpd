@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 659902 -->
+<!-- English Revision : 1041023 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -376,15 +376,6 @@ HTML pr&eacute;existants.</p>
     <p>Outre l'affichage de contenu, les SSI d'Apache vous permettent de
     d&eacute;finir des variables, et de les utiliser dans des comparaisons et
     des conditions.</p>
-
-<section id="caveat"><title>Mise en garde</title>
-
-    <p>La plupart des fonctionnalit&eacute;s d&eacute;crites dans cet article ne sont
-    disponibles que si vous utilisez la version 1.2 ou sup&eacute;rieure
-    d'Apache. Bien entendu, si ce n'est pas le cas, vous devez faire une
-    mise &agrave; jour imm&eacute;diatement, et m&ecirc;me plus t&ocirc;t. Allez-y. Faites-le
-    maintenant. Nous attendrons.</p>
-</section>
 
 <section id="variables"><title>D&eacute;finition de variables</title>
 

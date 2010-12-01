@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1039603 -->
+<!-- English Revision : 1040808 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -605,8 +605,8 @@ DESACTIV&Eacute;S &agrave; partir des version 2.3.x.</compatibility>
 <directivesynopsis type="section">
 <name>Directory</name>
 <description>Regroupe un ensemble de directives qui ne s'appliquent
-qu'au r&eacute;pertoire concern&eacute; du syst&egrave;me de fichiers et &agrave; ses
-sous-r&eacute;pertoires</description>
+qu'au r&eacute;pertoire concern&eacute; du syst&egrave;me de fichiers, &agrave; ses
+sous-r&eacute;pertoires, et &agrave; leur contenu.</description>
 <syntax>&lt;Directory <var>chemin r&eacute;pertoire</var>&gt;
 ... &lt;/Directory&gt;</syntax>
 <contextlist><context>server config</context><context>virtual
@@ -616,8 +616,9 @@ host</context>
 <usage>
     <p>Les balises <directive type="section">Directory</directive> et
     <code>&lt;/Directory&gt;</code> permettent de regrouper un ensemble
-    de directives qui ne s'appliquent qu'au r&eacute;pertoire pr&eacute;cis&eacute;
-    et &agrave; ses sous-r&eacute;pertoires. Toute directive
+    de directives qui ne s'appliquent qu'au r&eacute;pertoire pr&eacute;cis&eacute;,
+    &agrave; ses sous-r&eacute;pertoires, et aux fichiers situ&eacute;s dans ces
+    sous-r&eacute;pertoires. Toute directive
     autoris&eacute;e dans un contexte de r&eacute;pertoire peut &ecirc;tre utilis&eacute;e.
     <var>chemin r&eacute;pertoire</var> est soit le chemin absolu d'un
     r&eacute;pertoire, soit une cha&icirc;ne de caract&egrave;res avec caract&egrave;res g&eacute;n&eacute;riques
@@ -757,7 +758,7 @@ combinent entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</seealso>
 
 <directivesynopsis type="section">
 <name>DirectoryMatch</name>
-<description>Regroupe des directives qui s'appliquent &agrave; des r&eacute;pertoires
+<description>Regroupe des directives qui s'appliquent au contenu de r&eacute;pertoires
 du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle</description>
 <syntax>&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/DirectoryMatch&gt;</syntax>
@@ -769,7 +770,7 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
     <p>Les balises <directive type="section">DirectoryMatch</directive>
     et <code>&lt;/DirectoryMatch&gt;</code> permettent de regrouper un
     ensemble de directives qui ne s'appliqueront qu'au r&eacute;pertoire
-    pr&eacute;cis&eacute;, comme pour la section <directive
+    pr&eacute;cis&eacute; (et aux fichiers qu'il contient), comme pour la section <directive
     module="core" type="section">Directory</directive>. Cependant, le
     r&eacute;pertoire est pr&eacute;cis&eacute; sous la forme d'une <glossary
     ref="regex">expression rationnelle</glossary>. Par exemple :</p>
@@ -2521,6 +2522,38 @@ host</context>
     pour contr&ocirc;ler l'acc&egrave;s aux r&eacute;pertoires du syst&egrave;me de fichiers. Comme
     plusieurs URLs peuvent correspondre au m&ecirc;me r&eacute;pertoire du syst&egrave;me de
     fichiers, un tel contr&ocirc;le d'acc&egrave;s pourrait &ecirc;tre contourn&eacute;.</p>
+
+    <p>Les directives que contient cette section seront appliqu&eacute;es aux
+    requ&ecirc;tes si la partie chemin de l'URL satisfait &agrave; l'un au moins de
+    ces crit&egrave;res :
+    <ul>
+      <li>Le chemin sp&eacute;cifi&eacute; correspond exactement &agrave; la partie chemin de
+      l'URL.
+      </li>
+      <li>Le chemin sp&eacute;cifi&eacute;, qui se termine par un slash, est un
+      pr&eacute;fixe de la partie chemin de l'URL (trait&eacute; comme une racine du
+      contexte).
+      </li>
+      <li>Le chemin sp&eacute;cifi&eacute;, si on lui ajoute un slash de fin, est un
+      pr&eacute;fixe de la partie chemin de l'URL (aussi trait&eacute; comme une racine du
+      contexte).
+      </li>
+    </ul>
+    Dans l'exemple ci-dessous, o&ugrave; aucun slash de fin n'est utilis&eacute;, les
+    directives contenues dans la section s'appliqueront &agrave; /private1,
+    /private1/ et /private1/file.txt, mais pas &agrave; /private1other. 
+    <example>
+      &lt;Location /private1&gt;
+          ...
+    </example>
+    De m&ecirc;me, dans l'exemple ci-dessous, o&ugrave; l'on utilise un slash de fin, les
+    directives contenues dans la section s'appliqueront &agrave; /private2/ et
+    &agrave; /private2/file.txt, mais pas &agrave; /private2other. 
+    <example>
+      &lt;Location /private2<em>/</em>&gt;
+          ...
+    </example>
+    </p>
 
     <note><title>Quand utiliser la section <directive
     type="section">Location</directive></title>

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 955184:1040808 (outdated) -->
+<!-- English Revision: 1040808 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -170,7 +170,8 @@ ainsi que leurs &eacute;quivalents acceptant les
 appliquent des directives &agrave; certaines parties du syst&egrave;me de fichiers.
 Les directives contenues dans une section <directive
 type="section" module="core">Directory</directive> s'appliquent au r&eacute;pertoire
-pr&eacute;cis&eacute;, ainsi qu'&agrave; tous ses sous-r&eacute;pertoires.
+pr&eacute;cis&eacute;, ainsi qu'&agrave; tous ses sous-r&eacute;pertoires et aux fichiers que ces
+derniers contiennent.
 Le m&ecirc;me effet peut &ecirc;tre obtenu en utilisant les <a
 href="howto/htaccess.html">fichiers .htaccess</a>.  Par exemple, avec la
 configuration suivante, l'indexation sera activ&eacute;e pour le r&eacute;pertoire
@@ -233,7 +234,7 @@ En particulier, l'interdiction s'appliquera aux requ&ecirc;tes pour :
 toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <code>/private</code>.</p>
 
 <example>
-&lt;Location /private&gt;<br />
+&lt;LocationMatch ^/private&gt;<br />
 Order Allow,Deny<br />
 Deny from all<br />
 &lt;/Location&gt;

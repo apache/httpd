@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1037510 -->
+<!-- English Revision : 1040517 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -34,11 +34,12 @@ de caract&eacute;ristiques de la requ&ecirc;te</description>
 <summary>
 
     <p>Le module <module>mod_setenvif</module> vous permet de d&eacute;finir
-    des variables d'environnement en fonction du fait que telle ou telle
+    des variables d'environnement internes en fonction du fait que telle ou telle
     caract&eacute;ristique de la requ&ecirc;te correspond ou non aux expressions
     rationnelles que vous sp&eacute;cifiez. Ces variables d'environnement
     peuvent &ecirc;tre utilis&eacute;es par d'autres parties du serveur pour prendre
-    des d&eacute;cisions quant aux actions &agrave; entreprendre.</p>
+    des d&eacute;cisions quant aux actions &agrave; entreprendre, et pour d&eacute;terminer
+    si les scripts CGI et les pages SSI doivent pouvoir y acc&eacute;der.</p>
 
     <p>Les directives sont interpr&eacute;t&eacute;es selon l'ordre dans lequel elles
     appara&icirc;ssent dans les fichiers de configuration. Ainsi, des
@@ -269,7 +270,7 @@ serveur HTTP Apache</a> pour des exemples suppl&eacute;mentaires.
 <directivesynopsis>
 
 <name>SetEnvIfExpr</name>
-<description>D&eacute;finit des variables d'environnement en fonction d'une expression</description>
+<description>D&eacute;finit des variables d'environnement en fonction d'une expression ap_expr</description>
 <syntax>SetEnvIfExpr <em>expr
     [!]env-variable</em>[=<em>valeur</em>]
     [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
@@ -294,11 +295,12 @@ serveur HTTP Apache</a> pour des exemples suppl&eacute;mentaires.
     <code>iso_delivered</code> est d&eacute;finie chaque fois que notre
     application tente de l'envoyer via <code>X-Sendfile</code>.</p>
 
-    <p>Pour un exemple plus utile, voir le cas de
-    <code>Referer</code> pour un site comportant plusieurs domaines :</p>
+    <p>Il pourrait &ecirc;tre plus utile de d&eacute;finir une variable rfc1918 si
+    l'adresse IP distante est une adresse priv&eacute;e au sens de la RFC 1918
+    :</p>
 
 <example>
-    SetEnvIfExpr "${HTTP_REFERER} in { 'www.example.com','example.com','w2.example3.org' }" intra_site_referral
+    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
 </example>
 </usage>
 
