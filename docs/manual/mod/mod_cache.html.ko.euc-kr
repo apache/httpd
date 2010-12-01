@@ -159,7 +159,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a name="cachedisable" id="cachedisable">지시어</a></h2>
@@ -219,7 +219,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">지시어</a></h2>
@@ -327,7 +327,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreURLSessionIdentifiers" id="CacheIgnoreURLSessionIdentifiers">CacheIgnoreURLSessionIdentifiers</a> <a name="cacheignoreurlsessionidentifiers" id="cacheignoreurlsessionidentifiers">지시어</a></h2>
@@ -338,7 +338,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheKeyBaseURL" id="CacheKeyBaseURL">CacheKeyBaseURL</a> <a name="cachekeybaseurl" id="cachekeybaseurl">지시어</a></h2>
@@ -348,7 +348,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">지시어</a></h2>
@@ -390,7 +390,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLockMaxAge" id="CacheLockMaxAge">CacheLockMaxAge</a> <a name="cachelockmaxage" id="cachelockmaxage">지시어</a></h2>
@@ -400,7 +400,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLockPath" id="CacheLockPath">CacheLockPath</a> <a name="cachelockpath" id="cachelockpath">지시어</a></h2>
@@ -410,7 +410,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire">지시어</a></h2>
@@ -440,7 +440,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheQuickHandler" id="CacheQuickHandler">CacheQuickHandler</a> <a name="cachequickhandler" id="cachequickhandler">지시어</a></h2>
@@ -450,7 +450,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStaleOnError" id="CacheStaleOnError">CacheStaleOnError</a> <a name="cachestaleonerror" id="cachestaleonerror">지시어</a></h2>
@@ -460,7 +460,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreExpired" id="CacheStoreExpired">CacheStoreExpired</a> <a name="cachestoreexpired" id="cachestoreexpired">지시어</a></h2>
@@ -470,7 +470,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a name="cachestorenostore" id="cachestorenostore">지시어</a></h2>
@@ -480,7 +480,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStorePrivate" id="CacheStorePrivate">CacheStorePrivate</a> <a name="cachestoreprivate" id="cachestoreprivate">지시어</a></h2>
@@ -490,7 +490,7 @@
 <tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 </div>
 <div class="bottomlang">
