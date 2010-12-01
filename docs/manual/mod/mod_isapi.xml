@@ -212,12 +212,11 @@
     <code>GetServerVariable</code>, as well as the <code>ALL_HTTP</code>
     and <code>ALL_RAW</code> values.</p>
 
-    <p>Apache 2.0 <module>mod_isapi</module> supports additional
+    <p>Apache httpd 2.0+ <module>mod_isapi</module> supports additional
     features introduced in later versions of the ISAPI specification,
     as well as limited emulation of async I/O and the
-    <code>TransmitFile</code> semantics.  Apache also supports preloading
-    ISAPI .dlls for performance, neither of which were not available under
-    Apache 1.3 <code>mod_isapi</code>.</p>
+    <code>TransmitFile</code> semantics. Apache httpd also supports preloading
+    ISAPI .dlls for performance.</p>
 </section>
 
 <directivesynopsis>
