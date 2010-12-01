@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 990096 -->
+<!-- LastChangedRevision English document : 1040809 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -168,7 +168,8 @@ ainsi que leurs &eacute;quivalents acceptant les
 appliquent des directives &agrave; certaines parties du syst&egrave;me de fichiers.
 Les directives contenues dans une section <directive
 type="section" module="core">Directory</directive> s'appliquent au r&eacute;pertoire
-pr&eacute;cis&eacute;, ainsi qu'&agrave; tous ses sous-r&eacute;pertoires.
+pr&eacute;cis&eacute;, ainsi qu'&agrave; tous ses sous-r&eacute;pertoires et aux fichiers que ces
+derniers contiennent.
 Le m&ecirc;me effet peut &ecirc;tre obtenu en utilisant les <a
 href="howto/htaccess.html">fichiers .htaccess</a>.  Par exemple, avec la
 configuration suivante, l'indexation sera activ&eacute;e pour le r&eacute;pertoire
@@ -231,7 +232,7 @@ En particulier, l'interdiction s'appliquera aux requ&ecirc;tes pour :
 toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <code>/private</code>.</p>
 
 <example>
-&lt;Location /private&gt;<br />
+&lt;LocationMatch ^/private&gt;<br />
 Order Allow,Deny<br />
 Deny from all<br />
 &lt;/Location&gt;
