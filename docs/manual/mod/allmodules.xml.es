@@ -2,7 +2,7 @@
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <modulefilelist>
-  <modulefile>core.xml</modulefile>
+  <modulefile>core.xml.es</modulefile>
   <modulefile>mod_access_compat.xml</modulefile>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>

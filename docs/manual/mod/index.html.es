@@ -53,8 +53,7 @@
 <div class="section"><h2><a id="core" name="core">Funcionalidad Básica y Módulos
             de MultiProcesamiento</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
-available</dd>
+<dt><a href="core.html">core</a></dt><dd>Funcionalides básicas del Servidor HTTP Apache que siempre están presentes.</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
 more than one multi-processing module (MPM)</dd>
 <dt><a href="event.html">event</a></dt><dd>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal

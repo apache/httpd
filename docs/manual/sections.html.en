@@ -194,7 +194,7 @@ In particular, it will apply to requests for
 as any other requests starting with the <code>/private</code> string.</p>
 
 <div class="example"><p><code>
-&lt;Location /private&gt;<br />
+&lt;LocationMatch ^/private&gt;<br />
 Order Allow,Deny<br />
 Deny from all<br />
 &lt;/Location&gt;

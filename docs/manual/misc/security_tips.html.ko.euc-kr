@@ -329,7 +329,7 @@
     ∞Õ¿Ã¥Ÿ:</p>
     
     <div class="example"><p><code>
-      &lt;Files ~ "^\.ht"&gt; <br />
+      &lt;Files ".ht*"&gt; <br />
         Order allow,deny <br />
         Deny from all <br />
       &lt;Files&gt;
