@@ -693,13 +693,15 @@ components as part of the filename</description>
       ModMimeUsePathInfo On
     </example>
 
-    <p>If you have a request for <code>/index.php/foo.shtml</code> where
-    <code>/index.php</code> <module>mod_mime</module> will now treat the
+    <p>If you have a request for <code>/index.php/foo.shtml</code>
+    <module>mod_mime</module> will now treat the
     incoming request as <code>/index.php/foo.shtml</code> and directives
     like <code>AddOutputFilter INCLUDES .shtml</code> will add the
     <code>INCLUDES</code> filter to the request. If <directive
     >ModMimeUsePathInfo</directive> is not set, the
-    <code>INCLUDES</code> filter will not be added.</p>
+    <code>INCLUDES</code> filter will not be added. This will work
+    analogously for virtual paths, such as those defined by
+    <section>Location</Location></p>
 </usage>
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
 </directivesynopsis>
