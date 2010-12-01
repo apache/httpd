@@ -36,11 +36,11 @@ available</description>
 On Windows from Apache httpd 2.3.3 and later.</compatibility>
 
 <usage>
-    <p>This directive enables operating system specific optimizations for a 
-       listening socket by the Protocol type. The basic premise is for the 
-       kernel to not send a socket to the server process until either data 
-       is received or an entire HTTP Request is buffered. Only
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+    <p>This directive enables operating system specific optimizations for a
+       listening socket by the <directive>Protocol</directive>type.
+       The basic premise is for the kernel to not send a socket to the server
+       process until either data is received or an entire HTTP Request is buffered.
+       Only <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        FreeBSD's Accept Filters</a>, Linux's more primitive 
        <code>TCP_DEFER_ACCEPT</code>, and Windows' optimized AcceptEx()
        are currently supported.</p>
@@ -100,7 +100,7 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
        the <code>connect</code> option does not wait for the initial data
        transmission.</p>
 
-    <p>On Windows, <code>none</code> uses accept() rather than than AcceptEx()
+    <p>On Windows, <code>none</code> uses accept() rather than AcceptEx()
        and will not recycle sockets between connections.  This is useful for
        network adapters with broken driver support, as well as some virtual
        network providers such as vpn drivers, or spam, virus or spyware
@@ -2289,6 +2289,7 @@ URLs</description>
 
     <p>The enclosed directives will be applied to the request if the path component
     of the URL meets <em>any</em> of the following criteria:
+    </p>
     <ul>
       <li>The specified location matches exactly the path component of the URL.
       </li>
@@ -2299,21 +2300,24 @@ URLs</description>
       prefix of the path component of the URL (also treated as a context root).
       </li>
     </ul>
+    <p>
     In the example below, where no trailing slash is used, requests to 
     /private1, /private1/ and /private1/file.txt will have the enclosed
     directives applied, but /private1other would not. 
+    </p>
     <example>
       &lt;Location /private1&gt;
           ...
     </example>
+    <p>
     In the example below, where a trailing slash is used, requests to 
     /private2/ and /private2/file.txt will have the enclosed
     directives applied, but /private2 and /private2other would not. 
+    </p>
     <example>
       &lt;Location /private2<em>/</em>&gt;
           ...
     </example>
-    </p>
 
     <note><title>When to use <directive 
     type="section">Location</directive></title>
