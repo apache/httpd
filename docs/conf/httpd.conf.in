@@ -179,7 +179,7 @@ DocumentRoot "@exp_htdocsdir@"
 #
 <Files ".ht*">
     Require all denied
-</FilesMatch>
+</Files>
 
 #
 # ErrorLog: The location of the error log file.
