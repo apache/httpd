@@ -416,7 +416,7 @@
     <p>Bu, sunucu yapılandırma dosyanızda aşağıdaki yapılandırmayı iptal ettiğiniz anlamına gelir:</p>
 
     <div class="example"><p><code>
-      &lt;Files ~ "^\.ht"&gt;
+      &lt;Files "^.ht*"&gt;
       <span class="indent">
         Order allow,deny <br />
         Deny from all

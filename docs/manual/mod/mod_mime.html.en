@@ -646,12 +646,11 @@ components as part of the filename</td></tr>
       ModMimeUsePathInfo On
     </code></p></div>
 
-    <p>If you have a request for <code>/bar/foo.shtml</code> where
-    <code>/bar</code> is a Location and <code class="directive">ModMimeUsePathInfo</code> is <code>On</code>,
-    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> will treat the incoming request as
-    <code>/bar/foo.shtml</code> and directives like <code>AddOutputFilter
-    INCLUDES .shtml</code> will add the <code>INCLUDES</code> filter to the
-    request. If <code class="directive">ModMimeUsePathInfo</code> is not set, the
+    <p>If you have a request for <code>/index.php/foo.shtml</code> where
+    <code>/index.php</code> <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> will now treat the
+    incoming request as <code>/index.php/foo.shtml</code> and directives
+    like <code>AddOutputFilter INCLUDES .shtml</code> will add the
+    <code>INCLUDES</code> filter to the request. If <code class="directive">ModMimeUsePathInfo</code> is not set, the
     <code>INCLUDES</code> filter will not be added.</p>
 
 <h3>See also</h3>
@@ -699,9 +698,9 @@ a matching file with MultiViews</td></tr>
     associated with the <code>asis-handler</code>.</p>
 
     <p>You may finally allow <code>Any</code> extensions to match, even if
-    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> doesn't recognize the extension. This was the
-    behavior in Apache 1.3, and can cause unpredicatable results, such as
-    serving .old or .bak files the webmaster never expected to be served.</p>
+    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> doesn't recognize the extension. This can cause
+    unpredicatable results, such as serving .old or .bak files the webmaster
+    never expected to be served.</p>
 
     <p>For example, the following configuration will allow handlers
     and filters to participate in Multviews, but will exclude unknown
@@ -967,8 +966,8 @@ extensions</td></tr>
     configuration file. <var>File-path</var> is relative to the
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. This file sets
     the default list of mappings from filename extensions to content
-    types. Most administrators use the provided
-    <code>mime.types</code> file, which associates common filename
+    types. Most administrators use the <code>mime.types</code> file
+    provided by their OS, which associates common filename
     extensions with the official list of IANA registered media types
     maintained at <a href="http://www.iana.org/assignments/media-types/index.html">http://www.iana.org/assignments/media-types/index.html</a>
     as well as a large number of unofficial types.  This
@@ -986,7 +985,10 @@ extensions</td></tr>
     </code></p></div>
 
     <p>The case of the extension does not matter. Blank lines, and lines
-    beginning with a hash character (<code>#</code>) are ignored.</p>
+    beginning with a hash character (<code>#</code>) are ignored.
+    Empty lines are there for completeness (of the mime.types file).
+    Apache httpd can still determine these types with <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>.
+    </p>
 
     <div class="note">
       Please do <strong>not</strong> send requests to the Apache HTTP

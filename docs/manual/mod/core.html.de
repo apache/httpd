@@ -23,6 +23,7 @@
 <div class="toplang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
@@ -121,7 +122,7 @@ Servers</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a>-<a name="acceptpathinfo" id="acceptpathinfo">Direktive</a></h2>
@@ -1034,7 +1035,7 @@ Dateien an den Client auszuliefern</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a>-<a name="errordocument" id="errordocument">Direktive</a></h2>
@@ -1213,7 +1214,7 @@ Fehlermeldungen</a></li>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a>-<a name="extendedstatus" id="extendedstatus">Direktive</a></h2>
@@ -1224,7 +1225,7 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a>-<a name="fileetag" id="fileetag">Direktive</a></h2>
@@ -1425,7 +1426,7 @@ angegebenen MIME-Content-Type</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a>-<a name="hostnamelookups" id="hostnamelookups">Direktive</a></h2>
@@ -1480,7 +1481,7 @@ satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a>-<a name="ifdefine" id="ifdefine">Direktive</a></h2>
@@ -2338,7 +2339,7 @@ or specified mutexes</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a>-<a name="namevirtualhost" id="namevirtualhost">Direktive</a></h2>
@@ -2572,7 +2573,7 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Require" id="Require">Require</a>-<a name="require" id="require">Direktive</a></h2>
@@ -2877,7 +2878,7 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a>-<a name="serveradmin" id="serveradmin">Direktive</a></h2>
@@ -3295,7 +3296,7 @@ bevor er die Anfrage abbricht</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a>-<a name="undefine" id="undefine">Direktive</a></h2>
@@ -3305,7 +3306,7 @@ bevor er die Anfrage abbricht</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a>-<a name="usecanonicalname" id="usecanonicalname">Direktive</a></h2>
@@ -3385,7 +3386,7 @@ ermittelt</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a>-<a name="virtualhost" id="virtualhost">Direktive</a></h2>
@@ -3512,6 +3513,7 @@ IP-Adressen angewendet werden</td></tr>
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/core.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>

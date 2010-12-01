@@ -334,7 +334,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>The first step in upgrading is to read the release announcement
     and the file <code>CHANGES</code> in the source distribution to
     find any changes that may affect your site.  When changing between
-    major releases (for example, from 1.3 to 2.0 or from 2.0 to 2.2),
+    major releases (for example, from 2.0 to 2.2 or from 2.2 to 2.3),
     there will likely be major differences in the compile-time and
     run-time configuration that will require manual adjustments.  All
     modules will also need to be upgraded to accomodate changes in the

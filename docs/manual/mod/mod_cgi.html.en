@@ -116,8 +116,8 @@
     <p>Debugging CGI scripts has traditionally been difficult, mainly
     because it has not been possible to study the output (standard
     output and error) for scripts which are failing to run
-    properly. These directives, included in Apache 1.2 and later,
-    provide more detailed logging of errors when they occur.</p>
+    properly. These directives provide more detailed logging of errors
+    when they occur.</p>
 
     <h3>CGI Logfile Format</h3>
       <p>When configured, the CGI error log logs any CGI which does not

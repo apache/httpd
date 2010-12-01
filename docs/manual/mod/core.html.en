@@ -23,6 +23,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
@@ -116,11 +117,11 @@ available</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.1.5 and later.
 On Windows from Apache httpd 2.3.3 and later.</td></tr>
 </table>
-    <p>This directive enables operating system specific optimizations for a 
-       listening socket by the Protocol type. The basic premise is for the 
-       kernel to not send a socket to the server process until either data 
-       is received or an entire HTTP Request is buffered. Only
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+    <p>This directive enables operating system specific optimizations for a
+       listening socket by the <code class="directive">Protocol</code>type.
+       The basic premise is for the kernel to not send a socket to the server
+       process until either data is received or an entire HTTP Request is buffered.
+       Only <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        FreeBSD's Accept Filters</a>, Linux's more primitive 
        <code>TCP_DEFER_ACCEPT</code>, and Windows' optimized AcceptEx()
        are currently supported.</p>
@@ -180,7 +181,7 @@ On Windows from Apache httpd 2.3.3 and later.</td></tr>
        the <code>connect</code> option does not wait for the initial data
        transmission.</p>
 
-    <p>On Windows, <code>none</code> uses accept() rather than than AcceptEx()
+    <p>On Windows, <code>none</code> uses accept() rather than AcceptEx()
        and will not recycle sockets between connections.  This is useful for
        network adapters with broken driver support, as well as some virtual
        network providers such as vpn drivers, or spam, virus or spyware
@@ -1129,7 +1130,7 @@ in case of an error</td></tr>
     anyone other than the user that starts the server.</p>
     <div class="warning"><h3>Note</h3>
       <p>When entering a file path on non-Unix platforms, care should be taken
-      to make sure that only forward slashed are used even though the platform
+      to make sure that only forward slashes are used even though the platform
       may allow the use of back slashes. In general it is a good idea to always 
       use forward slashes throughout the configuration files.</p>
     </div>
@@ -2294,6 +2295,38 @@ URLs</td></tr>
     directives should not be used to control access to filesystem
     locations.  Since several different URLs may map to the same
     filesystem location, such access controls may by circumvented.</p>
+
+    <p>The enclosed directives will be applied to the request if the path component
+    of the URL meets <em>any</em> of the following criteria:
+    </p>
+    <ul>
+      <li>The specified location matches exactly the path component of the URL.
+      </li>
+      <li>The specified location, which ends in a forward slash, is a prefix 
+      of the path component of the URL (treated as a context root).
+      </li>
+      <li>The specified location, with the addition of a trailing slash, is a 
+      prefix of the path component of the URL (also treated as a context root).
+      </li>
+    </ul>
+    <p>
+    In the example below, where no trailing slash is used, requests to 
+    /private1, /private1/ and /private1/file.txt will have the enclosed
+    directives applied, but /private1other would not. 
+    </p>
+    <div class="example"><p><code>
+      &lt;Location /private1&gt;
+          ...
+    </code></p></div>
+    <p>
+    In the example below, where a trailing slash is used, requests to 
+    /private2/ and /private2/file.txt will have the enclosed
+    directives applied, but /private2 and /private2other would not. 
+    </p>
+    <div class="example"><p><code>
+      &lt;Location /private2<em>/</em>&gt;
+          ...
+    </code></p></div>
 
     <div class="note"><h3>When to use <code class="directive">&lt;Location&gt;</code></h3>
 
@@ -4093,6 +4126,7 @@ hostname or IP address</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
