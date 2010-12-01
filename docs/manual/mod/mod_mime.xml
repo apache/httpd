@@ -701,7 +701,7 @@ components as part of the filename</description>
     >ModMimeUsePathInfo</directive> is not set, the
     <code>INCLUDES</code> filter will not be added. This will work
     analogously for virtual paths, such as those defined by
-    <section>Location</Location></p>
+    <directive type="section">Location</directive></p>
 </usage>
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
 </directivesynopsis>

@@ -122,7 +122,90 @@ Servers</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache httpd 2.1.5.
+Auf Windows ab Apache httpd 2.3.3.</td></tr>
+</table>
+    <p>Diese Directive ermöglicht Betriebsystem spezifische
+    Optimierungen für seinen lauschenden Socket des
+    <code class="directive">Protocol</code> Typs.
+    Die Grundvoraussetzung ist, dass der Kernel nichts an den Socket eines
+    Serverprozesses schickt, solange entweder Daten angelangt sind, oder eine
+    vollständige HTTP Anfrage gepuffert ist. Lediglich
+       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
+       FreeBSDs Accept Filters</a>, Linuxs primitievere
+       <code>TCP_DEFER_ACCEPT</code>, und Windows' optimierte AcceptEx()
+       Funktionen sind derzeit unterstützt..</p>
+
+    <p>Die Verwendung von <code>none</code> als Argument schaltet jegliche accept
+    -Filter für dieses Protokoll ab.
+    Dies ist nützlich für Protokolle, die von einem Server erfordern
+    zuerst Daten zu senden, wie zum Beispiel <code>ftp:</code> oder <code>nntp</code>:</p>
+    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
+
+    <p>Die voreingestellten Protokollnamen sind <code>https</code> für
+    Port 443 und <code>http</code> für sätliche andere ports.
+    Um zu spezifizieren, dass ein anderes Protokkoll auf dem lauschenden Port
+    verwendet wird, fügen Sie das <var>Protokoll</var>
+    Argument zur <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
+    Directive hinzu.</p>
+
+    <p>Die voreingestellten Werte sind auf FreeBSD:</p>
+    <div class="example"><p><code>
+        AcceptFilter http httpready <br />
+        AcceptFilter https dataready
+    </code></p></div>
+
+    <p>Der <code>httpready</code> accept-Filter puffert ganze HTTP Anfragen auf
+    Kernelebene. Ist die gesamte Anfrage erhalten, schickt sie der Kernel
+    an den Server. Siehe auch die Handbuchseite 
+    <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
+    accf_http(9)</a> für mehr Details.  Da HTTPS Anfragen verschlüsselt
+    sind, werden lediglich die <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
+    accf_data(9)</a> Filter eingesetzt.</p>
+
+    <p>Die voreingestellten Werte auf Linux sind:</p>
+    <div class="example"><p><code>
+        AcceptFilter http data <br />
+        AcceptFilter https data
+    </code></p></div>
+
+    <p>Linux's <code>TCP_DEFER_ACCEPT</code> unterstützt kein Puffern von
+    HTTP Anfragen. Jeglicher Werte neben <code>none</code> schalten
+    <code>TCP_DEFER_ACCEPT</code> auf dem lauschenden Port ein. Für mehr
+    Details, siehe die Linux
+    <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
+    tcp(7)</a> Handbuchseite.</p>
+
+    <p>Die voreingestellten Werte sind auf Windows:</p>
+    <div class="example"><p><code>
+        AcceptFilter http data <br />
+        AcceptFilter https data
+    </code></p></div>
+
+    <p>Windows mpm_winnt interpretiert AcceptFilter als Anweisung die AcceptEx()
+    Programmierschnitstelle umzuschalten. Desweiteren unterstützt es keine
+    Pufferung des HTTP Protokolls. Es gibt zwei Werte, welche von der Windows
+    AcceptEx() Programmierschnittstelle Gebrauch machen und welche die Netzwerk
+    Sockets zwischen den einzelnen Verbindungen wieder aufbereiten.
+    <code>data</code> wartet, wie oben dokumentiert, bis Daten übertragen
+    wurden und der initiale Datenpuffer, sowie die Netzwerkendpunkt Adresse
+    durch einen einzigen AcceptEx() Aufruf abgerufen wurden.
+    <code>connect</code> verwendet die AcceptEx() Programmierschnittstelle,
+    ruft ebenfalls die Netzwerkendpunkt Adresse ab, aber ähnlich wie
+    <code>none</code>, wartet die <code>connect</code> Option nicht auf die
+    Initiale Data¨bertragung.</p>
+
+    <p>Auf Windows verwendet <code>none</code> accept() anstelle von AcceptEx()
+    und verwertet die Sockets zwischen Verbindungen nicht wieder. Dies ist
+    nützlich bei Netzwerkadaptern mit mangelhafter Treiber Unterstützung,
+    so wie einige virtuelle Netzwerk Anbieter, wie VPN Driver, oder Spam-, Viren-
+    oder Spyware-Filter.</p>
+
+
+<h3>Siehe auch</h3>
+<ul>
+<li><code class="directive">Protocol</code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a>-<a name="acceptpathinfo" id="acceptpathinfo">Direktive</a></h2>
@@ -668,13 +751,13 @@ nicht auf andere Weise ermitteln kann.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Define" id="Define">Define</a>-<a name="define" id="define">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Define the existence of a variable</td></tr>
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Define des Vorhandenseins einer variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Define <var>Parametername</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
-    <p>Equivalent zum übergeben von <var>Parametername</var> mittels des
+    <p>Equivalent zum Übergeben von <var>Parametername</var> mittels des
     <code>-D</code> Arguments an <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
     <p>Diese Directive kann verwendet werden, um die Nutzung von <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> Sectionen umzuschalten, ohne die
     <code>-D</code> Argumentente in etwaigen Start-Skripten ändern
@@ -965,12 +1048,13 @@ Auslieferung zu lesen</td></tr>
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Verwende die sendfile-Unterstützung des Kernels, um
 Dateien an den Client auszuliefern</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableSendfile On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>EnableSendfile On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>EnableSendfile Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache Version 2.0.44</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Version 2.0.44. Voreinstellung auf Off
+geändert in der Version 2.3.9</td></tr>
 </table>
     <p>Die Direktive steuert, ob <code class="program"><a href="../programs/httpd.html">httpd</a></code> die
     sendfile-Unterstützung des Kernels verwenden kann, um
@@ -1030,12 +1114,40 @@ Dateien an den Client auszuliefern</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Error" id="Error">Error</a>-<a name="error" id="error">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Abbruch der Konfigurationsanalyse mit einer angepassenten
+Fehlermeldung</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Error <var>Meldung</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab 2.3.9</td></tr>
+</table>
+    <p>Kann ein Fehler innheralb der Konfiguration erkannt werden, dann
+    kann diese Directive genutzt werden um eine angepasste Fehlermeldung zu
+    generieren und die Konfigurationsanalyse anzuhalten.
+    Typischerweise kann dies verwendet werden, um das Fehlen von erforderlichen
+    Modulen in der Konfiguration zu melden.</p>
+
+    <div class="example"><h3>Beispiel</h3><p><code>
+      # sicherstellen dass mod_include geladen ist<br />
+      &lt;IfModule !include_module&gt;<br />
+      Error mod_include wird von mod_foo verlangt.  Laden Sie es mit LoadModule.<br />
+      &lt;/IfModule&gt;<br />
+      <br />
+      # sicherstellen dass genau eines von SSL,NOSSL definiert ist<br />
+      &lt;IfDefine SSL&gt;<br />
+      &lt;IfDefine NOSSL&gt;<br />
+      Error Beide SSL and NOSSL sind defined.  Bitte definieren sie nur eines davon.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;IfDefine !SSL&gt;<br />
+      &lt;IfDefine !NOSSL&gt;<br />
+      Error Entweder SSL oder NOSSL muss definiert sein.<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;/IfDefine&gt;<br />
+    </code></p></div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a>-<a name="errordocument" id="errordocument">Direktive</a></h2>
@@ -1209,12 +1321,133 @@ Fehlermeldungen</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a>-<a name="errorlogformat" id="errorlogformat">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Format specification for error log entries</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Formatspecifikation für Einträge des Fehlerprotokolls</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> ErrorLog [Verbindung|Anfrage] <var>Format</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache httpd 2.3.9</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
+    <p><code class="directive">ErrorLogFormat</code> erlaubt das Spezifizieren
+    supplementärer Information, welche zusätzlich zur eigentlichen
+    Fehlermeldun mitprotokoliert werden.</p>
+
+    <div class="example"><h3>Einfaches Beispiel</h3><p><code>
+        ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+    </code></p></div>
+
+    <p>Durch die Angabe des <code>Verbindungs</code> oder <code>Request</code>
+    Paramters an erster Stelle, eröffnen Sie die Möglichkeit
+    zusätzlicher Formate, die wiederum zusätzliche Information
+    protokolieren, wenn die erste Meldung einer Verbindung, oder respektive
+    einer Anfrage protokoliert wird. Diese Zusatzinformation wird lediglich
+    einmal pro Verbindung/Anfrage protokolliert. Wird eine Verbindung oder eine Anfrage
+    verarbeitet, ohne einen Protokolleintrag zu verursachen, so wird auch die
+    Zusatzinformation nicht protokolliert.</p>
+
+    <p>Es kann geschehen, dass einige Format-Zeichenketten Teilpunkte keine
+    Ausgab
+    string item. A <code>-</code> (minus) modifier causes a minus to be logged if the
+    respective item does not produce any output. In once-per-connection/request
+    formats, it is also possible to use the <code>+</code> (plus) modifier. If an
+    item with the plus modifier does not produce any output, the whole line is
+    ommitted.</p>
+
+    <p>A number as modifier can be used to assign a log severity level to a
+    format item. The item will only be logged if the severity of the log
+    message is not higher than the specified log severity level. The number can
+    range from 1 (alert) over 4 (warn) and 7 (debug) to 15 (trace8).</p>
+
+    <p>Some format string items accept additional parameters in braces.</p>
+
+    <table class="bordered"><tr class="header"><th>Format&nbsp;String</th> <th>Description</th></tr>
+<tr><td><code>%%</code></td>
+        <td>Das Prozentzeichen</td></tr>
+<tr class="odd"><td><code>%...a</code></td>
+        <td>Entfernte IP Adresse und Port</td></tr>
+<tr><td><code>%...A</code></td>
+        <td>Lokale IP Adresse und Port</td></tr>
+<tr class="odd"><td><code>%...{name}e</code></td>
+        <td>Umgebungsvariable <code>Name</code> aus der Anfrage</td></tr>
+<tr><td><code>%...E</code></td>
+        <td>APR/OS Fehlerstatuskode und Zeichenkette</td></tr>
+<tr class="odd"><td><code>%...F</code></td>
+        <td>Dateiname der Quelle und Zeilennummer des Protokollaufrufs</td></tr>
+<tr><td><code>%...{name}i</code></td>
+        <td>Aufruf Header <code>Name</code></td></tr>
+<tr class="odd"><td><code>%...k</code></td>
+        <td>Anzahl der keep-alive Anfragen auf dieser Verbindung</td></tr>
+<tr><td><code>%...l</code></td>
+        <td>Loglevel der Meldung</td></tr>
+<tr class="odd"><td><code>%...L</code></td>
+        <td>Log ID der Anfrage</td></tr>
+<tr><td><code>%...{c}L</code></td>
+        <td>Log ID der Verbindung</td></tr>
+<tr class="odd"><td><code>%...{C}L</code></td>
+        <td>Log ID der Verbidung, wenn in einem Verbindungsrahmen verwendent, sonst leer.</td></tr>
+<tr><td><code>%...m</code></td>
+        <td>Name des Moduls, welches die Meldung protokoliert</td></tr>
+<tr class="odd"><td><code>%M</code></td>
+        <td>Die eigentliche Protokollmeldung</td></tr>
+<tr><td><code>%...{name}n</code></td>
+        <td>Request note <code>name</code></td></tr>
+<tr class="odd"><td><code>%...P</code></td>
+        <td>Process ID of current process</td></tr>
+<tr><td><code>%...T</code></td>
+        <td>Thread ID of current thread</td></tr>
+<tr class="odd"><td><code>%...t</code></td>
+        <td>The current time</td></tr>
+<tr><td><code>%...{u}t</code></td>
+        <td>The current time including micro-seconds</td></tr>
+<tr class="odd"><td><code>%...{cu}t</code></td>
+        <td>The current time in compact ISO 8601 format, including
+            micro-seconds</td></tr>
+<tr><td><code>%...v</code></td>
+        <td>The canonical <code class="directive"><a href="#servername">ServerName</a></code>
+            of the current server.</td></tr>
+<tr class="odd"><td><code>%...V</code></td>
+        <td>The server name of the server serving the request according to the
+            <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>
+            setting.</td></tr>
+<tr><td><code>\&nbsp;</code> (backslash space)</td>
+        <td>Non-field delimiting space</td></tr>
+<tr class="odd"><td><code>%&nbsp;</code> (percent space)</td>
+        <td>Field delimiter (no output)</td></tr>
+</table>
+
+    <p>The log ID format <code>%L</code> produces a unique id for a connection
+    or request. This can be used to correlate which log lines belong to the
+    same connection or request, which request happens on which connection.
+    A <code>%L</code> format string is also available in
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>, to allow to correlate access log entries
+    with error log lines. If <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code> is loaded, its
+    unique id will be used as log ID for requests.</p>
+
+    <div class="example"><h3>Example (somewhat similar to default format)</h3><p><code>
+        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
+        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </code></p></div>
+
+    <div class="example"><h3>Example (similar to the 2.2.x format)</h3><p><code>
+        ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
+        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+    </code></p></div>
+
+    <div class="example"><h3>Advanced example with request/connection log IDs</h3><p><code>
+        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"<br />
+        ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br />
+        ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br />
+        ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br />
+        ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"<br />
+    </code></p></div>
+
+
+<h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
+<li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
+<li><a href="../logs.html">Apache HTTP Server Log Files</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a>-<a name="extendedstatus" id="extendedstatus">Direktive</a></h2>
@@ -1225,7 +1458,7 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a>-<a name="fileetag" id="fileetag">Direktive</a></h2>
@@ -1426,7 +1659,7 @@ angegebenen MIME-Content-Type</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a>-<a name="hostnamelookups" id="hostnamelookups">Direktive</a></h2>
@@ -1481,7 +1714,7 @@ satisfied by a request at runtime</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a>-<a name="ifdefine" id="ifdefine">Direktive</a></h2>
@@ -1609,7 +1842,7 @@ Server-Konfigurationsdatei ein</td></tr>
     <p>Die Direktive erlaubt das Einfügen anderer Konfigurationsdateien
     in die Konfigurationsdatei des Servers.</p>
 
-    <p>Shell-typische (<code>fnmatch()</code>) Platzhlaterzeichen können
+    <p>Shell-typische (<code>fnmatch()</code>) Platzhalterzeichen können
     dazu verwendet werden, mehrere Dateien auf einmal in alphabetischer
     Reihenfolge einzufügen. Wenn <code class="directive">Include</code>
     darüber hinaus auf ein Verzeichnis anstatt auf eine Datei zeigt,
@@ -2339,7 +2572,7 @@ or specified mutexes</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a>-<a name="namevirtualhost" id="namevirtualhost">Direktive</a></h2>
@@ -2573,7 +2806,7 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Require" id="Require">Require</a>-<a name="require" id="require">Direktive</a></h2>
@@ -2878,7 +3111,7 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a>-<a name="serveradmin" id="serveradmin">Direktive</a></h2>
@@ -3291,22 +3524,31 @@ bevor er die Anfrage abbricht</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a>-<a name="traceenable" id="traceenable">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Determines the behaviour on <code>TRACE</code> requests</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Entscheidet über das Verhalten bei <code>TRACE</code>
+Anfragen</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>TraceEnable on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td> in Apache HTTP Server 1.3.34, 2.0.55 and later</td></tr>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a>-<a name="undefine" id="undefine">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Undefine the existence of a variable</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Hebt die Definition einer Variablen auf</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UnDefine <var>Parametername</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>
+    <p>Hebt die Auswirkungen eines <code class="directive"><a href="#define">Define</a></code>,
+    oder des Übergeben eines <code>-D</code> Argument an <code class="program"><a href="../programs/httpd.html">httpd</a></code> wieder auf.</p>
+    <p>Diese Directive kann verwendet werden, um die Nutzung von <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> Sectionen umzuschalten, ohne die
+    <code>-D</code> Argumentente in etwaigen Start-Skripten ändern
+    zu müssen.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a>-<a name="usecanonicalname" id="usecanonicalname">Direktive</a></h2>
@@ -3319,7 +3561,7 @@ ermittelt</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
-    <p>In vielen Situationen muss der Apache eine
+    <p>In vielen Situationen muss der Apache httpd eine
     <em>selbstreferenzierende</em> URL -- d.h. eine URL, die auf den selben
     Server zurück verweist -- zusammenbauen. Bei <code>UseCanonicalName
     On</code> verwendet der Apache den Hostnamen und Port, der in der
@@ -3386,7 +3628,7 @@ ermittelt</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
+</table>Documentation not yet translated. Please see English version of document.
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a>-<a name="virtualhost" id="virtualhost">Direktive</a></h2>

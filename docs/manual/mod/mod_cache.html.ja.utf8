@@ -172,7 +172,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a name="cachedisable" id="cachedisable">ディレクティブ</a></h2>
@@ -249,7 +249,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">ディレクティブ</a></h2>
@@ -398,7 +398,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheKeyBaseURL" id="CacheKeyBaseURL">CacheKeyBaseURL</a> <a name="cachekeybaseurl" id="cachekeybaseurl">ディレクティブ</a></h2>
@@ -408,7 +408,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">ディレクティブ</a></h2>
@@ -454,7 +454,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLockMaxAge" id="CacheLockMaxAge">CacheLockMaxAge</a> <a name="cachelockmaxage" id="cachelockmaxage">ディレクティブ</a></h2>
@@ -464,7 +464,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLockPath" id="CacheLockPath">CacheLockPath</a> <a name="cachelockpath" id="cachelockpath">ディレクティブ</a></h2>
@@ -474,7 +474,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire">ディレクティブ</a></h2>
@@ -525,7 +525,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStaleOnError" id="CacheStaleOnError">CacheStaleOnError</a> <a name="cachestaleonerror" id="cachestaleonerror">ディレクティブ</a></h2>
@@ -535,7 +535,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreExpired" id="CacheStoreExpired">CacheStoreExpired</a> <a name="cachestoreexpired" id="cachestoreexpired">ディレクティブ</a></h2>
@@ -545,7 +545,7 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table>Documentation not yet translated. Please see English version of document.
+</table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a name="cachestorenostore" id="cachestorenostore">ディレクティブ</a></h2>

@@ -646,12 +646,14 @@ components as part of the filename</td></tr>
       ModMimeUsePathInfo On
     </code></p></div>
 
-    <p>If you have a request for <code>/index.php/foo.shtml</code> where
-    <code>/index.php</code> <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> will now treat the
+    <p>If you have a request for <code>/index.php/foo.shtml</code>
+    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> will now treat the
     incoming request as <code>/index.php/foo.shtml</code> and directives
     like <code>AddOutputFilter INCLUDES .shtml</code> will add the
     <code>INCLUDES</code> filter to the request. If <code class="directive">ModMimeUsePathInfo</code> is not set, the
-    <code>INCLUDES</code> filter will not be added.</p>
+    <code>INCLUDES</code> filter will not be added. This will work
+    analogously for virtual paths, such as those defined by
+    <code class="directive">&lt;Location&gt;</code></p>
 
 <h3>See also</h3>
 <ul>
