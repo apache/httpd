@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1040808 -->
+<!-- English Revision : 1041010 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2526,6 +2526,7 @@ host</context>
     <p>Les directives que contient cette section seront appliqu&eacute;es aux
     requ&ecirc;tes si la partie chemin de l'URL satisfait &agrave; l'un au moins de
     ces crit&egrave;res :
+    </p>
     <ul>
       <li>Le chemin sp&eacute;cifi&eacute; correspond exactement &agrave; la partie chemin de
       l'URL.
@@ -2539,22 +2540,25 @@ host</context>
       contexte).
       </li>
     </ul>
+    <p>
     Dans l'exemple ci-dessous, o&ugrave; aucun slash de fin n'est utilis&eacute;, les
     directives contenues dans la section s'appliqueront &agrave; /private1,
     /private1/ et /private1/file.txt, mais pas &agrave; /private1other. 
+    </p>
     <example>
       &lt;Location /private1&gt;
           ...
     </example>
+    <p>
     De m&ecirc;me, dans l'exemple ci-dessous, o&ugrave; l'on utilise un slash de fin, les
     directives contenues dans la section s'appliqueront &agrave; /private2/ et
-    &agrave; /private2/file.txt, mais pas &agrave; /private2other. 
+    &agrave; /private2/file.txt, mais pas &agrave; /private2other.
+    </p>
     <example>
       &lt;Location /private2<em>/</em>&gt;
           ...
     </example>
-    </p>
-
+    
     <note><title>Quand utiliser la section <directive
     type="section">Location</directive></title>
 
