@@ -936,8 +936,6 @@ in case of an error</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Quoting syntax for text messages is different in Apache HTTP Server
-2.0</compatibility>
 
 <usage>
     <p>In the event of a problem or error, Apache httpd can be configured

@@ -1086,8 +1086,6 @@ zur&uuml;ckgibt</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Die Syntax der Anf&uuml;hrungszeichen bei Textnachrichten hat
-sich im Apache 2.0 ge&auml;ndert</compatibility>
 
 <usage>
     <p>Im Falle eines Problems oder Fehlers kann der Apache

@@ -1029,8 +1029,6 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>La syntaxe des guillemets pour les messages textes est
-diff&eacute;rente dans la version 2.0 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Apache httpd peut traiter les probl&egrave;mes et les erreurs de quatre
