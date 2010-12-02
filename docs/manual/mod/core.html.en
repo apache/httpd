@@ -987,8 +987,6 @@ in case of an error</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Quoting syntax for text messages is different in Apache HTTP Server
-2.0</td></tr>
 </table>
     <p>In the event of a problem or error, Apache httpd can be configured
     to do one of four things,</p>

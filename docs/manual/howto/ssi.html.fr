@@ -369,15 +369,6 @@ HTML préexistants.</p>
     définir des variables, et de les utiliser dans des comparaisons et
     des conditions.</p>
 
-<h3><a name="caveat" id="caveat">Mise en garde</a></h3>
-
-    <p>La plupart des fonctionnalités décrites dans cet article ne sont
-    disponibles que si vous utilisez la version 1.2 ou supérieure
-    d'Apache. Bien entendu, si ce n'est pas le cas, vous devez faire une
-    mise à jour immédiatement, et même plus tôt. Allez-y. Faites-le
-    maintenant. Nous attendrons.</p>
-
-
 <h3><a name="variables" id="variables">Définition de variables</a></h3>
 
     <p>Avec l'élément <code>set</code>, vous pouvez définir des

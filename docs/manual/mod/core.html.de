@@ -1159,8 +1159,6 @@ zurückgibt</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Die Syntax der Anführungszeichen bei Textnachrichten hat
-sich im Apache 2.0 geändert</td></tr>
 </table>
     <p>Im Falle eines Problems oder Fehlers kann der Apache
     konfiguriert werden, eine der vier Aktionen auszuführen:</p>

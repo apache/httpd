@@ -34,8 +34,11 @@ pages SSI</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_env.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de contrôler l'environnement transmis aux
-    scripts CGI et aux pages SSI. Les variables d'environnement peuvent
+    <p>Ce module permet de contrôler les variables d'environnement
+    internes utilisées par divers modules du serveur HTTP Apache. Ces
+    variables sont aussi accessibles aux scripts CGI en tant que
+    variables d'environnement système natives, et disponibles dans les
+    pages SSI. Les variables d'environnement peuvent
     être transmises depuis le shell qui a lancé le processus
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Elles peuvent également être définies ou
     supprimées au cours du processus de configuration.</p>
@@ -49,6 +52,7 @@ pages SSI</td></tr>
 <h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../env.html">Variables d'environnement</a></li>
+<li><code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -63,9 +67,12 @@ shell</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Spécifie une ou plusieurs variables d'environnement à transmettre
-    aux scripts CGI et aux pages SSI depuis l'environnement du shell qui
-    a lancé le processus <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
+    <p>Cette directive permet de spécifier quelles variables
+    d'environnement système natives doivent être disponibles en tant que
+    variables d'environnement internes pour les modules du serveur HTTP
+    Apache, et propagées vers les scripts CGI et les pages SSI. Leurs
+    valeurs sont issues de l'environnement natif de l'OS associé au
+    shell qui a invoqué le processus <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
       PassEnv LD_LIBRARY_PATH
@@ -82,13 +89,29 @@ shell</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Définit une variable d'environnement, cette dernière étant
-    ensuite transmise aux scripts CGI et aux pages SSI.</p>
+    <p>Définit une variable d'environnement interne, cette dernière étant
+    ensuite disponible pour les modules du serveur HTTP Apache et
+    transmise aux scripts CGI et aux pages SSI.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
       SetEnv SPECIAL_PATH /foo/bin
     </code></p></div>
+    <div class="note"><p>Les variables d'environnement internes définies par cette
+    directive le sont <em>après</em> l'exécution de la plupart des
+    directives du traitement initial des requêtes, comme les contrôles
+    d'accès et la mise en correspondance des URIs avec les noms de
+    fichiers. Si la variable d'environnement est sensée intervenir au
+    cours de cette phase initiale du traitement, par exemple pour la
+    directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>,
+    vous devez plutôt utiliser la directive <code class="directive"><a href="../mod/mod_setenvif.html# setenvif"> SetEnvIf</a></code> pour définir cette
+    variable.</p>
+    </div>
 
+
+<h3>Voir aussi</h3>
+<ul>
+<li><a href="../env.html">Variables d'environnement</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Directive</a></h2>
@@ -101,7 +124,7 @@ shell</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Supprime une ou plusieurs variables d'environnement parmi celles
+    <p>Supprime une ou plusieurs variables d'environnement internes parmi celles
     qui sont transmises aux scripts CGI et aux pages SSI.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>

@@ -121,20 +121,21 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Supposons que vous avez assigné 192.0.2.1 à
+    <p>Supposons que vous ayez assigné 192.0.2.1 à
     <code>www.example1.dom</code> et 192.0.2.2 à <code>www.example2.dom</code>. En
-    outre, supposons que <code>example2.dom</code> gère son propre DNS. Avec
-    cette configuration, <code>example2.dom</code> sera en mesure de
-    détourner tout trafic destiné à <code>example1.dom</code>. Pour y
-    parvenir, tout ce qu'ils ont à faire consiste à assigner 192.0.2.1 à
-    <code>www.example2.dom</code>. Comme ils gèrent leur propre DNS, vous ne
+    outre, supposons que <code>example1.dom</code> gère son propre DNS. Avec
+    cette configuration, <code>example1.dom</code> sera en mesure de
+    détourner tout trafic destiné à <code>example2.dom</code>. Pour y
+    parvenir, tout ce qu'ils ont à faire consiste à
+    assigner 192.0.2.2 à
+    <code>www.example1.dom</code>. Comme ils gèrent leur propre DNS, vous ne
     pouvez pas les empêcher de faire pointer l'enregistrement
-    <code>www.example2.dom</code> vers l'adresse qu'ils veulent.</p>
+    <code>www.example1.dom</code> vers l'adresse qu'ils veulent.</p>
 
-    <p>Les requêtes à destination de 192.0.2.1 (y compris toutes celles
+    <p>Les requêtes à destination de 192.0.2.2 (y compris toutes celles
     où l'utilisateur à tapé une URL de la forme
-    <code>http://www.example1.dom/quelquepart</code>), seront toutes servies
-    par le serveur virtuel <code>example2.dom</code>. Une meilleur
+    <code>http://www.example2.dom/quelquepart</code>), seront toutes servies
+    par le serveur virtuel <code>example1.dom</code>. Une meilleur
     compréhension de la raison pour laquelle ceci peut se produire
     nécessite une discussion plus approfondie à propos de la manière
     dont httpd associe les requêtes entrantes aux différents serveurs
