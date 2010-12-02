@@ -910,8 +910,6 @@ module="core">Directory</directive></seealso>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 2.0 ではテキストをクウォートする構文が以前のバージョンから
-変わっています。</compatibility>
 
 <usage>
     <p>問題やエラーが発生したときの動作として、
