@@ -2280,6 +2280,38 @@ URLs</description>
     locations.  Since several different URLs may map to the same
     filesystem location, such access controls may by circumvented.</p>
 
+    <p>The enclosed directives will be applied to the request if the path component
+    of the URL meets <em>any</em> of the following criteria:
+    </p>
+    <ul>
+      <li>The specified location matches exactly the path component of the URL.
+      </li>
+      <li>The specified location, which ends in a forward slash, is a prefix 
+      of the path component of the URL (treated as a context root).
+      </li>
+      <li>The specified location, with the addition of a trailing slash, is a 
+      prefix of the path component of the URL (also treated as a context root).
+      </li>
+    </ul>
+    <p>
+    In the example below, where no trailing slash is used, requests to 
+    /private1, /private1/ and /private1/file.txt will have the enclosed
+    directives applied, but /private1other would not. 
+    </p>
+    <example>
+      &lt;Location /private1&gt;
+          ...
+    </example>
+    <p>
+    In the example below, where a trailing slash is used, requests to 
+    /private2/ and /private2/file.txt will have the enclosed
+    directives applied, but /private2 and /private2other would not. 
+    </p>
+    <example>
+      &lt;Location /private2<em>/</em>&gt;
+          ...
+    </example>
+
     <note><title>When to use <directive 
     type="section">Location</directive></title>
 
