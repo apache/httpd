@@ -36,11 +36,12 @@ de caractéristiques de la requête</td></tr>
 
 
     <p>Le module <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> vous permet de définir
-    des variables d'environnement en fonction du fait que telle ou telle
+    des variables d'environnement internes en fonction du fait que telle ou telle
     caractéristique de la requête correspond ou non aux expressions
     rationnelles que vous spécifiez. Ces variables d'environnement
     peuvent être utilisées par d'autres parties du serveur pour prendre
-    des décisions quant aux actions à entreprendre.</p>
+    des décisions quant aux actions à entreprendre, et pour déterminer
+    si les scripts CGI et les pages SSI doivent pouvoir y accéder.</p>
 
     <p>Les directives sont interprétées selon l'ordre dans lequel elles
     apparaîssent dans les fichiers de configuration. Ainsi, des
@@ -275,7 +276,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a> <a name="setenvifexpr" id="setenvifexpr">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction d'une expression</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des variables d'environnement en fonction d'une expression ap_expr</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvIfExpr <em>expr
     [!]env-variable</em>[=<em>valeur</em>]
     [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
@@ -299,11 +300,12 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     <code>iso_delivered</code> est définie chaque fois que notre
     application tente de l'envoyer via <code>X-Sendfile</code>.</p>
 
-    <p>Pour un exemple plus utile, voir le cas de
-    <code>Referer</code> pour un site comportant plusieurs domaines :</p>
+    <p>Il pourrait être plus utile de définir une variable rfc1918 si
+    l'adresse IP distante est une adresse privée au sens de la RFC 1918
+    :</p>
 
 <div class="example"><p><code>
-    SetEnvIfExpr "${HTTP_REFERER} in { 'www.example.com','example.com','w2.example3.org' }" intra_site_referral
+    SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918
 </code></p></div>
 
 <h3>Voir aussi</h3>

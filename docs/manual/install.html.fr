@@ -26,8 +26,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -350,7 +348,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     sortie de la nouvelle version et le fichier <code>CHANGES</code>
     dans la distribution des sources afin de déceler toutes les modifications
     qui pourraient affecter votre site. Lors d'un changement majeur de version
-    (par exemple de 1.3 à 2.0 ou de 2.0 à 2.2),
+    (par exemple de 2.0 à 2.2 ou de 2.2 à 2.3),
     il y aura certainement des différences importantes quant à la
     configuration de la compilation et de l'exécution qui nécessiteront des
     ajustements manuels.  Tous les

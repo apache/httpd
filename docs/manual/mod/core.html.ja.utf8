@@ -950,8 +950,6 @@
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0 ではテキストをクウォートする構文が以前のバージョンから
-変わっています。</td></tr>
 </table>
     <p>問題やエラーが発生したときの動作として、
     Apache には以下の四つのうち一つの動作を設定することができます。</p>
