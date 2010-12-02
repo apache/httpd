@@ -1,0 +1,1 @@
+translated=core.xml
