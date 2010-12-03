@@ -180,6 +180,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      enabling/disabling the basic capability is not split out into mod_unixd 2.2.x.
      +1: trawick
 
+   * autoindex: fix merge of IndexOptions into per-dir configs 
+     without any autoindex options.  PR47766
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1031430
+     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-autoindex_merge.diff
+     +1 covener
+    
+   * mod_proxy_connect: don't break proxy connections when EINTR is received 
+     during poll PR50220.
+     Trunk patch: http://svn.apache.org/viewvc?rev=1031551&view=rev
+     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-proxy_connect_eintr.diff
+     +1 covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
