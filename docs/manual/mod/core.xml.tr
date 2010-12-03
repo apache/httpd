@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 890374:1028803 (outdated) -->
+<!-- English Revision: 1028803 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -1743,7 +1743,8 @@ sınırlar.</description>
 </description>
 <syntax>LimitRequestLine <var>bayt-sayısı</var></syntax>
 <default>LimitRequestLine 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>Bu yönerge, HTTP istek satırında izin verilecek bayt sayısını 0 ile bir
@@ -1771,6 +1772,13 @@ sınırlar.</description>
     </example>
 
     <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir.</note>
+
+    <note type="warning"><title>Uyarı</title>
+      <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
+        bağlantının eşleştirildiği ilk <directive>NameVirtualHost</directive>
+        yönergesinden (listedeki ilk - öntanımlı - konak) alınır.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
