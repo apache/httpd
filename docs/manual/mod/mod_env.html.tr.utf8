@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_env.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere
 müdahale etmek için kullanılır.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -34,9 +33,10 @@ müdahale etmek için kullanılır.</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_env.c</td></tr></table>
 <h3>Özet</h3>
 
-    <p>Bu modül CGI betiklerine ve SSI sayfalarına aktarılan ortama müdahale
-      etmeyi mümkün kılar. Ortam değişkenleri <code class="program"><a href="../programs/httpd.html">httpd</a></code> süreci
-      başlatılırken kabuktan aktarılabilir. Bundan başka, yapılandırma
+    <p>Bu modül çeşitli Apache HTTP sunucu modülleri tarafından kullanılan dahili
+      ortam değişkenlerini denetim altına almak için kullanılır. Bu değişkenler
+      ayrıca CGI betiklerinde sistem ortam değişkenleri gibi belirtilebildiği
+      gibi SSI sayfalarında da kullanılabilmektedir. Bundan başka, yapılandırma
       sürecinde tanımlı veya tanımsız yapılabilirler.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
@@ -61,8 +61,10 @@ müdahale etmek için kullanılır.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_env</td></tr>
 </table>
-    <p><code class="program"><a href="../programs/httpd.html">httpd</a></code> süreci başlatılırken CGI betiklerine ve SSI
-      sayfalarına kabuktan aktarılabilecek ortam değişkenleri belirtilir.</p>
+    <p><code class="program"><a href="../programs/httpd.html">httpd</a></code> süreci başlatılırken Apache HTTP sunucu
+      modüllerinde, CGI betiklerinde ve SSI sayfalarında dahili ortam
+      değişkenleri olarak kullanılmak üzere bazı sistem ortam değişkenlerini
+      belirtmek için kullanılır.</p>
 
     <div class="example"><h3>Örnek</h3><p><code>
       PassEnv LD_LIBRARY_PATH
@@ -79,8 +81,9 @@ müdahale etmek için kullanılır.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_env</td></tr>
 </table>
-    <p>CGI betiklerine ve SSI sayfalarına aktarılmak üzere bir ortam değişkeni
-      tanımlanmasını sağlar.</p>
+    <p>Apache HTTP sunucu modüllerinde kullanılmak ve CGI betiklerine ve SSI
+      sayfalarına aktarılmak üzere bir ortam değişkeni belirtilebilmesini
+      sağlar.</p>
 
     <div class="example"><h3>Örnek</h3><p><code>
       SetEnv SPECIAL_PATH /foo/bin
@@ -89,11 +92,15 @@ müdahale etmek için kullanılır.</td></tr>
     <div class="note"><p>Bu yönerge ile atanan dahili ortam değişkenleri, erişim denetimi ve
       URI'leri dosya isimleri ile eşleştirme gibi daha önceki istek işleme
       yönergelerinden <em>sonra</em> atanır. Eğer atayacağınız ortam
-      değikenlerinin <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      değişkenlerinin <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
       yönergelerindeki gibi erken dönem işlem aşamalarında etkili olmasını
       istiyorsanız bu ortam değişkenlerini <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> yönergesi ile atamalısınız.</p>
     </div>
 
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><a href="../env.html">Ortam Değişkenleri</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Yönergesi</a></h2>
@@ -106,8 +113,8 @@ müdahale etmek için kullanılır.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_env</td></tr>
 </table>
-    <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir ortam
-      değişkenini ortamdan siler.</p>
+    <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir dahili
+      ortam değişkenini ortamdan siler.</p>
 
     <div class="example"><h3>Örnek</h3><p><code>
       UnsetEnv LD_LIBRARY_PATH

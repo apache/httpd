@@ -27,7 +27,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -57,6 +56,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
@@ -77,6 +77,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
@@ -148,6 +149,10 @@
       kullanışlıdır:</p>
     <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
 
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive">Protocol</code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Yönergesi</a></h2>
@@ -698,8 +703,9 @@ kullanımı önerilmemektedir.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
-  altdizinlerinde uygulanacak bir yönerge grubunu sarmalar.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sadece ismi belirtilen dosya sistemi dizinine ve bunun
+  altdizinleri ile içeriklerine uygulanacak bir yönerge grubunu
+  sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Directory <var>dizin-yolu</var>&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
@@ -708,17 +714,17 @@ kullanımı önerilmemektedir.</td></tr>
 </table>
     <p><code class="directive">&lt;Directory&gt;</code> ve
       <code>&lt;/Directory&gt;</code> sadece ismi belirtilen dosya sistemi
-      dizininde ve bunun altdizinlerinde uygulanacak bir yönerge grubunu
-      sarmalamakta kullanılır. Bir dizin bağlamında kullanılabilecek her
-      yönergeye izin verilir. <var>dizin-yolu</var> bir dizinin tam yolu
-      olabileceği gibi Unix kabuk tarzı bir dosya ismi eşleştirme kalıbı da
-      olabilir. Kalıp dizgesinde, <code>?</code> herhangi bir tek karakterle,
-      <code>*</code> herhangi bir karakter dizisiyle eşleşir. Ayrıca
-      <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’ karakteri
-      ile hiçbir kalıp karakteri eşleşmez, bu bakımdan <code>&lt;Directory
-      /*/public_html&gt;</code> ile <code>/home/user/public_html</code>
-      değil, ama <code>&lt;Directory /home/*/public_html&gt;</code>
-      eşleşecektir. Örnek:</p>
+      dizini ve bunun altdizinleri ile bu dizinlerin içeriklerine uygulanacak
+      bir yönerge grubunu sarmalamakta kullanılır. Bir dizin bağlamında
+      kullanılabilecek her yönergeye izin verilir. <var>dizin-yolu</var> bir
+      dizinin tam yolu olabileceği gibi Unix kabuk tarzı bir dosya ismi
+      eşleştirme kalıbı da olabilir. Kalıp dizgesinde, <code>?</code> herhangi
+      bir tek karakterle, <code>*</code> herhangi bir karakter dizisiyle
+      eşleşir. Ayrıca <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’
+      karakteri ile hiçbir kalıp karakteri eşleşmez, bu bakımdan
+      <code>&lt;Directory /*/public_html&gt;</code> ile
+      <code>/home/user/public_html</code> değil, ama <code>&lt;Directory
+      /home/*/public_html&gt;</code> eşleşecektir. Örnek:</p>
 
     <div class="example"><p><code>
       &lt;Directory /usr/local/httpd/htdocs&gt;<br />
@@ -842,9 +848,10 @@ kullanımı önerilmemektedir.</td></tr>
 </table>
     <p><code class="directive">&lt;DirectoryMatch&gt;</code> and
     <code>&lt;/DirectoryMatch&gt;</code> yönergeleri <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> gibi sadece ismi
-      belirtilen dosya sistemi dizininde ve bunun <em>altdizinlerinde</em>
-      uygulanacak bir yönerge grubunu sarmalamakta kullanılır. Tek farkla
-      argüman olarak bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> alır.
+      belirtilen dosya sistemi dizinine ve bunun <em>altdizinleri</em> ile
+      bunların içerdiği dosyalara uygulanacak bir yönerge grubunu sarmalamakta
+      kullanılır. Tek farkla argüman olarak bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli
+      ifade</a> alır.
       Örnek:</p>
 
     <div class="example"><p><code>
@@ -1391,6 +1398,24 @@ oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>gmon.out profilleme verisinin yazılacağı dizin.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+</table>
+    <p>Sunucu gprof profilleme desteği ile derlendiği takdirde
+      <code class="directive">GprofDir</code> yönergesi, süreç çıkarken
+      <code>gmon.out</code> dosyalarının belirtilen dizine yazılmasını sağlar.
+      Eğer değistirge yüzde simgesi (%) ile bitirilirse her süreç kimliği (PID)
+      için ayrı bir aldizin oluşturulur.</p>
+
+    <p>Bu yönerge sadece <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM ile çalışır.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemci IP adresleri üzerinde DNS sorgularını etkin kılar.
@@ -1826,7 +1851,7 @@ uzunluğunu sınırlar.</td></tr>
 sınırlar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestFields <var>sayı</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitRequestFields 100</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
@@ -1858,6 +1883,12 @@ sınırlar.</td></tr>
       LimitRequestFields 50
     </code></p></div>
 
+    <div class="warning"><h3>Uyarı</h3>
+      <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
+        bağlantının eşleştirildiği ilk <code class="directive">NameVirtualHost</code>
+        yönergesinden (listedeki ilk - öntanımlı - konak) alınır.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1867,7 +1898,7 @@ sınırlar.</td></tr>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestFieldSize <var>bayt-sayısı</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitRequestFieldSize 8190</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
@@ -1895,6 +1926,12 @@ sınırlar.</td></tr>
 
     <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir.</div>
 
+    <div class="warning"><h3>Uyarı</h3>
+      <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
+        bağlantının eşleştirildiği ilk <code class="directive">NameVirtualHost</code>
+        yönergesinden (listedeki ilk - öntanımlı - konak) alınır.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1904,7 +1941,7 @@ sınırlar.</td></tr>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LimitRequestLine <var>bayt-sayısı</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LimitRequestLine 8190</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
@@ -1931,6 +1968,13 @@ sınırlar.</td></tr>
     </code></p></div>
 
     <div class="note">Normal şartlar altında öntanımlı değer değiştirilmemelidir.</div>
+
+    <div class="warning"><h3>Uyarı</h3>
+      <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
+        bağlantının eşleştirildiği ilk <code class="directive">NameVirtualHost</code>
+        yönergesinden (listedeki ilk - öntanımlı - konak) alınır.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1984,7 +2028,35 @@ sınırlar.</td></tr>
       URL’lerle erişmek mümkün olduğundan bu tür erişim denetimleri hile ile
       atlatılabilir olacaktır.</p>
 
-    <div class="note"><h3><code class="directive">&lt;Location&gt;</code> ne zaman
+    <p>URL-yolu bileşeni aşağıdaki koşullardan herhangi birine uyduğu takdirde
+      kapsanan yönergeler isteğe uygulanacaktır:</p>
+      <ul>
+        <li>URL'nin yol bileşeni belirtilen konum ile eşleşir.</li>
+        <li>URL'nin yol bileşeninin başındaki bölü çizgisi, belirtilen konumun
+          sonundaki bölü çizgisi ile eşleşir (içeriğin kök dizini olarak ele
+          alınır).</li>
+        <li>URL'nin yol bileşeninin başındaki bölü çizgisi, belirtilen konumun
+          sonuna bir bölü çizgisi eklenerek bununla eşleşir (içeriğin kök dizini
+          olarak ele alınır)</li>
+      </ul>
+    <p>Aşağıdaki örnekte, sonda bir bölü çizgisi kullanılmamış olmasına rağmen
+      /herhangi1, /herhangi1/ ve /herhangi1/dosya.txt dizgilerini içeren
+      isteklere kapsanan yönergeler uygulanacak, ancak /herhangi1baskasi
+      dizgisini içeren bir isteğe uygulanmayacaktır.</p>
+      <div class="example"><p><code>
+        &lt;Location /herhangi1&gt;
+          ...
+      </code></p></div>
+    <p>Aşağıdaki örnekte, sonda bir bölü çizgisi kullanılmış olup, /herhangi2,
+      /herhangi2/ ve /herhangi2/dosya.txt dizgilerini içeren isteklere kapsanan
+      yönergeler uygulanacak, ancak /herhangi2baskasi dizgisini içeren bir
+      isteğe uygulanmayacaktır.</p>
+      <div class="example"><p><code>
+        &lt;Location /private2<em>/</em>&gt;
+          ...
+      </code></p></div>
+
+<div class="note"><h3><code class="directive">&lt;Location&gt;</code> ne zaman
       kullanılmalı</h3>
 
     <p><code class="directive">&lt;Location&gt;</code> yönergesini dosya sistemi
@@ -2432,6 +2504,42 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dinlenen bir soket için protokol</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocol <var>protokol</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Windows üzerinde Apache 2.3.3 ve sonrasında diğerlerinde ise
+Apache 2.1.5 ve sonrasında kullanılabilmektedir.</td></tr>
+</table>
+    <p>Bu yönerge dinlenen belli bir soket için protokol belirtmek amacıyla
+    kullanılır. Protokol, bir isteği hangi modülün işleyeceğini belirlemekte ve
+    <code class="directive">AcceptFilter</code> yönergesi ile ilgili protokole özgü
+    iyileştirmeleri uygulamakta kullanılır.</p>
+
+    <p>Bu yönergeyi sadece standartdışı portlar belirtecekseniz kullanın.
+    Normalde <code>http</code> için 80, <code>https</code> için 443 portu
+    kullanılır.</p>
+
+    <p>Örneğin, <code>https</code>'i standartdışı bir port üzerinde
+    çalıştırıyorsanız bunu şöyle belirtebilirsiniz:</p>
+
+    <div class="example"><p><code>
+      Protocol https
+    </code></p></div>
+
+    <p>Kullandığınız protoklü ayrıca  <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> yönergesini kullanarak da
+    belirtebilirsiniz.</p>
+
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive">AcceptFilter</code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir özkaynağa erişebilecek kimliği doğrulanmış kullanıcıları belirler</td></tr>
@@ -2441,8 +2549,13 @@ uygulanır.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p>Bu yönerge br özkaynağa erişebilecek kimliği doğrulanmış kullanıcıları belirlemek için kullanılır. Kısıtlamalar yetkilendirme modülleri tarafından işleme sokulur. <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> ve
-    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> tarafından izin verilen bazı sözdizimleri:</p>
+    <p>Bu yönerge br özkaynağa erişebilecek kimliği doğrulanmış kullanıcıları
+     belirlemek için kullanılır. Belli bir kullanıcı veya kullanıcı grubuna
+     erişim vermek için bu yönergeden çok sayıda yazmak yerine bunlar mantıksal
+     VEYAlarla birleştirilebilir. Kısıtlamalar yetkilendirme modülleri
+     tarafından işleme sokulur. <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> ve
+     <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> tarafından izin verilen bazı
+     sözdizimleri:</p>
 
     <dl>
       <dt><code>Require user <var>kull-kiml</var> [<var>kull-kiml</var>]
@@ -2457,10 +2570,14 @@ uygulanır.</td></tr>
       <dd>Geçerli kullanıcıların hepsi özkaynağa erişebilir.</dd>
     </dl>
 
-    <p>Gerekli diğer seçenekleri sağlayan yetkilendirme modülleri olarak <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>, <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> ve
-    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> sayılabilir.</p>
+    <p>Gerekli diğer seçenekleri sağlayan yetkilendirme modülleri olarak
+      <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>, <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> ve
+     <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> sayılabilir.</p>
 
-    <p><code class="directive">Require</code> yönergesinin düzgün çalışması için kendisine <code class="directive"><a href="#authname">AuthName</a></code> ve <code class="directive"><a href="#authtype">AuthType</a></code> yönergelerinin yanı sıra kullanıcıları ve grupları tanımlamak için <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> ve <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> gibi yönergelerinin de eşlik etmesi gerekir. Örnek:</p>
+    <p><code class="directive">Require</code> yönergesinin düzgün çalışması için
+      kendisine <code class="directive"><a href="#authname">AuthName</a></code> ve <code class="directive"><a href="#authtype">AuthType</a></code> yönergelerinin yanı sıra kullanıcıları
+      ve grupları tanımlamak için <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> ve <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> gibi yönergelerinin
+      de eşlik etmesi gerekir. Örnek:</p>
 
     <div class="example"><p><code>
        AuthType Basic<br />
@@ -2470,13 +2587,23 @@ uygulanır.</td></tr>
        Require group admin
     </code></p></div>
 
-    <p>Bu yolla uygulanan erişim denetimleri <strong>tüm</strong> yöntemler için etkilidir. <strong>Normalde istenen zaten budur.</strong> Erişim denetimlerini diğerlerini korumasız bırakmak pahasına sadece belli yöntemlerle sınırlamak isterseniz <code class="directive">Require</code>  yönergesini bir <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> bölümüne yerleştirin.</p>
+    <p>Bu yolla uygulanan erişim denetimleri <strong>tüm</strong> yöntemler için
+      etkilidir. <strong>Normalde istenen zaten budur.</strong> Erişim
+      denetimlerini diğerlerini korumasız bırakmak pahasına sadece belli
+      yöntemlerle sınırlamak isterseniz <code class="directive">Require</code>
+      yönergesini bir <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>
+      bölümüne yerleştirin.</p>
 
     <p>Eğer <code class="directive">Require</code> yönergesini <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> veya
-    <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> yönergeleri ile birlikte kullanırsanız bu sınırlamalarla olan etkileşim <code class="directive"><a href="#satisfy">Satisfy</a></code> yönergesi tarafından denetlenir.</p>
+      <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> yönergeleri ile
+      birlikte kullanırsanız bu sınırlamalarla olan etkileşim <code class="directive"><a href="#satisfy">Satisfy</a></code> yönergesi tarafından denetlenir.</p>
 
     <div class="note"><h3>Denetimlerin alt dizinlerden kaldırılması</h3>
-    <p>Aşağıdaki örnekte korunmuş bir dizinin bir alt dizinindeki erişim denetimlerinin kaldırılması için <code class="directive"><a href="#satisfy">Satisfy</a></code> yönergesinin nasıl kullanılacağı gösterilmiştir. Bu teknik, <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> tarafından dayatılan erişim denetimlerini de ortadan kaldırdığından dikkatli kullanılmalıdır.</p>
+     <p>Aşağıdaki örnekte korunmuş bir dizinin bir alt dizinindeki erişim
+     denetimlerinin kaldırılması için <code class="directive"><a href="#satisfy">Satisfy</a></code> yönergesinin nasıl kullanılacağı
+     gösterilmiştir. Bu teknik, <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> tarafından
+     dayatılan erişim denetimlerini de ortadan kaldırdığından dikkatli
+     kullanılmalıdır.</p>
     <div class="example"><p><code>
       &lt;Directory /korunmuş/dizine/giden/yol/&gt;<br />
         <span class="indent">
@@ -2629,9 +2756,22 @@ sınırlama getirir.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.0.51 sürümü ve sonrasında <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> ve <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> tarafından etkin kılınır.</td></tr>
 </table>
-    <p><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> ve <code class="directive"><a href="#require">Require</a></code> yönergelerinin ikisi birden kullanıldığında uygulanacak erişim kuralını belirler. Değer olarak sadece <code>All</code> veya <code>Any</code> belirtilebilir. Bu yönergenin yararlı olabilmesi için belli bir alana hem istemci konak adresi hem de kullanıcı ismi ve parolası belirtmek suretiyle erişilebiliyor olunması gerekir. Bu durumda öntanımlı davranış (<code>All</code>), istemcinin belli bir adrese erişebilmek için belli kısıtlamaları aşması ve geçerli bir kullanıcı adı ve parola girmesi gerekir. <code>Any</code> seçeneğinin belirtildiği durumda ise istemcinin ya konak kısıtlamalarıdan geçmesi ya da geçerli bir kullanıcı adı ve parolası girmesi gerekir. Bu seçenek, belli bir alana erişimi parolayla kısıtlayıp, belli adreslerden gelen kullanıcılara parolasız erişim vermek için kullanılabilir.</p>
+    <p><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> ve <code class="directive"><a href="#require">Require</a></code> yönergelerinin ikisi birden
+    kullanıldığında uygulanacak erişim kuralını belirler. Değer olarak sadece
+    <code>All</code> veya <code>Any</code> belirtilebilir. Bu yönergenin yararlı
+    olabilmesi için belli bir alana hem istemci konak adresi hem de kullanıcı
+    ismi ve parolası belirtmek suretiyle erişilebiliyor olunması gerekir. Bu
+    durumda öntanımlı davranış (<code>All</code>), istemcinin belli bir adrese
+    erişebilmek için belli kısıtlamaları aşması ve geçerli bir kullanıcı adı ve
+    parola girmesi gerekir. <code>Any</code> seçeneğinin belirtildiği durumda
+    ise istemcinin ya konak kısıtlamalarıdan geçmesi ya da geçerli bir kullanıcı
+    adı ve parolası girmesi gerekir. Bu seçenek, belli bir alana erişimi
+    parolayla kısıtlayıp, belli adreslerden gelen kullanıcılara parolasız erişim
+    vermek için kullanılabilir.</p>
 
-    <p>Örneğin, sitenizin belli bir bölümü için iç ağınızdan gelen isteklere sınırsız erişim vermek ama dışardan gelen istekleri parolayla kısıtlamak isterseniz şöyle bir yapılandırma kullanabilirsiniz:</p>
+    <p>Örneğin, sitenizin belli bir bölümü için iç ağınızdan gelen isteklere
+    sınırsız erişim vermek ama dışardan gelen istekleri parolayla kısıtlamak
+    isterseniz şöyle bir yapılandırma kullanabilirsiniz:</p>
 
     <div class="example"><p><code>
       Require valid-user<br />
@@ -2640,7 +2780,9 @@ sınırlama getirir.</td></tr>
       Satisfy Any
     </code></p></div>
 
-    <p>2.0.51 sürümünden itibaren <code class="directive">Satisfy</code> yönergeleri <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> ve <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> bölümleri tarafından belli yöntemlerle kısıtlanmış olabilir.</p>
+    <p>2.0.51 sürümünden itibaren <code class="directive">Satisfy</code> yönergeleri
+    <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> ve <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> bölümleri tarafından
+    belli yöntemlerle kısıtlanmış olabilir.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -2792,11 +2934,19 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </table>
     <p><code class="directive">ServerName</code> yönergesi, sunucunun kendini
       betimlemekte kullanacağı şema, konak adı ve port değerlerini belirler.
-      Bu, yönlendirme URL’leri oluşturulurken kullanılır. Örneğin, HTTP
-      sunucusunun barındırıldığı makinenin ismi <code>falan.filan.dom</code>
-      olduğu halde makinenin bir de <code>www.filan.dom</code> diye bir de DNS
-      rumuzu varsa ve HTTP sunucunuzun bu rumuzla kendini özdeşleştirmesini
-      isterseniz bunu şöyle belirtebilirsiniz:</p>
+      Bu, yönlendirme URL’leri oluşturulurken kullanılır.</p>
+
+    <p>Buna ek olarak, <code class="directive">ServerName</code> yönergesi
+      <a href="../vhosts/name-based.html">isme dayali sanal konaklar</a>
+      kullanılması durumunda,  bir  sanal konağı tam olarak belirlemek için de
+      kullanlır (muhtemelen <code class="directive">ServerAlias</code> ile
+      birlikte).</p>
+
+    <p>Örneğin, HTTP sunucusunun barındırıldığı makinenin ismi
+      <code>falan.filan.dom</code> olduğu halde makinenin bir de
+      <code>www.filan.dom</code> diye bir de DNS rumuzu varsa ve HTTP
+      sunucunuzun bu rumuzla kendini özdeşleştirmesini isterseniz bunu şöyle
+      belirtebilirsiniz:</p>
 
     <div class="example"><p><code>
       ServerName www.filan.dom:80
