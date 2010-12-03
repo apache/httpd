@@ -757,4 +757,46 @@
     80 to attempt to bypass firewall issues.</p>
   </section>
 
+  <section id="windrivemap">
+    <title>Configuring Access to Network Resources</title>
+
+  <p>Access to files over the network can be specified using two
+  mechanisms provided by Windows:</p>
+
+  <dl>
+    <dt>Mapped drive letters</dt>
+    <dd>e.g., <code>Alias /images/ Z:/</code></dd>
+
+    <dt>UNC paths</dt>
+    <dd>e.g., <code>Alias /images/ //imagehost/www/images/</code></dd>
+  </dl>
+
+  <p>Mapped drive letters allow the administrator to maintain the
+  mapping to a specific machine and path outside of the Apache httpd
+  configuration.  However, these mappings are associated only with
+  interactive sessions and are not directly available to Apache httpd
+  when it is started as a service.  <strong>Use only UNC paths for
+  network resources in httpd.conf</strong> so that the resources can
+  be accessed consistently regardless of how Apache httpd is started.
+  (Arcane and error prone procedures may work around the restriction
+  on mapped drive letters, but this is not recommended.)</p>
+
+  <example><title>Example directives with UNC paths</title>
+
+  DocumentRoot //dochost/www/html/<br />
+  <br />
+  DocumentRoot //192.168.1.50/docs/<br />
+  <br />
+  Alias /images/ //imagehost/www/images/<br />
+  <br />
+  &lt;Directory //imagehost/www/images/&gt;<br />
+  ...<br />
+  &lt;Directory&gt;<br />
+  </example>
+
+  <p>When running Apache httpd as a service, you must create a
+  separate account in order to access network resources, as described
+  above.</p>
+  </section>
+
 </manualpage>
