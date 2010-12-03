@@ -319,6 +319,12 @@ is available to rewrite links in HTML and XHTML.</p>
     is followed by a URL redirection and a new request from the
     client.</p>
 
+    <p><module>mod_dir</module> provides <directive module="mod_dir"
+    >FallbackResource</directive>, which can be used to map virtual
+    URIs to a real resource, which then serves them. This is a very
+    useful replace to <module>mod_rewrite</module> when implementing
+    a 'front controler'</p>
+
     <p>If all attempts to locate the content fail, httpd returns
     an error page with HTTP status code 404 (file not found). The
     appearance of this page is controlled with the
