@@ -391,7 +391,7 @@ uzunluğunu sınırlar.</td></tr>
 sınırlar.</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bayt-sayısı</var></a></td><td> 8190 </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
 </td></tr>
-<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bayt-sayısı</var></a></td><td> 8190 </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
+<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bayt-sayısı</var></a></td><td> 8190 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
 </td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bayt-sayısı</var></a></td><td> 1000000 </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
 <tr><td><a href="mpm_common.html#listen">Listen [<var>IP-adresi</var>:]<var>port-numarası</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
