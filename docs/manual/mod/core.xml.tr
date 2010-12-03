@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 990096:1040809 (outdated) -->
+<!-- English Revision: 1040809 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -83,6 +83,7 @@
       kullanışlıdır:</p>
     <example>AcceptFilter nntp none</example>
 </usage>
+<seealso><directive>Protocol</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -639,8 +640,9 @@ kullanımı önerilmemektedir.</compatibility>
 
 <directivesynopsis type="section">
 <name>Directory</name>
-<description>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
-  altdizinlerinde uygulanacak bir yönerge grubunu sarmalar.</description>
+<description>Sadece ismi belirtilen dosya sistemi dizinine ve bunun
+  altdizinleri ile içeriklerine uygulanacak bir yönerge grubunu
+  sarmalar.</description>
 <syntax>&lt;Directory <var>dizin-yolu</var>&gt;
 ... &lt;/Directory&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -649,17 +651,17 @@ kullanımı önerilmemektedir.</compatibility>
 <usage>
     <p><directive type="section">Directory</directive> ve
       <code>&lt;/Directory&gt;</code> sadece ismi belirtilen dosya sistemi
-      dizininde ve bunun altdizinlerinde uygulanacak bir yönerge grubunu
-      sarmalamakta kullanılır. Bir dizin bağlamında kullanılabilecek her
-      yönergeye izin verilir. <var>dizin-yolu</var> bir dizinin tam yolu
-      olabileceği gibi Unix kabuk tarzı bir dosya ismi eşleştirme kalıbı da
-      olabilir. Kalıp dizgesinde, <code>?</code> herhangi bir tek karakterle,
-      <code>*</code> herhangi bir karakter dizisiyle eşleşir. Ayrıca
-      <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’ karakteri
-      ile hiçbir kalıp karakteri eşleşmez, bu bakımdan <code>&lt;Directory
-      /*/public_html&gt;</code> ile <code>/home/user/public_html</code>
-      değil, ama <code>&lt;Directory /home/*/public_html&gt;</code>
-      eşleşecektir. Örnek:</p>
+      dizini ve bunun altdizinleri ile bu dizinlerin içeriklerine uygulanacak
+      bir yönerge grubunu sarmalamakta kullanılır. Bir dizin bağlamında
+      kullanılabilecek her yönergeye izin verilir. <var>dizin-yolu</var> bir
+      dizinin tam yolu olabileceği gibi Unix kabuk tarzı bir dosya ismi
+      eşleştirme kalıbı da olabilir. Kalıp dizgesinde, <code>?</code> herhangi
+      bir tek karakterle, <code>*</code> herhangi bir karakter dizisiyle
+      eşleşir. Ayrıca <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’
+      karakteri ile hiçbir kalıp karakteri eşleşmez, bu bakımdan
+      <code>&lt;Directory /*/public_html&gt;</code> ile
+      <code>/home/user/public_html</code> değil, ama <code>&lt;Directory
+      /home/*/public_html&gt;</code> eşleşecektir. Örnek:</p>
 
     <example>
       &lt;Directory /usr/local/httpd/htdocs&gt;<br />
@@ -788,9 +790,10 @@ kullanımı önerilmemektedir.</compatibility>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> yönergeleri <directive
       module="core" type="section">Directory</directive> gibi sadece ismi
-      belirtilen dosya sistemi dizininde ve bunun <em>altdizinlerinde</em>
-      uygulanacak bir yönerge grubunu sarmalamakta kullanılır. Tek farkla
-      argüman olarak bir <glossary ref="regex">düzenli ifade</glossary> alır.
+      belirtilen dosya sistemi dizinine ve bunun <em>altdizinleri</em> ile
+      bunların içerdiği dosyalara uygulanacak bir yönerge grubunu sarmalamakta
+      kullanılır. Tek farkla argüman olarak bir <glossary ref="regex">düzenli
+      ifade</glossary> alır.
       Örnek:</p>
 
     <example>
@@ -1342,6 +1345,24 @@ oluşturmakta kullanılacak dosya özniteliklerini belirler.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>GprofDir</name>
+<description>gmon.out profilleme verisinin yazılacağı dizin.</description>
+<syntax>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Sunucu gprof profilleme desteği ile derlendiği takdirde
+      <directive>GprofDir</directive> yönergesi, süreç çıkarken
+      <code>gmon.out</code> dosyalarının belirtilen dizine yazılmasını sağlar.
+      Eğer değistirge yüzde simgesi (%) ile bitirilirse her süreç kimliği (PID)
+      için ayrı bir aldizin oluşturulur.</p>
+
+    <p>Bu yönerge sadece <module>prefork</module> MPM ile çalışır.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>HostnameLookups</name>
 <description>İstemci IP adresleri üzerinde DNS sorgularını etkin kılar.
 </description>
@@ -1787,7 +1808,8 @@ uzunluğunu sınırlar.</description>
 sınırlar.</description>
 <syntax>LimitRequestFields <var>sayı</var></syntax>
 <default>LimitRequestFields 100</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p><var>sayı</var>, en küçük 0 (sınırsız anlamında), en büyük 32767
@@ -1818,6 +1840,12 @@ sınırlar.</description>
       LimitRequestFields 50
     </example>
 
+    <note type="warning"><title>Uyarı</title>
+      <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
+        bağlantının eşleştirildiği ilk <directive>NameVirtualHost</directive>
+        yönergesinden (listedeki ilk - öntanımlı - konak) alınır.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -1827,7 +1855,8 @@ sınırlar.</description>
 </description>
 <syntax>LimitRequestFieldSize <var>bayt-sayısı</var></syntax>
 <default>LimitRequestFieldSize 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>Bu yönerge, HTTP istek başlığında izin verilecek bayt sayısını
@@ -1854,6 +1883,12 @@ sınırlar.</description>
 
     <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir.</note>
 
+    <note type="warning"><title>Uyarı</title>
+      <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
+        bağlantının eşleştirildiği ilk <directive>NameVirtualHost</directive>
+        yönergesinden (listedeki ilk - öntanımlı - konak) alınır.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -1863,7 +1898,8 @@ sınırlar.</description>
 </description>
 <syntax>LimitRequestLine <var>bayt-sayısı</var></syntax>
 <default>LimitRequestLine 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>Bu yönerge, HTTP istek satırında izin verilecek bayt sayısını
@@ -1889,6 +1925,13 @@ sınırlar.</description>
     </example>
 
     <note>Normal şartlar altında öntanımlı değer değiştirilmemelidir.</note>
+
+    <note type="warning"><title>Uyarı</title>
+      <p>İsme dayalı sanal konaklar kullanılıyorsa bu yönergenin değeri,
+        bağlantının eşleştirildiği ilk <directive>NameVirtualHost</directive>
+        yönergesinden (listedeki ilk - öntanımlı - konak) alınır.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -1944,7 +1987,35 @@ sınırlar.</description>
       URL’lerle erişmek mümkün olduğundan bu tür erişim denetimleri hile ile
       atlatılabilir olacaktır.</p>
 
-    <note><title><directive type="section">Location</directive> ne zaman
+    <p>URL-yolu bileşeni aşağıdaki koşullardan herhangi birine uyduğu takdirde
+      kapsanan yönergeler isteğe uygulanacaktır:</p>
+      <ul>
+        <li>URL'nin yol bileşeni belirtilen konum ile eşleşir.</li>
+        <li>URL'nin yol bileşeninin başındaki bölü çizgisi, belirtilen konumun
+          sonundaki bölü çizgisi ile eşleşir (içeriğin kök dizini olarak ele
+          alınır).</li>
+        <li>URL'nin yol bileşeninin başındaki bölü çizgisi, belirtilen konumun
+          sonuna bir bölü çizgisi eklenerek bununla eşleşir (içeriğin kök dizini
+          olarak ele alınır)</li>
+      </ul>
+    <p>Aşağıdaki örnekte, sonda bir bölü çizgisi kullanılmamış olmasına rağmen
+      /herhangi1, /herhangi1/ ve /herhangi1/dosya.txt dizgilerini içeren
+      isteklere kapsanan yönergeler uygulanacak, ancak /herhangi1baskasi
+      dizgisini içeren bir isteğe uygulanmayacaktır.</p>
+      <example>
+        &lt;Location /herhangi1&gt;
+          ...
+      </example>
+    <p>Aşağıdaki örnekte, sonda bir bölü çizgisi kullanılmış olup, /herhangi2,
+      /herhangi2/ ve /herhangi2/dosya.txt dizgilerini içeren isteklere kapsanan
+      yönergeler uygulanacak, ancak /herhangi2baskasi dizgisini içeren bir
+      isteğe uygulanmayacaktır.</p>
+      <example>
+        &lt;Location /private2<em>/</em>&gt;
+          ...
+      </example>
+
+<note><title><directive type="section">Location</directive> ne zaman
       kullanılmalı</title>
 
     <p><directive type="section">Location</directive> yönergesini dosya sistemi
@@ -2414,8 +2485,13 @@ uygulanır.</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Bu yönerge br özkaynağa erişebilecek kimliği doğrulanmış kullanıcıları belirlemek için kullanılır. Kısıtlamalar yetkilendirme modülleri tarafından işleme sokulur. <module>mod_authz_user</module> ve
-    <module>mod_authz_groupfile</module> tarafından izin verilen bazı sözdizimleri:</p>
+    <p>Bu yönerge br özkaynağa erişebilecek kimliği doğrulanmış kullanıcıları
+     belirlemek için kullanılır. Belli bir kullanıcı veya kullanıcı grubuna
+     erişim vermek için bu yönergeden çok sayıda yazmak yerine bunlar mantıksal
+     VEYAlarla birleştirilebilir. Kısıtlamalar yetkilendirme modülleri
+     tarafından işleme sokulur. <module>mod_authz_user</module> ve
+     <module>mod_authz_groupfile</module> tarafından izin verilen bazı
+     sözdizimleri:</p>
 
     <dl>
       <dt><code>Require user <var>kull-kiml</var> [<var>kull-kiml</var>]
@@ -2430,11 +2506,17 @@ uygulanır.</description>
       <dd>Geçerli kullanıcıların hepsi özkaynağa erişebilir.</dd>
     </dl>
 
-    <p>Gerekli diğer seçenekleri sağlayan yetkilendirme modülleri olarak <module>mod_authnz_ldap</module>, <module>mod_authz_dbm</module> ve
-    <module>mod_authz_owner</module> sayılabilir.</p>
+    <p>Gerekli diğer seçenekleri sağlayan yetkilendirme modülleri olarak
+      <module>mod_authnz_ldap</module>, <module>mod_authz_dbm</module> ve
+     <module>mod_authz_owner</module> sayılabilir.</p>
 
-    <p><directive>Require</directive> yönergesinin düzgün çalışması için kendisine <directive module="core">AuthName</directive> ve <directive
-    module="core">AuthType</directive> yönergelerinin yanı sıra kullanıcıları ve grupları tanımlamak için <directive module="mod_authn_file">AuthUserFile</directive> ve <directive module="mod_authz_groupfile">AuthGroupFile</directive> gibi yönergelerinin de eşlik etmesi gerekir. Örnek:</p>
+    <p><directive>Require</directive> yönergesinin düzgün çalışması için
+      kendisine <directive module="core">AuthName</directive> ve <directive
+      module="core">AuthType</directive> yönergelerinin yanı sıra kullanıcıları
+      ve grupları tanımlamak için <directive
+      module="mod_authn_file">AuthUserFile</directive> ve <directive
+      module="mod_authz_groupfile">AuthGroupFile</directive> gibi yönergelerinin
+      de eşlik etmesi gerekir. Örnek:</p>
 
     <example>
        AuthType Basic<br />
@@ -2444,13 +2526,26 @@ uygulanır.</description>
        Require group admin
     </example>
 
-    <p>Bu yolla uygulanan erişim denetimleri <strong>tüm</strong> yöntemler için etkilidir. <strong>Normalde istenen zaten budur.</strong> Erişim denetimlerini diğerlerini korumasız bırakmak pahasına sadece belli yöntemlerle sınırlamak isterseniz <directive>Require</directive>  yönergesini bir <directive module="core" type="section">Limit</directive> bölümüne yerleştirin.</p>
+    <p>Bu yolla uygulanan erişim denetimleri <strong>tüm</strong> yöntemler için
+      etkilidir. <strong>Normalde istenen zaten budur.</strong> Erişim
+      denetimlerini diğerlerini korumasız bırakmak pahasına sadece belli
+      yöntemlerle sınırlamak isterseniz <directive>Require</directive>
+      yönergesini bir <directive module="core" type="section">Limit</directive>
+      bölümüne yerleştirin.</p>
 
-    <p>Eğer <directive>Require</directive> yönergesini <directive module="mod_authz_host">Allow</directive> veya
-    <directive module="mod_authz_host">Deny</directive> yönergeleri ile birlikte kullanırsanız bu sınırlamalarla olan etkileşim <directive module="core">Satisfy</directive> yönergesi tarafından denetlenir.</p>
+    <p>Eğer <directive>Require</directive> yönergesini <directive
+      module="mod_authz_host">Allow</directive> veya
+      <directive module="mod_authz_host">Deny</directive> yönergeleri ile
+      birlikte kullanırsanız bu sınırlamalarla olan etkileşim <directive
+      module="core">Satisfy</directive> yönergesi tarafından denetlenir.</p>
 
     <note><title>Denetimlerin alt dizinlerden kaldırılması</title>
-    <p>Aşağıdaki örnekte korunmuş bir dizinin bir alt dizinindeki erişim denetimlerinin kaldırılması için <directive module="core">Satisfy</directive> yönergesinin nasıl kullanılacağı gösterilmiştir. Bu teknik, <module>mod_authz_host</module> tarafından dayatılan erişim denetimlerini de ortadan kaldırdığından dikkatli kullanılmalıdır.</p>
+     <p>Aşağıdaki örnekte korunmuş bir dizinin bir alt dizinindeki erişim
+     denetimlerinin kaldırılması için <directive
+     module="core">Satisfy</directive> yönergesinin nasıl kullanılacağı
+     gösterilmiştir. Bu teknik, <module>mod_authz_host</module> tarafından
+     dayatılan erişim denetimlerini de ortadan kaldırdığından dikkatli
+     kullanılmalıdır.</p>
     <example>
       &lt;Directory /korunmuş/dizine/giden/yol/&gt;<br />
         <indent>
@@ -2473,6 +2568,40 @@ uygulanır.</description>
 <seealso><a href="../howto/auth.html"> Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</a></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><module>mod_authz_host</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Protocol</name>
+<description>Dinlenen bir soket için protokol</description>
+<syntax>Protocol <var>protokol</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Windows üzerinde Apache 2.3.3 ve sonrasında diğerlerinde ise
+Apache 2.1.5 ve sonrasında kullanılabilmektedir.</compatibility>
+
+<usage>
+    <p>Bu yönerge dinlenen belli bir soket için protokol belirtmek amacıyla
+    kullanılır. Protokol, bir isteği hangi modülün işleyeceğini belirlemekte ve
+    <directive>AcceptFilter</directive> yönergesi ile ilgili protokole özgü
+    iyileştirmeleri uygulamakta kullanılır.</p>
+
+    <p>Bu yönergeyi sadece standartdışı portlar belirtecekseniz kullanın.
+    Normalde <code>http</code> için 80, <code>https</code> için 443 portu
+    kullanılır.</p>
+
+    <p>Örneğin, <code>https</code>'i standartdışı bir port üzerinde
+    çalıştırıyorsanız bunu şöyle belirtebilirsiniz:</p>
+
+    <example>
+      Protocol https
+    </example>
+
+    <p>Kullandığınız protoklü ayrıca  <directive
+    module="mpm_common">Listen</directive> yönergesini kullanarak da
+    belirtebilirsiniz.</p>
+</usage>
+<seealso><directive>AcceptFilter</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2594,9 +2723,22 @@ type="section">LimitExcept</directive> tarafından etkin kılınır.</compatibil
 
 <usage>
     <p><directive module="mod_authz_host">Allow</directive> ve <directive
-    module="core">Require</directive> yönergelerinin ikisi birden kullanıldığında uygulanacak erişim kuralını belirler. Değer olarak sadece <code>All</code> veya <code>Any</code> belirtilebilir. Bu yönergenin yararlı olabilmesi için belli bir alana hem istemci konak adresi hem de kullanıcı ismi ve parolası belirtmek suretiyle erişilebiliyor olunması gerekir. Bu durumda öntanımlı davranış (<code>All</code>), istemcinin belli bir adrese erişebilmek için belli kısıtlamaları aşması ve geçerli bir kullanıcı adı ve parola girmesi gerekir. <code>Any</code> seçeneğinin belirtildiği durumda ise istemcinin ya konak kısıtlamalarıdan geçmesi ya da geçerli bir kullanıcı adı ve parolası girmesi gerekir. Bu seçenek, belli bir alana erişimi parolayla kısıtlayıp, belli adreslerden gelen kullanıcılara parolasız erişim vermek için kullanılabilir.</p>
+    module="core">Require</directive> yönergelerinin ikisi birden
+    kullanıldığında uygulanacak erişim kuralını belirler. Değer olarak sadece
+    <code>All</code> veya <code>Any</code> belirtilebilir. Bu yönergenin yararlı
+    olabilmesi için belli bir alana hem istemci konak adresi hem de kullanıcı
+    ismi ve parolası belirtmek suretiyle erişilebiliyor olunması gerekir. Bu
+    durumda öntanımlı davranış (<code>All</code>), istemcinin belli bir adrese
+    erişebilmek için belli kısıtlamaları aşması ve geçerli bir kullanıcı adı ve
+    parola girmesi gerekir. <code>Any</code> seçeneğinin belirtildiği durumda
+    ise istemcinin ya konak kısıtlamalarıdan geçmesi ya da geçerli bir kullanıcı
+    adı ve parolası girmesi gerekir. Bu seçenek, belli bir alana erişimi
+    parolayla kısıtlayıp, belli adreslerden gelen kullanıcılara parolasız erişim
+    vermek için kullanılabilir.</p>
 
-    <p>Örneğin, sitenizin belli bir bölümü için iç ağınızdan gelen isteklere sınırsız erişim vermek ama dışardan gelen istekleri parolayla kısıtlamak isterseniz şöyle bir yapılandırma kullanabilirsiniz:</p>
+    <p>Örneğin, sitenizin belli bir bölümü için iç ağınızdan gelen isteklere
+    sınırsız erişim vermek ama dışardan gelen istekleri parolayla kısıtlamak
+    isterseniz şöyle bir yapılandırma kullanabilirsiniz:</p>
 
     <example>
       Require valid-user<br />
@@ -2605,7 +2747,10 @@ type="section">LimitExcept</directive> tarafından etkin kılınır.</compatibil
       Satisfy Any
     </example>
 
-    <p>2.0.51 sürümünden itibaren <directive>Satisfy</directive> yönergeleri <directive module="core" type="section">Limit</directive> ve <directive module="core" type="section">LimitExcept</directive> bölümleri tarafından belli yöntemlerle kısıtlanmış olabilir.</p>
+    <p>2.0.51 sürümünden itibaren <directive>Satisfy</directive> yönergeleri
+    <directive module="core" type="section">Limit</directive> ve <directive
+    module="core" type="section">LimitExcept</directive> bölümleri tarafından
+    belli yöntemlerle kısıtlanmış olabilir.</p>
 </usage>
    <seealso><directive module="mod_authz_host">Allow</directive></seealso>
    <seealso><directive module="core">Require</directive></seealso>
@@ -2751,11 +2896,19 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <usage>
     <p><directive>ServerName</directive> yönergesi, sunucunun kendini
       betimlemekte kullanacağı şema, konak adı ve port değerlerini belirler.
-      Bu, yönlendirme URL’leri oluşturulurken kullanılır. Örneğin, HTTP
-      sunucusunun barındırıldığı makinenin ismi <code>falan.filan.dom</code>
-      olduğu halde makinenin bir de <code>www.filan.dom</code> diye bir de DNS
-      rumuzu varsa ve HTTP sunucunuzun bu rumuzla kendini özdeşleştirmesini
-      isterseniz bunu şöyle belirtebilirsiniz:</p>
+      Bu, yönlendirme URL’leri oluşturulurken kullanılır.</p>
+
+    <p>Buna ek olarak, <directive>ServerName</directive> yönergesi
+      <a href="../vhosts/name-based.html">isme dayali sanal konaklar</a>
+      kullanılması durumunda,  bir  sanal konağı tam olarak belirlemek için de
+      kullanlır (muhtemelen <directive>ServerAlias</directive> ile
+      birlikte).</p>
+
+    <p>Örneğin, HTTP sunucusunun barındırıldığı makinenin ismi
+      <code>falan.filan.dom</code> olduğu halde makinenin bir de
+      <code>www.filan.dom</code> diye bir de DNS rumuzu varsa ve HTTP
+      sunucunuzun bu rumuzla kendini özdeşleştirmesini isterseniz bunu şöyle
+      belirtebilirsiniz:</p>
 
     <example>
       ServerName www.filan.dom:80

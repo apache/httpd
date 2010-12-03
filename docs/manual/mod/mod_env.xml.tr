@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 833097:1040519 (outdated) -->
+<!-- English Revision: 1040519 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -33,9 +33,10 @@ müdahale etmek için kullanılır.</description>
 <sourcefile>mod_env.c</sourcefile>
 <identifier>env_module</identifier>
 <summary>
-    <p>Bu modül CGI betiklerine ve SSI sayfalarına aktarılan ortama müdahale
-      etmeyi mümkün kılar. Ortam değişkenleri <program>httpd</program> süreci
-      başlatılırken kabuktan aktarılabilir. Bundan başka, yapılandırma
+    <p>Bu modül çeşitli Apache HTTP sunucu modülleri tarafından kullanılan dahili
+      ortam değişkenlerini denetim altına almak için kullanılır. Bu değişkenler
+      ayrıca CGI betiklerinde sistem ortam değişkenleri gibi belirtilebildiği
+      gibi SSI sayfalarında da kullanılabilmektedir. Bundan başka, yapılandırma
       sürecinde tanımlı veya tanımsız yapılabilirler.</p>
 </summary>
 <seealso><a href="../env.html">Ortam Değişkenleri</a></seealso>
@@ -50,8 +51,10 @@ müdahale etmek için kullanılır.</description>
 <override>FileInfo</override>
 
 <usage>
-    <p><program>httpd</program> süreci başlatılırken CGI betiklerine ve SSI
-      sayfalarına kabuktan aktarılabilecek ortam değişkenleri belirtilir.</p>
+    <p><program>httpd</program> süreci başlatılırken Apache HTTP sunucu
+      modüllerinde, CGI betiklerinde ve SSI sayfalarında dahili ortam
+      değişkenleri olarak kullanılmak üzere bazı sistem ortam değişkenlerini
+      belirtmek için kullanılır.</p>
 
     <example><title>Örnek</title>
       PassEnv LD_LIBRARY_PATH
@@ -68,8 +71,9 @@ müdahale etmek için kullanılır.</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>CGI betiklerine ve SSI sayfalarına aktarılmak üzere bir ortam değişkeni
-      tanımlanmasını sağlar.</p>
+    <p>Apache HTTP sunucu modüllerinde kullanılmak ve CGI betiklerine ve SSI
+      sayfalarına aktarılmak üzere bir ortam değişkeni belirtilebilmesini
+      sağlar.</p>
 
     <example><title>Örnek</title>
       SetEnv SPECIAL_PATH /foo/bin
@@ -78,12 +82,13 @@ müdahale etmek için kullanılır.</description>
     <note><p>Bu yönerge ile atanan dahili ortam değişkenleri, erişim denetimi ve
       URI'leri dosya isimleri ile eşleştirme gibi daha önceki istek işleme
       yönergelerinden <em>sonra</em> atanır. Eğer atayacağınız ortam
-      değikenlerinin <directive module="mod_rewrite">RewriteRule</directive>
+      değişkenlerinin <directive module="mod_rewrite">RewriteRule</directive>
       yönergelerindeki gibi erken dönem işlem aşamalarında etkili olmasını
       istiyorsanız bu ortam değişkenlerini <directive
       module="mod_setenvif">SetEnvIf</directive> yönergesi ile atamalısınız.</p>
     </note>
 </usage>
+<seealso><a href="../env.html">Ortam Değişkenleri</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -96,8 +101,8 @@ müdahale etmek için kullanılır.</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir ortam
-      değişkenini ortamdan siler.</p>
+    <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir dahili
+      ortam değişkenini ortamdan siler.</p>
 
     <example><title>Örnek</title>
       UnsetEnv LD_LIBRARY_PATH

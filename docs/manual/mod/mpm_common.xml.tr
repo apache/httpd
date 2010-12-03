@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 706316:1031660 (outdated) -->
+<!-- English Revision: 1031660 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -518,6 +518,15 @@
         başına <em>bağlantı</em> sayısının sınırlanması şeklinde
         değişmesidir.</p>
     </note>
+
+    <note><title>Öntanımlı Yapılandırma</title>
+      <p>Öntanımlı (derleme sırasında atanan) değer (10000),  yapılandırmada
+        hiçbir <directive>MaxRequestsPerChild</directive> yönergesi bulunmadığı
+        durumda kullanılır. <em>Öntanımlı yapılandırma</em>,
+        "MaxRequestsPerChild 0" dahil pek çok öntanımlı yapılandırma yönergesi
+        içerir.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -868,10 +877,8 @@
 <default>NetWare üzerinde 65536; diğer işletim sistemlerinde
   değişir.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module>
-<module>mpm_winnt</module>
-<module>worker</module>
-</modulelist>
+<modulelist><module>mpm_netware</module> <module>mpm_winnt</module>
+<module>event</module> <module>worker</module></modulelist>
 <compatibility>Apache 2.1 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
@@ -899,10 +906,18 @@
         düşük bir değer atanmışsa çocuk süreç başına evre sayısının yüksek
         olduğu durumlarda bu yığıt yetmeyebilir. Böyle bir ayarlama sadece
         sunucunun öldüresiye denendiği dolayısıyla yığıt boyutlarının aşırı
-        zorlandığı deneme ortamlarında yapılmalıdır. Sunucu yapılandırmasında
-        yapılan bir değişiklik mevcut <directive>ThreadStackSize</directive>
-        ayarını geçersiz hale getirebilir.</li>
+        zorlandığı deneme ortamlarında yapılmalıdır. Gereken en küçük yığıt
+        boyutu kullanılan modüllerle sıkı sıkıya ilintilidir, fakat sunucu
+        yapılandırmasında yapılan bir değişiklik mevcut
+        <directive>ThreadStackSize</directive> ayarını geçersiz hale
+        getirebilir.</li>
     </ul>
+
+    <note>Çocuk süreç başına evre sayısı çok yüksek olmadıkça
+      <directive>ThreadStackSize</directive> değerinin azaltılması önerilmez.
+      Bazı platformlarda (Linux dahil), 128000 değeri zaten çok düşüktür ve bazı
+      modüllerde çökmelere sebep olabilmektedir.</note>
+
 </usage>
 </directivesynopsis>
 
