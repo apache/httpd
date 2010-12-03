@@ -987,7 +987,7 @@ lire les fichiers pendant qu'ils sont servis</description>
     </example>
 
 
-    
+
 </usage>
 </directivesynopsis>
 
@@ -2195,7 +2195,7 @@ sp&eacute;cifi&eacute;es</description>
 
     <p>Les directives que contient cette section seront appliqu&eacute;es aux
     requ&ecirc;tes si la partie chemin de l'URL satisfait &agrave; l'un au moins de
-    ces crit&egrave;res :
+    ces crit&egrave;res :</p>
     <ul>
       <li>Le chemin sp&eacute;cifi&eacute; correspond exactement &agrave; la partie chemin de
       l'URL.
@@ -2209,21 +2209,20 @@ sp&eacute;cifi&eacute;es</description>
       contexte).
       </li>
     </ul>
-    Dans l'exemple ci-dessous, o&ugrave; aucun slash de fin n'est utilis&eacute;, les
+    <p>Dans l'exemple ci-dessous, o&ugrave; aucun slash de fin n'est utilis&eacute;, les
     directives contenues dans la section s'appliqueront &agrave; /private1,
-    /private1/ et /private1/file.txt, mais pas &agrave; /private1other. 
+    /private1/ et /private1/file.txt, mais pas &agrave; /private1other.</p>
     <example>
       &lt;Location /private1&gt;
           ...
     </example>
-    De m&ecirc;me, dans l'exemple ci-dessous, o&ugrave; l'on utilise un slash de fin, les
+    <p>De m&ecirc;me, dans l'exemple ci-dessous, o&ugrave; l'on utilise un slash de fin, les
     directives contenues dans la section s'appliqueront &agrave; /private2/ et
-    &agrave; /private2/file.txt, mais pas &agrave; /private2other. 
+    &agrave; /private2/file.txt, mais pas &agrave; /private2other.</p>
     <example>
       &lt;Location /private2<em>/</em>&gt;
           ...
     </example>
-    </p>
 
     <note><title>Quand utiliser la section <directive
     type="section">Location</directive></title>
