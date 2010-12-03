@@ -727,8 +727,8 @@ versions d'Apache 2.2.7 et supérieures</td></tr>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui ne s'appliquent
-qu'au répertoire concerné du système de fichiers et à ses
-sous-répertoires</td></tr>
+qu'au répertoire concerné du système de fichiers, à ses
+sous-répertoires, et à leur contenu.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Directory <var>chemin répertoire</var>&gt;
 ... &lt;/Directory&gt;</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
@@ -737,8 +737,9 @@ sous-répertoires</td></tr>
 </table>
     <p>Les balises <code class="directive">&lt;Directory&gt;</code> et
     <code>&lt;/Directory&gt;</code> permettent de regrouper un ensemble
-    de directives qui ne s'appliquent qu'au répertoire précisé
-    et à ses sous-répertoires. Toute directive
+    de directives qui ne s'appliquent qu'au répertoire
+    précisé, à ses sous-répertoires, et aux fichiers situés dans ces
+    sous-répertoires. Toute directive
     autorisée dans un contexte de répertoire peut être utilisée.
     <var>chemin répertoire</var> est soit le chemin absolu d'un
     répertoire, soit une chaîne de caractères avec caractères génériques
@@ -886,7 +887,7 @@ leurs sous-répertoires</td></tr>
     <p>Les balises <code class="directive">&lt;DirectoryMatch&gt;</code>
     et <code>&lt;/DirectoryMatch&gt;</code> permettent de regrouper un
     ensemble de directives qui ne s'appliqueront qu'au répertoire
-    précisé <em>et à ses sous-répertoires</em>, comme pour la section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. Cependant, le
+    précisé (et aux fichiers qu'il contient), comme pour la section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. Cependant, le
     répertoire est précisé sous la forme d'une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>. Par exemple :</p>
 
     <div class="example"><p><code>
@@ -1005,7 +1006,7 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     </code></p></div>
 
 
-    
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2180,6 +2181,37 @@ spécifiées</td></tr>
     pour contrôler l'accès aux répertoires du système de fichiers. Comme
     plusieurs URLs peuvent correspondre au même répertoire du système de
     fichiers, un tel contrôle d'accès pourrait être contourné.</p>
+
+    <p>Les directives que contient cette section seront appliquées aux
+    requêtes si la partie chemin de l'URL satisfait à l'un au moins de
+    ces critères :</p>
+    <ul>
+      <li>Le chemin spécifié correspond exactement à la partie chemin de
+      l'URL.
+      </li>
+      <li>Le chemin spécifié, qui se termine par un slash, est un
+      préfixe de la partie chemin de l'URL (traité comme une racine du
+      contexte).
+      </li>
+      <li>Le chemin spécifié, si on lui ajoute un slash de fin, est un
+      préfixe de la partie chemin de l'URL (aussi traité comme une racine du
+      contexte).
+      </li>
+    </ul>
+    <p>Dans l'exemple ci-dessous, où aucun slash de fin n'est utilisé, les
+    directives contenues dans la section s'appliqueront à /private1,
+    /private1/ et /private1/file.txt, mais pas à /private1other.</p>
+    <div class="example"><p><code>
+      &lt;Location /private1&gt;
+          ...
+    </code></p></div>
+    <p>De même, dans l'exemple ci-dessous, où l'on utilise un slash de fin, les
+    directives contenues dans la section s'appliqueront à /private2/ et
+    à /private2/file.txt, mais pas à /private2other.</p>
+    <div class="example"><p><code>
+      &lt;Location /private2<em>/</em>&gt;
+          ...
+    </code></p></div>
 
     <div class="note"><h3>Quand utiliser la section <code class="directive">&lt;Location&gt;</code></h3>
 
