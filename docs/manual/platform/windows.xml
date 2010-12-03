@@ -781,12 +781,15 @@
   (Arcane and error prone procedures may work around the restriction
   on mapped drive letters, but this is not recommended.)</p>
 
-  <example><title>Example directives with UNC paths</title>
+  <example><title>Example DocumentRoot with UNC path</title>
+  DocumentRoot //dochost/www/html/
+  </example>
 
-  DocumentRoot //dochost/www/html/<br />
-  <br />
+  <example><title>Example DocumentRoot with IP address in UNC path</title>
   DocumentRoot //192.168.1.50/docs/<br />
-  <br />
+  </example>
+
+  <example><title>Example Alias and corresponding Directory with UNC path</title>
   Alias /images/ //imagehost/www/images/<br />
   <br />
   &lt;Directory //imagehost/www/images/&gt;<br />
