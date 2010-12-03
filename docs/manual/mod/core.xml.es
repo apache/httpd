@@ -158,12 +158,12 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
 
     <p>El objetivo principal de la directiva <code>AcceptPathInfo</code>
     es permitirte sobreescribir la opci&#243;n del controlador
-    de aceptar or rechazar <code>PATH_INFO</code>. This override is required,
-    for example, when you use a <a href="../filter.html">filter</a>, such
-    as <a href="mod_include.html">INCLUDES</a>, to generate content
-    based on <code>PATH_INFO</code>.  The core handler would usually reject
-    the request, so you can use the following configuration to enable
-    such a script:</p>
+    de aceptar or rechazar <code>PATH_INFO</code>. Este tipo de sobreescritura se necesita,
+    por ejemplo, cuando utilizas un <a href="../filter.html">filtro</a>, tal como
+    <a href="mod_include.html">INCLUDES</a>, para generar contenido
+    basado en <code>PATH_INFO</code>. El controlador principal normalmente rechazar&#237;a
+    la petici&#243;n, de modo que puedes utilizar la siguiente configuraci&#243;n para habilitarla
+    como script:</p>
 
     <example>
       &lt;Files "mypaths.shtml"&gt;<br />
@@ -180,28 +180,28 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
 
 <directivesynopsis>
 <name>AccessFileName</name>
-<description>Name of the distributed configuration file</description>
+<description>Nombre del fichero distribuido de configuraci&#243;n</description>
 <syntax>AccessFileName <var>filename</var> [<var>filename</var>] ...</syntax>
 <default>AccessFileName .htaccess</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>While processing a request the server looks for
-    the first existing configuration file from this list of names in
-    every directory of the path to the document, if distributed
-    configuration files are <a href="#allowoverride">enabled for that
-    directory</a>. For example:</p>
+    <p>Mientras que procesa una petici&#243;n el servidor busca
+    el primer fichero de configuraci&#243;n existente dentro de un listado de nombres en
+    cada directorio de la ruta del documento, si los ficheros distribuidos
+    de configuraci&#243;n est&#225;n <a href="#allowoverride">habilitados para ese
+    directorio</a>. Por ejemplo:</p>
 
     <example>
       AccessFileName .acl
     </example>
 
-    <p>before returning the document
-    <code>/usr/local/web/index.html</code>, the server will read
+    <p>antes de servir el documento
+    <code>/usr/local/web/index.html</code>, el servidor leer&#225;
     <code>/.acl</code>, <code>/usr/.acl</code>,
     <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
-    for directives, unless they have been disabled with</p>
+    para las directivas, salvo que estén deshabilitadas with</p>
 
     <example>
       &lt;Directory /&gt;<br />
