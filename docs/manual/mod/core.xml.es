@@ -23,7 +23,7 @@
 <modulesynopsis metafile="core.xml.meta">
 
 <name>core</name>
-<description>Funcionalides básicas del Servidor HTTP Apache que siempre están presentes.</description>
+<description>Funcionalides b&#225;sicas del Servidor HTTP Apache que siempre est&#225;n presentes.</description>
 <status>Core</status>
 
 <directivesynopsis>
@@ -35,24 +35,24 @@
 En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
 
 <usage>
-    <p>Esta directiva hace posible mejoras específicas a nivel de sistema operativo
-       y a través del tipo de Protocolo para un socket que escucha.
-       La premisa básica es que el kernel no envíe un socket al servidor
+    <p>Esta directiva hace posible mejoras espec&#237;ficas a nivel de sistema operativo
+       y a trav&#233;s del tipo de Protocolo para un socket que escucha.
+       La premisa b&#225;sica es que el kernel no env&#237;e un socket al servidor
        hasta que o bien los datos se hayan recibido o bien se haya almacenado
        en el buffer una Respuesta HTTP completa.  
-       Actualmente sólo están soportados
+       Actualmente s&#243;lo est&#225;n soportados
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
        Accept Filters</a> sobre FreeBSD, <code>TCP_DEFER_ACCEPT</code> sobre Linux, 
        y AcceptEx() sobre Windows.</p>
 
     <p>El uso de <code>none</code> para un argumento desactiva cualquier filtro 
-       aceptado para ese protocolo. Esto es útil para protocolos que requieren que un
-       servidor envíe datos primeros, tales como <code>ftp:</code> o <code>nntp</code>:</p>
+       aceptado para ese protocolo. Esto es &#250;til para protocolos que requieren que un
+       servidor env&#237;e datos primeros, tales como <code>ftp:</code> o <code>nntp</code>:</p>
     <example>AcceptFilter nntp none</example>
 
     <p>Los nombres de protocolo por defecto son <code>https</code> para el puerto 443
-       y <code>http</code> para todos los demás puertos. Para especificar que se está
-       utilizando otro protocolo con un puerto escuchando, añade el argumento <var>protocol</var>
+       y <code>http</code> para todos los dem&#225;s puertos. Para especificar que se est&#225;
+       utilizando otro protocolo con un puerto escuchando, a&#241;ade el argumento <var>protocol</var>
        a la directiva <directive module="mpm_common">Listen</directive>.</p>
 
     <p>Sobre FreeBDS los valores por defecto:</p>
@@ -62,11 +62,11 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
     </example>
     
     <p>El filtro <code>httpready</code> almacena en el buffer peticiones HTTP completas
-       a nivel de kernel.  Una vez que la petición es recibida, el kernel la envía al servidor. 
-       Consulta la página man de
+       a nivel de kernel.  Una vez que la petici&#243;n es recibida, el kernel la env&#237;a al servidor. 
+       Consulta la p&#225;gina man de
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
-       accf_http(9)</a> para más detalles.  Puesto que las peticiones HTTPS
-       están encriptadas, sólo se utiliza el filtro
+       accf_http(9)</a> para m&#225;s detalles.  Puesto que las peticiones HTTPS
+       est&#225;n encriptadas, s&#243;lo se utiliza el filtro
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>.</p>
 
     <p>Sobre Linux los valores por defecto son:</p>
@@ -76,9 +76,9 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
     </example>
 
     <p>En Linux, <code>TCP_DEFER_ACCEPT</code> no soporta el buffering en peticiones http.
-       Cualquier valor además de <code>none</code> habilitará 
-       <code>TCP_DEFER_ACCEPT</code> en ese socket. Para más detalles 
-       ver la página man de Linux 
+       Cualquier valor adem&#225;s de <code>none</code> habilitar&#225; 
+       <code>TCP_DEFER_ACCEPT</code> en ese socket. Para m&#225;s detalles 
+       ver la p&#225;gina man de Linux 
        <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
        tcp(7)</a>.</p>
 
@@ -93,14 +93,14 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
        que utilizan la API Windows AcceptEx() y que recuperan sockets de red
        entre conexciones.  <code>data</code> espera hasta que los datos han sido
        transmitidos como se comentaba anteriormente, y el buffer inicial de datos y las
-       direcciones de red son recuperadas a partir de una única llamada AcceptEx().
-       <code>connect</code> utiliza la API AcceptEx() API, y recupera también
+       direcciones de red son recuperadas a partir de una &#250;nica llamada AcceptEx().
+       <code>connect</code> utiliza la API AcceptEx() API, y recupera tambi&#233;n
        las direccciones de red, pero a diferencia de <code>none</code> 
-       la opción <code>connect</code> no espera a la transmisión inicial de los datos.</p>
+       la opci&#243;n <code>connect</code> no espera a la transmisi&#243;n inicial de los datos.</p>
 
     <p>Sobre Windows, <code>none</code> prefiere accept() antes que AcceptEx()
-       y no recuperará sockets entre las conexiones.  Lo que es útil para los adaptadores de
-       red con un soporte precario de drivers, así como para algunos proveedores de red
+       y no recuperar&#225; sockets entre las conexiones.  Lo que es &#250;til para los adaptadores de
+       red con un soporte precario de drivers, as&#237; como para algunos proveedores de red
        tales como drivers vpn, o filtros de spam, de virus o de spyware.</p>  
 
 </usage>
@@ -109,7 +109,7 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
 
 <directivesynopsis>
 <name>AcceptPathInfo</name>
-<description>Los recursos aceptan información sobre su ruta</description>
+<description>Los recursos aceptan informaci&#243;n sobre su ruta</description>
 <syntax>AcceptPathInfo On|Off|Default</syntax>
 <default>AcceptPathInfo Default</default>
 <contextlist><context>server config</context>
@@ -120,13 +120,13 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
 
 <usage>
 
-    <p>Esta directiva controla si las peticiones que contienen información sobre la ruta
+    <p>Esta directiva controla si las peticiones que contienen informaci&#243;n sobre la ruta
     que sigue un fichero que existe (o un fichero que no existe pero en un directorio que
-    sí existe) serán aceptadas o denegadas.  La información de ruta puede estar disponible
+    s&#237; existe) ser&#225;n aceptadas o denegadas.  La informaci&#243;n de ruta puede estar disponible
     para los scripts en la variable de entorno <code>PATH_INFO</code>.</p>
 
-    <p>Por ejemplo, asumamos que la ubicación <code>/test/</code> apunta a
-    un directorio que contiene únicamente el fichero
+    <p>Por ejemplo, asumamos que la ubicaci&#243;n <code>/test/</code> apunta a
+    un directorio que contiene &#250;nicamente el fichero
     <code>here.html</code>.  Entonces, las peticiones tanto para
     <code>/test/here.html/more</code> como para
     <code>/test/nothere.html/more</code> recogen
@@ -135,20 +135,20 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
     <p>Los tres posibles argumentos para la directiva
     <directive>AcceptPathInfo</directive> son los siguientes:</p>
     <dl>
-    <dt><code>Off</code></dt><dd>Una petición sólo será aceptada si
-    se corresponde con una ruta literal que existe.  Por lo tanto, una petición
-    con una información de ruta después del nombre de fichero tal como
-    <code>/test/here.html/more</code> en el ejemplo anterior devolverá
+    <dt><code>Off</code></dt><dd>Una petici&#243;n s&#243;lo ser&#225; aceptada si
+    se corresponde con una ruta literal que existe.  Por lo tanto, una petici&#243;n
+    con una informaci&#243;n de ruta despu&#233;s del nombre de fichero tal como
+    <code>/test/here.html/more</code> en el ejemplo anterior devolver&#225;
     un error 404 NOT FOUND.</dd>
 
-    <dt><code>On</code></dt><dd>Una petición será aceptada si una
+    <dt><code>On</code></dt><dd>Una petici&#243;n ser&#225; aceptada si una
     ruta principal de acceso se corresponde con un fichero que existe. El ejemplo
-    anterior <code>/test/here.html/more</code> será aceptado si
-    <code>/test/here.html</code> corresponde a un fichero válido.</dd>
+    anterior <code>/test/here.html/more</code> ser&#225; aceptado si
+    <code>/test/here.html</code> corresponde a un fichero v&#225;lido.</dd>
 
-    <dt><code>Default</code></dt><dd>La gestión de las peticiones
-    con información de ruta está determinada por el <a
-    href="../handler.html">controlador</a> responsable de la petición.
+    <dt><code>Default</code></dt><dd>La gesti&#243;n de las peticiones
+    con informaci&#243;n de ruta est&#225; determinada por el <a
+    href="../handler.html">controlador</a> responsable de la petici&#243;n.
     El controlador principal para para ficheros normales rechaza por defecto
     peticiones <code>PATH_INFO</code>. Los controladores que sirven scripts, tales como <a
     href="mod_cgi.html">cgi-script</a> e <a
@@ -157,7 +157,7 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</compatibility>
     </dl>
 
     <p>El objetivo principal de la directiva <code>AcceptPathInfo</code>
-    es permitirte sobreescribir la opción del controlador
+    es permitirte sobreescribir la opci&#243;n del controlador
     de aceptar or rechazar <code>PATH_INFO</code>. This override is required,
     for example, when you use a <a href="../filter.html">filter</a>, such
     as <a href="mod_include.html">INCLUDES</a>, to generate content
