@@ -89,7 +89,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+   * mod_cache: Make sure that we never allow a 304 Not Modified response
+     that we asked for to leak to the client should the 304 response be
+     uncacheable.
+     PR45341
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
+     2.2.x patch: trunk patch works
+     +1: minfrin, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -148,15 +154,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=992625
      2.2.x patch: trunk patch works
      +1: minfrin, jim
-
-   * mod_cache: Make sure that we never allow a 304 Not Modified response
-     that we asked for to leak to the client should the 304 response be
-     uncacheable.
-     PR45341
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
-     2.2.x patch: trunk patch works
-     +1: minfrin, jim
-
+     +1 covener (needs r996311 MMN bump)
+    
    * mod_proxy: Release the backend connection as soon as EOS is detected,
      so the backend isn't forced to wait for the client to eventually
      acknowledge the data.
