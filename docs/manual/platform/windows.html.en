@@ -43,6 +43,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#winsvc">Running Apache as a Service</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#wincons">Running Apache as a Console Application</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#test">Testing the Installation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#windrivemap">Configuring Access to Network Resources</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -759,6 +760,48 @@
     services include other WWW servers, some firewall implementations,
     and even some client applications (such as Skype) which will use port
     80 to attempt to bypass firewall issues.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="windrivemap" id="windrivemap">Configuring Access to Network Resources</a></h2>
+    
+
+  <p>Access to files over the network can be specified using two
+  mechanisms provided by Windows:</p>
+
+  <dl>
+    <dt>Mapped drive letters</dt>
+    <dd>e.g., <code>Alias /images/ Z:/</code></dd>
+
+    <dt>UNC paths</dt>
+    <dd>e.g., <code>Alias /images/ //imagehost/www/images/</code></dd>
+  </dl>
+
+  <p>Mapped drive letters allow the administrator to maintain the
+  mapping to a specific machine and path outside of the Apache httpd
+  configuration.  However, these mappings are associated only with
+  interactive sessions and are not directly available to Apache httpd
+  when it is started as a service.  <strong>Use only UNC paths for
+  network resources in httpd.conf</strong> so that the resources can
+  be accessed consistently regardless of how Apache httpd is started.
+  (Arcane and error prone procedures may work around the restriction
+  on mapped drive letters, but this is not recommended.)</p>
+
+  <div class="example"><h3>Example directives with UNC paths</h3><p><code>
+
+  DocumentRoot //dochost/www/html/<br />
+  <br />
+  DocumentRoot //192.168.1.50/docs/<br />
+  <br />
+  Alias /images/ //imagehost/www/images/<br />
+  <br />
+  &lt;Directory //imagehost/www/images/&gt;<br />
+  ...<br />
+  &lt;Directory&gt;<br />
+  </code></p></div>
+
+  <p>When running Apache httpd as a service, you must create a
+  separate account in order to access network resources, as described
+  above.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |
