@@ -191,6 +191,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-proxy_connect_eintr.diff
      +1 covener, trawick
 
+   * mod_userdir: support merge of "userdir disabled" or "userdir public_html"
+     when userdir directives appear in vhost context. PR 44076
+     Trunk patch: http://svn.apache.org/viewvc?rev=1042090&view=rev
+     2.2.x patch:  http://people.apache.org/~covener/patches/2.2.x-userdir_merge.diff 
+     +1 covener
+  
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
