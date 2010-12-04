@@ -2354,6 +2354,15 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+
+static const apr_status_t valid_hostname(const char* name)
+{
+    if (ap_strchr_c(name, '*') || ap_strchr_c(name, '?') || 
+        ap_strchr_c(name, '[') || ap_strchr_c(name, ']')) { 
+        return APR_EINVAL;
+    }
+    return APR_SUCCESS;
+}
 /*
  * The ServerName directive takes one argument with format
  * [scheme://]fully-qualified-domain-name[:port], for instance
@@ -2372,6 +2381,10 @@ static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char 
     if (err != NULL) {
         return err;
     }
+
+    if (valid_hostname(arg) != APR_SUCCESS)
+        return apr_pstrcat(cmd->temp_pool, "Invalid ServerName \"", arg,
+                "\" use ServerAlias to set multiple server names.", NULL);
 
     part = ap_strstr_c(arg, "://");
 
