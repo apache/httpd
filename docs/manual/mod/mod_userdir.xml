@@ -159,6 +159,10 @@ host</context></contextlist>
     was assumed if no <directive module="mod_userdir">UserDir</directive>
     directive was present.</p>
 
+    <note><title>Merging details</title>
+    <p> Lists of specific enabled and disabled users are replaced, not merged, 
+    from global to virtual host scope</p></note>
+
 </usage>
 
 <seealso>
