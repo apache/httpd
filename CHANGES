@@ -2,8 +2,8 @@
 
 Changes with Apache 2.3.10
 
-  *) mod_userdir: Add merging of (enable, disable, and filename arguments 
-     to UserDir directive, leaving enable/disable userlists unmerged. 
+  *) mod_userdir: Add merging of enable, disable, and filename arguments 
+     to UserDir directive, leaving enable/disable of userlists unmerged. 
      PR 44076 [Eric Covener]
 
   *) httpd: When no -k option is provided on the httpd command line, the server
