@@ -95,9 +95,12 @@ AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     /* if we aren't running as root, cannot increase max */
     if (geteuid()) {
         limit->rlim_cur = cur;
-        if (max) {
+        if (max && (max > limit->rlim_max)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
                          "Must be uid 0 to raise maximum %s", cmd->cmd->name);
+        }
+        else if (max) {
+            limit->rlim_max = max;
         }
     }
     else {
