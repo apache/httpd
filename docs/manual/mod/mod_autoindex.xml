@@ -525,6 +525,7 @@ a directory</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<compatability>2.3.10 and later</compatability>
 <override>Indexes</override>
 
 <usage>
