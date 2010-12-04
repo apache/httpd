@@ -31,12 +31,12 @@ extern "C" {
 #endif
 
 /** A node in the expression parse tree */
-typedef struct ap_expr_node ap_expr;
+typedef struct ap_expr_node ap_expr_t;
 
 /** Struct describing a parsed expression */
 typedef struct {
     /** The root of the actual expression parse tree */
-    ap_expr *root_node;
+    ap_expr_t *root_node;
     /** The filename where the expression has been defined (for logging).
      *  May be NULL
      */
@@ -115,7 +115,7 @@ typedef struct {
      * interested in this information.
      */
     const char **vary_this;
-} ap_expr_eval_ctx;
+} ap_expr_eval_ctx_t;
 
 
 /**
@@ -143,7 +143,7 @@ typedef struct {
  * @param arg The (right) operand
  * @return 0 or 1
  */
-typedef int ap_expr_op_unary_t(ap_expr_eval_ctx *ctx, const void *data,
+typedef int ap_expr_op_unary_t(ap_expr_eval_ctx_t *ctx, const void *data,
                                const char *arg);
 
 /** Binary operator, takes two string arguments and returns a bool value.
@@ -154,7 +154,7 @@ typedef int ap_expr_op_unary_t(ap_expr_eval_ctx *ctx, const void *data,
  * @param arg2 The right operand
  * @return 0 or 1
  */
-typedef int ap_expr_op_binary_t(ap_expr_eval_ctx *ctx, const void *data,
+typedef int ap_expr_op_binary_t(ap_expr_eval_ctx_t *ctx, const void *data,
                                 const char *arg1, const char *arg2);
 
 /** String valued function, takes a string argument and returns a string
@@ -163,7 +163,8 @@ typedef int ap_expr_op_binary_t(ap_expr_eval_ctx *ctx, const void *data,
  * @param arg The argument
  * @return The functions result string, may be NULL for 'empty string'
  */
-typedef const char *(ap_expr_string_func_t)(ap_expr_eval_ctx *ctx, const void *data,
+typedef const char *(ap_expr_string_func_t)(ap_expr_eval_ctx_t *ctx,
+                                            const void *data,
                                             const char *arg);
 
 /** List valued function, takes a string argument and returns a list of strings
@@ -173,7 +174,7 @@ typedef const char *(ap_expr_string_func_t)(ap_expr_eval_ctx *ctx, const void *d
  * @param arg The argument
  * @return The functions result list of strings, may be NULL for 'empty array'
  */
-typedef apr_array_header_t *(ap_expr_list_func_t)(ap_expr_eval_ctx *ctx, const void *data,
+typedef apr_array_header_t *(ap_expr_list_func_t)(ap_expr_eval_ctx_t *ctx, const void *data,
                                                   const char *arg);
 
 /** Variable lookup function, takes no argument and returns a string
@@ -181,7 +182,7 @@ typedef apr_array_header_t *(ap_expr_list_func_t)(ap_expr_eval_ctx *ctx, const v
  * @param data An opaque context provided by the lookup hook function
  * @return The expanded variable
  */
-typedef const char *(ap_expr_var_func_t)(ap_expr_eval_ctx *ctx, const void *data);
+typedef const char *(ap_expr_var_func_t)(ap_expr_eval_ctx_t *ctx, const void *data);
 
 /** parameter struct passed to the lookup hook functions */
 typedef struct {
@@ -220,7 +221,7 @@ typedef struct {
  *          !OK on failure,
  *          DECLINED if the requested name is not handled by this function
  */
-typedef int (ap_expr_lookup_fn)(ap_expr_lookup_parms *parms);
+typedef int (ap_expr_lookup_fn_t)(ap_expr_lookup_parms *parms);
 
 /** Default lookup function which just calls ap_run_expr_lookup().
  *  ap_run_expr_lookup cannot be used directly because it has the wrong
@@ -243,7 +244,7 @@ AP_DECLARE_HOOK(int, expr_lookup, (ap_expr_lookup_parms *parms))
  */
 AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
                                        ap_expr_info_t *info, const char *expr,
-                                       ap_expr_lookup_fn *lookup_fn);
+                                       ap_expr_lookup_fn_t *lookup_fn);
 
 /**
  * High level interface to ap_expr_parse that also creates ap_expr_info_t and
@@ -256,7 +257,7 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
 AP_DECLARE(ap_expr_info_t *) ap_expr_parse_cmd(const cmd_parms *cmd,
                                                const char *expr,
                                                const char **err,
-                                               ap_expr_lookup_fn *lookup_fn);
+                                               ap_expr_lookup_fn_t *lookup_fn);
 
 
  /**

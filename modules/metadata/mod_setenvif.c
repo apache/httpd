@@ -644,7 +644,7 @@ static int match_headers(request_rec *r)
          * wasn't present or is undefined.  Represent that as an empty string
          * so that REs like "^$" will work and allow envariable setting
          * based on missing or empty field. This is also necessary to make
-         * ap_pregsub work after evaluating an ap_expr which does set the
+         * ap_pregsub work after evaluating an ap_expr_t which does set the
          * regexp backref data.
          */
         if (val == NULL) {

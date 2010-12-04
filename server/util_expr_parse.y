@@ -26,16 +26,16 @@
 %error-verbose
 %defines
 %lex-param   { void *yyscanner }
-%parse-param { ap_expr_parse_ctx *ctx }
+%parse-param { ap_expr_parse_ctx_t *ctx }
 
 %{
 #include "util_expr_private.h"
 %}
 
 %union {
-    char    *cpVal;
-    ap_expr *exVal;
-    int      num;
+    char      *cpVal;
+    ap_expr_t *exVal;
+    int        num;
 }
 
 %token  T_TRUE
@@ -203,7 +203,7 @@ strfunccall : T_ID '(' word ')' { $$ = ap_expr_str_func_make($1, $3, ctx); }
 
 %%
 
-void yyerror(ap_expr_parse_ctx *ctx, char *s)
+void yyerror(ap_expr_parse_ctx_t *ctx, char *s)
 {
     /* s is allocated on the stack */
     ctx->error = apr_pstrdup(ctx->ptemp, s);

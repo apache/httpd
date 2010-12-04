@@ -155,9 +155,9 @@ typedef union YYSTYPE
 /* Line 214 of yacc.c  */
 #line 35 "util_expr_parse.y"
 
-    char    *cpVal;
-    ap_expr *exVal;
-    int      num;
+    char      *cpVal;
+    ap_expr_t *exVal;
+    int        num;
 
 
 
@@ -777,14 +777,14 @@ do {									  \
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, ap_expr_parse_ctx *ctx)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, ap_expr_parse_ctx_t *ctx)
 #else
 static void
 yy_symbol_value_print (yyoutput, yytype, yyvaluep, ctx)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
-    ap_expr_parse_ctx *ctx;
+    ap_expr_parse_ctx_t *ctx;
 #endif
 {
   if (!yyvaluep)
@@ -811,14 +811,14 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep, ctx)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, ap_expr_parse_ctx *ctx)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, ap_expr_parse_ctx_t *ctx)
 #else
 static void
 yy_symbol_print (yyoutput, yytype, yyvaluep, ctx)
     FILE *yyoutput;
     int yytype;
     YYSTYPE const * const yyvaluep;
-    ap_expr_parse_ctx *ctx;
+    ap_expr_parse_ctx_t *ctx;
 #endif
 {
   if (yytype < YYNTOKENS)
@@ -869,13 +869,13 @@ do {								\
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (YYSTYPE *yyvsp, int yyrule, ap_expr_parse_ctx *ctx)
+yy_reduce_print (YYSTYPE *yyvsp, int yyrule, ap_expr_parse_ctx_t *ctx)
 #else
 static void
 yy_reduce_print (yyvsp, yyrule, ctx)
     YYSTYPE *yyvsp;
     int yyrule;
-    ap_expr_parse_ctx *ctx;
+    ap_expr_parse_ctx_t *ctx;
 #endif
 {
   int yynrhs = yyr2[yyrule];
@@ -1148,14 +1148,14 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, ap_expr_parse_ctx *ctx)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, ap_expr_parse_ctx_t *ctx)
 #else
 static void
 yydestruct (yymsg, yytype, yyvaluep, ctx)
     const char *yymsg;
     int yytype;
     YYSTYPE *yyvaluep;
-    ap_expr_parse_ctx *ctx;
+    ap_expr_parse_ctx_t *ctx;
 #endif
 {
   YYUSE (yyvaluep);
@@ -1182,7 +1182,7 @@ int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int yyparse (ap_expr_parse_ctx *ctx);
+int yyparse (ap_expr_parse_ctx_t *ctx);
 #else
 int yyparse ();
 #endif
@@ -1210,11 +1210,11 @@ yyparse (YYPARSE_PARAM)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 int
-yyparse (ap_expr_parse_ctx *ctx)
+yyparse (ap_expr_parse_ctx_t *ctx)
 #else
 int
 yyparse (ctx)
-    ap_expr_parse_ctx *ctx;
+    ap_expr_parse_ctx_t *ctx;
 #endif
 #endif
 {
@@ -2047,7 +2047,7 @@ yyreturn:
 #line 204 "util_expr_parse.y"
 
 
-void yyerror(ap_expr_parse_ctx *ctx, char *s)
+void yyerror(ap_expr_parse_ctx_t *ctx, char *s)
 {
     /* s is allocated on the stack */
     ctx->error = apr_pstrdup(ctx->ptemp, s);

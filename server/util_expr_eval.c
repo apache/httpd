@@ -37,19 +37,22 @@ APR_HOOK_STRUCT(
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, expr_lookup, (ap_expr_lookup_parms *parms),
                             (parms), DECLINED)
 
-static const char *ap_expr_eval_string_func(ap_expr_eval_ctx *ctx, const ap_expr *info,
-                                            const ap_expr *args);
-static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx *ctx, int n);
-static const char *ap_expr_eval_var(ap_expr_eval_ctx *ctx,
+static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
+                                            const ap_expr_t *info,
+                                            const ap_expr_t *args);
+static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, int n);
+static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx,
                                     const ap_expr_var_func_t *func,
                                     const void *data);
 
 /* define AP_EXPR_DEBUG to log the parse tree when parsing an expression */
 #ifdef AP_EXPR_DEBUG
-static void expr_dump_tree(const ap_expr *e, const server_rec *s, int loglevel, int indent);
+static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
+                           int loglevel, int indent);
 #endif
 
-static const char *ap_expr_eval_word(ap_expr_eval_ctx *ctx, const ap_expr *node)
+static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
+                                     const ap_expr_t *node)
 {
     const char *result = "";
     switch (node->node_op) {
@@ -72,8 +75,8 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx *ctx, const ap_expr *node)
             break;
         }
         case op_StringFuncCall: {
-            const ap_expr *info = node->node_arg1;
-            const ap_expr *args = node->node_arg2;
+            const ap_expr_t *info = node->node_arg1;
+            const ap_expr_t *args = node->node_arg2;
             result = ap_expr_eval_string_func(ctx, info, args);
             break;
         }
@@ -91,7 +94,7 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx *ctx, const ap_expr *node)
     return result;
 }
 
-static const char *ap_expr_eval_var(ap_expr_eval_ctx *ctx, 
+static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx, 
                                     const ap_expr_var_func_t *func,
                                     const void *data)
 {
@@ -100,7 +103,7 @@ static const char *ap_expr_eval_var(ap_expr_eval_ctx *ctx,
     return (*func)(ctx, data);
 }
 
-static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx *ctx, int n)
+static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, int n)
 {
     int len;
 
@@ -115,8 +118,9 @@ static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx *ctx, int n)
     return apr_pstrndup(ctx->p, *ctx->re_source + ctx->re_pmatch[n].rm_so, len);
 }
 
-static const char *ap_expr_eval_string_func(ap_expr_eval_ctx *ctx, const ap_expr *info,
-                                            const ap_expr *arg)
+static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
+                                            const ap_expr_t *info,
+                                            const ap_expr_t *arg)
 {
     ap_expr_string_func_t *func = (ap_expr_string_func_t *)info->node_arg1;
     const void *data = info->node_arg2;
@@ -140,76 +144,76 @@ static int intstrcmp(const char *s1, const char *s2)
         return 1;
 }
 
-static int ap_expr_eval_comp(ap_expr_eval_ctx *ctx, const ap_expr *node)
+static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 {
     switch (node->node_op) {
         case op_EQ: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) == 0);
         }
         case op_NE: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) != 0);
         }
         case op_LT: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <  0);
         }
         case op_LE: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <= 0);
         }
         case op_GT: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >  0);
         }
         case op_GE: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >= 0);
         }
         case op_STR_EQ: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) == 0);
         }
         case op_STR_NE: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) != 0);
         }
         case op_STR_LT: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <  0);
         }
         case op_STR_LE: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <= 0);
         }
         case op_STR_GT: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >  0);
         }
         case op_STR_GE: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >= 0);
         }
         case op_IN: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             const char *needle = ap_expr_eval_word(ctx, e1);
             if (e2->node_op == op_ListElement) {
                 do {
-                    const ap_expr *val = e2->node_arg1;
+                    const ap_expr_t *val = e2->node_arg1;
                     AP_DEBUG_ASSERT(e2->node_op == op_ListElement);
                     if (strcmp(needle, ap_expr_eval_word(ctx, val)) == 0) {
                         return 1;
@@ -219,8 +223,8 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx *ctx, const ap_expr *node)
                 } while (e2 != NULL);
             }
             else if (e2->node_op == op_ListFuncCall) {
-                const ap_expr *info = e2->node_arg1;
-                const ap_expr *arg = e2->node_arg2;
+                const ap_expr_t *info = e2->node_arg1;
+                const ap_expr_t *arg = e2->node_arg2;
                 ap_expr_list_func_t *func = (ap_expr_list_func_t *)info->node_arg1;
                 apr_array_header_t *haystack;
                 int i = 0;
@@ -238,8 +242,8 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx *ctx, const ap_expr *node)
         }
         case op_REG:
         case op_NRE: {
-            const ap_expr *e1;
-            const ap_expr *e2;
+            const ap_expr_t *e1;
+            const ap_expr_t *e2;
             const char *word;
             const ap_regex_t *regex;
             int result;
@@ -298,10 +302,10 @@ static int strcmplex(const char *str1, const char *str2)
     return 0;
 }
 
-static int ssl_expr_eval_comp(ap_expr_eval_ctx *ctx, const ap_expr *node)
+static int ssl_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 {
-    const ap_expr *e1 = node->node_arg1;
-    const ap_expr *e2 = node->node_arg2;
+    const ap_expr_t *e1 = node->node_arg1;
+    const ap_expr_t *e2 = node->node_arg2;
     switch (node->node_op) {
     case op_EQ:
     case op_STR_EQ:
@@ -333,9 +337,9 @@ AP_DECLARE_NONSTD(int) ap_expr_lookup_default(ap_expr_lookup_parms *parms)
 
 AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
                                        ap_expr_info_t *info, const char *expr,
-                                       ap_expr_lookup_fn *lookup_fn)
+                                       ap_expr_lookup_fn_t *lookup_fn)
 {
-    ap_expr_parse_ctx ctx;
+    ap_expr_parse_ctx_t ctx;
     int rc;
 
     ctx.pool     = pool;
@@ -391,7 +395,7 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
 AP_DECLARE(ap_expr_info_t*) ap_expr_parse_cmd(const cmd_parms *cmd,
                                               const char *expr,
                                               const char **err,
-                                              ap_expr_lookup_fn *lookup_fn)
+                                              ap_expr_lookup_fn_t *lookup_fn)
 {
     ap_expr_info_t *info = apr_pcalloc(cmd->pool, sizeof(ap_expr_info_t));
     info->filename = cmd->directive->filename;
@@ -404,21 +408,21 @@ AP_DECLARE(ap_expr_info_t*) ap_expr_parse_cmd(const cmd_parms *cmd,
     return info;
 }
 
-ap_expr *ap_expr_make(ap_expr_node_op op, const void *a1, const void *a2,
-                      ap_expr_parse_ctx *ctx)
+ap_expr_t *ap_expr_make(ap_expr_node_op_e op, const void *a1, const void *a2,
+                      ap_expr_parse_ctx_t *ctx)
 {
-    ap_expr *node = apr_palloc(ctx->pool, sizeof(ap_expr));
+    ap_expr_t *node = apr_palloc(ctx->pool, sizeof(ap_expr_t));
     node->node_op   = op;
     node->node_arg1 = a1;
     node->node_arg2 = a2;
     return node;
 }
 
-static ap_expr *ap_expr_info_make(int type, const char *name,
-                                  ap_expr_parse_ctx *ctx,
-                                  const ap_expr *arg)
+static ap_expr_t *ap_expr_info_make(int type, const char *name,
+                                  ap_expr_parse_ctx_t *ctx,
+                                  const ap_expr_t *arg)
 {
-    ap_expr *info = apr_palloc(ctx->pool, sizeof(ap_expr));
+    ap_expr_t *info = apr_palloc(ctx->pool, sizeof(ap_expr_t));
     ap_expr_lookup_parms parms;
     parms.type  = type;
     parms.flags = 0;
@@ -434,10 +438,10 @@ static ap_expr *ap_expr_info_make(int type, const char *name,
     return info;
 }
 
-ap_expr *ap_expr_str_func_make(const char *name, const ap_expr *arg,
-                               ap_expr_parse_ctx *ctx)
+ap_expr_t *ap_expr_str_func_make(const char *name, const ap_expr_t *arg,
+                               ap_expr_parse_ctx_t *ctx)
 {
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_STRING, name, ctx, arg);
+    ap_expr_t *info = ap_expr_info_make(AP_EXPR_FUNC_STRING, name, ctx, arg);
     if (!info)
         return NULL;
 
@@ -445,10 +449,10 @@ ap_expr *ap_expr_str_func_make(const char *name, const ap_expr *arg,
     return ap_expr_make(op_StringFuncCall, info, arg, ctx);
 }
 
-ap_expr *ap_expr_list_func_make(const char *name, const ap_expr *arg,
-                                ap_expr_parse_ctx *ctx)
+ap_expr_t *ap_expr_list_func_make(const char *name, const ap_expr_t *arg,
+                                ap_expr_parse_ctx_t *ctx)
 {
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_LIST, name, ctx, arg);
+    ap_expr_t *info = ap_expr_info_make(AP_EXPR_FUNC_LIST, name, ctx, arg);
     if (!info)
         return NULL;
 
@@ -456,10 +460,10 @@ ap_expr *ap_expr_list_func_make(const char *name, const ap_expr *arg,
     return ap_expr_make(op_ListFuncCall, info, arg, ctx);
 }
 
-ap_expr *ap_expr_unary_op_make(const char *name, const ap_expr *arg,
-                               ap_expr_parse_ctx *ctx)
+ap_expr_t *ap_expr_unary_op_make(const char *name, const ap_expr_t *arg,
+                               ap_expr_parse_ctx_t *ctx)
 {
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_OP_UNARY, name, ctx, arg);
+    ap_expr_t *info = ap_expr_info_make(AP_EXPR_FUNC_OP_UNARY, name, ctx, arg);
     if (!info)
         return NULL;
 
@@ -467,11 +471,12 @@ ap_expr *ap_expr_unary_op_make(const char *name, const ap_expr *arg,
     return ap_expr_make(op_UnaryOpCall, info, arg, ctx);
 }
 
-ap_expr *ap_expr_binary_op_make(const char *name, const ap_expr *arg1,
-                                const ap_expr *arg2, ap_expr_parse_ctx *ctx)
+ap_expr_t *ap_expr_binary_op_make(const char *name, const ap_expr_t *arg1,
+                                const ap_expr_t *arg2, ap_expr_parse_ctx_t *ctx)
 {
-    ap_expr *args;
-    ap_expr *info = ap_expr_info_make(AP_EXPR_FUNC_OP_BINARY, name, ctx, arg2);
+    ap_expr_t *args;
+    ap_expr_t *info = ap_expr_info_make(AP_EXPR_FUNC_OP_BINARY, name, ctx,
+                                        arg2);
     if (!info)
         return NULL;
 
@@ -481,9 +486,9 @@ ap_expr *ap_expr_binary_op_make(const char *name, const ap_expr *arg1,
 }
 
 
-ap_expr *ap_expr_var_make(const char *name, ap_expr_parse_ctx *ctx)
+ap_expr_t *ap_expr_var_make(const char *name, ap_expr_parse_ctx_t *ctx)
 {
-    ap_expr *node = ap_expr_info_make(AP_EXPR_FUNC_VAR, name, ctx, NULL);
+    ap_expr_t *node = ap_expr_info_make(AP_EXPR_FUNC_VAR, name, ctx, NULL);
     if (!node)
         return NULL;
 
@@ -511,14 +516,15 @@ ap_expr *ap_expr_var_make(const char *name, ap_expr_parse_ctx *ctx)
     ap_log_error(MARK,"%*s%s: '%s' '%s'", indent, " ", op, (char *)s1, (char *)s2)
 #define DUMP_P(op, p1)                                                      \
     ap_log_error(MARK,"%*s%s: %pp", indent, " ", op, p1);
-#define DUMP_IP(op, p1)                                                      \
+#define DUMP_IP(op, p1)                                                     \
     ap_log_error(MARK,"%*s%s: %d", indent, " ", op, *(int *)p1);
 #define DUMP_S(op, s1)                                                      \
     ap_log_error(MARK,"%*s%s: '%s'", indent, " ", op, (char *)s1)
 
 #define CASE_OP(op)                  case op: name = #op ; break;
 
-static void expr_dump_tree(const ap_expr *e, const server_rec *s, int loglevel, int indent)
+static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
+                           int loglevel, int indent)
 {
     switch (e->node_op) {
     /* no arg */
@@ -660,8 +666,8 @@ static void expr_dump_tree(const ap_expr *e, const server_rec *s, int loglevel, 
 }
 #endif /* AP_EXPR_DEBUG */
 
-static int ap_expr_eval_unary_op(ap_expr_eval_ctx *ctx, const ap_expr *info,
-                                 const ap_expr *arg)
+static int ap_expr_eval_unary_op(ap_expr_eval_ctx_t *ctx, const ap_expr_t *info,
+                                 const ap_expr_t *arg)
 {
     const ap_expr_op_unary_t *op_func = info->node_arg1;
     const void *data = info->node_arg2;
@@ -672,13 +678,14 @@ static int ap_expr_eval_unary_op(ap_expr_eval_ctx *ctx, const ap_expr *info,
     return (*op_func)(ctx, data, ap_expr_eval_word(ctx, arg));
 }
 
-static int ap_expr_eval_binary_op(ap_expr_eval_ctx *ctx, const ap_expr *info,
-                                  const ap_expr *args)
+static int ap_expr_eval_binary_op(ap_expr_eval_ctx_t *ctx,
+                                  const ap_expr_t *info,
+                                  const ap_expr_t *args)
 {
     const ap_expr_op_binary_t *op_func = info->node_arg1;
     const void *data = info->node_arg2;
-    const ap_expr *a1 = args->node_arg1;
-    const ap_expr *a2 = args->node_arg2;
+    const ap_expr_t *a1 = args->node_arg1;
+    const ap_expr_t *a2 = args->node_arg2;
 
     AP_DEBUG_ASSERT(info->node_op == op_BinaryOpInfo);
     AP_DEBUG_ASSERT(args->node_op == op_BinaryOpArgs);
@@ -689,7 +696,7 @@ static int ap_expr_eval_binary_op(ap_expr_eval_ctx *ctx, const ap_expr *info,
 }
 
 
-static int ap_expr_eval(ap_expr_eval_ctx *ctx, const ap_expr *node)
+static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 {
     switch (node->node_op) {
         case op_True: {
@@ -699,31 +706,31 @@ static int ap_expr_eval(ap_expr_eval_ctx *ctx, const ap_expr *node)
             return 0;
         }
         case op_Not: {
-            const ap_expr *e = node->node_arg1;
+            const ap_expr_t *e = node->node_arg1;
             return (!ap_expr_eval(ctx, e));
         }
         case op_Or: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (ap_expr_eval(ctx, e1) || ap_expr_eval(ctx, e2));
         }
         case op_And: {
-            const ap_expr *e1 = node->node_arg1;
-            const ap_expr *e2 = node->node_arg2;
+            const ap_expr_t *e1 = node->node_arg1;
+            const ap_expr_t *e2 = node->node_arg2;
             return (ap_expr_eval(ctx, e1) && ap_expr_eval(ctx, e2));
         }
         case op_UnaryOpCall: {
-            const ap_expr *info = node->node_arg1;
-            const ap_expr *args = node->node_arg2;
+            const ap_expr_t *info = node->node_arg1;
+            const ap_expr_t *args = node->node_arg2;
             return ap_expr_eval_unary_op(ctx, info, args);
         }
         case op_BinaryOpCall: {
-            const ap_expr *info = node->node_arg1;
-            const ap_expr *args = node->node_arg2;
+            const ap_expr_t *info = node->node_arg1;
+            const ap_expr_t *args = node->node_arg2;
             return ap_expr_eval_binary_op(ctx, info, args);
         }
         case op_Comp: {
-            const ap_expr *e = node->node_arg1;
+            const ap_expr_t *e = node->node_arg1;
             if (ctx->info->flags & AP_EXPR_FLAGS_SSL_EXPR_COMPAT)
                 return ssl_expr_eval_comp(ctx, e);
             else
@@ -736,7 +743,8 @@ static int ap_expr_eval(ap_expr_eval_ctx *ctx, const ap_expr *node)
     }
 }
 
-AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info, const char **err)
+AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info,
+                             const char **err)
 {
     return ap_expr_exec_re(r, info, 0, NULL, NULL, err);
 }
@@ -745,7 +753,7 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
                                 apr_size_t nmatch, ap_regmatch_t *pmatch,
                                 const char **source, const char **err)
 {
-    ap_expr_eval_ctx ctx;
+    ap_expr_eval_ctx_t ctx;
     int rc;
     int dont_vary = (info->flags & AP_EXPR_FLAGS_DONT_VARY);
     const char *tmp_source = NULL, *vary_this = NULL;
@@ -792,7 +800,7 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     }
 }
 
-static void add_vary(ap_expr_eval_ctx *ctx, const char *name)
+static void add_vary(ap_expr_eval_ctx_t *ctx, const char *name)
 {
     if (!ctx->vary_this)
         return;
@@ -806,7 +814,7 @@ static void add_vary(ap_expr_eval_ctx *ctx, const char *name)
     }
 }
 
-static const char *req_table_func(ap_expr_eval_ctx *ctx, const void *data,
+static const char *req_table_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                   const char *arg)
 {
     const char *name = (const char *)data;
@@ -827,7 +835,7 @@ static const char *req_table_func(ap_expr_eval_ctx *ctx, const void *data,
     return apr_table_get(t, arg);
 }
 
-static const char *env_func(ap_expr_eval_ctx *ctx, const void *data,
+static const char *env_func(ap_expr_eval_ctx_t *ctx, const void *data,
                             const char *arg)
 {
     const char *res;
@@ -841,13 +849,13 @@ static const char *env_func(ap_expr_eval_ctx *ctx, const void *data,
     return getenv(arg);
 }
 
-static const char *osenv_func(ap_expr_eval_ctx *ctx, const void *data,
+static const char *osenv_func(ap_expr_eval_ctx_t *ctx, const void *data,
                               const char *arg)
 {
     return getenv(arg);
 }
 
-static const char *tolower_func(ap_expr_eval_ctx *ctx, const void *data,
+static const char *tolower_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                 const char *arg)
 {
     char *result = apr_pstrdup(ctx->p, arg);
@@ -855,7 +863,7 @@ static const char *tolower_func(ap_expr_eval_ctx *ctx, const void *data,
     return result;
 }
 
-static const char *toupper_func(ap_expr_eval_ctx *ctx, const void *data,
+static const char *toupper_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                 const char *arg)
 {
     char *p;
@@ -868,14 +876,15 @@ static const char *toupper_func(ap_expr_eval_ctx *ctx, const void *data,
     return result;
 }
 
-static const char *escape_func(ap_expr_eval_ctx *ctx, const void *data,
+static const char *escape_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                const char *arg)
 {
     return ap_escape_uri(ctx->p, arg);
 }
 
 #define MAX_FILE_SIZE 10*1024*1024
-static const char *file_func(ap_expr_eval_ctx *ctx, const void *data, char *arg)
+static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                             char *arg)
 {
     apr_file_t *fp;
     char *buf;
@@ -919,7 +928,7 @@ static const char *file_func(ap_expr_eval_ctx *ctx, const void *data, char *arg)
 }
 
 
-static const char *unescape_func(ap_expr_eval_ctx *ctx, const void *data,
+static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                  const char *arg)
 {
     char *result = apr_pstrdup(ctx->p, arg);
@@ -930,7 +939,7 @@ static const char *unescape_func(ap_expr_eval_ctx *ctx, const void *data,
 
 }
 
-static int op_nz(ap_expr_eval_ctx *ctx, const void *data, const char *arg)
+static int op_nz(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
 {
     const char *name = (const char *)data;
     if (name[0] == 'z')
@@ -950,7 +959,7 @@ static const char *conn_var_names[] = {
     NULL
 };
 
-static const char *conn_var_fn(ap_expr_eval_ctx *ctx, const void *data)
+static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     int index = ((const char **)data - conn_var_names);
     conn_rec *c = ctx->c;
@@ -1011,7 +1020,7 @@ static const char *request_var_names[] = {
     NULL
 };
 
-static const char *request_var_fn(ap_expr_eval_ctx *ctx, const void *data)
+static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     int index = ((const char **)data - request_var_names);
     request_rec *r = ctx->r;
@@ -1089,7 +1098,7 @@ static const char *req_header_header_names[] = {
     "Accept"
 };
 
-static const char *req_header_var_fn(ap_expr_eval_ctx *ctx, const void *data)
+static const char *req_header_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     const char **varname = (const char **)data;
     int index = (varname - req_header_var_names);
@@ -1118,7 +1127,7 @@ static const char *misc_var_names[] = {
     NULL
 };
 
-static const char *misc_var_fn(ap_expr_eval_ctx *ctx, const void *data)
+static const char *misc_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     apr_time_exp_t tm;
     int index = ((const char **)data - misc_var_names);
@@ -1186,7 +1195,7 @@ static int subnet_parse_arg(ap_expr_lookup_parms *parms)
     return OK;
 }
 
-static int op_ipmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
+static int op_ipmatch(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg1,
                 const char *arg2)
 {
     apr_ipsubnet_t *subnet = (apr_ipsubnet_t *)data;
@@ -1201,7 +1210,7 @@ static int op_ipmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
     return apr_ipsubnet_test(subnet, saddr);
 }
 
-static int op_R(ap_expr_eval_ctx *ctx, const void *data, const char *arg1)
+static int op_R(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg1)
 {
     apr_ipsubnet_t *subnet = (apr_ipsubnet_t *)data;
 
@@ -1213,20 +1222,20 @@ static int op_R(ap_expr_eval_ctx *ctx, const void *data, const char *arg1)
     return apr_ipsubnet_test(subnet, ctx->c->remote_addr);
 }
 
-static int op_fnmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
-                       const char *arg2)
+static int op_fnmatch(ap_expr_eval_ctx_t *ctx, const void *data,
+                      const char *arg1, const char *arg2)
 {
     return (APR_SUCCESS == apr_fnmatch(arg2, arg1, APR_FNM_PATHNAME));
 }
 
-static int op_strmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
-                       const char *arg2)
+static int op_strmatch(ap_expr_eval_ctx_t *ctx, const void *data,
+                       const char *arg1, const char *arg2)
 {
     return (APR_SUCCESS == apr_fnmatch(arg2, arg1, 0));
 }
 
-static int op_strcmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg1,
-                       const char *arg2)
+static int op_strcmatch(ap_expr_eval_ctx_t *ctx, const void *data,
+                        const char *arg1, const char *arg2)
 {
     return (APR_SUCCESS == apr_fnmatch(arg2, arg1, APR_FNM_CASE_BLIND));
 }
@@ -1234,7 +1243,7 @@ static int op_strcmatch(ap_expr_eval_ctx *ctx, const void *data, const char *arg
 struct expr_provider_single {
     const void *func;
     const char *name;
-    ap_expr_lookup_fn *arg_parsing_func;
+    ap_expr_lookup_fn_t *arg_parsing_func;
 };
 
 struct expr_provider_multi {

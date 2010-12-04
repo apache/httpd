@@ -58,7 +58,7 @@
     }                                                       \
 }
 
-#define YY_EXTRA_TYPE ap_expr_parse_ctx*
+#define YY_EXTRA_TYPE ap_expr_parse_ctx_t*
 
 #define PERROR(msg) yyextra->error2 = msg ; return T_ERROR;
 
