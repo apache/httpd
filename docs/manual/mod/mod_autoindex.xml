@@ -518,6 +518,37 @@ a directory</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>IndexIgnoreReset</name>
+<description>Empties the list of files to hide when listing
+a directory</description>
+<syntax>IndexIgnoreReset ON|OFF</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>The <directive>IndexIgnoreReset</directive> directive removes
+    any files ignored by <directive>IndexIgnore</directive> otherwise
+    inherited from other configuration sections. </p>
+
+    <example>
+      &lt;Directory /var/www&gt;
+      IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+      &lt;/Directory&gt;
+      &lt;Directory /var/www/backups&gt;
+      IndexIgnoreReset ON
+      IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+      &lt;/Directory&gt;
+    </example>
+
+    <note type="warning"><p> Review the default configuration for a list of
+    patterns that you might want to explicitly ignore after using this 
+    directive.</p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>IndexOptions</name>
 <description>Various configuration settings for directory
 indexing</description>
