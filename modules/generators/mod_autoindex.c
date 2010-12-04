@@ -140,6 +140,7 @@ typedef struct autoindex_config_struct {
     apr_array_header_t *alt_list;
     apr_array_header_t *desc_list;
     apr_array_header_t *ign_list;
+    int ign_noinherit;
 
     char *ctype;
     char *charset;
@@ -582,6 +583,10 @@ static const command_rec autoindex_cmds[] =
                   "{Ascending,Descending} {Name,Size,Description,Date}"),
     AP_INIT_ITERATE("IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS,
                     "one or more file extensions"),
+    AP_INIT_FLAG("IndexIgnoreReset", ap_set_flag_slot, 
+                 (void *)APR_OFFSETOF(autoindex_config_rec, ign_noinherit), 
+                 DIR_CMD_PERMS,
+                 "Reset the inherited list of IndexIgnore filenames"),
     AP_INIT_ITERATE2("AddDescription", add_desc, BY_PATH, DIR_CMD_PERMS,
                      "Descriptive text followed by one or more filenames"),
     AP_INIT_TAKE1("HeaderName", ap_set_string_slot,
@@ -653,9 +658,9 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
     new->charset = add->charset ? add->charset : base->charset;
 
     new->alt_list = apr_array_append(p, add->alt_list, base->alt_list);
-    new->ign_list = apr_array_append(p, add->ign_list, base->ign_list);
     new->desc_list = apr_array_append(p, add->desc_list, base->desc_list);
     new->icon_list = apr_array_append(p, add->icon_list, base->icon_list);
+    new->ign_list = add->ign_noinherit ? add->ign_list : apr_array_append(p, add->ign_list, base->ign_list);
     if (add->opts == NO_OPTIONS) {
         /*
          * If the current directory explicitly says 'no options' then we also

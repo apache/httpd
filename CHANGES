@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.10
 
+  *) mod_autoindex: add IndexIgnoreReset to reset the list of IndexIgnored
+     filenames in higher precedence configuration sections.  PR 24243.
+     [Eric Covener]
+
   *) mod_cgid: RLimit* directive support for mod_cgid.  PR 42135
      [Eric Covener]
 
