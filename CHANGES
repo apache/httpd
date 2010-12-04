@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.10
 
+  *) mod_rewrite: Add 'RewriteOptions InheritBefore' to put the base 
+     rules/conditions before the overridden rules/conditions.  PR 39313.
+     [Jérôme Grandjanny <jerome.grandjanny cea.fr>]
+
   *) mod_autoindex: add IndexIgnoreReset to reset the list of IndexIgnored
      filenames in higher precedence configuration sections.  PR 24243.
      [Eric Covener]

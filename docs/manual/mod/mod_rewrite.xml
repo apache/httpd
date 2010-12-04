@@ -140,7 +140,7 @@ later</compatibility>
       only be one of the following:</p>
 
       <dl>
-      <dt><code>inherit</code></dt>
+      <dt><code>Inherit</code></dt>
       <dd>
       
       <p>This forces the current configuration to inherit the
@@ -163,7 +163,16 @@ later</compatibility>
       <strong>after</strong> rules specified in the child scope.
       </note>
       </dd>
+
+      <dt><code>InheritBefore</code></dt>
+      <dd>
+      <p> Like <code>Inherit</code> above, but the rules from the parent scope
+      are applied <strong>after</strong> rules specified in the child scope.  
+      Available in Apache HTTP Server 2.3.10 and later.</p>
+      </dd>
+      
       </dl>
+
 </usage>
 
 </directivesynopsis>

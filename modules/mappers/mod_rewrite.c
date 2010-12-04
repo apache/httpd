@@ -187,6 +187,7 @@ static const char* really_last_key = "rewrite_really_last";
 
 #define OPTION_NONE                 1<<0
 #define OPTION_INHERIT              1<<1
+#define OPTION_INHERIT_BEFORE       1<<2
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -2745,6 +2746,18 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
         a->rewriterules    = apr_array_append(p, overrides->rewriterules,
                                               base->rewriterules);
     }
+    else if (a->options & OPTION_INHERIT_BEFORE) {
+        /*
+         *  local directives override
+         *  and anything else is inherited (preserving order)
+         */
+        a->rewritemaps     = apr_hash_overlay(p, base->rewritemaps,
+                                              overrides->rewritemaps);
+        a->rewriteconds    = apr_array_append(p, base->rewriteconds,
+                                              overrides->rewriteconds);
+        a->rewriterules    = apr_array_append(p, base->rewriterules, 
+                                              overrides->rewriterules);
+    }
     else {
         /*
          *  local directives override
@@ -2810,6 +2823,12 @@ static void *config_perdir_merge(apr_pool_t *p, void *basev, void *overridesv)
         a->rewriterules = apr_array_append(p, overrides->rewriterules,
                                            base->rewriterules);
     }
+    else if (a->options & OPTION_INHERIT_BEFORE) {
+        a->rewriteconds    = apr_array_append(p, base->rewriteconds,
+                                              overrides->rewriteconds);
+        a->rewriterules    = apr_array_append(p, base->rewriterules,
+                                              overrides->rewriterules);
+    }
     else {
         a->rewriteconds = overrides->rewriteconds;
         a->rewriterules = overrides->rewriterules;
@@ -2852,6 +2871,9 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
 
         if (!strcasecmp(w, "inherit")) {
             options |= OPTION_INHERIT;
+        }
+        else if (!strcasecmp(w, "inheritbefore")) {
+            options |= OPTION_INHERIT_BEFORE;
         }
         else if (!strncasecmp(w, "MaxRedirects=", 13)) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
