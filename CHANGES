@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.10
 
+  *) mod_cgid: RLimit* directive support for mod_cgid.  PR 42135
+     [Eric Covener]
+
   *) core: Fail startup when the argument to ServerName looks like a glob
      or a regular expression instead of a hostname (*?[]).  PR 39863 
      [Rahul Nair <rahul.g.nair gmail.com>]

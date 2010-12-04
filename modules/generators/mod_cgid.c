@@ -168,6 +168,24 @@ typedef struct {
     int bufbytes;
 } cgid_server_conf;
 
+#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS) 
+typedef struct { 
+#ifdef RLIMIT_CPU
+    int    limit_cpu_set;
+    struct rlimit limit_cpu;
+#endif
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)
+    int    limit_mem_set;
+    struct rlimit limit_mem;
+#endif
+#ifdef RLIMIT_NPROC
+    int    limit_nproc_set;
+    struct rlimit limit_nproc;
+#endif
+
+} cgid_rlimit_t;
+#endif
+
 typedef struct {
     int req_type; /* request type (CGI_REQ, SSI_REQ, etc.) */
     unsigned long conn_id; /* connection id; daemon uses this as a hash value
@@ -185,6 +203,9 @@ typedef struct {
     apr_size_t uri_len;
     apr_size_t args_len;
     int loglevel; /* to stuff in server_rec */
+#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+    cgid_rlimit_t limits;
+#endif
 } cgid_req_t;
 
 /* This routine is called to create the argument list to be passed
@@ -438,39 +459,9 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
     *env = environ;
 
-#if 0
-#ifdef RLIMIT_CPU
-    sock_read(fd, &j, sizeof(int));
-    if (j) {
-        temp_core->limit_cpu = (struct rlimit *)apr_palloc (sizeof(struct rlimit));
-        sock_read(fd, temp_core->limit_cpu, sizeof(struct rlimit));
-    }
-    else {
-        temp_core->limit_cpu = NULL;
-    }
-#endif
-
-#if defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-    sock_read(fd, &j, sizeof(int));
-    if (j) {
-        temp_core->limit_mem = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit));
-        sock_read(fd, temp_core->limit_mem, sizeof(struct rlimit));
-    }
-    else {
-        temp_core->limit_mem = NULL;
-    }
-#endif
-
-#ifdef RLIMIT_NPROC
-    sock_read(fd, &j, sizeof(int));
-    if (j) {
-        temp_core->limit_nproc = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit));
-        sock_read(fd, temp_core->limit_nproc, sizeof(struct rlimit));
-    }
-    else {
-        temp_core->limit_nproc = NULL;
-    }
-#endif
+#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+    if ((stat = sock_read(fd, &(req->limits), sizeof(cgid_rlimit_t))) != APR_SUCCESS)
+         return stat;
 #endif
 
     return APR_SUCCESS;
@@ -483,6 +474,9 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     cgid_req_t req = {0};
     apr_status_t stat;
     ap_unix_identity_t * ugid = ap_run_get_suexec_identity(r);
+    core_dir_config *core_conf = ap_get_module_config(r->per_dir_config,
+                                                      &core_module);
+
 
     if (ugid == NULL) {
         req.ugid = empty_ugid;
@@ -532,44 +526,42 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
             return stat;
         }
     }
-
-#if 0
 #ifdef RLIMIT_CPU
-    if (conf->limit_cpu) {
-        len = 1;
-        stat = sock_write(fd, &len, sizeof(int));
-        stat = sock_write(fd, conf->limit_cpu, sizeof(struct rlimit));
+    if (core_conf->limit_cpu) {
+        req.limits.limit_cpu = *(core_conf->limit_cpu);
+        req.limits.limit_cpu_set = 1;
     }
     else {
-        len = 0;
-        stat = sock_write(fd, &len, sizeof(int));
+        req.limits.limit_cpu_set = 0;
     }
 #endif
 
 #if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-    if (conf->limit_mem) {
-        len = 1;
-        stat = sock_write(fd, &len, sizeof(int));
-        stat = sock_write(fd, conf->limit_mem, sizeof(struct rlimit));
+    if (core_conf->limit_mem) {
+        req.limits.limit_mem = *(core_conf->limit_mem);
+        req.limits.limit_mem_set = 1;
     }
     else {
-        len = 0;
-        stat = sock_write(fd, &len, sizeof(int));
+        req.limits.limit_mem_set = 0;
     }
+
 #endif
 
 #ifdef RLIMIT_NPROC
-    if (conf->limit_nproc) {
-        len = 1;
-        stat = sock_write(fd, &len, sizeof(int));
-        stat = sock_write(fd, conf->limit_nproc, sizeof(struct rlimit));
+    if (core_conf->limit_nproc) {
+        req.limits.limit_nproc = *(core_conf->limit_nproc);
+        req.limits.limit_nproc_set = 1;
     }
     else {
-        len = 0;
-        stat = sock_write(fd, &len, sizeof(int));
+        req.limits.limit_nproc_set = 0;
     }
 #endif
+
+#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+    if ( (stat = sock_write(fd, &(req.limits), sizeof(cgid_rlimit_t))) != APR_SUCCESS)
+        return stat;
 #endif
+
     return APR_SUCCESS;
 }
 
@@ -771,6 +763,19 @@ static int cgid_server(void *data)
             ((rc = apr_procattr_dir_set(procattr,
                                   ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
             ((rc = apr_procattr_cmdtype_set(procattr, cmd_type)) != APR_SUCCESS) ||
+#ifdef RLIMIT_CPU
+        (  (cgid_req.limits.limit_cpu_set) && ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_CPU,
+                                      &cgid_req.limits.limit_cpu)) != APR_SUCCESS)) ||
+#endif
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+        ( (cgid_req.limits.limit_mem_set) && ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_MEM,
+                                      &cgid_req.limits.limit_mem)) != APR_SUCCESS)) ||
+#endif
+#ifdef RLIMIT_NPROC
+        ( (cgid_req.limits.limit_nproc_set) && ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_NPROC,
+                                      &cgid_req.limits.limit_nproc)) != APR_SUCCESS)) ||
+#endif
+
             ((rc = apr_procattr_child_errfn_set(procattr, cgid_child_errfn)) != APR_SUCCESS)) {
             /* Something bad happened, tell the world.
              * ap_log_rerror() won't work because the header table used by
