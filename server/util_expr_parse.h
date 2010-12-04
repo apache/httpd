@@ -85,9 +85,9 @@ typedef union YYSTYPE
 /* Line 1676 of yacc.c  */
 #line 35 "util_expr_parse.y"
 
-    char    *cpVal;
-    ap_expr *exVal;
-    int      num;
+    char      *cpVal;
+    ap_expr_t *exVal;
+    int        num;
 
 
 

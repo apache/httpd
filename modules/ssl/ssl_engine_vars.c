@@ -63,14 +63,14 @@ static const char var_interface[] = "mod_ssl/" MOD_SSL_VERSION;
 static char var_library_interface[] = SSL_LIBRARY_TEXT;
 static char *var_library = NULL;
 
-static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx *ctx,
+static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
                                                  const void *dummy,
                                                  const char *arg)
 {
     return ssl_ext_list(ctx->p, ctx->c, 1, arg);
 }
 
-static const char *expr_var_fn(ap_expr_eval_ctx *ctx, const void *data)
+static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     char *var = (char *)data;
     return ssl_var_lookup_ssl(ctx->p, ctx->c, var);

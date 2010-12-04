@@ -64,11 +64,11 @@ typedef enum {
     op_BinaryOpCall, op_BinaryOpInfo, op_BinaryOpArgs,
     op_StringFuncCall, op_StringFuncInfo,
     op_ListFuncCall, op_ListFuncInfo
-} ap_expr_node_op;
+} ap_expr_node_op_e;
 
 /** The basic parse tree node */
 struct ap_expr_node {
-    ap_expr_node_op node_op;
+    ap_expr_node_op_e node_op;
     const void *node_arg1;
     const void *node_arg2;
 };
@@ -89,7 +89,7 @@ typedef struct {
     apr_pool_t        *ptemp;
 
     /* The created parse tree */
-    ap_expr           *expr;
+    ap_expr_t         *expr;
 
     const char        *error;
     const char        *error2;
@@ -99,33 +99,34 @@ typedef struct {
      * The function to use to lookup provider functions for variables
      * and funtctions
      */
-    ap_expr_lookup_fn   *lookup_fn;
-} ap_expr_parse_ctx;
+    ap_expr_lookup_fn_t *lookup_fn;
+} ap_expr_parse_ctx_t;
 
 /* flex/bison functions */
-int  ap_expr_yyparse(ap_expr_parse_ctx *context);
-void ap_expr_yyerror(ap_expr_parse_ctx *context, char *err);
+int  ap_expr_yyparse(ap_expr_parse_ctx_t *context);
+void ap_expr_yyerror(ap_expr_parse_ctx_t *context, char *err);
 int  ap_expr_yylex_init(void **scanner);
 int  ap_expr_yylex_destroy(void *scanner);
-void ap_expr_yyset_extra(ap_expr_parse_ctx *context, void *scanner);
+void ap_expr_yyset_extra(ap_expr_parse_ctx_t *context, void *scanner);
 
 /* create a parse tree node */
-ap_expr *ap_expr_make(ap_expr_node_op op, const void *arg1, const void *arg2,
-                        ap_expr_parse_ctx *ctx);
+ap_expr_t *ap_expr_make(ap_expr_node_op_e op, const void *arg1,
+                        const void *arg2, ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the string-returning function 'name' */
-ap_expr *ap_expr_str_func_make(const char *name, const ap_expr *arg,
-                               ap_expr_parse_ctx *ctx);
+ap_expr_t *ap_expr_str_func_make(const char *name, const ap_expr_t *arg,
+                               ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the list-returning function 'name' */
-ap_expr *ap_expr_list_func_make(const char *name, const ap_expr *arg,
-                                ap_expr_parse_ctx *ctx);
+ap_expr_t *ap_expr_list_func_make(const char *name, const ap_expr_t *arg,
+                                ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the variable 'name' */
-ap_expr *ap_expr_var_make(const char *name, ap_expr_parse_ctx *ctx);
+ap_expr_t *ap_expr_var_make(const char *name, ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the unary operator 'name' */
-ap_expr *ap_expr_unary_op_make(const char *name, const ap_expr *arg,
-                               ap_expr_parse_ctx *ctx);
+ap_expr_t *ap_expr_unary_op_make(const char *name, const ap_expr_t *arg,
+                               ap_expr_parse_ctx_t *ctx);
 /* create parse tree node for the binary operator 'name' */
-ap_expr *ap_expr_binary_op_make(const char *name, const ap_expr *arg1,
-                                const ap_expr *arg2, ap_expr_parse_ctx *ctx);
+ap_expr_t *ap_expr_binary_op_make(const char *name, const ap_expr_t *arg1,
+                                  const ap_expr_t *arg2,
+                                  ap_expr_parse_ctx_t *ctx);
 
 
 #endif /* __AP_EXPR_PRIVATE_H__ */

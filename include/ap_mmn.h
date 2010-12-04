@@ -286,14 +286,15 @@
  * 20101113.0 (2.3.9-dev)  Add source address to mod_proxy.h
  * 20101113.1 (2.3.9-dev)  Add ap_set_flag_slot_char()
  * 20101113.2 (2.3.9-dev)  Add ap_expr_exec_re()
+ * 20101204.0 (2.3.10-dev) Add _t to ap_expr's typedef names
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20101113
+#define MODULE_MAGIC_NUMBER_MAJOR 20101204
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
