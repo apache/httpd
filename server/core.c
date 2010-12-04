@@ -2355,7 +2355,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
 }
 
 
-static const apr_status_t valid_hostname(const char* name)
+static apr_status_t valid_hostname(const char* name)
 {
     if (ap_strchr_c(name, '*') || ap_strchr_c(name, '?') || 
         ap_strchr_c(name, '[') || ap_strchr_c(name, ']')) { 
