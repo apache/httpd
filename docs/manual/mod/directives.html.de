@@ -274,6 +274,7 @@
 <li><a href="core.html#include">Include</a></li>
 <li><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert</a></li>
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
+<li><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset</a></li>
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
 <li><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
 <li><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet</a></li>

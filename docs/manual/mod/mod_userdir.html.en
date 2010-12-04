@@ -166,6 +166,10 @@ tutorial</a></li>
     was assumed if no <code class="directive"><a href="#userdir">UserDir</a></code>
     directive was present.</p>
 
+    <div class="note"><h3>Merging details</h3>
+    <p> Lists of specific enabled and disabled users are replaced, not merged, 
+    from global to virtual host scope</p></div>
+
 
 <h3>See also</h3>
 <ul>

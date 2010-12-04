@@ -238,12 +238,12 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</td></tr>
 
     <p>El objetivo principal de la directiva <code>AcceptPathInfo</code>
     es permitirte sobreescribir la opción del controlador
-    de aceptar or rechazar <code>PATH_INFO</code>. This override is required,
-    for example, when you use a <a href="../filter.html">filter</a>, such
-    as <a href="mod_include.html">INCLUDES</a>, to generate content
-    based on <code>PATH_INFO</code>.  The core handler would usually reject
-    the request, so you can use the following configuration to enable
-    such a script:</p>
+    de aceptar or rechazar <code>PATH_INFO</code>. Este tipo de sobreescritura se necesita,
+    por ejemplo, cuando utilizas un <a href="../filter.html">filtro</a>, tal como
+    <a href="mod_include.html">INCLUDES</a>, para generar contenido
+    basado en <code>PATH_INFO</code>. El controlador principal normalmente rechazaría
+    la petición, de modo que puedes utilizar la siguiente configuración para habilitarla
+    como script:</p>
 
     <div class="example"><p><code>
       &lt;Files "mypaths.shtml"&gt;<br />
@@ -260,28 +260,28 @@ En Windows desde Apache httpd 2.3.3 y posteriores.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Directiva</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Name of the distributed configuration file</td></tr>
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Nombre del fichero distribuido de configuración</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AccessFileName <var>filename</var> [<var>filename</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>AccessFileName .htaccess</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
 </table>
-    <p>While processing a request the server looks for
-    the first existing configuration file from this list of names in
-    every directory of the path to the document, if distributed
-    configuration files are <a href="#allowoverride">enabled for that
-    directory</a>. For example:</p>
+    <p>Mientras que procesa una petición el servidor busca
+    el primer fichero de configuración existente dentro de un listado de nombres en
+    cada directorio de la ruta del documento, si los ficheros distribuidos
+    de configuración están <a href="#allowoverride">habilitados para ese
+    directorio</a>. Por ejemplo:</p>
 
     <div class="example"><p><code>
       AccessFileName .acl
     </code></p></div>
 
-    <p>before returning the document
-    <code>/usr/local/web/index.html</code>, the server will read
+    <p>antes de servir el documento
+    <code>/usr/local/web/index.html</code>, el servidor leerá
     <code>/.acl</code>, <code>/usr/.acl</code>,
     <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
-    for directives, unless they have been disabled with</p>
+    para las directivas, salvo que estén deshabilitadas with</p>
 
     <div class="example"><p><code>
       &lt;Directory /&gt;<br />
