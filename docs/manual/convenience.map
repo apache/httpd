@@ -235,6 +235,7 @@ imapmenu	mod/mod_imagemap.html#imapmenu
 include	mod/core.html#include
 indexheadinsert	mod/mod_autoindex.html#indexheadinsert
 indexignore	mod/mod_autoindex.html#indexignore
+indexignorereset	mod/mod_autoindex.html#indexignorereset
 indexoptions	mod/mod_autoindex.html#indexoptions
 indexorderdefault	mod/mod_autoindex.html#indexorderdefault
 indexstylesheet	mod/mod_autoindex.html#indexstylesheet
