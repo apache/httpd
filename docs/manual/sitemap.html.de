@@ -28,9 +28,6 @@
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
 <p>Diese Seite verzeichnet die zur Zeit verfügbaren Dokumente der
 <a href="./">Dokumentation zum Apache HTTP Server Version
@@ -40,7 +37,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#release">Hinweise zur Version</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">Bedienung des Apache HTTP Servers</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Apache-Dokumentation zu virtuellen Hosts</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#faq">Häufig gestellte Fragen (FAQ)</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#rewrite">Einführung in die URL-Manipulation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ssl">SSL/TLS-Verschlüsselung des Apache</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#howto">Praxis / Anleitungen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#platform">Plattform-spezifische Anmerkungen</a></li>
@@ -53,9 +50,9 @@
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="release" id="release">Hinweise zur Version</a></h2>
-<ul><li><a href="upgrading.html">Upgrade von 2.0 auf 2.2</a></li>
-<li><a href="new_features_2_4.html">Neue Funktionen in Version 2.4</a></li>
-<li><a href="new_features_2_2.html">Neue Funktionen in Version 2.2</a></li>
+<ul><li><a href="upgrading.html">Upgrade von 2.2 auf 2.4</a></li>
+<li><a href="new_features_2_4.html">Neue Funktionen in Version 2.3/2.4</a></li>
+<li><a href="new_features_2_2.html">Neue Funktionen in Version 2.1/2.2</a></li>
 <li><a href="new_features_2_0.html">Neue Funktionen in Version 2.0</a></li>
 <li><a href="license.html">Apache-Lizenz</a></li>
 </ul>
@@ -81,7 +78,7 @@
 <li><a href="filter.html">Filter</a></li>
 <li><a href="suexec.html">suEXEC Unterstützung</a></li>
 <li><a href="misc/perf-tuning.html">Performance-Hinweise</a></li>
-<li><a href="misc/rewriteguide.html">Einführung in die URL-Manipulation</a></li>
+<li><a href="faq/">Häufig gestellte Fragen (FAQ)</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache-Dokumentation zu virtuellen Hosts</a></h2>
@@ -97,11 +94,17 @@
 <li><a href="dns-caveats.html">Probleme bezüglich DNS und Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="faq" id="faq">Häufig gestellte Fragen (FAQ)</a></h2>
-<ul><li><a href="faq/">Übersicht</a></li>
-<li><a href="faq/background.html">Hintergrundinformationen</a></li>
-<li><a href="faq/support.html">Support</a></li>
-<li><a href="faq/error.html">Fehlermeldungen</a></li>
+<div class="section"><h2><a name="rewrite" id="rewrite">Einführung in die URL-Manipulation</a></h2>
+<ul><li class="separate"><a href="rewrite/">Übersicht</a></li>
+<li><a href="mod/mod_rewrite.html">Referenz-Dokumentation von
+mod_rewrite</a></li>
+<li><a href="rewrite/intro.html">Einführung</a></li>
+<li><a href="rewrite/flags.html">Schalter / Flags</a></li>
+<li><a href="rewrite/tech.html">Technische Details</a></li>
+<li><a href="rewrite/remapping.html">URL-Änderungen
+durchführen</a></li>
+<li><a href="rewrite/access.html">Zugriffskontrolle</a></li>
+<li><a href="rewrite/advanced.html">Fortgeschrittene Techniken</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">SSL/TLS-Verschlüsselung des Apache</a></h2>
@@ -274,12 +277,17 @@ HPUX betreiben</a></li>
 <div class="section"><h2><a name="developer" id="developer">Dokumentation für Entwickler</a></h2>
 <ul><li class="separate"><a href="developer/">Übersicht</a></li>
 <li><a href="developer/API.html">Anmerkungen zur Apache-API</a></li>
-<li><a href="developer/debugging.html">Debuggen der Speicher-Belegung in der APR </a></li>
-<li><a href="developer/documenting.html">Apache 2.0 dokumentieren</a></li>
-<li><a href="developer/hooks.html">Hook-Funktionen des Apache 2.0 </a></li>
-<li><a href="developer/modules.html">Module von Apache 1.3 nach Apache 2.0 konvertieren</a></li>
-<li><a href="developer/request.html">Verarbeitung der Anfragen im Apache 2.0</a></li>
-<li><a href="developer/filters.html">Wie Filter im Apache 2.0 arbeiten</a></li>
+<li><a href="developer/new_api_2_4.html">API-Änderungen im Apache HTTPD
+2.4</a></li>
+<li><a href="developer/debugging.html">Debuggen der Speicher-Belegung in der
+APR </a></li>
+<li><a href="developer/documenting.html">Apache 2.x dokumentieren</a></li>
+<li><a href="developer/hooks.html">Hook-Funktionen des Apache 2.x</a></li>
+<li><a href="developer/modules.html">Module von Apache 1.3 nach Apache 2.x
+konvertieren</a></li>
+<li><a href="developer/request.html">Verarbeitung der Anfragen im Apache
+2.x</a></li>
+<li><a href="developer/filters.html">Wie Filter im Apache 2.x arbeiten</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="index" id="index">Glossar und Index</a></h2>
