@@ -345,7 +345,7 @@ header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
 <tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>MIME-Type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">MIME-Content-Type, der gesendet wird, wenn der Server den Typ
 nicht auf andere Weise ermitteln kann.</td></tr>
-<tr><td><a href="core.html#define">Define <var>Parametername</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Define des Vorhandenseins einer variable</td></tr>
+<tr><td><a href="core.html#define">Define <var>Parametername</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Define the existence of a variable</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
 <tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
@@ -375,14 +375,13 @@ Web sichtbar ist.</td></tr>
 Ausnahmefehler behandeln lassen kann</td></tr>
 <tr><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Verwende Memory-Mapping, um Dateien während der
 Auslieferung zu lesen</td></tr>
-<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Verwende die sendfile-Unterstützung des Kernels, um
+<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Verwende die sendfile-Unterstützung des Kernels, um
 Dateien an den Client auszuliefern</td></tr>
-<tr><td><a href="core.html#error">Error <var>Meldung</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Abbruch der Konfigurationsanalyse mit einer angepassenten
-Fehlermeldung</td></tr>
+<tr><td><a href="core.html#error" /></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
 <tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>Fehlercode</var> <var>Dokument</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Das, was der Server im Fehlerfall an den Client
 zurückgibt</td></tr>
 <tr><td><a href="core.html#errorlog"> ErrorLog <var>Dateiname</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Ablageort, an dem der Server Fehler protokolliert</td></tr>
-<tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLog [Verbindung|Anfrage] <var>Format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Formatspecifikation für Einträge des Fehlerprotokolls</td></tr>
+<tr class="odd"><td><a href="core.html#errorlogformat" /></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Format specification for error log entries</td></tr>
 <tr><td><a href="mod_example.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
 API</td></tr>
 <tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables generation of <code>Expires</code>
@@ -906,11 +905,10 @@ Certificate verification</td></tr>
 verwendet wird, die Client-Verbindungen bearbeiten.</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>Sekunden</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
 bevor er die Anfrage abbricht</td></tr>
-<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Entscheidet über das Verhalten bei <code>TRACE</code>
-Anfragen</td></tr>
+<tr class="odd"><td><a href="core.html#traceenable" /></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the behaviour on <code>TRACE</code> requests</td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify location of a log file</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
-<tr><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>Parametername</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Hebt die Definition einer Variablen auf</td></tr>
+<tr><td><a href="core.html#undefine" id="U" name="U" /></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Undefine the existence of a variable</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes variables from the environment</td></tr>
 <tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt, wie der Server seinen eigenen Namen und Port
