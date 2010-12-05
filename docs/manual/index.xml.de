@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 420993:959136 (outdated) -->
+<!-- English Revision: 959136 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -89,6 +89,7 @@
     <page href="sitemap.html">Seitenindex</page>
     <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
     <page href="misc/">Sonstiges</page>
+    <page href="http://wiki.apache.org/httpd/">Wiki</page>
 </category>
 
 </indexpage>
