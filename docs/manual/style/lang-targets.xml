@@ -23,9 +23,35 @@
 <project name="lang-targets">
 
 <target name="check-man"><if><not><available type="dir" file="../../man"/></not><then><property value="yes" name="skip-man"/></then></if></target>
-<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, pt-br, ru, tr"/>
-<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru, zip-tr"/>
-<target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru, war-tr"/>
+<target description="- builds all HTML files and nroff man pages" name="all" depends="da, de, en, es, fr, ja, ko, pt-br, ru, tr"/>
+<target description="- builds all zip download packages" name="zip-all" depends="zip-da, zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru, zip-tr"/>
+<target description="- builds all war download packages" name="war-all" depends="war-da, war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru, war-tr"/>
+
+<!-- Dansk                                                                -->
+<!-- ==================================================================== -->
+<property value=".xml.da" name="inputext.da"/>
+<property value=".html.da" name="outputext.da"/>
+
+<target description="- builds Dansk HTML files" name="da">
+    <html.generic lang="da"/>
+</target>
+<target unless="-off.da.done" depends="metafiles" name="-off-da">
+    <dependencies.offline dir="_off" style="zip" lang="da"/>
+    <offline.generic dir="_off" style="zip" lang="da"/>
+    <property value="yes" name="-off.da.done"/>
+</target>
+<target description="- builds the Dansk zipped download package" depends="-off-da" name="zip-da">
+    <zip.generic lang="da"/>
+</target>
+<target description="- builds the Dansk Konqueror Web Archive" depends="-off-da" name="war-da">
+    <war.generic lang="da"/>
+</target>
+<target description="- builds the Dansk CHM file" name="chm-da">
+    <chm.generic lang="da"/>
+</target>
+<target description="- builds the Dansk nroff files" unless="skip-man" depends="check-man" name="man-da">
+    <nroff.generic lang="da"/>
+</target>
 
 <!-- German                                                               -->
 <!-- ==================================================================== -->
@@ -243,6 +269,7 @@
     <xmlvalidate warn="true" failonerror="false" lenient="false">
         <xmlcatalog refid="w3c-catalog"/>
         <fileset dir="../">
+            <include name="**/*.xml.da"/>
             <include name="**/*.xml.de"/>
             <include name="**/*.xml"/>
             <include name="**/*.xml.es"/>

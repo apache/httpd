@@ -38,6 +38,7 @@ Some targets have additional requirements:
   - The appropriate locale (e.g. Japanese) before invoking hhc.exe. Otherwise
     the compiler is not able to build the fulltext search index correctly and
     the TOC may be garbled, too. In particular:
+    + chm-da: Dansk (DK)
     + chm-de: German (Germany), sorting order: dictionary
     + chm-en: English (USA)
     + chm-es: Spanish (Spain), sorting order: international
