@@ -86,6 +86,7 @@ shell Win32 <code>dir</code></td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexheadinsert">IndexHeadInsert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#indexignorereset">IndexIgnoreReset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
@@ -562,6 +563,38 @@ de l'index d'un répertoire</td></tr>
     <div class="example"><p><code>
       IndexIgnore README .htaccess *.bak *~
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vide la liste des fichiers à cacher lors de l'affichage du
+contenu d'un répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexIgnoreReset ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Versions 2.3.10 et supérieures</td></tr>
+</table>
+    <p>La directive <code class="directive">IndexIgnoreReset</code> supprime
+    toute liste de fichiers définie par la directive
+    <code class="directive">IndexIgnore</code> et héritée par ailleurs d'autres
+    sections de configuration.</p>
+
+    <div class="example"><p><code>
+      &lt;Directory /var/www&gt;
+      IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+      &lt;/Directory&gt;
+      &lt;Directory /var/www/backups&gt;
+      IndexIgnoreReset ON
+      IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+      &lt;/Directory&gt;
+    </code></p></div>
+
+    <div class="warning"><p>Revoyez la configuration par défaut pour une
+    liste de modèles que vous voulez ignorer explicitement après usage
+    de cette directive.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
