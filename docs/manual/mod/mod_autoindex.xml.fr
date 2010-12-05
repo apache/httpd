@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1031303 -->
+<!-- English Revision : 1042242 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -551,6 +551,39 @@ de l'index d'un r&eacute;pertoire</description>
     <example>
       IndexIgnore README .htaccess *.bak *~
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexIgnoreReset</name>
+<description>Vide la liste des fichiers &agrave; cacher lors de l'affichage du
+contenu d'un r&eacute;pertoire</description>
+<syntax>IndexIgnoreReset ON|OFF</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+<compatibility>Versions 2.3.10 et sup&eacute;rieures</compatibility>
+
+<usage>
+    <p>La directive <directive>IndexIgnoreReset</directive> supprime
+    toute liste de fichiers d&eacute;finie par la directive
+    <directive>IndexIgnore</directive> et h&eacute;rit&eacute;e par ailleurs d'autres
+    sections de configuration.</p>
+
+    <example>
+      &lt;Directory /var/www&gt;
+      IndexIgnore *.bak .??* *~ *# HEADER* README* RCS CVS *,v *,t
+      &lt;/Directory&gt;
+      &lt;Directory /var/www/backups&gt;
+      IndexIgnoreReset ON
+      IndexIgnore .??* *# HEADER* README* RCS CVS *,v *,t
+      &lt;/Directory&gt;
+    </example>
+
+    <note type="warning"><p>Revoyez la configuration par d&eacute;faut pour une
+    liste de mod&egrave;les que vous voulez ignorer explicitement apr&egrave;s usage
+    de cette directive.</p></note>
 </usage>
 </directivesynopsis>
 
