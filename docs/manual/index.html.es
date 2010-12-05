@@ -20,7 +20,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a></div>
 <div id="page-content"><h1>Versión 2.3 de la documentación del Servidor de HTTP Apache</h1>
 <div class="toplang">
-<p><span>Idiomas disponibles: </span><a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Idiomas disponibles: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -96,7 +97,8 @@ ejecución</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
-<p><span>Idiomas disponibles: </span><a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Idiomas disponibles: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |

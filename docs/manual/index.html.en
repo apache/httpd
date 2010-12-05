@@ -22,7 +22,8 @@ Documentation - Apache HTTP Server</title>
 <div id="page-content"><h1>Apache HTTP Server Version 2.3
 Documentation</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -93,7 +94,8 @@ Documentation</h1>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Available Languages: </span><a href="./da/" hreflang="da" rel="alternate" title="Dansk">&nbsp;da&nbsp;</a> |
+<a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
