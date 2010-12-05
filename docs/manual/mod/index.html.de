@@ -26,15 +26,13 @@
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>
-      Unten ist eine Liste aller Module angegeben, die als Bestandteil der
-      Apache-Distribution mitgeliefert werden. Bitte beachten Sie auch die
-      vollständige alphabetische Liste <a href="directives.html">aller
-      Apache-Direktiven</a>.
+      Nachfolgend ist eine Liste aller Module angegeben, die als
+      Bestandteil der Distribution des Apache HTTP Servers mitgeliefert
+      werden. Bitte beachten Sie auch die vollständige alphabetische
+      Liste <a href="directives.html">aller
+      Apache-HTTP-Server-Direktiven</a>.
     </p>
   </div>
 <div id="quickview"><ul id="toc">
