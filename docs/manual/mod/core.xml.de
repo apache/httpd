@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 167959:1041620 (outdated) -->
+<!-- English Revision: 167959:1041010 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -31,88 +31,7 @@ Servers</description>
 <name>AcceptFilter</name>
 <description>Configures optimizations for a Protocol's Listener Sockets</description>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Verf&uuml;gbar ab Apache httpd 2.1.5.
-Auf Windows ab Apache httpd 2.3.3.</compatibility>
-
-<usage>
-    <p>Diese Directive erm&ouml;glicht Betriebsystem spezifische
-    Optimierungen f&uuml;r seinen lauschenden Socket des
-    <directive>Protocol</directive> Typs.
-    Die Grundvoraussetzung ist, dass der Kernel nichts an den Socket eines
-    Serverprozesses schickt, solange entweder Daten angelangt sind, oder eine
-    vollst&auml;ndige HTTP Anfrage gepuffert ist. Lediglich
-       <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
-       FreeBSDs Accept Filters</a>, Linuxs primitievere
-       <code>TCP_DEFER_ACCEPT</code>, und Windows' optimierte AcceptEx()
-       Funktionen sind derzeit unterst&uuml;tzt..</p>
-
-    <p>Die Verwendung von <code>none</code> als Argument schaltet jegliche accept
-    -Filter f&uuml;r dieses Protokoll ab.
-    Dies ist n&uuml;tzlich f&uuml;r Protokolle, die von einem Server erfordern
-    zuerst Daten zu senden, wie zum Beispiel <code>ftp:</code> oder <code>nntp</code>:</p>
-    <example>AcceptFilter nntp none</example>
-
-    <p>Die voreingestellten Protokollnamen sind <code>https</code> f&uuml;r
-    Port 443 und <code>http</code> f&uuml;r s&auml;tliche andere ports.
-    Um zu spezifizieren, dass ein anderes Protokkoll auf dem lauschenden Port
-    verwendet wird, f&uuml;gen Sie das <var>Protokoll</var>
-    Argument zur <directive module="mpm_common">Listen</directive>
-    Directive hinzu.</p>
-
-    <p>Die voreingestellten Werte sind auf FreeBSD:</p>
-    <example>
-        AcceptFilter http httpready <br/>
-        AcceptFilter https dataready
-    </example>
-
-    <p>Der <code>httpready</code> accept-Filter puffert ganze HTTP Anfragen auf
-    Kernelebene. Ist die gesamte Anfrage erhalten, schickt sie der Kernel
-    an den Server. Siehe auch die Handbuchseite 
-    <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
-    accf_http(9)</a> f&uuml;r mehr Details.  Da HTTPS Anfragen verschl&uuml;sselt
-    sind, werden lediglich die <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
-    accf_data(9)</a> Filter eingesetzt.</p>
-
-    <p>Die voreingestellten Werte auf Linux sind:</p>
-    <example>
-        AcceptFilter http data <br/>
-        AcceptFilter https data
-    </example>
-
-    <p>Linux's <code>TCP_DEFER_ACCEPT</code> unterst&uuml;tzt kein Puffern von
-    HTTP Anfragen. Jeglicher Werte neben <code>none</code> schalten
-    <code>TCP_DEFER_ACCEPT</code> auf dem lauschenden Port ein. F&uuml;r mehr
-    Details, siehe die Linux
-    <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
-    tcp(7)</a> Handbuchseite.</p>
-
-    <p>Die voreingestellten Werte sind auf Windows:</p>
-    <example>
-        AcceptFilter http data <br/>
-        AcceptFilter https data
-    </example>
-
-    <p>Windows mpm_winnt interpretiert AcceptFilter als Anweisung die AcceptEx()
-    Programmierschnitstelle umzuschalten. Desweiteren unterst&uuml;tzt es keine
-    Pufferung des HTTP Protokolls. Es gibt zwei Werte, welche von der Windows
-    AcceptEx() Programmierschnittstelle Gebrauch machen und welche die Netzwerk
-    Sockets zwischen den einzelnen Verbindungen wieder aufbereiten.
-    <code>data</code> wartet, wie oben dokumentiert, bis Daten &uuml;bertragen
-    wurden und der initiale Datenpuffer, sowie die Netzwerkendpunkt Adresse
-    durch einen einzigen AcceptEx() Aufruf abgerufen wurden.
-    <code>connect</code> verwendet die AcceptEx() Programmierschnittstelle,
-    ruft ebenfalls die Netzwerkendpunkt Adresse ab, aber &auml;hnlich wie
-    <code>none</code>, wartet die <code>connect</code> Option nicht auf die
-    Initiale Data&uml;bertragung.</p>
-
-    <p>Auf Windows verwendet <code>none</code> accept() anstelle von AcceptEx()
-    und verwertet die Sockets zwischen Verbindungen nicht wieder. Dies ist
-    n&uuml;tzlich bei Netzwerkadaptern mit mangelhafter Treiber Unterst&uuml;tzung,
-    so wie einige virtuelle Netzwerk Anbieter, wie VPN Driver, oder Spam-, Viren-
-    oder Spyware-Filter.</p>
-
-</usage>
-<seealso><directive>Protocol</directive></seealso>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -677,12 +596,12 @@ nicht auf andere Weise ermitteln kann.</description>
 
 <directivesynopsis>
 <name>Define</name>
-<description>Define des Vorhandenseins einer variable</description>
+<description>Define the existence of a variable</description>
 <syntax>Define <var>Parametername</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Equivalent zum &Uuml;bergeben von <var>Parametername</var> mittels des
+    <p>Equivalent zum &uuml;bergeben von <var>Parametername</var> mittels des
     <code>-D</code> Arguments an <program>httpd</program>.</p>
     <p>Diese Directive kann verwendet werden, um die Nutzung von <directive module="core"
     type="section">IfDefine</directive> Sectionen umzuschalten, ohne die
@@ -973,13 +892,12 @@ Auslieferung zu lesen</description>
 <description>Verwende die sendfile-Unterst&uuml;tzung des Kernels, um
 Dateien an den Client auszuliefern</description>
 <syntax>EnableSendfile On|Off</syntax>
-<default>EnableSendfile Off</default>
+<default>EnableSendfile On</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Verf&uuml;gbar ab Version 2.0.44. Voreinstellung auf Off
-ge&auml;ndert in der Version 2.3.9</compatibility>
+<compatibility>Verf&uuml;gbar ab Apache Version 2.0.44</compatibility>
 
 <usage>
     <p>Die Direktive steuert, ob <program>httpd</program> die
@@ -1041,40 +959,9 @@ ge&auml;ndert in der Version 2.3.9</compatibility>
 
 <directivesynopsis>
 <name>Error</name>
-<description>Abbruch der Konfigurationsanalyse mit einer angepassenten
-Fehlermeldung</description>
-<syntax>Error <var>Meldung</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Verf&uuml;gbar ab 2.3.9</compatibility>
-
-<usage>
-    <p>Kann ein Fehler innheralb der Konfiguration erkannt werden, dann
-    kann diese Directive genutzt werden um eine angepasste Fehlermeldung zu
-    generieren und die Konfigurationsanalyse anzuhalten.
-    Typischerweise kann dies verwendet werden, um das Fehlen von erforderlichen
-    Modulen in der Konfiguration zu melden.</p>
-
-    <example><title>Beispiel</title>
-      # sicherstellen dass mod_include geladen ist<br />
-      &lt;IfModule !include_module&gt;<br />
-      Error mod_include wird von mod_foo verlangt.  Laden Sie es mit LoadModule.<br />
-      &lt;/IfModule&gt;<br />
-      <br />
-      # sicherstellen dass genau eines von SSL,NOSSL definiert ist<br />
-      &lt;IfDefine SSL&gt;<br />
-      &lt;IfDefine NOSSL&gt;<br />
-      Error Beide SSL and NOSSL sind defined.  Bitte definieren sie nur eines davon.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;IfDefine !SSL&gt;<br />
-      &lt;IfDefine !NOSSL&gt;<br />
-      Error Entweder SSL oder NOSSL muss definiert sein.<br />
-      &lt;/IfDefine&gt;<br />
-      &lt;/IfDefine&gt;<br />
-    </example>
-
-</usage>
+<description>Abort configuration parsing with a custom error message</description>
+<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1086,6 +973,8 @@ zur&uuml;ckgibt</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>Die Syntax der Anf&uuml;hrungszeichen bei Textnachrichten hat
+sich im Apache 2.0 ge&auml;ndert</compatibility>
 
 <usage>
     <p>Im Falle eines Problems oder Fehlers kann der Apache
@@ -1248,157 +1137,9 @@ Fehlermeldungen</a></seealso>
 
 <directivesynopsis>
 <name>ErrorLogFormat</name>
-<description>Formatspecifikation f&uuml;r Eintr&auml;ge des Fehlerprotokolls</description>
-<syntax> ErrorLog [Verbindung|Anfrage] <var>Format</var></syntax>
+<description>Format specification for error log entries</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Verf&uuml;gbar ab Apache httpd 2.3.9</compatibility>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
-
-<usage>
-    <p><directive>ErrorLogFormat</directive> erlaubt das Spezifizieren
-    supplement&auml;rer Information, welche zus&auml;tzlich zur eigentlichen
-    Fehlermeldun mitprotokoliert werden.</p>
-
-    <example><title>Einfaches Beispiel</title>
-        ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
-    </example>
-
-    <p>Durch die Angabe des <code>Verbindungs</code> oder <code>Request</code>
-    Paramters an erster Stelle, er&ouml;ffnen Sie die M&ouml;glichkeit
-    zus&auml;tzlicher Formate, die wiederum zus&auml;tzliche Information
-    protokolieren, wenn die erste Meldung einer Verbindung, oder respektive
-    einer Anfrage protokoliert wird. Diese Zusatzinformation wird lediglich
-    einmal pro Verbindung/Anfrage protokolliert. Wird eine Verbindung oder eine Anfrage
-    verarbeitet, ohne einen Protokolleintrag zu verursachen, so wird auch die
-    Zusatzinformation nicht protokolliert.</p>
-
-    <p>Es kann geschehen, dass einige Format-Zeichenketten Teilpunkte keine
-    Ausgab
-    string item. A <code>-</code> (minus) modifier causes a minus to be logged if the
-    respective item does not produce any output. In once-per-connection/request
-    formats, it is also possible to use the <code>+</code> (plus) modifier. If an
-    item with the plus modifier does not produce any output, the whole line is
-    ommitted.</p>
-
-    <p>A number as modifier can be used to assign a log severity level to a
-    format item. The item will only be logged if the severity of the log
-    message is not higher than the specified log severity level. The number can
-    range from 1 (alert) over 4 (warn) and 7 (debug) to 15 (trace8).</p>
-
-    <p>Some format string items accept additional parameters in braces.</p>
-
-    <table border="1" style="zebra">
-    <columnspec><column width=".2"/><column width=".8"/></columnspec>
-
-    <tr><th>Format&nbsp;String</th> <th>Description</th></tr>
-
-    <tr><td><code>%%</code></td>
-        <td>Das Prozentzeichen</td></tr>
-
-    <tr><td><code>%...a</code></td>
-        <td>Entfernte IP Adresse und Port</td></tr>
-
-    <tr><td><code>%...A</code></td>
-        <td>Lokale IP Adresse und Port</td></tr>
-
-    <tr><td><code>%...{name}e</code></td>
-        <td>Umgebungsvariable <code>Name</code> aus der Anfrage</td></tr>
-
-    <tr><td><code>%...E</code></td>
-        <td>APR/OS Fehlerstatuskode und Zeichenkette</td></tr>
-
-    <tr><td><code>%...F</code></td>
-        <td>Dateiname der Quelle und Zeilennummer des Protokollaufrufs</td></tr>
-
-    <tr><td><code>%...{name}i</code></td>
-        <td>Aufruf Header <code>Name</code></td></tr>
-
-    <tr><td><code>%...k</code></td>
-        <td>Anzahl der keep-alive Anfragen auf dieser Verbindung</td></tr>
-
-    <tr><td><code>%...l</code></td>
-        <td>Loglevel der Meldung</td></tr>
-
-    <tr><td><code>%...L</code></td>
-        <td>Log ID der Anfrage</td></tr>
-
-    <tr><td><code>%...{c}L</code></td>
-        <td>Log ID der Verbindung</td></tr>
-
-    <tr><td><code>%...{C}L</code></td>
-        <td>Log ID der Verbidung, wenn in einem Verbindungsrahmen verwendent, sonst leer.</td></tr>
-
-    <tr><td><code>%...m</code></td>
-        <td>Name des Moduls, welches die Meldung protokoliert</td></tr>
-
-    <tr><td><code>%M</code></td>
-        <td>Die eigentliche Protokollmeldung</td></tr>
-
-    <tr><td><code>%...{name}n</code></td>
-        <td>Request note <code>name</code></td></tr>
-
-    <tr><td><code>%...P</code></td>
-        <td>Process ID of current process</td></tr>
-
-    <tr><td><code>%...T</code></td>
-        <td>Thread ID of current thread</td></tr>
-
-    <tr><td><code>%...t</code></td>
-        <td>The current time</td></tr>
-
-    <tr><td><code>%...{u}t</code></td>
-        <td>The current time including micro-seconds</td></tr>
-
-    <tr><td><code>%...{cu}t</code></td>
-        <td>The current time in compact ISO 8601 format, including
-            micro-seconds</td></tr>
-
-    <tr><td><code>%...v</code></td>
-        <td>The canonical <directive module="core">ServerName</directive>
-            of the current server.</td></tr>
-
-    <tr><td><code>%...V</code></td>
-        <td>The server name of the server serving the request according to the
-            <directive module="core" >UseCanonicalName</directive>
-            setting.</td></tr>
-
-    <tr><td><code>\&nbsp;</code> (backslash space)</td>
-        <td>Non-field delimiting space</td></tr>
-
-    <tr><td><code>%&nbsp;</code> (percent space)</td>
-        <td>Field delimiter (no output)</td></tr>
-    </table>
-
-    <p>The log ID format <code>%L</code> produces a unique id for a connection
-    or request. This can be used to correlate which log lines belong to the
-    same connection or request, which request happens on which connection.
-    A <code>%L</code> format string is also available in
-    <module>mod_log_config</module>, to allow to correlate access log entries
-    with error log lines. If <module>mod_unique_id</module> is loaded, its
-    unique id will be used as log ID for requests.</p>
-
-    <example><title>Example (somewhat similar to default format)</title>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </example>
-
-    <example><title>Example (similar to the 2.2.x format)</title>
-        ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
-        %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
-    </example>
-
-    <example><title>Advanced example with request/connection log IDs</title>
-        ErrorLogFormat "[%{uc}t] [%-m:%-l] [R:%L] [C:%{C}L] %7F: %E: %M"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] Request %k on C:%{c}L pid:%P tid:%T"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] UA:'%+{User-Agent}i'"<br/>
-        ErrorLogFormat request "[%{uc}t] [R:%L] Referer:'%+{Referer}i'"<br/>
-        ErrorLogFormat connection "[%{uc}t] [C:%{c}L] local\ %a remote\ %A"<br/>
-    </example>
-
-</usage>
-<seealso><directive module="core">ErrorLog</directive></seealso>
-<seealso><directive module="core">LogLevel</directive></seealso>
-<seealso><a href="../logs.html">Apache HTTP Server Log Files</a></seealso>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1406,7 +1147,7 @@ Fehlermeldungen</a></seealso>
 <description>Keep track of extended status information for each 
 request</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1610,7 +1351,7 @@ angegebenen MIME-Content-Type</description>
 <name>GprofDir</name>
 <description>Directory to write gmon.out profiling data to.  </description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1663,7 +1404,7 @@ angegebenen MIME-Content-Type</description>
 <description>Contains directives that apply only if a condition is
 satisfied by a request at runtime</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -1798,7 +1539,7 @@ Server-Konfigurationsdatei ein</description>
     <p>Die Direktive erlaubt das Einf&uuml;gen anderer Konfigurationsdateien
     in die Konfigurationsdatei des Servers.</p>
 
-    <p>Shell-typische (<code>fnmatch()</code>) Platzhalterzeichen k&ouml;nnen
+    <p>Shell-typische (<code>fnmatch()</code>) Platzhlaterzeichen k&ouml;nnen
     dazu verwendet werden, mehrere Dateien auf einmal in alphabetischer
     Reihenfolge einzuf&uuml;gen. Wenn <directive>Include</directive>
     dar&uuml;ber hinaus auf ein Verzeichnis anstatt auf eine Datei zeigt,
@@ -2533,7 +2274,7 @@ zul&auml;ssig sind</description>
 <description>Configures mutex mechanism and lock file directory for all
 or specified mutexes</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2824,7 +2565,7 @@ Ressource zugreifen k&ouml;nnen</description>
 <name>Protocol</name>
 <description>Protocol for a listening socket</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3061,7 +2802,7 @@ Die Option <code>Registry-Strict</code> ist verf&uuml;gbar seit Apache
 of a request or the last 63, assuming the request itself is greater than
 63 chars.</description>
 <contextlist><context>server config</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3457,30 +3198,16 @@ bevor er die Anfrage abbricht</description>
 
 <directivesynopsis>
 <name>TraceEnable</name>
-<description>Entscheidet &uuml;ber das Verhalten bei <code>TRACE</code>
-Anfragen</description>
-<syntax>TraceEnable <var>[on|off|extended]</var></syntax>
-<default>TraceEnable on</default>
+<description>Determines the behaviour on <code>TRACE</code> requests</description>
 <contextlist><context>server config</context></contextlist>
-<compatibility> in Apache HTTP Server 1.3.34, 2.0.55 and later</compatibility>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>UnDefine</name>
-<description>Hebt die Definition einer Variablen auf</description>
-<syntax>UnDefine <var>Parametername</var></syntax>
+<description>Undefine the existence of a variable</description>
 <contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>Hebt die Auswirkungen eines <directive module="core">Define</directive>,
-    oder des &Uuml;bergeben eines <code>-D</code> Argument an <program
-    >httpd</program> wieder auf.</p>
-    <p>Diese Directive kann verwendet werden, um die Nutzung von <directive module="core"
-    type="section">IfDefine</directive> Sectionen umzuschalten, ohne die
-    <code>-D</code> Argumentente in etwaigen Start-Skripten &auml;ndern
-    zu m&uuml;ssen.</p>
-</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3493,7 +3220,7 @@ ermittelt</description>
 <context>directory</context></contextlist>
 
 <usage>
-    <p>In vielen Situationen muss der Apache httpd eine
+    <p>In vielen Situationen muss der Apache eine
     <em>selbstreferenzierende</em> URL -- d.h. eine URL, die auf den selben
     Server zur&uuml;ck verweist -- zusammenbauen. Bei <code>UseCanonicalName
     On</code> verwendet der Apache den Hostnamen und Port, der in der
@@ -3556,7 +3283,7 @@ ermittelt</description>
 <name>UseCanonicalPhysicalPort</name>
 <description>Configures how the server determines its own name and port</description>
 <contextlist><context>server config</context><context>virtual host</context><context>directory</context></contextlist>
-<usage>Documentation not yet translated. Please see English version of document.</usage>
+<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
