@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 420990:926432 (outdated) -->
+<!-- English Revision: 926432 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,10 +24,11 @@
   <title>Modul-Index</title>
   <summary>
     <p>
-      Unten ist eine Liste aller Module angegeben, die als Bestandteil der
-      Apache-Distribution mitgeliefert werden. Bitte beachten Sie auch die
-      vollst&#228;ndige alphabetische Liste <a href="directives.html">aller
-      Apache-Direktiven</a>.
+      Nachfolgend ist eine Liste aller Module angegeben, die als
+      Bestandteil der Distribution des Apache HTTP Servers mitgeliefert
+      werden. Bitte beachten Sie auch die vollst&#228;ndige alphabetische
+      Liste <a href="directives.html">aller
+      Apache-HTTP-Server-Direktiven</a>.
     </p>
   </summary>
   <seealso><a href="../mpm.html">Multi-Processing-Module (MPMs)</a>
