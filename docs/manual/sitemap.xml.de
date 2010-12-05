@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 420990:959136 (outdated) -->
+<!-- English Revision: 959136 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,9 +32,9 @@
 
 <category id="release">
 <title>Hinweise zur Version</title>
-<page href="upgrading.html">Upgrade von 2.0 auf 2.2</page>
-<page href="new_features_2_4.html">Neue Funktionen in Version 2.4</page>
-<page href="new_features_2_2.html">Neue Funktionen in Version 2.2</page>
+<page href="upgrading.html">Upgrade von 2.2 auf 2.4</page>
+<page href="new_features_2_4.html">Neue Funktionen in Version 2.3/2.4</page>
+<page href="new_features_2_2.html">Neue Funktionen in Version 2.1/2.2</page>
 <page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
 <page href="license.html">Apache-Lizenz</page>
 </category>
@@ -61,7 +61,7 @@
 <page href="filter.html">Filter</page>
 <page href="suexec.html">suEXEC Unterst&#252;tzung</page>
 <page href="misc/perf-tuning.html">Performance-Hinweise</page>
-<page href="misc/rewriteguide.html">Einf&#252;hrung in die URL-Manipulation</page>
+<page href="faq/">Häufig gestellte Fragen (FAQ)</page>
 </category>
 
 <category id="vhosts">
@@ -78,13 +78,18 @@
 <page href="dns-caveats.html">Probleme bez&#252;glich DNS und Apache</page>
 </category>
 
-
-<category id="faq">
-<title>H&#228;ufig gestellte Fragen (FAQ)</title>
-<page href="faq/">&#220;bersicht</page>
-<page href="faq/background.html">Hintergrundinformationen</page>
-<page href="faq/support.html">Support</page>
-<page href="faq/error.html">Fehlermeldungen</page>
+<category id="rewrite">
+<title>Einf&uuml;hrung in die URL-Manipulation</title>
+<page separate="yes" href="rewrite/">&Uuml;bersicht</page>
+<page href="mod/mod_rewrite.html">Referenz-Dokumentation von
+mod_rewrite</page>
+<page href="rewrite/intro.html">Einf&uuml;hrung</page>
+<page href="rewrite/flags.html">Schalter / Flags</page>
+<page href="rewrite/tech.html">Technische Details</page>
+<page href="rewrite/remapping.html">URL-&Auml;nderungen
+durchf&uuml;hren</page>
+<page href="rewrite/access.html">Zugriffskontrolle</page>
+<page href="rewrite/advanced.html">Fortgeschrittene Techniken</page>
 </category>
 
 <category id="ssl">
@@ -154,12 +159,17 @@ HPUX betreiben</page>
 <title>Dokumentation f&#252;r Entwickler</title>
 <page separate="yes" href="developer/">&#220;bersicht</page>
 <page href="developer/API.html">Anmerkungen zur Apache-API</page>
-<page href="developer/debugging.html">Debuggen der Speicher-Belegung in der APR </page>
-<page href="developer/documenting.html">Apache 2.0 dokumentieren</page>
-<page href="developer/hooks.html">Hook-Funktionen des Apache 2.0 </page>
-<page href="developer/modules.html">Module von Apache 1.3 nach Apache 2.0 konvertieren</page>
-<page href="developer/request.html">Verarbeitung der Anfragen im Apache 2.0</page>
-<page href="developer/filters.html">Wie Filter im Apache 2.0 arbeiten</page>
+<page href="developer/new_api_2_4.html">API-&Auml;nderungen im Apache HTTPD
+2.4</page>
+<page href="developer/debugging.html">Debuggen der Speicher-Belegung in der
+APR </page>
+<page href="developer/documenting.html">Apache 2.x dokumentieren</page>
+<page href="developer/hooks.html">Hook-Funktionen des Apache 2.x</page>
+<page href="developer/modules.html">Module von Apache 1.3 nach Apache 2.x
+konvertieren</page>
+<page href="developer/request.html">Verarbeitung der Anfragen im Apache
+2.x</page>
+<page href="developer/filters.html">Wie Filter im Apache 2.x arbeiten</page>
 </category>
 
 <category id="index"><title>Glossar und Index</title>
