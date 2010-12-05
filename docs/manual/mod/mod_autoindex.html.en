@@ -541,6 +541,7 @@ a directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.3.10 and later</td></tr>
 </table>
     <p>The <code class="directive">IndexIgnoreReset</code> directive removes
     any files ignored by <code class="directive">IndexIgnore</code> otherwise
