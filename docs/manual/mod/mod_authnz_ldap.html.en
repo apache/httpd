@@ -360,7 +360,7 @@ for HTTP Basic authentication.</td></tr>
     must be surrounded with double quotes. Multiple users can also be
     granted access by using multiple <code>Require ldap-user</code>
     directives, with one user per line. For example, with a <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> of
-    <code>ldap://ldap/o=Airius?cn</code> (i.e., <code>cn</code> is
+    <code>ldap://ldap/o=Example?cn</code> (i.e., <code>cn</code> is
     used for searches), the following Require directives could be used
     to restrict access:</p>
 <div class="example"><p><code>
@@ -390,47 +390,47 @@ Require ldap-user "Joe Manager"<br />
     For example, assume that the following entry existed in
     the LDAP directory:</p>
 <div class="example"><p><code>
-dn: cn=Administrators, o=Airius<br />
+dn: cn=Administrators, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Barbara Jenson, o=Airius<br />
-uniqueMember: cn=Fred User, o=Airius<br />
+uniqueMember: cn=Barbara Jenson, o=Example<br />
+uniqueMember: cn=Fred User, o=Example<br />
 </code></p></div>
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<div class="example"><p><code>Require ldap-group cn=Administrators, o=Airius</code></p></div>
+<div class="example"><p><code>Require ldap-group cn=Administrators, o=Example</code></p></div>
 
     <p>Members can also be found within sub-groups of a specified LDAP group
     if <code class="directive"><a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></code>
     is set to a value greater than 0. For example, assume the following entries
     exist in the LDAP directory:</p>
 <div class="example"><p><code>
-dn: cn=Employees, o=Airius<br />
+dn: cn=Employees, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Managers, o=Airius<br />
-uniqueMember: cn=Administrators, o=Airius<br />
-uniqueMember: cn=Users, o=Airius<br />
+uniqueMember: cn=Managers, o=Example<br />
+uniqueMember: cn=Administrators, o=Example<br />
+uniqueMember: cn=Users, o=Example<br />
 <br />
-dn: cn=Managers, o=Airius<br />
+dn: cn=Managers, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Bob Ellis, o=Airius<br />
-uniqueMember: cn=Tom Jackson, o=Airius<br />
+uniqueMember: cn=Bob Ellis, o=Example<br />
+uniqueMember: cn=Tom Jackson, o=Example<br />
 <br />
-dn: cn=Administrators, o=Airius<br />
+dn: cn=Administrators, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Barbara Jenson, o=Airius<br />
-uniqueMember: cn=Fred User, o=Airius<br />
+uniqueMember: cn=Barbara Jenson, o=Example<br />
+uniqueMember: cn=Fred User, o=Example<br />
 <br />
-dn: cn=Users, o=Airius<br />
+dn: cn=Users, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Allan Jefferson, o=Airius<br />
-uniqueMember: cn=Paul Tilley, o=Airius<br />
-uniqueMember: cn=Temporary Employees, o=Airius<br />
+uniqueMember: cn=Allan Jefferson, o=Example<br />
+uniqueMember: cn=Paul Tilley, o=Example<br />
+uniqueMember: cn=Temporary Employees, o=Example<br />
 <br />
-dn: cn=Temporary Employees, o=Airius<br />
+dn: cn=Temporary Employees, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Jim Swenson, o=Airius<br />
-uniqueMember: cn=Elliot Rhodes, o=Airius<br />
+uniqueMember: cn=Jim Swenson, o=Example<br />
+uniqueMember: cn=Elliot Rhodes, o=Example<br />
 </code></p></div>
 
     <p>The following directives would allow access for Bob Ellis, Tom Jackson,
@@ -438,7 +438,7 @@ uniqueMember: cn=Elliot Rhodes, o=Airius<br />
     allow access for Jim Swenson, or Elliot Rhodes (since they are at a 
     sub-group depth of 2):</p>
 <div class="example"><p><code>
-Require ldap-group cn=Employees, o-Airius<br />
+Require ldap-group cn=Employees, o-Example<br />
 AuthLDAPSubGroupDepth 1<br />
 </code></p></div>
 
@@ -458,7 +458,7 @@ AuthLDAPSubGroupDepth 1<br />
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<div class="example"><p><code>Require ldap-dn cn=Barbara Jenson, o=Airius</code></p></div>
+<div class="example"><p><code>Require ldap-dn cn=Barbara Jenson, o=Example</code></p></div>
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></code>
     directive.</p>
@@ -522,7 +522,7 @@ AuthLDAPSubGroupDepth 1<br />
         Grant access to anyone who exists in the LDAP directory,
         using their UID for searches. 
 <div class="example"><p><code>
-AuthLDAPURL "ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)"<br />
+AuthLDAPURL "ldap://ldap1.example.com:389/ou=People, o=Example?uid?sub?(objectClass=*)"<br />
 Require valid-user
 </code></p></div>
       </li>
@@ -531,7 +531,7 @@ Require valid-user
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server. 
-<div class="example"><p><code>AuthLDAPURL "ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius"<br />
+<div class="example"><p><code>AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"<br />
 Require valid-user
 </code></p></div>
       </li>
@@ -546,7 +546,7 @@ Require valid-user
         choose an attribute that is guaranteed unique in your
         directory, such as <code>uid</code>. 
 <div class="example"><p><code>
-AuthLDAPURL "ldap://ldap.airius.com/ou=People, o=Airius?cn"<br />
+AuthLDAPURL "ldap://ldap.example.com/ou=People, o=Example?cn"<br />
 Require valid-user
 </code></p></div>
       </li>
@@ -555,19 +555,19 @@ Require valid-user
         Grant access to anybody in the Administrators group. The
         users must authenticate using their UID. 
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
-Require ldap-group cn=Administrators, o=Airius
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid<br />
+Require ldap-group cn=Administrators, o=Example
 </code></p></div>
       </li>
 
       <li>
-        The next example assumes that everyone at Airius who
+        The next example assumes that everyone at Example who
         carries an alphanumeric pager will have an LDAP attribute
         of <code>qpagePagerID</code>. The example will grant access
         only to people (authenticated via their UID) who have
         alphanumeric pagers: 
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(qpagePagerID=*)<br />
 Require valid-user
 </code></p></div>
       </li>
@@ -583,7 +583,7 @@ Require valid-user
         have a pager, but does need to access the same
         resource:</p>
 <div class="example"><p><code>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
 Require valid-user
 </code></p></div>
 
@@ -983,9 +983,9 @@ group membership</td></tr>
     membership.  Otherwise, the username will be used. For example,
     assume that the client sent the username <code>bjenson</code>,
     which corresponds to the LDAP DN <code>cn=Babs Jenson,
-    o=Airius</code>. If this directive is set,
+    o=Example</code>. If this directive is set,
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will check if the group has
-    <code>cn=Babs Jenson, o=Airius</code> as a member. If this
+    <code>cn=Babs Jenson, o=Example</code> as a member. If this
     directive is not set, then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will
     check if the group has <code>bjenson</code> as a member.</p>
 
@@ -1317,7 +1317,7 @@ You can of course use search parameters on each of these.</p>
     <code>(&amp;(<em>filter</em>)(<em>attribute</em>=<em>username</em>))</code>.</p>
 
     <p>For example, consider an URL of
-    <code>ldap://ldap.airius.com/o=Airius?cn?sub?(posixid=*)</code>. When
+    <code>ldap://ldap.example.com/o=Example?cn?sub?(posixid=*)</code>. When
     a client attempts to connect using a username of <code>Babs
     Jenson</code>, the resulting search filter will be
     <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>

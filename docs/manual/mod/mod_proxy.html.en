@@ -705,14 +705,13 @@ proxied</td></tr>
     well. That may slow down the startup time of the server.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyBlock joes-garage.com some-host.co.uk rocky.wotsamattau.edu
+      ProxyBlock news.example.com auctions.example.com friends.example.com
     </code></p></div>
 
-    <p><code>rocky.wotsamattau.edu</code> would also be matched if referenced by
-    IP address.</p>
+    <p>Note that <code>example</code> would also be sufficient to match any
+    of these sites.</p>
 
-    <p>Note that <code>wotsamattau</code> would also be sufficient to match
-    <code>wotsamattau.edu</code>.</p>
+    <p>Hosts would also be matched if referenced by IP address.</p>
 
     <p>Note also that</p>
 
