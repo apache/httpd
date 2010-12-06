@@ -101,7 +101,7 @@
     that daemon services. e.g.</p>
 
     <example>
-    Listen www.smallco.com:80
+    Listen www.example.com:80
     </example>
 
     <p>It is recommended that you use an IP address instead of a
@@ -127,11 +127,11 @@
 
     <example>
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    ServerAdmin webmaster@mail.smallco.com<br />
-    DocumentRoot /groups/smallco/www<br />
-    ServerName www.smallco.com<br />
-    ErrorLog /groups/smallco/logs/error_log<br />
-    TransferLog /groups/smallco/logs/access_log<br />
+    ServerAdmin webmaster@mail.example.com<br />
+    DocumentRoot /groups/example/www<br />
+    ServerName www.example.com<br />
+    ErrorLog /groups/example/logs/error_log<br />
+    TransferLog /groups/example/logs/access_log<br />
     &lt;/VirtualHost&gt;<br />
     <br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />

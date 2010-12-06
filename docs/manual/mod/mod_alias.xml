@@ -361,7 +361,7 @@ of the current URL</description>
     another server, one might use:</p>
 
     <example>
-      RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+      RedirectMatch (.*)\.gif$ http://other.example.com$1.jpg
     </example>
 
     <p>The considerations related to the difference between

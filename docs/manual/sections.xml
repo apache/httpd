@@ -373,10 +373,10 @@ containers apply enclosed configuration directives only
 to sites accessed through <module>mod_proxy</module>'s proxy server
 that match the specified URL.  For example, the following configuration
 will prevent the proxy server from being used to access the
-<code>cnn.com</code> website.</p>
+<code>www.example.com</code> website.</p>
 
 <example>
-&lt;Proxy http://cnn.com/*&gt;<br />
+&lt;Proxy http://www.example.com/*&gt;<br />
 Order allow,deny<br />
 Deny from all<br />
 &lt;/Proxy&gt;

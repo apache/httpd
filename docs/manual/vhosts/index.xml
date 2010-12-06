@@ -29,7 +29,7 @@
 
     <p>The term <cite>Virtual Host</cite> refers to the practice of
     running more than one web site (such as
-    <code>www.company1.com</code> and <code>www.company2.com</code>)
+    <code>company1.example.com</code> and <code>company2.example.com</code>)
     on a single machine. Virtual hosts can be "<a
     href="ip-based.html">IP-based</a>", meaning that you have a
     different IP address for every web site, or "<a
