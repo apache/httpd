@@ -54,10 +54,10 @@ following directives.</p>
    Listen 443<br />
    &lt;VirtualHost _default_:443&gt;<br />
    <span class="indent">
-        ServerName www.domain.com<br />
+        ServerName www.example.com<br />
         SSLEngine on<br />
-        SSLCertificateFile /path/to/www.comain.com.cert<br />
-        SSLCertificateKeyFile /path/to/www.domain.com.key<br />
+        SSLCertificateFile /path/to/www.example.com.cert<br />
+        SSLCertificateKeyFile /path/to/www.example.com.key<br />
    </span>
    &lt;/VirtualHost&gt;
 </code></p></div>

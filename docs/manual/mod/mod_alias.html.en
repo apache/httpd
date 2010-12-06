@@ -369,7 +369,7 @@ of the current URL</td></tr>
     another server, one might use:</p>
 
     <div class="example"><p><code>
-      RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+      RedirectMatch (.*)\.gif$ http://other.example.com$1.jpg
     </code></p></div>
 
     <p>The considerations related to the difference between

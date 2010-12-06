@@ -53,7 +53,7 @@ configuration</td></tr>
       &lt;Location /server-info&gt;<br />
       <span class="indent">
         SetHandler server-info<br />
-        Require host yourcompany.com<br />
+        Require host example.com<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
