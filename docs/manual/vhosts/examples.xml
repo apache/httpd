@@ -133,7 +133,7 @@
     </note>
 
     <p>The server has two IP addresses. On one (<code>172.20.30.40</code>), we
-    will serve the "main" server, <code>server.domain.com</code> and on the
+    will serve the "main" server, <code>server.example.com</code> and on the
     other (<code>172.20.30.50</code>), we will serve two or more virtual hosts.</p>
 
     <example>
@@ -142,7 +142,7 @@
     Listen 80<br />
     <br />
     # This is the "main" server running on 172.20.30.40<br />
-    ServerName server.domain.com<br />
+    ServerName server.example.com<br />
     DocumentRoot /www/mainserver<br />
     <br />
     # This is the other address<br />

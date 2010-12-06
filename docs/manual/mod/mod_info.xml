@@ -50,7 +50,7 @@ configuration</description>
       &lt;Location /server-info&gt;<br />
       <indent>
         SetHandler server-info<br />
-        Require host yourcompany.com<br />
+        Require host example.com<br />
       </indent>
       &lt;/Location&gt;
     </example>

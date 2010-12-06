@@ -761,7 +761,7 @@ from the web</description>
     </example>
 
     <p>then an access to
-    <code>http://www.my.host.com/index.html</code> refers to
+    <code>http://my.example.com/index.html</code> refers to
     <code>/usr/web/index.html</code>. If the <var>directory-path</var> is 
     not absolute then it is assumed to be relative to the <directive 
     module="core">ServerRoot</directive>.</p>
@@ -3427,8 +3427,8 @@ to name-virtual hosts</description>
 
     <example>
       &lt;VirtualHost *:80&gt;<br />
-      ServerName server.domain.com<br />
-      ServerAlias server server2.domain.com server2<br />
+      ServerName server.example.com<br />
+      ServerAlias server server2.example.com server2<br />
       ServerAlias *.example.com<br />
       UseCanonicalName Off<br />
       # ...<br />
@@ -3896,10 +3896,10 @@ port</description>
     type a shortname, and a URL which is a directory, such as
     <code>http://www/splat</code>, <em>without the trailing
     slash</em> then Apache httpd will redirect them to
-    <code>http://www.domain.com/splat/</code>. If you have
+    <code>http://www.example.com/splat/</code>. If you have
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
-    for <code>www.domain.com</code> -- see <a
+    for <code>www.example.com</code> -- see <a
     href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">the
     FAQ on this subject for more information</a>). But if
     <directive>UseCanonicalName</directive> is set <code>Off</code>, then

@@ -176,10 +176,10 @@ RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-
     this:</p>
 
 <example>
-www.customer-1.com  /www/customers/1<br />
-www.customer-2.com  /www/customers/2<br />
+customer-1.example.com  /www/customers/1<br />
+customer-2.example.com  /www/customers/2<br />
 # ...<br />
-www.customer-N.com  /www/customers/N<br />
+customer-N.example.com  /www/customers/N<br />
 </example>
 
     <p>The <code>httpd.conf</code> should contain the following:</p>
