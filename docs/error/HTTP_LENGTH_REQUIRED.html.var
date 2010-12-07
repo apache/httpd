@@ -38,15 +38,18 @@ Body:----------en--
 <!--#include virtual="include/bottom.html" -->
 ----------en--
 
-Content-language: es
-Content-type: text/html; charset=UTF-8
-Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Content-Length err&oacute;neo!"
---><!--#include virtual="include/top.html" -->
+HTTP_LENGTH_REQUIRED:
 
-    Una solicitud con el m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" --> 
-    necesita una cabecera <code>Content-Length</code> v&aacute;lida.
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Error en la longitud del contenido!" -->
+<!--#include virtual="include/top.html" -->
+
+    Una solicitud con el m&eacute;todo <!--#echo encoding="none"
+var="REDIRECT_REQUEST_METHOD"-->
+    requiere que el contenido de la variable de los encabezados
+    <code>Content-Length</code> sea v&aacute;lida.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
