@@ -384,7 +384,7 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example3<br />
-        ServerName www.example3.net<br />
+        ServerName www.example.net<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
     <br />
@@ -392,14 +392,14 @@
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example4<br />
-        ServerName www.example4.edu<br />
+        ServerName www.example.edu<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
     <br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <indent>
         DocumentRoot /www/example5<br />
-        ServerName www.example5.gov<br />
+        ServerName www.example.gov<br />
     </indent>
     &lt;/VirtualHost&gt;
     </example>
