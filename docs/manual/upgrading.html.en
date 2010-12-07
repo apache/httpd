@@ -138,18 +138,18 @@
         Require all granted
       </code></p></div>
 
-      <p>In the following example, all hosts in the apache.org domain
+      <p>In the following example, all hosts in the example.org domain
       are allowed access; all other hosts are denied access.</p>
 
       <div class="example"><h3>2.2 configuration:</h3><p><code>
         
         Order Deny,Allow<br />
         Deny from all<br />
-        Allow from apache.org
+        Allow from example.org
       </code></p></div>
       <div class="example"><h3>2.4 configuration:</h3><p><code>
         
-        Require host apache.org
+        Require host example.org
       </code></p></div>
     
 

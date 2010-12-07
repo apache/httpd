@@ -114,13 +114,13 @@ server</td></tr>
 
       <dd>
       <div class="example"><h3>Example:</h3><p><code>
-        Allow from apache.org<br />
+        Allow from example.org<br />
         Allow from .net example.edu
       </code></p></div>
       <p>Hosts whose names match, or end in, this string are allowed
       access. Only complete components are matched, so the above
-      example will match <code>foo.apache.org</code> but it will not
-      match <code>fooapache.org</code>. This configuration will cause
+      example will match <code>foo.example.org</code> but it will not
+      match <code>fooexample.org</code>. This configuration will cause
       Apache httpd to perform a double DNS lookup on the client IP
       address, regardless of the setting of the <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> directive.  It will do
       a reverse DNS lookup on the IP address to find the associated
@@ -315,35 +315,35 @@ evaluated.</td></tr>
       </tr>
     </table>
 
-    <p>In the following example, all hosts in the apache.org domain
+    <p>In the following example, all hosts in the example.org domain
     are allowed access; all other hosts are denied access.</p>
 
     <div class="example"><p><code>
       Order Deny,Allow<br />
       Deny from all<br />
-      Allow from apache.org
+      Allow from example.org
     </code></p></div>
 
-    <p>In the next example, all hosts in the apache.org domain are
+    <p>In the next example, all hosts in the example.org domain are
     allowed access, except for the hosts which are in the
-    foo.apache.org subdomain, who are denied access. All hosts not
-    in the apache.org domain are denied access because the default
+    foo.example.org subdomain, who are denied access. All hosts not
+    in the example.org domain are denied access because the default
     state is to <code class="directive"><a href="#deny">Deny</a></code>
     access to the server.</p>
 
     <div class="example"><p><code>
       Order Allow,Deny<br />
-      Allow from apache.org<br />
-      Deny from foo.apache.org
+      Allow from example.org<br />
+      Deny from foo.example.org
     </code></p></div>
 
     <p>On the other hand, if the <code class="directive">Order</code> in the
     last example is changed to <code>Deny,Allow</code>, all hosts will
     be allowed access. This happens because, regardless of the actual
     ordering of the directives in the configuration file, the
-    <code>Allow from apache.org</code> will be evaluated last and will
-    override the <code>Deny from foo.apache.org</code>. All hosts not in
-    the <code>apache.org</code> domain will also be allowed access
+    <code>Allow from example.org</code> will be evaluated last and will
+    override the <code>Deny from foo.example.org</code>. All hosts not in
+    the <code>example.org</code> domain will also be allowed access
     because the default state is <code class="directive"><a href="#allow">Allow</a></code>.</p>
 
     <p>The presence of an <code class="directive">Order</code> directive can
