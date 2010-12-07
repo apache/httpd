@@ -83,29 +83,24 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Error en el servidor!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Error del Servidor!" -->
+<!--#include virtual="include/top.html" -->
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    Se produjo un error interno en el servidor y le
+   fue imposible completar su solicitud.
 
-	El servidor encontro un error interno y fue
-	imposible completar su solicitud. 
+   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    <!--#include virtual="include/spacer.html" -->
+      <!--#include virtual="include/spacer.html" -->
+      Mensaje de error:<br />
+      <!--#echo var="REDIRECT_ERROR_NOTES" -->
 
-    Mensaje de error:
-    <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+   <!--#else -->
 
-  <!--#else -->
-
-	El servidor encontro un error interno y fue
-	imposible completar su solicitud. 
-	Existe tambien la posibilidad de que el servidor 
-	este sobrecargado o de alg&uacute;n error en un 
-	programa de CGI.
+    El servidor puede estar sobrecargado, o hubo un
+    error en la ejecuci&oacute;n de un programa 'CGI'.
 
   <!--#endif -->
 
