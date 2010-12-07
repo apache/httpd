@@ -45,18 +45,18 @@
         <!-- Used for the moduleindex -->
         <message id="corefeatures">Kerne funktioner og Multi-Processing Modules</message>
         <message id="othermodules">Andre moduler</message>
-        <message id="obsoletemodules">ForÃ¦ldede Moduler</message>
+        <message id="obsoletemodules">Forældede Moduler</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
-        <message id="obsoleteapachemodule">ForÃ¦ldede Apache Moduler</message>
+        <message id="obsoleteapachemodule">Forældede Apache Moduler</message>
         <message id="apachemodule">Apache Moduler</message>
         <message id="apachecore">Apache Kerne funktioner</message>
-        <message id="apachempmcommon">Apache MPM FÃ¦lles Direktiver</message>
+        <message id="apachempmcommon">Apache MPM Fælles Direktiver</message>
         <message id="apachempm">Apache MPM</message>
 
         <!-- Used in description box for modulesynopsis -->
         <message id="description">Beskrivelse</message>
-        <message id="seealso">Se ogsÃ¥</message>
+        <message id="seealso">Se også</message>
         <message id="topics">Emner</message>
         <message id="status">Status</message>
         <message id="moduleidentifier">Modul&nbsp;Identifikation</message>
@@ -66,8 +66,8 @@
         <!-- Used in manualpage -->
         <message id="relatedmodules">Relaterede moduler</message>
         <message id="relateddirectives">Relaterede Direktiver</message>
-        <message id="lowercase">abcdefghijklmnopqrstuvwxyzÃ¦Ã¸Ã¥</message>
-        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZÃ†Ã˜Ã…</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyzæøå</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ</message>
         <message id="name-section">NAVN</message>
         <message id="hyphenation"></message>
 
@@ -75,7 +75,7 @@
         <message id="syntax">Syntaks</message>
         <message id="default">Standard</message>
         <message id="context">Kontekst</message>
-        <message id="override">TilsidesÃ¦t</message>
+        <message id="override">Tilsidesæt</message>
         <message id="status">Status</message>
         <message id="module">Modul</message>
 
@@ -89,7 +89,7 @@
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">server konfiguration</message>
-        <message id="virtualhost" letter="v">virtuel vÃ¦rt</message>
+        <message id="virtualhost" letter="v">virtuel vært</message>
         <message id="directory" letter="d">mappe</message>
         <message id="htaccess" letter="h">.htaccess</message>
 
@@ -113,7 +113,7 @@
         <message id="apachehttpserver">Apache HTTP Server Version
             &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
-        <message id="search">Google SÃ¸gning</message> <!-- search button -->
+        <message id="search">Google Søgning</message> <!-- search button -->
         <message id="index">Indeks</message> <!-- deprecated -->
         <message id="home">Hjem</message> <!-- deprecated -->
 
@@ -132,10 +132,10 @@
         <!-- footer line -->
         <message id="before-license">Licenseret under</message>
         <message id="after-license"></message>
-        <message id="langavail">TilgÃ¦ngelige sprog</message>
+        <message id="langavail">Tilgængelige sprog</message>
 
         <!-- not up to date -->
-        <message id="outofdate">Denne oversÃ¦ttelse kan vÃ¦re forÃ¦ldet. Se den Engelske version for de seneste opdateringer.</message>
+        <message id="outofdate">Denne oversættelse kan være forældet. Se den Engelske version for de seneste opdateringer.</message>
     </messages>
 </language>
 
