@@ -166,14 +166,14 @@ browsers that support this feature.</dd>
 
 <div class="example"><p><code>
 RewriteEngine On<br />
-RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
+RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.com:1440:/]
 </code></p></div>
 
 <p>In the example give, the rule doesn't rewrite the request.
 The "-" rewrite target tells mod_rewrite to pass the request
 through unchanged. Instead, it sets a cookie
 called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
-in the <code>.apache.org</code> domain. It will be set to expire in 1440
+in the <code>.example.com</code> domain. It will be set to expire in 1440
 minutes (24 hours) and will be returned for all URIs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

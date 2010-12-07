@@ -406,7 +406,7 @@
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example3<br />
-        ServerName www.example3.net<br />
+        ServerName www.example.net<br />
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
@@ -414,14 +414,14 @@
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example4<br />
-        ServerName www.example4.edu<br />
+        ServerName www.example.edu<br />
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <span class="indent">
         DocumentRoot /www/example5<br />
-        ServerName www.example5.gov<br />
+        ServerName www.example.gov<br />
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>

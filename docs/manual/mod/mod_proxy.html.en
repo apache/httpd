@@ -520,7 +520,7 @@ directly</td></tr>
     all ending in <var>Domain</var>).</p>
 
     <div class="example"><h3>Examples</h3><p><code>
-      .com .apache.org.
+      .com .example.org.
     </code></p></div>
 
     <p>To distinguish <var>Domain</var>s from <var><a href="#hostname">Hostname</a></var>s (both syntactically and semantically; a DNS domain can
@@ -588,8 +588,8 @@ directly</td></tr>
     of hosts with different <var><a href="#ipaddr">IPAddr</a></var>s).</p>
 
     <div class="example"><h3>Examples</h3><p><code>
-      prep.ai.example.com<br />
-      www.apache.org
+      prep.ai.example.edu<br />
+      www.example.org
     </code></p></div>
 
     <div class="note"><h3>Note</h3>

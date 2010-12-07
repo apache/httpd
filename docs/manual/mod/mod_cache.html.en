@@ -475,8 +475,8 @@ manager</td></tr>
       CacheEnable  disk  /<br /><br />
       # Cache FTP-proxied url's<br />
       CacheEnable  disk  ftp://<br /><br />
-      # Cache content from www.apache.org<br />
-      CacheEnable  disk  http://www.apache.org/<br />
+      # Cache content from www.example.org<br />
+      CacheEnable  disk  http://www.example.org/<br />
     </code></p></div>
 
     <p>A hostname starting with a <strong>"*"</strong> matches all hostnames with
@@ -484,10 +484,10 @@ manager</td></tr>
     hostnames containing the domain components that follow.</p>
 
     <div class="example"><p><code>
-      # Match www.apache.org, and fooapache.org<br />
-      CacheEnable  disk  http://*apache.org/<br />
-      # Match www.apache.org, but not fooapache.org<br />
-      CacheEnable  disk  http://.apache.org/<br />
+      # Match www.example.org, and fooexample.org<br />
+      CacheEnable  disk  http://*example.org/<br />
+      # Match www.example.org, but not fooexample.org<br />
+      CacheEnable  disk  http://.example.org/<br />
     </code></p></div>
 
     <p> The <code>no-cache</code> environment variable can be set to 
