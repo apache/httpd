@@ -52,20 +52,21 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Puerta de enlace err&oacute;nea!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Puerta de enlace err&oacute;nea!" -->
+<!--#include virtual="include/top.html" -->
 
-	El servidor origen recibi&oacute; informaci&oacute;n 
-	inv&aacute;lida por parte del servidor destino.
+    El servidor 'proxy' recibi&oacute; informaci&oacute;n
+    inv&aacute;lida del servidor solicitante.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
-    <!--#include virtual="include/spacer.html" -->
-    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
-  <!--#endif -->
-    
+   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+      <!--#include virtual="include/spacer.html" -->
+      <!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+   <!--#endif -->
+
 <!--#include virtual="include/bottom.html" -->
 ----------es--
 
