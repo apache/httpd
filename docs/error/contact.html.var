@@ -22,11 +22,11 @@ the <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-Por favor contacte con el 
-<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>
-en caso de que usted crea que existe un error en el servidor.
+Si usted cree que esto es un error del servidor, por favor comun&iacute;queselo al
+<a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">administrador
+del portal</a>.
 ----------es--
 
 Content-language: fr
