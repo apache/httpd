@@ -122,19 +122,19 @@
 
     <div class="example"><p><code>
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    ServerAdmin webmaster@mail.example.com<br />
-    DocumentRoot /groups/example/www<br />
-    ServerName www.example.com<br />
-    ErrorLog /groups/example/logs/error_log<br />
-    TransferLog /groups/example/logs/access_log<br />
+    ServerAdmin webmaster@example1.com<br />
+    DocumentRoot /www/vhosts/example1<br />
+    ServerName www.example1.com<br />
+    ErrorLog /www/logs/example1/error_log<br />
+    CustomLog /www/logs/example1/access_log combined<br />
     &lt;/VirtualHost&gt;<br />
     <br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    ServerAdmin webmaster@mail.baygroup.org<br />
-    DocumentRoot /groups/baygroup/www<br />
-    ServerName www.baygroup.org<br />
-    ErrorLog /groups/baygroup/logs/error_log<br />
-    TransferLog /groups/baygroup/logs/access_log<br />
+    ServerAdmin webmaster@example2.org<br />
+    DocumentRoot /www/vhosts/example2<br />
+    ServerName www.example2.org<br />
+    ErrorLog /www/logs/example2/error_log<br />
+    CustomLog /www/logs/example2/access_log combined<br />
     &lt;/VirtualHost&gt;
     </code></p></div>
 
