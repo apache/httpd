@@ -40,16 +40,15 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Entidad solicitada demasiado larga!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="La entidad solicitada es demasiado grande!" -->
+<!--#include virtual="include/top.html" -->
 
-	Los recursos establecidos no permiten peticiones con
-	el <!--#echo var="REDIRECT_REQUEST_METHOD" --> m&eacute;todo 
-	suministrado por su solicitud, o, la cantidad de datos 
-	provistos exceden los l&iacute;mites de capacidad.
+   El m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+   no permite transmitir la informaci&oacute;n, o el
+   volumen de la informaci&oacute;n excede los l&iacute;mites
+   de capacidad del mismo.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
