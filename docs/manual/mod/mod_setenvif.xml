@@ -316,13 +316,13 @@ without respect to case</description>
     and differs only in that the regular expression matching is
     performed in a case-insensitive manner. For example:</p>
 <example>
-   SetEnvIfNoCase Host Apache\.Org site=apache
+   SetEnvIfNoCase Host Example\.Org site=example
 </example>
 
     <p>This will cause the <code>site</code> environment variable
-    to be set to "<code>apache</code>" if the HTTP request header
+    to be set to "<code>example</code>" if the HTTP request header
     field <code>Host:</code> was included and contained
-    <code>Apache.Org</code>, <code>apache.org</code>, or any other
+    <code>Example.Org</code>, <code>example.org</code>, or any other
     combination.</p>
 </usage>
 </directivesynopsis>

@@ -127,19 +127,19 @@
 
     <example>
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
-    ServerAdmin webmaster@example1.com<br />
-    DocumentRoot /www/vhosts/example1<br />
-    ServerName www.example1.com<br />
-    ErrorLog /www/logs/example1/error_log<br />
-    CustomLog /www/logs/example1/access_log combined<br />
+    ServerAdmin webmaster@www1.example.com<br />
+    DocumentRoot /www/vhosts/www1<br />
+    ServerName www1.example.com<br />
+    ErrorLog /www/logs/www1/error_log<br />
+    CustomLog /www/logs/www1/access_log combined<br />
     &lt;/VirtualHost&gt;<br />
     <br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
-    ServerAdmin webmaster@example2.org<br />
-    DocumentRoot /www/vhosts/example2<br />
-    ServerName www.example2.org<br />
-    ErrorLog /www/logs/example2/error_log<br />
-    CustomLog /www/logs/example2/access_log combined<br />
+    ServerAdmin webmaster@www2.example.org<br />
+    DocumentRoot /www/vhosts/www2<br />
+    ServerName www2.example.org<br />
+    ErrorLog /www/logs/www2/error_log<br />
+    CustomLog /www/logs/www2/access_log combined<br />
     &lt;/VirtualHost&gt;
     </example>
 

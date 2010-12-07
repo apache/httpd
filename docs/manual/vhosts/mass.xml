@@ -45,21 +45,21 @@
 <pre>
 NameVirtualHost 111.22.33.44
 &lt;VirtualHost 111.22.33.44&gt;
-    ServerName                 www.customer-1.com
-    DocumentRoot        /www/hosts/www.customer-1.com/docs
-    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-1.com/cgi-bin
+    ServerName                 customer-1.example.com
+    DocumentRoot        /www/hosts/customer-1.example.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/customer-1.example.com/cgi-bin
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.44&gt;
-    ServerName                 www.customer-2.com
-    DocumentRoot        /www/hosts/www.customer-2.com/docs
-    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-2.com/cgi-bin
+    ServerName                 customer-2.example.com
+    DocumentRoot        /www/hosts/customer-2.example.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/customer-2.example.com/cgi-bin
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 111.22.33.44&gt;
-    ServerName                 www.customer-N.com
-    DocumentRoot        /www/hosts/www.customer-N.com/docs
-    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-N.com/cgi-bin
+    ServerName                 customer-N.example.com
+    DocumentRoot        /www/hosts/customer-N.example.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/customer-N.example.com/cgi-bin
 &lt;/VirtualHost&gt;
 </pre>
 </example>
@@ -183,7 +183,7 @@ examples.</p>
     ISP's web hosting server. Using <code>%2</code>,
     we can select substrings of the server name to
     use in the filename so that, for example, the documents for
-    <code>www.user.isp.com</code> are found in
+    <code>www.user.example.com</code> are found in
     <code>/home/user/www</code>. It uses a single <code>cgi-bin</code>
     directory instead of one per virtual host.</p>
 
@@ -239,7 +239,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 <br />
 &lt;VirtualHost 111.22.33.44&gt;<br />
 <indent>
-    ServerName www.commercial.isp.com<br />
+    ServerName www.commercial.example.com<br />
     <br />
     CustomLog logs/access_log.commercial vcommon<br />
     <br />
@@ -250,7 +250,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 <br />
 &lt;VirtualHost 111.22.33.45&gt;<br />
 <indent>
-    ServerName www.homepages.isp.com<br />
+    ServerName www.homepages.example.com<br />
     <br />
     CustomLog logs/access_log.homepages vcommon<br />
     <br />

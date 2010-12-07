@@ -131,14 +131,14 @@ address)</description>
     <p>A (partial) domain-name</p>
     
     <example>
-    Require host apache.org<br />
+    Require host example.org<br />
     Require host .net example.edu
     </example>
     
     <p>Hosts whose names match, or end in, this string are allowed
     access. Only complete components are matched, so the above
-    example will match <code>foo.apache.org</code> but it will not
-    match <code>fooapache.org</code>. This configuration will cause
+    example will match <code>foo.example.org</code> but it will not
+    match <code>fooexample.org</code>. This configuration will cause
     Apache to perform a double reverse DNS lookup on the client IP
     address, regardless of the setting of the <directive
     module="core">HostnameLookups</directive> directive.  It will do

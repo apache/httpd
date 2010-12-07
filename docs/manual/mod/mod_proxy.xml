@@ -1442,7 +1442,7 @@ directly</description>
     all ending in <var>Domain</var>).</p>
 
     <example><title>Examples</title>
-      .com .apache.org.
+      .com .example.org.
     </example>
 
     <p>To distinguish <var>Domain</var>s from <var><a href="#hostname"
@@ -1511,8 +1511,8 @@ directly</description>
     of hosts with different <var><a href="#ipaddr">IPAddr</a></var>s).</p>
 
     <example><title>Examples</title>
-      prep.ai.example.com<br />
-      www.apache.org
+      prep.ai.example.edu<br />
+      www.example.org
     </example>
 
     <note><title>Note</title>

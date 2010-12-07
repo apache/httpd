@@ -102,11 +102,11 @@
     <ol>
       <li><p><strong>Network Domain.</strong> Enter the DNS domain in which
       your server is or will be registered in. For example, if your
-      server's full DNS name is <code>server.mydomain.net</code>, you would
-      type <code>mydomain.net</code> here.</p></li>
+      server's full DNS name is <code>server.example.net</code>, you would
+      type <code>example.net</code> here.</p></li>
 
       <li><p><strong>Server Name.</strong> Your server's full DNS name.
-      From the example above, you would type <code>server.mydomain.net</code>
+      From the example above, you would type <code>server.example.net</code>
       here.</p></li>
 
       <li><p><strong>Administrator's Email Address.</strong> Enter the
