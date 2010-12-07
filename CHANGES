@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.10
 
+  *) core: Honor 'AcceptPathInfo OFF' during internal redirects,
+     such as per-directory mod_rewrite substitutions.  PR 50349.
+     [Eric Covener]
+
   *) mod_rewrite: Add 'RewriteOptions InheritBefore' to put the base 
      rules/conditions before the overridden rules/conditions.  PR 39313.
      [Jérôme Grandjanny <jerome.grandjanny cea.fr>]
