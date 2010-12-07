@@ -66,24 +66,22 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Acceso prohibido!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Acceso prohibido!" -->
+<!--#include virtual="include/top.html" -->
 
-  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+   <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
-    Usted no tiene permiso para accesar a la direcci&oacute;n
-    solicitada. Existe la posibilidad de que el directorio
-    este protegido contra lectura o que no exista la
-    documentaci&oacute;n requerida.
+      Usted no tiene permiso para accesar al directorio solicitado.
+      No existe un documento &iacute;ndice, o el directorio est&aacute;
+      protegido contra lectura.
 
   <!--#else -->
 
-    Usted no tiene permiso de accesar al objeto solicitado.
-    Existe la posibilidad de que este protegido contra
-    lectura o que no haya podido ser leido por el servidor.
+      Usted no tiene permiso de accesar al objeto solicitado.
+      El objeto est&aacute; protegido contra lectura, o no
+      puede ser leido por el servidor.
 
   <!--#endif -->
 
