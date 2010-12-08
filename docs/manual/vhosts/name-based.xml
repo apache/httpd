@@ -79,8 +79,9 @@
     >NameVirtualHost</directive>. If it is, then it will look at each <directive
     type="section" module="core">VirtualHost</directive> section with a (literal) matching
     IP address and try to find one where the <directive module="core"
-    >ServerName</directive> or <code>ServerAlias</code> matches the requested
-    hostname. If it finds one, then it uses the configuration for that server.</p>
+    >ServerName</directive> or <directive module="core" >ServerAlias</directive> 
+    matches the requested hostname. If it finds one, then it uses the configuration 
+    for that server.</p>
 
     <p id="defaultvhost"> If no matching ServerName or ServerAlias is found in the
     set of virtual hosts matching the NameVirtualHost directive, then 
