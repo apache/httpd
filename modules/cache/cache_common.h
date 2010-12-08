@@ -52,4 +52,4 @@ typedef struct cache_control {
 } cache_control_t;
 
 #endif /* CACHE_COMMON_H */
-
+/** @} */

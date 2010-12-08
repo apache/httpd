@@ -324,7 +324,7 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
  * @param filter_func The filter function to name
  * @param filter_init The function to call before the filter handlers 
                       are invoked
- * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT_SET or
  *              ::AP_FTYPE_CONNECTION
  * @see add_input_filter()
  */
@@ -354,7 +354,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
  * @param filter_func The filter function to name
  * @param filter_init The function to call before the filter handlers 
  *                    are invoked
- * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT_SET or
  *              ::AP_FTYPE_CONNECTION
  * @param proto_flags Protocol flags: logical OR of AP_FILTER_PROTO_* bits
  * @return the filter rec
