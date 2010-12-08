@@ -17,6 +17,10 @@
 /**
  * @file ap_expr.h
  * @brief Expression parser
+ *
+ * @defgroup AP_EXPR ap_expr
+ * @ingroup  APACHE_CORE
+ * @{
  */
 
 #ifndef AP_EXPR_H
@@ -252,6 +256,8 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
  * @param cmd The cmd_parms struct
  * @param expr The expression string to parse
  * @param err Set to NULL on success, error message on error
+ * @param lookup_fn The lookup function used to lookup vars, functions, and
+ *        operators
  * @return The parsed expression
  */
 AP_DECLARE(ap_expr_info_t *) ap_expr_parse_cmd(const cmd_parms *cmd,
@@ -270,3 +276,4 @@ void ap_expr_init(apr_pool_t *pool);
 #endif
 
 #endif /* AP_EXPR_H */
+/** @} */

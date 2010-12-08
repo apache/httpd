@@ -65,4 +65,4 @@ typedef struct {
 } disk_cache_info_t;
 
 #endif /* CACHE_DIST_COMMON_H */
-
+/** @} */

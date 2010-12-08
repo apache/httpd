@@ -228,7 +228,7 @@ typedef struct {
 /**
  * Check the whether the request allows a cached object to be served as per RFC2616
  * section 14.9.4 (Cache Revalidation and Reload Controls)
- * @param h cache_handle_t
+ * @param cache cache_request_rec
  * @param r request_rec
  * @return 0 ==> cache object may not be served, 1 ==> cache object may be served
  */
@@ -236,7 +236,7 @@ CACHE_DECLARE(int) ap_cache_check_allowed(cache_request_rec *cache, request_rec 
 
 /**
  * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)
- * @param h cache_handle_t
+ * @param cache cache_request_rec
  * @param r request_rec
  * @return 0 ==> cache object is stale, 1 ==> cache object is fresh
  */
