@@ -35,15 +35,14 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Solicitud no procesada!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="La solicitud no puede ser procesada!" -->
+<!--#include virtual="include/top.html" -->
 
-	El navegador est&aacute; solicitando una acci&oacute;n 
-	que no puede ser procesada.
-    
+    El servidor no tiene implementada la acci&oacute;n
+    solicitada por el buscador.
+
 <!--#include virtual="include/bottom.html" -->
 ----------es--
 
