@@ -97,6 +97,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk patch works
      +1: minfrin, jim, covener
 
+   * mod_proxy_connect: don't break proxy connections when EINTR is received 
+     during poll PR50220.
+     Trunk patch: http://svn.apache.org/viewvc?rev=1031551&view=rev
+     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-proxy_connect_eintr.diff
+     +1 covener, trawick, poirier
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -185,12 +191,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-autoindex_merge.diff
      +1 covener
     
-   * mod_proxy_connect: don't break proxy connections when EINTR is received 
-     during poll PR50220.
-     Trunk patch: http://svn.apache.org/viewvc?rev=1031551&view=rev
-     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-proxy_connect_eintr.diff
-     +1 covener, trawick
-
    * mod_userdir: support merge of "userdir disabled" or "userdir public_html"
      when userdir directives appear in vhost context. PR 44076
      Trunk patch: http://svn.apache.org/viewvc?rev=1042090&view=rev
