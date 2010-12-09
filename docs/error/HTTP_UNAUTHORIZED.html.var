@@ -60,24 +60,22 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Autentificaci&oacute;n requerida!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Autentificaci&oacute;n requerida!" -->
+<!--#include virtual="include/top.html" -->
 
-    El servidor no puede certificar que usted este autorizado
-    para acceder al enlace "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Usted pudo suministrar informaci&oacute;n err&oacute;nea accidentalmente
-    (ejem. una contrase&ntilde;a inv&aacute;lida) o, el navegador no sabe 
+    El servidor no puede certificar que usted est&eacute; autorizado
+    para accesar el URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Pudo haber suministrado informaci&oacute;n incorrecta (ej.
+    contrase&ntilde;a inv&aacute;lida) o, el buscador no sabe
     como suministrar la informaci&oacute;n requerida.
 
   <!--#include virtual="include/spacer.html" -->
 
-    En caso de que a usted le este permitido el uso del
-    documento requerido, le solicitamos de la manera m&aacute;s atenta
-    que por favor vuelva a intentar la operaci&oacute;n suministrando
-    nuevamente su identificador y su contrase&ntilde;a.
+    En caso de que a usted le este permitido accesar el documento,
+    verifique su nombre de usuario y contrase&ntilde;a y vu&eacute;lvalo
+    a intentar.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
