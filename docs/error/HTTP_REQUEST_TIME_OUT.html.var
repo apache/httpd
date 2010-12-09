@@ -38,16 +38,15 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;La solicitud ha excedido el tiempo de espera permitido!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Tiempo de espera excedido!" -->
+<!--#include virtual="include/top.html" -->
 
-	El servidor ha cerrado la conexi&oacute;n de red 
-	debido a que el navegador no termin&oacute; la solicitud
-	dentro del tiempo especificado.
-    
+    El servidor cerr&oacute; la conecci&oacute;n de red
+    debido a que el buscador no termino la solicitud
+    dentro del tiempo permitido.
+
 <!--#include virtual="include/bottom.html" -->
 ----------es--
 
