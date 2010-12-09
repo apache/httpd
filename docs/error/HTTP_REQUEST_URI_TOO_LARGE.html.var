@@ -155,6 +155,18 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="URI demasiado grande!"
+--><!--#include virtual="include/top.html" -->
+
+	O tamanho do URL pedido excede o limite da capacidade deste
+	servidor. O pedido n&atilde;o pode ser processado.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

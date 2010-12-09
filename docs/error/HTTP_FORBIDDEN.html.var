@@ -272,6 +272,29 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Acesso proibido!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+	N&atilde;o tem permiss&atilde;o para aceder ao direct&oacute;rio
+	que deseja. Ou n&atilde;o existe o documento de &iacute;ndice
+	ou o direct&oacute;rio est&aacute; protegido contra leitura.
+
+  <!--#else -->
+
+	N&atilde;o tem permiss&atilde;o para aceder ao objecto
+	que deseja. Este est&aacute; protegido contra leitura ou
+	o servidor n&atilde;o o consegue ler.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

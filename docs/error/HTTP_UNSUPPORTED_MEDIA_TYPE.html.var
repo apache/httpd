@@ -145,6 +145,17 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Media n&atilde;o suportado!"
+--><!--#include virtual="include/top.html" -->
+
+	O servidor n&atilde;o suporta o <i>media type</i> transmitido no pedido.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

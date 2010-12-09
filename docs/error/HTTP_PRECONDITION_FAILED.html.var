@@ -146,6 +146,18 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Pr&eacute;-condi&ccedil;&atilde;o falhou!"
+--><!--#include virtual="include/top.html" -->
+
+	A condi&ccedil;&atilde;o necess&aacute;ria ao pedido do URL
+	foi avaliada com resultado negativo.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

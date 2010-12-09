@@ -156,6 +156,18 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Tempo excedido!"
+--><!--#include virtual="include/top.html" -->
+
+	O servidor interrompeu a liga&ccedil;&atilde;o de rede porque o
+	<i>browser</i> n&atilde;o terminou o pedido dentro do tempo limite.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--
