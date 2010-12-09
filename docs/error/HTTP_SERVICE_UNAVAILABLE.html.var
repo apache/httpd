@@ -40,8 +40,6 @@ Body:----------en--
 <!--#include virtual="include/bottom.html" -->
 ----------en--
 
-HTTP_SERVICE_UNAVAILABLE:
-
 Content-language: es
 Content-type: text/html
 Body:----------es--
