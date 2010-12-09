@@ -38,15 +38,14 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Variante negociable!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="La variante tambi&eacute;n varia!" -->
+<!--#include virtual="include/top.html" -->
 
-	No es posible tener acceso debido a que
-	una variante de la solicitud es por si 
-	misma un recurso negociable.
+   Una variante de la entidad solicitada es por si misma
+   un recurso negociable.
+   No es posible tener acceso a la entidad.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
