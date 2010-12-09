@@ -160,6 +160,19 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Variante tamb&eacute;m varia!"
+--><!--#include virtual="include/top.html" -->
+
+	A variante relativa &agrave; entidade pedida &eacute; ela mesma
+	um recurso negoci&aacute;vel. N&atilde;o &eacute; poss&iacute;vel
+	ter acesso.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

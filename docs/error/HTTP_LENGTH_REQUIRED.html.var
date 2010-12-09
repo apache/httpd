@@ -163,6 +163,18 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Content-Length incorrecto!"
+--><!--#include virtual="include/top.html" -->
+
+	Um pedido com o m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+	necessita de um cabe&ccedil;alho <code>Content-Length</code> v&aacute;lido.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

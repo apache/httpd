@@ -319,6 +319,18 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="M&eacute;todo n&atilde;o permitido!"
+--><!--#include virtual="include/top.html" -->
+
+	O m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" --> n&atilde;o
+	&eacute; permitido para o URL pedido.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

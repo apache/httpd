@@ -249,6 +249,26 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Autentica&ccedil;&atilde;o exigida!"
+--><!--#include virtual="include/top.html" -->
+
+	Este servidor n&atilde;o conseguiu validar a sua autoridade para aceder
+	ao URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+	Ou forneceu as credenciais erradas (e.g.: senha incorrecta)
+	ou o seu <i>browser</i> n&atilde;o sabe como fornecer as credenciais
+	necess&aacute;rias.
+
+  <!--#include virtual="include/spacer.html" -->
+
+	Caso lhe seja permitido aceder ao documento, por favor verifique o
+	seu nome de utilizador e senha e tente de novo.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

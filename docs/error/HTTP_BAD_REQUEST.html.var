@@ -152,6 +152,18 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Pedido incorrecto!"
+--><!--#include virtual="include/top.html" -->
+
+	O seu <i>browser</i> ou <i>proxy</i> enviou
+	um pedido que este servidor n&atilde;o compreendeu.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

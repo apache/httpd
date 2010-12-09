@@ -309,6 +309,32 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="Recurso n&atilde;o dispon&iacute;vel!"
+--><!--#include virtual="include/top.html" -->
+
+	O URL desejado j&aacute; n&atilde;o est&aacute; dispon&iacute;vel
+	neste servidor e n&atilde;o existe endere&ccedil;o alternativo.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+	Por favor informe o autor da
+	<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
+	origin&aacute;ria</a> que a hiperliga&ccedil;&atilde;o est&aacute;
+	desactualizada.
+
+  <!--#else -->
+
+	Se chegou aqui a partir de uma hiperliga&ccedil;&atilde;o externa,
+	por favor contacte o autor dessa p&aacute;gina.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--

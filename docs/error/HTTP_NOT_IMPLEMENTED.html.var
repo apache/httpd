@@ -144,6 +144,18 @@ Body:-------pt-br--
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
 
+Content-language: pt
+Content-type: text/html; charset=ISO-8859-1
+Body:----------pt--
+<!--#set var="TITLE" value="N&atilde;o posso processar o pedido!"
+--><!--#include virtual="include/top.html" -->
+
+	O servidor n&atilde;o suporta a ac&ccedil;&atilde;o pedida pelo
+	<i>browser</i>.
+
+<!--#include virtual="include/bottom.html" -->
+----------pt--
+
 Content-language: ro
 Content-type: text/html; charset=UTF-8
 Body:----------ro--
