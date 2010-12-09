@@ -205,7 +205,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?rev=1043023&view=rev
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-accept_pathinfo_redir.diff
     +1 covener
-  
+
+   * mod_proxy_http: Become aware of ssl handshake failures when attempting
+     to pass request. Makes it so workers are put in error state when a
+     handshake failure is encountered.
+     PR50332
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1039304
+     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26374
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
