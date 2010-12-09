@@ -35,14 +35,13 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Tipo de datos no soportados!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="El tipo de medio no est&aacute; implementado!" -->
+<!--#include virtual="include/top.html" -->
 
-	Los datos de su solicitud no se encuentran en
-	un formato aceptado por este recurso.
+   El servidor no tiene implementado el tipo
+   de medio transmitido en la solicitud.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
