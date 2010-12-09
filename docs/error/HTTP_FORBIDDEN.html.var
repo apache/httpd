@@ -263,7 +263,7 @@ Body:-------pt-br--
 
   <!--#else -->
 
-   Voc&ecirc; n&atilde;o tem premiss&atilde;o para acessar o 
+   Voc&ecirc; n&atilde;o tem permiss&atilde;o para acessar o 
    objeto requisitado. Ele pode estar protegido contra leitura ou 
    n&atilde;o ser leg&iacute;vel pelo servidor.
 
