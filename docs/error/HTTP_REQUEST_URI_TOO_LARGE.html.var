@@ -38,16 +38,14 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Direcci&oacute;n suministrada demasiado larga!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="El URI enviado es demasiado largo!" -->
+<!--#include virtual="include/top.html" -->
 
-	Su solicitud no puede procesarse debido a que la
-	longitud del enlace excede la capacidad l&iacute;mite del 
-	servidor. 
-    
+   La longitud del URL solicitado excede el l&iacute;mite de
+   capacidad para este servidor. La solicitud no puede ser procesada.
+
 <!--#include virtual="include/bottom.html" -->
 ----------es--
 
