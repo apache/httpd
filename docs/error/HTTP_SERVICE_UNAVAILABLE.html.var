@@ -40,19 +40,18 @@ Body:----------en--
 <!--#include virtual="include/bottom.html" -->
 ----------en--
 
+HTTP_SERVICE_UNAVAILABLE:
+
 Content-language: es
-Content-type: text/html; charset=UTF-8
+Content-type: text/html
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Servicio no disponible!"
---><!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Servicio no disponible!" -->
+<!--#include virtual="include/top.html" -->
 
-	El servidor no puede atender su solicitud por
-	el momento debido a problemas de mantenimiento
-	o de capacidad.
-
-	Le solicitamos que por favor repita la operaci&oacute;n
-	m&aacute;s tarde.
+   Por el momento el servidor no puede atender su solicitud
+   debido a que est&aacute; en mantenimiento o a que tiene
+   problemas de capacidad. Por favor intente nuevamente
+   m&aacute;s tarde.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
