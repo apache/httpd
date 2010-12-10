@@ -170,6 +170,7 @@ a directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.2.16 and later</td></tr>
 </table>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).

@@ -158,6 +158,7 @@ a directory</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
+<compatibility>Apache HTTP Server 2.2.16 and later</compatibility>
 <usage>
     <p>Use this to set a handler for any URL that doesn't map to anything
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
