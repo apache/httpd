@@ -83,10 +83,11 @@
     matches the requested hostname. If it finds one, then it uses the configuration 
     for that server.</p>
 
-    <p><a name="defaultvhost"></a> If no matching ServerName or ServerAlias is found in the
+    <section id="defaultvhost"><title>The default name-based vhost for a NameVirtualHost</title>
+    <p> If no matching ServerName or ServerAlias is found in the
     set of virtual hosts matching the NameVirtualHost directive, then 
     <strong>the first listed virtual host</strong> that matches the IP 
-    address will be used.</p>
+    address will be used.</p></section>
 </section>
 
 <section id="using"><title>Using Name-based Virtual Hosts</title>
