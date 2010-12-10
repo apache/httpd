@@ -41,11 +41,8 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authname">AuthName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authtype">AuthType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -66,7 +63,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#if">If</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
@@ -88,11 +85,9 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li>
@@ -294,79 +289,6 @@ Servers</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a>-<a name="addoutputfilterbytype" id="addoutputfilterbytype">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>einen Ausgabefilter einem bestimmten MIME-Type
-zuordnen</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddOutputFilterByType <var>Filter</var>[;<var>Filter</var>...]
-<var>MIME-Type</var> [<var>MIME-Type</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 2.0.33</td></tr>
-</table>
-    <p>Die Direktive aktiviert für eine Anfrage abhängig vom
-    MIME-Type der Antwort einen bestimmten Ausgabe-<a href="../filter.html">Filter</a>.</p>
-
-    <p>Das folgende Beispiel verwendet den Filter <code>DEFLATE</code>,
-    der von <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> angeboten wird. Er komprimiert
-    jede Ausgabe, die  als <code>text/html</code> oder <code>text/plain</code>
-    gekennzeichnet ist, (gleichgültig, ob statisch oder dynamisch)
-    bevor sie an den Client gesendet wird.</p>
-
-    <div class="example"><p><code>
-      AddOutputFilterByType DEFLATE text/html text/plain
-    </code></p></div>
-
-    <p>Wenn Sie den Inhalt von mehr als einem Filter verarbeiten lassen
-    wollen, dann müssen deren Namen durch Semikolons voneinander
-    getrennt werden. Es ist ebenfalls möglich, eine
-    <code class="directive">AddOutputFilterByType</code>-Direktive für
-    jeden von diesen Filtern zu verwenden.</p>
-
-    <p>Die folgende Konfiguration sorgt dafür, dass alle
-    Skriptausgaben, die als <code>text/html</code> gekennzeichnet
-    sind, zuerst vom <code>INCLUDES</code>-Filter und dann vom
-    <code>DEFLATE</code>-Filter verarbeitet werden.</p>
-
-    <div class="example"><p><code>
-    &lt;Location /cgi-bin/&gt;<br />
-    <span class="indent">
-      Options Includes<br />
-      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
-    </span>
-    &lt;/Location&gt;
-    </code></p></div>
-
-    <div class="warning"><h3>Hinweis:</h3>
-      <p>Die Aktivierung von Filtern mittels
-      <code class="directive">AddOutputFilterByType</code> kann in einigen
-      Fällen ganz oder teilweise fehlschlagen. Beispielsweise
-      werden keine Filter angewendet, wenn der MIME-Type nicht bestimmt
-      werden kann und auf die Einstellung der <code class="directive"><a href="#defaulttype">DefaultType</a></code>-Anweisung zurückfällt,
-      selbst wenn die <code class="directive"><a href="#defaulttype">DefaultType</a></code>-Einstellung die gleiche ist.</p>
-
-      <p>Wenn Sie jedoch sicherstellen wollen, dass der Filter
-      angewendet wird, sollten Sie den Content-Type z.B. mit
-      <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> oder
-      <code class="directive"><a href="#forcetype">ForceType</a></code> der Ressource
-      explizit zuordnen. Das Setzen des Content-Types innerhalb
-      eines (nicht-nph) CGI-Skriptes funktioniert ebenfalls
-      zuverlässig.</p>
-
-      <p>Die Typ-gebundenen Ausgabefilter werden niemals auf
-      Proxy-Anfragen angewendet.</p>
-    </div>
-
-<h3>Siehe auch</h3>
-<ul>
-<li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
-<li><code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code></li>
-<li><a href="../filter.html">Filter</a></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a>-<a name="allowencodedslashes" id="allowencodedslashes">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Legt fest, ob kodierte Pfadtrennzeichen in URLs durchgereicht
@@ -501,69 +423,6 @@ erlaubt sind.</td></tr>
 <li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
 <li><a href="../configuring.html">Konfigurationsdateien</a></li>
 <li><a href="../howto/htaccess.html">.htaccess-Dateien</a></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthName" id="AuthName">AuthName</a>-<a name="authname" id="authname">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Autorisierungsbereich zur Verwendung in der
-HTTP-Authentisierung</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthName <var>auth-Bereich</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>
-    <p>Die Direktive legt den Namen des Autorisierungsbereiches
-    <span class="transnote">(<em>Anm.d.Ü.:</em> Der Autorisierungsbereich wird auch Realm genannt.)</span>
-    für ein Verzeichnis fest. Dieser Realm wird dem Client mitgeteilt,
-    damit der Anwender weiß, welchen Benutzernamen und welches Passwort
-    er zu übermitteln hat. <code class="directive">AuthName</code> akzeptiert ein
-    Argument. Falls der Name des Realm Leerzeichen enthält, muss er in
-    Anführungszeichen eingeschlossen werden. Um zu funktionieren, muss
-    die Anweisung von den Direktiven <code class="directive"><a href="#authtype">AuthType</a></code> und <code class="directive"><a href="#require">Require</a></code> sowie von
-    Direktiven wie <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    und <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>
-    begleitet werden.</p>
-
-   <p>Beispiel:</p>
-
-   <div class="example"><p><code>
-     AuthName "Top Secret"
-   </code></p></div>
-
-    <p>Die <code>AuthName</code> übergebene Zeichenkette ist das,
-    was in dem von den meisten Browsern angebotenen Passwort-Dialog
-    angezeigt wird.</p>
-
-<h3>Siehe auch</h3>
-<ul>
-<li><a href="../howto/auth.html">Authentisierung, Autorisierung und
-    Zugriffskontrolle</a></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthType" id="AuthType">AuthType</a>-<a name="authtype" id="authtype">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Art der Authentisierung</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthType Basic|Digest</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>
-    <p>Die Direktive wählt die Art der Benutzer-Authentisierung
-    für ein Verzeichnis aus. Derzeit sind lediglich <code>Basic</code>
-    und <code>Digest</code> implementiert.
-    Um zu funktionieren, muss die Anweisung von den Direktiven <code class="directive"><a href="#authname">AuthName</a></code> und <code class="directive"><a href="#require">Require</a></code> sowie von
-    Direktiven wie <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    und <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>
-    begleitet werden.</p>
-
-<h3>Siehe auch</h3>
-<ul>
-<li><a href="../howto/auth.html">Authentisierung, Autorisierung und
-    Zugriffskontrolle</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2576,66 +2435,6 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 </table><p>Documentation not yet translated. Please see English version of document.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Require" id="Require">Require</a>-<a name="require" id="require">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Wählt die authentisierten Benutzer aus, die auf eine
-Ressource zugreifen können</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Require <var>Name</var> [<var>Name</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table>
-    <p>Die Direktive wählt aus, welche authentisierten Benutzer auf eine
-    Ressource zugreifen dürfen. Folgende Syntax ist erlaubt:</p>
-
-    <dl>
-      <dt><code>Require user <var>User-ID</var> [<var>User-ID</var>]
-      ...</code></dt>
-      <dd>Nur die genannten Benutzer dürfen auf die Ressource
-      zugreifen.</dd>
-
-      <dt><code>Require group <var>Gruppenname</var> [<var>Gruppenname</var>]
-      ...</code></dt>
-      <dd>Nur Benutzer der genannten Gruppen dürfen auf die
-      Ressource zugreifen.</dd>
-
-      <dt><code>Require valid-user</code></dt>
-      <dd>Alle gültigen Benutzer dürfen auf die Ressource
-      zugreifen.</dd>
-    </dl>
-
-    <p><code class="directive">Require</code> muss von den Direktiven
-    <code class="directive"><a href="#authname">AuthName</a></code> und <code class="directive"><a href="#authtype">AuthType</a></code> sowie Direktiven wie
-    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    und <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>
-    (zur Definition von Benutzern und Gruppen) begleitet werden, um
-    korrekt zu funktionieren. Beispiel:</p>
-
-    <div class="example"><p><code>
-       AuthType Basic<br />
-       AuthName "Geschützte Ressource"<br />
-       AuthUserFile /web/users<br />
-       AuthGroupFile /web/groups<br />
-       Require group admin
-    </code></p></div>
-
-    <p>Zugriffskontrollen, die in dieser Form angewandt werden, gelten
-    für <strong>alle</strong> Methoden. <strong>Dies ist normalerweise
-    gewünscht.</strong> Wenn Sie Zugriffskontrollen nur auf bestimmte
-    Methoden anwenden möchten, während andere Methoden
-    ungeschützt bleiben, dann müssen Sie die
-    <code class="directive">Require</code>-Anweisung innerhalb eines
-    <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>-Abschnitts
-    platzieren.</p>
-
-<h3>Siehe auch</h3>
-<ul>
-<li><code class="directive"><a href="#satisfy">Satisfy</a></code></li>
-<li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a>-<a name="rlimitcpu" id="rlimitcpu">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Begrenzt den CPU-Verbrauch von Prozessen, die von
@@ -2751,56 +2550,6 @@ wurden</td></tr>
 <ul>
 <li><code class="directive"><a href="#rlimitmem">RLimitMEM</a></code></li>
 <li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a>-<a name="satisfy" id="satisfy">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Zusammenspiel von rechnerbasierter Zugriffskontrolle und
-Benutzerauthentisierung</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Satisfy Any|All</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>Satisfy All</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Wird seit Version 2.0.51 von <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> und <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> beeinflusst</td></tr>
-</table>
-    <p>Verfahrensweise für den Zugriff, falls sowohl <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> als auch <code class="directive"><a href="#require">Require</a></code> verwendet werden. Der Parameter kann
-    entweder <code>All</code> oder <code>Any</code> sein. Die Direktive ist
-    nur dann nützlich, wenn der Zugriff zu einem bestimmten Bereich
-    durch Benutzername/Passwort <em>und</em> Clientrechner-Adressen
-    eingeschränkt ist. In diesem Fall verlangt die Voreinstellung
-    (<code>All</code>), dass der Client die Adressbeschränkung passiert
-    <em>und</em> eine gültige Benutzerkennung und ein gültiges
-    Passwort übermittelt. Mit der Auswahl <code>Any</code> wird dem
-    Client der Zugriff erlaubt, wenn er entweder die Rechner-Beschänkung
-    passiert oder einen gültigen Benutzernamen und ein gültiges
-    Passwort übermittelt. Dies kann verwendet werden, um einen Bereich
-    mit einem Passwort zu schützen, jedoch Clients von bestimmten
-    Adressen ohne Abfrage des Passwortes zuzulassen.</p>
-
-    <p>Wenn Sie beispielsweise möchten, dass Personen aus Ihrem
-    privaten Netzwerk unbechänkten Zugriff zu Teilen Ihres
-    Webangebots haben, jedoch verlangen, dass Personen außerhalb
-    Ihres privaten Netzwerks ein Passwort übergeben müssen,
-    können Sie eine Konfiguration ähnlich der folgenden
-    verwenden:</p>
-
-    <div class="example"><p><code>
-      Require valid-user<br />
-      Allow from 192.168.1<br />
-      Satisfy Any
-    </code></p></div>
-
-    <p>Seit Version 2.0.51 können
-      <code class="directive">Satisfy</code>-Anweisungen durch <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>- und <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>-Abschnitte auf bestimmte Methoden
-      beschränkt werden.</p>
-
-<h3>Siehe auch</h3>
-<ul>
-<li><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code></li>
-<li><code class="directive"><a href="#require">Require</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

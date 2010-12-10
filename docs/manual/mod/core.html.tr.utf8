@@ -39,7 +39,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
@@ -51,12 +50,16 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
@@ -76,12 +79,15 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveralias">ServerAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#servername">ServerName</a></li>
@@ -94,6 +100,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
@@ -330,74 +337,6 @@
 <h3>Ayrıca bakınız:</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addcharset">AddCharset</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belli bir ortam türüne bir çıktı süzgeci atar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddOutputFilterByType <var>süzgeç</var>[;<var>süzgeç</var>...]
-<var>ortam-türü</var> [<var>ortam-türü</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.0.33 ve sonrasında mevcuttur; Apache 2.1 ve sonrasında
-kullanımı önerilmemektedir.</td></tr>
-</table>
-    <p>Bu yönerge yanıtın <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">ortam türü</a>ne
-      bağlı olarak bir istek için belli bir <a href="../filter.html">çıktı
-      süzgecini</a> etkin kılar. Aşağıda açıklanan belli başlı sorunlardan
-      dolayı bu yönergenin kullanımı önerilmemektedir. Aynı işlevsellik
-      <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> kullanarak sağlanabilmektedir.</p>
-
-    <p>Aşağıdaki örnekte <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> modülünce sağlanan
-      <code>DEFLATE</code> süzgeci kullanılmıştır. Bu süzgeç,
-      <code>text/html</code> veya <code>text/plain</code> olarak yaftalanmış
-      tüm çıktıyı (ister durağan ister devingen olsun) istemciye göndermeden
-      önce sıkıştırır.</p>
-
-    <div class="example"><p><code>
-      AddOutputFilterByType DEFLATE text/html text/plain
-    </code></p></div>
-
-    <p>İçeriğin birden fazla süzgeç tarafından işlenmesini isterseniz süzgeç
-      isimlerini noktalı virgüllerle ayırarak belirtebilirsiniz. Ayrıca, bu
-      süzgeçlerin her biri için ayrı bir
-      <code class="directive">AddOutputFilterByType</code> yönergesi belirtmek de
-      mümkündür.</p>
-
-    <p>Aşağıdaki yapılandırma <code>text/html</code> olarak yaftalanmış tüm
-      betik çıktılarının önce <code>INCLUDES</code> sonra da
-      <code>DEFLATE</code> süzgecinden geçirilmesine sebep olur.</p>
-
-    <div class="example"><p><code>
-    &lt;Location /cgi-bin/&gt;<br />
-    <span class="indent">
-      Options Includes<br />
-      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
-    </span>
-    &lt;/Location&gt;
-    </code></p></div>
-
-    <div class="warning"><h3>Ek Bilgi</h3>
-      <p>Süzgeçlerin <code class="directive">AddOutputFilterByType</code> ile etkin
-        kılınması bazı durumlarda kısmen bazılarında da tamamen başarısızlığa
-        uğrayabilir. Örneğin, <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">ortam türü</a>
-        saptanamadığı takdirde hiçbir süzgeç uygulanmaz. Süzgeçlerin
-        uygulanacağına emin olmak isterseniz, bir kaynağa içerik türünü
-        örneğin, <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> veya
-        <code class="directive"><a href="#forcetype">ForceType</a></code> ile açıkça
-        atayabilirsiniz. Ayrıca, içerik türünü (bir nph-olmayan) CGI betiği
-        içinde ayarlamak da bu güvenceyi sağlar.</p>
-
-    </div>
-
-<h3>Ayrıca bakınız:</h3>
-<ul>
-<li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
-<li><code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code></li>
-<li><a href="../filter.html">Süzgeçler</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1001,6 +940,17 @@ edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Error <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.3.9 and later</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir hata durumunda sunucunun istemciye ne döndüreceğini
@@ -1158,6 +1108,35 @@ edilmiştir.</td></tr>
 <li><a href="../logs.html">Apache Günlük Dosyaları</a></li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Format specification for error log entries</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLog [connection|request] <var>format</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p><h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
+<li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
+<li><a href="../logs.html">Apache HTTP Server Log Files</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Keep track of extended status information for each 
+request</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ExtendedStatus Off[*]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Yönergesi</a></h2>
 <table class="directive">
@@ -1352,6 +1331,16 @@ edilmiştir.</td></tr>
     </code></p></div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Directory to write gmon.out profiling data to.  </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Yönergesi</a></h2>
 <table class="directive">
@@ -2257,6 +2246,19 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Configures mutex mechanism and lock file directory for all
+or specified mutexes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Mutex <var>mechanism</var> [default|<var>mutex-name</var>] ... [OmitPID]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Mutex default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache HTTP Server 2.3.4 and later</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsme dayalı sanal konaklar için IP adresi belirtir</td></tr>
@@ -2478,6 +2480,23 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Protocol for a listening socket</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Protocol <var>protocol</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache 2.1.5 and later.
+On Windows from Apache 2.3.3 and later.</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p><h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive">AcceptFilter</code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache alt süreçleri tarafından çalıştırılan süreçlerin işlemci
@@ -2653,6 +2672,20 @@ sınırlama getirir.</td></tr>
       program çağrılarına sebep olmaz.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Determine if mod_status displays the first 63 characters
+of a request or the last 63, assuming the request itself is greater than
+63 chars.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache httpd 2.2.7 and later.</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Yönergesi</a></h2>
 <table class="directive">
@@ -3086,6 +3119,16 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
       Vekil sunucuda ise istek gövdesi için 64k’lık sınır yoktur.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Undefine the existence of a variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>UnDefine <var>parameter-name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Yönergesi</a></h2>
 <table class="directive">

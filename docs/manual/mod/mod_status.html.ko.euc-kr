@@ -67,9 +67,7 @@
     이 정보를 보려면 컴파일시 옵션을 사용해야 한다.</p>
 </div>
 <div id="quickview"><h3 class="directives">지시어들</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
-</ul>
+<p>이 모듈에는 지시어가 없습니다.</p>
 <h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Status 사용하기</a></li>
@@ -124,21 +122,6 @@
       설정파일에서 핸들러를 사용할 수 있다. 그래서 사이트에
       보안 문제가 발생할 수 있다.</strong>
     </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>각 요청에 대한 자세한 상태 정보를 기록한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ExtendedStatus Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>ExtendedStatus는 아파치 1.3.2 이후에만 있다.</td></tr>
-</table>
-    <p>이 설정은 서버 전체에 적용되며, 가상호스트별로 키고 끌
-    수 없다. 자세한 상태 정보를 모으면 서버가 느려질 수 있다.</p>
 
 </div>
 </div>

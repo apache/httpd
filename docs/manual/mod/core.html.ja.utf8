@@ -40,7 +40,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
@@ -52,12 +51,16 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
@@ -77,12 +80,15 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveralias">ServerAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#servername">ServerName</a></li>
@@ -95,6 +101,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
@@ -298,68 +305,6 @@
 <h3>参照</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addcharset">AddCharset</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>MIME-type に出力フィルタを割り当てる</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
-[<var>MIME-type</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0.33 以降で使用可能; Apache 2.1 以降非推奨</td></tr>
-</table>
-    <p>このディレクティブは応答の <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a> に応じて出力<a href="../filter.html">フィルタ</a>を使用するようにします。
-    しかし後述する問題のため、このディレクティブは非推奨です。
-    同等の機能は <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> で実現可能です。</p>
-
-    <p>次の例は <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> の <code>DEFLATE</code> フィルタを
-    使っています。<code>text/html</code> と <code>text/plain</code> の
-    すべての出力 (静的なものも動的なものも) をクライアントに送られる前に
-    圧縮します。</p>
-
-    <div class="example"><p><code>
-      AddOutputFilterByType DEFLATE text/html text/plain
-    </code></p></div>
-
-    <p>複数のフィルタでコンテンツを処理させたいときは、それぞれの名前をセミコロンで
-    分ける必要があります。各フィルタに対して
-    <code class="directive">AddOutputFilterByType</code> を一つずつ書くこともできます。</p>
-
-    <p>次の例は <code>text/html</code> のスクリプトのすべての出力を
-    まず <code>INCLUDES</code> フィルタで処理し、さらに <code>DEFLATE</code> フィルタにかけます。</p>
-
-    <div class="example"><p><code>
-    &lt;Location /cgi-bin/&gt;<br />
-    <span class="indent">
-      Options Includes<br />
-      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
-    </span>
-    &lt;/Location&gt;
-    </code></p></div>
-
-    <div class="warning"><h3>注:</h3>
-      <p><code class="directive">AddOutputFilterByType</code> ディレクティブにより
-      有効にしたフィルタは場合によっては、部分的もしくは完全に適用されないことが
-      あります。例えば、<a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a> が決定できないときには
-      <code class="directive"><a href="#defaulttype">DefaultType</a></code> の設定が同じだったとしても、
-      <code class="directive"><a href="#defaulttype">DefaultType</a></code> 設定を使うようになります。</p>
-      <p>しかし、確実にフィルタが適用されるようにしたいときは、リソースに
-      明示的にコンテントタイプを割り当てることができます。これには例えば
-      <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> ディレクティブや
-      <code class="directive"><a href="#forcetype">ForceType</a></code> ディレクティブを使います。
-      (nphでない) CGI スクリプトでコンテントタイプを設定するというものでも
-      大丈夫です。</p>
-    </div>
-
-<h3>参照</h3>
-<ul>
-<li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
-<li><code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code></li>
-<li><a href="../filter.html">フィルタ</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -942,6 +887,17 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Error <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.3.9 and later</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>エラーが発生したときにサーバがクライアントに送るもの</td></tr>
@@ -1096,6 +1052,35 @@
 <li><a href="../logs.html">Apache ログファイル</a></li>
 </ul>
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Format specification for error log entries</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> ErrorLog [connection|request] <var>format</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p><h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
+<li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
+<li><a href="../logs.html">Apache HTTP Server Log Files</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Keep track of extended status information for each 
+request</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ExtendedStatus Off[*]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">ディレクティブ</a></h2>
 <table class="directive">
@@ -1293,6 +1278,16 @@
     </code></p></div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Directory to write gmon.out profiling data to.  </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">ディレクティブ</a></h2>
 <table class="directive">
@@ -2206,6 +2201,19 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Configures mutex mechanism and lock file directory for all
+or specified mutexes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Mutex <var>mechanism</var> [default|<var>mutex-name</var>] ... [OmitPID]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>Mutex default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache HTTP Server 2.3.4 and later</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>名前ベースのバーチャルホストのための IP アドレスを指定</td></tr>
@@ -2437,6 +2445,23 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Protocol for a listening socket</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Protocol <var>protocol</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.1.5 and later.
+On Windows from Apache 2.3.3 and later.</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p><h3>参照</h3>
+<ul>
+<li><code class="directive">AcceptFilter</code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Apache の子プロセスから起動されたプロセスの CPU 消費量を
@@ -2609,6 +2634,20 @@
     実行を防ぐことができます。</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Determine if mod_status displays the first 63 characters
+of a request or the last 63, assuming the request itself is greater than
+63 chars.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache httpd 2.2.7 and later.</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">ディレクティブ</a></h2>
 <table class="directive">
@@ -3050,6 +3089,16 @@
     proxy サーバとしては、リクエストボディのサイズは 64k に制限されません。</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Undefine the existence of a variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UnDefine <var>parameter-name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">ディレクティブ</a></h2>
 <table class="directive">

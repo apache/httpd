@@ -35,18 +35,14 @@
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#chrootdir">ChrootDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxmemfree">MaxMemFree</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li>
@@ -59,120 +55,9 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptMutex" id="AcceptMutex">AcceptMutex</a> <a name="acceptmutex" id="acceptmutex">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>複数の子プロセスがネットワークソケットでリクエストを
-accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
-使う方法</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AcceptMutex Default|<var>method</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AcceptMutex Default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p><code class="directive">AcceptMutex</code> ディレクティブは、
-    ネットワークソケットのリクエストを accept しようとしている複数の子プロセスを
-    Apache が直列化するために使う方法(と必要ならロックファイルの場所)を設定します。
-    Apache 2.0 以前は、このメソッドはコンパイル時にのみ選択できました。
-    最適な方法は、アーキテクチャやプラットホームに大きく依存します。
-    詳細に関しては、<a href="../misc/perf-tuning.html">性能のチューニング</a>
-    ドキュメントをご覧下さい。</p>
-
-    <p>このディレクティブが <code>Default</code>
-    に設定されていれば、コンパイル時に選択されたデフォルト値が使われます。
-    他の使用可能なメソッドの一覧は下にあります。
-    全てのメソッドが全てのプラットホームで使用可能であるわけではない、
-    ということに注意してください。
-    使用可能でないメソッドが指定された場合は、
-    使用可能なメソッドの一覧を含んだメッセージが
-    エラーログに出力されます。</p>
-
-    <dl>
-      <dt><code>flock&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>オプションの <var>/path/to/lockfile</var>
-      パラメータで定義したファイルのロックに、
-      <code>flock(2)</code> システムコールを使います。
-      ロックファイルの指定には <code class="directive"><a href="#lockfile">LockFile</a></code> 
-      ディレクティブを使うことも出来ます(非推奨です)。</dd>
-
-      <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>オプションの <var>/path/to/lockfile</var>
-      パラメータで定義したファイルのロックに、
-      <code>fcntl(2)</code> システムコールを使います。
-      ロックファイルの指定には <code class="directive"><a href="#lockfile">LockFile</a></code> 
-      ディレクティブを使うことも出来ます(非推奨です)。</dd>
-
-      <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>使用できるファイルロックルーチンの中で最適なものを使います。
-      具体的には、<code>fcntl</code> が使用可能な場合はそれを使い、そうでない場合は
-      <code>flock</code> を試します。
-      この設定はプラットホームと <a class="glossarylink" href="../glossary.html#apr" title="用語集を参照">APR</a> が二つのうち少なくとも
-      一つをサポートしている場合のみ使用可能です。</dd>
-
-      <dt><code>posixsem</code></dt>
-      <dd>排他処理の実装に POSIX 互換セマフォを使用します</dd>
-
-      <dt><code>sysvsem</code></dt>
-      <dd>排他処理の実装に SySV 形式のセマフォを使います。</dd>
-
-      <dt><code>sem</code></dt>
-      <dd>使用できるセマフォルーチンの中で最適なものを使います。
-      具体的には、Posix 互換セマフォが使用可能な場合はそれを使い、そうでない場合は
-      SystemV IPC 形式のセマフォを試します。
-      この設定はプラットホームと <a class="glossarylink" href="../glossary.html#apr" title="用語集を参照">APR</a> が二つのうち少なくとも
-      一つをサポートしている場合のみ使用可能です。</dd>
-
-      <dt><code>pthread</code></dt>
-      <dd>POSIX Threads (PThreads) 規格で実装されている
-      POSIX 排他処理を使います。</dd>
-
-    </dl>
-
-    <p>コンパイル時にシステムのデフォルトに選ばれたものが何かを見たい場合は、
-    <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> を <code>debug</code>
-    に設定するとよいでしょう。デフォルトの <code class="directive">AcceptMutex</code>
-    が <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> に書き込まれます。</p>
-
-  <div class="warning"><h3>警告</h3>
-     <p>ほとんどのシステムにおいては、<code>pthread</code> オプションが
-     選ばれていると、子プロセスが <code>AcceptCntl</code> mutex を
-     保持しているときに異常終了した場合、サーバはリクエストへの応答を
-     停止してしまいます。これが発生した場合は、サーバを復旧させるためには
-     手動で再起動させる必要があります。</p>
-
-     <p>Solaris は例外で、Apache も使用している、子プロセスが mutex を
-     保持して異常終了した後に mutex を復旧させるための機構を提供をしています。</p>
-     <p>御使用のシステムが <code>pthread_mutexattr_setrobust_np()</code> 関数を
-     実装している場合は、<code>pthread</code> オプションを安全に使用できる
-     可能性があります。</p>
-  </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>apache が起動後に chroot(8) するディレクトリ
-</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ChrootDir <var>/path/to/directory</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p>このディレクティブは2.2.9(?)以降で利用できます。
-    サーバ起動後、ネットからリクエストを受け付けるより前に、
-    サーバは指定したディレクトリに <var>chroot(8)</var> します。</p>
-    <p>chroot 環境下でサーバを動かすのは単純ではなく、
-    特に CGI や PHP を動かしているなら、さらなるセットアップ
-    が必要であることに注意してください。 この機能を使おうとする前に、
-    chroot の動作を正しく理解しておくようにしてください。</p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2>
 <table class="directive">
@@ -240,61 +125,6 @@ accept しようとしているときに、Apache がそれらの子プロセス
 
     <p>この値をゼロに設定すると、処理中として残っているリクエストが
     全て完了するまでサーバーは終了しません。</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答する際に所属するグループ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Group <var>unix-group</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>Group #-1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0 以降で、グローバル設定でのみ有効です。</td></tr>
-</table>
-    <p><code class="directive">Group</code> ディレクティブで、
-    リクエストに応答する際に所属しておくグループを設定します。
-    このディレクティブを使用するためには、
-    サーバは最初に <code>root</code> 権限で起動されている必要があります。
-    非 root ユーザでサーバを起動した場合は、指定したグループに変化できずに、
-    結果的に起動したユーザの属するグループで実行されることになります。
-    <var>unix-group</var> は次のうちのいずれかです:</p>
-
-    <dl>
-      <dt>グループ名</dt>
-      <dd>グループを名前で参照します</dd>
-
-      <dt><code>#</code> に続いてグループ番号</dt>
-      <dd>グループを番号で参照します。</dd>
-    </dl>
-
-    <div class="example"><h3>例</h3><p><code>
-      Group www-group
-    </code></p></div>
-
-    <p>サーバを実行するために特定の新しいグループを設定することを
-    お薦めします。<code>nobody</code> を使用する管理者もいますが、
-    可能であったり望ましい訳では必ずしもありません。</p>
-
-    <div class="warning"><h3>セキュリティ</h3>
-      <p>正確にどんなことをやっているのか、その危険性を知らないで、
-      <code class="directive">Group</code> (や <code class="directive"><a href="#user">User</a></code>) を
-      <code>root</code> に 設定しないでください。</p>
-    </div>
-
-    <p>特記事項: このディレクティブを
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    で使用することはサポートされなくなりました。Apache 2.0 で
-    <code class="program"><a href="../programs/suexec.html">suexec</a></code> を設定したい場合は、
-    <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
-    を使用してください。</p>
-
-    <div class="note"><h3>注意</h3>
-      <p><code class="directive">Group</code> ディレクティブは
-      <code class="module"><a href="../mod/beos.html">beos</a></code> と <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> MPM
-      にも存在しますが、実質的に無効で、互換性のためだけに存在します。</p>
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -406,45 +236,6 @@ accept しようとしているときに、Apache がそれらの子プロセス
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LockFile" id="LockFile">LockFile</a> <a name="lockfile" id="lockfile">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>受付を直列化するためのロックファイルの位置<em>(非推奨)</em></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LockFile <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LockFile logs/accept.lock</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p><code class="directive"><a href="#acceptmutex">AcceptMutex</a></code>
-    が <code>fcntl</code> や <code>flock</code>
-    に設定されて使用されている場合に、使用されるロックファイルへのパスを
-    <code class="directive">LockFile</code> ディレクティブで設定します。
-    このディレクティブは通常はそのままにしておきます。
-    主に <code>logs</code> ディレクトリが NFS
-    でマウントされている場合などに値を変えます。
-    なぜなら<strong>ロックファイルはローカルディスクに
-    保存されなければならない</strong>からです。
-    メインサーバプロセスの PID がファイル名に自動的に付加されます。</p>
-
-    <div class="warning"><h3>セキュリティ</h3>
-      <p><code>/var/tmp</code>
-      といった、誰でも書き込めるディレクトリにファイルを
-      <em>置かない</em>方がよいです。なぜなら、サーバが起動時に作成する
-      ロックファイルの作成自体を妨害することによって、
-      誰でもサービス拒否アタックを引き起こすことができるからです。</p>
-    </div>
-    <div class="warning"><h3>非推奨</h3>
-      <p>このディレクティブは非推奨です。 <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code>
-      ディレクティブで排他処理の方法の指定とともにロックファイルの場所も指定してください。</p>
-    </div>
-
-
-<h3>参照</h3>
-<ul>
-<li><code class="directive"><a href="#acceptmutex">AcceptMutex</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答するために作成される
@@ -486,6 +277,20 @@ accept しようとしているときに、Apache がそれらの子プロセス
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Limit on the number of connections that an individual child server
+will handle during its life</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxConnectionsPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxConnectionsPerChild 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available Apache HTTP Server 2.3.9 and later. The old name
+<code>MaxRequestsPerChild</code> is still supported.</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>free()</code> が呼ばれない限り、
@@ -500,40 +305,6 @@ accept しようとしているときに、Apache がそれらの子プロセス
     <code>free()</code> が呼ばれない限り、
     主アロケータが保持できる空のメモリの最大値をキロバイト単位で設定します。
     設定されていないか、零に設定されているときは、無制限になります。</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRequestsPerChild" id="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild" id="maxrequestsperchild">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>個々の子サーバが稼働中に扱うリクエスト数の上限</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxRequestsPerChild <var>number</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxRequestsPerChild 10000</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p><code class="directive">MaxRequestsPerChild</code> ディレクティブは、
-    個々の子サーバプロセスが扱うことのできるリクエストの制限数を
-    設定します。<code class="directive">MaxRequestsPerChild</code>
-    個のリクエストの後に、子プロセスは終了します。
-    <code class="directive">MaxRequestsPerChild</code> が <code>0</code>
-    に設定されている場合は、プロセスは期限切れにより終了することはありません。</p>
-
-    <div class="note"><h3>その他のデフォルト値</h3>
-      <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> と <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>
-      でのデフォルト値は <code>0</code> です。</p>
-    </div>
-
-    <p><code class="directive">MaxRequestsPerChild</code>
-    を非ゼロにすることにより、(偶発的な) メモリーリークが起こった場合に
-    プロセスが消費するメモリの総量を制限できます。</p>
-
-    <div class="note"><h3>注</h3>
-      <p><code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> リクエストの場合は、
-      一つ目のリクエストだけがこの制限に該当します。
-      実効的には、一つの子プロセスあたりの<em>コネクション</em>数を
-      制限するように挙動が変化します。</p>
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -993,75 +764,6 @@ accept しようとしているときに、Apache がそれらの子プロセス
       Web サーバの設定を変更すると、現在の <code class="directive">ThreadStackSize</code> 
       の設定が取り消される場合があります。</li>
     </ul>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答する際に用いるユーザ ID</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>User <var>unix-userid</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>User #-1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0 以降で、グローバル設定でのみ有効です。
-</td></tr>
-</table>
-    <p><code class="directive">User</code> ディレクティブは
-    サーバがリクエストに応答する際に用いるユーザ ID を設定します。
-    このディレクティブを使用するためには、スタンドアロン型の
-    サーバは最初に <code>root</code> 権限で起動されている必要があります。
-    非 root ユーザでサーバを起動した場合は、
-    権限の低いユーザへと変わることができず、
-    結局元のユーザのプロセスとして実行され続けます。
-    <code>root</code> で起動した場合に親プロセスが root
-    として実行されているのは正常な動作です。
-    <var>Unix-userid</var> は次のどれかです。</p>
-
-    <dl>
-      <dt>ユーザ名</dt>
-      <dd>ユーザを名前で参照します。</dd>
-
-      <dt># に続いてユーザ番号</dt>
-      <dd>ユーザを番号で参照します。</dd>
-    </dl>
-
-    <p>このユーザは、外部に見せるように意図していないファイルに、
-    アクセス可能になってしまうような権限を持つべきではないですし、
-    同様に HTTP リクエストに対して応答するように意図していない
-    実行コードを、実行できるような権限を持つべきではないです。
-    サーバを実行するために特定の新しいユーザとグループを
-    設定することをお薦めいたします。
-    <code>nobody</code> ユーザを使用する管理者もいますが、
-    これが常に望ましいわけではありません。
-    なぜなら <code>nobody</code> ユーザは、システムで
-    他の役割を担っているかも知れないからです。</p>
-
-    <div class="warning"><h3>セキュリティ</h3>
-      <p>正確にどんなことをやっているのか、その危険性を知らないで、
-      <code class="directive">User</code> (や <code class="directive"><a href="#group">Group</a></code>) を <code>root</code> に
-      設定しないでください。</p>
-    </div>
-
-    <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM では、異なるユーザ ID
-    で複数のバーチャルホストを動かすことを目的としていますが、
-    <code class="directive">User</code> は、主サーバのユーザ ID 
-    と、<code class="directive"><a href="../mod/perchild.html#assignuserid">AssignUserID</a></code>
-    ディレクティブを持たない <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> セクションへの
-    フォールバックとを定義することになります。</p>
-
-    <p>特記事項: このディレクティブを
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    で使用することはサポートされなくなりました。
-    <code class="program"><a href="../programs/suexec.html">suexec</a></code> 向けにサーバを設定するのであれば、
-    <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
-    を使用してください。</p>
-
-    <div class="note"><h3>注意</h3>
-      <p><code class="directive">User</code> ディレクティブは
-      <code class="module"><a href="../mod/beos.html">beos</a></code> と <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> MPM
-      にも存在しますが、実質的に無効で、互換性のためだけに存在します。</p>
-    </div>
 
 </div>
 </div>

@@ -71,9 +71,7 @@
     </div>
 </div>
 <div id="quickview"><h3 class="directives">지시어들</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
-</ul>
+<p>이 모듈에는 지시어가 없습니다.</p>
 <h3>주제</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">설정 예제</a></li>
@@ -140,39 +138,6 @@
         &lt;/Directory&gt;
       </code></p></div>
     
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzOwnerAuthoritative" id="AuthzOwnerAuthoritative">AuthzOwnerAuthoritative</a> <a name="authzownerauthoritative" id="authzownerauthoritative">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>권한부여를 저수준 모듈로 넘겨줄지 여부</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthzOwnerAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>AuthzOwnerAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_authz_owner</td></tr>
-</table>
-    <p><code class="directive">AuthzOwnerAuthoritative</code> 지시어를
-    직접 <code>Off</code>로 설정하면 다음과 같은 경우 사용자
-    권한부여를 (<code>modules.c</code> 파일에서 정의한) 저수준
-    모듈로 넘겨준다.</p>
-
-    <ul>
-    <li><code>file-owner</code>를 사용하면 파일시스템 소유자를
-    알 수 없거나 주어진 웹 사용자명과 다른 경우</li>
-
-    <li><code>file-group</code>을 사용하면 파일시스템 그룹을
-    알 수 없거나 주어진 웹 사용자명이 구성원이 아닌 경우.</li>
-    </ul>
-
-    <p>또, 값을 <code>Off</code>로 설정하면
-    <code>file-owner</code>와 <code>file-group</code>을 결합하여,
-    둘 중 하나만 만족해도 접근을 허가한다.</p>
-
-    <p>기본적으로 제어를 넘기지않고, 모르는 그룹의 경우 인증
-    필요 응답을 한다. 이 지시어를 <code>Off</code>로 설정하지않으면
-    시스템이 안전하게 유지되며, NCSA 웹서버와 같이 동작한다.</p>
-
 </div>
 </div>
 <div class="bottomlang">
