@@ -29,6 +29,7 @@
     <p>This document describes when and how to use name-based virtual hosts.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Name-based vs. IP-based Virtual Hosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#alg">How the server selects the proper name-based virtual host</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Using Name-based Virtual Hosts</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="ip-based.html">IP-based Virtual Host Support</a></li><li><a href="details.html">An In-Depth Discussion of Virtual Host Matching</a></li><li><a href="mass.html">Dynamically configured mass virtual hosting</a></li><li><a href="examples.html">Virtual Host examples for common setups</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -39,10 +40,9 @@
     determine the correct virtual host to serve.  Therefore you need to
     have a separate IP address for each host.</p>
 
-    <p>With name-based virtual
-    hosting, the server relies on the client to report the hostname as
-    part of the HTTP headers.  Using this technique, many different hosts
-    can share the same IP address.</p>
+    <p>With name-based virtual hosting, the server relies on the client to 
+    report the hostname as part of the HTTP headers.  Using this technique, 
+    many different hosts can share the same IP address.</p>
 
     <p>Name-based virtual hosting is usually simpler, since you need
     only configure your DNS server to map each hostname to the correct
@@ -63,6 +63,28 @@
         they are on separate IP addresses.</li>
     </ul>
 
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="alg" id="alg">How the server selects the proper name-based virtual host</a></h2>
+
+    <p>It is important to recognize that the first step in name-based virtual
+    host resolution is IP-based resolution.  Name-based virtual host
+    resolution only chooses the most appropriate name-based virtual host
+    after narrowing down the candidates to the best IP-based match.  Using a wildcard (*)
+    for the IP address in all of the NameVirtualHost and VirtualHost directives makes this
+    IP-based mapping irrelevant.</p>
+    
+    <p>When a request arrives, the server will first check if it is using
+    an IP address that matches exactly any <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. If it is, then it will look at each <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section with a (literal) matching
+    IP address and try to find one where the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> 
+    matches the requested hostname. If it finds one, then it uses the configuration 
+    for that server.</p>
+
+    <p><a name="defaultvhost" /> If no matching ServerName or ServerAlias is found in the
+    set of virtual hosts matching the NameVirtualHost directive, then 
+    <strong>the first listed virtual host</strong> that matches the IP 
+    address will be used.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="using" id="using">Using Name-based Virtual Hosts</a></h2>
@@ -96,17 +118,22 @@
     lives.</p>
 
     <div class="note"><h3>Main host goes away</h3>
-        <p>If you are adding virtual hosts to an existing web server, you
-        must also create a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block for the existing host. The <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> included in this virtual host should be the
-        same as the global <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and
-        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. List this virtual
-        host first in the configuration file so that it will act as the default
-        host.</p>
+        <p> Any request that doesn't match an existing <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> is handled by the global
+        server configuration, regardless of the hostname or ServerName.</p>
+
+        <p> When you add a name-based virtual host to an existing server, and 
+        the virtual host arguments match preexisting IP and port combinations, 
+        requests will now be handled by an explicit virtual host.  In this case,
+        it's usually wise to create a <a href="#defaultvhost">default virtual host</a>
+        with a <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> matching that of 
+        the base server.  New domains on the same interface and port, but
+        requiring separate configurations,  can then be added as subsequent (non-default)
+        virtual hosts.</p>
     </div>
 
     <p>For example, suppose that you are serving the domain
-    <code>www.domain.tld</code> and you wish to add the virtual host
-    <code>www.otherdomain.tld</code>, which points at the same IP address.
+    <code>www.example.com</code> and you wish to add the virtual host
+    <code>other.example.com</code>, which points at the same IP address.
     Then you simply add the following to <code>httpd.conf</code>:</p>
 
     <div class="example"><p><code>
@@ -114,14 +141,15 @@
         <br />
         &lt;VirtualHost *:80&gt;<br />
         <span class="indent">
-            ServerName www.domain.tld<br />
-            ServerAlias domain.tld *.domain.tld<br />
+            # This first-listed virtual host is also the default for *:80
+            ServerName www.example.com<br />
+            ServerAlias example.com *.example.com<br />
             DocumentRoot /www/domain<br />
         </span>
         &lt;/VirtualHost&gt;<br />
         <br />
         &lt;VirtualHost *:80&gt;<br />
-        <span class="indent">ServerName www.otherdomain.tld<br />
+        <span class="indent">ServerName other.example.com<br />
             DocumentRoot /www/otherdomain<br />
         </span>
         &lt;/VirtualHost&gt;<br />
@@ -140,11 +168,11 @@
     web site:</p>
 
     <div class="example"><p><code>
-        ServerAlias domain.tld *.domain.tld
+        ServerAlias example.com *.example.com
     </code></p></div>
 
-    <p>then requests for all hosts in the <code>domain.tld</code> domain will
-    be served by the <code>www.domain.tld</code> virtual host. The wildcard
+    <p>then requests for all hosts in the <code>example.com</code> domain will
+    be served by the <code>www.example.com</code> virtual host. The wildcard
     characters <code>*</code> and <code>?</code> can be used to match names.
     Of course, you can't just make up names and place them in <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code>ServerAlias</code>. You must
     first have your DNS server properly configured to map those names to an IP
@@ -159,22 +187,6 @@
     (outside any <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     container) will be used only if they are not overridden by the virtual host
     settings.</p>
-
-    <p>Now when a request arrives, the server will first check if it is using
-    an IP address that matches the <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. If it is, then it will look at each <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> section with a matching
-    IP address and try to find one where the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> or <code>ServerAlias</code> matches the requested
-    hostname. If it finds one, then it uses the configuration for that server.
-    If no matching virtual host  is found, then <strong>the first listed virtual
-    host</strong> that matches the IP address will be used.</p>
-
-    <p>As a consequence, the first listed virtual host is the <em>default</em>
-    virtual host.  The <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> from
-    the <em>main server</em> will <strong>never</strong> be used when an IP
-    address matches the <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> 
-    directive. If you would like to have a special configuration for requests 
-    that do not match any particular virtual host, simply put that configuration
-    in a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    container and list it first in the configuration file.</p>
 
 </div></div>
 <div class="bottomlang">
