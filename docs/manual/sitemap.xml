@@ -61,7 +61,7 @@ Documentation</a>.</p>
 <page href="filter.html">Filters</page>
 <page href="suexec.html">suEXEC Support</page>
 <page href="misc/perf-tuning.html">Performance Hints</page>
-<page href="faq/">Frequently Asked Questions</page>
+<page href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</page>
 </category>
 
 <category id="vhosts">
