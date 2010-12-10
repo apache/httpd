@@ -10,7 +10,7 @@
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
-<body id="manual-page"><div id="page-header">
+<body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
 <img alt="" src="../images/feather.gif" /></div>
@@ -24,89 +24,9 @@
 </div>
 
 
-    <p>This document is not a traditional FAQ, but rather a quick
-    guide showing you what to do when you run into problems with the
-    Apache HTTP Server.</p>
-
-    <p>A more traditional but quite outdated document is the <a href="http://httpd.apache.org/docs/misc/FAQ.html">Apache 1.3
-    FAQ</a>.</p> 
+    <p>The FAQ has been moved to the <a href="http://wiki.apache.org/httpd/FAQ">HTTP Server Wiki</a>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support.what2do">"Why can't I ...? Why won't ... work?" What to do in case of
-    problems</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#support.support">Whom do I contact for support?</a></li>
-</ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="support.what2do" id="support.what2do">"Why can't I ...? Why won't ... work?" What to do in case of
-    problems</a></h2>
-    
-
-      <p>If you are having trouble with your Apache server software, you should
-      take the following steps:</p>
-
-      <dl>
-      <dt>Check the ErrorLog!</dt>
-      <dd><p>Apache tries to be helpful when it encounters a problem. In many
-      cases, it will provide some details by writing one or more messages to the
-      server error log. Sometimes this is enough for you to diagnose and fix
-      the problem yourself (such as file permissions or the like). The default
-      location of the error log is
-      <code>/usr/local/apache2/logs/error_log</code>, but see the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> directive in your config files for the
-      location on your server.</p>
-
-      <p>If you end up in any of the support forums this is quite likely to be the 
-      first place they will ask you retrieve information from.  Please ensure you
-      know where to find your errorlog.  If you are unsure, the wiki page 
-      <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout"> here</a> can
-      give you some ideas where to look.</p></dd>
-
-      <dt>Consult the wiki</dt>
-      <dd>The <a href="http://wiki.apache.org/httpd/">Apache HTTP
-      Server Wiki</a> contains guides to solving many common
-      problems.</dd>
-
-      <dt>Check the Apache bug database</dt> <dd>Most problems that
-      get reported to The Apache Group are recorded in the <a href="http://httpd.apache.org/bug_report.html">bug database</a>.
-      <strong>Do not</strong> submit a new bug report until you have
-      checked existing reports (open <em>and</em> closed) and asked
-      about your problem in a user-support forum (see below). If you
-      find that your issue has already been reported, please
-      <em>don't</em> add a "me, too" report.</dd>
-
-      <dt><a id="support.what2do.user-support" name="support.what2do.user-support">Ask in a user support forum</a></dt>
-      <dd><p>Apache has an active community of users who are willing to share
-      their knowledge. Participating in this community is usually the best and
-      fastest way to get answers to your questions and problems.</p>
-
-      <p><a href="http://httpd.apache.org/userslist.html">Users
-      mailing list</a></p>
-
-      <p><a href="irc://irc.freenode.net/#httpd">#httpd</a> on 
-      <a href="http://freenode.net">Freenode IRC</a> is also available for 
-      user support issues.</p>
-      </dd>
-
-      <dt>Please use the bug database for bugs!</dt>
-      <dd><p>If you've gone through those steps above that are appropriate and
-      have obtained no relief, then please <em>do</em> let the httpd developers
-      know about the problem by <a href="http://httpd.apache.org/bug_report.html">logging a bug
-      report</a>.</p>
-
-      <p>If your problem involves the server crashing and generating a core
-      dump, please <a href="http://httpd.apache.org/dev/debugging.html">
-      include a backtrace</a> (if possible).</p>
-      </dd>
-      </dl>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="support.support" id="support.support">Whom do I contact for support?</a></h2>
-      <p>With millions of users and fewer than sixty volunteer developers,
-      we cannot provide personal support for Apache. For free support, we
-      suggest participating in a user forum (see above).</p>
-
-      <p>Professional, commercial support for Apache is available from
-      a number of companies.</p>
-    </div></div>
+</div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/faq/" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/faq/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
