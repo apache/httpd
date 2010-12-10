@@ -84,7 +84,7 @@ Documentation</title>
 </category>
 
 <category id="other"><title>Other Topics</title>
-    <page href="faq/">Frequently Asked Questions</page>
+    <page href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</page>
     <page href="sitemap.html">Sitemap</page>
     <page href="developer/">Documentation for Developers</page>
     <page href="misc/">Other Notes</page>

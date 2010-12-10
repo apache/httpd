@@ -86,7 +86,7 @@ Documentation</h1>
 <li><a href="platform/ebcdic.html">EBCDIC Port</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">Other Topics</a></h2>
-<ul><li><a href="faq/">Frequently Asked Questions</a></li>
+<ul><li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
 <li><a href="sitemap.html">Sitemap</a></li>
 <li><a href="developer/">Documentation for Developers</a></li>
 <li><a href="misc/">Other Notes</a></li>
