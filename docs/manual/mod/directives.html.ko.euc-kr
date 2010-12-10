@@ -134,12 +134,8 @@
 <li><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
-<li><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative</a></li>
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
-<li><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
-<li><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
 <li><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
-<li><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative</a></li>
 <li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
 <li><a href="mod_proxy_balancer.html#balancernonce">BalancerNonce</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
@@ -236,7 +232,6 @@
 <li><a href="mod_expires.html#expiresbytype">ExpiresByType</a></li>
 <li><a href="mod_expires.html#expiresdefault">ExpiresDefault</a></li>
 <li><a href="core.html#extendedstatus">ExtendedStatus</a></li>
-<li><a href="mod_status.html#extendedstatus">ExtendedStatus</a></li>
 <li><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></li>
 <li><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></li>
 <li><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource</a></li>
@@ -273,6 +268,7 @@
 <li><a href="core.html#include">Include</a></li>
 <li><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert</a></li>
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
+<li><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset</a></li>
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
 <li><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
 <li><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet</a></li>

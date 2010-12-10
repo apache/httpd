@@ -69,10 +69,7 @@
       takdirde mevcuttur.</p>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
-</ul>
+<p>Bu modül yönerge içermez.</p>
 <h3>Konular</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></li>
@@ -131,59 +128,6 @@
        için kullanılabilir olacaktır. Bu durum güvenlik ile ilgili olarak
        siteniz için içinden çıkılması güç durumlara yol açabilir (çapanoğlu
        durumu).</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Her istekte ek durum bilgisinin toplanmasını sağlar.
-</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ExtendedStatus Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_status</td></tr>
-</table>
-    <p>Bu ayarlama sunucunun tamamını etkiler ve sanal konaklar için ayrı ayrı
-      etkin kılınamaz veya iptal edilemez. Ek durum bilgisinin toplanması
-      sunucuyu yavaşlatabilir.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsteğin kendisi 63 karakterden uzun olduğunda, isteğin ilk 63
-karakterinin mi yoksa son 63 karakterinin mi gösterileceğini belirler.
-</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>SeeRequestTail Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.2.7 ve sonrasında mevcuttur.</td></tr>
-</table>
-    <p><code>mod_status</code>, <code>ExtendedStatus On</code> olduğunda
-      isteğin kendisini de gösterir. Tarihsel nedenlerle, göstermek için
-      isteğin sadece 63 karakteri saklanır. Bu yönerge ilk 63 karakterin mi
-      yoksa son 63 karakterin mi saklanacağını belirtmek için kullanılır. Bu,
-      elbette, istek 64 karakterlik veya daha uzunsa uygulanır.</p>
-
-    <p>Apache şöyle bir istek alsaydı:<br /><code>GET&nbsp;
-      /disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;
-      HTTP/1.1</code><br /><code>mod_status</code> bu isteği şöyle gösterirdi:
-    </p>
-
-    <table class="bordered">
-      <tr>
-        <th>Off (öntanımlı)</th>
-        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples</td>
-      </tr>
-      <tr>
-        <th>On</th>
-        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
-      </tr>
-    </table>
-
 
 </div>
 </div>

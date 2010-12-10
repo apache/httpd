@@ -33,16 +33,14 @@
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxmemfree">MaxMemFree</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li>
@@ -58,90 +56,6 @@
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptMutex" id="AcceptMutex">AcceptMutex</a> <a name="acceptmutex" id="acceptmutex">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
-  çok sayıda çocuk süreci sıraya sokmak için kullandığı yöntemi
-  belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AcceptMutex Default|<var>yöntem</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>AcceptMutex Default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p><code class="directive">AcceptMutex</code> yönergesi Apache HTTPd Sunucusunun
-     ağ soketlerinden istekleri kabul eden çok sayıda çocuk süreci sıraya
-     sokmak için kullandığı yöntemi (ve uygunsa kilit dosyasının yerini)
-     belirler. Apache 2.0’dan önce, yöntem sadece derleme sırasında
-     seçilebiliyordu. Kullanılacak en uygun yöntem mimariye ve platforma aşırı
-     derecede bağımlıdır. Bu konuda daha ayrıntılı bilgi edinmek için <a href="../misc/perf-tuning.html">Başarım Arttırma İpuçları</a> belgesine
-     bakabilirsiniz.</p>
-
-    <p>Bu yönergeye değer olarak <code>Default</code> belirtilmişse derleme
-     sırasında seçilen öntanımlı yöntem kullanılacaktır. Diğer olası yöntemler
-     aşağıda listelenmiştir. Tüm yöntemlerin tüm platformlarda mevcut
-     olmadığına dikkat ediniz. Eğer belirtilen yöntem mevcut değilse hata
-     günlüğüne mevcut yöntemlerin listesini içeren bir ileti yazılacaktır.</p>
-
-    <dl>
-      <dt><code>flock&lt;<var>:/dosya/yolu/kilit.dosyası</var>&gt;</code></dt>
-      <dd>İsteğe bağlı <var>/dosya/yolu/kilit.dosyası</var> ile tanımlanan
-      dosyayı kilitlemek için <code>flock(2)</code> sistem çağrısı kullanılır.
-      Ayrıca, önerilmiyor olsa bile kilit dosyasının yerini belirtmek için
-      <code class="directive"><a href="#lockfile">LockFile</a></code> yönergesi
-      kullanılabilir.</dd>
-
-      <dt><code>fcntl&lt;<var>:/dosya/yolu/kilit.dosyası</var>&gt;</code></dt>
-      <dd>İsteğe bağlı <var>/dosya/yolu/kilit.dosyası</var> ile tanımlanan
-       dosyayı kilitlemek için <code>fcntl(2)</code> sistem çağrısı
-       kullanılır. Ayrıca, önerilmiyor olsa bile kilit dosyasının yerini
-       belirtmek için <code class="directive"><a href="#lockfile">LockFile</a></code>
-       yönergesi kullanılabilir.</dd>
-
-      <dt><code>file&lt;<var>:/dosya/yolu/kilit.dosyası</var>&gt;</code></dt>
-      <dd>Bu yönerge Apache’ye, <code>fcntl</code> ve <code>flock</code>
-       arasında "en iyi" dosya kilitleme gerçeklenimini seçip kullanmasını
-       söyler. Sadece bu işlevleri içeren ve <a class="glossarylink" href="../glossary.html#apr" title="sözlüğe bakınız">APR</a>’nin
-       ikisinden birini desteklediği platformlarda kullanılabilir.</dd>
-
-      <dt><code>posixsem</code></dt>
-      <dd>Muteksleri gerçeklemek için POSIX uyumlu semaforlar kullanılır.</dd>
-
-      <dt><code>sysvsem</code></dt>
-      <dd>Muteksleri gerçeklemek için SysV tarzı semaforlar kullanılır.</dd>
-
-      <dt><code>sem</code></dt>
-      <dd>Bu yönerge Apache’ye, POSIX ve SystemV IPC arasında "en iyi" semafor
-       gerçeklenimini seçip kullanmasını söyler. Sadece bu semaforları içeren
-       ve <a class="glossarylink" href="../glossary.html#apr" title="sözlüğe bakınız">APR</a>’nin ikisinden birini desteklediği
-       platformlarda kullanılabilir.</dd>
-
-      <dt><code>pthread</code></dt>
-      <dd>POSIX Evreleri (PThreads) belirtimi tarafından gerçeklenen muteksler
-       kullanılır.</dd>
-
-    </dl>
-
-    <p>Sisteminiz için derleme sırasında seçilmiş öntanımlı yöntemi öğrenmek
-      isterseniz <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> yönergesine
-      <code>debug</code> değerini atayabilirsiniz. Öntanımlı <code class="directive">AcceptMutex</code>, <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
-      ile belirtilen günlük dosyasına yazılacaktır.</p>
-
-  <div class="warning"><h3>Uyarı</h3>
-     <p>Çoğu sistemde, <code>pthread</code> seçeneği seçildiği takdirde,
-      <code>AcceptCntl</code> muteksi tutulurken bir çocuk süreç anormal
-      şekilde sonlanırsa, muteksi kurtarmak için sunucunun elle yeniden
-      başlatılması gerekecektir.</p>
-     <p>Solaris, bir muteks tutulurken, bir çocuk süreç anormal şekilde
-      sonlandıktan sonra muteksin Apache tarafından kurtarılmasına imkan veren
-      bir mekanizma sağlaması sebebiyle diğerlerinden ayrılır.</p>
-     <p>Sisteminiz <code>pthread_mutexattr_setrobust_np()</code> işlevini
-      gerçekliyorsa <code>pthread</code> seçeneğini gönül rahatlığıyla
-      kullanabilirsiniz.</p>
-  </div>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Yönergesi</a></h2>
 <table class="directive">
@@ -342,45 +256,6 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LockFile" id="LockFile">LockFile</a> <a name="lockfile" id="lockfile">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
-  çok sayıda çocuk süreci sıraya sokarken kullandığı kilit dosyasının yerini
-  belirler. <em>(kullanımı önerilmemektedir)</em></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LockFile <var>dosya</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LockFile logs/accept.lock</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p><code class="directive">LockFile</code> yönergesi, <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code> yönergesi <code>fcntl</code>
-      veya <code>flock</code> değeri ile belirtildiği takdirde kullanılan
-      kilit dosyasının yerini belirler. Bu yönerge normalde öntanımlı
-      değeriyle bırakılır. Değişmesini gerektiren ana sebep, <code>logs</code>
-      dizininin ağ dosya sisteminde (NFS) yeralması halinde <strong>kilit
-      dosyasının bir yerel diskte saklanması gereği</strong>dir. Ana sürecin
-      süreç kimliği dosyaya kendiliğinden eklenir.</p>
-
-    <div class="warning"><h3>Güvenlik</h3>
-      <p>Bu dosyayı herkesin yazabildiği <code>/var/tmp</code> gibi bir dizine
-        koymaktan kaçınmak gerekir. Çünkü, bu takdirde, birileri sunucunun
-        hizmet sunmaya başlarken oluşturacağı kilit dosyası ile aynı isimde
-        bir dosya oluşturarak hizmet reddi saldırısı (DoS) başlatabilir.</p>
-    </div>
-    <div class="warning"><h3>Kullanımı önerilmiyor</h3>
-      <p>Bu yönergenin kullanılması önerilmemektedir. Kilit dosyasının yerini
-        <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code> yönergesinde
-        muteks kilitleme gerçeklenimiyle birlikte belirtmeniz
-        önerilmektedir.</p>
-    </div>
-
-
-<h3>Ayrıca bakınız:</h3>
-<ul>
-<li><code class="directive"><a href="#acceptmutex">AcceptMutex</a></code></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Aynı anda işleme sokulacak azami bağlantı sayısı</td></tr>
@@ -414,6 +289,20 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Limit on the number of connections that an individual child server
+will handle during its life</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxConnectionsPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxConnectionsPerChild 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available Apache HTTP Server 2.3.9 and later. The old name
+<code>MaxRequestsPerChild</code> is still supported.</td></tr>
+</table><p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>free()</code> çağrılmaksızın ana bellek ayırıcının
@@ -429,39 +318,6 @@
       bellek miktarını kB cinsinden belirler. Bir değerle belirtilmediğinde
       veya <code>0</code> değeriyle belirtildiğinde eşik sınırsız
       olacaktır.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRequestsPerChild" id="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild" id="maxrequestsperchild">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Tek bir çocuk sürecin ömrü boyunca işleme sokabileceği istek
-  sayısını sınırlamakta kullanılır.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRequestsPerChild <var>sayı</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxRequestsPerChild 10000</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p><code class="directive">MaxRequestsPerChild</code> yönergesi, tek bir çocuk
-      sürecin işleme sokabileceği istek sayısını sınırlamakta kullanılır.
-      <code class="directive">MaxRequestsPerChild</code> istekten sonra çocuk süreç
-      ölür. Eğer <code class="directive">MaxRequestsPerChild</code> için
-      <code>0</code> belirtilmişse sürecin ömrü sonsuz olacaktır.</p>
-
-    <div class="note"><h3>Sıfırdan farklı öntanımlı değerler</h3>
-      <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> ve <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> için
-        öntanımlı değer <code>0</code>’dır.</p>
-    </div>
-
-    <p><code class="directive">MaxRequestsPerChild</code> için sıfırdan farklı bir
-      değer belirtilmesi sürecin kullanacağı bellek miktarını sınırlamak suretiyle olası bellek sızıntılarını engeller.</p>
-
-    <div class="note"><h3>Ek Bilgi</h3>
-      <p><code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> isteklerinde sadece
-        ilk istek bu sınıra uygun sayılır. Etkisi ise, davranışın çocuk süreç
-        başına <em>bağlantı</em> sayısının sınırlanması şeklinde
-        değişmesidir.</p>
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -40,7 +40,6 @@
 <div id="quickview"><h3 class="directives">지시어들</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authdbmgroupfile">AuthDBMGroupFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbmauthoritative">AuthzDBMAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzdbmtype">AuthzDBMType</a></li>
 </ul>
 <h3>참고</h3>
@@ -98,47 +97,6 @@
     기록할 수 있다. 이 부분은 인증모듈이 무시한다.
     www.telescope.org는 이렇게 암호 데이터베이스와 그룹
     데이터베이스를 같이 사용한다.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBMAuthoritative" id="AuthzDBMAuthoritative">AuthzDBMAuthoritative</a> <a name="authzdbmauthoritative" id="authzdbmauthoritative">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>권한부여를 저수준 모듈로 넘겨줄지 여부</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthzDBMAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>AuthzDBMAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_authz_dbm</td></tr>
-</table>
-    <p><code class="directive">AuthzDBMAuthoritative</code> 지시어를
-    직접 <code>Off</code>로 설정하면 해당 사용자 아이디에 대한
-    그룹이 없는 경우 그룹 권한부여를 (<code>modules.c</code>
-    파일에서 정의한) 저수준 모듈로 넘겨준다. 지정한 그룹이 있다면
-    보통때와 같이 검사하고, 실패하면 인증 필요 응답을 한다.</p>
-
-    <p>그래서 여러 모듈의 데이터베이스에 사용자 아이디가 있거나
-    유효한 <code class="directive"><a href="../mod/core.html#require">Require</a></code> 지시어를
-    여러 모듈에 적용하면, 첫번째 모듈이 사용자를 검사하고,
-    <code class="directive">AuthAuthoritative</code> 설정과 관계없이
-    접근을 넘기지않는다.</p>
-
-    <p>일반적으로 <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>이나
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>과 같은 인증제공자와 같이
-    사용한다. 대량의 사용자 검사에 대한 검사는 DBM 모듈을
-    사용하지만, 소수(관리자)에 대한 검사는 잘 보호된
-    <code>.htpasswd</code> 파일로 넘긴다.</p>
-
-    <p>기본적으로 제어를 넘기지않고, 모르는 그룹의 경우 인증
-    필요 응답을 한다. 이 지시어를 설정하지않으면 시스템이 안전하게
-    유지되며, NCSA 웹서버와 같이 동작한다.</p>
-
-    <div class="warning"><h3>보안</h3>
-      <p>사용자가 자신의 .htaccess 파일을 사용하게 되는지 살펴보고,
-      이런 행동을 허용할지 결정하라. 일반적으로 여러가지 방법으로
-      접근할 수 있는 데이터베이스를 보호하는 것보다 하나의
-      <code>.htpasswd</code> 파일을 보호하는 것이 더 쉽다.</p>
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

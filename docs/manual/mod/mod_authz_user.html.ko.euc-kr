@@ -43,36 +43,13 @@
     사용자 모두에게 접근을 허용한다.</p>
 </div>
 <div id="quickview"><h3 class="directives">지시어들</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzuserauthoritative">AuthzUserAuthoritative</a></li>
-</ul>
+<p>이 모듈에는 지시어가 없습니다.</p>
 <h3>참고</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 </ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzUserAuthoritative" id="AuthzUserAuthoritative">AuthzUserAuthoritative</a> <a name="authzuserauthoritative" id="authzuserauthoritative">지시어</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>권한부여를 저수준 모듈로 넘겨줄지 여부</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthzUserAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>AuthzUserAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_authz_user</td></tr>
-</table>
-    <p><code class="directive">AuthzUserAuthoritative</code> 지시어를
-    직접 <code>Off</code>로 설정하면 해당 <strong>사용자가
-    없는</strong> 경우 사용자 권한부여를 (<code>modules.c</code>
-    파일에서 정의한) 저수준 모듈로 넘겨준다.</p>
-
-    <p>기본적으로 제어를 넘기지않고, 모르는 사용자의 경우 인증
-    필요 응답을 한다. 이 지시어를 <code>Off</code>로 설정하지않으면
-    시스템이 안전하게 유지되며, NCSA 웹서버와 같이 동작한다.</p>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_authz_user.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

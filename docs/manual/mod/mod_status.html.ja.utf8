@@ -71,10 +71,7 @@
     が <code>On</code> になっている必要があります。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
-</ul>
+<p>このモジュールにディレクティブはありません。</p>
 <h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Status を使用可能にする</a></li>
@@ -131,57 +128,6 @@
       これは、サイトによってはセキュリティに関する望ましくない結果を
       もたらすことがあるかもしれません。</strong>
     </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>各リクエストに対して拡張ステータス情報を保存する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ExtendedStatus Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_status</td></tr>
-</table>
-    <p>この設定はサーバ全体に対して適用され、バーチャルホスト毎に
-    変更することはできません。拡張ステータス情報の収集はサーバの
-    動作を遅くすることがあります。</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストの最初の 63 文字か最後の 63 文字
-のどちらを mod_status が表示するかを決める</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SeeRequestTail Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.2.7 以降</td></tr>
-</table>
-    <p><code>ExtendedStatus On</code> に設定すると mod_status 
-    は処理中のリクエスト<span class="transnote">(<em>訳注:</em> の文字列)</span>を表示します。
-    歴史的な理由で、リクエストのうちの63文字だけが表示用に記録されます。
-    このディレクティブで、最初の63文字を記録する(従来からの動作、
-    そして現在もデフォルト)か、最後の63文字を記録するかを決めます。
-    もちろん、リクエストの長さが64文字以上のときに効果があります
-    <span class="transnote">(<em>訳注:</em> 63文字以下だと結果的に同じ動作)</span>。</p>
-
-    <p>Apache が <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> というリクエストを扱っているとき、 mod_status は以下のように表示します:
-    </p>
-
-    <table class="bordered">
-      <tr>
-        <th>Off (デフォルト)</th>
-        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
-      </tr>
-      <tr>
-        <th>On</th>
-        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
-      </tr>
-    </table>
-
 
 </div>
 </div>
