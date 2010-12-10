@@ -172,9 +172,12 @@
                         </h3>&lf;
 
                         <xsl:choose>
-                        <xsl:when test="directivesynopsis">
+                        <xsl:when test="document($metafile/@reference)
+                                        /modulesynopsis/directivesynopsis">
                             <ul id="toc">&lf;
-                            <xsl:for-each select="directivesynopsis">
+                            <xsl:for-each
+                            select="document($metafile/@reference)
+                                    /modulesynopsis/directivesynopsis">
                             <xsl:sort select="name" />
                                 <xsl:variable name="lowername"
                                     select="translate(name, $uppercase,
@@ -259,10 +262,23 @@
             <!-- Sections of documentation about the module as a whole -->
             <xsl:apply-templates select="section" />&lf;
 
+            <xsl:variable name="this" select="directivesynopsis" />
+
             <!-- Directive documentation -->
-            <xsl:apply-templates select="directivesynopsis">
-                <xsl:sort select="name" />
-            </xsl:apply-templates>
+            <xsl:for-each select="document($metafile/@reference)
+                                  /modulesynopsis/directivesynopsis">
+            <xsl:sort select="name" />
+                <xsl:choose>
+                <xsl:when test="$this[name=current()/name]">
+                    <xsl:apply-templates select="$this[name=current()/name]" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select=".">
+                        <xsl:with-param name="translated" select="'no'" />
+                    </xsl:apply-templates>
+                </xsl:otherwise>
+                </xsl:choose>
+            </xsl:for-each>
         </div>&lf; <!-- /#page-content -->
 
         <xsl:call-template name="bottom" />&lf;
@@ -276,6 +292,8 @@
 <!-- Directivesynopsis                                                    -->
 <!-- ==================================================================== -->
 <xsl:template match="directivesynopsis">
+<xsl:param name="translated" select="'yes'" />
+
 <xsl:if test="not(@location)">
     <xsl:call-template name="toplink" />&lf;
 
@@ -428,7 +446,15 @@
         </xsl:if>&lf;
         </table>
 
-        <xsl:apply-templates select="usage" />&lf;
+        <xsl:choose>
+        <xsl:when test="$translated = 'yes'">
+            <xsl:apply-templates select="usage" />&lf;
+        </xsl:when>
+        <xsl:otherwise>
+            <p>The documentation of this directive was not translated yet.
+            Please refer to the English version.</p>
+        </xsl:otherwise>
+        </xsl:choose>
 
         <xsl:if test="seealso">
             <h3>

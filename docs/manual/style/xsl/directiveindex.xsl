@@ -36,9 +36,14 @@
         <xsl:call-template name="top"/>
 
         <xsl:variable name="directives"
-            select="document(document($allmodules)/modulefilelist/modulefile)
-                        /modulesynopsis[status!='Obsolete']
-                        /directivesynopsis[not(@location)]" />
+            select="document(
+                        document(document(document(
+                            $allmodules)/modulefilelist/modulefile
+                        )/*/@metafile)
+                        /metafile/@reference
+                    )
+                    /modulesynopsis[status!='Obsolete']
+                    /directivesynopsis[not(@location)]" />
 
         <!-- collect the start letters -->
         <xsl:variable name="start-letters">

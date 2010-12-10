@@ -47,8 +47,14 @@
 
         <div id="directive-ref">
             <xsl:variable name="directives"
-                select="document(document($allmodules)/modulefilelist/modulefile)
+                select="document(document(document(
+                            document($allmodules)/modulefilelist/modulefile
+                        )/*/@metafile)/metafile/@reference)
                         /modulesynopsis/directivesynopsis[not(@location)]" />
+            <xsl:variable name="modules"
+                select="document(
+                            document($allmodules)/modulefilelist/modulefile
+                        )/modulesynopsis" />
 
             <xsl:variable name="start-letters">
                 <xsl:call-template name="directive-startletters">
@@ -183,6 +189,7 @@
                 <xsl:with-param name="letters-todo" select="$start-letters" />
                 <xsl:with-param name="offset" select="number(0)" />
                 <xsl:with-param name="directives" select="$directives" />
+                <xsl:with-param name="modules" select="$modules" />
             </xsl:call-template>
             </table>
         </div>&lf; <!-- /#directive-ref -->
@@ -202,6 +209,7 @@
 <xsl:param name="letters-todo" />
 <xsl:param name="offset" />
 <xsl:param name="directives" />
+<xsl:param name="modules" />
 
 <xsl:variable name="letter" select="substring($letters-todo, 1, 1)" />
 
@@ -210,14 +218,63 @@
                                           $lowercase,$uppercase)]">
 <xsl:sort select="name" />
 
+    <xsl:choose>
+    <xsl:when test="$modules[name=current()/../name]
+                    /directivesynopsis[name=current()/name]">
+        <xsl:call-template name="reference-of-letter-loop">
+            <xsl:with-param name="letter" select="$letter" />
+            <xsl:with-param name="directive"
+                select="$modules[name=current()/../name]
+                        /directivesynopsis[name=current()/name]" />
+            <xsl:with-param name="offset" select="$offset" />
+            <xsl:with-param name="position" select="position()" />
+        </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+        <xsl:call-template name="reference-of-letter-loop">
+            <xsl:with-param name="letter" select="$letter" />
+            <xsl:with-param name="directive" select="." />
+            <xsl:with-param name="offset" select="$offset" />
+            <xsl:with-param name="position" select="position()" />
+        </xsl:call-template>
+    </xsl:otherwise>
+    </xsl:choose>
+
+</xsl:for-each> <!-- /directives -->
+
+<!-- call next letter, if there is -->
+<xsl:if test="string-length($letters-todo) &gt; 1">
+    <xsl:call-template name="reference-of-letter">
+        <xsl:with-param name="letters-todo"
+            select="substring($letters-todo, 2)" />
+        <xsl:with-param name="offset"
+            select="(count($directives[$letter=translate(substring(
+                        normalize-space(name), 1, 1),
+                        $lowercase, $uppercase)])
+                    + $offset) mod 2" />
+        <xsl:with-param name="directives" select="$directives" />
+        <xsl:with-param name="modules" select="$modules" />
+    </xsl:call-template>
+</xsl:if>
+</xsl:template>
+<!-- /reference-of-letter -->
+
+
+<xsl:template name="reference-of-letter-loop">
+<xsl:param name="directive" />
+<xsl:param name="letter" />
+<xsl:param name="offset" />
+<xsl:param name="position" />
+
     <tr>
-        <xsl:if test="position() mod 2 = $offset">
+        <xsl:if test="$position mod 2 = $offset">
             <xsl:attribute name="class">odd</xsl:attribute>
         </xsl:if>
 
         <td>
-            <a href="{../name}.html#{translate(name, $uppercase, $lowercase)}">
-                <xsl:if test="position()=1">
+            <a href="{$directive/../name}.html#{
+                        translate($directive/name, $uppercase, $lowercase)}">
+                <xsl:if test="$position = 1">
                     <xsl:attribute name="id">
                         <xsl:value-of select="$letter" />
                     </xsl:attribute>
@@ -226,7 +283,7 @@
                     </xsl:attribute>
                 </xsl:if>
 
-                <xsl:apply-templates select="syntax" />
+                <xsl:apply-templates select="$directive/syntax" />
             </a>
         </td>
         <td>
@@ -237,13 +294,14 @@
             <!-- (add the + character instead)                        -->
             <xsl:variable name="default">
                 <xsl:choose>
-                <xsl:when test="count(default[count(br) &gt; 0]) &gt; 0">
+                <xsl:when test="count($directive/default[count(br) &gt; 0])
+                                &gt; 0">
                     <xsl:value-of
-                        select="default/child::node()
+                        select="$directive/default/child::node()
                                 [count(preceding-sibling::*) = 0]" />
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="default"/>
+                    <xsl:value-of select="$directive/default"/>
                 </xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>
@@ -252,34 +310,35 @@
                                   ' '), name),1,20)" />
             <xsl:if test="string-length(substring-after(concat($default, ' '),
                               name)) &gt; 20
-                          or count(default[count(br) &gt; 0]) &gt; 0">
+                          or count($directive/default[count(br) &gt; 0])
+                             &gt; 0">
                 <xsl:text> +</xsl:text>
             </xsl:if>
         </td>
         <td>
-            <xsl:if test="contextlist/context
+            <xsl:if test="$directive/contextlist/context
                           [normalize-space(.)='server config']">
                 <xsl:value-of select="$message[@id='serverconfig']/@letter"/>
             </xsl:if>
-            <xsl:if test="contextlist/context
+            <xsl:if test="$directive/contextlist/context
                           [normalize-space(.)='virtual host']">
                 <xsl:value-of select="$message[@id='virtualhost']/@letter"/>
             </xsl:if>
-            <xsl:if test="contextlist/context
+            <xsl:if test="$directive/contextlist/context
                           [normalize-space(.)='directory']">
                 <xsl:value-of select="$message[@id='directory']/@letter"/>
             </xsl:if>
-            <xsl:if test="contextlist/context
+            <xsl:if test="$directive/contextlist/context
                           [normalize-space(.)='.htaccess']">
                 <xsl:value-of select="$message[@id='htaccess']/@letter"/>
             </xsl:if>
         </td>
         <td>
             <xsl:choose>
-            <xsl:when test="../status='External'">
+            <xsl:when test="$directive/../status='External'">
                 <xsl:choose>
-                <xsl:when test="../status/@href">
-                    <a href="{../status/@href}">
+                <xsl:when test="$directive/../status/@href">
+                    <a href="{$directive/../status/@href}">
                         <xsl:value-of
                             select="$message[@id='external']/@letter"/>
                     </a>
@@ -291,21 +350,22 @@
             </xsl:when>
             <xsl:otherwise>
                 <xsl:variable name="status" select="translate(
-                    ../status, $uppercase, $lowercase)"/>
+                    $directive/../status, $uppercase, $lowercase)"/>
                 <xsl:value-of select="$message[@id=$status]/@letter"/>
             </xsl:otherwise>
             </xsl:choose>
         </td>
     </tr>
     <tr>
-        <xsl:if test="position() mod 2 = $offset">
+        <xsl:if test="$position mod 2 = $offset">
             <xsl:attribute name="class">odd</xsl:attribute>
         </xsl:if>
 
         <td colspan="4" class="descr">
             <xsl:choose>
-            <xsl:when test="string-length(normalize-space(description)) &gt; 0">
-                <xsl:apply-templates select="description"/>
+            <xsl:when test="string-length(normalize-space(
+                                $directive/description)) &gt; 0">
+                <xsl:apply-templates select="$directive/description" />
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>-</xsl:text>
@@ -313,21 +373,6 @@
             </xsl:choose>
         </td>
     </tr>&lf;
-</xsl:for-each> <!-- /directives -->
-
-<!-- call next letter, if there is -->
-<xsl:if test="string-length($letters-todo) &gt; 1">
-    <xsl:call-template name="reference-of-letter">
-        <xsl:with-param name="letters-todo"
-            select="substring($letters-todo, 2)" />
-        <xsl:with-param name="offset"
-            select="(count($directives[$letter=translate(substring(
-                    normalize-space(name), 1, 1), $lowercase, $uppercase)])
-                    + $offset) mod 2" />
-        <xsl:with-param name="directives" select="$directives" />
-    </xsl:call-template>
-</xsl:if>
 </xsl:template>
-<!-- /reference-of-letter -->
 
 </xsl:stylesheet>
