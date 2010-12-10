@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
-<metafile>
+<metafile reference="mod_expires.xml">
   <basename>mod_expires</basename>
   <path>/mod/</path>
   <relpath>..</relpath>
