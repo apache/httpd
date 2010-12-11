@@ -88,7 +88,7 @@ extern "C" {
  */
 #define APLOG_NOERRNO		(APLOG_LEVELMASK + 1)
 
-/* Use APLOG_TOCLIENT on ap_log_rerror() to give content
+/** Use APLOG_TOCLIENT on ap_log_rerror() to give content
  * handlers the option of including the error text in the 
  * ErrorDocument sent back to the client. Setting APLOG_TOCLIENT
  * will cause the error text to be saved in the request_rec->notes 
@@ -112,7 +112,8 @@ extern "C" {
 /**
  * APLOG_NO_MODULE may be passed as module_index to ap_log_error() and related
  * functions if the module causing the log message is not known. Normally this
- * should not be used directly. Use APLOG_MARK or APLOG_MODULE_INDEX instead.
+ * should not be used directly. Use ::APLOG_MARK or ::APLOG_MODULE_INDEX
+ * instead.
  *
  * @see APLOG_MARK
  * @see APLOG_MODULE_INDEX
@@ -120,25 +121,26 @@ extern "C" {
  */
 #define APLOG_NO_MODULE         -1
 
-/*
+/**
+ * Constant to store module_index for the current file.
  * Objects with static storage duration are set to NULL if not
- * initialized explicitly. This means if aplog_module_index
- * is not initalized using the APLOG_USE_MODULE or the
- * AP_DECLARE_MODULE macro, we can safely fall back to
- * use APLOG_NO_MODULE. This variable will usually be optimized away.
+ * initialized explicitly. This means that if aplog_module_index
+ * is not initalized using the ::APLOG_USE_MODULE or the
+ * ::AP_DECLARE_MODULE macro, we can safely fall back to
+ * use ::APLOG_NO_MODULE. This variable will usually be optimized away.
  */
 static int * const aplog_module_index;
 
 /**
  * APLOG_MODULE_INDEX contains the module_index of the current module if
- * it has been set via the APLOG_USE_MODULE or AP_DECLARE_MODULE macro.
- * Otherwise it contains APLOG_NO_MODULE (for example in unmodified httpd 2.2
- * modules).
+ * it has been set via the ::APLOG_USE_MODULE or ::AP_DECLARE_MODULE macro.
+ * Otherwise it contains ::APLOG_NO_MODULE (for example in unmodified httpd
+ * 2.2 modules).
  *
- * If APLOG_MARK is used in ap_log_error() and related functions,
- * APLOG_MODULE_INDEX will be passed as module_index. In cases where
- * APLOG_MARK cannot be used, APLOG_MODULE_INDEX should normally be passed as
- * module_index.
+ * If ::APLOG_MARK is used in ap_log_error() and related functions,
+ * ::APLOG_MODULE_INDEX will be passed as module_index. In cases where
+ * ::APLOG_MARK cannot be used, ::APLOG_MODULE_INDEX should normally be passed
+ * as module_index.
  *
  * @see APLOG_MARK
  * @see ap_log_error
@@ -152,6 +154,9 @@ static int * const aplog_module_index;
  *
  * This requires a C99 compiler.
  */
+#ifdef DOXYGEN
+#define APLOG_MAX_LOGLEVEL
+#endif
 #ifndef APLOG_MAX_LOGLEVEL
 #define APLOG_MODULE_IS_LEVEL(s,module_index,level)              \
           ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \

@@ -69,7 +69,7 @@ typedef struct {
  * @return > 0 if expression evaluates to true, == 0 if false, < 0 on error
  * @note err will be set to NULL on success, or to an error message on error
  * @note request headers used during evaluation will be added to the Vary:
- *       response header, unless AP_EXPR_FLAGS_DONT_VARY is set.
+ *       response header, unless ::AP_EXPR_FLAGS_DONT_VARY is set.
  */
 AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
                              const char **err);
@@ -88,7 +88,7 @@ AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
  *       available to ap_expr_exec_re and to use ap_expr_exec_re's matches
  *       later on.
  * @note request headers used during evaluation will be added to the Vary:
- *       response header, unless AP_EXPR_FLAGS_DONT_VARY is set.
+ *       response header, unless ::AP_EXPR_FLAGS_DONT_VARY is set.
  */
 AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *expr,
                                 apr_size_t nmatch, ap_regmatch_t *pmatch,
@@ -131,8 +131,8 @@ typedef struct {
  * If the argument to a function or operator is constant, the lookup function
  * may also parse that argument and store the parsed data in the context.
  *
- * The default lookup function is the hook 'ap_expr_lookup_default' which just
- * calls ap_expr_lookup_default. Modules can use it to make functions and
+ * The default lookup function is the hook ::ap_expr_lookup_default which just
+ * calls ap_run_expr_lookup. Modules can use it to make functions and
  * variables generally available.
  *
  * An ap_expr consumer can also provide its own custom lookup function to
