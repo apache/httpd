@@ -28,13 +28,6 @@ Servers</description>
 <status>Core</status>
 
 <directivesynopsis>
-<name>AcceptFilter</name>
-<description>Configures optimizations for a Protocol's Listener Sockets</description>
-<contextlist><context>server config</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>AcceptPathInfo</name>
 <description>Ressourcen lassen angeh&auml;ngte Pfadangaben zu</description>
 <syntax>AcceptPathInfo On|Off|Default</syntax>
@@ -958,13 +951,6 @@ Dateien an den Client auszuliefern</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>Error</name>
-<description>Abort configuration parsing with a custom error message</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>ErrorDocument</name>
 <description>Das, was der Server im Fehlerfall an den Client
 zur&uuml;ckgibt</description>
@@ -1133,21 +1119,6 @@ Fehlermeldungen</a></seealso>
 </usage>
 <seealso><directive module="core">LogLevel</directive></seealso>
 <seealso><a href="../logs.html">Apache-Log-Dateien</a></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>ErrorLogFormat</name>
-<description>Format specification for error log entries</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>ExtendedStatus</name>
-<description>Keep track of extended status information for each 
-request</description>
-<contextlist><context>server config</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1348,13 +1319,6 @@ angegebenen MIME-Content-Type</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>GprofDir</name>
-<description>Directory to write gmon.out profiling data to.  </description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>HostnameLookups</name>
 <description>Aktiviert DNS-Lookups auf Client-IP-Adressen</description>
 <syntax>HostnameLookups On|Off|Double</syntax>
@@ -1397,14 +1361,6 @@ angegebenen MIME-Content-Type</description>
     kompiliert wird, kann dazu verwendet werden, um offline Hostnamen von
     protokollierten IP-Adressen nachzuschlagen.</p>
 </usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>If</name>
-<description>Contains directives that apply only if a condition is
-satisfied by a request at runtime</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -2270,14 +2226,6 @@ zul&auml;ssig sind</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>Mutex</name>
-<description>Configures mutex mechanism and lock file directory for all
-or specified mutexes</description>
-<contextlist><context>server config</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>NameVirtualHost</name>
 <description>Bestimmt eine IP-Adresse f&uuml;r den Betrieb namensbasierter
 virtueller Hosts</description>
@@ -2562,13 +2510,6 @@ Ressource zugreifen k&ouml;nnen</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>Protocol</name>
-<description>Protocol for a listening socket</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>RLimitCPU</name>
 <description>Begrenzt den CPU-Verbrauch von Prozessen, die von
 Apache-Kindprozessen gestartet wurden</description>
@@ -2794,15 +2735,6 @@ Die Option <code>Registry-Strict</code> ist verf&uuml;gbar seit Apache
     manuell eingerichtet werden und sch&uuml;tzt Ihr System so for
     versehentlichen Programmaufrufen.</p>
 </usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>SeeRequestTail</name>
-<description>Determine if mod_status displays the first 63 characters
-of a request or the last 63, assuming the request itself is greater than
-63 chars.</description>
-<contextlist><context>server config</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -3197,20 +3129,6 @@ bevor er die Anfrage abbricht</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>TraceEnable</name>
-<description>Determines the behaviour on <code>TRACE</code> requests</description>
-<contextlist><context>server config</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>UnDefine</name>
-<description>Undefine the existence of a variable</description>
-<contextlist><context>server config</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>UseCanonicalName</name>
 <description>Bestimmt, wie der Server seinen eigenen Namen und Port
 ermittelt</description>
@@ -3277,13 +3195,6 @@ ermittelt</description>
 </usage>
 <seealso><directive module="core">ServerName</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>UseCanonicalPhysicalPort</name>
-<description>Configures how the server determines its own name and port</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context></contextlist>
-<usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
