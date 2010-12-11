@@ -116,8 +116,9 @@ Off otherwise</code></td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_unixd</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p></div>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Yönergesi</a></h2>
 <table class="directive">
