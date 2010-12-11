@@ -303,6 +303,12 @@ permet de réécrire les liens dans les documents HTML et XHTML.</p>
     requête "incorrecte" entraîne une redirection d'URL et une nouvelle requête
     de la part du client.</p>
 
+    <p><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code> fournit la directive <code class="directive"><a href="./mod/mod_dir.html#fallbackresource">FallbackResource</a></code> qui permet d'associer
+    des URIs virtuels à une ressource réelle qui peut ainsi les servir.
+    Cette directive remplace avantageusement
+    <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> lors de l'implémentation d'un
+    "contrôleur frontal".</p>
+
     <p>Si toutes les tentatives pour localiser le contenu
     échouent, httpd
     retourne une page d'erreur avec le code de statut HTTP 404

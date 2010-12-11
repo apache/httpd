@@ -849,7 +849,7 @@ depuis Internet</td></tr>
       DocumentRoot /usr/web
     </code></p></div>
 
-    <p>un accès à <code>http://www.my.host.com/index.html</code> se
+    <p>un accès à <code>http://my.example.com/index.html</code> se
     réfère alors à <code>/usr/web/index.html</code>. Si <var>chemin
     répertoire</var> n'est pas un chemin absolu, il est considéré comme
     relatif au chemin défini par la directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
@@ -3682,8 +3682,8 @@ serveurs virtuels à base de nom</td></tr>
 
     <div class="example"><p><code>
       &lt;VirtualHost *:80&gt;<br />
-      ServerName serveur.domaine.com<br />
-      ServerAlias serveur serveur2.domaine.com serveur2<br />
+      ServerName serveur.example.com<br />
+      ServerAlias serveur serveur2.example.com serveur2<br />
       ServerAlias *.example.com<br />
       UseCanonicalName Off<br />
       # ...<br />
@@ -4203,10 +4203,10 @@ et son port</td></tr>
     court suivi d'une URL qui fait référence à un répertoire, comme
     <code>http://www/splat</code>, <em>sans le slash terminal</em>, vous
     remarquerez qu'Apache httpd va les rediriger vers
-    <code>http://www.domain.com/splat/</code>. Si vous avez activé
+    <code>http://www.example.com/splat/</code>. Si vous avez activé
     l'authentification, ceci va obliger l'utilisateur à s'authentifier
     deux fois (une première fois pour <code>www</code> et une seconde
-    fois pour <code>www.domain.com</code> -- voir <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">la
+    fois pour <code>www.example.com</code> -- voir <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">la
     foire aux questions sur ce sujet pour plus d'informations</a>). Par
     contre, si <code class="directive">UseCanonicalName</code> est définie à
     <code>Off</code>, Apache httpd redirigera l'utilisateur vers

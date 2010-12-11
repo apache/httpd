@@ -577,7 +577,7 @@ directement</td></tr>
     <var>domaine</var>).</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
-      .com .apache.org.
+      .com .example.org.
     </code></p></div>
 
     <p>Pour faire la distinction entre <var>domaine</var>s et <var><a href="#hostname">nom d'hôte</a></var>s (des points de vue à la fois
@@ -657,8 +657,8 @@ directement</td></tr>
     IP</a></var>).</p>
 
     <div class="example"><h3>Exemples</h3><p><code>
-      prep.ai.example.com<br />
-      www.apache.org
+      prep.ai.example.edu<br />
+      www.example.org
     </code></p></div>
 
     <div class="note"><h3>Note</h3>
@@ -785,14 +785,13 @@ mandataire</td></tr>
     serveur.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
-      ProxyBlock joes-garage.com some-host.co.uk rocky.wotsamattau.edu
+      ProxyBlock news.example.com auctions.example.com friends.example.com
     </code></p></div>
 
-    <p><code>rocky.wotsamattau.edu</code> aurait également correspondu s'il
-    avait été spécifié par son adresse IP.</p>
+    <p>Notez qu'<code>example</code> suffirait aussi pour atteindre
+    ces sites.</p>
 
-    <p>Notez que <code>wotsamattau</code> aurait suffi pour correspondre
-    à <code>wotsamattau.edu</code>.</p>
+    <p>Hosts conviendrait aussi s'il était référencé par adresse IP.</p>
 
     <p>Notez aussi que</p>
 
