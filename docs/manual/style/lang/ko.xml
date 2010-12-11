@@ -143,8 +143,8 @@
         <message id="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</message>
         <!-- directive not translated yet -->
-        <message id="nottranslated">The documentation for this directive was
-            not translated yet. Please have a look at the English
+        <message id="nottranslated">The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</message>
     </messages>
 </language>
