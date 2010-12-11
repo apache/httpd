@@ -895,8 +895,8 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.3.9 and later</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">ディレクティブ</a></h2>
@@ -1062,8 +1062,8 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache httpd 2.3.9 and later</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p><h3>参照</h3>
 <ul>
 <li><code class="directive"><a href="#errorlog">ErrorLog</a></code></li>
@@ -1081,8 +1081,8 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">ディレクティブ</a></h2>
@@ -1289,8 +1289,8 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">ディレクティブ</a></h2>
@@ -2215,8 +2215,8 @@ or specified mutexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache HTTP Server 2.3.4 and later</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">ディレクティブ</a></h2>
@@ -2459,8 +2459,8 @@ or specified mutexes</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.1.5 and later.
 On Windows from Apache 2.3.3 and later.</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p><h3>参照</h3>
 <ul>
 <li><code class="directive">AcceptFilter</code></li>
@@ -2652,8 +2652,8 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache httpd 2.2.7 and later.</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">ディレクティブ</a></h2>
@@ -3104,8 +3104,8 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">ディレクティブ</a></h2>
