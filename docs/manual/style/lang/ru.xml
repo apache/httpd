@@ -134,5 +134,9 @@
         <!-- not up to date -->
         <message id="outofdate">This translation may be out of date. Check the
             English version for recent changes.</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</message>
     </messages>
 </language>
