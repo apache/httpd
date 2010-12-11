@@ -78,6 +78,17 @@
 <!-- it may be desired to open external targets in a new window -->
 <xsl:variable name="ext-target" select="boolean($is-chm)" />
 
+<xsl:template match="/">
+    <xsl:if test="not($metafile/@reference)">
+        <xsl:message terminate="yes">
+            Invalid metafile. Probably your build system is not up-to-date.
+            Get a current version and try again.
+        </xsl:message>
+    </xsl:if>
+    <xsl:apply-templates />
+</xsl:template>
+
+
 <!-- #################################################################### -->
 <!-- Utility templates for constructing pages                             -->
 <!-- #################################################################### -->
