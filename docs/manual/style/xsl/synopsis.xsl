@@ -441,8 +441,7 @@
             <xsl:apply-templates select="usage" />&lf;
         </xsl:when>
         <xsl:otherwise>
-            <p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p>
+            <p><xsl:value-of select="$message[@id='nottranslated']" /></p>
         </xsl:otherwise>
         </xsl:choose>
 
