@@ -544,7 +544,7 @@ directly</td></tr>
 <tr><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">List of additional client certificates</td></tr>
 <tr class="odd"><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Allows a connection to be upgraded to an SSL connection upon request</td></tr>
 <tr><td><a href="core.html#options" id="O" name="O">Options
-    [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures what features are available in a particular
+    [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> FollowSymLinks </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures what features are available in a particular
 directory</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are

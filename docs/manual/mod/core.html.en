@@ -2984,7 +2984,7 @@ documentation</a></li>
 directory</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Options All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Options FollowSymLinks</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>

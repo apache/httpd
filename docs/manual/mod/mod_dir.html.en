@@ -182,7 +182,7 @@ a directory</td></tr>
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
     For example</p>
     <div class="example"><p><code>
-        <code>FallbackResource not-404.php</code>
+        <code>FallbackResource /not-404.php</code>
     </code></p></div>
     <p>will cause requests for non-existent files to be handled by
     <code>not-404.php</code>, while requests for files that exist
@@ -196,7 +196,7 @@ a directory</td></tr>
     <code>-d</code> tests for file and directory existence. This now
     requires only one line of configuration.</p>
     <div class="example"><p><code>
-        <code>FallbackResource index.php</code>
+        <code>FallbackResource /index.php</code>
     </code></p></div>
     <p>Existing files, such as images, css files, and so on, will be
     served normally.</p>
@@ -206,7 +206,7 @@ a directory</td></tr>
          <code>
              &lt;Directory /web/example.com/htdocs/blog&gt;<br />
 	     <span class="indent">
-		     FallbackResource /blog/index.php<br />
+                  FallbackResource /blog/index.php<br />
              </span>
              &lt;/Directory&gt;
          </code>

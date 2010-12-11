@@ -336,13 +336,13 @@ attributs de la requête sans tenir compte de la casse</td></tr>
     par le fait que la comparaison des expressions rationnelles est
     effectuée sans tenir compte de la casse. Par exemple :</p>
 <div class="example"><p><code>
-   SetEnvIfNoCase Host Apache\.Org site=apache
+   SetEnvIfNoCase Host Example\.Org site=apache
 </code></p></div>
 
     <p>Cette ligne va définir la variable d'environnement
-    <code>site</code> avec la valeur "<code>apache</code>" si le champ
+    <code>site</code> avec la valeur "<code>example</code>" si le champ
     d'en-tête de requête HTTP <code>Host:</code> est présent et contient
-    <code>Apache.Org</code>, <code>apache.org</code>, ou une autre
+    <code>Example.Org</code>, <code>example.org</code>, ou une autre
     combinaison des mêmes caractères, sans tenir compte de la casse.</p>
 
 </div>

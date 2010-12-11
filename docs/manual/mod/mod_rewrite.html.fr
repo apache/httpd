@@ -863,7 +863,7 @@ la version version 2.1</td></tr>
       ne peut actuellement prendre qu'une des valeurs suivantes :</p>
 
       <dl>
-      <dt><code>inherit</code></dt>
+      <dt><code>Inherit</code></dt>
       <dd>
 
       <p>Ceci force la configuration locale à hériter de la
@@ -876,7 +876,7 @@ la version version 2.1</td></tr>
       copiées dans la section où cette directive est utilisée. Si elles
       sont utilisées avec des règles locales, les règles héritées sont
       placées après ces dernières. La place de cette directive - avant
-      ou après les règles locales - n'a aucune influance sur ce
+      ou après les règles locales - n'a aucune influence sur ce
       comportement. Si des règles locales ont forcé l'arrêt de la
       réécriture, les règles héritées ne seront pas traitées.</p>
 
@@ -886,6 +886,16 @@ la version version 2.1</td></tr>
       enfant.
       </div>
       </dd>
+
+      <dt><code>InheritBefore</code></dt>
+      <dd>
+      <p>Même effet que l'option <code>Inherit</code> ci-dessus, mais
+      les règles spécifiées dans le niveau parent s'appliquent
+      <strong>avant</strong> les règles spécifiées dans le niveau
+      enfant. Disponible depuis la version 2.3.10 du serveur HTTP
+      Apache.</p>
+      </dd>
+
       </dl>
 
 </div>
