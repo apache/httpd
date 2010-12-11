@@ -139,5 +139,9 @@
         <message id="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
             nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
             die neuesten &#196;nderungen.</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</message>
     </messages>
 </language>

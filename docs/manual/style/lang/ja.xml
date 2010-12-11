@@ -137,5 +137,9 @@
         <!-- not up to date -->
         <message id="outofdate">この日本語訳はすでに古くなっている可能性があります。
           更新された内容を見るには英語版をご覧下さい。</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</message>
     </messages>
 </language>

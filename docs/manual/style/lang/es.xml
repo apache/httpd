@@ -139,5 +139,9 @@
             obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
             documentaci&#243;n para comprobar si se han producido cambios
             recientemente.</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</message>
     </messages>
 </language>
