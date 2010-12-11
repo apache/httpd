@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.10
 
+  *) mod_rewrite: Don't implicitly URL-escape the original query string
+     when no substitution has changed it. PR 50447. [Eric Covener]
+
   *) core: Honor 'AcceptPathInfo OFF' during internal redirects,
      such as per-directory mod_rewrite substitutions.  PR 50349.
      [Eric Covener]
