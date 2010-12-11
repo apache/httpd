@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
-<metafile>
+<metafile reference="mod_log_forensic.xml">
   <basename>mod_log_forensic</basename>
   <path>/mod/</path>
   <relpath>..</relpath>
