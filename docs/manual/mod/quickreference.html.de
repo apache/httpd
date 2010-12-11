@@ -59,7 +59,7 @@
 </table></td></tr>
 </table>
 <table class="qref">
-<tr><td><a href="core.html#acceptfilter" id="A" name="A" /></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures optimizations for a Protocol's Listener Sockets</td></tr>
+<tr><td><a href="core.html#acceptfilter" id="A" name="A">AcceptFilter <var>protocol</var> <var>accept_filter</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures optimizations for a Protocol's Listener Sockets</td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Ressourcen lassen angehängte Pfadangaben zu</td></tr>
 <tr><td><a href="core.html#accessfilename">AccessFileName <var>Dateiname</var> [<var>Dateiname</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name der dezentralen Konfigurationsdateien</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#action">Action <var>Aktionsart</var> <var>CGI-Skript</var> [virtual]</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Aktiviert ein CGI-Skript für einen bestimmten Handler oder
@@ -369,11 +369,11 @@ Ausnahmefehler behandeln lassen kann</td></tr>
 Auslieferung zu lesen</td></tr>
 <tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Verwende die sendfile-Unterstützung des Kernels, um
 Dateien an den Client auszuliefern</td></tr>
-<tr><td><a href="core.html#error" /></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
+<tr><td><a href="core.html#error">Error <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Abort configuration parsing with a custom error message</td></tr>
 <tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>Fehlercode</var> <var>Dokument</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Das, was der Server im Fehlerfall an den Client
 zurückgibt</td></tr>
 <tr><td><a href="core.html#errorlog"> ErrorLog <var>Dateiname</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Ablageort, an dem der Server Fehler protokolliert</td></tr>
-<tr class="odd"><td><a href="core.html#errorlogformat" /></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Format specification for error log entries</td></tr>
+<tr class="odd"><td><a href="core.html#errorlogformat"> ErrorLog [connection|request] <var>format</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Format specification for error log entries</td></tr>
 <tr><td><a href="mod_example.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
 API</td></tr>
 <tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables generation of <code>Expires</code>
@@ -382,7 +382,7 @@ headers</td></tr>
 <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
 by MIME type</td></tr>
 <tr class="odd"><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
-<tr><td><a href="core.html#extendedstatus" /></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Keep track of extended status information for each 
+<tr><td><a href="core.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off[*] </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Keep track of extended status information for each 
 request</td></tr>
 <tr class="odd"><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an external filter</td></tr>
 <tr><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoLogS +</td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
@@ -406,7 +406,7 @@ found</td></tr>
 <tr class="odd"><td><a href="core.html#forcetype">ForceType <var>MIME-Type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Erzwingt die Auslieferung aller passendenden Dateien mit dem
 angegebenen MIME-Content-Type</td></tr>
 <tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
-<tr class="odd"><td><a href="core.html#gprofdir" id="G" name="G" /></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory to write gmon.out profiling data to.  </td></tr>
+<tr class="odd"><td><a href="core.html#gprofdir" id="G" name="G">GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory to write gmon.out profiling data to.  </td></tr>
 <tr><td><a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutDownTimeout <var>seconds</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
 will exit.</td></tr>
 <tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
@@ -423,7 +423,7 @@ of the index listing</td></tr>
 <tr class="odd"><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
 user</td></tr>
 <tr><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
-<tr class="odd"><td><a href="core.html#if" /></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply only if a condition is
+<tr class="odd"><td><a href="core.html#if">&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply only if a condition is
 satisfied by a request at runtime</td></tr>
 <tr><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>Parametername</var>&gt; ...
     &lt;/IfDefine&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Schließt Direktiven ein, die nur ausgeführt werden,
@@ -573,7 +573,7 @@ components as part of the filename</td></tr>
 <tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
 [Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when searching for
 a matching file with MultiViews</td></tr>
-<tr class="odd"><td><a href="core.html#mutex" /></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures mutex mechanism and lock file directory for all
+<tr class="odd"><td><a href="core.html#mutex">Mutex <var>mechanism</var> [default|<var>mutex-name</var>] ... [OmitPID]</a></td><td> default </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures mutex mechanism and lock file directory for all
 or specified mutexes</td></tr>
 <tr><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>Adresse</var>[:<var>Port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt eine IP-Adresse für den Betrieb namensbasierter
 virtueller Hosts</td></tr>
@@ -594,7 +594,7 @@ evaluated.</td></tr>
 ablegt</td></tr>
 <tr class="odd"><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td></td><td>svd</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
-<tr><td><a href="core.html#protocol" /></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Protocol for a listening socket</td></tr>
+<tr><td><a href="core.html#protocol">Protocol <var>protocol</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Protocol for a listening socket</td></tr>
 <tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
 <tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how to handle bad header lines in a
@@ -740,7 +740,7 @@ in the scriptlog</td></tr>
 the cgi daemon</td></tr>
 <tr class="odd"><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
 <var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
-<tr><td><a href="core.html#seerequesttail" /></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
+<tr><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
 of a request or the last 63, assuming the request itself is greater than
 63 chars.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>Bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Größe des TCP-Puffers</td></tr>
@@ -892,15 +892,16 @@ Certificate verification</td></tr>
 verwendet wird, die Client-Verbindungen bearbeiten.</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>Sekunden</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
 bevor er die Anfrage abbricht</td></tr>
-<tr class="odd"><td><a href="core.html#traceenable" /></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the behaviour on <code>TRACE</code> requests</td></tr>
+<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the behaviour on <code>TRACE</code> requests</td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify location of a log file</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
-<tr><td><a href="core.html#undefine" id="U" name="U" /></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Undefine the existence of a variable</td></tr>
+<tr><td><a href="core.html#undefine" id="U" name="U">UnDefine <var>parameter-name</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Undefine the existence of a variable</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes variables from the environment</td></tr>
 <tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt, wie der Server seinen eigenen Namen und Port
 ermittelt</td></tr>
-<tr class="odd"><td><a href="core.html#usecanonicalphysicalport" /></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures how the server determines its own name and port</td></tr>
+<tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures how the server determines its own name and
+port</td></tr>
 <tr><td><a href="mod_unixd.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The userid under which the server will answer
 requests</td></tr>
 <tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
