@@ -4636,7 +4636,7 @@ static int hook_fixup(request_rec *r)
     apr_size_t l;
     int rulestatus;
     int n;
-    char *ofilename;
+    char *ofilename, *oargs;
     int is_proxyreq;
     void *skipdata;
 
@@ -4710,6 +4710,7 @@ static int hook_fixup(request_rec *r)
      *  request
      */
     ofilename = r->filename;
+    oargs = r->args;
 
     if (r->filename == NULL) {
         r->filename = apr_pstrdup(r->pool, r->uri);
@@ -4814,11 +4815,20 @@ static int hook_fixup(request_rec *r)
 
             /* append the QUERY_STRING part */
             if (r->args) {
+                char *escaped_args = NULL;
+                int noescape = (rulestatus == ACTION_NOESCAPE || 
+                                (oargs && !strcmp(r->args, oargs)));
+                             
                 r->filename = apr_pstrcat(r->pool, r->filename, "?",
-                                          (rulestatus == ACTION_NOESCAPE)
+                                          noescape 
                                             ? r->args
-                                            : ap_escape_uri(r->pool, r->args),
+                                            : (escaped_args = ap_escape_uri(r->pool, r->args)),
                                           NULL);
+
+                rewritelog((r, 1, dconf->directory, "%s %s to query string for redirect %s",
+                            noescape ? "copying" : "escaping",  
+                            r->args , 
+                            noescape ? "" : escaped_args));
             }
 
             /* determine HTTP redirect response code */
