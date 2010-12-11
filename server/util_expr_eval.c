@@ -56,38 +56,38 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
 {
     const char *result = "";
     switch (node->node_op) {
-        case op_Digit:
-        case op_String:
-            result = node->node_arg1;
-            break;
-        case op_Var:
-            result = ap_expr_eval_var(ctx, node->node_arg1, node->node_arg2);
-            break;
-        case op_Concat: {
-            const char *s1 = ap_expr_eval_word(ctx, node->node_arg1);
-            const char *s2 = ap_expr_eval_word(ctx, node->node_arg2);
-            if (!*s1)
-                result = s2;
-            else if (!*s2)
-                result = s1;
-            else
-                result = apr_pstrcat(ctx->p, s1, s2, NULL);
-            break;
-        }
-        case op_StringFuncCall: {
-            const ap_expr_t *info = node->node_arg1;
-            const ap_expr_t *args = node->node_arg2;
-            result = ap_expr_eval_string_func(ctx, info, args);
-            break;
-        }
-        case op_RegexBackref: {
-            const int *np = node->node_arg1;
-            result = ap_expr_eval_re_backref(ctx, *np);
-            break;
-        }
-        default:
-            *ctx->err = "Internal evaluation error: Unknown word expression node";
-            break;
+    case op_Digit:
+    case op_String:
+        result = node->node_arg1;
+        break;
+    case op_Var:
+        result = ap_expr_eval_var(ctx, node->node_arg1, node->node_arg2);
+        break;
+    case op_Concat: {
+        const char *s1 = ap_expr_eval_word(ctx, node->node_arg1);
+        const char *s2 = ap_expr_eval_word(ctx, node->node_arg2);
+        if (!*s1)
+            result = s2;
+        else if (!*s2)
+            result = s1;
+        else
+            result = apr_pstrcat(ctx->p, s1, s2, NULL);
+        break;
+    }
+    case op_StringFuncCall: {
+        const ap_expr_t *info = node->node_arg1;
+        const ap_expr_t *args = node->node_arg2;
+        result = ap_expr_eval_string_func(ctx, info, args);
+        break;
+    }
+    case op_RegexBackref: {
+        const int *np = node->node_arg1;
+        result = ap_expr_eval_re_backref(ctx, *np);
+        break;
+    }
+    default:
+        *ctx->err = "Internal evaluation error: Unknown word expression node";
+        break;
     }
     if (!result)
         result = "";
@@ -146,70 +146,34 @@ static int intstrcmp(const char *s1, const char *s2)
 
 static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 {
+    const ap_expr_t *e1 = node->node_arg1;
+    const ap_expr_t *e2 = node->node_arg2;
     switch (node->node_op) {
-        case op_EQ: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) == 0);
-        }
-        case op_NE: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) != 0);
-        }
-        case op_LT: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <  0);
-        }
-        case op_LE: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <= 0);
-        }
-        case op_GT: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >  0);
-        }
-        case op_GE: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >= 0);
-        }
-        case op_STR_EQ: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) == 0);
-        }
-        case op_STR_NE: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) != 0);
-        }
-        case op_STR_LT: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <  0);
-        }
-        case op_STR_LE: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <= 0);
-        }
-        case op_STR_GT: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >  0);
-        }
-        case op_STR_GE: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >= 0);
-        }
-        case op_IN: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
+    case op_EQ:
+        return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) == 0);
+    case op_NE:
+        return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) != 0);
+    case op_LT:
+        return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <  0);
+    case op_LE:
+        return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <= 0);
+    case op_GT:
+        return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >  0);
+    case op_GE:
+        return (intstrcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >= 0);
+    case op_STR_EQ:
+        return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) == 0);
+    case op_STR_NE:
+        return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) != 0);
+    case op_STR_LT:
+        return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <  0);
+    case op_STR_LE:
+        return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) <= 0);
+    case op_STR_GT:
+        return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >  0);
+    case op_STR_GE:
+        return (strcmp(ap_expr_eval_word(ctx, e1), ap_expr_eval_word(ctx, e2)) >= 0);
+    case op_IN: {
             const char *needle = ap_expr_eval_word(ctx, e1);
             if (e2->node_op == op_ListElement) {
                 do {
@@ -240,18 +204,11 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
             }
             return 0;
         }
-        case op_REG:
-        case op_NRE: {
-            const ap_expr_t *e1;
-            const ap_expr_t *e2;
-            const char *word;
-            const ap_regex_t *regex;
+    case op_REG:
+    case op_NRE: {
+            const char *word = ap_expr_eval_word(ctx, e1);
+            const ap_regex_t *regex = e2->node_arg1;
             int result;
-
-            e1 = node->node_arg1;
-            e2 = node->node_arg2;
-            word = ap_expr_eval_word(ctx, e1);
-            regex = e2->node_arg1;
 
             /*
              * $0 ... $9 may contain stuff the user wants to keep. Therefore
@@ -271,10 +228,9 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
             else
                 return !result;
         }
-        default: {
-            *ctx->err = "Internal evaluation error: Unknown comp expression node";
-            return -1;
-        }
+    default:
+        *ctx->err = "Internal evaluation error: Unknown comp expression node";
+        return -1;
     }
 }
 
@@ -698,48 +654,31 @@ static int ap_expr_eval_binary_op(ap_expr_eval_ctx_t *ctx,
 
 static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 {
+    const ap_expr_t *e1 = node->node_arg1;
+    const ap_expr_t *e2 = node->node_arg2;
     switch (node->node_op) {
-        case op_True: {
-            return 1;
-        }
-        case op_False: {
-            return 0;
-        }
-        case op_Not: {
-            const ap_expr_t *e = node->node_arg1;
-            return (!ap_expr_eval(ctx, e));
-        }
-        case op_Or: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (ap_expr_eval(ctx, e1) || ap_expr_eval(ctx, e2));
-        }
-        case op_And: {
-            const ap_expr_t *e1 = node->node_arg1;
-            const ap_expr_t *e2 = node->node_arg2;
-            return (ap_expr_eval(ctx, e1) && ap_expr_eval(ctx, e2));
-        }
-        case op_UnaryOpCall: {
-            const ap_expr_t *info = node->node_arg1;
-            const ap_expr_t *args = node->node_arg2;
-            return ap_expr_eval_unary_op(ctx, info, args);
-        }
-        case op_BinaryOpCall: {
-            const ap_expr_t *info = node->node_arg1;
-            const ap_expr_t *args = node->node_arg2;
-            return ap_expr_eval_binary_op(ctx, info, args);
-        }
-        case op_Comp: {
-            const ap_expr_t *e = node->node_arg1;
-            if (ctx->info->flags & AP_EXPR_FLAGS_SSL_EXPR_COMPAT)
-                return ssl_expr_eval_comp(ctx, e);
-            else
-                return ap_expr_eval_comp(ctx, e);
-        }
-        default: {
-            *ctx->err = "Internal evaluation error: Unknown expression node";
-            return FALSE;
-        }
+    case op_True:
+        return 1;
+    case op_False:
+        return 0;
+    case op_Not:
+        return (!ap_expr_eval(ctx, e1));
+    case op_Or:
+        return (ap_expr_eval(ctx, e1) || ap_expr_eval(ctx, e2));
+    case op_And:
+        return (ap_expr_eval(ctx, e1) && ap_expr_eval(ctx, e2));
+    case op_UnaryOpCall:
+        return ap_expr_eval_unary_op(ctx, e1, e2);
+    case op_BinaryOpCall:
+        return ap_expr_eval_binary_op(ctx, e1, e2);
+    case op_Comp:
+        if (ctx->info->flags & AP_EXPR_FLAGS_SSL_EXPR_COMPAT)
+            return ssl_expr_eval_comp(ctx, e1);
+        else
+            return ap_expr_eval_comp(ctx, e1);
+    default:
+        *ctx->err = "Internal evaluation error: Unknown expression node";
+        return FALSE;
     }
 }
 
