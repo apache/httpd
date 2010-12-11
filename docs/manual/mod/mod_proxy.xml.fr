@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1032399 -->
+<!-- English Revision : 1013126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1479,14 +1479,13 @@ mandataire</description>
     serveur.</p>
 
     <example><title>Exemple</title>
-      ProxyBlock joes-garage.com some-host.co.uk rocky.wotsamattau.edu
+      ProxyBlock news.example.com auctions.example.com friends.example.com
     </example>
 
-    <p><code>rocky.wotsamattau.edu</code> aurait &eacute;galement correspondu s'il
-    avait &eacute;t&eacute; sp&eacute;cifi&eacute; par son adresse IP.</p>
+    <p>Notez qu'<code>example</code> suffirait aussi pour atteindre
+    ces sites.</p>
 
-    <p>Notez que <code>wotsamattau</code> aurait suffi pour correspondre
-    &agrave; <code>wotsamattau.edu</code>.</p>
+    <p>Hosts conviendrait aussi s'il &eacute;tait r&eacute;f&eacute;renc&eacute; par adresse IP.</p>
 
     <p>Notez aussi que</p>
 
@@ -1626,7 +1625,7 @@ directement</description>
     <var>domaine</var>).</p>
 
     <example><title>Exemple</title>
-      .com .apache.org.
+      .com .example.org.
     </example>
 
     <p>Pour faire la distinction entre <var>domaine</var>s et <var><a
@@ -1709,8 +1708,8 @@ directement</description>
     IP</a></var>).</p>
 
     <example><title>Exemples</title>
-      prep.ai.example.com<br />
-      www.apache.org
+      prep.ai.example.edu<br />
+      www.example.org
     </example>
 
     <note><title>Note</title>
