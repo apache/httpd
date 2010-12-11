@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1040809 -->
+<!-- English Revision : 1041924 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -987,7 +987,7 @@ lire les fichiers pendant qu'ils sont servis</description>
     </example>
 
 
-
+    
 </usage>
 </directivesynopsis>
 
@@ -2223,7 +2223,7 @@ sp&eacute;cifi&eacute;es</description>
       &lt;Location /private2<em>/</em>&gt;
           ...
     </example>
-
+    
     <note><title>Quand utiliser la section <directive
     type="section">Location</directive></title>
 
