@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1041010 -->
+<!-- English Revision : 1042758 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -830,7 +830,7 @@ host</context>
       DocumentRoot /usr/web
     </example>
 
-    <p>un acc&egrave;s &agrave; <code>http://www.my.host.com/index.html</code> se
+    <p>un acc&egrave;s &agrave; <code>http://my.example.com/index.html</code> se
     r&eacute;f&egrave;re alors &agrave; <code>/usr/web/index.html</code>. Si <var>chemin
     r&eacute;pertoire</var> n'est pas un chemin absolu, il est consid&eacute;r&eacute; comme
     relatif au chemin d&eacute;fini par la directive <directive
@@ -3761,8 +3761,8 @@ serveurs virtuels &agrave; base de nom</description>
 
     <example>
       &lt;VirtualHost *:80&gt;<br />
-      ServerName serveur.domaine.com<br />
-      ServerAlias serveur serveur2.domaine.com serveur2<br />
+      ServerName serveur.example.com<br />
+      ServerAlias serveur serveur2.example.com serveur2<br />
       ServerAlias *.example.com<br />
       UseCanonicalName Off<br />
       # ...<br />
@@ -4280,10 +4280,10 @@ host</context>
     court suivi d'une URL qui fait r&eacute;f&eacute;rence &agrave; un r&eacute;pertoire, comme
     <code>http://www/splat</code>, <em>sans le slash terminal</em>, vous
     remarquerez qu'Apache httpd va les rediriger vers
-    <code>http://www.domain.com/splat/</code>. Si vous avez activ&eacute;
+    <code>http://www.example.com/splat/</code>. Si vous avez activ&eacute;
     l'authentification, ceci va obliger l'utilisateur &agrave; s'authentifier
     deux fois (une premi&egrave;re fois pour <code>www</code> et une seconde
-    fois pour <code>www.domain.com</code> -- voir <a
+    fois pour <code>www.example.com</code> -- voir <a
     href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">la
     foire aux questions sur ce sujet pour plus d'informations</a>). Par
     contre, si <directive>UseCanonicalName</directive> est d&eacute;finie &agrave;

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1001305 -->
+<!-- English Revision : 1042758-->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -377,7 +377,7 @@ d'Apache</compatibility>
     en utilisant une directive <code>Require ldap-user</code> par
     utilisateur. Par exemple, avec la directive <directive
     module="mod_authnz_ldap">AuthLDAPURL</directive> définie à
-    <code>ldap://ldap/o=Airius?cn</code> (spécifiant donc que l'attribut
+    <code>ldap://ldap/o=Example?cn</code> (spécifiant donc que l'attribut
     <code>cn</code> sera utilisé pour les recherches), on pourra
     utiliser les directives Require suivantes pour restreindre l'accès
     :</p>
@@ -409,15 +409,15 @@ Require ldap-user "Joe Manager"<br />
     guillemets. Par exemple, supposons que l'entrée suivante existe dans
     l'annuaire LDAP :</p>
 <example>
-dn: cn=Administrators, o=Airius<br />
+dn: cn=Administrators, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Barbara Jenson, o=Airius<br />
-uniqueMember: cn=Fred User, o=Airius<br />
+uniqueMember: cn=Barbara Jenson, o=Example<br />
+uniqueMember: cn=Fred User, o=Example<br />
 </example>
 
     <p>La directive suivante autoriserait alors l'accès à Fred et
     Barbara :</p>
-<example>Require ldap-group cn=Administrators, o=Airius</example>
+<example>Require ldap-group cn=Administrators, o=Example</example>
 
     <p>Les membres peuvent aussi se trouver dans les sous-groupes du
     groupe LDAP spécifié si la directive <directive
@@ -425,32 +425,32 @@ uniqueMember: cn=Fred User, o=Airius<br />
     définie à une valeur supérieure à 0. Par exemple, supposons que les
     entrées suivantes existent dans l'annuaire LDAP :</p>
 <example>
-dn: cn=Employees, o=Airius<br />
+dn: cn=Employees, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Managers, o=Airius<br />
-uniqueMember: cn=Administrators, o=Airius<br />
-uniqueMember: cn=Users, o=Airius<br />
+uniqueMember: cn=Managers, o=Example<br />
+uniqueMember: cn=Administrators, o=Example<br />
+uniqueMember: cn=Users, o=Example<br />
 <br />
-dn: cn=Managers, o=Airius<br />
+dn: cn=Managers, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Bob Ellis, o=Airius<br />
-uniqueMember: cn=Tom Jackson, o=Airius<br />
+uniqueMember: cn=Bob Ellis, o=Example<br />
+uniqueMember: cn=Tom Jackson, o=Example<br />
 <br />
-dn: cn=Administrators, o=Airius<br />
+dn: cn=Administrators, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Barbara Jenson, o=Airius<br />
-uniqueMember: cn=Fred User, o=Airius<br />
+uniqueMember: cn=Barbara Jenson, o=Example<br />
+uniqueMember: cn=Fred User, o=Example<br />
 <br />
-dn: cn=Users, o=Airius<br />
+dn: cn=Users, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Allan Jefferson, o=Airius<br />
-uniqueMember: cn=Paul Tilley, o=Airius<br />
-uniqueMember: cn=Temporary Employees, o=Airius<br />
+uniqueMember: cn=Allan Jefferson, o=Example<br />
+uniqueMember: cn=Paul Tilley, o=Example<br />
+uniqueMember: cn=Temporary Employees, o=Example<br />
 <br />
-dn: cn=Temporary Employees, o=Airius<br />
+dn: cn=Temporary Employees, o=Example<br />
 objectClass: groupOfUniqueNames<br />
-uniqueMember: cn=Jim Swenson, o=Airius<br />
-uniqueMember: cn=Elliot Rhodes, o=Airius<br />
+uniqueMember: cn=Jim Swenson, o=Example<br />
+uniqueMember: cn=Elliot Rhodes, o=Example<br />
 </example>
 
     <p>Les directives suivantes autoriseraient alors l'accès à Bob
@@ -459,7 +459,7 @@ uniqueMember: cn=Elliot Rhodes, o=Airius<br />
     (car ils sont situés dans un sous-groupe de niveau de profondeur 2)
     :</p>
 <example>
-Require ldap-group cn=Employees, o-Airius<br />
+Require ldap-group cn=Employees, o-Example<br />
 AuthLDAPSubGroupDepth 1<br />
 </example>
 
@@ -488,7 +488,7 @@ AuthLDAPSubGroupDepth 1<br />
 
     <p>La directive suivante accorderait l'accès à un DN spécifique
     :</p>
-<example>Require ldap-dn cn=Barbara Jenson, o=Airius</example>
+<example>Require ldap-dn cn=Barbara Jenson, o=Example</example>
 
     <p>Le comportement ce cette directive est modifié par la directive
     <directive
@@ -562,7 +562,7 @@ AuthLDAPSubGroupDepth 1<br />
 	l'annuaire LDAP, en utilisant son UID pour effectuer la
 	recherche :
 <example>
-AuthLDAPURL "ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)"<br />
+AuthLDAPURL "ldap://ldap1.example.com:389/ou=People, o=Example?uid?sub?(objectClass=*)"<br />
 Require valid-user
 </example>
       </li>
@@ -571,7 +571,7 @@ Require valid-user
         L'exemple suivant est similaire au précédent, mais les champs
 	dont les valeurs par défaut conviennent sont omis. Notez aussi
 	la présence d'un annuaire LDAP redondant :
-<example>AuthLDAPURL "ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius"<br />
+<example>AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"<br />
 Require valid-user
 </example>
       </li>
@@ -587,7 +587,7 @@ Require valid-user
 	attribut de votre annuaire dont l'unicité soit garantie, comme
 	<code>uid</code>.
 <example>
-AuthLDAPURL "ldap://ldap.airius.com/ou=People, o=Airius?cn"<br />
+AuthLDAPURL "ldap://ldap.example.com/ou=People, o=Example?cn"<br />
 Require valid-user
 </example>
       </li>
@@ -597,19 +597,19 @@ Require valid-user
 	groupe Administrateurs. Les utilisateurs doivent s'authentifier
 	en utilisant leur UID :
 <example>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
-Require ldap-group cn=Administrators, o=Airius
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid<br />
+Require ldap-group cn=Administrators, o=Example
 </example>
       </li>
 
       <li>
         Pour l'exemple suivant, on suppose que tout utilisateur de chez
-	Airius qui dispose d'un bippeur alphanumérique possèdera un
+	Example qui dispose d'un bippeur alphanumérique possèdera un
 	attribut LDAP <code>qpagePagerID</code>. Seuls ces utilisateurs
 	(authentifiés via leur UID) se verront accorder l'autorisation
 	d'accès :
 <example>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(qpagePagerID=*)<br />
 Require valid-user
 </example>
       </li>
@@ -625,7 +625,7 @@ Require valid-user
 	qui ne possède pas de bippeur, mais doit tout de même pouvoir
 	accéder à la ressource :</p>
 <example>
-AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
+AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
 Require valid-user
 </example>
 
@@ -1179,9 +1179,9 @@ appartenance à un groupe</description>
     vérifier son appartenance à un groupe. Dans le cas contraire, c'est
     le nom de l'utilisateur qui sera utilisé. Par exemple, supposons que
     le client envoie le nom d'utilisateur <code>bjenson</code>, qui
-    correspond au DN LDAP <code>cn=Babs Jenson,o=Airius</code>. Si la
+    correspond au DN LDAP <code>cn=Babs Jenson,o=Example</code>. Si la
     directive est à <code>on</code>, <module>mod_authnz_ldap</module> va
-    vérifier si <code>cn=Babs Jenson, o=Airius</code> est un membre du
+    vérifier si <code>cn=Babs Jenson, o=Example</code> est un membre du
     groupe. Dans le cas contraire, <module>mod_authnz_ldap</module>
     vérifiera si <code>bjenson</code> est un membre du groupe.</p>
 </usage>
@@ -1459,7 +1459,7 @@ spécifiés.</p>
     =<em>nom-utilisateur</em>))</code>.</p>
 
     <p>Par exemple, considérons l'URL
-    <code>ldap://ldap.airius.com/o=Airius?cn?sub?(posixid=*)</code>.
+    <code>ldap://ldap.example.com/o=Example?cn?sub?(posixid=*)</code>.
     Lorsqu'un client tentera de se connecter en utilisant le nom
     d'utilisateur <code>Babs Jenson</code>, le filtre de recherche sera
     : <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>

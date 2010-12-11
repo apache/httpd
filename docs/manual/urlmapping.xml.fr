@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1029715 (outdated) -->
+<!-- English Revision: 1041851 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -329,6 +329,13 @@ permet de r&eacute;&eacute;crire les liens dans les documents HTML et XHTML.</p>
     occasionnelle d'URLs peut augmenter la charge du serveur, car chaque
     requ&ecirc;te "incorrecte" entra&icirc;ne une redirection d'URL et une nouvelle requ&ecirc;te
     de la part du client.</p>
+
+    <p><module>mod_dir</module> fournit la directive <directive
+    module="mod_dir">FallbackResource</directive> qui permet d'associer
+    des URIs virtuels &agrave; une ressource r&eacute;elle qui peut ainsi les servir.
+    Cette directive remplace avantageusement
+    <module>mod_rewrite</module> lors de l'impl&eacute;mentation d'un
+    "contr&ocirc;leur frontal".</p>
 
     <p>Si toutes les tentatives pour localiser le contenu
     &eacute;chouent, httpd

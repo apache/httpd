@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1040517 -->
+<!-- English Revision : 1043126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -331,13 +331,13 @@ attributs de la requ&ecirc;te sans tenir compte de la casse</description>
     par le fait que la comparaison des expressions rationnelles est
     effectu&eacute;e sans tenir compte de la casse. Par exemple :</p>
 <example>
-   SetEnvIfNoCase Host Apache\.Org site=apache
+   SetEnvIfNoCase Host Example\.Org site=apache
 </example>
 
     <p>Cette ligne va d&eacute;finir la variable d'environnement
-    <code>site</code> avec la valeur "<code>apache</code>" si le champ
+    <code>site</code> avec la valeur "<code>example</code>" si le champ
     d'en-t&ecirc;te de requ&ecirc;te HTTP <code>Host:</code> est pr&eacute;sent et contient
-    <code>Apache.Org</code>, <code>apache.org</code>, ou une autre
+    <code>Example.Org</code>, <code>example.org</code>, ou une autre
     combinaison des m&ecirc;mes caract&egrave;res, sans tenir compte de la casse.</p>
 </usage>
 </directivesynopsis>
