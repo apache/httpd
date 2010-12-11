@@ -114,8 +114,9 @@ Servers</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache 2.1.5 and later</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p><h3>Siehe auch</h3>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p><h3>Siehe auch</h3>
 <ul>
 <li><code class="directive">Protocol</code></li>
 </ul>
@@ -1375,8 +1376,9 @@ angegebenen MIME-Content-Type</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p></div>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a>-<a name="hostnamelookups" id="hostnamelookups">Direktive</a></h2>
 <table class="directive">
@@ -2502,8 +2504,9 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache 2.1.5 and later.
 On Windows from Apache 2.3.3 and later.</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p><h3>Siehe auch</h3>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p><h3>Siehe auch</h3>
 <ul>
 <li><code class="directive">AcceptFilter</code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
@@ -3221,8 +3224,9 @@ requests</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache 1.3.34, 2.0.55 and later</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p></div>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a>-<a name="usecanonicalname" id="usecanonicalname">Direktive</a></h2>
 <table class="directive">
@@ -3303,8 +3307,9 @@ port</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p><h3>Siehe auch</h3>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p><h3>Siehe auch</h3>
 <ul>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><code class="directive"><a href="#servername">ServerName</a></code></li>

@@ -1006,7 +1006,7 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     </code></p></div>
 
 
-
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2212,7 +2212,7 @@ spécifiées</td></tr>
       &lt;Location /private2<em>/</em>&gt;
           ...
     </code></p></div>
-
+    
     <div class="note"><h3>Quand utiliser la section <code class="directive">&lt;Location&gt;</code></h3>
 
     <p>Vous pouvez utiliser une section <code class="directive">&lt;Location&gt;</code> pour appliquer des directives à
