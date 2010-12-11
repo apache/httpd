@@ -153,8 +153,9 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_status</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>Available in Apache 2.2.7 and later.</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p></div>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p></div>
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
