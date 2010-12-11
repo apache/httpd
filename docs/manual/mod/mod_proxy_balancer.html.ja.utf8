@@ -322,8 +322,9 @@ candidate lbstatus -= total factor</code></pre></div>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy_balancer</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in version 2.4 and later</td></tr>
-</table><p>The documentation of this directive was not translated yet.
-            Please refer to the English version.</p></div>
+</table><p>The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</p></div>
 </div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="../en/mod/mod_proxy_balancer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
