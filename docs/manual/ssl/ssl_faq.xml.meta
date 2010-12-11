@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
-<metafile>
+<metafile reference="ssl_faq.xml">
   <basename>ssl_faq</basename>
   <path>/ssl/</path>
   <relpath>..</relpath>
