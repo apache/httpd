@@ -72,8 +72,8 @@ proxy</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy_connect</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Moved from <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> in Apache 2.3.5.
 Port ranges available since Apache 2.3.7.</td></tr>
-</table><p>The documentation for this directive was
-            not translated yet. Please have a look at the English
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</p></div>
 </div>
 <div class="bottomlang">
