@@ -139,6 +139,10 @@
         <!-- not up to date -->
         <message id="outofdate">Cette traduction peut être périmée. Consultez la version
             Anglaise pour les changements récents.</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">The documentation for this directive was
+            not translated yet. Please have a look at the English
+            version.</message>
     </messages>
 </language>
 
