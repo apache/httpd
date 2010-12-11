@@ -138,8 +138,8 @@
         <message id="outofdate">Esta tradu&#231;&#227;o pode estar desatualizada. 
         Confira a vers&#227;o em Ingl&#234;s para mudan&#231;as recentes.</message>
         <!-- directive not translated yet -->
-        <message id="nottranslated">The documentation for this directive was
-            not translated yet. Please have a look at the English
+        <message id="nottranslated">The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</message>
     </messages>
 </language>

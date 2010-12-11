@@ -140,8 +140,8 @@
         <!-- not up to date -->
         <message id="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</message>
         <!-- directive not translated yet -->
-        <message id="nottranslated">The documentation for this directive was
-            not translated yet. Please have a look at the English
+        <message id="nottranslated">The documentation for this directive has
+            not been translated yet. Please have a look at the English
             version.</message>
     </messages>
 </language>
