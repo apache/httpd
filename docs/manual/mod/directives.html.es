@@ -293,6 +293,7 @@
 <li><a href="mod_proxy.html#proxytimeout">ProxyTimeout</a></li>
 <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
 <li><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName</a></li>
+<li><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize</a></li>
 <li><a href="mod_alias.html#redirect">Redirect</a></li>
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
@@ -389,6 +390,7 @@
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><a href="mpm_netware.html#threadstacksize">ThreadStackSize</a></li>
 <li><a href="core.html#timeout">TimeOut</a></li>
+<li><a href="core.html#traceenable">TraceEnable</a></li>
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
 <li><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv</a></li>

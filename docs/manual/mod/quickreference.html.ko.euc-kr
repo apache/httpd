@@ -183,21 +183,24 @@ passwords for authentication</td></tr>
 설정한다</td></tr>
 <tr><td><a href="mpm_common.html#bs2000account">BS2000Account <var>account</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Define the non-privileged account on BS2000
 machines</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">하위디렉토리명의 문자개수</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 3 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">캐쉬의 하위디렉토리 깊이.</td></tr>
-<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">특정 URL을 캐쉬하지 않는다</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</td></tr>
-<tr><td><a href="mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck On|Off</a></td><td> On </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에서 파일을 찾을때 만기시간을 고려할지 여부</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">시작시 여러 파일 핸들을 캐쉬한다</td></tr>
-<tr><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <var>Percentage</var></a></td><td> 60 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">요청이 취소되더라도 서버가 파일을 계속 캐쉬하기위해
+<tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
+<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">하위디렉토리명의 문자개수</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 3 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬의 하위디렉토리 깊이.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">특정 URL을 캐쉬하지 않는다</td></tr>
+<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck On|Off</a></td><td> On </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">캐쉬에서 파일을 찾을때 만기시간을 고려할지 여부</td></tr>
+<tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">시작시 여러 파일 핸들을 캐쉬한다</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <var>Percentage</var></a></td><td> 60 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">요청이 취소되더라도 서버가 파일을 계속 캐쉬하기위해
 필요한 문서의 서비스률.</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachegcclean">CacheGcClean <var>hours</var> <var>url-string</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">URL에 해당하는 변하지않은 캐쉬파일을 유지할 시간</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachegcdaily">CacheGcDaily <var>time</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">매일 가비지컬랙터를 실행할 반복 시간 (24시 시계)</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachegcinterval">CacheGcInterval <var>hours</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">가비지컬랙터를 실행하는 간격.</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage <var>KBytes</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">가비지컬랙터가 사용할 최대 메모리량 (kilobyte 단위)</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachegcunused">CacheGcUnused <var>hours</var> <var>url-string</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">URL에 해당하는 참조되지않은 캐쉬파일을 유지할 기간.</td></tr>
-<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">클라이언트가 캐쉬하지않는 내용을 요청함을 무시한다.</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachegcclean">CacheGcClean <var>hours</var> <var>url-string</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">URL에 해당하는 변하지않은 캐쉬파일을 유지할 시간</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cachegcdaily">CacheGcDaily <var>time</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">매일 가비지컬랙터를 실행할 반복 시간 (24시 시계)</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachegcinterval">CacheGcInterval <var>hours</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">가비지컬랙터를 실행하는 간격.</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage <var>KBytes</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">가비지컬랙터가 사용할 최대 메모리량 (kilobyte 단위)</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachegcunused">CacheGcUnused <var>hours</var> <var>url-string</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">URL에 해당하는 참조되지않은 캐쉬파일을 유지할 기간.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">클라이언트가 캐쉬하지않는 내용을 요청함을 무시한다.</td></tr>
+<tr><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
+</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">응답에 Last Modified 헤더가 없다는 사실을 무시한다.</td></tr>
 <tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">LastModified 시간으로 만기시간을 계산하는데 사용하는
 계수.</td></tr>
