@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 654773:1044382 (outdated) -->
+<!-- English revision : 1044382 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2008051201 $ -->
+<!-- $LastChangedRevision: 2010121201 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -91,7 +90,7 @@
     Ceci indique que le serveur a d&eacute;marr&eacute; et est en cours d'ex&eacute;cution.
     &Agrave; partir de ce moment, vous pouvez utiliser votre navigateur pour vous connecter
     au serveur et afficher la page de test situ&eacute;e dans le r&eacute;pertoire d&eacute;fini
-    par la directive <directive module="core">DocumentRoot</directive>.</p>
+    par la directive <directive module="core">DocumentRoot</directive></p>
 </section>
 
 <section id="errors"><title>Erreurs en cours de d&eacute;marrage</title>
@@ -113,7 +112,7 @@
     </ul>
 
     <p>Pour plus d'instructions de d&eacute;pannage, consultez la
-    <a href="faq/">FAQ</a> Apache.</p>
+    <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> Apache.</p>
 </section>
 
 <section id="boot"><title>Lancement au d&eacute;marrage du syst&egrave;me</title>
