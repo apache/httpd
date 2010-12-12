@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 636034:1044382 (outdated) -->
+<!-- English revision : 1044382 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2007072801 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -84,7 +83,7 @@
 </category>
 
 <category id="other"><title>Autres sujets</title>
-    <page href="faq/">Foire Aux Questions</page>
+    <page href="http://wiki.apache.org/httpd/FAQ">Foire Aux Questions</page>
     <page href="sitemap.html">Plan du site</page>
     <page href="developer/">Documentation du d&eacute;veloppeur</page>
     <page href="misc/">Autres notes</page>
