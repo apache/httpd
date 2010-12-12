@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 959136:1044380 (outdated) -->
+<!-- English Revision: 1044380 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -61,7 +61,8 @@
 <page href="filter.html">Filter</page>
 <page href="suexec.html">suEXEC Unterst&#252;tzung</page>
 <page href="misc/perf-tuning.html">Performance-Hinweise</page>
-<page href="faq/">Häufig gestellte Fragen (FAQ)</page>
+<page href="http://wiki.apache.org/httpd/FAQ">Häufig gestellte Fragen
+    (FAQ)</page>
 </category>
 
 <category id="vhosts">

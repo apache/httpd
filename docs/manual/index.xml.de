@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 959136:1044380 (outdated) -->
+<!-- English Revision: 1044380 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -85,7 +85,8 @@
 </category>
 
 <category id="other"><title>Weitere Themen</title>
-    <page href="faq/">H&auml;ufig gestellte Fragen (FAQ)</page>
+    <page href="http://wiki.apache.org/httpd/FAQ">H&auml;ufig gestellte
+    Fragen (FAQ)</page>
     <page href="sitemap.html">Seitenindex</page>
     <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
     <page href="misc/">Sonstiges</page>
