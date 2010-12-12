@@ -827,7 +827,7 @@ later</td></tr>
       <dt><code>InheritBefore</code></dt>
       <dd>
       <p> Like <code>Inherit</code> above, but the rules from the parent scope
-      are applied <strong>after</strong> rules specified in the child scope.  
+      are applied <strong>before</strong> rules specified in the child scope.  
       Available in Apache HTTP Server 2.3.10 and later.</p>
       </dd>
       

@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -149,18 +147,18 @@ nécessiter une modification des fichiers de configuration de la version
         Require all granted
       </code></p></div>
 
-      <p>Dans l'exemple suivant, tous les hôtes du domaine apache.org
+      <p>Dans l'exemple suivant, tous les hôtes du domaine example.org
       ont l'autorisation d'accès, tous les autres sont rejetés :</p>
 
       <div class="example"><h3>version 2.2 :</h3><p><code>
         
         Order Deny,Allow<br />
         Deny from all<br />
-        Allow from apache.org
+        Allow from example.org
       </code></p></div>
       <div class="example"><h3>version 2.4 :</h3><p><code>
         
-        Require host apache.org
+        Require host example.org
       </code></p></div>
     
 

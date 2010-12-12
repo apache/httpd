@@ -52,7 +52,7 @@ serveur</td></tr>
       &lt;Location /infos-serveur&gt;<br />
       <span class="indent">
         SetHandler server-info<br />
-        Require host votre-entreprise.com<br />
+        Require host example.com<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
