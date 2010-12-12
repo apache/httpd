@@ -177,7 +177,7 @@ cache</a></li>
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
-        LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        LoadModule disk_cache_module modules/mod_cache_disk.so<br />
         &lt;IfModule mod_cache_disk.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
@@ -524,8 +524,8 @@ gestionnaire de stockage précisé</td></tr>
       CacheEnable  disk  /<br /><br />
       # Mise en cache des URLs FTP mandatées<br />
       CacheEnable  disk  ftp://<br /><br />
-      # Mise en cache des contenus situés dans www.apache.org<br />
-      CacheEnable  disk  http://www.apache.org/<br />
+      # Mise en cache des contenus situés dans www.example.org<br />
+      CacheEnable  disk  http://www.example.org/<br />
     </code></p></div>
 
     <p>Un nom d'hôte commençant par un caractère <strong>"*"</strong>
@@ -535,10 +535,10 @@ gestionnaire de stockage précisé</td></tr>
     composant de nom de domaine qui suit ce caractère.</p>
 
     <div class="example"><p><code>
-      # Correspond à www.apache.org et fooapache.org<br />
-      CacheEnable  disk  http://*apache.org/<br />
-      # Correspond à www.apache.org, mais pas à fooapache.org<br />
-      CacheEnable  disk  http://.apache.org/<br />
+      # Correspond à www.example.org et fooexample.org<br />
+      CacheEnable  disk  http://*example.org/<br />
+      # Correspond à www.example.org, mais pas à fooexample.org<br />
+      CacheEnable  disk  http://.example.org/<br />
     </code></p></div>
 
     <p>Depuis la version 2.2.12, on peut définir la variable

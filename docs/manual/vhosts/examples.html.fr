@@ -24,8 +24,6 @@
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Le but de ce document est d'essayer de répondre aux questions 
@@ -163,7 +161,7 @@
 
     <p>Le serveur a deux adresses IP. Sur l'une 
     (<code>172.20.30.40</code>), le serveur "principal" 
-    <code>server.domain.com</code> doit répondre, et sur l'autre 
+    <code>server.example.com</code> doit répondre, et sur l'autre 
     (<code>172.20.30.50</code>), deux serveurs virtuels (ou plus) 
     répondront.</p>
 
@@ -173,7 +171,7 @@
     Listen 80<br />
         <br />
     # Serveur "principal" sur 172.20.30.40<br />
-    ServerName server.domain.com<br />
+    ServerName server.example.com<br />
     DocumentRoot /www/mainserver<br />
         <br />
     # l'autre adresse <br />
@@ -402,21 +400,21 @@
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
-        DocumentRoot /www/example.com<br />
+        DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
-        DocumentRoot /www/example.org<br />
+        DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
-        DocumentRoot /www/example.net<br />
+        DocumentRoot /www/example3<br />
         ServerName www.example.net<br />
     </span>
     &lt;/VirtualHost&gt;<br />
@@ -424,14 +422,14 @@
     # "par-IP"<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
-        DocumentRoot /www/example.edu<br />
+        DocumentRoot /www/example4<br />
         ServerName www.example.edu<br />
     </span>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <span class="indent">
-        DocumentRoot /www/example.gov<br />
+        DocumentRoot /www/example5<br />
         ServerName www.example.gov<br />
     </span>
     &lt;/VirtualHost&gt;

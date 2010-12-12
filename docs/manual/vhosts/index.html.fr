@@ -25,13 +25,11 @@
 <a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Le principe des <cite>Serveurs Virtuels</cite> consiste à 
     faire fonctionner un ou plusieurs serveurs Web (comme 
-    <code>www.company1.com</code> et <code>www.company2.com</code>) 
+    <code>www.company1.example.com</code> et <code>www.company2.example.com</code>) 
     sur une même machine. Les serveurs virtuels peuvent être soit 
     "<a href="ip-based.html">par-IP</a>" où une adresse IP est 
     attribuée pour chaque serveur Web, soit "<a href="name-based.html">par-nom</a>" où plusieurs noms de domaine se côtoient sur 

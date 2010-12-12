@@ -390,7 +390,7 @@ courante</td></tr>
     serveur, on peut utiliser :</p>
 
     <div class="example"><p><code>
-      RedirectMatch (.*)\.gif$ http://www.autre-serveur.com$1.jpg
+      RedirectMatch (.*)\.gif$ http://autre.example.com$1.jpg
     </code></p></div>
 
     <p>Les remarques à propos de la différence entre <code class="directive"><a href="#alias">Alias</a></code> et <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> s'appliquent aussi à la

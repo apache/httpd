@@ -143,15 +143,15 @@ contrôle d'accès</a></li>
     <p>Un nom de domaine (éventuellement partiel)</p>
 
     <div class="example"><p><code>
-    Require host apache.org<br />
+    Require host example.org<br />
     Require host .net example.edu
     </code></p></div>
 
     <p>Les hôtes dont les noms correspondent ou se terminent par la
     chaîne spécifiée se voient accorder l'accès. Seuls les élément de
     nom de domaine complets sont mis en correspondance ; ainsi,
-    l'exemple ci-dessus correspondra à <code>foo.apache.org</code>, mais
-    ne correspondra pas à <code>fooapache.org</code>. Avec cette
+    l'exemple ci-dessus correspondra à <code>foo.example.org</code>, mais
+    ne correspondra pas à <code>fooexample.org</code>. Avec cette
     configuration, Apache va effectuer une double recherche DNS sur
     l'adresse IP du client, sans tenir compte de la définition de la
     directive  <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>. Il

@@ -59,10 +59,10 @@ suivantes :</p>
 <div class="example"><p><code>
    Listen 443
    &lt;VirtualHost _default_:443&gt;<br />
-        ServerName www.domain.com<br />
+        ServerName www.example.com<br />
         SSLEngine on<br />
-        SSLCertificateFile /chemin/vers/www.comain.com.cert<br />
-        SSLCertificateKeyFile /chemin/vers/www.domain.com.key<br />
+        SSLCertificateFile /chemin/vers/www.example.com.cert<br />
+        SSLCertificateKeyFile /chemin/vers/www.example.com.key<br />
    &lt;/VirtualHost&gt;
 </code></p></div>
 

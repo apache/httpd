@@ -174,7 +174,7 @@ fonctionnalité.</dd>
 
 <div class="example"><p><code>
 RewriteEngine On<br />
-RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
+RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.org:1440:/]
 </code></p></div>
 
 <p>Dans l'exemple ci-dessus, la règle ne réécrit
@@ -182,7 +182,7 @@ pas la requête. La cible de réécriture "-"
 indique à mod_rewrite de transmettre la requête sans
 modification. Par contre, il
 définit un cookie nommé 'frontdoor' avec une valeur 'yes'. Le cookie est
-valide pour tout hôte situé dans le domaine <code>.apache.org</code>. Sa
+valide pour tout hôte situé dans le domaine <code>.example.org</code>. Sa
 durée de vie est limitée à 1440 minutes (24 heures), et il sera renvoyé
 pour tous les URIs.</p>
 

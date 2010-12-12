@@ -121,14 +121,14 @@ d'environnement</var>
 
       <dd>
       <div class="example"><h3>Exemple :</h3><p><code>
-        Allow from apache.org<br />
+        Allow from example.org<br />
         Allow from .net example.edu
       </code></p></div>
       <p>Les hôtes dont les noms correspondent ou se terminent par la
       chaîne spécifiée ont l'autorisation d'accès. Seules les
       composantes entières du nom d'hôte doivent correspondre ; ainsi,
-      dans l'exemple ci-dessus, <code>foo.apache.org</code>
-      correspondra, mais <code>fooapache.org</code> ne conviendra pas.
+      dans l'exemple ci-dessus, <code>foo.example.org</code>
+      correspondra, mais <code>fooexample.org</code> ne conviendra pas.
       Avec cette configuration, Apache httpd va effectuer une double recherche
       DNS sur l'adresse IP du client, sans tenir compte de la
       définition de la directive <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>. Tout d'abord, une
@@ -333,37 +333,37 @@ les directives <code class="directive">Allow</code> et
       </tr>
     </table>
 
-    <p>Dans cet exemple, tous les hôtes du domaine apache.org ont
+    <p>Dans cet exemple, tous les hôtes du domaine example.org ont
     l'autorisation d'accès ; tous les autres voient leur accès
     refusé.</p>
 
     <div class="example"><p><code>
       Order Deny,Allow<br />
       Deny from all<br />
-      Allow from apache.org
+      Allow from example.org
     </code></p></div>
 
-    <p>Dans l'exemple suivant, tous les hôtes du domaine apache.org ont
-    l'autorisation d'accès, sauf ceux du sous-domaine foo.apache.org qui
+    <p>Dans l'exemple suivant, tous les hôtes du domaine example.org ont
+    l'autorisation d'accès, sauf ceux du sous-domaine foo.example.org qui
     voient leur accès refusé. Tous les hôtes qui ne sont pas dans le
-    domaine apache.org sont rejetés car le statut par défaut est positionné
+    domaine example.org sont rejetés car le statut par défaut est positionné
     sur <code class="directive"><a href="#deny">Deny</a></code>, et consiste donc en un
     refus d'accès.</p>
 
     <div class="example"><p><code>
       Order Allow,Deny<br />
-      Allow from apache.org<br />
-      Deny from foo.apache.org
+      Allow from example.org<br />
+      Deny from foo.example.org
     </code></p></div>
 
     <p>Par contre, si la valeur de la directive
     <code class="directive">Order</code>, dans l'exemple précédent, est
     <code>Deny,Allow</code>, tout le monde a l'autorisation d'accès.
-    Ceci est dû au fait que <code>Allow from apache.org</code> sera
+    Ceci est dû au fait que <code>Allow from example.org</code> sera
     évalué en dernier, sans tenir compte de l'ordre réel dans lequel les
     directives apparaissent dans le fichier de configuration, et va
-    l'emporter sur <code>Deny from foo.apache.org</code>. Tout hôte qui
-    n'est pas dans le domaine <code>apache.org</code> aura aussi
+    l'emporter sur <code>Deny from foo.example.org</code>. Tout hôte qui
+    n'est pas dans le domaine <code>example.org</code> aura aussi
     l'autorisation d'accès car le statut par défaut est positionné sur
     <code class="directive"><a href="#allow">Allow</a></code> et constitue donc une
     autorisation d'accès.</p>
