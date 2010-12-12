@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1028778 -->
+<!-- English Revision : 1043126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -170,7 +170,7 @@ fonctionnalit&eacute;.</dd>
 
 <example>
 RewriteEngine On<br />
-RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
+RewriteRule ^/index\.html - [CO=frontdoor:yes:.example.org:1440:/]
 </example>
 
 <p>Dans l'exemple ci-dessus, la r&egrave;gle ne r&eacute;&eacute;crit
@@ -178,7 +178,7 @@ pas la requ&ecirc;te. La cible de r&eacute;&eacute;criture "-"
 indique &agrave; mod_rewrite de transmettre la requ&ecirc;te sans
 modification. Par contre, il
 d&eacute;finit un cookie nomm&eacute; 'frontdoor' avec une valeur 'yes'. Le cookie est
-valide pour tout h&ocirc;te situ&eacute; dans le domaine <code>.apache.org</code>. Sa
+valide pour tout h&ocirc;te situ&eacute; dans le domaine <code>.example.org</code>. Sa
 dur&eacute;e de vie est limit&eacute;e &agrave; 1440 minutes (24 heures), et il sera renvoy&eacute;
 pour tous les URIs.</p>
 

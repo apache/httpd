@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1040808:1042758 (outdated) -->
+<!-- English Revision: 1042758 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -411,10 +411,10 @@ sites qui correspondent &agrave; l'URL sp&eacute;cifi&eacute;e et auxquels on a
 acc&eacute;d&eacute; via le serveur mandataire du module <module>mod_proxy</module>.
 Par exemple, la configuration suivante
 va interdire l'utilisation du serveur proxy pour acc&eacute;der au site
-<code>cnn.com</code>.</p>
+<code>www.example.com</code>.</p>
 
 <example>
-&lt;Proxy http://cnn.com/*&gt;<br />
+&lt;Proxy http://www.example.com/*&gt;<br />
 Order allow,deny<br />
 Deny from all<br />
 &lt;/Proxy&gt;

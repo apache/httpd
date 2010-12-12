@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1029587 -->
+<!-- English Revision : 1043126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -161,7 +161,7 @@ cache</a></seealso>
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <indent>
-        LoadModule cache_disk_module modules/mod_cache_disk.so<br />
+        LoadModule disk_cache_module modules/mod_cache_disk.so<br />
         &lt;IfModule mod_cache_disk.c&gt;<br />
         <indent>
           CacheRoot c:/cacheroot<br />
@@ -407,8 +407,8 @@ gestionnaire de stockage pr&eacute;cis&eacute;</description>
       CacheEnable  disk  /<br /><br />
       # Mise en cache des URLs FTP mandat&eacute;es<br />
       CacheEnable  disk  ftp://<br /><br />
-      # Mise en cache des contenus situ&eacute;s dans www.apache.org<br />
-      CacheEnable  disk  http://www.apache.org/<br />
+      # Mise en cache des contenus situ&eacute;s dans www.example.org<br />
+      CacheEnable  disk  http://www.example.org/<br />
     </example>
 
     <p>Un nom d'h&ocirc;te commen&ccedil;ant par un caract&egrave;re <strong>"*"</strong>
@@ -418,10 +418,10 @@ gestionnaire de stockage pr&eacute;cis&eacute;</description>
     composant de nom de domaine qui suit ce caract&egrave;re.</p>
 
     <example>
-      # Correspond &agrave; www.apache.org et fooapache.org<br />
-      CacheEnable  disk  http://*apache.org/<br />
-      # Correspond &agrave; www.apache.org, mais pas &agrave; fooapache.org<br />
-      CacheEnable  disk  http://.apache.org/<br />
+      # Correspond &agrave; www.example.org et fooexample.org<br />
+      CacheEnable  disk  http://*example.org/<br />
+      # Correspond &agrave; www.example.org, mais pas &agrave; fooexample.org<br />
+      CacheEnable  disk  http://.example.org/<br />
     </example>
 
     <p>Depuis la version 2.2.12, on peut d&eacute;finir la variable

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1039209 -->
+<!-- English Revision : 1044701 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -193,7 +193,7 @@ aucun fichier</description>
     (Not Found).
     Par exemple</p>
     <example>
-        <code>FallbackResource non-404.php</code>
+        <code>FallbackResource /not-404.php</code>
     </example>
     <p>fait en sorte que les requ&ecirc;tes ne correspondant &agrave; aucun fichier
     soient trait&eacute;es par <code>non-404.php</code>, sans affecter les
@@ -209,7 +209,7 @@ aucun fichier</description>
     l'existence des fichiers et r&eacute;pertoires. Maintenant, une seule ligne
     de configuration est n&eacute;cessaire.</p>
     <example>
-        <code>FallbackResource index.php</code>
+        <code>FallbackResource /index.php</code>
     </example>
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront trait&eacute;s normalement.</p>
@@ -220,7 +220,7 @@ aucun fichier</description>
          <code>
              &lt;Directory /web/example.com/htdocs/blog&gt;<br />
 	     <indent>
-		     FallbackResource /blog/index.php<br />
+		   FallbackResource /blog/index.php<br />
              </indent>
              &lt;/Directory&gt;
          </code>

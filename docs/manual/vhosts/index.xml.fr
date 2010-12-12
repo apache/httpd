@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 932383:1042758 (outdated) -->
+<!-- English Revision: 1042758 -->
 <!-- french translation by alain B, review by Vincent Deffontaines -->
+<!-- Updated by Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -30,7 +31,7 @@
 
     <p>Le principe des <cite>Serveurs Virtuels</cite> consiste à 
     faire fonctionner un ou plusieurs serveurs Web (comme 
-    <code>www.company1.com</code> et <code>www.company2.com</code>) 
+    <code>www.company1.example.com</code> et <code>www.company2.example.com</code>) 
     sur une même machine. Les serveurs virtuels peuvent être soit 
     "<a href="ip-based.html">par-IP</a>" où une adresse IP est 
     attribuée pour chaque serveur Web, soit "<a href="name-based.html"
