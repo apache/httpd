@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 421100:1044382 (outdated) -->
+<!-- English Revision: 1044382 -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -61,7 +61,7 @@
     <page href="server-wide.html">Serverweite Konfiguration</page>
     <page href="ssl/">SSL/TLS-Verschl&uuml;sselung</page>
     <page href="suexec.html">Suexec f&uuml;r CGI</page>
-    <page href="misc/rewriteguide.html">Einf&uuml;hrung in die
+    <page href="rewrite/">Einf&uuml;hrung in die
     URL-Manipulation</page>
     <page href="vhosts/">Virtual-Hosts</page>
 </category>
@@ -83,7 +83,8 @@
 </category>
 
 <category id="other"><title>Weitere Themen</title>
-    <page href="faq/">H&auml;ufig gestellte Fragen (FAQ)</page>
+    <page href="http://wiki.apache.org/httpd/FAQ">H&auml;ufig gestellte Fragen
+        (FAQ)</page>
     <page href="sitemap.html">Seitenindex</page>
     <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
     <page href="misc/">Sonstiges</page>

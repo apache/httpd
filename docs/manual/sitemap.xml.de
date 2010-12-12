@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 421100:1044382 (outdated) -->
+<!-- English Revision: 1044382 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -60,7 +60,8 @@
 <page href="filter.html">Filter</page>
 <page href="suexec.html">suEXEC Unterst&#252;tzung</page>
 <page href="misc/perf-tuning.html">Performance-Hinweise</page>
-<page href="misc/rewriteguide.html">Einf&#252;hrung in die URL-Manipulation</page>
+<page href="http://wiki.apache.org/httpd/FAQ">Häufig gestellte Fragen
+    (FAQ)</page>
 </category>
 
 <category id="vhosts">
@@ -77,13 +78,16 @@
 <page href="dns-caveats.html">Probleme bez&#252;glich DNS und Apache</page>
 </category>
 
-
-<category id="faq">
-<title>H&#228;ufig gestellte Fragen (FAQ)</title>
-<page href="faq/">&#220;bersicht</page>
-<page href="faq/background.html">Hintergrundinformationen</page>
-<page href="faq/support.html">Support</page>
-<page href="faq/error.html">Fehlermeldungen</page>
+<category id="rewrite">
+<title>Einf&uuml;hrung in die URL-Manipulation</title>
+<page separate="yes" href="rewrite/">&Uuml;bersicht</page>
+<page href="mod/mod_rewrite.html">Referenz-Dokumentation von
+mod_rewrite</page>
+<page href="rewrite/rewrite_intro.html">Einf&uuml;hrung</page>
+<page href="rewrite/rewrite_flags.html">Schalter / Flags</page>
+<page href="rewrite/rewrite_tech.html">Technische Details</page>
+<page href="rewrite/rewrite_guide.html">N&uuml;tzliche Beispiele f&uuml; URL-Manipulationen</page>
+<page href="rewrite/rewrite_guide_advanced.html">URL-Manipulation f&uuml;r Fortgeschrittene - mehr n&uuml;tzliche Beispiele</page>
 </category>
 
 <category id="ssl">
