@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1037337 -->
+<!-- English revision : 1042758 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,10 +55,10 @@ suivantes :</p>
 <example>
    Listen 443
    &lt;VirtualHost _default_:443&gt;<br />
-        ServerName www.domain.com<br />
+        ServerName www.example.com<br />
         SSLEngine on<br />
-        SSLCertificateFile /chemin/vers/www.comain.com.cert<br />
-        SSLCertificateKeyFile /chemin/vers/www.domain.com.key<br />
+        SSLCertificateFile /chemin/vers/www.example.com.cert<br />
+        SSLCertificateKeyFile /chemin/vers/www.example.com.key<br />
    &lt;/VirtualHost&gt;
 </example>
 

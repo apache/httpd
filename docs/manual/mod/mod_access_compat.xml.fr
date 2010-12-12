@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 926436 -->
+<!-- English Revision : 1043126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -118,14 +118,14 @@ d'environnement</var>
 
       <dd>
       <example><title>Exemple :</title>
-        Allow from apache.org<br />
+        Allow from example.org<br />
         Allow from .net example.edu
       </example>
       <p>Les h&ocirc;tes dont les noms correspondent ou se terminent par la
       cha&icirc;ne sp&eacute;cifi&eacute;e ont l'autorisation d'acc&egrave;s. Seules les
       composantes enti&egrave;res du nom d'h&ocirc;te doivent correspondre ; ainsi,
-      dans l'exemple ci-dessus, <code>foo.apache.org</code>
-      correspondra, mais <code>fooapache.org</code> ne conviendra pas.
+      dans l'exemple ci-dessus, <code>foo.example.org</code>
+      correspondra, mais <code>fooexample.org</code> ne conviendra pas.
       Avec cette configuration, Apache httpd va effectuer une double recherche
       DNS sur l'adresse IP du client, sans tenir compte de la
       d&eacute;finition de la directive <directive
@@ -345,38 +345,38 @@ les directives <directive>Allow</directive> et
       </tr>
     </table>
 
-    <p>Dans cet exemple, tous les h&ocirc;tes du domaine apache.org ont
+    <p>Dans cet exemple, tous les h&ocirc;tes du domaine example.org ont
     l'autorisation d'acc&egrave;s ; tous les autres voient leur acc&egrave;s
     refus&eacute;.</p>
 
     <example>
       Order Deny,Allow<br />
       Deny from all<br />
-      Allow from apache.org
+      Allow from example.org
     </example>
 
-    <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine apache.org ont
-    l'autorisation d'acc&egrave;s, sauf ceux du sous-domaine foo.apache.org qui
+    <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine example.org ont
+    l'autorisation d'acc&egrave;s, sauf ceux du sous-domaine foo.example.org qui
     voient leur acc&egrave;s refus&eacute;. Tous les h&ocirc;tes qui ne sont pas dans le
-    domaine apache.org sont rejet&eacute;s car le statut par d&eacute;faut est positionn&eacute;
+    domaine example.org sont rejet&eacute;s car le statut par d&eacute;faut est positionn&eacute;
     sur <directive
     module="mod_access_compat">Deny</directive>, et consiste donc en un
     refus d'acc&egrave;s.</p>
 
     <example>
       Order Allow,Deny<br />
-      Allow from apache.org<br />
-      Deny from foo.apache.org
+      Allow from example.org<br />
+      Deny from foo.example.org
     </example>
 
     <p>Par contre, si la valeur de la directive
     <directive>Order</directive>, dans l'exemple pr&eacute;c&eacute;dent, est
     <code>Deny,Allow</code>, tout le monde a l'autorisation d'acc&egrave;s.
-    Ceci est d&ucirc; au fait que <code>Allow from apache.org</code> sera
+    Ceci est d&ucirc; au fait que <code>Allow from example.org</code> sera
     &eacute;valu&eacute; en dernier, sans tenir compte de l'ordre r&eacute;el dans lequel les
     directives apparaissent dans le fichier de configuration, et va
-    l'emporter sur <code>Deny from foo.apache.org</code>. Tout h&ocirc;te qui
-    n'est pas dans le domaine <code>apache.org</code> aura aussi
+    l'emporter sur <code>Deny from foo.example.org</code>. Tout h&ocirc;te qui
+    n'est pas dans le domaine <code>example.org</code> aura aussi
     l'autorisation d'acc&egrave;s car le statut par d&eacute;faut est positionn&eacute; sur
     <directive
     module="mod_access_compat">Allow</directive> et constitue donc une

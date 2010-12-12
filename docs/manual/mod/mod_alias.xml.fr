@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1031084 -->
+<!-- English Revision : 1042758 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -391,7 +391,7 @@ courante</description>
     serveur, on peut utiliser :</p>
 
     <example>
-      RedirectMatch (.*)\.gif$ http://www.autre-serveur.com$1.jpg
+      RedirectMatch (.*)\.gif$ http://autre.example.com$1.jpg
     </example>
 
     <p>Les remarques à propos de la différence entre <directive

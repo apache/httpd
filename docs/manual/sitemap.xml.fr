@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 959136 -->
+<!-- English Revision : 1044380 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -65,7 +65,7 @@ Apache</page>
 <page href="filter.html">Filtres</page>
 <page href="suexec.html">Support de suEXEC</page>
 <page href="misc/perf-tuning.html">Optimisation des performances</page>
-<page href="faq/">Frequently Asked Questions</page>
+<page href="http://wiki.apache.org/httpd/FAQ">Foire aux Questions</page>
 </category>
 
 <category id="vhosts">

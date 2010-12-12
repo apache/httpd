@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1001207 -->
+<!-- English Revision : 1043126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -140,15 +140,15 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
     <p>Un nom de domaine (&eacute;ventuellement partiel)</p>
 
     <example>
-    Require host apache.org<br />
+    Require host example.org<br />
     Require host .net example.edu
     </example>
 
     <p>Les h&ocirc;tes dont les noms correspondent ou se terminent par la
     cha&icirc;ne sp&eacute;cifi&eacute;e se voient accorder l'acc&egrave;s. Seuls les &eacute;l&eacute;ment de
     nom de domaine complets sont mis en correspondance ; ainsi,
-    l'exemple ci-dessus correspondra &agrave; <code>foo.apache.org</code>, mais
-    ne correspondra pas &agrave; <code>fooapache.org</code>. Avec cette
+    l'exemple ci-dessus correspondra &agrave; <code>foo.example.org</code>, mais
+    ne correspondra pas &agrave; <code>fooexample.org</code>. Avec cette
     configuration, Apache va effectuer une double recherche DNS sur
     l'adresse IP du client, sans tenir compte de la d&eacute;finition de la
     directive  <directive module="core">HostnameLookups</directive>. Il

@@ -141,8 +141,8 @@
         <message id="outofdate">Cette traduction peut &#234;tre p&#233;rim&#233;e. V&#233;rifiez la version
             anglaise pour les changements r&#233;cents.</message>
         <!-- directive not translated yet -->
-        <message id="nottranslated">The documentation for this directive has
-            not been translated yet. Please have a look at the English
-            version.</message>
+        <message id="nottranslated">La documentation de cette directive
+	n'a pas encore &eacute;t&eacute; traduite. Veuillez vous reporter &agrave; la version
+	en langue anglaise.</message>
     </messages>
 </language>

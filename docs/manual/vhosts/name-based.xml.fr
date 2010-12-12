@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 987242:1044323 (outdated) -->
+<!-- English Revision: 1044323 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -69,6 +69,39 @@
         qui ne peuvent pas différencier des domaines autrement que 
         par des adresses IP séparées.</li>
     </ul>
+</section>
+
+<section id="alg"><title>Comment le serveur sélectionne-t-il le serveur
+virtuel basé sur le nom approprié</title>
+
+    <p>Il est important de savoir que la première étape de la résolution
+    de serveur virtuel basée sur le nom est une résolution basée sur IP.
+    La résolution de serveur virtuel basée sur le nom ne fait que
+    choisir le serveur virtuel basé sur le nom le plus approprié, en se
+    limitant aux candidats qui conviennent le mieux du point de vue IP.
+    La résolution basée sur IP est sans objet si l'on
+    utilise un caractère générique (*) pour l'adresse IP dans
+    toutes les directives NameVirtualHost et VirtualHost.</p>
+    
+    <p>Lorsqu'une requête arrive, le serveur vérifie d'abord si elle
+    utilise une adresse IP qui correspond exactement à une directive
+    <directive module="core">NameVirtualHost</directive>. Si c'est le
+    cas, il va ensuite rechercher toutes les sections <directive
+    type="section" module="core">VirtualHost</directive> comportant une
+    adresse IP correspondante, puis essaiera d'en trouver une dont la
+    directive <directive module="core">ServerName</directive> ou
+    <directive module="core" >ServerAlias</directive> correspond au nom
+    d'hôte de la requête. S'il en trouve une, il utilisera la
+    configuration associée au serveur correspondant.</p>
+
+    <section id="defaultvhost"><title>Le serveur virtuel basé sur le nom
+    par défaut pour une directive NameVirtualHost</title>
+    <p>Si aucune directive ServerName ou ServerAlias correspondant au
+    nom d'hôte de la requête n'est trouvée dans l'ensemble des serveurs
+    virtuels correspondant à la directive NameVirtualHost, <strong>c'est
+    le premier serveur virtuel de la liste de ceux qui
+    correspondent à l'adresse IP</strong> qui sera utilisé.</p></section>
+    
 
 </section>
 
@@ -125,23 +158,28 @@
     l'emplacement sur le système de fichiers du contenu de ce serveur.</p>
 
     <note><title>Le serveur principal disparaît</title>
-        <p>Si vous ajoutez des serveurs virtuels à un serveur Web 
-        existant, vous devez également créer une section 
-        <directive type="section" module="core">VirtualHost</directive> 
-        redéfinissant ce serveur existant. Les directives 
-        <directive module="core">ServerName</directive> et 
-        <directive module="core">DocumentRoot</directive> incluses 
-        dans ce serveur virtuel doivent être les mêmes que pour 
-        les directives globales 
-        <directive module="core">ServerName</directive> et 
-        <directive module="core">DocumentRoot</directive>. Positionnez 
-        ce serveur virtuel en premier dans le fichier de configuration 
-        pour en faire le serveur par défaut.</p>
+        <p>Toute requête qui ne correspond à aucune section <directive
+	type="section" module="core">VirtualHost</directive> existante
+	est traitée avec la configuration du serveur principal, sans
+	tenir compte du nom d'hôte ou de la directive ServerName.</p>
+
+        <p>Lorsque vous ajoutez un serveur virtuel basé sur le nom à un
+	serveur existant, et si les caractéristiques de ce serveur
+	virtuel correspondent à des combinaisons IP/port préexistantes,
+	les requêtes seront alors traitées par un serveur virtuel
+	explicite. Dans ce cas, il est en général judicieux de créer un
+	<a href="#defaultvhost">serveur virtuel par défaut</a>
+	comportant une directive <directive
+	module="core">ServerName</directive> correspondant au nom du
+	serveur principal. De nouveaux domaines sur les mêmes interface
+	et port, mais nécessitant des configurations distinctes,
+	pourront alors être ajoutés en tant que serveurs virtuels
+	spécifiques (et non par défaut).</p>
     </note>
 
     <p>Par exemple, supposez que vous hébergez le domaine 
-    <code>www.domain.tld</code> et que vous souhaitez ajouter le 
-    serveur virtuel <code>www.otherdomain.tld</code> qui pointe sur 
+    <code>www.example.com</code> et que vous souhaitez ajouter le 
+    serveur virtuel <code>other.example.com</code> qui pointe sur 
     la même adresse IP. Il vous suffit d'ajouter la configuration 
     suivante à <code>httpd.conf</code>&nbsp;:</p>
 
@@ -150,14 +188,16 @@
         <br />
         &lt;VirtualHost *:80&gt;<br />
         <indent>
-            ServerName www.domain.tld<br />
-            ServerAlias domain.tld *.domain.tld<br />
+            # Le premier serveur virtuel de la liste est aussi le
+	    # serveur par défaut pour *:80
+            ServerName www.example.com<br />
+            ServerAlias example.com *.example.com<br />
             DocumentRoot /www/domain<br />
         </indent>
         &lt;/VirtualHost&gt;<br />
         <br />
         &lt;VirtualHost *:80&gt;<br />
-        <indent>ServerName www.otherdomain.tld<br />
+        <indent>ServerName other.example.com<br />
             DocumentRoot /www/otherdomain<br />
         </indent>
         &lt;/VirtualHost&gt;<br />
@@ -183,12 +223,12 @@
     même site Web&nbsp;:</p>
 
     <example>
-        ServerAlias domain.tld *.domain.tld
+        ServerAlias example.com *.example.com
     </example>
 
     <p>ainsi, toutes les requêtes portant sur un domaine 
-    <code>domain.tld</code> seront servies par le serveur virtuel 
-    <code>www.domain.tld</code>. Les caractères joker <code>*</code> 
+    <code>example.com</code> seront servies par le serveur virtuel 
+    <code>www.example.com</code>. Les caractères joker <code>*</code> 
     et <code>?</code> peuvent être utilisés pour les correspondances. 
     Bien entendu, vous ne pouvez pas inventer des noms et les placer 
     dans une directive <directive module="core">ServerName</directive> 
@@ -209,32 +249,6 @@
     <directive type="section" module="core">VirtualHost</directive>) 
     sera utilisé seulement s'il n'y a pas de configuration contraire 
     par un serveur virtuel.</p>
-
-    <p>Maintenant, lorsqu'une requête arrive, le serveur va d'abord 
-    tester si elle utilise une adresse IP qui correspond à 
-    <directive module="core" >NameVirtualHost</directive>. Si c'est 
-    le cas, il regardera chaque section 
-    <directive type="section" module="core">VirtualHost</directive> 
-    avec l'adresse correspondante et essaiera d'en trouver une où 
-    le nom de domaine requis correspond à 
-    <directive module="core">ServerName</directive> ou 
-    <code>ServerAlias</code>. S'il en trouve une, il utilisera 
-    sa configuration pour le serveur. Si aucun serveur virtuel ne 
-    correspond, alors <em>le premier serveur virtuel listé</em> 
-    dont l'adresse IP correspond sera employé.</p>
-
-    <p>En conséquence, le premier serveur virtuel listé est le 
-    serveur virtuel <em>par défaut</em>. La directive 
-    <directive module="core">DocumentRoot</directive> du 
-    <em>serveur principal</em> <strong>ne</strong> sera 
-    <strong>jamais</strong> employée lorsqu'une adresse IP 
-    correspond à la directive 
-    <directive module="core">NameVirtualHost</directive>. Si vous 
-    souhaiter avoir une configuration spéciale pour les requêtes 
-    qui ne correspondent pas à un serveur virtuel en particulier, 
-    mettez cette configuration dans une section 
-    <directive type="section" module="core">VirtualHost</directive> 
-    que vous placerez en premier dans le fichier de configuration.</p>
 
 </section>
 

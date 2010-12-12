@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1031197:1043126 (outdated) -->
+<!-- English Revision: 1043126 -->
 <!-- French translation by Vincent Deffontaines, Alain B., review by  -->
 <!-- updated by Lucien Gentis -->
 
@@ -139,7 +139,7 @@
 
     <p>Le serveur a deux adresses IP. Sur l'une 
     (<code>172.20.30.40</code>), le serveur "principal" 
-    <code>server.domain.com</code> doit répondre, et sur l'autre 
+    <code>server.example.com</code> doit répondre, et sur l'autre 
     (<code>172.20.30.50</code>), deux serveurs virtuels (ou plus) 
     répondront.</p>
 
@@ -149,7 +149,7 @@
     Listen 80<br />
         <br />
     # Serveur "principal" sur 172.20.30.40<br />
-    ServerName server.domain.com<br />
+    ServerName server.example.com<br />
     DocumentRoot /www/mainserver<br />
         <br />
     # l'autre adresse <br />
@@ -378,21 +378,21 @@
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example.com<br />
+        DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example.org<br />
+        DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example.net<br />
+        DocumentRoot /www/example3<br />
         ServerName www.example.net<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
@@ -400,14 +400,14 @@
     # "par-IP"<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
-        DocumentRoot /www/example.edu<br />
+        DocumentRoot /www/example4<br />
         ServerName www.example.edu<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <indent>
-        DocumentRoot /www/example.gov<br />
+        DocumentRoot /www/example5<br />
         ServerName www.example.gov<br />
     </indent>
     &lt;/VirtualHost&gt;

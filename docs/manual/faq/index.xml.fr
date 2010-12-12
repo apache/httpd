@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 810464 -->
+<!-- English Revision : 1044378 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2008072101 $ -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -29,102 +28,8 @@
 
 <summary>
 
-    <p>Ce document n'est pas une FAQ traditionnelle, mais plut&ocirc;t un
-    guide sommaire vous indiquant ce qu'il faut faire lorsque vous
-    rencontrez des probl&egrave;mes avec le serveur HTTP Apache.</p>
-
-    <p>La <a
-    href="http://httpd.apache.org/docs/misc/FAQ.html">FAQ Apache 1.3</a>
-    constitue un document plus traditionnel, quoique l&eacute;g&egrave;rement
-    obsol&egrave;te.</p>
+    <p>La FAQ a &eacute;t&eacute; transf&eacute;r&eacute;e vers le <a
+    href="http://wiki.apache.org/httpd/FAQ">Wiki du serveur HTTP</a>.</p>
 </summary>
-
-    <section id="support.what2do">
-    <title>"Pourquoi ne puis-je pas ... ? Pourquoi ... ne fonctionne
-    pas ?" Que faire en cas de probl&egrave;me ?</title>
-
-      <p>Si vous rencontrez des probl&egrave;mes avec le serveur Apache, vous
-      devez effectuer les actions suivantes :</p>
-
-      <dl>
-      <dt>Consultez le journal des erreurs !</dt>
-      <dd><p>Apache essaie de vous aider &agrave; r&eacute;soudre les probl&egrave;mes
-      rencontr&eacute;s. Dans de nombreux cas, il fournira certains d&eacute;tails en
-      enregistrant un ou plusieurs messages dans le journal des erreurs
-      du serveur. Cela vous suffit parfois pour diagnostiquer et
-      r&eacute;soudre le probl&egrave;me vous-m&ecirc;me (en corrigeant les permissions sur
-      certains fichiers par exemple). La localisation du
-      journal des erreurs de votre serveur est d&eacute;finie dans votre
-      fichier de configuration par la directive <directive
-      module="core">ErrorLog</directive>, et sa valeur par d&eacute;faut est
-      <code>/usr/local/apache2/logs/error_log</code>.</p>
-
-      <p>Si vous avez fini par poster un message dans un des forums de
-      support, c'est probablement le premier endroit dans lequel on vous
-      demandera de rechercher des informations. S'il vous plait,
-      assurez-vous de savoir o&ugrave; trouver votre journal des erreurs. Si
-      vous n'en &ecirc;tes pas s&ucirc;r, cette <a
-      href="http://wiki.apache.org/httpd/DistrosDefaultLayout">page du
-      wiki</a> peut vous orienter dans vos recherches.</p></dd>
-
-      <dt>Consultez le wiki</dt>
-      <dd>Le <a href="http://wiki.apache.org/httpd/">Wiki du serveur
-      HTTP Apache</a> vous guidera pour r&eacute;soudre de nombreux probl&egrave;mes
-      courants.</dd>
-
-      <dt>Consultez la base de donn&eacute;es des bogues d'Apache</dt>
-      <dd>La plupart des probl&egrave;mes signal&eacute;s au Groupe Apache sont
-      enregistr&eacute;s dans la <a
-      href="http://httpd.apache.org/bug_report.html">base de donn&eacute;es des
-      bogues</a>. <strong>Ne soumettez pas</strong> de nouveau rapport
-      de bogue avant d'avoir consult&eacute; les rapports existants (ouverts
-      <em>et</em> ferm&eacute;s), et expos&eacute; votre probl&egrave;me dans un forum de
-      support des utilisateurs (voir ci-dessous). Si votre probl&egrave;me a
-      d&eacute;j&agrave; &eacute;t&eacute; signal&eacute;, merci de <em>ne pas</em> ajouter un commentaire
-      du style "Je rencontre le m&ecirc;me probl&egrave;me . . .".</dd>
-
-      <dt><a id="support.what2do.user-support"
-      name="support.what2do.user-support">Exposez votre probl&egrave;me dans un
-      forum de support</a></dt>
-      <dd><p>Apache poss&egrave;de une communaut&eacute; active d'utilisateurs pr&ecirc;ts &agrave;
-      partager leurs connaissances. Prendre part &agrave; cette communaut&eacute; est
-      en g&eacute;n&eacute;ral le moyen le plus rapide et le plus efficace pour
-      obtenir des r&eacute;ponses &agrave; vos questions ou probl&egrave;mes.</p>
-
-      <p><a href="http://httpd.apache.org/userslist.html">Liste de
-      diffusion des utilisateurs</a></p>
-
-      <p>Les utilisateurs peuvent aussi soumettre leurs probl&egrave;mes &agrave; <a
-      href="irc://irc.freenode.net/#httpd">#httpd</a> sur <a
-      href="http://freenode.net">Freenode IRC</a>.</p>
-      </dd>
-
-      <dt>Merci d'utiliser la base de donn&eacute;es des bogues pour les bogues
-      !</dt>
-      <dd><p>Si vous avez suivi toutes ces &eacute;tapes sans trouver la
-      solution &agrave; votre probl&egrave;me, <em>merci</em> de le signaler aux
-      d&eacute;veloppeurs de httpd en <a
-      href="http://httpd.apache.org/bug_report.html">enregistrant un
-      rapport de bogue</a>.</p>
-
-      <p>Si votre probl&egrave;me provoque un crash du serveur et g&eacute;n&egrave;re un
-      vidage m&eacute;moire (core dump), merci de <a
-      href="http://httpd.apache.org/dev/debugging.html">joindre ce
-      dernier</a> (dans la mesure du possible).</p>
-      </dd>
-      </dl>
-    </section>
-
-    <section id="support.support"><title>Qui contacter pour obtenir du support
-    ?</title>
-      <p>Avec des millions d'utilisateurs et moins de soixante
-      d&eacute;veloppeurs b&eacute;n&eacute;voles, nous ne sommes pas en mesure de proposer
-      un support personnalis&eacute; pour Apache. Pour un support gratuit, nous
-      vous sugg&eacute;rons de participer &agrave; un forum utilisateur (voir plus
-      haut).</p>
-
-      <p>De nombreuses soci&eacute;t&eacute;s proposent un support Apache
-      professionnel et commercial.</p>
-    </section>
 
 </manualpage>

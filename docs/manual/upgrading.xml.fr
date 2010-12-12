@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1021924:1043126 (outdated) -->
+<!-- English Revision: 1043126 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -153,18 +153,18 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
         Require all granted
       </example>
 
-      <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine apache.org
+      <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine example.org
       ont l'autorisation d'acc&egrave;s, tous les autres sont rejet&eacute;s :</p>
 
       <example>
         <title>version 2.2 :</title>
         Order Deny,Allow<br />
         Deny from all<br />
-        Allow from apache.org
+        Allow from example.org
       </example>
       <example>
         <title>version 2.4 :</title>
-        Require host apache.org
+        Require host example.org
       </example>
     </section>
 
