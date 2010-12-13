@@ -128,11 +128,12 @@ requests</description>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mod_unixd</module></modulelist>
+<compatibility>Available in Apache 2.2.10 and later</compatibility>
 
 <usage>
-    <p>This directive, available in httpd 2.2.9(?) and later, tells the
-    server to <var>chroot(8)</var> to the specified directory after
-    startup, but before accepting requests over the 'net.</p>
+    <p>This directive tells the server to <var>chroot(8)</var> to the
+    specified directory after startup, but before accepting requests
+    over the 'net.</p>
     <p>Note that running the server under chroot is not simple,
     and requires additional setup, particularly if you are running
     scripts such as CGI or PHP.  Please make sure you are properly
