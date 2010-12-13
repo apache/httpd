@@ -27,7 +27,7 @@ Release history:
           while x.{even}.z versions are Stable/GA releases.]
 
     2.3.10  : In development.
-    2.3.9   : Tagged on November 23, 2010.
+    2.3.9   : Tagged on November 23, 2010, not released.
     2.3.8   : Tagged on August 24, 2010.
     2.3.7   : Tagged on August 19, 2010, not released.
     2.3.6   : Released on June 21, 2010.
@@ -85,9 +85,13 @@ RELEASE SHOWSTOPPERS:
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
     and any anomolies fixed.
+    jim sez: from what I can see, mod_session* is no worse that other
+             modules that mix these 2 types... clean up is
+             forthcoming but should not be considered a blocker, imo
 
   * mod_ssl's proxy support only allows one proxy client certificate per
     frontend virtual host. Lift this restriction.
+    jim sez: Why a blocker?
 
 
   OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.2 BUT OBVIOUSLY WEREN'T:
