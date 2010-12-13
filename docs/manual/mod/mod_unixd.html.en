@@ -48,10 +48,11 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_unixd.html">mod_unixd</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.10 and later</td></tr>
 </table>
-    <p>This directive, available in httpd 2.2.9(?) and later, tells the
-    server to <var>chroot(8)</var> to the specified directory after
-    startup, but before accepting requests over the 'net.</p>
+    <p>This directive tells the server to <var>chroot(8)</var> to the
+    specified directory after startup, but before accepting requests
+    over the 'net.</p>
     <p>Note that running the server under chroot is not simple,
     and requires additional setup, particularly if you are running
     scripts such as CGI or PHP.  Please make sure you are properly
