@@ -2985,7 +2985,7 @@ itself</td></tr>
     directive should be used:</p>
 
     <div class="example"><p><code>
-      ServerName www.example.com:80
+      ServerName www.example.com
     </code></p></div>
 
     <p>If no <code class="directive">ServerName</code> is specified, then the
