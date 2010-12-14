@@ -2962,7 +2962,7 @@ itself</description>
     directive should be used:</p>
 
     <example>
-      ServerName www.example.com:80
+      ServerName www.example.com
     </example>
 
     <p>If no <directive>ServerName</directive> is specified, then the
