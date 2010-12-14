@@ -41,11 +41,11 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
        The basic premise is for the kernel to not send a socket to the server
        process until either data is received or an entire HTTP Request is buffered.
        Only <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
-       FreeBSD's Accept Filters</a>, Linux's more primitive 
+       FreeBSD's Accept Filters</a>, Linux's more primitive
        <code>TCP_DEFER_ACCEPT</code>, and Windows' optimized AcceptEx()
        are currently supported.</p>
 
-    <p>Using <code>none</code> for an argument will disable any accept filters 
+    <p>Using <code>none</code> for an argument will disable any accept filters
        for that protocol.  This is useful for protocols that require a server
        send data first, such as <code>ftp:</code> or <code>nntp</code>:</p>
     <example>AcceptFilter nntp none</example>
@@ -61,12 +61,12 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
         AcceptFilter http httpready <br/>
         AcceptFilter https dataready
     </example>
-    
+
     <p>The <code>httpready</code> accept filter buffers entire HTTP requests at
-       the kernel level.  Once an entire request is received, the kernel then 
-       sends it to the server. See the 
+       the kernel level.  Once an entire request is received, the kernel then
+       sends it to the server. See the
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
-       accf_http(9)</a> man page for more details.  Since HTTPS requests are 
+       accf_http(9)</a> man page for more details.  Since HTTPS requests are
        encrypted only the <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">
        accf_data(9)</a> filter is used.</p>
 
@@ -77,9 +77,9 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
     </example>
 
     <p>Linux's <code>TCP_DEFER_ACCEPT</code> does not support buffering http
-       requests.  Any value besides <code>none</code> will enable 
+       requests.  Any value besides <code>none</code> will enable
        <code>TCP_DEFER_ACCEPT</code> on that listener. For more details
-       see the Linux 
+       see the Linux
        <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
        tcp(7)</a> man page.</p>
 
@@ -104,7 +104,7 @@ On Windows from Apache httpd 2.3.3 and later.</compatibility>
        and will not recycle sockets between connections.  This is useful for
        network adapters with broken driver support, as well as some virtual
        network providers such as vpn drivers, or spam, virus or spyware
-       filters.</p>  
+       filters.</p>
 
 </usage>
 <seealso><directive>Protocol</directive></seealso>
@@ -425,7 +425,7 @@ be passed through</description>
     server error.</p>
 
     <note><p>For security and performance reasons, do not set
-    <code>AllowOverride</code> to anything other than <code>None</code> 
+    <code>AllowOverride</code> to anything other than <code>None</code>
     in your <code>&lt;Directory /&gt;</code> block. Instead, find (or
     create) the <code>&lt;Directory&gt;</code> block that refers to the
     directory where you're actually planning to place a
@@ -564,7 +564,7 @@ named file-system directory, sub-directories, and their contents.</description>
     <p><directive type="section">Directory</directive> and
     <code>&lt;/Directory&gt;</code> are used to enclose a group of
     directives that will apply only to the named directory,
-    sub-directories of that directory, and the files within the respective 
+    sub-directories of that directory, and the files within the respective
     directories.  Any directive that is allowed
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
@@ -705,9 +705,9 @@ the contents of file-system directories matching a regular expression.</descript
 <usage>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory (and the files within), 
-    the same as <directive module="core" type="section">Directory</directive>. 
-    However, it takes as an argument a 
+    of directives which will apply only to the named directory (and the files within),
+    the same as <directive module="core" type="section">Directory</directive>.
+    However, it takes as an argument a
     <glossary ref="regex">regular expression</glossary>.  For example:</p>
 
     <example>
@@ -726,8 +726,8 @@ the contents of file-system directories matching a regular expression.</descript
     </note>
 
     <note><title>Trailing Slash</title>
-      This directive applies to requests for directories that may or may 
-      not end in a trailing slash, so expressions that are anchored to the 
+      This directive applies to requests for directories that may or may
+      not end in a trailing slash, so expressions that are anchored to the
       end of line ($) must be written with care.
     </note>
 </usage>
@@ -762,8 +762,8 @@ from the web</description>
 
     <p>then an access to
     <code>http://my.example.com/index.html</code> refers to
-    <code>/usr/web/index.html</code>. If the <var>directory-path</var> is 
-    not absolute then it is assumed to be relative to the <directive 
+    <code>/usr/web/index.html</code>. If the <var>directory-path</var> is
+    not absolute then it is assumed to be relative to the <directive
     module="core">ServerRoot</directive>.</p>
 
     <p>The <directive>DocumentRoot</directive> should be specified without
@@ -1019,7 +1019,7 @@ in case of an error</description>
     will be immediately halted and the internal error message returned.
     This is necessary to guard against security problems caused by
     bad requests.</p>
-   
+
     <p>If you are using mod_proxy, you may wish to enable
     <directive module="mod_proxy">ProxyErrorOverride</directive> so that you can provide
     custom error messages on behalf of your Origin servers. If you don't enable ProxyErrorOverride,
@@ -1041,7 +1041,7 @@ in case of an error</description>
 <usage>
     <p>The <directive>ErrorLog</directive> directive sets the name of
     the file to which the server will log any errors it encounters. If
-    the <var>file-path</var> is not absolute then it is assumed to be 
+    the <var>file-path</var> is not absolute then it is assumed to be
     relative to the <directive module="core">ServerRoot</directive>.</p>
 
     <example><title>Example</title>
@@ -1080,7 +1080,7 @@ in case of an error</description>
     <note type="warning"><title>Note</title>
       <p>When entering a file path on non-Unix platforms, care should be taken
       to make sure that only forward slashes are used even though the platform
-      may allow the use of back slashes. In general it is a good idea to always 
+      may allow the use of back slashes. In general it is a good idea to always
       use forward slashes throughout the configuration files.</p>
     </note>
 </usage>
@@ -1258,7 +1258,7 @@ in case of an error</description>
 
 <directivesynopsis>
 <name>ExtendedStatus</name>
-<description>Keep track of extended status information for each 
+<description>Keep track of extended status information for each
 request</description>
 <syntax>ExtendedStatus On|Off</syntax>
 <default>ExtendedStatus Off[*]</default>
@@ -1266,8 +1266,8 @@ request</description>
 
 <usage>
     <p>This option tracks additional data per worker about the
-    currently executing request, and a utilization summary; you 
-    can see these variables during runtime by configuring 
+    currently executing request, and a utilization summary; you
+    can see these variables during runtime by configuring
     <module>mod_status</module>.  Note that other modules may
     rely on this scoreboard.</p>
 
@@ -1278,7 +1278,7 @@ request</description>
     during a graceful restart.</p>
 
     <note>
-    <p>Note that loading <module>mod_status</module> will change 
+    <p>Note that loading <module>mod_status</module> will change
     the default behavior to ExtendedStatus On, while other
     third party modules may do the same.  Such modules rely on
     collecting detailed information about the state of all workers.
@@ -1348,8 +1348,8 @@ HTTP response header for static files</description>
     changed via <directive>FileETag</directive>.
     </note>
     <note><title>Server Side Includes</title>
-    An ETag is not generated for responses parsed by <module>mod_include</module>, 
-    since the response entity can change without a change of the INode, MTime, or Size 
+    An ETag is not generated for responses parsed by <module>mod_include</module>,
+    since the response entity can change without a change of the INode, MTime, or Size
     of the static file with embedded SSI directives.
     </note>
 
@@ -1388,7 +1388,7 @@ filenames</description>
     <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where <code>?</code> matches any single character,
     and <code>*</code> matches any sequences of characters.
-    <glossary ref="regex">Regular expressions</glossary> 
+    <glossary ref="regex">Regular expressions</glossary>
     can also be used, with the addition of the
     <code>~</code> character. For example:</p>
 
@@ -1427,7 +1427,7 @@ filenames</description>
     <p>The <directive type="section">FilesMatch</directive> directive
     limits the scope of the enclosed directives by filename, just as the
     <directive module="core" type="section">Files</directive> directive
-    does. However, it accepts a <glossary ref="regex">regular 
+    does. However, it accepts a <glossary ref="regex">regular
     expression</glossary>. For example:</p>
 
     <example>
@@ -1492,8 +1492,8 @@ media type in the HTTP Content-Type header field</description>
     </example>
 
     <p>This directive primarily overrides the content types generated for
-    static files served out of the filesystem.  For resources other than 
-    static files, where the generator of the response typically specifies 
+    static files served out of the filesystem.  For resources other than
+    static files, where the generator of the response typically specifies
     a Content-Type, this directive has no effect.</p>
 
 </usage>
@@ -1512,7 +1512,7 @@ media type in the HTTP Content-Type header field</description>
     argument ends with a percent symbol ('%'), subdirectories are created
     for each process id.</p>
 
-    <p>This directive currently only works with the <module>prefork</module> 
+    <p>This directive currently only works with the <module>prefork</module>
     MPM.</p>
 </usage>
 </directivesynopsis>
@@ -1779,7 +1779,7 @@ wildcard matching available in 2.3.6 and later</compatibility>
     <directive module="core">Include</directive> directive will fail with an
     error saying the file or directory cannot be found.</p>
 
-    <p>The file path specified may be an absolute path, or may be relative 
+    <p>The file path specified may be an absolute path, or may be relative
     to the <directive module="core">ServerRoot</directive> directory.</p>
 
     <p>Examples:</p>
@@ -1801,7 +1801,7 @@ wildcard matching available in 2.3.6 and later</compatibility>
     path. In the following example, the server will fail to load if no
     directories match conf/vhosts/*, but will load successfully if no
     files match *.conf.</p>
-  
+
     <example>
       Include conf/vhosts/*/vhost.conf<br />
       Include conf/vhosts/*/*.conf
@@ -1813,7 +1813,7 @@ wildcard matching available in 2.3.6 and later</compatibility>
     <example>
       Include strict conf/vhosts/*/*.conf
     </example>
-  
+
     <p>In this example, the server load successfully if either conf/vhosts/*
     matches no directories, or if *.conf matches no files:</p>
 
@@ -1825,7 +1825,7 @@ wildcard matching available in 2.3.6 and later</compatibility>
 
 <seealso><program>apachectl</program></seealso>
 </directivesynopsis>
-  
+
 <directivesynopsis>
 <name>KeepAlive</name>
 <description>Enables HTTP persistent connections</description>
@@ -1872,7 +1872,7 @@ requests on a persistent connection</description>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Specifying a value in milliseconds is available in 
+<compatibility>Specifying a value in milliseconds is available in
 Apache httpd 2.3.2 and later</compatibility>
 
 <usage>
@@ -1886,7 +1886,7 @@ Apache httpd 2.3.2 and later</compatibility>
     may cause performance problems in heavily loaded servers. The
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
-    
+
     <p>In a name-based virtual host context, the value of the first
     defined virtual host (the default host) in a set of <directive
     module="core">NameVirtualHost</directive> will be used.
@@ -1970,12 +1970,12 @@ methods</description>
       &lt;LimitExcept GET&gt;
       <indent>
         Require valid-user
-      </indent> 
+      </indent>
       &lt;/LimitExcept&gt;<br />
       &lt;Limit POST&gt;
       <indent>
         Require group editors
-      </indent> 
+      </indent>
       &lt;/Limit&gt;
     </example>
 </usage>
@@ -2092,8 +2092,8 @@ from the client</description>
     <example>
       LimitRequestBody 102400
     </example>
-    
-    <note><p>For a full description of how this directive is interpreted by 
+
+    <note><p>For a full description of how this directive is interpreted by
     proxy requests, see the <module>mod_proxy</module> documentation.</p>
     </note>
 
@@ -2139,7 +2139,7 @@ will be accepted from the client</description>
     </example>
 
      <note type="warning"><title>Warning</title>
-     <p> When name-based virtual hosting is used, the value for this 
+     <p> When name-based virtual hosting is used, the value for this
      directive is taken from the default (first-listed) virtual host for the
      <directive>NameVirtualHost</directive> the connection was mapped to.</p>
      </note>
@@ -2160,11 +2160,11 @@ client</description>
     that will be allowed in an HTTP request header.</p>
 
     <p>The <directive>LimitRequestFieldSize</directive> directive
-    allows the server administrator to reduce or increase the limit 
+    allows the server administrator to reduce or increase the limit
     on the allowed size of an HTTP request header field. A server
-    needs this value to be large enough to hold any one header field 
-    from a normal client request. The size of a normal request header 
-    field will vary greatly among different client implementations, 
+    needs this value to be large enough to hold any one header field
+    from a normal client request. The size of a normal request header
+    field will vary greatly among different client implementations,
     often depending upon the extent to which a user has configured
     their browser to support detailed content negotiation. SPNEGO
     authentication headers can be up to 12392 bytes.</p>
@@ -2183,7 +2183,7 @@ client</description>
     the default.</note>
 
     <note type="warning"><title>Warning</title>
-    <p> When name-based virtual hosting is used, the value for this 
+    <p> When name-based virtual hosting is used, the value for this
     directive is taken from the default (first-listed) virtual host for the
     <directive>NameVirtualHost</directive> the connection was mapped to.</p>
     </note>
@@ -2200,7 +2200,7 @@ from the client</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>This directive sets the number of <var>bytes</var> that will be 
+    <p>This directive sets the number of <var>bytes</var> that will be
     allowed on the HTTP request-line.</p>
 
     <p>The <directive>LimitRequestLine</directive> directive allows
@@ -2227,7 +2227,7 @@ from the client</description>
     the default.</note>
 
     <note type="warning"><title>Warning</title>
-    <p> When name-based virtual hosting is used, the value for this 
+    <p> When name-based virtual hosting is used, the value for this
     directive is taken from the default (first-listed) virtual host for the
     <directive>NameVirtualHost</directive> the connection was mapped to.</p>
     </note>
@@ -2291,33 +2291,33 @@ URLs</description>
     <ul>
       <li>The specified location matches exactly the path component of the URL.
       </li>
-      <li>The specified location, which ends in a forward slash, is a prefix 
+      <li>The specified location, which ends in a forward slash, is a prefix
       of the path component of the URL (treated as a context root).
       </li>
-      <li>The specified location, with the addition of a trailing slash, is a 
+      <li>The specified location, with the addition of a trailing slash, is a
       prefix of the path component of the URL (also treated as a context root).
       </li>
     </ul>
     <p>
-    In the example below, where no trailing slash is used, requests to 
+    In the example below, where no trailing slash is used, requests to
     /private1, /private1/ and /private1/file.txt will have the enclosed
-    directives applied, but /private1other would not. 
+    directives applied, but /private1other would not.
     </p>
     <example>
       &lt;Location /private1&gt;
           ...
     </example>
     <p>
-    In the example below, where a trailing slash is used, requests to 
+    In the example below, where a trailing slash is used, requests to
     /private2/ and /private2/file.txt will have the enclosed
-    directives applied, but /private2 and /private2other would not. 
+    directives applied, but /private2 and /private2other would not.
     </p>
     <example>
       &lt;Location /private2<em>/</em>&gt;
           ...
     </example>
 
-    <note><title>When to use <directive 
+    <note><title>When to use <directive
     type="section">Location</directive></title>
 
     <p>Use <directive type="section">Location</directive> to apply
@@ -2325,7 +2325,7 @@ URLs</description>
     content that lives in the filesystem, use <directive
     type="section" module="core">Directory</directive> and <directive
     type="section" module="core">Files</directive>.  An exception is
-    <code>&lt;Location /&gt;</code>, which is an easy way to 
+    <code>&lt;Location /&gt;</code>, which is an easy way to
     apply a configuration to the entire server.</p>
     </note>
 
@@ -2341,7 +2341,7 @@ URLs</description>
     characters. Neither wildcard character matches a / in the URL-path.</p>
 
     <p><glossary ref="regex">Regular expressions</glossary>
-    can also be used, with the addition of the <code>~</code> 
+    can also be used, with the addition of the <code>~</code>
     character. For example:</p>
 
     <example>
@@ -2705,7 +2705,7 @@ or specified mutexes</description>
         <li><code>default | yes</code>
         <p>This selects the default locking implementation, as determined by
         <glossary>APR</glossary>.  The default locking implementation can
-        be displayed by running <program>httpd</program> with the 
+        be displayed by running <program>httpd</program> with the
         <code>-V</code> option.</p></li>
 
         <li><code>none | no</code>
@@ -2726,7 +2726,7 @@ or specified mutexes</description>
         <p>This is a mutex variant based on a SystemV IPC semaphore.</p>
 
         <note type="warning"><title>Warning</title>
-        <p>It is possible to "leak" SysV semaphores if processes crash 
+        <p>It is possible to "leak" SysV semaphores if processes crash
         before the semaphore is removed.</p>
 	</note>
 
@@ -2761,7 +2761,7 @@ or specified mutexes</description>
         </li>
 
         <li><code>fcntl:/path/to/mutex</code>
-        <p>This is a mutex variant where a physical (lock-)file and the 
+        <p>This is a mutex variant where a physical (lock-)file and the
         <code>fcntl()</code> function are used as the mutex.</p>
 
         <note type="warning"><title>Warning</title>
@@ -2783,10 +2783,10 @@ or specified mutexes</description>
         order.</p></li>
     </ul>
 
-    <p>Most mechanisms are only available on selected platforms, where the 
+    <p>Most mechanisms are only available on selected platforms, where the
     underlying platform and <glossary>APR</glossary> support it.  Mechanisms
     which aren't available on all platforms are <em>posixsem</em>,
-    <em>sysvsem</em>, <em>sem</em>, <em>pthread</em>, <em>fcntl</em>, 
+    <em>sysvsem</em>, <em>sem</em>, <em>pthread</em>, <em>fcntl</em>,
     <em>flock</em>, and <em>file</em>.</p>
 
     <p>With the file-based mechanisms <em>fcntl</em> and <em>flock</em>,
@@ -2796,12 +2796,12 @@ or specified mutexes</description>
     filesystem for <code>/path/to/mutex</code> and never a directory residing
     on a NFS- or AFS-filesystem.  The basename of the file will be the mutex
     type, an optional instance string provided by the module, and unless the
-    <code>OmitPID</code> keyword is specified, the process id of the httpd 
+    <code>OmitPID</code> keyword is specified, the process id of the httpd
     parent process will be appended to to make the file name unique, avoiding
     conflicts when multiple httpd instances share a lock file directory.  For
     example, if the mutex name is <code>mpm-accept</code> and the lock file
     directory is <code>/var/httpd/locks</code>, the lock file name for the
-    httpd instance with parent process id 12345 would be 
+    httpd instance with parent process id 12345 would be
     <code>/var/httpd/locks/mpm-accept.12345</code>.</p>
 
     <note type="warning"><title>Security</title>
@@ -2892,15 +2892,15 @@ hosting</description>
 
 <usage>
 
-<p>A single <directive>NameVirtualHost</directive> directive 
-identifies a set of identical virtual hosts on which the server will  
-further select from on the basis of the <em>hostname</em> 
+<p>A single <directive>NameVirtualHost</directive> directive
+identifies a set of identical virtual hosts on which the server will
+further select from on the basis of the <em>hostname</em>
 requested by the client.  The <directive>NameVirtualHost</directive>
-directive is a required directive if you want to configure 
+directive is a required directive if you want to configure
 <a href="../vhosts/">name-based virtual hosts</a>.</p>
 
 <p>This directive, and the corresponding <directive >VirtualHost</directive>,
-<em>must</em> be qualified with a port number if the server supports both HTTP 
+<em>must</em> be qualified with a port number if the server supports both HTTP
 and HTTPS connections.</p>
 
 <p>Although <var>addr</var> can be a hostname, it is recommended
@@ -2908,16 +2908,16 @@ that you always use an IP address or a wildcard.  A wildcard
 NameVirtualHost matches only virtualhosts that also have a literal wildcard
 as their argument.</p>
 
-<p>In cases where a firewall or other proxy receives the requests and 
+<p>In cases where a firewall or other proxy receives the requests and
 forwards them on a different IP address to the server, you must specify the
 IP address of the physical interface on the machine which will be
 servicing the requests. </p>
 
-<p> In the example below, requests received on interface 192.0.2.1 and port 80 
+<p> In the example below, requests received on interface 192.0.2.1 and port 80
 will only select among the first two virtual hosts. Requests received on
 port 80 on any other interface will only select among the third and fourth
-virtual hosts. In the common case where the interface isn't important 
-to the mapping, only the "*:80" NameVirtualHost and VirtualHost directives 
+virtual hosts. In the common case where the interface isn't important
+to the mapping, only the "*:80" NameVirtualHost and VirtualHost directives
 are necessary.</p>
 
    <example>
@@ -3355,7 +3355,7 @@ of a request or the last 63, assuming the request itself is greater than
 
 <usage>
     <p>mod_status with <code>ExtendedStatus On</code>
-    displays the actual request being handled. 
+    displays the actual request being handled.
     For historical purposes, only 63 characters of the request
     are actually stored for display purposes. This directive
     controls whether the 1st 63 characters are stored (the previous
@@ -3457,7 +3457,7 @@ itself</description>
     in conjunction with <directive>ServerAlias</directive>) to uniquely
     identify a virtual host, when using <a
     href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
-    
+
     <p>For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
     but the machine also has the DNS alias <code>www.example.com</code>
@@ -3465,7 +3465,7 @@ itself</description>
     directive should be used:</p>
 
     <example>
-      ServerName www.example.com:80
+      ServerName www.example.com
     </example>
 
     <p>The <directive>ServerName</directive> directive
@@ -3494,7 +3494,7 @@ itself</description>
     <code>https://</code> scheme and the port number to which the
     clients connect in the <directive>ServerName</directive> directive
     to make sure that the server generates the correct
-    self-referential URLs. 
+    self-referential URLs.
     </p>
 
     <p>See the description of the
@@ -3556,7 +3556,7 @@ is accessed by an incompatible browser</description>
     subdirectories <code>conf/</code> and <code>logs/</code>. Relative
     paths in other configuration directives (such as <directive
     module="core">Include</directive> or <directive
-    module="mod_so">LoadModule</directive>, for example) are taken as 
+    module="mod_so">LoadModule</directive>, for example) are taken as
     relative to this directory.</p>
 
     <example><title>Example</title>
@@ -3661,7 +3661,7 @@ header</description>
     <p>After version 2.0.44, this directive also controls the
     information presented by the <directive
     module="core">ServerSignature</directive> directive.</p>
-    
+
     <note>Setting <directive>ServerTokens</directive> to less than
     <code>minimal</code> is not recommended because it makes it more
     difficult to debug interoperational problems. Also note that
@@ -3838,7 +3838,7 @@ certain events before failing a request</description>
     allowed) error to the client.</p>
 
     <p>Finally, for testing and diagnostic purposes only, request
-    bodies may be allowed using the non-compliant <code>TraceEnable 
+    bodies may be allowed using the non-compliant <code>TraceEnable
     extended</code> directive.  The core (as an origin server) will
     restrict the request body to 64k (plus 8k for chunk headers if
     <code>Transfer-Encoding: chunked</code> is used).  The core will
@@ -3960,7 +3960,7 @@ port</description>
       <li>Port provided in <code>Servername</code></li>
       <li>Default port</li>
      </ul>
-    
+
     <p>With <code>UseCanonicalPhysicalPort Off</code>, the
     physical ports are removed from the ordering.</p>
     </note>
