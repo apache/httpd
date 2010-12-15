@@ -65,6 +65,9 @@
     rel="Help"><strong>Compatibility:</strong></a> Action is only
     available in Apache 1.1 and later</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_actions.html#action">here</a></strong></p>
+ 
     <p>This directive adds an action, which will activate
     <em>cgi-script</em> when <em>action-type</em> is triggered by the
     request.  The <i>cgi-script</i> is the URL-path to a resource that
@@ -115,6 +118,9 @@
     available in Apache 1.1 and later; arbitrary method use is only
     available with 1.3.10 and later</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_actions.html#script">here</a></strong></p>
+ 
     <p>This directive adds an action, which will activate
     <i>cgi-script</i> when a file is requested using the method of
     <i>method</i>. The <i>cgi-script</i> is the URL-path to a resource
