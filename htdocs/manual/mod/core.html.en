@@ -297,7 +297,7 @@
     Apache 1.3.13 and later.  This directive was eliminated in version
     2.0 and later.
 
-    <p><strong>This directive has been removed in current versions of
+    <p class="currentdocs"><strong>This directive has been removed in current versions of
     the server.</strong></p>
 
     <p>The server will read this file for more directives after
