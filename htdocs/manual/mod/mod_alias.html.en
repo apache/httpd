@@ -83,6 +83,9 @@
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_alias</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#alias">here</a></strong></p>
+ 
     <p>The Alias directive allows documents to be stored in the
     local filesystem other than under the <a
     href="core.html#documentroot">DocumentRoot</a>. URLs with a
@@ -134,6 +137,9 @@
     rel="Help"><strong>Compatibility:</strong></a> Available in
     Apache 1.3 and later</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#aliasmatch">here</a></strong></p>
+ 
     <p>This directive is equivalent to <a href="#alias">Alias</a>,
     but makes use of standard regular expressions, instead of
     simple prefix matching. The supplied regular expression is
@@ -146,8 +152,7 @@
 </pre>
     <hr />
 
-    <h2><a id="redirect" name="redirect">Redirect
-    directive</a></h2>
+    <h2><a id="redirect" name="redirect">Redirect directive</a></h2>
 
     <p>
      <a href="directive-dict.html#Syntax"
