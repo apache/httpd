@@ -242,6 +242,16 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
+# Make sure that the build doesn't attempt to regenerate the shipping files.
+# This requires a 'touch' utility.  Can be downloaded from 'coreutils' at
+#  http://sourceforge.net/projects/gnuwin32/
+util_expr_parse.h : util_expr_parse.y
+	touch util_expr_parse.h
+util_expr_parse.c : util_expr_parse.y
+	touch util_expr_parse.c
+util_expr_scan.c : util_expr_scan.l
+	touch util_expr_scan.c
+
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
 # in this makefile
