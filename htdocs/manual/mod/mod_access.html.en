@@ -128,6 +128,9 @@
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_access</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/2.2/mod/mod_authz_host.html#allow">here</a></strong></p>
+ 
     <p>The <code>Allow</code> directive affects which hosts can
     access an area of the server. Access can be controlled by
     hostname, IP address, IP address range, or other
@@ -243,6 +246,9 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_access</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/2.2/mod/mod_authz_host.html#deny">here</a></strong></p>
+ 
     <p>This directive allows access to the server to be restricted
     based on hostname, IP address, or environment variables. The
     arguments for the <code>Deny</code> directive are identical to
@@ -272,6 +278,9 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_access</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/2.2/mod/mod_authz_host.html#order">here</a></strong></p>
+ 
     <p>The <code>Order</code> directive, along with the
     <code>Allow</code> and <code>Deny</code> directives, controls a
     three-pass access control system. The first pass processes either
