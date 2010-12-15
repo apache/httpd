@@ -4092,6 +4092,9 @@ Syntax OK
     rel="Help"><strong>Compatibility:</strong></a>
     ShmemUIDisUser directive is only available in Apache 1.3.27 and later.
 
+    <p class="currentdocs"><strong>This directive is not available in
+    current versions of the server.</strong></p>
+
     <p>The ShmemUIDisUser directive controls whether Apache will change
     the <code>uid</code> and <code>gid</code> ownership of System V shared memory
     based scoreboards to the server settings of <a href="#user">User</a> and
@@ -4121,6 +4124,9 @@ Syntax OK
     rel="Help"><strong>Context:</strong></a> server config<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/mpm_common.html#startservers">here</a></strong></p>
 
     <p>The StartServers directive sets the number of child server
     processes created on startup. As the number of processes is
@@ -4155,6 +4161,9 @@ Syntax OK
      <strong>Compatibility:</strong> Available only with Apache 1.3
     and later with Windows 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/mpm_common.html#threadsperchild">here</a></strong></p>
+
     <p>This directive tells the server how many threads it should
     use. This is the maximum number of connections the server can
     handle at once; be sure and set this number high enough for
@@ -4180,6 +4189,9 @@ Syntax OK
      <strong>Compatibility:</strong> Available only with Apache 1.3
     and later with NetWare 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/mpm_common.html#threadstacksize">here</a></strong></p>
+
     <p>This directive tells the server what stack size to use for
     each of the running threads. If you ever get a stack overflow
     you will need to bump this number to a higher setting.</p>
@@ -4199,6 +4211,9 @@ Syntax OK
     rel="Help"><strong>Context:</strong></a> server config<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/core.html#timeout">here</a></strong></p>
 
     <p>The TimeOut directive currently defines the amount of time
     Apache will wait for three things:</p>
@@ -4237,6 +4252,9 @@ Syntax OK
      <strong>Compatibility:</strong> Available only in Apache 1.3.34,
     2.0.55 and later 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/core.html#traceenable">here</a></strong></p>
+
     <p>This directive overrides the behavior of TRACE for both
     the core server and mod_proxy.  The default <code>TraceEnable 
     on</code> permits TRACE requests per RFC 2616, which disallows
@@ -4272,6 +4290,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> UseCanonicalName
     is only available in Apache 1.3 and later 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/core.html#usecanonicalname">here</a></strong></p>
 
     <p>In many situations Apache has to construct a
     <em>self-referential</em> URL. That is, a URL which refers back
@@ -4347,6 +4368,9 @@ Syntax OK
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> core 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/mod_unixd.html#user">here</a></strong></p>
+
     <p>The User directive sets the userid as which the server will
     answer requests. In order to use this directive, the standalone
     server must be run initially as root. <em>Unix-userid</em> is
@@ -4409,6 +4433,9 @@ Syntax OK
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> Multiple address
     support only available in Apache 1.2 and later. 
+
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/trunk/mod/core.html#virtualhost">here</a></strong></p>
 
     <p>&lt;VirtualHost&gt; and &lt;/VirtualHost&gt; are used to
     enclose a group of directives which will apply only to a
