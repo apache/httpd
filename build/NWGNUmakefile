@@ -39,7 +39,6 @@ cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NW
 	@echo -nosyspath >> $@
 	@echo -w nocmdline >> $@
 	@echo $(DEFINES) >> $@
-	@echo -DCORE_PRIVATE >> $@
 	@echo -I..\include >> $@
 	@echo -I..\modules\http >> $@
 	@echo -I..\modules\aaa >> $@
