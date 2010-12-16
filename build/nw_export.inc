@@ -7,11 +7,17 @@
     so that httpd.h will not mess with them. This allows 
     them to pass untouched so that the AWK script can pick 
     them out of the preprocessed result file. */
+#undef  AP_DECLARE
 #define AP_DECLARE              AP_DECLARE
+#undef  AP_CORE_DECLARE
 #define AP_CORE_DECLARE         AP_CORE_DECLARE
+#undef  AP_DECLARE_NONSTD
 #define AP_DECLARE_NONSTD       AP_DECLARE_NONSTD
+#undef  AP_CORE_DECLARE_NONSTD
 #define AP_CORE_DECLARE_NONSTD  AP_CORE_DECLARE_NONSTD
+#undef  AP_DECLARE_HOOK
 #define AP_DECLARE_HOOK         AP_DECLARE_HOOK
+#undef  AP_DECLARE_DATA
 #define AP_DECLARE_DATA         AP_DECLARE_DATA
 #undef  APACHE_OS_H
 
