@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1042758 -->
+<!-- English Revision : 1049240 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3805,7 +3805,7 @@ host</context>
     suivante :</p>
 
     <example>
-      ServerName www.example.com:80
+      ServerName www.example.com
     </example>
 
     <p>La directive <directive>ServerName</directive> peut appara&icirc;tre &agrave;
