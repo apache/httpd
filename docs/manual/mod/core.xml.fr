@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1041924 -->
+<!-- English Revision : 1049230 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3236,7 +3236,7 @@ fonctionnalit&eacute; de la directive <directive>Port</directive> de la version
     suivante :</p>
 
     <example>
-      ServerName www.example.com:80
+      ServerName www.example.com
     </example>
 
     <p>Si la directive <directive>ServerName</directive> n'est pas
