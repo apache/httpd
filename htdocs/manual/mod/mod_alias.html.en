@@ -169,10 +169,13 @@
     rel="Help"><strong>Module:</strong></a> mod_alias<br />
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> The directory
-    and .htaccess context's are only available in versions 1.1 and
+    and .htaccess contexts are only available in versions 1.1 and
     later. The <em>status</em> argument is only available in Apache
     1.2 or later.</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#redirect">here</a></strong></p>
+ 
     <p>The Redirect directive maps an old URL into a new one. The
     new URL is returned to the client which attempts to fetch it
     again with the new address. <em>URL-path</em> a (%-decoded)
@@ -259,6 +262,9 @@
     rel="Help"><strong>Compatibility:</strong></a> Available in
     Apache 1.3 and later</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#redirectmatch">here</a></strong></p>
+ 
     <p>This directive is equivalent to <a
     href="#redirect">Redirect</a>, but makes use of standard
     regular expressions, instead of simple prefix matching. The
@@ -292,6 +298,9 @@
     rel="Help"><strong>Compatibility:</strong></a> This directive
     is only available in Apache 1.2 and later</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#redirecttemp">here</a></strong></p>
+ 
     <p>This directive makes the client know that the Redirect is
     only temporary (status 302). Exactly equivalent to
     <code>Redirect temp</code>.</p>
@@ -317,6 +326,9 @@
     rel="Help"><strong>Compatibility:</strong></a> This directive
     is only available in Apache 1.2 and later</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#redirectpermanent">here</a></strong></p>
+ 
     <p>This directive makes the client know that the Redirect is
     permanent (status 301). Exactly equivalent to <code>Redirect
     permanent</code>.</p>
@@ -337,6 +349,9 @@
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_alias</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#scriptalias">here</a></strong></p>
+ 
     <p>The ScriptAlias directive has the same behavior as the <a
     href="#alias">Alias</a> directive, except that in addition it
     marks the target directory as containing CGI scripts that will be
@@ -373,6 +388,9 @@
     rel="Help"><strong>Compatibility:</strong></a> Available in
     Apache 1.3 and later</p>
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_alias.html#scriptaliasmatch">here</a></strong></p>
+ 
     <p>This directive is equivalent to <a
     href="#scriptalias">ScriptAlias</a>, but makes use of standard
     regular expressions, instead of simple prefix matching. The
