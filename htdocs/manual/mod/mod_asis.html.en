@@ -64,7 +64,7 @@
 
     <blockquote>
       <code>Status: 301 Now where did I leave that URL<br />
-       Location: http://xyz.abc.com/foo/bar.html<br />
+       Location: http://xyz.example.com/foo/bar.html<br />
        Content-type: text/html<br />
       <br />
        &lt;HTML&gt;<br />
@@ -75,7 +75,7 @@
        &lt;H1&gt;Fred's exceptionally wonderful page has moved
       to<br />
        &lt;A
-      HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
+      HREF="http://xyz.example.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
       site.<br />
        &lt;/H1&gt;<br />
        &lt;/BODY&gt;<br />
