@@ -3727,7 +3727,7 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
     suivante :</p>
 
     <div class="example"><p><code>
-      ServerName www.example.com:80
+      ServerName www.example.com
     </code></p></div>
 
     <p>La directive <code class="directive">ServerName</code> peut apparaître à

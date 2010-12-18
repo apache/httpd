@@ -107,9 +107,6 @@
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 1.2 以降
-    (Apache 1.2 ではこのディレクティブはもう用いられていない
-    mod_browser モジュールにありました)</td></tr>
 </table>
 
     <p><code class="directive">BrowserMatchNoCase</code> ディレクティブは
@@ -285,7 +282,6 @@
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 1.3 以降</td></tr>
 </table>
 
     <p><code class="directive">SetEnvIfNoCase</code> は意味的には
