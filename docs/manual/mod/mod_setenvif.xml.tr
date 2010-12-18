@@ -95,8 +95,6 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.2 ve sonrasında bulunur (Apache 1.2 sürümünde bu
-yönerge artık atıl olan mod_browser modülüyle sağlanırdı).</compatibility>
 
 <usage>
 
