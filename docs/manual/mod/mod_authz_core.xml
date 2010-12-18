@@ -603,6 +603,12 @@ authentication succeeds but authorization fails
     again, which is not wanted in all situations.
     <directive>AuthzSendForbiddenOnFailure</directive> allows to change the
     response code to '403 FORBIDDEN'.</p>
+
+    <note type="warning"><title>Security Warning</title>
+    <p>Modifying the response in case of missing authorization weakens the
+    security of the password, because it reveals to a possible attacker, that
+    his guessed password was right.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
