@@ -86,8 +86,6 @@
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>아파치 1.2 이상 (아파치 1.2에서 이 지시어는 현재
-    없어진 mod_browser 모듈에 있었다)</compatibility>
 
 <usage>
 
@@ -233,7 +231,6 @@ href="http://www.pcre.org/">Perl 호환 정규표현식</a>이다.
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>아파치 1.3 이후</compatibility>
 
 <usage>
 
