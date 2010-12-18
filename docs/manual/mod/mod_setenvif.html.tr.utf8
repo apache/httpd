@@ -104,8 +104,6 @@ duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 1.2 ve sonrasında bulunur (Apache 1.2 sürümünde bu
-yönerge artık atıl olan mod_browser modülüyle sağlanırdı).</td></tr>
 </table>
 
     <p><code class="directive">BrowserMatchNoCase</code> yönergesi sözdizimsel ve

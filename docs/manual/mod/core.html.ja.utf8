@@ -1074,7 +1074,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Keep track of extended status information for each 
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Keep track of extended status information for each
 request</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ExtendedStatus Off[*]</code></td></tr>

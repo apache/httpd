@@ -1095,7 +1095,7 @@ Fehlermeldungen</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a>-<a name="extendedstatus" id="extendedstatus">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Keep track of extended status information for each 
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Keep track of extended status information for each
 request</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>ExtendedStatus Off[*]</code></td></tr>

@@ -100,8 +100,6 @@
 <tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>아파치 1.2 이상 (아파치 1.2에서 이 지시어는 현재
-    없어진 mod_browser 모듈에 있었다)</td></tr>
 </table>
 
     <p><code class="directive">BrowserMatchNoCase</code> 지시어는 <code class="directive"><a href="#browsermatch">BrowserMatch</a></code> 지시어와
@@ -247,7 +245,6 @@
 <tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">지원:</a></th><td>아파치 1.3 이후</td></tr>
 </table>
 
     <p><code class="directive">SetEnvIfNoCase</code>는 의미상 <code class="directive"><a href="#setenvif">SetEnvIf</a></code> 지시어와 같지만,
