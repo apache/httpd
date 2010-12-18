@@ -104,9 +104,6 @@ respect to case</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache 1.2 and
-    above (in Apache 1.2 this directive was found in the
-    now-obsolete mod_browser module)</td></tr>
 </table>
 
     <p>The <code class="directive">BrowserMatchNoCase</code> directive is
@@ -261,7 +258,6 @@ without respect to case</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache 1.3 and above</td></tr>
 </table>
 
     <p>The <code class="directive">SetEnvIfNoCase</code> is semantically identical to
