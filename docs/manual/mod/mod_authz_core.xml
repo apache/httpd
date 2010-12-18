@@ -27,7 +27,7 @@
 <status>Base</status>
 <sourcefile>mod_authz_core.c</sourcefile>
 <identifier>authz_core_module</identifier>
-<compatibility>Available in Apache 2.3 and later</compatibility>
+<compatibility>Available in Apache HTTPD 2.3 and later</compatibility>
 
 <summary>
     <p>This module provides core authorization capabilities so that
@@ -584,5 +584,27 @@ alias</description>
 
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>AuthzSendForbiddenOnFailure</name>
+<description>Send '403 FORBIDDEN' instead of '401 UNAUTHORIZED' if
+authentication succeeds but authorization fails
+</description>
+<syntax>AuthzSendForbiddenOnFailure On|Off</syntax>
+<default>AuthzSendForbiddenOnFailure Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>Available in Apache HTTPD 2.3.11 and later</compatibility>
+
+<usage>
+    <p>If authentication succeeds but authorization fails, Apache HTTPD will
+    respond with an HTTP response code of '401 UNAUTHORIZED' by default. This
+    usually causes browsers to display the password dialogue to the user
+    again, which is not wanted in all situations.
+    <directive>AuthzSendForbiddenOnFailure</directive> allows to change the
+    response code to '403 FORBIDDEN'.</p>
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>

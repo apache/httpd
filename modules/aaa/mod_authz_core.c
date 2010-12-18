@@ -59,7 +59,8 @@ typedef struct provider_alias_rec {
 typedef enum {
     AUTHZ_LOGIC_AND,
     AUTHZ_LOGIC_OR,
-    AUTHZ_LOGIC_OFF
+    AUTHZ_LOGIC_OFF,
+    AUTHZ_LOGIC_UNSET
 } authz_logic_op;
 
 typedef struct authz_section_conf authz_section_conf;
@@ -80,9 +81,12 @@ typedef struct authz_core_dir_conf authz_core_dir_conf;
 
 struct authz_core_dir_conf {
     authz_section_conf *section;
-    authz_logic_op op;
     authz_core_dir_conf *next;
+    authz_logic_op op;
+    signed char authz_forbidden_on_fail;
 };
+
+#define UNSET -1
 
 typedef struct authz_core_srv_conf {
     apr_hash_t *alias_rec;
@@ -96,7 +100,8 @@ static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
 {
     authz_core_dir_conf *conf = apr_pcalloc(p, sizeof(*conf));
 
-    conf->op = AUTHZ_LOGIC_OFF;
+    conf->op = AUTHZ_LOGIC_UNSET;
+    conf->authz_forbidden_on_fail = UNSET;
 
     conf->next = authz_core_first_dir_conf;
     authz_core_first_dir_conf = conf;
@@ -111,7 +116,13 @@ static void *merge_authz_core_dir_config(apr_pool_t *p,
     authz_core_dir_conf *new = (authz_core_dir_conf *)newv;
     authz_core_dir_conf *conf;
 
-    if (new->op == AUTHZ_LOGIC_OFF || !(base->section || new->section)) {
+    if (new->op == AUTHZ_LOGIC_UNSET && !new->section && base->section ) {
+	/* Only authz_forbidden_on_fail has been set in new. Don't treat
+	 * it as a new auth config w.r.t. AuthMerging */
+        conf = apr_pmemdup(p, base, sizeof(*base));
+    }
+    else if (new->op == AUTHZ_LOGIC_OFF || new->op == AUTHZ_LOGIC_UNSET ||
+             !(base->section || new->section)) {
         conf = apr_pmemdup(p, new, sizeof(*new));
     }
     else {
@@ -144,6 +155,11 @@ static void *merge_authz_core_dir_config(apr_pool_t *p,
         conf->section = section;
         conf->op = new->op;
     }
+
+    if (new->authz_forbidden_on_fail == UNSET)
+        conf->authz_forbidden_on_fail = base->authz_forbidden_on_fail;
+    else
+        conf->authz_forbidden_on_fail = new->authz_forbidden_on_fail;
 
     return (void*)conf;
 }
@@ -655,6 +671,12 @@ static const command_rec authz_cmds[] =
                   "controls how a <Directory>, <Location>, or similar "
                   "directive's authorization directives are combined with "
                   "those of its predecessor"),
+    AP_INIT_FLAG("AuthzSendForbiddenOnFailure", ap_set_flag_slot_char,
+                 (void *)APR_OFFSETOF(authz_core_dir_conf, authz_forbidden_on_fail),
+                 OR_AUTHCFG,
+                 "Controls if an authorization failure should result in a "
+                 "'403 FORBIDDEN' response instead of the HTTP-conforming "
+                 "'401 UNAUTHORIZED'"),
     {NULL}
 };
 
@@ -816,20 +838,23 @@ static int authorize_user_core(request_rec *r, int after_authn)
             return HTTP_FORBIDDEN;
         }
         else {
-            /* XXX: maybe we want to return FORBIDDEN here, too??? */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
                           "user %s: authorization failure for \"%s\": ",
                           r->user, r->uri);
 
-            /*
-             * If we're returning 401 to an authenticated user, tell them to
-             * try again. If unauthenticated, note_auth_failure has already
-             * been called during auth.
-             */
-            if (r->user)
-                ap_note_auth_failure(r);
-
-            return HTTP_UNAUTHORIZED;
+            if (conf->authz_forbidden_on_fail > 0) {
+                return HTTP_FORBIDDEN;
+            }
+            else {
+                /*
+                 * If we're returning 401 to an authenticated user, tell them to
+                 * try again. If unauthenticated, note_auth_failure has already
+                 * been called during auth.
+                 */
+                if (r->user)
+                    ap_note_auth_failure(r);
+                return HTTP_UNAUTHORIZED;
+            }
         }
     }
     else {
