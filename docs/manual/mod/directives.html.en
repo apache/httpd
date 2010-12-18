@@ -139,6 +139,7 @@
 <li><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
 <li><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
+<li><a href="mod_authz_core.html#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
 <li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
 <li><a href="mod_proxy_balancer.html#balancernonce">BalancerNonce</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
