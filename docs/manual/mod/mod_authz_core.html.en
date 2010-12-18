@@ -27,7 +27,7 @@
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authz_core_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authz_core.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTPD 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides core authorization capabilities so that
@@ -44,6 +44,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authmerging">AuthMerging</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requireall">&lt;RequireAll&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requireany">&lt;RequireAny&gt;</a></li>
@@ -355,6 +356,27 @@ alias</td></tr>
     authorization directives that can be referenced by the alias name using the
     directive <code class="directive"><a href="#require">Require</a></code>.</p>
 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzSendForbiddenOnFailure" id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</a> <a name="authzsendforbiddenonfailure" id="authzsendforbiddenonfailure">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Send '403 FORBIDDEN' instead of '401 UNAUTHORIZED' if
+authentication succeeds but authorization fails
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzSendForbiddenOnFailure On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzSendForbiddenOnFailure Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTPD 2.3.11 and later</td></tr>
+</table>
+    <p>If authentication succeeds but authorization fails, Apache HTTPD will
+    respond with an HTTP response code of '401 UNAUTHORIZED' by default. This
+    usually causes browsers to display the password dialogue to the user
+    again, which is not wanted in all situations.
+    <code class="directive">AuthzSendForbiddenOnFailure</code> allows to change the
+    response code to '403 FORBIDDEN'.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
