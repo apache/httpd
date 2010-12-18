@@ -378,6 +378,12 @@ authentication succeeds but authorization fails
     <code class="directive">AuthzSendForbiddenOnFailure</code> allows to change the
     response code to '403 FORBIDDEN'.</p>
 
+    <div class="warning"><h3>Security Warning</h3>
+    <p>Modifying the response in case of missing authorization weakens the
+    security of the password, because it reveals to a possible attacker, that
+    his guessed password was right.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Directive</a></h2>
