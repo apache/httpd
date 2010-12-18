@@ -3217,7 +3217,7 @@ fonctionnalité de la directive <code class="directive">Port</code> de la version
     suivante :</p>
 
     <div class="example"><p><code>
-      ServerName www.example.com:80
+      ServerName www.example.com
     </code></p></div>
 
     <p>Si la directive <code class="directive">ServerName</code> n'est pas
