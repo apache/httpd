@@ -93,9 +93,6 @@ respect to case</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.2 and
-    above (in Apache 1.2 this directive was found in the
-    now-obsolete mod_browser module)</compatibility>
 
 <usage>
 
@@ -254,7 +251,6 @@ without respect to case</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.3 and above</compatibility>
 
 <usage>
 
