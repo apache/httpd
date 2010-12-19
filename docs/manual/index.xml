@@ -44,6 +44,7 @@ Documentation</title>
     <page href="mpm.html">Multi-Processing Modules (MPMs)</page>
     <page href="filter.html">Filters</page>
     <page href="handler.html">Handlers</page>
+    <page href="expr.html">Expression parser</page>
     <page href="programs/">Server and Supporting Programs</page>
     <page href="glossary.html">Glossary</page>
 </category>    

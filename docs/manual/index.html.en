@@ -50,6 +50,7 @@ Documentation</h1>
 <li><a href="mpm.html">Multi-Processing Modules (MPMs)</a></li>
 <li><a href="filter.html">Filters</a></li>
 <li><a href="handler.html">Handlers</a></li>
+<li><a href="expr.html">Expression parser</a></li>
 <li><a href="programs/">Server and Supporting Programs</a></li>
 <li><a href="glossary.html">Glossary</a></li>
 </ul>

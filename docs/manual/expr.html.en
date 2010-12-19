@@ -133,7 +133,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
 <tr><td><code>REQUEST_METHOD</code></td>
-        <td>The HTTP method of the incoming request</td></tr>
+        <td>The HTTP method of the incoming request (e.g.
+            <code>GET</code></td></tr>
 <tr class="odd"><td><code>REQUEST_SCHEME</code></td>
         <td>The scheme part of the request's URI</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
@@ -161,22 +162,27 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr><td><code>REMOTE_IDENT</code></td>
         <td>The user name set by <code class="module"><a href="./mod/mod_ident.html">mod_ident</a></code></td></tr>
 <tr class="odd"><td><code>SERVER_NAME</code></td>
-        <td>The server name of the current vhost</td></tr>
+        <td>The <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> of
+            the current vhost</td></tr>
 <tr><td><code>SERVER_PORT</code></td>
-        <td>The server port of the current vhost</td></tr>
-<tr class="odd"><td><code>SERVER_PROTOCOL</code></td>
+        <td>The server port of the current vhost, see
+            <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></td></tr>
+<tr class="odd"><td><code>SERVER_ADMIN</code></td>
+        <td>The <code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code> of
+            the current vhost</td></tr>
+<tr><td><code>SERVER_PROTOCOL</code></td>
         <td>The protocol used by the request</td></tr>
-<tr><td><code>SERVER_ADMIN</code></td>
-        <td>The server admin of the current vhost</td></tr>
 <tr class="odd"><td><code>DOCUMENT_ROOT</code></td>
         <td>The <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> of
             the current vhost</td></tr>
 <tr><td><code>AUTH_TYPE</code></td>
-        <td>The configured auth type (e.g. "<code>basic</code>")</td></tr>
+        <td>The configured <code class="directive"><a href="./mod/mod_authn_core.html#authtype">AuthType</a></code>
+            (e.g. "<code>basic</code>")</td></tr>
 <tr class="odd"><td><code>CONTENT_TYPE</code></td>
         <td>The content type of the response</td></tr>
 <tr><td><code>HANDLER</code></td>
-        <td>The name of the handler creating the response</td></tr>
+        <td>The name of the <a href="handler.htmll">handler</a> creating
+            the response</td></tr>
 <tr class="odd"><td><code>HTTPS</code></td>
         <td>"<code>on</code>" if the request uses https,
             "<code>off</code>" otherwise</td></tr>
