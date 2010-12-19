@@ -108,9 +108,17 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <div class="section">
 <h2><a name="vars" id="vars">Variables</a></h2>
     
-<p>XXX: not all vars are available in all request phases</p>
-    
-    <p>Request headers (XXX:see req function)</p>
+
+    <p>The expression parser provides a number of variables of the form
+    <code>%{HTTP_HOST}</code>. Note that the value of a variable may depend
+    on the phase of the request processing in which it is evaluated.  For
+    example, an expression used in an <code class="directive">&lt;If &gt;</code>
+    directive is evaluated before authentication is done. Therefore,
+    <code>%{REMOTE_USER}</code> will not be set in this case.</p>
+
+    <p>The following variables provide the values of the named HTTP request
+    headers. The values of other headers can be obtained witht the
+    <code>req</code> <a href="#functions">function</a>.</p>
 
     <table class="bordered"><tr class="header"><th>Name</th></tr>
 <tr><td><code>HTTP_ACCEPT</code></td></tr>
@@ -125,81 +133,92 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
 <tr><td><code>REQUEST_METHOD</code></td>
-        <td /></tr>
+        <td>The HTTP method of the incoming request</td></tr>
 <tr class="odd"><td><code>REQUEST_SCHEME</code></td>
-        <td /></tr>
+        <td>The scheme part of the request's URI</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
-        <td /></tr>
+        <td>The URI of the request</td></tr>
 <tr class="odd"><td><code>REQUEST_FILENAME</code></td>
         <td /></tr>
+<tr><td><code>SCRIPT_FILENAME</code></td>
+        <td>Same as <code>REQUEST_FILENAME</code></td></tr>
+<tr class="odd"><td><code>PATH_INFO</code></td>
+        <td /></tr>
+<tr><td><code>QUERY_STRING</code></td>
+        <td>The query string of the current request</td></tr>
+<tr class="odd"><td><code>IS_SUBREQ</code></td>
+        <td>"<code>true</code>" if the current request is a subrequest,
+            "<code>false</code>" otherwise</td></tr>
+<tr><td><code>THE_REQUEST</code></td>
+        <td>The complete request line (e.g.,
+            "<code>GET /index.html HTTP/1.1</code>")</td></tr>
+<tr class="odd"><td><code>REMOTE_ADDR</code></td>
+        <td>The IP address of the remote host</td></tr>
 <tr><td><code>REMOTE_HOST</code></td>
-        <td /></tr>
-<tr class="odd"><td><code>REMOTE_IDENT</code></td>
-        <td /></tr>
-<tr><td><code>REMOTE_USER</code></td>
-        <td /></tr>
-<tr class="odd"><td><code>SERVER_ADMIN</code></td>
-        <td /></tr>
-<tr><td><code>SERVER_NAME</code></td>
-        <td /></tr>
-<tr class="odd"><td><code>SERVER_PORT</code></td>
-        <td /></tr>
-<tr><td><code>SERVER_PROTOCOL</code></td>
-        <td /></tr>
-<tr class="odd"><td><code>SCRIPT_FILENAME</code></td>
-        <td /></tr>
-<tr><td><code>PATH_INFO</code></td>
-        <td /></tr>
-<tr class="odd"><td><code>QUERY_STRING</code></td>
-        <td /></tr>
-<tr><td><code>IS_SUBREQ</code></td>
-        <td /></tr>
+        <td>The host name of the remote host</td></tr>
+<tr class="odd"><td><code>REMOTE_USER</code></td>
+        <td>The name of the authenticated user (if any)</td></tr>
+<tr><td><code>REMOTE_IDENT</code></td>
+        <td>The user name set by <code class="module"><a href="./mod/mod_ident.html">mod_ident</a></code></td></tr>
+<tr class="odd"><td><code>SERVER_NAME</code></td>
+        <td>The server name of the current vhost</td></tr>
+<tr><td><code>SERVER_PORT</code></td>
+        <td>The server port of the current vhost</td></tr>
+<tr class="odd"><td><code>SERVER_PROTOCOL</code></td>
+        <td>The protocol used by the request</td></tr>
+<tr><td><code>SERVER_ADMIN</code></td>
+        <td>The server admin of the current vhost</td></tr>
 <tr class="odd"><td><code>DOCUMENT_ROOT</code></td>
-        <td /></tr>
+        <td>The <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> of
+            the current vhost</td></tr>
 <tr><td><code>AUTH_TYPE</code></td>
-        <td /></tr>
-<tr class="odd"><td><code>THE_REQUEST</code></td>
-        <td /></tr>
-<tr><td><code>CONTENT_TYPE</code></td>
-        <td /></tr>
-<tr class="odd"><td><code>HANDLER</code></td>
-        <td /></tr>
-<tr><td><code>REMOTE_ADDR</code></td>
-        <td /></tr>
+        <td>The configured auth type (e.g. "<code>basic</code>")</td></tr>
+<tr class="odd"><td><code>CONTENT_TYPE</code></td>
+        <td>The content type of the response</td></tr>
+<tr><td><code>HANDLER</code></td>
+        <td>The name of the handler creating the response</td></tr>
 <tr class="odd"><td><code>HTTPS</code></td>
-        <td /></tr>
+        <td>"<code>on</code>" if the request uses https,
+            "<code>off</code>" otherwise</td></tr>
 <tr><td><code>IPV6</code></td>
-        <td /></tr>
+        <td>"<code>on</code>" if the connection uses IPv6,
+            "<code>off</code>" otherwise</td></tr>
 <tr class="odd"><td><code>REQUEST_LOG_ID</code></td>
-        <td /></tr>
+        <td>The error log id of the request (see
+            <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
 <tr><td><code>CONN_LOG_ID</code></td>
-        <td /></tr>
+        <td>The error log id of the connection (see
+            <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>)</td></tr>
 </table>
 
     <p>Misc variables</p>
 
     <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
 <tr><td><code>TIME_YEAR</code></td>
-        <td /></tr>
+        <td>The current year (e.g. <code>2010</code>)</td></tr>
 <tr class="odd"><td><code>TIME_MON</code></td>
-        <td /></tr>
+        <td>The current month (<code>1</code>, ..., <code>12</code>)</td></tr>
 <tr><td><code>TIME_DAY</code></td>
-        <td /></tr>
+        <td>The current day of the month</td></tr>
 <tr class="odd"><td><code>TIME_HOUR</code></td>
-        <td /></tr>
+        <td>The hour part of the current time
+            (<code>0</code>, ..., <code>23</code>)</td></tr>
 <tr><td><code>TIME_MIN</code></td>
-        <td /></tr>
+        <td>The minute part of the current time </td></tr>
 <tr class="odd"><td><code>TIME_SEC</code></td>
-        <td /></tr>
+        <td>The second part of the current time </td></tr>
 <tr><td><code>TIME_WDAY</code></td>
-        <td /></tr>
+        <td>The day of the week (starting with <code>0</code>
+            for Sunday)</td></tr>
 <tr class="odd"><td><code>TIME</code></td>
-        <td /></tr>
+        <td>The date and time in the format <code>20101231235959</code></td></tr>
 <tr><td><code>SERVER_SOFTWARE</code></td>
-        <td /></tr>
+        <td>The server version string</td></tr>
 <tr class="odd"><td><code>API_VERSION</code></td>
-        <td /></tr>
+        <td>The date of the API version (module magic number)</td></tr>
 </table>
+
+    <p>Some modules register additional variables, see e.g. <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
