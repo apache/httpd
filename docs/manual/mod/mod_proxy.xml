@@ -764,23 +764,30 @@ expressions</description>
 
     </note> <!-- /ordering_proxypass -->
 
-    <p>As of Apache 2.1, the ability to use pooled connections to a backend
-    server is available. Using the <code>key=value</code> parameters it is
-    possible to tune this connection pooling. The default for a <code>Hard
-    Maximum</code> for the number of connections is the number of threads per
-    process in the active MPM. In the Prefork MPM, this is always 1, while with
-    the Worker MPM it is controlled by the
-    <directive>ThreadsPerChild</directive>.</p>
+    <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
+    connections to a backend server.  Connections created on demand
+    can be retained in a pool for future use.  Limits on the pool size
+    and other settings can be coded on
+    the <directive>ProxyPass</directive> directive
+    using  <code>key=value</code> parameters, described in the table
+    below.</p>
 
-    <p>Setting <code>min</code> will determine how many connections will always 
-    be open to the backend server. Upto the Soft Maximum or <code>smax</code> 
-    number of connections will be created on demand. Any connections above 
-    <code>smax</code> are subject to a time to live or <code>ttl</code>.  Apache
-    will never create more than the Hard Maximum or <code>max</code> connections
-    to the backend server.</p>
+    <p>By default, mod_proxy will allow and retain the maximum number of
+    connections that could be used simultaneously by that web server child
+    process.  Use the <code>max</code> parameter to reduce the number from
+    the default.  Use the <code>ttl</code> parameter to set an optional
+    time to live; connections which have been unused for at least
+    <code>ttl</code> seconds will be closed.  <code>ttl</code> can be used
+    to avoid using a connection which is subject to closing because of the
+    backend server's keep-alive timeout.</p>
 
-    <example>
-        ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
+    <p>The pool of connections is maintained per web server child
+    process, and <code>max</code> and other settings are not coordinated 
+    among all child processes, except when only one child process is allowed
+    by configuration or MPM design.</p>
+
+    <example><title>Example</title>
+        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
     </example>
 
     <table>
@@ -789,23 +796,27 @@ expressions</description>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Minimum number of connections that will always
-            be open to the backend server.</td></tr>
+        <td>Minimum number of connection pool entries, unrelated to the
+    actual number of connections.  This only needs to be modified from the
+    default for special circumstances where heap memory associated with the
+    backend connections should be preallocated or retained.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
-        <td>Hard Maximum number of connections that will be
-    allowed to the backend server. The default for a Hard Maximum
-    for the number of connections is the number of threads per process in the 
-    active MPM. In the Prefork MPM, this is always 1, while with the Worker MPM
-    it is controlled by the <directive>ThreadsPerChild</directive>.
-    Apache will never create more than the Hard Maximum connections
-    to the backend server.</td></tr>
+        <td>Maximum number of connections that will be allowed to the
+    backend server. The default for this limit is the number of threads
+    per process in the active MPM. In the Prefork MPM, this is always 1,
+    while with other MPMs it is controlled by the
+    <directive>ThreadsPerChild</directive> directive.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Upto the Soft Maximum
-    number of connections will be created on demand. Any connections above 
-    <code>smax</code> are subject to a time to live or <code>ttl</code>.
-    </td></tr>
+        <td>Retained connection pool entries above this limit are freed
+    during certain operations if they have been unused for longer than
+    the time to live, controlled by the <code>ttl</code> parameter.  If
+    the connection pool entry has an associated connection, it will be
+    closed.  This only needs to be modified from the default for special
+    circumstances where connection pool entries and any associated
+    connections which have exceeded the time to live need to be freed or
+    closed more aggressively.</td></tr>
     <tr><td>acquire</td>
         <td>-</td>
         <td>If set this will be the maximum time to wait for a free
@@ -924,9 +935,9 @@ expressions</description>
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td>Time To Live for the inactive connections above the
-        <code>smax</code> connections in seconds. Apache will close all
-        connections that has not been used inside that time period.
+        <td>Time to live for inactive connections and associated connection
+        pool entries, in seconds.  Those which are unused for at least
+        <code>ttl</code> seconds will be destroyed.
     </td></tr>
 
     </table>
