@@ -137,7 +137,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><th>Name</th><th>Description</th></tr>
     <tr><td><code>REQUEST_METHOD</code></td>
         <td>The HTTP method of the incoming request (e.g.
-            <code>GET</code></td></tr>
+            <code>GET</code>)</td></tr>
     <tr><td><code>REQUEST_SCHEME</code></td>
         <td>The scheme part of the request's URI</td></tr>
     <tr><td><code>REQUEST_URI</code></td>
@@ -184,7 +184,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>CONTENT_TYPE</code></td>
         <td>The content type of the response</td></tr>
     <tr><td><code>HANDLER</code></td>
-        <td>The name of the <a href="handler.htmll">handler</a> creating
+        <td>The name of the <a href="handler.html">handler</a> creating
             the response</td></tr>
     <tr><td><code>HTTPS</code></td>
         <td>"<code>on</code>" if the request uses https,
