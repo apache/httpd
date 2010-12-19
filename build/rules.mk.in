@@ -147,6 +147,9 @@ local-depend: x-local-depend
 		for i in $$list; do \
 			$(MKDEP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) $$i | sed 's/\.o:/.lo:/' >> .deps; \
 		done; \
+		sed 's/\.lo:/.slo:/' < .deps > .deps.$$; \
+		cat .deps.$$ >> .deps; \
+		rm -f .deps.$$; \
 	fi
 
 local-clean: x-local-clean
