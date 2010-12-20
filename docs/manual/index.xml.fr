@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1044380:1050960 (outdated) -->
+<!-- English Revision: 1050960 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -46,6 +46,7 @@
     <page href="mpm.html">Modules multi-processus (MPMs)</page>
     <page href="filter.html">Filtres</page>
     <page href="handler.html">Gestionnaires</page>
+    <page href="expr.html">Interpr&eacute;teur d'expressions</page>
     <page href="programs/">Le serveur et ses utilitaires</page>
     <page href="glossary.html">Glossaire</page>
 </category>
