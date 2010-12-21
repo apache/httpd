@@ -87,6 +87,7 @@ struct rotate_config {
     int use_strftime;
     int force_open;
     int verbose;
+    int echo;
     const char *szLogRoot;
     int truncate;
     const char *linkfile;
@@ -116,7 +117,7 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
-            "Usage: %s [-v] [-l] [-L linkname] [-f] [-t] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-f] [-t] [-e] <logfile> "
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -142,7 +143,8 @@ static void usage(const char *argv0, const char *reason)
             "instead of rotated, and is useful where tail is used to\n"
             "process logs in real time.  If the -L option is specified, "
             "a hard link will be\nmade from the current log file to the "
-            "specified filename.\n");
+            "specified filename. In the case of the -e option, the log "
+            "will be echoed through to stdout for further processing.\n");
     exit(1);
 }
 
@@ -435,6 +437,7 @@ int main (int argc, const char * const argv[])
     char buf[BUFSIZE];
     apr_size_t nRead, nWrite;
     apr_file_t *f_stdin;
+    apr_file_t *f_stdout;
     apr_getopt_t *opt;
     apr_status_t rv;
     char c;
@@ -451,6 +454,7 @@ int main (int argc, const char * const argv[])
     config.use_strftime = 0;
     config.force_open = 0;
     config.verbose = 0;
+    config.echo = 0;
     status.pool = NULL;
     status.pfile = NULL;
     status.pfile_prev = NULL;
@@ -462,7 +466,7 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
-    while ((rv = apr_getopt(opt, "lL:ftv", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:ftve", &c, &opt_arg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             config.use_localtime = 1;
@@ -478,6 +482,9 @@ int main (int argc, const char * const argv[])
             break;
         case 'v':
             config.verbose = 1;
+            break;
+        case 'e':
+            config.echo = 1;
             break;
         }
     }
@@ -509,6 +516,11 @@ int main (int argc, const char * const argv[])
 
     if (apr_file_open_stdin(&f_stdin, status.pool) != APR_SUCCESS) {
         fprintf(stderr, "Unable to open stdin\n");
+        exit(1);
+    }
+
+    if (apr_file_open_stdout(&f_stdout, status.pool) != APR_SUCCESS) {
+        fprintf(stderr, "Unable to open stdout\n");
         exit(1);
     }
 
@@ -574,6 +586,12 @@ int main (int argc, const char * const argv[])
         }
         else {
             status.nMessCount++;
+        }
+        if (config.echo) {
+            if (apr_file_write_full(f_stdout, buf, nRead, &nWrite)) {
+                fprintf(stderr, "Unable to write to stdout\n");
+                exit(4);
+            }
         }
     }
     /* Of course we never, but prevent compiler warnings */
