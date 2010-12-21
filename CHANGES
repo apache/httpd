@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) rotatelogs: Add -e option to write logs through to stdout for optional
+     further processing. [Graham Leggett]
+
   *) mod_ssl: Correctly read full lines in input filter when the line is
      incomplete during first read. PR 50481. [Ruediger Pluem]
 
