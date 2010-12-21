@@ -756,6 +756,10 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
         status = ssl_io_input_read(inctx, buf + offset, &tmplen);
 
         if (status != APR_SUCCESS) {
+            if (APR_STATUS_IS_EAGAIN(status) && (*len > 0)) {
+                /* Safe the part of the line we already got */
+                char_buffer_write(&inctx->cbuf, buf, *len);
+            }
             return status;
         }
 
@@ -781,6 +785,10 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
         char_buffer_write(&inctx->cbuf, value, length);
 
         *len = bytes;
+    }
+    else {
+        /* Safe the part of the line we already got */
+        char_buffer_write(&inctx->cbuf, buf, *len);
     }
 
     return APR_SUCCESS;
