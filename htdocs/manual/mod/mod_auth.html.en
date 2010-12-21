@@ -44,7 +44,11 @@
         In 2.2, the equivalent of this module is now named 
         <a
         href="http://httpd.apache.org/docs/2.2/mod/mod_auth_basic.html"
-        >mod_auth_basic</a>.</p> 
+        >mod_auth_basic</a>. However, authentication has changed
+        enormously in the 2.x versions, and you are encouraged to look
+        at the <a
+        href="http://httpd.apache.org/docs/current/howto/auth.html">Authentication
+        HowTo</a> for an overview of those changes.</p> 
 
         </div>
 
@@ -187,6 +191,9 @@
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_auth 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_authz_groupfile.html#authgroupfile">here</a></strong></p>
+ 
     <p>The AuthGroupFile directive sets the name of a textual file
     containing the list of user groups for user authentication.
     <em>File-path</em> is the path to the group file. If it is not
@@ -230,6 +237,9 @@
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_auth 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_authn_file.html#authuserfile">here</a></strong></p>
+ 
     <p>The AuthUserFile directive sets the name of a textual file
     containing the list of users and passwords for user
     authentication. <em>File-path</em> is the path to the user
@@ -298,6 +308,9 @@
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_auth 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_auth_basic.html#authbasicauthoritative">here</a></strong></p>
+ 
     <p>Setting the AuthAuthoritative directive explicitly to
     <strong>'off'</strong> allows for both authentication and
     authorization to be passed on to lower level modules (as
