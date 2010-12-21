@@ -1417,9 +1417,6 @@ static const char *
 
     /* if per directory, save away the single alias */
     if (cmd->path) {
-        if (dconf->alias_set) {
-            return "ProxyPass may be defined just once within a specific location block";
-        }
         dconf->alias = apr_pcalloc(cmd->pool, sizeof(struct proxy_alias));
         dconf->alias_set = 1;
         new = dconf->alias;
