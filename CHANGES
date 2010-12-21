@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_ssl: Correctly read full lines in input filter when the line is
+     incomplete during first read. PR 50481. [Ruediger Pluem]
+
   *) mod_authz_core: Add AuthzSendForbiddenOnFailure directive to allow
      sending '403 FORBIDDEN' instead of '401 UNAUTHORIZED' if authorization
      fails for an authenticated user. PR 40721. [Stefan Fritsch]
