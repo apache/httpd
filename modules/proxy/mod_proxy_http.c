@@ -1946,7 +1946,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
                         || c->aborted) {
                         /* Ack! Phbtt! Die! User aborted! */
-                        backend->close = 1;  /* this causes socket close below */
+                        if (!backend->cleaned) {
+                            backend->close = 1;  /* this causes socket close below */
+                        }
                         finish = TRUE;
                     }
 
@@ -1974,11 +1976,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* Pass EOS bucket down the filter chain. */
             e = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
-            if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS
-                || c->aborted) {
-                /* Ack! Phbtt! Die! User aborted! */
-                backend->close = 1;  /* this causes socket close below */
-            }
+            ap_pass_brigade(r->output_filters, bb);
 
             apr_brigade_cleanup(bb);
         }
@@ -2162,7 +2160,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     /* Step Six: Clean Up */
 cleanup:
     if (backend) {
-        if (status != OK)
+        if ((status != OK) && (!backend->cleaned))
             backend->close = 1;
         ap_proxy_http_cleanup(proxy_function, r, backend);
     }
