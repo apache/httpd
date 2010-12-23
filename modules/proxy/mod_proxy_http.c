@@ -1383,7 +1383,7 @@ apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec
 
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
-                                            proxy_conn_rec *backend,
+                                            proxy_conn_rec **backend_ptr,
                                             proxy_worker *worker,
                                             proxy_server_conf *conf,
                                             char *server_portstr) {
@@ -1409,6 +1409,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     int proxy_status = OK;
     const char *original_status_line = r->status_line;
     const char *proxy_status_line = NULL;
+    proxy_conn_rec *backend = *backend_ptr;
     conn_rec *origin = backend->connection;
     apr_interval_time_t old_timeout = 0;
     proxy_dir_conf *dconf;
@@ -1939,6 +1940,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          */
                         ap_proxy_release_connection(backend->worker->scheme,
                                 backend, r->server);
+                        /* Ensure that the backend is not reused */
+                        backend_ptr = NULL;
 
                     }
 
@@ -1946,7 +1949,12 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
                         || c->aborted) {
                         /* Ack! Phbtt! Die! User aborted! */
-                        if (!backend->cleaned) {
+                        /* Only close backend if we haven't got all from the
+                         * backend. Furthermore if backend_ptr is NULL it is no
+                         * longer save to fiddle around with backend as it might
+                         * be already in use by another thread.
+                         */
+                        if (backend_ptr) {
                             backend->close = 1;  /* this causes socket close below */
                         }
                         finish = TRUE;
@@ -1972,6 +1980,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             ap_proxy_release_connection(backend->worker->scheme,
                     backend, r->server);
+            backend_ptr = NULL;
 
             /* Pass EOS bucket down the filter chain. */
             e = apr_bucket_eos_create(c->bucket_alloc);
@@ -2151,7 +2160,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Step Five: Receive the Response... Fall thru to cleanup */
-        status = ap_proxy_http_process_response(p, r, backend, worker,
+        status = ap_proxy_http_process_response(p, r, &backend, worker,
                                                 conf, server_portstr);
 
         break;
@@ -2160,7 +2169,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     /* Step Six: Clean Up */
 cleanup:
     if (backend) {
-        if ((status != OK) && (!backend->cleaned))
+        if (status != OK)
             backend->close = 1;
         ap_proxy_http_cleanup(proxy_function, r, backend);
     }
