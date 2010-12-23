@@ -213,6 +213,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1039304
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26374
 
+  * mod_ssl: Correctly read full lines in input filter when the line is
+    incomplete during first read. PR 50481.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=1051468&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
