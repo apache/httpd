@@ -287,12 +287,13 @@
  * 20101113.1 (2.3.9-dev)  Add ap_set_flag_slot_char()
  * 20101113.2 (2.3.9-dev)  Add ap_expr_exec_re()
  * 20101204.0 (2.3.10-dev) Add _t to ap_expr's typedef names
+ * 20101223.0 (2.3.11-dev) Remove cleaned from proxy_conn_rec.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20101204
+#define MODULE_MAGIC_NUMBER_MAJOR 20101223
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

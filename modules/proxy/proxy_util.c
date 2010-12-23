@@ -2105,7 +2105,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 #if APR_HAS_THREADS
     (*conn)->inreslist = 0;
 #endif
-    (*conn)->cleaned = 0;
 
     return OK;
 }
@@ -2114,13 +2113,10 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                proxy_conn_rec *conn,
                                                server_rec *s)
 {
-    if (!conn->cleaned) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                 "proxy: %s: has released connection for (%s)",
                 proxy_function, conn->worker->hostname);
-        connection_cleanup(conn);
-        conn->cleaned = 1;
-    }
+    connection_cleanup(conn);
 
     return OK;
 }
