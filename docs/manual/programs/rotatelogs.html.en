@@ -41,6 +41,7 @@
      [ -<strong>L</strong> <var>linkname</var> ]
      [ -<strong>f</strong> ]
      [ -<strong>v</strong> ]
+     [ -<strong>e</strong> ]
      <var>logfile</var>
      <var>rotationtime</var>|<var>filesize</var>(B|K|M|G) 
      [ <var>offset</var> ]</code></p>
@@ -82,6 +83,10 @@ will be respected.
 <dd>Produce verbose output on STDERR. The output contains
 the result of the configuration parsing, and all file open and
 close actions.</dd>
+
+<dt><code>-e</code></dt>
+<dd>Echo logs through to stdout. Useful when logs need to be further
+processed in real time by a further tool in the chain.</dd>
 
 <dt><code><var>logfile</var></code></dt>
 

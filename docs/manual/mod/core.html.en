@@ -2984,11 +2984,12 @@ documentation</a></li>
 directory</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Options All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Options FollowSymlinks</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The default was changed from All to FollowSymlinks in 2.3.11</td></tr>
 </table>
     <p>The <code class="directive">Options</code> directive controls which
     server features are available in a particular directory.</p>
@@ -3000,8 +3001,7 @@ directory</td></tr>
     <dl>
       <dt><code>All</code></dt>
 
-      <dd>All options except for <code>MultiViews</code>. This is the default
-      setting.</dd>
+      <dd>All options except for <code>MultiViews</code>.</dd>
 
       <dt><code>ExecCGI</code></dt>
 
@@ -3012,8 +3012,8 @@ directory</td></tr>
       <dt><code>FollowSymLinks</code></dt>
 
       <dd>
-
-      The server will follow symbolic links in this directory.
+      The server will follow symbolic links in this directory. This is
+      the default setting.
       <div class="note">
       <p>Even though the server follows the symlink it does <em>not</em>
       change the pathname used to match against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.</p>
@@ -3138,7 +3138,7 @@ directory</td></tr>
     </div>
 
     <p>The default in the absence of any other settings is
-    <code>All</code>.</p>
+    <code>FollowSymlinks</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
