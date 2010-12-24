@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) core: In the absence of any Options directives, the default is now
+     "FollowSymlinks" instead of "All".  [Igor Galić]
+
   *) rotatelogs: Add -e option to write logs through to stdout for optional
      further processing. [Graham Leggett]
 
