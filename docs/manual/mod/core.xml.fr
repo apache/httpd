@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1049240 -->
+<!-- English Revision : 1052419 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3268,12 +3268,14 @@ virtuels</a></seealso>
 particulier</description>
 <syntax>Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</syntax>
-<default>Options All</default>
+<default>Options FollowSymlinks</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Options</override>
+<compatibility>Avec la version 2.3.11, la valeur par d&eacute;faut passe de All
+&agrave; FollowSymlinks</compatibility>
 
 <usage>
     <p>La directive <directive>Options</directive> permet de d&eacute;finir
@@ -3287,8 +3289,7 @@ host</context>
     <dl>
       <dt><code>All</code></dt>
 
-      <dd>Toutes les options except&eacute; <code>MultiViews</code>. il s'agit
-      de la configuration par d&eacute;faut.</dd>
+      <dd>Toutes les options except&eacute; <code>MultiViews</code>.</dd>
 
       <dt><code>ExecCGI</code></dt>
 
@@ -3300,7 +3301,7 @@ host</context>
       <dd>
 
       Le serveur va suivre les liens symboliques dans le r&eacute;pertoire
-      concern&eacute;.
+      concern&eacute;. Il s'agit de la valeur par d&eacute;faut.
       <note>
       <p>Bien que le serveur suive les liens symboliques, il ne modifie
       <em>pas</em> le nom de chemin concern&eacute; d&eacute;fini par la section
@@ -3440,7 +3441,7 @@ host</context>
     </note>
 
     <p>En l'absence de toute d&eacute;finition d'options, la valeur par d&eacute;faut
-    est <code>All</code>.</p>
+    est <code>FollowSymlinks</code>.</p>
 </usage>
 </directivesynopsis>
 
