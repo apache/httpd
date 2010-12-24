@@ -117,7 +117,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     /* conf->r and conf->d[_*] are initialized by dirsection() or left NULL */
 
-    conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
+    conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_SYM_LINKS;
     conf->opts_add = conf->opts_remove = OPT_NONE;
     conf->override = OR_UNSET|OR_NONE;
     conf->override_opts = OPT_UNSET | OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
@@ -1377,7 +1377,7 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
             if (v)
                 set_allow_opts(cmd, &(d->override_opts), v);
             else
-                d->override_opts = OPT_ALL;
+                d->override_opts = OPT_SYM_LINKS;
         }
         else if (!strcasecmp(w, "FileInfo")) {
             d->override |= OR_FILEINFO;
@@ -1419,7 +1419,7 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
             action = *(w++);
         }
         else if (first) {
-              d->opts = OPT_NONE;
+            d->opts = OPT_NONE;
             first = 0;
         }
 

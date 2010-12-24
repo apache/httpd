@@ -2981,11 +2981,12 @@ documentation</a></seealso>
 directory</description>
 <syntax>Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</syntax>
-<default>Options All</default>
+<default>Options FollowSymlinks</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Options</override>
+<compatibility>The default was changed from All to FollowSymlinks in 2.3.11</compatibility>
 
 <usage>
     <p>The <directive>Options</directive> directive controls which
@@ -2998,8 +2999,7 @@ directory</description>
     <dl>
       <dt><code>All</code></dt>
 
-      <dd>All options except for <code>MultiViews</code>. This is the default
-      setting.</dd>
+      <dd>All options except for <code>MultiViews</code>.</dd>
 
       <dt><code>ExecCGI</code></dt>
 
@@ -3010,8 +3010,8 @@ directory</description>
       <dt><code>FollowSymLinks</code></dt>
 
       <dd>
-
-      The server will follow symbolic links in this directory.
+      The server will follow symbolic links in this directory. This is
+      the default setting.
       <note>
       <p>Even though the server follows the symlink it does <em>not</em>
       change the pathname used to match against <directive type="section"
@@ -3140,7 +3140,7 @@ directory</description>
     </note>
 
     <p>The default in the absence of any other settings is
-    <code>All</code>.</p>
+    <code>FollowSymlinks</code>.</p>
 </usage>
 </directivesynopsis>
 
