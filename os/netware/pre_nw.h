@@ -66,9 +66,6 @@
 /* Don't use the DBM rewrite map for mod_rewrite */
 #define NO_DBM_REWRITEMAP
 
-/* Allow MOD_AUTH_DBM to use APR */
-#define AP_AUTH_DBM_USE_APR
-
 /* Restrict the number of nested includes */
 #define AP_MAX_INCLUDE_DEPTH    48
 
