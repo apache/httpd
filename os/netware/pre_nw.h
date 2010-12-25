@@ -63,9 +63,6 @@
 #define __int64 long long
 #endif
 
-/* Don't use the DBM rewrite map for mod_rewrite */
-#define NO_DBM_REWRITEMAP
-
 /* Restrict the number of nested includes */
 #define AP_MAX_INCLUDE_DEPTH    48
 
