@@ -33,7 +33,7 @@ Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
 Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter le 
-<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">gestionnaire du site</a>.
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmestre</a>.
 ----------fr--
 
 Content-language: ga
