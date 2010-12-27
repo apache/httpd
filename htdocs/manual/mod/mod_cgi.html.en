@@ -151,6 +151,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> mod_cgi 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_cgi.html#scriptlog">here</a></strong></p>
+ 
     <p>The <tt>ScriptLog</tt> directive sets the CGI script error
     logfile. If no ScriptLog is given, no error log is created. If
     given, any CGI errors are logged into the filename given as
@@ -186,6 +189,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> mod_cgi 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_cgi.html#scriptloglength">here</a></strong></p>
+ 
     <p><tt>ScriptLogLength</tt> can be used to limit the size of
     the CGI script logfile. Since the logfile logs a lot of
     information per CGI error (all request headers, all script
@@ -207,6 +213,9 @@
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> mod_cgi 
 
+    <p class="currentdocs"><strong>Current documentation for this directive may be found <a
+    href="http://httpd.apache.org/docs/current/mod/mod_cgi.html#scriptlogbuffer">here</a></strong></p>
+ 
     <p>The size of any PUT or POST entity body that is logged to
     the file is limited, to prevent the log file growing too big
     too quickly if large bodies are being received. By default, up
