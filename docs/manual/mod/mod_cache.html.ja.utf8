@@ -168,12 +168,15 @@
 <div class="directive-section"><h2><a name="CacheDetailHeader" id="CacheDetailHeader">CacheDetailHeader</a> <a name="cachedetailheader" id="cachedetailheader">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Add an X-Cache-Detail header to the response.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDetailHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDetailHeader off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a name="cachedisable" id="cachedisable">ディレクティブ</a></h2>
 <table class="directive">
@@ -245,12 +248,15 @@
 <div class="directive-section"><h2><a name="CacheHeader" id="CacheHeader">CacheHeader</a> <a name="cacheheader" id="cacheheader">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Add an X-Cache header to the response.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheHeader off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">ディレクティブ</a></h2>
 <table class="directive">
@@ -393,23 +399,29 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreURLSessionIdentifiers" id="CacheIgnoreURLSessionIdentifiers">CacheIgnoreURLSessionIdentifiers</a> <a name="cacheignoreurlsessionidentifiers" id="cacheignoreurlsessionidentifiers">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Ignore defined session identifiers encoded in the URL when caching </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Ignore defined session identifiers encoded in the URL when caching
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheIgnoreURLSessionIdentifiers None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheKeyBaseURL" id="CacheKeyBaseURL">CacheKeyBaseURL</a> <a name="cachekeybaseurl" id="cachekeybaseurl">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Override the base URL of reverse proxied cache keys.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheKeyBaseURL <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheKeyBaseURL http://example.com</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">ディレクティブ</a></h2>
 <table class="directive">
@@ -450,32 +462,39 @@
 <div class="directive-section"><h2><a name="CacheLock" id="CacheLock">CacheLock</a> <a name="cachelock" id="cachelock">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Enable the thundering herd lock.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheLock <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheLock off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.2.15 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLockMaxAge" id="CacheLockMaxAge">CacheLockMaxAge</a> <a name="cachelockmaxage" id="cachelockmaxage">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Set the maximum possible age of a cache lock.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheLockMaxAge <var>integer</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheLockMaxAge 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLockPath" id="CacheLockPath">CacheLockPath</a> <a name="cachelockpath" id="cachelockpath">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Set the lock path directory.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheLockPath <var>directory</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheLockPath /tmp/mod_cache-lock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire">ディレクティブ</a></h2>
 <table class="directive">
@@ -521,32 +540,39 @@
 <div class="directive-section"><h2><a name="CacheQuickHandler" id="CacheQuickHandler">CacheQuickHandler</a> <a name="cachequickhandler" id="cachequickhandler">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Run the cache from the quick handler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheQuickHandler <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheQuickHandler on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStaleOnError" id="CacheStaleOnError">CacheStaleOnError</a> <a name="cachestaleonerror" id="cachestaleonerror">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Serve stale content in place of 5xx responses.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheStaleOnError <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheStaleOnError on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache 2.3.9 and later</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreExpired" id="CacheStoreExpired">CacheStoreExpired</a> <a name="cachestoreexpired" id="cachestoreexpired">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Attempt to cache responses that the server reports as expired</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheStoreExpired On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheStoreExpired Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
-</table><p>Documentation not yet translated. Please see English version of document.</p>
-</div>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a name="cachestorenostore" id="cachestorenostore">ディレクティブ</a></h2>
 <table class="directive">
