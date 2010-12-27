@@ -112,19 +112,52 @@ Servers</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a>-<a name="acceptfilter" id="acceptfilter">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Configures optimizations for a Protocol's Listener Sockets</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AcceptFilter <var>protocol</var> <var>accept_filter</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Konfiguriert Optimierungen für lauschende Sockets bestimmter
+Protokolle</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AcceptFilter <var>Protokoll</var> <var>Filter</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Available in Apache httpd 2.1.5 and later.
-On Windows from Apache httpd 2.3.3 and later.</td></tr>
-</table><p>Die Dokumentation zu dieser Direktive wurde
-            noch nicht übersetzt. Bitte schauen Sie in die englische
-            Version.</p><h3>Siehe auch</h3>
-<ul>
-<li><code class="directive">Protocol</code></li>
-</ul>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 2.1.5</td></tr>
+</table>
+    <p>Diese Direktive aktiviert betriebssystemspezifische Optimierungen
+    für lauschende Sockets anhand des Protokolltyps. Die grundlegende
+    Ansatz ist, dass der Kernel das Socket nicht an den Serverprozess
+    übergibt, bis entweder Daten verfügbar sind oder eine komplette
+    HTTP-Anfrage zwischengespeichert wurde. Derzeit werden
+    ausschließlich die <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">Accept-Filter von FreeBSD</a> und das primitivere
+    <code>TCP_DEFER_ACCEPT</code> von Linux unterstützt.</p>
+
+    <p>Die Standardeinstellungen für FreeBSD sind:</p>
+    <div class="example"><p><code>
+        AcceptFilter http httpready<br />
+        AcceptFilter https dataready
+    </code></p></div>
+
+    <p>Der <code>httpready</code>-Accept-Filter puffert komplette
+    HTTP-Anfragen auf Kernelebene. Sobald eine Anfrage vollständig
+    vorliegt, schickt der Kernel sie an den Server weiter. Bitte schlagen Sie
+    in der <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a>-Manpage für weitere Details nach. HTTPS-Anfragen
+    sind verschlüsselt. Daher wird dafür nur der <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a>-Filter verwendet.</p>
+
+    <p>Die Standardeinstellungen für Linux sind:</p>
+    <div class="example"><p><code>
+        AcceptFilter http data<br />
+        AcceptFilter https data
+    </code></p></div>
+
+    <p><code>TCP_DEFER_ACCEPT</code> unter Linux unterstützt keine
+    Zwischenspeicherung von HTTP-Anfragen. Jeder andere Wert als
+    <code>none</code> aktiviert <code>TCP_DEFER_ACCEPT</code> auf dem
+    Lauschsocket. Mehr Details finden Sie in der <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a>-Manpage von Linux.</p>
+
+    <p>Wenn Sie <code>none</code> als Argument verwenden, werden alle
+    Accept-Filter für das Protokoll abgeschaltet. Das ist sinnvoll
+    für Protokolle, bei denen der Server zuerst Daten senden muss,
+    wie zum Beispiel <code>nntp</code>:</p>
+    <div class="example"><p><code>AcceptFilter nttp none</code></p></div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a>-<a name="acceptpathinfo" id="acceptpathinfo">Direktive</a></h2>
