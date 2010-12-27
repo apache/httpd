@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 167959:1053149 (outdated) -->
+<!-- English Revision: 190982:1053149 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -26,6 +26,63 @@
 <description>St&auml;ndig verf&uuml;gbare Kernfunktionen des Apache HTTP
 Servers</description>
 <status>Core</status>
+
+<directivesynopsis>
+<name>AcceptFilter</name>
+<description>Konfiguriert Optimierungen f&uuml;r lauschende Sockets bestimmter
+Protokolle</description>
+<syntax>AcceptFilter <var>Protokoll</var> <var>Filter</var></syntax>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Verf&uuml;gbar ab Apache 2.1.5</compatibility>
+
+<usage>
+    <p>Diese Direktive aktiviert betriebssystemspezifische Optimierungen
+    f&uuml;r lauschende Sockets anhand des Protokolltyps. Die grundlegende
+    Ansatz ist, dass der Kernel das Socket nicht an den Serverprozess
+    &uuml;bergibt, bis entweder Daten verf&uuml;gbar sind oder eine komplette
+    HTTP-Anfrage zwischengespeichert wurde. Derzeit werden
+    ausschlie&szlig;lich die <a
+    href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9"
+    >Accept-Filter von FreeBSD</a> und das primitivere
+    <code>TCP_DEFER_ACCEPT</code> von Linux unterst&uuml;tzt.</p>
+
+    <p>Die Standardeinstellungen f&uuml;r FreeBSD sind:</p>
+    <example>
+        AcceptFilter http httpready<br />
+        AcceptFilter https dataready
+    </example>
+
+    <p>Der <code>httpready</code>-Accept-Filter puffert komplette
+    HTTP-Anfragen auf Kernelebene. Sobald eine Anfrage vollst&auml;ndig
+    vorliegt, schickt der Kernel sie an den Server weiter. Bitte schlagen Sie
+    in der <a
+    href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9"
+    >accf_http(9)</a>-Manpage f&uuml;r weitere Details nach. HTTPS-Anfragen
+    sind verschl&uuml;sselt. Daher wird daf&uuml;r nur der <a
+    href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9"
+    >accf_data(9)</a>-Filter verwendet.</p>
+
+    <p>Die Standardeinstellungen f&uuml;r Linux sind:</p>
+    <example>
+        AcceptFilter http data<br />
+        AcceptFilter https data
+    </example>
+
+    <p><code>TCP_DEFER_ACCEPT</code> unter Linux unterst&uuml;tzt keine
+    Zwischenspeicherung von HTTP-Anfragen. Jeder andere Wert als
+    <code>none</code> aktiviert <code>TCP_DEFER_ACCEPT</code> auf dem
+    Lauschsocket. Mehr Details finden Sie in der <a
+    href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html"
+    >tcp(7)</a>-Manpage von Linux.</p>
+
+    <p>Wenn Sie <code>none</code> als Argument verwenden, werden alle
+    Accept-Filter f&uuml;r das Protokoll abgeschaltet. Das ist sinnvoll
+    f&uuml;r Protokolle, bei denen der Server zuerst Daten senden muss,
+    wie zum Beispiel <code>nntp</code>:</p>
+    <example>AcceptFilter nttp none</example>
+
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>AcceptPathInfo</name>
