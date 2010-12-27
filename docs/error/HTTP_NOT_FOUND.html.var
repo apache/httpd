@@ -112,7 +112,7 @@ Body:----------fr--
 --><!--#set var="TITLE" value="Objet non trouv&eacute;!"
 --><!--#include virtual="include/top.html" -->
 
-    L'URL requise n'a pu etre trouv&eacute;e sur ce serveur.
+    L'URL demand&eacute;e n'a pas pu &ecirc;tre trouv&eacute;e sur ce serveur.
 
   <!--#if expr="$HTTP_REFERER" -->
 

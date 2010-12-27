@@ -109,13 +109,13 @@ Body:----------fr--
 --><!--#include virtual="include/top.html" -->
 
     L'URL demand&eacute;e n'est plus accessible sur ce serveur et il
-    n'y a pas d'adresse de suite. 
+    n'y a pas d'adresse de redirection. 
 
   <!--#if expr="$HTTP_REFERER" --> 
 
     Nous vous prions d'informer l'auteur de
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la 
-    page en question</a> que la r&eacute;f&eacute;rence n'est plus actuelle.
+    page en question</a> que la r&eacute;f&eacute;rence n'est plus valable.
 
   <!--#else --> 
 

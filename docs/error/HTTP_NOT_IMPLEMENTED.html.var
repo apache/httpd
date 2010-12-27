@@ -54,7 +54,7 @@ Body:----------fr--
 --><!--#include virtual="include/top.html" -->
 
     Le serveur n'est pas en mesure d'effectuer l'action
-    requise par le navigateur. 
+    demand&eacute;e par le navigateur. 
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--

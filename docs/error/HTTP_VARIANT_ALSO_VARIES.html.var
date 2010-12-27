@@ -57,7 +57,7 @@ Body:----------fr--
 --><!--#set var="TITLE" value="La variante varie elle-m&ecirc;me!"
 --><!--#include virtual="include/top.html" -->
 
-    Une variante pour l'entit&eacute; requise
+    Une variante pour l'entit&eacute; demand&eacute;e
     est elle-m&ecirc;me une ressource n&eacute;gociable.
     L'acc&egrave;s est impossible.
 
