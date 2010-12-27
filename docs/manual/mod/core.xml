@@ -619,7 +619,7 @@ named file-system directory, sub-directories, and their contents.</description>
       </indent>
       &lt;/Directory&gt;<br />
       <br />
-      &lt;Directory /home/&gt;<br />
+      &lt;Directory /home&gt;<br />
       <indent>
         AllowOverride FileInfo<br />
       </indent>
