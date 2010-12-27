@@ -78,7 +78,7 @@
     rel="Help"><strong>Module:</strong></a> mod_dir 
 
     <p class="currentdocs"><strong>Current documentation for this directive may be found <a
-    href="http://httpd.apache.org/docs/current/mod/mod_dif.html#directoryindex">here</a></strong></p>
+    href="http://httpd.apache.org/docs/current/mod/mod_dir.html#directoryindex">here</a></strong></p>
 
     <p>The DirectoryIndex directive sets the list of resources to
     look for, when the client requests an index of the directory by
