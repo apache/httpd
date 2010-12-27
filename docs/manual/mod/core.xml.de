@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 190982:1053149 (outdated) -->
+<!-- English Revision: 290537:1053149 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -3182,6 +3182,35 @@ bevor er die Anfrage abbricht</description>
     weiter herabgesetzt, da gelegentlich noch Stellen im Code existieren
     k&ouml;nnen, wo der Zeitgeber nicht zur&uuml;ckgesetzt wird, wenn ein
     Paket verschickt wird.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>TraceEnable</name>
+<description>Legt das Verhalten von <code>TRACE</code>-Anfragen fest</description>
+<syntax>TraceEnable <var>[on|off|extended]</var></syntax>
+<default>TraceEnable on</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Diese Direktive beeinflusst das Verhalten von <code>TRACE</code> sowohl
+    f&uuml;r den Server selbst als auch <module>mod_proxy</module>. Die
+    Voreinstellung <code>TraceEnable on</code> erlaubt
+    <code>TRACE</code>-Anfragen gem&auml;&szlig; RFC 2616. Dort werden
+    nur Anfragen ohne Datenteil zugelassen. <code>TraceEnable off</code>
+    sorgt daf&uuml;r, dass der Serverkern und <module>mod_proxy</module> den
+    Fehler <code>405</code> (Zugriffsmethode nicht erlaubt) an den Client
+    senden.</p>
+
+    <p>Zu Test- und Diagnosezwecken k&ouml;nnen Sie auch
+    nicht-standardkonforme Anfragen mit Datenteil erlauben, indem Sie die
+    Direktive <code>TraceEnable extended</code> verwenden. Der Server (als
+    Ursprungsserver) beschr&auml;nkt den Anfrageinhalt auf 64k. (Wenn
+    <code>Transfer-Encoding: chunked</code> benutzt wird, k&ouml;nnen
+    weitere 8k f&uuml;r die Chunk-Kopfzeilen verwendet werden.) Der
+    Server selbst reflektiert dann die vollst&auml;ndigen HTTP- und
+    Chunk-Kopfzeilen in seiner Antwort. Die Einschr&auml;nkung auf 64k gilt
+    nicht, wenn der Server als Proxy arbeitet.</p>
 </usage>
 </directivesynopsis>
 
