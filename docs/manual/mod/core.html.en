@@ -671,7 +671,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
       </span>
       &lt;/Directory&gt;<br />
       <br />
-      &lt;Directory /home/&gt;<br />
+      &lt;Directory /home&gt;<br />
       <span class="indent">
         AllowOverride FileInfo<br />
       </span>
