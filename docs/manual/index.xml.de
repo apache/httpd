@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 1044380:1050960 (outdated) -->
+<!-- English Revision: 1050960 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,6 +44,7 @@
     <page href="mpm.html">Multi-Processing-Module (MPMs)</page>
     <page href="filter.html">Filter</page>
     <page href="handler.html">Handler</page>
+    <page href="expr.html">Der Ausdrucksparser</page>
     <page href="programs/">Server und Hilfsprogramme</page>
     <page href="glossary.html">Glossar</page>
 </category>    
