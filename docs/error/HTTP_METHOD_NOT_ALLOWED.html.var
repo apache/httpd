@@ -56,7 +56,7 @@ Body:----------fr--
 --><!--#include virtual="include/top.html" -->
 
     La m&eacute;thode <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    n'est pas utilisable pour l'URL requise.
+    n'est pas utilisable pour l'URL demand&eacute;e.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--

@@ -60,8 +60,8 @@ Body:----------fr--
 --><!--#include virtual="include/top.html" -->
 
     Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo
-    var="REDIRECT_REQUEST_METHOD" --> n&eacute;cessite un header valable
-    <code>Content-Length</code> (indiquant la longueur).
+    var="REDIRECT_REQUEST_METHOD" --> n&eacute;cessite un en-t&ecirc;te
+    <code>Content-Length</code> (indiquant la longueur) valable.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
