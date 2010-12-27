@@ -97,6 +97,18 @@
         &lt;/Location&gt;
     </code></p></div>
 
+    <p>Backreferences can be used in the comparison and in the substituion,
+    when regular expressions are used, as illustrated in the following example: </p>
+    <div class="example"><h3>Example of using backreferences and captures</h3><p><code>
+        &lt;Location /&gt;
+        <span class="indent">
+            AddOutputFilterByType SUBSTITUTE text/html<br />
+            # "foo=k,bar=k" -&gt; "foo/bar=k" <br />
+            Substitute "s|foo=(\w+),bar=\1|foo/bar=$1"
+        </span>
+        &lt;/Location&gt;
+    </code></p></div>
+
     <p>A common use scenario for <code>mod_substitute</code> is the
     situation in which a front-end server proxies requests to a back-end
     server which returns HTML with hard-coded embedded URLs that refer
