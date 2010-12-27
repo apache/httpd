@@ -3193,11 +3193,13 @@ virtuels</a></li>
 particulier</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Options All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Options FollowSymlinks</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Avec la version 2.3.11, la valeur par défaut passe de All
+à FollowSymlinks</td></tr>
 </table>
     <p>La directive <code class="directive">Options</code> permet de définir
     les fonctionnalités de serveur disponibles pour un répertoire
@@ -3210,8 +3212,7 @@ particulier</td></tr>
     <dl>
       <dt><code>All</code></dt>
 
-      <dd>Toutes les options excepté <code>MultiViews</code>. il s'agit
-      de la configuration par défaut.</dd>
+      <dd>Toutes les options excepté <code>MultiViews</code>.</dd>
 
       <dt><code>ExecCGI</code></dt>
 
@@ -3223,7 +3224,7 @@ particulier</td></tr>
       <dd>
 
       Le serveur va suivre les liens symboliques dans le répertoire
-      concerné.
+      concerné. Il s'agit de la valeur par défaut.
       <div class="note">
       <p>Bien que le serveur suive les liens symboliques, il ne modifie
       <em>pas</em> le nom de chemin concerné défini par la section
@@ -3356,7 +3357,7 @@ particulier</td></tr>
     </div>
 
     <p>En l'absence de toute définition d'options, la valeur par défaut
-    est <code>All</code>.</p>
+    est <code>FollowSymlinks</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
