@@ -83,12 +83,7 @@ To Do List
         - mpm_simple
       the list may be incomplete
       maybe some of the modules will not be included in 2.4
-    - The following modules have new docs added since 2.2, but are
-      grossly lacking in details and examples.
-        - mod_dialup
     - mod_suexec: very little documentation
-    - mod_rewrite: explain, when which variables are actually available
-      (PR 16402)
 
 - mod_substitute and reverse proxies: Add example using mod_filter
   (see: http://marc.info/?l=apache-httpd-users&m=128830729603423&w=2)
@@ -149,8 +144,6 @@ To Do List
 - http://httpd.apache.org/docs/trunk/developer/ is a graveyard, and a
   profound embarrassment.
     - Purge all the dead links
-    - API docs are generated via 'make dox'. Find somewhere that we can
-      do this on a schedule, and link to that from the documentation.
     - Introductory module authoring doc
     - Verify links to external resources at least every year
 
@@ -180,9 +173,6 @@ To Do List
   Add them. This makes them show up in the directives listing for that
   language, and also encourages translators to provide translations for
   those directives.
-
-- Write a script that generates a table of modules and available
-  translations. Put this on the docs-project website.
 
 LaTeX Todo list
 ==================
