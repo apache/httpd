@@ -376,7 +376,8 @@ static name_chain *new_name_chain(apr_pool_t *p,
 static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
 {
     unsigned bucket;
-    ipaddr_chain *trav;
+    ipaddr_chain *trav = NULL;
+    ipaddr_chain *wild_match = NULL;
 
     /* scan the hash table for an exact match first */
     bucket = hash_addr(sa);
@@ -384,28 +385,39 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
         server_addr_rec *sar = trav->sar;
         apr_sockaddr_t *cur = sar->host_addr;
 
-        if (cur->port == 0 || sa->port == 0 || cur->port == sa->port) {
+        if (cur->port == sa->port) {
             if (apr_sockaddr_equal(cur, sa)) {
                 return trav;
             }
         }
+        if (wild_match == NULL && (cur->port == 0 || sa->port == 0)) {
+            if (apr_sockaddr_equal(cur, sa)) {
+                /* don't break, continue looking for an exact match */
+                wild_match = trav; 
+            }
+        }
     }
-    return NULL;
+    return wild_match;
 }
 
 static ipaddr_chain *find_default_server(apr_port_t port)
 {
     server_addr_rec *sar;
-    ipaddr_chain *trav;
+    ipaddr_chain *trav = NULL;
+    ipaddr_chain *wild_match = NULL;
 
     for (trav = default_list; trav; trav = trav->next) {
         sar = trav->sar;
-        if (sar->host_port == 0 || sar->host_port == port) {
+        if (sar->host_port == port) {
             /* match! */
             return trav;
         }
+        if (wild_match == NULL && sar->host_port == 0) {
+            /* don't break, continue looking for an exact match */
+            wild_match = trav;
+        } 
     }
-    return NULL;
+    return wild_match;
 }
 
 static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
