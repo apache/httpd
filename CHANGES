@@ -370,7 +370,7 @@ Changes with Apache 2.3.7
 
   *) socache modules: return APR_NOTFOUND when a lookup is not found [Nick Kew]
 
-  *) mod_authn_cache: new module [Nick Kew]
+  *) mod_authn_socache: new module [Nick Kew]
 
   *) configure: Add reallyall option for --enable-mods-shared. [Stefan Fritsch]
 
