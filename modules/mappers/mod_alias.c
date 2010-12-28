@@ -99,7 +99,7 @@ static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv
 static int alias_matches(const char *uri, const char *alias_fakename);
 
 static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
-                                      const char *f, const char *r,
+                                      const char *fake, const char *real,
                                       int use_regex)
 {
     server_rec *s = cmd->server;
@@ -109,13 +109,13 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     alias_entry *entries = (alias_entry *)conf->aliases->elts;
     int i;
 
-    /* XX r can NOT be relative to DocumentRoot here... compat bug. */
+    /* XX real can NOT be relative to DocumentRoot here... compat bug. */
 
     if (use_regex) {
-        new->regexp = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
+        new->regexp = ap_pregcomp(cmd->pool, fake, AP_REG_EXTENDED);
         if (new->regexp == NULL)
             return "Regular expression could not be compiled.";
-        new->real = r;
+        new->real = real;
     }
     else {
         /* XXX This may be optimized, but we must know that new->real
@@ -123,9 +123,9 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
          * and just canonicalizing the remainder.  Not till I finish
          * cleaning out the old ap_canonical stuff first.
          */
-        new->real = r;
+        new->real = real;
     }
-    new->fake = f;
+    new->fake = fake;
     new->handler = cmd->info;
 
     /* check for overlapping (Script)Alias directives
@@ -133,18 +133,18 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
      */
     if (!use_regex) {
         for (i = 0; i < conf->aliases->nelts - 1; ++i) {
-            alias_entry *p = &entries[i];
+            alias_entry *alias = &entries[i];
 
-            if (  (!p->regexp &&  alias_matches(f, p->fake) > 0)
-                || (p->regexp && !ap_regexec(p->regexp, f, 0, NULL, 0))) {
+            if (  (!alias->regexp &&  alias_matches(fake, alias->fake) > 0)
+                || (alias->regexp && !ap_regexec(alias->regexp, fake, 0, NULL, 0))) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                              "The %s directive in %s at line %d will probably "
                              "never match because it overlaps an earlier "
                              "%sAlias%s.",
                              cmd->cmd->name, cmd->directive->filename,
                              cmd->directive->line_num,
-                             p->handler ? "Script" : "",
-                             p->regexp ? "Match" : "");
+                             alias->handler ? "Script" : "",
+                             alias->regexp ? "Match" : "");
 
                 break; /* one warning per alias should be sufficient */
             }
@@ -154,16 +154,16 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *add_alias(cmd_parms *cmd, void *dummy, const char *f,
-                             const char *r)
+static const char *add_alias(cmd_parms *cmd, void *dummy, const char *fake,
+                             const char *real)
 {
-    return add_alias_internal(cmd, dummy, f, r, 0);
+    return add_alias_internal(cmd, dummy, fake, real, 0);
 }
 
-static const char *add_alias_regex(cmd_parms *cmd, void *dummy, const char *f,
-                                   const char *r)
+static const char *add_alias_regex(cmd_parms *cmd, void *dummy,
+                                   const char *fake, const char *real)
 {
-    return add_alias_internal(cmd, dummy, f, r, 1);
+    return add_alias_internal(cmd, dummy, fake, real, 1);
 }
 
 static const char *add_redirect_internal(cmd_parms *cmd,
@@ -177,8 +177,8 @@ static const char *add_redirect_internal(cmd_parms *cmd,
                                                          &alias_module);
     int status = (int) (long) cmd->info;
     int grokarg1 = 1;
-    ap_regex_t *r = NULL;
-    const char *f = arg2;
+    ap_regex_t *regex = NULL;
+    const char *fake = arg2;
     const char *url = arg3;
 
     /*
@@ -211,13 +211,13 @@ static const char *add_redirect_internal(cmd_parms *cmd,
      * one, so we don't want to re-arrange
      */
     if (!arg3 && !grokarg1) {
-        f = arg1;
+        fake = arg1;
         url = arg2;
     }
 
     if (use_regex) {
-        r = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
-        if (r == NULL)
+        regex = ap_pregcomp(cmd->pool, fake, AP_REG_EXTENDED);
+        if (regex == NULL)
             return "Regular expression could not be compiled.";
     }
 
@@ -240,9 +240,9 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     else
         new = apr_array_push(serverconf->redirects);
 
-    new->fake = f;
+    new->fake = fake;
     new->real = url;
-    new->regexp = r;
+    new->regexp = regex;
     new->redir_status = status;
     return NULL;
 }
@@ -342,13 +342,13 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
     int i;
 
     for (i = 0; i < aliases->nelts; ++i) {
-        alias_entry *p = &entries[i];
+        alias_entry *alias = &entries[i];
         int l;
 
-        if (p->regexp) {
-            if (!ap_regexec(p->regexp, r->uri, AP_MAX_REG_MATCH, regm, 0)) {
-                if (p->real) {
-                    found = ap_pregsub(r->pool, p->real, r->uri,
+        if (alias->regexp) {
+            if (!ap_regexec(alias->regexp, r->uri, AP_MAX_REG_MATCH, regm, 0)) {
+                if (alias->real) {
+                    found = ap_pregsub(r->pool, alias->real, r->uri,
                                        AP_MAX_REG_MATCH, regm);
                     if (found && doesc) {
                         apr_uri_t uri;
@@ -374,23 +374,23 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
             }
         }
         else {
-            l = alias_matches(r->uri, p->fake);
+            l = alias_matches(r->uri, alias->fake);
 
             if (l > 0) {
                 if (doesc) {
                     char *escurl;
                     escurl = ap_os_escape_path(r->pool, r->uri + l, 1);
 
-                    found = apr_pstrcat(r->pool, p->real, escurl, NULL);
+                    found = apr_pstrcat(r->pool, alias->real, escurl, NULL);
                 }
                 else
-                    found = apr_pstrcat(r->pool, p->real, r->uri + l, NULL);
+                    found = apr_pstrcat(r->pool, alias->real, r->uri + l, NULL);
             }
         }
 
         if (found) {
-            if (p->handler) {    /* Set handler, and leave a note for mod_cgi */
-                r->handler = p->handler;
+            if (alias->handler) {    /* Set handler, and leave a note for mod_cgi */
+                r->handler = alias->handler;
                 apr_table_setn(r->notes, "alias-forced-type", r->handler);
             }
             /* XXX This is as SLOW as can be, next step, we optimize
@@ -402,7 +402,7 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                 found = ap_server_root_relative(r->pool, found);
             }
             if (found) {
-                *status = p->redir_status;
+                *status = alias->redir_status;
             }
             return found;
         }
