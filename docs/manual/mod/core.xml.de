@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 290537:1053375 (outdated) -->
+<!-- English Revision: 290816:1053375 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -266,8 +266,8 @@ zuordnen</description>
 
 <usage>
     <p>Die Direktive aktiviert f&uuml;r eine Anfrage abh&auml;ngig vom
-    MIME-Type der Antwort einen bestimmten Ausgabe-<a href="../filter.html"
-    >Filter</a>.</p>
+    <glossary>MIME-Type</glossary> der Antwort einen bestimmten
+    Ausgabe-<a href="../filter.html">Filter</a>.</p>
 
     <p>Das folgende Beispiel verwendet den Filter <code>DEFLATE</code>,
     der von <module>mod_deflate</module> angeboten wird. Er komprimiert
@@ -303,8 +303,8 @@ zuordnen</description>
       <p>Die Aktivierung von Filtern mittels
       <directive>AddOutputFilterByType</directive> kann in einigen
       F&auml;llen ganz oder teilweise fehlschlagen. Beispielsweise
-      werden keine Filter angewendet, wenn der MIME-Type nicht bestimmt
-      werden kann und auf die Einstellung der <directive
+      werden keine Filter angewendet, wenn der <glossary>MIME-Type</glossary>
+      nicht bestimmt werden kann und auf die Einstellung der <directive
       module="core">DefaultType</directive>-Anweisung zur&uuml;ckf&auml;llt,
       selbst wenn die <directive
       module="core">DefaultType</directive>-Einstellung die gleiche ist.</p>
@@ -620,8 +620,8 @@ nicht auf andere Weise ermitteln kann.</description>
 
 <usage>
     <p>Es kann vorkommen, dass der Server ein Dokument ausliefern muss,
-    dessen Typ er nicht mit Hilfe seiner MIME-Type-Zuordnungen bestimmen
-    kann.</p>
+    dessen Typ er nicht mit Hilfe seiner <glossary ref="mime-type"
+    >MIME-Type</glossary>-Zuordnungen bestimmen kann.</p>
 
     <p>Der Server muss den Client &uuml;ber den Content-Type des
     Dokumentes informieren. Daher verwendet er im Falle eines
@@ -706,7 +706,8 @@ werden</description>
       &uuml;ber verschiedene symbolische Links.</p>
     </note>
 
-    <p>Erweiterte regul&auml;re Ausdr&uuml;cke k&ouml;nnen ebenfalls
+    <p>Erweiterte <glossary ref="regex"
+    >regul&auml;re Ausdr&uuml;cke</glossary> k&ouml;nnen ebenfalls
     verwendet werden, indem das Zeichen <code>~</code> hinzugef&uuml;gt
     wird. Beispielsweise w&uuml;rde</p>
 
@@ -826,8 +827,8 @@ werden</description>
     Gruppe von Direktiven zusammenzufassen, die nur f&uuml;r das
     genannte Verzeichnis und dessen Unterverzeichnisse gelten, genauso
     wie bei <directive module="core" type="section">Directory</directive>.
-    Als Argument dient jedoch ein regul&auml;rer Ausdruck.
-    Beispielsweise w&uuml;rde</p>
+    Als Argument dient jedoch ein <glossary ref="regex">regul&auml;rer
+    Ausdruck</glossary>. Beispielsweise w&uuml;rde</p>
 
     <example>
       &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
@@ -1268,9 +1269,10 @@ beziehen</description>
     <p>Das Argument <var>Dateiname</var> kann einen Dateinamen oder eine
     Zeichenkette mit Platzhaltern enthalten, wobei <code>?</code> auf ein
     einzelnes Zeichen passt und <code>*</code> auf eine beliebige Folge von
-    Zeichen. Erweiterte regul&auml;re Ausdr&uuml;cke k&ouml;nnen ebenfalls
-    verwendet werden, indem das Zeichen <code>~</code> hinzugef&uuml;gt wird.
-    Beispielsweise w&uuml;rde</p>
+    Zeichen. Erweiterte <glossary ref="regex">regul&auml;re
+    Ausdr&uuml;cke</glossary> k&ouml;nnen ebenfalls verwendet werden, indem
+    das Zeichen <code>~</code> hinzugef&uuml;gt wird. Beispielsweise
+    w&uuml;rde</p>
 
     <example>
       &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
@@ -1308,8 +1310,8 @@ beziehen</description>
     <p>Die Direktive <directive type="section">FilesMatch</directive>
     begrenzt wie die Direktive <directive module="core"
     type="section">Files</directive> die enthaltenen Anweisungen auf
-    Dateinamen. Sie akzeptiert jedoch regul&auml;re Ausdr&uuml;cke.
-    Beispielsweise w&uuml;rde</p>
+    Dateinamen. Sie akzeptiert jedoch <glossary ref="regex">regul&auml;re
+    Ausdr&uuml;cke</glossary>. Beispielsweise w&uuml;rde</p>
 
     <example>
       &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
@@ -2032,9 +2034,10 @@ URLs an</description>
     Platzhaltern entspricht <code>?</code> einem einzelnen Zeichen und
     <code>*</code>einer beliebigen Zeichenfolge.</p>
 
-    <p>Erweiterte regul&auml;re Ausdr&uuml;cke k&ouml;nnen ebenfalls
-    verwendet werden, indem das Zeichen <code>~</code> hinzugef&uuml;gt
-    wird. Beispielsweise w&uuml;rde</p>
+    <p>Erweiterte <glossary ref="regex">regul&auml;re
+    Ausdr&uuml;cke</glossary> k&ouml;nnen ebenfalls verwendet werden, indem
+    das Zeichen <code>~</code> hinzugef&uuml;gt wird. Beispielsweise
+    w&uuml;rde</p>
 
     <example>
       &lt;Location ~ "/(extra|special)/data"&gt;
@@ -2109,8 +2112,9 @@ regul&auml;re Ausdr&uuml;cke passen</description>
     <p>Die Direktive <directive type="section">LocationMatch</directive>
     begrenzt die Reichweite der enthaltenen Anweisungen in der gleichen Weise
     wie <directive module="core" type="section">Location</directive> auf URLs.
-    Sie verwendet jedoch regul&auml;re Ausdr&uuml;cke als Argument anstelle
-    einer einfachen Zeichenkette. Beispielsweise w&uuml;rde</p>
+    Sie verwendet jedoch <glossary ref="regex">regul&auml;re
+    Ausdr&uuml;cke</glossary> als Argument anstelle einer einfachen
+    Zeichenkette. Beispielsweise w&uuml;rde</p>
 
     <example>
       &lt;LocationMatch "/(extra|special)/data"&gt;
@@ -3191,6 +3195,7 @@ bevor er die Anfrage abbricht</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Verf&uuml;gbar ab Apache 1.3.34 und 2.0.55</compatibility>
 
 <usage>
     <p>Diese Direktive beeinflusst das Verhalten von <code>TRACE</code> sowohl
