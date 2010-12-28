@@ -67,11 +67,14 @@ static char *http2env(apr_pool_t *a, const char *w)
     *cp++ = '_';
 
     while ((c = *w++) != 0) {
-        if (!apr_isalnum(c)) {
+        if (apr_isalnum(c)) {
+            *cp++ = apr_toupper(c);
+        }
+        else if (c == '-') {
             *cp++ = '_';
         }
         else {
-            *cp++ = apr_toupper(c);
+            return NULL;
         }
     }
     *cp = 0;
@@ -175,8 +178,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
             continue;
         }
 #endif
-        else {
-            apr_table_addn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+        else if ((env_temp = http2env(r->pool, hdrs[i].key)) != NULL) {
+            apr_table_addn(e, env_temp, hdrs[i].val);
         }
     }
 

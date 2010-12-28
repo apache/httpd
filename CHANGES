@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) core: When exporting request headers to HTTP_* environment variables,
+     drop variables whose names contain invalid characters. Describe in the
+     docs how to restore the old behaviour. [Malte S. Stretz <mss apache org>]
+
   *) core: When selecting an IP-based virtual host, favor an exact match for
      the port over a wildcard (or omitted) port instead of favoring the one
      that came first in the configuration file. [Eric Covener]
