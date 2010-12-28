@@ -54,9 +54,9 @@
 
 APLOG_USE_MODULE(core);
 
-static char *http2env(apr_pool_t *a, const char *w)
+static char *http2env(request_rec *r, const char *w)
 {
-    char *res = (char *)apr_palloc(a, sizeof("HTTP_") + strlen(w));
+    char *res = (char *)apr_palloc(r->pool, sizeof("HTTP_") + strlen(w));
     char *cp = res;
     char c;
 
@@ -74,6 +74,9 @@ static char *http2env(apr_pool_t *a, const char *w)
             *cp++ = '_';
         }
         else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                          "Not exporting header with invalid name as envvar: %s",
+                          ap_escape_logitem(r->pool, w));
             return NULL;
         }
     }
@@ -188,7 +191,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
         }
 #endif
         else
-            add_unless_null(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+            add_unless_null(e, http2env(r, hdrs[i].key), hdrs[i].val);
     }
 
     env_temp = apr_table_get(r->subprocess_env, "PATH");
