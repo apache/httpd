@@ -1409,6 +1409,8 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
     core_dir_config *d = d_;
     allow_options_t opt;
     int first = 1;
+    int merge = 0;
+    int all_none = 0;
     char action;
 
     while (l[0]) {
@@ -1417,10 +1419,16 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
 
         if (*w == '+' || *w == '-') {
             action = *(w++);
+            if (!merge && !first && !all_none) {
+                return "Either all Options must start with + or -, or no Option may.";
+            }
+            merge = 1;
         }
         else if (first) {
             d->opts = OPT_NONE;
-            first = 0;
+        }
+        else if (merge) {
+            return "Either all Options must start with + or -, or no Option may.";
         }
 
         if (!strcasecmp(w, "Indexes")) {
@@ -1448,10 +1456,24 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
             opt = OPT_MULTI|OPT_EXECCGI;
         }
         else if (!strcasecmp(w, "None")) {
+            if (!first) {
+                return "'Options None' must be the first Option given.";
+            }
+            else if (merge) { /* Only works since None may not follow any other option. */
+                return "You may not use 'Options +None' or 'Options -None'.";
+            }
             opt = OPT_NONE;
+            all_none = 1;
         }
         else if (!strcasecmp(w, "All")) {
+            if (!first) {
+                return "'Options All' must be the first option given.";
+            }
+            else if (merge) { /* Only works since All may not follow any other option. */
+                return "You may not use 'Options +All' or 'Options -All'.";
+            }
             opt = OPT_ALL;
+            all_none = 1;
         }
         else {
             return apr_pstrcat(cmd->pool, "Illegal option ", w, NULL);
@@ -1474,6 +1496,8 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
         else {
             d->opts |= opt;
         }
+
+        first = 0;
     }
 
     return NULL;
