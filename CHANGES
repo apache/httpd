@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) core: When selecting an IP-based virtual host, favor an exact match for
+     the port over a wildcard (or omitted) port instead of favoring the one
+     that came first in the configuration file. [Eric Covener]
+
   *) core: Overlapping virtual host address/port combinations  now implicitly 
      enable name-based virtual hosting for that address.  The NameVirtualHost
      directive has no effect, and _default_ is interpreted the same as "*". 
