@@ -117,8 +117,11 @@ static void *merge_userdir_config(apr_pool_t *p, void *basev, void *overridesv)
     userdir_config *cfg = apr_pcalloc(p, sizeof(userdir_config));
     userdir_config *base = basev, *overrides = overridesv;
  
-    cfg->globally_disabled = (overrides->globally_disabled != O_DEFAULT) ? overrides->globally_disabled : base->globally_disabled;
-    cfg->userdir = (overrides->userdir != DEFAULT_USER_DIR) ? overrides->userdir : base->userdir;
+    cfg->globally_disabled = (overrides->globally_disabled != O_DEFAULT) ?
+                             overrides->globally_disabled :
+                             base->globally_disabled;
+    cfg->userdir = (overrides->userdir != DEFAULT_USER_DIR) ?
+                   overrides->userdir : base->userdir;
  
     /* not merged */
     cfg->enabled_users = overrides->enabled_users;
@@ -196,9 +199,8 @@ static int translate_userdir(request_rec *r)
 {
     ap_conf_vector_t *server_conf;
     const userdir_config *s_cfg;
-    char *name = r->uri;
     const char *userdirs;
-    const char *w, *dname;
+    const char *user, *dname;
     char *redirect;
     apr_finfo_t statbuf;
 
@@ -206,7 +208,7 @@ static int translate_userdir(request_rec *r)
      * If the URI doesn't match our basic pattern, we've nothing to do with
      * it.
      */
-    if (name[0] != '/' || name[1] != '~') {
+    if (r->uri[0] != '/' || r->uri[1] != '~') {
         return DECLINED;
     }
     server_conf = r->server->module_config;
@@ -216,8 +218,8 @@ static int translate_userdir(request_rec *r)
         return DECLINED;
     }
 
-    dname = name + 2;
-    w = ap_getword(r->pool, &dname, '/');
+    dname = r->uri + 2;
+    user = ap_getword(r->pool, &dname, '/');
 
     /*
      * The 'dname' funny business involves backing it up to capture the '/'
@@ -233,13 +235,15 @@ static int translate_userdir(request_rec *r)
     /*
      * If there's no username, it's not for us.  Ignore . and .. as well.
      */
-    if (w[0] == '\0' || (w[1] == '.' && (w[2] == '\0' || (w[2] == '.' && w[3] == '\0')))) {
+    if (user[0] == '\0' ||
+        (user[1] == '.' && (user[2] == '\0' ||
+                            (user[2] == '.' && user[3] == '\0')))) {
         return DECLINED;
     }
     /*
      * Nor if there's an username but it's in the disabled list.
      */
-    if (apr_table_get(s_cfg->disabled_users, w) != NULL) {
+    if (apr_table_get(s_cfg->disabled_users, user) != NULL) {
         return DECLINED;
     }
     /*
@@ -247,7 +251,7 @@ static int translate_userdir(request_rec *r)
      * name is one of the Blessed.
      */
     if (s_cfg->globally_disabled == O_DISABLE
-        && apr_table_get(s_cfg->enabled_users, w) == NULL) {
+        && apr_table_get(s_cfg->enabled_users, user) == NULL) {
         return DECLINED;
     }
 
@@ -257,15 +261,15 @@ static int translate_userdir(request_rec *r)
 
     while (*userdirs) {
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
-        char *filename = NULL, *x = NULL;
+        char *filename = NULL, *prefix = NULL;
         apr_status_t rv;
         int is_absolute = ap_os_is_path_absolute(r->pool, userdir);
 
         if (ap_strchr_c(userdir, '*'))
-            x = ap_getword(r->pool, &userdir, '*');
+            prefix = ap_getword(r->pool, &userdir, '*');
 
         if (userdir[0] == '\0' || is_absolute) {
-            if (x) {
+            if (prefix) {
 #ifdef HAVE_DRIVE_LETTERS
                 /*
                  * Crummy hack. Need to figure out whether we have been
@@ -274,23 +278,25 @@ static int translate_userdir(request_rec *r)
                  * a : as the first or second character, and assume a file
                  * was specified
                  */
-                if (strchr(x + 2, ':'))
+                if (strchr(prefix + 2, ':'))
 #else
-                if (strchr(x, ':') && !is_absolute)
+                if (strchr(prefix, ':') && !is_absolute)
 #endif /* HAVE_DRIVE_LETTERS */
                 {
-                    redirect = apr_pstrcat(r->pool, x, w, userdir, dname, NULL);
+                    redirect = apr_pstrcat(r->pool, prefix, user, userdir,
+                                           dname, NULL);
                     apr_table_setn(r->headers_out, "Location", redirect);
                     return HTTP_MOVED_TEMPORARILY;
                 }
                 else
-                    filename = apr_pstrcat(r->pool, x, w, userdir, NULL);
+                    filename = apr_pstrcat(r->pool, prefix, user, userdir,
+                                           NULL);
             }
             else
-                filename = apr_pstrcat(r->pool, userdir, "/", w, NULL);
+                filename = apr_pstrcat(r->pool, userdir, "/", user, NULL);
         }
-        else if (x && ap_strchr_c(x, ':')) {
-            redirect = apr_pstrcat(r->pool, x, w, dname, NULL);
+        else if (prefix && ap_strchr_c(prefix, ':')) {
+            redirect = apr_pstrcat(r->pool, prefix, user, dname, NULL);
             apr_table_setn(r->headers_out, "Location", redirect);
             return HTTP_MOVED_TEMPORARILY;
         }
@@ -298,7 +304,7 @@ static int translate_userdir(request_rec *r)
 #if APR_HAS_USER
             char *homedir;
 
-            if (apr_uid_homepath_get(&homedir, w, r->pool) == APR_SUCCESS) {
+            if (apr_uid_homepath_get(&homedir, user, r->pool) == APR_SUCCESS) {
                 filename = apr_pstrcat(r->pool, homedir, "/", userdir, NULL);
             }
 #else
@@ -325,7 +331,7 @@ static int translate_userdir(request_rec *r)
                 r->finfo = statbuf;
 
             /* For use in the get_suexec_identity phase */
-            apr_table_setn(r->notes, "mod_userdir_user", w);
+            apr_table_setn(r->notes, "mod_userdir_user", user);
 
             return OK;
         }
