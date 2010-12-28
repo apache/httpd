@@ -342,10 +342,6 @@
 
       <p>Make sure that this is in fact the path to the
       interpreter.</p>
-
-      <p>In addition, if your CGI program depends on other <a href="#env">environment variables</a>, you will need to
-      assure that those variables are passed by Apache.</p>
-
       <div class="warning">
       When editing CGI scripts on Windows, end-of-line characters may be
       appended to the interpreter path. Ensure that files are then
@@ -354,6 +350,20 @@
       unrecognized end-of-line character being interpreted as a part of
       the interpreter filename.
       </div>
+    
+
+    <h3><a name="missingenv" id="missingenv">Missing environment variables</a></h3>
+      
+
+      <p>If your CGI program depends on non-standard <a href="#env">environment variables</a>, you will need to
+      assure that those variables are passed by Apache.</p>
+
+      <p>When you miss HTTP headers from the environment, make
+      sure they are formatted according to 
+      <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>,
+      section 4.2: Header names must start with a letter, 
+      followed only by letters, numbers or hyphen. Any header
+      violating this rule will be dropped silently.</p>
 
     
 

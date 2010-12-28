@@ -25,7 +25,8 @@
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">System requirements</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#explanation">What is IP-based virtual hosting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requirements">System requirements</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">How to set up Apache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multiple">Setting up multiple daemons</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#single">Setting up a single daemon
@@ -34,6 +35,18 @@
 <a href="name-based.html">Name-based Virtual Hosts Support</a>
 </li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="explanation" id="explanation">What is IP-based virtual hosting</a></h2>
+<p>IP-based virtual hosting is a method to apply different directives
+based on the IP address and port a request is received on.  Most commonly,
+this is used to serve different websites on different ports or interfaces.</p>
+
+<p>In many cases, <a href="name-based.html">name-based
+virtual hosts</a> are more convenient, because they allow
+many virtual hosts to share a single address/port.
+See <a href="name-based.html#namevip">Name-based vs. IP-based
+Virtual Hosts</a> to help you decide.  </p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">System requirements</a></h2>
 
@@ -47,12 +60,8 @@
     most commonly used to set them up), and/or using multiple
     port numbers.</p>
 
-    <p>In many cases, <a href="name-based.html">name-based
-    virtual hosts</a> are more convenient, because they allow
-    many virtual hosts to share a single address/port.
-    See <a href="name-based.html#namevip">Name-based vs. IP-based
-    Virtual Hosts</a> to help you decide.
-    </p>
+    <p> In the terminology of Apache HTTP Servr, using a single IP address 
+    but multiple TCP ports, is also IP-based virtual hosting.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -141,6 +150,10 @@
     <p>It is recommended that you use an IP address instead of a
     hostname in the &lt;VirtualHost&gt; directive
     (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
+
+    <p> Specific IP addresses or ports have precedence over their wildcard
+    equivalents, and any virtual host that matches has precedence over
+    the servers base configuration.</p> 
 
     <p>Almost <strong>any</strong> configuration directive can be
     put in the VirtualHost directive, with the exception of

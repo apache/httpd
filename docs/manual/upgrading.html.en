@@ -214,7 +214,6 @@
         <li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>: <code class="directive"><a href="./mod/filter.html#filterprovider">FilterProvider</a></code> syntax has changed and
         now uses a boolean expression to determine if a filter is applied.
         </li>
-
       </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -228,6 +227,12 @@
       ignored.</li>
       <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> now uses MD5 hash by default on
       all platforms.</li>
+
+      <li>The <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code>
+      directive no longer has any effect, other than to emit a
+      warning.  Any address/port combination appearing in multiple
+      virtual hosts is implicitly treated as a name-based virtual host.
+      </li>
     </ul>
     
 
@@ -253,8 +258,6 @@
  - load module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code>, or update configuration to 2.4 authorization directives.</li>
       <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
       and replace with other configuration settings.</li>
-      <li><code>mixing * ports and non-* ports with a NameVirtualHost address is not supported</code>, <code>Either NameVirtualHost w.x.y.z:n has no VirtualHosts, or there is more than one identical NameVirtualHost line, or your VirtualHost declarations do not match the NameVirtualHost line</code> - these are not new messages, but they now cause startup to fail</li>
-      <li><code>_default_ is not allowed in NameVirtualHost directive</code> - self-explanatory; was never valid, but now causes startup to fail.</li>
     </ul></li>
     <li>Errors serving requests:
     <ul>
