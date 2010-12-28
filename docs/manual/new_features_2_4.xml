@@ -109,10 +109,19 @@
       authentication or authorization.</dd>
 
       <dt><module>mod_include</module></dt>
-
       <dd>Support for the 'onerror' attribute within an 'include' element,
       allowing an error document to be served on error instead of the default
       error string.</dd>
+
+      <dt><module>mod_cgi</module>, <module>mod_include</module>,
+          <module>mod_isapi</module>, ...</dt>
+      <dd>Translation of headers to environment variables is more strict than 
+      before to mitigate some possible cross-site-scripting attacks via header
+      injection. Headers containing invalid characters (including underscores)
+      are now silently dropped. <a href="env.html">Environment Variables
+      in Apache</a> has some pointers on how to work around broken legacy
+      clients which require such headers. (This affects all modules which
+      use these environment variables.)</dd>
 
     </dl>
   </section>
