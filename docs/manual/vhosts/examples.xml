@@ -59,8 +59,6 @@
     # Ensure that Apache listens on port 80<br />
     Listen 80<br />
     <br />
-    # Listen for virtual host requests on all IP addresses<br />
-    NameVirtualHost *:80<br />
     <br />
     &lt;VirtualHost *:80&gt;<br />
     <indent>
@@ -95,17 +93,9 @@
     <note>
             <title>Note</title>
 
-            <p>You can, if you wish, replace <code>*</code> with the actual
-            IP address of the system. In that case, the argument to
-            <code>VirtualHost</code> <em>must</em> match the argument to
-            <code>NameVirtualHost</code>:</p>
-
-            <example>
-            NameVirtualHost 172.20.30.40<br />
-            <br />
-            &lt;VirtualHost 172.20.30.40&gt;<br />
-             # etc ...
-            </example>
+           <p>You can, if you wish, replace <code>*</code> with the actual
+           IP address of the system, when you don't care to discriminate based
+           on the IP address or port.</p>
 
            <p>However, it is additionally useful to use <code>*</code>
            on systems where the IP address is not predictable - for
@@ -144,9 +134,6 @@
     # This is the "main" server running on 172.20.30.40<br />
     ServerName server.example.com<br />
     DocumentRoot /www/mainserver<br />
-    <br />
-    # This is the other address<br />
-    NameVirtualHost 172.20.30.50<br />
     <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
@@ -195,8 +182,6 @@
     <example>
     <title>Server configuration</title>
 
-    NameVirtualHost 192.168.1.1<br />
-    NameVirtualHost 172.20.30.40<br />
     <br />
     &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
     <indent>
@@ -227,19 +212,15 @@
     ports.</title>
 
     <p>You have multiple domains going to the same IP and also want to
-    serve multiple ports. By defining the ports in the "NameVirtualHost"
-    tag, you can allow this to work. If you try using &lt;VirtualHost
-    name:port&gt; without the NameVirtualHost name:port or you try to use
-    the Listen directive, your configuration will not work.</p>
+    serve multiple ports.  The example below illustrates that the name-matching
+    takes place after the best matching IP address and port combination
+    is determined.</p>
 
     <example>
     <title>Server configuration</title>
 
     Listen 80<br />
     Listen 8080<br />
-    <br />
-    NameVirtualHost 172.20.30.40:80<br />
-    NameVirtualHost 172.20.30.40:8080<br />
     <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
@@ -357,16 +338,13 @@
   <section id="mixed"><title>Mixed name-based and IP-based
     vhosts</title>
 
-    <p>On some of my addresses, I want to do name-based virtual hosts, and
-    on others, IP-based hosts.</p>
+    <p>Any address mentioned in the argument to a virtualhost that never
+    appears in another virtual host is a strictly IP-based virtual host.</p>
 
     <example>
     <title>Server configuration</title>
 
     Listen 80<br />
-    <br />
-    NameVirtualHost 172.20.30.40<br />
-    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
@@ -540,8 +518,6 @@
     ServerName www.example.com<br />
     DocumentRoot /www/example1<br />
     <br />
-    NameVirtualHost 172.20.30.40<br />
-    <br />
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
@@ -581,8 +557,6 @@
     <example>
     <title>Server configuration</title>
 
-    NameVirtualHost 172.20.30.40<br />
-    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         # primary vhost<br />

@@ -28,6 +28,18 @@
 <a href="name-based.html">Name-based Virtual Hosts Support</a>
 </seealso>
 
+<section id="explanation"><title>What is IP-based virtual hosting</title>
+<p>IP-based virtual hosting is a method to apply different directives
+based on the IP address and port a request is received on.  Most commonly,
+this is used to serve different websites on different ports or interfaces.</p>
+
+<p>In many cases, <a href="name-based.html">name-based
+virtual hosts</a> are more convenient, because they allow
+many virtual hosts to share a single address/port.
+See <a href="name-based.html#namevip">Name-based vs. IP-based
+Virtual Hosts</a> to help you decide.  </p>
+</section>
+
 <section id="requirements"><title>System requirements</title>
 
     <p>As the term <cite>IP-based</cite> indicates, the server
@@ -40,12 +52,8 @@
     most commonly used to set them up), and/or using multiple
     port numbers.</p>
 
-    <p>In many cases, <a href="name-based.html">name-based
-    virtual hosts</a> are more convenient, because they allow
-    many virtual hosts to share a single address/port.
-    See <a href="name-based.html#namevip">Name-based vs. IP-based
-    Virtual Hosts</a> to help you decide.
-    </p>
+    <p> In the terminology of Apache HTTP Servr, using a single IP address 
+    but multiple TCP ports, is also IP-based virtual hosting.</p>
 
 </section>
 
@@ -146,6 +154,10 @@
     <p>It is recommended that you use an IP address instead of a
     hostname in the &lt;VirtualHost&gt; directive
     (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
+
+    <p> Specific IP addresses or ports have precedence over their wildcard
+    equivalents, and any virtual host that matches has precedence over
+    the servers base configuration.</p> 
 
     <p>Almost <strong>any</strong> configuration directive can be
     put in the VirtualHost directive, with the exception of

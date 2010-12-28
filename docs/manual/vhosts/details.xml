@@ -66,16 +66,10 @@
     resolutions fail, those virtual host definitions are ignored.
     This is, therefore, not recommended.</p>
 
-    <p>If using IP-based vhosts, the address can be specified
-    as <code>_default_</code>, which will match a request if no
-    other vhost has the explicit address on which the request was
-    received.</p>
-
-    <p>If using name-based vhosts, the address can be specified as
+    <p>The address can be specified as
     <code>*</code>, which will match a request if no
     other vhost has the explicit address on which the request was
-    received.  The corresponding <code>NameVirtualHost</code>
-    directive must also use <code>*</code>.</p>
+    received. </p> 
 
     <p>The address appearing in the <code>VirtualHost</code>
     directive can have an optional port. If the port is unspecified,
@@ -95,11 +89,10 @@
     results from DNS lookups) are called the vhost's
     <em>address set</em>.</p>
 
-    <p>If you want Apache to discriminate on the
-    basis of the HTTP <code>Host</code> header supplied by the client,
-    the <code>NameVirtualHost</code> directive <em>must</em> appear
-    with the exact IP address (or wildcard) and port pair used in a
-    corresponding set of <code>VirtualHost</code> directives.</p>
+    <p>Apache automatically discriminates on the
+    basis of the HTTP <code>Host</code> header supplied by the client
+    whenever the most specific match for an IP address and port combination
+    is listed in multiple virtual hosts.</p>
 
     <p>The 
     <directive module="core">ServerName</directive> directive
@@ -108,11 +101,6 @@
     server).  If no <code>ServerName</code> is specified, the server
     attempts to deduce it from the server's IP address.</p>
 
-    <p>Multiple <code>NameVirtualHost</code> directives can be used,
-    each with a set of <code>VirtualHost</code> directives, but only
-    one <code>NameVirtualHost</code> directive should be used for
-    each specific IP:port pair.</p>
-
     <p>The first name-based vhost in the configuration file for a
     given IP:port pair is significant because it is used for all
     requests received on that address and port for which no other
@@ -120,66 +108,6 @@
     ServerAlias.  It is also used for all SSL connections if the
     server does not support <glossary
     ref="servernameindication">Server Name Indication</glossary>.</p>
-
-    <p>If there are no vhosts defined for an address in a
-    <code>NameVirtualHost</code> directive, the
-    <code>NameVirtualHost</code> directive is ignored at startup and an error is
-    logged.</p>
-
-    <p>The ordering of <code>NameVirtualHost</code> and
-    <code>VirtualHost</code> directives is not important, which
-    makes the following two examples identical (only the order of
-    the <code>VirtualHost</code> directives for <em>one</em>
-    address set is important, see below):</p>
-
-<table><tr>
-<td><example>
-  NameVirtualHost 111.22.33.44<br />
-  &lt;VirtualHost 111.22.33.44&gt;<br />
-  # server A<br />
-  ...<br />
-  &lt;/VirtualHost&gt;<br />
-  &lt;VirtualHost 111.22.33.44&gt;<br />
-  # server B<br />
-  ...<br />
-  &lt;/VirtualHost&gt;<br />
-  <br />
-  NameVirtualHost 111.22.33.55<br />
-  &lt;VirtualHost 111.22.33.55&gt;<br />
-  # server C<br />
-  ...<br />
-  &lt;/VirtualHost&gt;<br />
-  &lt;VirtualHost 111.22.33.55&gt;<br />
-  # server D<br />
-  ...<br />
-  &lt;/VirtualHost&gt;
-</example></td>
-<td><example>
-  &lt;VirtualHost 111.22.33.44&gt;<br />
-  # server A<br />
-  &lt;/VirtualHost&gt;<br />
-  &lt;VirtualHost 111.22.33.55&gt;<br />
-  # server C<br />
-  ...<br />
-  &lt;/VirtualHost&gt;<br />
-  &lt;VirtualHost 111.22.33.44&gt;<br />
-  # server B<br />
-  ...<br />
-  &lt;/VirtualHost&gt;<br />
-  &lt;VirtualHost 111.22.33.55&gt;<br />
-  # server D<br />
-  ...<br />
-  &lt;/VirtualHost&gt;<br />
-  <br />
-  NameVirtualHost 111.22.33.44<br />
-  NameVirtualHost 111.22.33.55<br />
-  <br />
-</example></td>
-</tr></table>
-
-
-    <p>(To aid the readability of your configuration you should
-    prefer the left variant.)</p>
 
     <p>For every vhost various default values are set. In
     particular:</p>
@@ -245,10 +173,6 @@
     <p>If there are no exact matches for the address and port, then
     wildcard (<code>*</code>) matches are considered.</p>
 
-    <p>If there are still no matches, then vhosts with IP
-    address specified as <code>_default_</code> that match the
-    port are considered.</p>
-
     <p>If no matches are found, the request is served by the
     main server.</p>
 
@@ -260,17 +184,19 @@
 
     <section id="ipbased"><title>IP-based vhost</title>
 
-    <p>If there is no <code>NameVirtualHost</code> directive
-    matching the vhost, no further actions are performed and
-    the request is served from the first matching vhost.</p>
+    <p>If there is exactly one <code>VirtualHost</code> directive
+    listing the IP address and port combibation that was determined
+    to be the best match, no further actions are performed and
+    the request is served from the matching vhost.</p>
 
     </section>
 
     <section id="namebased"><title>Name-based vhost</title>
 
-    <p>If the entry corresponds to a name-based vhost, the "list" in
-    the remaining steps refers to the list of vhosts that matched, in
-    the order they were in the configuration file.</p>
+    <p>If there are multiple <code>VirtalHost</code> directives listing
+    the IP address and port combination that was determined to be the
+    best match, the "list" in the remaining steps refers to the list of vhosts 
+    that matched, in the order they were in the configuration file.</p>
 
     <p>If the connection is using SSL, the server supports <glossary
     ref="servernameindication">Server Name Indication</glossary>, and
@@ -324,20 +250,18 @@
 <section id="observations"><title>Observations</title>
 
     <ul>
-      <li>A name-based vhost can never interfere with an IP-base
-      vhost and vice versa. IP-based vhosts can only be reached
-      through an IP address of its own address set and never
-      through any other address. The same applies to name-based
-      vhosts, they can only be reached through an IP address of the
-      corresponding address set which must be defined with a
-      <code>NameVirtualHost</code> directive.</li>
+      <li>Name-based virtual hosting is a process applied after
+      the server has selected the best matching IP-based virtual
+      host.</li>
 
-      <li><code>ServerAlias</code>
+      <li>If you don't care what IP address the client has connected to, use a
+      "*" as the address of every virtual host, and name-based virtual hosting
+      is applied across all configured virtual hosts.</li>
+
+      <li><code>ServerName</code> and <code>ServerAlias</code>
       checks are never performed for an IP-based vhost.</li>
 
-      <li>The order of name-/IP-based, the <code>_default_</code>
-      vhost and the <code>NameVirtualHost</code> directive within
-      the config file is not important. Only the ordering of
+      <li>Only the ordering of
       name-based vhosts for a specific address set is significant.
       The one name-based vhosts that comes first in the
       configuration file has the highest priority for its
@@ -347,38 +271,17 @@
       matching process. Apache always uses the real port to which
       the client sent the request.</li>
 
-      <li>If two IP-based vhosts have an address in common, the
-      vhost appearing first in the config file is always matched.
-      Such a thing might happen inadvertently. The server will give
-      a warning in the error logfile when it detects this.</li>
-
-      <li>A <code>_default_</code> vhost catches a request only if
-      there is no other vhost with a matching IP address
-      <em>and</em> a matching port number for the request. The
-      request is only caught if the port number to which the client
-      sent the request matches the port number of your
-      <code>_default_</code> vhost which is your standard
-      <code>Listen</code> by default. A wildcard port can be
-      specified (<em>i.e.</em>, <code>_default_:*</code>) to catch
-      requests to any available port. This also applies to
-      <code>NameVirtualHost *</code> vhosts.  Note that this is simply an
-      extension of the "best match" principle, as a specific and exact match
-      is favored over a wildcard.</li>
+      <li>If two vhosts have an address in common, those common addresses
+      act as name-based virtual hosts implicitly.  This is new behavior as of 
+      2.3.11.</li>
 
       <li>The main server is only used to serve a request if the IP
       address and port number to which the client connected 
       does not match any vhost (including a
-      <code>_default_</code> vhost). In other words, the main server
+      <code>*</code> vhost). In other words, the main server
       only catches a request for an unspecified address/port
       combination (unless there is a <code>_default_</code> vhost
       which matches that port).</li>
-
-      <li>A <code>_default_</code> vhost or the main server is
-      <em>never</em> matched for a request with an unknown or
-      missing <code>Host:</code> header field if the client
-      connected to an address (and port) which is used for
-      name-based vhosts, <em>e.g.</em>, in a
-      <code>NameVirtualHost</code> directive.</li>
 
       <li>You should never specify DNS names in
       <code>VirtualHost</code> directives because it will force
@@ -408,10 +311,6 @@
       readability of the configuration -- the post-config merging
       process makes it non-obvious that definitions mixed in around
       virtual hosts might affect all virtual hosts.)</li>
-
-      <li>Group corresponding <code>NameVirtualHost</code> and
-      <code>VirtualHost</code> definitions in your configuration to
-      ensure better readability.</li>
     </ul>
 
 </section>

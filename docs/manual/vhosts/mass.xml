@@ -43,7 +43,6 @@
 
 <example>
 <pre>
-NameVirtualHost 111.22.33.44
 &lt;VirtualHost 111.22.33.44&gt;
     ServerName                 customer-1.example.com
     DocumentRoot        /www/hosts/customer-1.example.com/docs

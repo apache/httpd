@@ -62,6 +62,10 @@
         they are on separate IP addresses.</li>
     </ul>
 
+    <p> Name-based virtual hosting builds off of the IP-based virtual host
+    selection algoirthm, meaning that searches for the proper server name
+    occur only between virtual hosts that have the best IP-based address.</p>
+
 
 </section>
 
@@ -71,23 +75,22 @@
     host resolution is IP-based resolution.  Name-based virtual host
     resolution only chooses the most appropriate name-based virtual host
     after narrowing down the candidates to the best IP-based match.  Using a wildcard (*)
-    for the IP address in all of the NameVirtualHost and VirtualHost directives makes this
+    for the IP address in all of the VirtualHost directives makes this
     IP-based mapping irrelevant.</p>
     
-    <p>When a request arrives, the server will first check if it is using
-    an IP address that matches exactly any <directive module="core"
-    >NameVirtualHost</directive>. If it is, then it will look at each <directive
-    type="section" module="core">VirtualHost</directive> section with a (literal) matching
-    IP address and try to find one where the <directive module="core"
-    >ServerName</directive> or <directive module="core" >ServerAlias</directive> 
-    matches the requested hostname. If it finds one, then it uses the configuration 
-    for that server.</p>
+    <p>When a request arrives, the server will find the best (most specific) matching  
+    <directive type="section" module="core">VirtualHost</directive> argument based on
+    the IP address and port used by the request.  If there is more than one virtual host
+    contanin this best-match address and port combination,  Apache will further
+    compare the <directive module="core" >ServerName</directive> and <directive 
+    module="core">ServerAlias</directive>  directives to the server name
+    present in the request.</p>
 
-    <section id="defaultvhost"><title>The default name-based vhost for a NameVirtualHost</title>
-    <p> If no matching ServerName or ServerAlias is found in the
-    set of virtual hosts matching the NameVirtualHost directive, then 
-    <strong>the first listed virtual host</strong> that matches the IP 
-    address will be used.</p></section>
+    <section id="defaultvhost"><title>The default name-based vhost for an IP and port combination </title>
+    <p> If no matching ServerName or ServerAlias is found in the set of 
+    virtual hosts containing the most specific matching IP address and port 
+    combination, then <strong>the first listed virtual host</strong> that 
+    matches the will be used.</p></section>
 </section>
 
 <section id="using"><title>Using Name-based Virtual Hosts</title>
@@ -99,38 +102,15 @@
 
     <directivelist>
         <directive module="core">DocumentRoot</directive>
-        <directive module="core">NameVirtualHost</directive>
         <directive module="core">ServerAlias</directive>
         <directive module="core">ServerName</directive>
         <directive module="core" type="section">VirtualHost</directive>
     </directivelist>
 </related>
 
-    <p>To use name-based virtual hosting, you must designate the IP
-    address (and possibly port) on the server that will be accepting
-    requests that need to be distinguished by hostname.
-    This is configured using the <directive
-    module="core">NameVirtualHost</directive> directive.
-    In the normal case where any and all IP addresses on the server should
-    be used, you can use <code>*</code> as the argument to <directive
-    module="core">NameVirtualHost</directive>. If you're planning to use
-    multiple ports (e.g. running SSL) you should add a Port to the argument,
-    such as <code>*:80</code>.</p>
-
-    <note><p>Note that mentioning an IP address in a
-    <directive module="core">NameVirtualHost</directive> directive does not
-    automatically make the server <em>listen</em> to that IP address. See
-    <a href="../bind.html">Setting which addresses and ports Apache uses</a>
-    for more details. In addition, any IP address specified here must be
-    associated with a network interface on the server.</p></note>
-
-    <p>The next step is to create a <directive type="section"
+    <p>The first step is to create a <directive type="section"
     module="core">VirtualHost</directive> block for
-    each different host that you would like to serve. The argument to the
-    <directive type="section" module="core">VirtualHost</directive> directive
-    must match a defined <directive
-    module="core">NameVirtualHost</directive> directive. (In this usual case,
-    this will be "*:80").  Inside each <directive type="section"
+    each different host that you would like to serve.  Inside each <directive type="section"
     module="core">VirtualHost</directive> block, you will need at minimum a
     <directive module="core">ServerName</directive> directive to designate
     which host is served and a <directive module="core">DocumentRoot</directive>
@@ -158,8 +138,6 @@
     Then you simply add the following to <code>httpd.conf</code>:</p>
 
     <example>
-        NameVirtualHost *:80<br />
-        <br />
         &lt;VirtualHost *:80&gt;<br />
         <indent>
             # This first-listed virtual host is also the default for *:80
@@ -177,8 +155,7 @@
     </example>
 
     <p>You can alternatively specify an explicit IP address in place of the
-    <code>*</code> in both the <directive module="core"
-    >NameVirtualHost</directive> and <directive type="section" module="core"
+    <code>*</code> in <directive type="section" module="core"
     >VirtualHost</directive> directives. For example, you might want to do this
     in order to run some name-based virtual hosts on one IP address, and either
     IP-based, or another set of name-based virtual hosts on another address.</p>
