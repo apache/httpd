@@ -225,7 +225,6 @@
         module="filter">FilterProvider</directive> syntax has changed and
         now uses a boolean expression to determine if a filter is applied.
         </li>
-
       </ul>
     </section>
   </section>
@@ -239,6 +238,12 @@
       ignored.</li>
       <li><program>htpasswd</program> now uses MD5 hash by default on
       all platforms.</li>
+
+      <li>The <directive module="core">NameVirtualHost</directive>
+      directive no longer has any effect, other than to emit a
+      warning.  Any address/port combination appearing in multiple
+      virtual hosts is implicitly treated as a name-based virtual host.
+      </li>
     </ul>
     
 
@@ -264,8 +269,6 @@
  - load module <module>mod_access_compat</module>, or update configuration to 2.4 authorization directives.</li>
       <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <directive module="core">DefaultType</directive>
       and replace with other configuration settings.</li>
-      <li><code>mixing * ports and non-* ports with a NameVirtualHost address is not supported</code>, <code>Either NameVirtualHost w.x.y.z:n has no VirtualHosts, or there is more than one identical NameVirtualHost line, or your VirtualHost declarations do not match the NameVirtualHost line</code> - these are not new messages, but they now cause startup to fail</li>
-      <li><code>_default_ is not allowed in NameVirtualHost directive</code> - self-explanatory; was never valid, but now causes startup to fail.</li>
     </ul></li>
     <li>Errors serving requests:
     <ul>

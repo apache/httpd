@@ -82,7 +82,6 @@ hosts</a></seealso>
     <ul>
       <li><directive type="section"
            module="core">VirtualHost</directive></li>
-      <li><directive module="core">NameVirtualHost</directive></li>
       <li><directive module="core">ServerName</directive></li>
       <li><directive module="core">ServerAlias</directive></li>
       <li><directive module="core">ServerPath</directive></li>
