@@ -542,8 +542,7 @@ nicht auf andere Weise ermitteln kann.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
     <p>Es kann vorkommen, dass der Server ein Dokument ausliefern muss,
-    dessen Typ er nicht mit Hilfe seiner MIME-Type-Zuordnungen bestimmen
-    kann.</p>
+    dessen Typ er nicht mit Hilfe seiner <a class="glossarylink" href="../glossary.html#mime-type" title="siehe Glossar">MIME-Type</a>-Zuordnungen bestimmen kann.</p>
 
     <p>Der Server muss den Client über den Content-Type des
     Dokumentes informieren. Daher verwendet er im Falle eines
@@ -627,7 +626,7 @@ werden</td></tr>
       über verschiedene symbolische Links.</p>
     </div>
 
-    <p>Erweiterte reguläre Ausdrücke können ebenfalls
+    <p>Erweiterte <a class="glossarylink" href="../glossary.html#regex" title="siehe Glossar">reguläre Ausdrücke</a> können ebenfalls
     verwendet werden, indem das Zeichen <code>~</code> hinzugefügt
     wird. Beispielsweise würde</p>
 
@@ -745,8 +744,8 @@ werden</td></tr>
     Gruppe von Direktiven zusammenzufassen, die nur für das
     genannte Verzeichnis und dessen Unterverzeichnisse gelten, genauso
     wie bei <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>.
-    Als Argument dient jedoch ein regulärer Ausdruck.
-    Beispielsweise würde</p>
+    Als Argument dient jedoch ein <a class="glossarylink" href="../glossary.html#regex" title="siehe Glossar">regulärer
+    Ausdruck</a>. Beispielsweise würde</p>
 
     <div class="example"><p><code>
       &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
@@ -1224,9 +1223,10 @@ beziehen</td></tr>
     <p>Das Argument <var>Dateiname</var> kann einen Dateinamen oder eine
     Zeichenkette mit Platzhaltern enthalten, wobei <code>?</code> auf ein
     einzelnes Zeichen passt und <code>*</code> auf eine beliebige Folge von
-    Zeichen. Erweiterte reguläre Ausdrücke können ebenfalls
-    verwendet werden, indem das Zeichen <code>~</code> hinzugefügt wird.
-    Beispielsweise würde</p>
+    Zeichen. Erweiterte <a class="glossarylink" href="../glossary.html#regex" title="siehe Glossar">reguläre
+    Ausdrücke</a> können ebenfalls verwendet werden, indem
+    das Zeichen <code>~</code> hinzugefügt wird. Beispielsweise
+    würde</p>
 
     <div class="example"><p><code>
       &lt;Files ~ "\.(gif|jpe?g|png)$"&gt;
@@ -1262,8 +1262,8 @@ beziehen</td></tr>
 </table>
     <p>Die Direktive <code class="directive">&lt;FilesMatch&gt;</code>
     begrenzt wie die Direktive <code class="directive"><a href="#files">&lt;Files&gt;</a></code> die enthaltenen Anweisungen auf
-    Dateinamen. Sie akzeptiert jedoch reguläre Ausdrücke.
-    Beispielsweise würde</p>
+    Dateinamen. Sie akzeptiert jedoch <a class="glossarylink" href="../glossary.html#regex" title="siehe Glossar">reguläre
+    Ausdrücke</a>. Beispielsweise würde</p>
 
     <div class="example"><p><code>
       &lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;
@@ -2006,9 +2006,10 @@ URLs an</td></tr>
     Platzhaltern entspricht <code>?</code> einem einzelnen Zeichen und
     <code>*</code>einer beliebigen Zeichenfolge.</p>
 
-    <p>Erweiterte reguläre Ausdrücke können ebenfalls
-    verwendet werden, indem das Zeichen <code>~</code> hinzugefügt
-    wird. Beispielsweise würde</p>
+    <p>Erweiterte <a class="glossarylink" href="../glossary.html#regex" title="siehe Glossar">reguläre
+    Ausdrücke</a> können ebenfalls verwendet werden, indem
+    das Zeichen <code>~</code> hinzugefügt wird. Beispielsweise
+    würde</p>
 
     <div class="example"><p><code>
       &lt;Location ~ "/(extra|special)/data"&gt;
@@ -2081,8 +2082,9 @@ reguläre Ausdrücke passen</td></tr>
     <p>Die Direktive <code class="directive">&lt;LocationMatch&gt;</code>
     begrenzt die Reichweite der enthaltenen Anweisungen in der gleichen Weise
     wie <code class="directive"><a href="#location">&lt;Location&gt;</a></code> auf URLs.
-    Sie verwendet jedoch reguläre Ausdrücke als Argument anstelle
-    einer einfachen Zeichenkette. Beispielsweise würde</p>
+    Sie verwendet jedoch <a class="glossarylink" href="../glossary.html#regex" title="siehe Glossar">reguläre
+    Ausdrücke</a> als Argument anstelle einer einfachen
+    Zeichenkette. Beispielsweise würde</p>
 
     <div class="example"><p><code>
       &lt;LocationMatch "/(extra|special)/data"&gt;
@@ -3125,6 +3127,7 @@ bevor er die Anfrage abbricht</td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 1.3.34 und 2.0.55</td></tr>
 </table>
     <p>Diese Direktive beeinflusst das Verhalten von <code>TRACE</code> sowohl
     für den Server selbst als auch <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Die
