@@ -82,6 +82,18 @@ static char *http2env(apr_pool_t *a, const char *w)
     return res;
 }
 
+static void add_unless_null(apr_table_t *table, const char *name, const char *val)
+{
+    if (name && val) {
+        apr_table_addn(table, name, val);
+    }
+}
+
+static void env2env(apr_table_t *table, const char *name)
+{
+    add_unless_null(table, name, getenv(name));
+}
+
 AP_DECLARE(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
 {
     const apr_array_header_t *env_arr = apr_table_elts(t);
@@ -125,10 +137,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_t *e;
     server_rec *s = r->server;
     conn_rec *c = r->connection;
-    const char *rem_logname;
-    const char *env_path;
     const char *env_temp;
-    const char *host;
     const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
     const apr_table_entry_t *hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
     int i;
@@ -178,70 +187,41 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
             continue;
         }
 #endif
-        else if ((env_temp = http2env(r->pool, hdrs[i].key)) != NULL) {
-            apr_table_addn(e, env_temp, hdrs[i].val);
-        }
+        else
+            add_unless_null(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
     }
 
-    env_path = apr_table_get(r->subprocess_env, "PATH");
-    if (env_path == NULL) {
-        env_path = getenv("PATH");
+    env_temp = apr_table_get(r->subprocess_env, "PATH");
+    if (env_temp == NULL) {
+        env_temp = getenv("PATH");
     }
-    if (env_path == NULL) {
-        env_path = DEFAULT_PATH;
+    if (env_temp == NULL) {
+        env_temp = DEFAULT_PATH;
     }
-    apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_path));
+    apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_temp));
 
 #if defined(WIN32)
-    if (env_temp = getenv("SystemRoot")) {
-        apr_table_addn(e, "SystemRoot", env_temp);
-    }
-    if (env_temp = getenv("COMSPEC")) {
-        apr_table_addn(e, "COMSPEC", env_temp);
-    }
-    if (env_temp = getenv("PATHEXT")) {
-        apr_table_addn(e, "PATHEXT", env_temp);
-    }
-    if (env_temp = getenv("WINDIR")) {
-        apr_table_addn(e, "WINDIR", env_temp);
-    }
+    env2env(e, "SystemRoot");
+    env2env(e, "COMSPEC");
+    env2env(e, "PATHEXT");
+    env2env(e, "WINDIR");
 #elif defined(OS2)
-    if ((env_temp = getenv("COMSPEC")) != NULL) {
-        apr_table_addn(e, "COMSPEC", env_temp);
-    }
-    if ((env_temp = getenv("ETC")) != NULL) {
-        apr_table_addn(e, "ETC", env_temp);
-    }
-    if ((env_temp = getenv("DPATH")) != NULL) {
-        apr_table_addn(e, "DPATH", env_temp);
-    }
-    if ((env_temp = getenv("PERLLIB_PREFIX")) != NULL) {
-        apr_table_addn(e, "PERLLIB_PREFIX", env_temp);
-    }
+    env2env(e, "COMSPEC");
+    env2env(e, "ETC");
+    env2env(e, "DPATH");
+    env2env(e, "PERLLIB_PREFIX");
 #elif defined(BEOS)
-    if ((env_temp = getenv("LIBRARY_PATH")) != NULL) {
-        apr_table_addn(e, "LIBRARY_PATH", env_temp);
-    }
+    env2env(e, "LIBRARY_PATH");
 #elif defined(DARWIN)
-    if ((env_temp = getenv("DYLD_LIBRARY_PATH")) != NULL) {
-        apr_table_addn(e, "DYLD_LIBRARY_PATH", env_temp);
-    }
+    env2env(e, "DYLD_LIBRARY_PATH");
 #elif defined(_AIX)
-    if ((env_temp = getenv("LIBPATH")) != NULL) {
-        apr_table_addn(e, "LIBPATH", env_temp);
-    }
+    env2env(e, "LIBPATH");
 #elif defined(__HPUX__)
     /* HPUX PARISC 2.0W knows both, otherwise redundancy is harmless */
-    if ((env_temp = getenv("SHLIB_PATH")) != NULL) {
-        apr_table_addn(e, "SHLIB_PATH", env_temp);
-    }
-    if ((env_temp = getenv("LD_LIBRARY_PATH")) != NULL) {
-        apr_table_addn(e, "LD_LIBRARY_PATH", env_temp);
-    }
+    env2env(e, "SHLIB_PATH");
+    env2env(e, "LD_LIBRARY_PATH");
 #else /* Some Unix */
-    if ((env_temp = getenv("LD_LIBRARY_PATH")) != NULL) {
-        apr_table_addn(e, "LD_LIBRARY_PATH", env_temp);
-    }
+    env2env(e, "LD_LIBRARY_PATH");
 #endif
 
     apr_table_addn(e, "SERVER_SIGNATURE", ap_psignature("", r));
@@ -251,10 +231,8 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_ADDR", r->connection->local_ip);  /* Apache */
     apr_table_addn(e, "SERVER_PORT",
                   apr_psprintf(r->pool, "%u", ap_get_server_port(r)));
-    host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST, NULL);
-    if (host) {
-        apr_table_addn(e, "REMOTE_HOST", host);
-    }
+    add_unless_null(e, "REMOTE_HOST",
+                    ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST, NULL));
     apr_table_addn(e, "REMOTE_ADDR", c->remote_ip);
     apr_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));    /* Apache */
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin); /* Apache */
@@ -277,23 +255,17 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
             back = back->prev;
         }
     }
-    if (r->ap_auth_type) {
-        apr_table_addn(e, "AUTH_TYPE", r->ap_auth_type);
-    }
-    rem_logname = ap_get_remote_logname(r);
-    if (rem_logname) {
-        apr_table_addn(e, "REMOTE_IDENT", apr_pstrdup(r->pool, rem_logname));
+    add_unless_null(e, "AUTH_TYPE", r->ap_auth_type);
+    env_temp = ap_get_remote_logname(r);
+    if (env_temp) {
+        apr_table_addn(e, "REMOTE_IDENT", apr_pstrdup(r->pool, env_temp));
     }
 
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
-        if (r->prev->args) {
-            apr_table_addn(e, "REDIRECT_QUERY_STRING", r->prev->args);
-        }
-        if (r->prev->uri) {
-            apr_table_addn(e, "REDIRECT_URL", r->prev->uri);
-        }
+        add_unless_null(e, "REDIRECT_QUERY_STRING", r->prev->args);
+        add_unless_null(e, "REDIRECT_URL", r->prev->uri);
     }
 
     if (e != r->subprocess_env) {
