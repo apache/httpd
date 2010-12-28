@@ -3016,10 +3016,10 @@ directory</description>
     <code>-</code> are removed from the options currently in
     force. </p>
 
-    <note type="warning"><title>Warning</title>
+    <note><title>Note</title>
     <p>Mixing <directive>Options</directive> with a <code>+</code> or
-    <code>-</code> with those without is not valid syntax, and is likely
-    to cause unexpected results.</p>
+    <code>-</code> with those without is not valid syntax, and will be
+    rejected during server startup by the syntax check with an abort.</p>
     </note>
 
     <p>For example, without any <code>+</code> and <code>-</code> symbols:</p>
