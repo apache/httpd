@@ -1907,8 +1907,7 @@ Apache httpd 2.3.2 and later</td></tr>
     occupied waiting on connections with idle clients.</p>
 
     <p>In a name-based virtual host context, the value of the first
-    defined virtual host (the default host) in a set of <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code> will be used.
-    The other values will be ignored.</p>
+    defined virtual host best matching the local IP and port will be used.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2151,7 +2150,7 @@ will be accepted from the client</td></tr>
      <div class="warning"><h3>Warning</h3>
      <p> When name-based virtual hosting is used, the value for this
      directive is taken from the default (first-listed) virtual host for the
-     <code class="directive">NameVirtualHost</code> the connection was mapped to.</p>
+     local IP and port combination</p>.
      </div>
 
 
@@ -2195,10 +2194,9 @@ client</td></tr>
 
     <div class="warning"><h3>Warning</h3>
     <p> When name-based virtual hosting is used, the value for this
-    directive is taken from the default (first-listed) virtual host for the
-    <code class="directive">NameVirtualHost</code> the connection was mapped to.</p>
+    directive is taken from the default (first-listed) virtual host best 
+    matching the current IP address and port combination.</p>
     </div>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2240,8 +2238,8 @@ from the client</td></tr>
 
     <div class="warning"><h3>Warning</h3>
     <p> When name-based virtual hosting is used, the value for this
-    directive is taken from the default (first-listed) virtual host for the
-    <code class="directive">NameVirtualHost</code> the connection was mapped to.</p>
+    directive is taken from the default (first-listed) virtual host best 
+    matching the current IP address and port combination.</p>
     </div>
 
 
@@ -2896,80 +2894,13 @@ hosting</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
 
-<p>A single <code class="directive">NameVirtualHost</code> directive
-identifies a set of identical virtual hosts on which the server will
-further select from on the basis of the <em>hostname</em>
-requested by the client.  The <code class="directive">NameVirtualHost</code>
-directive is a required directive if you want to configure
-<a href="../vhosts/">name-based virtual hosts</a>.</p>
+<p>Prior to 2.3.11, <code class="directive">NameVirtualHost</code> was required
+to instruct the server that a particular IP address and port combination
+was usable as a name-based virtual host.  In 2.3.11 and later,
+any time an IP address and port combination is used in multiple virtual
+hosts, name-based virtual hosting is automatically enabled for that address.</p>
 
-<p>This directive, and the corresponding <code class="directive">VirtualHost</code>,
-<em>must</em> be qualified with a port number if the server supports both HTTP
-and HTTPS connections.</p>
-
-<p>Although <var>addr</var> can be a hostname, it is recommended
-that you always use an IP address or a wildcard.  A wildcard
-NameVirtualHost matches only virtualhosts that also have a literal wildcard
-as their argument.</p>
-
-<p>In cases where a firewall or other proxy receives the requests and
-forwards them on a different IP address to the server, you must specify the
-IP address of the physical interface on the machine which will be
-servicing the requests. </p>
-
-<p> In the example below, requests received on interface 192.0.2.1 and port 80
-will only select among the first two virtual hosts. Requests received on
-port 80 on any other interface will only select among the third and fourth
-virtual hosts. In the common case where the interface isn't important
-to the mapping, only the "*:80" NameVirtualHost and VirtualHost directives
-are necessary.</p>
-
-   <div class="example"><p><code>
-      NameVirtualHost 192.0.2.1:80<br />
-      NameVirtualHost *:80<br /><br />
-
-      &lt;VirtualHost 192.0.2.1:80&gt;<br />
-      &nbsp; ServerName namebased-a.example.com<br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost 192.0.2.1:80&gt;<br />
-      &nbsp; Servername namebased-b.example.com<br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost *:80&gt;<br />
-      &nbsp; ServerName namebased-c.example.com <br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost *:80&gt;<br />
-      &nbsp; ServerName namebased-d.example.com <br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-
-    </code></p></div>
-
-    <p>If no matching virtual host is found, then the first listed
-    virtual host that matches the IP address and port will be used.</p>
-
-
-    <p>IPv6 addresses must be enclosed in square brackets, as shown
-    in the following example:</p>
-
-    <div class="example"><p><code>
-      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
-    </code></p></div>
-
-    <div class="note"><h3>Argument to <code class="directive">&lt;VirtualHost&gt;</code>
-      directive</h3>
-      <p>Note that the argument to the <code class="directive">&lt;VirtualHost&gt;</code> directive must
-      exactly match the argument to the <code class="directive">NameVirtualHost</code> directive.</p>
-
-      <div class="example"><p><code>
-        NameVirtualHost 192.0.2.2:80<br />
-        &lt;VirtualHost 192.0.2.2:80&gt;<br />
-        # ...<br />
-        &lt;/VirtualHost&gt;<br />
-      </code></p></div>
-    </div>
+<p>This directive currently has no effect.</p>
 
 <h3>See also</h3>
 <ul>
@@ -3534,7 +3465,6 @@ itself</td></tr>
     documentation</a></li>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><code class="directive"><a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code></li>
-<li><code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code></li>
 <li><code class="directive"><a href="#serveralias">ServerAlias</a></code></li>
 </ul>
 </div>
@@ -4017,7 +3947,8 @@ hostname or IP address</td></tr>
     used. When the server receives a request for a document on a
     particular virtual host, it uses the configuration directives
     enclosed in the <code class="directive">&lt;VirtualHost&gt;</code>
-    section. <var>Addr</var> can be:</p>
+    section. <var>Addr</var> can be any of the following, optionally followed by
+    a colon and a port number (or *):</p>
 
     <ul>
       <li>The IP address of the virtual host;</li>
@@ -4025,15 +3956,15 @@ hostname or IP address</td></tr>
       <li>A fully qualified domain name for the IP address of the
       virtual host (not recommended);</li>
 
-      <li>The character <code>*</code>, which is used only in combination with
-      <code>NameVirtualHost *</code> to match all IP addresses; or</li>
+      <li>The character <code>*</code>, which acts as a wildcard and matches 
+      any IP address.</li>
+  
+      <li>The string <code>_default_</code>, which is an alias for <code>*</code></li>
 
-      <li>The string <code>_default_</code>, which is used only
-      with IP virtual hosting to catch unmatched IP addresses.</li>
     </ul>
 
     <div class="example"><h3>Example</h3><p><code>
-      &lt;VirtualHost 10.1.2.3&gt;<br />
+      &lt;VirtualHost 10.1.2.3:80&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -4050,7 +3981,7 @@ hostname or IP address</td></tr>
     IPv6 example is shown below:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -4076,30 +4007,24 @@ hostname or IP address</td></tr>
     using <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
     </div>
 
-    <p>When using IP-based virtual hosting, the special name
-    <code>_default_</code> can be specified in
-    which case this virtual host will match any IP address that is
-    not explicitly listed in another virtual host. In the absence
-    of any <code>_default_</code> virtual host the "main" server config,
-    consisting of all those definitions outside any VirtualHost
-    section, is used when no IP-match occurs.</p>
-
-    <p>You can specify a <code>:port</code> to change the port that is
-    matched. If unspecified then it defaults to the same port as the
-    most recent <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
-    statement of the main server. You may also specify <code>:*</code>
-    to match all ports on that address. (This is recommended when used
-    with <code>_default_</code>.)</p>
-
     <p>A <code class="directive"><a href="#servername">ServerName</a></code> should be
     specified inside each <code class="directive">&lt;VirtualHost&gt;</code> block. If it is absent, the
     <code class="directive"><a href="#servername">ServerName</a></code> from the "main"
     server configuration will be inherited.</p>
 
-    <p>If no matching virtual host is found, then the first listed
-    virtual host that matches the IP address will be used.  As a
-    consequence, the first listed virtual host is the default virtual
-    host.</p>
+    <p>When a request is received, the server first maps it to the best matching 
+    <code class="directive">&lt;VirtualHost&gt;</code> based on the local 
+    IP address and port combination only.  Non-wildcards have a higher 
+    precedence. if no match based on IP and port occurs at all, the 
+    "main" server configuration is used.</p>
+    
+    <p>If multiple virtual hosts contain the best matching IP address and port,
+    the server selects from these virtual hosts the best match based on the 
+    requested hostname.  If no matching name-based virtual host is found, 
+    then the first listed virtual host that matched the IP address will be 
+    used.  As a consequence, the first listed virtual for a given IP address
+    and port combination is default virtual host for that IP and port 
+    combination.</p>
 
     <div class="warning"><h3>Security</h3>
     <p>See the <a href="../misc/security_tips.html">security tips</a>
