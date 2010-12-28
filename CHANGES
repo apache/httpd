@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.11
 
+  *) core: Overlapping virtual host address/port combinations  now implicitly 
+     enable name-based virtual hosting for that address.  The NameVirtualHost
+     directive has no effect, and _default_ is interpreted the same as "*". 
+     [Eric Covener]
+
   *) core: In the absence of any Options directives, the default is now
      "FollowSymlinks" instead of "All".  [Igor Galić]
 
