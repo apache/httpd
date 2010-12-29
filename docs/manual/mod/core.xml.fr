@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1052419 -->
+<!-- English Revision : 1053375 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -677,7 +677,7 @@ host</context>
       </indent>
       &lt;/Directory&gt;<br />
       <br />
-      &lt;Directory /home/&gt;<br />
+      &lt;Directory /home&gt;<br />
       <indent>
         AllowOverride FileInfo<br />
       </indent>
@@ -2091,11 +2091,9 @@ possible depuis les versions 2.3.2 et sup&eacute;rieures d'Apache httpd</compati
     est &eacute;l&eacute;v&eacute;, plus nombreux seront les processus serveur en attente de
     requ&ecirc;tes de la part de clients inactifs.</p>
 
-    <p>Dans un contexte de serveur virtuel &agrave; base de nom, c'est le d&eacute;lai
-    du premier serveur virtuel d&eacute;fini (le serveur par d&eacute;faut) parmi un
-    ensemble de directives <directive
-    module="core">NameVirtualHost</directive> qui sera utilis&eacute;. Les
-    autres valeurs seront ignor&eacute;es.</p>
+    <p>Dans un contexte de serveur virtuel &agrave; base de nom, c'est
+    la valeur de la paire adresse IP/port du serveur virtuel qui
+    correspond le mieux qui sera utilis&eacute;e.</p>
 </usage>
 </directivesynopsis>
 
@@ -2363,8 +2361,7 @@ requ&ecirc;te HTTP</description>
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
      cette directive est extraite du serveur virtuel par d&eacute;faut (le
-     premier de la liste) pour lequel la connexion correspondait &agrave; la
-     directive <directive>NameVirtualHost</directive>.</p>
+     premier de la liste) pour la paire adresse IP/port.</p>
     </note>
 
 </usage>
@@ -2410,10 +2407,9 @@ requ&ecirc;te HTTP</description>
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
      cette directive est extraite du serveur virtuel par d&eacute;faut (le
-     premier de la liste) pour lequel la connexion correspondait &agrave; la
-     directive <directive>NameVirtualHost</directive>.</p>
+     premier de la liste) pour lequel la paire adresse IP/port
+     correspond le mieux.</p>
     </note>
-
 </usage>
 </directivesynopsis>
 
@@ -2457,8 +2453,8 @@ HTTP</description>
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
      cette directive est extraite du serveur virtuel par d&eacute;faut (le
-     premier de la liste) pour lequel la connexion correspondait &agrave; la
-     directive <directive>NameVirtualHost</directive>.</p>
+     premier de la liste) pour lequel la paire adresse IP/port
+     correspond le mieux.</p>
     </note>
 
 </usage>
@@ -3083,7 +3079,7 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
     sera <code>/var/httpd/locks/mpm-accept.12345</code>.</p>
 
     <note type="warning"><title>S&eacute;curit&eacute;</title>
-    <p>Il est d&eacute;conseill&eacute; d'<em>&eacute;viter</em> de placer les fichiers mutex
+    <p>Il est conseill&eacute; d'<em>&eacute;viter</em> de placer les fichiers mutex
     dans un r&eacute;pertoire o&ugrave; tout le monde peut &eacute;crire comme
     <code>/var/tmp</code>, car quelqu'un pourrait initier une attaque
     par d&eacute;ni de service et emp&ecirc;cher le serveur de d&eacute;marrer en cr&eacute;ant un
@@ -3175,86 +3171,15 @@ nom</description>
 
 <usage>
 
-<p>Une seule directive <directive>NameVirtualHost</directive> permet
-d'identifier un ensemble de serveurs virtuels identiques que le serveur
-va s&eacute;lectionner en fonction du <em>nom d'h&ocirc;te</em> sp&eacute;cifi&eacute; par le
-client. La directive <directive>NameVirtualHost</directive> est
-obligatoire si vous souhaitez configurer des <a
-href="../vhosts/">serveurs virtuels &agrave; base de nom</a>.</p>
-
-<p>Cette directive, ainsi que les directives <directive
->VirtualHost</directive> correspondantes, <em>doit</em> comporter un
-num&eacute;ro de port si le serveur supporte les connexions HTTP et HTTPS.</p>
-
-<p>Bien que <var>adresse</var> puisse contenir un nom d'h&ocirc;te, il est
-recommand&eacute; d'utiliser plut&ocirc;t une adresse IP ou un nom d'h&ocirc;te avec
-caract&egrave;res g&eacute;n&eacute;riques. Une directive NameVirtualHost contenant des
-caract&egrave;res g&eacute;n&eacute;riques ne peut correspondre qu'&agrave; des serveurs virtuels
-qui contiennent aussi des caract&egrave;res g&eacute;n&eacute;riques dans leur argument.</p>
-
-<p>Dans les cas o&ugrave; un pare-feu ou autre mandataire re&ccedil;oit les requ&ecirc;tes
-et les redirige sous une adresse IP diff&eacute;rente vers le serveur, vous
-devez sp&eacute;cifier l'adresse IP de l'interface physique de la machine qui
-va servir les requ&ecirc;tes.</p>
-
-<p>Dans l'exemple ci-dessous, les requ&ecirc;tes re&ccedil;ues sur l'interface
-192.0.2.1 et le port 80 ne vont d&eacute;clencher une s&eacute;lection que parmi les
-deux premiers serveurs virtuels. Les requ&ecirc;tes re&ccedil;ues sur le port 80 et
-sur toute interface ne vont d&eacute;clencher une s&eacute;lection que parmi les
-troisi&egrave;me et quatri&egrave;me serveurs virtuels. D'une mani&egrave;re g&eacute;n&eacute;rale,
-lorsque l'interface ne constitue pas un crit&egrave;re important de s&eacute;lection,
-la valeur "*:80" suffit pour les directives NameVirtualHost et
-VirtualHost.</p>
-
-<example>
-      NameVirtualHost 192.0.2.1:80<br />
-      NameVirtualHost *:80<br /><br />
-
-      &lt;VirtualHost 192.0.2.1:80&gt;<br />
-      &nbsp; ServerName namebased-a.example.com<br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost 192.0.2.1:80&gt;<br />
-      &nbsp; Servername namebased-b.example.com<br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost *:80&gt;<br />
-      &nbsp; ServerName namebased-c.example.com <br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-      &lt;VirtualHost *:80&gt;<br />
-      &nbsp; ServerName namebased-d.example.com <br />
-      &lt;/VirtualHost&gt;<br />
-      <br />
-
-   </example>
-
-   <p>Si aucun serveur virtuel ne correspond, c'est le premier serveur
-   virtuel correspondant &agrave; l'adresse IP qui sera utilis&eacute;.</p>
-
-    <p>Les adresses IPv6 doivent &ecirc;tre entour&eacute;es de crochets, comme dans
-    l'exemple suivant :</p>
-
-    <example>
-      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
-    </example>
-
-
-
-    <note><title>Argument de la directive <directive
-    type="section">VirtualHost</directive></title>
-      <p>Notez que l'argument de la directive <directive
-       type="section">VirtualHost</directive> doit &ecirc;tre identique &agrave;
-       l'argument de la directive <directive
-      >NameVirtualHost</directive>.</p>
-
-      <example>
-        NameVirtualHost 192.0.2.2:80<br />
-        &lt;VirtualHost 192.0.2.2:80&gt;<br />
-        # ...<br />
-        &lt;/VirtualHost&gt;<br />
-      </example>
-    </note>
+    <p>Avant la version 2.3.11, il &eacute;tait n&eacute;cessaire de d&eacute;finir une
+    directive <directive>NameVirtualHost</directive> pour indiquer au
+    serveur qu'une paire adresse IP/port particuli&egrave;re pouvait &ecirc;tre
+    utilis&eacute;e comme serveur virtuel &agrave; base de nom. Depuis la version
+    2.3.11, chaque fois qu'une paire adresse IP/port est utilis&eacute;e dans
+    plusieurs serveurs virtuels, l'h&eacute;bergement virtuel &agrave; base de nom est
+    automatiquement activ&eacute; pour cette adresse.</p>
+    
+    <p>Cette directive n'a actuellement plus aucun effet.</p>
 </usage>
 
 <seealso><a href="../vhosts/">Documentation sur les serveurs
@@ -3387,11 +3312,12 @@ host</context>
     <code>-</code> est supprim&eacute;e de la liste des options courantes de la
     m&ecirc;me mani&egrave;re.</p>
 
-    <note type="warning"><title>Avertissement</title>
+    <note><title>Note</title>
     <p>M&eacute;langer des <directive>Options</directive> avec <code>+</code>
     ou <code>-</code> avec des <directive>Options</directive> sans
     <code>+</code> ou <code>-</code> constitue une erreur de syntaxe, et
-    peut r&eacute;sulter en des comportements inattendus.</p>
+    la v&eacute;rification de la syntaxe au cours du d&eacute;marrage du serveur fera
+    &eacute;chouer ce dernier.</p>
     </note>
 
     <p>Par exemple, sans aucun symbole <code>+</code> et <code>-</code>
@@ -3869,7 +3795,6 @@ le serveur HTTP Apache</a></seealso>
 du serveur HTTP Apache</a></seealso>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
-<seealso><directive module="core">NameVirtualHost</directive></seealso>
 <seealso><directive module="core">ServerAlias</directive></seealso>
 </directivesynopsis>
 
@@ -4382,7 +4307,8 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     pour un document h&eacute;berg&eacute; par un serveur virtuel particulier, il
     applique les directives de configuration rassembl&eacute;es dans la section
     <directive type="section">VirtualHost</directive>. <var>adresse
-    IP</var> peut &ecirc;tre :</p>
+    IP</var> peut &ecirc;tre une des entit&eacute;s suivantes, &eacute;ventuellement suivies
+    d'un caract&egrave;re ':' et d'un num&eacute;ro de port (ou *) :</p>
 
     <ul>
       <li>L'adresse IP du serveur virtuel ;</li>
@@ -4390,18 +4316,16 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
       <li>Un nom de domaine enti&egrave;rement qualifi&eacute; correspondant &agrave;
       l'adresse IP du serveur virtuel (non recommand&eacute;) ;</li>
 
-      <li>Le caract&egrave;re <code>*</code>, qui n'est utilis&eacute; qu'en
-      combinaison avec <code>NameVirtualHost *</code> pour intercepter
-      toutes les adresses IP ; ou</li>
+      <li>Le caract&egrave;re <code>*</code>, qui agit comme un
+      caract&egrave;re g&eacute;n&eacute;rique, et correspond &agrave; toute adresse IP.</li>
 
-      <li>La cha&icirc;ne de caract&egrave;res <code>_default_</code>, qui n'est
-      utilis&eacute;e qu'avec l'h&eacute;bergement virtuel &agrave; base d'adresse IP pour
-      intercepter les adresses IP qui ne correspondent &agrave; aucun serveur
-      virtuel.</li>
+      <li>La cha&icirc;ne <code>_default_</code>, dont la signification est
+      identique &agrave; celle du caract&egrave;re <code>*</code></li>
+
     </ul>
 
     <example><title>Exemple</title>
-      &lt;VirtualHost 10.1.2.3&gt;<br />
+      &lt;VirtualHost 10.1.2.3:80&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -4419,7 +4343,7 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     :</p>
 
     <example>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -4445,25 +4369,7 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     dans la liste des adresses pr&eacute;cis&eacute;es par la directive <directive
     module="mpm_common">Listen</directive>.</p>
     </note>
-
-    <p>Avec l'h&eacute;bergement virtuel &agrave; base d'adresse IP, on peut utiliser
-    le nom sp&eacute;cial <code>_default_</code>, auquel cas le serveur virtuel
-    consid&eacute;r&eacute; interceptera toute adresse IP qui n'est pas explicitement
-    associ&eacute;e &agrave; un autre serveur virtuel. En l'absence de serveur virtuel
-    associ&eacute; &agrave; <code>_default_</code>, et si l'adresse IP demand&eacute;e ne
-    correspond &agrave; aucun serveur virtuel, c'est la configuration du
-    serveur "principal" qui sera utilis&eacute;e, c'est &agrave; dire l'ensemble des
-    d&eacute;finitions situ&eacute;es en dehors de toute section VirtualHost.</p>
-
-    <p>Vous pouvez sp&eacute;cifier <code>:port</code> pour modifier le port du
-    serveur virtuel. S'il n'est pas sp&eacute;cifi&eacute;, sa valeur par d&eacute;faut
-    correspond &agrave; celle qui est d&eacute;finie par la derni&egrave;re directive
-    <directive module="mpm_common">Listen</directive> du serveur
-    principal. Vous pouvez aussi sp&eacute;cifier <code>:*</code> pour accepter
-    tous les ports associ&eacute;s &agrave; l'adresse du serveur virtuel (c'est une
-    configuration recommand&eacute;e lorsqu'on utilise
-    <code>_default_</code>).</p>
-
+    
     <p>Tout bloc <directive
     type="section">VirtualHost</directive> doit comporter une directive
     <directive module="core">ServerName</directive>. Dans le cas
@@ -4471,10 +4377,23 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     <directive module="core">ServerName</directive> issue de la
     configuration du serveur principal.</p>
 
-    <p>Si aucun serveur virtuel ne correspond, c'est le premier serveur
-    virtuel correspondant &agrave; l'adresse IP qui sera utilis&eacute;. Par
-    cons&eacute;quent, le premier serveur virtuel d&eacute;fini est le serveur virtuel
-    par d&eacute;faut.</p>
+    <p>A l'arriv&eacute;e d'une requ&ecirc;te, le serveur tente de la
+    faire prendre en compte par la section <directive
+    type="section">VirtualHost</directive> qui correspond le mieux en ne
+    se basant que sur la paire adresse IP/port. Les cha&icirc;nes sans
+    caract&egrave;res g&eacute;n&eacute;riques l'emportent sur celles qui en contiennent. Si
+    aucune correspondance du point de vue de l'adresse IP/port n'est
+    trouv&eacute;e, c'est la configuration du serveur "principal" qui sera
+    utilis&eacute;e.</p>
+    
+    <p>Si plusieurs serveurs virtuels correspondent du point de vue de
+    l'adresse IP/port, le serveur s&eacute;lectionne celui qui correspond le
+    mieux du point de vue du nom d'h&ocirc;te de la requ&ecirc;te. Si aucune
+    correspondance du point de vue du nom d'h&ocirc;te n'est trouv&eacute;e, c'est le
+    premier serveur virtuel dont l'adresse IP/port correspond qui sera
+    utilis&eacute;. Par voie de cons&eacute;quence, le premier serveur virtuel
+    comportant une certaine paire adresse IP/port est le serveur virtuel
+    par d&eacute;faut pour cette paire adresse IP/port.</p>
 
     <note type="warning"><title>S&eacute;curit&eacute;</title>
     <p>Voir le document sur les <a

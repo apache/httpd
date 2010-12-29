@@ -299,8 +299,8 @@ headers</description>
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
-<compatibility>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10</compatibility>
 <override>FileInfo</override>
+<compatibility>Default condition was temporarily changed to "always" in 2.3.9 and 2.3.10</compatibility>
 
 <usage>
     <p>This directive can replace, merge or remove HTTP response

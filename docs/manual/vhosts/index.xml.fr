@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1042758:1053231 (outdated) -->
+<!-- English Revision: 1053231 -->
 <!-- french translation by alain B, review by Vincent Deffontaines -->
 <!-- Updated by Lucien Gentis -->
 
@@ -84,7 +84,6 @@
     <ul>
       <li><directive type="section"
            module="core">VirtualHost</directive></li>
-      <li><directive module="core">NameVirtualHost</directive></li>
       <li><directive module="core">ServerName</directive></li>
       <li><directive module="core">ServerAlias</directive></li>
       <li><directive module="core">ServerPath</directive></li>
