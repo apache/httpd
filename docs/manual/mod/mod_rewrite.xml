@@ -503,6 +503,10 @@ RewriteRule ^index\.html$  newsite.html
         </li>
       </ul>
 
+      <p>If the <em>TestString</em> has the special value <code>expr</code>, the
+      <em>CondPattern</em> will be treated as a
+      <a href="../expr.html">ap_expr</a>.</p>
+
       <p>Other things you should be aware of:</p>
 
       <ol>
@@ -754,6 +758,12 @@ RewriteRule ^index\.html$  newsite.html
               also be prefixed by an exclamation mark ('!') to
               negate their meaning.
 </note>
+        </li>
+
+	<li>
+           <p>If the <em>TestString</em> has the special value <code>expr</code>, the
+           <em>CondPattern</em> will be treated as a
+           <a href="../expr.html">ap_expr</a>.</p>
         </li>
 
         <li>You can also set special flags for

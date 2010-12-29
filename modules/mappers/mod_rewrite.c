@@ -99,6 +99,7 @@
 #include "mod_ssl.h"
 
 #include "mod_rewrite.h"
+#include "ap_expr.h"
 
 static ap_dbd_t *(*dbd_acquire)(request_rec*) = NULL;
 static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
@@ -272,16 +273,18 @@ typedef enum {
     CONDPAT_INT_LE,
     CONDPAT_INT_EQ,
     CONDPAT_INT_GT,
-    CONDPAT_INT_GE
+    CONDPAT_INT_GE,
+    CONDPAT_AP_EXPR
 } pattern_type;
 
 typedef struct {
-    char        *input;   /* Input string of RewriteCond   */
-    char        *pattern; /* the RegExp pattern string     */
-    ap_regex_t  *regexp;  /* the precompiled regexp        */
-    int          flags;   /* Flags which control the match */
-    pattern_type ptype;   /* pattern type                  */
-    int          pskip;   /* back-index to display pattern */
+    char           *input;   /* Input string of RewriteCond   */
+    char           *pattern; /* the RegExp pattern string     */
+    ap_regex_t     *regexp;  /* the precompiled regexp        */
+    ap_expr_info_t *expr;    /* the compiled ap_expr          */
+    int             flags;   /* Flags which control the match */
+    pattern_type    ptype;   /* pattern type                  */
+    int             pskip;   /* back-index to display pattern */
 } rewritecond_entry;
 
 /* single linked list for env vars and cookies */
@@ -3234,7 +3237,10 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
 
     /* determine the pattern type */
     newcond->ptype = CONDPAT_REGEX;
-    if (*a2 && a2[1]) {
+    if (strcasecmp(a1, "expr") == 0) {
+        newcond->ptype = CONDPAT_AP_EXPR;
+    }
+    else if (*a2 && a2[1]) {
         if (!a2[2] && *a2 == '-') {
             switch (a2[1]) {
             case 'f': newcond->ptype = CONDPAT_FILE_EXISTS; break;
@@ -3312,6 +3318,15 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         }
 
         newcond->regexp  = regexp;
+    }
+    else if (newcond->ptype == CONDPAT_AP_EXPR) {
+        newcond->expr = ap_expr_parse_cmd(cmd, a2, &err, NULL);
+        if (err)
+            return apr_psprintf(cmd->pool, "RewriteCond: cannot compile "
+                                "expression \"%s\": %s", a2, err);
+        newcond->expr->module_index = rewrite_module.module_index;
+        if (newcond->flags & CONDFLAG_NOVARY)
+            newcond->expr->flags |= AP_EXPR_FLAGS_DONT_VARY;
     }
 
     return NULL;
@@ -3679,12 +3694,15 @@ static APR_INLINE int compare_lexicography(char *a, char *b)
  */
 static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 {
-    char *input = do_expand(p->input, ctx, NULL);
+    char *input;
     apr_finfo_t sb;
     request_rec *rsub, *r = ctx->r;
     ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
     int rc = 0;
     int basis;
+
+    if (p->ptype != CONDPAT_AP_EXPR)
+        input = do_expand(p->input, ctx, NULL);
 
     switch (p->ptype) {
     case CONDPAT_FILE_EXISTS:
@@ -3799,6 +3817,24 @@ test_str_l:
 
     case CONDPAT_INT_EQ: rc = (atoi(input) == atoi(p->pattern)); break;
 
+    case CONDPAT_AP_EXPR:
+        {
+            const char *err, *source;
+            rc = ap_expr_exec_re(r, p->expr, AP_MAX_REG_MATCH, regmatch,
+                                 &source, &err);
+            if (rc < 0 || err) {
+                rewritelog((r, 1, ctx->perdir,
+                            "RewriteCond: expr='%s' evaluation failed: %s",
+                            p->pattern - p->pskip, err));
+                rc = 0;
+            }
+            /* update briRC backref info */
+            if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
+                ctx->briRC.source = source;
+                memcpy(ctx->briRC.regmatch, regmatch, sizeof(regmatch));
+            }
+        }
+        break;
     default:
         /* it is really a regexp pattern, so apply it */
         rc = !ap_regexec(p->regexp, input, AP_MAX_REG_MATCH, regmatch, 0);
