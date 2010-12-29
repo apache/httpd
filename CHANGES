@@ -76,6 +76,9 @@ Changes with Apache 2.3.9
      Fix a denial of service attack against mod_reqtimeout.
      [Stefan Fritsch]
 
+  *) mod_headers: Change default first argument of Header directive
+     from "onsuccess" to "always". [Eric Covener]
+
   *) mod_include: Add the onerror attribute to the include element,
      allowing an URL to be specified to include on error. [Graham
      Leggett]
