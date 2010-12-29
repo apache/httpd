@@ -37,7 +37,7 @@ Protokolle</description>
 
 <usage>
     <p>Diese Direktive aktiviert betriebssystemspezifische Optimierungen
-    f&uuml;r lauschende Sockets anhand des Protokolltyps. Die grundlegende
+    f&uuml;r lauschende Sockets anhand des Protokolltyps. Der grundlegende
     Ansatz ist, dass der Kernel das Socket nicht an den Serverprozess
     &uuml;bergibt, bis entweder Daten verf&uuml;gbar sind oder eine komplette
     HTTP-Anfrage zwischengespeichert wurde. Derzeit werden
