@@ -350,8 +350,7 @@ typedef struct {
  * substitution of backreferences
  */
 typedef struct backrefinfo {
-    char *source;
-    int nsub;
+    const char *source;
     ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
 } backrefinfo;
 
@@ -3807,7 +3806,6 @@ test_str_l:
         /* update briRC backref info */
         if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
             ctx->briRC.source = input;
-            ctx->briRC.nsub   = p->regexp->re_nsub;
             memcpy(ctx->briRC.regmatch, regmatch, sizeof(regmatch));
         }
         break;
@@ -3928,7 +3926,6 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     }
     else {
         ctx->briRR.source = apr_pstrdup(r->pool, ctx->uri);
-        ctx->briRR.nsub   = p->regexp->re_nsub;
         memcpy(ctx->briRR.regmatch, regmatch, sizeof(regmatch));
     }
 
