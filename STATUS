@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR50332
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1039304
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26374
-     rpluem says: -1: Trunk patch 2.2.x patch differ significantly. This needs to
+     rpluem says: -1: Trunk patch and 2.2.x patch differ significantly. This needs to
                       be fixed or clarified first.
 
   * mod_ssl: Correctly read full lines in input filter when the line is
