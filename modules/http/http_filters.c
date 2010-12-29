@@ -1037,7 +1037,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     }
 
     if (conf->trace_enable == AP_TRACE_EXTENDED)
-        /* XX should be = REQUEST_CHUNKED_PASS */
+        /* XXX: should be = REQUEST_CHUNKED_PASS */
         body = REQUEST_CHUNKED_DECHUNK;
     else
         body = REQUEST_NO_BODY;

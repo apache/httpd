@@ -109,7 +109,7 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     alias_entry *entries = (alias_entry *)conf->aliases->elts;
     int i;
 
-    /* XX real can NOT be relative to DocumentRoot here... compat bug. */
+    /* XXX: real can NOT be relative to DocumentRoot here... compat bug. */
 
     if (use_regex) {
         new->regexp = ap_pregcomp(cmd->pool, fake, AP_REG_EXTENDED);

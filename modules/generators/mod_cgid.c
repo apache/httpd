@@ -1609,7 +1609,7 @@ static int cgid_handler(request_rec *r)
             return OK;
         }
         else if (location && r->status == 200) {
-            /* XX Note that if a script wants to produce its own Redirect
+            /* XXX: Note that if a script wants to produce its own Redirect
              * body, it now has to explicitly *say* "Status: 302"
              */
             discard_script_output(bb);
