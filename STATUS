@@ -89,14 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Make sure that we never allow a 304 Not Modified response
-     that we asked for to leak to the client should the 304 response be
-     uncacheable.
-     PR45341
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
-     2.2.x patch: trunk patch works
-     +1: minfrin, jim, covener
-
    * mod_mem_cache: add a debug msg when a streaming response exceeds 
      MCacheMaxStreamingBuffer, since mod_cache will follow up with a scary 
      'memory allocation failed' debug message. PR 49604
@@ -224,6 +216,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem,
+
+   * mod_cache: Make sure that we never allow a 304 Not Modified response
+     that we asked for to leak to the client should the 304 response be
+     uncacheable.
+     PR45341
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
+     2.2.x patch: trunk patch works
+     +1: minfrin, jim, covener
+     rpluem says: Trunks patch works, but fails to compile in 2.2.x.
 
 PATCHES/ISSUES THAT ARE STALLED
 
