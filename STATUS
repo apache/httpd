@@ -89,15 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Check the request to determine whether we are allowed
-     to return cached content at all, and respect a "Cache-Control:
-     no-cache" header from a client. Previously, "no-cache" would
-     behave like "max-age=0".
-     PR49200
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=992625
-     2.2.x patch: trunk patch works
-     +1: minfrin, jim
-     +1 covener (needs r996311 MMN bump)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
