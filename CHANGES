@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_headers: Restore the 2.3.8 and earlier default for the first 
+     argument of the Header directive ("onsuccess").  [Eric Covener]
+
   *) core: Disallow the mixing of relative and absolute Options PR 33708.
      [Sönke Tesch <st kino-fahrplan.de>]
 

@@ -300,7 +300,6 @@ headers</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Default condition changes in 2.3.9 from "onsuccess" to "always"</compatibility>
 
 <usage>
     <p>This directive can replace, merge or remove HTTP response
@@ -308,16 +307,18 @@ headers</description>
     and output filters are run, allowing outgoing headers to be
     modified.</p>
 
-    <p> In 2.3.9 and later, the default condition is "always", meaning this directive 
-    acts without regard for the response status code.  In 2.3.8 and earlier,
-    "onsuccess" is the default, meaning headers are only modified for <code>2<var>xx</var>
-    </code> responses.</p>
+    <p>By default, this directive only affects successful responses (responses
+    in the <code>2<var>xx</var></code> range).  The optional <var>condition</var>
+    can be either <code>onsuccess</code> (default) or <code>always</code> (all
+    status codes, including successful responses).  A value of <code>always</code>
+    may be needed to influence headers set by some internal modules even for
+    successful responses, and is always needed to affect non-<code>2<var>xx</var></code> 
+    responses such as redirects or client errors.</p>
 
-    <p>An effective value of <code>always</code> may be needed to influence 
-    headers set by some internal modules (such as <module>mod_cgi</module>) 
-    even for successful responses, and is always needed to affect 
-    non-<code>2<var>xx</var></code> responses such as redirects or client 
-    errors.</p>
+    <note><title>CGI</title>
+      <p>To manipulate headers set by CGI scripts, it is necessary to specify 
+      <code>always</code> for the first parameter.</p>
+    </note>
 
     <p>The action it performs is determined by the first
     argument (second argument if a <var>condition</var> is specified).
