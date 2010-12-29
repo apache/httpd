@@ -25,8 +25,6 @@
 <a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Le principe des <cite>Serveurs Virtuels</cite> consiste à 
@@ -78,7 +76,6 @@
 
     <ul>
       <li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li>
-      <li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li>
       <li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li>
