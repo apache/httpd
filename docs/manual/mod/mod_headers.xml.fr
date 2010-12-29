@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1031670 -->
+<!-- English Revision : 1053526 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -328,8 +328,8 @@ tardif</title>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>La condition par d&eacute;faut passe de "onsuccess" &agrave; "always" &agrave;
-partir de la version 2.3.9</compatibility>
+<compatibility>La condition par d&eacute;faut est temporairement pass&eacute;e
+&agrave; "always" dans les version 2.3.9 et 2.3.10</compatibility>
 
 <usage>
     <p>Cette directive permet de remplacer, fusionner, ou
@@ -338,20 +338,38 @@ partir de la version 2.3.9</compatibility>
     s'ex&eacute;cutent, ce qui permet la modification des en-t&ecirc;tes
     sortants.</p>
 
-    <p>A partir de la version 2.3.9, la condition par d&eacute;faut est
-    "always", ce qui implique que cette directive agit sans tenir compte
-    du code d'&eacute;tat de la r&eacute;ponse. Dans les versions 2.3.8 et
-    ant&eacute;rieures, "onsuccess" &eacute;tait la condition par d&eacute;faut, ce qui
-    impliquait que les en-t&ecirc;tes n'&eacute;taient modifi&eacute;s que pour les r&eacute;ponses
-    avec code d'&eacute;tat <code>2<var>xx</var></code>.</p>
+    <p>L'argument optionnel <var>condition</var> permet de d&eacute;terminer
+    sur quelle table interne d'en-t&ecirc;tes de r&eacute;ponses cette directive va
+    op&eacute;rer. D'autres composants du serveur peuvent avoir stock&eacute; leurs
+    en-t&ecirc;tes de r&eacute;ponses dans la table correspondant &agrave;
+    <code>onsuccess</code> ou dans celle correspondant &agrave;
+    <code>always</code>. Dans ce contexte, "Always" fait r&eacute;f&eacute;rence au
+    choix d'envoyer les en-t&ecirc;tes que vous ajoutez aux r&eacute;ponses, qu'elle
+    soient avec succ&egrave;s ou &eacute;chou&eacute;es ; par contre, si votre action est une
+    fonction d'un en-t&ecirc;te existant, vous devrez lire la documentation de
+    mani&egrave;re plus approfondie car dans ce cas, les choses se compliquent.</p>
 
-    <p>Une valeur effective <code>always</code> peut &ecirc;tre n&eacute;cessaire
-    pour forcer la d&eacute;finition des en-t&ecirc;tes par certains modules internes
-    (tels que <module>mod_cgi</module>), m&ecirc;me dans le cas de r&eacute;ponses
-    positives, et doit toujours &ecirc;tre pr&eacute;sente pour modifier les r&eacute;ponses avec un code
-    d'&eacute;tat autre que <code>2<var>xx</var></code>, comme les redirections
-    ou les erreurs clients.</p>
+    <p>Vous pouvez avoir &agrave; changer la valeur par d&eacute;faut
+    <code>onsuccess</code> en <code>always</code> dans des circonstances
+    similaires &agrave; celles expos&eacute;es plus loin. Notez aussi que la r&eacute;p&eacute;tition
+    de cette directive avec les deux conditions peut &ecirc;tre pertinente
+    dans certains sc&eacute;narios, car <code>always</code> n'englobe pas
+    <code>onsuccess</code> en ce qui concerne les en-t&ecirc;tes existants :</p>
 
+    <ul>
+       <li>Vous ajoutez un en-t&ecirc;te &agrave; une r&eacute;ponse &eacute;chou&eacute;e (non-2xx),
+       une redirection par exemple, et dans ce cas, seule la table
+       correspondant &agrave; <code>always</code> est utilis&eacute;e dans la r&eacute;ponse
+       d&eacute;finitive.</li>
+       <li>Vous modifiez ou supprimez un en-t&ecirc;te g&eacute;n&eacute;r&eacute; par un script
+       CGI, et dans ce cas, les scripts CGI sont dans la table
+       correspondant &agrave; <code>always</code> et non dans la table par
+       d&eacute;faut.</li>
+       <li>Vous modifiez ou supprimez un en-t&ecirc;te g&eacute;n&eacute;r&eacute; par tel ou tel
+       composant du serveur, mais cet en-t&ecirc;te n'est pas trouv&eacute; par la
+       condition par d&eacute;faut <code>onsuccess</code>.</li>
+    </ul>
+    
     <p>L'action que cette directive provoque est d&eacute;termin&eacute;e par le
     premier argument (ou par le second argument si une
     <var>condition</var> est sp&eacute;cifi&eacute;e). Il peut prendre

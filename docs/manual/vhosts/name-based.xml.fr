@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1044323:1053231 (outdated) -->
+<!-- English Revision: 1053231 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -69,6 +69,13 @@
         qui ne peuvent pas différencier des domaines autrement que 
         par des adresses IP séparées.</li>
     </ul>
+
+    <p>La sélection du serveur virtuel en fonction du nom s'opère en
+    dehors de l'algorithme de sélection du serveur virtuel en fonction
+    de l'adresse IP, ce qui signifie que les recherches du point de vue
+    du nom du serveur ne s'effectuent que parmi le jeu de serveurs
+    virtuels pour lesquels la correspondance avec la paire adresse
+    IP/port est la plus exacte.</p>
 </section>
 
 <section id="alg"><title>Comment le serveur sélectionne-t-il le serveur
@@ -81,27 +88,26 @@ virtuel basé sur le nom approprié</title>
     limitant aux candidats qui conviennent le mieux du point de vue IP.
     La résolution basée sur IP est sans objet si l'on
     utilise un caractère générique (*) pour l'adresse IP dans
-    toutes les directives NameVirtualHost et VirtualHost.</p>
+    toutes les directives VirtualHost.</p>
     
-    <p>Lorsqu'une requête arrive, le serveur vérifie d'abord si elle
-    utilise une adresse IP qui correspond exactement à une directive
-    <directive module="core">NameVirtualHost</directive>. Si c'est le
-    cas, il va ensuite rechercher toutes les sections <directive
-    type="section" module="core">VirtualHost</directive> comportant une
-    adresse IP correspondante, puis essaiera d'en trouver une dont la
-    directive <directive module="core">ServerName</directive> ou
-    <directive module="core" >ServerAlias</directive> correspond au nom
-    d'hôte de la requête. S'il en trouve une, il utilisera la
-    configuration associée au serveur correspondant.</p>
+    <p>A l'arrivée d'une requête, le serveur va rechercher l'argument de
+    section <directive type="section"
+    module="core">VirtualHost</directive> présentant la meilleure
+    (la plus exacte) correspondance avec la paire adresse IP/port
+    utilisée dans la requête. Si plusieurs serveurs virtuels possèdent
+    cette même paire adresse IP/port, Apache va ensuite comparer les
+    valeurs des directives <directive module="core"
+    >ServerName</directive> et <directive
+    >module="core">ServerAlias</directive> avec le nom de serveur
+    présent dans la requête.</p>
 
-    <section id="defaultvhost"><title>Le serveur virtuel basé sur le nom
-    par défaut pour une directive NameVirtualHost</title>
-    <p>Si aucune directive ServerName ou ServerAlias correspondant au
-    nom d'hôte de la requête n'est trouvée dans l'ensemble des serveurs
-    virtuels correspondant à la directive NameVirtualHost, <strong>c'est
-    le premier serveur virtuel de la liste de ceux qui
-    correspondent à l'adresse IP</strong> qui sera utilisé.</p></section>
-    
+    <section id="defaultvhost"><title>Le serveur virtuel à base de nom
+    par défaut pour une paire adresse IP/port</title>
+    <p>Si aucune directive ServerName ou ServerAlias ne correspond dans
+    la liste de serveurs virtuels présentant la meilleure correspondance
+    du point de vue adresse IP/port, c'est <strong>le premier serveur
+    virtuel de cette liste</strong> qui sera utilisé.</p></section>
+        
 
 </section>
 
@@ -114,42 +120,16 @@ virtuel basé sur le nom approprié</title>
 
     <directivelist>
 	<directive module="core">DocumentRoot</directive>
-	<directive module="core">NameVirtualHost</directive>
 	<directive module="core">ServerAlias</directive>
 	<directive module="core">ServerName</directive>
 	<directive module="core" type="section">VirtualHost</directive>
     </directivelist>
 </related>
 
-    <p>Pour utiliser des serveurs virtuels par nom, vous devez 
-    désigner l'adresse IP (et si possible le port) sur le serveur 
-    devant accepter les requêtes qui doivent être redirigées en fonction
-    du nom d'hôte. Cette 
-    configuration utilise la directive 
-    <directive module="core">NameVirtualHost</directive>. Dans un 
-    cas normal où n'importe quelle adresse IP peut être utilisée, 
-    vous pouvez ajouter <code>*</code> comme argument de la directive 
-    <directive module="core">NameVirtualHost</directive>. Si vous 
-    prévoyez d'utiliser de multiples ports (comme l'emploi de SSL), 
-    vous devez ajouter le port à cet argument tel que 
-    <code>*:80</code>.</p>
     
-    <note><p>Notez que la simple mention d'une adresse 
-    IP dans une directive 
-    <directive module="core">NameVirtualHost</directive> ne suffit 
-    pas à faire <em>écouter</em> le serveur sur cette IP. Consultez 
-    <a href="../bind.html">Définition des adresses et ports qu'utilise
-    Apache</a> pour plus 
-    de détails. Par ailleurs, chaque adresse IP spécifiée ici doit 
-    être associée avec une interface réseau sur le serveur.</p></note>
-
-    <p>L'étape suivante est la création d'une section 
+    <p>La première étape consiste à créer une section 
     <directive type="section" module="core">VirtualHost</directive> 
-    pour chacun des serveurs à créer. L'argument de la directive 
-    <directive type="section" module="core">VirtualHost</directive> 
-    doit être le même que celui de la directive 
-    <directive module="core">NameVirtualHost</directive> 
-    (dans le cas présent "*:80"). Dans chaque section 
+    pour chacun des serveurs à définir. Dans chaque section 
     <directive type="section" module="core">VirtualHost</directive>, 
     vous devez définir au minimum une directive 
     <directive module="core">ServerName</directive> pour désigner 
@@ -184,8 +164,6 @@ virtuel basé sur le nom approprié</title>
     suivante à <code>httpd.conf</code>&nbsp;:</p>
 
     <example>
-        NameVirtualHost *:80<br />
-        <br />
         &lt;VirtualHost *:80&gt;<br />
         <indent>
             # Le premier serveur virtuel de la liste est aussi le
@@ -204,8 +182,7 @@ virtuel basé sur le nom approprié</title>
     </example>
 
     <p>Autrement, vous pouvez spécifiez une adresse IP explicite 
-    à la place de <code>*</code> dans les deux directives 
-    <directive module="core" >NameVirtualHost</directive> et 
+    à la place de <code>*</code> dans la directive
     <directive type="section" module="core" >VirtualHost</directive>. 
     Par exemple, cette méthode est utile si vous souhaitez faire 
     tourner quelques serveurs virtuels par nom sur une même adresse 

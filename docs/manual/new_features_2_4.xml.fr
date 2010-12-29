@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1037335 -->
+<!-- English Revision : 1053353 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -126,10 +126,21 @@ serveur HTTP Apache</title>
       HTTP sans interf&eacute;rer avec l'authentification et l'autorisation.</dd>
 
       <dt><module>mod_include</module></dt>
-
       <dd>Support de l'attribut 'onerror' dans un &eacute;l&eacute;ment 'include',
       permettant de servir un message d'erreur personnalis&eacute; &agrave; la place
       du message d'erreur par d&eacute;faut.</dd>
+
+      <dt><module>mod_cgi</module>, <module>mod_include</module>,
+          <module>mod_isapi</module>, ...</dt>
+      <dd>La traduction des en-t&ecirc;tes en variables d'environnement est
+      plus stricte qu'avant, ce qui permet de diminuer l'exposition aux attaques
+      de type cross-site-scripting via injection d'en-t&ecirc;tes. Les
+      en-t&ecirc;tes contenant des caract&egrave;res invalides (comme les caract&egrave;res
+      de soulignement) sont maintenant ignor&eacute;s. Le document <a
+      href="env.html">Les variables d'environnement dans Apache</a>
+      pr&eacute;sentent quelques pistes pour contourner ce probl&egrave;me avec les
+      clients anciens qui n&eacute;cessitent de tels en-t&ecirc;tes (Ceci affecte
+      tous les modules qui utilisent ces variables d'environnement).</dd>
       
     </dl>
   </section>

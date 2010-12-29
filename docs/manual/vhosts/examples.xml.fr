@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1043126:1053231 (outdated) -->
+<!-- English Revision: 1053231 -->
 <!-- French translation by Vincent Deffontaines, Alain B., review by  -->
 <!-- updated by Lucien Gentis -->
 
@@ -61,9 +61,6 @@
     # Apache doit écouter sur le port 80<br />
     Listen 80<br />
     <br />
-    # Toutes les adresses IP doivent répondre aux requêtes sur les 
-    # serveurs virtuels
-    NameVirtualHost *:80<br />
     <br />
     &lt;VirtualHost *:80&gt;<br />
     <indent>
@@ -99,17 +96,10 @@
     <note>
             <title>Note&nbsp;:</title>
 
-            <p>Si vous le souhaitez, vous pouvez remplacer <code>*</code> 
-            par l'adresse IP du système. Dans ce cas, l'argument de 
-            <code>VirtualHost</code> <em>doit</em> correspondre à 
-            l'argument de <code>NameVirtualHost</code>&nbsp;:</p>
-
-            <example>
-            NameVirtualHost 172.20.30.40<br />
-						<br />
-            &lt;VirtualHost 172.20.30.40&gt;<br />
- 		        # etc ...
-            </example>
+            <p>Vous pouvez remplacer <code>*</code> 
+            par l'adresse IP du système si vous ne souhaitez pas faire
+	    opérer la sélection du serveur virtuel en fonction de la
+	    paire adresse IP/port.</p>
 
            <p>En général, il est commode d'utiliser <code>*</code> sur 
            les systèmes dont l'adresse IP n'est pas constante - par 
@@ -151,9 +141,6 @@
     # Serveur "principal" sur 172.20.30.40<br />
     ServerName server.example.com<br />
     DocumentRoot /www/mainserver<br />
-        <br />
-    # l'autre adresse <br />
-    NameVirtualHost 172.20.30.50<br />
         <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
@@ -203,9 +190,7 @@
     <example>
     <title>Configuration du serveur</title>
 
-    NameVirtualHost 192.168.1.1<br />
-    NameVirtualHost 172.20.30.40<br />
-        <br />
+    <br />
     &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/server1<br />
@@ -235,21 +220,16 @@
     ports.</title>
 
     <p>Vous disposez de plusieurs domaines pointant sur la même adresse 
-    IP et vous voulez également servir de multiples ports. Vous y 
-    parviendrez en définissant les ports dans la directive 
-    "NameVirtualHost". Si vous tentez d'utiliser &lt;VirtualHost 
-    name:port&gt; sans directive NameVirtualHost name:port, ou tentez 
-    d'utiliser la directive Listen, votre configuration ne fonctionnera 
-    pas.</p>
+    IP et vous voulez également servir de multiples ports. L'exemple
+    suivant montre que la sélection en fonction du nom intervient après
+    la sélection de la meilleure correspondance du point de vue adresse
+    IP/port.</p>
 
     <example>
     <title>Configuration du serveur</title>
 
     Listen 80<br />
     Listen 8080<br />
-		<br />
-    NameVirtualHost 172.20.30.40:80<br />
-    NameVirtualHost 172.20.30.40:8080<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
@@ -366,16 +346,15 @@
     <section id="mixed"><title>Hébergements virtuels mixtes basé sur 
     les noms et sur IP</title>
 
-    <p>Pour certaines adresses, des serveurs virtuels seront définis 
-    par nom, et pour d'autres, ils seront définis par IP.</p>
+    <p>Toute adresse indiquée comme argument d'une section VirtualHost
+    et n'apparaissant dans aucun autre serveur virtuel, fait de cette
+    section un serveur virtuel sélectionnable uniquement en fonction de
+    son adresse IP.</p>
 
     <example>
     <title>Configuration du serveur</title>
 
     Listen 80<br />
-		<br />
-    NameVirtualHost 172.20.30.40<br />
-		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
@@ -556,8 +535,6 @@
     ServerName www.example.com<br />
     DocumentRoot /www/example.com<br />
 		<br />
-    NameVirtualHost 172.20.30.40<br />
-		<br />
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example.org<br />
@@ -599,8 +576,6 @@
     <example>
     <title>Configuration du serveur</title>
 
-    NameVirtualHost 172.20.30.40<br />
-		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         # Serveur virtuel primaire<br />
