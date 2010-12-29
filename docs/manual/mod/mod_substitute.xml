@@ -91,7 +91,7 @@
         &lt;/Location&gt;
     </example>
 
-    <p>Backreferences can be used in the comparison and in the substituion,
+    <p>Backreferences can be used in the comparison and in the substitution,
     when regular expressions are used, as illustrated in the following example: </p>
     <example><title>Example of using backreferences and captures</title>
         &lt;Location /&gt;
