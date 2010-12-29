@@ -330,6 +330,10 @@ RewriteRule ^index\.html$  newsite.html
         </li>
       </ul>
 
+      <p>If the <em>TestString</em> has the special value <code>expr</code>, the
+      <em>CondPattern</em> will be treated as a
+      <a href="../expr.html">ap_expr</a>.</p>
+
       <p>Other things you should be aware of:</p>
 
       <ol>
@@ -581,6 +585,12 @@ RewriteRule ^index\.html$  newsite.html
               also be prefixed by an exclamation mark ('!') to
               negate their meaning.
 </div>
+        </li>
+
+	<li>
+           <p>If the <em>TestString</em> has the special value <code>expr</code>, the
+           <em>CondPattern</em> will be treated as a
+           <a href="../expr.html">ap_expr</a>.</p>
         </li>
 
         <li>You can also set special flags for
@@ -1028,9 +1038,10 @@ cannot use <code>$N</code> in the substitution string!
         ...</a></em></td>
     </tr>
     <tr>
-        <td>env|E=<em>VAR</em>[:<em>VAL</em>]</td>
+        <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>Causes an environment variable <em>VAR</em> to be set (to the
-        value <em>VAL</em> if provided). <em><a href="../rewrite/flags.html#flag_e">details ...</a></em></td>
+        value <em>VAL</em> if provided). The form !<em>VAR</em> causes
+        the environment variable <em>VAR</em> to be unset.<em><a href="../rewrite/flags.html#flag_e">details ...</a></em></td>
     </tr>
     <tr>
         <td>forbidden|F</td>

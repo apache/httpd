@@ -182,7 +182,7 @@
     <h3><a name="ipbased" id="ipbased">IP-based vhost</a></h3>
 
     <p>If there is exactly one <code>VirtualHost</code> directive
-    listing the IP address and port combibation that was determined
+    listing the IP address and port combination that was determined
     to be the best match, no further actions are performed and
     the request is served from the matching vhost.</p>
 
@@ -190,7 +190,7 @@
 
     <h3><a name="namebased" id="namebased">Name-based vhost</a></h3>
 
-    <p>If there are multiple <code>VirtalHost</code> directives listing
+    <p>If there are multiple <code>VirtualHost</code> directives listing
     the IP address and port combination that was determined to be the
     best match, the "list" in the remaining steps refers to the list of vhosts 
     that matched, in the order they were in the configuration file.</p>

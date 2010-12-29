@@ -219,6 +219,7 @@ variables work.</p>
 
 <div class="example"><p><code>
 [E=VAR:VAL]
+[E=!VAR]
 </code></p></div>
 
 <p><code>VAL</code> may contain backreferences (<code>$N</code> or
@@ -232,6 +233,15 @@ variables work.</p>
 
 <p>you can set the environment variable named <code>VAR</code> to an
 empty value.</p>
+
+<p>The form</p>
+
+<div class="example"><p><code>
+[E=!VAR]
+</code></p></div>
+
+<p>allows to unset a previouslz set environment variable named
+<code>VAR</code>.</p>
 
 <p>Environment variables can then be used in a variety of
 contexts, including CGI programs, other RewriteRule directives, or

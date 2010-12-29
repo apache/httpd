@@ -229,7 +229,7 @@ headers</td></tr>
     will have to read on for further complications.</p>
 
     <p> The default value of <code>onsuccess</code> may need to be changed to 
-    <code>always</code> under the circumstances similar to those listed below
+    <code>always</code> under the circumstances similar to those listed below.
     Note also that repeating this directive with both conditions makes sense in
     some scenarios because <code>always</code> is not a superset of 
     <code>onsuccess</code> with respect to existing headers:</p>
