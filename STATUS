@@ -89,13 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_mem_cache: add a debug msg when a streaming response exceeds 
-     MCacheMaxStreamingBuffer, since mod_cache will follow up with a scary 
-     'memory allocation failed' debug message. PR 49604
-     Trunk patch: n/a mod_mem_cache not in trunk
-     2.2.x: http://people.apache.org/~covener/patches/httpd-2.2.x-memcache_streaming_debug-2.diff
-     +1 covener, poirier, rpluem
-
    * mod_cache: Check the request to determine whether we are allowed
      to return cached content at all, and respect a "Cache-Control:
      no-cache" header from a client. Previously, "no-cache" would

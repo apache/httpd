@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_mem_cache: Add a debug msg when a streaming response exceeds
+     MCacheMaxStreamingBuffer, since mod_cache will follow up with a scary
+     'memory allocation failed' debug message. PR 49604. [Eric Covener]
+
   *) proxy_connect: Don't give up in the middle of a CONNECT tunnel
      when the child process is starting to exit.  PR50220. [Eric Covener]
 

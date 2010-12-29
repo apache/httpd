@@ -820,8 +820,11 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             return rv;
         }
         if (len) {
-            /* Check for buffer overflow */
+            /* Check for buffer (max_streaming_buffer_size) overflow  */
            if ((obj->count + len) > mobj->m_len) {
+               ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                            "mem_cache: URL %s exceeds the MCacheMaxStreamingBuffer (%" APR_SIZE_T_FMT ") limit and will not be cached.", 
+                            obj->key, mobj->m_len);
                return APR_ENOMEM;
            }
            else {
