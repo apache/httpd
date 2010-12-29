@@ -385,7 +385,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <h3><a name="rebackref" id="rebackref">Regular expression backreferences</a></h3>
         
         <p>The strings <code>$0</code> ... <code>$9</code> allow to reference
-        the capture groups form a previously executed, successfully
+        the capture groups from a previously executed, successfully
         matching regular expressions. They can normally only be used in the
         same expression as the matching regex, but some modules allow special
         uses.</p>

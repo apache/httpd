@@ -64,7 +64,7 @@
     </ul>
 
     <p> Name-based virtual hosting builds off of the IP-based virtual host
-    selection algoirthm, meaning that searches for the proper server name
+    selection algorithm, meaning that searches for the proper server name
     occur only between virtual hosts that have the best IP-based address.</p>
 
 
@@ -82,7 +82,7 @@
     <p>When a request arrives, the server will find the best (most specific) matching  
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> argument based on
     the IP address and port used by the request.  If there is more than one virtual host
-    contanin this best-match address and port combination,  Apache will further
+    containing this best-match address and port combination,  Apache will further
     compare the <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>  directives to the server name
     present in the request.</p>
 
@@ -90,7 +90,7 @@
     <p> If no matching ServerName or ServerAlias is found in the set of 
     virtual hosts containing the most specific matching IP address and port 
     combination, then <strong>the first listed virtual host</strong> that 
-    matches the will be used.</p>
+    matches that will be used.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="using" id="using">Using Name-based Virtual Hosts</a></h2>

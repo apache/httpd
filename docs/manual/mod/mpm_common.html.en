@@ -718,7 +718,7 @@ client connections</td></tr>
       of adjustment should only be made in a test environment which allows
       the full set of web server processing can be exercised, as there
       may be infrequent requests which require more stack to process.
-      The minumum required stack size strongly depends on the modules
+      The minimum required stack size strongly depends on the modules
       used, but any change in the web server configuration can invalidate
       the current <code class="directive">ThreadStackSize</code> setting.</li>
     </ul>

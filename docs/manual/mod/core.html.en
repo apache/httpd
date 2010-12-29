@@ -1158,7 +1158,7 @@ in case of an error</td></tr>
     </code></p></div>
 
     <p>Specifying <code>connection</code> or <code>request</code> as first
-    paramter allows to specify additional formats, causing additional
+    parameter allows to specify additional formats, causing additional
     information to be logged when the first message is logged for a specific
     connection or request, respectivly. This additional information is only
     logged once per connection/request. If a connection or request is processed
@@ -4015,14 +4015,14 @@ hostname or IP address</td></tr>
     <p>When a request is received, the server first maps it to the best matching 
     <code class="directive">&lt;VirtualHost&gt;</code> based on the local 
     IP address and port combination only.  Non-wildcards have a higher 
-    precedence. if no match based on IP and port occurs at all, the 
+    precedence. If no match based on IP and port occurs at all, the 
     "main" server configuration is used.</p>
     
     <p>If multiple virtual hosts contain the best matching IP address and port,
     the server selects from these virtual hosts the best match based on the 
     requested hostname.  If no matching name-based virtual host is found, 
     then the first listed virtual host that matched the IP address will be 
-    used.  As a consequence, the first listed virtual for a given IP address
+    used.  As a consequence, the first listed virtual host for a given IP address
     and port combination is default virtual host for that IP and port 
     combination.</p>
 
