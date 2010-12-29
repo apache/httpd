@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_rewrite: Allow to unset environment variables using E=!VAR.
+     PR 49512. [Mark Drayton <mark markdrayton info>, Stefan Fritsch]
+
   *) mod_headers: Restore the 2.3.8 and earlier default for the first 
      argument of the Header directive ("onsuccess").  [Eric Covener]
 
