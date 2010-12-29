@@ -228,8 +228,8 @@ tardif</a></h2>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La condition par défaut passe de "onsuccess" à "always" à
-partir de la version 2.3.9</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La condition par défaut est temporairement passée
+à "always" dans les version 2.3.9 et 2.3.10</td></tr>
 </table>
     <p>Cette directive permet de remplacer, fusionner, ou
     supprimer des en-têtes de réponse HTTP. L'en-tête est modifié juste
@@ -237,20 +237,38 @@ partir de la version 2.3.9</td></tr>
     s'exécutent, ce qui permet la modification des en-têtes
     sortants.</p>
 
-    <p>A partir de la version 2.3.9, la condition par défaut est
-    "always", ce qui implique que cette directive agit sans tenir compte
-    du code d'état de la réponse. Dans les versions 2.3.8 et
-    antérieures, "onsuccess" était la condition par défaut, ce qui
-    impliquait que les en-têtes n'étaient modifiés que pour les réponses
-    avec code d'état <code>2<var>xx</var></code>.</p>
+    <p>L'argument optionnel <var>condition</var> permet de déterminer
+    sur quelle table interne d'en-têtes de réponses cette directive va
+    opérer. D'autres composants du serveur peuvent avoir stocké leurs
+    en-têtes de réponses dans la table correspondant à
+    <code>onsuccess</code> ou dans celle correspondant à
+    <code>always</code>. Dans ce contexte, "Always" fait référence au
+    choix d'envoyer les en-têtes que vous ajoutez aux réponses, qu'elle
+    soient avec succès ou échouées ; par contre, si votre action est une
+    fonction d'un en-tête existant, vous devrez lire la documentation de
+    manière plus approfondie car dans ce cas, les choses se compliquent.</p>
 
-    <p>Une valeur effective <code>always</code> peut être nécessaire
-    pour forcer la définition des en-têtes par certains modules internes
-    (tels que <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>), même dans le cas de réponses
-    positives, et doit toujours être présente pour modifier les réponses avec un code
-    d'état autre que <code>2<var>xx</var></code>, comme les redirections
-    ou les erreurs clients.</p>
+    <p>Vous pouvez avoir à changer la valeur par défaut
+    <code>onsuccess</code> en <code>always</code> dans des circonstances
+    similaires à celles exposées plus loin. Notez aussi que la répétition
+    de cette directive avec les deux conditions peut être pertinente
+    dans certains scénarios, car <code>always</code> n'englobe pas
+    <code>onsuccess</code> en ce qui concerne les en-têtes existants :</p>
 
+    <ul>
+       <li>Vous ajoutez un en-tête à une réponse échouée (non-2xx),
+       une redirection par exemple, et dans ce cas, seule la table
+       correspondant à <code>always</code> est utilisée dans la réponse
+       définitive.</li>
+       <li>Vous modifiez ou supprimez un en-tête généré par un script
+       CGI, et dans ce cas, les scripts CGI sont dans la table
+       correspondant à <code>always</code> et non dans la table par
+       défaut.</li>
+       <li>Vous modifiez ou supprimez un en-tête généré par tel ou tel
+       composant du serveur, mais cet en-tête n'est pas trouvé par la
+       condition par défaut <code>onsuccess</code>.</li>
+    </ul>
+    
     <p>L'action que cette directive provoque est déterminée par le
     premier argument (ou par le second argument si une
     <var>condition</var> est spécifiée). Il peut prendre

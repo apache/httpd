@@ -121,7 +121,7 @@ Protokolle</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 2.1.5</td></tr>
 </table>
     <p>Diese Direktive aktiviert betriebssystemspezifische Optimierungen
-    für lauschende Sockets anhand des Protokolltyps. Die grundlegende
+    für lauschende Sockets anhand des Protokolltyps. Der grundlegende
     Ansatz ist, dass der Kernel das Socket nicht an den Serverprozess
     übergibt, bis entweder Daten verfügbar sind oder eine komplette
     HTTP-Anfrage zwischengespeichert wurde. Derzeit werden

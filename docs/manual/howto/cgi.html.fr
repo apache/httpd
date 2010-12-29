@@ -365,9 +365,6 @@
       <p>Assurez-vous qu'il s'agit bien du chemin correct vers
       l'interpréteur.</p>
 
-      <p>De plus, si votre programme CGI dépend d'autres <a href="#env">variables d'environnement</a>, vous devrez vous
-      assurer qu'elles lui sont bien transmises par Apache.</p>
-
       <div class="warning">
       Lors de l'édition de scripts CGI sous Windows, il se peut que des
       caractères de fin de ligne soient ajoutés au chemin de
@@ -377,6 +374,22 @@
       caractères de fin de ligne non reconnus car considérés comme
       faisant partie du nom de fichier de l'interpréteur.
       </div>
+
+      
+
+    <h3><a name="missingenv" id="missingenv">Variables d'environnement manquantes</a></h3>
+      
+
+      <p>Si votre programme CGI dépend de <a href="#env">variables
+      d'environnement</a> non standards, vous devrez vous assurez que
+      ces variables lui sont bien transmises par Apache.</p>
+
+      <p>Lorsque des en-têtes HTTP ne sont pas transmis à
+      l'environnement, assurez-vous qu'ils sont bien formatés selon la
+      <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>, section
+      4.2 : les noms d'en-têtes doivent commencer par une lettre,
+      elle-même suivie de lettres, chiffres ou traits d'union. Tout
+      en-tête dont le nom viole cette règle sera ignoré.</p>
 
     
 
