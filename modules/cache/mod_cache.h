@@ -271,6 +271,15 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, request_rec *r);
 
 /**
+ * Check the whether the request allows a cached object to be served as per RFC2616
+ * section 14.9.4 (Cache Revalidation and Reload Controls)
+ * @param h cache_handle_t
+ * @param r request_rec
+ * @return 0 ==> cache object may not be served, 1 ==> cache object may be served
+ */
+CACHE_DECLARE(int) ap_cache_check_allowed(request_rec *r);
+
+/**
  * Try obtain a cache wide lock on the given cache key.
  *
  * If we return APR_SUCCESS, we obtained the lock, and we are clear to

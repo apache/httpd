@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_cache: Check the request to determine whether we are allowed
+     to return cached content at all, and respect a "Cache-Control:
+     no-cache" header from a client. Previously, "no-cache" would
+     behave like "max-age=0". [Graham Leggett]
+
   *) mod_mem_cache: Add a debug msg when a streaming response exceeds
      MCacheMaxStreamingBuffer, since mod_cache will follow up with a scary
      'memory allocation failed' debug message. PR 49604. [Eric Covener]

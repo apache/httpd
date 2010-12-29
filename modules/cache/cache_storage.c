@@ -193,6 +193,11 @@ int cache_select(request_rec *r)
     if (rv != APR_SUCCESS) {
         return rv;
     }
+
+    if (!ap_cache_check_allowed(r)) {
+        return DECLINED;
+    }
+
     /* go through the cache types till we get a match */
     h = apr_palloc(r->pool, sizeof(cache_handle_t));
 
