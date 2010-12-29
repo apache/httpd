@@ -104,7 +104,7 @@ typedef enum {
  */
 static char hdr_in  = '0';  /* RequestHeader */
 static char hdr_out_onsuccess = '1';  /* Header onsuccess */
-static char hdr_out_always = '2';  /* Header always (default) */
+static char hdr_out_always = '2';  /* Header always */
 
 /* Callback function type. */
 typedef const char *format_tag_fn(request_rec *r, char *a);
@@ -524,12 +524,12 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     const char *subs;
 
     action = ap_getword_conf(cmd->temp_pool, &args);
-    if (cmd->info == &hdr_out_always) {
-        if (!strcasecmp(action, "onsuccess")) {
-            cmd->info = &hdr_out_onsuccess;
+    if (cmd->info == &hdr_out_onsuccess) {
+        if (!strcasecmp(action, "always")) {
+            cmd->info = &hdr_out_always;
             action = ap_getword_conf(cmd->temp_pool, &args);
         }
-        else if (!strcasecmp(action, "always")) {
+        else if (!strcasecmp(action, "onsuccess")) {
             action = ap_getword_conf(cmd->temp_pool, &args);
         }
     }
@@ -863,7 +863,7 @@ static apr_status_t ap_headers_early(request_rec *r)
 
 static const command_rec headers_cmds[] =
 {
-    AP_INIT_RAW_ARGS("Header", header_cmd, &hdr_out_always, OR_FILEINFO,
+    AP_INIT_RAW_ARGS("Header", header_cmd, &hdr_out_onsuccess, OR_FILEINFO,
                      "an optional condition, an action, header and value "
                      "followed by optional env clause"),
     AP_INIT_RAW_ARGS("RequestHeader", header_cmd, &hdr_in, OR_FILEINFO,
