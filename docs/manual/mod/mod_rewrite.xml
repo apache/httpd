@@ -1036,9 +1036,10 @@ cannot use <code>$N</code> in the substitution string!
         ...</a></em></td>
     </tr>
     <tr>
-        <td>env|E=<em>VAR</em>[:<em>VAL</em>]</td>
+        <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>Causes an environment variable <em>VAR</em> to be set (to the
-        value <em>VAL</em> if provided). <em><a
+        value <em>VAL</em> if provided). The form !<em>VAR</em> causes
+        the environment variable <em>VAR</em> to be unset.<em><a
         href="../rewrite/flags.html#flag_e">details ...</a></em></td>
     </tr>
     <tr>
