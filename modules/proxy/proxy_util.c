@@ -2779,9 +2779,10 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
             APR_BRIGADE_INSERT_TAIL(to, new);
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: Unhandled bucket type of type %s in"
                           " ap_proxy_buckets_lifetime_transform", e->type->name);
+            apr_bucket_delete(e);
             rv = APR_EGENERAL;
         }
     }
