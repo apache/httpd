@@ -436,6 +436,7 @@ RewriteRule ^index\.html$  newsite.html
                  REQUEST_FILENAME<br />
                  IS_SUBREQ<br />
                  HTTPS<br />
+                 REQUEST_SCHEME<br />
               </td>
             </tr>
           </table>
@@ -497,6 +498,12 @@ RewriteRule ^index\.html$  newsite.html
                   using SSL/TLS, or "off" otherwise.  (This variable
                   can be safely used regardless of whether or not
                   <module>mod_ssl</module> is loaded).</dd>
+
+                  <dt><code>REQUEST_SCHEME</code></dt>
+
+                  <dd>Will contain the scheme of the request (ususally
+                  "http" or "https"). This value can be influenced with
+                  <directive module="core">ServerName</directive>.</dd>
 
                 </dl>
 </note>

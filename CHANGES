@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) core, mod_rewrite: Make the REQUEST_SCHEME variable available to
+     scripts and mod_rewrite. [Stefan Fritsch]
+
   *) mod_rewrite: Allow to use arbitrary boolean expressions (ap_expr) in
      RewriteCond. [Stefan Fritsch]
 
