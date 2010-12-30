@@ -3694,7 +3694,7 @@ static APR_INLINE int compare_lexicography(char *a, char *b)
  */
 static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 {
-    char *input;
+    char *input = NULL;
     apr_finfo_t sb;
     request_rec *rsub, *r = ctx->r;
     ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
