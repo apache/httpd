@@ -956,6 +956,8 @@ static const char *request_var_names[] = {
     "CONTENT_TYPE",             /* 18 */
     "HANDLER",                  /* 19 */
     "REQUEST_LOG_ID",           /* 20 */
+    "SCRIPT_USER",              /* 21 */
+    "SCRIPT_GROUP",             /* 22 */
     NULL
 };
 
@@ -1010,6 +1012,20 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return r->handler;
     case 20:
         return r->log_id;
+    case 21:
+        {
+            char *result = "";
+            if (r->finfo.valid & APR_FINFO_USER)
+                apr_uid_name_get(&result, r->finfo.user, ctx->p);
+            return result;
+        }
+    case 22:
+        {
+            char *result = "";
+            if (r->finfo.valid & APR_FINFO_USER)
+                apr_gid_name_get(&result, r->finfo.group, ctx->p);
+            return result;
+        }
     default:
         ap_assert(0);
         return NULL;
