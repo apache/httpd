@@ -1161,6 +1161,27 @@ static int op_R(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg1)
     return apr_ipsubnet_test(subnet, ctx->c->remote_addr);
 }
 
+static int op_T(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    switch (arg[0]) {
+    case '\0':
+        return FALSE;
+    case 'o':
+    case 'O':
+        return strcasecmp(arg, "off") == 0 ? FALSE : TRUE;
+    case 'n':
+    case 'N':
+        return strcasecmp(arg, "no") == 0 ? FALSE : TRUE;
+    case 'f':
+    case 'F':
+        return strcasecmp(arg, "false") == 0 ? FALSE : TRUE;
+    case '0':
+        return arg[1] == '\0' ? FALSE : TRUE;
+    default:
+        return TRUE;
+    }
+}
+
 static int op_fnmatch(ap_expr_eval_ctx_t *ctx, const void *data,
                       const char *arg1, const char *arg2)
 {
@@ -1220,6 +1241,7 @@ static const struct expr_provider_single unary_op_providers[] = {
     { op_nz, "n", NULL },
     { op_nz, "z", NULL },
     { op_R,  "R", subnet_parse_arg },
+    { op_T,  "T", NULL },
     { NULL, NULL, NULL }
 };
 
