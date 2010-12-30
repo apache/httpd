@@ -897,7 +897,7 @@ static void basic_http_header_check(request_rec *r,
 static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
                               const char *protocol)
 {
-    char *date;
+    char *date = NULL;
     const char *proxy_date = NULL;
     const char *server = NULL;
     const char *us = ap_get_server_banner();
