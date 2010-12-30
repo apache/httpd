@@ -252,7 +252,7 @@ static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
 }
 
 static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
-                                 request_rec *r, proxy_conn_rec *conn,
+                                 request_rec *r, proxy_conn_rec *p_conn,
                                  conn_rec *origin, apr_bucket_brigade *bb,
                                  int flush)
 {
@@ -265,12 +265,12 @@ static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
     }
     apr_brigade_length(bb, 0, &transferred);
     if (transferred != -1)
-        conn->worker->s->transferred += transferred;
+        p_conn->worker->s->transferred += transferred;
     status = ap_pass_brigade(origin->output_filters, bb);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request body failed to %pI (%s)",
-                     conn->addr, conn->hostname);
+                     p_conn->addr, p_conn->hostname);
         if (origin->aborted) {
             if (strcmp(apr_table_get(origin->notes,
                                      "SSL_connect_rv"), "err") == 0) {
