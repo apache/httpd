@@ -1954,7 +1954,6 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     core_dir_config *conf;
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
-    core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd,
                                            NOT_IN_LOCATION | NOT_IN_LIMIT);
@@ -2015,7 +2014,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
     conf->r = r;
 
-    ap_add_file_conf(c, new_file_conf);
+    ap_add_file_conf((core_dir_config *)mconfig, new_file_conf);
 
     if (*arg != '\0') {
         return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
@@ -2035,7 +2034,6 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *old_path = cmd->path;
     core_dir_config *conf;
     const command_rec *thiscmd = cmd->cmd;
-    core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd,
                                            NOT_IN_LOCATION | NOT_IN_LIMIT);
@@ -2080,7 +2078,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d_is_fnmatch = 0;
     conf->r = NULL;
 
-    ap_add_file_conf(c, new_file_conf);
+    ap_add_file_conf((core_dir_config *)mconfig, new_file_conf);
 
     if (*arg != '\0') {
         return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
