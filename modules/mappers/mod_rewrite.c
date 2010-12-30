@@ -2089,8 +2089,11 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
             if (*var == 'H' && !strcmp(var, "HTTP_FORWARDED")) {
                 result = lookup_header("Forwarded", ctx);
             }
-            else if (!strcmp(var, "REQUEST_METHOD")) {
+            else if (var[8] == 'M' && !strcmp(var, "REQUEST_METHOD")) {
                 result = r->method;
+            }
+            else if (!strcmp(var, "REQUEST_SCHEME")) {
+                result = ap_http_scheme(r);
             }
             break;
 
