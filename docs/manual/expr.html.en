@@ -143,6 +143,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td /></tr>
 <tr><td><code>SCRIPT_FILENAME</code></td>
         <td>Same as <code>REQUEST_FILENAME</code></td></tr>
+<tr class="odd"><td><code>SCRIPT_USER</code></td>
+        <td>The user name of the owner of the script.</td></tr>
+<tr><td><code>SCRIPT_GROUP</code></td>
+        <td>The group name of the group of the script.</td></tr>
 <tr class="odd"><td><code>PATH_INFO</code></td>
         <td /></tr>
 <tr><td><code>QUERY_STRING</code></td>
