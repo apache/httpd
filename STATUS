@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      uncacheable.
      PR45341
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
-     2.2.x patch: trunk patch works
+     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304-fix.patch
      +1: minfrin, jim, covener
      rpluem says: Trunks patch works, but fails to compile in 2.2.x.
 
