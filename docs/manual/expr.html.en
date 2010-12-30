@@ -307,10 +307,14 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
 <tr><td><code>-n</code></td>
-        <td>String is not empty</td></tr>
+        <td>True if string is not empty</td></tr>
 <tr class="odd"><td><code>-z</code></td>
-        <td>String is empty</td></tr>
-<tr><td><code>-R</code></td>
+        <td>True if string is empty</td></tr>
+<tr><td><code>-T</code></td>
+        <td>False if string is empty, "<code>0</code>", "<code>off</code>",
+            "<code>false</code>", or "<code>no</code>" (case insensitive).
+            True otherwise.</td></tr>
+<tr class="odd"><td><code>-R</code></td>
         <td>Same as "<code>%{REMOTE_ADDR} -ipmatch ...</code>", but more efficient
         </td></tr>
 </table>
