@@ -3874,20 +3874,27 @@ port</description>
     relying on all configured information to construct a valid port number.</p>
 
     <note><title>Note</title>
-    <p>The ordering of when the physical port is used is as follows:<br /><br />
-     <code>UseCanonicalName On</code></p>
-     <ul>
+    <p>The ordering of the lookup when the physical port is used is as
+    follows:</p>
+     <dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
       <li>Port provided in <code>Servername</code></li>
       <li>Physical port</li>
       <li>Default port</li>
-     </ul>
-     <code>UseCanonicalName Off | DNS</code>
-     <ul>
+     </ol>
+     </dd>
+     <dt><code>UseCanonicalName Off | DNS</code></dt>
+     <dd>
+     <ol>
       <li>Parsed port from <code>Host:</code> header</li>
       <li>Physical port</li>
       <li>Port provided in <code>Servername</code></li>
       <li>Default port</li>
-     </ul>
+     </ol>
+     </dd>
+     </dl>
 
     <p>With <code>UseCanonicalPhysicalPort Off</code>, the
     physical ports are removed from the ordering.</p>
