@@ -3880,7 +3880,7 @@ port</description>
      <dt><code>UseCanonicalName On</code></dt>
      <dd>
      <ol>
-      <li>Port provided in <code>Servername</code></li>
+      <li>Port provided in <directive module="core">Servername</directive></li>
       <li>Physical port</li>
       <li>Default port</li>
      </ol>
@@ -3890,7 +3890,7 @@ port</description>
      <ol>
       <li>Parsed port from <code>Host:</code> header</li>
       <li>Physical port</li>
-      <li>Port provided in <code>Servername</code></li>
+      <li>Port provided in <directive module="core">Servername</directive></li>
       <li>Default port</li>
      </ol>
      </dd>
