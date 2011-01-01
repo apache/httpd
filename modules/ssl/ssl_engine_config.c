@@ -1107,6 +1107,9 @@ const char *ssl_cmd_SSLOptions(cmd_parms *cmd,
         else if (strcEQ(w, "OptRenegotiate")) {
             opt = SSL_OPT_OPTRENEGOTIATE;
         }
+        else if (strcEQ(w, "LegacyDNStringFormat")) {
+            opt = SSL_OPT_LEGACYDNFORMAT;
+        }
         else {
             return apr_pstrcat(cmd->pool,
                                "SSLOptions: Illegal option '", w, "'",

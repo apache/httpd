@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_ssl: Change the format of the SSL_{CLIENT,SERVER}_{I,S}_DN variables
+     to be RFC 2253 compatible, convert non-ASCII characters to UTF8, and 
+     escape other special characters with backslashes. The old format can
+     still be used with the LegacyDNStringFormat argument to SSLOptions.
+
   *) core, mod_rewrite: Make the REQUEST_SCHEME variable available to
      scripts and mod_rewrite. [Stefan Fritsch]
 

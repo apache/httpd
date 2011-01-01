@@ -39,8 +39,8 @@
 **  _________________________________________________________________
 */
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var);
-static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var);
+static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r, char *var);
+static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
 static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_UTCTIME *tm);
 static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm);
@@ -73,7 +73,7 @@ static apr_array_header_t *expr_peer_ext_list_fn(ap_expr_eval_ctx_t *ctx,
 static const char *expr_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 {
     char *var = (char *)data;
-    return ssl_var_lookup_ssl(ctx->p, ctx->c, var);
+    return ssl_var_lookup_ssl(ctx->p, ctx->c, ctx->r, var);
 }
 
 static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
@@ -241,7 +241,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         SSLConnRec *sslconn = myConnConfig(c);
         if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
-            result = ssl_var_lookup_ssl(p, c, var+4);
+            result = ssl_var_lookup_ssl(p, c, r, var+4);
         else if (strcEQ(var, "REMOTE_ADDR"))
             result = c->remote_ip;
         else if (strcEQ(var, "HTTPS")) {
@@ -313,7 +313,8 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     return (char *)result;
 }
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
+static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
+                                char *var)
 {
     SSLConnRec *sslconn = myConnConfig(c);
     char *result;
@@ -358,13 +359,17 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
     }
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "CLIENT_", 7)) {
         if ((xs = SSL_get_peer_certificate(ssl)) != NULL) {
-            result = ssl_var_lookup_ssl_cert(p, xs, var+7);
+            result = ssl_var_lookup_ssl_cert(p, r, xs, var+7);
             X509_free(xs);
         }
     }
     else if (ssl != NULL && strlen(var) > 7 && strcEQn(var, "SERVER_", 7)) {
-        if ((xs = SSL_get_certificate(ssl)) != NULL)
-            result = ssl_var_lookup_ssl_cert(p, xs, var+7);
+        if ((xs = SSL_get_certificate(ssl)) != NULL) {
+            result = ssl_var_lookup_ssl_cert(p, r, xs, var+7);
+            /* SSL_get_certificate is different from SSL_get_peer_certificate.
+             * No need to X509_free(xs).
+             */
+        }
     }
     else if (ssl != NULL && strcEQ(var, "COMPRESS_METHOD")) {
         result = ssl_var_lookup_ssl_compress_meth(ssl);
@@ -386,13 +391,44 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
+static char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
+                                                X509_NAME *xsname)
+{
+    char *result;
+    SSLDirConfigRec *dc;
+    int legacy_format = 0;
+    if (r) {
+        dc = myDirConfig(r);
+        legacy_format = dc->nOptions & SSL_OPT_LEGACYDNFORMAT;
+    }
+    if (legacy_format) {
+        char *cp = X509_NAME_oneline(xsname, NULL, 0);
+        result = apr_pstrdup(p, cp);
+        modssl_free(cp);
+    }
+    else {
+        BIO* bio;
+        int n;
+        unsigned long flags = XN_FLAG_RFC2253 & ~ASN1_STRFLGS_ESC_MSB;
+        if ((bio = BIO_new(BIO_s_mem())) == NULL)
+            return NULL;
+        X509_NAME_print_ex(bio, xsname, 0, flags);
+        n = BIO_pending(bio);
+        result = apr_palloc(p, n+1);
+        n = BIO_read(bio, result, n);
+        result[n] = NUL;
+        BIO_free(bio);
+    }
+    return result;
+}
+
+static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
+                                     char *var)
 {
     char *result;
     BOOL resdup;
     X509_NAME *xsname;
     int nid;
-    char *cp;
 
     result = NULL;
     resdup = TRUE;
@@ -414,27 +450,23 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
         result = ssl_var_lookup_ssl_cert_remain(p, X509_get_notAfter(xs));
         resdup = FALSE;
     }
-    else if (strcEQ(var, "S_DN")) {
-        xsname = X509_get_subject_name(xs);
-        cp = X509_NAME_oneline(xsname, NULL, 0);
-        result = apr_pstrdup(p, cp);
-        modssl_free(cp);
+    else if (*var && strcEQ(var+1, "_DN")) {
+        if (*var == 'S')
+            xsname = X509_get_subject_name(xs);
+        else if (*var == 'I')
+            xsname = X509_get_issuer_name(xs);
+        else
+            return NULL;
+        result = ssl_var_lookup_ssl_cert_dn_oneline(p, r, xsname);
         resdup = FALSE;
     }
-    else if (strlen(var) > 5 && strcEQn(var, "S_DN_", 5)) {
-        xsname = X509_get_subject_name(xs);
-        result = ssl_var_lookup_ssl_cert_dn(p, xsname, var+5);
-        resdup = FALSE;
-    }
-    else if (strcEQ(var, "I_DN")) {
-        xsname = X509_get_issuer_name(xs);
-        cp = X509_NAME_oneline(xsname, NULL, 0);
-        result = apr_pstrdup(p, cp);
-        modssl_free(cp);
-        resdup = FALSE;
-    }
-    else if (strlen(var) > 5 && strcEQn(var, "I_DN_", 5)) {
-        xsname = X509_get_issuer_name(xs);
+    else if (strlen(var) > 5 && strcEQn(var+1, "_DN_", 4)) {
+        if (*var == 'S')
+            xsname = X509_get_subject_name(xs);
+        else if (*var == 'I')
+            xsname = X509_get_issuer_name(xs);
+        else
+            return NULL;
         result = ssl_var_lookup_ssl_cert_dn(p, xsname, var+5);
         resdup = FALSE;
     }
@@ -516,13 +548,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
-                    unsigned char *data = X509_NAME_ENTRY_get_data_ptr(xsne);
-                    /* cast needed from unsigned char to char */
-                    result = apr_pstrmemdup(p, (char *)data,
-                                            X509_NAME_ENTRY_get_data_len(xsne));
-#if APR_CHARSET_EBCDIC
-                    ap_xlate_proto_from_ascii(result, X509_NAME_ENTRY_get_data_len(xsne));
-#endif /* APR_CHARSET_EBCDIC */
+                    result = SSL_X509_NAME_ENTRY_to_string(p, xsne);
                     break;
                 }
             }
@@ -759,7 +785,6 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
 
          tag = apr_hash_get(nids, &nid, sizeof nid);
          if (tag) {
-             unsigned char *data = X509_NAME_ENTRY_get_data_ptr(xsne);
              const char *key;
              int *dup;
              char *value;
@@ -776,13 +801,7 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
                  apr_hash_set(count, &nid, sizeof nid, dup);
                  key = apr_pstrcat(p, pfx, tag, NULL);
              }
-             
-             /* cast needed from 'unsigned char *' to 'char *' */
-             value = apr_pstrmemdup(p, (char *)data,
-                                    X509_NAME_ENTRY_get_data_len(xsne));
-#if APR_CHARSET_EBCDIC
-             ap_xlate_proto_from_ascii(value, X509_NAME_ENTRY_get_data_len(xsne));
-#endif /* APR_CHARSET_EBCDIC */
+             value = SSL_X509_NAME_ENTRY_to_string(p, xsne);
              apr_table_setn(t, key, value);
          }
     }
