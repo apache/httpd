@@ -3856,8 +3856,7 @@ port</description>
 
 <directivesynopsis>
 <name>UseCanonicalPhysicalPort</name>
-<description>Configures how the server determines its own name and
-port</description>
+<description>Configures how the server determines its own port</description>
 <syntax>UseCanonicalPhysicalPort On|Off</syntax>
 <default>UseCanonicalPhysicalPort Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
