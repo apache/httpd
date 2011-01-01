@@ -3642,9 +3642,10 @@ handler</description>
     <p>You can override an earlier defined <directive>SetHandler</directive>
     directive by using the value <code>None</code>.</p>
 
-    <note>Because <directive>SetHandler</directive> overrides default handlers,
+    <note><title>Note</title>
+    <p>Because <directive>SetHandler</directive> overrides default handlers,
     normal behaviour such as handling of URLs ending in a slash (/) as
-    directories or index files is suppressed.</note>
+    directories or index files is suppressed.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
