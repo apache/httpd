@@ -236,6 +236,12 @@
       <li><module>mod_auto_index</module>: will now extract titles and
       display descriptions for .xhtml files, which were previously
       ignored.</li>
+
+      <li><module>mod_ssl</module>: The default format of the <code>*_DN</code>
+      variables has changed. The old format can still be used with the new
+      <code>LegacyDNStringFormat</code> argument to <directive
+      module="mod_ssl">SSLOptions</directive>.</li>
+
       <li><program>htpasswd</program> now uses MD5 hash by default on
       all platforms.</li>
 

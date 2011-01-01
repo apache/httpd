@@ -344,14 +344,32 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
 #endif
 }
 
+/* convert a NAME_ENTRY to UTF8 string */
+char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
+{
+    char *result = NULL;
+    BIO* bio;
+    int len;
+
+    if ((bio = BIO_new(BIO_s_mem())) == NULL)
+        return NULL;
+    ASN1_STRING_print_ex(bio, X509_NAME_ENTRY_get_data(xsne),
+                         ASN1_STRFLGS_ESC_CTRL|ASN1_STRFLGS_UTF8_CONVERT);
+    len = BIO_pending(bio);
+    result = apr_palloc(p, len+1);
+    len = BIO_read(bio, result, len);
+    result[len] = NUL;
+    BIO_free(bio);
+    ap_xlate_proto_from_ascii(value, len);
+    return result;
+}
+
 /* retrieve subject CommonName of certificate */
 BOOL SSL_X509_getCN(apr_pool_t *p, X509 *xs, char **cppCN)
 {
     X509_NAME *xsn;
     X509_NAME_ENTRY *xsne;
     int i, nid;
-    unsigned char *data_ptr;
-    int data_len;
 
     xsn = X509_get_subject_name(xs);
     for (i = 0; i < sk_X509_NAME_ENTRY_num((STACK_OF(X509_NAME_ENTRY) *)
@@ -360,12 +378,7 @@ BOOL SSL_X509_getCN(apr_pool_t *p, X509 *xs, char **cppCN)
                                          X509_NAME_get_entries(xsn), i);
         nid = OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
         if (nid == NID_commonName) {
-            data_ptr = X509_NAME_ENTRY_get_data_ptr(xsne);
-            data_len = X509_NAME_ENTRY_get_data_len(xsne);
-            *cppCN = apr_palloc(p, data_len+1);
-            apr_cpystrn(*cppCN, (char *)data_ptr, data_len+1);
-            (*cppCN)[data_len] = NUL;
-            ap_xlate_proto_from_ascii(*cppCN, data_len);
+            *cppCN = SSL_X509_NAME_ENTRY_to_string(p, xsne);
             return TRUE;
         }
     }
