@@ -3662,9 +3662,10 @@ handler</td></tr>
     <p>You can override an earlier defined <code class="directive">SetHandler</code>
     directive by using the value <code>None</code>.</p>
 
-    <div class="note">Because <code class="directive">SetHandler</code> overrides default handlers,
+    <div class="note"><h3>Note</h3>
+    <p>Because <code class="directive">SetHandler</code> overrides default handlers,
     normal behaviour such as handling of URLs ending in a slash (/) as
-    directories or index files is suppressed.</div>
+    directories or index files is suppressed.</p></div>
 
 <h3>See also</h3>
 <ul>
