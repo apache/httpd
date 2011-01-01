@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 290816:1053666 (outdated) -->
+<!-- English Revision: 330409:1053666 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -421,7 +421,26 @@ erlaubt sind.</description>
       module="core">SetInputFilter</directive>, <directive
       module="core">SetOutputFilter</directive>, und
       <module>mod_mime</module>-Direktiven Add* und Remove*
-      <em>usw.</em>).</dd>
+      <em>usw.</em>), Metadaten (<directive
+      module="mod_headers">Header</directive>, <directive
+      module="mod_headers">RequestHeader</directive>, <directive
+      module="mod_setenvif">SetEnvIf</directive>, <directive
+      module="mod_setenvif">SetEnvIfNoCase</directive>, <directive
+      module="mod_setenvif">BrowserMatch</directive>, <directive
+      module="mod_usertrack">CookieExpires</directive>, <directive
+      module="mod_usertrack">CookieDomain</directive>, <directive
+      module="mod_usertrack">CookieStyle</directive>, <directive
+      module="mod_usertrack">CookieTracking</directive>, <directive
+      module="mod_usertrack">CookieName</directive>),
+      <module>mod_rewrite</module>-Direktiven <directive
+      module="mod_rewrite">RewriteEngine</directive>, <directive
+      module="mod_rewrite">RewriteOptions</directive>, <directive
+      module="mod_rewrite">RewriteBase</directive>, <directive
+      module="mod_rewrite">RewriteCond</directive>, <directive
+      module="mod_rewrite">RewriteRule</directive>) und
+      <directive module="mod_actions">Action</directive> aus
+      <module>mod_actions</module>.
+      </dd>
 
       <dt>Indexes</dt>
 
@@ -978,6 +997,8 @@ Dateien an den Client auszuliefern</description>
     <li>Unter Linux l&ouml;st die Verwendung von <code>sendfile</code>
     in Verbindung mit bestimmten Netzwerkkarten und IPv6
     TCP-Checksummenfehler aus.</li>
+    <li>Unter Linux auf Itanium-Systemen kommt sendfile unter Umst&auml;nden
+    nicht mit Dateien gr&ouml;&szlig;er als 2GB klar.</li>
     </ul>
 
     <p>Bei Serverkonfigurationen, die f&uuml;r dieses Problam
@@ -2461,6 +2482,12 @@ bestimmten Verzeichnis verf&uuml;gbar sind</description>
     mit vorangestelltem <code>-</code> wird aus den derzeit g&uuml;ltigen
     Optionen entfernt.</p>
 
+    <note type="warning"><title>Warnung</title>
+    <p>Die Vermischung von Optionen mit <code>+</code> oder <code>-</code> mit
+    Optionen ohne diese (Zeichen) ist keine g&uuml;ltige Syntax und f&uuml;hrt
+    mit hoher Wahrscheinlichkeit zu unerwarteten Effekten.</p>
+    </note>
+
     <p>So wird zum Beispiel ohne die Zeichen <code>+</code> und
     <code>-</code></p>
 
@@ -3094,6 +3121,10 @@ einen Handler</description>
     <p>Sie k&ouml;nnen eine zuvor definierte
     <directive>SetHandler</directive>-Anweisung aufheben, indem Sie den Wert
     <code>None</code> verwenden.</p>
+    <p><strong>Hinweis:</strong> SetHandler setzt die Standard-Handler
+    au&szlig;er Kraft und unterdr&uuml;ckt gewohnte Verhaltensweisen, wie
+    beispielsweise die Behandlung von URLs, die auf einen Schr&auml;gstrich
+    (/) enden als Verzeichnisse oder (die Auslieferung von) Index-Dateien.</p>
 </usage>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 </directivesynopsis>
