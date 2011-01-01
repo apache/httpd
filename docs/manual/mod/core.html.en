@@ -909,8 +909,8 @@ version 2.3.9.</td></tr>
     support.</li>
     <li>On Linux the use of sendfile triggers TCP-checksum
     offloading bugs on certain networking cards when using IPv6.</li>
-    <li>On Linux on Itanium, sendfile may be unable to handle files
-    over 2GB in size.</li>
+    <li>On Linux on Itanium, <code>sendfile</code> may be unable to handle
+    files over 2GB in size.</li>
     <li>With a network-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code> (e.g., NFS, SMB, CIFS, FUSE),
     the kernel may be unable to serve the network file through
     its own cache.</li>
@@ -3661,9 +3661,10 @@ handler</td></tr>
 
     <p>You can override an earlier defined <code class="directive">SetHandler</code>
     directive by using the value <code>None</code>.</p>
-    <p><strong>Note:</strong> because SetHandler overrides default handlers,
+
+    <div class="note">Because <code class="directive">SetHandler</code> overrides default handlers,
     normal behaviour such as handling of URLs ending in a slash (/) as
-    directories or index files is suppressed.</p>
+    directories or index files is suppressed.</div>
 
 <h3>See also</h3>
 <ul>

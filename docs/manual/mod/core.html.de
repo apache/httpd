@@ -417,7 +417,11 @@ erlaubt sind.</td></tr>
       Dokumenttypen (<code class="directive"><a href="#defaulttype">DefaultType</a></code>, <code class="directive"><a href="#errordocument">ErrorDocument</a></code>, <code class="directive"><a href="#forcetype">ForceType</a></code>, <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>,
       <code class="directive"><a href="#sethandler">SetHandler</a></code>, <code class="directive"><a href="#setinputfilter">SetInputFilter</a></code>, <code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code>, und
       <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>-Direktiven Add* und Remove*
-      <em>usw.</em>).</dd>
+      <em>usw.</em>), Metadaten (<code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>, <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookieexpires">CookieExpires</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiedomain">CookieDomain</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiestyle">CookieStyle</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookietracking">CookieTracking</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiename">CookieName</a></code>),
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Direktiven <code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriteoptions">RewriteOptions</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) und
+      <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> aus
+      <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>.
+      </dd>
 
       <dt>Indexes</dt>
 
@@ -896,6 +900,8 @@ Dateien an den Client auszuliefern</td></tr>
     <li>Unter Linux löst die Verwendung von <code>sendfile</code>
     in Verbindung mit bestimmten Netzwerkkarten und IPv6
     TCP-Checksummenfehler aus.</li>
+    <li>Unter Linux auf Itanium-Systemen kommt sendfile unter Umständen
+    nicht mit Dateien größer als 2GB klar.</li>
     </ul>
 
     <p>Bei Serverkonfigurationen, die für dieses Problam
@@ -2444,6 +2450,12 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
     mit vorangestelltem <code>-</code> wird aus den derzeit gültigen
     Optionen entfernt.</p>
 
+    <div class="warning"><h3>Warnung</h3>
+    <p>Die Vermischung von Optionen mit <code>+</code> oder <code>-</code> mit
+    Optionen ohne diese (Zeichen) ist keine gültige Syntax und führt
+    mit hoher Wahrscheinlichkeit zu unerwarteten Effekten.</p>
+    </div>
+
     <p>So wird zum Beispiel ohne die Zeichen <code>+</code> und
     <code>-</code></p>
 
@@ -3016,6 +3028,10 @@ einen Handler</td></tr>
     <p>Sie können eine zuvor definierte
     <code class="directive">SetHandler</code>-Anweisung aufheben, indem Sie den Wert
     <code>None</code> verwenden.</p>
+    <p><strong>Hinweis:</strong> SetHandler setzt die Standard-Handler
+    außer Kraft und unterdrückt gewohnte Verhaltensweisen, wie
+    beispielsweise die Behandlung von URLs, die auf einen Schrägstrich
+    (/) enden als Verzeichnisse oder (die Auslieferung von) Index-Dateien.</p>
 
 <h3>Siehe auch</h3>
 <ul>
