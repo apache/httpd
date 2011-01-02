@@ -1,6 +1,6 @@
 # Include for creating start/stop/restart NCF scripts.
 
-instscripts:: FORCE $(INSTALL)/$(BASEDIR)/ap2start.ncf $(INSTALL)/$(BASEDIR)/ap2rest.ncf $(INSTALL)/$(BASEDIR)/ap2stop.ncf $(INSTALL)/$(BASEDIR)/ap2prod.ncf
+instscripts:: FORCE $(INSTALL)/$(BASEDIR)/ap2start.ncf $(INSTALL)/$(BASEDIR)/ap2rest.ncf $(INSTALL)/$(BASEDIR)/ap2stop.ncf
 
 $(INSTALL)/$(BASEDIR)/ap2start.ncf:
 	@echo # NCF to start Apache 2.x in own address space > $@
@@ -9,7 +9,7 @@ $(INSTALL)/$(BASEDIR)/ap2start.ncf:
 	@echo # search add SYS:/$(BASEDIR) >> $@
 	@echo load address space = $(BASEDIR) SYS:/$(BASEDIR)/apache2 >> $@
 	@echo # If you have problems with 3rd-party modules try to load in OS space. >> $@
-	@echo # load $(BASEDIR)/apache2 >> $@
+	@echo # load SYS:/$(BASEDIR)/apache2 >> $@
 	@echo. >> $@
 
 $(INSTALL)/$(BASEDIR)/ap2rest.ncf:
