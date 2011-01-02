@@ -360,7 +360,7 @@ char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
     len = BIO_read(bio, result, len);
     result[len] = NUL;
     BIO_free(bio);
-    ap_xlate_proto_from_ascii(value, len);
+    ap_xlate_proto_from_ascii(result, len);
     return result;
 }
 
