@@ -3884,8 +3884,7 @@ port</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures how the server determines its own name and
-port</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures how the server determines its own port</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UseCanonicalPhysicalPort On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>UseCanonicalPhysicalPort Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
@@ -3903,20 +3902,27 @@ port</td></tr>
     relying on all configured information to construct a valid port number.</p>
 
     <div class="note"><h3>Note</h3>
-    <p>The ordering of when the physical port is used is as follows:<br /><br />
-     <code>UseCanonicalName On</code></p>
-     <ul>
-      <li>Port provided in <code>Servername</code></li>
+    <p>The ordering of the lookup when the physical port is used is as
+    follows:</p>
+     <dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
+      <li>Port provided in <code class="directive"><a href="#servername">Servername</a></code></li>
       <li>Physical port</li>
       <li>Default port</li>
-     </ul>
-     <code>UseCanonicalName Off | DNS</code>
-     <ul>
+     </ol>
+     </dd>
+     <dt><code>UseCanonicalName Off | DNS</code></dt>
+     <dd>
+     <ol>
       <li>Parsed port from <code>Host:</code> header</li>
       <li>Physical port</li>
-      <li>Port provided in <code>Servername</code></li>
+      <li>Port provided in <code class="directive"><a href="#servername">Servername</a></code></li>
       <li>Default port</li>
-     </ul>
+     </ol>
+     </dd>
+     </dl>
 
     <p>With <code>UseCanonicalPhysicalPort Off</code>, the
     physical ports are removed from the ordering.</p>

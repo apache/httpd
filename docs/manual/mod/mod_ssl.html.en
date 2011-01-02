@@ -159,6 +159,10 @@ attribute.  For example, where the server certificate subject DN
 included two OU fields, <code>SSL_SERVER_S_DN_OU_0</code> and
 <code>SSL_SERVER_S_DN_OU_1</code> could be used to reference each.</p>
 
+<p>The format of the <em>*_DN</em> variables has changed in Apache HTTPD
+2.3.11. See the <code>LegacyDNStringFormat</code> option for
+<code class="directive"><a href="#ssloptions">SSLOptions</a></code> for details.</p>
+
 <p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
 and later.</p>
 
@@ -963,6 +967,21 @@ The available <em>option</em>s are:</p>
     granular (but still safe) parameter checks. Nevertheless these granular
     checks sometimes maybe not what the user expects, so enable this on a
     per-directory basis only, please.</p>
+</li>
+<li><code>LegacyDNStringFormat</code>
+    <p>
+    This option influences how values of the
+    <code>SSL_{CLIENT,SERVER}_{I,S}_DN</code> variables are formatted. Since
+    version 2.3.11, Apache HTTPD uses a RFC 2253 compatible format by
+    default. This uses commas as delimiters between the attributes, allows the
+    use of non-ASCII characters (which are converted to UTF8), escapes
+    various special characters with backslashes, and sorts the attributes
+    with the "C" attribute last.</p>
+
+    <p>If <code>LegacyDNStringFormat</code> is set, the old format will be
+    used which sorts the "C" attribute first, uses slashes as separators, and
+    does not handle non-ASCII and special characters in any consistent way.
+    </p>
 </li>
 </ul>
 <div class="example"><h3>Example</h3><p><code>
