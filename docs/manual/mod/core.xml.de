@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 330409:1054303 (outdated) -->
+<!-- English Revision: 344972:1054303 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -2923,8 +2923,9 @@ selbst zu identifizieren</description>
     Hostname im <code>Host:</code>-Header der Anfrage auftauchen muss,
     damit sie diesem virtuellen Host zugeordnet wird.</p>
 
-    <p>Lesen Sie bitte die Beschreibung der Direktive <directive
-    module="core">UseCanonicalName</directive> f&uuml;r Einstellungen, die
+    <p>Lesen Sie bitte die Beschreibung der Direktiven <directive
+    module="core">UseCanonicalName</directive> und <directive module="core"
+    >UseCanonicalPhysicalPort</directive> f&uuml;r Einstellungen, die
     bestimmen, ob selbstreferenzierende URLs (z.B. vom Modul
     <module>mod_dir</module>) auf den angegebenen Port zeigen oder auf die
     Portnummern die in der Anfrage des Clients angegeben ist.</p>
@@ -2935,6 +2936,7 @@ Apache</a></seealso>
 <seealso><a href="../vhosts/">Apache-Dokumentation zu virtuellen
   Hosts</a></seealso>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
 <seealso><directive module="core">NameVirtualHost</directive></seealso>
 <seealso><directive module="core">ServerAlias</directive></seealso>
 </directivesynopsis>
@@ -3315,6 +3317,54 @@ ermittelt</description>
       in Ordnung sein.</p>
     </note>
 </usage>
+<seealso><directive module="core">ServerName</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UseCanonicalPhysicalPort</name>
+<description>Bestimmt, wie der Server seinen eigenen Namen und Port
+ermittelt</description>
+<syntax>UseCanonicalPhysicalPort On|Off</syntax>
+<default>UseCanonicalPhysicalPort Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>In vielen Situationen muss der Apache eine
+    <em>selbstreferenzierende</em> URL zusammenbauen, d.h. eine URL, die auf
+    den selben Server zur&uuml;ck verweist. Wenn der Apache f&uuml;r die
+    <directive module="core">UseCanonicalName</directive>-Direktive den Port
+    bestimmt, wird mit <code>UseCanonicalPhysicalPort On</code> die
+    tats&auml;chlich f&uuml;r die Anfrage verwendete physische Portnummer
+    in Betracht gezogen. Mit <code>UseCanonicalPhysicalPort Off</code>
+    verl&auml;&szlig;t sich der Apache nur auf die Konfiguration, um eine
+    g&uuml;ltige Portnummer zu bestimmen und l&auml;&szlig;t die
+    physische Portnummer au&szlig;er acht.</p>
+
+    <note><title>Hinweis</title>
+    <p>Wenn der physische Port verwendet wird, ist die Reihenfolge wie
+    folgt:<br /><br />
+     <code>UseCanonicalName On</code></p>
+     <ul>
+      <li>Der in <code>Servername</code> angegebene Port</li>
+      <li>Der physische Port</li>
+      <li>Der Standardport</li>
+     </ul>
+     <code>UseCanonicalName Off | DNS</code>
+     <ul>
+      <li>Der Port, der aus dem <code>Host:</code>-Header gewonnen wurde</li>
+      <li>Der physische Port</li>
+      <li>Der in <code>Servername</code> angegebene Port</li>
+      <li>Der Standardport</li>
+     </ul>
+
+    <p>Bei <code>UseCanonicalPhysicalPort Off</code> werden die physischen
+    Ports aus der Suchreihe entfernt.</p>
+    </note>
+
+</usage>
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><directive module="core">ServerName</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
