@@ -151,7 +151,7 @@
     common method is <code>Basic</code>, and this is the method
     implemented by <module>mod_auth</module>. It is important to be aware,
     however, that Basic authentication sends the password from the client to
-    the browser unencrypted. This method should therefore not be used for
+    the server unencrypted. This method should therefore not be used for
     highly sensitive data. Apache supports one other authentication method:
     <code>AuthType Digest</code>. This method is implemented by <module
     >mod_auth_digest</module> and is much more secure. Only the most recent
