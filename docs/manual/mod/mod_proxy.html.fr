@@ -1012,26 +1012,34 @@ l'espace d'URLs du serveur local</td></tr>
 
     </div> 
 
-    <p>Depuis Apache 2.1, il est possible d'utiliser un jeu de
-    connexions vers un serveur d'arrière-plan. Il est possible de
-    personnaliser ce jeu de connexions à l'aide des paramètres
-    <code>clé=valeur</code>. La valeur par défaut du nombre maximum de
-    connexions correspond au nombre de threads par processus pour le MPM
-    utilisé. Pour le MPM Prefork, cette valeur est toujours 1, alors que
-    pour le MPM Worker, elle est contrôlée par la directive
-    <code class="directive">ThreadsPerChild</code>.</p>
+    <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
+    les jeux de connexions vers un serveur d'arrière-plan. Ainsi, les
+    connexions créées à la demande peuvent être conservées dans un
+    jeu pour une utilisation ultérieure. Les limites de la taille
+    du jeu de connexions et d'autres paramètres peuvent être définis au
+    niveau de la directive <code class="directive">ProxyPass</code> via des
+    arguments <code>clé=valeur</code> décrits dans la table ci-dessous.</p>
 
-    <p>La définition de <code>min</code> va déterminer le nombre minimum
-    de connexions ouvertes vers le serveur d'arrière-plan. Des
-    connexions pourront être créées à la demande à concurrence du
-    maximum relatif, soit <code>smax</code>. Toute
-    connexion au dessus de <code>smax</code> se verra attribuer une
-    durée de vie <code>ttl</code>. Apache ne créera jamais plus de
-    connexions vers le serveur d'arrière-plan que le maximum absolu,
-    soit <code>max</code>.</p>
+    <p>Par défaut, mod_proxy permettra de conserver le nombre maximum de
+    connexions pouvant être utilisées simultanément par le processus
+    enfant concerné du serveur web. Vous pouvez utiliser le paramètre
+    <code>max</code> pour réduire ce nombre par rapport à la valeur par
+    défaut. Vous pouvez aussi utiliser le paramètre <code>ttl</code>
+    pour définir une durée de vie optionnelle ; ainsi, les connections
+    qui n'ont pas été utilisées au bout de <code>ttl</code> secondes
+    seront fermées. Le paramètre <code>ttl</code> permet aussi
+    d'empêcher l'utilisation d'une connexion susceptible d'être fermée
+    suite à l'expiration de la durée de vie des connexions persistantes
+    sur le serveur d'arrière-plan.</p>
+
+    <p>Le jeu de connexions est maintenu au niveau de chaque processus
+    enfant du serveur web, et <code>max</code> et les autres paramètres
+    ne font l'objet d'aucune coordination entre les différents processus
+    enfants, sauf bien sur dans le cas où un seul processus enfant est
+    permis par la configuration du module multiprocessus.</p>
 
     <div class="example"><p><code>
-        ProxyPass /exemple http://backend.example.com smax=5 max=20 ttl=120 retry=300
+        ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
     </code></p></div>
 
     <table>
@@ -1040,25 +1048,31 @@ l'espace d'URLs du serveur local</td></tr>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Nombre minimum de connexions ouvertes vers le serveur
-	d'arrière-plan.</td></tr>
+        <td>Nombre minimum d'entrées dans le jeu de connexions, sans
+	rapport avec le nombre réel de connexions. Ne doit être modifié
+	par rapport à la valeur par défaut que dans des circonstances
+	spéciales où la mémoire du tas associée aux connexions
+	d'arrière-plan doit être préallouée ou conservée.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
-        <td>Nombre maximum absolu de connexions autorisées vers le
-	serveur d'arrière-plan. La valeur par défaut du nombre maximum
-	absolu de connexions correspond au nombre de threads par
-	processus pour le MPM utilisé. Pour le MPM Prefork, la valeur
-	est toujours 1, alors que pour le MPM Worker, elle est contrôlée
-	par la directive <code class="directive">ThreadsPerChild</code>. Apache
-	ne créera jamais plus de connexions vers le serveur
-	d'arrière-plan que le maximum absolu.</td></tr>
+        <td>Nombre maximum de connexions permises vers le serveur
+	d'arrière-plan. La valeur par défaut pour cette limite est le
+	nombre de threads par processus pour le module multiprocessus
+	actif. Pour le MPM Prefork, la valeur est toujours 1, alors que
+	pour les autres, on peut la contrôler via la directive
+	<code class="directive">ThreadsPerChild</code>.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Des connexions pourront être créées à la demande jusqu'au
-	maximum relatif. Toute connexion en surnombre par rapport au
-	maximum relatif se verra attribuer une durée de vie
-	<code>ttl</code>.
-    </td></tr>
+        <td>Les entrées conservées du jeu de connexions au dessus de
+	cette limite sont libérées au cours de certaines opérations si
+	elles n'ont pas été utilisées au bout de leur durée de vie
+	définie par le paramètre <code>ttl</code>. Si l'entrée du jeu de
+	connexions est associée à une connexion, cette dernière sera
+	alors fermée. Ce paramètre ne doit être modifié par rapport à la
+	valeur par défaut que dans des circonstances spéciales où les
+	entrées du jeu de connexions, et toutes connexions associées qui
+	ont dépassé leur durée de vie doivent être respectivement
+	libérées ou fermées plus impérativement.</td></tr>
     <tr><td>acquire</td>
         <td>-</td>
         <td>Cette clé permet de définir le délai maximum d'attente pour
@@ -1193,10 +1207,10 @@ l'espace d'URLs du serveur local</td></tr>
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td>Durée de vie des connexions inactives en surnombre par
-	rapport aux <code>smax</code> premières connexions en secondes.
-	Apache fermera toutes les connexions qui n'ont pas été utilisées
-	pendant ce laps de temps.
+        <td>Durée de vie des connexions inactives et des entrées
+	associées du jeu de connexions. Celles qui sont inutilisées au
+	bout de <code>ttl</code> secondes seront respectivement fermées
+	et libérées.
     </td></tr>
 
     </table>
@@ -1850,6 +1864,6 @@ mandatées</td></tr>
 <a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2010 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
 </body></html>
