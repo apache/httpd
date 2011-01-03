@@ -209,7 +209,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
      2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304-fix.patch
      +1: minfrin, jim, covener
-     rpluem says: Trunks patch works, but fails to compile in 2.2.x.
+     rpluem says: The new patch works, but still compiles with a waring:
+                  mod_cache.c: In function `cache_save_filter':
+                  mod_cache.c:628: warning: implicit declaration of function `cache_remove_lock'
+                  This will cause mod_cache.so to be unusable.
+                  Instead of cache_remove_lock it must be ap_cache_remove_lock.
 
 PATCHES/ISSUES THAT ARE STALLED
 
