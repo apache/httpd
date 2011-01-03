@@ -891,7 +891,7 @@ client connections</td></tr>
       of adjustment should only be made in a test environment which allows
       the full set of web server processing can be exercised, as there
       may be infrequent requests which require more stack to process.
-      The minumum required stack size strongly depends on the modules
+      The minimum required stack size strongly depends on the modules
       used, but any change in the web server configuration can invalidate
       the current <code class="directive">ThreadStackSize</code> setting.</li>
     </ul>
@@ -965,6 +965,6 @@ requests</td></tr>
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
