@@ -84,7 +84,8 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-
+* Wait for a release of APR-UTIL 1.3.11 as 1.3.10 contains a regression within
+  the bundled expat make files (https://issues.apache.org/bugzilla/show_bug.cgi?id=50162)
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
