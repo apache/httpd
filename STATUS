@@ -207,7 +207,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      uncacheable.
      PR45341
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
-     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304-fix.patch
+     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304-fix-2.patch
      +1: minfrin, jim, covener
      rpluem says: The new patch works, but still compiles with a waring:
                   mod_cache.c: In function `cache_save_filter':
