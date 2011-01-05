@@ -1950,7 +1950,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         /* Ack! Phbtt! Die! User aborted! */
                         /* Only close backend if we haven't got all from the
                          * backend. Furthermore if *backend_ptr is NULL it is no
-                         * longer save to fiddle around with backend as it might
+                         * longer safe to fiddle around with backend as it might
                          * be already in use by another thread.
                          */
                         if (*backend_ptr) {
