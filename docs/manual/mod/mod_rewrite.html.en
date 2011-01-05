@@ -877,24 +877,55 @@ later</td></tr>
       RewriteRule.</p>
 
 <div class="note"><h3>What is matched?</h3>
-      <p>The <em>Pattern</em> will initially be matched against the part of the
-      URL after the hostname and port, and before the query string.</p>
+      <p>In <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> context, 
+      The <em>Pattern</em> will initially be matched against the part of the
+      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").</p>
 
-      <p>When the RewriteRule appears in per-directory (htaccess) context, the 
-      <em>Pattern</em> is matched against what remains of the URL after removing
-      the prefix that lead Apache httpd to the current rules (see the 
-      <code class="directive"><a href="#rewritebase">RewriteBase</a></code>).  The removed prefix
-      always ends with a slash, meaning the matching occurs against a string which
-      never has a leading slash.  A <em>Pattern</em> with <code>^/</code> never
-      matches in per-directory context.</p>
-
+      <p>In <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> and htaccess context,
+      the <em>Pattern</em> will initially be matched against the  
+      <em>filesystem</em> path, after removing the prefix that lead the server
+      to the current <code class="directive">RewriteRule</code> (e.g. "app1/index.html" 
+      or "index.html" depending on where the directives are defined).</p>
+       
       <p>If you wish to match against the hostname, port, or query string, use a
       <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
-      <code>%{QUERY_STRING}</code> variables respectively. If you wish to 
-      match against the full URL-path in a per-directory (htaccess) RewriteRule, 
-      use the <code>%{REQUEST_URI}</code> variable.</p>
+      <code>%{QUERY_STRING}</code> variables respectively.</p>
 
+</div>
+
+<div class="note"><h3>Per-directory Rewrites</h3>
+<ul>
+<li>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections, with some additional
+complexity.</li>
+
+<li>To enable the rewrite engine in this context, you need to set
+"<code>RewriteEngine On</code>" <strong>and</strong>
+"<code>Options FollowSymLinks</code>" must be enabled. If your
+administrator has disabled override of <code>FollowSymLinks</code> for
+a user's directory, then you cannot use the rewrite engine. This
+restriction is required for security reasons.</li>
+
+<li>When using the rewrite engine in <code>.htaccess</code> files the
+per-directory prefix (which always is the same for a specific
+directory) is automatically <em>removed</em> for the RewriteRule pattern matching
+and automatically <em>added</em> after any relative (not starting with a
+slash or protocol name) substitution encounters the end of a rule set.  
+See the <code class="directive"><a href="#rewritebase">RewriteBase</a></code> 
+directive for more information regarding what prefix will be added back to 
+relative substutions.</li>
+
+<li> If you wish to match against the full URL-path in a per-directory 
+(htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
+a <code class="directive">RewriteCond</code>.</li>
+
+<li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
+<em>never</em> has a leading slash.  Therefore, A <em>Pattern</em> with <code>^/</code> never
+matches in per-directory context.</li>
+
+<li>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections, this
+should never be necessary and is unsupported.</li>
+</ul>
 </div>
 
       <p>For some hints on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
@@ -1152,39 +1183,6 @@ flag is used on the <code class="directive"><a href="#rewriterule">RewriteRule</
 directive.</p>
 </div>
 
-<div class="note"><h3>Per-directory Rewrites</h3>
-
-<p>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files.  To enable the
-rewrite engine for these files you need to set
-"<code>RewriteEngine On</code>" <strong>and</strong>
-"<code>Options FollowSymLinks</code>" must be enabled. If your
-administrator has disabled override of <code>FollowSymLinks</code> for
-a user's directory, then you cannot use the rewrite engine. This
-restriction is required for security reasons.</p>
-
-<p>When using the rewrite engine in <code>.htaccess</code> files the
-per-directory prefix (which always is the same for a specific
-directory) is automatically <em>removed</em> for the pattern matching
-and automatically <em>added</em> after the substitution has been
-done. This feature is essential for many sorts of rewriting; without
-this, you would always have to match the parent directory, which is
-not always possible.  There is one exception: If a substitution string
-starts with <code>http://</code>, then the directory prefix will
-<strong>not</strong> be added, and an external redirect (or proxy
-throughput, if using flag <strong>P</strong>) is forced.  See the
-<code class="directive"><a href="#rewritebase">RewriteBase</a></code> directive for
-more information.</p>
-
-<p>The rewrite engine may also be used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections with the same
-prefix-matching rules as would be applied to <code>.htaccess</code>
-files.  It is usually simpler, however, to avoid the prefix substitution
-complication by putting the rewrite rules in the main server or
-virtual host context, rather than in a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section.</p>
-
-<p>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections, this
-should never be necessary and is unsupported.</p>
-
-</div>
 
      <p>Here are all possible substitution combinations and their
       meanings:</p>
