@@ -37,7 +37,7 @@ the load on backends</td></tr>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authncachecontext">AuthnCacheContext</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authncacheprovider">AuthnCacheProvider</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authncacheprovidefor">AuthnCacheProvideFor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authncachesocache">AuthnCacheSOCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authncachetimeout">AuthnCacheTimeout</a></li>
 </ul>
@@ -74,7 +74,7 @@ the load on backends</td></tr>
     <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> will usually benefit from this cache.</p>
     <p>The basic rules to cache for a provider are:</p>
     <ol><li>Include the provider you're cacheing for in an
-            <code class="directive">AuthnCacheProvider</code> directive.</li>
+            <code class="directive">AuthnCacheProvideFor</code> directive.</li>
         <li>List <var>socache</var> ahead of the provider you're
             cacheing for in your <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> directive.</li>
     </ol>
@@ -86,7 +86,7 @@ the load on backends</td></tr>
         AuthName "Cached Authentication Example"
         AuthBasicProvider socache dbd
         AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
-        AuthnCacheProvider dbd
+        AuthnCacheProvideFor dbd
         AuthnCacheContext dbd-authn-example
         AuthnCacheSOCache dbm
         Require valid-user
@@ -96,7 +96,7 @@ the load on backends</td></tr>
 <div class="section">
 <h2><a name="dev" id="dev">Cacheing with custom modules</a></h2>
     <p>Module developers should note that their modules must be enabled
-    for cacheing with mod_authn_cache.  A single optional API function
+    for cacheing with mod_authn_socache.  A single optional API function
     <var>ap_authn_cache_store</var> is provided to cache credentials
     a provider has just looked up or generated.  Usage examples are
     available in <a href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072">r957072</a>, in which three authn providers are enabled for cacheing.</p>
@@ -132,10 +132,10 @@ the load on backends</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthnCacheProvider" id="AuthnCacheProvider">AuthnCacheProvider</a> <a name="authncacheprovider" id="authncacheprovider">Directive</a></h2>
+<div class="directive-section"><h2><a name="AuthnCacheProvideFor" id="AuthnCacheProvideFor">AuthnCacheProvideFor</a> <a name="authncacheprovidefor" id="authncacheprovidefor">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify which authn provider(s) to cache for</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheProvider <var>authn-provider</var> [...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheProvideFor <var>authn-provider</var> [...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -144,13 +144,13 @@ the load on backends</td></tr>
 </table>
     <p>This directive specifies an authentication provider or providers
     to cache for.  Credentials found by a provider not listed in an
-    AuthnCacheProvider directive will not be cached.</p>
+    AuthnCacheProvideFor directive will not be cached.</p>
 
     <p>For example, to cache credentials found by <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
     or by a custom provider <var>myprovider</var>, but leave those looked
     up by lightweight providers like file or dbm lookup alone:</p>
     <div class="example"><p><code>
-        AuthnCacheProvider dbd myprovider
+        AuthnCacheProvideFor dbd myprovider
     </code></p></div>
 
 </div>
