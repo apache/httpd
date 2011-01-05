@@ -1813,7 +1813,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * TE, so that they are preserved accordingly for
              * ap_http_filter to know where to end.
              */
-            backend->r->headers_in = apr_table_copy(backend->r->pool, r->headers_out);
+            backend->r->headers_in = apr_table_clone(backend->r->pool, r->headers_out);
             /*
              * Restore Transfer-Encoding header from response if we saved
              * one before and there is none left. We need it for the
