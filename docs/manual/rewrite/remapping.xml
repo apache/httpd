@@ -286,7 +286,7 @@ hostname(s).</p>
 &lt;/VirtualHost&gt;
 </pre></example>
 
-<p>You can alternatively accomplis this using the 
+<p>You can alternatively accomplish this using the 
 <directive module="core" type="section">If</directive>
 directive:</p>
 

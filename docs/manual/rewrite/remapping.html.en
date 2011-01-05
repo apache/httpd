@@ -284,7 +284,7 @@ hostname(s).</p>
 &lt;/VirtualHost&gt;
 </pre></div>
 
-<p>You can alternatively accomplis this using the 
+<p>You can alternatively accomplish this using the 
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
 directive:</p>
 

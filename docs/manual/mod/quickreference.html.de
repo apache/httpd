@@ -218,7 +218,7 @@ sections.</td></tr>
 <tr><td><a href="mod_authn_core.html#authname">AuthName <var>auth-domain</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Authorization realm for use in HTTP
 authentication</td></tr>
 <tr class="odd"><td><a href="mod_authn_socache.html#authncachecontext">AuthnCacheContext <var>directory|server|custom-string</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a context string for use in the cache key</td></tr>
-<tr><td><a href="mod_authn_socache.html#authncacheprovider">AuthnCacheProvider <var>authn-provider</var> [...]</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify which authn provider(s) to cache for</td></tr>
+<tr><td><a href="mod_authn_socache.html#authncacheprovidefor">AuthnCacheProvideFor <var>authn-provider</var> [...]</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify which authn provider(s) to cache for</td></tr>
 <tr class="odd"><td><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache <var>provider-name</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Select socache backend provider to use</td></tr>
 <tr><td><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout <var>timeout</var> (seconds)</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Set a timeout for cache entries</td></tr>
 <tr class="odd"><td><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
