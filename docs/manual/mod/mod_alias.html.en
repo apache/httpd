@@ -140,7 +140,10 @@
 
     <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
 
-    <p>then the url <code>/icons</code> will not be aliased.</p>
+    <p>then the url <code>/icons</code> will not be aliased, as it lacks
+    that trailing /. Likewise, if you omit the slash on the
+    <var>url-path</var> then you must also omit it from the
+    <var>file-path</var>.</p>
 
     <p>Note that you may need to specify additional <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections which
     cover the <em>destination</em> of aliases.  Aliasing occurs before
