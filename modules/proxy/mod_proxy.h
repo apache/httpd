@@ -211,8 +211,8 @@ typedef struct {
 
 typedef struct {
     conn_rec     *connection;
-    request_rec  *r;           /* Request record of the frontend request
-                                * which the backend currently answers. */
+    request_rec  *r;           /* Request record of the backend request
+                                * that is used over the backend connection. */
     proxy_worker *worker;      /* Connection pool this connection belongs to */
     apr_pool_t   *pool;        /* Subpool for hostname and addr data */
     const char   *hostname;
