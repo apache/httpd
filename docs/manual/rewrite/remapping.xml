@@ -286,11 +286,32 @@ hostname(s).</p>
 &lt;/VirtualHost&gt;
 </pre></example>
 
-<p>However, there are situations where you'll need to use mod_rewrite -
-primarily when you don't have access to the main server configuration
-file, or if you wish to do this dynamically for a larger number of
-hostnames. For these situations, you might use one of the recipes
-below.</p>
+<p>You can alternatively accomplis this using the 
+<directive module="core" type="section">If</directive>
+directive:</p>
+
+<example>
+&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;<br />
+<indent>
+Redirect / http://www.example.com/
+</indent>
+&lt;/If&gt;
+</example>
+
+<p>Or, for example, to redirect a portion of your site to HTTPS, you
+might do the following:</p>
+
+<example>
+&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;<br />
+<indent>
+Redirect /admin/ https://www.example.com/admin/
+</indent>
+&lt;/If&gt;
+</example>
+
+<p>If, for whatever reason, you still want to use <code>mod_rewrite</code>
+- if, for example, you need this to work with a larger set of RewriteRules - 
+you might use one of the recipes below.</p>
 
 <p>For sites running on a port other than 80:</p>
 <example><pre>
