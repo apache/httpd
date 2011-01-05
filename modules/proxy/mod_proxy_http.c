@@ -1397,7 +1397,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     char buffer[HUGE_STRING_LEN];
     const char *buf;
     char keepchar;
-    request_rec *rp;
     apr_bucket *e;
     apr_bucket_brigade *bb, *tmp_bb;
     apr_bucket_brigade *pass_bb;
@@ -1448,21 +1447,21 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      * filter chain
      */
 
-    rp = ap_proxy_make_fake_req(origin, r);
+    backend->r = ap_proxy_make_fake_req(origin, r);
     /* In case anyone needs to know, this is a fake request that is really a
      * response.
      */
-    rp->proxyreq = PROXYREQ_RESPONSE;
+    backend->r->proxyreq = PROXYREQ_RESPONSE;
     tmp_bb = apr_brigade_create(p, c->bucket_alloc);
     do {
         apr_status_t rc;
 
         apr_brigade_cleanup(bb);
 
-        rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), rp, 0, &len);
+        rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), backend->r, 0, &len);
         if (len == 0) {
             /* handle one potential stray CRLF */
-            rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), rp, 0, &len);
+            rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), backend->r, 0, &len);
         }
         if (len <= 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
@@ -1590,7 +1589,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          "Set-Cookie", NULL);
 
             /* shove the headers direct into r->headers_out */
-            ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin,
+            ap_proxy_read_headers(r, backend->r, buffer, sizeof(buffer), origin,
                                   &pread_len);
 
             if (r->headers_out == NULL) {
@@ -1656,7 +1655,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 ap_set_content_type(r, apr_pstrdup(p, buf));
             }
             if (!ap_is_HTTP_INFO(proxy_status)) {
-                ap_proxy_pre_http_request(origin, rp);
+                ap_proxy_pre_http_request(origin, backend->r);
             }
 
             /* Clear hop-by-hop headers */
@@ -1798,7 +1797,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             if (!r->header_only && /* not HEAD request */
                 (proxy_status != HTTP_NO_CONTENT) && /* not 204 */
                 (proxy_status != HTTP_NOT_MODIFIED)) { /* not 304 */
-                ap_discard_request_body(rp);
+                ap_discard_request_body(backend->r);
             }
             return proxy_status;
         }
@@ -1814,14 +1813,14 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * TE, so that they are preserved accordingly for
              * ap_http_filter to know where to end.
              */
-            rp->headers_in = apr_table_copy(r->pool, r->headers_out);
+            backend->r->headers_in = apr_table_copy(backend->r->pool, r->headers_out);
             /*
              * Restore Transfer-Encoding header from response if we saved
              * one before and there is none left. We need it for the
              * ap_http_filter. See above.
              */
-            if (te && !apr_table_get(rp->headers_in, "Transfer-Encoding")) {
-                apr_table_add(rp->headers_in, "Transfer-Encoding", te);
+            if (te && !apr_table_get(backend->r->headers_in, "Transfer-Encoding")) {
+                apr_table_add(backend->r->headers_in, "Transfer-Encoding", te);
             }
 
             apr_table_unset(r->headers_out,"Transfer-Encoding");
@@ -1853,7 +1852,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     apr_off_t readbytes;
                     apr_status_t rv;
 
-                    rv = ap_get_brigade(rp->input_filters, bb,
+                    rv = ap_get_brigade(backend->r->input_filters, bb,
                                         AP_MODE_READBYTES, mode,
                                         conf->io_buffer_size);
 

@@ -348,16 +348,20 @@ PROXY_DECLARE(const char *)
 
 PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
 {
-    request_rec *rp = apr_pcalloc(r->pool, sizeof(*r));
+    apr_pool_t *pool;
 
-    rp->pool            = r->pool;
+    apr_pool_create(&pool, c->pool);
+
+    request_rec *rp = apr_pcalloc(pool, sizeof(*r));
+
+    rp->pool            = pool;
     rp->status          = HTTP_OK;
 
-    rp->headers_in      = apr_table_make(r->pool, 50);
-    rp->subprocess_env  = apr_table_make(r->pool, 50);
-    rp->headers_out     = apr_table_make(r->pool, 12);
-    rp->err_headers_out = apr_table_make(r->pool, 5);
-    rp->notes           = apr_table_make(r->pool, 5);
+    rp->headers_in      = apr_table_make(pool, 50);
+    rp->subprocess_env  = apr_table_make(pool, 50);
+    rp->headers_out     = apr_table_make(pool, 12);
+    rp->err_headers_out = apr_table_make(pool, 5);
+    rp->notes           = apr_table_make(pool, 5);
 
     rp->server = r->server;
     rp->proxyreq = r->proxyreq;
@@ -368,7 +372,7 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->proto_output_filters  = c->output_filters;
     rp->proto_input_filters   = c->input_filters;
 
-    rp->request_config  = ap_create_request_config(r->pool);
+    rp->request_config  = ap_create_request_config(pool);
     proxy_run_create_req(r, rp);
 
     return rp;
@@ -1722,6 +1726,11 @@ static apr_status_t connection_cleanup(void *theconn)
      */
     if (!worker->cp) {
         return APR_SUCCESS;
+    }
+
+    if (conn->r) {
+        apr_pool_destroy(conn->r->pool);
+        conn->r = NULL;
     }
 
 #if APR_HAS_THREADS

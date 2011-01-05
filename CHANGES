@@ -2,6 +2,13 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_proxy_http: Allocate the fake backend request from a child pool
+     of the backend connection, instead of misusing the pool of the frontend
+     request. Fixes a thread safety issue where buckets set aside in the
+     backend connection leak into other threads, and then disappear when
+     the frontend request is cleaned up, in turn causing corrupted buckets
+     to make other threads spin. [Graham Leggett]
+
   *) mod_ssl: Change the format of the SSL_{CLIENT,SERVER}_{I,S}_DN variables
      to be RFC 2253 compatible, convert non-ASCII characters to UTF8, and 
      escape other special characters with backslashes. The old format can
