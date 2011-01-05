@@ -33,6 +33,13 @@
     </p>
   </summary>
 
+<seealso><directive module="core">If</directive></seealso>
+<seealso><module>mod_rewrite</module></seealso>
+<seealso><module>mod_include</module></seealso>
+<seealso><module>mod_setenvif</module></seealso>
+<seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><directive module="mod_filter">FilterProvider</directive></seealso>
+
   <section id="grammar">
     <title>Grammar in BNF notation</title>
 <blockquote>
