@@ -84,7 +84,7 @@ the load on backends</description>
 
 <section id="dev"><title>Cacheing with custom modules</title>
     <p>Module developers should note that their modules must be enabled
-    for cacheing with mod_authn_cache.  A single optional API function
+    for cacheing with mod_authn_socache.  A single optional API function
     <var>ap_authn_cache_store</var> is provided to cache credentials
     a provider has just looked up or generated.  Usage examples are
     available in <a
