@@ -60,7 +60,7 @@ the load on backends</description>
     <module>mod_authn_dbd</module> will usually benefit from this cache.</p>
     <p>The basic rules to cache for a provider are:</p>
     <ol><li>Include the provider you're cacheing for in an
-            <directive>AuthnCacheProvider</directive> directive.</li>
+            <directive>AuthnCacheProvideFor</directive> directive.</li>
         <li>List <var>socache</var> ahead of the provider you're
             cacheing for in your <directive module="mod_auth_basic"
             >AuthBasicProvider</directive> or <directive module=
@@ -74,7 +74,7 @@ the load on backends</description>
         AuthName "Cached Authentication Example"
         AuthBasicProvider socache dbd
         AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
-        AuthnCacheProvider dbd
+        AuthnCacheProvideFor dbd
         AuthnCacheContext dbd-authn-example
         AuthnCacheSOCache dbm
         Require valid-user
@@ -110,9 +110,9 @@ the load on backends</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthnCacheProvider</name>
+<name>AuthnCacheProvideFor</name>
 <description>Specify which authn provider(s) to cache for</description>
-<syntax>AuthnCacheProvider <var>authn-provider</var> [...]</syntax>
+<syntax>AuthnCacheProvideFor <var>authn-provider</var> [...]</syntax>
 <default>None</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
@@ -120,13 +120,13 @@ the load on backends</description>
 <usage>
     <p>This directive specifies an authentication provider or providers
     to cache for.  Credentials found by a provider not listed in an
-    AuthnCacheProvider directive will not be cached.</p>
+    AuthnCacheProvideFor directive will not be cached.</p>
 
     <p>For example, to cache credentials found by <module>mod_authn_dbd</module>
     or by a custom provider <var>myprovider</var>, but leave those looked
     up by lightweight providers like file or dbm lookup alone:</p>
     <example>
-        AuthnCacheProvider dbd myprovider
+        AuthnCacheProvideFor dbd myprovider
     </example>
 </usage>
 </directivesynopsis>

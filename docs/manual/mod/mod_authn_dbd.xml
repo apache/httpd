@@ -93,7 +93,7 @@ DBDExptime 300
   AuthBasicProvider socache dbd
 
   # Also required for caching: tell the cache to cache dbd lookups!
-  AuthnCacheProvider dbd
+  AuthnCacheProvideFor dbd
   AuthnCacheContext my-server
 
   # mod_authz_core configuration

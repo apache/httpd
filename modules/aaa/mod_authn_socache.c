@@ -205,7 +205,7 @@ static const command_rec authn_cache_cmds[] =
     AP_INIT_TAKE1("AuthnCacheSOCache", authn_cache_socache, NULL, RSRC_CONF,
                   "socache provider for authn cache"),
     /* per-dir stuff */
-    AP_INIT_ITERATE("AuthnCacheProvider", authn_cache_setprovider, NULL,
+    AP_INIT_ITERATE("AuthnCacheProvideFor", authn_cache_setprovider, NULL,
                     OR_AUTHCFG, "Determine what authn providers to cache for"),
     AP_INIT_TAKE1("AuthnCacheTimeout", authn_cache_timeout, NULL,
                   OR_AUTHCFG, "Timeout (secs) for cached credentials"),

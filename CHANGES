@@ -2,6 +2,13 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_authn_socache: change directive name from AuthnCacheProvider
+     to AuthnCacheProvideFor.  The term "provider" is overloaded in
+     this module, and we should avoid confusion between the provider
+     of a backend (AuthnCacheSOCache) and the authn provider(s) for
+     which this module provides cacheing (AuthnCacheProvideFor).
+     [Nick Kew]
+
   *) mod_proxy_http: Allocate the fake backend request from a child pool
      of the backend connection, instead of misusing the pool of the frontend
      request. Fixes a thread safety issue where buckets set aside in the
