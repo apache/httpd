@@ -899,7 +899,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 <note><title>Per-directory Rewrites</title>
 <ul>
 <li>The rewrite engine may be used in <a
-href="../howto/htaccess.html">.htaccess</a> files in <directive type="section"
+href="../howto/htaccess.html">.htaccess</a> files and in <directive type="section"
 module="core">Directory</directive> sections, with some additional
 complexity.</li>
 
@@ -924,7 +924,7 @@ relative substutions.</li>
 a <directive>RewriteCond</directive>.</li>
 
 <li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
-<em>never</em> has a leading slash.  Therefore, A <em>Pattern</em> with <code>^/</code> never
+<em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
 matches in per-directory context.</li>
 
 <li>Although rewrite rules are syntactically permitted in <directive
