@@ -113,16 +113,20 @@ URLs on the fly</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
       <p>The <code class="directive">RewriteBase</code> directive explicitly
-      sets the base URL-path (not filesystem directory path!)  for per-directory rewrites.
+      sets the base URL-path (not filesystem directory path!)  for per-directory rewrites
+      that result in the substitution of a relative path.
       When you use a <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
       in a <code>.htaccess</code> file, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> strips off
       the local directory prefix before processing, then rewrites the rest of 
       the URL. When the rewrite is completed, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-      automatically adds the local directory prefix back on to the path.</p>
+      automatically adds the local directory prefix (or the
+      <code class="directive">RewriteBase</code> when set) back on to the substitution 
+      before handing it back to the core of the server as if it were the original
+      URL.</p>
       
       <p>This directive is <em>required</em> for per-directory rewrites whose context
       is a directory made available via the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
-      directive.</p>
+      directive, when the substitution uses a relative path.</p>
 
       <p>If your URL path does not exist verbatim on the filesystem,
       or isn't directly under your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>,
@@ -896,7 +900,7 @@ later</td></tr>
 
 <div class="note"><h3>Per-directory Rewrites</h3>
 <ul>
-<li>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections, with some additional
+<li>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files and in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections, with some additional
 complexity.</li>
 
 <li>To enable the rewrite engine in this context, you need to set
@@ -920,7 +924,7 @@ relative substutions.</li>
 a <code class="directive">RewriteCond</code>.</li>
 
 <li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
-<em>never</em> has a leading slash.  Therefore, A <em>Pattern</em> with <code>^/</code> never
+<em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
 matches in per-directory context.</li>
 
 <li>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections, this
