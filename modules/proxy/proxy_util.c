@@ -349,10 +349,11 @@ PROXY_DECLARE(const char *)
 PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
 {
     apr_pool_t *pool;
+    request_rec *rp;
 
     apr_pool_create(&pool, c->pool);
 
-    request_rec *rp = apr_pcalloc(pool, sizeof(*r));
+    rp = apr_pcalloc(pool, sizeof(*r));
 
     rp->pool            = pool;
     rp->status          = HTTP_OK;
