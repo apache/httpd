@@ -683,6 +683,15 @@ Apache</a></seealso>
 
     <p>If set to the value of <code>0</code>, the server will use the
     OS default.</p>
+
+    <p>Further configuration of your operating system may be required to elicit
+    better performance on high speed, high latency connections.</p>
+
+    <note> <p> On some operating systems, changes in TCP behavior resulting
+    from a larger <directive>SendBufferSize</directive> may not be seen unless
+    <directive module="core">EnableSendfile</directive> is set to OFF.  This
+    interaction applies only to static files.</p> </note>
+
 </usage>
 </directivesynopsis>
 
