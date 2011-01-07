@@ -512,6 +512,15 @@ Apache HTTP Server</a></li>
     <p>If set to the value of <code>0</code>, the server will use the
     default value provided by your OS.</p>
 
+    <p>Further configuration of your operating system may be required to elicit
+    better performance on high speed, high latency connections.</p>
+
+    <div class="note"> <p> On some operating systems, changes in TCP behavior resulting
+    from a larger <code class="directive">SendBufferSize</code> may not be seen unless
+    <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> is set to OFF.  This
+    interaction applies only to static files.</p> </div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ServerLimit" id="ServerLimit">ServerLimit</a> <a name="serverlimit" id="serverlimit">Directive</a></h2>
