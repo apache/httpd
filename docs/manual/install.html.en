@@ -52,6 +52,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">Customize</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#upgrading">Upgrading</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#3p">Third-party packages</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="programs/configure.html">Configure the source tree</a></li><li><a href="invoking.html">Starting Apache httpd</a></li><li><a href="stopping.html">Stopping and Restarting</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -383,6 +384,30 @@ $ tar xvf httpd-<em>NN</em>.tar
     <div class="example"><p><code>
     $ ./config.nice --prefix=/home/test/apache --with-port=90
     </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="3p" id="3p">Third-party packages</a></h2>
+
+    <p>A large number of third parties provide their own packaged
+    distributions of the Apache HTTP Server for installation on
+    particular platforms. This includes the various Linux distributions,
+    various third-party Windows packages, Mac OS X, Solaris, and many
+    more.</p>
+
+    <p>Our software license not only permits, but encourages, this kind
+    of redistribution. However, it does result in a situation where the
+    configuration layout and defaults on your installation of the server
+    may differ from what is stated in the documentation. While
+    unfortunate, this situation is not likely to change any time
+    soon.</p>
+
+    <p>A <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    of these third-party distrubutions</a> is maintained in the HTTP
+    Server wiki, and should reflect the current state of these
+    third-party distributions. However, you will need to familiarize
+    yourself with your particular platform's package management and
+    installation procedures.</p>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
