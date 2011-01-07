@@ -386,7 +386,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     apr_shm_t *shm;
     apr_size_t descsize = PADME(sizeof(sharedslotdesc_t));
     apr_status_t rv;
-        
+
     if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
     }
