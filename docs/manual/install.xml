@@ -388,4 +388,28 @@ $ tar xvf httpd-<em>NN</em>.tar
     $ ./config.nice --prefix=/home/test/apache --with-port=90
     </example>
 </section>
+<section id="3p"><title>Third-party packages</title>
+
+    <p>A large number of third parties provide their own packaged
+    distributions of the Apache HTTP Server for installation on
+    particular platforms. This includes the various Linux distributions,
+    various third-party Windows packages, Mac OS X, Solaris, and many
+    more.</p>
+
+    <p>Our software license not only permits, but encourages, this kind
+    of redistribution. However, it does result in a situation where the
+    configuration layout and defaults on your installation of the server
+    may differ from what is stated in the documentation. While
+    unfortunate, this situation is not likely to change any time
+    soon.</p>
+
+    <p>A <a
+    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    of these third-party distrubutions</a> is maintained in the HTTP
+    Server wiki, and should reflect the current state of these
+    third-party distributions. However, you will need to familiarize
+    yourself with your particular platform's package management and
+    installation procedures.</p>
+
+</section>
 </manualpage>
