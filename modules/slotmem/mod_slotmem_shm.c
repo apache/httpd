@@ -42,7 +42,8 @@
 #endif
 #endif
 
-#define AP_SLOTMEM_IS_PREGRAB(t) (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
+#define AP_SLOTMEM_IS_PREGRAB(t) (t->slot.type & AP_SLOTMEM_TYPE_PREGRAB)
+#define PADME(x) ((((x) / sizeof(void *)) + 1 ) * sizeof(void *))
 
 /* The description of the slots to reuse the slotmem */
 typedef struct {
@@ -57,14 +58,16 @@ struct ap_slotmem_instance_t {
     void                 *base;       /* data set start */
     apr_pool_t           *gpool;      /* per segment global pool */
     char                 *inuse;      /* in-use flag table*/
-    sharedslotdesc_t     desc;        /* per slot desc */
+    sharedslotdesc_t     slot;        /* per slot desc */
     struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
 };
 
 
 /*
  * Memory layout:
- *     sharedslotdesc_t | slots | isuse array
+ *     sharedslotdesc_t [padding] | slots [padding] | isuse array [padding]
+ *
+ * We pad to ensure the pointer conversions don't mangle things
  */
 
 /* global pool and list of slotmem we are handling */
@@ -154,8 +157,8 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
         if (rv != APR_SUCCESS) {
             return;
         }
-        nbytes = (slotmem->desc.size * slotmem->desc.num) +
-                 (slotmem->desc.num * sizeof(char));
+        nbytes = (slotmem->slot.size * slotmem->slot.num) +
+                 (slotmem->slot.num * sizeof(char));
         apr_file_write(fp, slotmem->base, &nbytes);
         apr_file_close(fp);
     }
@@ -218,7 +221,7 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem,
                                   void *data, apr_pool_t *pool)
 {
     unsigned int i;
-    void *ptr;
+    char *ptr;
     char *inuse;
     apr_status_t retval = APR_SUCCESS;
 
@@ -228,14 +231,14 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem,
 
     ptr = mem->base;
     inuse = mem->inuse;
-    for (i = 0; i < mem->desc.num; i++, inuse++) {
+    for (i = 0; i < mem->slot.num; i++, inuse++) {
         if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
            (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
             retval = func((void *) ptr, data, pool);
             if (retval != APR_SUCCESS)
                 break;
         }
-        ptr += mem->desc.size;
+        ptr += mem->slot.size;
     }
     return retval;
 }
@@ -246,17 +249,23 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                                    ap_slotmem_type_t type, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
-    void *ptr;
-    sharedslotdesc_t desc;
+    char *ptr;
+    sharedslotdesc_t slot;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
     const char *fname;
     apr_shm_t *shm;
-    apr_size_t basesize = (item_size * item_num);
-    apr_size_t size = sizeof(sharedslotdesc_t) +
-                      (item_num * sizeof(char)) + basesize;
+    apr_size_t basesize;
+    apr_size_t descsize = PADME(sizeof(sharedslotdesc_t));
+    apr_size_t inusesize = item_num * sizeof(char);
+    apr_size_t size;
     apr_status_t rv;
 
+    item_size = PADME(item_size);
+    inusesize = PADME(inusesize);
+    basesize = (item_size * item_num);
+    size = descsize + basesize + inusesize;
+     
     if (gpool == NULL)
         return APR_ENOSHMAVAIL;
     if (name) {
@@ -300,15 +309,15 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             return APR_EINVAL;
         }
         ptr = apr_shm_baseaddr_get(shm);
-        memcpy(&desc, ptr, sizeof(desc));
-        if (desc.size != item_size || desc.num != item_num) {
+        memcpy(&slot, ptr, sizeof(slot));
+        if (slot.size != item_size || slot.num != item_num) {
             apr_shm_detach(shm);
             return APR_EINVAL;
         }
-        ptr = ptr + sizeof(desc);
+        ptr = ptr + descsize;
     }
     else {
-        apr_size_t dsize = size - sizeof(sharedslotdesc_t);
+        apr_size_t dsize = size - descsize;
         if (name && name[0] != ':') {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, size, fname, gpool);
@@ -329,11 +338,11 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             unixd_set_shm_perms(fname);
         }
         ptr = apr_shm_baseaddr_get(shm);
-        desc.size = item_size;
-        desc.num = item_num;
-        desc.type = type;
-        memcpy(ptr, &desc, sizeof(desc));
-        ptr = ptr + sizeof(desc);
+        slot.size = item_size;
+        slot.num = item_num;
+        slot.type = type;
+        memcpy(ptr, &slot, sizeof(slot));
+        ptr = ptr + descsize;
         memset(ptr, 0, dsize);
         /*
          * TODO: Error check the below... What error makes
@@ -349,7 +358,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
     res->base = ptr;
-    res->desc = desc;
+    res->slot = slot;
     res->gpool = gpool;
     res->next = NULL;
     res->inuse = ptr + basesize;
@@ -369,14 +378,15 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
                                    unsigned int *item_num, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
-    void *ptr;
+    char *ptr;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
-    sharedslotdesc_t desc;
+    sharedslotdesc_t slot;
     const char *fname;
     apr_shm_t *shm;
+    apr_size_t descsize = PADME(sizeof(sharedslotdesc_t));
     apr_status_t rv;
-
+        
     if (gpool == NULL) {
         return APR_ENOSHMAVAIL;
     }
@@ -398,8 +408,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
             if (strcmp(next->name, fname) == 0) {
                 /* we already have it */
                 *new = next;
-                *item_size = next->desc.size;
-                *item_num = next->desc.num;
+                *item_size = next->slot.size;
+                *item_num = next->slot.num;
                 return APR_SUCCESS;
             }
             if (!next->next) {
@@ -417,8 +427,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
 
     /* Read the description of the slotmem */
     ptr = apr_shm_baseaddr_get(shm);
-    memcpy(&desc, ptr, sizeof(desc));
-    ptr = ptr + sizeof(desc);
+    memcpy(&slot, ptr, sizeof(slot));
+    ptr = ptr + descsize;
 
     /* For the chained slotmem stuff */
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
@@ -426,9 +436,9 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
     res->base = ptr;
-    res->desc = desc;
+    res->slot = slot;
     res->gpool = gpool;
-    res->inuse = ptr + (desc.size * desc.num);
+    res->inuse = ptr + (slot.size * slot.num);
     res->next = NULL;
     if (globallistmem == NULL) {
         globallistmem = res;
@@ -438,24 +448,24 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     }
 
     *new = res;
-    *item_size = desc.size;
-    *item_num = desc.num;
+    *item_size = slot.size;
+    *item_num = slot.num;
     return APR_SUCCESS;
 }
 
 static apr_status_t slotmem_dptr(ap_slotmem_instance_t *slot,
                                  unsigned int id, void **mem)
 {
-    void *ptr;
+    char *ptr;
 
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
-    if (id >= slot->desc.num) {
+    if (id >= slot->slot.num) {
         return APR_ENOSHMAVAIL;
     }
 
-    ptr = slot->base + slot->desc.size * id;
+    ptr = (char *) slot->base + slot->slot.size * id;
     if (!ptr) {
         return APR_ENOSHMAVAIL;
     }
@@ -475,14 +485,14 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id,
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->desc.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->slot.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
     }
-    memcpy(dest, ptr, dest_len); /* bounds check? */
+    memcpy(dest, (char *)ptr, dest_len); /* bounds check? */
     return APR_SUCCESS;
 }
 
@@ -498,25 +508,25 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id,
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->desc.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->slot.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
     }
-    memcpy(ptr, src, src_len); /* bounds check? */
+    memcpy((char *)ptr, src, src_len); /* bounds check? */
     return APR_SUCCESS;
 }
 
 static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 {
-    return slot->desc.num;
+    return slot->slot.num;
 }
 
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
 {
-    return slot->desc.size;
+    return slot->slot.size;
 }
 
 /*
@@ -534,12 +544,12 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 
     inuse = slot->inuse;
 
-    for (i = 0; i < slot->desc.num; i++, inuse++) {
+    for (i = 0; i < slot->slot.num; i++, inuse++) {
         if (!*inuse) {
             break;
         }
     }
-    if (i >= slot->desc.num) {
+    if (i >= slot->slot.num) {
         return APR_ENOSHMAVAIL;
     }
     *inuse = 1;
@@ -558,7 +568,7 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
 
     inuse = slot->inuse;
 
-    if (id >= slot->desc.num || !inuse[id] ) {
+    if (id >= slot->slot.num || !inuse[id] ) {
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
