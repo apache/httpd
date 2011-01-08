@@ -345,6 +345,9 @@
     efficient disk access and hence higher performance.  It may be
     set only once for the entire server; it cannot be configured
     per virtual-host.</p>
+
+    <note>This directive should be used with caution as a crash might
+    cause loss of logging data.</note>
 </usage>
 </directivesynopsis>
 
