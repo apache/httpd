@@ -730,21 +730,28 @@ static authz_status apply_authz_sections(request_rec *r,
                  * AUTHZ_DENIED_NO_USER if providing a user may change the
                  * result, AUTHZ_DENIED otherwise.
                  */
-                if (!(section->op == AUTHZ_LOGIC_AND
-                      && auth_result == AUTHZ_DENIED
-                      && child_result == AUTHZ_DENIED_NO_USER)
-                    && !(section->op == AUTHZ_LOGIC_OR
-                         && auth_result == AUTHZ_DENIED_NO_USER
-                         && child_result == AUTHZ_DENIED) )
-                {
-                    auth_result = child_result;
+                if (section->op == AUTHZ_LOGIC_AND) {
+                    if (child_result == AUTHZ_DENIED) {
+                        auth_result = child_result;
+                        break;
+                    }
+                    if ((child_result == AUTHZ_DENIED_NO_USER
+                         && auth_result != AUTHZ_DENIED)
+                        || (auth_result == AUTHZ_NEUTRAL)) {
+                        auth_result = child_result;
+                    }
                 }
-
-                if ((section->op == AUTHZ_LOGIC_AND
-                     && child_result == AUTHZ_DENIED)
-                    || (section->op == AUTHZ_LOGIC_OR
-                        && child_result == AUTHZ_GRANTED)) {
-                    break;
+                else {
+                    /* AUTHZ_LOGIC_OR */
+                    if (child_result == AUTHZ_GRANTED) {
+                        auth_result = child_result;
+                        break;
+                    }
+                    if ((child_result == AUTHZ_DENIED_NO_USER
+                         && auth_result == AUTHZ_DENIED)
+                        || (auth_result == AUTHZ_NEUTRAL)) {
+                        auth_result = child_result;
+                    }
                 }
             }
 

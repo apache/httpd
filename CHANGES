@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_authz_core: Fix bug in merging logic if user-based and non-user-based
+     authorization directives were mixed. [Stefan Fritsch]
+
   *) mod_authn_socache: change directive name from AuthnCacheProvider
      to AuthnCacheProvideFor.  The term "provider" is overloaded in
      this module, and we should avoid confusion between the provider
