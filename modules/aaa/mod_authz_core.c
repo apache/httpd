@@ -73,6 +73,9 @@ struct authz_section_conf {
     apr_int64_t limited;
     authz_logic_op op;
     int negate;
+    /** true if this is not a real container but produced by AuthMerging;
+     *  only used for logging */
+    int is_merged;
     authz_section_conf *first;
     authz_section_conf *next;
 };
@@ -136,6 +139,7 @@ static void *merge_authz_core_dir_config(apr_pool_t *p,
                     base->section->limited | new->section->limited;
 
                 section->op = new->op;
+                section->is_merged = 1;
 
                 section->first = apr_pmemdup(p, base->section,
                                              sizeof(*base->section));
@@ -325,7 +329,7 @@ static const char* format_authz_result(authz_status result)
             : ((result == AUTHZ_GRANTED)
                ? "granted"
                : ((result == AUTHZ_DENIED_NO_USER)
-                  ? "denied (no authenticated user)"
+                  ? "denied (no authenticated user yet)"
                   : "neutral")));
 }
 
@@ -336,11 +340,11 @@ static const char* format_authz_command(apr_pool_t *p,
             ? apr_pstrcat(p, "Require ", (section->negate ? "not " : ""),
                           section->provider_name, " ",
                           section->provider_args, NULL)
-            : apr_pstrcat(p, "<Require",
+            : apr_pstrcat(p, section->is_merged ? "AuthMerging " : "<Require",
                           ((section->op == AUTHZ_LOGIC_AND)
                            ? (section->negate ? "NotAll" : "All")
                            : (section->negate ? "None" : "Any")),
-                          ">", NULL));
+                          section->is_merged ? "" : ">", NULL));
 }
 
 static authz_section_conf* create_default_section(apr_pool_t *p)
