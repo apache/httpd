@@ -86,7 +86,7 @@
 
 module AP_MODULE_DECLARE_DATA status_module;
 
-static int server_limit, thread_limit;
+static int server_limit, thread_limit, threads_per_child, max_servers;
 
 /* Implement 'ap_run_status_hook'. */
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap, STATUS, int, status_hook,
@@ -172,7 +172,11 @@ static const struct stat_opt status_options[] = /* see #defines above */
     {STAT_OPT_END, NULL, NULL}
 };
 
-static char status_flags[SERVER_NUM_STATUS];
+/* add another state for slots above the MaxClients setting */
+#define SERVER_DISABLED SERVER_NUM_STATUS
+#define MOD_STATUS_NUM_STATUS (SERVER_NUM_STATUS+1)
+
+static char status_flags[MOD_STATUS_NUM_STATUS];
 
 static int status_handler(request_rec *r)
 {
@@ -293,7 +297,12 @@ static int status_handler(request_rec *r)
 
             ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
             res = ws_record->status;
-            stat_buffer[indx] = status_flags[res];
+
+            if ((i >= max_servers || j >= threads_per_child)
+                && (res == SERVER_DEAD))
+                stat_buffer[indx] = status_flags[SERVER_DISABLED];
+            else
+                stat_buffer[indx] = status_flags[res];
 
             if (!ps_record->quiescing
                 && ps_record->pid) {
@@ -483,7 +492,8 @@ static int status_handler(request_rec *r)
         ap_rputs("\"<b><code>L</code></b>\" Logging, \n", r);
         ap_rputs("\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n", r);
         ap_rputs("\"<b><code>I</code></b>\" Idle cleanup of worker, \n", r);
-        ap_rputs("\"<b><code>.</code></b>\" Open slot with no current process</p>\n", r);
+        ap_rputs("\"<b><code>.</code></b>\" Open slot with no current process,<br />\n", r);
+        ap_rputs("\"<b><code> </code></b>\" Slot disabled by MaxClients setting</p>\n", r);
         ap_rputs("<p />\n", r);
         if (!ap_extended_status) {
             int j;
@@ -809,8 +819,14 @@ static int status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     status_flags[SERVER_CLOSING] = 'C';
     status_flags[SERVER_GRACEFUL] = 'G';
     status_flags[SERVER_IDLE_KILL] = 'I';
+    status_flags[SERVER_DISABLED] = ' ';
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
+    ap_mpm_query(AP_MPMQ_MAX_THREADS, &threads_per_child);
+    /* work around buggy MPMs */
+    if (threads_per_child == 0)
+        threads_per_child = 1;
+    ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_servers);
     return OK;
 }
 

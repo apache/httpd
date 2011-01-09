@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_status: Don't show slots which are disabled by MaxClients as open.
+     PR: 47022 [Jordi Prats <jordi prats gmail com>, Stefan Fritsch]
+
   *) mpm_prefork: Fix ap_mpm_query results for AP_MPMQ_MAX_DAEMONS and
      AP_MPMQ_MAX_THREADS.
 
