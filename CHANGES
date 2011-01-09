@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mpm_prefork: Fix ap_mpm_query results for AP_MPMQ_MAX_DAEMONS and
+     AP_MPMQ_MAX_THREADS.
+
   *) mod_authz_core: Fix bug in merging logic if user-based and non-user-based
      authorization directives were mixed. [Stefan Fritsch]
 
