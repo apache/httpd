@@ -263,7 +263,7 @@ static int prefork_query(int query_code, int *result, apr_status_t *rv)
         *result = HARD_THREAD_LIMIT;
         break;
     case AP_MPMQ_MAX_THREADS:
-        *result = 0;
+        *result = 1;
         break;
     case AP_MPMQ_MIN_SPARE_DAEMONS:
         *result = ap_daemons_min_free;
@@ -281,7 +281,7 @@ static int prefork_query(int query_code, int *result, apr_status_t *rv)
         *result = ap_max_requests_per_child;
         break;
     case AP_MPMQ_MAX_DAEMONS:
-        *result = server_limit;
+        *result = ap_daemons_limit;
         break;
     case AP_MPMQ_MPM_STATE:
         *result = mpm_state;
