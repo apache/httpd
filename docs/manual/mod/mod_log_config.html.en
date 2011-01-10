@@ -320,8 +320,8 @@
     set only once for the entire server; it cannot be configured
     per virtual-host.</p>
 
-    <div class="note">This directive is experimental and should be used with
-    caution.</div>
+    <div class="note">This directive should be used with caution as a crash might
+    cause loss of logging data.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

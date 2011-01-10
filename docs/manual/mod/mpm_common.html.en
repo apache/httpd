@@ -730,6 +730,12 @@ client connections</td></tr>
       The minimum required stack size strongly depends on the modules
       used, but any change in the web server configuration can invalidate
       the current <code class="directive">ThreadStackSize</code> setting.</li>
+
+      <li>On Linux, this directive can only be used to increase the default
+      stack size, as the underlying system call uses the value as a 
+      <em>minimum</em> stack size.  The (often large) soft limit for 
+      <code>ulimit -s</code> (8MB if unlimited) is used as the default stack 
+      size.</li>
     </ul>
 
     <div class="note">It is recommended to not reduce <code class="directive">ThreadStackSize</code>
