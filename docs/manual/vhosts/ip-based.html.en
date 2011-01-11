@@ -60,7 +60,7 @@ Virtual Hosts</a> to help you decide.  </p>
     most commonly used to set them up), and/or using multiple
     port numbers.</p>
 
-    <p> In the terminology of Apache HTTP Servr, using a single IP address 
+    <p> In the terminology of Apache HTTP Server, using a single IP address 
     but multiple TCP ports, is also IP-based virtual hosting.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -111,7 +111,7 @@ Virtual Hosts</a> to help you decide.  </p>
     that daemon services. e.g.</p>
 
     <div class="example"><p><code>
-    Listen www.example.com:80
+    Listen 192.0.2.100:80
     </code></p></div>
 
     <p>It is recommended that you use an IP address instead of a
