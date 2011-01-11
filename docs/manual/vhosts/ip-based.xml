@@ -109,7 +109,7 @@ Virtual Hosts</a> to help you decide.  </p>
     that daemon services. e.g.</p>
 
     <example>
-    Listen www.example.com:80
+    Listen 192.0.2.100:80
     </example>
 
     <p>It is recommended that you use an IP address instead of a
