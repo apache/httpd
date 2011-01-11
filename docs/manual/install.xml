@@ -388,7 +388,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     $ ./config.nice --prefix=/home/test/apache --with-port=90
     </example>
 </section>
-<section id="3p"><title>Third-party packages</title>
+<section id="thirdp"><title>Third-party packages</title>
 
     <p>A large number of third parties provide their own packaged
     distributions of the Apache HTTP Server for installation on
