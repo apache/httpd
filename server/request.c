@@ -333,9 +333,7 @@ static walk_cache_t *prep_walk_cache(apr_size_t t, request_rec *r)
      * that exists; if not, then create a new walk cache.
      */
     note = ap_get_request_note(r, t);
-    if (!note) {
-        return NULL;
-    }
+    AP_DEBUG_ASSERT(note != NULL);
 
     copy_cache = prev_cache = *note;
     count = prev_cache ? (prev_cache->count + 1) : 0;
