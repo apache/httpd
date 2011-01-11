@@ -224,7 +224,8 @@
  * 20100606.0 (2.3.6-dev)  Make ap_log_*error macro wrappers around
  *                         ap_log_*error_ to save argument preparation and
  *                         function call overhead.
- *                         Introduce per-module loglevels
+ *                         Introduce per-module loglevels, including new APIs
+ *                         APLOG_USE_MODULE() and AP_DECLARE_MODULE().
  * 20100606.1 (2.3.6-dev)  Added extended timestamp formatting via
  *                         ap_recent_ctime_ex().
  * 20100609.0 (2.3.6-dev)  Dropped ap_body_to_table due to missing constraints.
