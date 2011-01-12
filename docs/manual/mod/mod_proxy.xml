@@ -994,8 +994,9 @@ expressions</description>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Time to live for inactive connections and associated connection
-        pool entries, in seconds.  Those which are unused for at least
-        <code>ttl</code> seconds will be destroyed.
+        pool entries, in seconds.  Once reaching this limit, a
+        connection will not be used again; it will be closed at some
+        later time.
     </td></tr>
 
     </table>
