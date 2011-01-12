@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      hook thought some module had overridden it. PR 50349.
      Trunk patch: http://svn.apache.org/viewvc?rev=1043023&view=rev
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-accept_pathinfo_redir.diff
-    +1 covener, rpluem
+    +1 covener, rpluem, jorton
 
    * mod_proxy_http: Become aware of ssl handshake failures when attempting
      to pass request. Makes it so workers are put in error state when a
@@ -217,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     must not ignore it but reply with 501 per RFC 2616 9.6.
     PR: 42978
     Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=1026746view=rev
+      http://svn.apache.org/viewvc?rev=1026746&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
     +1: rpluem,
@@ -227,10 +227,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     instead of ignoring the Content-Range.
     PR: 49825
     Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=1026743view=rev
+      http://svn.apache.org/viewvc?rev=1026743&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jorton
 
 PATCHES/ISSUES THAT ARE STALLED
 
