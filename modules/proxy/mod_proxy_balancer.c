@@ -849,15 +849,20 @@ static int balancer_handler(request_rec *r)
         wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
     }
 
-#if 0
+
     /* Check that the supplied nonce matches this server's nonce;
      * otherwise ignore all parameters, to prevent a CSRF attack. */
-    if (*balancer_nonce &&
-        ((name = apr_table_get(params, "nonce")) == NULL
-         || strcmp(balancer_nonce, name) != 0)) {
+    if (!bsel ||
+        (*bsel->nonce &&
+         (
+          (name = apr_table_get(params, "nonce")) == NULL ||
+          strcmp(bsel->nonce, name) != 0
+         )
+        )
+       ) {
         apr_table_clear(params);
     }
-#endif
+
     /* First set the params */
     /*
      * Note that it is not possible set the proxy_balancer because it is not
