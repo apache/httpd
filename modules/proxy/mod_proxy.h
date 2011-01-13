@@ -42,6 +42,7 @@
 #include "apr_reslist.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_global_mutex.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -123,8 +124,8 @@ typedef struct {
     apr_array_header_t *aliases;
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
-    apr_array_header_t *workers;
-    apr_array_header_t *balancers;
+    apr_array_header_t *workers;    /* non-balancer workers, eg ProxyPass http://example.com */
+    apr_array_header_t *balancers;  /* list of balancers @ config time */
     proxy_worker       *forward;    /* forward proxy worker */
     proxy_worker       *reverse;    /* reverse "module-driven" proxy worker */
     const char *domain;     /* domain name to use in absence of a domain name in the request */
@@ -151,7 +152,8 @@ typedef struct {
         status_full
     } proxy_status;             /* Status display options */
     apr_sockaddr_t *source_address;
-
+    apr_global_mutex_t  *mutex; /* global lock for updating lb params */
+    
     int req_set:1;
     int viaopt_set:1;
     int recv_buffer_size_set:1;
@@ -274,80 +276,74 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 
 /* default worker retry timeout in seconds */
 #define PROXY_WORKER_DEFAULT_RETRY  60
-#define PROXY_WORKER_MAX_ROUTE_SIZ  63
+#define PROXY_WORKER_MAX_SCHEME_SIZE  16
+#define PROXY_WORKER_MAX_ROUTE_SIZE   64
+#define PROXY_WORKER_MAX_NAME_SIZE    96
+
 
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
-    apr_time_t      error_time; /* time of the last error */
+    char      name[PROXY_WORKER_MAX_NAME_SIZE];
+    char      scheme[PROXY_WORKER_MAX_SCHEME_SIZE];   /* scheme to use ajp|http|https */
+    char      hostname[PROXY_WORKER_MAX_ROUTE_SIZE];  /* remote backend address */
+    char      route[PROXY_WORKER_MAX_ROUTE_SIZE];     /* balancing route */
+    char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
+    char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
+    int             lbset;      /* load balancer cluster set */
     int             status;
     int             retries;    /* number of retries on this worker */
     int             lbstatus;   /* Current lbstatus */
     int             lbfactor;   /* dynamic lbfactor */
-    apr_off_t       transferred;/* Number of bytes transferred to remote */
-    apr_off_t       read;       /* Number of bytes read from remote */
-    apr_size_t      elected;    /* Number of times the worker was elected */
-    char            route[PROXY_WORKER_MAX_ROUTE_SIZ+1];
-    char            redirect[PROXY_WORKER_MAX_ROUTE_SIZ+1];
-    void            *context;   /* general purpose storage */
-    apr_size_t      busy;       /* busyness factor */
-    int             lbset;      /* load balancer cluster set */
-    unsigned int    apr_hash;      /* hash #0 of worker name */
-    unsigned int    our_hash;      /* hash #1 of worker name. Why 2? hash collisions. */
-} proxy_worker_stat;
-
-/* Worker configuration */
-struct proxy_worker {
-    const char      *name;
-    const char      *scheme;    /* scheme to use ajp|http|https */
-    const char      *hostname;  /* remote backend address */
-    const char      *route;     /* balancing route */
-    const char      *redirect;  /* temporary balancing redirection route */
-    int             id;         /* scoreboard id */
-    int             status;     /* temporary worker status */
-    int             lbfactor;   /* initial load balancing factor */
-    int             lbset;      /* load balancer cluster set */
     int             min;        /* Desired minimum number of available connections */
     int             smax;       /* Soft maximum on the total number of connections */
     int             hmax;       /* Hard maximum on the total number of connections */
+    int             flush_wait; /* poll wait time in microseconds if flush_auto */
+    int             index;      /* shm array index */
+    unsigned int    apr_hash;    /* hash #0 of worker name */
+    unsigned int    our_hash;    /* hash #1 of worker name. Why 2? hash collisions. */
+    enum {
+        flush_off,
+        flush_on,
+        flush_auto
+    } flush_packets;           /* control AJP flushing */
+    apr_time_t      error_time; /* time of the last error */
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
                                  * may be available while exceeding the soft limit */
-    apr_interval_time_t retry;  /* retry interval */
+    apr_interval_time_t retry;   /* retry interval */
     apr_interval_time_t timeout; /* connection timeout */
     apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
     apr_interval_time_t ping_timeout;
     apr_interval_time_t conn_timeout;
     apr_size_t      recv_buffer_size;
     apr_size_t      io_buffer_size;
+    apr_size_t      elected;    /* Number of times the worker was elected */
+    apr_size_t      busy;       /* busyness factor */
     apr_port_t      port;
-    char            keepalive;
-    char            disablereuse;
-    int             is_address_reusable:1;
-    proxy_conn_pool     *cp;        /* Connection pool to use */
-    proxy_worker_stat   *s;         /* Shared data */
-    void            *opaque;    /* per scheme worker data */
+    apr_off_t       transferred;/* Number of bytes transferred to remote */
+    apr_off_t       read;       /* Number of bytes read from remote */
     void            *context;   /* general purpose storage */
-    enum {
-         flush_off,
-         flush_on,
-         flush_auto
-    } flush_packets;           /* control AJP flushing */
-    int             flush_wait;  /* poll wait time in microseconds if flush_auto */
-    const char      *flusher;  /* flush provider used by mod_proxy_fdpass */
-#if APR_HAS_THREADS
-    apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
-#endif
+    unsigned int     keepalive:1;
+    unsigned int     disablereuse:1;
+    unsigned int     is_address_reusable:1;
+    unsigned int     retry_set:1;
+    unsigned int     timeout_set:1;
+    unsigned int     acquire_set:1;
+    unsigned int     ping_timeout_set:1;
+    unsigned int     conn_timeout_set:1;
+    unsigned int     recv_buffer_size_set:1;
+    unsigned int     io_buffer_size_set:1;
+    unsigned int     keepalive_set:1;
+    unsigned int     disablereuse_set:1;
+} proxy_worker_shared;
 
-    int             retry_set:1;
-    int             timeout_set:1;
-    int             acquire_set:1;
-    int             ping_timeout_set:1;
-    int             conn_timeout_set:1;
-    int             recv_buffer_size_set:1;
-    int             io_buffer_size_set:1;
-    int             keepalive_set:1;
-    int             disablereuse_set:1;
-    unsigned int    apr_hash;      /* hash #0 of worker name */
-    unsigned int    our_hash;      /* hash #1 of worker name. Why 2? hash collisions. */
+/* Worker configuration */
+struct proxy_worker {
+    proxy_conn_pool     *cp;    /* Connection pool to use */
+    proxy_worker_shared   *s;   /* Shared data */
+    void            *context;   /* general purpose storage */
+#if APR_HAS_THREADS
+    apr_thread_mutex_t  *mutex; /* Thread lock for updating address cache */
+#endif
 };
 
 /*
@@ -357,9 +353,12 @@ struct proxy_worker {
 #define PROXY_FLUSH_WAIT 10000
 
 struct proxy_balancer {
-    apr_array_header_t *workers; /* array of proxy_workers */
+    apr_array_header_t *cw;      /* initially configured workers */
+    proxy_worker **workers;     /* array of proxy_workers - runtime*/
+    int max_workers;             /* maximum number of allowed workers */
     const char *name;            /* name of the load balancer */
     apr_interval_time_t timeout; /* Timeout for waiting on free connection */
+    const char *lbprovider;      /* name of the lbmethod provider to use */
     proxy_balancer_method *lbmethod;
 
     const char      *sticky_path;     /* URL sticky session identifier */
@@ -370,11 +369,8 @@ struct proxy_balancer {
     int             sticky_force:1;   /* Disable failover for sticky sessions */
     int             scolonsep:1;      /* true if ';' seps sticky session paths */
     int             max_attempts_set:1;
-#if APR_HAS_THREADS
-    apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
-#endif
-    void            *context;         /* general purpose storage */
-    apr_time_t      updated;   /* timestamp of last update */
+    void            *context;   /* general purpose storage */
+    apr_time_t      updated;    /* timestamp of last update */
 };
 
 struct proxy_balancer_method {
@@ -394,6 +390,9 @@ struct proxy_balancer_method {
 #define PROXY_THREAD_LOCK(x)      APR_SUCCESS
 #define PROXY_THREAD_UNLOCK(x)    APR_SUCCESS
 #endif
+
+#define PROXY_GLOBAL_LOCK(x)      apr_global_mutex_lock((x)->mutex)
+#define PROXY_GLOBAL_UNLOCK(x)    apr_global_mutex_unlock((x)->mutex)
 
 /* hooks */
 

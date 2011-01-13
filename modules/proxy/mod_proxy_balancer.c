@@ -24,13 +24,26 @@
 #include "apr_uuid.h"
 #include "apr_date.h"
 
+static const char *balancer_mutex_type = "proxy-balancer-shm";
+
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
 static char balancer_nonce[APR_UUID_FORMATTED_LENGTH + 1];
 
+/*
+ * Register our mutex type before the config is read so we
+ * can adjust the mutex settings using the Mutex directive.
+ */
+static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
+                               apr_pool_t *ptemp)
+{
+    ap_mutex_register(pconf, balancer_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+    return OK;
+}
+
 #if 0
 extern void proxy_update_members(proxy_balancer **balancer, request_rec *r,
-                                  proxy_server_conf *conf);
+                                 proxy_server_conf *conf);
 #endif
 
 static int proxy_balancer_canon(request_rec *r, char *url)
@@ -96,12 +109,12 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
         int worker_is_initialized;
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(*workers);
         if (!worker_is_initialized) {
-            proxy_worker_stat *slot;
+            proxy_worker_shared *slot;
             /*
              * If the worker is not initialized check whether its scoreboard
              * slot is already initialized.
              */
-            slot = (proxy_worker_stat *) ap_get_scoreboard_lb((*workers)->id);
+            slot = (proxy_worker_shared *) ap_get_scoreboard_lb((*workers)->id);
             if (slot) {
                 worker_is_initialized = slot->status & PROXY_WORKER_INITIALIZED;
             }
@@ -322,8 +335,10 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
 {
     proxy_worker *candidate = NULL;
     apr_status_t rv;
+    proxy_server_conf *conf = (proxy_server_conf *)
+      ap_get_module_config(r->server->module_config, &proxy_module);
 
-    if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_GLOBAL_LOCK(conf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
         "proxy: BALANCER: (%s). Lock failed for find_best_worker()", balancer->name);
         return NULL;
@@ -335,11 +350,11 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
         candidate->s->elected++;
 
 /*
-        PROXY_THREAD_UNLOCK(balancer);
+        PROXY_GLOBAL_UNLOCK(conf);
         return NULL;
 */
 
-    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_GLOBAL_UNLOCK(conf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
         "proxy: BALANCER: (%s). Unlock failed for find_best_worker()", balancer->name);
     }
@@ -463,7 +478,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     /* Step 2: Lock the LoadBalancer
      * XXX: perhaps we need the process lock here
      */
-    if ((rv = PROXY_THREAD_LOCK(*balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_GLOBAL_LOCK(conf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: BALANCER: (%s). Lock failed for pre_request",
                      (*balancer)->name);
@@ -529,7 +544,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                          "proxy: BALANCER: (%s). All workers are in error state for route (%s)",
                          (*balancer)->name, route);
-            if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
+            if ((rv = PROXY_GLOBAL_UNLOCK(conf)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                              "proxy: BALANCER: (%s). Unlock failed for pre_request",
                              (*balancer)->name);
@@ -538,7 +553,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         }
     }
 
-    if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_GLOBAL_UNLOCK(conf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: BALANCER: (%s). Unlock failed for pre_request",
                      (*balancer)->name);
@@ -614,7 +629,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 
     apr_status_t rv;
 
-    if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_GLOBAL_LOCK(conf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
             "proxy: BALANCER: (%s). Lock failed for post_request",
             balancer->name);
@@ -636,7 +651,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         }
     }
 
-    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_GLOBAL_UNLOCK(conf)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
             "proxy: BALANCER: (%s). Unlock failed for post_request",
             balancer->name);
@@ -673,23 +688,33 @@ static void recalc_factors(proxy_balancer *balancer)
 }
 
 /* post_config hook: */
-static int balancer_init(apr_pool_t *p, apr_pool_t *plog,
+static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
 {
     apr_uuid_t uuid;
     void *data;
+    apr_status_t rv;
+    void *sconf = s->module_config;
+    proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     const char *userdata_key = "mod_proxy_balancer_init";
 
     /* balancer_init() will be called twice during startup.  So, only
      * set up the static data the 1st time through. */
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
-        /* Retrieve a UUID and store the nonce for the lifetime of
-         * the process. */
-        apr_uuid_get(&uuid);
-        apr_uuid_format(balancer_nonce, &uuid);
         apr_pool_userdata_set((const void *)1, userdata_key,
                                apr_pool_cleanup_null, s->process->pool);
+    }
+    /* Retrieve a UUID and store the nonce for the lifetime of
+     * the process. */
+    apr_uuid_get(&uuid);
+    apr_uuid_format(balancer_nonce, &uuid);
+    
+    /* Create global mutex */
+    rv = ap_global_mutex_create(&conf->mutex, NULL, balancer_mutex_type, NULL,
+                                s, pconf, 0);
+    if (rv != APR_SUCCESS) {
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     return OK;
 }
@@ -967,15 +992,26 @@ static int balancer_handler(request_rec *r)
     return OK;
 }
 
-static void child_init(apr_pool_t *p, server_rec *s)
+static void balancer_child_init(apr_pool_t *p, server_rec *s)
 {
     while (s) {
-        void *sconf = s->module_config;
-        proxy_server_conf *conf;
         proxy_balancer *balancer;
         int i;
-        conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-
+        void *sconf = s->module_config;
+        proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
+        apr_status_t rv;
+        
+        /* Re-open the mutex for the child. */
+        rv = apr_global_mutex_child_init(&conf->mutex, 
+                                         apr_global_mutex_lockfile(conf->mutex),
+                                         p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, 
+                         "Failed to reopen mutex %s in child", 
+                         balancer_mutex_type);
+            exit(1); /* Ugly, but what else? */
+        } 
+        
         /* Initialize shared scoreboard data */
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
@@ -1026,9 +1062,10 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
      */
     static const char *const aszPred[] = { "mpm_winnt.c", NULL};
      /* manager handler */
-    ap_hook_post_config(balancer_init, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(balancer_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(balancer_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(balancer_child_init, aszPred, NULL, APR_HOOK_MIDDLE);
     proxy_hook_pre_request(proxy_balancer_pre_request, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_post_request(proxy_balancer_post_request, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_balancer_canon, NULL, NULL, APR_HOOK_FIRST);
