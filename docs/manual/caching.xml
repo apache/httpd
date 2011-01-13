@@ -141,12 +141,11 @@
       Side Includes</a>;</p>
 
       <example>
-      <pre>
-&lt;!-- The following include can be cached --&gt;
-&lt;!--#include virtual="/footer.html" --&gt; 
-
-&lt;!-- The following include can not be cached --&gt;
-&lt;!--#include file="/path/to/footer.html" --&gt;</pre>
+&lt;!-- The following include can be cached --&gt;<br />
+&lt;!--#include virtual="/footer.html" --&gt; <br />
+<br />
+&lt;!-- The following include can not be cached --&gt;<br />
+&lt;!--#include file="/path/to/footer.html" --&gt;
       </example>
 
       <p>If you are using Server Side Includes, and want the benefit of speedy
@@ -425,7 +424,7 @@ Vary: negotiate,accept-language,accept-charset
       this file-handle for all subsequent access to this file.</p>
 
       <example>
-      <pre>CacheFile /usr/local/apache2/htdocs/index.html</pre>
+      CacheFile /usr/local/apache2/htdocs/index.html
       </example>
 
       <p>If you intend to cache a large number of files in this manner, you 
@@ -528,7 +527,7 @@ sys     0m0.000s</pre>
       contents for all subsequent accesses to this file.</p>
 
       <example>
-      <pre>MMapFile /usr/local/apache2/htdocs/index.html</pre>
+      MMapFile /usr/local/apache2/htdocs/index.html
       </example>
 
       <p>As with the
@@ -565,11 +564,10 @@ sys     0m0.000s</pre>
     <p>Typically the module will be configured as so;</p>
 
     <example>  
-    <pre>
-CacheRoot   /var/cache/apache/
-CacheEnable disk /
-CacheDirLevels 2
-CacheDirLength 1</pre>
+CacheRoot   /var/cache/apache/<br />
+CacheEnable disk /<br />
+CacheDirLevels 2<br />
+CacheDirLength 1
     </example>
 
     <p>Importantly, as the cached files are locally stored, operating system
