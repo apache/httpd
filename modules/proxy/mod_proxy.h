@@ -58,6 +58,7 @@
 #include "http_connection.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
+#include "util_md5.h"
 #include "ap_provider.h"
 #include "ap_slotmem.h"
 
@@ -157,7 +158,7 @@ typedef struct {
         status_full
     } proxy_status;             /* Status display options */
     apr_sockaddr_t *source_address;
-    apr_global_mutex_t  *mutex; /* global lock for updating lb params */
+    apr_global_mutex_t  *mutex; /* global lock (needed??) */
     
     int req_set:1;
     int viaopt_set:1;
@@ -342,6 +343,7 @@ struct proxy_worker {
     proxy_worker_shared   *s;   /* Shared data */
     proxy_balancer  *balancer;  /* which balancer am I in? */
     apr_thread_mutex_t  *mutex; /* Thread lock for updating address cache */
+    int local_status;           /* status of per-process worker */
     void            *context;   /* general purpose storage */
 };
 
@@ -357,6 +359,7 @@ struct proxy_balancer {
     int growth;                   /* number of post-config workers can added */
     int max_workers;              /* maximum number of allowed workers */
     const char *name;             /* name of the load balancer */
+    const char *sname;            /* filesystem safe balancer name */
     apr_interval_time_t timeout;  /* Timeout for waiting on free connection */
     const char *lbprovider;       /* name of the lbmethod provider to use */
     proxy_balancer_method *lbmethod;
@@ -371,6 +374,7 @@ struct proxy_balancer {
     int             max_attempts_set:1;
     void            *context;   /* general purpose storage */
     apr_time_t      updated;    /* timestamp of last update */
+    apr_global_mutex_t  *mutex; /* global lock for updating lb params */
 };
 
 struct proxy_balancer_method {
@@ -560,9 +564,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
 /**
  * Verifies valid balancer name (eg: balancer://foo)
  * @param name  name to test
- * @return      ptr to start of name or NULL if not valid
+ * @param i     number of chars to test; 0 for all.
+ * @return      true/false
  */
-PROXY_DECLARE(char *) ap_proxy_valid_balancer_name(char *name);
+PROXY_DECLARE(int) ap_proxy_valid_balancer_name(char *name, int i);
 
 
 /**
