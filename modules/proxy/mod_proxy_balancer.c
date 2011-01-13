@@ -950,24 +950,25 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
             ap_rvputs(r, balancer->name, "</h3>\n\n", NULL);
             ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
-                "<th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
+                "<th>MaxMembers</th><th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);
+            ap_rprintf(r, "<td align=\"center\">%d</td>\n", balancer->max_workers);
             if (balancer->sticky) {
                 if (strcmp(balancer->sticky, balancer->sticky_path)) {
-                    ap_rvputs(r, "<td>", balancer->sticky, " | ",
+                    ap_rvputs(r, "<td align=\"center\">", balancer->sticky, " | ",
                               balancer->sticky_path, NULL);
                 }
                 else {
-                    ap_rvputs(r, "<td>", balancer->sticky, NULL);
+                    ap_rvputs(r, "<td align=\"center\">", balancer->sticky, NULL);
                 }
             }
             else {
-                ap_rputs("<td> - ", r);
+                ap_rputs("<td align=\"center\"> - ", r);
             }
-            ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
+            ap_rprintf(r, "</td><td align=\"center\">%" APR_TIME_T_FMT "</td>",
                 apr_time_sec(balancer->timeout));
-            ap_rprintf(r, "<td>%d</td>\n", balancer->max_attempts);
-            ap_rprintf(r, "<td>%s</td>\n",
+            ap_rprintf(r, "<td align=\"center\">%d</td>\n", balancer->max_attempts);
+            ap_rprintf(r, "<td align=\"center\">%s</td>\n",
                        balancer->lbmethod->name);
             ap_rputs("</table>\n<br />", r);
             ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
@@ -987,12 +988,12 @@ static int balancer_handler(request_rec *r)
                           "&nonce=", balancer->nonce,
                           "\">", NULL);
                 ap_rvputs(r, worker->s->name, "</a></td>", NULL);
-                ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
+                ap_rvputs(r, "<td align=\"center\">", ap_escape_html(r->pool, worker->s->route),
                           NULL);
-                ap_rvputs(r, "</td><td>",
+                ap_rvputs(r, "</td><td align=\"center\">",
                           ap_escape_html(r->pool, worker->s->redirect), NULL);
-                ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
-                ap_rprintf(r, "<td>%d</td><td>", worker->s->lbset);
+                ap_rprintf(r, "</td><td align=\"center\">%d</td>", worker->s->lbfactor);
+                ap_rprintf(r, "<td align=\"center\">%d</td><td align=\"center\">", worker->s->lbset);
                 if (worker->s->status & PROXY_WORKER_DISABLED)
                    ap_rputs("Dis ", r);
                 if (worker->s->status & PROXY_WORKER_IN_ERROR)
@@ -1006,9 +1007,9 @@ static int balancer_handler(request_rec *r)
                 if (!PROXY_WORKER_IS_INITIALIZED(worker))
                     ap_rputs("-", r);
                 ap_rputs("</td>", r);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>", worker->s->elected);
+                ap_rprintf(r, "<td align=\"center\">%" APR_SIZE_T_FMT "</td><td align=\"center\">", worker->s->elected);
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
-                ap_rputs("</td><td>", r);
+                ap_rputs("</td><td align=\"center\">", r);
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
                 ap_rputs("</td></tr>\n", r);
 
