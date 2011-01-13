@@ -59,7 +59,7 @@
     itself. Practically all other distributed Apache httpd modules will then
     be placed into a DSO. After a module is compiled into a DSO named
     <code>mod_foo.so</code> you can use <module>mod_so</module>'s <directive
-    module="mod_so">LoadModule</directive> command in your
+    module="mod_so">LoadModule</directive> directive in your
     <code>httpd.conf</code> file to load this module at server startup
     or restart.</p>
     <p>The DSO builds for individual modules can be disabled via
@@ -136,13 +136,13 @@ $ apxs -cia mod_foo.c
 
 <section id="background"><title>Background</title>
 
-    <p>On modern Unix derivatives there exists a nifty mechanism
-    usually called dynamic linking/loading of <em>Dynamic Shared
+    <p>On modern Unix derivatives there exists a mechanism
+    called dynamic linking/loading of <em>Dynamic Shared
     Objects</em> (DSO) which provides a way to build a piece of
     program code in a special format for loading it at run-time
     into the address space of an executable program.</p>
 
-    <p>This loading can usually be done in two ways: Automatically
+    <p>This loading can usually be done in two ways: automatically
     by a system program called <code>ld.so</code> when an
     executable program is started or manually from within the
     executing program via a programmatic system interface to the
@@ -221,8 +221,7 @@ $ apxs -cia mod_foo.c
     <p>The shared library approach is the typical one, because it
     is what the DSO mechanism was designed for, hence it is used
     for nearly all types of libraries the operating system
-    provides. On the other hand using shared objects for extending
-    a program is not used by a lot of programs.</p>
+    provides.</p>
 
 </section>
 
@@ -233,23 +232,22 @@ $ apxs -cia mod_foo.c
 
     <ul>
       <li>The server package is more flexible at run-time because
-      the actual server process can be assembled at run-time via
+      the server process can be assembled at run-time via
       <directive module="mod_so">LoadModule</directive>
-      <code>httpd.conf</code> configuration commands instead of
-      <program>configure</program> options at build-time. For instance
+      <code>httpd.conf</code> configuration directives instead of
+      <program>configure</program> options at build-time. For instance,
       this way one is able to run different server instances
-      (standard &amp; SSL version, minimalistic &amp; powered up
-      version [mod_perl, PHP3], <em>etc.</em>) with only one Apache httpd
+      (standard &amp; SSL version, minimalistic &amp; dynamic
+      version [mod_perl, mod_php], <em>etc.</em>) with only one Apache httpd
       installation.</li>
 
       <li>The server package can be easily extended with
-      third-party modules even after installation. This is at least
-      a great benefit for vendor package maintainers who can create
-      a Apache httpd core package and additional packages containing
-      extensions like PHP, mod_perl, mod_security,
-      <em>etc.</em></li>
+      third-party modules even after installation. This is
+      a great benefit for vendor package maintainers, who can create
+      an Apache httpd core package and additional packages containing
+      extensions like PHP, mod_perl, mod_security, <em>etc.</em></li>
 
-      <li>Easier Apache httpd module prototyping because with the
+      <li>Easier Apache httpd module prototyping, because with the
       DSO/<program>apxs</program> pair you can both work outside the
       Apache httpd source tree and only need an <code>apxs -i</code>
       command followed by an <code>apachectl restart</code> to
@@ -260,18 +258,14 @@ $ apxs -cia mod_foo.c
     <p>DSO has the following disadvantages:</p>
 
     <ul>
-      <li>The DSO mechanism cannot be used on every platform
-      because not all operating systems support dynamic loading of
-      code into the address space of a program.</li>
-
       <li>The server is approximately 20% slower at startup time
       because of the symbol resolving overhead the Unix loader now
       has to do.</li>
 
       <li>The server is approximately 5% slower at execution time
-      under some platforms because position independent code (PIC)
+      under some platforms, because position independent code (PIC)
       sometimes needs complicated assembler tricks for relative
-      addressing which are not necessarily as fast as absolute
+      addressing, which are not necessarily as fast as absolute
       addressing.</li>
 
       <li>Because DSO modules cannot be linked against other
