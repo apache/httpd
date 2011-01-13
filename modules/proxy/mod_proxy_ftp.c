@@ -1037,7 +1037,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
        "proxy: FTP: connecting %s to %s:%d", url, connectname, connectport);
 
-    if (worker->is_address_reusable) {
+    if (worker->s->is_address_reusable) {
         if (!worker->cp->addr) {
             if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
@@ -1057,7 +1057,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                     connectname, APR_UNSPEC,
                                     connectport, 0,
                                     address_pool);
-    if (worker->is_address_reusable && !worker->cp->addr) {
+    if (worker->s->is_address_reusable && !worker->cp->addr) {
         worker->cp->addr = connect_addr;
         if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, uerr, r->server,

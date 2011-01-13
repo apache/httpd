@@ -125,7 +125,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
         mycandidate->s->lbstatus -= total_factor;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: byrequests selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
-                     mycandidate->name, mycandidate->s->busy, mycandidate->s->lbstatus);
+                     mycandidate->s->name, mycandidate->s->busy, mycandidate->s->lbstatus);
 
     }
 

@@ -729,7 +729,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * To be compliant, we only use 100-Continue for requests with bodies.
      * We also make sure we won't be talking HTTP/1.0 as well.
      */
-    do_100_continue = (worker->ping_timeout_set
+    do_100_continue = (worker->s->ping_timeout_set
                        && ap_request_has_body(r)
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
@@ -1422,7 +1422,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
 
-    do_100_continue = (worker->ping_timeout_set
+    do_100_continue = (worker->s->ping_timeout_set
                        && ap_request_has_body(r)
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
@@ -1433,9 +1433,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     /* Setup for 100-Continue timeout if appropriate */
     if (do_100_continue) {
         apr_socket_timeout_get(backend->sock, &old_timeout);
-        if (worker->ping_timeout != old_timeout) {
+        if (worker->s->ping_timeout != old_timeout) {
             apr_status_t rc;
-            rc = apr_socket_timeout_set(backend->sock, worker->ping_timeout);
+            rc = apr_socket_timeout_set(backend->sock, worker->s->ping_timeout);
             if (rc != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
                              "proxy: could not set 100-Continue timeout");
@@ -1710,7 +1710,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* Reset to old timeout iff we've adjusted it */
             if (do_100_continue
                 && (r->status == HTTP_CONTINUE)
-                && (worker->ping_timeout != old_timeout)) {
+                && (worker->s->ping_timeout != old_timeout)) {
                     apr_socket_timeout_set(backend->sock, old_timeout);
             }
         }
@@ -1937,7 +1937,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          * left waiting for a slow client to eventually
                          * acknowledge the data.
                          */
-                        ap_proxy_release_connection(backend->worker->scheme,
+                        ap_proxy_release_connection(backend->worker->s->scheme,
                                 backend, r->server);
                         /* Ensure that the backend is not reused */
                         *backend_ptr = NULL;
@@ -1977,7 +1977,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * left waiting for a slow client to eventually
              * acknowledge the data.
              */
-            ap_proxy_release_connection(backend->worker->scheme,
+            ap_proxy_release_connection(backend->worker->s->scheme,
                     backend, r->server);
             *backend_ptr = NULL;
 
@@ -2145,11 +2145,11 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
          */
         if ((status = ap_proxy_http_request(p, r, backend, worker,
                                         conf, uri, locurl, server_portstr)) != OK) {
-            if ((status == HTTP_SERVICE_UNAVAILABLE) && worker->ping_timeout_set) {
+            if ((status == HTTP_SERVICE_UNAVAILABLE) && worker->s->ping_timeout_set) {
                 backend->close = 1;
                 ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
                              "proxy: HTTP: 100-Continue failed to %pI (%s)",
-                             worker->cp->addr, worker->hostname);
+                             worker->cp->addr, worker->s->hostname);
                 retry++;
                 continue;
             } else {

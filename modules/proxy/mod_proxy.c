@@ -35,12 +35,6 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 #endif
 
-/* return the sizeof of one lb_worker in scoreboard. */
-static int ap_proxy_lb_worker_size(void)
-{
-    return sizeof(proxy_worker_shared);
-}
-
 /*
  * A Web proxy module. Stages:
  *
@@ -992,7 +986,6 @@ static int proxy_handler(request_rec *r)
         /* Initialise worker if needed, note the shared area must be initialized by the balancer logic */
         if (balancer) {
             ap_proxy_initialize_worker(worker, r->server, conf->pool); 
-            ap_proxy_initialize_worker_share(conf, worker, r->server);
         }
 
         if (balancer && balancer->max_attempts_set && !max_attempts)
@@ -1452,9 +1445,7 @@ static const char *
     if (ap_proxy_valid_balancer_name(r)) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
-            const char *err = ap_proxy_alloc_balancer(&balancer,
-                                                    cmd->pool,
-                                                    conf, r);
+            const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
@@ -1466,10 +1457,10 @@ static const char *
         }
     }
     else {
-        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, conf, r);
+        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, r);
         int reuse = 0;
         if (!worker) {
-            const char *err = ap_proxy_add_worker(&worker, cmd->pool, conf, r);
+            const char *err = ap_proxy_define_worker(cmd->pool, &worker, NULL, conf, r);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
             PROXY_COPY_CONF_PARAMS(worker, conf);
@@ -1477,14 +1468,14 @@ static const char *
             reuse = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
                          "Sharing worker '%s' instead of creating new worker '%s'",
-                         worker->name, new->real);
+                         worker->s->name, new->real);
         }
 
         for (i = 0; i < arr->nelts; i++) {
             if (reuse) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                              "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                             elts[i].key, elts[i].val, worker->name);
+                             elts[i].key, elts[i].val, worker->s->name);
             } else {
                 const char *err = set_worker_param(cmd->pool, worker, elts[i].key,
                                                    elts[i].val);
@@ -1844,6 +1835,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     const apr_table_entry_t *elts;
     int reuse = 0;
     int i;
+    const char *err;
 
     if (cmd->path)
         path = apr_pstrdup(cmd->pool, cmd->path);
@@ -1877,18 +1869,25 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
 
     ap_str_tolower(path);   /* lowercase scheme://hostname */
 
+    /* Try to find the balancer */
+    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path);
+    if (!balancer) {
+        err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, path);
+        if (err)
+            return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
+    }
+
     /* Try to find existing worker */
-    worker = ap_proxy_get_worker(cmd->temp_pool, conf, name);
+    worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, name);
     if (!worker) {
-        const char *err;
-        if ((err = ap_proxy_add_worker(&worker, cmd->pool, conf, name)) != NULL)
+        if ((err = ap_proxy_define_worker(cmd->pool, &worker, balancer, conf, name)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
                      "Sharing worker '%s' instead of creating new worker '%s'",
-                     worker->name, name);
+                     worker->s->name, name);
     }
 
     arr = apr_table_elts(params);
@@ -1897,25 +1896,15 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if (reuse) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                          "Ignoring parameter '%s=%s' for worker '%s' because of worker sharing",
-                         elts[i].key, elts[i].val, worker->name);
+                         elts[i].key, elts[i].val, worker->s->name);
         } else {
-            const char *err = set_worker_param(cmd->pool, worker, elts[i].key,
+            err = set_worker_param(cmd->pool, worker, elts[i].key,
                                                elts[i].val);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         }
     }
-    /* Try to find the balancer */
-    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path);
-    if (!balancer) {
-        const char *err = ap_proxy_alloc_balancer(&balancer,
-                                                cmd->pool,
-                                                conf, path);
-        if (err)
-            return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
-    }
-    /* Add the worker to the load balancer */
-    ap_proxy_add_worker_to_balancer(cmd->pool, balancer, worker);
+
     return NULL;
 }
 
@@ -1951,13 +1940,11 @@ static const char *
         name = ap_getword_conf(cmd->temp_pool, &arg);
     }
 
-    if (ap_proxy_valid_balancer_name(name) {
+    if (ap_proxy_valid_balancer_name(name)) {
         balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
         if (!balancer) {
             if (in_proxy_section) {
-                err = ap_proxy_alloc_balancer(&balancer,
-                                            cmd->pool,
-                                            conf, name);
+                err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, name);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxySet ",
                                        err, NULL);
@@ -1968,11 +1955,11 @@ static const char *
         }
     }
     else {
-        worker = ap_proxy_get_worker(cmd->temp_pool, conf, name);
+        worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, name);
         if (!worker) {
             if (in_proxy_section) {
-                err = ap_proxy_add_worker(&worker, cmd->pool,
-                                          conf, name);
+                err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
+                                             conf, name);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxySet ",
                                        err, NULL);
@@ -2102,22 +2089,21 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             return apr_pstrcat(cmd->pool, thiscmd->name,
                                "> arguments are not supported for non url.",
                                NULL);
-        if (ap_proxy_valid_balancer_name(conf->p) {
+        if (ap_proxy_valid_balancer_name(conf->p)) {
             balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p);
             if (!balancer) {
-                err = ap_proxy_alloc_balancer(&balancer,
-                                            cmd->pool,
-                                            sconf, conf->p);
+                err = ap_proxy_define_balancer(cmd->pool, &balancer,
+                                               sconf, conf->p);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
             }
         }
         else {
-            worker = ap_proxy_get_worker(cmd->temp_pool, sconf,
+            worker = ap_proxy_get_worker(cmd->temp_pool, NULL, sconf,
                                          conf->p);
             if (!worker) {
-                err = ap_proxy_add_worker(&worker, cmd->pool,
+                err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
                                           sconf, conf->p);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
@@ -2325,8 +2311,8 @@ static int proxy_status_hook(request_rec *r, int flags)
         worker = (proxy_worker **)balancer->workers->elts;
         for (n = 0; n < balancer->workers->nelts; n++) {
             char fbuf[50];
-            ap_rvputs(r, "<tr>\n<td>", (*worker)->scheme, "</td>", NULL);
-            ap_rvputs(r, "<td>", (*worker)->hostname, "</td><td>", NULL);
+            ap_rvputs(r, "<tr>\n<td>", (*worker)->s->scheme, "</td>", NULL);
+            ap_rvputs(r, "<td>", (*worker)->s->hostname, "</td><td>", NULL);
             if ((*worker)->s->status & PROXY_WORKER_DISABLED)
                 ap_rputs("Dis", r);
             else if ((*worker)->s->status & PROXY_WORKER_IN_ERROR)
@@ -2374,44 +2360,42 @@ static void child_init(apr_pool_t *p, server_rec *s)
 {
     proxy_worker *reverse = NULL;
 
+    /* TODO */
     while (s) {
         void *sconf = s->module_config;
         proxy_server_conf *conf;
         proxy_worker *worker;
-        int i;
 
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-        /* Initialize worker's shared scoreboard data */
-        worker = (proxy_worker *)conf->workers->elts;
-        for (i = 0; i < conf->workers->nelts; i++) {
-            ap_proxy_initialize_worker_share(conf, worker, s);
-            ap_proxy_initialize_worker(worker, s, p);
-            worker++;
-        }
+        /*
+         * NOTE: non-balancer members don't use shm at all...
+         *       after all, why should they?
+         */
         /* Create and initialize forward worker if defined */
         if (conf->req_set && conf->req) {
-            conf->forward = ap_proxy_create_worker(p);
-            conf->forward->name     = "proxy:forward";
-            conf->forward->hostname = "*";
-            conf->forward->scheme   = "*";
-            ap_proxy_initialize_worker_share(conf, conf->forward, s);
-            ap_proxy_initialize_worker(conf->forward, s, p);
-            /* Do not disable worker in case of errors */
+            ap_proxy_define_worker(p, &worker, NULL, NULL, "http://www.apache.org");
+            conf->forward = worker;
+            PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
+            PROXY_STRNCPY(conf->forward->s->hostname, "*");
+            PROXY_STRNCPY(conf->forward->s->scheme,   "*");
+            conf->forward->hash = conf->forward->s->hash = 
+                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_DEFAULT);
+             /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Disable address cache for generic forward worker */
-            conf->forward->is_address_reusable = 0;
+            conf->forward->s->is_address_reusable = 0;
         }
         if (!reverse) {
-            reverse = ap_proxy_create_worker(p);
-            reverse->name     = "proxy:reverse";
-            reverse->hostname = "*";
-            reverse->scheme   = "*";
-            ap_proxy_initialize_worker_share(conf, reverse, s);
-            ap_proxy_initialize_worker(reverse, s, p);
+            ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org");
+            PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
+            PROXY_STRNCPY(reverse->s->hostname, "*");
+            PROXY_STRNCPY(reverse->s->scheme,   "*");
+            reverse->hash = reverse->s->hash = 
+                ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_DEFAULT);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Disable address cache for generic reverse worker */
-            reverse->is_address_reusable = 0;
+            reverse->s->is_address_reusable = 0;
         }
         conf->reverse = reverse;
         s = s->next;
@@ -2441,10 +2425,8 @@ static void register_hooks(apr_pool_t *p)
      * make sure that we are called after the mpm
      * initializes.
      */
-    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c", NULL};
+    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c", "mod_slotmem_shm.c", NULL};
 
-    APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_workers);
-    APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_worker_size);
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */

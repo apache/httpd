@@ -42,7 +42,9 @@
 #include "apr_reslist.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "util_mutex.h"
 #include "apr_global_mutex.h"
+#include "apr_thread_mutex.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -514,14 +516,14 @@ typedef __declspec(dllimport) const char *
 /**
  * Get the worker from proxy configuration
  * @param p        memory pool used for finding worker
- * @param conf     current proxy server configuration
  * @param balancer the balancer that the worker belongs to
+ * @param conf     current proxy server configuration
  * @param url      url to find the worker from
  * @return         proxy_worker or NULL if not found
  */
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
-                                                  proxy_server_conf *conf,
                                                   proxy_balancer *balancer,
+                                                  proxy_server_conf *conf,
                                                   const char *url);
 /**
  * Define and Allocate space for the worker to proxy configuration
@@ -532,40 +534,22 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * @param url       url containing worker name
  * @return          error message or NULL if successful (*worker is new worker)
  */
-PROXY_DECLARE(const char *) ap_proxy_define_worker(apr_pool_t *p,
+PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
                                                    proxy_worker **worker,
                                                    proxy_balancer *balancer,
                                                    proxy_server_conf *conf,
                                                    const char *url);
 
 /**
- * Create new worker
- * @param p      memory pool to allocate worker from 
- * @param id     slotnumber id or -1 for auto allocation
- * @return       new worker
+ * Share a defined proxy worker via shm
+ * @param worker  worker to be shared 
+ * @param shm     location of shared info
+ * @param i       index into shm
  */
-PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker_wid(apr_pool_t *p, int id);
+PROXY_DECLARE(void) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm, int i);
 
 /**
- * Create new worker
- * @param p      memory pool to allocate worker from 
- * @return       new worker
- */
-PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p);
-
-/**
- * Initialize the worker's shared data
- * @param conf   current proxy server configuration
- * @param worker worker to initialize
- * @param s      current server record
- * @param worker worker to initialize
- */
-PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
-                                                     proxy_worker *worker,
-                                                     server_rec *s);
-
-/**
- * Initialize the worker
+ * Initialize the worker by setting up worker connection pool and mutex
  * @param worker worker to initialize
  * @param s      current server record
  * @param p      memory pool used for mutex and connection pool
@@ -574,12 +558,13 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
                                                        server_rec *s,
                                                        apr_pool_t *p);
+
 /**
  * Verifies valid balancer name (eg: balancer://foo)
  * @param name  name to test
  * @return      ptr to start of name or NULL if not valid
  */
-PROXY_DECLARE(char *) ap_proxy_valid_balancer_name(const char *name);
+PROXY_DECLARE(char *) ap_proxy_valid_balancer_name(char *name);
 
 
 /**
@@ -601,7 +586,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
  * @param url    url containing balancer name
  * @return       error message or NULL if successfull
  */
-PROXY_DECLARE(const char *) ap_proxy_define_balancer(apr_pool_t *p,
+PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                     proxy_balancer **balancer,
                                                     proxy_server_conf *conf,
                                                     const char *url);
