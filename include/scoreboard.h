@@ -126,7 +126,6 @@ typedef struct {
                                          * should still be serving requests.
                                          */
     apr_time_t restart_time;
-    int             lb_limit;
 } global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
@@ -139,12 +138,6 @@ struct process_score {
                              */
 };
 
-/* stuff which is lb specific */
-typedef struct lb_score lb_score;
-struct lb_score {
-    unsigned char data[1024];
-};
-
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
  * even in forked architectures.  Child created-processes (non-fork) will
  * set up these indicies into the (possibly relocated) shmem records.
@@ -153,7 +146,6 @@ typedef struct {
     global_score *global;
     process_score *parent;
     worker_score **servers;
-    lb_score     *balancers;
 } scoreboard;
 
 typedef struct ap_sb_handle_t ap_sb_handle_t;
@@ -182,7 +174,6 @@ AP_DECLARE(worker_score *) ap_get_scoreboard_worker_from_indexes(int child_num,
                                                                 int thread_num);
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x);
 AP_DECLARE(global_score *) ap_get_scoreboard_global(void);
-AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int lb_num);
 
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
@@ -205,19 +196,6 @@ const char *ap_set_reqtail(cmd_parms *cmd, void *dummy, int arg);
   * @return OK or DECLINE on success; anything else is a error
   */  
 AP_DECLARE_HOOK(int, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
-
-/**
-  * proxy load balancer
-  * @return the number of load balancer workers.
-  */  
-APR_DECLARE_OPTIONAL_FN(int, ap_proxy_lb_workers,
-                        (void));
-/**
-  * proxy load balancer
-  * @return the size of lb_workers.
-  */  
-APR_DECLARE_OPTIONAL_FN(int, ap_proxy_lb_worker_size,
-                        (void));
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

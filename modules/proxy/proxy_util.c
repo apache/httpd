@@ -1092,6 +1092,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
             ap_get_module_config(r->server->module_config, &proxy_module);
         proxy_balancer *balancer;
         const char *real = ent[i].real;
+        const char *bname;
         /*
          * First check if mapping against a balancer and see
          * if we have such a entity. If so, then we need to
@@ -1099,11 +1100,11 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
          * or may not be the right one... basically, we need
          * to find which member actually handled this request.
          */
-        if ((strncasecmp(real, "balancer://", 11) == 0) &&
-            (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
+        bname = ap_proxy_valid_balancer_name(real);
+        if (bname && (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
             int n, l3 = 0;
             proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
-            const char *urlpart = ap_strchr_c(real + 11, '/');
+            const char *urlpart = ap_strchr_c(bname, '/');
             if (urlpart) {
                 if (!urlpart[1])
                     urlpart = NULL;
@@ -1284,25 +1285,42 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     return ret;
 }
 
+/*
+ * BALANCER related...
+ */
+
+/*
+ * verifies that the balancer name conforms to standards. If
+ * so, returns ptr to the actual name (BALANCER_PREFIX removed),
+ * otherwise NULL
+ */
+PROXY_DECLARE(char *) ap_proxy_valid_balancer_name(const char *name)
+{
+    if (strncasecmp(name, BALANCER_PREFIX, sizeof(BALANCER_PREFIX)) == 0)
+        return (name + sizeof(BALANCER_PREFIX));
+    else
+        return NULL;
+}
+
+
 PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                       proxy_server_conf *conf,
                                                       const char *url)
 {
     proxy_balancer *balancer;
-    char *c, *uri = apr_pstrdup(p, url);
+    char *name, *q, *uri = apr_pstrdup(p, url);
     int i;
 
-    c = strchr(uri, ':');
-    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
+    if (!(name = ap_proxy_valid_balancer_name(uri)))
        return NULL;
-    }
+
     /* remove path from uri */
-    if ((c = strchr(c + 3, '/'))) {
-        *c = '\0';
-    }
+    if ((q = strchr(name, '/')))
+        *q = '\0';
+
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
-        if (strcasecmp(balancer->name, uri) == 0) {
+        if (strcasecmp(balancer->name, name) == 0) {
             return balancer;
         }
         balancer++;
@@ -1310,22 +1328,24 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     return NULL;
 }
 
-PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
+PROXY_DECLARE(const char *) ap_proxy_define_balancer(proxy_balancer **balancer,
                                                   apr_pool_t *p,
                                                   proxy_server_conf *conf,
                                                   const char *url)
 {
-    char *c, *q, *uri = apr_pstrdup(p, url);
+    char *name, *q, *uri = apr_pstrdup(p, url);
     proxy_balancer_method *lbmethod;
 
-    c = strchr(uri, ':');
-    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
-       return "Bad syntax for a balancer name";
-    /* remove path from uri */
-    if ((q = strchr(c + 3, '/')))
-        *q = '\0';
+    /* We should never get here without a valid BALANCER_PREFIX... */
 
-    ap_str_tolower(uri);
+    if (!(name = ap_proxy_valid_balancer_name(uri)))
+        return "Bad syntax for a balancer name";
+    
+    /* remove path from uri */
+    if ((q = strchr(name, '/')))
+        *q = '\0';
+    
+    ap_str_tolower(name);
     *balancer = apr_array_push(conf->balancers);
     memset(*balancer, 0, sizeof(proxy_balancer));
 
@@ -1338,86 +1358,33 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
         return "Can't find 'byrequests' lb method";
     }
 
-    (*balancer)->name = uri;
+    (*balancer)->name = name;
     (*balancer)->lbmethod = lbmethod;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     (*balancer)->updated = apr_time_now();
-    /* XXX Is this a right place to create mutex */
-#if APR_HAS_THREADS
-    if (apr_thread_mutex_create(&((*balancer)->mutex),
-                APR_THREAD_MUTEX_DEFAULT, p) != APR_SUCCESS) {
-        /* XXX: Do we need to log something here */
-        return "can not create thread mutex";
-    }
-#endif
 
     return NULL;
 }
 
-PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
-                                                  proxy_server_conf *conf,
-                                                  const char *url)
+#if 0
+/*
+ * Create an already defined balancer and free up memory.
+ * Placeholder for when we make +/- of balancers runtime as well
+ */
+PROXY_DECLARE(void) ap_proxy_create_balancer(TODO)
 {
-    proxy_worker *worker;
-    proxy_worker *max_worker = NULL;
-    int max_match = 0;
-    int url_length;
-    int min_match;
-    int worker_name_length;
-    const char *c;
-    char *url_copy;
-    int i;
-
-    c = ap_strchr_c(url, ':');
-    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
-       return NULL;
-    }
-
-    url_copy = apr_pstrdup(p, url);
-    url_length = strlen(url);
-
-    /*
-     * We need to find the start of the path and
-     * therefore we know the length of the scheme://hostname/
-     * part to we can force-lowercase everything up to
-     * the start of the path.
-     */
-    c = ap_strchr_c(c+3, '/');
-    if (c) {
-        char *pathstart;
-        pathstart = url_copy + (c - url);
-        *pathstart = '\0';
-        ap_str_tolower(url_copy);
-        min_match = strlen(url_copy);
-        *pathstart = '/';
-    }
-    else {
-        ap_str_tolower(url_copy);
-        min_match = strlen(url_copy);
-    }
-
-    worker = (proxy_worker *)conf->workers->elts;
-
-    /*
-     * Do a "longest match" on the worker name to find the worker that
-     * fits best to the URL, but keep in mind that we must have at least
-     * a minimum matching of length min_match such that
-     * scheme://hostname[:port] matches between worker and url.
-     */
-    for (i = 0; i < conf->workers->nelts; i++) {
-        if ( ((worker_name_length = strlen(worker->name)) <= url_length)
-           && (worker_name_length >= min_match)
-           && (worker_name_length > max_match)
-           && (strncmp(url_copy, worker->name, worker_name_length) == 0) ) {
-            max_worker = worker;
-            max_match = worker_name_length;
-        }
-        worker++;
-    }
-    return max_worker;
 }
 
-#if APR_HAS_THREADS
+PROXY_DECLARE(void) ap_proxy_initialize_balancer(TODO)
+{
+}
+
+#endif
+
+/*
+ * CONNECTION related...
+ */
+
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
     proxy_worker *worker = (proxy_worker *)theworker;
@@ -1426,7 +1393,6 @@ static apr_status_t conn_pool_cleanup(void *theworker)
     }
     return APR_SUCCESS;
 }
-#endif
 
 static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
 {
@@ -1450,272 +1416,6 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     worker->cp = cp;
 }
 
-PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
-                                                apr_pool_t *p,
-                                                proxy_server_conf *conf,
-                                                const char *url,
-                                                int id)
-{
-    int rv;
-    apr_uri_t uri;
-
-    rv = apr_uri_parse(p, url, &uri);
-
-    if (rv != APR_SUCCESS) {
-        return "Unable to parse URL";
-    }
-    if (!uri.hostname || !uri.scheme) {
-        return "URL must be absolute!";
-    }
-
-    ap_str_tolower(uri.hostname);
-    ap_str_tolower(uri.scheme);
-    *worker = apr_array_push(conf->workers);
-    memset(*worker, 0, sizeof(proxy_worker));
-    (*worker)->name = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
-    (*worker)->scheme = uri.scheme;
-    (*worker)->hostname = uri.hostname;
-    (*worker)->port = uri.port;
-    if (id < 0) {
-        (*worker)->id   = proxy_lb_workers;
-        /* Increase the total worker count */
-        proxy_lb_workers++;
-    } else {
-        (*worker)->id   = id;
-    }
-    (*worker)->flush_packets = flush_off;
-    (*worker)->flush_wait = PROXY_FLUSH_WAIT;
-    (*worker)->smax = -1;
-    (*worker)->our_hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_DEFAULT);
-    (*worker)->apr_hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_APR);
-    (*worker)->cp = NULL;
-    (*worker)->mutex = NULL;
-
-    return NULL;
-}
-
-PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
-                                                apr_pool_t *p,
-                                                proxy_server_conf *conf,
-                                                const char *url)
-{
-    return ap_proxy_add_worker_wid(worker, p, conf, url, -1);
-}
-
-PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker_wid(apr_pool_t *p, int id)
-{
-
-    proxy_worker *worker;
-    worker = (proxy_worker *)apr_pcalloc(p, sizeof(proxy_worker));
-    if (id < 0) {
-        worker->id = proxy_lb_workers;
-        /* Increase the total worker count */
-        proxy_lb_workers++;
-    } else {
-        worker->id = id;
-    }
-    worker->smax = -1;
-    worker->cp = NULL;
-    worker->mutex = NULL;
-
-    return worker;
-}
-
-PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
-{
-    return ap_proxy_create_worker_wid(p, -1);
-}
-
-PROXY_DECLARE(void)
-ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool, proxy_balancer *balancer,
-                                proxy_worker *worker, int id)
-{
-    proxy_worker **runtime;
-
-    runtime = apr_array_push(balancer->workers);
-    *runtime = worker;
-    if (id < 0) {
-        (*runtime)->id = proxy_lb_workers;
-        /* Increase the total runtime count */
-        proxy_lb_workers++;
-    } else {
-        (*runtime)->id = id;
-    }
-    balancer->updated = apr_time_now();
-
-}
-
-PROXY_DECLARE(void)
-ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
-                                proxy_worker *worker)
-{
-    ap_proxy_add_worker_to_balancer_wid(pool, balancer, worker, -1);
-}
-
-PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
-                                        proxy_balancer **balancer,
-                                        request_rec *r,
-                                        proxy_server_conf *conf, char **url)
-{
-    int access_status;
-
-    access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
-    if (access_status == DECLINED && *balancer == NULL) {
-        *worker = ap_proxy_get_worker(r->pool, conf, *url);
-        if (*worker) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                          "proxy: %s: found worker %s for %s",
-                          (*worker)->scheme, (*worker)->name, *url);
-
-            *balancer = NULL;
-            access_status = OK;
-        }
-        else if (r->proxyreq == PROXYREQ_PROXY) {
-            if (conf->forward) {
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "proxy: *: found forward proxy worker for %s",
-                              *url);
-                *balancer = NULL;
-                *worker = conf->forward;
-                access_status = OK;
-                /*
-                 * The forward worker does not keep connections alive, so
-                 * ensure that mod_proxy_http does the correct thing
-                 * regarding the Connection header in the request.
-                 */
-                apr_table_set(r->subprocess_env, "proxy-nokeepalive", "1");
-            }
-        }
-        else if (r->proxyreq == PROXYREQ_REVERSE) {
-            if (conf->reverse) {
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "proxy: *: found reverse proxy worker for %s",
-                               *url);
-                *balancer = NULL;
-                *worker = conf->reverse;
-                access_status = OK;
-                /*
-                 * The reverse worker does not keep connections alive, so
-                 * ensure that mod_proxy_http does the correct thing
-                 * regarding the Connection header in the request.
-                 */
-                apr_table_set(r->subprocess_env, "proxy-nokeepalive", "1");
-            }
-        }
-    }
-    else if (access_status == DECLINED && *balancer != NULL) {
-        /* All the workers are busy */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-          "proxy: all workers are busy.  Unable to serve %s",
-          *url);
-        access_status = HTTP_SERVICE_UNAVAILABLE;
-    }
-    return access_status;
-}
-
-PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
-                                         proxy_balancer *balancer,
-                                         request_rec *r,
-                                         proxy_server_conf *conf)
-{
-    int access_status = OK;
-    if (balancer) {
-        access_status = proxy_run_post_request(worker, balancer, r, conf);
-        if (access_status == DECLINED) {
-            access_status = OK; /* no post_request handler available */
-            /* TODO: recycle direct worker */
-        }
-    }
-
-    return access_status;
-}
-
-/* DEPRECATED */
-PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
-                                               const char *proxy_function,
-                                               apr_sockaddr_t *backend_addr,
-                                               const char *backend_name,
-                                               proxy_server_conf *conf,
-                                               request_rec *r)
-{
-    apr_status_t rv;
-    int connected = 0;
-    int loglevel;
-
-    while (backend_addr && !connected) {
-        if ((rv = apr_socket_create(newsock, backend_addr->family,
-                                    SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
-            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
-            ap_log_rerror(APLOG_MARK, loglevel, rv, r,
-                          "proxy: %s: error creating fam %d socket for target %s",
-                          proxy_function,
-                          backend_addr->family,
-                          backend_name);
-            /*
-             * this could be an IPv6 address from the DNS but the
-             * local machine won't give us an IPv6 socket; hopefully the
-             * DNS returned an additional address to try
-             */
-            backend_addr = backend_addr->next;
-            continue;
-        }
-
-        if (conf->recv_buffer_size > 0 &&
-            (rv = apr_socket_opt_set(*newsock, APR_SO_RCVBUF,
-                                     conf->recv_buffer_size))) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "apr_socket_opt_set(SO_RCVBUF): Failed to set "
-                          "ProxyReceiveBufferSize, using default");
-        }
-
-        rv = apr_socket_opt_set(*newsock, APR_TCP_NODELAY, 1);
-        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
-             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                           "apr_socket_opt_set(APR_TCP_NODELAY): "
-                           "Failed to set");
-        }
-
-        /* Set a timeout on the socket */
-        if (conf->timeout_set) {
-            apr_socket_timeout_set(*newsock, conf->timeout);
-        }
-        else {
-             apr_socket_timeout_set(*newsock, r->server->timeout);
-        }
-
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                      "proxy: %s: fam %d socket created to connect to %s",
-                      proxy_function, backend_addr->family, backend_name);
-
-        if (conf->source_address) {
-            rv = apr_socket_bind(*newsock, conf->source_address);
-            if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                    "proxy: %s: failed to bind socket to local address",
-                    proxy_function);
-            }
-        }
-
-        /* make the connection out of the socket */
-        rv = apr_socket_connect(*newsock, backend_addr);
-
-        /* if an error occurred, loop round and try again */
-        if (rv != APR_SUCCESS) {
-            apr_socket_close(*newsock);
-            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
-            ap_log_rerror(APLOG_MARK, loglevel, rv, r,
-                          "proxy: %s: attempt to connect to %pI (%s) failed",
-                          proxy_function,
-                          backend_addr,
-                          backend_name);
-            backend_addr = backend_addr->next;
-            continue;
-        }
-        connected = 1;
-    }
-    return connected ? 0 : 1;
-}
-
 static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
@@ -1734,7 +1434,6 @@ static apr_status_t connection_cleanup(void *theconn)
         conn->r = NULL;
     }
 
-#if APR_HAS_THREADS
     /* Sanity check: Did we already return the pooled connection? */
     if (conn->inreslist) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conn->pool,
@@ -1743,10 +1442,9 @@ static apr_status_t connection_cleanup(void *theconn)
                       worker->name);
         return APR_SUCCESS;
     }
-#endif
 
     /* determine if the connection need to be closed */
-    if (conn->close || !worker->is_address_reusable || worker->disablereuse) {
+    if (conn->close || !worker->s->is_address_reusable || worker->s->disablereuse) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
@@ -1755,13 +1453,12 @@ static apr_status_t connection_cleanup(void *theconn)
         apr_pool_create(&(conn->scpool), p);
         apr_pool_tag(conn->scpool, "proxy_conn_scpool");
     }
-#if APR_HAS_THREADS
+
     if (worker->hmax && worker->cp->res) {
         conn->inreslist = 1;
         apr_reslist_release(worker->cp->res, (void *)conn);
     }
     else
-#endif
     {
         worker->cp->conn = conn;
     }
@@ -1842,15 +1539,12 @@ static apr_status_t connection_constructor(void **resource, void *params,
     conn->pool   = ctx;
     conn->scpool = scpool;
     conn->worker = worker;
-#if APR_HAS_THREADS
     conn->inreslist = 1;
-#endif
     *resource = conn;
 
     return APR_SUCCESS;
 }
 
-#if APR_HAS_THREADS /* only needed when threads are used */
 /* reslist destructor */
 static apr_status_t connection_destructor(void *resource, void *params,
                                           apr_pool_t *pool)
@@ -1864,102 +1558,179 @@ static apr_status_t connection_destructor(void *resource, void *params,
 
     return APR_SUCCESS;
 }
-#endif
 
 /*
- * ap_proxy_initialize_worker_share() concerns itself
- * with initializing those parts of worker which
- * are, or could be, shared. Basically worker->s
+ * WORKER related...
  */
-PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
-                                                     proxy_worker *worker,
-                                                     server_rec *s)
+
+PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
+                                                  proxy_server_conf *conf,
+                                                  proxy_balancer *balancer
+                                                  const char *url)
 {
-    proxy_worker_shared *score = NULL;
-
-    if (PROXY_WORKER_IS_INITIALIZED(worker)) {
-        /* The worker share is already initialized */
-        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                     "proxy: worker %s already initialized",
-                     worker->name);
-        return;
+    proxy_worker *worker;
+    proxy_worker *max_worker = NULL;
+    int max_match = 0;
+    int url_length;
+    int min_match;
+    int worker_name_length;
+    const char *c;
+    char *url_copy;
+    int i, end;
+    
+    c = ap_strchr_c(url, ':');
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
+        return NULL;
     }
-    if (!worker->s) {
-        /* Get scoreboard slot */
-        if (ap_scoreboard_image) {
-            score = (proxy_worker_shared *) ap_get_scoreboard_lb(worker->id);
-            if (!score) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                      "proxy: ap_get_scoreboard_lb(%d) failed in child %" APR_PID_T_FMT " for worker %s",
-                      worker->id, getpid(), worker->name);
-            }
-            else {
-                 ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                      "proxy: grabbed scoreboard slot %d in child %" APR_PID_T_FMT " for worker %s",
-                      worker->id, getpid(), worker->name);
-            }
-        }
-        if (!score) {
-            score = (proxy_worker_shared *) apr_pcalloc(conf->pool, sizeof(proxy_worker_shared));
-            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                  "proxy: initialized plain memory in child %" APR_PID_T_FMT " for worker %s",
-                  getpid(), worker->name);
-        }
-        worker->s = score;
-        /*
-         * recheck to see if we've already been here. Possible
-         * if proxy is using scoreboard to hold shared stats
-         */
-        if (PROXY_WORKER_IS_INITIALIZED(worker)) {
-            /* The worker share is already initialized */
-            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
-                         "proxy: worker %s already initialized",
-                         worker->name);
-            return;
-        }
-    }
-    if (worker->route) {
-        strcpy(worker->s->route, worker->route);
+    
+    url_copy = apr_pstrdup(p, url);
+    url_length = strlen(url);
+    
+    /*
+     * We need to find the start of the path and
+     * therefore we know the length of the scheme://hostname/
+     * part to we can force-lowercase everything up to
+     * the start of the path.
+     */
+    c = ap_strchr_c(c+3, '/');
+    if (c) {
+        char *pathstart;
+        pathstart = url_copy + (c - url);
+        *pathstart = '\0';
+        ap_str_tolower(url_copy);
+        min_match = strlen(url_copy);
+        *pathstart = '/';
     }
     else {
-        *worker->s->route = '\0';
+        ap_str_tolower(url_copy);
+        min_match = strlen(url_copy);
     }
-    if (worker->redirect) {
-        strcpy(worker->s->redirect, worker->redirect);
+    
+    if (balancer) {
+        worker = (proxy_worker *)balancer->workers->elts;
+        end = balancer->workers->nelts;
+    } else {
+        worker = (proxy_worker *)conf->workers->elts;
+        end = conf->workers->nelts;
     }
-    else {
-        *worker->s->redirect = '\0';
+    
+    /*
+     * Do a "longest match" on the worker name to find the worker that
+     * fits best to the URL, but keep in mind that we must have at least
+     * a minimum matching of length min_match such that
+     * scheme://hostname[:port] matches between worker and url.
+     */
+    for (i = 0; i < end; i++) {
+        if ( ((worker_name_length = strlen(worker->name)) <= url_length)
+            && (worker_name_length >= min_match)
+            && (worker_name_length > max_match)
+            && (strncmp(url_copy, worker->name, worker_name_length) == 0) ) {
+            max_worker = worker;
+            max_match = worker_name_length;
+        }
+        worker++;
     }
+    return max_worker;
+}
 
-    worker->s->status |= (worker->status | PROXY_WORKER_INITIALIZED);
-    worker->s->apr_hash = worker->apr_hash;
-    worker->s->our_hash = worker->our_hash;
+/*
+ * To create a worker from scratch first we define the
+ * specifics of the worker; this is all local data.
+ * We then allocate space for it if data needs to be
+ * shared. This allows for dynamic addition during
+ * config and runtime.
+ */
+PROXY_DECLARE(const char *) ap_proxy_define_worker(apr_pool_t *p,
+                                                   proxy_worker **worker,
+                                                   proxy_balancer *balancer,
+                                                   proxy_server_conf *conf,
+                                                   const char *url)
+{
+    int rv;
+    apr_uri_t uri;
+    proxy_worker_shared *wstatus;
+    
+    rv = apr_uri_parse(p, url, &uri);
+    
+    if (rv != APR_SUCCESS) {
+        return "Unable to parse URL";
+    }
+    if (!uri.hostname || !uri.scheme) {
+        return "URL must be absolute!";
+    }
+    
+    ap_str_tolower(uri.hostname);
+    ap_str_tolower(uri.scheme);
+    /*
+     * Workers can be associated w/ balancers or on their
+     * own; ie: the generic reverse-proxy or a worker
+     * in a simple ProxyPass statement. eg: 
+     *
+     *      ProxyPass / http://www.example.com
+     *
+     * in which case the worker goes in the conf slot.
+     */
+    if (balancer)
+        *worker = apr_array_push(balancer->workers);
+    else
+        *worker = apr_array_push(conf->workers)
+        memset(*worker, 0, sizeof(proxy_worker));
+    /* right here we just want to tuck away the worker info.
+     * if called during config, we don't have shm setup yet,
+     * so just note the info for later. */
+    wstatus = malloc(sizeof(proxy_worker_shared);)  /* will be freed ap_proxy_create_worker */
+    memset(*wstatus, 0, sizeof(proxy_worker_shared));
+    
+    (*worker)->hash = ap_proxy_hashfunc((*worker)->name, PROXY_HASHFUNC_DEFAULT);
+    (*worker)->cp = NULL;
+    (*worker)->mutex = NULL;
+    (*worker)->balancer = balancer;
+    
+    PROXY_STRNCPY(wstatus->name, apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD));
+    PROXY_STRNCPY(wstatus->scheme, uri.scheme);
+    PROXY_STRNCPY(wstatus->hostname, uri.hostname);
+    wstatus->port = uri.port;
+    wstatus->flush_packets = flush_off;
+    wstatus->flush_wait = PROXY_FLUSH_WAIT;
+    wstatus->smax = -1;
+    wstatus->hash = (*worker)->hash;
+    
+    (*worker)->s = wstatus;
+    
+    return NULL;
+}
 
+/*
+ * Create an already defined worker and free up memory
+ */
+PROXY_DECLARE(void) ap_proxy_create_worker(proxy_worker *worker, proxy_worker_shared *shm, int i)
+{
+    memcpy(shm, worker->s, sizeof(proxy_worker_shared));
+    free(worker->s); /* was malloced in ap_proxy_define_worker */
+    worker->s = shm;
+    worker->s->index = i;
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv;
-
-#if APR_HAS_THREADS
     int mpm_threads;
-#endif
 
-    if (worker->status & PROXY_WORKER_INITIALIZED) {
+    if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
         return APR_SUCCESS;
     }
 
     /* Set default parameters */
-    if (!worker->retry_set) {
-        worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
+    if (!worker->s->retry_set) {
+        worker->s->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
     }
     /* By default address is reusable unless DisableReuse is set */
-    if (worker->disablereuse) {
-        worker->is_address_reusable = 0;
+    if (worker->s->disablereuse) {
+        worker->s->is_address_reusable = 0;
     }
     else {
-        worker->is_address_reusable = 1;
+        worker->s->is_address_reusable = 1;
     }
 
     if (worker->cp == NULL)
@@ -1970,7 +1741,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         return APR_EGENERAL;
     } 
 
-#if APR_HAS_THREADS
     if (worker->mutex == NULL) {
         rv = apr_thread_mutex_create(&(worker->mutex), APR_THREAD_MUTEX_DEFAULT, p);
         if (rv != APR_SUCCESS) {
@@ -1983,20 +1753,20 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
     if (mpm_threads > 1) {
         /* Set hard max to no more then mpm_threads */
-        if (worker->hmax == 0 || worker->hmax > mpm_threads) {
-            worker->hmax = mpm_threads;
+        if (worker->s->hmax == 0 || worker->s->hmax > mpm_threads) {
+            worker->s->hmax = mpm_threads;
         }
-        if (worker->smax == -1 || worker->smax > worker->hmax) {
-            worker->smax = worker->hmax;
+        if (worker->s->smax == -1 || worker->s->smax > worker->hmax) {
+            worker->s->smax = worker->s->hmax;
         }
         /* Set min to be lower then smax */
-        if (worker->min > worker->smax) {
-            worker->min = worker->smax;
+        if (worker->s->min > worker->s->smax) {
+            worker->s->min = worker->s->smax;
         }
     }
     else {
         /* This will supress the apr_reslist creation */
-        worker->min = worker->smax = worker->hmax = 0;
+        worker->s->min = worker->s->smax = worker->s->hmax = 0;
     }
     if (worker->hmax) {
         rv = apr_reslist_create(&(worker->cp->res),
@@ -2010,19 +1780,18 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                   apr_pool_cleanup_null);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-            "proxy: initialized worker %d in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
-             worker->id, getpid(), worker->hostname, worker->min,
-             worker->hmax, worker->smax);
+            "proxy: initialized worker in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
+             getpid(), worker->s->hostname, worker->s->min,
+             worker->s->hmax, worker->s->smax);
 
 #if (APR_MAJOR_VERSION > 0)
         /* Set the acquire timeout */
-        if (rv == APR_SUCCESS && worker->acquire_set) {
-            apr_reslist_timeout_set(worker->cp->res, worker->acquire);
+        if (rv == APR_SUCCESS && worker->s->acquire_set) {
+            apr_reslist_timeout_set(worker->cp->res, worker->s->acquire);
         }
 #endif
     }
     else
-#endif
     {
         void *conn;
 
@@ -2030,11 +1799,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         worker->cp->conn = conn;
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-             "proxy: initialized single connection worker %d in child %" APR_PID_T_FMT " for (%s)",
-             worker->id, getpid(), worker->hostname);
+             "proxy: initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
+             getpid(), worker->hostname);
     }
     if (rv == APR_SUCCESS) {
-        worker->status |= (PROXY_WORKER_INITIALIZED);
+        worker->s->status |= (PROXY_WORKER_INITIALIZED);
     }
     return rv;
 }
@@ -2064,6 +1833,170 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
     }
 }
 
+PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
+                                        proxy_balancer **balancer,
+                                        request_rec *r,
+                                        proxy_server_conf *conf, char **url)
+{
+    int access_status;
+    
+    access_status = proxy_run_pre_request(worker, balancer, r, conf, url);
+    if (access_status == DECLINED && *balancer == NULL) {
+        *worker = ap_proxy_get_worker(r->pool, conf, *url);
+        if (*worker) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "proxy: %s: found worker %s for %s",
+                          (*worker)->scheme, (*worker)->name, *url);
+            
+            *balancer = NULL;
+            access_status = OK;
+        }
+        else if (r->proxyreq == PROXYREQ_PROXY) {
+            if (conf->forward) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                              "proxy: *: found forward proxy worker for %s",
+                              *url);
+                *balancer = NULL;
+                *worker = conf->forward;
+                access_status = OK;
+                /*
+                 * The forward worker does not keep connections alive, so
+                 * ensure that mod_proxy_http does the correct thing
+                 * regarding the Connection header in the request.
+                 */
+                apr_table_set(r->subprocess_env, "proxy-nokeepalive", "1");
+            }
+        }
+        else if (r->proxyreq == PROXYREQ_REVERSE) {
+            if (conf->reverse) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                              "proxy: *: found reverse proxy worker for %s",
+                              *url);
+                *balancer = NULL;
+                *worker = conf->reverse;
+                access_status = OK;
+                /*
+                 * The reverse worker does not keep connections alive, so
+                 * ensure that mod_proxy_http does the correct thing
+                 * regarding the Connection header in the request.
+                 */
+                apr_table_set(r->subprocess_env, "proxy-nokeepalive", "1");
+            }
+        }
+    }
+    else if (access_status == DECLINED && *balancer != NULL) {
+        /* All the workers are busy */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "proxy: all workers are busy.  Unable to serve %s",
+                      *url);
+        access_status = HTTP_SERVICE_UNAVAILABLE;
+    }
+    return access_status;
+}
+
+PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
+                                         proxy_balancer *balancer,
+                                         request_rec *r,
+                                         proxy_server_conf *conf)
+{
+    int access_status = OK;
+    if (balancer) {
+        access_status = proxy_run_post_request(worker, balancer, r, conf);
+        if (access_status == DECLINED) {
+            access_status = OK; /* no post_request handler available */
+            /* TODO: recycle direct worker */
+        }
+    }
+    
+    return access_status;
+}
+
+/* DEPRECATED */
+PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
+                                               const char *proxy_function,
+                                               apr_sockaddr_t *backend_addr,
+                                               const char *backend_name,
+                                               proxy_server_conf *conf,
+                                               request_rec *r)
+{
+    apr_status_t rv;
+    int connected = 0;
+    int loglevel;
+    
+    while (backend_addr && !connected) {
+        if ((rv = apr_socket_create(newsock, backend_addr->family,
+                                    SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
+            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
+            ap_log_rerror(APLOG_MARK, loglevel, rv, r,
+                          "proxy: %s: error creating fam %d socket for target %s",
+                          proxy_function,
+                          backend_addr->family,
+                          backend_name);
+            /*
+             * this could be an IPv6 address from the DNS but the
+             * local machine won't give us an IPv6 socket; hopefully the
+             * DNS returned an additional address to try
+             */
+            backend_addr = backend_addr->next;
+            continue;
+        }
+        
+        if (conf->recv_buffer_size > 0 &&
+            (rv = apr_socket_opt_set(*newsock, APR_SO_RCVBUF,
+                                     conf->recv_buffer_size))) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "apr_socket_opt_set(SO_RCVBUF): Failed to set "
+                          "ProxyReceiveBufferSize, using default");
+        }
+        
+        rv = apr_socket_opt_set(*newsock, APR_TCP_NODELAY, 1);
+        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "apr_socket_opt_set(APR_TCP_NODELAY): "
+                          "Failed to set");
+        }
+        
+        /* Set a timeout on the socket */
+        if (conf->timeout_set) {
+            apr_socket_timeout_set(*newsock, conf->timeout);
+        }
+        else {
+            apr_socket_timeout_set(*newsock, r->server->timeout);
+        }
+        
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "proxy: %s: fam %d socket created to connect to %s",
+                      proxy_function, backend_addr->family, backend_name);
+        
+        if (conf->source_address) {
+            rv = apr_socket_bind(*newsock, conf->source_address);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "proxy: %s: failed to bind socket to local address",
+                              proxy_function);
+            }
+        }
+        
+        /* make the connection out of the socket */
+        rv = apr_socket_connect(*newsock, backend_addr);
+        
+        /* if an error occurred, loop round and try again */
+        if (rv != APR_SUCCESS) {
+            apr_socket_close(*newsock);
+            loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
+            ap_log_rerror(APLOG_MARK, loglevel, rv, r,
+                          "proxy: %s: attempt to connect to %pI (%s) failed",
+                          proxy_function,
+                          backend_addr,
+                          backend_name);
+            backend_addr = backend_addr->next;
+            continue;
+        }
+        connected = 1;
+    }
+    return connected ? 0 : 1;
+}
+
 PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                                                proxy_conn_rec **conn,
                                                proxy_worker *worker,
@@ -2082,12 +2015,11 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
             return HTTP_SERVICE_UNAVAILABLE;
         }
     }
-#if APR_HAS_THREADS
+
     if (worker->hmax && worker->cp->res) {
         rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
     }
     else
-#endif
     {
         /* create the new connection if the previous was destroyed */
         if (!worker->cp->conn) {
@@ -2112,9 +2044,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
     (*conn)->worker = worker;
     (*conn)->close  = 0;
-#if APR_HAS_THREADS
     (*conn)->inreslist = 0;
-#endif
 
     return OK;
 }

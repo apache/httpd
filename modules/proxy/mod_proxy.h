@@ -57,6 +57,7 @@
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "ap_provider.h"
+#include "ap_slotmem.h"
 
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -69,6 +70,8 @@
 enum enctype {
     enc_path, enc_search, enc_user, enc_fpath, enc_parm
 };
+
+#define BALANCER_PREFIX "balancer://"
 
 #if APR_CHARSET_EBCDIC
 #define CRLF   "\r\n"
@@ -229,9 +232,7 @@ typedef struct {
     int          close:1;      /* Close 'this' connection */
     int          need_flush:1; /* Flag to decide whether we need to flush the
                                 * filter chain or not */
-#if APR_HAS_THREADS
     int          inreslist:1;  /* connection in apr_reslist? */
-#endif
 } proxy_conn_rec;
 
 typedef struct {
@@ -243,9 +244,7 @@ typedef struct {
 struct proxy_conn_pool {
     apr_pool_t     *pool;   /* The pool used in constructor and destructor calls */
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
-#if APR_HAS_THREADS
     apr_reslist_t  *res;    /* Connection resource list */
-#endif
     proxy_conn_rec *conn;   /* Single connection for prefork mpm */
 };
 
@@ -280,6 +279,7 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_WORKER_MAX_ROUTE_SIZE   64
 #define PROXY_WORKER_MAX_NAME_SIZE    96
 
+#define PROXY_STRNCPY(dst, src) apr_cpystrn((dst), (src), sizeof(dst))
 
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
@@ -299,8 +299,7 @@ typedef struct {
     int             hmax;       /* Hard maximum on the total number of connections */
     int             flush_wait; /* poll wait time in microseconds if flush_auto */
     int             index;      /* shm array index */
-    unsigned int    apr_hash;    /* hash #0 of worker name */
-    unsigned int    our_hash;    /* hash #1 of worker name. Why 2? hash collisions. */
+    unsigned int    hash;       /* hash of worker name */
     enum {
         flush_off,
         flush_on,
@@ -338,12 +337,13 @@ typedef struct {
 
 /* Worker configuration */
 struct proxy_worker {
+    int             index;      /* shm array index */
+    unsigned int    hash;       /* hash of worker name */
     proxy_conn_pool     *cp;    /* Connection pool to use */
     proxy_worker_shared   *s;   /* Shared data */
+    proxy_balancer  *balancer;  /* which balancer am I in? */
     void            *context;   /* general purpose storage */
-#if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex; /* Thread lock for updating address cache */
-#endif
 };
 
 /*
@@ -353,12 +353,13 @@ struct proxy_worker {
 #define PROXY_FLUSH_WAIT 10000
 
 struct proxy_balancer {
-    apr_array_header_t *cw;      /* initially configured workers */
-    proxy_worker **workers;     /* array of proxy_workers - runtime*/
-    int max_workers;             /* maximum number of allowed workers */
-    const char *name;            /* name of the load balancer */
-    apr_interval_time_t timeout; /* Timeout for waiting on free connection */
-    const char *lbprovider;      /* name of the lbmethod provider to use */
+    apr_array_header_t *workers;  /* initially configured workers */
+    ap_slotmem_instance_t *slot;  /* worker shm data - runtime */
+    int growth;                   /* number of post-config workers can added */
+    int max_workers;              /* maximum number of allowed workers */
+    const char *name;             /* name of the load balancer */
+    apr_interval_time_t timeout;  /* Timeout for waiting on free connection */
+    const char *lbprovider;       /* name of the lbmethod provider to use */
     proxy_balancer_method *lbmethod;
 
     const char      *sticky_path;     /* URL sticky session identifier */
@@ -383,13 +384,8 @@ struct proxy_balancer_method {
     apr_status_t (*updatelbstatus)(proxy_balancer *balancer, proxy_worker *elected, server_rec *s); 
 };
 
-#if APR_HAS_THREADS
 #define PROXY_THREAD_LOCK(x)      apr_thread_mutex_lock((x)->mutex)
 #define PROXY_THREAD_UNLOCK(x)    apr_thread_mutex_unlock((x)->mutex)
-#else
-#define PROXY_THREAD_LOCK(x)      APR_SUCCESS
-#define PROXY_THREAD_UNLOCK(x)    APR_SUCCESS
-#endif
 
 #define PROXY_GLOBAL_LOCK(x)      apr_global_mutex_lock((x)->mutex)
 #define PROXY_GLOBAL_UNLOCK(x)    apr_global_mutex_unlock((x)->mutex)
@@ -517,41 +513,30 @@ typedef __declspec(dllimport) const char *
 /* Connection pool API */
 /**
  * Get the worker from proxy configuration
- * @param p     memory pool used for finding worker
- * @param conf  current proxy server configuration
- * @param url   url to find the worker from
- * @return      proxy_worker or NULL if not found
+ * @param p        memory pool used for finding worker
+ * @param conf     current proxy server configuration
+ * @param balancer the balancer that the worker belongs to
+ * @param url      url to find the worker from
+ * @return         proxy_worker or NULL if not found
  */
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_server_conf *conf,
+                                                  proxy_balancer *balancer,
                                                   const char *url);
 /**
- * Add the worker to proxy configuration
- * @param worker the new worker
- * @param p      memory pool to allocate worker from 
- * @param conf   current proxy server configuration
- * @param url    url containing worker name
- * @param id     slotnumber id or -1 for auto allocation
- * @return       error message or NULL if successful
+ * Define and Allocate space for the worker to proxy configuration
+ * @param p         memory pool to allocate worker from 
+ * @param worker    the new worker
+ * @param balancer  the balancer that the worker belongs to
+ * @param conf      current proxy server configuration
+ * @param url       url containing worker name
+ * @return          error message or NULL if successful (*worker is new worker)
  */
-PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
-                                                apr_pool_t *p,
-                                                proxy_server_conf *conf,
-                                                const char *url,
-                                                int id);
-
-/**
- * Add the worker to proxy configuration
- * @param worker the new worker
- * @param p      memory pool to allocate worker from 
- * @param conf   current proxy server configuration
- * @param url    url containing worker name
- * @return       error message or NULL if successful
- */
-PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
-                                                apr_pool_t *p,
-                                                proxy_server_conf *conf,
-                                                const char *url);
+PROXY_DECLARE(const char *) ap_proxy_define_worker(apr_pool_t *p,
+                                                   proxy_worker **worker,
+                                                   proxy_balancer *balancer,
+                                                   proxy_server_conf *conf,
+                                                   const char *url);
 
 /**
  * Create new worker
@@ -579,7 +564,6 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                                                      proxy_worker *worker,
                                                      server_rec *s);
 
-
 /**
  * Initialize the worker
  * @param worker worker to initialize
@@ -591,6 +575,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
                                                        server_rec *s,
                                                        apr_pool_t *p);
 /**
+ * Verifies valid balancer name (eg: balancer://foo)
+ * @param name  name to test
+ * @return      ptr to start of name or NULL if not valid
+ */
+PROXY_DECLARE(char *) ap_proxy_valid_balancer_name(const char *name);
+
+
+/**
  * Get the balancer from proxy configuration
  * @param p     memory pool used for temporary storage while finding balancer
  * @param conf  current proxy server configuration
@@ -600,41 +592,20 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
 PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                       proxy_server_conf *conf,
                                                       const char *url);
+
 /**
- * Add the balancer to proxy configuration
- * @param balancer the new balancer
+ * Define and Allocate space for the balancer to proxy configuration
  * @param p      memory pool to allocate balancer from 
+ * @param balancer the new balancer
  * @param conf   current proxy server configuration
  * @param url    url containing balancer name
  * @return       error message or NULL if successfull
  */
-PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
-                                                  apr_pool_t *p,
-                                                  proxy_server_conf *conf,
-                                                  const char *url);
+PROXY_DECLARE(const char *) ap_proxy_define_balancer(apr_pool_t *p,
+                                                    proxy_balancer **balancer,
+                                                    proxy_server_conf *conf,
+                                                    const char *url);
 
-/**
- * Add the worker to the balancer
- * @param pool     memory pool for adding worker 
- * @param balancer balancer to add to
- * @param worker worker to add
- * @param id     slotnumber id or -1 for auto allocation
- * @note A single worker can be added to multiple balancers.
- */
-PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool,
-                                                    proxy_balancer *balancer,
-                                                    proxy_worker *worker,
-                                                    int id);
-/**
- * Add the worker to the balancer
- * @param pool     memory pool for adding worker 
- * @param balancer balancer to add to
- * @param worker worker to add
- * @note A single worker can be added to multiple balancers.
- */
-PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool,
-                                                    proxy_balancer *balancer,
-                                                    proxy_worker *worker);
 /**
  * Get the most suitable worker and/or balancer for the request
  * @param worker   worker used for processing request
