@@ -1092,7 +1092,6 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
             ap_get_module_config(r->server->module_config, &proxy_module);
         proxy_balancer *balancer;
         const char *real = ent[i].real;
-        const char *bname;
         /*
          * First check if mapping against a balancer and see
          * if we have such a entity. If so, then we need to
@@ -1100,11 +1099,11 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
          * or may not be the right one... basically, we need
          * to find which member actually handled this request.
          */
-        bname = ap_proxy_valid_balancer_name((char *)real);
-        if (bname && (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
+        if (ap_proxy_valid_balancer_name((char *)real, 0) &&
+            (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
             int n, l3 = 0;
             proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
-            const char *urlpart = ap_strchr_c(bname, '/');
+            const char *urlpart = ap_strchr_c(real, '/');
             if (urlpart) {
                 if (!urlpart[1])
                     urlpart = NULL;
@@ -1290,16 +1289,13 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
  */
 
 /*
- * verifies that the balancer name conforms to standards. If
- * so, returns ptr to the actual name (BALANCER_PREFIX removed),
- * otherwise NULL
+ * verifies that the balancer name conforms to standards.
  */
-PROXY_DECLARE(char *) ap_proxy_valid_balancer_name(char *name)
+PROXY_DECLARE(int) ap_proxy_valid_balancer_name(char *name, int i)
 {
-    if (strncasecmp(name, BALANCER_PREFIX, sizeof(BALANCER_PREFIX)-1) == 0)
-        return (name + sizeof(BALANCER_PREFIX)-1);
-    else
-        return NULL;
+    if (!i)
+        i = sizeof(BALANCER_PREFIX)-1;
+    return (!strncasecmp(name, BALANCER_PREFIX, i));
 }
 
 
@@ -1308,19 +1304,20 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                       const char *url)
 {
     proxy_balancer *balancer;
-    char *name, *q, *uri = apr_pstrdup(p, url);
+    char *c, *uri = apr_pstrdup(p, url);
     int i;
-
-    if (!(name = ap_proxy_valid_balancer_name(uri)))
-       return NULL;
-
+    
+    c = strchr(uri, ':');
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
+        return NULL;
+    }
     /* remove path from uri */
-    if ((q = strchr(name, '/')))
-        *q = '\0';
-
+    if ((c = strchr(c + 3, '/'))) {
+        *c = '\0';
+    }
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
-        if (strcasecmp(balancer->name, name) == 0) {
+        if (strcasecmp(balancer->name, uri) == 0) {
             return balancer;
         }
         balancer++;
@@ -1333,20 +1330,19 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                      proxy_server_conf *conf,
                                                      const char *url)
 {
-    char *name, *q, *uri = apr_pstrdup(p, url);
+    char *c, *q, *uri = apr_pstrdup(p, url);
     proxy_balancer_method *lbmethod;
 
     /* We should never get here without a valid BALANCER_PREFIX... */
 
-    name = ap_proxy_valid_balancer_name(uri);
-    if (!name)
-        return apr_pstrcat(p, "Bad syntax for a balancer name ", uri, NULL);
-    
+    c = strchr(uri, ':');
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
+        return "Bad syntax for a balancer name";
     /* remove path from uri */
-    if ((q = strchr(name, '/')))
+    if ((q = strchr(c + 3, '/')))
         *q = '\0';
     
-    ap_str_tolower(name);
+    ap_str_tolower(uri);
     *balancer = apr_array_push(conf->balancers);
     memset(*balancer, 0, sizeof(proxy_balancer));
 
@@ -1359,10 +1355,11 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
         return "Can't find 'byrequests' lb method";
     }
 
-    (*balancer)->name = name;
+    (*balancer)->name = uri;
     (*balancer)->lbmethod = lbmethod;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     (*balancer)->updated = apr_time_now();
+    (*balancer)->mutex = NULL;
 
     return NULL;
 }
@@ -1741,96 +1738,111 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_wo
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s, apr_pool_t *p)
 {
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
     int mpm_threads;
 
     if (worker->s->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
-        return APR_SUCCESS;
-    }
-
-    /* Set default parameters */
-    if (!worker->s->retry_set) {
-        worker->s->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
-    }
-    /* By default address is reusable unless DisableReuse is set */
-    if (worker->s->disablereuse) {
-        worker->s->is_address_reusable = 0;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "worker %s shared already initialized", worker->s->name);
     }
     else {
-        worker->s->is_address_reusable = 1;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "initializing worker %s shared", worker->s->name);
+        /* Set default parameters */
+        if (!worker->s->retry_set) {
+            worker->s->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
+        }
+        /* By default address is reusable unless DisableReuse is set */
+        if (worker->s->disablereuse) {
+            worker->s->is_address_reusable = 0;
+        }
+        else {
+            worker->s->is_address_reusable = 1;
+        }
+
+        ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
+        if (mpm_threads > 1) {
+            /* Set hard max to no more then mpm_threads */
+            if (worker->s->hmax == 0 || worker->s->hmax > mpm_threads) {
+                worker->s->hmax = mpm_threads;
+            }
+            if (worker->s->smax == -1 || worker->s->smax > worker->s->hmax) {
+                worker->s->smax = worker->s->hmax;
+            }
+            /* Set min to be lower then smax */
+            if (worker->s->min > worker->s->smax) {
+                worker->s->min = worker->s->smax;
+            }
+        }
+        else {
+            /* This will supress the apr_reslist creation */
+            worker->s->min = worker->s->smax = worker->s->hmax = 0;
+        }
     }
 
-    if (worker->cp == NULL)
-        init_conn_pool(p, worker);
-    if (worker->cp == NULL) {
+    /* What if local is init'ed and shm isn't?? Even possible? */
+    if (worker->local_status & PROXY_WORKER_INITIALIZED) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-            "can not create connection pool");
-        return APR_EGENERAL;
-    } 
-
-    if (worker->mutex == NULL) {
-        rv = apr_thread_mutex_create(&(worker->mutex), APR_THREAD_MUTEX_DEFAULT, p);
-        if (rv != APR_SUCCESS) {
+                     "worker %s local already initialized", worker->s->name);        
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "initializing worker %s local", worker->s->name);
+        /* Now init local worker data */
+        if (worker->cp == NULL)
+            init_conn_pool(p, worker);
+        if (worker->cp == NULL) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                "can not create thread mutex");
-            return rv;
-        }
-    }
+                "can not create connection pool");
+            return APR_EGENERAL;
+        } 
 
-    ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
-    if (mpm_threads > 1) {
-        /* Set hard max to no more then mpm_threads */
-        if (worker->s->hmax == 0 || worker->s->hmax > mpm_threads) {
-            worker->s->hmax = mpm_threads;
-        }
-        if (worker->s->smax == -1 || worker->s->smax > worker->s->hmax) {
-            worker->s->smax = worker->s->hmax;
-        }
-        /* Set min to be lower then smax */
-        if (worker->s->min > worker->s->smax) {
-            worker->s->min = worker->s->smax;
-        }
-    }
-    else {
-        /* This will supress the apr_reslist creation */
-        worker->s->min = worker->s->smax = worker->s->hmax = 0;
-    }
-    if (worker->s->hmax) {
-        rv = apr_reslist_create(&(worker->cp->res),
-                                worker->s->min, worker->s->smax,
-                                worker->s->hmax, worker->s->ttl,
-                                connection_constructor, connection_destructor,
-                                worker, worker->cp->pool);
-
-        apr_pool_cleanup_register(worker->cp->pool, (void *)worker,
-                                  conn_pool_cleanup,
-                                  apr_pool_cleanup_null);
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-            "proxy: initialized worker in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
-             getpid(), worker->s->hostname, worker->s->min,
-             worker->s->hmax, worker->s->smax);
-
-        /* Set the acquire timeout */
-        if (rv == APR_SUCCESS && worker->s->acquire_set) {
-            apr_reslist_timeout_set(worker->cp->res, worker->s->acquire);
+        if (worker->mutex == NULL) {
+            rv = apr_thread_mutex_create(&(worker->mutex), APR_THREAD_MUTEX_DEFAULT, p);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                    "can not create thread mutex");
+                return rv;
+            }
         }
 
-    }
-    else
-    {
-        void *conn;
+        if (worker->s->hmax) {
+            rv = apr_reslist_create(&(worker->cp->res),
+                                    worker->s->min, worker->s->smax,
+                                    worker->s->hmax, worker->s->ttl,
+                                    connection_constructor, connection_destructor,
+                                    worker, worker->cp->pool);
 
-        rv = connection_constructor(&conn, worker, worker->cp->pool);
-        worker->cp->conn = conn;
+            apr_pool_cleanup_register(worker->cp->pool, (void *)worker,
+                                      conn_pool_cleanup,
+                                      apr_pool_cleanup_null);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-             "proxy: initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
-             getpid(), worker->s->hostname);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                "proxy: initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
+                 getpid(), worker->s->hostname, worker->s->min,
+                 worker->s->hmax, worker->s->smax);
+
+            /* Set the acquire timeout */
+            if (rv == APR_SUCCESS && worker->s->acquire_set) {
+                apr_reslist_timeout_set(worker->cp->res, worker->s->acquire);
+            }
+
+        }
+        else {
+            void *conn;
+
+            rv = connection_constructor(&conn, worker, worker->cp->pool);
+            worker->cp->conn = conn;
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "proxy: initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
+                 getpid(), worker->s->hostname);
+        }
     }
     if (rv == APR_SUCCESS) {
         worker->s->status |= (PROXY_WORKER_INITIALIZED);
+        worker->local_status |= (PROXY_WORKER_INITIALIZED);
     }
     return rv;
 }
@@ -2046,8 +2058,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     if (worker->s->hmax && worker->cp->res) {
         rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
     }
-    else
-    {
+    else {
         /* create the new connection if the previous was destroyed */
         if (!worker->cp->conn) {
             connection_constructor((void **)conn, worker, worker->cp->pool);
@@ -2769,7 +2780,8 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
     if (method == PROXY_HASHFUNC_APR) {
         apr_ssize_t slen = strlen(str);
         return apr_hashfunc_default(str, &slen);
-    } else if (method == PROXY_HASHFUNC_FNV) {
+    }
+    else if (method == PROXY_HASHFUNC_FNV) {
         /* FNV model */
         unsigned int hash;
         const unsigned int fnv_prime = 0x811C9DC5;
@@ -2778,7 +2790,8 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
             hash ^= (*str);
         }
         return hash;
-    } else { /* method == PROXY_HASHFUNC_DEFAULT */
+    }
+    else { /* method == PROXY_HASHFUNC_DEFAULT */
         /* SDBM model */
         unsigned int hash;
         for (hash = 0; *str; str++) {

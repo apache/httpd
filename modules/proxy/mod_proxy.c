@@ -1442,7 +1442,7 @@ static const char *
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
     /* Distinguish the balancer from worker */
-    if (ap_proxy_valid_balancer_name(r)) {
+    if (ap_proxy_valid_balancer_name(r, 9)) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
             const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r);
@@ -1947,7 +1947,7 @@ static const char *
         name = ap_getword_conf(cmd->temp_pool, &arg);
     }
 
-    if (ap_proxy_valid_balancer_name(name)) {
+    if (ap_proxy_valid_balancer_name(name, 9)) {
         balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
         if (!balancer) {
             if (in_proxy_section) {
@@ -2096,7 +2096,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             return apr_pstrcat(cmd->pool, thiscmd->name,
                                "> arguments are not supported for non url.",
                                NULL);
-        if (ap_proxy_valid_balancer_name((char*)conf->p)) {
+        if (ap_proxy_valid_balancer_name((char *)conf->p, 9)) {
             balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p);
             if (!balancer) {
                 err = ap_proxy_define_balancer(cmd->pool, &balancer,
@@ -2372,16 +2372,22 @@ static void child_init(apr_pool_t *p, server_rec *s)
         void *sconf = s->module_config;
         proxy_server_conf *conf;
         proxy_worker *worker;
+        int i;
 
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
         /*
          * NOTE: non-balancer members don't use shm at all...
          *       after all, why should they?
          */
+        worker = (proxy_worker *)conf->workers->elts;
+        for (i = 0; i < conf->workers->nelts; i++, worker++) {
+            ap_proxy_initialize_worker(worker, s, conf->pool);
+        }
         /* Create and initialize forward worker if defined */
         if (conf->req_set && conf->req) {
-            ap_proxy_define_worker(p, &worker, NULL, NULL, "http://www.apache.org");
-            conf->forward = worker;
+            proxy_worker *forward;
+            ap_proxy_define_worker(p, &forward, NULL, NULL, "http://www.apache.org");
+            conf->forward = forward;
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
             PROXY_STRNCPY(conf->forward->s->hostname, "*");
             PROXY_STRNCPY(conf->forward->s->scheme,   "*");
@@ -2391,6 +2397,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Disable address cache for generic forward worker */
             conf->forward->s->is_address_reusable = 0;
+            ap_proxy_initialize_worker(conf->forward, s, conf->pool);
         }
         if (!reverse) {
             ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org");
@@ -2405,6 +2412,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             reverse->s->is_address_reusable = 0;
         }
         conf->reverse = reverse;
+        ap_proxy_initialize_worker(conf->reverse, s, conf->pool);
         s = s->next;
     }
 }
