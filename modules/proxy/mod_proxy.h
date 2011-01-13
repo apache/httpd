@@ -42,6 +42,7 @@
 #include "apr_reslist.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_uuid.h"
 #include "util_mutex.h"
 #include "apr_global_mutex.h"
 #include "apr_thread_mutex.h"
@@ -369,12 +370,13 @@ struct proxy_balancer {
     const char      *sticky;          /* sticky session identifier */
     int             max_attempts;     /* Number of attempts before failing */
 
+    apr_time_t      updated;    /* timestamp of last update */
+    char nonce[APR_UUID_FORMATTED_LENGTH + 1];
+    apr_global_mutex_t  *mutex; /* global lock for updating lb params */
+    void            *context;   /* general purpose storage */
     int             sticky_force:1;   /* Disable failover for sticky sessions */
     int             scolonsep:1;      /* true if ';' seps sticky session paths */
     int             max_attempts_set:1;
-    void            *context;   /* general purpose storage */
-    apr_time_t      updated;    /* timestamp of last update */
-    apr_global_mutex_t  *mutex; /* global lock for updating lb params */
 };
 
 struct proxy_balancer_method {

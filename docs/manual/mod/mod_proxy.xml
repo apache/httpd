@@ -837,6 +837,7 @@ expressions</description>
         ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
     </example>
 
+    <table border="2"><tr><th>BalancerMember parameters</th></tr></table>
     <table>
     <tr><th>Parameter</th>
         <th>Default</th>
@@ -1009,6 +1010,7 @@ expressions</description>
     parameters can be add to this virtual worker. See <module>mod_proxy_balancer</module>
     for more information about how the balancer works.
     </p>
+    <table border="2"><tr><th>Balancer parameters</th></tr></table>
     <table>
     <tr><th>Parameter</th>
         <th>Default</th>
@@ -1057,6 +1059,23 @@ expressions</description>
         <td>A single or comma-separated list of HTTP status codes. If set this will
         force the worker into error state when the backend returns any status code
         in the list. Worker recovery behaves the same as other worker errors.
+    </td></tr>
+    <tr><td>nonce</td>
+        <td>&lt;auto&gt;</td>
+        <td>The protective nonce used in the <code>balancer-manager</code> application page.
+        The default is to use an automatically determined UUID-based
+        nonce, to provide for further protection for the page. If set,
+        then the nonce is set to that value. A setting of <code>None</code>
+        disables all nonce checking.
+    <note><title>Note</title>
+      <p>In addition to the nonce, the <code>balancer-manager</code> page
+      should be protected via an ACL.</p>
+    </note>
+     </td></tr>
+    <tr><td>growth</td>
+        <td>0</td>
+        <td>Number of additional BalancerMembers to allow to be added
+        to this balancer in addition to those defined at configuration. 
     </td></tr>
     
     </table>

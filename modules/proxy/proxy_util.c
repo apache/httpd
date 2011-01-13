@@ -1332,6 +1332,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
 {
     char *c, *q, *uri = apr_pstrdup(p, url);
     proxy_balancer_method *lbmethod;
+    apr_uuid_t uuid;
 
     /* We should never get here without a valid BALANCER_PREFIX... */
 
@@ -1360,6 +1361,10 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     (*balancer)->updated = apr_time_now();
     (*balancer)->mutex = NULL;
+    /* Retrieve a UUID and store the nonce for the lifetime of
+     * the process. */
+    apr_uuid_get(&uuid);
+    apr_uuid_format((*balancer)->nonce, &uuid);
 
     return NULL;
 }

@@ -289,6 +289,11 @@
  * 20101113.2 (2.3.9-dev)  Add ap_expr_exec_re()
  * 20101204.0 (2.3.10-dev) Add _t to ap_expr's typedef names
  * 20101223.0 (2.3.11-dev) Remove cleaned from proxy_conn_rec.
+ * 20101223.1 (2.3.11-dev) Rework mod_proxy, et.al. Remove proxy_worker_stat
+ *                         and replace w/ proxy_worker_shared; remove worker
+ *                         info from scoreboard and use slotmem; Allow
+ *                         dynamic growth of balancer members; Remove
+ *                         BalancerNonce in favor of 'nonce' parameter.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
