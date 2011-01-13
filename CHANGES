@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_proxy: Refactor usage of shared data by dropping the scoreboard
+     and using slotmem. Create foundation for dynamic growth/changes of
+     members within a balancer. Remove BalancerNonce in favor of a
+     per-balancer 'nonce' parameter. [Jim Jagielski]
+
   *) mod_status: Don't show slots which are disabled by MaxClients as open.
      PR: 47022 [Jordi Prats <jordi prats gmail com>, Stefan Fritsch]
 
