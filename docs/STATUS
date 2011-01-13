@@ -99,7 +99,6 @@ To Do List
      - SSL docs need serious update and enhancement
         - compat docs are wrong
         - no basic how to setup ssl doc
-        mads said he was working on this, but...
 
 - API documentation
     - Ben Laurie has written some hooks documentation
