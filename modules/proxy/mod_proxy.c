@@ -985,7 +985,7 @@ static int proxy_handler(request_rec *r)
 
         /* Initialise worker if needed, note the shared area must be initialized by the balancer logic */
         if (balancer) {
-            ap_proxy_initialize_worker(worker, r->server, conf->pool); 
+            ap_proxy_initialize_worker(worker, r->server, conf->pool);
         }
 
         if (balancer && balancer->max_attempts_set && !max_attempts)
@@ -1357,7 +1357,7 @@ static const char *
     const char *err;
 
     err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES);
-    if (err) { 
+    if (err) {
         return err;
     }
 
@@ -1512,7 +1512,7 @@ static const char * add_pass_reverse(cmd_parms *cmd, void *dconf, const char *f,
     const char *err;
 
     err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES);
-    if (err) { 
+    if (err) {
         return err;
     }
 
@@ -2391,7 +2391,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
             PROXY_STRNCPY(conf->forward->s->hostname, "*");
             PROXY_STRNCPY(conf->forward->s->scheme,   "*");
-            conf->forward->hash = conf->forward->s->hash = 
+            conf->forward->hash = conf->forward->s->hash =
                 ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_DEFAULT);
              /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
@@ -2404,7 +2404,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
             PROXY_STRNCPY(reverse->s->hostname, "*");
             PROXY_STRNCPY(reverse->s->scheme,   "*");
-            reverse->hash = reverse->s->hash = 
+            reverse->hash = reverse->s->hash =
                 ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_DEFAULT);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;

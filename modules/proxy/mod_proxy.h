@@ -15,7 +15,7 @@
  */
 
 #ifndef MOD_PROXY_H
-#define MOD_PROXY_H 
+#define MOD_PROXY_H
 
 /**
  * @file  mod_proxy.h
@@ -159,7 +159,7 @@ typedef struct {
     } proxy_status;             /* Status display options */
     apr_sockaddr_t *source_address;
     apr_global_mutex_t  *mutex; /* global lock (needed??) */
-    
+
     int req_set:1;
     int viaopt_set:1;
     int recv_buffer_size_set:1;
@@ -384,7 +384,7 @@ struct proxy_balancer_method {
     void            *context;   /* general purpose storage */
     apr_status_t (*reset)(proxy_balancer *balancer, server_rec *s);
     apr_status_t (*age)(proxy_balancer *balancer, server_rec *s);
-    apr_status_t (*updatelbstatus)(proxy_balancer *balancer, proxy_worker *elected, server_rec *s); 
+    apr_status_t (*updatelbstatus)(proxy_balancer *balancer, proxy_worker *elected, server_rec *s);
 };
 
 #define PROXY_THREAD_LOCK(x)      apr_thread_mutex_lock((x)->mutex)
@@ -395,7 +395,7 @@ struct proxy_balancer_method {
 
 /* hooks */
 
-/* Create a set of PROXY_DECLARE(type), PROXY_DECLARE_NONSTD(type) and 
+/* Create a set of PROXY_DECLARE(type), PROXY_DECLARE_NONSTD(type) and
  * PROXY_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(WIN32)
@@ -423,14 +423,14 @@ struct proxy_balancer_method {
 #define PROXY_OPTIONAL_HOOK(name,fn,pre,succ,order) \
         APR_OPTIONAL_HOOK(proxy,name,fn,pre,succ,order)
 
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r, 
-                          proxy_worker *worker, proxy_server_conf *conf, char *url, 
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r,
+                          proxy_worker *worker, proxy_server_conf *conf, char *url,
                           const char *proxyhost, apr_port_t proxyport))
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r, 
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, canon_handler, (request_rec *r,
                           char *url))
 
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, create_req, (request_rec *r, request_rec *pr))
-APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r)) 
+APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r))
 
 /**
  * pre request hook.
@@ -443,7 +443,7 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, fixups, (request_rec *r))
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, pre_request, (proxy_worker **worker,
                           proxy_balancer **balancer,
                           request_rec *r,
-                          proxy_server_conf *conf, char **url))                          
+                          proxy_server_conf *conf, char **url))
 /**
  * post request hook.
  * It is called after request for updating runtime balancer status.
@@ -528,7 +528,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   const char *url);
 /**
  * Define and Allocate space for the worker to proxy configuration
- * @param p         memory pool to allocate worker from 
+ * @param p         memory pool to allocate worker from
  * @param worker    the new worker
  * @param balancer  the balancer that the worker belongs to
  * @param conf      current proxy server configuration
@@ -543,7 +543,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 
 /**
  * Share a defined proxy worker via shm
- * @param worker  worker to be shared 
+ * @param worker  worker to be shared
  * @param shm     location of shared info
  * @param i       index into shm
  * @return        APR_SUCCESS or error code
@@ -583,7 +583,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
 
 /**
  * Define and Allocate space for the balancer to proxy configuration
- * @param p      memory pool to allocate balancer from 
+ * @param p      memory pool to allocate balancer from
  * @param balancer the new balancer
  * @param conf   current proxy server configuration
  * @param url    url containing balancer name
@@ -601,7 +601,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
  * @param r        current request
  * @param conf     current proxy server configuration
  * @param url      request url that balancer can rewrite.
- * @return         OK or  HTTP_XXX error 
+ * @return         OK or  HTTP_XXX error
  * @note It calls balancer pre_request hook if the url starts with balancer://
  * The balancer then rewrites the url to particular worker, like http://host:port
  */
@@ -618,7 +618,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
  * @param conf     current proxy server configuration
  * @return         OK or  HTTP_XXX error
  * @note Whenever the pre_request is called, the post_request has to be
- * called too. 
+ * called too.
  */
 PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
                                          proxy_balancer *balancer,
@@ -647,7 +647,7 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
  * @param server_portstr Via headers server port
  * @param server_portstr_size size of the server_portstr buffer
  * @return         OK or HTTP_XXX error
- */                                         
+ */
 PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                                  proxy_server_conf *conf,
                                                  proxy_worker *worker,
@@ -694,7 +694,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
  * @param s       current server record
  * @return        OK or HTTP_XXX error
  * @note The connection will be closed if conn->close_on_release is set
- */                                         
+ */
 PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                proxy_conn_rec *conn,
                                                server_rec *s);
@@ -707,7 +707,7 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
  * @return        OK or HTTP_XXX error
  * @note In case the socket already exists for conn, just check the link
  * status.
- */                                         
+ */
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
                                             proxy_worker *worker,

@@ -35,18 +35,18 @@ static char balancer_nonce[APR_UUID_FORMATTED_LENGTH + 1];
  * Register our mutex type before the config is read so we
  * can adjust the mutex settings using the Mutex directive.
  */
-static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
+static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_t *ptemp)
 {
 
     apr_status_t rv;
-    
+
     rv = ap_mutex_register(pconf, balancer_mutex_type, NULL,
                                APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS) {
         return rv;
     }
-    
+
     return OK;
 }
 
@@ -207,7 +207,7 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
     int i;
     int checking_standby;
     int checked_standby;
-    
+
     proxy_worker **workers;
 
     checking_standby = checked_standby = 0;
@@ -475,7 +475,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
     /* Step 3: force recovery */
     force_recovery(*balancer, r->server);
-    
+
     /* Step 3.5: Update member list for the balancer */
     /* TODO: Implement as provider! */
     /* proxy_update_members(balancer, r, conf); */
@@ -715,8 +715,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
      * the process. */
     apr_uuid_get(&uuid);
     apr_uuid_format(balancer_nonce, &uuid);
-        
-    
+
     /*
      * Get worker slotmem setup
      */
@@ -736,14 +735,14 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         proxy_balancer *balancer;
         sconf = s->module_config;
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-        
+
         /* Initialize shared scoreboard data */
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
             proxy_worker **workers;
             proxy_worker *worker;
             ap_slotmem_instance_t *new = NULL;
-            
+
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
             balancer->sname = ap_md5(pconf, (const unsigned char *)balancer->name);
 
@@ -756,10 +755,10 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              balancer->sname);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
-            
+
             apr_pool_cleanup_register(pconf, (void *)s, lock_remove,
                                       apr_pool_cleanup_null);
-            
+
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing create: %s (%s), %d, %d",
                          balancer->name, balancer->sname,
                          (int)sizeof(proxy_worker_shared),
@@ -782,7 +781,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 if ((rv = storage->grab(balancer->slot, &index)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_grab failed");
                     return !OK;
-                    
+
                 }
                 if ((rv = storage->dptr(balancer->slot, index, (void *)&shm)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_dptr failed");
@@ -796,7 +795,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         }
         s = s->next;
     }
-    
+
     return OK;
 }
 
@@ -849,11 +848,11 @@ static int balancer_handler(request_rec *r)
                 return HTTP_BAD_REQUEST;
         }
     }
-    
+
     /* Check that the supplied nonce matches this server's nonce;
      * otherwise ignore all parameters, to prevent a CSRF attack. */
     if (*balancer_nonce &&
-        ((name = apr_table_get(params, "nonce")) == NULL 
+        ((name = apr_table_get(params, "nonce")) == NULL
         || strcmp(balancer_nonce, name) != 0)) {
         apr_table_clear(params);
     }
@@ -985,7 +984,7 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof(BALANCER_PREFIX) - 1, "&w=",
                           ap_escape_uri(r->pool, worker->s->name),
-                          "&nonce=", balancer_nonce, 
+                          "&nonce=", balancer_nonce,
                           "\">", NULL);
                 ap_rvputs(r, worker->s->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
@@ -1049,7 +1048,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, "<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof(BALANCER_PREFIX) - 1,
                       "\">\n", NULL);
-            ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"", 
+            ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"",
                       balancer_nonce, "\">\n", NULL);
             ap_rvputs(r, "</form>\n", NULL);
             ap_rputs("<hr />\n", r);
@@ -1068,7 +1067,7 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         void *sconf = s->module_config;
         proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
         apr_status_t rv;
-                
+
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
             apr_size_t size;
@@ -1086,15 +1085,15 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
             }
 
             /* Re-open the mutex for the child. */
-            rv = apr_global_mutex_child_init(&(balancer->mutex), 
+            rv = apr_global_mutex_child_init(&(balancer->mutex),
                                              apr_global_mutex_lockfile(balancer->mutex),
                                              p);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, 
-                             "Failed to reopen mutex %: %s in child", 
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                             "Failed to reopen mutex %: %s in child",
                              balancer->name, balancer_mutex_type);
                 exit(1); /* Ugly, but what else? */
-            } 
+            }
 
             /* now attach */
             storage->attach(&(balancer->slot), balancer->sname, &size, &num, p);
