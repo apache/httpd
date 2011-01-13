@@ -54,6 +54,8 @@ extern "C" {
 typedef unsigned int ap_slotmem_type_t;
 
 /*
+ * Values for ap_slotmem_type_t::
+ *
  * AP_SLOTMEM_TYPE_PERSIST: For transitory providers, persist
  *    the data on the file-system
  *
