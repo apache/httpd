@@ -203,7 +203,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
 
     {
         int status;
-        const char *flush_method = worker->flusher ? worker->flusher : "flush";
+        const char *flush_method = worker->s->flusher ? worker->s->flusher : "flush";
 
         proxy_fdpass_flush *flush = ap_lookup_provider(PROXY_FDPASS_FLUSHER,
                                                        flush_method, "0");

@@ -210,7 +210,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: AJP: request failed to %pI (%s)",
                      conn->worker->cp->addr,
-                     conn->worker->hostname);
+                     conn->worker->s->hostname);
         if (status == AJP_EOVERFLOW)
             return HTTP_BAD_REQUEST;
         else {
@@ -293,7 +293,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                              "proxy: send failed to %pI (%s)",
                              conn->worker->cp->addr,
-                             conn->worker->hostname);
+                             conn->worker->s->hostname);
                 /*
                  * It is fatal when we failed to send a (part) of the request
                  * body.
@@ -333,7 +333,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: read response failed from %pI (%s)",
                      conn->worker->cp->addr,
-                     conn->worker->hostname);
+                     conn->worker->s->hostname);
         /*
          * This is only non fatal when we have not sent (parts) of a possible
          * request body so far (we do not store it and thus cannot send it
@@ -456,10 +456,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                                     r->connection->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
 
-                        if ((conn->worker->flush_packets == flush_on) ||
-                            ((conn->worker->flush_packets == flush_auto) &&
+                        if ((conn->worker->s->flush_packets == flush_on) ||
+                            ((conn->worker->s->flush_packets == flush_auto) &&
                             ((rv = apr_poll(conn_poll, 1, &conn_poll_fd,
-                                             conn->worker->flush_wait))
+                                             conn->worker->s->flush_wait))
                                              != APR_SUCCESS) &&
                               APR_STATUS_IS_TIMEUP(rv))) {
                             e = apr_bucket_flush_create(r->connection->bucket_alloc);
@@ -568,7 +568,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: got response from %pI (%s)",
                      conn->worker->cp->addr,
-                     conn->worker->hostname);
+                     conn->worker->s->hostname);
         rv = OK;
     }
 
@@ -576,7 +576,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: dialog to %pI (%s) failed",
                      conn->worker->cp->addr,
-                     conn->worker->hostname);
+                     conn->worker->s->hostname);
         /*
          * If we already send data, signal a broken backend connection
          * upwards in the chain.
@@ -699,9 +699,9 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
         }
 
         /* Handle CPING/CPONG */
-        if (worker->ping_timeout_set) {
+        if (worker->s->ping_timeout_set) {
             status = ajp_handle_cping_cpong(backend->sock, r,
-                                            worker->ping_timeout);
+                                            worker->s->ping_timeout);
             /*
              * In case the CPING / CPONG failed for the first time we might be
              * just out of luck and got a faulty backend connection, but the
@@ -713,7 +713,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
                 ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                              "proxy: AJP: cping/cpong failed to %pI (%s)",
                              worker->cp->addr,
-                             worker->hostname);
+                             worker->s->hostname);
                 status = HTTP_SERVICE_UNAVAILABLE;
                 retry++;
                 continue;

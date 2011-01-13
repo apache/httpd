@@ -98,40 +98,21 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     return OK;
 }
 
-static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
+static void init_balancer_members(proxy_server_conf *conf, server_rec *s,
                                  proxy_balancer *balancer)
 {
     int i;
-    proxy_worker **workers;
+    proxy_worker *worker;
 
-    workers = (proxy_worker **)balancer->workers->elts;
+    worker = (proxy_worker *)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         int worker_is_initialized;
-        worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(*workers);
+        worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(worker);
         if (!worker_is_initialized) {
-            proxy_worker_shared *slot;
-            /*
-             * If the worker is not initialized check whether its scoreboard
-             * slot is already initialized.
-             */
-            slot = (proxy_worker_shared *) XXXXXap_get_scoreboard_lb((*workers)->id);
-            if (slot) {
-                worker_is_initialized = slot->status & PROXY_WORKER_INITIALIZED;
-            }
-            else {
-                worker_is_initialized = 0;
-            }
+            ap_proxy_initialize_worker(worker, s, conf->pool);
         }
-        ap_proxy_initialize_worker_share(conf, *workers, s);
-        ap_proxy_initialize_worker(*workers, s, conf->pool);
-        if (!worker_is_initialized) {
-            /* Set to the original configuration */
-            (*workers)->s->lbstatus = (*workers)->s->lbfactor =
-            ((*workers)->lbfactor ? (*workers)->lbfactor : 1);
-            (*workers)->s->lbset = (*workers)->lbset;
-        }
-        ++workers;
+        ++worker;
     }
 
     /* Set default number of attempts to the number of
@@ -141,7 +122,6 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
         balancer->max_attempts = balancer->workers->nelts - 1;
         balancer->max_attempts_set = 1;
     }
-    return 0;
 }
 
 /* Retrieve the parameter with the given name
@@ -413,7 +393,7 @@ static int rewrite_url(request_rec *r, proxy_worker *worker,
                              NULL));
     }
 
-    *url = apr_pstrcat(r->pool, worker->name, path, NULL);
+    *url = apr_pstrcat(r->pool, worker->s->name, path, NULL);
 
     return OK;
 }
@@ -448,7 +428,7 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
             (*worker)->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "proxy: BALANCER: (%s). Forcing recovery for worker (%s)",
-                         balancer->name, (*worker)->hostname);
+                         balancer->name, (*worker)->s->hostname);
         }
     }
 }
@@ -592,7 +572,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     apr_table_setn(r->subprocess_env,
                    "BALANCER_NAME", (*balancer)->name);
     apr_table_setn(r->subprocess_env,
-                   "BALANCER_WORKER_NAME", (*worker)->name);
+                   "BALANCER_WORKER_NAME", (*worker)->s->name);
     apr_table_setn(r->subprocess_env,
                    "BALANCER_WORKER_ROUTE", (*worker)->s->route);
 
@@ -615,7 +595,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: BALANCER (%s) worker (%s) rewritten to %s",
-                 (*balancer)->name, (*worker)->name, *url);
+                 (*balancer)->name, (*worker)->s->name, *url);
 
     return access_status;
 }
@@ -642,7 +622,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
             if (r->status == val) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                              "proxy: BALANCER: (%s).  Forcing recovery for worker (%s), failonstatus %d",
-                             balancer->name, worker->name, val);
+                             balancer->name, worker->s->name, val);
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
                 worker->s->error_time = apr_time_now();
                 break;
@@ -731,32 +711,54 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
      */
     while (s) {
         int i,j;
+        apr_status_t rv;
         sconf = s->module_config;
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-        proxy_worker *worker;
         
         /* Initialize shared scoreboard data */
-        balancer = (proxy_balancer *)conf->balancers->elts;
+        proxy_balancer *balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+            apr_size_t size;
+            unsigned int num;
             proxy_worker *worker;
+            ap_slotmem_instance_t *new = NULL;
             
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
-            storage->create(&balancer->slot, balancer->name, sizeof(proxy_worker_shared),
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing create: %s, %d, %d",
+                         balancer->name, (int)sizeof(proxy_worker_shared),
+                         (int)balancer->max_workers);
+
+            rv = storage->create(&new, balancer->name, sizeof(proxy_worker_shared),
                             balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
-            if (!balancer->slot) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_create failed");
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_create failed");
                 return !OK;
             }
-            proxy_worker *worker = balancer->workers->elts;
+            balancer->slot = new;
+#if 0
+            rv = storage->attach(&(balancer->slot), balancer->name, &size, &num, pconf);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_attach failed");
+                return !OK;
+            }
+#endif
+            worker = (proxy_worker *)balancer->workers->elts;
             for (j = 0; j < balancer->workers->nelts; j++, worker++) {
                 proxy_worker_shared *shm;
                 unsigned int index;
-                if ((storage->grab(balancer->slot, &index) != APR_SUCCESS) ||;
-                    (storage->dptr(balancer->slot, index, &shm) != APR_SUCESS)) {
-                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_grab/dptr failed");
+
+                if ((rv = storage->grab(balancer->slot, &index)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_grab failed");
+                    return !OK;
+                    
+                }
+                if ((rv = storage->dptr(balancer->slot, index, (void *)&shm)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_dptr failed");
                     return !OK;
                 }
-                ap_proxy_create_worker(worker, shm, index)
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing share: %pp %pp %d", worker->s, shm, (int)index);
+                ap_proxy_share_worker(worker, shm, index);
             }
         }
         s = s->next;
@@ -827,20 +829,7 @@ static int balancer_handler(request_rec *r)
         bsel = ap_proxy_get_balancer(r->pool, conf,
             apr_pstrcat(r->pool, "balancer://", name, NULL));
     if ((name = apr_table_get(params, "w"))) {
-        proxy_worker *ws;
-
-        ws = ap_proxy_get_worker(r->pool, conf, name);
-        if (bsel && ws) {
-            workers = (proxy_worker **)bsel->workers->elts;
-            for (n = 0; n < bsel->workers->nelts; n++) {
-                worker = *workers;
-                if (strcasecmp(worker->name, ws->name) == 0) {
-                    wsel = worker;
-                    break;
-                }
-                ++workers;
-            }
-        }
+        wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
     }
     /* First set the params */
     /*
@@ -858,13 +847,13 @@ static int balancer_handler(request_rec *r)
             }
         }
         if ((val = apr_table_get(params, "wr"))) {
-            if (strlen(val) && strlen(val) < PROXY_WORKER_MAX_ROUTE_SIZ)
+            if (strlen(val) && strlen(val) < sizeof(wsel->s->route))
                 strcpy(wsel->s->route, val);
             else
                 *wsel->s->route = '\0';
         }
         if ((val = apr_table_get(params, "rr"))) {
-            if (strlen(val) && strlen(val) < PROXY_WORKER_MAX_ROUTE_SIZ)
+            if (strlen(val) && strlen(val) < sizeof(wsel->s->redirect))
                 strcpy(wsel->s->redirect, val);
             else
                 *wsel->s->redirect = '\0';
@@ -897,9 +886,9 @@ static int balancer_handler(request_rec *r)
             for (n = 0; n < balancer->workers->nelts; n++) {
                 worker = *workers;
                 ap_rputs("        <httpd:worker>\n", r);
-                ap_rvputs(r, "          <httpd:scheme>", worker->scheme,
+                ap_rvputs(r, "          <httpd:scheme>", worker->s->scheme,
                           "</httpd:scheme>\n", NULL);
-                ap_rvputs(r, "          <httpd:hostname>", worker->hostname,
+                ap_rvputs(r, "          <httpd:hostname>", worker->s->hostname,
                           "</httpd:hostname>\n", NULL);
                ap_rprintf(r, "          <httpd:loadfactor>%d</httpd:loadfactor>\n",
                           worker->s->lbfactor);
@@ -962,10 +951,10 @@ static int balancer_handler(request_rec *r)
                 worker = *workers;
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof("balancer://") - 1, "&w=",
-                          ap_escape_uri(r->pool, worker->name),
+                          ap_escape_uri(r->pool, worker->s->name),
                           "&nonce=", balancer_nonce, 
                           "\">", NULL);
-                ap_rvputs(r, worker->name, "</a></td>", NULL);
+                ap_rvputs(r, worker->s->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
                           NULL);
                 ap_rvputs(r, "</td><td>",
@@ -999,7 +988,7 @@ static int balancer_handler(request_rec *r)
         ap_rputs("<hr />\n", r);
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
-            ap_rvputs(r, wsel->name, "</h3>\n", NULL);
+            ap_rvputs(r, wsel->s->name, "</h3>\n", NULL);
             ap_rvputs(r, "<form method=\"GET\" action=\"", NULL);
             ap_rvputs(r, r->uri, "\">\n<dl>", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name=\"lf\" type=text ", r);
@@ -1023,7 +1012,7 @@ static int balancer_handler(request_rec *r)
             ap_rputs("></td></tr>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name=\"w\" ",  NULL);
-            ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->name), "\">\n", NULL);
+            ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->s->name), "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
                       "\">\n", NULL);
@@ -1063,10 +1052,10 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         for (i = 0; i < conf->balancers->nelts; i++) {
             apr_size_t size;
             unsigned int num;
-            storage->attach(&balancer->slot, balancer->name, &size, &num, p);
+            storage->attach(&(balancer->slot), balancer->name, &size, &num, p);
             if (!balancer->slot) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
-                return !OK;
+                exit(1); /* Ugly, but what else? */
             }
             if (balancer->lbmethod && balancer->lbmethod->reset)
                balancer->lbmethod->reset(balancer, s);

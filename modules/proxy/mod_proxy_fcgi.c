@@ -589,13 +589,13 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
     ob = apr_brigade_create(r->pool, c->bucket_alloc);
 
     while (! done) {
-        apr_interval_time_t timeout = conn->worker->timeout;
+        apr_interval_time_t timeout = conn->worker->s->timeout;
         apr_size_t len;
         int n;
 
         /* We need SOME kind of timeout here, or virtually anything will
          * cause timeout errors. */
-        if (! conn->worker->timeout_set) {
+        if (! conn->worker->s->timeout_set) {
             timeout = apr_time_from_sec(30);
         }
 
