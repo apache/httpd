@@ -265,14 +265,11 @@ struct proxy_conn_pool {
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 
 /* NOTE: these check the shared status */
-#define PROXY_WORKER_IS_INITIALIZED(f)   ( (f)->s && \
-  ( (f)->s->status &  PROXY_WORKER_INITIALIZED ) )
+#define PROXY_WORKER_IS_INITIALIZED(f)  ( (f)->s->status &  PROXY_WORKER_INITIALIZED )
 
-#define PROXY_WORKER_IS_STANDBY(f)   ( (f)->s && \
-  ( (f)->s->status &  PROXY_WORKER_HOT_STANDBY ) )
+#define PROXY_WORKER_IS_STANDBY(f)   ( (f)->s->status &  PROXY_WORKER_HOT_STANDBY )
 
-#define PROXY_WORKER_IS_USABLE(f)   ( (f)->s && \
-  ( !( (f)->s->status & PROXY_WORKER_NOT_USABLE_BITMAP) ) && \
+#define PROXY_WORKER_IS_USABLE(f)   ( ( !( (f)->s->status & PROXY_WORKER_NOT_USABLE_BITMAP) ) && \
   PROXY_WORKER_IS_INITIALIZED(f) )
 
 /* default worker retry timeout in seconds */
@@ -344,8 +341,8 @@ struct proxy_worker {
     proxy_conn_pool     *cp;    /* Connection pool to use */
     proxy_worker_shared   *s;   /* Shared data */
     proxy_balancer  *balancer;  /* which balancer am I in? */
-    void            *context;   /* general purpose storage */
     apr_thread_mutex_t  *mutex; /* Thread lock for updating address cache */
+    void            *context;   /* general purpose storage */
 };
 
 /*
@@ -545,8 +542,9 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
  * @param worker  worker to be shared 
  * @param shm     location of shared info
  * @param i       index into shm
+ * @return        APR_SUCCESS or error code
  */
-PROXY_DECLARE(void) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm, int i);
+PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm, int i);
 
 /**
  * Initialize the worker by setting up worker connection pool and mutex
