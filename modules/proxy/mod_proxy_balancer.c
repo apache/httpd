@@ -38,7 +38,15 @@ static char balancer_nonce[APR_UUID_FORMATTED_LENGTH + 1];
 static int balancer_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
                                apr_pool_t *ptemp)
 {
-    ap_mutex_register(pconf, balancer_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+
+    apr_status_t rv;
+    
+    rv = ap_mutex_register(pconf, balancer_mutex_type, NULL,
+                               APR_LOCK_DEFAULT, 0);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    
     return OK;
 }
 
@@ -102,17 +110,18 @@ static void init_balancer_members(proxy_server_conf *conf, server_rec *s,
                                  proxy_balancer *balancer)
 {
     int i;
-    proxy_worker *worker;
+    proxy_worker **workers;
 
-    worker = (proxy_worker *)balancer->workers->elts;
+    workers = (proxy_worker **)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         int worker_is_initialized;
+        proxy_worker *worker = *workers;
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(worker);
         if (!worker_is_initialized) {
             ap_proxy_initialize_worker(worker, s, conf->pool);
         }
-        ++worker;
+        ++workers;
     }
 
     /* Set default number of attempts to the number of
@@ -197,13 +206,12 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
     int checked_standby;
     
     proxy_worker **workers;
-    proxy_worker *worker;
 
     checking_standby = checked_standby = 0;
     while (!checked_standby) {
         workers = (proxy_worker **)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++, workers++) {
-            worker = *workers;
+            proxy_worker *worker = *workers;
             if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
                 continue;
             if (*(worker->s->route) && strcmp(worker->s->route, route) == 0) {
@@ -666,6 +674,18 @@ static void recalc_factors(proxy_balancer *balancer)
     }
 }
 
+static apr_status_t lock_remove(void *data)
+{
+    server_rec *s = data;
+    void *sconf = s->module_config;
+    proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
+    if (conf->mutex) {
+        apr_global_mutex_destroy(conf->mutex);
+        conf->mutex = NULL;
+    }
+    return(0);
+}
+
 /* post_config hook: */
 static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
@@ -677,12 +697,13 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     const char *userdata_key = "mod_proxy_balancer_init";
 
-    /* balancer_init() will be called twice during startup.  So, only
+    /* balancer_post_config() will be called twice during startup.  So, only
      * set up the static data the 1st time through. */
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
         apr_pool_userdata_set((const void *)1, userdata_key,
                                apr_pool_cleanup_null, s->process->pool);
+        return OK;
     }
     /* Retrieve a UUID and store the nonce for the lifetime of
      * the process. */
@@ -692,10 +713,16 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /* Create global mutex */
     rv = ap_global_mutex_create(&conf->mutex, NULL, balancer_mutex_type, NULL,
                                 s, pconf, 0);
-    if (rv != APR_SUCCESS) {
+    if (rv != APR_SUCCESS || !conf->mutex) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                     "mutex creation of %s failed", balancer_mutex_type);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+    apr_pool_cleanup_register(pconf, (void *)s, lock_remove,
+                              apr_pool_cleanup_null);
+    
+    
     /*
      * Get worker slotmem setup
      */
@@ -718,8 +745,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         /* Initialize shared scoreboard data */
         proxy_balancer *balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-            apr_size_t size;
-            unsigned int num;
+            proxy_worker **workers;
             proxy_worker *worker;
             ap_slotmem_instance_t *new = NULL;
             
@@ -736,18 +762,13 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 return !OK;
             }
             balancer->slot = new;
-#if 0
-            rv = storage->attach(&(balancer->slot), balancer->name, &size, &num, pconf);
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_attach failed");
-                return !OK;
-            }
-#endif
-            worker = (proxy_worker *)balancer->workers->elts;
-            for (j = 0; j < balancer->workers->nelts; j++, worker++) {
+
+            workers = (proxy_worker **)balancer->workers->elts;
+            for (j = 0; j < balancer->workers->nelts; j++, workers++) {
                 proxy_worker_shared *shm;
                 unsigned int index;
 
+                worker = *workers;
                 if ((rv = storage->grab(balancer->slot, &index)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_grab failed");
                     return !OK;
@@ -757,8 +778,11 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_dptr failed");
                     return !OK;
                 }
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing share: %pp %pp %d", worker->s, shm, (int)index);
-                ap_proxy_share_worker(worker, shm, index);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing share: %x %pp %pp %pp %pp %d", worker->hash, worker->balancer, (char *)worker->context, worker->s, shm, (int)index);
+                if ((rv = ap_proxy_share_worker(worker, shm, index)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot share worker");
+                    return !OK;
+                }
             }
         }
         s = s->next;
@@ -890,7 +914,7 @@ static int balancer_handler(request_rec *r)
                           "</httpd:scheme>\n", NULL);
                 ap_rvputs(r, "          <httpd:hostname>", worker->s->hostname,
                           "</httpd:hostname>\n", NULL);
-               ap_rprintf(r, "          <httpd:loadfactor>%d</httpd:loadfactor>\n",
+                ap_rprintf(r, "          <httpd:loadfactor>%d</httpd:loadfactor>\n",
                           worker->s->lbfactor);
                 ap_rputs("        </httpd:worker>\n", r);
                 ++workers;
@@ -1036,6 +1060,11 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
         apr_status_t rv;
         
+        if (!conf->mutex) {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                         "no mutex %s", balancer_mutex_type);
+            return;
+        }
         /* Re-open the mutex for the child. */
         rv = apr_global_mutex_child_init(&conf->mutex, 
                                          apr_global_mutex_lockfile(conf->mutex),

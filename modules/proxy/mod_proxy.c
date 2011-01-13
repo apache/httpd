@@ -1463,6 +1463,7 @@ static const char *
             const char *err = ap_proxy_define_worker(cmd->pool, &worker, NULL, conf, r);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
+
             PROXY_COPY_CONF_PARAMS(worker, conf);
         } else {
             reuse = 1;
@@ -1880,8 +1881,14 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     /* Try to find existing worker */
     worker = ap_proxy_get_worker(cmd->temp_pool, balancer, conf, name);
     if (!worker) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+                     "Defining worker '%s' for balancer '%s'",
+                     name, balancer->name);
         if ((err = ap_proxy_define_worker(cmd->pool, &worker, balancer, conf, name)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+                     "Defined worker '%s' for balancer '%s'",
+                     worker->s->name, balancer->name);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
@@ -2089,7 +2096,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             return apr_pstrcat(cmd->pool, thiscmd->name,
                                "> arguments are not supported for non url.",
                                NULL);
-        if (ap_proxy_valid_balancer_name(conf->p)) {
+        if (ap_proxy_valid_balancer_name((char*)conf->p)) {
             balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p);
             if (!balancer) {
                 err = ap_proxy_define_balancer(cmd->pool, &balancer,

@@ -1577,7 +1577,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     int worker_name_length;
     const char *c;
     char *url_copy;
-    int i, end;
+    int i;
     
     c = ap_strchr_c(url, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
@@ -1606,31 +1606,39 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
         ap_str_tolower(url_copy);
         min_match = strlen(url_copy);
     }
-    
-    if (balancer) {
-        worker = (proxy_worker *)balancer->workers->elts;
-        end = balancer->workers->nelts;
-    } else {
-        worker = (proxy_worker *)conf->workers->elts;
-        end = conf->workers->nelts;
-    }
-    
     /*
      * Do a "longest match" on the worker name to find the worker that
      * fits best to the URL, but keep in mind that we must have at least
      * a minimum matching of length min_match such that
      * scheme://hostname[:port] matches between worker and url.
      */
-    for (i = 0; i < end; i++) {
-        if ( ((worker_name_length = strlen(worker->s->name)) <= url_length)
-            && (worker_name_length >= min_match)
-            && (worker_name_length > max_match)
-            && (strncmp(url_copy, worker->s->name, worker_name_length) == 0) ) {
-            max_worker = worker;
-            max_match = worker_name_length;
+    
+    if (balancer) {
+        proxy_worker **workers = (proxy_worker **)balancer->workers->elts;
+        for (i = 0; i < balancer->workers->nelts; i++, workers++) {
+            worker = *workers;
+            if ( ((worker_name_length = strlen(worker->s->name)) <= url_length)
+                && (worker_name_length >= min_match)
+                && (worker_name_length > max_match)
+                && (strncmp(url_copy, worker->s->name, worker_name_length) == 0) ) {
+                max_worker = worker;
+                max_match = worker_name_length;
+            }
+            
         }
-        worker++;
+    } else {
+        worker = (proxy_worker *)conf->workers->elts;
+        for (i = 0; i < conf->workers->nelts; i++, worker++) {
+            if ( ((worker_name_length = strlen(worker->s->name)) <= url_length)
+                && (worker_name_length >= min_match)
+                && (worker_name_length > max_match)
+                && (strncmp(url_copy, worker->s->name, worker_name_length) == 0) ) {
+                max_worker = worker;
+                max_match = worker_name_length;
+            }
+        }
     }
+    
     return max_worker;
 }
 
@@ -1671,20 +1679,27 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
      *
      * in which case the worker goes in the conf slot.
      */
-    if (balancer)
-        *worker = apr_array_push(balancer->workers);
-    else if (conf)
+    if (balancer) {
+        proxy_worker **runtime;
+        /* recall that we get a ptr to the ptr here */
+        runtime = apr_array_push(balancer->workers);
+        *worker = *runtime = apr_palloc(p, sizeof(proxy_worker));   /* right to left baby */
+    } else if (conf) {
         *worker = apr_array_push(conf->workers);
-    else {
-        proxy_worker *w = apr_palloc(p, sizeof(proxy_worker));
-        *worker = w;
+    } else {
+        /* we need to allocate space here */
+        *worker = apr_palloc(p, sizeof(proxy_worker));
     }
     
     memset(*worker, 0, sizeof(proxy_worker));
     /* right here we just want to tuck away the worker info.
      * if called during config, we don't have shm setup yet,
      * so just note the info for later. */
+#if 0
     wstatus = malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
+#else
+    wstatus = apr_palloc(p, sizeof(proxy_worker_shared));
+#endif
     memset(wstatus, 0, sizeof(proxy_worker_shared));
     
     
@@ -1698,24 +1713,30 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wstatus->hash = ap_proxy_hashfunc(wstatus->name, PROXY_HASHFUNC_DEFAULT);
  
     (*worker)->hash = wstatus->hash;
+    (*worker)->context = NULL;
     (*worker)->cp = NULL;
     (*worker)->mutex = NULL;
     (*worker)->balancer = balancer;
-    
     (*worker)->s = wstatus;
-    
+ 
     return NULL;
 }
 
 /*
  * Create an already defined worker and free up memory
  */
-PROXY_DECLARE(void) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm, int i)
+PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm, int i)
 {
+    if (!shm || !worker->s)
+        return APR_EINVAL;
+
     memcpy(shm, worker->s, sizeof(proxy_worker_shared));
+#if 0
     free(worker->s); /* was malloced in ap_proxy_define_worker */
+#endif
     worker->s = shm;
     worker->s->index = i;
+    return APR_SUCCESS;
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s, apr_pool_t *p)
