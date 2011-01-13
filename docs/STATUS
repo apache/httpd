@@ -28,8 +28,6 @@ To Do List
     -  Improving the documentation of the documentations' build system
        itself (requirements, procedures)
 
-- Identify which documents are grossly out of date, and fix.
-
 - Continue to enhance the FAQ, which is in the wiki:
   http://wiki.apache.org/httpd/FAQ
 
@@ -50,7 +48,6 @@ To Do List
   as well as: http://wiki.apache.org/httpd/PerformanceScalingOut for
   a follow up -- these days it's *all* about scaling, really.
 
-
 - Windows platform docs are in desperate need of rewrites/updates for 2.x.
     - Bill Rowe is a good contact for tech questions.
     - "using apache" has been done, "compiling apache" is still open
@@ -59,7 +56,8 @@ To Do List
     - FAQ: UTF-8 config and URL encoding for non-ascii characters.
 
 - New Auth system
-    - Much clean-up and enhancement of aaa howto
+    - Much clean-up and enhancement of aaa howto (Can someone clarify
+      exactly what needs cleaned up and enhanced?)
     - Independent note on how to upgrade to new auth system
     - Discussion of DBD auth, and, in particular, examples of how to set
       up auth using each of the supported databases.
@@ -96,19 +94,16 @@ To Do List
               one-process-mode == no threads, i.e. only one
               process handling the requests in a single loop?
 
-- Individual docs will need some cleanup.
+- Identify which documents are grossly out of date, and fix.
      - platform/ebcdic.xml - needs major rework for 2.0
-     - dso.xml - Reads as though this is a nifty new thing we just came
-       up with recently.
+     - SSL docs need serious update and enhancement
+        - compat docs are wrong
+        - no basic how to setup ssl doc
+        mads said he was working on this, but...
 
 - API documentation
     - Ben Laurie has written some hooks documentation
     - authn provider API documentation could be useful
-
-- SSL docs need serious update and enhancement
-    - compat docs are wrong
-    - no basic how to setup ssl doc
-    mads said he was working on this, but...
 
 - How does <Proxy> fit into sections.html?
 
