@@ -143,7 +143,6 @@
 <li><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
 <li><a href="mod_authz_core.html#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
 <li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
-<li><a href="mod_proxy_balancer.html#balancernonce">BalancerNonce</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
