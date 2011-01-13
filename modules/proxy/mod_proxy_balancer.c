@@ -21,15 +21,12 @@
 #include "ap_mpm.h"
 #include "apr_version.h"
 #include "apr_hooks.h"
-#include "apr_uuid.h"
 #include "apr_date.h"
 
 static const char *balancer_mutex_type = "proxy-balancer-shm";
 ap_slotmem_provider_t *storage = NULL;
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
-
-static char balancer_nonce[APR_UUID_FORMATTED_LENGTH + 1];
 
 /*
  * Register our mutex type before the config is read so we
@@ -697,7 +694,6 @@ static apr_status_t lock_remove(void *data)
 static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
 {
-    apr_uuid_t uuid;
     void *data;
     void *sconf = s->module_config;
     proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
@@ -711,10 +707,6 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_cleanup_null, s->process->pool);
         return OK;
     }
-    /* Retrieve a UUID and store the nonce for the lifetime of
-     * the process. */
-    apr_uuid_get(&uuid);
-    apr_uuid_format(balancer_nonce, &uuid);
 
     /*
      * Get worker slotmem setup
@@ -849,20 +841,23 @@ static int balancer_handler(request_rec *r)
         }
     }
 
+    if ((name = apr_table_get(params, "b")))
+        bsel = ap_proxy_get_balancer(r->pool, conf,
+            apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL));
+
+    if ((name = apr_table_get(params, "w"))) {
+        wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
+    }
+
+#if 0
     /* Check that the supplied nonce matches this server's nonce;
      * otherwise ignore all parameters, to prevent a CSRF attack. */
     if (*balancer_nonce &&
         ((name = apr_table_get(params, "nonce")) == NULL
-        || strcmp(balancer_nonce, name) != 0)) {
+         || strcmp(balancer_nonce, name) != 0)) {
         apr_table_clear(params);
     }
-
-    if ((name = apr_table_get(params, "b")))
-        bsel = ap_proxy_get_balancer(r->pool, conf,
-            apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL));
-    if ((name = apr_table_get(params, "w"))) {
-        wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
-    }
+#endif
     /* First set the params */
     /*
      * Note that it is not possible set the proxy_balancer because it is not
@@ -984,7 +979,7 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof(BALANCER_PREFIX) - 1, "&w=",
                           ap_escape_uri(r->pool, worker->s->name),
-                          "&nonce=", balancer_nonce,
+                          "&nonce=", balancer->nonce,
                           "\">", NULL);
                 ap_rvputs(r, worker->s->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
@@ -1049,7 +1044,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, "value=\"", bsel->name + sizeof(BALANCER_PREFIX) - 1,
                       "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"",
-                      balancer_nonce, "\">\n", NULL);
+                      bsel->nonce, "\">\n", NULL);
             ap_rvputs(r, "</form>\n", NULL);
             ap_rputs("<hr />\n", r);
         }
@@ -1090,7 +1085,7 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
                                              p);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                             "Failed to reopen mutex %: %s in child",
+                             "Failed to reopen mutex %s: %s in child",
                              balancer->name, balancer_mutex_type);
                 exit(1); /* Ugly, but what else? */
             }
@@ -1110,35 +1105,6 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
     }
 
 }
-
-static const char *set_balancer_nonce (cmd_parms *cmd, void *dummy, const char *arg,
-                                       const char *val)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (!strcasecmp(arg, "None")) {
-        *balancer_nonce = '\0';
-    } else if (!strcasecmp(arg, "Set")) {
-        if (val) {
-            apr_cpystrn(balancer_nonce, val, sizeof(balancer_nonce));
-        } else {
-            return "BalancerNonce Set requires an argument";
-        }
-    } else if (strcasecmp(arg, "Default")) {
-        return "Bad argument for BalancerNonce: Must be 'Set', 'None' or 'Default'";
-    }
-    return NULL;
-}
-
-static const command_rec balancer_cmds[] =
-{
-    AP_INIT_TAKE12("BalancerNonce", set_balancer_nonce, NULL,
-       RSRC_CONF, "Set value for balancer-manager nonce"),
-    {NULL}
-};
 
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
@@ -1163,6 +1129,6 @@ AP_DECLARE_MODULE(proxy_balancer) = {
     NULL,       /* merge per-directory config structures */
     NULL,       /* create per-server config structure */
     NULL,       /* merge per-server config structures */
-    balancer_cmds,       /* command apr_table_t */
+    NULL,       /* command apr_table_t */
     ap_proxy_balancer_register_hook /* register hooks */
 };

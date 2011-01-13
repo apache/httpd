@@ -399,6 +399,25 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
 
     }
+    else if (!strcasecmp(key, "nonce")) {
+        if (!strcasecmp(val, "None")) {
+            *balancer->nonce = '\0';
+        } 
+        else {
+            if (strlen(val) > sizeof(balancer->nonce)-1) {
+                return "Provided nonce is too large";
+            }
+            else {
+                apr_cpystrn(balancer->nonce, val, sizeof(balancer->nonce));
+            }
+        }
+    }
+    else if (!strcasecmp(key, "growth")) {
+        ival = atoi(val);
+        if (ival < 1 || ival > 100)   /* arbitrary limit here */
+            return "growth must be between 1 and 100";
+        balancer->growth = ival;
+    }
     else {
         return "unknown Balancer parameter";
     }
