@@ -1705,6 +1705,8 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wstatus->port = uri.port;
     wstatus->flush_packets = flush_off;
     wstatus->flush_wait = PROXY_FLUSH_WAIT;
+    wstatus->is_address_reusable = 1;
+    wstatus->lbfactor = 1;
     wstatus->smax = -1;
     wstatus->hash = ap_proxy_hashfunc(wstatus->name, PROXY_HASHFUNC_DEFAULT);
 
