@@ -60,12 +60,12 @@ static int ap_proxy_lb_worker_size(void)
 
 #define PROXY_COPY_CONF_PARAMS(w, c) \
     do {                             \
-        (w)->timeout              = (c)->timeout;               \
-        (w)->timeout_set          = (c)->timeout_set;           \
-        (w)->recv_buffer_size     = (c)->recv_buffer_size;      \
-        (w)->recv_buffer_size_set = (c)->recv_buffer_size_set;  \
-        (w)->io_buffer_size       = (c)->io_buffer_size;        \
-        (w)->io_buffer_size_set   = (c)->io_buffer_size_set;    \
+        (w)->s->timeout              = (c)->timeout;               \
+        (w)->s->timeout_set          = (c)->timeout_set;           \
+        (w)->s->recv_buffer_size     = (c)->recv_buffer_size;      \
+        (w)->s->recv_buffer_size_set = (c)->recv_buffer_size_set;  \
+        (w)->s->io_buffer_size       = (c)->io_buffer_size;        \
+        (w)->s->io_buffer_size_set   = (c)->io_buffer_size_set;    \
     } while (0)
 
 static const char *set_worker_param(apr_pool_t *p,
@@ -81,8 +81,8 @@ static const char *set_worker_param(apr_pool_t *p,
         /* Normalized load factor. Used with BalancerMamber,
          * it is a number between 1 and 100.
          */
-        worker->lbfactor = atoi(val);
-        if (worker->lbfactor < 1 || worker->lbfactor > 100)
+        worker->s->lbfactor = atoi(val);
+        if (worker->s->lbfactor < 1 || worker->s->lbfactor > 100)
             return "LoadFactor must be number between 1..100";
     }
     else if (!strcasecmp(key, "retry")) {
@@ -93,8 +93,8 @@ static const char *set_worker_param(apr_pool_t *p,
         ival = atoi(val);
         if (ival < 0)
             return "Retry must be a positive value";
-        worker->retry = apr_time_from_sec(ival);
-        worker->retry_set = 1;
+        worker->s->retry = apr_time_from_sec(ival);
+        worker->s->retry_set = 1;
     }
     else if (!strcasecmp(key, "ttl")) {
         /* Time in seconds that will destroy all the connections
@@ -103,7 +103,7 @@ static const char *set_worker_param(apr_pool_t *p,
         ival = atoi(val);
         if (ival < 1)
             return "TTL must be at least one second";
-        worker->ttl = apr_time_from_sec(ival);
+        worker->s->ttl = apr_time_from_sec(ival);
     }
     else if (!strcasecmp(key, "min")) {
         /* Initial number of connections to remote
@@ -111,7 +111,7 @@ static const char *set_worker_param(apr_pool_t *p,
         ival = atoi(val);
         if (ival < 0)
             return "Min must be a positive number";
-        worker->min = ival;
+        worker->s->min = ival;
     }
     else if (!strcasecmp(key, "max")) {
         /* Maximum number of connections to remote
@@ -119,7 +119,7 @@ static const char *set_worker_param(apr_pool_t *p,
         ival = atoi(val);
         if (ival < 0)
             return "Max must be a positive number";
-        worker->hmax = ival;
+        worker->s->hmax = ival;
     }
     /* XXX: More inteligent naming needed */
     else if (!strcasecmp(key, "smax")) {
@@ -129,7 +129,7 @@ static const char *set_worker_param(apr_pool_t *p,
         ival = atoi(val);
         if (ival < 0)
             return "Smax must be a positive number";
-        worker->smax = ival;
+        worker->s->smax = ival;
     }
     else if (!strcasecmp(key, "acquire")) {
         /* Acquire timeout in given unit (default is milliseconds).
@@ -140,8 +140,8 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Acquire timeout has wrong format";
         if (timeout < 1000)
             return "Acquire must be at least one millisecond";
-        worker->acquire = timeout;
-        worker->acquire_set = 1;
+        worker->s->acquire = timeout;
+        worker->s->acquire_set = 1;
     }
     else if (!strcasecmp(key, "timeout")) {
         /* Connection timeout in seconds.
@@ -150,56 +150,56 @@ static const char *set_worker_param(apr_pool_t *p,
         ival = atoi(val);
         if (ival < 1)
             return "Timeout must be at least one second";
-        worker->timeout = apr_time_from_sec(ival);
-        worker->timeout_set = 1;
+        worker->s->timeout = apr_time_from_sec(ival);
+        worker->s->timeout_set = 1;
     }
     else if (!strcasecmp(key, "iobuffersize")) {
         long s = atol(val);
         if (s < 512 && s) {
             return "IOBufferSize must be >= 512 bytes, or 0 for system default.";
         }
-        worker->io_buffer_size = (s ? s : AP_IOBUFSIZE);
-        worker->io_buffer_size_set = 1;
+        worker->s->io_buffer_size = (s ? s : AP_IOBUFSIZE);
+        worker->s->io_buffer_size_set = 1;
     }
     else if (!strcasecmp(key, "receivebuffersize")) {
         ival = atoi(val);
         if (ival < 512 && ival != 0) {
             return "ReceiveBufferSize must be >= 512 bytes, or 0 for system default.";
         }
-        worker->recv_buffer_size = ival;
-        worker->recv_buffer_size_set = 1;
+        worker->s->recv_buffer_size = ival;
+        worker->s->recv_buffer_size_set = 1;
     }
     else if (!strcasecmp(key, "keepalive")) {
         if (!strcasecmp(val, "on"))
-            worker->keepalive = 1;
+            worker->s->keepalive = 1;
         else if (!strcasecmp(val, "off"))
-            worker->keepalive = 0;
+            worker->s->keepalive = 0;
         else
             return "KeepAlive must be On|Off";
-        worker->keepalive_set = 1;
+        worker->s->keepalive_set = 1;
     }
     else if (!strcasecmp(key, "disablereuse")) {
         if (!strcasecmp(val, "on"))
-            worker->disablereuse = 1;
+            worker->s->disablereuse = 1;
         else if (!strcasecmp(val, "off"))
-            worker->disablereuse = 0;
+            worker->s->disablereuse = 0;
         else
             return "DisableReuse must be On|Off";
-        worker->disablereuse_set = 1;
+        worker->s->disablereuse_set = 1;
     }
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
-        if (strlen(val) > PROXY_WORKER_MAX_ROUTE_SIZ)
+        if (strlen(val) >= PROXY_WORKER_MAX_ROUTE_SIZE)
             return "Route length must be < 64 characters";
-        worker->route = apr_pstrdup(p, val);
+        PROXY_STRNCPY(worker->s->route, val);
     }
     else if (!strcasecmp(key, "redirect")) {
         /* Worker redirection route.
          */
-        if (strlen(val) > PROXY_WORKER_MAX_ROUTE_SIZ)
+        if (strlen(val) >= PROXY_WORKER_MAX_ROUTE_SIZE)
             return "Redirect length must be < 64 characters";
-        worker->redirect = apr_pstrdup(p, val);
+        PROXY_STRNCPY(worker->s->redirect, val);
     }
     else if (!strcasecmp(key, "status")) {
         const char *v;
@@ -217,33 +217,33 @@ static const char *set_worker_param(apr_pool_t *p,
             }
             if (*v == 'D' || *v == 'd') {
                 if (mode)
-                    worker->status |= PROXY_WORKER_DISABLED;
+                    worker->s->status |= PROXY_WORKER_DISABLED;
                 else
-                    worker->status &= ~PROXY_WORKER_DISABLED;
+                    worker->s->status &= ~PROXY_WORKER_DISABLED;
             }
             else if (*v == 'S' || *v == 's') {
                 if (mode)
-                    worker->status |= PROXY_WORKER_STOPPED;
+                    worker->s->status |= PROXY_WORKER_STOPPED;
                 else
-                    worker->status &= ~PROXY_WORKER_STOPPED;
+                    worker->s->status &= ~PROXY_WORKER_STOPPED;
             }
             else if (*v == 'E' || *v == 'e') {
                 if (mode)
-                    worker->status |= PROXY_WORKER_IN_ERROR;
+                    worker->s->status |= PROXY_WORKER_IN_ERROR;
                 else
-                    worker->status &= ~PROXY_WORKER_IN_ERROR;
+                    worker->s->status &= ~PROXY_WORKER_IN_ERROR;
             }
             else if (*v == 'H' || *v == 'h') {
                 if (mode)
-                    worker->status |= PROXY_WORKER_HOT_STANDBY;
+                    worker->s->status |= PROXY_WORKER_HOT_STANDBY;
                 else
-                    worker->status &= ~PROXY_WORKER_HOT_STANDBY;
+                    worker->s->status &= ~PROXY_WORKER_HOT_STANDBY;
             }
             else if (*v == 'I' || *v == 'i') {
                 if (mode)
-                    worker->status |= PROXY_WORKER_IGNORE_ERRORS;
+                    worker->s->status |= PROXY_WORKER_IGNORE_ERRORS;
                 else
-                    worker->status &= ~PROXY_WORKER_IGNORE_ERRORS;
+                    worker->s->status &= ~PROXY_WORKER_IGNORE_ERRORS;
             }
             else {
                 return "Unknown status parameter option";
@@ -252,11 +252,11 @@ static const char *set_worker_param(apr_pool_t *p,
     }
     else if (!strcasecmp(key, "flushpackets")) {
         if (!strcasecmp(val, "on"))
-            worker->flush_packets = flush_on;
+            worker->s->flush_packets = flush_on;
         else if (!strcasecmp(val, "off"))
-            worker->flush_packets = flush_off;
+            worker->s->flush_packets = flush_off;
         else if (!strcasecmp(val, "auto"))
-            worker->flush_packets = flush_auto;
+            worker->s->flush_packets = flush_auto;
         else
             return "flushpackets must be on|off|auto";
     }
@@ -266,9 +266,9 @@ static const char *set_worker_param(apr_pool_t *p,
             return "flushwait must be <= 1000, or 0 for system default of 10 millseconds.";
         }
         if (ival == 0)
-            worker->flush_wait = PROXY_FLUSH_WAIT;
+            worker->s->flush_wait = PROXY_FLUSH_WAIT;
         else
-            worker->flush_wait = ival * 1000;    /* change to microseconds */
+            worker->s->flush_wait = ival * 1000;    /* change to microseconds */
     }
     else if (!strcasecmp(key, "ping")) {
         /* Ping/Pong timeout in given unit (default is second).
@@ -277,14 +277,14 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Ping/Pong timeout has wrong format";
         if (timeout < 1000)
             return "Ping/Pong timeout must be at least one millisecond";
-        worker->ping_timeout = timeout;
-        worker->ping_timeout_set = 1;
+        worker->s->ping_timeout = timeout;
+        worker->s->ping_timeout_set = 1;
     }
     else if (!strcasecmp(key, "lbset")) {
         ival = atoi(val);
         if (ival < 0 || ival > 99)
             return "lbset must be between 0 and 99";
-        worker->lbset = ival;
+        worker->s->lbset = ival;
     }
     else if (!strcasecmp(key, "connectiontimeout")) {
         /* Request timeout in given unit (default is second).
@@ -294,11 +294,13 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Connectiontimeout has wrong format";
         if (timeout < 1000)
             return "Connectiontimeout must be at least one millisecond.";
-        worker->conn_timeout = timeout;
-        worker->conn_timeout_set = 1;
+        worker->s->conn_timeout = timeout;
+        worker->s->conn_timeout_set = 1;
     }
     else if (!strcasecmp(key, "flusher")) {
-        worker->flusher = apr_pstrdup(p, val);
+        if (strlen(val) >= PROXY_WORKER_MAX_SCHEME_SIZE)
+            return "flusher name length must be < 16 characters";
+        PROXY_STRNCPY(worker->s->flusher, val);
     }
     else {
         return "unknown Worker parameter";
@@ -1447,10 +1449,10 @@ static const char *
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
     /* Distinguish the balancer from worker */
-    if (strncasecmp(r, "balancer:", 9) == 0) {
+    if (ap_proxy_valid_balancer_name(r)) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
-            const char *err = ap_proxy_add_balancer(&balancer,
+            const char *err = ap_proxy_alloc_balancer(&balancer,
                                                     cmd->pool,
                                                     conf, r);
             if (err)
@@ -1906,7 +1908,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     /* Try to find the balancer */
     balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path);
     if (!balancer) {
-        const char *err = ap_proxy_add_balancer(&balancer,
+        const char *err = ap_proxy_alloc_balancer(&balancer,
                                                 cmd->pool,
                                                 conf, path);
         if (err)
@@ -1949,11 +1951,11 @@ static const char *
         name = ap_getword_conf(cmd->temp_pool, &arg);
     }
 
-    if (strncasecmp(name, "balancer:", 9) == 0) {
+    if (ap_proxy_valid_balancer_name(name) {
         balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
         if (!balancer) {
             if (in_proxy_section) {
-                err = ap_proxy_add_balancer(&balancer,
+                err = ap_proxy_alloc_balancer(&balancer,
                                             cmd->pool,
                                             conf, name);
                 if (err)
@@ -2100,10 +2102,10 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             return apr_pstrcat(cmd->pool, thiscmd->name,
                                "> arguments are not supported for non url.",
                                NULL);
-        if (strncasecmp(conf->p, "balancer:", 9) == 0) {
+        if (ap_proxy_valid_balancer_name(conf->p) {
             balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p);
             if (!balancer) {
-                err = ap_proxy_add_balancer(&balancer,
+                err = ap_proxy_alloc_balancer(&balancer,
                                             cmd->pool,
                                             sconf, conf->p);
                 if (err)

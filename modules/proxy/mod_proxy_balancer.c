@@ -25,6 +25,7 @@
 #include "apr_date.h"
 
 static const char *balancer_mutex_type = "proxy-balancer-shm";
+ap_slotmem_provider_t *storage = NULL;
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
@@ -114,7 +115,7 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
              * If the worker is not initialized check whether its scoreboard
              * slot is already initialized.
              */
-            slot = (proxy_worker_shared *) ap_get_scoreboard_lb((*workers)->id);
+            slot = (proxy_worker_shared *) XXXXXap_get_scoreboard_lb((*workers)->id);
             if (slot) {
                 worker_is_initialized = slot->status & PROXY_WORKER_INITIALIZED;
             }
@@ -367,7 +368,6 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
          * By default the timeout is not set, and the server
          * returns SERVER_BUSY.
          */
-#if APR_HAS_THREADS
         if (balancer->timeout) {
             /* XXX: This can perhaps be build using some
              * smarter mechanism, like tread_cond.
@@ -391,7 +391,6 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
             /* restore the timeout */
             balancer->timeout = timeout;
         }
-#endif
     }
 
     return candidate;
@@ -716,6 +715,53 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     if (rv != APR_SUCCESS) {
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    /*
+     * Get worker slotmem setup
+     */
+    storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
+    if (!storage) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s,
+                     "ap_lookup_provider %s failed", AP_SLOTMEM_PROVIDER_GROUP);
+        return !OK;
+    }
+    /*
+     * Go thru each Vhost and create the shared mem slotmem for
+     * each balancer's workers
+     */
+    while (s) {
+        int i,j;
+        sconf = s->module_config;
+        conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
+        proxy_worker *worker;
+        
+        /* Initialize shared scoreboard data */
+        balancer = (proxy_balancer *)conf->balancers->elts;
+        for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+            proxy_worker *worker;
+            
+            balancer->max_workers = balancer->workers->nelts + balancer->growth;
+            storage->create(&balancer->slot, balancer->name, sizeof(proxy_worker_shared),
+                            balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
+            if (!balancer->slot) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_create failed");
+                return !OK;
+            }
+            proxy_worker *worker = balancer->workers->elts;
+            for (j = 0; j < balancer->workers->nelts; j++, worker++) {
+                proxy_worker_shared *shm;
+                unsigned int index;
+                if ((storage->grab(balancer->slot, &index) != APR_SUCCESS) ||;
+                    (storage->dptr(balancer->slot, index, &shm) != APR_SUCESS)) {
+                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_grab/dptr failed");
+                    return !OK;
+                }
+                ap_proxy_create_worker(worker, shm, index)
+            }
+        }
+        s = s->next;
+    }
+    
     return OK;
 }
 
@@ -1015,6 +1061,13 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         /* Initialize shared scoreboard data */
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
+            apr_size_t size;
+            unsigned int num;
+            storage->attach(&balancer->slot, balancer->name, &size, &num, p);
+            if (!balancer->slot) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
+                return !OK;
+            }
             if (balancer->lbmethod && balancer->lbmethod->reset)
                balancer->lbmethod->reset(balancer, s);
             init_balancer_members(conf, s, balancer);
