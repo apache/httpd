@@ -129,12 +129,13 @@
       in which it matters: If you are using <a href="howto/ssi.html">Server 
       Side Includes</a>;</p>
 
-      <div class="example"><pre>
-&lt;!-- The following include can be cached --&gt;
-&lt;!--#include virtual="/footer.html" --&gt; 
-
-&lt;!-- The following include can not be cached --&gt;
-&lt;!--#include file="/path/to/footer.html" --&gt;</pre></div>
+      <div class="example"><p><code>
+&lt;!-- The following include can be cached --&gt;<br />
+&lt;!--#include virtual="/footer.html" --&gt; <br />
+<br />
+&lt;!-- The following include can not be cached --&gt;<br />
+&lt;!--#include file="/path/to/footer.html" --&gt;
+      </code></p></div>
 
       <p>If you are using Server Side Includes, and want the benefit of speedy
       serves from the cache, you should use <code>virtual</code> include
@@ -398,7 +399,9 @@ Vary: negotiate,accept-language,accept-charset
       instructs httpd to open the file when it is started and to re-use 
       this file-handle for all subsequent access to this file.</p>
 
-      <div class="example"><pre>CacheFile /usr/local/apache2/htdocs/index.html</pre></div>
+      <div class="example"><p><code>
+      CacheFile /usr/local/apache2/htdocs/index.html
+      </code></p></div>
 
       <p>If you intend to cache a large number of files in this manner, you 
       must ensure that your operating system's limit for the number of open 
@@ -489,7 +492,9 @@ sys     0m0.000s</pre></div>
       start time (using the mmap system call). httpd will use the in-memory 
       contents for all subsequent accesses to this file.</p>
 
-      <div class="example"><pre>MMapFile /usr/local/apache2/htdocs/index.html</pre></div>
+      <div class="example"><p><code>
+      MMapFile /usr/local/apache2/htdocs/index.html
+      </code></p></div>
 
       <p>As with the
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> directive, any
@@ -516,11 +521,12 @@ sys     0m0.000s</pre></div>
 
     <p>Typically the module will be configured as so;</p>
 
-    <div class="example"><pre>
-CacheRoot   /var/cache/apache/
-CacheEnable disk /
-CacheDirLevels 2
-CacheDirLength 1</pre></div>
+    <div class="example"><p><code>  
+CacheRoot   /var/cache/apache/<br />
+CacheEnable disk /<br />
+CacheDirLevels 2<br />
+CacheDirLength 1
+    </code></p></div>
 
     <p>Importantly, as the cached files are locally stored, operating system
     in-memory caching will typically be applied to their access also. So 
