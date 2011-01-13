@@ -38,7 +38,7 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 /* return the sizeof of one lb_worker in scoreboard. */
 static int ap_proxy_lb_worker_size(void)
 {
-    return sizeof(proxy_worker_stat);
+    return sizeof(proxy_worker_shared);
 }
 
 /*
