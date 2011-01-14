@@ -786,10 +786,6 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
 
         *len = bytes;
     }
-    else {
-        /* Save the part of the line we already got */
-        char_buffer_write(&inctx->cbuf, buf, *len);
-    }
 
     return APR_SUCCESS;
 }
