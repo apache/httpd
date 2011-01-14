@@ -71,14 +71,14 @@ mod_rewrite</a> document.</note>
 
     <dd>
 
-<example><pre>
-RewriteEngine on
-
-RewriteMap    lowercase int:tolower
-
-RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
+<example>
+RewriteEngine on<br />
+<br />
+RewriteMap    lowercase int:tolower<br />
+<br />
+RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$<br />
 RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
-</pre></example></dd>
+</example></dd>
 
 <dt>Discussion</dt>
     <dd>
