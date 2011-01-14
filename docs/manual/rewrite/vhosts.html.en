@@ -62,14 +62,14 @@ mod_rewrite</a> document.</div>
 
     <dd>
 
-<div class="example"><pre>
-RewriteEngine on
-
-RewriteMap    lowercase int:tolower
-
-RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
+<div class="example"><p><code>
+RewriteEngine on<br />
+<br />
+RewriteMap    lowercase int:tolower<br />
+<br />
+RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$<br />
 RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
-</pre></div></dd>
+</code></p></div></dd>
 
 <dt>Discussion</dt>
     <dd>
