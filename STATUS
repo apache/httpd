@@ -209,6 +209,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     incomplete during first read. PR 50481.
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=1051468&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=1058133&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=1059037&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem,
