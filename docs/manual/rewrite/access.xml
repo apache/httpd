@@ -81,29 +81,29 @@ configuration.</note>
     initiate from a page on our site. For the purpose of this example,
     we assume that our site is <code>www.example.com</code>.</p>
 
-<example><pre>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+<example>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
 RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
-</pre></example>
+</example>
 
     <p>In this second example, instead of failing the request, we display
     an alternate image instead.</p>
 
-<example><pre>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+<example>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
 RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
-</pre></example>
+</example>
 
     <p>In the third example, we redirect the request to an image on some
     other site.</p>
 
-<example><pre>
-RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
-RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+<example>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
 RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif   [R,NC]
-</pre></example>
+</example>
 
     <p>Of these techniques, the last two tend to be the most effective
     in getting people to stop hotlinking your images, because they will
@@ -168,11 +168,11 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif
         range, if you are trying to block that user agent only from the
         particular source.</p>
 
-<example><pre>
-RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>
-RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong>
+<example>
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong><br />
+RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong><br />
 RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
-</pre></example>
+</example>
         </dd>
 
       <dt>Discussion:</dt>
@@ -219,27 +219,27 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
     <dt>Solution:</dt>
 
     <dd>
-<example><pre>
-RewriteEngine on
-RewriteMap    hosts-deny  txt:/path/to/hosts.deny
-RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
-RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
+<example>
+RewriteEngine on<br />
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny<br />
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]<br />
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND<br />
 RewriteRule   ^  -  [F]
-</pre></example>
+</example>
 
-<example><pre>
-##
-##  hosts.deny
-##
-##  ATTENTION! This is a map, not a list, even when we treat it as such.
-##             mod_rewrite parses it for key/value pairs, so at least a
-##             dummy value "-" must be present for each entry.
-##
-
-193.102.180.41 -
-bsdti1.sdm.de  -
-192.76.162.40  -
-</pre></example>
+<example>
+##<br />
+##  hosts.deny<br />
+##<br />
+##  ATTENTION! This is a map, not a list, even when we treat it as such.<br />
+##             mod_rewrite parses it for key/value pairs, so at least a<br />
+##             dummy value "-" must be present for each entry.<br />
+##<br />
+<br />
+193.102.180.41 -<br />
+bsdti1.sdm.de  -<br />
+192.76.162.40  -<br />
+</example>
     </dd>
 
     <dt>Discussion:</dt>
@@ -273,31 +273,31 @@ bsdti1.sdm.de  -
   <p>The following ruleset uses a map file to associate each Referer
   with a redirection target.</p>
 
-<example><pre>
-RewriteMap  deflector txt:/path/to/deflector.map
-
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}} =-
-RewriteRule ^ %{HTTP_REFERER} [R,L]
-
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
+<example>
+RewriteMap  deflector txt:/path/to/deflector.map<br />
+<br />
+RewriteCond %{HTTP_REFERER} !=""<br />
+RewriteCond ${deflector:%{HTTP_REFERER}} =-<br />
+RewriteRule ^ %{HTTP_REFERER} [R,L]<br />
+<br />
+RewriteCond %{HTTP_REFERER} !=""<br />
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND<br />
 RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
-</pre></example>
+</example>
 
       <p>The map file lists redirection targets for each referer, or, if
       we just wish to redirect back to where they came from, a "-" is
       placed in the map:</p>
 
-<example><pre>
-##
-##  deflector.map
-##
-
-http://badguys.example.com/bad/index.html    -
-http://badguys.example.com/bad/index2.html   -
+<example>
+##<br />
+##  deflector.map<br />
+##<br />
+<br />
+http://badguys.example.com/bad/index.html    -<br />
+http://badguys.example.com/bad/index2.html   -<br />
 http://badguys.example.com/bad/index3.html   http://somewhere.example.com/
-</pre></example>
+</example>
 
     </dd>
   </dl>
