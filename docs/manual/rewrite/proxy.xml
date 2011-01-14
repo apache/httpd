@@ -65,24 +65,24 @@ A number of recipes are provided that describe common scenarios.</p>
       <p>To simply map a URL to another server, we use the [P] flag, as
       follows:</p>
 
-<example><pre>
-RewriteEngine  on
-RewriteBase    /products/
-RewriteRule    ^<strong>widget/</strong>(.*)$  <strong>http://product.example.com/widget/</strong>$1  [<strong>P</strong>]
+<example>
+RewriteEngine  on<br />
+RewriteBase    /products/<br />
+RewriteRule    ^<strong>widget/</strong>(.*)$  <strong>http://product.example.com/widget/</strong>$1  [<strong>P</strong>]<br />
 ProxyPassReverse /products/widget/ http://product.example.com/widget/
-</pre></example>
+</example>
 
    <p>In the second example, we proxy the request only if we can't find
    the resource locally. This can be very useful when you're migrating
    from one server to another, and you're not sure if all the content
    has been migrated yet.</p>
 
-<example><pre>
-RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong>
-RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong>
-RewriteRule ^/(.*) http://<strong>old</strong>.example.com$1 [<strong>P</strong>]
+<example>
+RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong><br />
+RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong><br />
+RewriteRule ^/(.*) http://<strong>old</strong>.example.com$1 [<strong>P</strong>]<br />
 ProxyPassReverse / http://old.example.com/
-</pre></example>
+</example>
     </dd>
 
     <dt>Discussion:</dt>
