@@ -624,7 +624,7 @@ set to accomplish the same thing:</p>
   RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f<br />
   RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d<br />
   RewriteRule ^ index.php [PT]<br />
-<indent>
+</indent>
 &lt;/Directory&gt;
 </example>
 
