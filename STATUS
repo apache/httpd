@@ -125,6 +125,8 @@ CURRENT VOTES:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
+  * Clean up all the kruft and *extremely* outdated stuff below...
+
   * Maybe remove Limit/LimitExcept or at least make it log warnings when
     mis-used.
 
