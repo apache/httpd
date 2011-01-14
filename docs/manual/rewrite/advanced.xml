@@ -68,37 +68,37 @@ configuration.</note>
       <p>A mapping is maintained, from users to target servers, in
       external map files. They look like:</p>
 
-<example><pre>
-user1  physical_host_of_user1
-user2  physical_host_of_user2
+<example>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
 :      :
-</pre></example>
+</example>
 
   <p>We put this into a <code>map.users-to-hosts</code> file. The
     aim is to map;</p>
 
-<example><pre>
+<example>
 /u/user1/anypath
-</pre></example>
+</example>
 
   <p>to</p>
 
-<example><pre>
+<example>
 http://physical_host_of_user1/u/user/anypath
-</pre></example>
+</example>
 
       <p>thus every URL path need not be valid on every backend physical
       host. The following ruleset does this for us with the help of the map
       files assuming that server0 is a default server which will be used if
       a user has no entry in the map:</p>
 
-<example><pre>
-RewriteEngine on
-
-RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
-
+<example>
+RewriteEngine on<br />
+<br />
+RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts<br />
+<br />
 RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hosts:$1|server0}</strong>/u/$1/$2
-</pre></example>
+</example>
     </dd>
   </dl>
 
@@ -124,11 +124,11 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
     <dd>
       This is done via the following ruleset:
 
-<example><pre>
-# This example is valid in per-directory context only
-RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong>
+<example>
+# This example is valid in per-directory context only<br />
+RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong><br />
 RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
-</pre></example>
+</example>
 
       <p>Here a request for <code>page.html</code> leads to an
       internal run of a corresponding <code>page.cgi</code> if
@@ -164,20 +164,20 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
       module="mod_rewrite">RewriteMap</directive> and a list of servers
       to accomplish this.</p>
 
-<example><pre>
-RewriteEngine on
-RewriteMap lb rnd:/path/to/serverlist.txt
-
+<example>
+RewriteEngine on<br />
+RewriteMap lb rnd:/path/to/serverlist.txt<br />
+<br />
 RewriteRule ^/(.*) http://${lb:servers}/$1 [P,L]
-</pre></example>
+</example>
 
 <p><code>serverlist.txt</code> will contain a list of the servers:</p>
 
-<example><pre>
-## serverlist.txt
-
-servers one.example.com|two.example.com|three.example.com
-</pre></example>
+<example>
+## serverlist.txt<br />
+<br />
+servers one.example.com|two.example.com|three.example.com<br />
+</example>
 
 <p>If you want one particular server to get more of the load than the
 others, add it more times to the list.</p>
@@ -218,21 +218,21 @@ featureful than anything you can cobble together using mod_rewrite.</p>
       URL causes the 'page' to be refreshed every time it is
       updated on the filesystem.</p>
 
-<example><pre>
+<example>
 RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
-</pre></example>
+</example>
 
       <p>Now when we reference the URL</p>
 
-<example><pre>
+<example>
 /u/foo/bar/page.html:refresh
-</pre></example>
+</example>
 
       <p>this leads to the internal invocation of the URL</p>
 
-<example><pre>
+<example>
 /internal/cgi/apache/nph-refresh?f=/u/foo/bar/page.html
-</pre></example>
+</example>
 
       <p>The only missing part is the NPH-CGI script. Although
       one would usually say "left as an exercise to the reader"
@@ -369,10 +369,10 @@ exit(0);
       <p>We use the following ruleset to expand the tilde URLs
       into the above layout.</p>
 
-<example><pre>
-RewriteEngine on
+<example>
+RewriteEngine on<br />
 RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
-</pre></example>
+</example>
     </dd>
   </dl>
 
@@ -428,13 +428,13 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
       <code>&gt;STRING</code> and <code>=STRING</code> we can
       do time-dependent redirects:</p>
 
-<example><pre>
-RewriteEngine on
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
-RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
-RewriteRule   ^foo\.html$             foo.day.html [L]
+<example>
+RewriteEngine on<br />
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700<br />
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900<br />
+RewriteRule   ^foo\.html$             foo.day.html [L]<br />
 RewriteRule   ^foo\.html$             foo.night.html
-</pre></example>
+</example>
 
       <p>This provides the content of <code>foo.day.html</code>
       under the URL <code>foo.html</code> from
@@ -473,17 +473,17 @@ RewriteRule   ^foo\.html$             foo.night.html
     <dd>
       <p>Use the [E] flag to set an environment variable.</p>
 
-<example><pre>
-RewriteEngine on
+<example>
+RewriteEngine on<br />
 RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
-</pre></example>
+</example>
 
     <p>Later in your ruleset you might check for this environment
     variable using a RewriteCond:</p>
 
-<example><pre>
+<example>
 RewriteCond %{ENV:rewritten} =1
-</pre></example>
+</example>
 
     </dd>
   </dl>
