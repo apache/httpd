@@ -277,14 +277,22 @@ but rather uses the <directive module="alias">Redirect</directive>
 directive placed in a virtual host for the non-canonical
 hostname(s).</p>
 
-<example><pre>
-&lt;VirtualHost *:80&gt;
-  ServerName undesired.example.com
-  ServerAlias example.com notthis.example.com
-
-  Redirect / http://www.example.com/
+<example>
+&lt;VirtualHost *:80&gt;<br />
+<indent>
+  ServerName undesired.example.com<br />
+  ServerAlias example.com notthis.example.com<br />
+<br />
+  Redirect / http://www.example.com/<br />
+</indent>
+&lt;/VirtualHost&gt;<br />
+<br />
+&lt;VirtualHost *:80&gt;<br />
+<indent>
+  ServerName www.example.com<br />
+</indent>
 &lt;/VirtualHost&gt;
-</pre></example>
+</example>
 
 <p>You can alternatively accomplish this using the 
 <directive module="core" type="section">If</directive>
