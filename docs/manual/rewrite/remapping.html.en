@@ -275,14 +275,22 @@ but rather uses the <code class="directive"><a href="../mod/alias.html#redirect"
 directive placed in a virtual host for the non-canonical
 hostname(s).</p>
 
-<div class="example"><pre>
-&lt;VirtualHost *:80&gt;
-  ServerName undesired.example.com
-  ServerAlias example.com notthis.example.com
-
-  Redirect / http://www.example.com/
+<div class="example"><p><code>
+&lt;VirtualHost *:80&gt;<br />
+<span class="indent">
+  ServerName undesired.example.com<br />
+  ServerAlias example.com notthis.example.com<br />
+<br />
+  Redirect / http://www.example.com/<br />
+</span>
+&lt;/VirtualHost&gt;<br />
+<br />
+&lt;VirtualHost *:80&gt;<br />
+<span class="indent">
+  ServerName www.example.com<br />
+</span>
 &lt;/VirtualHost&gt;
-</pre></div>
+</code></p></div>
 
 <p>You can alternatively accomplish this using the 
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
