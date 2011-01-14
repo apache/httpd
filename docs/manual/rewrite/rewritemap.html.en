@@ -155,17 +155,17 @@ may be used, and give examples of each.</p>
     <p>The file <code>/etc/apache2/productmap.txt</code> then contains
     the following:</p>
 
-    <div class="example"><h3>Product to ID map</h3><pre>
-##
-##  productmap.txt - Product to ID map file
-##
-
-television 993
-stereo     198
-fishingrod 043
-basketball 418
+    <div class="example"><h3>Product to ID map</h3><p><code>
+##<br />
+##  productmap.txt - Product to ID map file<br />
+##<br />
+<br />
+television 993<br />
+stereo     198<br />
+fishingrod 043<br />
+basketball 418<br />
 telephone  328
-</pre></div>
+    </code></p></div>
 
     <p>Thus, when <code>http://example.com/product/television</code> is
     requested, the <code>RewriteRule</code> is applied, and the request
@@ -207,14 +207,14 @@ telephone  328
     to one of the servers in the 'static' pool, while everything
     else is sent to one of the 'dynamic' pool.</p>
 
-    <div class="example"><h3>Rewrite map file</h3><pre>
-##
-##  map.txt -- rewriting map
-##
-
-static   www1|www2|www3|www4
+    <div class="example"><h3>Rewrite map file</h3><p><code>
+##<br />
+##  map.txt -- rewriting map<br />
+##<br />
+<br />
+static   www1|www2|www3|www4<br />
 dynamic  www5|www6
-</pre></div>
+    </code></p></div>
 
     <div class="example"><h3>Configuration directives</h3><p><code>
     RewriteMap servers rnd:/path/to/file/map.txt<br />

@@ -71,10 +71,10 @@ configuration.</div>
       <p>We rewrite the old URL to the new one internally via the
       following rule:</p>
 
-<div class="example"><pre>
-RewriteEngine  on
+<div class="example"><p><code>
+RewriteEngine  on<br />
 RewriteRule    ^<strong>/old</strong>\.html$  <strong>/new</strong>.html [PT]
-</pre></div>
+</code></p></div>
     </dd>
   </dl>
 
@@ -102,10 +102,10 @@ RewriteRule    ^<strong>/old</strong>\.html$  <strong>/new</strong>.html [PT]
       <p>We force a HTTP redirect to the new URL which leads to a
       change of the browsers and thus the users view:</p>
 
-<div class="example"><pre>
-RewriteEngine  on
+<div class="example"><p><code>
+RewriteEngine  on<br />
 RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
-</pre></div>
+</code></p></div>
 </dd>
 
 <dt>Discussion</dt>
@@ -144,18 +144,18 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
       to the new server, but you might also consider using the Redirect
       or RedirectMatch directive.</p>
 
-<div class="example"><h3>With mod_rewrite</h3><pre>
-RewriteEngine on
+<div class="example"><h3>With mod_rewrite</h3><p><code>
+RewriteEngine on<br />
 RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
-</pre></div>
+</code></p></div>
 
-<div class="example"><h3>With RedirectMatch</h3><pre>
+<div class="example"><h3>With RedirectMatch</h3><p><code>
 RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
-</pre></div>
+</code></p></div>
 
-<div class="example"><h3>With Redirect</h3><pre>
+<div class="example"><h3>With Redirect</h3><p><code>
 Redirect /docs/ http://new.example.com/docs/
-</pre></div>
+</code></p></div>
     </dd>
   </dl>
 
@@ -185,11 +185,11 @@ Redirect /docs/ http://new.example.com/docs/
       internally leads to the invocation of
       <code>/~quux/foo.cgi</code>.</p>
 
-<div class="example"><pre>
-RewriteEngine  on
-RewriteBase    /~quux/
+<div class="example"><p><code>
+RewriteEngine  on<br />
+RewriteBase    /~quux/<br />
 RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
-</pre></div>
+</code></p></div>
     </dd>
   </dl>
 
@@ -216,19 +216,21 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
       existence of the new extension. If it exists, we take
       that name, else we rewrite the URL to its original state.</p>
 
-<div class="example"><pre>
-#   backward compatibility ruleset for
-#   rewriting document.html to document.php
-#   when and only when document.php exists
-&lt;Directory /var/www/htdocs&gt;
-RewriteEngine on
-RewriteBase /var/www/htdocs
-
-RewriteCond $1.php -f
-RewriteCond $1.html !-f
-RewriteRule ^(.*).html$ $1.php
+<div class="example"><p><code>
+#   backward compatibility ruleset for<br />
+#   rewriting document.html to document.php<br />
+#   when and only when document.php exists<br />
+&lt;Directory /var/www/htdocs&gt;<br />
+<span class="indent">
+RewriteEngine on<br />
+RewriteBase /var/www/htdocs<br />
+<br />
+RewriteCond $1.php -f<br />
+RewriteCond $1.html !-f<br />
+RewriteRule ^(.*).html$ $1.php<br />
+</span>
 &lt;/Directory&gt;
-</pre></div>
+</code></p></div>
     </dd>
 
     <dt>Discussion</dt>
@@ -320,19 +322,19 @@ Redirect /admin/ https://www.example.com/admin/
 you might use one of the recipes below.</p>
 
 <p>For sites running on a port other than 80:</p>
-<div class="example"><pre>
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteCond %{SERVER_PORT} !^80$
+<div class="example"><p><code>
+RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]<br />
+RewriteCond %{HTTP_HOST}   !^$<br />
+RewriteCond %{SERVER_PORT} !^80$<br />
 RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]
-</pre></div>
+</code></p></div>
 
 <p>And for a site running on port 80</p>
-<div class="example"><pre>
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
+<div class="example"><p><code>
+RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]<br />
+RewriteCond %{HTTP_HOST}   !^$<br />
 RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
-</pre></div>
+</code></p></div>
 
         <p>
         If you wanted to do this generically for all domain names - that
@@ -341,11 +343,11 @@ RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
-<div class="example"><pre>
-RewriteCond %{HTTP_HOST} !^www\. [NC]
-RewriteCond %{HTTP_HOST} !^$
+<div class="example"><p><code>
+RewriteCond %{HTTP_HOST} !^www\. [NC]<br />
+RewriteCond %{HTTP_HOST} !^$<br />
 RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
-</pre></div>
+</code></p></div>
 
     <p>These rulesets will work either in your main server configuration
     file, or in a <code>.htaccess</code> file placed in the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> of the server.</p>
@@ -375,23 +377,23 @@ RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
       resource, and, if not finding it in either place, will attempt to
       just serve it out of the location requested.</p>
 
-<div class="example"><pre>
-RewriteEngine on
-
-#   first try to find it in dir1/...
-#   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
-
-#   second try to find it in dir2/...
-#   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
-
-#   else go on for other Alias or ScriptAlias directives,
-#   etc.
+<div class="example"><p><code>
+RewriteEngine on<br />
+<br />
+#   first try to find it in dir1/...<br />
+#   ...and if found stop and be happy:<br />
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f<br />
+RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]<br />
+<br />
+#   second try to find it in dir2/...<br />
+#   ...and if found stop and be happy:<br />
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f<br />
+RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]<br />
+<br />
+#   else go on for other Alias or ScriptAlias directives,<br />
+#   etc.<br />
 RewriteRule   ^  -  [PT]
-</pre></div>
+</code></p></div>
     </dd>
   </dl>
 
@@ -419,22 +421,22 @@ RewriteRule   ^  -  [PT]
     <p>We'll use a <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
     directive to build a list of servers that we wish to use.</p>
 
-<div class="example"><pre>
-HostnameLookups on
-RewriteEngine on
-RewriteMap    multiplex         txt:/path/to/map.mirrors
-RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
+<div class="example"><p><code>
+HostnameLookups on<br />
+RewriteEngine on<br />
+RewriteMap    multiplex         txt:/path/to/map.mirrors<br />
+RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]<br />
 RewriteRule   ^/(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]
-</pre></div>
+</code></p></div>
 
-<div class="example"><pre>
-##  map.mirrors -- Multiplexing Map
-
-de        http://www.example.de/
-uk        http://www.example.uk/
-com       http://www.example.com/
+<div class="example"><p><code>
+##  map.mirrors -- Multiplexing Map<br />
+<br />
+de        http://www.example.de/<br />
+uk        http://www.example.uk/<br />
+com       http://www.example.com/<br />
 ##EOF##
-</pre></div>
+</code></p></div>
     </dd>
 
     <dt>Discussion</dt>
@@ -479,16 +481,16 @@ com       http://www.example.com/
       All other browsers receive page <code>foo.32.html</code>.
       This is done with the following ruleset:</p>
 
-<div class="example"><pre>
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
-RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
-
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>.*         [OR]
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>.*
-RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
-
+<div class="example"><p><code>
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*<br />
+RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]<br />
+<br />
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>.*         [OR]<br />
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>.*<br />
+RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]<br />
+<br />
 RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
-</pre></div>
+</code></p></div>
     </dd>
   </dl>
 
@@ -519,9 +521,9 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
        we replace <code>/puppies</code> and <code>/canines</code>
        by the canonical <code>/dogs</code>.</p>
 
-<div class="example"><pre>
+<div class="example"><p><code>
 RewriteRule   ^/(puppies|canines)/(.*)    /dogs/$2  [R]
-</pre></div>
+</code></p></div>
         </dd>
 
      <dt>Discussion:</dt>
@@ -529,9 +531,9 @@ RewriteRule   ^/(puppies|canines)/(.*)    /dogs/$2  [R]
      This should really be accomplished with Redirect or RedirectMatch
      directives:
 
-     <div class="example"><pre>
+     <div class="example"><p><code>
      RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2
-     </pre></div>
+     </code></p></div>
      </dd>
       </dl>
 
@@ -560,10 +562,10 @@ using the following ruleset:</p>
       <code>/about/</code>:
       </p>
      
-<div class="example"><pre>
-RewriteEngine on
+<div class="example"><p><code>
+RewriteEngine on<br />
 RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
-</pre></div>
+</code></p></div>
 
 <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
 
@@ -597,32 +599,36 @@ that should go to an existing resource such as an image, or a css file.</dd>
 <dd>
 <p>As of version 2.2.16, you should use the <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive for this:</p>
 
-<div class="example"><pre>
-&lt;Directory /var/www/my_blog&gt;
-  FallbackResource index.php
+<div class="example"><p><code>
+&lt;Directory /var/www/my_blog&gt;<br />
+<span class="indent">
+  FallbackResource index.php<br />
+</span>
 &lt;/Directory&gt;
-</pre></div>
+</code></p></div>
 
 <p>However, in earlier versions of Apache, or if your needs are more
 complicated than this, you can use a variation of the following rewrite
 set to accomplish the same thing:</p>
 
-<div class="example"><pre>
-&lt;Directory /var/www/my_blog&gt;
-  RewriteBase /my_blog
-
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f
-  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.php [PT]
+<div class="example"><p><code>
+&lt;Directory /var/www/my_blog&gt;<br />
+<span class="indent">
+  RewriteBase /my_blog<br />
+<br />
+  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f<br />
+  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d<br />
+  RewriteRule ^ index.php [PT]<br />
+</span>
 &lt;/Directory&gt;
-</pre></div>
+</code></p></div>
 
 <p>If, on the other hand, you wish to pass the requested URI as a query
 string argument to index.php, you can replace that RewriteRule with:</p>
 
-<div class="example"><pre>
+<div class="example"><p><code>
   RewriteRule (.*) index.php?$1 [PT,QSA]
-</pre></div>
+</code></p></div>
 
 <p>Note that these rulesets can be uses in a <code>.htaccess</code>
 file, as well as in a &lt;Directory&gt; block.</p>
