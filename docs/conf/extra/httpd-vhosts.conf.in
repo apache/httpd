@@ -15,11 +15,6 @@
 # configuration.
 
 #
-# Use name-based virtual hosting.
-#
-NameVirtualHost *:@@Port@@
-
-#
 # VirtualHost example:
 # Almost any Apache directive may go into a VirtualHost container.
 # The first VirtualHost section is used for all requests that do not
