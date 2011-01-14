@@ -154,7 +154,7 @@ RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
 RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
 </example>
 
-<example><title>With Redirect</title><pre>
+<example><title>With Redirect</title>
 Redirect /docs/ http://new.example.com/docs/
 </example>
     </dd>
