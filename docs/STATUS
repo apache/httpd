@@ -12,7 +12,7 @@ To Do List
 
 - The 1.3 docs need to have links from each directive forward to the
   /docs/current/ version of that directive, or a note that it's not
-  avaialble in this century. See core.html for examples of how this
+  available in this century. See core.html for examples of how this
   might be done. This is a large undertaking, and involves a lot of
   grunt work, but will be greatly appreciated by the folks that make it
   to the wrong doc via Google. (Update: This is clearly going to take
@@ -121,8 +121,6 @@ To Do List
     - in progress
   - add letter links to glossary and quickreference,
     perhaps also a term overview (sidebar)
-  - remove <pre> elements. Use <br /> and <indent> elements to get
-    a similar effect.
 
 - Provide example solutions for the mapping of encodings, especially
   for .gz etc. (also in regard to our default configuration)
@@ -167,6 +165,10 @@ To Do List
   Add them. This makes them show up in the directives listing for that
   language, and also encourages translators to provide translations for
   those directives.
+
+- Add examples using expr to mod_rewrite recipes. Possibly benchmark the
+  different approaches and make intelligent remarks about the
+  comparative value of each.
 
 LaTeX Todo list
 ==================
