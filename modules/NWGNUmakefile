@@ -28,6 +28,7 @@ SUBDIRS = \
 	filters \
 	database \
 	session \
+	slotmem \
 	$(EOLIST)
 
 # If LDAPSDK has been defined then build the util_ldap module
