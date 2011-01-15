@@ -7,7 +7,6 @@
 # If we are going to create an nlm, make sure we have assigned variables to
 # use during the link.
 #
-echo NLM_NAME=$(NLM_NAME)
 ifndef NLM_NAME
 NLM_NAME = $(TARGET_nlm)
 endif
