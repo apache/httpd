@@ -119,7 +119,7 @@ struct ap_socache_instance_t {
  * The subcache's "Data" segment is a single cyclic data buffer, of
  * total size header->subcache_data_size; data inside is referenced
  * using byte offsets. The offset marking the beginning of the cyclic
- * buffer is subcache->data_pos the buffer's length is
+ * buffer is subcache->data_pos; the buffer's length is
  * subcache->data_used.
  *
  * "Indexes" is an array of header->index_num SHMCBIndex structures,
