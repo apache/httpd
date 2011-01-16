@@ -2209,7 +2209,12 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     /* NOT virtual host; don't match any real network interface */
     rv = apr_sockaddr_info_get(&s->addrs->host_addr,
                                NULL, APR_INET, 0, 0, p);
-    ap_assert(rv == APR_SUCCESS); /* otherwise: bug or no storage */
+    if (rv != APR_SUCCESS) {
+        /* should we test here for rv being an EAIERR? */
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, rv, NULL,
+                     "initialisation: bug or getaddrinfo fail");
+        return NULL;
+    }
 
     s->addrs->host_port = 0; /* matches any port */
     s->addrs->virthost = ""; /* must be non-NULL */
@@ -2235,6 +2240,9 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
     const char *confname, *error;
     apr_pool_t *p = process->pconf;
     server_rec *s = init_server_config(process, p);
+    if (s == NULL) {
+        return s;
+    }
 
     init_config_globals(p);
 
