@@ -504,6 +504,7 @@ of the index listing</description>
 <description>Adds to the list of files to hide when listing
 a directory</description>
 <syntax>IndexIgnore <var>file</var> [<var>file</var>] ...</syntax>
+<default>IndexIgnore "."</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -562,6 +563,7 @@ a directory</description>
 indexing</description>
 <syntax>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</syntax>
+<default>By default, no options are enabled.</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
