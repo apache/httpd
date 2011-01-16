@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1031389 -->
+<!-- English Revision : 1055700 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1231,24 +1231,84 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
       l'expression est compar&eacute;e au
       <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requ&ecirc;te ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
+      requ&ecirc;te (url-encod&eacute; avec caract&egrave;res %) ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui a &eacute;t&eacute; appliqu&eacute;e.</p>
 
 <note><title>Qu'est-ce qui est compar&eacute; ?</title>
-      <p>Le <em>Mod&egrave;le</em> est d'abord compar&eacute; &agrave; la partie
-      de l'URL apr&egrave;s le nom d'h&ocirc;te et le port, et avant la cha&icirc;ne de
-      requ&ecirc;te. Si vous souhaitez faire une comparaison sur le nom
-      d'h&ocirc;te, le port, ou la cha&icirc;ne de requ&ecirc;te, utilisez une
+      
+      <p>Dans un contexte de serveur virtuel <directive
+      module="core">VirtualHost</directive>, le <em>mod&egrave;le</em> est tout
+      d'abord compar&eacute; &agrave; la portion de l'URL situ&eacute;e entre le nom d'h&ocirc;te
+      &eacute;ventuellement accompagn&eacute; du port, et la cha&icirc;ne de param&egrave;tres (par
+      exemple "/app1/index.html").</p>
+
+      <p>Dans les contextes de r&eacute;pertoire <directive
+      module="core">Directory</directive> et htaccess, le
+      <em>mod&egrave;le</em> est tout d'abord compar&eacute; au chemin du <em>syst&egrave;me
+      de fichiers</em>, apr&egrave;s suppression du pr&eacute;fixe ou chemin de base
+      ayant conduit &agrave; la r&egrave;gle <directive>RewriteRule</directive> (par
+      exemple "app1/index.html" ou
+      "index.html" selon l'endroit o&ugrave; les directives sont d&eacute;finies).</p>
+
+      <p>Si vous voulez effectuer une comparaison en tenant compte du
+      nom d'h&ocirc;te, du port ou de la cha&icirc;ne de param&egrave;tres, utilisez une
       directive <directive module="mod_rewrite">RewriteCond</directive>
       comportant les variables
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, ou
       <code>%{QUERY_STRING}</code>.</p>
+
+</note>
+
+<note><title>R&eacute;&eacute;critures dans un contexte de r&eacute;pertoire</title>
+<ul>
+<li>L'utilisation du moteur de r&eacute;&eacute;criture dans les
+fichiers <a href="../howto/htaccess.html">.htaccess</a> et les sections
+<directive
+type="section" module="core">Directory</directive> est un peu plus
+complexe.</li>
+
+<li>Pour activer le moteur de r&eacute;&eacute;criture dans ces contextes, vous devez
+d&eacute;finir "<code>RewriteEngine On</code>" <strong>et</strong>
+"<code>Options FollowSymLinks</code>". Si l'administrateur a d&eacute;sactiv&eacute;
+la possibilit&eacute; de modifier l'option <code>FollowSymLinks</code> au
+niveau du r&eacute;pertoire d'un utilisateur, vous ne pouvez pas utiliser le
+moteur de r&eacute;&eacute;criture. Cette restriction a &eacute;t&eacute; instaur&eacute;e &agrave; des fins de
+s&eacute;curit&eacute;.</li>
+
+<li>Lorsqu'on utilise le moteur de r&eacute;&eacute;criture dans un fichier
+<code>.htaccess</code>, le chemin de base du r&eacute;pertoire courant (qui est
+toujours le m&ecirc;me pour ce m&ecirc;me r&eacute;pertoire) est automatiquement
+<em>supprim&eacute;</em> au cours de la comparaison avec le mod&egrave;le de la r&egrave;gle
+de r&eacute;&eacute;criture, et automatiquement <em>ajout&eacute;</em> lorsqu'une
+substitution relative (ne d&eacute;butant pas par un slash ou un nom de
+protocole) arrive &agrave; la fin d'un jeu de r&egrave;gles. Voir la directive
+<directive module="mod_rewrite">RewriteBase</directive> pour plus de
+d&eacute;tails &agrave; propos de l'ajout du pr&eacute;fixe apr&egrave;s les substitutions
+relatives.</li>
+
+<li>Si vous souhaitez effectuer une comparaison en prenant en compte
+l'int&eacute;gralit&eacute; du
+chemin de l'URL dans un contexte de r&eacute;pertoire (htaccess), vous devez
+utiliser la variable <code>%{REQUEST_URI}</code> dans la directive
+<directive>RewriteCond</directive>.</li>
+
+<li>Le prefixe supprim&eacute; se termine toujours par un slash, ce qui
+signifie que la comparaison s'effectue avec une cha&icirc;ne qui ne comporte
+<em>jamais</em> de slash de d&eacute;but. Ainsi, un <em>mod&egrave;le</em> contenant
+<code>^/</code> ne correspondra jamais dans un contexte de r&eacute;pertoire.</li>
+
+<li>Bien que les r&egrave;gles de r&eacute;&eacute;criture soient permises du point de vue de
+la syntaxe dans les sections <directive type="section"
+module="core">Location</directive> et <directive type="section"
+module="core">Files</directive>, elles n'y sont pas prises en compte, et
+n'y sont &agrave; priori d'aucune utilit&eacute;.</li>
+</ul>      
 </note>
 
 	<p>Pour quelques conseils &agrave; propos des <glossary
 	ref="regex">expressions rationnelles</glossary>, voir le
 	document <a
-	href="../rewrite/rewrite_intro.html#regex">Introduction &agrave;
+	href="../rewrite/intro.html#regex">Introduction &agrave;
 	mod_rewrite</a>.</p>
 
       <p>Dans mod_rewrite, on peut aussi utiliser le caract&egrave;re NON
@@ -1715,48 +1775,6 @@ configuration du module <module>mod_userdir</module>.</p>
 
 <p> Ce d&eacute;veloppement n'est pas effectu&eacute; si le drapeau <em>PT</em> est
 utilis&eacute; dans la directive <directive module="mod_rewrite">RewriteRule</directive></p>
-</note>
-
-<note><title>R&eacute;&eacute;critures dans le contexte de r&eacute;pertoire</title>
-
-<p>Le moteur de r&eacute;&eacute;criture peut &ecirc;tre utilis&eacute; dans les fichiers <a
-href="../howto/htaccess.html">.htaccess</a>. Pour activer le moteur de
-r&eacute;&eacute;criture pour ces fichiers, vous devez pr&eacute;ciser "<code>RewriteEngine
-On</code>" <strong>et</strong> "<code>Options FollowSymLinks</code>"
-doit &ecirc;tre activ&eacute;. Si votre administrateur a interdit la surcharge de
-<code>FollowSymLinks</code> pour un r&eacute;pertoire utilisateur, vous ne
-pouvez pas utiliser le moteur de r&eacute;&eacute;criture. Cette restriction est
-n&eacute;cessaire pour des raisons de s&eacute;curit&eacute;.</p>
-
-<p>Lorsqu'on utilise le moteur de r&eacute;&eacute;criture dans les fichiers
-<code>.htaccess</code>, le pr&eacute;fixe du r&eacute;pertoire (qui est
-toujours le m&ecirc;me pour un r&eacute;pertoire donn&eacute;) est automatiquement
-<em>supprim&eacute;</em> pour la comparaison du mod&egrave;le et automatiquement
-<em>ajout&eacute;</em> une fois la substitution effectu&eacute;e. Cette fonctionnalit&eacute;
-est n&eacute;cessaire pour de nombreux cas de r&eacute;&eacute;criture ; sans elle, vous
-seriez oblig&eacute; de tenir compte du r&eacute;pertoire parent pour la comparaison,
-ce qui n'est pas toujours
-possible. Il y a une exception : si une cha&icirc;ne de substitution commence
-par <code>http://</code>, le pr&eacute;fixe du r&eacute;pertoire ne sera
-<strong>pas</strong> ajout&eacute;, et une redirection externe (ou le passage
-par un mandataire, si le drapeau <strong>P</strong> est utilis&eacute;) sera
-initi&eacute;e. Voir la directive <directive
-module="mod_rewrite">RewriteBase</directive> pour plus de d&eacute;tails.</p>
-
-<p>Le moteur de r&eacute;&eacute;criture peut aussi &ecirc;tre utilis&eacute; dans les sections
-<directive type="section" module="core">Directory</directive> avec les
-m&ecirc;mes r&egrave;gles de comparaison des pr&eacute;fixes que celles qui s'appliquent
-pour les fichiers <code>.htaccess</code>. Cependant, il est en g&eacute;n&eacute;ral
-plus simple, pour &eacute;viter la complication des substitutions de pr&eacute;fixes,
-de d&eacute;finir les r&egrave;gles de r&eacute;&eacute;criture dans le contexte du serveur
-principal ou des h&ocirc;tes virtuels, plut&ocirc;t que dans une section
-<directive type="section" module="core">Directory</directive>.</p>
-
-<p>Bien que du point de vue syntaxique, il soit permis de d&eacute;finir des
-r&egrave;gles de r&eacute;&eacute;criture dans les sections <directive type="section"
-module="core">Location</directive>, ce n'est &agrave; priori d'aucune utilit&eacute;
-et n'est pas support&eacute;.</p>
-
 </note>
 
      <p>Voici toutes les combinaisons de substitution et leurs
