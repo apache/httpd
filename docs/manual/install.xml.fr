@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1041010:1057657 (outdated) -->
+<!-- English Revision: 1057657 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -406,4 +406,26 @@ $ tar xvf httpd-<em>NN</em>.tar
      </example>
 
     </section>
+<section id="thirdp"><title>Paquets tiers</title>
+
+    <p>De nombreux tiers fournissent leur propre distribution du
+    serveur HTTP Apache &agrave; installer sur une plate-forme particuli&egrave;re. On
+    peut citer les diff&eacute;rentes distributions Linux, divers
+    paquets tiers Windows, Mac OS X, Solaris et de nombreux autres.</p>
+
+    <p>Notre license logicielle non seulement permet, mais aussi
+    encourage ce genre de redistribution. Cependant, ceci conduit &agrave; une
+    situation ou l'organisation de la configuration et les valeurs par
+    d&eacute;faut de votre installation du serveur peuvent ne pas correspondre
+    &agrave; ce qui est &eacute;crit dans la documentation. Bien que f&acirc;cheuse, cette
+    situation n'est pas appel&eacute;e &agrave; &eacute;voluer de sit&ocirc;t.</p>
+
+    <p>Une  <a
+    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    de ces distributions tierses</a> est maintenue dans le wiki du
+    serveur HTTP, et doit en refl&eacute;ter l'&eacute;tat actuel. Vous devrez
+    cependant vous familiariser par vous-m&ecirc;me avec la gestion du paquet
+    de votre plate-forme particuli&egrave;re et les proc&eacute;dures d'installation.</p>
+
+</section>    
 </manualpage>

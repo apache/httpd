@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1053375 -->
+<!-- English Revision : 1054303 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -941,7 +941,7 @@ sup&eacute;rieures. Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</com
     <li>Sous Linux, l'utilisation de sendfile induit des bogues lors de
     la r&eacute;cup&eacute;ration des paquets de v&eacute;rification TCP (TCP-checksum) avec
     certaines cartes r&eacute;seau lorsqu'on utilise IPv6.</li>
-    <li>Sous Linux sur Itanium, sendfile peut s'av&eacute;rer incapable de
+    <li>Sous Linux sur Itanium, <code>sendfile</code> peut s'av&eacute;rer incapable de
     traiter les fichiers de plus de 2 Go.</li>
     <li>Avec un montage r&eacute;seau de <directive
     module="core">DocumentRoot</directive> (par exemple NFS, SMB, CIFS,
@@ -4005,10 +4005,12 @@ host</context>
     <p>Vous pouvez &eacute;craser la d&eacute;finition ant&eacute;rieure d'une directive
     <directive>SetHandler</directive> en utilisant la valeur
     <code>None</code>.</p>
-    <p><strong>Note :</strong> comme SetHandler l'emporte sur la
+
+    <note><title>Note</title>
+    <p>Comme <directive>SetHandler</directive> l'emporte sur la
     d&eacute;finition des gestionnaires par d&eacute;faut, le comportement habituel
     consistant &agrave; traiter les URLs se terminant par un slash (/) comme
-    des r&eacute;pertoires ou des fichiers index est d&eacute;sactiv&eacute;.</p>
+    des r&eacute;pertoires ou des fichiers index est d&eacute;sactiv&eacute;.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
@@ -4240,8 +4242,8 @@ host</context>
 
 <directivesynopsis>
 <name>UseCanonicalPhysicalPort</name>
-<description>D&eacute;finit la mani&egrave;re dont le serveur d&eacute;termine son propre nom
-et son port</description>
+<description>D&eacute;finit la mani&egrave;re dont le serveur
+d&eacute;termine son propre port</description>
 <syntax>UseCanonicalPhysicalPort On|Off</syntax>
 <default>UseCanonicalPhysicalPort Off</default>
 <contextlist><context>server config</context><context>virtual
@@ -4262,21 +4264,27 @@ host</context>
     valide.</p>
 
     <note><title>Note</title>
-    <p>L'ordre dans lequel s'effectue la recherche du port est le
-    suivant :<br /><br />
-     <code>UseCanonicalName On</code></p>
-     <ul>
-      <li>Port sp&eacute;cifi&eacute; par <code>Servername</code></li>
+    <p>L'ordre dans lequel s'effectue la recherche quand on utilise le
+    port physique est le suivant :</p>
+     <dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
+      <li>Port indiqu&eacute; dans <directive module="core">Servername</directive></li>
       <li>Port physique</li>
       <li>Port par d&eacute;faut</li>
-     </ul>
-     <code>UseCanonicalName Off | DNS</code>
-     <ul>
+     </ol>
+     </dd>
+     <dt><code>UseCanonicalName Off | DNS</code></dt>
+     <dd>
+     <ol>
       <li>Port sp&eacute;cifi&eacute; dans l'en-t&ecirc;te <code>Host:</code></li>
       <li>Port physique</li>
-      <li>Port sp&eacute;cifi&eacute; par <code>Servername</code></li>
+      <li>Port sp&eacute;cifi&eacute; par <directive module="core">Servername</directive></li>
       <li>Port par d&eacute;faut</li>
-     </ul>
+     </ol>
+     </dd>
+     </dl>
 
     <p>Avec <code>UseCanonicalPhysicalPort Off</code>, on reprend
     l'ordre ci-dessus en supprimant "Port physique".</p>
