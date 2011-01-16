@@ -150,6 +150,7 @@ BEGIN {
 	  print "#LoadModule proxy_http_module modules/mod_proxy_http.so" > dstfl;
 	  print "#LoadModule proxy_scgi_module modules/mod_proxy_scgi.so" > dstfl;
 	  print "#LoadModule reqtimeout_module modules/mod_reqtimeout.so" > dstfl;
+	  print "#LoadModule reflector_module modules/mod_reflector.so" > dstfl;
 	  print "#LoadModule rewrite_module modules/mod_rewrite.so" > dstfl;
 	  print "LoadModule setenvif_module modules/mod_setenvif.so" > dstfl;
 	  print "#LoadModule speling_module modules/mod_speling.so" > dstfl;
