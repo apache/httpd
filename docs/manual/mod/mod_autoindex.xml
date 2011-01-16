@@ -331,7 +331,7 @@ icon selected by MIME content-type</description>
     <p>This sets the icon to display next to a file ending in
     <var>name</var> for <code><a href="#indexoptions.fancyindexing"
     >FancyIndexing</a></code>. <var>Icon</var> is either a (%-escaped)
-    relative URL to the icon, or of the format <code>
+    relative URL to the icon, a fully qualified remote URL, or of the format <code>
     (<var>alttext</var>,<var>url</var>)</code> where <var>alttext</var>
     is the text tag given for an icon for non-graphical browsers.</p>
 
@@ -367,6 +367,7 @@ content-encoding</description>
     <p>This sets the icon to display next to files with <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    a fully qualified remote URL,
     or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
     where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
@@ -396,6 +397,7 @@ content-type</description>
     <var>MIME-type</var> for <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    a fully qualified remote URL,
     or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
     where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
@@ -423,7 +425,8 @@ configured</description>
     <p>The <directive>DefaultIcon</directive> directive sets the icon
     to display for files when no specific icon is known, for <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
-    <var>Url-path</var> is a (%-escaped) relative URL to the icon.</p>
+    <var>Url-path</var> is a (%-escaped) relative URL to the icon,
+    or a fully qualified remote URL.</p>
 
     <example><title>Example</title>
       DefaultIcon /icon/unknown.png
