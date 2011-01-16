@@ -1085,7 +1085,7 @@ cannot use <code>$N</code> in the substitution string!
         </td>
     </tr>
     <tr>
-        <td>discardpathinfo|DPI</td>
+        <td>discardpath|DPI</td>
         <td>Causes the PATH_INFO portion of the rewritten URI to be
         discarded. <em><a href="../rewrite/flags.html#flag_dpi">details 
         ...</a></em></td>
