@@ -322,7 +322,7 @@ icon selected by MIME content-type</description>
     <p>This sets the icon to display next to a file ending in
     <var>name</var> for <code><a href="#indexoptions.fancyindexing"
     >FancyIndexing</a></code>. <var>Icon</var> is either a (%-escaped)
-    relative URL to the icon, or of the format <code>
+    relative URL to the icon, a fully qualified remote URL, or of the format <code>
     (<var>alttext</var>,<var>url</var>)</code> where <var>alttext</var>
     is the text tag given for an icon for non-graphical browsers.</p>
 
@@ -330,6 +330,10 @@ icon selected by MIME content-type</description>
     <code>^^BLANKICON^^</code> for blank lines (to format the list
     correctly), a file extension, a wildcard expression, a partial
     filename or a complete filename.</p>
+
+    <p><code>^^BLANKICON^^</code> is only used for formatting, and so
+    is unnecessary if you're using <code>IndexOptions
+    HTMLTable</code>.</p>
 
     <example><title>Examples</title>
       AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
@@ -358,6 +362,7 @@ content-encoding</description>
     <p>This sets the icon to display next to files with <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    a fully qualified remote URL,
     or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
     where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
@@ -387,6 +392,7 @@ content-type</description>
     <var>MIME-type</var> for <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    a fully qualified remote URL,
     or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
     where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
@@ -414,7 +420,8 @@ configured</description>
     <p>The <directive>DefaultIcon</directive> directive sets the icon
     to display for files when no specific icon is known, for <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
-    <var>Url-path</var> is a (%-escaped) relative URL to the icon.</p>
+    <var>Url-path</var> is a (%-escaped) relative URL to the icon,
+    or a fully qualified remote URL.</p>
 
     <example><title>Example</title>
       DefaultIcon /icon/unknown.xbm
@@ -488,6 +495,7 @@ of the index listing</description>
 <description>Adds to the list of files to hide when listing
 a directory</description>
 <syntax>IndexIgnore <var>file</var> [<var>file</var>] ...</syntax>
+<default>IndexIgnore "."</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -503,7 +511,7 @@ a directory</description>
     directory).</p>
 
     <example>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </example>
 </usage>
 </directivesynopsis>
@@ -514,6 +522,7 @@ a directory</description>
 indexing</description>
 <syntax>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</syntax>
+<default>By default, no options are enabled.</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -901,12 +910,14 @@ Name|Date|Size|Description</syntax>
     and identifies the primary key. The secondary key is
     <em>always</em> the ascending filename.</p>
 
-    <p>You can force a directory listing to only be displayed in a
-    particular order by combining this directive with the <code><a
-    href="#indexoptions.suppresscolumnsorting"
-    >SuppressColumnSorting</a></code> index option; this will prevent
-    the client from requesting the directory listing in a different
-    order.</p>
+    <p>You can, if desired, prevent the client from reordering the list
+    by also adding the <code><a
+    href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    index option to remove the sort link from the top of the column,
+    along with the <code><a
+    href="#indexoptions.ignoreclient">IgnoreClient</a></code> index
+    option to prevent them from manually adding sort options to the
+    query string in order to override your ordering preferences.</p>
 </usage>
 </directivesynopsis>
 
