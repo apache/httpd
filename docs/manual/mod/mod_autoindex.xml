@@ -519,7 +519,7 @@ a directory</description>
     directory).</p>
 
     <example>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </example>
 </usage>
 </directivesynopsis>
