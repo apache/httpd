@@ -328,7 +328,7 @@ icon selected by MIME content-type</td></tr>
 </table>
     <p>This sets the icon to display next to a file ending in
     <var>name</var> for <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>. <var>Icon</var> is either a (%-escaped)
-    relative URL to the icon, or of the format <code>
+    relative URL to the icon, a fully qualified remote URL, or of the format <code>
     (<var>alttext</var>,<var>url</var>)</code> where <var>alttext</var>
     is the text tag given for an icon for non-graphical browsers.</p>
 
@@ -336,6 +336,10 @@ icon selected by MIME content-type</td></tr>
     <code>^^BLANKICON^^</code> for blank lines (to format the list
     correctly), a file extension, a wildcard expression, a partial
     filename or a complete filename.</p>
+
+    <p><code>^^BLANKICON^^</code> is only used for formatting, and so
+    is unnecessary if you're using <code>IndexOptions
+    HTMLTable</code>.</p>
 
     <div class="example"><h3>Examples</h3><p><code>
       AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
@@ -362,6 +366,7 @@ content-encoding</td></tr>
 </table>
     <p>This sets the icon to display next to files with <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    a fully qualified remote URL,
     or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
     where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
@@ -389,6 +394,7 @@ content-type</td></tr>
     <p>This sets the icon to display next to files of type
     <var>MIME-type</var> for <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    a fully qualified remote URL,
     or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
     where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
@@ -414,7 +420,8 @@ configured</td></tr>
 </table>
     <p>The <code class="directive">DefaultIcon</code> directive sets the icon
     to display for files when no specific icon is known, for <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
-    <var>Url-path</var> is a (%-escaped) relative URL to the icon.</p>
+    <var>Url-path</var> is a (%-escaped) relative URL to the icon,
+    or a fully qualified remote URL.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       DefaultIcon /icon/unknown.xbm
@@ -504,6 +511,7 @@ of the index listing</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds to the list of files to hide when listing
 a directory</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexIgnore <var>file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>IndexIgnore "."</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -518,7 +526,7 @@ a directory</td></tr>
     directory).</p>
 
     <div class="example"><p><code>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </code></p></div>
 
 </div>
@@ -529,6 +537,7 @@ a directory</td></tr>
 indexing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>By default, no options are enabled.</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -876,10 +885,12 @@ Name|Date|Size|Description</code></td></tr>
     and identifies the primary key. The secondary key is
     <em>always</em> the ascending filename.</p>
 
-    <p>You can force a directory listing to only be displayed in a
-    particular order by combining this directive with the <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> index option; this will prevent
-    the client from requesting the directory listing in a different
-    order.</p>
+    <p>You can, if desired, prevent the client from reordering the list
+    by also adding the <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    index option to remove the sort link from the top of the column,
+    along with the <code><a href="#indexoptions.ignoreclient">IgnoreClient</a></code> index
+    option to prevent them from manually adding sort options to the
+    query string in order to override your ordering preferences.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
