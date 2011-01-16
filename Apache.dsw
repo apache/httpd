@@ -285,6 +285,9 @@ Package=<4>
     Project_Dep_Name mod_ratelimit
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_reflector
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_remoteip
     End Project Dependency
     Begin Project Dependency
@@ -2568,6 +2571,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_ratelimit"=.\modules\filters\mod_ratelimit.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_reflector"=.\modules\filters\mod_reflector.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
