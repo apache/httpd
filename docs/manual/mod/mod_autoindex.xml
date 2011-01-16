@@ -975,12 +975,14 @@ Name|Date|Size|Description</syntax>
     and identifies the primary key. The secondary key is
     <em>always</em> the ascending filename.</p>
 
-    <p>You can force a directory listing to only be displayed in a
-    particular order by combining this directive with the <code><a
-    href="#indexoptions.suppresscolumnsorting"
-    >SuppressColumnSorting</a></code> index option; this will prevent
-    the client from requesting the directory listing in a different
-    order.</p>
+    <p>You can, if desired, prevent the client from reordering the list
+    by also adding the <code><a
+    href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    index option to remove the sort link from the top of the column,
+    along with the <code><a
+    href="#indexoptions.ignoreclient">IgnoreClient</a></code> index
+    option to prevent them from manually adding sort options to the
+    query string in order to override your ordering preferences.</p>
 </usage>
 </directivesynopsis>
 
