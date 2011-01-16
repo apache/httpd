@@ -340,6 +340,10 @@ icon selected by MIME content-type</description>
     correctly), a file extension, a wildcard expression, a partial
     filename or a complete filename.</p>
 
+    <p><code>^^BLANKICON^^</code> is only used for formatting, and so
+    is unnecessary if you're using <code>IndexOptions
+    HTMLTable</code>.</p>
+
     <example><title>Examples</title>
       AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
       AddIcon /icons/dir.png ^^DIRECTORY^^<br />
