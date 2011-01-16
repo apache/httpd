@@ -439,7 +439,7 @@ an imagemap</td></tr>
 <tr><td><a href="core.html#include">Include [<var>optional</var>|<var>strict</var>] <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Includes other configuration files from within
 the server configuration files</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"markup ..."</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Inserts text in the HEAD section of an index page.</td></tr>
-<tr><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Adds to the list of files to hide when listing
+<tr><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>file</var> [<var>file</var>] ...</a></td><td> "." </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Adds to the list of files to hide when listing
 a directory</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexignorereset">IndexIgnoreReset ON|OFF</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Empties the list of files to hide when listing
 a directory</td></tr>

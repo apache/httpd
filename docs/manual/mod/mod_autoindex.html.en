@@ -520,6 +520,7 @@ of the index listing</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds to the list of files to hide when listing
 a directory</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexIgnore <var>file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>IndexIgnore "."</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -576,6 +577,7 @@ a directory</td></tr>
 indexing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>By default, no options are enabled.</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -941,10 +943,12 @@ Name|Date|Size|Description</code></td></tr>
     and identifies the primary key. The secondary key is
     <em>always</em> the ascending filename.</p>
 
-    <p>You can force a directory listing to only be displayed in a
-    particular order by combining this directive with the <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> index option; this will prevent
-    the client from requesting the directory listing in a different
-    order.</p>
+    <p>You can, if desired, prevent the client from reordering the list
+    by also adding the <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    index option to remove the sort link from the top of the column,
+    along with the <code><a href="#indexoptions.ignoreclient">IgnoreClient</a></code> index
+    option to prevent them from manually adding sort options to the
+    query string in order to override your ordering preferences.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
