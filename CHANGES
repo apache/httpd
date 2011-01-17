@@ -2,6 +2,12 @@
 
 Changes with Apache 2.3.11
 
+  *) core: Apply <If> sections to all requests, not only to file base requests.
+     Allow to use <If> inside <Directory>, <Location>, and <Files> sections.
+     The merging of <If> sections now happens after the merging of <Location>
+     sections, even if an <If> section is embedded inside a <Directory> or
+     <Files> section.  [Stefan Fritsch]
+
   *) mod_proxy: Refactor usage of shared data by dropping the scoreboard
      and using slotmem. Create foundation for dynamic growth/changes of
      members within a balancer. Remove BalancerNonce in favor of a
