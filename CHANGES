@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_slotmem_shm: Increase memory alignment for slotmem data.
+     [Rainer Jung]
+
   *) mod_ssl: Add config options for OCSP: SSLOCSPResponderTimeout,
      SSLOCSPResponseMaxAge, SSLOCSPResponseTimeSkew.  
      [Kaspar Brand <httpd-dev.2011 velox.ch>]
