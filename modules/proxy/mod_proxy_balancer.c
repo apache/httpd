@@ -1118,7 +1118,7 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
      * make sure that we are called after the mpm
      * initializes
      */
-    static const char *const aszPred[] = { "mpm_winnt.c", NULL};
+    static const char *const aszPred[] = { "mpm_winnt.c", "mod_slotmem_shm.c", NULL};
      /* manager handler */
     ap_hook_post_config(balancer_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config(balancer_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
