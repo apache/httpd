@@ -2459,7 +2459,7 @@ static void register_hooks(apr_pool_t *p)
      * make sure that we are called after the mpm
      * initializes.
      */
-    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c", "mod_slotmem_shm.c", NULL};
+    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c", NULL};
 
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
