@@ -192,7 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        with reason string for why suEXEC is disabled)
      Plz consider where doc for directive should go.  Patch has it in core, as
      enabling/disabling the basic capability is not split out into mod_unixd 2.2.x.
-     +1: trawick
+     +1: trawick, covener
 
    * autoindex: fix merge of IndexOptions into per-dir configs 
      without any autoindex options.  PR47766
