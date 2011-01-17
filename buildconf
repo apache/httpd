@@ -230,11 +230,9 @@ fi
 # when running make
 echo fixing timestamps for ap_expr sources
 cd server
-touch util_expr_parse.y
+touch util_expr_parse.y util_expr_scan.l
 sleep 1
-touch util_expr_parse.c util_expr_parse.h util_expr_scan.l
-sleep 1
-touch util_expr_scan.c
+touch util_expr_parse.c util_expr_parse.h util_expr_scan.c
 cd ..
 
 exit 0
