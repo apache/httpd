@@ -51,6 +51,8 @@ typedef struct {
     ap_slotmem_type_t type;      /* type-specific flags */
 } sharedslotdesc_t;
 
+#define AP_SLOTMEM_OFFSET (APR_ALIGN_DEFAULT(sizeof(sharedslotdesc_t)))
+
 struct ap_slotmem_instance_t {
     char                 *name;       /* per segment name */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
@@ -253,7 +255,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     const char *fname;
     apr_shm_t *shm;
     apr_size_t basesize = (item_size * item_num);
-    apr_size_t size = sizeof(sharedslotdesc_t) +
+    apr_size_t size = AP_SLOTMEM_OFFSET +
                       (item_num * sizeof(char)) + basesize;
     apr_status_t rv;
 
@@ -305,10 +307,10 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             apr_shm_detach(shm);
             return APR_EINVAL;
         }
-        ptr = ptr + sizeof(desc);
+        ptr = ptr + AP_SLOTMEM_OFFSET;
     }
     else {
-        apr_size_t dsize = size - sizeof(sharedslotdesc_t);
+        apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
         if (name && name[0] != ':') {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, size, fname, gpool);
@@ -333,7 +335,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         desc.num = item_num;
         desc.type = type;
         memcpy(ptr, &desc, sizeof(desc));
-        ptr = ptr + sizeof(desc);
+        ptr = ptr + AP_SLOTMEM_OFFSET;
         memset(ptr, 0, dsize);
         /*
          * TODO: Error check the below... What error makes
@@ -418,7 +420,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     /* Read the description of the slotmem */
     ptr = apr_shm_baseaddr_get(shm);
     memcpy(&desc, ptr, sizeof(desc));
-    ptr = ptr + sizeof(desc);
+    ptr = ptr + AP_SLOTMEM_OFFSET;
 
     /* For the chained slotmem stuff */
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
