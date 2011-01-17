@@ -179,6 +179,16 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define DEFAULT_RENEG_BUFFER_SIZE (128 * 1024)
 #endif
 
+/* Default for OCSP response validity */
+#ifndef DEFAULT_OCSP_MAX_SKEW
+#define DEFAULT_OCSP_MAX_SKEW (60 * 5)
+#endif
+
+/* Default timeout for OCSP queries */
+#ifndef DEFAULT_OCSP_TIMEOUT
+#define DEFAULT_OCSP_TIMEOUT 10
+#endif
+
 /**
  * Support for MM library
  */
@@ -516,6 +526,9 @@ typedef struct {
     BOOL ocsp_force_default; /* true if the default responder URL is
                               * used regardless of per-cert URL */
     const char *ocsp_responder; /* default responder URL */
+    long ocsp_resptime_skew;
+    long ocsp_resp_maxage;
+    apr_interval_time_t ocsp_responder_timeout;
 
 } modssl_ctx_t;
 
@@ -620,6 +633,9 @@ const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
 
 const char *ssl_cmd_SSLOCSPOverrideResponder(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const char *arg);
+const char *ssl_cmd_SSLOCSPResponseTimeSkew(cmd_parms *cmd, void *dcfg, const char *arg);
+const char *ssl_cmd_SSLOCSPResponseMaxAge(cmd_parms *cmd, void *dcfg, const char *arg);
+const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag);
