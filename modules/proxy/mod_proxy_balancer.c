@@ -753,11 +753,12 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing create: %s (%s), %d, %d",
                          balancer->name, balancer->sname,
-                         (int)sizeof(proxy_worker_shared),
+                         (int)ALIGNED_PROXY_WORKER_SHARED_SIZE,
                          (int)balancer->max_workers);
 
-            rv = storage->create(&new, balancer->sname, sizeof(proxy_worker_shared),
-                            balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
+            rv = storage->create(&new, balancer->sname,
+                                 ALIGNED_PROXY_WORKER_SHARED_SIZE,
+                                 balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_create failed");
                 return !OK;

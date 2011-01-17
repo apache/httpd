@@ -336,6 +336,8 @@ typedef struct {
     unsigned int     disablereuse_set:1;
 } proxy_worker_shared;
 
+#define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))
+
 /* Worker configuration */
 struct proxy_worker {
     int             index;      /* shm array index */
