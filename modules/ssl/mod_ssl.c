@@ -197,6 +197,12 @@ static const command_rec ssl_config_cmds[] = {
                "URL of the default OCSP Responder")
     SSL_CMD_SRV(OCSPOverrideResponder, FLAG,
                "Force use of the default responder URL ('on', 'off')")
+    SSL_CMD_SRV(OCSPResponseTimeSkew, TAKE1,
+                "Maximum time difference in OCSP responses")
+    SSL_CMD_SRV(OCSPResponseMaxAge, TAKE1,
+                "Maximum age of OCSP responses")
+    SSL_CMD_SRV(OCSPResponderTimeout, TAKE1,
+                "OCSP responder query timeout")
 
 #ifdef HAVE_OCSP_STAPLING
     /*

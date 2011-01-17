@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_ssl: Add config options for OCSP: SSLOCSPResponderTimeout,
+     SSLOCSPResponseMaxAge, SSLOCSPResponseTimeSkew.  
+     [Kaspar Brand <httpd-dev.2011 velox.ch>]
+
   *) mod_ssl: Revamp output buffering to reduce network overhead for
      output fragmented into many buckets, such as chunked HTTP responses.
      [Joe Orton] 

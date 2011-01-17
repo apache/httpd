@@ -1856,6 +1856,53 @@ certificate being validated references an OCSP responder.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLOCSPResponseTimeSkew</name>
+<description>Maximum allowable time skew for OCSP response validation</description>
+<syntax>SSLOCSPResponseTimeSkew <em>seconds</em></syntax>
+<default>SSLOCSPResponseTimeSkew 300</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>This option sets the maximum allowable time skew for OCSP responses
+(when checking their <code>thisUpdate</code> and <code>nextUpdate</code> fields).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLOCSPResponseMaxAge</name>
+<description>Maximum allowable age for OCSP responses</description>
+<syntax>SSLOCSPResponseMaxAge <em>seconds</em></syntax>
+<default>SSLOCSPResponseMaxAge -1</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>This option sets the maximum allowable age ("freshness") for OCSP responses.
+The default value (<code>-1</code>) does not enforce a maximum age,
+which means that OCSP responses are considered valid as long as their
+<code>nextUpdate</code> field is in the future.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLOCSPResponderTimeout</name>
+<description>Timeout for OCSP queries</description>
+<syntax>SSLOCSPResponderTimeout <em>seconds</em></syntax>
+<default>SSLOCSPResponderTimeout 10</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>This option sets the timeout for queries to OCSP responders, when
+<directive module="mod_ssl">SSLOCSPEnable</directive> is turned on.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLInsecureRenegotiation</name>
 <description>Option to enable support for insecure renegotiation</description>
 <syntax>SSLInsecureRenegotiation <em>flag</em></syntax>

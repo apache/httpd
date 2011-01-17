@@ -130,6 +130,9 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->ocsp_enabled        = FALSE;
     mctx->ocsp_force_default  = FALSE;
     mctx->ocsp_responder      = NULL;
+    mctx->ocsp_resptime_skew  = UNSET;
+    mctx->ocsp_resp_maxage    = UNSET;
+    mctx->ocsp_responder_timeout = UNSET;
 
 #ifdef HAVE_OCSP_STAPLING
     mctx->stapling_enabled                   = UNSET;
@@ -243,6 +246,9 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMergeBool(ocsp_enabled);
     cfgMergeBool(ocsp_force_default);
     cfgMerge(ocsp_responder, NULL);
+    cfgMergeInt(ocsp_resptime_skew);
+    cfgMergeInt(ocsp_resp_maxage);
+    cfgMergeInt(ocsp_responder_timeout);
 #ifdef HAVE_OCSP_STAPLING
     cfgMergeBool(stapling_enabled);
     cfgMergeInt(stapling_resptime_skew);
@@ -1442,6 +1448,36 @@ const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const ch
 
     sc->server->ocsp_responder = arg;
 
+    return NULL;
+}
+
+const char *ssl_cmd_SSLOCSPResponseTimeSkew(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->ocsp_resptime_skew = atoi(arg);
+    if (sc->server->ocsp_resptime_skew < 0) {
+        return "SSLOCSPResponseTimeSkew: invalid argument";
+    }
+    return NULL;
+}
+
+const char *ssl_cmd_SSLOCSPResponseMaxAge(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->ocsp_resp_maxage = atoi(arg);
+    if (sc->server->ocsp_resp_maxage < 0) {
+        return "SSLOCSPResponseMaxAge: invalid argument";
+    }
+    return NULL;
+}
+
+const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->ocsp_responder_timeout = apr_time_from_sec(atoi(arg));
+    if (sc->server->ocsp_responder_timeout < 0) {
+        return "SSLOCSPResponderTimeout: invalid argument";
+    }
     return NULL;
 }
 

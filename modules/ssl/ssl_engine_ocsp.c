@@ -141,10 +141,10 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     request = create_request(ctx, cert, &certID, s, pool);
     if (request) {
-        /* Use default I/O timeout for the server. */
-        response = modssl_dispatch_ocsp_request(ruri, 
-                                                mySrvFromConn(c)->timeout,
-                                                request, c, pool);
+        apr_interval_time_t to = sc->server->ocsp_responder_timeout == UNSET ?
+                                 DEFAULT_OCSP_TIMEOUT :
+                                 sc->server->ocsp_responder_timeout;
+        response = modssl_dispatch_ocsp_request(ruri, to, request, c, pool);
     }
 
     if (!request || !response) {
@@ -205,15 +205,16 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
             rc = status;
         }
 
-        /* TODO: make these configurable. */
-#define MAX_SKEW (60)
-#define MAX_AGE (360)
-
         /* Check whether the response is inside the defined validity
          * period; otherwise fail.  */
         if (rc != V_OCSP_CERTSTATUS_UNKNOWN) {
-            int vrc  = OCSP_check_validity(thisup, nextup, MAX_SKEW, MAX_AGE);
-            
+            long resptime_skew = sc->server->ocsp_resptime_skew == UNSET ?
+                                 DEFAULT_OCSP_MAX_SKEW : sc->server->ocsp_resptime_skew;
+            /* oscp_resp_maxage can be passed verbatim - UNSET (-1) means
+             * that responses can be of any age as long as nextup is in the
+             * future. */
+            int vrc  = OCSP_check_validity(thisup, nextup, resptime_skew,
+                                           sc->server->ocsp_resp_maxage);
             if (vrc != 1) {
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
                 ssl_log_cxerror(SSLLOG_MARK, APLOG_ERR, 0, c, cert,
