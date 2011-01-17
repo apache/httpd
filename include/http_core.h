@@ -362,7 +362,8 @@ typedef struct {
 #define AP_NOTE_DIRECTORY_WALK 0
 #define AP_NOTE_LOCATION_WALK  1
 #define AP_NOTE_FILE_WALK      2
-#define AP_NUM_STD_NOTES       3
+#define AP_NOTE_IF_WALK        3
+#define AP_NUM_STD_NOTES       4
 
 /**
  * Reserve an element in the core_request_config->notes array
@@ -499,6 +500,7 @@ typedef struct {
 
     /* Access control */
     apr_array_header_t *sec_file;
+    apr_array_header_t *sec_if;
     ap_regex_t *r;
 
     const char *mime_type;       /* forced with ForceType  */
@@ -597,6 +599,7 @@ void ap_core_reorder_directories(apr_pool_t *, server_rec *);
 AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config);
 AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config);
 AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
+AP_CORE_DECLARE(void) ap_add_if_conf(core_dir_config *conf, void *url_config);
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy, const char *arg);
 
 /* Core filters; not exported. */

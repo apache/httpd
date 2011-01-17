@@ -143,6 +143,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->limit_req_body = AP_LIMIT_REQ_BODY_UNSET;
     conf->limit_xml_body = AP_LIMIT_UNSET;
     conf->sec_file = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
+    conf->sec_if   = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
 
     conf->server_signature = srv_sig_unset;
 
@@ -299,6 +300,17 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->sec_file = apr_array_append(a, base->sec_file, new->sec_file);
     }
     /* Otherwise we simply use the base->sec_file array
+     */
+
+    if (!conf->sec_if) {
+        conf->sec_if = new->sec_if;
+    }
+    else if (new->sec_if) {
+        /* If we merge, the merge-result must have it's own array
+         */
+        conf->sec_if = apr_array_append(a, base->sec_if, new->sec_if);
+    }
+    /* Otherwise we simply use the base->sec_if array
      */
 
     if (new->server_signature != srv_sig_unset) {
@@ -509,6 +521,14 @@ AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
 
     *new_space = url_config;
 }
+
+AP_CORE_DECLARE(void) ap_add_if_conf(core_dir_config *conf, void *url_config)
+{
+    void **new_space = (void **)apr_array_push(conf->sec_if);
+
+    *new_space = url_config;
+}
+
 
 /* We need to do a stable sort, qsort isn't stable.  So to make it stable
  * we'll be maintaining the original index into the list, and using it
@@ -2035,8 +2055,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     core_dir_config *conf;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_LOCATION | NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     const char *condition;
     const char *expr_err;
 
@@ -2078,7 +2097,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d_is_fnmatch = 0;
     conf->r = NULL;
 
-    ap_add_file_conf((core_dir_config *)mconfig, new_file_conf);
+    ap_add_if_conf((core_dir_config *)mconfig, new_file_conf);
 
     if (*arg != '\0') {
         return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,

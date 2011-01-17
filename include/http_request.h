@@ -531,6 +531,7 @@ AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
 AP_DECLARE(int) ap_location_walk(request_rec *r);
 AP_DECLARE(int) ap_directory_walk(request_rec *r);
 AP_DECLARE(int) ap_file_walk(request_rec *r);
+AP_DECLARE(int) ap_if_walk(request_rec *r);
 
 /** End Of REQUEST (EOR) bucket */
 AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eor;
