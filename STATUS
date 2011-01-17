@@ -222,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1026746&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, covener
 
   * mod_dav: If a malformed Content-Range header is received for a PUT request,
     we must not use the supplied content per RFC 2616 14.16. Send 400 response
@@ -232,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1026743&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
-    +1: rpluem, jorton
+    +1: rpluem, jorton, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
