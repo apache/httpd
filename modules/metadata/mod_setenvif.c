@@ -677,12 +677,8 @@ static int match_headers(request_rec *r)
                                        elts[j].val);
                     }
                 }
-            }
-            if (APLOGrtrace2(r)) {
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "Setting envvar(s): %s",
-                              apr_array_pstrcat(r->pool, arr, ' '));
-
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, "Setting %s",
+                              elts[j].key);
             }
         }
     }
