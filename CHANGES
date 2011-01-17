@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_ssl: Revamp output buffering to reduce network overhead for
+     output fragmented into many buckets, such as chunked HTTP responses.
+     [Joe Orton] 
+
   *) core: Apply <If> sections to all requests, not only to file base requests.
      Allow to use <If> inside <Directory>, <Location>, and <Files> sections.
      The merging of <If> sections now happens after the merging of <Location>

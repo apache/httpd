@@ -102,7 +102,6 @@ typedef struct {
     BIO                *pbioWrite;
     ap_filter_t        *pInputFilter;
     ap_filter_t        *pOutputFilter;
-    int                nobuffer; /* non-zero to prevent buffering */
     SSLConnRec         *config;
 } ssl_filter_ctx_t;
 
@@ -110,9 +109,6 @@ typedef struct {
     ssl_filter_ctx_t *filter_ctx;
     conn_rec *c;
     apr_bucket_brigade *bb;    /* Brigade used as a buffer. */
-    apr_size_t length;         /* Number of bytes stored in ->bb brigade. */
-    char buffer[AP_IOBUFSIZE]; /* Fixed-size buffer */
-    apr_size_t blen;           /* Number of bytes of ->buffer used. */
     apr_status_t rc;
 } bio_filter_out_ctx_t;
 
@@ -124,35 +120,15 @@ static bio_filter_out_ctx_t *bio_filter_out_ctx_new(ssl_filter_ctx_t *filter_ctx
     outctx->filter_ctx = filter_ctx;
     outctx->c = c;
     outctx->bb = apr_brigade_create(c->pool, c->bucket_alloc);
-    outctx->blen = 0;
-    outctx->length = 0;
 
     return outctx;
 }
 
-static int bio_filter_out_flush(BIO *bio)
+/* Pass an output brigade down the filter stack; returns 1 on success
+ * or -1 on failure. */
+static int bio_filter_out_pass(bio_filter_out_ctx_t *outctx)
 {
-    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
-    apr_bucket *e;
-
-    if (!(outctx->blen || outctx->length)) {
-        outctx->rc = APR_SUCCESS;
-        return 1;
-    }
-
-    if (outctx->blen) {
-        e = apr_bucket_transient_create(outctx->buffer, outctx->blen,
-                                        outctx->bb->bucket_alloc);
-        /* we filled this buffer first so add it to the
-         * head of the brigade
-         */
-        APR_BRIGADE_INSERT_HEAD(outctx->bb, e);
-        outctx->blen = 0;
-    }
-
-    outctx->length = 0;
-    e = apr_bucket_flush_create(outctx->bb->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
+    AP_DEBUG_ASSERT(!APR_BRIGADE_EMPTY(outctx->bb));
 
     outctx->rc = ap_pass_brigade(outctx->filter_ctx->pOutputFilter->next,
                                  outctx->bb);
@@ -161,6 +137,21 @@ static int bio_filter_out_flush(BIO *bio)
         outctx->rc = APR_ECONNRESET;
     }
     return (outctx->rc == APR_SUCCESS) ? 1 : -1;
+}
+
+/* Send a FLUSH bucket down the output filter stack; returns 1 on
+ * success, -1 on failure. */
+static int bio_filter_out_flush(BIO *bio)
+{
+    bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
+    apr_bucket *e;
+
+    AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(outctx->bb));
+    
+    e = apr_bucket_flush_create(outctx->bb->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
+
+    return bio_filter_out_pass(outctx);
 }
 
 static int bio_filter_create(BIO *bio)
@@ -194,7 +185,8 @@ static int bio_filter_out_read(BIO *bio, char *out, int outl)
 static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 {
     bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
-    
+    apr_bucket *e;
+
     /* Abort early if the client has initiated a renegotiation. */
     if (outctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
         outctx->rc = APR_ECONNABORTED;
@@ -207,32 +199,13 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
      */
     BIO_clear_retry_flags(bio);
 
-    if (!outctx->length && (inl + outctx->blen < sizeof(outctx->buffer)) &&
-        !outctx->filter_ctx->nobuffer) {
-        /* the first two SSL_writes (of 1024 and 261 bytes)
-         * need to be in the same packet (vec[0].iov_base)
-         */
-        /* XXX: could use apr_brigade_write() to make code look cleaner
-         * but this way we avoid the malloc(APR_BUCKET_BUFF_SIZE)
-         * and free() of it later
-         */
-        memcpy(&outctx->buffer[outctx->blen], in, inl);
-        outctx->blen += inl;
-    }
-    else {
-        /* pass along the encrypted data
-         * need to flush since we're using SSL's malloc-ed buffer
-         * which will be overwritten once we leave here
-         */
-        apr_bucket *bucket = apr_bucket_transient_create(in, inl,
-                                             outctx->bb->bucket_alloc);
-
-        outctx->length += inl;
-        APR_BRIGADE_INSERT_TAIL(outctx->bb, bucket);
-
-        if (bio_filter_out_flush(bio) < 0) {
-            return -1;
-        }
+    /* Use a transient bucket for the output data - any downstream
+     * filter must setaside if necessary. */
+    e = apr_bucket_transient_create(in, inl, outctx->bb->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
+    
+    if (bio_filter_out_pass(outctx) < 0) {
+        return -1;
     }
 
     return inl;
@@ -241,42 +214,26 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
 {
     long ret = 1;
-    char **pptr;
-
     bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
 
     switch (cmd) {
-      case BIO_CTRL_RESET:
-        outctx->blen = outctx->length = 0;
+    case BIO_CTRL_RESET:
+    case BIO_CTRL_EOF:
+    case BIO_C_SET_BUF_MEM_EOF_RETURN:
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, outctx->c,
+                      "output bio: unhandled control %d", cmd);
+        ret = 0;
         break;
-      case BIO_CTRL_EOF:
-        ret = (long)((outctx->blen + outctx->length) == 0);
+    case BIO_CTRL_WPENDING:
+    case BIO_CTRL_PENDING:
+    case BIO_CTRL_INFO:
+        ret = 0;
         break;
-      case BIO_C_SET_BUF_MEM_EOF_RETURN:
-        outctx->blen = outctx->length = (apr_size_t)num;
-        break;
-      case BIO_CTRL_INFO:
-        ret = (long)(outctx->blen + outctx->length);
-        if (ptr) {
-            pptr = (char **)ptr;
-            *pptr = (char *)&(outctx->buffer[0]);
-        }
-        break;
-      case BIO_CTRL_GET_CLOSE:
+    case BIO_CTRL_GET_CLOSE:
         ret = (long)bio->shutdown;
         break;
       case BIO_CTRL_SET_CLOSE:
         bio->shutdown = (int)num;
-        break;
-      case BIO_CTRL_PENDING:
-        /* _PENDING is interpreted as "pending to read" - since this
-         * is a *write* buffer, return zero. */
-        ret = 0L;
-        break;
-      case BIO_CTRL_WPENDING:
-        /* _WPENDING is interpreted as "pending to write" - return the
-         * number of bytes in ->bb plus buffer. */
-        ret = (long)(outctx->blen + outctx->length);
         break;
       case BIO_CTRL_FLUSH:
         ret = bio_filter_out_flush(bio);
@@ -932,6 +889,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
 
 static const char ssl_io_filter[] = "SSL/TLS Filter";
 static const char ssl_io_buffer[] = "SSL/TLS Buffer";
+static const char ssl_io_coalesce[] = "SSL/TLS Coalescing Filter";
 
 /*
  *  Close the SSL part of the socket connection
@@ -1380,6 +1338,149 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+
+/* ssl_io_filter_output() produces one SSL/TLS message per bucket
+ * passed down the output filter stack.  This results in a high
+ * overhead (network packets) for any output comprising many small
+ * buckets.  SSI page applied through the HTTP chunk filter, for
+ * example, may produce many brigades containing small buckets -
+ * [chunk-size CRLF] [chunk-data] [CRLF]. 
+ *
+ * The coalescing filter merges many small buckets into larger buckets
+ * where possible, allowing the SSL I/O output filter to handle them
+ * more efficiently. */
+
+#define COALESCE_BYTES (2048)
+
+struct coalesce_ctx {
+    char buffer[COALESCE_BYTES];
+    apr_size_t bytes; /* number of bytes of buffer used. */
+};
+
+static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
+                                           apr_bucket_brigade *bb)
+{
+    apr_bucket *e, *last = NULL;
+    apr_size_t bytes = 0;
+    struct coalesce_ctx *ctx = f->ctx;
+    unsigned count = 0;
+
+    /* The brigade consists of zero-or-more small data buckets which
+     * can be coalesced (the prefix), followed by the remainder of the
+     * brigade.  
+     *
+     * Find the last bucket - if any - of that prefix.  count gives
+     * the number of buckets in the prefix.  The "prefix" must contain
+     * only data buckets with known length, and must be of a total
+     * size which fits into the buffer.
+     *
+     * N.B.: The process here could be repeated throughout the brigade
+     * (coalesce any run of consecutive data buckets) but this would
+     * add significant complexity, particularly to memory
+     * management. */
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb)
+             && !APR_BUCKET_IS_METADATA(e)
+             && e->length != (apr_size_t)-1
+             && e->length < COALESCE_BYTES
+             && (bytes + e->length) < COALESCE_BYTES
+             && (ctx == NULL
+                 || bytes + ctx->bytes + e->length < COALESCE_BYTES);
+         e = APR_BUCKET_NEXT(e)) {
+        last = e;
+        if (e->length) count++; /* don't count zero-length buckets */
+        bytes += e->length;
+    }
+
+    /* Coalesce the prefix, if:
+     * a) more than one bucket is found to coalesce, or 
+     * b) the brigade contains only a single data bucket, or
+     * c) 
+     */
+    if (bytes > 0
+        && (count > 1
+            || (count == 1 && APR_BUCKET_NEXT(last) == APR_BRIGADE_SENTINEL(bb)))) {
+        /* If coalescing some bytes, ensure a context has been
+         * created. */
+        if (!ctx) {
+            f->ctx = ctx = apr_palloc(f->c->pool, sizeof *ctx);
+            ctx->bytes = 0;
+        }
+
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
+                      "coalesce: have %" APR_SIZE_T_FMT " bytes, "
+                      "adding %" APR_SIZE_T_FMT " more", ctx->bytes, bytes);
+
+        /* Iterate through the prefix segment.  For non-fatal errors
+         * in this loop it is safe to break out and fall back to the
+         * normal path of sending the buffer + remaining buckets in
+         * brigade.  */
+        e = APR_BRIGADE_FIRST(bb); 
+        while (e != last) {
+            apr_size_t len;
+            const char *data;
+            apr_bucket *next;
+
+            if (APR_BUCKET_IS_METADATA(e)
+                || e->length == (apr_size_t)-1) {
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
+                              "unexpected bucket type during coalesce");
+                break; /* non-fatal error; break out */
+            }                
+
+            if (e->length) {
+                apr_status_t rv;
+
+                /* A blocking read should be fine here for a
+                 * known-length data bucket, rather than the usual
+                 * non-block/flush/block.  */
+                rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+                if (rv) {
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c,
+                                  "coalesce failed to read from data bucket");
+                    return AP_FILTER_ERROR;
+                }
+
+                /* Be paranoid. */
+                if (len > sizeof ctx->buffer 
+                    || (len + ctx->bytes > sizeof ctx->buffer)) {
+                    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
+                                  "unexpected coalesced bucket data length");
+                    break; /* non-fatal error; break out */
+                }
+
+                memcpy(ctx->buffer + ctx->bytes, data, len);
+                ctx->bytes += len;
+            }
+
+            next = APR_BUCKET_NEXT(e);
+            apr_bucket_delete(e);
+            e = next;
+        }
+    }
+
+    if (APR_BRIGADE_EMPTY(bb)) {
+        /* If the brigade is now empty, our work here is done. */
+        return APR_SUCCESS;
+    }
+
+    /* If anything remains in the brigade, it must now be passed down
+     * the filter stack, first prepending anything that has been
+     * coalesced. */
+    if (ctx && ctx->bytes) {
+        apr_bucket *e;
+
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
+                      "coalesce: passing on %" APR_SIZE_T_FMT " bytes", ctx->bytes);
+        
+        e = apr_bucket_transient_create(ctx->buffer, ctx->bytes, bb->bucket_alloc);
+        APR_BRIGADE_INSERT_HEAD(bb, e);
+        ctx->bytes = 0; /* buffer now emptied. */
+    }
+    
+    return ap_pass_brigade(f->next, bb);    
+}
+
 static apr_status_t ssl_io_filter_output(ap_filter_t *f,
                                          apr_bucket_brigade *bb)
 {
@@ -1446,11 +1547,8 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
             }
         }
         else if (AP_BUCKET_IS_EOC(bucket)) {
-            /* The special "EOC" bucket means a shutdown is needed;
-             * - turn off buffering in bio_filter_out_write
-             * - issue the SSL_shutdown
-             */
-            filter_ctx->nobuffer = 1;
+            /* The EOC bucket indicates connection closure, so SSL
+             * shutdown must now be performed.  */
             ssl_filter_io_shutdown(filter_ctx, f->c, 0);
             if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
                 return status;
@@ -1731,7 +1829,8 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
 
     filter_ctx->config          = myConnConfig(c);
 
-    filter_ctx->nobuffer        = 0;
+    ap_add_output_filter(ssl_io_coalesce, NULL, r, c);
+
     filter_ctx->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
                                                        filter_ctx, r, c);
 
@@ -1760,6 +1859,7 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
 void ssl_io_filter_register(apr_pool_t *p)
 {
     ap_register_input_filter  (ssl_io_filter, ssl_io_filter_input,  NULL, AP_FTYPE_CONNECTION + 5);
+    ap_register_output_filter (ssl_io_coalesce, ssl_io_filter_coalesce, NULL, AP_FTYPE_CONNECTION + 4);
     ap_register_output_filter (ssl_io_filter, ssl_io_filter_output, NULL, AP_FTYPE_CONNECTION + 5);
 
     ap_register_input_filter  (ssl_io_buffer, ssl_io_filter_buffer, NULL, AP_FTYPE_PROTOCOL);
