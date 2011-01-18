@@ -1459,11 +1459,16 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     ap_conf_vector_t *now_merged = NULL;
     core_dir_config *dconf = ap_get_module_config(r->per_dir_config,
                                                   &core_module);
-    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **)dconf->sec_file->elts;
-    int num_sec = dconf->sec_file->nelts;
+    ap_conf_vector_t **sec_ent = NULL;
+    int num_sec = 0;
     walk_cache_t *cache;
     const char *test_file;
     int cached;
+
+    if (dconf->sec_file) {
+    	sec_ent = (ap_conf_vector_t **)dconf->sec_file->elts;
+    	num_sec = dconf->sec_file->nelts;
+    }
 
     /* To allow broken modules to proceed, we allow missing filenames to pass.
      * We will catch it later if it's heading for the core handler.
@@ -1616,14 +1621,19 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
     ap_conf_vector_t *now_merged = NULL;
     core_dir_config *dconf = ap_get_module_config(r->per_dir_config,
                                                   &core_module);
-    ap_conf_vector_t **sec_ent = (ap_conf_vector_t **)dconf->sec_if->elts;
-    int num_sec = dconf->sec_if->nelts;
+    ap_conf_vector_t **sec_ent = NULL;
+    int num_sec = 0;
     walk_cache_t *cache;
     int cached;
     int sec_idx;
     int matches;
     int cached_matches;
     walk_walked_t *last_walk;
+
+    if (dconf->sec_if) {
+    	sec_ent = (ap_conf_vector_t **)dconf->sec_if->elts;
+    	num_sec = dconf->sec_if->nelts;
+    }
 
     /* No tricks here, there are just no <If > to parse in this context.
      * We won't destroy the cache, just in case _this_ redirect is later

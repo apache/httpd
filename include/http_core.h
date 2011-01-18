@@ -598,8 +598,8 @@ void ap_core_reorder_directories(apr_pool_t *, server_rec *);
 /* for mod_perl */
 AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config);
 AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config);
-AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
-AP_CORE_DECLARE(void) ap_add_if_conf(core_dir_config *conf, void *url_config);
+AP_CORE_DECLARE(void) ap_add_file_conf(apr_pool_t *p, core_dir_config *conf, void *url_config);
+AP_CORE_DECLARE(void) ap_add_if_conf(apr_pool_t *p, core_dir_config *conf, void *url_config);
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy, const char *arg);
 
 /* Core filters; not exported. */

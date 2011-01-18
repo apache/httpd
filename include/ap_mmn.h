@@ -295,7 +295,8 @@
  *                         dynamic growth of balancer members; Remove
  *                         BalancerNonce in favor of 'nonce' parameter.
  * 20110117.0 (2.3.11-dev) Merge <If> sections in separate step (ap_if_walk).
- *                         Add core_dir_config->sec_if.
+ *                         Add core_dir_config->sec_if. Add ap_add_if_conf().
+ *                         Add pool argument to ap_add_file_conf().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
