@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1054323 -->
+<!-- English Revision: 1043126:1054323 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -252,13 +252,6 @@ n&eacute;cessiter une modification des fichiers de configuration de la version
       <li><module>mod_auto_index</module>: extrait maintenant les titres
       et affiche la description pour les fichiers .xhtml qui &eacute;taient
       jusqu'alors ignor&eacute;s.</li>
-
-      <li><module>mod_ssl</module> : le format par d&eacute;faut des variables
-      <code>*_DN</code> a chang&eacute;. Il est cependant encore possible
-      d'utiliser l'ancien format via la nouvelle option
-      <code>LegacyDNStringFormat</code> de la directive <directive
-      module="mod_ssl">SSLOptions</directive>.</li>
-
       <li><program>htpasswd</program> utilise maintenant par d&eacute;faut les
       condens&eacute;s MD5 sur toutes les plates-formes.</li>
     </ul>

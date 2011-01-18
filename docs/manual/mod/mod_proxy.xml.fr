@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1058629 -->
+<!-- English Revision : 1013126 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -931,7 +931,6 @@ l'espace d'URLs du serveur local</description>
         ProxyPass /example http://backend.example.com max=20 ttl=120 retry=300
     </example>
 
-    <table border="2"><tr><th>Param&egrave;tres de BalancerMember</th></tr></table>
     <table>
     <tr><th>Param&egrave;tre</th>
         <th>D&eacute;faut</th>
@@ -1114,9 +1113,9 @@ l'espace d'URLs du serveur local</description>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Dur&eacute;e de vie des connexions inactives et des entr&eacute;es du pool
-	de connexions associ&eacute;es en secondes. Une fois cette
-	limite atteinte, une connexion ne sera pas r&eacute;utilis&eacute;e ; elle
-	sera ferm&eacute;e apr&egrave;s un d&eacute;lai variable.
+	de connexions associ&eacute;es en secondes. Celles qui n'ont pas &eacute;t&eacute;
+	utilis&eacute;es au bout de <code>ttl</code> secondes seront lib&eacute;r&eacute;es
+	ou ferm&eacute;es.
     </td></tr>
 
     </table>
@@ -1132,7 +1131,6 @@ l'espace d'URLs du serveur local</description>
     d'informations &agrave; propos du fonctionnement du r&eacute;partiteur de
     charge.
     </p>
-    <table border="2"><tr><th>Param&egrave;tres du r&eacute;partiteur</th></tr></table>
     <table>
     <tr><th>Param&egrave;tre</th>
         <th>D&eacute;faut</th>
@@ -1194,27 +1192,6 @@ l'espace d'URLs du serveur local</description>
 	serveur d'arri&egrave;re-plan renvoie un des codes d'&eacute;tat sp&eacute;cifi&eacute;s
 	dans la liste. La r&eacute;cup&eacute;ration du worker s'effectue comme dans
 	le cas des autres erreurs de worker.
-    </td></tr>
-
-    <tr><td>nonce</td>
-        <td>&lt;auto&gt;</td>
-        <td>Le nombre &agrave; usage unique de protection utilis&eacute; dans la page
-	de l'application <code>balancer-manager</code>. Par d&eacute;faut, la
-	protection de la page est assur&eacute;e par un nombre &agrave; usage unique
-	automatique &agrave; base d'UUID. Si une valeur est pr&eacute;cis&eacute;e, elle sera
-	utilis&eacute;e comme nombre &agrave; usage unique. La valeur
-	<code>None</code> d&eacute;sactive la v&eacute;rification du nombre &agrave; usage
-	unique.
-    <note><title>Note</title>
-      <p>En plus du nombre &agrave; usage unique, la page de l'application
-      <code>balancer-manager</code> peut &ecirc;tre prot&eacute;g&eacute;e par une ACL.</p>
-    </note>
-     </td></tr>
-    <tr><td>growth</td>
-        <td>0</td>
-        <td>Nombre de membres suppl&eacute;mentaires que l'on peut ajouter &agrave; ce
-	r&eacute;partiteur en plus de ceux d&eacute;finis au niveau de la
-	configuration. 
     </td></tr>
 
     </table>

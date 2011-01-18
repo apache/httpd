@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1058587 -->
+<!-- English Revision : 952009 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -65,8 +65,8 @@
     distribu&eacute;s seront alors compil&eacute;s en tant que modules DSO. Une fois
     compil&eacute; en tant que module DSO nomm&eacute; <code>mod_foo.so</code>, un
     module peut &ecirc;tre charg&eacute; en m&eacute;moire au
-    d&eacute;marrage ou red&eacute;marrage du serveur &agrave; l'aide de
-    la directive <directive module="mod_so">LoadModule</directive> du module
+    d&eacute;marrage ou red&eacute;marrage du serveur &agrave; l'aide de la commande
+    <directive module="mod_so">LoadModule</directive> du module
     <module>mod_so</module>, plac&eacute;e
     dans votre fichier <code>httpd.conf</code>.</p>
     <p>La compilation en mode DSO peut &ecirc;tre d&eacute;sactiv&eacute;e pour certains
@@ -149,8 +149,8 @@ $ apxs -cia mod_foo.c
 
 <section id="background"><title>Les dessous du fonctionnement des DSO</title>
 
-    <p>Les cl&ocirc;nes modernes d'UNIX proposent un m&eacute;canisme
-    appel&eacute; &eacute;dition de liens et chargement dynamiques d'
+    <p>Les cl&ocirc;nes modernes d'UNIX proposent un astucieux m&eacute;canisme
+    commun&eacute;ment appel&eacute; &eacute;dition de liens et chargement dynamiques d'
     <em>Objets Dynamiques Partag&eacute;s</em> (DSO), qui permet de construire un
     morceau de programme dans un format sp&eacute;cial pour le rendre chargeable
     &agrave; l'ex&eacute;cution dans l'espace d'adressage d'un programme ex&eacute;cutable.</p>
@@ -240,7 +240,8 @@ $ apxs -cia mod_foo.c
     c'est dans cette optique que le m&eacute;canisme DSO a &eacute;t&eacute; con&ccedil;u ; c'est cette
     approche qui est ainsi
     utilis&eacute;e par pratiquement tous les types de biblioth&egrave;ques que fournit le
-    syst&egrave;me d'exploitation.</p>
+    syst&egrave;me d'exploitation. Par contre, les objets partag&eacute;s sont relativement
+    peu utilis&eacute;s pour &eacute;tendre les fonctionnalit&eacute;s d'un programme.</p>
 
 </section>
 
@@ -251,23 +252,23 @@ $ apxs -cia mod_foo.c
 
     <ul>
       <li>Le paquetage du serveur est plus flexible &agrave; l'ex&eacute;cution car le
-      processus serveur peut &ecirc;tre assembl&eacute; &agrave; l'ex&eacute;cution via la
+      processus serveur effectif peut &ecirc;tre assembl&eacute; &agrave; l'ex&eacute;cution via la
       directive <directive module="mod_so">LoadModule</directive> du fichier de
       configuration <code>httpd.conf</code> plut&ocirc;t que par des options du script
       <program>configure</program> &agrave; la compilation. Par exemple,
       on peut ainsi ex&eacute;cuter diff&eacute;rentes instances du serveur
-      (standard et version SSL, version minimale et version dynamique
-      [mod_perl, mod_php], <em>etc...</em>) &agrave; partir d'une seule installation
+      (standard et version SSL, version minimale et version &eacute;toff&eacute;e
+      [mod_perl, PHP3], <em>etc...</em>) &agrave; partir d'une seule installation
       d'Apache httpd.</li>
 
       <li>Le paquetage du serveur peut &ecirc;tre facilement &eacute;tendu avec des modules
-      tiers, m&ecirc;me apr&egrave;s l'installation. Ceci pr&eacute;sente un gros
+      tiers, m&ecirc;me apr&egrave;s l'installation. Ceci pr&eacute;sente en tout cas un gros
       avantage pour les mainteneurs de paquetages destin&eacute;s aux distributions,
       car ils peuvent cr&eacute;er un paquetage Apache httpd de base, et des paquetages
       additionnels contenant des extensions telles que PHP, mod_perl, mod_fastcgi,
       <em>etc...</em></li>
 
-      <li>Une facilit&eacute; de prototypage des modules Apache httpd, car la paire
+      <li>Une facilit&eacute; de prototypage des modules Apache httpd car la paire
       DSO/<program>apxs</program> vous permet d'une part de travailler en
       dehors de l'arborescence des sources d'Apache httpd, et d'autre part de n'avoir
       besoin que de la commande <code>apxs -i</code>
@@ -279,6 +280,10 @@ $ apxs -cia mod_foo.c
     <p>Inconv&eacute;nients des DSO :</p>
 
     <ul>
+      <li>Le m&eacute;canisme DSO n'est pas disponible sur toutes les plates-formes
+      car tous les syst&egrave;mes d'exploitation ne supportent pas le chargement
+      dynamique de code dans l'espace d'adressage d'un programme.</li>
+
       <li>Le serveur est environ 20 % plus lent au d&eacute;marrage
       &agrave; cause des r&eacute;solutions de symboles suppl&eacute;mentaires que le chargeur
       Unix doit effectuer.</li>

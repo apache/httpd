@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1057632 -->
+<!-- English Revision: 1043126:1057632 (outdated) -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 <!-- Updated by Lucien Gentis -->
 
@@ -42,9 +42,15 @@
     IP" et la commande "ifconfig" pour les activer), et/ou utiliser
     plusieurs numéros de port.</p>
 
-    <p>Selon la terminologie du serveur HTTP Apache, l'utilisation d'une
-    seule adresse IP avec plusieurs ports TCP s'apparente aussi à de
-    l'hébergement virtuel basé sur IP.</p>
+    <p>Dans la plupart des cas, les <a href="name-based.html">serveurs
+    virtuels à base de nom</a> sont plus appropriés, car ils permettent
+    de partager une seule paire adresse/port entre de nombreux serveurs
+    virtuels. Voir le document <a
+    href="name-based.html#namevip">Serveurs virtuels à base de noms ou
+    serveurs virtuels à base d'adresse IP</a> pour vous aider à prendre
+    une décision.
+    </p>
+
 </section>
 
 <section id="howto"><title>Comment configurer Apache</title>
@@ -103,7 +109,7 @@
     que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
     <example>
-    Listen 192.0.2.100:80
+    Listen www.example.com:80
     </example>
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
