@@ -128,7 +128,7 @@ Also, these sections can be nested to achieve more complex
 restrictions.</p>
 </section>
 
-<section id="file-and-web"><title>Filesystem and Webspace</title>
+<section id="file-and-web"><title>Filesystem, Webspace, and Boolean Expressions</title>
 
 <p>The most commonly used configuration section containers are the
 ones that change the configuration of particular places in the
@@ -304,6 +304,20 @@ Deny from all<br />
 
 </section>
 
+<section id="expressions"><title>Boolean expressions</title>
+<p>The <directive type="section" module="core">If</directive>
+directive change the configuration depending on a condition which can be
+expressed by a boolean expression. For example, the following configuration
+denies access if the HTTP Referer header does not start with
+"http://www.example.com/".</p>
+<example>
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
+Require all denied<br />
+&lt;/If&gt;
+</example>
+
+</section>
+
 <section id="whichwhen"><title>What to use When</title>
 
 <p>Choosing between filesystem containers and webspace containers is
@@ -352,6 +366,21 @@ containers when you can.  There is, however, one exception to this
 rule.  Putting configuration restrictions in a <code>&lt;Location
 /&gt;</code> section is perfectly safe because this section will apply
 to all requests regardless of the specific URL.</p>
+</section>
+
+<section id="nesting"><title>Nesting of sections</title>
+
+<p>Some section types can be nested inside other section types. One the one
+hand, <directive type="section" module="core">File</directive> can be used
+inside <directive type="section" module="core">Directory</directive>.  On
+the other hand, <directive type="section" module="core">If</directive> can
+be used inside <directive type="section" module="core">Directory</directive>,
+<directive type="section" module="core">Location</directive>, and <directive
+type="section" module="core">Files</directive> sections. The regex
+counterparts of the named section behave identically.</p>
+
+<p>Nested sections are merged after non-nested sections of the same type.</p>
+
 </section>
 
 </section>
@@ -444,6 +473,10 @@ are interpreted, it is important to understand how this works.</p>
       <li><directive type="section" module="core">Location</directive>
       and <directive type="section"
       module="core">LocationMatch</directive> done simultaneously</li>
+
+      <li><directive type="section" module="core">If</directive>
+      </li>
+
     </ol>
 
     <p>Apart from <directive type="section"
