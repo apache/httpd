@@ -324,4 +324,4 @@ PATCHES/ISSUES THAT ARE STALLED
                drop_privileges hook).
    2.2.x patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   +1: niq
+   +1: niq, igalic
