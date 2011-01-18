@@ -34,6 +34,12 @@
 #define YY_NO_UNISTD_H
 #endif
 
+#ifdef _MSC_VER
+/* Avoid some warnings with Visual Studio (likely due to a bug in bison) */
+#define YYMALLOC malloc
+#define YYFREE   free
+#endif
+
 #ifndef YYDEBUG
 #define YYDEBUG 0
 #endif
