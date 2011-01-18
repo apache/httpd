@@ -135,12 +135,12 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
      * conf->limit_cpu = NULL;
      * conf->limit_mem = NULL;
      * conf->limit_nproc = NULL;
+     * conf->sec_file = NULL;
+     * conf->sec_if   = NULL;
      */
 
     conf->limit_req_body = AP_LIMIT_REQ_BODY_UNSET;
     conf->limit_xml_body = AP_LIMIT_UNSET;
-    conf->sec_file = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
-    conf->sec_if   = apr_array_make(a, 2, sizeof(ap_conf_vector_t *));
 
     conf->server_signature = srv_sig_unset;
 
@@ -513,17 +513,27 @@ AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config)
     *new_space = url_config;
 }
 
-AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config)
+AP_CORE_DECLARE(void) ap_add_file_conf(apr_pool_t *p, core_dir_config *conf,
+                                       void *url_config)
 {
-    void **new_space = (void **)apr_array_push(conf->sec_file);
+    void **new_space;
 
+    if (!conf->sec_file)
+        conf->sec_file = apr_array_make(p, 2, sizeof(ap_conf_vector_t *));
+
+    new_space = (void **)apr_array_push(conf->sec_file);
     *new_space = url_config;
 }
 
-AP_CORE_DECLARE(void) ap_add_if_conf(core_dir_config *conf, void *url_config)
+AP_CORE_DECLARE(void) ap_add_if_conf(apr_pool_t *p, core_dir_config *conf,
+                                     void *url_config)
 {
-    void **new_space = (void **)apr_array_push(conf->sec_if);
+    void **new_space;
 
+    if (!conf->sec_if)
+        conf->sec_if = apr_array_make(p, 2, sizeof(ap_conf_vector_t *));
+
+    new_space = (void **)apr_array_push(conf->sec_if);
     *new_space = url_config;
 }
 
@@ -2032,7 +2042,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d_is_fnmatch = apr_fnmatch_test(conf->d) != 0;
     conf->r = r;
 
-    ap_add_file_conf((core_dir_config *)mconfig, new_file_conf);
+    ap_add_file_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);
 
     if (*arg != '\0') {
         return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
@@ -2095,7 +2105,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d_is_fnmatch = 0;
     conf->r = NULL;
 
-    ap_add_if_conf((core_dir_config *)mconfig, new_file_conf);
+    ap_add_if_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);
 
     if (*arg != '\0') {
         return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
