@@ -1131,27 +1131,30 @@ static void log_error_core(const char *file, int line, int module_index,
             }
         }
 
-        sconf = ap_get_module_config(s->module_config, &core_module);
-        if (c && !c->log_id) {
-            add_log_id(c, NULL);
-            if (sconf->error_log_conn && sconf->error_log_conn->nelts > 0)
-                log_conn_info = 1;
-        }
-        if (r) {
-            if (r->main)
-                rmain = r->main;
-            else
-                rmain = r;
+        /* the faked server_rec from mod_cgid does not have s->module_config */
+        if (s->module_config) {
+            sconf = ap_get_module_config(s->module_config, &core_module);
+            if (c && !c->log_id) {
+                add_log_id(c, NULL);
+                if (sconf->error_log_conn && sconf->error_log_conn->nelts > 0)
+                    log_conn_info = 1;
+            }
+            if (r) {
+                if (r->main)
+                    rmain = r->main;
+                else
+                    rmain = r;
 
-            if (!rmain->log_id) {
-                /* XXX: do we need separate log ids for subrequests? */
-                if (sconf->error_log_req && sconf->error_log_req->nelts > 0)
-                    log_req_info = 1;
-                /*
-                 * XXX: potential optimization: only create log id if %L is
-                 * XXX: actually used
-                 */
-                add_log_id(c, rmain);
+                if (!rmain->log_id) {
+                    /* XXX: do we need separate log ids for subrequests? */
+                    if (sconf->error_log_req && sconf->error_log_req->nelts > 0)
+                        log_req_info = 1;
+                    /*
+                     * XXX: potential optimization: only create log id if %L is
+                     * XXX: actually used
+                     */
+                    add_log_id(c, rmain);
+                }
             }
         }
     }
