@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1055611 -->
+<!-- English Revision : 1042758 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,7 +25,7 @@
 <modulesynopsis metafile="mod_alias.xml.meta">
 
 <name>mod_alias</name>
-<description>Permet d'atteindre diff&eacute;rentes parties du syst&egrave;me de
+<description>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</description>
 <status>Base</status>
@@ -34,131 +34,129 @@ redirection d'URL</description>
 
 <summary>
     <p>Les directives fournies par ce module permettent de manipuler et
-    de contr&ocirc;ler les URLs &agrave; l'arriv&eacute;e des requ&ecirc;tes sur le serveur. Les
+    de contrôler les URLs à l'arrivée des requêtes sur le serveur. Les
     directives <directive module="mod_alias">Alias</directive> et
     <directive module="mod_alias">ScriptAlias</directive> permettent de
-    faire correspondre des URLs avec des chemins du syst&egrave;me de fichiers.
-    Ceci permet de servir des contenus qui ne sont pas situ&eacute;s dans
+    faire correspondre des URLs avec des chemins du système de fichiers.
+    Ceci permet de servir des contenus qui ne sont pas situés dans
     l'arborescence de <directive
-    module="core">DocumentRoot</directive> comme s'ils y &eacute;taient
-    r&eacute;ellement. La directive <directive
+    module="core">DocumentRoot</directive> comme s'ils y étaient
+    réellement. La directive <directive
     module="mod_alias">ScriptAlias</directive> a pour effet
-    suppl&eacute;mentaire de marquer le r&eacute;pertoire cible comme conteneur de
+    supplémentaire de marquer le répertoire cible comme conteneur de
     scripts CGI.</p>
 
     <p>Les directives <directive module="mod_alias">Redirect</directive>
-    indiquent aux clients qu'ils doivent effectuer une nouvelle requ&ecirc;te
-    avec une URL diff&eacute;rente. Elles sont souvent utilis&eacute;es lorsqu'une
-    ressource a &eacute;t&eacute; d&eacute;plac&eacute;e.</p>
+    indiquent aux clients qu'ils doivent effectuer une nouvelle requête
+    avec une URL différente. Elles sont souvent utilisées lorsqu'une
+    ressource a été déplacée.</p>
 
-    <p><module>mod_alias</module> est con&ccedil;u pour traiter des t&acirc;ches
-    simples de manipulation d'URL. Pour des t&acirc;ches plus complexes comme
-    la manipulation des cha&icirc;nes d'arguments des requ&ecirc;tes, utilisez
-    plut&ocirc;t les outils fournis par le module <module>mod_rewrite</module></p>
+    <p><module>mod_alias</module> est conçu pour traiter des tâches
+    simples de manipulation d'URL. Pour des tâches plus complexes comme
+    la manipulation des chaînes d'arguments des requêtes, utilisez
+    plutôt les outils fournis par le module <module>mod_rewrite</module></p>
 
 </summary>
 
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
 href="../urlmapping.html">Mise en correspondance des URLs avec le
-syst&egrave;me de fichiers</a></seealso>
+système de fichiers</a></seealso>
 
 <section id="order"><title>Chronologie du traitement</title>
 
-    <p>Les alias et redirections apparaissant dans diff&eacute;rents contextes
-    sont trait&eacute;s comme les autres directives en respectant les <a
-    href="../sections.html#mergin">r&egrave;gles de fusion</a> standards. Par
-    contre, ils sont trait&eacute;s selon une chronologie particuli&egrave;re
-    lorsqu'ils apparaissent dans le m&ecirc;me contexte (par exemple, dans la
-    m&ecirc;me section <directive type="section"
+    <p>Les alias et redirections apparaissant dans différents contextes
+    sont traités comme les autres directives en respectant les <a
+    href="../sections.html#mergin">règles de fusion</a> standards. Par
+    contre, ils sont traités selon une chronologie particulière
+    lorsqu'ils apparaissent dans le même contexte (par exemple, dans la
+    même section <directive type="section"
     module="core">VirtualHost</directive>).</p>
 
-    <p>Premi&egrave;rement, toutes les redirections sont trait&eacute;es avant les
-    alias, et ainsi, une requ&ecirc;te qui correspond &agrave; une directive
+    <p>Premièrement, toutes les redirections sont traitées avant les
+    alias, et ainsi, une requête qui correspond à une directive
     <directive module="mod_alias">Redirect</directive> ou <directive
     module="mod_alias">RedirectMatch</directive> ne se verra jamais
-    appliquer d'alias. Deuxi&egrave;mement, les alias et redirections sont
-    trait&eacute;s selon l'ordre dans lequel ils apparaissent dans le fichier
-    de configuration, seule la premi&egrave;re correspondance &eacute;tant prise en
+    appliquer d'alias. Deuxièmement, les alias et redirections sont
+    traités selon l'ordre dans lequel ils apparaissent dans le fichier
+    de configuration, seule la première correspondance étant prise en
     compte.</p>
 
     <p>Ainsi, lorsqu'une ou plusieurs de ces directives s'appliquent au
-    m&ecirc;me sous-r&eacute;pertoire, vous devez classer les chemins du plus pr&eacute;cis
-    au moins pr&eacute;cis afin que toutes les directives puissent
-    &eacute;ventuellement s'appliquer, comme dans l'exemple suivant :</p>
+    même sous-répertoire, vous devez classer les chemins du plus précis
+    au moins précis afin que toutes les directives puissent
+    éventuellement s'appliquer, comme dans l'exemple suivant :</p>
 
     <example>
     Alias /foo/bar /baz<br />
     Alias /foo /gaq
     </example>
 
-    <p>Si l'ordre des directives &eacute;tait invers&eacute;, la directive <directive
+    <p>Si l'ordre des directives était inversé, la directive <directive
     module="mod_alias">Alias</directive> ayant pour argument
-    <code>/foo</code> serait toujours appliqu&eacute;e avant la directive
+    <code>/foo</code> serait toujours appliquée avant la directive
     <directive module="mod_alias">Alias</directive> ayant pour argument
-    <code>/foo/bar</code>, et cette derni&egrave;re serait toujours
-    ignor&eacute;e.</p>
+    <code>/foo/bar</code>, et cette dernière serait toujours
+    ignorée.</p>
 
 </section>
 
 <directivesynopsis>
 <name>Alias</name>
-<description>Met en correspondance des URLs avec des chemins du syst&egrave;me
+<description>Met en correspondance des URLs avec des chemins du système
 de fichiers</description>
 <syntax>Alias <var>chemin URL</var>
-<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></syntax>
+<var>chemin fichier</var>|<var>chemin répertoire</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
 
     <p>La directive <directive>Alias</directive> permet de stocker des
-    documents (destin&eacute;s &agrave; &ecirc;tre servis) dans des zones du syst&egrave;me de
-    fichiers situ&eacute;es en dehors de l'arborescence du site web <directive
+    documents (destinés à être servis) dans des zones du système de
+    fichiers situées en dehors de l'arborescence du site web <directive
     module="core">DocumentRoot</directive>. Les URLs dont le chemin
-    (d&eacute;cod&eacute; avec caract&egrave;res %) commence par <var>chemin URL</var> seront
+    (décodé avec caractères %) commence par <var>chemin URL</var> seront
     mises en correspondance avec des fichiers locaux dont le chemin
-    commence par <var>chemin r&eacute;pertoire</var>. Le <var>chemin URL</var>
-    est sensible &agrave; la casse, m&ecirc;me sur les syst&egrave;mes de fichiers
-    insensibles &agrave; la casse.</p>
+    commence par <var>chemin répertoire</var>. Le <var>chemin URL</var>
+    est sensible à la casse, même sur les systèmes de fichiers
+    insensibles à la casse.</p>
 
     <example><title>Exemple :</title>
       Alias /image /ftp/pub/image
     </example>
 
-    <p>Une requ&ecirc;te pour <code>http://myserver/image/foo.gif</code> fera
+    <p>Une requête pour <code>http://myserver/image/foo.gif</code> fera
     renvoyer par le serveur le fichier
-    <code>/ftp/pub/image/foo.gif</code>. Seuls les &eacute;l&eacute;ments de chemin
-    complets sont test&eacute;s ; ainsi l'alias pr&eacute;c&eacute;dent ne conviendra pas
-    pour une requ&ecirc;te du style <code>http://myserver/imagefoo.gif</code>.
+    <code>/ftp/pub/image/foo.gif</code>. Seuls les éléments de chemin
+    complets sont testés ; ainsi l'alias précédent ne conviendra pas
+    pour une requête du style <code>http://myserver/imagefoo.gif</code>.
     Pour des mises en correspondance plus complexes faisant intervenir
-    les expressions rationnelles, veuillez vous reporter &agrave; la directive
+    les expressions rationnelles, veuillez vous reporter à la directive
     <directive module="mod_alias">AliasMatch</directive>.</p>
 
     <p>Notez que si vous ajoutez un slash de fin au <var>chemin
     URL</var>, vous devrez aussi ajouter un slash de fin au chemin de la
-    requ&ecirc;te. Autrement dit, si vous d&eacute;finissez</p>
+    requête. Autrement dit, si vous définissez</p>
 
     <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
 
-    <p>l'alias pr&eacute;c&eacute;dent ne s'appliquera pas &agrave; l'url
-    <code>/icons</code> &agrave; cause de l'absence du slash final. Ainsi, si
-    le slash final est absent du <var>chemin de l'URL</var>, il doit
-    aussi l'&ecirc;tre du <var>chemin du fichier</var>.</p>
+    <p>l'alias précédent ne s'appliquera pas à l'url
+    <code>/icons</code>.</p>
 
-    <p>Notez qu'il pourra s'av&eacute;rer n&eacute;cessaire de d&eacute;finir des sections
+    <p>Notez qu'il pourra s'avérer nécessaire de définir des sections
     <directive type="section" module="core">Directory</directive>
-    suppl&eacute;mentaires qui couvriront la  <em>destination</em> des alias.
+    supplémentaires qui couvriront la  <em>destination</em> des alias.
     Le traitement des alias intervenant avant le traitement des sections
     <directive type="section" module="core">Directory</directive>,
-    seules les cibles des alias sont affect&eacute;es (Notez cependant
+    seules les cibles des alias sont affectées (Notez cependant
     que les sections <directive type="section"
-    module="core">Location</directive> sont trait&eacute;es avant les alias, et
+    module="core">Location</directive> sont traitées avant les alias, et
     s'appliqueront donc).</p>
 
-    <p>En particulier, si vous cr&eacute;ez un alias ayant pour cible un
-    r&eacute;pertoire situ&eacute; en dehors de l'arborescence de votre site web
+    <p>En particulier, si vous créez un alias ayant pour cible un
+    répertoire situé en dehors de l'arborescence de votre site web
     <directive module="core">DocumentRoot</directive>, vous devrez
-    probablement permettre explicitement l'acc&egrave;s &agrave; ce r&eacute;pertoire.</p>
+    probablement permettre explicitement l'accès à ce répertoire.</p>
 
     <example><title>Exemple :</title>
         Alias /image /ftp/pub/image<br />
@@ -174,23 +172,23 @@ de fichiers</description>
 
 <directivesynopsis>
 <name>AliasMatch</name>
-<description>Met en correspondance des URLs avec le syst&egrave;me de fichiers
+<description>Met en correspondance des URLs avec le système de fichiers
 en faisant intervenir les expressions rationnelles</description>
 <syntax>AliasMatch <var>regex</var>
-<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></syntax>
+<var>chemin fichier</var>|<var>chemin répertoire</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive est identique &agrave; la directive <directive
+    <p>Cette directive est identique à la directive <directive
     module="mod_alias">Alias</directive>, mais fait appel aux <glossary
-    ref="regex">expressions rationnelles</glossary>, &agrave; la place d'une
-    simple mise en correspondance de pr&eacute;fixe. L'expression rationnelle
+    ref="regex">expressions rationnelles</glossary>, à la place d'une
+    simple mise en correspondance de préfixe. L'expression rationnelle
     fournie est mise en correspondance avec le chemin URL, et si elle
     correspond, le serveur va substituer toute partie de chemin
-    correspondant &agrave; l'expression entre parenth&egrave;ses dans la cha&icirc;ne
+    correspondant à l'expression entre parenthèses dans la chaîne
     fournie et l'utiliser comme nom de fichier.
-    Par exemple, pour activer le r&eacute;pertoire <code>/icons</code>, on peut
+    Par exemple, pour activer le répertoire <code>/icons</code>, on peut
     utiliser :</p>
 
     <example>
@@ -198,32 +196,32 @@ en faisant intervenir les expressions rationnelles</description>
     </example>
 
     <p>Toute la puissance des <glossary ref="regex">expressions
-    rationnelles</glossary> peut &ecirc;tre mise &agrave; contribution. Par exemple,
-    il est possible de construire un alias avec un mod&egrave;le de chemin URL
-    insensible &agrave; la casse :</p>
+    rationnelles</glossary> peut être mise à contribution. Par exemple,
+    il est possible de construire un alias avec un modèle de chemin URL
+    insensible à la casse :</p>
 
     <example>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
     </example>
 
-    <p>Il existe une diff&eacute;rence subtile entre <directive
+    <p>Il existe une différence subtile entre <directive
     module="mod_alias">Alias</directive> et <directive
     module="mod_alias">AliasMatch</directive> : <directive
     module="mod_alias">Alias</directive> copie automatiquement toute
-    portion suppl&eacute;mentaire de l'URI situ&eacute;e apr&egrave;s la partie du mod&egrave;le qui
-    correspond, &agrave; la fin du chemin du fichier de la partie droite, alors
+    portion supplémentaire de l'URI située après la partie du modèle qui
+    correspond, à la fin du chemin du fichier de la partie droite, alors
     que <directive module="mod_alias">AliasMatch</directive> ne le fait
-    pas. Cela signifie qu'il sera pr&eacute;f&eacute;rable dans la plupart des cas de
-    comparer l'expression rationnelle du mod&egrave;le &agrave; la totalit&eacute; de l'URI
-    de la requ&ecirc;te, et d'utiliser les substitutions dans la partie
+    pas. Cela signifie qu'il sera préférable dans la plupart des cas de
+    comparer l'expression rationnelle du modèle à la totalité de l'URI
+    de la requête, et d'utiliser les substitutions dans la partie
     droite.</p>
 
     <p>En d'autres termes, le remplacement d'<directive
     module="mod_alias">Alias</directive> par <directive
-    module="mod_alias">AliasMatch</directive> ne produira pas le m&ecirc;me
-    r&eacute;sultat. Au minimum, vous devez ajouter <code>^</code> au d&eacute;but de
-    l'expression rationnelle, <code>(.*)$</code> &agrave; sa fin et
-    <code>$1</code> &agrave; la fin de la cha&icirc;ne de remplacement.</p>
+    module="mod_alias">AliasMatch</directive> ne produira pas le même
+    résultat. Au minimum, vous devez ajouter <code>^</code> au début de
+    l'expression rationnelle, <code>(.*)$</code> à sa fin et
+    <code>$1</code> à la fin de la chaîne de remplacement.</p>
 
     <p>Par exemple, supposons que nous voulions reformuler cet alias
     avec AliasMatch :</p>
@@ -233,14 +231,14 @@ en faisant intervenir les expressions rationnelles</description>
     </example>
 
     <p>Le simple remplacement d'Alias par AliasMatch ne produira pas le
-    m&ecirc;me r&eacute;sultat. Ainsi, ce qui suit va rediriger toutes les requ&ecirc;tes
+    même résultat. Ainsi, ce qui suit va rediriger toutes les requêtes
     qui contiennent /image/ vers /ftp/pub/image/ :</p>
 
     <example>
       AliasMatch /image/ /ftp/pub/image/
     </example>
 
-    <p>Voici la directive AliasMatch qui produira le m&ecirc;me r&eacute;sultat que
+    <p>Voici la directive AliasMatch qui produira le même résultat que
     la directive Alias ci-dessus :</p>
 
     <example>
@@ -248,12 +246,12 @@ en faisant intervenir les expressions rationnelles</description>
     </example>
 
     <p>Bien entendu, il n'y a aucune raison d'utiliser <directive
-    module="mod_alias">AliasMatch</directive> dans le cas o&ugrave; <directive
+    module="mod_alias">AliasMatch</directive> dans le cas où <directive
     module="mod_alias">Alias</directive> suffit. <directive
     module="mod_alias">AliasMatch</directive> vous permet d'effectuer
-    des choses beaucoup plus sophistiqu&eacute;es. Par exemple, vous pouvez
-    servir diff&eacute;rentes sortes de fichiers &agrave; partir de r&eacute;pertoires
-    diff&eacute;rents :</p>
+    des choses beaucoup plus sophistiquées. Par exemple, vous pouvez
+    servir différentes sortes de fichiers à partir de répertoires
+    différents :</p>
 
     <example>
       AliasMatch ^/image/(.*)\.jpg$ /fichiers/jpg.images/$1.jpg<br/>
@@ -266,7 +264,7 @@ en faisant intervenir les expressions rationnelles</description>
 <directivesynopsis>
 <name>Redirect</name>
 <description>Envoie une redirection externe demandant au client
-d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
+d'effectuer une autre requête avec une URL différente</description>
 <syntax>Redirect [<var>statut</var>] <var>chemin URL</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -275,58 +273,58 @@ d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
 
 <usage>
     <p>La directive Redirect permet de faire correspondre une ancienne
-    URL &agrave; une nouvelle en demandant au client d'aller chercher la ressource &agrave;
+    URL à une nouvelle en demandant au client d'aller chercher la ressource à
     une autre localisation.</p>
 
-    <p>L'ancien <em>chemin URL</em> est un chemin sensible &agrave; la casse
-    (d&eacute;cod&eacute; &agrave; l'aide de caract&egrave;res %) commen&ccedil;ant par un slash. Les
-    chemins relatifs ne sont pas autoris&eacute;s.</p>
+    <p>L'ancien <em>chemin URL</em> est un chemin sensible à la casse
+    (décodé à l'aide de caractères %) commençant par un slash. Les
+    chemins relatifs ne sont pas autorisés.</p>
 
     <p>La nouvelle <em>URL</em>
-    peut &ecirc;tre une URL absolue commen&ccedil;ant par un protocole et un nom
-    d'h&ocirc;te, mais on peut aussi utiliser un chemin URL commen&ccedil;ant par un
-    slash, auquel cas le protocole et le nom d'h&ocirc;te du serveur local
-    seront ajout&eacute;s.</p>
+    peut être une URL absolue commençant par un protocole et un nom
+    d'hôte, mais on peut aussi utiliser un chemin URL commençant par un
+    slash, auquel cas le protocole et le nom d'hôte du serveur local
+    seront ajoutés.</p>
 
-    <p>Ensuite, toute requ&ecirc;te commen&ccedil;ant par <em>chemin URL</em> va
+    <p>Ensuite, toute requête commençant par <em>chemin URL</em> va
     renvoyer une redirection au client vers l'<em>URL</em> cible. Tout
-    &eacute;l&eacute;ment de chemin suppl&eacute;mentaire situ&eacute; en aval du <em>chemin
-    URL</em> sera ajout&eacute; &agrave; l'URL cible.</p>
+    élément de chemin supplémentaire situé en aval du <em>chemin
+    URL</em> sera ajouté à l'URL cible.</p>
 
     <example><title>Exemple :</title>
-      # Redirige vers une URL sur un serveur diff&eacute;rent<br />
+      # Redirige vers une URL sur un serveur différent<br />
       Redirect /service http://foo2.example.com/service<br />
       <br />
-      # Redirige vers une URL sur le m&ecirc;me serveur<br />
+      # Redirige vers une URL sur le même serveur<br />
       Redirect /one /two
     </example>
 
-    <p>Si le client effectue une requ&ecirc;te pour l'URL
-    <code>http://example.com/service/foo.txt</code>, il lui sera demand&eacute;
+    <p>Si le client effectue une requête pour l'URL
+    <code>http://example.com/service/foo.txt</code>, il lui sera demandé
     d'en effectuer une autre pour l'URL
     <code>http://foo2.example.com/service/foo.txt</code>. Ceci concerne
-    les requ&ecirc;tes avec param&egrave;tres <code>GET</code>, comme
+    les requêtes avec paramètres <code>GET</code>, comme
     <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>, qui
-    seront redirig&eacute;es vers
+    seront redirigées vers
     <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
-    Notez que les <code>POST</code>s seront ignor&eacute;s.<br />
+    Notez que les <code>POST</code>s seront ignorés.<br />
     Seuls les
-    &eacute;l&eacute;ments de chemin complets sont test&eacute;s, si bien que l'exemple
-    pr&eacute;c&eacute;dent ne s'appliquera pas &agrave; l'URL
+    éléments de chemin complets sont testés, si bien que l'exemple
+    précédent ne s'appliquera pas à l'URL
     <code>http://example.com/servicefoo.txt</code>. Pour des mises en
     correspondance plus complexes faisant intervenir les expressions
-    rationnelles, veuillez vous reporter &agrave; la directive <directive
+    rationnelles, veuillez vous reporter à la directive <directive
     module="mod_alias">RedirectMatch</directive>.</p>
 
 
     <note><title>Note</title>
-    <p>Les directives de redirection ont priorit&eacute; sur les directives
+    <p>Les directives de redirection ont priorité sur les directives
     Alias et ScriptAlias, quel que soit leur ordre d'apparition dans le
     fichier de configuration.</p></note>
 
-    <p>Si aucun argument <var>statut</var> n'est sp&eacute;cifi&eacute;, la
+    <p>Si aucun argument <var>statut</var> n'est spécifié, la
     redirection sera temporaire (statut HTTP 302). Le client est alors
-    inform&eacute; que la ressource a &eacute;t&eacute; temporairement d&eacute;plac&eacute;e. On peut
+    informé que la ressource a été temporairement déplacée. On peut
     utiliser l'argument <var>statut</var> pour renvoyer d'autres codes
     de statut HTTP :</p>
 
@@ -334,30 +332,30 @@ d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
       <dt>permanent</dt>
 
       <dd>Renvoie un statut de redirection permanente (301), indiquant
-      que la ressource a &eacute;t&eacute; d&eacute;finitivement d&eacute;plac&eacute;e.</dd>
+      que la ressource a été définitivement déplacée.</dd>
 
       <dt>temp</dt>
 
       <dd>Renvoie un statut de redirection temporaire (302). C'est le
-      comportement par d&eacute;faut.</dd>
+      comportement par défaut.</dd>
 
       <dt>seeother</dt>
 
       <dd>Renvoie un statut "See Other" (303) indiquant que la ressource
-      a &eacute;t&eacute; remplac&eacute;e par une autre.</dd>
+      a été remplacée par une autre.</dd>
 
       <dt>gone</dt>
 
       <dd>Renvoie un statut "Gone" (410) indiquant que la ressource a
-      &eacute;t&eacute; d&eacute;finitivement supprim&eacute;e. Lorsque ce statut est d&eacute;fini, on ne
+      été définitivement supprimée. Lorsque ce statut est défini, on ne
       doit pas utiliser l'argument <var>URL</var>.</dd>
     </dl>
 
-    <p>On peut renvoyer d'autres codes de statut en sp&eacute;cifiant le code
-    de statut num&eacute;rique comme valeur de l'argument of <var>statut</var>.
+    <p>On peut renvoyer d'autres codes de statut en spécifiant le code
+    de statut numérique comme valeur de l'argument of <var>statut</var>.
     Si le code de statut est compris entre 300 et 399, l'argument
-    <var>URL</var> doit &ecirc;tre pr&eacute;sent, sinon il ne doit pas &ecirc;tre utilis&eacute;.
-    Notez que le statut doit &ecirc;tre connu du code d'Apache (voir la
+    <var>URL</var> doit être présent, sinon il ne doit pas être utilisé.
+    Notez que le statut doit être connu du code d'Apache (voir la
     fonction <code>send_error_response</code> dans
     http_protocol.c).</p>
 
@@ -381,29 +379,29 @@ courante</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Cette directive est identique &agrave; la directive <directive
+    <p>Cette directive est identique à la directive <directive
     module="mod_alias">Redirect</directive>, mais fait appel aux
-    <glossary ref="regex">expressions rationnelles</glossary>, &agrave; la
-    place d'une simple mise en correspondance de pr&eacute;fixe. L'expression
+    <glossary ref="regex">expressions rationnelles</glossary>, à la
+    place d'une simple mise en correspondance de préfixe. L'expression
     rationnelle fournie est mise en correspondance avec le chemin URL,
     et si elle correspond, le serveur va substituer toute partie de
-    chemin correspondante entre parenth&egrave;ses dans la cha&icirc;ne sp&eacute;cifi&eacute;e et
+    chemin correspondante entre parenthèses dans la chaîne spécifiée et
     l'utiliser comme nom de fichier. Par exemple, pour rediriger tous
-    les fichiers GIF vers les fichiers JPEG de m&ecirc;me nom sur un autre
+    les fichiers GIF vers les fichiers JPEG de même nom sur un autre
     serveur, on peut utiliser :</p>
 
     <example>
       RedirectMatch (.*)\.gif$ http://autre.example.com$1.jpg
     </example>
 
-    <p>Les remarques &agrave; propos de la diff&eacute;rence entre <directive
+    <p>Les remarques à propos de la différence entre <directive
     module="mod_alias">Alias</directive> et <directive
-    module="mod_alias">AliasMatch</directive> s'appliquent aussi &agrave; la
-    diff&eacute;rence entre les directives <directive
+    module="mod_alias">AliasMatch</directive> s'appliquent aussi à la
+    différence entre les directives <directive
     module="mod_alias">Redirect</directive> et <directive
     module="mod_alias">RedirectMatch</directive>. Voir la directive
     <directive module="mod_alias">AliasMatch</directive> pour plus de
-    d&eacute;tails.</p>
+    détails.</p>
 
 </usage>
 </directivesynopsis>
@@ -411,8 +409,8 @@ courante</description>
 <directivesynopsis>
 <name>RedirectTemp</name>
 <description>Envoie une redirection externe temporaire demandant au
-client d'effectuer une nouvelle requ&ecirc;te avec une URL
-diff&eacute;rente</description>
+client d'effectuer une nouvelle requête avec une URL
+différente</description>
 <syntax>RedirectTemp <var>chemin URL</var> <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -420,7 +418,7 @@ diff&eacute;rente</description>
 
 <usage>
     <p>Cette directive informe le client que la redirection n'est
-    que temporaire (statut 302). Son comportement est exactement le m&ecirc;me
+    que temporaire (statut 302). Son comportement est exactement le même
     que celui de <code>Redirect temp</code>.</p>
 </usage>
 </directivesynopsis>
@@ -428,8 +426,8 @@ diff&eacute;rente</description>
 <directivesynopsis>
 <name>RedirectPermanent</name>
 <description>Envoie une redirection externe permanente demandant au
-client d'effectuer une nouvelle requ&ecirc;te avec une URL
-diff&eacute;rente</description>
+client d'effectuer une nouvelle requête avec une URL
+différente</description>
 <syntax>RedirectPermanent <var>chemin URL</var> <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -437,40 +435,40 @@ diff&eacute;rente</description>
 
 <usage>
     <p>Cette directive informe le client que la redirection est
-    permanente (statut 301). Son comportement est exactement le m&ecirc;me
+    permanente (statut 301). Son comportement est exactement le même
     que celui de <code>Redirect permanent</code>.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptAlias</name>
-<description>Fait correspondre une URL &agrave; une zone du syst&egrave;me de fichiers
-et d&eacute;signe la cible comme script CGI</description>
+<description>Fait correspondre une URL à une zone du système de fichiers
+et désigne la cible comme script CGI</description>
 <syntax>ScriptAlias <var>chemin URL</var>
-<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></syntax>
+<var>chemin fichier</var>|<var>chemin répertoire</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>La directive <directive>ScriptAlias</directive> pr&eacute;sente le m&ecirc;me
+    <p>La directive <directive>ScriptAlias</directive> présente le même
     comportement que la directive <directive
-    module="mod_alias">Alias</directive>, mais d&eacute;signe en plus le
-    r&eacute;pertoire cible comme conteneur de scripts CGI qui seront trait&eacute;es
+    module="mod_alias">Alias</directive>, mais désigne en plus le
+    répertoire cible comme conteneur de scripts CGI qui seront traitées
     par le gestionnaire cgi-script du module <module>mod_cgi</module>.
-    Les URLs dont le chemin URL sensible &agrave; la casse (d&eacute;cod&eacute; avec
-    caract&egrave;res %) commence par <var>chemin URL</var> seront mises en
+    Les URLs dont le chemin URL sensible à la casse (décodé avec
+    caractères %) commence par <var>chemin URL</var> seront mises en
     correspondance avec les scripts dont le chemin commence par le
-    second argument, qui est un chemin complet dans le syst&egrave;me de
+    second argument, qui est un chemin complet dans le système de
     fichiers local.</p>
 
     <example><title>Exemple :</title>
       ScriptAlias /cgi-bin/ /web/cgi-bin/
     </example>
 
-    <p>Une requ&ecirc;te pour <code>http://mon-serveur/cgi-bin/foo</code>
-    ferait ex&eacute;cuter par le serveur le script
+    <p>Une requête pour <code>http://mon-serveur/cgi-bin/foo</code>
+    ferait exécuter par le serveur le script
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
-    &eacute;quivalente &agrave; :</p>
+    équivalente à :</p>
     <example>
       Alias /cgi-bin/ /web/cgi-bin/<br />
       &lt;Location /cgi-bin &gt;<br />
@@ -488,22 +486,22 @@ et d&eacute;signe la cible comme script CGI</description>
 	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl
     </example>
 
-    <p>Dans ce sc&eacute;nario, tous les fichiers faisant l'objet d'une requ&ecirc;te
-    dans <code>/cgi-bin/</code> seront trait&eacute;s par le fichier que vous
-    avez sp&eacute;cifi&eacute;, ce qui vous permet d'utiliser votre propre
+    <p>Dans ce scénario, tous les fichiers faisant l'objet d'une requête
+    dans <code>/cgi-bin/</code> seront traités par le fichier que vous
+    avez spécifié, ce qui vous permet d'utiliser votre propre
     gestionnaire. Vous pouvez l'utiliser comme enveloppe (wrapper) pour
     les scripts CGI afin d'ajouter du contenu, ou autre action "maison".</p>
 
-    <note type="warning">Il est pr&eacute;f&eacute;rable d'&eacute;viter de placer les
+    <note type="warning">Il est préférable d'éviter de placer les
     scripts CGI dans l'arborescence de <directive
-    module="core">DocumentRoot</directive> afin d'&eacute;viter de r&eacute;v&eacute;ler
+    module="core">DocumentRoot</directive> afin d'éviter de révéler
     accidentellement leur code source lors d'une modification de
-    configuration. On y parvient ais&eacute;ment avec
+    configuration. On y parvient aisément avec
     <directive>ScriptAlias</directive> en mettant en correspondance une
-    URL et en d&eacute;signant la cible comme scripts CGI par la m&ecirc;me occasion.
-    Si vous choisissez de placer vos scripts CGI dans un r&eacute;pertoire
+    URL et en désignant la cible comme scripts CGI par la même occasion.
+    Si vous choisissez de placer vos scripts CGI dans un répertoire
     accessible depuis le web, n'utilisez pas
-    <directive>ScriptAlias</directive>. Utilisez plut&ocirc;t <directive
+    <directive>ScriptAlias</directive>. Utilisez plutôt <directive
     module="core" type="section">Directory</directive>, <directive
     module="core">SetHandler</directive>, et <directive
     module="core">Options</directive> comme dans l'exemple suivant :
@@ -515,10 +513,10 @@ et d&eacute;signe la cible comme script CGI</description>
       </indent>
       &lt;/Directory&gt;
     </example>
-    Ceci est n&eacute;cessaire car plusieurs <var>chemins URL</var> peuvent
-    correspondre &agrave; la m&ecirc;me zone du syst&egrave;me de fichiers, court-circuitant
-    ainsi la directive <directive>ScriptAlias</directive> et r&eacute;v&eacute;lant le
-    code source des scripts CGI s'ils ne sont pas prot&eacute;g&eacute;s par une
+    Ceci est nécessaire car plusieurs <var>chemins URL</var> peuvent
+    correspondre à la même zone du système de fichiers, court-circuitant
+    ainsi la directive <directive>ScriptAlias</directive> et révélant le
+    code source des scripts CGI s'ils ne sont pas protégés par une
     section <directive module="core">Directory</directive>.</note>
 
 </usage>
@@ -527,23 +525,23 @@ et d&eacute;signe la cible comme script CGI</description>
 
 <directivesynopsis>
 <name>ScriptAliasMatch</name>
-<description>Fait correspondre une URL &agrave; une zone du syst&egrave;me de fichiers
-en faisant appel aux expressions rationnelles et en d&eacute;signant la cible
+<description>Fait correspondre une URL à une zone du système de fichiers
+en faisant appel aux expressions rationnelles et en désignant la cible
 comme un script CGI</description>
 <syntax>ScriptAliasMatch <var>regex</var>
-<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></syntax>
+<var>chemin fichier</var>|<var>chemin répertoire</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cette directive est &eacute;quivalente &agrave; la directive <directive
+    <p>Cette directive est équivalente à la directive <directive
     module="mod_alias">ScriptAlias</directive>, mais fait appel aux
-    <glossary ref="regex">expressions rationnelles</glossary>, &agrave; la
-    place d'une simple mise en correspondance de pr&eacute;fixe. L'expression
+    <glossary ref="regex">expressions rationnelles</glossary>, à la
+    place d'une simple mise en correspondance de préfixe. L'expression
     rationnelle fournie est mise en correspondance avec le chemin URL,
     et si elle correspond, le serveur va substituer toute partie de
-    chemin entre parenth&egrave;ses dans la cha&icirc;ne sp&eacute;cifi&eacute;e et l'utiliser
-    comme nom de fichier. Par exemple, pour activer le r&eacute;pertoire
+    chemin entre parenthèses dans la chaîne spécifiée et l'utiliser
+    comme nom de fichier. Par exemple, pour activer le répertoire
     standard <code>/cgi-bin</code>, on peut utiliser :</p>
 
     <example>
@@ -551,22 +549,22 @@ comme un script CGI</description>
     </example>
 
     <p>Comme dans le cas d'AliasMatch, toute la puissance des <glossary
-    ref="rexex">expressions rationnelles</glossary> peut &ecirc;tre mise &agrave;
+    ref="rexex">expressions rationnelles</glossary> peut être mise à
     contribution. Par exemple, il est possible de construire un alias
-    avec une comparaison du mod&egrave;le du chemin URL insensible &agrave; la casse :</p>
+    avec une comparaison du modèle du chemin URL insensible à la casse :</p>
 
     <example>
       ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </example>
 
-    <p>Les remarques &agrave; propos de la diff&eacute;rence entre <directive
+    <p>Les remarques à propos de la différence entre <directive
     module="mod_alias">Alias</directive> et <directive
-    module="mod_alias">AliasMatch</directive> s'appliquent aussi &agrave; la
-    diff&eacute;rence entre les directives <directive
+    module="mod_alias">AliasMatch</directive> s'appliquent aussi à la
+    différence entre les directives <directive
     module="mod_alias">ScriptAlias</directive> et <directive
     module="mod_alias">ScriptAliasMatch</directive>. Voir la directive
     <directive module="mod_alias">AliasMatch</directive> pour plus de
-    d&eacute;tails.</p>
+    détails.</p>
 
 </usage>
 </directivesynopsis>
