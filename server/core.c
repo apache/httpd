@@ -130,15 +130,12 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
 
-#ifdef RLIMIT_CPU
-    conf->limit_cpu = NULL;
-#endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-    conf->limit_mem = NULL;
-#endif
-#ifdef RLIMIT_NPROC
-    conf->limit_nproc = NULL;
-#endif
+    /*
+     * left as NULL (we use apr_pcalloc):
+     * conf->limit_cpu = NULL;
+     * conf->limit_mem = NULL;
+     * conf->limit_nproc = NULL;
+     */
 
     conf->limit_req_body = AP_LIMIT_REQ_BODY_UNSET;
     conf->limit_xml_body = AP_LIMIT_UNSET;
@@ -151,11 +148,12 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
 
     /* Overriding all negotiation
+     * Set NULL by apr_pcalloc:
+     * conf->mime_type = NULL;
+     * conf->handler = NULL;
+     * conf->output_filters = NULL;
+     * conf->input_filters = NULL;
      */
-    conf->mime_type = NULL;
-    conf->handler = NULL;
-    conf->output_filters = NULL;
-    conf->input_filters = NULL;
 
     /*
      * Flag for use of inodes in ETags.
