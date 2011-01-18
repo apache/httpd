@@ -31,7 +31,7 @@ use configuration section containers or <code>.htaccess</code> files
 to change the scope of other configuration directives.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#types">Types of Configuration Section Containers</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Filesystem and Webspace</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Filesystem, Webspace, and Boolean Expressions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Proxy</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">What Directives are Allowed?</a></li>
@@ -108,7 +108,7 @@ Also, these sections can be nested to achieve more complex
 restrictions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">Filesystem and Webspace</a></h2>
+<h2><a name="file-and-web" id="file-and-web">Filesystem, Webspace, and Boolean Expressions</a></h2>
 
 <p>The most commonly used configuration section containers are the
 ones that change the configuration of particular places in the
@@ -278,6 +278,20 @@ Deny from all<br />
 
 
 
+<h3><a name="expressions" id="expressions">Boolean expressions</a></h3>
+<p>The <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+directive change the configuration depending on a condition which can be
+expressed by a boolean expression. For example, the following configuration
+denies access if the HTTP Referer header does not start with
+"http://www.example.com/".</p>
+<div class="example"><p><code>
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
+Require all denied<br />
+&lt;/If&gt;
+</code></p></div>
+
+
+
 <h3><a name="whichwhen" id="whichwhen">What to use When</a></h3>
 
 <p>Choosing between filesystem containers and webspace containers is
@@ -320,6 +334,20 @@ containers when you can.  There is, however, one exception to this
 rule.  Putting configuration restrictions in a <code>&lt;Location
 /&gt;</code> section is perfectly safe because this section will apply
 to all requests regardless of the specific URL.</p>
+
+
+<h3><a name="nesting" id="nesting">Nesting of sections</a></h3>
+
+<p>Some section types can be nested inside other section types. One the one
+hand, <code class="directive"><a href="./mod/core.html#file">&lt;File&gt;</a></code> can be used
+inside <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>.  On
+the other hand, <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> can
+be used inside <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
+<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, and <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> sections. The regex
+counterparts of the named section behave identically.</p>
+
+<p>Nested sections are merged after non-nested sections of the same type.</p>
+
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -405,6 +433,10 @@ are interpreted, it is important to understand how this works.</p>
 
       <li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
       and <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> done simultaneously</li>
+
+      <li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+      </li>
+
     </ol>
 
     <p>Apart from <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, each group is processed in
