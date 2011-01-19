@@ -2255,3 +2255,27 @@ AP_DECLARE_NONSTD(apr_status_t) ap_pool_cleanup_set_null(void *data_)
     *ptr = NULL;
     return APR_SUCCESS;
 }
+
+AP_DECLARE(apr_status_t) ap_str2alnum(const char *src, char *dest) {
+    
+    for ( ; *src; src++, dest++)
+    {
+        if (!apr_isprint(*src))
+            *dest = 'x';
+        else if (!apr_isalnum(*src))
+            *dest = '_';
+        else
+            *dest = (char)*src;
+    }
+    *dest = '\0';
+    return APR_SUCCESS;
+    
+}
+
+AP_DECLARE(apr_status_t) ap_pstr2alnum(apr_pool_t *p, const char *src, char **dest)
+{
+    *dest = apr_palloc(p, strlen(src)+1);
+    if (!*dest)
+        return APR_ENOMEM;
+    return ap_str2alnum(src, *dest);
+}
