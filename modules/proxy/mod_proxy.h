@@ -59,7 +59,6 @@
 #include "http_connection.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
-#include "util_md5.h"
 #include "ap_provider.h"
 #include "ap_slotmem.h"
 

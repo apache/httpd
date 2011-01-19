@@ -1828,6 +1828,29 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
  */
 AP_DECLARE(int) ap_request_has_body(request_rec *r);
     
+/**
+ * Cleanup a string.
+ * We only allow alphanumeric chars. Non-printable
+ * map to 'x' and all others map to '_'
+ *
+ * @param  p pool to use to allocate dest
+ * @param  src string to clean up
+ * @param  dest cleaned up, allocated string
+ * @return Status value indicating whether the cleaning was successful or not.
+ */
+AP_DECLARE(apr_status_t) ap_pstr2alnum(apr_pool_t *p, const char *src, char **dest);
+
+/**
+ * Cleanup a string.
+ * We only allow alphanumeric chars. Non-printable
+ * map to 'x' and all others map to '_'
+ *
+ * @param  src string to clean up
+ * @param  dest cleaned up, pre-allocated string
+ * @return Status value indicating whether the cleaning was successful or not.
+ */
+AP_DECLARE(apr_status_t) ap_str2alnum(const char *src, char *dest);
+
 /* Misc system hackery */
 /**
  * Given the name of an object in the file system determine if it is a directory
