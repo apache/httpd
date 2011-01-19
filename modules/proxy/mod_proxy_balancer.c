@@ -736,7 +736,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             ap_slotmem_instance_t *new = NULL;
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
-            ap_pstr2alnum(pconf, balancer->name, &balancer->sname);
+            ap_pstr2_alnum(pconf, balancer->name, &balancer->sname);
 
             /* Create global mutex */
             rv = ap_global_mutex_create(&(balancer->mutex), NULL, balancer_mutex_type,

@@ -297,7 +297,7 @@
  * 20110117.0 (2.3.11-dev) Merge <If> sections in separate step (ap_if_walk).
  *                         Add core_dir_config->sec_if. Add ap_add_if_conf().
  *                         Add pool argument to ap_add_file_conf().
- * 20110117.1 (2.3.11-dev) Add ap_pstr2alnum() and ap_str2alnum()
+ * 20110117.1 (2.3.11-dev) Add ap_pstr2_alnum() and ap_str2_alnum()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
