@@ -206,6 +206,7 @@ typedef struct {
     int preserve_host_set:1;
     int error_override_set:1;
     int alias_set:1;
+    int add_forwarded_headers:1;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
