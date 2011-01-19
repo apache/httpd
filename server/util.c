@@ -2256,7 +2256,7 @@ AP_DECLARE_NONSTD(apr_status_t) ap_pool_cleanup_set_null(void *data_)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_status_t) ap_str2alnum(const char *src, char *dest) {
+AP_DECLARE(apr_status_t) ap_str2_alnum(const char *src, char *dest) {
     
     for ( ; *src; src++, dest++)
     {
@@ -2272,7 +2272,7 @@ AP_DECLARE(apr_status_t) ap_str2alnum(const char *src, char *dest) {
     
 }
 
-AP_DECLARE(apr_status_t) ap_pstr2alnum(apr_pool_t *p, const char *src, char **dest)
+AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src, char **dest)
 {
     *dest = apr_palloc(p, strlen(src)+1);
     if (!*dest)
