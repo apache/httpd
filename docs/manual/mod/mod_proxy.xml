@@ -1702,4 +1702,25 @@ header for proxied requests</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>ProxyAddHeaders</name>
+<description>Add proxy information in X-Forwarded-* headers</description>
+<syntax>ProxyAddHeaders Off|On</syntax>
+<default>ProxyAddHeaders On</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Available in version 2.3.10 and later</compatibility>
+
+<usage>
+    <p>This directive determines whether or not proxy related information should be passed to the
+    backend server through X-Forwarded-For, X-Forwarded-Host and X-Forwarded-Server HTTP headers.</p>
+    <note><title>Effectiveness</title>
+     <p>This option is of use only for HTTP proxying, as handled by <module>mod_proxy_http</module>.</p>
+    </note>
+
+
+</usage>
+</directivesynopsis>
 </modulesynopsis>

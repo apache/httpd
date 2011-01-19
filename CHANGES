@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_proxy_http: make adding of X-Forwarded-* headers configurable.
+     ProxyAddHeaders defaults to On. [Vincent Deffontaines]
+
   *) mod_slotmem_shm: Increase memory alignment for slotmem data.
      [Rainer Jung]
 

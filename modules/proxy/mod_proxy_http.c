@@ -851,29 +851,30 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * a forward proxy configuation instead of X-Forwarded-*. See the
      * ProxyVia option for details.
      */
+    if (dconf->add_forwarded_headers) {
+       if (PROXYREQ_REVERSE == r->proxyreq) {
+           const char *buf;
 
-    if (PROXYREQ_REVERSE == r->proxyreq) {
-        const char *buf;
+           /* Add X-Forwarded-For: so that the upstream has a chance to
+            * determine, where the original request came from.
+            */
+           apr_table_mergen(r->headers_in, "X-Forwarded-For",
+                            c->remote_ip);
 
-        /* Add X-Forwarded-For: so that the upstream has a chance to
-         * determine, where the original request came from.
-         */
-        apr_table_mergen(r->headers_in, "X-Forwarded-For",
-                         c->remote_ip);
+           /* Add X-Forwarded-Host: so that upstream knows what the
+            * original request hostname was.
+            */
+           if ((buf = apr_table_get(r->headers_in, "Host"))) {
+               apr_table_mergen(r->headers_in, "X-Forwarded-Host", buf);
+           }
 
-        /* Add X-Forwarded-Host: so that upstream knows what the
-         * original request hostname was.
-         */
-        if ((buf = apr_table_get(r->headers_in, "Host"))) {
-            apr_table_mergen(r->headers_in, "X-Forwarded-Host", buf);
-        }
-
-        /* Add X-Forwarded-Server: so that upstream knows what the
-         * name of this proxy server is (if there are more than one)
-         * XXX: This duplicates Via: - do we strictly need it?
-         */
-        apr_table_mergen(r->headers_in, "X-Forwarded-Server",
-                         r->server->server_hostname);
+           /* Add X-Forwarded-Server: so that upstream knows what the
+            * name of this proxy server is (if there are more than one)
+            * XXX: This duplicates Via: - do we strictly need it?
+            */
+           apr_table_mergen(r->headers_in, "X-Forwarded-Server",
+                            r->server->server_hostname);
+       }
     }
 
     proxy_run_fixups(r);

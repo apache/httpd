@@ -1246,6 +1246,7 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->interpolate_env = -1; /* unset */
     new->error_override = 0;
     new->error_override_set = 0;
+    new->add_forwarded_headers = 1;
 
     return (void *) new;
 }
@@ -1278,6 +1279,7 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->error_override_set = add->error_override_set || base->error_override_set;
     new->alias = (add->alias_set == 0) ? base->alias : add->alias;
     new->alias_set = add->alias_set || base->alias_set;
+    new->add_forwarded_headers = add->add_forwarded_headers;
     return new;
 }
 
@@ -1707,6 +1709,13 @@ static const char *
     conf->error_override = flag;
     conf->error_override_set = 1;
     return NULL;
+}
+static const char *
+   add_proxy_http_headers(cmd_parms *parms, void *dconf, int flag)
+{
+   proxy_dir_conf *conf = dconf;
+   conf->add_forwarded_headers = flag;
+   return NULL;
 }
 static const char *
     set_preserve_host(cmd_parms *parms, void *dconf, int flag)
@@ -2225,6 +2234,8 @@ static const command_rec proxy_cmds[] =
      "A balancer or worker name with list of params"),
     AP_INIT_TAKE1("ProxySourceAddress", set_source_address, NULL, RSRC_CONF,
      "Configure local source IP used for request forward"),
+    AP_INIT_FLAG("ProxyAddHeaders", add_proxy_http_headers, NULL, RSRC_CONF|ACCESS_CONF,
+     "on if X-Forwarded-* headers should be added or completed"),
     {NULL}
 };
 
