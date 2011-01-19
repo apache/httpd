@@ -2277,5 +2277,5 @@ AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src, char **d
     *dest = apr_palloc(p, strlen(src)+1);
     if (!*dest)
         return APR_ENOMEM;
-    return ap_str2alnum(src, *dest);
+    return ap_str2_alnum(src, *dest);
 }
