@@ -593,15 +593,33 @@ which no other media type configuration could be found.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define the existence of a variable</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Define <var>parameter-name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Define <var>parameter-name</var> [<var>parameter-value</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Equivalent to passing the <code>-D</code> argument to <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
-    <p>This directive can be used to toggle the use of <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sections without needing to alter
-    <code>-D</code> arguments in any startup scripts.</p>
+    <p>In its one parameter form, <code class="directive">Define</code> is equivalent
+    to passing the <code>-D</code> argument to <code class="program"><a href="../programs/httpd.html">httpd</a></code>. It
+    can be used to toggle the use of
+    <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sections
+    without needing to alter <code>-D</code> arguments in any startup
+    scripts.</p>
+
+    <p>In addition to that, if the second parameter is given, a config variable
+    is set to this value. The variable can be used in the configuration using
+    the <code>${VAR}</code> syntax. The variable is always globally defined
+    and not limited to the scope of the surrounding config section.</p>
+
+    <div class="example"><p><code>
+      &lt;IfDefine TEST&gt;<br />
+      &nbsp;&nbsp;Define servername test.example.com<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;IfDefine !TEST&gt;<br />
+      &nbsp;&nbsp;Define servername www.example.com<br />
+      &nbsp;&nbsp;Define SSL<br />
+      &lt;/IfDefine&gt;<br />
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

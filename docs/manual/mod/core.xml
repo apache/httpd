@@ -538,16 +538,33 @@ which no other media type configuration could be found.
 
 <directivesynopsis>
 <name>Define</name>
-<description>Define the existence of a variable</description>
-<syntax>Define <var>parameter-name</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<description>Define a variable</description>
+<syntax>Define <var>parameter-name</var> [<var>parameter-value</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
 
 <usage>
-    <p>Equivalent to passing the <code>-D</code> argument to <program
-    >httpd</program>.</p>
-    <p>This directive can be used to toggle the use of <directive module="core"
-    type="section">IfDefine</directive> sections without needing to alter
-    <code>-D</code> arguments in any startup scripts.</p>
+    <p>In its one parameter form, <directive>Define</directive> is equivalent
+    to passing the <code>-D</code> argument to <program>httpd</program>. It
+    can be used to toggle the use of
+    <directive module="core" type="section">IfDefine</directive> sections
+    without needing to alter <code>-D</code> arguments in any startup
+    scripts.</p>
+
+    <p>In addition to that, if the second parameter is given, a config variable
+    is set to this value. The variable can be used in the configuration using
+    the <code>${VAR}</code> syntax. The variable is always globally defined
+    and not limited to the scope of the surrounding config section.</p>
+
+    <example>
+      &lt;IfDefine TEST&gt;<br/>
+      &nbsp;&nbsp;Define servername test.example.com<br/>
+      &lt;/IfDefine&gt;<br/>
+      &lt;IfDefine !TEST&gt;<br/>
+      &nbsp;&nbsp;Define servername www.example.com<br/>
+      &nbsp;&nbsp;Define SSL<br/>
+      &lt;/IfDefine&gt;<br/>
+    </example>
 </usage>
 </directivesynopsis>
 
