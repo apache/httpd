@@ -565,12 +565,6 @@
   <section id="moreinfo">
     <title>For more information</title>
 
-    <p>There are a large number of CGI resources on the web. 
-    The list from the HTML Writers Guild is a great source of answers
-    to your questions. You can find out more at 
-    <a href="http://www.hwg.org/lists/hwg-servers/"
-    >http://www.hwg.org/lists/hwg-servers/</a>.</p>
-
     <p>The current CGI specification is available in the 
     <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
     Interface RFC</a>.</p>
