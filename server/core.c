@@ -108,6 +108,7 @@ AP_DECLARE_DATA int ap_document_root_check = 1;
 static char errordocument_default;
 
 static apr_array_header_t *saved_server_config_defines = NULL;
+static apr_table_t *server_config_defined_vars = NULL;
 
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
@@ -1087,12 +1088,6 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-/* Check a string for any ${ENV} environment variable
- * construct and replace each them by the value of
- * that environment variable, if it exists. If the
- * environment value does not exist, leave the ${ENV}
- * construct alone; it means something else.
- */
 AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 {
 # define SMALL_EXPANSION 5
@@ -1134,13 +1129,22 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 
         if (*s == '$') {
             if (s[1] == '{' && (e = ap_strchr_c(s, '}'))) {
-                word = getenv(apr_pstrndup(p, s+2, e-s-2));
+                char *name = apr_pstrndup(p, s+2, e-s-2);
+                word = NULL;
+                if (server_config_defined_vars)
+                    word = apr_table_get(server_config_defined_vars, name);
+                if (!word)
+                    word = getenv(name);
                 if (word) {
                     current->string = word;
                     current->len = strlen(word);
                     outlen += current->len;
                 }
                 else {
+                    if (ap_strchr(name, ':') == 0)
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+                                     "Config variable ${%s} is not defined",
+                                     name);
                     current->string = s;
                     current->len = e - s + 1;
                     outlen += current->len;
@@ -1179,43 +1183,67 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 static int reset_config_defines(void *dummy)
 {
     ap_server_config_defines = saved_server_config_defines;
+    server_config_defined_vars = NULL;
     return OK;
 }
 
+/*
+ * Make sure we can revert the effects of Define/UnDefine when restarting.
+ * This function must be called once per loading of the config, before
+ * ap_server_config_defines is changed. This may be during reading of the
+ * config, which is even before the pre_config hook is run (due to
+ * EXEC_ON_READ for Define/UnDefine).
+ */
+static void init_config_defines(apr_pool_t *pconf)
+{
+    saved_server_config_defines = ap_server_config_defines;
+    /* Use apr_array_copy instead of apr_array_copy_hdr because it does not
+     * protect from the way unset_define removes entries.
+     */
+    ap_server_config_defines = apr_array_copy(pconf, ap_server_config_defines);
+}
 
 static const char *set_define(cmd_parms *cmd, void *dummy,
-                              const char *optarg)
+                              const char *name, const char *value)
 {
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
+    if (ap_strchr_c(name, ':') != NULL)
+        return "Variable name must not contain ':'";
 
-    if (!ap_exists_config_define(optarg)) {
+    if (!saved_server_config_defines)
+        init_config_defines(cmd->pool);
+    if (!ap_exists_config_define(name)) {
         char **newv = (char **)apr_array_push(ap_server_config_defines);
-        *newv = apr_pstrdup(cmd->pool, optarg);
+        *newv = apr_pstrdup(cmd->pool, name);
+    }
+    if (value) {
+        if (!server_config_defined_vars)
+            server_config_defined_vars = apr_table_make(cmd->pool, 5);
+        apr_table_setn(server_config_defined_vars, name, value);
     }
 
     return NULL;
 }
 
 static const char *unset_define(cmd_parms *cmd, void *dummy,
-                                const char *optarg)
+                                const char *name)
 {
     int i;
     char **defines;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
+    if (ap_strchr_c(name, ':') != NULL)
+        return "Variable name must not contain ':'";
+
+    if (!saved_server_config_defines)
+        init_config_defines(cmd->pool);
 
     defines = (char **)ap_server_config_defines->elts;
     for (i = 0; i < ap_server_config_defines->nelts; i++) {
-        if (strcmp(defines[i], optarg) == 0) {
+        if (strcmp(defines[i], name) == 0) {
             defines[i] = apr_array_pop(ap_server_config_defines);
             break;
         }
     }
+
+    apr_table_unset(server_config_defined_vars, name);
 
     return NULL;
 }
@@ -3601,9 +3629,9 @@ AP_INIT_TAKE1("AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO,
   "The name of the default charset to add to any Content-Type without one or 'Off' to disable"),
 AP_INIT_TAKE1("AcceptPathInfo", set_accept_path_info, NULL, OR_FILEINFO,
   "Set to on or off for PATH_INFO to be accepted by handlers, or default for the per-handler preference"),
-AP_INIT_TAKE1("Define", set_define, NULL, RSRC_CONF,
-              "Define the existence of a variable.  Same as passing -D to the command line."),
-AP_INIT_TAKE1("UnDefine", unset_define, NULL, RSRC_CONF,
+AP_INIT_TAKE12("Define", set_define, NULL, EXEC_ON_READ|ACCESS_CONF|RSRC_CONF,
+              "Define a variable, optionally to a value.  Same as passing -D to the command line."),
+AP_INIT_TAKE1("UnDefine", unset_define, NULL, EXEC_ON_READ|ACCESS_CONF|RSRC_CONF,
               "Undefine the existence of a variable. Undo a Define."),
 AP_INIT_RAW_ARGS("Error", generate_error, NULL, OR_ALL,
                  "Generate error message from within configuration"),
@@ -4097,13 +4125,8 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 {
     ap_mutex_init(pconf);
 
-    /*
-     * Make sure we revert the effects of Define/UnDefine when restarting.
-     * We cannot use apr_array_copy_hdr because it does not protect from the
-     * way unset_define removes entries.
-     */
-    saved_server_config_defines = ap_server_config_defines;
-    ap_server_config_defines = apr_array_copy(pconf, ap_server_config_defines);
+    if (!saved_server_config_defines)
+        init_config_defines(pconf);
     apr_pool_cleanup_register(pconf, NULL, reset_config_defines,
                               apr_pool_cleanup_null);
 

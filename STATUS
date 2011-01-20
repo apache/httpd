@@ -133,8 +133,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
   * Sort out modules selections for most/all/reallyall. Maybe rename
     all -> most, reallyall -> all, and remove the old 'most'.
 
-  * Add mod_define.
-
   * Patches submitted to the bug database:
     http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
 
