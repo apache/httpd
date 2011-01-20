@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) core: Add support to set variables with the 'Define' directive. The
+     variables that can then be used in the config using the ${VAR} syntax
+     known from envvar interpolation. [Stefan Fritsch]
+
   *) mod_proxy_http: make adding of X-Forwarded-* headers configurable.
      ProxyAddHeaders defaults to On. [Vincent Deffontaines]
 

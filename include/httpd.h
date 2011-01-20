@@ -1396,10 +1396,11 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line);
 AP_DECLARE(char *) ap_getword_conf_nc(apr_pool_t *p, char **line);
 
 /**
- * Check a string for any ${ENV} environment variable construct and replace 
- * each them by the value of that environment variable, if it exists. If the 
- * environment value does not exist, leave the ${ENV} construct alone; it 
- * means something else.
+ * Check a string for any config define or environment variable construct
+ * and replace each of them by the value of that variable, if it exists.
+ * The default syntax of the constructs is ${ENV} but can be changed by
+ * setting the define::* config defines. If the variable does not exist,
+ * leave the ${ENV} construct alone but print a warning.
  * @param p The pool to allocate from
  * @param word The string to check
  * @return The string with the replaced environment variables
