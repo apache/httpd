@@ -755,7 +755,7 @@ static int find_ct(request_rec *r)
     mime_dir_config *conf;
     apr_array_header_t *exception_list;
     char *ext;
-    const char *fn, *type, *charset = NULL, *resource_name;
+    const char *fn, *fntmp, *type, *charset = NULL, *resource_name;
     int found_metadata = 0;
 
     if (r->finfo.filetype == APR_DIR) {
@@ -788,12 +788,27 @@ static int find_ct(request_rec *r)
         ++fn;
     }
 
+
     /* The exception list keeps track of those filename components that
      * are not associated with extensions indicating metadata.
      * The base name is always the first exception (i.e., "txt.html" has
      * a basename of "txt" even though it might look like an extension).
+     * Leading dots are considered to be part of the base name (a file named
+     * ".png" is likely not a png file but just a hidden file called png).
      */
-    ext = ap_getword(r->pool, &fn, '.');
+    fntmp = fn;
+    while (*fntmp == '.')
+        fntmp++;
+    fntmp = ap_strchr_c(fntmp, '.');
+    if (fntmp) {
+        ext = apr_pstrmemdup(r->pool, fn, fntmp - fn);
+        fn = fntmp + 1;
+    }
+    else {
+        ext = apr_pstrdup(r->pool, fn);
+        fn += strlen(fn);
+    }
+
     *((const char **)apr_array_push(exception_list)) = ext;
 
     /* Parse filename extensions which can be in any order
