@@ -130,7 +130,8 @@
       space available. After installation the server occupies
       approximately 10 MB of disk space. The actual disk space
       requirements will vary considerably based on your chosen
-      configuration options and any third-party modules.</dd>
+      configuration options, any third-party modules, and, of course,
+      the size of the web site or sites that you have on the server.</dd>
 
       <dt>ANSI-C Compiler and Build System</dt>
       <dd>Make sure you have an ANSI-C compiler installed. The <a href="http://gcc.gnu.org/">GNU C
