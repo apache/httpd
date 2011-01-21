@@ -2183,10 +2183,12 @@ AP_DECLARE(apr_status_t) ap_str2_alnum(const char *src, char *dest) {
     
 }
 
-AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src, char **dest)
+AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src,
+                                        const char **dest)
 {
-    *dest = apr_palloc(p, strlen(src)+1);
-    if (!*dest)
+    char *new = apr_palloc(p, strlen(src)+1);
+    if (!new)
         return APR_ENOMEM;
-    return ap_str2_alnum(src, *dest);
+    *dest = new;
+    return ap_str2_alnum(src, new);
 }

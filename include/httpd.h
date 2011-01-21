@@ -1839,7 +1839,8 @@ AP_DECLARE(int) ap_request_has_body(request_rec *r);
  * @param  dest cleaned up, allocated string
  * @return Status value indicating whether the cleaning was successful or not.
  */
-AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src, char **dest);
+AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src,
+                                        const char **dest);
 
 /**
  * Cleanup a string (mainly to be filesystem safe)
