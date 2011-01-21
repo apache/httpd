@@ -1243,7 +1243,9 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
         }
     }
 
-    apr_table_unset(server_config_defined_vars, name);
+    if (server_config_defined_vars) {
+        apr_table_unset(server_config_defined_vars, name);
+    }
 
     return NULL;
 }
