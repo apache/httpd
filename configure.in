@@ -529,7 +529,7 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
 [
   APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
   if test "$GCC" = "yes"; then
-    APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations])
+    APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
     AC_CACHE_CHECK([whether gcc accepts -Wdeclaration-after-statement], [ap_cv_cc_Wdas], [
       save_CFLAGS=$CFLAGS
       CFLAGS="$CFLAGS -Wdeclaration-after-statement"
