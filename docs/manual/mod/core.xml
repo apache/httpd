@@ -565,6 +565,9 @@ which no other media type configuration could be found.
       &nbsp;&nbsp;Define SSL<br/>
       &lt;/IfDefine&gt;<br/>
     </example>
+
+    <p>Variable names may not contain colon ":" characters, to avoid clashes
+    with <directive module="mod_rewrite">RewriteMap</directive>'s syntax.</p>
 </usage>
 </directivesynopsis>
 
