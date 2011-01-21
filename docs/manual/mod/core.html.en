@@ -621,6 +621,9 @@ which no other media type configuration could be found.
       &lt;/IfDefine&gt;<br />
     </code></p></div>
 
+    <p>Variable names may not contain colon ":" characters, to avoid clashes
+    with <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>'s syntax.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2>
