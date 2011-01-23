@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!--English Revision : 965792 -->
+<!--English Revision : 1061758 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -85,26 +85,33 @@ le Serveur HTTP Apache.</p>
     sont ignor&eacute;s; vous pouvez par cons&eacute;quent indenter les directives
     afin d'am&eacute;liorer la lisibilit&eacute;.</p>
 
-    <p>On peut utiliser les variables d'environnement du shell dans les
-    lignes du fichier de configuration en utilisant la syntaxe
-    <code>${ENVVAR}</code>. Si "ENVVAR" est le nom d'une variable
-    d'environnement valide, sa valeur remplace l'expression
-    <code>${ENVVAR}</code> dans la ligne du fichier de configuration, et
-    le traitement continue comme si cette valeur avait &eacute;t&eacute; inscrite
-    directement dans le fichier de configuration. Si la variable ENVVAR
-    n'est pas trouv&eacute;e, l'expression "${ENVVAR}" est conserv&eacute;e tel quel
-    pour une utilisation ult&eacute;rieure dans le traitement du fichier de
-    configuration.</p>
+    <p>Les valeurs des variables d'environnement ou des variables
+    d&eacute;finies via la directive <directive
+    module="core">Define</directive> peuvent &ecirc;tre utilis&eacute;es dans le
+    fichier de configuration en utilisant la syntaxe
+    <code>${VAR}</code>. Si "VAR" est le nom d'une variable valide, la
+    valeur de la variable est alors substitu&eacute;e &agrave; la cha&icirc;ne
+    <code>${VAR}</code>, et le processus de lecture du fichier de
+    configuration continue comme si la cha&icirc;ne correspondant &agrave; la valeur
+    de la variable s'y &eacute;tait trouv&eacute;e litt&eacute;ralement. Les variables d&eacute;finies
+    via la directive <directive module="core">Define</directive>
+    l'emportent sur les autres variables d'environnement du shell. Si la
+    variable "VAR" n'est pas trouv&eacute;e, la cha&icirc;ne <code>${VAR}</code>
+    n'est pas modifi&eacute;e, et un avertissement est enregistr&eacute; dans le
+    journal. Le caract&egrave;re ":" est interdit dans les noms de variables
+    afin d'&eacute;viter tout conflit avec la syntaxe de la directive <directive
+    module="mod_rewrite">RewriteMap</directive>.</p>
 
-    <p>Seules les variables d'environnement d&eacute;finies avant le d&eacute;marrage
-    du serveur peuvent &ecirc;tre utilis&eacute;es dans les extensions. Les variables
+    <p>Seules les variables d'environnement du shell d&eacute;finies avant le d&eacute;marrage
+    du serveur peuvent &ecirc;tre utilis&eacute;es dans les extensions.
+    Les variables d'environnement
     d&eacute;finies dans le fichier de configuration lui-m&ecirc;me, par exemple avec <directive
     module="mod_env">SetEnv</directive>, prennent effet trop tard pour
     pouvoir &ecirc;tre utilis&eacute;es dans les extensions au sein du fichier de
     configuration.</p>
 
     <p>La longueur maximale d'une ligne du fichier de configuration,
-    apr&egrave;s substitution des variables d'environnement, reconstitution des
+    apr&egrave;s substitution des variables, reconstitution des
     lignes fragment&eacute;es et suppression des espaces de d&eacute;but et de fin,
     est de 8192 caract&egrave;res.</p>
 
@@ -143,15 +150,10 @@ le Serveur HTTP Apache.</p>
     Les directives de configuration peuvent &ecirc;tre incluses de mani&egrave;re
     conditionnelle selon la pr&eacute;sence ou l'absence d'un module particulier
     en les pla&ccedil;ant dans un bloc <directive
-    module="core" type="section">IfModule</directive>. Les blocs
-    <directive type="section">IfModule</directive> ne sont cependant pas
-    n&eacute;cessaires et peuvent m&ecirc;me dans certains cas masquer l'absence d'un
-    module important.</p>
+    module="core" type="section">IfModule</directive>.</p>
 
     <p>Pour voir quels modules ont &eacute;t&eacute; compil&eacute;s avec le serveur,
-    vous pouvez utiliser l'option de ligne de commande <code>-l</code>.
-    En outre, l'option de ligne de commande <code>-M</code> permet de
-    voir quels modules sont charg&eacute;s dynamiquement.</p>
+    vous pouvez utiliser l'option de ligne de commande <code>-l</code>.</p>
   </section>
 
   <section id="scope">
