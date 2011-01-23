@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1042459 -->
+<!-- English Revision : 1059584 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -353,8 +353,9 @@ nom</description>
     <p>Cette directive permet de d&eacute;terminer l'ic&ocirc;ne &agrave; afficher &agrave; c&ocirc;t&eacute;
     d'un fichier dont le nom se termine par <var>nom</var>, dans le cas
     d'un affichage <code><a href="#indexoptions.fancyindexing"
-    >FancyIndexing</a></code>. <var>ic&ocirc;ne</var> est soit une URL relative
-    (&eacute;chapp&eacute;e par des caract&egrave;res '%') vers l'ic&ocirc;ne, soit de la forme
+    >FancyIndexing</a></code>. <var>ic&ocirc;ne</var> est une URL relative
+    (&eacute;chapp&eacute;e par des caract&egrave;res '%') vers
+    l'ic&ocirc;ne, une URL distante pleinement qualifi&eacute;e, ou de la forme
     <code>(<var>alttext</var>,<var>url</var>)</code>, o&ugrave;
     <var>alttext</var> est le symbole texte correspondant &agrave; l'ic&ocirc;ne &agrave;
     afficher dans les navigateurs en mode texte.</p>
@@ -364,6 +365,10 @@ nom</description>
     (pour personnaliser la pr&eacute;sentation du listing), une extension de
     fichier, une expression avec caract&egrave;res g&eacute;n&eacute;riques, un nom de
     fichier partiel ou un nom de fichier complet.</p>
+
+    <p><code>^^BLANKICON^^</code> n'est utilis&eacute; que pour le formatage,
+    et n'est donc pas n&eacute;cessaire si vous utilisez <code>IndexOptions
+    HTMLTable</code>.</p>
 
     <example><title>Exemples</title>
       AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
@@ -392,8 +397,9 @@ codage MIME</description>
     <p>Cette directive permet de d&eacute;terminer l'ic&ocirc;ne &agrave; afficher &agrave; c&ocirc;t&eacute;
     d'un fichier dans le cas d'un affichage <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
-    <var>ic&ocirc;ne</var> est soit une URL relative
-    (&eacute;chapp&eacute;e par des caract&egrave;res '%') vers l'ic&ocirc;ne, soit de la forme
+    <var>ic&ocirc;ne</var> est une URL relative
+    (&eacute;chapp&eacute;e par des caract&egrave;res '%') vers
+    l'ic&ocirc;ne, une URL pleinement qualifi&eacute;e, ou de la forme
     <code>(<var>alttext</var>,<var>url</var>)</code>, o&ugrave;
     <var>alttext</var> est le symbole texte correspondant &agrave; l'ic&ocirc;ne &agrave;
     afficher dans les navigateurs en mode texte.</p>
@@ -423,8 +429,9 @@ type MIME</description>
     d'un fichier de type MIME <var>type MIME</var> dans le cas d'un
     affichage <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
-    <var>ic&ocirc;ne</var> est soit une URL relative
-    (&eacute;chapp&eacute;e par des caract&egrave;res '%') vers l'ic&ocirc;ne, soit de la forme
+    <var>ic&ocirc;ne</var> est une URL relative
+    (&eacute;chapp&eacute;e par des caract&egrave;res '%') vers
+    l'ic&ocirc;ne, une URL pleinement qualifi&eacute;e, ou de la forme
     <code>(<var>alttext</var>,<var>url</var>)</code>, o&ugrave;
     <var>alttext</var> est le symbole texte correspondant &agrave; l'ic&ocirc;ne &agrave;
     afficher dans les navigateurs en mode texte.</p>
@@ -454,7 +461,7 @@ n'est pr&eacute;cis&eacute;</description>
     n'a &eacute;t&eacute; pr&eacute;cis&eacute;, dans le cas d'un affichage <code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>chemin URL</var> est une URL relative (&eacute;chapp&eacute;e par des
-    caract&egrave;res '%') vers l'ic&ocirc;ne.</p>
+    caract&egrave;res '%') vers l'ic&ocirc;ne ou une URL pleinement qualifi&eacute;e.</p>
 
     <example><title>Exemple</title>
       DefaultIcon /icon/unknown.png
@@ -533,6 +540,7 @@ contenant l'index</description>
 <description>Ajouts &agrave; la liste des fichiers &agrave; cacher lors de l'affichage
 de l'index d'un r&eacute;pertoire</description>
 <syntax>IndexIgnore <var>fichier</var> [<var>fichier</var>] ...</syntax>
+<default>IndexIgnore "."</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -549,7 +557,7 @@ de l'index d'un r&eacute;pertoire</description>
     courant).</p>
 
     <example>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </example>
 </usage>
 </directivesynopsis>
@@ -593,6 +601,7 @@ contenu d'un r&eacute;pertoire</description>
 r&eacute;pertoire</description>
 <syntax>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</syntax>
+<default>Par d&eacute;faut, aucune option n'est activ&eacute;e.</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -1051,13 +1060,15 @@ Name|Date|Size|Description</syntax>
     d'identifier la cl&eacute; primaire. La cl&eacute; secondaire est
     <em>toujours</em> le nom du fichier selon un ordre croissant.</p>
 
-    <p>Vous pouvez forcer l'affichage de l'index d'un r&eacute;pertoire selon
-    un certain ordre en utilisant la directive
-    <directive>IndexOrderDefault</directive> conjointement avec l'option
-    d'index <code><a href="#indexoptions.suppresscolumnsorting"
-    >SuppressColumnSorting</a></code> ; ceci aura pour effet d'ignorer
-    les demandes d'affichage de l'index du r&eacute;pertoire par le client
-    selon un ordre diff&eacute;rent.</p>
+    <p>Si vous le d&eacute;sirez, vous pouvez emp&ecirc;cher le client de modifier
+    l'ordre de tri de la liste en ajoutant l'option d'index  <code><a
+    href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
+    qui supprime le lien de d&eacute;finition du tri de l'en-t&ecirc;te de la
+    colonne, ainsi que l'option <code><a
+    href="#indexoptions.ignoreclient">IgnoreClient</a></code> qui
+    emp&ecirc;che ce m&ecirc;me client de passer outre vos pr&eacute;f&eacute;rences de tri en
+    ajoutant manuellement des options de tri &agrave; la cha&icirc;ne de param&egrave;tres
+    de la requ&ecirc;te.</p>
 </usage>
 </directivesynopsis>
 

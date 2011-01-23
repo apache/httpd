@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1053375 -->
+<!-- English Revision : 1061758 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -588,17 +588,38 @@ DESACTIV&Eacute;S &agrave; partir des version 2.3.x.</compatibility>
 
 <directivesynopsis>
 <name>Define</name>
-<description>Permet de d&eacute;finir l'existence d'une variable</description>
-<syntax>Define <var>nom variable</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<description>Permet de d&eacute;finir une variable</description>
+<syntax>Define <var>nom-param&egrave;tre</var> [<var>valeur-param&egrave;tre</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
 
 <usage>
-    <p>Cette directive produit le m&ecirc;me effet que l'argument
-    <code>-D</code> du programme <program>httpd</program>.</p>
-    <p>Elle permet de faire basculer le fonctionnement de sections
-    <directive module="core" type="section">IfDefine</directive> sans
-    avoir &agrave; modifier les arguments de l'option <code>-D</code> dans
-    aucun script de d&eacute;marrage.</p>
+    <p>Avec un seul param&egrave;tre, l'effet de la directive
+    <directive>Define</directive> est identique &agrave; celui de l'argument
+    <code>-D</code> du programme <program>httpd</program>. Il permet de
+    modifier le comportement des sections <directive module="core"
+    type="section">IfDefine</directive> sans avoir &agrave; ajouter d'argument
+    <code>-D</code> au sein des scripts de d&eacute;marrage.</p>
+
+    <p>De plus, le second param&egrave;tre permet d'affecter une valeur &agrave; la
+    variable d&eacute;finie par le premier. Cette variable peut &ecirc;tre r&eacute;f&eacute;renc&eacute;e
+    dans le fichier de configuration via la syntaxe <code>${VAR}</code>.
+    La port&eacute;e de la variable est toujours globale, et n'est jamais
+    limit&eacute;e &agrave; la section de configuration courante.</p>
+
+    <example>
+      &lt;IfDefine TEST&gt;<br/>
+      &nbsp;&nbsp;Define servername test.example.com<br/>
+      &lt;/IfDefine&gt;<br/>
+      &lt;IfDefine !TEST&gt;<br/>
+      &nbsp;&nbsp;Define servername www.example.com<br/>
+      &nbsp;&nbsp;Define SSL<br/>
+      &lt;/IfDefine&gt;<br/>
+    </example>
+
+    <p>Le caract&egrave;re ":" est interdit dans les noms de variables afin
+    d'&eacute;viter les conflits avec la syntaxe de la directive <directive
+    module="mod_rewrite">RewriteMap</directive>.</p>
 </usage>
 </directivesynopsis>
 
@@ -941,7 +962,7 @@ sup&eacute;rieures. Par d&eacute;faut &agrave; Off depuis la version 2.3.9.</com
     <li>Sous Linux, l'utilisation de sendfile induit des bogues lors de
     la r&eacute;cup&eacute;ration des paquets de v&eacute;rification TCP (TCP-checksum) avec
     certaines cartes r&eacute;seau lorsqu'on utilise IPv6.</li>
-    <li>Sous Linux sur Itanium, sendfile peut s'av&eacute;rer incapable de
+    <li>Sous Linux sur Itanium, <code>sendfile</code> peut s'av&eacute;rer incapable de
     traiter les fichiers de plus de 2 Go.</li>
     <li>Avec un montage r&eacute;seau de <directive
     module="core">DocumentRoot</directive> (par exemple NFS, SMB, CIFS,
@@ -4005,10 +4026,12 @@ host</context>
     <p>Vous pouvez &eacute;craser la d&eacute;finition ant&eacute;rieure d'une directive
     <directive>SetHandler</directive> en utilisant la valeur
     <code>None</code>.</p>
-    <p><strong>Note :</strong> comme SetHandler l'emporte sur la
+
+    <note><title>Note</title>
+    <p>Comme <directive>SetHandler</directive> l'emporte sur la
     d&eacute;finition des gestionnaires par d&eacute;faut, le comportement habituel
     consistant &agrave; traiter les URLs se terminant par un slash (/) comme
-    des r&eacute;pertoires ou des fichiers index est d&eacute;sactiv&eacute;.</p>
+    des r&eacute;pertoires ou des fichiers index est d&eacute;sactiv&eacute;.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
@@ -4240,8 +4263,8 @@ host</context>
 
 <directivesynopsis>
 <name>UseCanonicalPhysicalPort</name>
-<description>D&eacute;finit la mani&egrave;re dont le serveur d&eacute;termine son propre nom
-et son port</description>
+<description>D&eacute;finit la mani&egrave;re dont le serveur
+d&eacute;termine son propre port</description>
 <syntax>UseCanonicalPhysicalPort On|Off</syntax>
 <default>UseCanonicalPhysicalPort Off</default>
 <contextlist><context>server config</context><context>virtual
@@ -4262,21 +4285,27 @@ host</context>
     valide.</p>
 
     <note><title>Note</title>
-    <p>L'ordre dans lequel s'effectue la recherche du port est le
-    suivant :<br /><br />
-     <code>UseCanonicalName On</code></p>
-     <ul>
-      <li>Port sp&eacute;cifi&eacute; par <code>Servername</code></li>
+    <p>L'ordre dans lequel s'effectue la recherche quand on utilise le
+    port physique est le suivant :</p>
+     <dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
+      <li>Port indiqu&eacute; dans <directive module="core">Servername</directive></li>
       <li>Port physique</li>
       <li>Port par d&eacute;faut</li>
-     </ul>
-     <code>UseCanonicalName Off | DNS</code>
-     <ul>
+     </ol>
+     </dd>
+     <dt><code>UseCanonicalName Off | DNS</code></dt>
+     <dd>
+     <ol>
       <li>Port sp&eacute;cifi&eacute; dans l'en-t&ecirc;te <code>Host:</code></li>
       <li>Port physique</li>
-      <li>Port sp&eacute;cifi&eacute; par <code>Servername</code></li>
+      <li>Port sp&eacute;cifi&eacute; par <directive module="core">Servername</directive></li>
       <li>Port par d&eacute;faut</li>
-     </ul>
+     </ol>
+     </dd>
+     </dl>
 
     <p>Avec <code>UseCanonicalPhysicalPort Off</code>, on reprend
     l'ordre ci-dessus en supprimant "Port physique".</p>

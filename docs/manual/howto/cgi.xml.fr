@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1053353 -->
+<!-- English Revision : 1061423 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -612,12 +612,6 @@
 
   <section id="moreinfo">
     <title>Pour plus d'informations</title>
-
-    <p>Il existe un grand nombre de ressources CGI sur le web. Vous
-    trouverez de nombreuses r&eacute;ponses &agrave; vos questions dans la liste HTML
-    Writers Guild &agrave; l'adresse <a
-    href="http://www.hwg.org/lists/hwg-servers/">
-    http://www.hwg.org/lists/hwg-servers/</a>.</p>
 
     <p>La sp&eacute;cification CGI actuelle est disponible dans la <a
     href="http://www.ietf.org/rfc/rfc3875">Common Gateway

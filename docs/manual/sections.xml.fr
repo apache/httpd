@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1042758:1060606 (outdated) -->
+<!-- English Revision: 1060606 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -136,8 +136,8 @@ De plus, ces sections peuvent &ecirc;tre imbriqu&eacute;es afin de d&eacute;fini
 plus complexes.</p>
 </section>
 
-<section id="file-and-web"><title>Syst&egrave;me de fichiers et
-arborescence du site web</title>
+<section id="file-and-web"><title>Syst&egrave;me de fichiers,
+arborescence du site web et expressions bool&eacute;ennes</title>
 
 <p>Les conteneurs de sections de configuration les plus couramment utilis&eacute;s
 sont ceux qui modifient la configuration de points particuliers du syst&egrave;me de
@@ -333,6 +333,20 @@ Deny from all<br />
 
 </section>
 
+<section id="expressions"><title>Expressions bool&eacute;ennes</title>
+<p>La directive <directive type="section" module="core">If</directive>
+permet de modifier la configuration en fonction d'une condition qui peut
+&ecirc;tre d&eacute;finie sous la forme d'une expression bool&eacute;enne. Dans l'exemple
+suivant, l'acc&egrave;s est interdit si l'en-t&ecirc;te HTTP Referer ne commence pas
+par "http://www.example.com/".</p>
+<example>
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
+Require all denied<br />
+&lt;/If&gt;
+</example>
+
+</section>
+
 <section id="whichwhen"><title>Que faut-il utiliser et quand ?</title>
 
 <p>Choisir entre des conteneurs de syst&egrave;me de fichiers et des conteneurs
@@ -387,6 +401,26 @@ Il y a cependant une exception &agrave; cette r&egrave;gle.  Placer des restrict
 configuration dans un conteneur <code>&lt;Location
 /&gt;</code> est tout &agrave; fait sans rique car ce conteneur va s'appliquer &agrave;
 toutes les requ&ecirc;tes sans tenir compte de l'URL sp&eacute;cifique.</p>
+</section>
+
+<section id="nesting"><title>Imbrication des sections</title>
+
+<p>Certains types de sections peuvent &ecirc;tre imbriqu&eacute;s : d'une part, on
+peut utiliser les sections <directive type="section"
+module="core">File</directive> &agrave; l'int&eacute;rieur des sections <directive
+type="section" module="core">Directory</directive>, d'autre part, on
+peut utiliser les
+directives <directive type="section" module="core">If</directive> &agrave;
+l'int&eacute;rieur des sections <directive type="section"
+module="core">Directory</directive>, <directive type="section"
+module="core">Location</directive> et <directive type="section"
+module="core">Files</directive>. Les valeurs des expressions
+rationnelles correspondant aux sections nomm&eacute;es se comportent de mani&egrave;re
+identique.</p>
+
+<p>Les sections imbriqu&eacute;es sont fusionn&eacute;es apr&egrave;s les sections
+non-imbriqu&eacute;es de m&ecirc;me type.</p>
+
 </section>
 
 </section>
@@ -488,6 +522,9 @@ sont interpr&eacute;t&eacute;es.</p>
       et <directive type="section"
       module="core">LocationMatch</directive> sont appliqu&eacute;es
       simultan&eacute;ment</li>
+
+      <li>Les directives <directive type="section" module="core">If</directive>
+      </li>
     </ol>
 
     <p>Mises &agrave; part les sections <directive type="section"
