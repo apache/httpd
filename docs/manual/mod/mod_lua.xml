@@ -26,7 +26,7 @@
 
 <description>Provides Lua hooks into various portions of the httpd
 request processing</description>
-<status>experimental</status>
+<status>Experimental</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
 <compatibility>2.3 and later</compatibility>

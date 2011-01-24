@@ -27,7 +27,7 @@ the document to validate. -->
 <modulesynopsis metafile="mod_ratelimit.xml.meta"> 
 <name>mod_ratelimit</name>
 <description>Bandwidth Rate Limiting for Clients</description>
-<status>extension</status>
+<status>Extension</status>
 <sourcefile>mod_ratelimit.c</sourcefile>
 <identifier>ratelimit_module</identifier>
 

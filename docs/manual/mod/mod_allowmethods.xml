@@ -33,7 +33,7 @@ in order for it to rebuild correctly.
 <modulesynopsis metafile="mod_allowmethods.xml.meta"> 
 <name>mod_allowmethods</name>
 <description>Easily restrict what HTTP methods can be used on the server</description>
-<status>experimental</status>
+<status>Experimental</status>
 <sourcefile>mod_allowmethods.c</sourcefile>
 <identifier>allowmethods_module</identifier>
 
