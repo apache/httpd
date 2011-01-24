@@ -24,7 +24,7 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_substitute.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Perform search and replace operations on response bodies</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>substitute_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_substitute.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.2.7 and later</td></tr></table>
@@ -47,7 +47,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Substitute <var>s/pattern/substitution/[infq]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
 </table>
     <p>The <code class="directive">Substitute</code> directive specifies a

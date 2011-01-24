@@ -26,8 +26,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -56,6 +54,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">Personnalisation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#upgrading">Mise à jour</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#thirdp">Paquets tiers</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="programs/configure.html">Configuration de l'arborescence
 	des sources</a></li><li><a href="invoking.html">Démarrer Apache httpd</a></li><li><a href="stopping.html">Arrêt et redémarrage</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -134,7 +133,9 @@
       temporaire. Après l'installation le serveur occupe
       approximativement 10 MB d'espace disque. L'espace disque réellement
       nécessaire va varier considérablement en fonction de vos options
-      de configuration et de la présence éventuelle de modules tiers.</dd>
+      de configuration, de la présence éventuelle de
+      modules tiers, et bien entendu de la taille de votre site web et
+      des sites que vous hébergez sur votre serveur.</dd>
 
       <dt>Compilateur ANSI-C et système de construction</dt>
       <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a href="http://gcc.gnu.org/">GNU C (GCC)</a> de la <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
@@ -405,7 +406,29 @@ $ tar xvf httpd-<em>NN</em>.tar
      $ ./config.nice --prefix=/home/test/apache --with-port=90
      </code></p></div>
 
-    </div></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="thirdp" id="thirdp">Paquets tiers</a></h2>
+
+    <p>De nombreux tiers fournissent leur propre distribution du
+    serveur HTTP Apache à installer sur une plate-forme particulière. On
+    peut citer les différentes distributions Linux, divers
+    paquets tiers Windows, Mac OS X, Solaris et de nombreux autres.</p>
+
+    <p>Notre license logicielle non seulement permet, mais aussi
+    encourage ce genre de redistribution. Cependant, ceci conduit à une
+    situation ou l'organisation de la configuration et les valeurs par
+    défaut de votre installation du serveur peuvent ne pas correspondre
+    à ce qui est écrit dans la documentation. Bien que fâcheuse, cette
+    situation n'est pas appelée à évoluer de sitôt.</p>
+
+    <p>Une  <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    de ces distributions tierses</a> est maintenue dans le wiki du
+    serveur HTTP, et doit en refléter l'état actuel. Vous devrez
+    cependant vous familiariser par vous-même avec la gestion du paquet
+    de votre plate-forme particulière et les procédures d'installation.</p>
+
+</div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

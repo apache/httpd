@@ -569,7 +569,7 @@ using the specified magic file</td></tr>
 <tr><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle threads available to handle request
 spikes</td></tr>
 <tr class="odd"><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
-<tr><td><a href="mod_dialup.html#modemstandard">ModemStandard V.21|V.26bis|V.32|V.92</a></td><td></td><td /><td>E</td></tr><tr><td class="descr" colspan="4">Modem standard to simulate</td></tr>
+<tr><td><a href="mod_dialup.html#modemstandard">ModemStandard V.21|V.26bis|V.32|V.92</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">Modem standard to simulate</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
 components as part of the filename</td></tr>
 <tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
@@ -692,7 +692,7 @@ extensions</td></tr>
 <tr><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
 [body=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
-</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
+</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
 </td></tr>
 <tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
     [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
@@ -763,8 +763,8 @@ header</td></tr>
 <tr><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>
 <tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session</td></tr>
 <tr><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
 <tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
 <tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
 <tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
@@ -882,7 +882,7 @@ host.
 Certificate verification</td></tr>
 <tr><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of child server processes created at startup</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Number of threads created on startup</td></tr>
-<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
 <tr class="odd"><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enable or disable the suEXEC feature</td></tr>
 <tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group for CGI programs to run as</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the upper limit on the configurable number of threads
