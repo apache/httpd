@@ -334,7 +334,6 @@
 <syntax>BufferedLogs On|Off</syntax>
 <default>BufferedLogs Off</default>
 <contextlist><context>server config</context></contextlist>
-<status>Experimental</status>
 <compatibility>Available in versions 2.0.41 and later.</compatibility>
 
 <usage>
