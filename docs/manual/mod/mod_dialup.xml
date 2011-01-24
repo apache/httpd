@@ -27,7 +27,7 @@ the document to validate. -->
 <modulesynopsis metafile="mod_dialup.xml.meta"> 
 <name>mod_dialup</name>
 <description>Send static content at a bandwidth rate limit, defined by the various old modem standards</description>
-<status>experimental</status>
+<status>Experimental</status>
 <sourcefile>mod_dialup.c</sourcefile>
 <identifier>dialup_module</identifier>
 
