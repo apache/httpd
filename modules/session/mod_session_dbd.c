@@ -251,7 +251,8 @@ static int session_dbd_load(request_rec * r, session_rec ** z)
 /**
  * Save the session by the key specified.
  */
-static apr_status_t dbd_save(request_rec * r, const char *key, const char *val, apr_int64_t expiry)
+static apr_status_t dbd_save(request_rec * r, const char *key, const char *val,
+                             apr_int64_t expiry)
 {
 
     apr_status_t rv;
@@ -352,11 +353,13 @@ static apr_status_t dbd_remove(request_rec * r, const char *key)
         return APR_EGENERAL;
     }
 
-    statement = apr_hash_get(dbd->prepared, conf->deletelabel, APR_HASH_KEY_STRING);
+    statement = apr_hash_get(dbd->prepared, conf->deletelabel,
+                             APR_HASH_KEY_STRING);
     if (statement == NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
                       "prepared statement could not be found for "
-                      "SessionDBDdeletelabel with the label '%s'", conf->deletelabel);
+                      "SessionDBDdeletelabel with the label '%s'",
+                      conf->deletelabel);
         return APR_EGENERAL;
     }
     rv = apr_dbd_pvbquery(dbd->driver, r->pool, dbd->handle, &rows, statement,
@@ -431,12 +434,14 @@ static int session_dbd_save(request_rec * r, session_rec * z)
 
         /* create RFC2109 compliant cookie */
         if (conf->name_set) {
-            ap_cookie_write(r, conf->name, buffer, conf->name_attrs, z->maxage, r->headers_out, r->err_headers_out, NULL);
+            ap_cookie_write(r, conf->name, buffer, conf->name_attrs, z->maxage,
+                            r->headers_out, r->err_headers_out, NULL);
         }
 
         /* create RFC2965 compliant cookie */
         if (conf->name2_set) {
-            ap_cookie_write2(r, conf->name2, buffer, conf->name2_attrs, z->maxage, r->headers_out, r->err_headers_out, NULL);
+            ap_cookie_write2(r, conf->name2, buffer, conf->name2_attrs, z->maxage,
+                             r->headers_out, r->err_headers_out, NULL);
         }
 
         return OK;

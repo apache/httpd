@@ -77,7 +77,11 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t crypt_init(request_rec * r, const apr_crypto_driver_t *driver, apr_crypto_t **f, apr_crypto_key_t **key, apr_uuid_t *salt, apr_size_t *ivSize, session_crypto_dir_conf * dconf)
+static apr_status_t crypt_init(request_rec * r,
+                               const apr_crypto_driver_t *driver,
+                               apr_crypto_t **f, apr_crypto_key_t **key,
+                               apr_uuid_t *salt, apr_size_t *ivSize,
+                               session_crypto_dir_conf * dconf)
 {
     apr_status_t res;
 
@@ -110,8 +114,8 @@ static apr_status_t crypt_init(request_rec * r, const apr_crypto_driver_t *drive
         res = apr_crypto_passphrase(r->pool, *f, dconf->passphrase,
 #endif
                 strlen(dconf->passphrase),
-                (unsigned char *) salt, salt ? sizeof(apr_uuid_t) : 0, dconf->cipher,
-                MODE_CBC, 1, 4096, key, ivSize);
+                (unsigned char *) salt, salt ? sizeof(apr_uuid_t) : 0,
+                dconf->cipher, MODE_CBC, 1, 4096, key, ivSize);
     }
 
     if (APR_STATUS_IS_ENOKEY(res)) {
@@ -141,9 +145,10 @@ static apr_status_t crypt_init(request_rec * r, const apr_crypto_driver_t *drive
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t encrypt_string(request_rec * r, const apr_crypto_driver_t *driver,
-        session_crypto_dir_conf *dconf,
-        const char *in, char **out)
+static apr_status_t encrypt_string(request_rec * r,
+                                   const apr_crypto_driver_t *driver,
+                                   session_crypto_dir_conf *dconf,
+                                   const char *in, char **out)
 {
     apr_status_t res;
     apr_crypto_t *f = NULL;
@@ -217,8 +222,11 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_driver_t *d
     memcpy(combined + sizeof(apr_uuid_t) + ivSize, encrypt, encryptlen);
 
     /* base64 encode the result */
-    base64 = apr_palloc(r->pool, apr_base64_encode_len(ivSize + encryptlen + sizeof(apr_uuid_t) + 1) * sizeof(char));
-    apr_base64_encode(base64, (const char *) combined, ivSize + encryptlen + sizeof(apr_uuid_t));
+    base64 = apr_palloc(r->pool, apr_base64_encode_len(ivSize + encryptlen +
+                                                       sizeof(apr_uuid_t) + 1)
+                                 * sizeof(char));
+    apr_base64_encode(base64, (const char *) combined,
+                      ivSize + encryptlen + sizeof(apr_uuid_t));
     *out = base64;
 
     return res;
@@ -230,9 +238,10 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_driver_t *d
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t decrypt_string(request_rec * r, const apr_crypto_driver_t *driver,
-        session_crypto_dir_conf *dconf,
-        const char *in, char **out)
+static apr_status_t decrypt_string(request_rec * r,
+                                   const apr_crypto_driver_t *driver,
+                                   session_crypto_dir_conf *dconf,
+                                   const char *in, char **out)
 {
     apr_status_t res;
     apr_crypto_t *f = NULL;
@@ -360,7 +369,8 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
             &session_crypto_module);
 
     if ((dconf->passphrase_set) && z->encoded && *z->encoded) {
-        apr_pool_userdata_get((void **)&driver, DRIVER_KEY, r->server->process->pconf);
+        apr_pool_userdata_get((void **)&driver, DRIVER_KEY,
+                              r->server->process->pconf);
         res = decrypt_string(r, driver, dconf, z->encoded, &encoded);
         if (res != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX

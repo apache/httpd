@@ -67,20 +67,26 @@ static int session_cookie_save(request_rec * r, session_rec * z)
     /* create RFC2109 compliant cookie */
     if (conf->name_set) {
         if (z->encoded && z->encoded[0]) {
-            ap_cookie_write(r, conf->name, z->encoded, conf->name_attrs, z->maxage, r->headers_out, r->err_headers_out, NULL);
+            ap_cookie_write(r, conf->name, z->encoded, conf->name_attrs,
+                            z->maxage, r->headers_out, r->err_headers_out,
+                            NULL);
         }
         else {
-            ap_cookie_remove(r, conf->name, conf->name_attrs, r->headers_out, r->err_headers_out, NULL);
+            ap_cookie_remove(r, conf->name, conf->name_attrs, r->headers_out,
+                             r->err_headers_out, NULL);
         }
     }
 
     /* create RFC2965 compliant cookie */
     if (conf->name2_set) {
         if (z->encoded && z->encoded[0]) {
-            ap_cookie_write2(r, conf->name2, z->encoded, conf->name2_attrs, z->maxage, r->headers_out, r->err_headers_out, NULL);
+            ap_cookie_write2(r, conf->name2, z->encoded, conf->name2_attrs,
+                             z->maxage, r->headers_out, r->err_headers_out,
+                             NULL);
         }
         else {
-            ap_cookie_remove2(r, conf->name2, conf->name2_attrs, r->headers_out, r->err_headers_out, NULL);
+            ap_cookie_remove2(r, conf->name2, conf->name2_attrs,
+                              r->headers_out, r->err_headers_out, NULL);
         }
     }
 
@@ -172,9 +178,11 @@ static void *create_session_cookie_dir_config(apr_pool_t * p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_session_cookie_dir_config(apr_pool_t * p, void *basev, void *addv)
+static void *merge_session_cookie_dir_config(apr_pool_t * p, void *basev,
+                                             void *addv)
 {
-    session_cookie_dir_conf *new = (session_cookie_dir_conf *) apr_pcalloc(p, sizeof(session_cookie_dir_conf));
+    session_cookie_dir_conf *new = (session_cookie_dir_conf *)
+                                apr_pcalloc(p, sizeof(session_cookie_dir_conf));
     session_cookie_dir_conf *add = (session_cookie_dir_conf *) addv;
     session_cookie_dir_conf *base = (session_cookie_dir_conf *) basev;
 
@@ -204,7 +212,8 @@ static const char *check_string(cmd_parms * cmd, const char *string)
     return NULL;
 }
 
-static const char *set_cookie_name(cmd_parms * cmd, void *config, const char *args)
+static const char *set_cookie_name(cmd_parms * cmd, void *config,
+                                   const char *args)
 {
     char *last;
     char *line = apr_pstrdup(cmd->pool, args);
@@ -219,7 +228,8 @@ static const char *set_cookie_name(cmd_parms * cmd, void *config, const char *ar
     return check_string(cmd, cookie);
 }
 
-static const char *set_cookie_name2(cmd_parms * cmd, void *config, const char *args)
+static const char *set_cookie_name2(cmd_parms * cmd, void *config,
+                                    const char *args)
 {
     char *last;
     char *line = apr_pstrdup(cmd->pool, args);
