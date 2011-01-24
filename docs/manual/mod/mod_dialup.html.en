@@ -24,7 +24,7 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_dialup.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Send static content at a bandwidth rate limit, defined by the various old modem standards</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dialup_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dialup.c</td></tr></table>
 <h3>Summary</h3>
@@ -57,7 +57,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modem standard to simulate</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.92</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dialup</td></tr>
 </table>
 <p>Specify what modem standard you wish to simulate.</p>

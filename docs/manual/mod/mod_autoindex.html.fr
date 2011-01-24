@@ -356,8 +356,9 @@ nom</td></tr>
 </table>
     <p>Cette directive permet de déterminer l'icône à afficher à côté
     d'un fichier dont le nom se termine par <var>nom</var>, dans le cas
-    d'un affichage <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>. <var>icône</var> est soit une URL relative
-    (échappée par des caractères '%') vers l'icône, soit de la forme
+    d'un affichage <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>. <var>icône</var> est une URL relative
+    (échappée par des caractères '%') vers
+    l'icône, une URL distante pleinement qualifiée, ou de la forme
     <code>(<var>alttext</var>,<var>url</var>)</code>, où
     <var>alttext</var> est le symbole texte correspondant à l'icône à
     afficher dans les navigateurs en mode texte.</p>
@@ -367,6 +368,10 @@ nom</td></tr>
     (pour personnaliser la présentation du listing), une extension de
     fichier, une expression avec caractères génériques, un nom de
     fichier partiel ou un nom de fichier complet.</p>
+
+    <p><code>^^BLANKICON^^</code> n'est utilisé que pour le formatage,
+    et n'est donc pas nécessaire si vous utilisez <code>IndexOptions
+    HTMLTable</code>.</p>
 
     <div class="example"><h3>Exemples</h3><p><code>
       AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
@@ -392,8 +397,9 @@ codage MIME</td></tr>
 </table>
     <p>Cette directive permet de déterminer l'icône à afficher à côté
     d'un fichier dans le cas d'un affichage <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
-    <var>icône</var> est soit une URL relative
-    (échappée par des caractères '%') vers l'icône, soit de la forme
+    <var>icône</var> est une URL relative
+    (échappée par des caractères '%') vers
+    l'icône, une URL pleinement qualifiée, ou de la forme
     <code>(<var>alttext</var>,<var>url</var>)</code>, où
     <var>alttext</var> est le symbole texte correspondant à l'icône à
     afficher dans les navigateurs en mode texte.</p>
@@ -421,8 +427,9 @@ type MIME</td></tr>
     <p>Cette directive permet de déterminer l'icône à afficher à côté
     d'un fichier de type MIME <var>type MIME</var> dans le cas d'un
     affichage <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
-    <var>icône</var> est soit une URL relative
-    (échappée par des caractères '%') vers l'icône, soit de la forme
+    <var>icône</var> est une URL relative
+    (échappée par des caractères '%') vers
+    l'icône, une URL pleinement qualifiée, ou de la forme
     <code>(<var>alttext</var>,<var>url</var>)</code>, où
     <var>alttext</var> est le symbole texte correspondant à l'icône à
     afficher dans les navigateurs en mode texte.</p>
@@ -450,7 +457,7 @@ n'est précisé</td></tr>
     l'icône à afficher à côté d'un fichier lorsqu'aucun icône spécifique
     n'a été précisé, dans le cas d'un affichage <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>.
     <var>chemin URL</var> est une URL relative (échappée par des
-    caractères '%') vers l'icône.</p>
+    caractères '%') vers l'icône ou une URL pleinement qualifiée.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
       DefaultIcon /icon/unknown.png
@@ -546,6 +553,7 @@ d'index.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajouts à la liste des fichiers à cacher lors de l'affichage
 de l'index d'un répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexIgnore <var>fichier</var> [<var>fichier</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>IndexIgnore "."</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -561,7 +569,7 @@ de l'index d'un répertoire</td></tr>
     courant).</p>
 
     <div class="example"><p><code>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </code></p></div>
 
 </div>
@@ -604,6 +612,7 @@ contenu d'un répertoire</td></tr>
 répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Par défaut, aucune option n'est activée.</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -1012,12 +1021,13 @@ Name|Date|Size|Description</code></td></tr>
     d'identifier la clé primaire. La clé secondaire est
     <em>toujours</em> le nom du fichier selon un ordre croissant.</p>
 
-    <p>Vous pouvez forcer l'affichage de l'index d'un répertoire selon
-    un certain ordre en utilisant la directive
-    <code class="directive">IndexOrderDefault</code> conjointement avec l'option
-    d'index <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> ; ceci aura pour effet d'ignorer
-    les demandes d'affichage de l'index du répertoire par le client
-    selon un ordre différent.</p>
+    <p>Si vous le désirez, vous pouvez empêcher le client de modifier
+    l'ordre de tri de la liste en ajoutant l'option d'index  <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
+    qui supprime le lien de définition du tri de l'en-tête de la
+    colonne, ainsi que l'option <code><a href="#indexoptions.ignoreclient">IgnoreClient</a></code> qui
+    empêche ce même client de passer outre vos préférences de tri en
+    ajoutant manuellement des options de tri à la chaîne de paramètres
+    de la requête.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -50,7 +50,7 @@
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
-    <dt><a name="apr1" id="apr1">APR</a></dt>
+    <dt><a name="apr" id="apr">APR</a></dt>
     <dd>Voir "Bibliothèques pour la portabilité d'Apache"
     </dd>
 
@@ -223,8 +223,20 @@
     ensembles de fichiers ou ressources avec une grande flexibilité
       - par exemple, tous les fichiers .gif et .jpg situés dans tout répertoire
       nommé "images", pourraient être enregistrés comme
-      "<code>/images/.*(jpg|gif)$</code>".  Apache utilise les Expressions
-      Rationnelles Compatibles avec Perl fournies par la librairie <a href="http://www.pcre.org/">PCRE</a>.
+      "<code>/images/.*(jpg|gif)$</code>".  Lorsque l'on utilise des
+      expressions rationnelles pour la substitution de chaînes, les
+      variables spéciales $1 ... $9 contiennent des références arrières
+      vers les parties regroupées (entre parenthèses) de l'expression
+      qui correspond. La variable spéciale $0 contient une référence
+      arrière vers l'ensemble de l'expression qui correspond. Pour
+      insérer un caractère littéral "dollar" dans la chaîne de
+      remplacement, il faut l'échapper avec un anti-slash. Pour des
+      raisons historiques, la variable &amp; peut être utilisée en tant
+      qu'alias de $0 dans certains cas, mais ceci n'est plus possible
+      depuis la version 2.3.6. Apache utilise les Expressions
+      Rationnelles Compatibles avec Perl fournies par la librairie <a href="http://www.pcre.org/">PCRE</a>. Vous trouverez plus
+      d'information à propos de la syntaxe des expressions rationnelles
+      PCRE sur ce site, ou dans le <a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia de la PCRE</a>.
   </dd>
 
     <dt><a name="configurationfile" id="configurationfile">
@@ -322,15 +334,28 @@
     Voir : <a href="howto/ssi.html">Introduction aux Inclusions Côté Serveur</a>
   </dd>
 
+  <dt><a name="servernameindication" id="servernameindication">Indication du nom du serveur</a> <a name="sni" id="sni">(SNI)</a></dt>
+    <dd>Une fonctionnalité SSL permettant de spécifier le
+    nom du serveur désiré dans le message initial de la
+    négociation SSL, de façon à ce que le serveur web
+    puisse choisir la bonne configuration de serveur virtuel à
+    utiliser pendant le déroulement de la négociation SSL.
+    Cette fonctionnalité a été ajoutée
+    à SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
+      Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
+      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+    </dd>
+
+
+
 <dt><a name="commongatewayinterface" id="commongatewayinterface">
 Interface commune avec les programmes externes
 (Common Gateway Interface)</a>
 	 <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>La définition standard d'une interface entre un serveur web et un
     programme externe pour permettre à ce dernier de traiter des requêtes.
-      L'interface a été initialement définie par <a href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> mais il
-      existe aussi le projet
-      <a href="http://www.w3.org/CGI/">RFC project</a>.<br />
+     Il existe une <a href="http://www.ietf.org/rfc/rfc3875">RFC
+     informationnelle</a> qui en couvre les spécificités.<br />
       Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
     </dd>
 

@@ -615,18 +615,36 @@ DESACTIVÉS à partir des version 2.3.x.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet de définir l'existence d'une variable</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Define <var>nom variable</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet de définir une variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Define <var>nom-paramètre</var> [<var>valeur-paramètre</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Cette directive produit le même effet que l'argument
-    <code>-D</code> du programme <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
-    <p>Elle permet de faire basculer le fonctionnement de sections
-    <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sans
-    avoir à modifier les arguments de l'option <code>-D</code> dans
-    aucun script de démarrage.</p>
+    <p>Avec un seul paramètre, l'effet de la directive
+    <code class="directive">Define</code> est identique à celui de l'argument
+    <code>-D</code> du programme <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Il permet de
+    modifier le comportement des sections <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sans avoir à ajouter d'argument
+    <code>-D</code> au sein des scripts de démarrage.</p>
+
+    <p>De plus, le second paramètre permet d'affecter une valeur à la
+    variable définie par le premier. Cette variable peut être référencée
+    dans le fichier de configuration via la syntaxe <code>${VAR}</code>.
+    La portée de la variable est toujours globale, et n'est jamais
+    limitée à la section de configuration courante.</p>
+
+    <div class="example"><p><code>
+      &lt;IfDefine TEST&gt;<br />
+      &nbsp;&nbsp;Define servername test.example.com<br />
+      &lt;/IfDefine&gt;<br />
+      &lt;IfDefine !TEST&gt;<br />
+      &nbsp;&nbsp;Define servername www.example.com<br />
+      &nbsp;&nbsp;Define SSL<br />
+      &lt;/IfDefine&gt;<br />
+    </code></p></div>
+
+    <p>Le caractère ":" est interdit dans les noms de variables afin
+    d'éviter les conflits avec la syntaxe de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -958,7 +976,7 @@ supérieures. Par défaut à Off depuis la version 2.3.9.</td></tr>
     <li>Sous Linux, l'utilisation de sendfile induit des bogues lors de
     la récupération des paquets de vérification TCP (TCP-checksum) avec
     certaines cartes réseau lorsqu'on utilise IPv6.</li>
-    <li>Sous Linux sur Itanium, sendfile peut s'avérer incapable de
+    <li>Sous Linux sur Itanium, <code>sendfile</code> peut s'avérer incapable de
     traiter les fichiers de plus de 2 Go.</li>
     <li>Avec un montage réseau de <code class="directive"><a href="#documentroot">DocumentRoot</a></code> (par exemple NFS, SMB, CIFS,
     FUSE), le
@@ -3935,10 +3953,12 @@ gestionnaire particulier</td></tr>
     <p>Vous pouvez écraser la définition antérieure d'une directive
     <code class="directive">SetHandler</code> en utilisant la valeur
     <code>None</code>.</p>
-    <p><strong>Note :</strong> comme SetHandler l'emporte sur la
+
+    <div class="note"><h3>Note</h3>
+    <p>Comme <code class="directive">SetHandler</code> l'emporte sur la
     définition des gestionnaires par défaut, le comportement habituel
     consistant à traiter les URLs se terminant par un slash (/) comme
-    des répertoires ou des fichiers index est désactivé.</p>
+    des répertoires ou des fichiers index est désactivé.</p></div>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -4171,8 +4191,8 @@ et son port</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont le serveur détermine son propre nom
-et son port</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont le serveur
+détermine son propre port</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UseCanonicalPhysicalPort On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>UseCanonicalPhysicalPort Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
@@ -4192,21 +4212,27 @@ et son port</td></tr>
     valide.</p>
 
     <div class="note"><h3>Note</h3>
-    <p>L'ordre dans lequel s'effectue la recherche du port est le
-    suivant :<br /><br />
-     <code>UseCanonicalName On</code></p>
-     <ul>
-      <li>Port spécifié par <code>Servername</code></li>
+    <p>L'ordre dans lequel s'effectue la recherche quand on utilise le
+    port physique est le suivant :</p>
+     <dl>
+     <dt><code>UseCanonicalName On</code></dt>
+     <dd>
+     <ol>
+      <li>Port indiqué dans <code class="directive"><a href="#servername">Servername</a></code></li>
       <li>Port physique</li>
       <li>Port par défaut</li>
-     </ul>
-     <code>UseCanonicalName Off | DNS</code>
-     <ul>
+     </ol>
+     </dd>
+     <dt><code>UseCanonicalName Off | DNS</code></dt>
+     <dd>
+     <ol>
       <li>Port spécifié dans l'en-tête <code>Host:</code></li>
       <li>Port physique</li>
-      <li>Port spécifié par <code>Servername</code></li>
+      <li>Port spécifié par <code class="directive"><a href="#servername">Servername</a></code></li>
       <li>Port par défaut</li>
-     </ul>
+     </ol>
+     </dd>
+     </dl>
 
     <p>Avec <code>UseCanonicalPhysicalPort Off</code>, on reprend
     l'ordre ci-dessus en supprimant "Port physique".</p>

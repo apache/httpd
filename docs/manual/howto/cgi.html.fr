@@ -594,11 +594,6 @@
 <h2><a name="moreinfo" id="moreinfo">Pour plus d'informations</a></h2>
     
 
-    <p>Il existe un grand nombre de ressources CGI sur le web. Vous
-    trouverez de nombreuses réponses à vos questions dans la liste HTML
-    Writers Guild à l'adresse <a href="http://www.hwg.org/lists/hwg-servers/">
-    http://www.hwg.org/lists/hwg-servers/</a>.</p>
-
     <p>La spécification CGI actuelle est disponible dans la <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
     Interface RFC</a>.</p>
 

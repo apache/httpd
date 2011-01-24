@@ -24,8 +24,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
 au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hôtes,
 ou URLs particuliers.  Ce document décrit comment utiliser les conteneurs de
@@ -34,8 +32,8 @@ modifier la portée des directives de configuration.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#types">Types de conteneurs de sections de
 configuration</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Système de fichiers et
-arborescence du site web</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Système de fichiers,
+arborescence du site web et expressions booléennes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Hôtes virtuels</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Mandataire</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">Quelles sont les directives autorisées ?</a></li>
@@ -119,8 +117,8 @@ De plus, ces sections peuvent être imbriquées afin de définir des restrictions
 plus complexes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">Système de fichiers et
-arborescence du site web</a></h2>
+<h2><a name="file-and-web" id="file-and-web">Système de fichiers,
+arborescence du site web et expressions booléennes</a></h2>
 
 <p>Les conteneurs de sections de configuration les plus couramment utilisés
 sont ceux qui modifient la configuration de points particuliers du système de
@@ -308,6 +306,20 @@ Deny from all<br />
 
 
 
+<h3><a name="expressions" id="expressions">Expressions booléennes</a></h3>
+<p>La directive <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+permet de modifier la configuration en fonction d'une condition qui peut
+être définie sous la forme d'une expression booléenne. Dans l'exemple
+suivant, l'accès est interdit si l'en-tête HTTP Referer ne commence pas
+par "http://www.example.com/".</p>
+<div class="example"><p><code>
+&lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;<br />
+Require all denied<br />
+&lt;/If&gt;
+</code></p></div>
+
+
+
 <h3><a name="whichwhen" id="whichwhen">Que faut-il utiliser et quand ?</a></h3>
 
 <p>Choisir entre des conteneurs de système de fichiers et des conteneurs
@@ -357,6 +369,21 @@ Il y a cependant une exception à cette règle.  Placer des restrictions de
 configuration dans un conteneur <code>&lt;Location
 /&gt;</code> est tout à fait sans rique car ce conteneur va s'appliquer à
 toutes les requêtes sans tenir compte de l'URL spécifique.</p>
+
+
+<h3><a name="nesting" id="nesting">Imbrication des sections</a></h3>
+
+<p>Certains types de sections peuvent être imbriqués : d'une part, on
+peut utiliser les sections <code class="directive"><a href="./mod/core.html#file">&lt;File&gt;</a></code> à l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, d'autre part, on
+peut utiliser les
+directives <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> à
+l'intérieur des sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>. Les valeurs des expressions
+rationnelles correspondant aux sections nommées se comportent de manière
+identique.</p>
+
+<p>Les sections imbriquées sont fusionnées après les sections
+non-imbriquées de même type.</p>
+
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -452,6 +479,9 @@ sont interprétées.</p>
       <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
       et <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> sont appliquées
       simultanément</li>
+
+      <li>Les directives <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+      </li>
     </ol>
 
     <p>Mises à part les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, chaque groupe est traité selon
