@@ -24,7 +24,7 @@
 
 <name>mod_session_crypto</name>
 <description>Session encryption support</description>
-<status>Extension</status>
+<status>Experimental</status>
 <sourcefile>mod_session_crypto.c</sourcefile>
 <identifier>session_crypto_module</identifier>
 <compatibility>Available in Apache 2.3 and later</compatibility>
