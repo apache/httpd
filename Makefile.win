@@ -508,6 +508,10 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_session_cookie.mak CFG="mod_session_cookie - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_session_dbd.mak    CFG="mod_session_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd modules\slotmem
+	 $(MAKE) $(MAKEOPT) -f mod_slotmem_plain.mak  CFG="mod_slotmem_plain - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_slotmem_shm.mak    CFG="mod_slotmem_shm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 !IF EXIST("srclib\openssl")
 #	cd modules\session
 #	 $(MAKE) $(MAKEOPT) -f mod_session_crypto.mak CFG="mod_session_crypto - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -736,6 +740,8 @@ _copybin:
 	copy modules\session\$(LONG)\mod_session.$(src_so)        "$(inst_so)" <.y
 	copy modules\session\$(LONG)\mod_session_cookie.$(src_so) "$(inst_so)" <.y
 	copy modules\session\$(LONG)\mod_session_dbd.$(src_so)    "$(inst_so)" <.y
+	copy modules\slotmem\$(LONG)\mod_slotmem_plain.$(src_so)    "$(inst_so)" <.y
+	copy modules\slotmem\$(LONG)\mod_slotmem_shm.$(src_so)    "$(inst_so)" <.y
 !IF EXIST("srclib\openssl")
 #	copy modules\session\$(LONG)\mod_session_crypto.$(src_so) "$(inst_so)" <.y
 	copy modules\ssl\$(LONG)\mod_ssl.$(src_so) 		"$(inst_so)" <.y
