@@ -1,7 +1,7 @@
 %define contentdir /var/www
 %define suexec_caller apache
 %define mmn APACHE_MMN
-%define mpms worker event
+%define mpms prefork event
 
 Summary: Apache HTTP Server
 Name: httpd
@@ -119,8 +119,8 @@ make %{?_smp_mflags}
 popd
 }
 
-# Build everything and the kitchen sink with the prefork build
-mpmbuild prefork \
+# Build everything and the kitchen sink with the worker build
+mpmbuild worker \
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --enable-distcache \
         --enable-proxy \
@@ -141,7 +141,7 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 
-pushd prefork
+pushd worker
 make DESTDIR=$RPM_BUILD_ROOT install
 popd
 
@@ -246,10 +246,10 @@ if readelf -d $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.so | grep TEXTREL; then
 fi
 
 # Verify that the same modules were built into the httpd binaries
-./prefork/httpd -l | grep -v prefork > prefork.mods
+./worker/httpd -l | grep -v worker > worker.mods
 for mpm in %{mpms}; do
   ./${mpm}/httpd -l | grep -v ${mpm} > ${mpm}.mods
-  if ! diff -u prefork.mods ${mpm}.mods; then
+  if ! diff -u worker.mods ${mpm}.mods; then
     : Different modules built into httpd binaries, will not proceed
     exit 1
   fi
