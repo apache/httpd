@@ -16,7 +16,7 @@ Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
 BuildPrereq: /usr/bin/apr-1-config, /usr/bin/apu-1-config
-Requires: apr >= 1.4.0, apr-util >= 1.4.0, pcre-devel >= 5.0, gawk, /usr/share/magic.mime, /usr/bin/find, openldap
+Requires: apr >= 1.4.2, apr-util >= 1.3.10, pcre-devel >= 5.0, gawk, /usr/share/magic.mime, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Prereq: sh-utils, textutils, /usr/sbin/useradd
 Provides: webserver
@@ -34,7 +34,7 @@ Group: Development/Libraries
 Summary: Development tools for the Apache HTTP server.
 Obsoletes: secureweb-devel, apache-devel
 Requires: libtool, httpd = %{epoch}:%{version}-%{release}
-Requires: apr-devel >= 1.4.0, apr-util-devel >= 1.4.0
+Requires: apr-devel >= 1.4.2, apr-util-devel >= 1.3.10
 
 %description devel
 The httpd-devel package contains the APXS binary and other files
@@ -377,149 +377,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/build/mkdir.sh
 
 %changelog
-* Fri Aug 26 2005 Graham Leggett <minfrin@apache.org> 2.1.7
-- Deleting the xml doc files is no longer necessary.
-- Add httxt2dbm to the sbin directory
-
-* Sat Jul 2 2005 Graham Leggett <minfrin@apache.org> 2.1.7-dev
-- Fixed complaints about unpackaged files with new config file changes.
-
-* Thu Dec 16 2004 Graham Leggett <minfrin@apache.org> 2.1.3-dev
-- Changed build to use external apr and apr-util
-
-* Thu May 20 2004 Graham Leggett <minfrin@apache.org> 2.0.50-dev
-- Changed default dependancy to link to db4 instead of db3.
-- Fixed complaints about unpackaged files.
-
-* Sat Apr 5 2003 Graham Leggett <minfrin@apache.org> 2.0.46-dev
-- Moved mime.types back to the default location.
-- Added mod_ldap and friends, mod_cache and friends.
-- Added openldap dependancy.
-
-* Sun Mar 30 2003 Graham Leggett <minfrin@apache.org> 2.0.45-1
-- Created generic Apache rpm spec file from that donated by Redhat.
-- Removed Redhat specific patches and boilerplate files.
-- Removed SSL related Makefiles.
-
-* Mon Feb 24 2003 Joe Orton <jorton@redhat.com> 2.0.40-21
-- add security fix for CAN-2003-0020; replace non-printable characters
-  with '!' when printing to error log.
-- disable debuginfo on IA64.
-
-* Tue Feb 11 2003 Joe Orton <jorton@redhat.com> 2.0.40-20
-- disable POSIX semaphores to support 2.4.18 kernel (#83324)
-
-* Wed Jan 29 2003 Joe Orton <jorton@redhat.com> 2.0.40-19
-- require xmlto 0.0.11 or later
-- fix apr_strerror on glibc2.3
-
-* Wed Jan 22 2003 Tim Powers <timp@redhat.com> 2.0.40-18
-- rebuilt
-
-* Thu Jan 16 2003 Joe Orton <jorton@redhat.com> 2.0.40-17
-- add mod_cgid and httpd binary built with worker MPM (#75496)
-- allow choice of httpd binary in init script
-- pick appropriate CGI module based on loaded MPM in httpd.conf
-- source /etc/sysconfig/httpd in apachectl to get httpd choice
-- make "apachectl status" fail gracefully when links isn't found (#78159)
-
-* Mon Jan 13 2003 Joe Orton <jorton@redhat.com> 2.0.40-16
-- rebuild for OpenSSL 0.9.7
-
-* Fri Jan  3 2003 Joe Orton <jorton@redhat.com> 2.0.40-15
-- fix possible infinite recursion in config dir processing (#77206)
-- fix memory leaks in request body processing (#79282)
-
-* Thu Dec 12 2002 Joe Orton <jorton@redhat.com> 2.0.40-14
-- remove unstable shmht session cache from mod_ssl
-- get SSL libs from pkg-config if available (Nalin Dahyabhai)
-- stop "apxs -a -i" from inserting AddModule into httpd.conf (#78676)
-
-* Wed Nov  6 2002 Joe Orton <jorton@redhat.com> 2.0.40-13
-- fix location of installbuilddir in apxs when libdir!=/usr/lib
-
-* Wed Nov  6 2002 Joe Orton <jorton@redhat.com> 2.0.40-12
-- pass libdir to configure; clean up config_vars.mk
-- package instdso.sh, fixing apxs -i (#73428)
-- prevent build if upstream MMN differs from mmn macro
-- remove installed but unpackaged files
-
-* Wed Oct  9 2002 Joe Orton <jorton@redhat.com> 2.0.40-11
-- correct SERVER_NAME encoding in i18n error pages (thanks to Andre Malo)
-
-* Wed Oct  9 2002 Joe Orton <jorton@redhat.com> 2.0.40-10
-- fix patch for CAN-2002-0840 to also cover i18n error pages
-
-* Wed Oct  2 2002 Joe Orton <jorton@redhat.com> 2.0.40-9
-- security fixes for CAN-2002-0840 and CAN-2002-0843
-- fix for possible mod_dav segfault for certain requests
-
-* Tue Sep 24 2002 Gary Benson <gbenson@redhat.com>
-- updates to the migration guide
-
-* Wed Sep  4 2002 Nalin Dahyabhai <nalin@redhat.com> 2.0.40-8
-- link httpd with libssl to avoid library loading/unloading weirdness
-
-* Tue Sep  3 2002 Joe Orton <jorton@redhat.com> 2.0.40-7
-- add LoadModule lines for proxy modules in httpd.conf (#73349)
-- fix permissions of conf/ssl.*/ directories; add Makefiles for
-  certificate management (#73352)
-
-* Mon Sep  2 2002 Joe Orton <jorton@redhat.com> 2.0.40-6
-- provide "httpd-mmn" to manage module ABI compatibility
-
-* Sun Sep  1 2002 Joe Orton <jorton@redhat.com> 2.0.40-5
-- fix SSL session cache (#69699)
-- revert addition of LDAP support to apr-util
-
-* Mon Aug 26 2002 Joe Orton <jorton@redhat.com> 2.0.40-4
-- set SIGXFSZ disposition to "ignored" (#69520)
-- make dummy connections to the first listener in config (#72692)
-
-* Mon Aug 26 2002 Joe Orton <jorton@redhat.com> 2.0.40-3
-- allow "apachectl configtest" on a 1.3 httpd.conf
-- add mod_deflate
-- enable LDAP support in apr-util
-- don't package everything in /var/www/error as config(noreplace)
-
-* Wed Aug 21 2002 Bill Nottingham <notting@redhat.com> 2.0.40-2
-- add trigger (#68657)
-
-* Mon Aug 12 2002 Joe Orton <jorton@redhat.com> 2.0.40-1
-- update to 2.0.40
-
-* Wed Jul 24 2002 Joe Orton <jorton@redhat.com> 2.0.36-8
-- improve comment on use of UserDir in default config (#66886)
-
-* Wed Jul 10 2002 Joe Orton <jorton@redhat.com> 2.0.36-7
-- use /sbin/nologin as shell for apache user (#68371)
-- add patch from CVS to fix possible infinite loop when processing
-  internal redirects
-
-* Wed Jun 26 2002 Gary Benson <gbenson@redhat.com> 2.0.36-6
-- modify init script to detect 1.3.x httpd.conf's and direct users
-  to the migration guide
-
-* Tue Jun 25 2002 Gary Benson <gbenson@redhat.com> 2.0.36-5
-- patch apachectl to detect 1.3.x httpd.conf's and direct users
-  to the migration guide
-- ship the migration guide
-
-* Fri Jun 21 2002 Joe Orton <jorton@redhat.com>
-- move /etc/httpd2 back to /etc/httpd
-- add noindex.html page and poweredby logo; tweak default config
-  to load noindex.html if no default "/" page is present.
-- add patch to prevent mutex errors on graceful restart
-
-* Fri Jun 21 2002 Tim Powers <timp@redhat.com> 2.0.36-4
-- automated rebuild
-
-* Wed Jun 12 2002 Joe Orton <jorton@redhat.com> 2.0.36-3
-- add patch to fix SSL mutex handling
-
-* Wed Jun 12 2002 Joe Orton <jorton@redhat.com> 2.0.36-2
-- improved config directory patch
-
-* Mon May 20 2002 Joe Orton <jorton@redhat.com>
-- initial build; based heavily on apache.spec and mod_ssl.spec
-- fixes: #65214, #58490, #57376, #61265, #65518, #58177, #57245
+* See http://www.apache.org/dist/httpd/CHANGES_2.3
