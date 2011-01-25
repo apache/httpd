@@ -312,6 +312,12 @@ Package=<4>
     Project_Dep_Name mod_setenvif
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_slotmem_plain
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_slotmem_shm
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_socache_dbm
     End Project Dependency
     Begin Project Dependency
@@ -2838,6 +2844,48 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_setenvif"=.\modules\metadata\mod_setenvif.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_slotmem_plain"=.\modules\slotmem\mod_slotmem_plain.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_slotmem_shm"=.\modules\slotmem\mod_slotmem_shm.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

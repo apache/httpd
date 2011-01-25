@@ -153,6 +153,8 @@ BEGIN {
 	  print "#LoadModule reflector_module modules/mod_reflector.so" > dstfl;
 	  print "#LoadModule rewrite_module modules/mod_rewrite.so" > dstfl;
 	  print "LoadModule setenvif_module modules/mod_setenvif.so" > dstfl;
+	  print "#LoadModule slotmem_plain_module modules/mod_slotmem_plain.so" > dstfl;
+	  print "#LoadModule slotmem_shm_module modules/mod_slotmem_shm.so" > dstfl;
 	  print "#LoadModule speling_module modules/mod_speling.so" > dstfl;
 	  print "#LoadModule ssl_module modules/mod_ssl.so" > dstfl;
 	  print "#LoadModule status_module modules/mod_status.so" > dstfl;
