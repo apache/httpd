@@ -277,8 +277,14 @@ RewriteRule ^index\.html$  newsite.html
                 MIME-headers, C variables of the Apache HTTP Server or
                 <code>struct tm</code> fields of the Unix system.
                 Most are documented elsewhere in the Manual or in
-                the CGI specification. Those that are special to
-                mod_rewrite include those below.</p>
+                the CGI specification.</p>
+
+                <p>SERVER_NAME and SERVER_PORT depend on the values of 
+                <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> and
+                <code class="directive"><a href="../mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>
+                respectively.</p>
+
+                <p>Those that are special to mod_rewrite include those below.</p>
         <div class="note">
                 <dl>
                   <dt><code>IS_SUBREQ</code></dt>
@@ -886,7 +892,7 @@ later</td></tr>
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>. On the first RewriteRule it is applied to the (%-encoded)
+      expression</a>. On the first RewriteRule it is applied to the (%-decoded)
       <a href="./directive-dict.html#Syntax">URL-path</a> of the request;
       subsequent patterns are applied to the output of the last matched
       RewriteRule.</p>
