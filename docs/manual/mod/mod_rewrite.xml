@@ -450,8 +450,14 @@ RewriteRule ^index\.html$  newsite.html
                 MIME-headers, C variables of the Apache HTTP Server or
                 <code>struct tm</code> fields of the Unix system.
                 Most are documented elsewhere in the Manual or in
-                the CGI specification. Those that are special to
-                mod_rewrite include those below.</p>
+                the CGI specification.</p>
+
+                <p>SERVER_NAME and SERVER_PORT depend on the values of 
+                <directive module="core">UseCanonicalName</directive> and
+                <directive module="core">UseCanonicalPhysicalPort</directive>
+                respectively.</p>
+
+                <p>Those that are special to mod_rewrite include those below.</p>
         <note>
                 <dl>
                   <dt><code>IS_SUBREQ</code></dt>
