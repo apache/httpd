@@ -310,6 +310,8 @@ apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
     queue->data = apr_palloc(a, queue_capacity * sizeof(fd_queue_elem_t));
     queue->bounds = queue_capacity;
     queue->nelts = 0;
+    queue->in = 0;
+    queue->out = 0;
 
     /* Set all the sockets in the queue to NULL */
     for (i = 0; i < queue_capacity; ++i)
@@ -340,7 +342,10 @@ apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
     AP_DEBUG_ASSERT(!queue->terminated);
     AP_DEBUG_ASSERT(!ap_queue_full(queue));
 
-    elem = &queue->data[queue->nelts];
+    elem = &queue->data[queue->in];
+    queue->in++;
+    if (queue->in >= queue->bounds)
+        queue->in -= queue->bounds;
     elem->sd = sd;
     elem->cs = cs;
     elem->p = p;
@@ -420,7 +425,11 @@ apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
         APR_RING_REMOVE(*te_out, link);
     }
     else {
-        elem = &queue->data[--queue->nelts];
+        elem = &queue->data[queue->out];
+        queue->out++;
+        if (queue->out >= queue->bounds)
+            queue->out -= queue->bounds;
+        queue->nelts--;
         *sd = elem->sd;
         *cs = elem->cs;
         *p = elem->p;
