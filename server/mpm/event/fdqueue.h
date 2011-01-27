@@ -70,8 +70,10 @@ struct fd_queue_t
 {
     APR_RING_HEAD(timers_t, timer_event_t) timers;
     fd_queue_elem_t *data;
-    int nelts;
-    int bounds;
+    unsigned int nelts;
+    unsigned int bounds;
+    unsigned int in;
+    unsigned int out;
     apr_thread_mutex_t *one_big_mutex;
     apr_thread_cond_t *not_empty;
     int terminated;
