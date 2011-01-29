@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1043126 -->
+<!-- English Revision : 1053726 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -226,7 +226,7 @@ fonctionnement des variables d'environnement.</p>
 <p>La syntaxe compl&egrave;te pour ce drapeau est :</p>
 
 <example>
-[E=VAR:VAL]
+[E=!VAR]
 </example>
 
 <p><code>VAL</code> peut comporter des r&eacute;f&eacute;rences arri&egrave;res
@@ -240,6 +240,14 @@ fonctionnement des variables d'environnement.</p>
 
 <p>vous pouvez d&eacute;finir la variable d'environnement nomm&eacute;e
 <code>VAR</code> avec une valeur vide.</p>
+
+<p>La forme</p>
+
+<example>
+[E=!VAR]
+</example>
+
+<p>permet d'annuler la d&eacute;finition de la variable <code>VAR</code>.</p>
 
 <p>Les variables d'environnement s'emploient dans diff&eacute;rents contextes,
 comme les programmes CGI, d'autres directives RewriteRule, ou des

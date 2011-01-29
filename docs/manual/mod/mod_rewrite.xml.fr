@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1044738 -->
+<!-- English Revision : 1063587 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -316,17 +316,22 @@ r&eacute;pertoire</description>
       <p>La directive <directive>RewriteBase</directive> d&eacute;finit
       explicitement le chemin URL de base (et non le chemin du
       r&eacute;pertoire dans le syst&egrave;me de fichiers !) pour les r&eacute;&eacute;critures dans un contexte
-      de r&eacute;pertoire. Lorsque vous utilisez une directive <directive
+      de r&eacute;pertoire dont le r&eacute;sultat est la substitution d'un
+      chemin relatif. Lorsque vous utilisez une directive <directive
       module="mod_rewrite">RewriteRule</directive> dans un fichier
       <code>.htaccess</code>, <module>mod_rewrite</module> enl&egrave;ve le
       pr&eacute;fixe de r&eacute;pertoire local avant d'effectuer le traitement, puis
       r&eacute;&eacute;crit ce qui reste de l'URL. Lorsque la r&eacute;&eacute;criture est termin&eacute;e,
-      <module>mod_rewrite</module> rajoute automatiquement le pr&eacute;fixe de
-      r&eacute;pertoire local au chemin.</p>
+      <module>mod_rewrite</module> ajoute automatiquement le pr&eacute;fixe de
+      r&eacute;pertoire local (ou la valeur de la directive
+      <directive>RewriteBase</directive> si cette derni&egrave;re est d&eacute;finie)
+      &agrave; la cha&icirc;ne de substitution avant de la remettre &agrave; disposition du
+      serveur, comme s'il s'agissait de l'URL d'origine.</p>
 
 	<p>Cette directive est <em>requise</em> pour les r&eacute;&eacute;critures
 	dans un contexte de r&eacute;pertoire d&eacute;fini via la directive
-	<directive module="mod_alias">Alias</directive>.</p>
+	<directive module="mod_alias">Alias</directive> lorsque la
+	substitution utilise un chemin relatif.</p>
 
       <p>Si votre chemin URL n'existe pas r&eacute;ellement dans le syst&egrave;me de
       fichiers, ou ne trouve pas directement sous le r&eacute;pertoire d&eacute;fini
@@ -481,6 +486,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
                  REQUEST_FILENAME<br />
                  IS_SUBREQ<br />
                  HTTPS<br />
+		 REQUEST_SCHEME<br />
               </td>
             </tr>
           </table>
@@ -489,7 +495,14 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		HTTP de m&ecirc;mes noms, au variables C du serveur HTTP Apache, ou
 		aux champs <code>struct tm</code> du syst&egrave;me Unix. La
 		plupart d'entre elles sont document&eacute;es ailleurs dans le
-		manuel ou dans la sp&eacute;cification CGI. Parmi les variables
+		manuel ou dans la sp&eacute;cification CGI.</p>
+
+		<p>SERVER_NAME et SERVER_PORT d&eacute;pendent respectivement
+		des valeurs des directives <directive
+		module="core">UseCanonicalName</directive> et <directive
+		module="core">UseCanonicalPhysicalPort</directive>.</p>
+		
+		<p>Parmi les variables
 		sp&eacute;cifiques &agrave; mod_rewrite, ou trouve les suivantes :</p>
         <note>
                 <dl>
@@ -543,10 +556,22 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		  (Cette variable peut &ecirc;tre utilis&eacute;e sans probl&egrave;me, que
 		  <module>mod_ssl</module> soit charg&eacute; ou non.</dd>
 
+		  <dt><code>REQUEST_SCHEME</code></dt>
+
+                  <dd>Contient le protocole de la requ&ecirc;te (en g&eacute;n&eacute;ral
+		  "http" ou "https"). La valeur peut &ecirc;tre modifi&eacute;e par
+		  la directive <directive
+		  module="core">ServerName</directive>.</dd>
+
                 </dl>
 </note>
         </li>
       </ul>
+
+      <p>Si la <em>cha&icirc;ne de test</em> contient la valeur sp&eacute;ciale
+      <code>expr</code>, <em>expression de comparaison</em> sera trait&eacute;
+      en tant qu'expression rationnelle de type <a
+      href="../expr.html">ap_expr</a>.</p>
 
       <p>Autres points &agrave; conna&icirc;tre ::</p>
       <ol>
@@ -824,6 +849,25 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 </note>
         </li>
 
+	<li>
+           <p>Si la <em>cha&icirc;ne de test</em> contient la valeur sp&eacute;ciale
+	   <code>expr</code>, la <em>cha&icirc;ne de comparaison</em> sera
+	   trait&eacute;e en tant qu'expression rationnelle de type <a
+	   href="../expr.html">ap_expr</a>.</p>
+
+	   <p>
+            Dans l'exemple ci-dessous, on utilise <code>-strmatch</code>
+	    pour comparer le <code>REFERER</code> avec le nom d'h&ocirc;te du
+	    site afin de bloquer le hotlinking (r&eacute;f&eacute;rencement direct)
+	    non d&eacute;sir&eacute;.
+           </p>
+
+           <example>
+           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+           RewriteRule ^/images - [F]
+           </example>
+        </li>
+
 	<li>Vous pouvez aussi d&eacute;finir certains drapeaux pour
 	l'<em>expression de comparaison</em> en ajoutant ces
 	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
@@ -933,35 +977,79 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <p><a id="patterns" name="patterns"><em>Mod&egrave;le</em></a> est une
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
-      l'expression est compar&eacute;e au (%-encoded)
+      l'expression est compar&eacute;e au (%-decoded)
       <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
       requ&ecirc;te ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui a &eacute;t&eacute; appliqu&eacute;e.</p>
 
 <note><title>Qu'est-ce qui est compar&eacute; ?</title>
-      <p>Le <em>Mod&egrave;le</em> est d'abord compar&eacute; &agrave; la partie
-      de l'URL apr&egrave;s le nom d'h&ocirc;te et le port, et avant la cha&icirc;ne de
-      requ&ecirc;te.</p>
-
-      <p>Dans un contexte de r&eacute;pertoire, <em>Mod&egrave;le</em> est compar&eacute; &agrave;
-      ce qui reste de l'URL apr&egrave;s suppression du pr&eacute;fixe qui a conduit
-      Apache httpd &agrave; la r&egrave;gle courante (voir la directive <directive
-      module="mod_rewrite">RewriteBase</directive>). Le pr&eacute;fixe supprim&eacute;
-      se termine toujours par un slash, ce qui signifie que la
-      correspondance se fera toujours avec une cha&icirc;ne qui ne commence
-      pas par un slash. Un <em>Mod&egrave;le</em> contenant <code>^/</code> ne
-      correspondra jamais dans un contexte de r&eacute;pertoire.</p>
       
+      <p>Dans un contexte de serveur virtuel <directive
+      module="core">VirtualHost</directive>, le <em>mod&egrave;le</em> est tout
+      d'abord compar&eacute; &agrave; la portion de l'URL situ&eacute;e entre le nom d'h&ocirc;te
+      &eacute;ventuellement accompagn&eacute; du port, et la cha&icirc;ne de param&egrave;tres (par
+      exemple "/app1/index.html").</p>
+
+      <p>Dans les contextes de r&eacute;pertoire <directive
+      module="core">Directory</directive> et htaccess, le
+      <em>mod&egrave;le</em> est tout d'abord compar&eacute; au chemin du <em>syst&egrave;me
+      de fichiers</em>, apr&egrave;s suppression du pr&eacute;fixe ou chemin de base
+      ayant conduit &agrave; la r&egrave;gle <directive>RewriteRule</directive> (par
+      exemple "app1/index.html" ou
+      "index.html" selon l'endroit o&ugrave; les directives sont d&eacute;finies).</p>
       
       <p>Si vous souhaitez faire une comparaison sur le nom
       d'h&ocirc;te, le port, ou la cha&icirc;ne de requ&ecirc;te, utilisez une
       directive <directive module="mod_rewrite">RewriteCond</directive>
       comportant respectivement les variables
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, ou
-      <code>%{QUERY_STRING}</code>. Si vous d&eacute;sirez effectuer une
-      correspondance avec l'ensemble du chemin de l'URL dans un contexte
-      de r&eacute;pertoire (htaccess), utilisez la variable
-      <code>%{REQUEST_URI}</code>.</p>
+      <code>%{QUERY_STRING}</code>.</p>
+</note>
+
+<note><title>R&eacute;&eacute;critures dans un contexte de r&eacute;pertoire</title>
+<ul>
+<li>L'utilisation du moteur de r&eacute;&eacute;criture dans les
+fichiers <a href="../howto/htaccess.html">.htaccess</a> et les sections
+<directive
+type="section" module="core">Directory</directive> est un peu plus
+complexe.</li>
+
+<li>Pour activer le moteur de r&eacute;&eacute;criture dans ces contextes, vous devez
+d&eacute;finir "<code>RewriteEngine On</code>" <strong>et</strong>
+"<code>Options FollowSymLinks</code>". Si l'administrateur a d&eacute;sactiv&eacute;
+la possibilit&eacute; de modifier l'option <code>FollowSymLinks</code> au
+niveau du r&eacute;pertoire d'un utilisateur, vous ne pouvez pas utiliser le
+moteur de r&eacute;&eacute;criture. Cette restriction a &eacute;t&eacute; instaur&eacute;e &agrave; des fins de
+s&eacute;curit&eacute;.</li>
+
+<li>Lorsqu'on utilise le moteur de r&eacute;&eacute;criture dans un fichier
+<code>.htaccess</code>, le chemin de base du r&eacute;pertoire courant (qui est
+toujours le m&ecirc;me pour ce m&ecirc;me r&eacute;pertoire) est automatiquement
+<em>supprim&eacute;</em> au cours de la comparaison avec le mod&egrave;le de la r&egrave;gle
+de r&eacute;&eacute;criture, et automatiquement <em>ajout&eacute;</em> lorsqu'une
+substitution relative (ne d&eacute;butant pas par un slash ou un nom de
+protocole) arrive &agrave; la fin d'un jeu de r&egrave;gles. Voir la directive
+<directive module="mod_rewrite">RewriteBase</directive> pour plus de
+d&eacute;tails &agrave; propos de l'ajout du pr&eacute;fixe apr&egrave;s les substitutions
+relatives.</li>
+
+<li>Si vous souhaitez effectuer une comparaison en prenant en compte
+l'int&eacute;gralit&eacute; du
+chemin de l'URL dans un contexte de r&eacute;pertoire (htaccess), vous devez
+utiliser la variable <code>%{REQUEST_URI}</code> dans la directive
+<directive>RewriteCond</directive>.</li>
+
+<li>Le prefixe supprim&eacute; se termine toujours par un slash, ce qui
+signifie que la comparaison s'effectue avec une cha&icirc;ne qui ne comporte
+<em>jamais</em> de slash de d&eacute;but. Ainsi, un <em>mod&egrave;le</em> contenant
+<code>^/</code> ne correspondra jamais dans un contexte de r&eacute;pertoire.</li>
+
+<li>Bien que les r&egrave;gles de r&eacute;&eacute;criture soient permises du point de vue de
+la syntaxe dans les sections <directive type="section"
+module="core">Location</directive> et <directive type="section"
+module="core">Files</directive>, elles n'y sont pas prises en compte, et
+n'y sont &agrave; priori d'aucune utilit&eacute;.</li>
+</ul>
 </note>
 
 	<p>Pour quelques conseils &agrave; propos des <glossary
@@ -1131,15 +1219,16 @@ substitution !
         </td>
     </tr>
     <tr>
-        <td>discardpathinfo|DPI</td>
+        <td>discardpath|DPI</td>
         <td>Supprime la partie PATH_INFO de l'URI r&eacute;&eacute;crit. <em><a
 	href="../rewrite/flags.html#flag_dpi">d&eacute;tails 
         ...</a></em></td>
     </tr>
     <tr>
-        <td>env|E=<em>VAR</em>[:<em>VAL</em>]</td>
+        <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>D&eacute;finit la variable d'environnement <em>VAR</em> (&agrave; la valeur
-	<em>VAL</em> si elle est fournie). <em><a
+	<em>VAL</em> si elle est fournie). La variante !<em>VAR</em>
+	annule la d&eacute;finition de la variable <em>VAR</em>.<em><a
         href="../rewrite/flags.html#flag_e">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
@@ -1257,49 +1346,6 @@ configuration du module <module>mod_userdir</module>.</p>
 
 <p> Ce d&eacute;veloppement n'est pas effectu&eacute; si le drapeau <em>PT</em> est
 utilis&eacute; dans la directive <directive module="mod_rewrite">RewriteRule</directive></p>
-</note>
-
-<note><title>R&eacute;&eacute;critures dans le contexte de r&eacute;pertoire</title>
-
-<p>Le moteur de r&eacute;&eacute;criture peut &ecirc;tre utilis&eacute; dans les fichiers <a
-href="../howto/htaccess.html">.htaccess</a>. Pour activer le moteur de
-r&eacute;&eacute;criture pour ces fichiers, vous devez pr&eacute;ciser "<code>RewriteEngine
-On</code>" <strong>et</strong> "<code>Options FollowSymLinks</code>"
-doit &ecirc;tre activ&eacute;. Si votre administrateur a interdit la surcharge de
-<code>FollowSymLinks</code> pour un r&eacute;pertoire utilisateur, vous ne
-pouvez pas utiliser le moteur de r&eacute;&eacute;criture. Cette restriction est
-n&eacute;cessaire pour des raisons de s&eacute;curit&eacute;.</p>
-
-<p>Lorsqu'on utilise le moteur de r&eacute;&eacute;criture dans les fichiers
-<code>.htaccess</code>, le pr&eacute;fixe du r&eacute;pertoire (qui est
-toujours le m&ecirc;me pour un r&eacute;pertoire donn&eacute;) est automatiquement
-<em>supprim&eacute;</em> pour la comparaison du mod&egrave;le et automatiquement
-<em>ajout&eacute;</em> une fois la substitution effectu&eacute;e. Cette fonctionnalit&eacute;
-est n&eacute;cessaire pour de nombreux cas de r&eacute;&eacute;criture ; sans elle, vous
-seriez oblig&eacute; de tenir compte du r&eacute;pertoire parent pour la comparaison,
-ce qui n'est pas toujours
-possible. Il y a une exception : si une cha&icirc;ne de substitution commence
-par <code>http://</code>, le pr&eacute;fixe du r&eacute;pertoire ne sera
-<strong>pas</strong> ajout&eacute;, et une redirection externe (ou le passage
-par un mandataire, si le drapeau <strong>P</strong> est utilis&eacute;) sera
-initi&eacute;e. Voir la directive <directive
-module="mod_rewrite">RewriteBase</directive> pour plus de d&eacute;tails.</p>
-
-<p>Le moteur de r&eacute;&eacute;criture peut aussi &ecirc;tre utilis&eacute; dans les sections
-<directive type="section" module="core">Directory</directive> avec les
-m&ecirc;mes r&egrave;gles de comparaison des pr&eacute;fixes que celles qui s'appliquent
-pour les fichiers <code>.htaccess</code>. Cependant, il est en g&eacute;n&eacute;ral
-plus simple, pour &eacute;viter la complication des substitutions de pr&eacute;fixes,
-de d&eacute;finir les r&egrave;gles de r&eacute;&eacute;criture dans le contexte du serveur
-principal ou des h&ocirc;tes virtuels, plut&ocirc;t que dans une section
-<directive type="section" module="core">Directory</directive>.</p>
-
-<p>Bien que du point de vue syntaxique, il soit permis de d&eacute;finir des
-r&egrave;gles de r&eacute;&eacute;criture dans les sections <directive type="section"
-module="core">Location</directive> et <directive
-type="section" module="core">Files</directive>, ce n'est &agrave; priori
-d'aucune utilit&eacute; et n'est pas support&eacute;.</p>
-
 </note>
 
      <p>Voici toutes les combinaisons de substitution et leurs
