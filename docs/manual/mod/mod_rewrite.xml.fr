@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1055700 -->
+<!-- English Revision : 1063588 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -870,9 +870,15 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		en-t&ecirc;tes MIME HTTP, aux variables C du serveur Apache
 		ou aux champs <code>struct tm</code> du syst&egrave;me Unix.
 		La plupart sont document&eacute;es dans une autre partie du
-		manuel ou dans la sp&eacute;cification CGI. Vous trouverez
-		dans ce qui suit quelques variables sp&eacute;cifiques
-		&agrave; mod_rewrite.</p>
+		manuel ou dans la sp&eacute;cification CGI.</p>
+
+		<p>SERVER_NAME et SERVER_PORT d&eacute;pendent respectivement
+		des valeurs des directives <directive
+		module="core">UseCanonicalName</directive> et <directive
+		module="core">UseCanonicalPhysicalPort</directive>.</p>
+		
+		<p>Parmi les variables
+		sp&eacute;cifiques &agrave; mod_rewrite, ou trouve les suivantes :</p>
 	<note>
                 <dl>
                   <dt><code>IS_SUBREQ</code></dt>
@@ -1231,7 +1237,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       compatible perl. Dans la premi&egrave;re r&egrave;gle de r&eacute;&eacute;criture,
       l'expression est compar&eacute;e au
       <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
-      requ&ecirc;te (url-encod&eacute; avec caract&egrave;res %) ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
+      requ&ecirc;te (%-decoded) ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui a &eacute;t&eacute; appliqu&eacute;e.</p>
 
 <note><title>Qu'est-ce qui est compar&eacute; ?</title>
