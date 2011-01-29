@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1037244 -->
+<!-- English Revision : 1058639 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -163,12 +163,11 @@
       <a href="howto/ssi.html">Inclusions C&ocirc;t&eacute; Serveur (SSI)</a>;</p>
 
       <example>
-      <pre>
-&lt;!-- L'inclusion suivante peut &ecirc;tre mise en cache --&gt;
-&lt;!--#include virtual="/footer.html" --&gt;
-
-&lt;!-- L'inclusion suivante ne peut pas &ecirc;tre mise en cache --&gt;
-&lt;!--#include file="/path/to/footer.html" --&gt;</pre>
+&lt;!-- L'inclusion suivante peut &ecirc;tre mise en cache --&gt;<br />
+&lt;!--#include virtual="/footer.html" --&gt;<br />
+<br />
+&lt;!-- L'inclusion suivante ne peut pas &ecirc;tre mise en cache --&gt;<br />
+&lt;!--#include file="/path/to/footer.html" --&gt; <br />
       </example>
 
       <p>Si vous utilisez les SSI, et voulez b&eacute;n&eacute;ficier de la vitesse de
@@ -487,7 +486,7 @@ Vary: negotiate,accept-language,accept-charset
       acc&egrave;s ult&eacute;rieurs &agrave; ce fichier.</p>
 
       <example>
-      <pre>CacheFile /usr/local/apache2/htdocs/index.html</pre>
+      CacheFile /usr/local/apache2/htdocs/index.html
       </example>
 
       <p>Si vous avez l'intention de mettre en cache un grand nombre de
@@ -608,7 +607,7 @@ sys     0m0.000s</pre>
       toutes les demandes d'acc&egrave;s &agrave; ce fichier.</p>
 
       <example>
-      <pre>MMapFile /usr/local/apache2/htdocs/index.html</pre>
+      MMapFile /usr/local/apache2/htdocs/index.html
       </example>
 
       <p>Comme dans le cas de la directive
@@ -649,11 +648,10 @@ sys     0m0.000s</pre>
     <p>Typiquement, le module sera configur&eacute; comme suit :</p>
 
     <example>
-    <pre>
-CacheRoot   /var/cache/apache/
-CacheEnable disk /
-CacheDirLevels 2
-CacheDirLength 1</pre>
+CacheRoot   /var/cache/apache/<br />
+CacheEnable disk /<br />
+CacheDirLevels 2<br />
+CacheDirLength 1
     </example>
 
     <p>Il est important de savoir que, les fichiers mis en cache &eacute;tant stock&eacute;s
