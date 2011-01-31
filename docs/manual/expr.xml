@@ -41,7 +41,10 @@
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
 
   <section id="grammar">
-    <title>Grammar in BNF notation</title>
+    <title>Grammar in Backus–Naur Form notation</title>
+      <p><a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus–Naur Form</a> (BNF) is a notation
+      technique for context-free grammars, often used to describe the syntax of languages used in computing.
+      </p>
 <blockquote>
 <pre>
 expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
