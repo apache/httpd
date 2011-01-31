@@ -1370,7 +1370,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     
     memset(bshared, 0, sizeof(proxy_balancer_shared));
     
-    (*balancer)->lbmethod = lbmethod;
+    bshared->lbmethod = lbmethod;
     bshared->updated = apr_time_now();
     bshared->was_malloced = (do_malloc != 0);
 

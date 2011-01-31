@@ -368,6 +368,7 @@ typedef struct {
     char nonce[APR_UUID_FORMATTED_LENGTH + 1];
     apr_interval_time_t timeout;  /* Timeout for waiting on free connection */
     apr_time_t      updated;    /* timestamp of last update */
+    proxy_balancer_method *lbmethod;
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
     int             sticky_force:1;   /* Disable failover for sticky sessions */
@@ -382,7 +383,6 @@ struct proxy_balancer {
     apr_array_header_t *workers;  /* initially configured workers */
     apr_array_header_t *errstatuses;  /* statuses to force members into error */
     ap_slotmem_instance_t *slot;  /* worker shm data - runtime */
-    proxy_balancer_method *lbmethod;
     int growth;                   /* number of post-config workers can added */
     int max_workers;              /* maximum number of allowed workers */
     const char *name;             /* name of the load balancer */
