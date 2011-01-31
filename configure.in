@@ -529,6 +529,26 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
 [
   APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
   if test "$GCC" = "yes"; then
+    APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith])
+    AC_CACHE_CHECK([whether gcc accepts -Wdeclaration-after-statement], [ap_cv_cc_Wdas], [
+      save_CFLAGS=$CFLAGS
+      CFLAGS="$CFLAGS -Wdeclaration-after-statement"
+      AC_COMPILE_IFELSE([int foo() { return 0; }],
+        [ap_cv_cc_Wdas=yes], [ap_cv_cc_Wdas=no])
+      CFLAGS=$save_CFLAGS
+    ])
+    if test "$ap_cv_cc_Wdas" = "yes"; then
+      APR_ADDTO(CFLAGS,[-Wdeclaration-after-statement])
+    fi
+  elif test "$AIX_XLC" = "yes"; then
+    APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+  fi
+])dnl
+
+AC_ARG_ENABLE(debugger-mode,APACHE_HELP_STRING(--enable-debugger-mode,Turn on debugging and compile time warnings and turn off optimization),
+[
+  APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
+  if test "$GCC" = "yes"; then
     APR_ADDTO(CFLAGS,[-Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -Wpointer-arith -O0])
     AC_CACHE_CHECK([whether gcc accepts -Wdeclaration-after-statement], [ap_cv_cc_Wdas], [
       save_CFLAGS=$CFLAGS
