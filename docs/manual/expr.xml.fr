@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- English Revision : 1055507 -->
@@ -29,10 +29,10 @@
   <summary>
     <p>Historiquement, il existe de nombreuses variantes dans la syntaxe
     des expressions permettant d'exprimer une condition dans les
-    différents modules du serveur HTTP Apache. À ce titre, des travaux sont
-    en cours pour n'utiliser qu'une seule variante nommée
+    diff&eacute;rents modules du serveur HTTP Apache. &Agrave; ce titre, des travaux sont
+    en cours pour n'utiliser qu'une seule variante nomm&eacute;e
     <em>ap_expr</em>, pour toutes les directives de configuration. Ce
-    document décrit l'interpréteur d'expressions <em>ap_expr</em>.
+    document d&eacute;crit l'interpr&eacute;teur d'expressions <em>ap_expr</em>.
     </p>
   </summary>
 
@@ -46,8 +46,8 @@
   <section id="grammar">
     <title>Syntaxe en Forme de Backus-Naur</title>
       <p>La <a href="http://fr.wikipedia.org/wiki/Forme_de_Backus-Naur">Forme de Backus-Naur</a>
-      (souvent abrégée en BNF, de l'anglais Backus-Naur Form) est une notation permettant de décrire
-      les règles syntaxiques des langages de programmation.
+      (souvent abr&eacute;g&eacute;e en BNF, de l'anglais Backus-Naur Form) est une notation permettant de d&eacute;crire
+      les r&egrave;gles syntaxiques des langages de programmation.
       </p>
 <blockquote>
 <pre>
@@ -119,17 +119,17 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <section id="vars">
     <title>Variables</title>
 
-    <p>L'interpréteur d'expressions fournit plusieurs variables de la
+    <p>L'interpr&eacute;teur d'expressions fournit plusieurs variables de la
     forme <code>%{HTTP_HOST}</code>. Notez que la valeur d'une variable
-    peut dépendre de la phase du traitement de la requête au cours de
-    laquelle elle est évaluée. Par exemple, une expression utilisée dans
-    une directive <directive>&lt;If &gt;</directive> sera évaluée avant
-    la phase d'authentification. Par conséquent, la variable
-    <code>%{REMOTE_USER}</code> ne sera pas encore définie à ce stade.</p>
+    peut d&eacute;pendre de la phase du traitement de la requ&ecirc;te au cours de
+    laquelle elle est &eacute;valu&eacute;e. Par exemple, une expression utilis&eacute;e dans
+    une directive <directive>&lt;If &gt;</directive> sera &eacute;valu&eacute;e avant
+    la phase d'authentification. Par cons&eacute;quent, la variable
+    <code>%{REMOTE_USER}</code> ne sera pas encore d&eacute;finie &agrave; ce stade.</p>
 
-    <p>Les variables suivantes contiennent la valeur de l'en-tête de
-    requête HTTP correspondant. La <a href="#functions">fonction</a>
-    <code>req</code> permet d'extraire les valeurs des autres en-têtes.</p>
+    <p>Les variables suivantes contiennent la valeur de l'en-t&ecirc;te de
+    requ&ecirc;te HTTP correspondant. La <a href="#functions">fonction</a>
+    <code>req</code> permet d'extraire les valeurs des autres en-t&ecirc;tes.</p>
 
     <table border="1" style="zebra">
     <columnspec><column width="1"/></columnspec>
@@ -144,56 +144,56 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     </table>
 
-    <p>Autres variables liées aux requêtes</p>
+    <p>Autres variables li&eacute;es aux requ&ecirc;tes</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".4"/><column width=".6"/></columnspec>
 
     <tr><th>Nom</th><th>Description</th></tr>
     <tr><td><code>REQUEST_METHOD</code></td>
-        <td>La méthode HTTP de la requête entrante (par exemple
+        <td>La m&eacute;thode HTTP de la requ&ecirc;te entrante (par exemple
 	<code>GET</code>)</td></tr>
     <tr><td><code>REQUEST_SCHEME</code></td>
-        <td>Le protocole associé à l'URI de la requête</td></tr>
+        <td>Le protocole associ&eacute; &agrave; l'URI de la requ&ecirc;te</td></tr>
     <tr><td><code>REQUEST_URI</code></td>
-        <td>L'URI de la requête</td></tr>
+        <td>L'URI de la requ&ecirc;te</td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
         <td></td></tr>
     <tr><td><code>SCRIPT_FILENAME</code></td>
-        <td>Identique à <code>REQUEST_FILENAME</code></td></tr>
+        <td>Identique &agrave; <code>REQUEST_FILENAME</code></td></tr>
     <tr><td><code>SCRIPT_USER</code></td>
-        <td>Le nom d'utilisateur du propriétaire du script.</td></tr>
+        <td>Le nom d'utilisateur du propri&eacute;taire du script.</td></tr>
     <tr><td><code>SCRIPT_GROUP</code></td>
         <td>Le nom du groupe auquel appartient le script.</td></tr>
     <tr><td><code>PATH_INFO</code></td>
         <td></td></tr>
     <tr><td><code>QUERY_STRING</code></td>
-        <td>La chaîne de paramètres de la requête courante</td></tr>
+        <td>La cha&icirc;ne de param&egrave;tres de la requ&ecirc;te courante</td></tr>
     <tr><td><code>IS_SUBREQ</code></td>
-        <td>"<code>true</code>" si la requête courante est une
-	sous-requête, "<code>false</code>" dans le cas contraire</td></tr>
+        <td>"<code>true</code>" si la requ&ecirc;te courante est une
+	sous-requ&ecirc;te, "<code>false</code>" dans le cas contraire</td></tr>
     <tr><td><code>THE_REQUEST</code></td>
-        <td>La requête complète (par exemple "<code>GET /index.html
+        <td>La requ&ecirc;te compl&egrave;te (par exemple "<code>GET /index.html
 	HTTP/1.1</code>")</td></tr>
     <tr><td><code>REMOTE_ADDR</code></td>
-        <td>L'adresse IP de l'hôte distant</td></tr>
+        <td>L'adresse IP de l'h&ocirc;te distant</td></tr>
     <tr><td><code>REMOTE_HOST</code></td>
-        <td>Le nom d'hôte de l'hôte distant</td></tr>
+        <td>Le nom d'h&ocirc;te de l'h&ocirc;te distant</td></tr>
     <tr><td><code>REMOTE_USER</code></td>
-        <td>Le nom de l'utilisateur authentifié (s'il existe)</td></tr>
+        <td>Le nom de l'utilisateur authentifi&eacute; (s'il existe)</td></tr>
     <tr><td><code>REMOTE_IDENT</code></td>
-        <td>Le nom de l'utilisateur défini par <module>mod_ident</module></td></tr>
+        <td>Le nom de l'utilisateur d&eacute;fini par <module>mod_ident</module></td></tr>
     <tr><td><code>SERVER_NAME</code></td>
         <td>La valeur de la directive <directive
 	module="core">ServerName</directive> du serveur virtuel courant</td></tr>
     <tr><td><code>SERVER_PORT</code></td>
-        <td>Le port associé au serveur virtuel courant ; voir la
+        <td>Le port associ&eacute; au serveur virtuel courant ; voir la
 	directive <directive module="core">ServerName</directive></td></tr>
     <tr><td><code>SERVER_ADMIN</code></td>
         <td>La valeur de la directive <directive
 	module="core">ServerAdmin</directive> du serveur virtuel courant</td></tr>
     <tr><td><code>SERVER_PROTOCOL</code></td>
-        <td>Le protocole utilisé par la requête</td></tr>
+        <td>Le protocole utilis&eacute; par la requ&ecirc;te</td></tr>
     <tr><td><code>DOCUMENT_ROOT</code></td>
         <td>La valeur de la directive <directive
 	module="core">DocumentRoot</directive> du serveur virtuel
@@ -203,22 +203,22 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	module="mod_authn_core">AuthType</directive> (par exemple
 	"<code>basic</code>")</td></tr>
     <tr><td><code>CONTENT_TYPE</code></td>
-        <td>Le type de contenu de la réponse</td></tr>
+        <td>Le type de contenu de la r&eacute;ponse</td></tr>
     <tr><td><code>HANDLER</code></td>
         <td>Le nom du <a href="handler.html">gestionnaire</a> qui a
-	généré la réponse</td></tr>
+	g&eacute;n&eacute;r&eacute; la r&eacute;ponse</td></tr>
     <tr><td><code>HTTPS</code></td>
-        <td>"<code>on</code>" si la requête utilise https,
+        <td>"<code>on</code>" si la requ&ecirc;te utilise https,
 	"<code>off</code>" dans le cas contraire</td></tr>
     <tr><td><code>IPV6</code></td>
         <td>"<code>on</code>" si la connexion utilise IPv6,
 	"<code>off</code>" dans le cas contraire</td></tr>
     <tr><td><code>REQUEST_LOG_ID</code></td>
-        <td>L'identifiant du message d'erreur associé à la requête (voir
+        <td>L'identifiant du message d'erreur associ&eacute; &agrave; la requ&ecirc;te (voir
 	la directive <directive
 	module="core">ErrorLogFormat</directive>)</td></tr>
     <tr><td><code>CONN_LOG_ID</code></td>
-        <td>L'identifiant du message d'erreur associé à la connexion
+        <td>L'identifiant du message d'erreur associ&eacute; &agrave; la connexion
 	(voir la directive <directive
 	module="core">ErrorLogFormat</directive>)</td></tr>
 
@@ -231,7 +231,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <tr><th>Nom</th><th>Description</th></tr>
     <tr><td><code>TIME_YEAR</code></td>
-        <td>L'année courante (par exemple <code>2010</code>)</td></tr>
+        <td>L'ann&eacute;e courante (par exemple <code>2010</code>)</td></tr>
     <tr><td><code>TIME_MON</code></td>
         <td>Le mois courant (<code>1</code>, ..., <code>12</code>)</td></tr>
     <tr><td><code>TIME_DAY</code></td>
@@ -244,32 +244,32 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>TIME_SEC</code></td>
         <td>Les secondes de la date courante</td></tr>
     <tr><td><code>TIME_WDAY</code></td>
-        <td>Le jour de la semaine (à partir de <code>0</code> pour
+        <td>Le jour de la semaine (&agrave; partir de <code>0</code> pour
 	dimanche)</td></tr>
     <tr><td><code>TIME</code></td>
         <td>La date et heure au format <code>20101231235959</code></td></tr>
     <tr><td><code>SERVER_SOFTWARE</code></td>
-        <td>La chaîne contenant la version du serveur</td></tr>
+        <td>La cha&icirc;ne contenant la version du serveur</td></tr>
     <tr><td><code>API_VERSION</code></td>
         <td>La date de la version de l'API (module magic number)</td></tr>
     </table>
 
-    <p>Certains modules, comme <module>mod_ssl</module>, définissent des
-    variables supplémentaires.</p>
+    <p>Certains modules, comme <module>mod_ssl</module>, d&eacute;finissent des
+    variables suppl&eacute;mentaires.</p>
 
 </section>
 
 <section id="binop">
-    <title>Opérateurs binaires</title>
+    <title>Op&eacute;rateurs binaires</title>
 
-    <p>À l'exception de quelques opérateurs de comparaison internes, les
-    opérateurs binaires sont de la forme
+    <p>&Agrave; l'exception de quelques op&eacute;rateurs de comparaison internes, les
+    op&eacute;rateurs binaires sont de la forme
     "<code>-[a-zA-Z][a-zA-Z0-9_]+</code>", autrement dit un signe moins
-    et au moins deux caractères. Le nom est insensible à la casse. Les
-    modules peuvent fournir des opérateurs binaires supplémentaires.</p>
+    et au moins deux caract&egrave;res. Le nom est insensible &agrave; la casse. Les
+    modules peuvent fournir des op&eacute;rateurs binaires suppl&eacute;mentaires.</p>
 
     <section id="comp">
-    <title>Opérateurs de comparaison</title>
+    <title>Op&eacute;rateurs de comparaison</title>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
@@ -277,85 +277,85 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
     <tr><td><code>==</code></td>
         <td><code>=</code></td>
-        <td>Egalité de chaînes</td></tr>
+        <td>Egalit&eacute; de cha&icirc;nes</td></tr>
     <tr><td><code>!=</code></td>
         <td></td>
-        <td>Inégalité de chaînes</td></tr>
+        <td>In&eacute;galit&eacute; de cha&icirc;nes</td></tr>
     <tr><td><code>&lt;</code></td>
         <td></td>
-        <td>Chaîne inférieure à</td></tr>
+        <td>Cha&icirc;ne inf&eacute;rieure &agrave;</td></tr>
     <tr><td><code>&lt;=</code></td>
         <td></td>
-        <td>Chaîne inférieure ou égale à</td></tr>
+        <td>Cha&icirc;ne inf&eacute;rieure ou &eacute;gale &agrave;</td></tr>
     <tr><td><code>&gt;</code></td>
         <td></td>
-        <td>Chaîne supérieure à</td></tr>
+        <td>Cha&icirc;ne sup&eacute;rieure &agrave;</td></tr>
     <tr><td><code>&gt;=</code></td>
         <td></td>
-        <td>Chaîne supérieure ou égale à</td></tr>
+        <td>Cha&icirc;ne sup&eacute;rieure ou &eacute;gale &agrave;</td></tr>
     <tr><td><code>-eq</code></td>
         <td><code>eq</code></td>
-        <td>Egalité d'entiers</td></tr>
+        <td>Egalit&eacute; d'entiers</td></tr>
     <tr><td><code>-ne</code></td>
         <td><code>ne</code></td>
-        <td>Inégalité d'entiers</td></tr>
+        <td>In&eacute;galit&eacute; d'entiers</td></tr>
     <tr><td><code>-lt</code></td>
         <td><code>lt</code></td>
-        <td>Entier inférieur à</td></tr>
+        <td>Entier inf&eacute;rieur &agrave;</td></tr>
     <tr><td><code>-le</code></td>
         <td><code>le</code></td>
-        <td>Entier inférieur ou égal à</td></tr>
+        <td>Entier inf&eacute;rieur ou &eacute;gal &agrave;</td></tr>
     <tr><td><code>-gt</code></td>
         <td><code>gt</code></td>
-        <td>Entier supérieur à</td></tr>
+        <td>Entier sup&eacute;rieur &agrave;</td></tr>
     <tr><td><code>-ge</code></td>
         <td><code>ge</code></td>
-        <td>Entier supérieur ou égal à</td></tr>
+        <td>Entier sup&eacute;rieur ou &eacute;gal &agrave;</td></tr>
     </table>
     </section>
 
     <section id="binaryother">
-    <title>Autres opérateurs binaires</title>
+    <title>Autres op&eacute;rateurs binaires</title>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
 
     <tr><th>Nom</th><th>Description</th></tr>
     <tr><td><code>-ipmatch</code></td>
-        <td>L'adresse IP correspond à adresse/masque</td></tr>
+        <td>L'adresse IP correspond &agrave; adresse/masque</td></tr>
     <tr><td><code>-strmatch</code></td>
-        <td>la chaîne de gauche correspond au modèle constitué par la
-	chaîne de droite (contenant des caractères génériques *, ?, [])</td></tr>
+        <td>la cha&icirc;ne de gauche correspond au mod&egrave;le constitu&eacute; par la
+	cha&icirc;ne de droite (contenant des caract&egrave;res g&eacute;n&eacute;riques *, ?, [])</td></tr>
     <tr><td><code>-strcmatch</code></td>
-        <td>idem <code>-strmatch</code>, mais insensible à la casse</td></tr>
+        <td>idem <code>-strmatch</code>, mais insensible &agrave; la casse</td></tr>
     <tr><td><code>-fnmatch</code></td>
         <td>idem <code>-strmatch</code>, mais les slashes ne sont pas
-	pris en compte par les caractères génériques</td></tr>
+	pris en compte par les caract&egrave;res g&eacute;n&eacute;riques</td></tr>
     </table>
     </section>
 
 </section>
 
 <section id="unnop">
-    <title>Opérateurs unaires</title>
+    <title>Op&eacute;rateurs unaires</title>
 
-    <p>Les opérateurs unaires sont de la forme "<code>-[a-zA-Z]</code>",
-    autrement dit le signe moins et un caractère. Le nom <em>est</em>
-    sensible à la casse. Les modules peuvent fournir des opérateurs
-    unaires supplémentaires.</p>
+    <p>Les op&eacute;rateurs unaires sont de la forme "<code>-[a-zA-Z]</code>",
+    autrement dit le signe moins et un caract&egrave;re. Le nom <em>est</em>
+    sensible &agrave; la casse. Les modules peuvent fournir des op&eacute;rateurs
+    unaires suppl&eacute;mentaires.</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
 
     <tr><th>Nom</th><th>Description</th></tr>
     <tr><td><code>-n</code></td>
-        <td>Vrai si la chaîne n'est pas vide</td></tr>
+        <td>Vrai si la cha&icirc;ne n'est pas vide</td></tr>
     <tr><td><code>-z</code></td>
-        <td>Vrai si la chaîne est vide</td></tr>
+        <td>Vrai si la cha&icirc;ne est vide</td></tr>
     <tr><td><code>-T</code></td>
-        <td>Faux si la chaîne est vide, "<code>0</code>",
+        <td>Faux si la cha&icirc;ne est vide, "<code>0</code>",
 	"<code>off</code>", "<code>false</code>", ou "<code>no</code>"
-	(insensibilité à la casse). Vrai dans le cas contraire.</td></tr>
+	(insensibilit&eacute; &agrave; la casse). Vrai dans le cas contraire.</td></tr>
     <tr><td><code>-R</code></td>
         <td>Idem "<code>%{REMOTE_ADDR} -ipmatch ...</code>", en plus
 	efficace
@@ -367,56 +367,56 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <section id="functions">
     <title>Fonctions</title>
 
-    <p>Normalement, les fonctions dont la valeur est une chaîne acceptent une chaîne
-    comme argument et renvoient une chaîne. Les noms de fonctions sont
-    insensibles à la casse. Les modules peuvent fournir des fonctions
-    supplémentaires.</p>
+    <p>Normalement, les fonctions dont la valeur est une cha&icirc;ne acceptent une cha&icirc;ne
+    comme argument et renvoient une cha&icirc;ne. Les noms de fonctions sont
+    insensibles &agrave; la casse. Les modules peuvent fournir des fonctions
+    suppl&eacute;mentaires.</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
 
     <tr><th>Nom</th><th>Description</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
-        <td>Lit l'en-tête de requête HTTP</td></tr>
+        <td>Lit l'en-t&ecirc;te de requ&ecirc;te HTTP</td></tr>
     <tr><td><code>resp</code></td>
-        <td>Lit l'en-tête de réponse HTTP</td></tr>
+        <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td></tr>
     <tr><td><code>reqenv</code></td>
-        <td>Recherche une variable d'environnement de requête</td></tr>
+        <td>Recherche une variable d'environnement de requ&ecirc;te</td></tr>
     <tr><td><code>osenv</code></td>
-        <td>Recherche une variable d'environnement du système
+        <td>Recherche une variable d'environnement du syst&egrave;me
 	d'exploitation</td></tr>
     <tr><td><code>note</code></td>
-        <td>Recherche une note de requête</td></tr>
+        <td>Recherche une note de requ&ecirc;te</td></tr>
     <tr><td><code>env</code></td>
-        <td>Renvoie le premier résultat positif de <code>note</code>,
+        <td>Renvoie le premier r&eacute;sultat positif de <code>note</code>,
 	<code>reqenv</code>, <code>osenv</code></td></tr>
     <tr><td><code>tolower</code></td>
-        <td>Convertit une chaîne en minuscules</td></tr>
+        <td>Convertit une cha&icirc;ne en minuscules</td></tr>
     <tr><td><code>toupper</code></td>
-        <td>Convertit une chaîne en majuscules</td></tr>
+        <td>Convertit une cha&icirc;ne en majuscules</td></tr>
     <tr><td><code>escape</code></td>
-        <td>Echappe les caractères spéciaux en codage hexadécimal</td></tr>
+        <td>Echappe les caract&egrave;res sp&eacute;ciaux en codage hexad&eacute;cimal</td></tr>
     <tr><td><code>unescape</code></td>
-        <td>"Déséchappe" les chaînes codées en hexadécimal en conservant
-	le codage des caractères spéciaux aux URLs (XXX: describe better)</td></tr>
+        <td>"D&eacute;s&eacute;chappe" les cha&icirc;nes cod&eacute;es en hexad&eacute;cimal en conservant
+	le codage des caract&egrave;res sp&eacute;ciaux aux URLs (XXX: describe better)</td></tr>
     <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td></tr>
     </table>
 
-    <p>En plus des fonctions dont la valeur est une chaîne, il existe
+    <p>En plus des fonctions dont la valeur est une cha&icirc;ne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une
-    chaîne comme argument, et renvoient une liste de mots, autrement dit
-    une liste de chaînes. La liste de mot peut être utilisée avec
-    l'opérateur spécial <code>-in</code>. Les noms de fonctions sont
-    insensibles à la casse. Les modules peuvent fournir des fonctions
-    supplémentaires.</p>
+    cha&icirc;ne comme argument, et renvoient une liste de mots, autrement dit
+    une liste de cha&icirc;nes. La liste de mot peut &ecirc;tre utilis&eacute;e avec
+    l'op&eacute;rateur sp&eacute;cial <code>-in</code>. Les noms de fonctions sont
+    insensibles &agrave; la casse. Les modules peuvent fournir des fonctions
+    suppl&eacute;mentaires.</p>
 
     <p>Il n'existe pas de fonctions internes dont la valeur est une
     liste. Le module <module>mod_ssl</module> fournit la fonction
     <code>PeerExtList</code>. Voir la description de la directive
     <directive module="mod_ssl">SSLRequire</directive> pour plus de
-    détails (notez que la fonction <code>PeerExtList</code> peut aussi
-    être utilisée en dehors de la directive <directive
+    d&eacute;tails (notez que la fonction <code>PeerExtList</code> peut aussi
+    &ecirc;tre utilis&eacute;e en dehors de la directive <directive
     module="mod_ssl">SSLRequire</directive>).</p>
 
 </section>
@@ -430,27 +430,27 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><th>Nom</th><th>Alternative</th> <th>Description</th></tr>
     <tr><td><code>-in</code></td>
         <td><code>in</code></td>
-        <td>chaîne contenue dans une liste de chaînes</td></tr>
+        <td>cha&icirc;ne contenue dans une liste de cha&icirc;nes</td></tr>
     <tr><td><code>/regexp/</code></td>
         <td><code>m#regexp#</code></td>
-        <td>Expression rationnelle (la seconde forme permet de spécifier
-	des délimiteurs autres que /)</td></tr>
+        <td>Expression rationnelle (la seconde forme permet de sp&eacute;cifier
+	des d&eacute;limiteurs autres que /)</td></tr>
     <tr><td><code>/regexp/i</code></td>
         <td><code>m#regexp#i</code></td>
-        <td>Expression rationnelle insensible à la casse</td></tr>
+        <td>Expression rationnelle insensible &agrave; la casse</td></tr>
     <tr><td><code>$0 ... $9</code></td>
         <td></td>
-        <td>Références arrières dans les expressions rationnelles</td></tr>
+        <td>R&eacute;f&eacute;rences arri&egrave;res dans les expressions rationnelles</td></tr>
     </table>
 
     <section id="rebackref">
-        <title>Références arrières dans les expressions rationnelles</title>
-        <p>Les chaînes <code>$0</code> ... <code>$9</code> permettent de
-	référencer les groupes de capture en provenance d'expressions
-	rationnelles précédemment exécutées et mises en correspondance avec
-	succès. Elles ne peuvent normalement être utilisées que dans la
-	même expression que celle mise en correspondance, mais certains
-	modules permettent de les utiliser de manière spéciale.</p>
+        <title>R&eacute;f&eacute;rences arri&egrave;res dans les expressions rationnelles</title>
+        <p>Les cha&icirc;nes <code>$0</code> ... <code>$9</code> permettent de
+	r&eacute;f&eacute;rencer les groupes de capture en provenance d'expressions
+	rationnelles pr&eacute;c&eacute;demment ex&eacute;cut&eacute;es et mises en correspondance avec
+	succ&egrave;s. Elles ne peuvent normalement &ecirc;tre utilis&eacute;es que dans la
+	m&ecirc;me expression que celle mise en correspondance, mais certains
+	modules permettent de les utiliser de mani&egrave;re sp&eacute;ciale.</p>
     </section>
 
 </section>
