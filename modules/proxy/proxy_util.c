@@ -1326,13 +1326,16 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
 }
 
 PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
-                                                     proxy_balancer **balancer,
-                                                     proxy_server_conf *conf,
-                                                     const char *url)
+                                               proxy_balancer **balancer,
+                                               proxy_server_conf *conf,
+                                               const char *url,
+                                               int do_malloc)
 {
-    char *c, *q, *uri = apr_pstrdup(p, url);
+    char nonce[APR_UUID_FORMATTED_LENGTH + 1];
     proxy_balancer_method *lbmethod;
     apr_uuid_t uuid;
+    proxy_balancer_shared *bshared;
+    char *c, *q, *uri = apr_pstrdup(p, url);
 
     /* We should never get here without a valid BALANCER_PREFIX... */
 
@@ -1357,32 +1360,54 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     }
 
     (*balancer)->name = uri;
-    (*balancer)->lbmethod = lbmethod;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
-    (*balancer)->updated = apr_time_now();
     (*balancer)->mutex = NULL;
+
+    if (do_malloc)
+        bshared = malloc(sizeof(proxy_balancer_shared));
+    else
+        bshared = apr_palloc(p, sizeof(proxy_balancer_shared));
+    
+    memset(bshared, 0, sizeof(proxy_balancer_shared));
+    
+    (*balancer)->lbmethod = lbmethod;
+    bshared->updated = apr_time_now();
+    bshared->was_malloced = (do_malloc != 0);
+
     /* Retrieve a UUID and store the nonce for the lifetime of
      * the process. */
     apr_uuid_get(&uuid);
-    apr_uuid_format((*balancer)->nonce, &uuid);
+    apr_uuid_format(nonce, &uuid);
+    PROXY_STRNCPY(bshared->nonce, nonce);    
+    
+    (*balancer)->s = bshared;
 
     return NULL;
 }
 
-#if 0
 /*
  * Create an already defined balancer and free up memory.
- * Placeholder for when we make +/- of balancers runtime as well
  */
-PROXY_DECLARE(void) ap_proxy_share_balancer(TODO)
+PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
+                                                    proxy_balancer_shared *shm,
+                                                    int i)
 {
+    if (!shm || !balancer->s)
+        return APR_EINVAL;
+
+    memcpy(shm, balancer->s, sizeof(proxy_balancer_shared));
+    if (balancer->s->was_malloced)
+        free(balancer->s);
+    balancer->s = shm;
+    balancer->s->index = i;
+    return APR_SUCCESS;
 }
 
-PROXY_DECLARE(void) ap_proxy_initialize_balancer(TODO)
+PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer, server_rec *s, apr_pool_t *p)
 {
+    apr_status_t rv = APR_SUCCESS;
+    return rv;
 }
-
-#endif
 
 /*
  * CONNECTION related...
@@ -1652,14 +1677,15 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * config and runtime.
  */
 PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
-                                                   proxy_worker **worker,
-                                                   proxy_balancer *balancer,
-                                                   proxy_server_conf *conf,
-                                                   const char *url)
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             int do_malloc)
 {
     int rv;
     apr_uri_t uri;
-    proxy_worker_shared *wstatus;
+    proxy_worker_shared *wshared;
 
     rv = apr_uri_parse(p, url, &uri);
 
@@ -1697,30 +1723,31 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     /* right here we just want to tuck away the worker info.
      * if called during config, we don't have shm setup yet,
      * so just note the info for later. */
-#if 0
-    wstatus = malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
-#else
-    wstatus = apr_palloc(p, sizeof(proxy_worker_shared));
-#endif
-    memset(wstatus, 0, sizeof(proxy_worker_shared));
+    if (do_malloc)
+        wshared = malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
+    else
+        wshared = apr_palloc(p, sizeof(proxy_worker_shared));
 
-    PROXY_STRNCPY(wstatus->name, apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD));
-    PROXY_STRNCPY(wstatus->scheme, uri.scheme);
-    PROXY_STRNCPY(wstatus->hostname, uri.hostname);
-    wstatus->port = uri.port;
-    wstatus->flush_packets = flush_off;
-    wstatus->flush_wait = PROXY_FLUSH_WAIT;
-    wstatus->is_address_reusable = 1;
-    wstatus->lbfactor = 1;
-    wstatus->smax = -1;
-    wstatus->hash = ap_proxy_hashfunc(wstatus->name, PROXY_HASHFUNC_DEFAULT);
+    memset(wshared, 0, sizeof(proxy_worker_shared));
 
-    (*worker)->hash = wstatus->hash;
+    PROXY_STRNCPY(wshared->name, apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD));
+    PROXY_STRNCPY(wshared->scheme, uri.scheme);
+    PROXY_STRNCPY(wshared->hostname, uri.hostname);
+    wshared->port = uri.port;
+    wshared->flush_packets = flush_off;
+    wshared->flush_wait = PROXY_FLUSH_WAIT;
+    wshared->is_address_reusable = 1;
+    wshared->lbfactor = 1;
+    wshared->smax = -1;
+    wshared->hash = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
+    wshared->was_malloced = (do_malloc != 0);
+
+    (*worker)->hash = wshared->hash;
     (*worker)->context = NULL;
     (*worker)->cp = NULL;
     (*worker)->mutex = NULL;
     (*worker)->balancer = balancer;
-    (*worker)->s = wstatus;
+    (*worker)->s = wshared;
 
     return NULL;
 }
@@ -1728,15 +1755,15 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 /*
  * Create an already defined worker and free up memory
  */
-PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm, int i)
+PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm,
+                                                  int i)
 {
     if (!shm || !worker->s)
         return APR_EINVAL;
 
     memcpy(shm, worker->s, sizeof(proxy_worker_shared));
-#if 0
-    free(worker->s); /* was malloced in ap_proxy_define_worker */
-#endif
+    if (worker->s->was_malloced)
+        free(worker->s); /* was malloced in ap_proxy_define_worker */
     worker->s = shm;
     worker->s->index = i;
     return APR_SUCCESS;
