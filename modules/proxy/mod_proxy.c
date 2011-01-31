@@ -363,7 +363,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         proxy_balancer_method *provider;
         provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
         if (provider) {
-            balancer->lbmethod = provider;
+            balancer->s->lbmethod = provider;
             return NULL;
         }
         return "unknown lbmethod";
@@ -2348,7 +2348,7 @@ static int proxy_status_hook(request_rec *r, int flags)
         ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
                    apr_time_sec(balancer->s->timeout));
         ap_rprintf(r, "<td>%s</td>\n",
-                   balancer->lbmethod->name);
+                   balancer->s->lbmethod->name);
         ap_rputs("</table>\n", r);
         ap_rputs("\n\n<table border=\"0\"><tr>"
                  "<th>Sch</th><th>Host</th><th>Stat</th>"

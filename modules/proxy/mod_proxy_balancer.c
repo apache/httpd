@@ -331,7 +331,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
         return NULL;
     }
 
-    candidate = (*balancer->lbmethod->finder)(balancer, r);
+    candidate = (*balancer->s->lbmethod->finder)(balancer, r);
 
     if (candidate)
         candidate->s->elected++;
@@ -480,9 +480,9 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     /* Step 4: find the session route */
     runtime = find_session_route(*balancer, r, &route, &sticky, url);
     if (runtime) {
-        if ((*balancer)->lbmethod && (*balancer)->lbmethod->updatelbstatus) {
+        if ((*balancer)->s->lbmethod && (*balancer)->s->lbmethod->updatelbstatus) {
             /* Call the LB implementation */
-            (*balancer)->lbmethod->updatelbstatus(*balancer, runtime, r->server);
+            (*balancer)->s->lbmethod->updatelbstatus(*balancer, runtime, r->server);
         }
         else { /* Use the default one */
             int i, total_factor = 0;
@@ -1005,7 +1005,7 @@ static int balancer_handler(request_rec *r)
                 apr_time_sec(balancer->s->timeout));
             ap_rprintf(r, "<td align=\"center\">%d</td>\n", balancer->s->max_attempts);
             ap_rprintf(r, "<td align=\"center\">%s</td>\n",
-                       balancer->lbmethod->name);
+                       balancer->s->lbmethod->name);
             ap_rputs("</table>\n<br />", r);
             ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
                 "<th>Worker URL</th>"
@@ -1146,8 +1146,8 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
                 exit(1); /* Ugly, but what else? */
             }
-            if (balancer->lbmethod && balancer->lbmethod->reset)
-               balancer->lbmethod->reset(balancer, s);
+            if (balancer->s->lbmethod && balancer->s->lbmethod->reset)
+               balancer->s->lbmethod->reset(balancer, s);
             init_balancer_members(conf, s, balancer);
             balancer++;
         }
