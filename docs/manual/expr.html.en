@@ -28,7 +28,7 @@
         This document describes the <em>ap_expr</em> expression parser.
     </p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#grammar">Grammar in BNF notation</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#grammar">Grammar in Backus&#8211;Naur Form notation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#vars">Variables</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#binop">Binary operators</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#unnop">Unary operators</a></li>
@@ -37,8 +37,11 @@
 </ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">If</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="grammar" id="grammar">Grammar in BNF notation</a></h2>
+<h2><a name="grammar" id="grammar">Grammar in Backus&#8211;Naur Form notation</a></h2>
     
+      <p><a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus&#8211;Naur Form</a> (BNF) is a notation
+      technique for context-free grammars, often used to describe the syntax of languages used in computing.
+      </p>
 <blockquote>
 <pre>
 expr        ::= "<strong>true</strong>" | "<strong>false</strong>"
