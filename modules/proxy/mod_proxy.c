@@ -316,11 +316,14 @@ static const char *set_balancer_param(proxy_server_conf *conf,
          * Set to something like JSESSIONID or
          * PHPSESSIONID, etc..,
          */
-        path = apr_pstrdup(p, val);
-        balancer->sticky = balancer->sticky_path = path;
-        if ((path = strchr(path, '|'))) {
+        if (strlen(val) > (PROXY_BALANCER_MAX_STICKY_SIZE-1))
+            return "stickysession length must be < 64 characters";
+        PROXY_STRNCPY(balancer->s->sticky_path, val);
+        PROXY_STRNCPY(balancer->s->sticky, val);
+        
+        if ((path = strchr((char *)val, '|'))) {
             *path++ = '\0';
-            balancer->sticky_path = path;
+            PROXY_STRNCPY(balancer->s->sticky_path, path);
         }
     }
     else if (!strcasecmp(key, "nofailover")) {
@@ -329,9 +332,9 @@ static const char *set_balancer_param(proxy_server_conf *conf,
          * disabled.
          */
         if (!strcasecmp(val, "on"))
-            balancer->sticky_force = 1;
+            balancer->s->sticky_force = 1;
         else if (!strcasecmp(val, "off"))
-            balancer->sticky_force = 0;
+            balancer->s->sticky_force = 0;
         else
             return "failover must be On|Off";
     }
@@ -344,7 +347,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         ival = atoi(val);
         if (ival < 1)
             return "timeout must be at least one second";
-        balancer->timeout = apr_time_from_sec(ival);
+        balancer->s->timeout = apr_time_from_sec(ival);
     }
     else if (!strcasecmp(key, "maxattempts")) {
         /* Maximum number of failover attempts before
@@ -353,8 +356,8 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         ival = atoi(val);
         if (ival < 0)
             return "maximum number of attempts must be a positive number";
-        balancer->max_attempts = ival;
-        balancer->max_attempts_set = 1;
+        balancer->s->max_attempts = ival;
+        balancer->s->max_attempts_set = 1;
     }
     else if (!strcasecmp(key, "lbmethod")) {
         proxy_balancer_method *provider;
@@ -371,9 +374,9 @@ static const char *set_balancer_param(proxy_server_conf *conf,
          * mod_jk)
          */
         if (!strcasecmp(val, "on"))
-            balancer->scolonsep = 1;
+            balancer->s->scolonsep = 1;
         else if (!strcasecmp(val, "off"))
-            balancer->scolonsep = 0;
+            balancer->s->scolonsep = 0;
         else
             return "scolonpathdelim must be On|Off";
     }
@@ -401,14 +404,14 @@ static const char *set_balancer_param(proxy_server_conf *conf,
     }
     else if (!strcasecmp(key, "nonce")) {
         if (!strcasecmp(val, "None")) {
-            *balancer->nonce = '\0';
+            *balancer->s->nonce = '\0';
         } 
         else {
-            if (strlen(val) > sizeof(balancer->nonce)-1) {
+            if (strlen(val) > sizeof(balancer->s->nonce)-1) {
                 return "Provided nonce is too large";
             }
             else {
-                apr_cpystrn(balancer->nonce, val, sizeof(balancer->nonce));
+                PROXY_STRNCPY(balancer->s->nonce, val);
             }
         }
     }
@@ -1007,8 +1010,8 @@ static int proxy_handler(request_rec *r)
             ap_proxy_initialize_worker(worker, r->server, conf->pool);
         }
 
-        if (balancer && balancer->max_attempts_set && !max_attempts)
-            max_attempts = balancer->max_attempts;
+        if (balancer && balancer->s->max_attempts_set && !max_attempts)
+            max_attempts = balancer->s->max_attempts;
         /* firstly, try a proxy, unless a NoProxy directive is active */
         if (!direct_connect) {
             for (i = 0; i < proxies->nelts; i++) {
@@ -1150,6 +1153,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
+    ps->id = apr_psprintf(p, "%pp", ps->noproxies);
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
@@ -1188,6 +1192,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->reverse = overrides->reverse ? overrides->reverse : base->reverse;
 
     ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
+    ps->id = (overrides->id == NULL) ? base->id : overrides->id;
     ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
     ps->viaopt_set = overrides->viaopt_set || base->viaopt_set;
     ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
@@ -1466,7 +1471,7 @@ static const char *
     if (ap_proxy_valid_balancer_name(r, 9)) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
-            const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r);
+            const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r, 0);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
@@ -1481,7 +1486,7 @@ static const char *
         proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, r);
         int reuse = 0;
         if (!worker) {
-            const char *err = ap_proxy_define_worker(cmd->pool, &worker, NULL, conf, r);
+            const char *err = ap_proxy_define_worker(cmd->pool, &worker, NULL, conf, r, 0);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
 
@@ -1901,7 +1906,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     /* Try to find the balancer */
     balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path);
     if (!balancer) {
-        err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, path);
+        err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, path, 0);
         if (err)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
@@ -1912,7 +1917,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                      "Defining worker '%s' for balancer '%s'",
                      name, balancer->name);
-        if ((err = ap_proxy_define_worker(cmd->pool, &worker, balancer, conf, name)) != NULL)
+        if ((err = ap_proxy_define_worker(cmd->pool, &worker, balancer, conf, name, 0)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                      "Defined worker '%s' for balancer '%s'",
@@ -1979,7 +1984,7 @@ static const char *
         balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
         if (!balancer) {
             if (in_proxy_section) {
-                err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, name);
+                err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, name, 0);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxySet ",
                                        err, NULL);
@@ -1994,7 +1999,7 @@ static const char *
         if (!worker) {
             if (in_proxy_section) {
                 err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                             conf, name);
+                                             conf, name, 0);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxySet ",
                                        err, NULL);
@@ -2128,7 +2133,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p);
             if (!balancer) {
                 err = ap_proxy_define_balancer(cmd->pool, &balancer,
-                                               sconf, conf->p);
+                                               sconf, conf->p, 0);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
@@ -2139,7 +2144,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                                          conf->p);
             if (!worker) {
                 err = ap_proxy_define_worker(cmd->pool, &worker, NULL,
-                                          sconf, conf->p);
+                                          sconf, conf->p, 0);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
@@ -2322,20 +2327,20 @@ static int proxy_status_hook(request_rec *r, int flags)
         ap_rputs("\n\n<table border=\"0\"><tr>"
                  "<th>SSes</th><th>Timeout</th><th>Method</th>"
                  "</tr>\n<tr>", r);
-        if (balancer->sticky) {
-            if (strcmp(balancer->sticky, balancer->sticky_path)) {
-                ap_rvputs(r, "<td>", balancer->sticky, " | ",
-                          balancer->sticky_path, NULL);
+        if (*balancer->s->sticky) {
+            if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
+                ap_rvputs(r, "<td>", balancer->s->sticky, " | ",
+                          balancer->s->sticky_path, NULL);
             }
             else {
-                ap_rvputs(r, "<td>", balancer->sticky, NULL);
+                ap_rvputs(r, "<td>", balancer->s->sticky, NULL);
             }
         }
         else {
             ap_rputs("<td> - ", r);
         }
         ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
-                   apr_time_sec(balancer->timeout));
+                   apr_time_sec(balancer->s->timeout));
         ap_rprintf(r, "<td>%s</td>\n",
                    balancer->lbmethod->name);
         ap_rputs("</table>\n", r);
@@ -2416,7 +2421,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
         /* Create and initialize forward worker if defined */
         if (conf->req_set && conf->req) {
             proxy_worker *forward;
-            ap_proxy_define_worker(p, &forward, NULL, NULL, "http://www.apache.org");
+            ap_proxy_define_worker(p, &forward, NULL, NULL, "http://www.apache.org", 0);
             conf->forward = forward;
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
             PROXY_STRNCPY(conf->forward->s->hostname, "*");
@@ -2430,7 +2435,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             ap_proxy_initialize_worker(conf->forward, s, conf->pool);
         }
         if (!reverse) {
-            ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org");
+            ap_proxy_define_worker(p, &reverse, NULL, NULL, "http://www.apache.org", 0);
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
             PROXY_STRNCPY(reverse->s->hostname, "*");
             PROXY_STRNCPY(reverse->s->scheme,   "*");

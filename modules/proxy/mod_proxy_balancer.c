@@ -127,9 +127,9 @@ static void init_balancer_members(proxy_server_conf *conf, server_rec *s,
     /* Set default number of attempts to the number of
      * workers.
      */
-    if (!balancer->max_attempts_set && balancer->workers->nelts > 1) {
-        balancer->max_attempts = balancer->workers->nelts - 1;
-        balancer->max_attempts_set = 1;
+    if (!balancer->s->max_attempts_set && balancer->workers->nelts > 1) {
+        balancer->s->max_attempts = balancer->workers->nelts - 1;
+        balancer->s->max_attempts_set = 1;
     }
 }
 
@@ -271,23 +271,23 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
 {
     proxy_worker *worker = NULL;
 
-    if (!balancer->sticky)
+    if (!*balancer->s->sticky)
         return NULL;
     /* Try to find the sticky route inside url */
-    *route = get_path_param(r->pool, *url, balancer->sticky_path, balancer->scolonsep);
+    *route = get_path_param(r->pool, *url, balancer->s->sticky_path, balancer->s->scolonsep);
     if (*route) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: BALANCER: Found value %s for "
-                     "stickysession %s", *route, balancer->sticky_path);
-        *sticky_used =  balancer->sticky_path;
+                     "stickysession %s", *route, balancer->s->sticky_path);
+        *sticky_used =  balancer->s->sticky_path;
     }
     else {
-        *route = get_cookie_param(r, balancer->sticky);
+        *route = get_cookie_param(r, balancer->s->sticky);
         if (*route) {
-            *sticky_used =  balancer->sticky;
+            *sticky_used =  balancer->s->sticky;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: BALANCER: Found value %s for "
-                         "stickysession %s", *route, balancer->sticky);
+                         "stickysession %s", *route, balancer->s->sticky);
         }
     }
     /*
@@ -354,18 +354,18 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
          * By default the timeout is not set, and the server
          * returns SERVER_BUSY.
          */
-        if (balancer->timeout) {
+        if (balancer->s->timeout) {
             /* XXX: This can perhaps be build using some
              * smarter mechanism, like tread_cond.
              * But since the statuses can came from
              * different childs, use the provided algo.
              */
-            apr_interval_time_t timeout = balancer->timeout;
+            apr_interval_time_t timeout = balancer->s->timeout;
             apr_interval_time_t step, tval = 0;
             /* Set the timeout to 0 so that we don't
              * end in infinite loop
              */
-            balancer->timeout = 0;
+            balancer->s->timeout = 0;
             step = timeout / 100;
             while (tval < timeout) {
                 apr_sleep(step);
@@ -375,7 +375,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
                 tval += step;
             }
             /* restore the timeout */
-            balancer->timeout = timeout;
+            balancer->s->timeout = timeout;
         }
     }
 
@@ -509,7 +509,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
         *worker = runtime;
     }
-    else if (route && (*balancer)->sticky_force) {
+    else if (route && (*balancer)->s->sticky_force) {
         int i, member_of = 0;
         proxy_worker **workers;
         /*
@@ -558,7 +558,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
             return HTTP_SERVICE_UNAVAILABLE;
         }
-        if ((*balancer)->sticky && runtime) {
+        if (*(*balancer)->s->sticky && runtime) {
             /*
              * This balancer has sticky sessions and the client either has not
              * supplied any routing information or all workers for this route
@@ -694,10 +694,12 @@ static apr_status_t lock_remove(void *data)
 static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
 {
+    apr_status_t rv;
     void *data;
     void *sconf = s->module_config;
     proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     const char *userdata_key = "mod_proxy_balancer_init";
+    ap_slotmem_instance_t *new = NULL;
 
     /* balancer_post_config() will be called twice during startup.  So, only
      * set up the static data the 1st time through. */
@@ -709,7 +711,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
 
     /*
-     * Get worker slotmem setup
+     * Get slotmem setups
      */
     storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
     if (!storage) {
@@ -717,23 +719,40 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                      "ap_lookup_provider %s failed", AP_SLOTMEM_PROVIDER_GROUP);
         return !OK;
     }
+
+    
     /*
      * Go thru each Vhost and create the shared mem slotmem for
      * each balancer's workers
      */
     while (s) {
         int i,j;
-        apr_status_t rv;
         proxy_balancer *balancer;
         sconf = s->module_config;
         conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
+
+        if (conf->balancers->nelts) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing balancers create: %d, %d",
+                         (int)ALIGNED_PROXY_BALANCER_SHARED_SIZE,
+                         (int)conf->balancers->nelts);
+            
+            rv = storage->create(&new, conf->id,
+                                 ALIGNED_PROXY_BALANCER_SHARED_SIZE,
+                                 conf->balancers->nelts, AP_SLOTMEM_TYPE_PREGRAB, pconf);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_create failed");
+                return !OK;
+            }
+            conf->slot = new;
+        }
 
         /* Initialize shared scoreboard data */
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
             proxy_worker **workers;
             proxy_worker *worker;
-            ap_slotmem_instance_t *new = NULL;
+            proxy_balancer_shared *bshm;
+            unsigned int index;
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
             ap_pstr2_alnum(pconf, balancer->name, &balancer->sname);
@@ -751,7 +770,23 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             apr_pool_cleanup_register(pconf, (void *)s, lock_remove,
                                       apr_pool_cleanup_null);
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing create: %s (%s), %d, %d",
+            /* setup shm for balancers */
+            if ((rv = storage->grab(conf->slot, &index)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_grab failed");
+                return !OK;
+                
+            }
+            if ((rv = storage->dptr(conf->slot, index, (void *)&bshm)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_dptr failed");
+                return !OK;
+            }
+            if ((rv = ap_proxy_share_balancer(balancer, bshm, index)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot share balancer");
+                return !OK;
+            }
+            
+            /* create slotmem slots for workers */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing workers create: %s (%s), %d, %d",
                          balancer->name, balancer->sname,
                          (int)ALIGNED_PROXY_WORKER_SHARED_SIZE,
                          (int)balancer->max_workers);
@@ -760,24 +795,24 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                  ALIGNED_PROXY_WORKER_SHARED_SIZE,
                                  balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_create failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_create failed");
                 return !OK;
             }
             balancer->slot = new;
 
+            /* now go thru each worker */
             workers = (proxy_worker **)balancer->workers->elts;
             for (j = 0; j < balancer->workers->nelts; j++, workers++) {
                 proxy_worker_shared *shm;
-                unsigned int index;
 
                 worker = *workers;
                 if ((rv = storage->grab(balancer->slot, &index)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_grab failed");
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_grab failed");
                     return !OK;
 
                 }
                 if ((rv = storage->dptr(balancer->slot, index, (void *)&shm)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "slotmem_dptr failed");
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
                     return !OK;
                 }
                 if ((rv = ap_proxy_share_worker(worker, shm, index)) != APR_SUCCESS) {
@@ -854,10 +889,10 @@ static int balancer_handler(request_rec *r)
     /* Check that the supplied nonce matches this server's nonce;
      * otherwise ignore all parameters, to prevent a CSRF attack. */
     if (!bsel ||
-        (*bsel->nonce &&
+        (*bsel->s->nonce &&
          (
           (name = apr_table_get(params, "nonce")) == NULL ||
-          strcmp(bsel->nonce, name) != 0
+          strcmp(bsel->s->nonce, name) != 0
          )
         )
        ) {
@@ -954,21 +989,21 @@ static int balancer_handler(request_rec *r)
                 "<th>MaxMembers</th><th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);
             ap_rprintf(r, "<td align=\"center\">%d</td>\n", balancer->max_workers);
-            if (balancer->sticky) {
-                if (strcmp(balancer->sticky, balancer->sticky_path)) {
-                    ap_rvputs(r, "<td align=\"center\">", balancer->sticky, " | ",
-                              balancer->sticky_path, NULL);
+            if (*balancer->s->sticky) {
+                if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
+                    ap_rvputs(r, "<td align=\"center\">", balancer->s->sticky, " | ",
+                              balancer->s->sticky_path, NULL);
                 }
                 else {
-                    ap_rvputs(r, "<td align=\"center\">", balancer->sticky, NULL);
+                    ap_rvputs(r, "<td align=\"center\">", balancer->s->sticky, NULL);
                 }
             }
             else {
                 ap_rputs("<td align=\"center\"> - ", r);
             }
             ap_rprintf(r, "</td><td align=\"center\">%" APR_TIME_T_FMT "</td>",
-                apr_time_sec(balancer->timeout));
-            ap_rprintf(r, "<td align=\"center\">%d</td>\n", balancer->max_attempts);
+                apr_time_sec(balancer->s->timeout));
+            ap_rprintf(r, "<td align=\"center\">%d</td>\n", balancer->s->max_attempts);
             ap_rprintf(r, "<td align=\"center\">%s</td>\n",
                        balancer->lbmethod->name);
             ap_rputs("</table>\n<br />", r);
@@ -986,7 +1021,7 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof(BALANCER_PREFIX) - 1, "&w=",
                           ap_escape_uri(r->pool, worker->s->name),
-                          "&nonce=", balancer->nonce,
+                          "&nonce=", balancer->s->nonce,
                           "\">", NULL);
                 ap_rvputs(r, worker->s->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td align=\"center\">", ap_escape_html(r->pool, worker->s->route),
@@ -1051,7 +1086,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, "value=\"", bsel->name + sizeof(BALANCER_PREFIX) - 1,
                       "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"",
-                      bsel->nonce, "\">\n", NULL);
+                      bsel->s->nonce, "\">\n", NULL);
             ap_rvputs(r, "</form>\n", NULL);
             ap_rputs("<hr />\n", r);
         }
@@ -1068,12 +1103,20 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         int i;
         void *sconf = s->module_config;
         proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
+        apr_size_t size;
+        unsigned int num;
         apr_status_t rv;
 
+        if (conf->balancers->nelts) {
+            storage->attach(&(conf->slot), conf->id, &size, &num, p);
+            if (!conf->slot) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
+                exit(1); /* Ugly, but what else? */
+            }
+        }
+        
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
-            apr_size_t size;
-            unsigned int num;
 
             /*
              * for each balancer we need to init the global
