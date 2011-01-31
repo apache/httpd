@@ -1141,6 +1141,7 @@ cleanup:
 
 static void * create_proxy_config(apr_pool_t *p, server_rec *s)
 {
+    unsigned int id;
     proxy_server_conf *ps = apr_pcalloc(p, sizeof(proxy_server_conf));
 
     ps->sec_proxy = apr_array_make(p, 10, sizeof(ap_conf_vector_t *));
@@ -1153,7 +1154,12 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->forward = NULL;
     ps->reverse = NULL;
     ps->domain = NULL;
-    ps->id = apr_psprintf(p, "%pp", ps->noproxies);
+#if 0
+    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp-%" APR_TIME_T_FMT, ps->noproxies, apr_time_now()), PROXY_HASHFUNC_DEFAULT);
+#else
+    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp", ps->noproxies), PROXY_HASHFUNC_DEFAULT);
+#endif
+    ps->id = apr_psprintf(p, "cnf_%x", id);
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
