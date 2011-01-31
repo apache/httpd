@@ -808,8 +808,7 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
 
 typedef enum { PROXY_HASHFUNC_DEFAULT, PROXY_HASHFUNC_APR,  PROXY_HASHFUNC_FNV } proxy_hash_t;
 
-PROXY_DECLARE(unsigned int)
-ap_proxy_hashfunc(const char *str, proxy_hash_t method);
+PROXY_DECLARE(unsigned int) ap_proxy_hashfunc(const char *str, proxy_hash_t method);
 
 #define PROXY_LBMETHOD "proxylbmethod"
 
