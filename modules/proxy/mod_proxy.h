@@ -824,12 +824,21 @@ PROXY_DECLARE(unsigned int) ap_proxy_hashfunc(const char *str, proxy_hash_t meth
 
 /**
  * Set/unset the worker status bitfield depending on flag
- * @param c      flag
- * @param set    set or unset bit
- * @param status bitfield to use
- * @return       APR_SUCCESS if valid flag
+ * @param c    flag
+ * @param set  set or unset bit
+ * @param w    worker to use
+ * @return     APR_SUCCESS if valid flag
  */
-PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, unsigned int *status);
+PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, proxy_worker *w);
+
+
+/**
+ * Create readable representation of worker status bitfield
+ * @param p  pool
+ * @param w  worker to use
+ * @return   string representation of status
+ */
+PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w);
 
 #define PROXY_LBMETHOD "proxylbmethod"
 

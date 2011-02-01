@@ -2834,10 +2834,35 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
     }
 }
 
-PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(const char c, int set, unsigned int *status)
+PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(const char c, int set, proxy_worker *w)
 {
+    unsigned int *status = &w->s->status;
     char bit = toupper(c);
     switch (bit) {
+        case PROXY_WORKER_INITIALIZED_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_INITIALIZED;
+            else
+                *status &= ~PROXY_WORKER_INITIALIZED;
+            break;
+        case PROXY_WORKER_IGNORE_ERRORS_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_IGNORE_ERRORS;
+            else
+                *status &= ~PROXY_WORKER_IGNORE_ERRORS;
+            break;
+        case PROXY_WORKER_DRAIN_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_DRAIN;
+            else
+                *status &= ~PROXY_WORKER_DRAIN;
+            break;
+        case PROXY_WORKER_IN_SHUTDOWN_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_IN_SHUTDOWN;
+            else
+                *status &= ~PROXY_WORKER_IN_SHUTDOWN;
+            break;
         case PROXY_WORKER_DISABLED_FLAG :
             if (set)
                 *status |= PROXY_WORKER_DISABLED;
@@ -2862,15 +2887,44 @@ PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(const char c, int set, unsigned
             else
                 *status &= ~PROXY_WORKER_HOT_STANDBY;
             break;
-        case PROXY_WORKER_IGNORE_ERRORS_FLAG :
+        case PROXY_WORKER_FREE_FLAG :
             if (set)
-                *status |= PROXY_WORKER_IGNORE_ERRORS;
+                *status |= PROXY_WORKER_FREE;
             else
-                *status &= ~PROXY_WORKER_IGNORE_ERRORS;
+                *status &= ~PROXY_WORKER_FREE;
             break;
         default:
             return APR_EINVAL;
             break;
     }
     return APR_SUCCESS;
+}
+
+PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w)
+{
+    char *ret = NULL;
+    unsigned int status = w->s->status;
+    if (status & PROXY_WORKER_INITIALIZED)
+        ret = apr_pstrcat(p, "Init ", NULL);
+    else
+        ret = apr_pstrcat(p, "!Init ", NULL);
+    if (status & PROXY_WORKER_IGNORE_ERRORS)
+        ret = apr_pstrcat(p, ret, "Ign ", NULL);
+    if (status & PROXY_WORKER_DRAIN)
+        ret = apr_pstrcat(p, ret, "Drn ", NULL);
+    if (status & PROXY_WORKER_IN_SHUTDOWN)
+        ret = apr_pstrcat(p, ret, "Shut ", NULL);
+    if (status & PROXY_WORKER_DISABLED)
+        ret = apr_pstrcat(p, ret, "Dis ", NULL);
+    if (status & PROXY_WORKER_STOPPED)
+        ret = apr_pstrcat(p, ret, "Stop ", NULL);
+    if (status & PROXY_WORKER_IN_ERROR)
+        ret = apr_pstrcat(p, ret, "Err ", NULL);
+    if (status & PROXY_WORKER_HOT_STANDBY)
+        ret = apr_pstrcat(p, ret, "Stby ", NULL);
+    if (status & PROXY_WORKER_FREE)
+        ret = apr_pstrcat(p, ret, "Free ", NULL);
+    if (PROXY_WORKER_IS_USABLE(w))
+        ret = apr_pstrcat(p, ret, "Ok ", NULL);
+    return ret;
 }
