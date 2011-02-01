@@ -254,7 +254,7 @@ struct proxy_conn_pool {
     proxy_conn_rec *conn;   /* Single connection for prefork mpm */
 };
 
-/* worker status flags */
+/* worker status bits */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
 #define PROXY_WORKER_DRAIN          0x0004
@@ -264,6 +264,17 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IN_ERROR       0x0080
 #define PROXY_WORKER_HOT_STANDBY    0x0100
 #define PROXY_WORKER_FREE           0x0200
+
+/* worker status flags */
+#define PROXY_WORKER_INITIALIZED_FLAG    'O'
+#define PROXY_WORKER_IGNORE_ERRORS_FLAG  'I'
+#define PROXY_WORKER_DRAIN_FLAG          'N'
+#define PROXY_WORKER_IN_SHUTDOWN_FLAG    'U'
+#define PROXY_WORKER_DISABLED_FLAG       'D'
+#define PROXY_WORKER_STOPPED_FLAG        'S'
+#define PROXY_WORKER_IN_ERROR_FLAG       'E'
+#define PROXY_WORKER_HOT_STANDBY_FLAG    'H'
+#define PROXY_WORKER_FREE_FLAG           'F'
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
@@ -296,7 +307,6 @@ typedef struct {
     char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
     char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
     int             lbset;      /* load balancer cluster set */
-    int             status;
     int             retries;    /* number of retries on this worker */
     int             lbstatus;   /* Current lbstatus */
     int             lbfactor;   /* dynamic lbfactor */
@@ -306,6 +316,7 @@ typedef struct {
     int             flush_wait; /* poll wait time in microseconds if flush_auto */
     int             index;      /* shm array index */
     unsigned int    hash;       /* hash of worker name */
+    unsigned int    status;     /* worker status bitfield */
     enum {
         flush_off,
         flush_on,
@@ -348,11 +359,11 @@ typedef struct {
 /* Worker configuration */
 struct proxy_worker {
     unsigned int    hash;       /* hash of worker name */
+    unsigned int local_status;  /* status of per-process worker */
     proxy_conn_pool     *cp;    /* Connection pool to use */
     proxy_worker_shared   *s;   /* Shared data */
     proxy_balancer  *balancer;  /* which balancer am I in? */
     apr_thread_mutex_t  *mutex; /* Thread lock for updating address cache */
-    int local_status;           /* status of per-process worker */
     void            *context;   /* general purpose storage */
 };
 
@@ -809,6 +820,16 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
 typedef enum { PROXY_HASHFUNC_DEFAULT, PROXY_HASHFUNC_APR,  PROXY_HASHFUNC_FNV } proxy_hash_t;
 
 PROXY_DECLARE(unsigned int) ap_proxy_hashfunc(const char *str, proxy_hash_t method);
+
+
+/**
+ * Set/unset the worker status bitfield depending on flag
+ * @param c      flag
+ * @param set    set or unset bit
+ * @param status bitfield to use
+ * @return       APR_SUCCESS if valid flag
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, unsigned int *status);
 
 #define PROXY_LBMETHOD "proxylbmethod"
 
