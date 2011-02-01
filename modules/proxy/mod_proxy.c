@@ -198,6 +198,7 @@ static const char *set_worker_param(apr_pool_t *p,
     else if (!strcasecmp(key, "status")) {
         const char *v;
         int mode = 1;
+        apr_status_t rv;
         /* Worker status.
          */
         for (v = val; *v; v++) {
@@ -209,39 +210,9 @@ static const char *set_worker_param(apr_pool_t *p,
                 mode = 0;
                 v++;
             }
-            if (*v == 'D' || *v == 'd') {
-                if (mode)
-                    worker->s->status |= PROXY_WORKER_DISABLED;
-                else
-                    worker->s->status &= ~PROXY_WORKER_DISABLED;
-            }
-            else if (*v == 'S' || *v == 's') {
-                if (mode)
-                    worker->s->status |= PROXY_WORKER_STOPPED;
-                else
-                    worker->s->status &= ~PROXY_WORKER_STOPPED;
-            }
-            else if (*v == 'E' || *v == 'e') {
-                if (mode)
-                    worker->s->status |= PROXY_WORKER_IN_ERROR;
-                else
-                    worker->s->status &= ~PROXY_WORKER_IN_ERROR;
-            }
-            else if (*v == 'H' || *v == 'h') {
-                if (mode)
-                    worker->s->status |= PROXY_WORKER_HOT_STANDBY;
-                else
-                    worker->s->status &= ~PROXY_WORKER_HOT_STANDBY;
-            }
-            else if (*v == 'I' || *v == 'i') {
-                if (mode)
-                    worker->s->status |= PROXY_WORKER_IGNORE_ERRORS;
-                else
-                    worker->s->status &= ~PROXY_WORKER_IGNORE_ERRORS;
-            }
-            else {
+            rv = ap_proxy_set_wstatus(*v, mode, &worker->s->status);
+            if (rv != APR_SUCCESS)
                 return "Unknown status parameter option";
-            }
         }
     }
     else if (!strcasecmp(key, "flushpackets")) {

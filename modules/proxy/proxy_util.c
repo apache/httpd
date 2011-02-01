@@ -2833,3 +2833,44 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
         return hash;
     }
 }
+
+PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(const char c, int set, unsigned int *status)
+{
+    char bit = toupper(c);
+    switch (bit) {
+        case PROXY_WORKER_DISABLED_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_DISABLED;
+            else
+                *status &= ~PROXY_WORKER_DISABLED;
+            break;
+        case PROXY_WORKER_STOPPED_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_STOPPED;
+            else
+                *status &= ~PROXY_WORKER_STOPPED;
+            break;
+        case PROXY_WORKER_IN_ERROR_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_IN_ERROR;
+            else
+                *status &= ~PROXY_WORKER_IN_ERROR;
+            break;
+        case PROXY_WORKER_HOT_STANDBY_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_HOT_STANDBY;
+            else
+                *status &= ~PROXY_WORKER_HOT_STANDBY;
+            break;
+        case PROXY_WORKER_IGNORE_ERRORS_FLAG :
+            if (set)
+                *status |= PROXY_WORKER_IGNORE_ERRORS;
+            else
+                *status &= ~PROXY_WORKER_IGNORE_ERRORS;
+            break;
+        default:
+            return APR_EINVAL;
+            break;
+    }
+    return APR_SUCCESS;
+}
