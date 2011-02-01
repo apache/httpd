@@ -1155,11 +1155,11 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->reverse = NULL;
     ps->domain = NULL;
 #if 0
-    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp-%" APR_TIME_T_FMT, ps->noproxies, apr_time_now()), PROXY_HASHFUNC_DEFAULT);
+    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp-%" APR_TIME_T_FMT, ps, apr_time_now()), PROXY_HASHFUNC_DEFAULT);
 #else
-    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp", ps->noproxies), PROXY_HASHFUNC_DEFAULT);
+    id = ap_proxy_hashfunc(apr_psprintf(p, "%pp", ps), PROXY_HASHFUNC_DEFAULT);
 #endif
-    ps->id = apr_psprintf(p, "cnf_%x", id);
+    ps->id = apr_psprintf(p, "s%x", id);
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
@@ -2395,8 +2395,8 @@ static int proxy_status_hook(request_rec *r, int flags)
              "<tr><th>Stat</th><td>Worker status</td></tr>\n"
              "<tr><th>Route</th><td>Session Route</td></tr>\n"
              "<tr><th>Redir</th><td>Session Route Redirection</td></tr>\n"
-             "<tr><th>F</th><td>Load Balancer Factor in %</td></tr>\n"
-             "<tr><th>Acc</th><td>Number of requests</td></tr>\n"
+             "<tr><th>F</th><td>Load Balancer Factor</td></tr>\n"
+             "<tr><th>Acc</th><td>Number of uses</td></tr>\n"
              "<tr><th>Wr</th><td>Number of bytes transferred</td></tr>\n"
              "<tr><th>Rd</th><td>Number of bytes read</td></tr>\n"
              "</table>", r);

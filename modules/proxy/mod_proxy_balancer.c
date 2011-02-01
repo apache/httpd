@@ -755,7 +755,10 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             unsigned int index;
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
-            ap_pstr2_alnum(pconf, balancer->name, &balancer->sname);
+            /* no need for the 'balancer://' prefix */
+            ap_pstr2_alnum(pconf, balancer->name + sizeof(BALANCER_PREFIX) - 1, 
+                           &balancer->sname);
+            balancer->sname = apr_pstrcat(pconf, conf->id, "_", balancer->sname, NULL);
 
             /* Create global mutex */
             rv = ap_global_mutex_create(&(balancer->mutex), NULL, balancer_mutex_type,
@@ -839,6 +842,7 @@ static int balancer_handler(request_rec *r)
     apr_table_t *params;
     int access_status;
     int i, n;
+    int ok2change = 1;
     const char *name;
 
     /* is this for us? */
@@ -897,14 +901,11 @@ static int balancer_handler(request_rec *r)
         )
        ) {
         apr_table_clear(params);
+        ok2change = 0;
     }
 
     /* First set the params */
-    /*
-     * Note that it is not possible set the proxy_balancer because it is not
-     * in shared memory.
-     */
-    if (wsel) {
+    if (wsel && ok2change) {
         const char *val;
         if ((val = apr_table_get(params, "lf"))) {
             int ival = atoi(val);
@@ -940,6 +941,17 @@ static int balancer_handler(request_rec *r)
         }
 
     }
+
+    if (bsel && ok2change) {
+        const char *val;
+        if ((val = apr_table_get(params, "lbm"))) {
+            proxy_balancer_method *lbmethod;
+            lbmethod = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
+            if (lbmethod)
+                bsel->s->lbmethod = lbmethod;
+        }
+    }
+
     if (apr_table_get(params, "xml")) {
         ap_set_content_type(r, "text/xml");
         ap_rputs("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n", r);
@@ -984,7 +996,11 @@ static int balancer_handler(request_rec *r)
         for (i = 0; i < conf->balancers->nelts; i++) {
 
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
-            ap_rvputs(r, balancer->name, "</h3>\n\n", NULL);
+            ap_rvputs(r, "<a href=\"", r->uri, "?b=",
+                      balancer->name + sizeof(BALANCER_PREFIX) - 1,
+                      "&nonce=", balancer->s->nonce,
+                      "\">", NULL);
+            ap_rvputs(r, balancer->name, "</a></h3>\n\n", NULL);
             ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);
@@ -1089,10 +1105,40 @@ static int balancer_handler(request_rec *r)
                       bsel->s->nonce, "\">\n", NULL);
             ap_rvputs(r, "</form>\n", NULL);
             ap_rputs("<hr />\n", r);
+        } else if (bsel) {
+            const apr_array_header_t *provs;
+            const ap_list_provider_names_t *pname;
+            int i;
+            ap_rputs("<h3>Edit balancer settings for ", r);
+            ap_rvputs(r, bsel->name, "</h3>\n", NULL);
+            ap_rvputs(r, "<form method=\"GET\" action=\"", NULL);
+            ap_rvputs(r, r->uri, "\">\n<dl>\n<table>\n", NULL);
+            provs = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
+            if (provs) {
+                ap_rputs("<tr><td>LBmethod:</td>", r);
+                ap_rputs("<td>\n<select name=\"lbm\" id=\"lbm\">", r);
+                pname = (ap_list_provider_names_t *)provs->elts;
+                for (i = 0; i < provs->nelts; i++, pname++) {
+                    ap_rvputs(r,"<option value=\"", pname->provider_name, "\"", NULL);
+                    if (strcmp(pname->provider_name, bsel->s->lbmethod->name) == 0)
+                        ap_rputs(" selected ", r);
+                    ap_rvputs(r, ">", pname->provider_name, "\n", NULL);
+                }
+                ap_rputs("</select>\n</td></tr>\n", r);
+            }
+            ap_rputs("</td></tr>\n", r);
+            ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
+            ap_rvputs(r, "</table>\n<input type=hidden name=\"b\" ", NULL);
+            ap_rvputs(r, "value=\"", bsel->name + sizeof(BALANCER_PREFIX) - 1,
+                      "\">\n", NULL);
+            ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"",
+                      bsel->s->nonce, "\">\n", NULL);
+            ap_rvputs(r, "</form>\n", NULL);
+            ap_rputs("<hr />\n", r);
         }
         ap_rputs(ap_psignature("",r), r);
         ap_rputs("</body></html>\n", r);
-    }
+}
     return OK;
 }
 
