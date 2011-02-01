@@ -382,10 +382,10 @@ typedef struct {
     proxy_balancer_method *lbmethod;
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
-    int             sticky_force:1;   /* Disable failover for sticky sessions */
-    int             scolonsep:1;      /* true if ';' seps sticky session paths */
-    int             max_attempts_set:1;
-    unsigned int     was_malloced:1;
+    unsigned int    sticky_force:1;   /* Disable failover for sticky sessions */
+    unsigned int    scolonsep:1;      /* true if ';' seps sticky session paths */
+    unsigned int    max_attempts_set:1;
+    unsigned int    was_malloced:1;
 } proxy_balancer_shared;
 
 #define ALIGNED_PROXY_BALANCER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_balancer_shared)))
