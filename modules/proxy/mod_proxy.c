@@ -210,7 +210,7 @@ static const char *set_worker_param(apr_pool_t *p,
                 mode = 0;
                 v++;
             }
-            rv = ap_proxy_set_wstatus(*v, mode, &worker->s->status);
+            rv = ap_proxy_set_wstatus(*v, mode, worker);
             if (rv != APR_SUCCESS)
                 return "Unknown status parameter option";
         }

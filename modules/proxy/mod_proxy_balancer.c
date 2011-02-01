@@ -1046,18 +1046,7 @@ static int balancer_handler(request_rec *r)
                           ap_escape_html(r->pool, worker->s->redirect), NULL);
                 ap_rprintf(r, "</td><td align=\"center\">%d</td>", worker->s->lbfactor);
                 ap_rprintf(r, "<td align=\"center\">%d</td><td align=\"center\">", worker->s->lbset);
-                if (worker->s->status & PROXY_WORKER_DISABLED)
-                   ap_rputs("Dis ", r);
-                if (worker->s->status & PROXY_WORKER_IN_ERROR)
-                   ap_rputs("Err ", r);
-                if (worker->s->status & PROXY_WORKER_STOPPED)
-                   ap_rputs("Stop ", r);
-                if (worker->s->status & PROXY_WORKER_HOT_STANDBY)
-                   ap_rputs("Stby ", r);
-                if (PROXY_WORKER_IS_USABLE(worker))
-                    ap_rputs("Ok", r);
-                if (!PROXY_WORKER_IS_INITIALIZED(worker))
-                    ap_rputs("-", r);
+                ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, worker), NULL);
                 ap_rputs("</td>", r);
                 ap_rprintf(r, "<td align=\"center\">%" APR_SIZE_T_FMT "</td><td align=\"center\">", worker->s->elected);
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
