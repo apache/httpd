@@ -2332,14 +2332,7 @@ static int proxy_status_hook(request_rec *r, int flags)
             char fbuf[50];
             ap_rvputs(r, "<tr>\n<td>", (*worker)->s->scheme, "</td>", NULL);
             ap_rvputs(r, "<td>", (*worker)->s->hostname, "</td><td>", NULL);
-            if ((*worker)->s->status & PROXY_WORKER_DISABLED)
-                ap_rputs("Dis", r);
-            else if ((*worker)->s->status & PROXY_WORKER_IN_ERROR)
-                ap_rputs("Err", r);
-            else if ((*worker)->s->status & PROXY_WORKER_INITIALIZED)
-                ap_rputs("Ok", r);
-            else
-                ap_rputs("-", r);
+            ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, *worker), NULL);
             ap_rvputs(r, "</td><td>", (*worker)->s->route, NULL);
             ap_rvputs(r, "</td><td>", (*worker)->s->redirect, NULL);
             ap_rprintf(r, "</td><td>%d</td>", (*worker)->s->lbfactor);
