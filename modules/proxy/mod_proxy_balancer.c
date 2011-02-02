@@ -700,6 +700,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     const char *userdata_key = "mod_proxy_balancer_init";
     ap_slotmem_instance_t *new = NULL;
+    apr_time_t tstamp;
 
     /* balancer_post_config() will be called twice during startup.  So, only
      * set up the static data the 1st time through. */
@@ -720,7 +721,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         return !OK;
     }
 
-    
+    tstamp = apr_time_now();
     /*
      * Go thru each Vhost and create the shared mem slotmem for
      * each balancer's workers
@@ -803,6 +804,9 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             }
             balancer->slot = new;
 
+            /* sync all timestamps */
+            balancer->wupdated = balancer->s->wupdated = tstamp;
+
             /* now go thru each worker */
             workers = (proxy_worker **)balancer->workers->elts;
             for (j = 0; j < balancer->workers->nelts; j++, workers++) {
@@ -822,6 +826,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot share worker");
                     return !OK;
                 }
+                worker->s->updated = tstamp;
             }
         }
         s = s->next;
@@ -1044,7 +1049,7 @@ static int balancer_handler(request_rec *r)
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
                 "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
-                "<th>Factor</th><th>Set</th><th>Status</th>"
+                "<th>Factor</th><th>Set</th><th align='center'>Status</th>"
                 "<th>Elected</th><th>To</th><th>From</th>"
                 "</tr>\n", r);
 

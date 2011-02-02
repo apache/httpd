@@ -254,6 +254,8 @@ struct proxy_conn_pool {
     proxy_conn_rec *conn;   /* Single connection for prefork mpm */
 };
 
+/* Keep below in sync with proxy_util.c! */
+
 /* worker status bits */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
@@ -275,6 +277,12 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IN_ERROR_FLAG       'E'
 #define PROXY_WORKER_HOT_STANDBY_FLAG    'H'
 #define PROXY_WORKER_FREE_FLAG           'F'
+
+typedef struct wstat {
+    unsigned int bit;
+    char flag;
+    const char *name;
+} wstat;
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
@@ -378,7 +386,7 @@ typedef struct {
     char      sticky[PROXY_BALANCER_MAX_STICKY_SIZE];          /* sticky session identifier */
     char nonce[APR_UUID_FORMATTED_LENGTH + 1];
     apr_interval_time_t timeout;  /* Timeout for waiting on free connection */
-    apr_time_t      updated;    /* timestamp of last update */
+    apr_time_t      wupdated;     /* timestamp of last change to workers list */
     proxy_balancer_method *lbmethod;
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
@@ -398,7 +406,7 @@ struct proxy_balancer {
     int max_workers;              /* maximum number of allowed workers */
     const char *name;             /* name of the load balancer */
     const char *sname;            /* filesystem safe balancer name */
-    apr_time_t      updated;    /* timestamp of last update */
+    apr_time_t      wupdated;    /* timestamp of last change to workers list */
     apr_global_mutex_t  *mutex; /* global lock for updating lb params */
     void            *context;   /* general purpose storage */
     proxy_balancer_shared *s;   /* Shared data */
