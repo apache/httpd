@@ -1811,6 +1811,7 @@ from the client</description>
       LimitRequestBody 102400
     </example>
 
+    <note>Note: not applicable to proxy requests.</note>
 </usage>
 </directivesynopsis>
 
