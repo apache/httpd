@@ -45,7 +45,11 @@ typedef struct {
 } forward_info;
 
 /* Keep synced with mod_proxy.h! */
-wstat wstat_tbl[] = {
+static struct wstat {
+    unsigned int bit;
+    char flag;
+    const char *name;
+} wstat_tbl[] = {
     {PROXY_WORKER_INITIALIZED,   PROXY_WORKER_INITIALIZED_FLAG,   "Init "},
     {PROXY_WORKER_IGNORE_ERRORS, PROXY_WORKER_IGNORE_ERRORS_FLAG, "Ign "},
     {PROXY_WORKER_DRAIN,         PROXY_WORKER_DRAIN_FLAG,         "Drn "},
@@ -2854,7 +2858,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(const char c, int set, proxy_wo
 {
     unsigned int *status = &w->s->status;
     char flag = toupper(c);
-    wstat *pwt = wstat_tbl;
+    struct wstat *pwt = wstat_tbl;
     while (pwt->bit) {
         if (flag == pwt->flag) {
             if (set)
@@ -2872,7 +2876,7 @@ PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w)
 {
     char *ret = "";
     unsigned int status = w->s->status;
-    wstat *pwt = wstat_tbl;
+    struct wstat *pwt = wstat_tbl;
     while (pwt->bit) {
         if (status & pwt->bit)
             ret = apr_pstrcat(p, ret, pwt->name, NULL);

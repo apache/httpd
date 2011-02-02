@@ -255,7 +255,6 @@ struct proxy_conn_pool {
 };
 
 /* Keep below in sync with proxy_util.c! */
-
 /* worker status bits */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
@@ -277,12 +276,6 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_IN_ERROR_FLAG       'E'
 #define PROXY_WORKER_HOT_STANDBY_FLAG    'H'
 #define PROXY_WORKER_FREE_FLAG           'F'
-
-typedef struct wstat {
-    unsigned int bit;
-    char flag;
-    const char *name;
-} wstat;
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
