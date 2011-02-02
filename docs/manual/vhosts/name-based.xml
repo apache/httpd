@@ -48,26 +48,12 @@
     IP address and then configure the Apache HTTP Server to recognize
     the different hostnames.  Name-based virtual hosting also eases
     the demand for scarce IP addresses.  Therefore you should use
-    name-based virtual hosting unless there is a specific reason to
-    choose IP-based virtual hosting.  Some reasons why you might consider
-    using IP-based virtual hosting:</p>
-
-    <ul>
-        <li>Some ancient clients are not compatible with name-based virtual
-        hosting.  For name-based virtual hosting to work, the client must send
-        the HTTP Host header.  This is required by HTTP/1.1, and is
-        implemented by all modern HTTP/1.0 browsers as an extension.  If you
-        need to support obsolete clients and still use name-based virtual
-        hosting, a possible technique is discussed at the end of this
-        document.</li>
-
-        <li>Name-based virtual hosting cannot be used with SSL secure servers
-        because of the nature of the SSL protocol.</li>
-
-        <li>Some operating systems and network equipment implement bandwidth
-        management techniques that cannot differentiate between hosts unless
-        they are on separate IP addresses.</li>
-    </ul>
+    name-based virtual hosting unless you are using equipment
+    that explicitly demands IP-based hosting.  Historical reasons for
+    IP-based virtual hosting based on client support are no longer
+    applicable to a general-purpose web server, unless you are
+    using a <module>mod_ssl</module> version without SNI support
+    (standard in Apache releases since 2.2.12).</p>
 
 </section>
 
