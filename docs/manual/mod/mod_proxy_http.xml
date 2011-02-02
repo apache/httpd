@@ -91,7 +91,7 @@
         encoding.  This allows the request to be efficiently streamed,
         but requires that the backend server supports HTTP/1.1.</dd>
         <dt>proxy-interim-response</dt>
-        <dd>This variable takes values <code>RFC</code> or
+        <dd>This variable takes values <code>RFC</code> (the default) or
         <code>Suppress</code>.  Earlier httpd versions would suppress
         HTTP interim (1xx) responses sent from the backend.  This is
         technically a violation of the HTTP protocol.  In practice,
