@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -240,6 +238,12 @@ nécessiter une modification des fichiers de configuration de la version
       <li><code class="module"><a href="./mod/mod_auto_index.html">mod_auto_index</a></code>: extrait maintenant les titres
       et affiche la description pour les fichiers .xhtml qui étaient
       jusqu'alors ignorés.</li>
+
+      <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> : le format par défaut des variables
+      <code>*_DN</code> a changé. Il est cependant encore possible
+      d'utiliser l'ancien format via la nouvelle option
+      <code>LegacyDNStringFormat</code> de la directive <code class="directive"><a href="./mod/mod_ssl.html#ssloptions">SSLOptions</a></code>.</li>
+
       <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> utilise maintenant par défaut les
       condensés MD5 sur toutes les plates-formes.</li>
     </ul>

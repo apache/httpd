@@ -61,8 +61,8 @@
     distribués seront alors compilés en tant que modules DSO. Une fois
     compilé en tant que module DSO nommé <code>mod_foo.so</code>, un
     module peut être chargé en mémoire au
-    démarrage ou redémarrage du serveur à l'aide de la commande
-    <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> du module
+    démarrage ou redémarrage du serveur à l'aide de
+    la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> du module
     <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>, placée
     dans votre fichier <code>httpd.conf</code>.</p>
     <p>La compilation en mode DSO peut être désactivée pour certains
@@ -143,8 +143,8 @@ $ apxs -cia mod_foo.c
 <div class="section">
 <h2><a name="background" id="background">Les dessous du fonctionnement des DSO</a></h2>
 
-    <p>Les clônes modernes d'UNIX proposent un astucieux mécanisme
-    communément appelé édition de liens et chargement dynamiques d'
+    <p>Les clônes modernes d'UNIX proposent un mécanisme
+    appelé édition de liens et chargement dynamiques d'
     <em>Objets Dynamiques Partagés</em> (DSO), qui permet de construire un
     morceau de programme dans un format spécial pour le rendre chargeable
     à l'exécution dans l'espace d'adressage d'un programme exécutable.</p>
@@ -234,8 +234,7 @@ $ apxs -cia mod_foo.c
     c'est dans cette optique que le mécanisme DSO a été conçu ; c'est cette
     approche qui est ainsi
     utilisée par pratiquement tous les types de bibliothèques que fournit le
-    système d'exploitation. Par contre, les objets partagés sont relativement
-    peu utilisés pour étendre les fonctionnalités d'un programme.</p>
+    système d'exploitation.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -246,23 +245,23 @@ $ apxs -cia mod_foo.c
 
     <ul>
       <li>Le paquetage du serveur est plus flexible à l'exécution car le
-      processus serveur effectif peut être assemblé à l'exécution via la
+      processus serveur peut être assemblé à l'exécution via la
       directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> du fichier de
       configuration <code>httpd.conf</code> plutôt que par des options du script
       <code class="program"><a href="./programs/configure.html">configure</a></code> à la compilation. Par exemple,
       on peut ainsi exécuter différentes instances du serveur
-      (standard et version SSL, version minimale et version étoffée
-      [mod_perl, PHP3], <em>etc...</em>) à partir d'une seule installation
+      (standard et version SSL, version minimale et version dynamique
+      [mod_perl, mod_php], <em>etc...</em>) à partir d'une seule installation
       d'Apache httpd.</li>
 
       <li>Le paquetage du serveur peut être facilement étendu avec des modules
-      tiers, même après l'installation. Ceci présente en tout cas un gros
+      tiers, même après l'installation. Ceci présente un gros
       avantage pour les mainteneurs de paquetages destinés aux distributions,
       car ils peuvent créer un paquetage Apache httpd de base, et des paquetages
       additionnels contenant des extensions telles que PHP, mod_perl, mod_fastcgi,
       <em>etc...</em></li>
 
-      <li>Une facilité de prototypage des modules Apache httpd car la paire
+      <li>Une facilité de prototypage des modules Apache httpd, car la paire
       DSO/<code class="program"><a href="./programs/apxs.html">apxs</a></code> vous permet d'une part de travailler en
       dehors de l'arborescence des sources d'Apache httpd, et d'autre part de n'avoir
       besoin que de la commande <code>apxs -i</code>
@@ -274,10 +273,6 @@ $ apxs -cia mod_foo.c
     <p>Inconvénients des DSO :</p>
 
     <ul>
-      <li>Le mécanisme DSO n'est pas disponible sur toutes les plates-formes
-      car tous les systèmes d'exploitation ne supportent pas le chargement
-      dynamique de code dans l'espace d'adressage d'un programme.</li>
-
       <li>Le serveur est environ 20 % plus lent au démarrage
       à cause des résolutions de symboles supplémentaires que le chargeur
       Unix doit effectuer.</li>

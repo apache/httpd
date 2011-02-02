@@ -24,8 +24,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
@@ -49,14 +47,9 @@ résident pour des serveurs virtuels</a></li>
     IP" et la commande "ifconfig" pour les activer), et/ou utiliser
     plusieurs numéros de port.</p>
 
-    <p>Dans la plupart des cas, les <a href="name-based.html">serveurs
-    virtuels à base de nom</a> sont plus appropriés, car ils permettent
-    de partager une seule paire adresse/port entre de nombreux serveurs
-    virtuels. Voir le document <a href="name-based.html#namevip">Serveurs virtuels à base de noms ou
-    serveurs virtuels à base d'adresse IP</a> pour vous aider à prendre
-    une décision.
-    </p>
-
+    <p>Selon la terminologie du serveur HTTP Apache, l'utilisation d'une
+    seule adresse IP avec plusieurs ports TCP s'apparente aussi à de
+    l'hébergement virtuel basé sur IP.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="howto" id="howto">Comment configurer Apache</a></h2>
@@ -115,7 +108,7 @@ résident pour des serveurs virtuels</a></li>
     que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
     <div class="example"><p><code>
-    Listen www.example.com:80
+    Listen 192.0.2.100:80
     </code></p></div>
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom

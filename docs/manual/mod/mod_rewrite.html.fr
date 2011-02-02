@@ -127,16 +127,21 @@ répertoire</td></tr>
       <p>La directive <code class="directive">RewriteBase</code> définit
       explicitement le chemin URL de base (et non le chemin du
       répertoire dans le système de fichiers !) pour les réécritures dans un contexte
-      de répertoire. Lorsque vous utilisez une directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code> dans un fichier
+      de répertoire dont le résultat est la substitution d'un
+      chemin relatif. Lorsque vous utilisez une directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code> dans un fichier
       <code>.htaccess</code>, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> enlève le
       préfixe de répertoire local avant d'effectuer le traitement, puis
       réécrit ce qui reste de l'URL. Lorsque la réécriture est terminée,
-      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rajoute automatiquement le préfixe de
-      répertoire local au chemin.</p>
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ajoute automatiquement le préfixe de
+      répertoire local (ou la valeur de la directive
+      <code class="directive">RewriteBase</code> si cette dernière est définie)
+      à la chaîne de substitution avant de la remettre à disposition du
+      serveur, comme s'il s'agissait de l'URL d'origine.</p>
 
 	<p>Cette directive est <em>requise</em> pour les réécritures
 	dans un contexte de répertoire défini via la directive
-	<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>.</p>
+	<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> lorsque la
+	substitution utilise un chemin relatif.</p>
 
       <p>Si votre chemin URL n'existe pas réellement dans le système de
       fichiers, ou ne trouve pas directement sous le répertoire défini
@@ -282,6 +287,7 @@ la réécriture soit effectuée
                  REQUEST_FILENAME<br />
                  IS_SUBREQ<br />
                  HTTPS<br />
+		 REQUEST_SCHEME<br />
               </td>
             </tr>
           </table>
@@ -290,7 +296,12 @@ la réécriture soit effectuée
 		HTTP de mêmes noms, au variables C du serveur HTTP Apache, ou
 		aux champs <code>struct tm</code> du système Unix. La
 		plupart d'entre elles sont documentées ailleurs dans le
-		manuel ou dans la spécification CGI. Parmi les variables
+		manuel ou dans la spécification CGI.</p>
+
+		<p>SERVER_NAME et SERVER_PORT dépendent respectivement
+		des valeurs des directives <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> et <code class="directive"><a href="../mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>.</p>
+		
+		<p>Parmi les variables
 		spécifiques à mod_rewrite, ou trouve les suivantes :</p>
         <div class="note">
                 <dl>
@@ -344,10 +355,20 @@ la réécriture soit effectuée
 		  (Cette variable peut être utilisée sans problème, que
 		  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> soit chargé ou non.</dd>
 
+		  <dt><code>REQUEST_SCHEME</code></dt>
+
+                  <dd>Contient le protocole de la requête (en général
+		  "http" ou "https"). La valeur peut être modifiée par
+		  la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</dd>
+
                 </dl>
 </div>
         </li>
       </ul>
+
+      <p>Si la <em>chaîne de test</em> contient la valeur spéciale
+      <code>expr</code>, <em>expression de comparaison</em> sera traité
+      en tant qu'expression rationnelle de type <a href="../expr.html">ap_expr</a>.</p>
 
       <p>Autres points à connaître ::</p>
       <ol>
@@ -623,6 +644,24 @@ la réécriture soit effectuée
               Tous ces tests peuvent aussi être préfixés par un point
 	      d'exclamation ('!') pour inverser leur signification.
 </div>
+        </li>
+
+	<li>
+           <p>Si la <em>chaîne de test</em> contient la valeur spéciale
+	   <code>expr</code>, la <em>chaîne de comparaison</em> sera
+	   traitée en tant qu'expression rationnelle de type <a href="../expr.html">ap_expr</a>.</p>
+
+	   <p>
+            Dans l'exemple ci-dessous, on utilise <code>-strmatch</code>
+	    pour comparer le <code>REFERER</code> avec le nom d'hôte du
+	    site afin de bloquer le hotlinking (référencement direct)
+	    non désiré.
+           </p>
+
+           <div class="example"><p><code>
+           RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"<br />
+           RewriteRule ^/images - [F]
+           </code></p></div>
         </li>
 
 	<li>Vous pouvez aussi définir certains drapeaux pour
@@ -921,34 +960,74 @@ la version version 2.1</td></tr>
       <p><a id="patterns" name="patterns"><em>Modèle</em></a> est une
       <a id="regexp" name="regexp">expression rationnelle</a>
       compatible perl. Dans la première règle de réécriture,
-      l'expression est comparée au (%-encoded)
+      l'expression est comparée au (%-decoded)
       <a href="./directive-dict.html#Syntax">chemin de l'URL</a> de la
       requête ; les expressions suivantes sont comparées à la sortie de
       la dernière règle de réécriture qui a été appliquée.</p>
 
 <div class="note"><h3>Qu'est-ce qui est comparé ?</h3>
-      <p>Le <em>Modèle</em> est d'abord comparé à la partie
-      de l'URL après le nom d'hôte et le port, et avant la chaîne de
-      requête.</p>
-
-      <p>Dans un contexte de répertoire, <em>Modèle</em> est comparé à
-      ce qui reste de l'URL après suppression du préfixe qui a conduit
-      Apache httpd à la règle courante (voir la directive <code class="directive"><a href="#rewritebase">RewriteBase</a></code>). Le préfixe supprimé
-      se termine toujours par un slash, ce qui signifie que la
-      correspondance se fera toujours avec une chaîne qui ne commence
-      pas par un slash. Un <em>Modèle</em> contenant <code>^/</code> ne
-      correspondra jamais dans un contexte de répertoire.</p>
       
+      <p>Dans un contexte de serveur virtuel <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>, le <em>modèle</em> est tout
+      d'abord comparé à la portion de l'URL située entre le nom d'hôte
+      éventuellement accompagné du port, et la chaîne de paramètres (par
+      exemple "/app1/index.html").</p>
+
+      <p>Dans les contextes de répertoire <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> et htaccess, le
+      <em>modèle</em> est tout d'abord comparé au chemin du <em>système
+      de fichiers</em>, après suppression du préfixe ou chemin de base
+      ayant conduit à la règle <code class="directive">RewriteRule</code> (par
+      exemple "app1/index.html" ou
+      "index.html" selon l'endroit où les directives sont définies).</p>
       
       <p>Si vous souhaitez faire une comparaison sur le nom
       d'hôte, le port, ou la chaîne de requête, utilisez une
       directive <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
       comportant respectivement les variables
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, ou
-      <code>%{QUERY_STRING}</code>. Si vous désirez effectuer une
-      correspondance avec l'ensemble du chemin de l'URL dans un contexte
-      de répertoire (htaccess), utilisez la variable
-      <code>%{REQUEST_URI}</code>.</p>
+      <code>%{QUERY_STRING}</code>.</p>
+</div>
+
+<div class="note"><h3>Réécritures dans un contexte de répertoire</h3>
+<ul>
+<li>L'utilisation du moteur de réécriture dans les
+fichiers <a href="../howto/htaccess.html">.htaccess</a> et les sections
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> est un peu plus
+complexe.</li>
+
+<li>Pour activer le moteur de réécriture dans ces contextes, vous devez
+définir "<code>RewriteEngine On</code>" <strong>et</strong>
+"<code>Options FollowSymLinks</code>". Si l'administrateur a désactivé
+la possibilité de modifier l'option <code>FollowSymLinks</code> au
+niveau du répertoire d'un utilisateur, vous ne pouvez pas utiliser le
+moteur de réécriture. Cette restriction a été instaurée à des fins de
+sécurité.</li>
+
+<li>Lorsqu'on utilise le moteur de réécriture dans un fichier
+<code>.htaccess</code>, le chemin de base du répertoire courant (qui est
+toujours le même pour ce même répertoire) est automatiquement
+<em>supprimé</em> au cours de la comparaison avec le modèle de la règle
+de réécriture, et automatiquement <em>ajouté</em> lorsqu'une
+substitution relative (ne débutant pas par un slash ou un nom de
+protocole) arrive à la fin d'un jeu de règles. Voir la directive
+<code class="directive"><a href="#rewritebase">RewriteBase</a></code> pour plus de
+détails à propos de l'ajout du préfixe après les substitutions
+relatives.</li>
+
+<li>Si vous souhaitez effectuer une comparaison en prenant en compte
+l'intégralité du
+chemin de l'URL dans un contexte de répertoire (htaccess), vous devez
+utiliser la variable <code>%{REQUEST_URI}</code> dans la directive
+<code class="directive">RewriteCond</code>.</li>
+
+<li>Le prefixe supprimé se termine toujours par un slash, ce qui
+signifie que la comparaison s'effectue avec une chaîne qui ne comporte
+<em>jamais</em> de slash de début. Ainsi, un <em>modèle</em> contenant
+<code>^/</code> ne correspondra jamais dans un contexte de répertoire.</li>
+
+<li>Bien que les règles de réécriture soient permises du point de vue de
+la syntaxe dans les sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, elles n'y sont pas prises en compte, et
+n'y sont à priori d'aucune utilité.</li>
+</ul>
 </div>
 
 	<p>Pour quelques conseils à propos des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, voir le
@@ -1110,14 +1189,15 @@ substitution !
         </td>
     </tr>
     <tr>
-        <td>discardpathinfo|DPI</td>
+        <td>discardpath|DPI</td>
         <td>Supprime la partie PATH_INFO de l'URI réécrit. <em><a href="../rewrite/flags.html#flag_dpi">détails 
         ...</a></em></td>
     </tr>
     <tr>
-        <td>env|E=<em>VAR</em>[:<em>VAL</em>]</td>
+        <td>env|E=[!]<em>VAR</em>[:<em>VAL</em>]</td>
         <td>Définit la variable d'environnement <em>VAR</em> (à la valeur
-	<em>VAL</em> si elle est fournie). <em><a href="../rewrite/flags.html#flag_e">détails ...</a></em></td>
+	<em>VAL</em> si elle est fournie). La variante !<em>VAR</em>
+	annule la définition de la variable <em>VAR</em>.<em><a href="../rewrite/flags.html#flag_e">détails ...</a></em></td>
     </tr>
     <tr>
         <td>forbidden|F</td>
@@ -1220,45 +1300,6 @@ configuration du module <code class="module"><a href="../mod/mod_userdir.html">m
 
 <p> Ce développement n'est pas effectué si le drapeau <em>PT</em> est
 utilisé dans la directive <code class="directive"><a href="#rewriterule">RewriteRule</a></code></p>
-</div>
-
-<div class="note"><h3>Réécritures dans le contexte de répertoire</h3>
-
-<p>Le moteur de réécriture peut être utilisé dans les fichiers <a href="../howto/htaccess.html">.htaccess</a>. Pour activer le moteur de
-réécriture pour ces fichiers, vous devez préciser "<code>RewriteEngine
-On</code>" <strong>et</strong> "<code>Options FollowSymLinks</code>"
-doit être activé. Si votre administrateur a interdit la surcharge de
-<code>FollowSymLinks</code> pour un répertoire utilisateur, vous ne
-pouvez pas utiliser le moteur de réécriture. Cette restriction est
-nécessaire pour des raisons de sécurité.</p>
-
-<p>Lorsqu'on utilise le moteur de réécriture dans les fichiers
-<code>.htaccess</code>, le préfixe du répertoire (qui est
-toujours le même pour un répertoire donné) est automatiquement
-<em>supprimé</em> pour la comparaison du modèle et automatiquement
-<em>ajouté</em> une fois la substitution effectuée. Cette fonctionnalité
-est nécessaire pour de nombreux cas de réécriture ; sans elle, vous
-seriez obligé de tenir compte du répertoire parent pour la comparaison,
-ce qui n'est pas toujours
-possible. Il y a une exception : si une chaîne de substitution commence
-par <code>http://</code>, le préfixe du répertoire ne sera
-<strong>pas</strong> ajouté, et une redirection externe (ou le passage
-par un mandataire, si le drapeau <strong>P</strong> est utilisé) sera
-initiée. Voir la directive <code class="directive"><a href="#rewritebase">RewriteBase</a></code> pour plus de détails.</p>
-
-<p>Le moteur de réécriture peut aussi être utilisé dans les sections
-<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> avec les
-mêmes règles de comparaison des préfixes que celles qui s'appliquent
-pour les fichiers <code>.htaccess</code>. Cependant, il est en général
-plus simple, pour éviter la complication des substitutions de préfixes,
-de définir les règles de réécriture dans le contexte du serveur
-principal ou des hôtes virtuels, plutôt que dans une section
-<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>.</p>
-
-<p>Bien que du point de vue syntaxique, il soit permis de définir des
-règles de réécriture dans les sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ce n'est à priori
-d'aucune utilité et n'est pas supporté.</p>
-
 </div>
 
      <p>Voici toutes les combinaisons de substitution et leurs
