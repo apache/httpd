@@ -230,7 +230,7 @@ fonctionnement des variables d'environnement.</p>
 <p>La syntaxe complète pour ce drapeau est :</p>
 
 <div class="example"><p><code>
-[E=VAR:VAL]
+[E=!VAR]
 </code></p></div>
 
 <p><code>VAL</code> peut comporter des références arrières
@@ -244,6 +244,14 @@ fonctionnement des variables d'environnement.</p>
 
 <p>vous pouvez définir la variable d'environnement nommée
 <code>VAR</code> avec une valeur vide.</p>
+
+<p>La forme</p>
+
+<div class="example"><p><code>
+[E=!VAR]
+</code></p></div>
+
+<p>permet d'annuler la définition de la variable <code>VAR</code>.</p>
 
 <p>Les variables d'environnement s'emploient dans différents contextes,
 comme les programmes CGI, d'autres directives RewriteRule, ou des

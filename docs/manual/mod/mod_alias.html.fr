@@ -153,7 +153,9 @@ de fichiers</td></tr>
     <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
 
     <p>l'alias précédent ne s'appliquera pas à l'url
-    <code>/icons</code>.</p>
+    <code>/icons</code> à cause de l'absence du slash final. Ainsi, si
+    le slash final est absent du <var>chemin de l'URL</var>, il doit
+    aussi l'être du <var>chemin du fichier</var>.</p>
 
     <p>Notez qu'il pourra s'avérer nécessaire de définir des sections
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>

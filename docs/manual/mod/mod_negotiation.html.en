@@ -114,8 +114,8 @@ Negotiation</a></li>
           0.</dd>
 
           <dt><code>qs</code></dt>
-          <dd>a floating-point number with a value in the range 0.0
-          to 1.0, indicating the relative 'quality' of this variant
+          <dd>a floating-point number with a value in the range 0[.000]
+          to 1[.000], indicating the relative 'quality' of this variant
           compared to the other available variants, independent of
           the client's capabilities. For example, a jpeg file is
           usually of higher source quality than an ascii file if it
