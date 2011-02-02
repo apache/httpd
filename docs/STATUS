@@ -44,9 +44,9 @@ To Do List
 
 - Performance doc "drop-in replace" wikified by Igor from Sander's
   presentation: http://wiki.apache.org/httpd/PerformanceScalingUp
-  What's missing are reviews regarding statements made about Windows,
-  as well as: http://wiki.apache.org/httpd/PerformanceScalingOut for
-  a follow up -- these days it's *all* about scaling, really.
+  as well as: http://wiki.apache.org/httpd/PerformanceScalingOut
+  They both need review and updates to reflect the current state
+  of the art.
 
 - Windows platform docs are in desperate need of rewrites/updates for 2.x.
     - Bill Rowe is a good contact for tech questions.
@@ -90,7 +90,7 @@ To Do List
      - explain what the following command line options do
        (perhaps in the developer/debugging docs):
         -D DEBUG
-        -D ONE_PROCESS
+        -D ONE_PROCESS -- is this the same as -X, if not, should it be?
               one-process-mode == no threads, i.e. only one
               process handling the requests in a single loop?
 
@@ -98,7 +98,9 @@ To Do List
      - platform/ebcdic.xml - needs major rework for 2.0
      - SSL docs need serious update and enhancement
         - compat docs are wrong
-        - no basic how to setup ssl doc
+        - A basic how to has been started here:
+	http://wiki.apache.org/httpd/SettingUpModSSL
+	but it needs some work...
 
 - API documentation
     - Ben Laurie has written some hooks documentation
