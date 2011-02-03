@@ -400,6 +400,7 @@ sys/sem.h \
 sys/sdt.h
 )
 AC_HEADER_SYS_WAIT
+AC_HEADER_RESOLV
 
 dnl ## Check for typedefs, structures, and compiler characteristics.
 
@@ -416,6 +417,7 @@ LIBS="$saved_LIBS"
 
 dnl See Comment #Spoon
 
+AC_SEARCH_LIBS(res_init, resolv, , [AC_SEARCH_LIBS(__res_init,resolv)])
 AC_CHECK_FUNCS( \
 getpwnam \
 getgrnam \
@@ -424,7 +426,9 @@ bindprocessor \
 prctl \
 timegm \
 getpgid \
-fopen64
+fopen64 \
+res_init \
+__res_init
 )
 
 dnl confirm that a void pointer is large enough to store a long integer
