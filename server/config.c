@@ -210,6 +210,14 @@ typedef int (*handler_func)(request_rec *);
 typedef void *(*dir_maker_func)(apr_pool_t *, char *);
 typedef void *(*merger_func)(apr_pool_t *, void *, void *);
 
+/* A list of the merge_dir_config functions of all loaded modules, sorted
+ * by module_index.
+ * Using this list in ap_merge_per_dir_configs() is faster than following
+ * the module->next linked list because of better memory locality (resulting
+ * in better cache usage).
+ */
+static merger_func *merger_func_cache;
+
 /* maximum nesting level for config directories */
 #ifndef AP_MAX_INCLUDE_DIR_DEPTH
 #define AP_MAX_INCLUDE_DIR_DEPTH (128)
@@ -254,16 +262,14 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_merge_per_dir_configs(apr_pool_t *p,
     void **conf_vector = apr_palloc(p, sizeof(void *) * conf_vector_length);
     void **base_vector = (void **)base;
     void **new_vector = (void **)new_conf;
-    module *modp;
+    int i;
 
-    for (modp = ap_top_module; modp; modp = modp->next) {
-        int i = modp->module_index;
-
+    for (i = 0; i < total_modules; i++) {
         if (!new_vector[i]) {
             conf_vector[i] = base_vector[i];
         }
         else {
-            merger_func df = modp->merge_dir_config;
+            const merger_func df = merger_func_cache[i];
             if (df && base_vector[i]) {
                 conf_vector[i] = (*df)(p, base_vector[i], new_vector[i]);
             }
@@ -571,6 +577,7 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
 
         ap_module_short_names[m->module_index] = strdup(sym_name);
         ap_module_short_names[m->module_index][len] = '\0';
+        merger_func_cache[m->module_index] = m->merge_dir_config;
     }
 
 
@@ -648,6 +655,7 @@ AP_DECLARE(void) ap_remove_module(module *m)
 
     free(ap_module_short_names[m->module_index]);
     ap_module_short_names[m->module_index] = NULL;
+    merger_func_cache[m->module_index] = NULL;
 
     m->module_index = -1; /* simulate being unloaded, should
                            * be unnecessary */
@@ -743,9 +751,12 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
     if (!ap_module_short_names)
         ap_module_short_names = calloc(sizeof(char *), conf_vector_length);
 
-    if (ap_loaded_modules == NULL || ap_module_short_names == NULL) {
+    if (!merger_func_cache)
+        merger_func_cache = calloc(sizeof(merger_func), conf_vector_length);
+
+    if (ap_loaded_modules == NULL || ap_module_short_names == NULL
+        || merger_func_cache == NULL)
         return "Ouch! Out of memory in ap_setup_prelinked_modules()!";
-    }
 
     for (m = ap_preloaded_modules, m2 = ap_loaded_modules; *m != NULL; )
         *m2++ = *m++;
