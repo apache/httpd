@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) core: Reload resolv.conf on graceful restarts. PR 50619.
+     [Matt Miller <m miller f5 com>, Stefan Fritsch]
+
   *) mod_mime: Ignore leading dots when looking for mime extensions.
      PR 50434 [Stefan Fritsch]
 

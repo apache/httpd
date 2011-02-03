@@ -44,6 +44,16 @@
 #include <unistd.h>
 #endif
 
+#if HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+#if HAVE_ARPA_NAMESER_H
+#include <arpa/nameser.h>
+#endif
+#if HAVE_RESOLV_H
+#include <resolv.h>
+#endif
+
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place
  *          extern functions and global data in another appropriate module.
  *
@@ -678,6 +688,17 @@ int main(int argc, const char * const argv[])
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
         ap_clear_auth_internal();
+
+/* glibc has __res_init that is #defined to res_init */
+#if HAVE_RES_INIT || HAVE___RES_INIT
+        /*
+         * resolv.conf may have changed, so this will read/reread it.
+         */
+        if (res_init() == -1) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+                         "Resolver initialization failed.");
+        }
+#endif
 
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
