@@ -736,7 +736,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing balancers create: %d, %d",
                          (int)ALIGNED_PROXY_BALANCER_SHARED_SIZE,
                          (int)conf->balancers->nelts);
-            
+
             rv = storage->create(&new, conf->id,
                                  ALIGNED_PROXY_BALANCER_SHARED_SIZE,
                                  conf->balancers->nelts, AP_SLOTMEM_TYPE_PREGRAB, pconf);
@@ -757,7 +757,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
             balancer->max_workers = balancer->workers->nelts + balancer->growth;
             /* no need for the 'balancer://' prefix */
-            ap_pstr2_alnum(pconf, balancer->name + sizeof(BALANCER_PREFIX) - 1, 
+            ap_pstr2_alnum(pconf, balancer->name + sizeof(BALANCER_PREFIX) - 1,
                            &balancer->sname);
             balancer->sname = apr_pstrcat(pconf, conf->id, "_", balancer->sname, NULL);
 
@@ -778,7 +778,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             if ((rv = storage->grab(conf->slot, &index)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_grab failed");
                 return !OK;
-                
+
             }
             if ((rv = storage->dptr(conf->slot, index, (void *)&bshm)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_dptr failed");
@@ -788,7 +788,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot share balancer");
                 return !OK;
             }
-            
+
             /* create slotmem slots for workers */
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing workers create: %s (%s), %d, %d",
                          balancer->name, balancer->sname,
@@ -989,6 +989,22 @@ static int balancer_handler(request_rec *r)
             ival = atoi(val);
             bsel->s->sticky_force = (ival != 0);
         }
+        if ((val = apr_table_get(params, "b_ss")) && *val) {
+            if (strlen(val) < (PROXY_BALANCER_MAX_STICKY_SIZE-1)) {
+                if (*val == '-' && *(val+1) == '\0')
+                    *bsel->s->sticky_path = *bsel->s->sticky = '\0';
+                else {
+                    char *path;
+                    PROXY_STRNCPY(bsel->s->sticky_path, val);
+                    PROXY_STRNCPY(bsel->s->sticky, val);
+
+                    if ((path = strchr((char *)bsel->s->sticky, '|'))) {
+                        *path++ = '\0';
+                        PROXY_STRNCPY(bsel->s->sticky_path, path);
+                    }
+                }
+            }
+        }
     }
 
     if (apr_table_get(params, "xml")) {
@@ -1054,7 +1070,7 @@ static int balancer_handler(request_rec *r)
                 }
             }
             else {
-                ap_rputs("<td align='center'> - ", r);
+                ap_rputs("<td align='center'> (None) ", r);
             }
             ap_rprintf(r, "<td align='center'>%s</td>\n",
                        balancer->s->sticky_force ? "On" : "Off");
@@ -1162,6 +1178,15 @@ static int balancer_handler(request_rec *r)
             ap_rprintf(r, "value='%d'></td></tr>\n", bsel->s->max_attempts);
             ap_rputs("<tr><td>Disable Failover:</td>", r);
             create_radio("b_sforce", bsel->s->sticky_force, r);
+            ap_rputs("<tr><td>Sticky Session:</td><td><input name='b_ss' id='b_ss' size=64 type=text ", r);
+            if (strcmp(bsel->s->sticky, bsel->s->sticky_path)) {
+                ap_rvputs(r, "value ='", bsel->s->sticky, " | ",
+                          bsel->s->sticky_path, NULL);
+            }
+            else {
+                ap_rvputs(r, "value ='", bsel->s->sticky, NULL);
+            }
+            ap_rputs("'> (Use '-' to delete)</td></tr>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='b' id='b' ", NULL);
             ap_rvputs(r, "value='", bsel->name + sizeof(BALANCER_PREFIX) - 1,
@@ -1195,7 +1220,7 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
                 exit(1); /* Ugly, but what else? */
             }
         }
-        
+
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
 
