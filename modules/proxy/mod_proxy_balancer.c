@@ -876,8 +876,20 @@ static int balancer_handler(request_rec *r)
     params = apr_table_make(r->pool, 10);
 
     balancer = (proxy_balancer *)conf->balancers->elts;
-    for (i = 0; i < conf->balancers->nelts; i++, balancer++)
+    for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+        apr_status_t rv;
+        if ((rv = PROXY_GLOBAL_LOCK(balancer)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "proxy: BALANCER: (%s). Lock failed for balancer_handler",
+                         balancer->name);
+        }
         ap_proxy_update_members(balancer, r->server, conf);
+        if ((rv = PROXY_GLOBAL_UNLOCK(balancer)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "proxy: BALANCER: (%s). Unlock failed for balancer_handler",
+                         balancer->name);
+        }
+    }
 
     if (r->args) {
         char *args = apr_pstrdup(r->pool, r->args);
