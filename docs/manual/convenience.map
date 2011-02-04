@@ -92,7 +92,7 @@ authldapurl	mod/mod_authnz_ldap.html#authldapurl
 authmerging	mod/mod_authz_core.html#authmerging
 authname	mod/mod_authn_core.html#authname
 authncachecontext	mod/mod_authn_socache.html#authncachecontext
-authncacheprovider	mod/mod_authn_socache.html#authncacheprovider
+authncacheprovidefor	mod/mod_authn_socache.html#authncacheprovidefor
 authncachesocache	mod/mod_authn_socache.html#authncachesocache
 authncachetimeout	mod/mod_authn_socache.html#authncachetimeout
 authnprovideralias	mod/mod_authn_core.html#authnprovideralias
@@ -103,8 +103,8 @@ authzdbdquery	mod/mod_authz_dbd.html#authzdbdquery
 authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzprovideralias	mod/mod_authz_core.html#authzprovideralias
+authzsendforbiddenonfailure	mod/mod_authz_core.html#authzsendforbiddenonfailure
 balancermember	mod/mod_proxy.html#balancermember
-balancernonce	mod/mod_proxy_balancer.html#balancernonce
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
@@ -327,6 +327,7 @@ privilegesmode	mod/mod_privileges.html#privilegesmode
 protocol	mod/core.html#protocol
 protocolecho	mod/mod_echo.html#protocolecho
 proxy	mod/mod_proxy.html#proxy
+proxyaddheaders	mod/mod_proxy.html#proxyaddheaders
 proxybadheader	mod/mod_proxy.html#proxybadheader
 proxyblock	mod/mod_proxy.html#proxyblock
 proxydomain	mod/mod_proxy.html#proxydomain
@@ -462,6 +463,9 @@ sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder
 sslocspenable	mod/mod_ssl.html#sslocspenable
 sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
+sslocsprespondertimeout	mod/mod_ssl.html#sslocsprespondertimeout
+sslocspresponsemaxage	mod/mod_ssl.html#sslocspresponsemaxage
+sslocspresponsetimeskew	mod/mod_ssl.html#sslocspresponsetimeskew
 ssloptions	mod/mod_ssl.html#ssloptions
 sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
 sslprotocol	mod/mod_ssl.html#sslprotocol
