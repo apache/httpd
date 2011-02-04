@@ -688,7 +688,7 @@ int main(int argc, const char * const argv[])
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
         ap_clear_auth_internal();
-
+#if 0
 /* glibc has __res_init that is #defined to res_init */
 #if HAVE_RES_INIT || HAVE___RES_INIT
         /*
@@ -699,7 +699,7 @@ int main(int argc, const char * const argv[])
                          "Resolver initialization failed.");
         }
 #endif
-
+#endif
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
         }
