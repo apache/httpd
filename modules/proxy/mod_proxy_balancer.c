@@ -835,14 +835,13 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
-static void create_radio(const char *name, unsigned int flag, proxy_worker *w,
-                         request_rec *r)
+static void create_radio(const char *name, unsigned int flag, request_rec *r)
 {
-    ap_rvputs(r, "<td>Set <input name='", name, "' value='1' type=radio", NULL);
-    if (w->s->status & flag)
+    ap_rvputs(r, "<td>On <input name='", name, "' id='", name, "' value='1' type=radio", NULL);
+    if (flag)
         ap_rputs(" checked", r);
-    ap_rvputs(r, "> <br/> Clear <input name='", name, "' value='0' type=radio", NULL);
-    if (!(w->s->status & flag))
+    ap_rvputs(r, "> <br/> Off <input name='", name, "' id='", name, "' value='0' type=radio", NULL);
+    if (!flag)
         ap_rputs(" checked", r);
     ap_rputs("></td>\n", r);
 }
@@ -924,7 +923,7 @@ static int balancer_handler(request_rec *r)
     /* First set the params */
     if (wsel && ok2change) {
         const char *val;
-        if ((val = apr_table_get(params, "lf"))) {
+        if ((val = apr_table_get(params, "w_lf"))) {
             int ival = atoi(val);
             if (ival >= 1 && ival <= 100) {
                 wsel->s->lbfactor = ival;
@@ -932,31 +931,31 @@ static int balancer_handler(request_rec *r)
                     recalc_factors(bsel);
             }
         }
-        if ((val = apr_table_get(params, "wr"))) {
+        if ((val = apr_table_get(params, "w_wr"))) {
             if (strlen(val) && strlen(val) < sizeof(wsel->s->route))
                 strcpy(wsel->s->route, val);
             else
                 *wsel->s->route = '\0';
         }
-        if ((val = apr_table_get(params, "rr"))) {
+        if ((val = apr_table_get(params, "w_rr"))) {
             if (strlen(val) && strlen(val) < sizeof(wsel->s->redirect))
                 strcpy(wsel->s->redirect, val);
             else
                 *wsel->s->redirect = '\0';
         }
-        if ((val = apr_table_get(params, "status_I"))) {
+        if ((val = apr_table_get(params, "w_status_I"))) {
             ap_proxy_set_wstatus('I', atoi(val), wsel);
         }
-        if ((val = apr_table_get(params, "status_N"))) {
+        if ((val = apr_table_get(params, "w_status_N"))) {
             ap_proxy_set_wstatus('N', atoi(val), wsel);
         }
-        if ((val = apr_table_get(params, "status_D"))) {
+        if ((val = apr_table_get(params, "w_status_D"))) {
             ap_proxy_set_wstatus('D', atoi(val), wsel);
         }
-        if ((val = apr_table_get(params, "status_H"))) {
+        if ((val = apr_table_get(params, "w_status_H"))) {
             ap_proxy_set_wstatus('H', atoi(val), wsel);
         }
-        if ((val = apr_table_get(params, "ls"))) {
+        if ((val = apr_table_get(params, "w_ls"))) {
             int ival = atoi(val);
             if (ival >= 0 && ival <= 99) {
                 wsel->s->lbset = ival;
@@ -967,11 +966,28 @@ static int balancer_handler(request_rec *r)
 
     if (bsel && ok2change) {
         const char *val;
-        if ((val = apr_table_get(params, "lbm"))) {
+        int ival;
+        if ((val = apr_table_get(params, "b_lbm"))) {
             proxy_balancer_method *lbmethod;
             lbmethod = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
             if (lbmethod)
                 bsel->s->lbmethod = lbmethod;
+        }
+        if ((val = apr_table_get(params, "b_tmo"))) {
+            ival = atoi(val);
+            if (ival >= 0 && ival <= 7200) { /* 2 hrs enuff? */
+                bsel->s->timeout = apr_time_from_sec(ival);
+            }
+        }
+        if ((val = apr_table_get(params, "b_max"))) {
+            ival = atoi(val);
+            if (ival >= 0 && ival <= 99) {
+                bsel->s->max_attempts = ival;
+            }
+        }
+        if ((val = apr_table_get(params, "b_sforce"))) {
+            ival = atoi(val);
+            bsel->s->sticky_force = (ival != 0);
         }
     }
 
@@ -1025,7 +1041,7 @@ static int balancer_handler(request_rec *r)
                       "'>", NULL);
             ap_rvputs(r, balancer->name, "</a></h3>\n\n", NULL);
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
-                "<th>MaxMembers</th><th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
+                "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);
             ap_rprintf(r, "<td align='center'>%d</td>\n", balancer->max_workers);
             if (*balancer->s->sticky) {
@@ -1040,6 +1056,8 @@ static int balancer_handler(request_rec *r)
             else {
                 ap_rputs("<td align='center'> - ", r);
             }
+            ap_rprintf(r, "<td align='center'>%s</td>\n",
+                       balancer->s->sticky_force ? "On" : "Off");
             ap_rprintf(r, "</td><td align='center'>%" APR_TIME_T_FMT "</td>",
                 apr_time_sec(balancer->s->timeout));
             ap_rprintf(r, "<td align='center'>%d</td>\n", balancer->s->max_attempts);
@@ -1088,32 +1106,32 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, wsel->s->name, "</h3>\n", NULL);
             ap_rvputs(r, "<form method='GET' action='", NULL);
             ap_rvputs(r, r->uri, "'>\n<dl>", NULL);
-            ap_rputs("<table><tr><td>Load factor:</td><td><input name='lf' type=text ", r);
+            ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbfactor);
-            ap_rputs("<tr><td>LB Set:</td><td><input name='ls' type=text ", r);
+            ap_rputs("<tr><td>LB Set:</td><td><input name='w_ls' id='w_ls' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbset);
-            ap_rputs("<tr><td>Route:</td><td><input name='wr' type=text ", r);
+            ap_rputs("<tr><td>Route:</td><td><input name='w_wr' id='w_wr' type=text ", r);
             ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->route),
                       NULL);
             ap_rputs("'></td></tr>\n", r);
-            ap_rputs("<tr><td>Route Redirect:</td><td><input name='rr' type=text ", r);
+            ap_rputs("<tr><td>Route Redirect:</td><td><input name='w_rr' id='w_rr' type=text ", r);
             ap_rvputs(r, "value='", ap_escape_html(r->pool, wsel->s->redirect),
                       NULL);
             ap_rputs("'></td></tr>\n", r);
             ap_rputs("<tr><td>Status:</td>", r);
             ap_rputs("<td><table border='1'><tr><th>Ign</th><th>Drn</th><th>Dis</th><th>Stby</th></tr>\n<tr>", r);
-            create_radio("status_I", PROXY_WORKER_IGNORE_ERRORS, wsel, r);
-            create_radio("status_N", PROXY_WORKER_DRAIN, wsel, r);
-            create_radio("status_D", PROXY_WORKER_DISABLED, wsel, r);
-            create_radio("status_H", PROXY_WORKER_HOT_STANDBY, wsel, r);
+            create_radio("w_status_I", (PROXY_WORKER_IGNORE_ERRORS & wsel->s->status), r);
+            create_radio("w_status_N", (PROXY_WORKER_DRAIN & wsel->s->status), r);
+            create_radio("w_status_D", (PROXY_WORKER_DISABLED & wsel->s->status), r);
+            create_radio("w_status_H", (PROXY_WORKER_HOT_STANDBY & wsel->s->status), r);
             ap_rputs("</tr></table>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
-            ap_rvputs(r, "</table>\n<input type=hidden name='w' ",  NULL);
+            ap_rvputs(r, "</table>\n<input type=hidden name='w' id='w' ",  NULL);
             ap_rvputs(r, "value='", ap_escape_uri(r->pool, wsel->s->name), "'>\n", NULL);
-            ap_rvputs(r, "<input type=hidden name='b' ", NULL);
+            ap_rvputs(r, "<input type=hidden name='b' id='b' ", NULL);
             ap_rvputs(r, "value='", bsel->name + sizeof(BALANCER_PREFIX) - 1,
                       "'>\n", NULL);
-            ap_rvputs(r, "<input type=hidden name='nonce' value='",
+            ap_rvputs(r, "<input type=hidden name='nonce' id='nonce' value='",
                       bsel->s->nonce, "'>\n", NULL);
             ap_rvputs(r, "</form>\n", NULL);
             ap_rputs("<hr />\n", r);
@@ -1128,7 +1146,7 @@ static int balancer_handler(request_rec *r)
             provs = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
             if (provs) {
                 ap_rputs("<tr><td>LBmethod:</td>", r);
-                ap_rputs("<td>\n<select name='lbm' id='lbm'>", r);
+                ap_rputs("<td>\n<select name='b_lbm' id='b_lbm'>", r);
                 pname = (ap_list_provider_names_t *)provs->elts;
                 for (i = 0; i < provs->nelts; i++, pname++) {
                     ap_rvputs(r,"<option value='", pname->provider_name, "'", NULL);
@@ -1138,12 +1156,17 @@ static int balancer_handler(request_rec *r)
                 }
                 ap_rputs("</select>\n</td></tr>\n", r);
             }
-            ap_rputs("</td></tr>\n", r);
+            ap_rputs("<tr><td>Timeout:</td><td><input name='b_tmo' id='b_tmo' type=text ", r);
+            ap_rprintf(r, "value='%" APR_TIME_T_FMT "'></td></tr>\n", apr_time_sec(bsel->s->timeout));
+            ap_rputs("<tr><td>Failover Attempts:</td><td><input name='b_max' id='b_max' type=text ", r);
+            ap_rprintf(r, "value='%d'></td></tr>\n", bsel->s->max_attempts);
+            ap_rputs("<tr><td>Disable Failover:</td>", r);
+            create_radio("b_sforce", bsel->s->sticky_force, r);
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
-            ap_rvputs(r, "</table>\n<input type=hidden name='b' ", NULL);
+            ap_rvputs(r, "</table>\n<input type=hidden name='b' id='b' ", NULL);
             ap_rvputs(r, "value='", bsel->name + sizeof(BALANCER_PREFIX) - 1,
                       "'>\n", NULL);
-            ap_rvputs(r, "<input type=hidden name='nonce' value='",
+            ap_rvputs(r, "<input type=hidden name='nonce' id='nonce' value='",
                       bsel->s->nonce, "'>\n", NULL);
             ap_rvputs(r, "</form>\n", NULL);
             ap_rputs("<hr />\n", r);
