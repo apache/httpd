@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 890440:1055614 (outdated) -->
+<!-- English Revision: 1055614 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -136,8 +136,10 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
 
     <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
 
-    <p>diye bir tanım yaparsanız <code>/icons</code> URL’si için bir
-      <directive>Alias</directive> kullanılmayacaktır.</p>
+    <p>diye bir tanım yaparsanız <code>/icons</code> URL’si için, sonunda bir /
+      yokmuşçasına bir <directive>Alias</directive> kullanılmayacaktır. Benzer
+      şekilde, <var>URL-yolu</var> belirtirken sonda / kullanmazsanız
+      <var>dosya-yolu</var> için de sonda / kullanmamalısınız.</p>
 
     <p><directive>Alias</directive> <em>hedefleri</em> için ek <directive
       type="section" module="core" >Directory</directive> bölümleri

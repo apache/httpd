@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 887984:1031039 (outdated) -->
+<!-- English Revision: 1067110 -->
 <!-- =====================================================
  Translated by: Umut Samuk <umut belgeler.org>
    Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.org>
@@ -74,7 +74,7 @@
 
     <p><module>mod_authnz_ldap</module> modülü kimlik doğrulama ve
     yetkilendirme işlemlerinin ikisini birden gerçekleştirir.
-    <module>mod_authn_alias</module> modülü bir kimlik doğrulama 
+    <module>mod_authn_alias</module> modülü bir kimlik doğrulama
     tedarikçisi olmadığı halde diğer kimlik doğrulama tedarikçilerinin
     yapılandırılabilmesini mümkün kılmak gibi bir esnekliğe sahiptir.</p>
 
@@ -258,6 +258,36 @@
     kısmını sağlar. Bir sonraki bölümde <directive
     module="core">Require</directive> yönergesini kullanmanın
     çeşitli yoları üzerinde duracağız.</p>
+  </section>
+
+  <section id="satisfy"><title>Satisfy</title>
+
+    <p><directive module="core">Satisfy</directive> yönergesi belli bir
+    kullanıcıya giriş hakkı tanınırken çeşitli kriterlerin belirtilebilmesine
+    olanak tanır. Yönerge değiştirge olarak <code>all</code> ve <code>any</code>
+    seçeneklerinden birini kabul eder. Öntanımlı olarak değerin <code>all</code>
+    olduğu varsayılır. Yani, çeşitli kriterler belirtilmişse kullanıcının tüm
+    bunları karşılaması gerekir. <code>any</code> belirtilmesi halinde ise,
+    kullanıcının bu kriterlerden herhangi birini karşılaması yeterlidir.</p>
+
+    <p>Ağ dışından erişimler parola korumalı iken içerden gelen isteklere kimlik
+    denetiminin yapılmadığı durum için erişim denetiminin kullanımı iyi bir
+    örnektir. Bu, <directive module="core">Satisfy</directive> yönergesi
+    kullanılarak şöyle yapılabilir:</p>
+
+    <example>
+    &lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
+      AuthType Basic<br />
+      AuthName intranet<br />
+      AuthUserFile /www/passwd/users<br />
+      AuthGroupFile /www/passwd/groups<br />
+      Require group customers<br />
+      Order allow,deny<br />
+      Allow from internal.com<br />
+      Satisfy any<br />
+    &lt;/Directory&gt;
+    </example>
+
   </section>
 
   <section id="lettingmorethanonepersonin">

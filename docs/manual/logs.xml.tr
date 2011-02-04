@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 989598:1028764 (outdated) -->
+<!-- English Revision: 1028764 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -559,9 +559,11 @@
         <module>mod_log_forensic</module>
         <module>mod_cgi</module>
         <module>mod_rewrite</module>
+        <module>mod_log_config</module>
       </modulelist>
       <directivelist>
         <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_config">BufferedLogs</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_rewrite">RewriteLog</directive>

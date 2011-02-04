@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 658547:1050541 (outdated) -->
+<!-- English Revision: 1050541 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -35,10 +35,12 @@
 
 <summary>
 
-    <p><module>mod_setenvif</module> modülü ortam değişkenlerinin isteğin
-      farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine bağlı
-      olarak atanmasını mümkün kılar. Bu ortam değişkenleri sunucunun çeşitli
-      kısımlarında yapılacak eylemlere karar verirken kullanılır.</p>
+    <p><module>mod_setenvif</module> modülü, dahili ortam değişkenlerinin,
+      isteğin farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine
+      bağlı olarak atanmasını mümkün kılar. Bu ortam değişkenleri, CGI
+      betiklerinde ve SSI sayfalarında da kullanılabilir hale gelmenin yanı sıra
+      sunucunun çeşitli kısımlarında yapılacak eylemlere karar verirken
+      kullanılabilirler.</p>
 
     <p>Yönergeler yapılandırma dosyasında yer aldıkları sıraya göre ele
       alınırlar. Böylece daha karmaşık dizilimler kullanılabilir, bu örnekteki

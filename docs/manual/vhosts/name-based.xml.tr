@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 558632 -->
+<!-- English Revision: 1066435 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -56,28 +56,12 @@ Barındırma</a></seealso>
       ismini doğru IP adresiyle eşlemek için DNS sunucunuzu yapılandırdıktan
       sonra Apache HTTP sunucusunu farklı konak isimlerini tanıyacak şekilde
       yapılandırmanız yeterli olur. İsme dayalı sanal barındırma ayrıca zaten
-      kıt olan IP adreslerine talebi de azaltır. Bu nedenle, IP’ye dayalı sanal
-      konakları kullanmanızı gerektirecek çok özel bir sebep olmadıkça isme
-      dayalı sanal konaklar kullanmalısınız. IP’ye dayalı sanal konakların
-      kullanımını gerektirebilecek bazı durumlar:</p>
-
-    <ul>
-        <li>Bazı tarihi istemciler isme dayalı sanal konaklarla uyumlu değildir.
-          İsme dayalı sanal konakların çalışması için istemcinin HTTP Host
-          başlığı göndermesi gerekir. Bu da HTTP/1.1 desteği gerektirir.
-          Günümüzdeki HTTP/1.0 istemcileri bir eklenti olarak HTTP/1.1’i de
-          desteklemektedir. Tarihi eser haline gelmiş HTTP/1.1 desteği
-          bulurmayan eski istemcileri hala isme dayalı sanal konaklarla
-          desteklemek isterseniz bu belgenin sonunda bunu mümkün kılabilecek bir
-          tekniğe yer verilmiştir.</li>
-
-        <li>İsme dayalı sanal konaklar SSL portokolünün doğası gereğince SSL’li
-          güvenli sunucular için kullanılamazlar.</li>
-
-        <li>Bazı işletim sistemlerinin ve ağ donanımlarının gerçekleştirdiği
-          band genişliği yönetim teknikleri IP adresleri farklı olmadığı sürece
-          konaklar arasında ayrım yapamazlar.</li>
-    </ul>
+      kıt olan IP adreslerine talebi de azaltır. Bu nedenle, açıkça IP’ye dayalı
+      sanal konakları talep eden donanım kullanmadıkça isme dayalı sanal konaklar
+      kullanmalısınız. SNI desteksiz bir <module>mod_ssl</module> sürümü
+      (Apache'nin 2.2.12 sürümüne kadar standart) kullanmıyorsanız, istemci
+      desteğine bağlı IP’ye dayalı sanal konaklar için geçerli tarihsel sebepler,
+      genel amaçlı bir HTTP sunucusu için artık uygulanabilir değildir.</p>
 
 </section>
 

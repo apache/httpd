@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1041924:1053145 (outdated) -->
+<!-- English Revision: 1066444 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -704,7 +704,7 @@ kullanımı önerilmemektedir.</compatibility>
       </indent>
       &lt;/Directory&gt;<br />
       <br />
-      &lt;Directory /home/&gt;<br />
+      &lt;Directory /home&gt;<br />
       <indent>
         AllowOverride FileInfo<br />
       </indent>
@@ -1799,6 +1799,7 @@ uzunluğunu sınırlar.</description>
       LimitRequestBody 102400
     </example>
 
+    <note>Dikkat: Vekil isteklerine uygulanamaz.</note>
 </usage>
 </directivesynopsis>
 
@@ -2911,7 +2912,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       belirtebilirsiniz:</p>
 
     <example>
-      ServerName www.filan.dom:80
+      ServerName www.filan.dom
     </example>
 
     <p>Bir <directive>ServerName</directive> ataması yapılmamışsa sunucu IP

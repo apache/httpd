@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 698390:1038595 (outdated) -->
+<!-- English Revision: 1038595 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -186,8 +186,8 @@
       <li>
         <strong>Hedef grup <code>root</code>  değil, değil mi?</strong>
 
-        <p class="indent">Mevcut durumda, <code>root</code> grubunun CGI/SSI
-          programlarını çalıştırmasına izin verilmemektedir.</p>
+        <p class="indent"><code>root</code> grubunun CGI/SSI
+          programlarını çalıştırmasına izin verilmez.</p>
       </li>
 
       <li>

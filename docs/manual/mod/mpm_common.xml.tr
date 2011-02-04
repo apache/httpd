@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1031660:1055702 (outdated) -->
+<!-- English Revision: 1055702 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -690,6 +690,16 @@
 
     <p><code>0</code> değeri atarsanız sunucu işletim sistemi öntanımlısını
       kullanacaktır.</p>
+
+    <p>Yüksek hızlı yüksek yataklık süreli bağlantılarda daha iyi başarım elde
+      etmek için işletim sisteminizde bazı yapılandırmalara gitmeniz
+      gerekebilir.</p>
+
+    <note><p>Bazı işletim sistemlerinde daha büyük bir
+      <directive>SendBufferSize</directive> ile sonuçlanan TCP davranışındaki
+      değişiklikler, <directive module="core">EnableSendfile</directive>
+      yönergesine OFF atanmadıkça görülmeyebilir. Bu etkileşim sadece duruk
+      dosyalarda ortaya çıkar.</p></note>
 </usage>
 </directivesynopsis>
 
