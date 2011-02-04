@@ -52,16 +52,6 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 /* -------------------------------------------------------------- */
 /* Translate the URL into a 'filename' */
 
-#define PROXY_COPY_CONF_PARAMS(w, c) \
-    do {                             \
-        (w)->s->timeout              = (c)->timeout;               \
-        (w)->s->timeout_set          = (c)->timeout_set;           \
-        (w)->s->recv_buffer_size     = (c)->recv_buffer_size;      \
-        (w)->s->recv_buffer_size_set = (c)->recv_buffer_size_set;  \
-        (w)->s->io_buffer_size       = (c)->io_buffer_size;        \
-        (w)->s->io_buffer_size_set   = (c)->io_buffer_size_set;    \
-    } while (0)
-
 static const char *set_worker_param(apr_pool_t *p,
                                     proxy_worker *worker,
                                     const char *key,

@@ -299,6 +299,17 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 
 #define PROXY_STRNCPY(dst, src) apr_cpystrn((dst), (src), sizeof(dst))
 
+#define PROXY_COPY_CONF_PARAMS(w, c) \
+do {                             \
+(w)->s->timeout              = (c)->timeout;               \
+(w)->s->timeout_set          = (c)->timeout_set;           \
+(w)->s->recv_buffer_size     = (c)->recv_buffer_size;      \
+(w)->s->recv_buffer_size_set = (c)->recv_buffer_size_set;  \
+(w)->s->io_buffer_size       = (c)->io_buffer_size;        \
+(w)->s->io_buffer_size_set   = (c)->io_buffer_size_set;    \
+} while (0)
+
+
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
     char      name[PROXY_WORKER_MAX_NAME_SIZE];
@@ -840,6 +851,17 @@ PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, proxy_worker *
  * @return   string representation of status
  */
 PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w);
+
+
+/**
+ * Create readable representation of worker status bitfield
+ * @param b  balancer to check/update member list of
+ * @param s  server rec
+ * @param conf config
+ * @return   APR_SUCCESS if all goes well
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_rec *s,
+                                                    proxy_server_conf *conf);
 
 #define PROXY_LBMETHOD "proxylbmethod"
 

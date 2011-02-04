@@ -475,7 +475,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
     /* Step 3.5: Update member list for the balancer */
     /* TODO: Implement as provider! */
-    /* proxy_update_members(balancer, r, conf); */
+    ap_proxy_update_members(*balancer, r->server, conf);
 
     /* Step 4: find the session route */
     runtime = find_session_route(*balancer, r, &route, &sticky, url);
@@ -875,6 +875,10 @@ static int balancer_handler(request_rec *r)
     conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     params = apr_table_make(r->pool, 10);
 
+    balancer = (proxy_balancer *)conf->balancers->elts;
+    for (i = 0; i < conf->balancers->nelts; i++, balancer++)
+        ap_proxy_update_members(balancer, r->server, conf);
+
     if (r->args) {
         char *args = apr_pstrdup(r->pool, r->args);
         char *tok, *val;
@@ -887,7 +891,7 @@ static int balancer_handler(request_rec *r)
                  * Special case: workers are allowed path information
                  */
                 if ((access_status = ap_unescape_url(val)) != OK)
-                    if (strcmp(args, "w") || (access_status !=  HTTP_NOT_FOUND))
+                    if ((strcmp(args, "w") && strcmp(args, "b_nwrkr")) || (access_status !=  HTTP_NOT_FOUND))
                         return access_status;
                 apr_table_setn(params, args, val);
                 args = tok;
@@ -1005,6 +1009,43 @@ static int balancer_handler(request_rec *r)
                 }
             }
         }
+        if ((val = apr_table_get(params, "b_wyes")) &&
+            (*val == '1' && *(val+1) == '\0') &&
+            (val = apr_table_get(params, "b_nwrkr"))) {
+            char *ret;
+            proxy_worker *nworker;
+            nworker = ap_proxy_get_worker(conf->pool, bsel, conf, val);
+            if (!nworker) {
+                ret = ap_proxy_define_worker(conf->pool, &nworker, bsel, conf, val, 0);
+                if (!ret) {
+                    unsigned int index;
+                    apr_status_t rv;
+                    proxy_worker_shared *shm;
+                    PROXY_COPY_CONF_PARAMS(nworker, conf);
+                    if ((rv = storage->grab(bsel->slot, &index)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "worker slotmem_grab failed");
+                        return HTTP_BAD_REQUEST;
+                    }
+                    if ((rv = storage->dptr(bsel->slot, index, (void *)&shm)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "worker slotmem_dptr failed");
+                        return HTTP_BAD_REQUEST;
+                    }
+                    if ((rv = ap_proxy_share_worker(nworker, shm, index)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "Cannot share worker");
+                        return HTTP_BAD_REQUEST;
+                    }
+                    if ((rv = ap_proxy_initialize_worker(nworker, r->server, conf->pool)) != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "Cannot init worker");
+                        return HTTP_BAD_REQUEST;
+                    }
+                    /* sync all timestamps */
+                    bsel->wupdated = bsel->s->wupdated = nworker->s->updated = apr_time_now();
+                    /* by default, all new workers are disabled */
+                    ap_proxy_set_wstatus('D', 1, nworker);
+                }
+            }
+        }
+        
     }
 
     if (apr_table_get(params, "xml")) {
@@ -1186,7 +1227,10 @@ static int balancer_handler(request_rec *r)
             else {
                 ap_rvputs(r, "value ='", bsel->s->sticky, NULL);
             }
-            ap_rputs("'> (Use '-' to delete)</td></tr>\n", r);
+            ap_rputs("'>&nbsp;&nbsp;&nbsp;&nbsp;(Use '-' to delete)</td></tr>\n", r);
+            ap_rputs("<tr><td>Add New Worker:</td><td><input name='b_nwrkr' id='b_nwrkr' size=32 type=text>"
+                     "&nbsp;&nbsp;&nbsp;&nbsp;Are you sure? <input name='b_wyes' id='b_wyes' type=checkbox value='1'>"
+                     "</td></tr>", r);
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='b' id='b' ", NULL);
             ap_rvputs(r, "value='", bsel->name + sizeof(BALANCER_PREFIX) - 1,
@@ -1260,6 +1304,57 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         s = s->next;
     }
 
+}
+
+PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_rec *s,
+                                                    proxy_server_conf *conf)
+{
+    proxy_worker **workers;
+    int i;
+    unsigned int index;
+    proxy_worker_shared *shm;
+    if (b->s->wupdated <= b->wupdated)
+        return APR_SUCCESS;
+    /*
+     * Look thru the list of workers in shm
+     * and see which one(s) we are lacking
+     */
+    for (index = 0; index < b->max_workers; index++) {
+        int found;
+        apr_status_t rv;
+        if ((rv = storage->dptr(b->slot, index, (void *)&shm)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
+            return APR_EGENERAL;
+        }
+        if (!shm->hash)
+            continue;
+        found = 0;
+        workers = (proxy_worker **)b->workers->elts;
+        for (i = 0; i < b->workers->nelts; i++, workers++) {
+            proxy_worker *worker = *workers;
+            if (worker->hash == shm->hash) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            proxy_worker **runtime;
+            runtime = apr_array_push(b->workers);
+            *runtime = apr_palloc(conf->pool, sizeof(proxy_worker));
+            (*runtime)->hash = shm->hash;
+            (*runtime)->context = NULL;
+            (*runtime)->cp = NULL;
+            (*runtime)->mutex = NULL;
+            (*runtime)->balancer = b;
+            (*runtime)->s = shm;
+            if ((rv = ap_proxy_initialize_worker(*runtime, s, conf->pool)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot init worker");
+                return rv;
+            }
+        }
+    }
+    b->wupdated = b->s->wupdated;
+    return APR_SUCCESS;
 }
 
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
