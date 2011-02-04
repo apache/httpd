@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 636034:1044382 (outdated) -->
+<!-- English Revision: 1044382 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -81,7 +81,7 @@ Belgeleri</title>
 </category>
 
 <category id="other"><title>Diğer Konular</title>
-    <page href="faq/">Sıkça Sorulan Sorular</page>
+    <page href="http://wiki.apache.org/httpd/FAQ">Sıkça Sorulan Sorular</page>
     <page href="sitemap.html">Site Haritası</page>
     <page href="developer/">Geliştiriciler için Belgeler</page>
     <page href="misc/">Diğer Bilgiler</page>

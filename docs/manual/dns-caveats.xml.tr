@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 667835:1040789 (outdated) -->
+<!-- English Revision: 1040789 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -127,18 +127,18 @@
 
     <p><code>falan.fesmekan.dom</code>’a 192.168.2.1,
       <code>misal.mesela.dom</code>’a 192.168.2.2 atadığınızı fakat,
-      <code>mesela.dom</code>’un DNS kaydının sizin denetiminizde olmadığını
-      varsayalım. Bu yapılandırmayla, <code>mesela.dom</code>’u
-      <code>fesmekan.dom</code>’a giden tüm trafiği çalabilecek duruma
+      <code>fesmekan.dom</code>’un DNS kaydının sizin denetiminizde olmadığını
+      varsayalım. Bu yapılandırmayla, <code>fesmekan.dom</code>’u
+      <code>mesela.dom</code>’a giden tüm trafiği çalabilecek duruma
       getirirsiniz. Bunu gerçekleştirmek için DNS kaydında
-      <code>misal.mesela.dom</code>’a 192.168.2.1 adresinin atanması
+      <code>falan.fesmekan.dom</code>’a 192.168.2.2 adresinin atanması
       yeterlidir. Kendi DNS’lerine sahip olduklarından dolayı
-      <code>misal.mesela.dom</code>’a istedikleri IP adresini atamaktan
+      <code>falan.fesmekan.dom</code>’a istedikleri IP adresini atamaktan
       onları alıkoyamazsınız.</p>
 
-    <p>192.168.2.1’e gelen isteklerin hepsine
-      (<code>http://falan.fesmekan.dom/biryer</code> şeklinde yazılan
-      adresler dahil) <code>mesela.dom</code> sanal konağınca hizmet
+    <p>192.168.2.2’ye gelen isteklerin hepsine
+      (<code>http://misal.mesela.dom/biryer</code> şeklinde yazılan
+      adresler dahil) <code>fesmekan.dom</code> sanal konağınca hizmet
       sunulacaktır. Apache’nin gelen istekleri sunduğu sanal konaklarla nasıl
       eşleştirdiğini bilirseniz bunun sebebini kolayca anlarsınız. Bunu
       kabataslak açıklayan  <a href="vhosts/details.html">bir belgemiz

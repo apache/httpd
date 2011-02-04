@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 886859:1031045 (outdated) -->
+<!-- English Revision: 1031045 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -323,7 +323,7 @@
         <dd><module>mod_asis</module> modülü tarafından sağlanan kendinden
           HTTP başlıklı dosya türü desteğini iptal eder.</dd>
 
-        <dt><code>--disable-auth</code></dt>
+        <dt><code>--disable-auth-basic</code></dt>
         <dd><module>mod_auth</module> modülü tarafından sağlanan kullanıcıya
           dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
           parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
@@ -421,12 +421,18 @@
         etkinleştirmek için aşağıdaki seçenekleri kullanabilirsiniz.</p>
 
       <dl>
-        <dt><code>--enable-auth-anon</code></dt>
+        <dt><code>--enable-authn-anon</code></dt>
         <dd><module>mod_auth_anon</module> modülünün sağladığı anonim
           kullanıcı erişimi etkin kılınır.</dd>
 
-        <dt><code>--enable-auth-dbm</code></dt>
-        <dd><module>mod_auth_dbm</module> modülü kullanıcı isimlerinin ve
+        <dt><code>--enable-authn-dbm</code></dt>
+        <dd><module>mod_authn_dbm</module> modülü kullanıcı isimlerinin ve
+          parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
+          Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
+          kılmak için kullanabilirsiniz.</dd>
+
+        <dt><code>--enable-authz-dbm</code></dt>
+        <dd><module>mod_authz_dbm</module> modülü kullanıcı isimlerinin ve
           parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
           Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
           kılmak için kullanabilirsiniz.</dd>
@@ -830,7 +836,8 @@
       </dl>
 
       <p>Apache HTTP Sunucusunun çeşitli bölümleri,
-        <module>mod_authn_dbm</module> modülü ve <module>mod_rewrite</module>
+        <module>mod_authn_dbm</module>, <module>mod_authz_dbm</module> ve
+        <module>mod_rewrite</module>
         modülünün <directive module="mod_rewrite">RewriteMap</directive>
         yönergesi bilgilere erişimi hızlandırmak için basit anahtar/değer
         veritabanları kullanırlar. SDBM, APU içinde mevcut olduğundan bu

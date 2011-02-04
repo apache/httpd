@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 962989:1055866 (outdated) -->
+<!-- English Revision: 1055866 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -163,16 +163,41 @@
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
+<compatibility>Apache HTTP Server 2.2.16 ve sonrası</compatibility>
 <usage>
     <p>Dosya sisteminizdeki hiçbir şey ile eşleşmeyen URL'ler için bir
       eylemci atamak isterseniz bunı kullanın. Kullanmadığınız takdirde
       httpd bir HTTP 404 (Bulunamadı) döndürecektir. Örneğin</p>
     <example>
-        <code>FallbackResource default.php</code>
+        <code>FallbackResource /not-404.php</code>
     </example>
     <p>yönergesi ile varolmayan dosyalarla ilgili isteklere
-      <code>default.php</code> sayfası gönderilirken varolanlar ile
+      <code>/not-404.php</code> sayfası gönderilirken varolanlar ile
       ilgili istekler bundan etkilenmeyecektir.</p>
+    <p>Çoğunlukla, belli bir dizindeki mevcut dosya ve betiklere yapılan istekler
+      dışındaki tüm isteklere tek bir dosyanın veya belli bir kaynağın yanıt
+      vermesi istenir. Buna 'öndenetleyici' adı verilir.</p>
+    <p>httpd'nin eski sürümlerinde bunu sağlamak için
+      <module>mod_rewrite</module> ve istenen dosya veya dizinin var olup
+      olmadığını sınamak için <code>-f</code> ve <code>-d</code> kullanımı
+      gerekirdi. Bu artık tek bir yapılandırma satırı ile
+      halledilebilmektedir.</p>
+    <example>
+        <code>FallbackResource /index.php</code>
+    </example>
+    <p>Resimler, css dosyaları gibi mevcut dosyalar normal olarak sunulmaya
+      devam edecektir.</p>
+    <p><em>http://example.com/blog/</em> gibi bir alt-URI isteğinde bu alt-URI
+      bir <var>yerel-url</var> olarak sunulabilir:</p>
+    <example>
+         <code>
+             &lt;Directory /web/example.com/htdocs/blog&gt;<br />
+            <indent>
+                  FallbackResource /blog/index.php<br />
+             </indent>
+             &lt;/Directory&gt;
+         </code>
+    </example>
 </usage>
 </directivesynopsis>
 

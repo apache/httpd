@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 680077:1044382 (outdated) -->
+<!-- English Revision: 1044382 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -63,7 +63,7 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <page href="filter.html">Süzgeçler</page>
 <page href="suexec.html">CGI için Suexec Desteği</page>
 <page href="misc/perf-tuning.html">Başarım Arttırma İpuçları</page>
-<page href="faq/">Sıkça Sorulan Sorular</page>
+<page href="http://wiki.apache.org/httpd/FAQ">Sıkça Sorulan Sorular</page>
 </category>
 
 <category id="vhosts">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 990096:1040809 (outdated) -->
+<!-- English Revision: 1067102 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -160,7 +160,8 @@ ve <directive type="section" module="core">Files</directive> taşıyıcıları,
 <glossary ref="regex">düzenli ifade</glossary> karşılıkları ile beraber,
 yönergeleri dosya sisteminin parçalarına uygularlar. Bir <directive
 type="section" module="core">Directory</directive> bölümü içindeki yönergeler
-belli bir dosya sistemi dizinine ve onun alt dizinlerine uygulanır. Aynı etki
+belli bir dosya sistemi dizinine ve onun alt dizinlerine (ve bunların içindeki
+dosyalara) uygulanır. Aynı etki
 <a href="howto/htaccess.html">.htaccess dosyaları</a> kullanılarak da
 sağlanabilir. Örneğin aşağıdaki yapılandırmada, <code>/var/web/dir1</code>
 dizini ve alt dizinlerinde dizin içeriğinin listelenmesi etkin kılınmaktadır.</p>
@@ -226,12 +227,12 @@ istekleri yanında <code>/gizli</code> ile başlayan diğer isteklere de
 uygulanır.</p>
 
 <example>
-&lt;Location /gizli&gt;<br />
+&lt;LocationMatch ^/gizli&gt;<br />
 <indent>
 Order Allow,Deny<br />
 Deny from all<br />
 </indent>
-&lt;/Location&gt;
+&lt;/LocationMatch&gt;
 </example>
 
 <p>Dosya sistemi ile etkileşime girmeyen herşey için
