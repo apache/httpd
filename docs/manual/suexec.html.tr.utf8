@@ -24,7 +24,6 @@
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><strong>SuEXEC</strong> özelliği, Apache kullanıcılarına
       <strong>CGI</strong> ve <strong>SSI</strong> programlarını sunucunun
@@ -192,8 +191,8 @@
       <li>
         <strong>Hedef grup <code>root</code>  değil, değil mi?</strong>
 
-        <p class="indent">Mevcut durumda, <code>root</code> grubunun CGI/SSI
-          programlarını çalıştırmasına izin verilmemektedir.</p>
+        <p class="indent"><code>root</code> grubunun CGI/SSI
+          programlarını çalıştırmasına izin verilmez.</p>
       </li>
 
       <li>

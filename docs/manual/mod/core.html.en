@@ -1833,6 +1833,7 @@ from the client</td></tr>
       LimitRequestBody 102400
     </code></p></div>
 
+    <div class="note">Note: not applicable to proxy requests.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

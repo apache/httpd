@@ -22,7 +22,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -318,7 +317,7 @@
         <dd><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code> modülü tarafından sağlanan kendinden
           HTTP başlıklı dosya türü desteğini iptal eder.</dd>
 
-        <dt><code>--disable-auth</code></dt>
+        <dt><code>--disable-auth-basic</code></dt>
         <dd><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> modülü tarafından sağlanan kullanıcıya
           dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
           parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
@@ -414,12 +413,18 @@
         etkinleştirmek için aşağıdaki seçenekleri kullanabilirsiniz.</p>
 
       <dl>
-        <dt><code>--enable-auth-anon</code></dt>
+        <dt><code>--enable-authn-anon</code></dt>
         <dd><code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code> modülünün sağladığı anonim
           kullanıcı erişimi etkin kılınır.</dd>
 
-        <dt><code>--enable-auth-dbm</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code> modülü kullanıcı isimlerinin ve
+        <dt><code>--enable-authn-dbm</code></dt>
+        <dd><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> modülü kullanıcı isimlerinin ve
+          parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
+          Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
+          kılmak için kullanabilirsiniz.</dd>
+
+        <dt><code>--enable-authz-dbm</code></dt>
+        <dd><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> modülü kullanıcı isimlerinin ve
           parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
           Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
           kılmak için kullanabilirsiniz.</dd>
@@ -817,7 +822,8 @@
       </dl>
 
       <p>Apache HTTP Sunucusunun çeşitli bölümleri,
-        <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> modülü ve <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+        <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>, <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> ve
+        <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
         modülünün <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
         yönergesi bilgilere erişimi hızlandırmak için basit anahtar/değer
         veritabanları kullanırlar. SDBM, APU içinde mevcut olduğundan bu
