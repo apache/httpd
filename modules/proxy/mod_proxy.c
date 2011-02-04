@@ -292,7 +292,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         PROXY_STRNCPY(balancer->s->sticky_path, val);
         PROXY_STRNCPY(balancer->s->sticky, val);
         
-        if ((path = strchr((char *)val, '|'))) {
+        if ((path = strchr((char *)balancer->s->sticky, '|'))) {
             *path++ = '\0';
             PROXY_STRNCPY(balancer->s->sticky_path, path);
         }
