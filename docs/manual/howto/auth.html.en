@@ -50,7 +50,7 @@ authorization process.  You will usually need to choose at least one
 module from each group.</p>
 
 <ul>
-  <li>Authentication type (see the 
+  <li>Authentication type (see the
       <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
@@ -68,7 +68,7 @@ module from each group.</p>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
     </ul>
   </li>
-  <li>Authorization (see the 
+  <li>Authorization (see the
       <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
@@ -163,7 +163,7 @@ module from each group.</p>
     came with Apache. This will be located in the <code>bin</code> directory
     of wherever you installed Apache. If you have installed Apache from
     a third-party package, it may be in your execution path.</p>
-    
+
     <p>To create the file, type:</p>
 
     <div class="example"><p><code>
@@ -265,24 +265,24 @@ that several criteria may be considered when trying to decide if a particular us
 will be granted admission. Satisfy can take as an argument one of two options - <code>all</code>
 or <code>any</code>. By default, it is assumed that the value is <code>all</code>. This means that if several
 criteria are specified, then all of them must be met in order for someone to get in.
-However, if set to <code>any</code>, then several criteria may be specified, but if 
+However, if set to <code>any</code>, then several criteria may be specified, but if
 the user satisfies any of these, then they will be granted entrance.</p>
 
-<p>An example of this is using access control to assure that, although a resource 
+<p>An example of this is using access control to assure that, although a resource
 is password protected from outside your network, all hosts inside the network
 will be given unauthenticated access to the resource. This would be accomplished
 by using the Satisfy directive, as shown below.</p>
 
 <div class="example"><p><code>
-&lt;Directory /usr/local/apache/htdocs/sekrit&gt;
-  AuthType Basic
-  AuthName intranet
-  AuthUserFile /www/passwd/users
-  AuthGroupFile /www/passwd/groups
-  Require group customers
-  Order allow,deny
-  Allow from internal.com
-  Satisfy any
+&lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
+  AuthType Basic<br />
+  AuthName intranet<br />
+  AuthUserFile /www/passwd/users<br />
+  AuthGroupFile /www/passwd/groups<br />
+  Require group customers<br />
+  Order allow,deny<br />
+  Allow from internal.com<br />
+  Satisfy any<br />
 &lt;/Directory&gt;
 </code></p></div>
 
@@ -410,11 +410,11 @@ person in</a></h2>
     contain some more information about how this all works.
     <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code> can also help in simplifying certain
     authentication configurations.</p>
-    
+
     <p>The various ciphers supported by Apache for authentication data are
     explained in <a href="../misc/password_encryptions.html">Password
     Encryptions</a>.</p>
-    
+
     <p>And you may want to look at the <a href="access.html">Access
     Control</a> howto, which discusses a number of related topics.</p>
 

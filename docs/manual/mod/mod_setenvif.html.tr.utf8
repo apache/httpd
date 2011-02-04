@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>setenvif_module</td></tr>
@@ -34,10 +33,12 @@
 <h3>Özet</h3>
 
 
-    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülü ortam değişkenlerinin isteğin
-      farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine bağlı
-      olarak atanmasını mümkün kılar. Bu ortam değişkenleri sunucunun çeşitli
-      kısımlarında yapılacak eylemlere karar verirken kullanılır.</p>
+    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülü, dahili ortam değişkenlerinin,
+      isteğin farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine
+      bağlı olarak atanmasını mümkün kılar. Bu ortam değişkenleri, CGI
+      betiklerinde ve SSI sayfalarında da kullanılabilir hale gelmenin yanı sıra
+      sunucunun çeşitli kısımlarında yapılacak eylemlere karar verirken
+      kullanılabilirler.</p>
 
     <p>Yönergeler yapılandırma dosyasında yer aldıkları sıraya göre ele
       alınırlar. Böylece daha karmaşık dizilimler kullanılabilir, bu örnekteki

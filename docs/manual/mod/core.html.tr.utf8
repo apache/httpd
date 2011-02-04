@@ -27,7 +27,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -766,7 +765,7 @@ kullanımı önerilmemektedir.</td></tr>
       </span>
       &lt;/Directory&gt;<br />
       <br />
-      &lt;Directory /home/&gt;<br />
+      &lt;Directory /home&gt;<br />
       <span class="indent">
         AllowOverride FileInfo<br />
       </span>
@@ -1843,6 +1842,7 @@ uzunluğunu sınırlar.</td></tr>
       LimitRequestBody 102400
     </code></p></div>
 
+    <div class="note">Dikkat: Vekil isteklerine uygulanamaz.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2950,7 +2950,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       belirtebilirsiniz:</p>
 
     <div class="example"><p><code>
-      ServerName www.filan.dom:80
+      ServerName www.filan.dom
     </code></p></div>
 
     <p>Bir <code class="directive">ServerName</code> ataması yapılmamışsa sunucu IP

@@ -197,7 +197,7 @@ as any other requests starting with the <code>/private</code> string.</p>
 &lt;LocationMatch ^/private&gt;<br />
 Order Allow,Deny<br />
 Deny from all<br />
-&lt;/Location&gt;
+&lt;/LocationMatch&gt;
 </code></p></div>
 
 <p>The <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>

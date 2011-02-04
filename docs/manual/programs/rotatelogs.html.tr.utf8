@@ -24,7 +24,6 @@
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
      <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu günlük
      dosyaları özelliği ile birlikte kullanmak için tasarlanmış basit bir
@@ -66,7 +65,7 @@
     için geçerlidir.</em></dd>
 
     <dt><code><var>dosyaismi</var></code></dt>
-    <dd>Günlük dosyasının ismi yoluyla birlikte belirtilir.
+    <dd><p>Günlük dosyasının ismi yoluyla birlikte belirtilir.
     <var>dosyaismi</var> '%' karakterleri içeriyorsa bunlar
     <code>strftime(3)</code> biçem belirteçleri olarak ele alınır. Aksi
     takdirde, özdevinimli olarak <var>.nnnnnnnnnn</var> uzantısı üretilir.
@@ -74,7 +73,15 @@
     diliminin başlangıcına göre hesaplanır. Örneğin, döndürmenin 86400
     saniyede bir yapılacağı belirtilmişse, <code>strftime(3)</code> biçeminde
     oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin
-    başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur.</dd>
+    başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur.</p>
+    <p><code>strftime(3)</code> dosya ismi biçimlemesini kullanırken, günlük
+    dosyası biçiminin günlüğün her döndürülüşünde farklı bir dosya ismi üretecek
+    ayrıntılara sahip olmasın sağlamalısınız. Aksi takdirde, döndürme işlemi
+    sonucunda günlük yeni bir dosya yerine aynı dosyanın üzerine yazılacaktır.
+    Örneğin, <code><var>dosyaismi</var></code> olarak
+    <code>/var/logs/errorlog.%Y-%m-%d</code> belirtilmişse, günlük dosyası da 5
+    megabayta ulaşıyorsa, günlük döndürme ile aynı dosya ismi üretilir ve günlük
+    aynı dosyaya yazılmaya devam ederek bu boyut ikiye katlanır.</p></dd>
 
     <dt><code><var>süre</var></code></dt>
     <dd>Günlük dosyasının yenisinin kaç saniyede bir açılacağı belirtilir.

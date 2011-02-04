@@ -26,7 +26,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -698,6 +697,16 @@
 
     <p><code>0</code> değeri atarsanız sunucu işletim sistemi öntanımlısını
       kullanacaktır.</p>
+
+    <p>Yüksek hızlı yüksek yataklık süreli bağlantılarda daha iyi başarım elde
+      etmek için işletim sisteminizde bazı yapılandırmalara gitmeniz
+      gerekebilir.</p>
+
+    <div class="note"><p>Bazı işletim sistemlerinde daha büyük bir
+      <code class="directive">SendBufferSize</code> ile sonuçlanan TCP davranışındaki
+      değişiklikler, <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code>
+      yönergesine OFF atanmadıkça görülmeyebilir. Bu etkileşim sadece duruk
+      dosyalarda ortaya çıkar.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
