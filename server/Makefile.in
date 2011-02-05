@@ -7,7 +7,6 @@ SUBDIRS = mpm
 
 LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
-    test_char.h \
 	config.c log.c main.c vhost.c util.c \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
 	connection.c listen.c util_mutex.c mpm_common.c mpm_unix.c \
@@ -16,6 +15,7 @@ LTLIBRARY_SOURCES = \
 	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c \
 	eoc_bucket.c eor_bucket.c core_filters.c \
 	util_expr_parse.c util_expr_scan.c util_expr_eval.c
+LTLIBRARY_DEPENDENCIES = test_char.h
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 
