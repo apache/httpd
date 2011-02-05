@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 558632:1066435 (outdated) -->
+<!-- English Revision: 1066435 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -55,29 +55,12 @@
     configurer votre serveur Apache HTTP afin qu'il reconnaisse 
     ces domaines. Il réduit aussi la pénurie en adresses IP. Par 
     conséquent, vous devriez utiliser l'hébergement virtuel par 
-    nom à moins d'avoir une raison spécifique de préférer 
-    l'hébergement virtuel par IP. Certaines de ces raisons vous 
-    sont exposées ci-après&nbsp;:</p>
-
-    <ul>
-        <li>Certains anciens navigateurs ne sont pas compatibles 
-        avec les serveurs virtuels par nom, car pour fonctionner, 
-        un client doit transmettre un champ d'en-tête HTTP Host. 
-        Cet en-tête est exigé pour HTTP/1.1, et peut être implémenté 
-        sur des navigateurs modernes HTTP/1.0 grâce à une extension. 
-        Si vous devez maintenir des clients obsolètes tout en 
-        utilisant l'hébergement virtuel par nom, il existe une 
-        technique qui est traitée à la fin de ce document.</li>
-
-        <li>L'hébergement virtuel par nom ne peut pas être utilisé 
-        avec des serveurs sécurisés SSL à cause de la nature même 
-        du protocole SSL.</li>
-
-        <li>Certains systèmes d'exploitation et équipements réseaux 
-        emploient des techniques de gestion de la bande passante 
-        qui ne peuvent pas différencier des domaines autrement que 
-        par des adresses IP séparées.</li>
-    </ul>
+    nom, sauf dans le cas où vous utiliseriez des équipements qui
+    nécessitent un hébergement basé sur IP. Les raisons historiques de
+    l'hébergement basé sur IP dans un but de support de certains clients ne
+    s'appliquent plus à un serveur web d'usage général, sauf si vous
+    utilisez une version de <module>mod_ssl</module> sans support SNI
+    (situation  standard depuis la version 2.2.12 d'Apache).</p>
 
 </section>
 

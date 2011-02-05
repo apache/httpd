@@ -235,7 +235,7 @@ toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <
 &lt;LocationMatch ^/private&gt;<br />
 Order Allow,Deny<br />
 Deny from all<br />
-&lt;/Location&gt;
+&lt;/LocationMatch&gt;
 </example>
 
 <p>Le conteneur <directive type="section" module="core">Location</directive>

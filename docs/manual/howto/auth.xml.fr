@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1031039 -->
+<!-- English Revision : 1067110 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -291,15 +291,15 @@ pourront y acc&eacute;der sans authentification. Voici comment y parvenir en
 utilisant la directive Satisfy :</p>
 
 <example>
-&lt;Directory /usr/local/apache/htdocs/sekrit&gt;
-  AuthType Basic
-  AuthName intranet
-  AuthUserFile /www/passwd/users
-  AuthGroupFile /www/passwd/groups
-  Require group customers
-  Order allow,deny
-  Allow from internal.com
-  Satisfy any
+&lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
+  AuthType Basic<br />
+  AuthName intranet<br />
+  AuthUserFile /www/passwd/users<br />
+  AuthGroupFile /www/passwd/groups<br />
+  Require group customers<br />
+  Order allow,deny<br />
+  Allow from internal.com<br />
+  Satisfy any<br />
 &lt;/Directory&gt;
 </example>
 
