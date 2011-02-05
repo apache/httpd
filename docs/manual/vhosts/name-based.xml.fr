@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1053231:1066434 (outdated) -->
+<!-- English Revision: 1053231 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -55,20 +55,10 @@
     configurer votre serveur Apache HTTP afin qu'il reconnaisse 
     ces domaines. Il réduit aussi la pénurie en adresses IP. Par 
     conséquent, vous devriez utiliser l'hébergement virtuel par 
-    nom à moins d'avoir une raison spécifique de préférer 
-    l'hébergement virtuel par IP. Certaines de ces raisons vous 
-    sont exposées ci-après&nbsp;:</p>
-
-    <ul>
-        <li>L'hébergement virtuel par nom <a href="../ssl/ssl_faq.html#vhosts">ne peut pas être utilisé 
-        avec des serveurs sécurisés SSL</a> à cause de la nature même 
-        du protocole SSL.</li>
-
-        <li>Certains systèmes d'exploitation et équipements réseaux 
-        emploient des techniques de gestion de la bande passante 
-        qui ne peuvent pas différencier des domaines autrement que 
-        par des adresses IP séparées.</li>
-    </ul>
+    nom, sauf dans le cas où vous utiliseriez des équipements qui
+    nécessitent un hébergement basé sur IP. Les raisons historiques de
+    l'hébergement basé sur IP dans un but de support de certains clients ne
+    s'appliquent plus à un serveur web d'usage général.</p>
 
     <p>La sélection du serveur virtuel en fonction du nom s'opère en
     dehors de l'algorithme de sélection du serveur virtuel en fonction
@@ -76,6 +66,7 @@
     du nom du serveur ne s'effectuent que parmi le jeu de serveurs
     virtuels pour lesquels la correspondance avec la paire adresse
     IP/port est la plus exacte.</p>
+
 </section>
 
 <section id="alg"><title>Comment le serveur sélectionne-t-il le serveur

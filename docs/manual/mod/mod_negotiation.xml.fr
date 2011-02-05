@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1029134 -->
+<!-- English Revision : 1066440 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -109,7 +109,7 @@ contenu</a></seealso>
 	  0.</dd>
 
           <dt><code>qs</code></dt>
-          <dd>un nombre en virgule flottante de 0.0 &agrave; 1.0, indiquant la
+          <dd>un nombre en virgule flottante de 0[.000] &agrave; 1[.000], indiquant la
 	  "qualit&eacute;" relative de la variante courante par rapport aux
 	  autres variantes disponibles, ind&eacute;pendamment des possibilit&eacute;s
 	  du client. Par exemple, un fichier jpeg est en g&eacute;n&eacute;ral une

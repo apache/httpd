@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 909323 -->
+<!-- English Revision : 1066408 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -104,7 +104,8 @@
 	plus efficace, mais n&eacute;cessite que le serveur cible supporte le
 	protocole HTTP/1.1.</dd>
         <dt>proxy-interim-response</dt>
-        <dd>Cette variable peut prendre les valeurs <code>RFC</code> ou
+        <dd>Cette variable peut prendre les valeurs <code>RFC</code>
+	(valeur par d&eacute;faut) ou
 	<code>Suppress</code>. Les versions pr&eacute;c&eacute;dentes de httpd
 	supprimaient les r&eacute;ponses interm&eacute;diaires HTTP (1xx) envoy&eacute;es par
 	le serveur cible. En pratique, si un serveur cible envoie une
