@@ -211,7 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      when userdir directives appear in vhost context. PR 44076
      Trunk patch: http://svn.apache.org/viewvc?rev=1042090&view=rev
      2.2.x patch:  http://people.apache.org/~covener/patches/2.2.x-userdir_merge.diff 
-     +1 covener, rpluem
+     +1 covener, rpluem, poirier
 
    * mod_proxy_http: Become aware of ssl handshake failures when attempting
      to pass request. Makes it so workers are put in error state when a
