@@ -116,6 +116,21 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
      +1: rpluem, jorton, covener
 
+   * mod_userdir: support merge of "userdir disabled" or "userdir public_html"
+     when userdir directives appear in vhost context. PR 44076
+     Trunk patch: http://svn.apache.org/viewvc?rev=1042090&view=rev
+     2.2.x patch:  http://people.apache.org/~covener/patches/2.2.x-userdir_merge.diff 
+     +1 covener, rpluem, poirier
+
+  * mod_dav: If an unknown Content-* header is received for a PUT request, we
+    must not ignore it but reply with 501 per RFC 2616 9.6.
+    PR: 42978
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=1026746&view=rev
+    Backport version for 2.2.x of patch:
+      Trunk version of patch works
+    +1: rpluem, covener, poirier
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -207,12 +222,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-autoindex_merge.diff
      +1 covener, rpluem
 
-   * mod_userdir: support merge of "userdir disabled" or "userdir public_html"
-     when userdir directives appear in vhost context. PR 44076
-     Trunk patch: http://svn.apache.org/viewvc?rev=1042090&view=rev
-     2.2.x patch:  http://people.apache.org/~covener/patches/2.2.x-userdir_merge.diff 
-     +1 covener, rpluem, poirier
-
    * mod_proxy_http: Become aware of ssl handshake failures when attempting
      to pass request. Makes it so workers are put in error state when a
      handshake failure is encountered.
@@ -231,15 +240,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem,
-
-  * mod_dav: If an unknown Content-* header is received for a PUT request, we
-    must not ignore it but reply with 501 per RFC 2616 9.6.
-    PR: 42978
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=1026746&view=rev
-    Backport version for 2.2.x of patch:
-      Trunk version of patch works
-    +1: rpluem, covener, poirier
 
   * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
     of encoded slashes in path info.  (This is already the behavior of
