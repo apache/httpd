@@ -1026,28 +1026,53 @@ static int balancer_handler(request_rec *r)
             (val = apr_table_get(params, "b_nwrkr"))) {
             char *ret;
             proxy_worker *nworker;
+            apr_status_t rv;
             nworker = ap_proxy_get_worker(conf->pool, bsel, conf, val);
             if (!nworker) {
+                if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                                 "proxy: BALANCER: (%s). Lock failed for adding worker",
+                                 bsel->name);
+                }
                 ret = ap_proxy_define_worker(conf->pool, &nworker, bsel, conf, val, 0);
                 if (!ret) {
                     unsigned int index;
-                    apr_status_t rv;
                     proxy_worker_shared *shm;
                     PROXY_COPY_CONF_PARAMS(nworker, conf);
                     if ((rv = storage->grab(bsel->slot, &index)) != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "worker slotmem_grab failed");
+                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
+                            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                                         "proxy: BALANCER: (%s). Unlock failed for adding worker",
+                                         bsel->name);
+                        }
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = storage->dptr(bsel->slot, index, (void *)&shm)) != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "worker slotmem_dptr failed");
+                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
+                            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                                         "proxy: BALANCER: (%s). Unlock failed for adding worker",
+                                         bsel->name);
+                        }
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = ap_proxy_share_worker(nworker, shm, index)) != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "Cannot share worker");
+                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
+                            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                                         "proxy: BALANCER: (%s). Unlock failed for adding worker",
+                                         bsel->name);
+                        }
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = ap_proxy_initialize_worker(nworker, r->server, conf->pool)) != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, r->server, "Cannot init worker");
+                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
+                            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                                         "proxy: BALANCER: (%s). Unlock failed for adding worker",
+                                         bsel->name);
+                        }
                         return HTTP_BAD_REQUEST;
                     }
                     /* sync all timestamps */
@@ -1055,9 +1080,15 @@ static int balancer_handler(request_rec *r)
                     /* by default, all new workers are disabled */
                     ap_proxy_set_wstatus('D', 1, nworker);
                 }
+                if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                                 "proxy: BALANCER: (%s). Unlock failed for adding worker",
+                                 bsel->name);
+                }                
             }
+            
         }
-        
+
     }
 
     if (apr_table_get(params, "xml")) {
@@ -1338,6 +1369,9 @@ PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_re
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
             return APR_EGENERAL;
         }
+        /* account for possible "holes" in the slotmem
+         * (eg: slots 0-2 are used, but 3 isn't, but 4-5 is)
+         */
         if (!shm->hash)
             continue;
         found = 0;
