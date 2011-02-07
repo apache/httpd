@@ -48,6 +48,7 @@
 typedef struct {
     apr_size_t size;             /* size of each memory slot */
     unsigned int num;            /* number of mem slots */
+    unsigned int free;           /* number of free mem slots */
     ap_slotmem_type_t type;      /* type-specific flags */
 } sharedslotdesc_t;
 
@@ -173,7 +174,7 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
     apr_status_t rv;
 
     storename = store_filename(pool, name);
-    
+
     if (storename) {
         rv = apr_file_open(&fp, storename, APR_READ | APR_WRITE, APR_OS_DEFAULT,
                            pool);
@@ -332,7 +333,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         }
         ptr = (char *)apr_shm_baseaddr_get(shm);
         desc.size = item_size;
-        desc.num = item_num;
+        desc.free = desc.num = item_num;
         desc.type = type;
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + AP_SLOTMEM_OFFSET;
@@ -341,8 +342,15 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
          * TODO: Error check the below... What error makes
          * sense if the restore fails? Any?
          */
-        if (type & AP_SLOTMEM_TYPE_PERSIST)
+        if (type & AP_SLOTMEM_TYPE_PERSIST) {
+            unsigned int i, counter=0;
+            char *inuse = ptr + basesize;
             restore_slotmem(ptr, fname, dsize, pool);
+            for (i=0; i<desc.num; i++, inuse++)
+                if (!*inuse)
+                    counter++;
+            desc.free = counter;
+        }
     }
 
     /* For the chained slotmem stuff */
@@ -484,6 +492,7 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id,
     if (ret != APR_SUCCESS) {
         return ret;
     }
+    *inuse = 1;
     memcpy(dest, ptr, dest_len); /* bounds check? */
     return APR_SUCCESS;
 }
@@ -507,6 +516,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id,
     if (ret != APR_SUCCESS) {
         return ret;
     }
+    *inuse=1;
     memcpy(ptr, src, src_len); /* bounds check? */
     return APR_SUCCESS;
 }
@@ -516,15 +526,26 @@ static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
     return slot->desc.num;
 }
 
+static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
+{
+    if (AP_SLOTMEM_IS_PREGRAB(slot))
+        return slot->desc.free;
+    else {
+        unsigned int i, counter=0;
+        char *inuse = slot->inuse;
+        for (i=0; i<slot->desc.num; i++, inuse++) {
+            if (!*inuse)
+                counter++;
+        }
+        return counter;
+    }
+}
+
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
 {
     return slot->desc.size;
 }
 
-/*
- * XXXX: if !AP_SLOTMEM_IS_PREGRAB, then still worry about
- *       inuse for grab and return?
- */
 static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 {
     unsigned int i;
@@ -546,6 +567,7 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
     }
     *inuse = 1;
     *id = i;
+    slot->desc.free--;
     return APR_SUCCESS;
 }
 
@@ -564,6 +586,7 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
+    slot->desc.free++;
     return APR_SUCCESS;
 }
 
@@ -576,6 +599,7 @@ static const ap_slotmem_provider_t storage = {
     &slotmem_get,
     &slotmem_put,
     &slotmem_num_slots,
+    &slotmem_num_free_slots,
     &slotmem_slot_size,
     &slotmem_grab,
     &slotmem_release
