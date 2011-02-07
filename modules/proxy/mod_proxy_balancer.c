@@ -1028,7 +1028,7 @@ static int balancer_handler(request_rec *r)
             proxy_worker *nworker;
             apr_status_t rv;
             nworker = ap_proxy_get_worker(conf->pool, bsel, conf, val);
-            if (!nworker) {
+            if (!nworker && storage->num_free_slots(bsel->slot)) {
                 if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                                  "proxy: BALANCER: (%s). Lock failed for adding worker",
@@ -1143,7 +1143,10 @@ static int balancer_handler(request_rec *r)
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);
-            ap_rprintf(r, "<td align='center'>%d</td>\n", balancer->max_workers);
+            /* the below is a safe cast, since the number of slots total will
+             * never be more than max_workers, which is restricted to int */
+            ap_rprintf(r, "<td align='center'>%d [%d Used]</td>\n", balancer->max_workers,
+                       balancer->max_workers - (int)storage->num_free_slots(balancer->slot));
             if (*balancer->s->sticky) {
                 if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
                     ap_rvputs(r, "<td align='center'>", balancer->s->sticky, " | ",
@@ -1271,9 +1274,11 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "value ='", bsel->s->sticky, NULL);
             }
             ap_rputs("'>&nbsp;&nbsp;&nbsp;&nbsp;(Use '-' to delete)</td></tr>\n", r);
-            ap_rputs("<tr><td>Add New Worker:</td><td><input name='b_nwrkr' id='b_nwrkr' size=32 type=text>"
-                     "&nbsp;&nbsp;&nbsp;&nbsp;Are you sure? <input name='b_wyes' id='b_wyes' type=checkbox value='1'>"
-                     "</td></tr>", r);
+            if (storage->num_free_slots(bsel->slot) != 0) {
+                ap_rputs("<tr><td>Add New Worker:</td><td><input name='b_nwrkr' id='b_nwrkr' size=32 type=text>"
+                         "&nbsp;&nbsp;&nbsp;&nbsp;Are you sure? <input name='b_wyes' id='b_wyes' type=checkbox value='1'>"
+                         "</td></tr>", r);
+            }
             ap_rputs("<tr><td colspan=2><input type=submit value='Submit'></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name='b' id='b' ", NULL);
             ap_rvputs(r, "value='", bsel->name + sizeof(BALANCER_PREFIX) - 1,
