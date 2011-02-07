@@ -52,6 +52,7 @@ typedef struct {
 } sharedslotdesc_t;
 
 #define AP_SLOTMEM_OFFSET (APR_ALIGN_DEFAULT(sizeof(sharedslotdesc_t)))
+#define AP_UNSIGNEDINT_OFFSET (APR_ALIGN_DEFAULT(sizeof(unsigned int)))
 
 struct ap_slotmem_instance_t {
     char                 *name;       /* per segment name */
@@ -59,6 +60,8 @@ struct ap_slotmem_instance_t {
     void                 *base;       /* data set start */
     apr_pool_t           *gpool;      /* per segment global pool */
     char                 *inuse;      /* in-use flag table*/
+    unsigned int         *num_free;   /* slot free count for this instance */
+    void                 *persist;    /* persist dataset start */
     sharedslotdesc_t     desc;        /* per slot desc */
     struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
 };
@@ -66,7 +69,10 @@ struct ap_slotmem_instance_t {
 
 /*
  * Memory layout:
- *     sharedslotdesc_t | slots | isuse array
+ *     sharedslotdesc_t | num_free | slots | isuse array |
+ *                      ^          ^
+ *                      |          . base
+ *                      . persist (also num_free)
  */
 
 /* global pool and list of slotmem we are handling */
@@ -157,8 +163,8 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
             return;
         }
         nbytes = (slotmem->desc.size * slotmem->desc.num) +
-                 (slotmem->desc.num * sizeof(char));
-        apr_file_write(fp, slotmem->base, &nbytes);
+                 (slotmem->desc.num * sizeof(char)) + AP_UNSIGNEDINT_OFFSET;
+        apr_file_write(fp, slotmem->persist, &nbytes);
         apr_file_close(fp);
     }
 }
@@ -255,7 +261,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     const char *fname;
     apr_shm_t *shm;
     apr_size_t basesize = (item_size * item_num);
-    apr_size_t size = AP_SLOTMEM_OFFSET +
+    apr_size_t size = AP_SLOTMEM_OFFSET + AP_UNSIGNEDINT_OFFSET +
                       (item_num * sizeof(char)) + basesize;
     apr_status_t rv;
 
@@ -307,7 +313,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
             apr_shm_detach(shm);
             return APR_EINVAL;
         }
-        ptr = ptr + AP_SLOTMEM_OFFSET;
+        ptr += AP_SLOTMEM_OFFSET;
     }
     else {
         apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
@@ -335,7 +341,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         desc.num = item_num;
         desc.type = type;
         memcpy(ptr, &desc, sizeof(desc));
-        ptr = ptr + AP_SLOTMEM_OFFSET;
+        ptr += AP_SLOTMEM_OFFSET;
         memset(ptr, 0, dsize);
         /*
          * TODO: Error check the below... What error makes
@@ -351,6 +357,10 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                                                 sizeof(ap_slotmem_instance_t));
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
+    res->num_free = (unsigned int *)ptr;
+    *res->num_free = item_num;
+    res->persist = (void *)ptr;
+    ptr += AP_UNSIGNEDINT_OFFSET;
     res->base = (void *)ptr;
     res->desc = desc;
     res->gpool = gpool;
@@ -421,13 +431,16 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     /* Read the description of the slotmem */
     ptr = (char *)apr_shm_baseaddr_get(shm);
     memcpy(&desc, ptr, sizeof(desc));
-    ptr = ptr + AP_SLOTMEM_OFFSET;
+    ptr += AP_SLOTMEM_OFFSET;
 
     /* For the chained slotmem stuff */
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
                                                 sizeof(ap_slotmem_instance_t));
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
+    res->num_free = (unsigned int *)ptr;
+    res->persist = (void *)ptr;
+    ptr += AP_UNSIGNEDINT_OFFSET;
     res->base = (void *)ptr;
     res->desc = desc;
     res->gpool = gpool;
@@ -521,13 +534,17 @@ static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 
 static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
 {
-    unsigned int i, counter=0;
-    char *inuse = slot->inuse;
-    for (i=0; i<slot->desc.num; i++, inuse++) {
-        if (!*inuse)
-            counter++;
+    if (AP_SLOTMEM_IS_PREGRAB(slot))
+        return *slot->num_free;
+    else {
+        unsigned int i, counter=0;
+        char *inuse = slot->inuse;
+        for (i=0; i<slot->desc.num; i++, inuse++) {
+            if (!*inuse)
+                counter++;
+        }
+        return counter;
     }
-    return counter;
 }
 
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
@@ -556,6 +573,7 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
     }
     *inuse = 1;
     *id = i;
+    (*slot->num_free)--;
     return APR_SUCCESS;
 }
 
@@ -574,6 +592,7 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
+    (*slot->num_free)++;
     return APR_SUCCESS;
 }
 
