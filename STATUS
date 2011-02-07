@@ -239,7 +239,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=1026746&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
-    +1: rpluem, covener
+    +1: rpluem, covener, poirier
 
   * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
     of encoded slashes in path info.  (This is already the behavior of
