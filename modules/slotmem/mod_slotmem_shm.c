@@ -43,6 +43,7 @@
 #endif
 
 #define AP_SLOTMEM_IS_PREGRAB(t) (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
+#define AP_SLOTMEM_IS_PERSIST(t) (t->desc.type & AP_SLOTMEM_TYPE_PERSIST)
 
 /* The description of the slots to reuse the slotmem */
 typedef struct {
@@ -208,7 +209,9 @@ static apr_status_t cleanup_slotmem(void *param)
         ap_slotmem_instance_t *next = *mem;
         apr_pool_t *p = next->gpool;
         while (next) {
-            store_slotmem(next);
+            if (AP_SLOTMEM_IS_PERSIST(next)) {
+                store_slotmem(next);
+            }
             apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
         }
