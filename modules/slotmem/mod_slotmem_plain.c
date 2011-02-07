@@ -181,6 +181,7 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
     if (ret != APR_SUCCESS) {
         return ret;
     }
+    *inuse=1;
     memcpy(dest, ptr, dest_len); /* bounds check? */
     return APR_SUCCESS;
 }
@@ -203,6 +204,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
     if (ret != APR_SUCCESS) {
         return ret;
     }
+    *inuse=1;
     memcpy(ptr, src, src_len); /* bounds check? */
     return APR_SUCCESS;
 }
@@ -210,6 +212,17 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
 static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 {
     return slot->num;
+}
+
+static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
+{
+    unsigned int i, counter=0;
+    char *inuse = slot->inuse;
+    for (i=0; i<desc.num; i++, inuse++) {
+        if (!*inuse)
+            counter++;
+    }
+    return counter;
 }
 
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
@@ -271,6 +284,7 @@ static const ap_slotmem_provider_t storage = {
     &slotmem_get,
     &slotmem_put,
     &slotmem_num_slots,
+    &slotmem_num_free_slots
     &slotmem_slot_size,
     &slotmem_grab,
     &slotmem_release

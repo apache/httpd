@@ -146,6 +146,14 @@ struct ap_slotmem_provider_t {
      */
     unsigned int (* num_slots)(ap_slotmem_instance_t *s);
     /**
+     * return number of free (not used) slots allocated for this entry.
+     * Valid for slots which are AP_SLOTMEM_TYPE_PREGRAB as well as
+     * any which use get/release. 
+     * @param s ap_slotmem_instance_t to use.
+     * @return number of slots
+     */
+    unsigned int (* num_free_slots)(ap_slotmem_instance_t *s);
+    /**
      * return slot size allocated for this entry.
      * @param s ap_slotmem_instance_t to use.
      * @return size of slot
