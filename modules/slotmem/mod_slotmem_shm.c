@@ -48,7 +48,6 @@
 typedef struct {
     apr_size_t size;             /* size of each memory slot */
     unsigned int num;            /* number of mem slots */
-    unsigned int free;           /* number of free mem slots */
     ap_slotmem_type_t type;      /* type-specific flags */
 } sharedslotdesc_t;
 
@@ -333,7 +332,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         }
         ptr = (char *)apr_shm_baseaddr_get(shm);
         desc.size = item_size;
-        desc.free = desc.num = item_num;
+        desc.num = item_num;
         desc.type = type;
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + AP_SLOTMEM_OFFSET;
@@ -343,13 +342,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
          * sense if the restore fails? Any?
          */
         if (type & AP_SLOTMEM_TYPE_PERSIST) {
-            unsigned int i, counter=0;
-            char *inuse = ptr + basesize;
             restore_slotmem(ptr, fname, dsize, pool);
-            for (i=0; i<desc.num; i++, inuse++)
-                if (!*inuse)
-                    counter++;
-            desc.free = counter;
         }
     }
 
@@ -528,17 +521,13 @@ static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 
 static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
 {
-    if (AP_SLOTMEM_IS_PREGRAB(slot))
-        return slot->desc.free;
-    else {
-        unsigned int i, counter=0;
-        char *inuse = slot->inuse;
-        for (i=0; i<slot->desc.num; i++, inuse++) {
-            if (!*inuse)
-                counter++;
-        }
-        return counter;
+    unsigned int i, counter=0;
+    char *inuse = slot->inuse;
+    for (i=0; i<slot->desc.num; i++, inuse++) {
+        if (!*inuse)
+            counter++;
     }
+    return counter;
 }
 
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
@@ -567,7 +556,6 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
     }
     *inuse = 1;
     *id = i;
-    slot->desc.free--;
     return APR_SUCCESS;
 }
 
@@ -586,7 +574,6 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot,
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
-    slot->desc.free++;
     return APR_SUCCESS;
 }
 
