@@ -241,6 +241,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
     +1: rpluem, covener
 
+  * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
+    of encoded slashes in path info.  (This is already the behavior of
+    AllowEncodedSlashes On in trunk.)
+      Trunk version of patch: n/a
+      Backport version for 2.2.x of patch:
+         http://people.apache.org/~poirier/AllowEncodedSlashes.22.patch
+      +1 poirier, 
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
