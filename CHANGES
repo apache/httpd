@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) core: Honor 'AcceptPathInfo OFF' during internal redirects,
+     such as per-directory mod_rewrite substitutions.  PR 50349.
+     [Eric Covener]
+
   *) mod_cache: Check the request to determine whether we are allowed
      to return cached content at all, and respect a "Cache-Control:
      no-cache" header from a client. Previously, "no-cache" would
