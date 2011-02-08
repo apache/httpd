@@ -104,7 +104,7 @@ static int proxy_balancer_canon(request_rec *r, char *url)
     return OK;
 }
 
-static void init_balancer_members(proxy_server_conf *conf, server_rec *s,
+static void init_balancer_members(apr_pool_t *p, server_rec *s,
                                  proxy_balancer *balancer)
 {
     int i;
@@ -119,7 +119,7 @@ static void init_balancer_members(proxy_server_conf *conf, server_rec *s,
                      "Looking at %s -> %s initialized?", balancer->name, worker->s->name);
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(worker);
         if (!worker_is_initialized) {
-            ap_proxy_initialize_worker(worker, s, conf->pool);
+            ap_proxy_initialize_worker(worker, s, p);
         }
         ++workers;
     }
@@ -325,7 +325,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     proxy_worker *candidate = NULL;
     apr_status_t rv;
 
-    if ((rv = PROXY_GLOBAL_LOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
         "proxy: BALANCER: (%s). Lock failed for find_best_worker()", balancer->name);
         return NULL;
@@ -336,12 +336,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     if (candidate)
         candidate->s->elected++;
 
-/*
-        PROXY_GLOBAL_UNLOCK(conf);
-        return NULL;
-*/
-
-    if ((rv = PROXY_GLOBAL_UNLOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
         "proxy: BALANCER: (%s). Unlock failed for find_best_worker()", balancer->name);
     }
@@ -463,7 +458,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     /* Step 2: Lock the LoadBalancer
      * XXX: perhaps we need the process lock here
      */
-    if ((rv = PROXY_GLOBAL_LOCK(*balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_LOCK(*balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: BALANCER: (%s). Lock failed for pre_request",
                      (*balancer)->name);
@@ -529,7 +524,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                          "proxy: BALANCER: (%s). All workers are in error state for route (%s)",
                          (*balancer)->name, route);
-            if ((rv = PROXY_GLOBAL_UNLOCK(*balancer)) != APR_SUCCESS) {
+            if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                              "proxy: BALANCER: (%s). Unlock failed for pre_request",
                              (*balancer)->name);
@@ -538,7 +533,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         }
     }
 
-    if ((rv = PROXY_GLOBAL_UNLOCK(*balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: BALANCER: (%s). Unlock failed for pre_request",
                      (*balancer)->name);
@@ -614,7 +609,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 
     apr_status_t rv;
 
-    if ((rv = PROXY_GLOBAL_LOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
             "proxy: BALANCER: (%s). Lock failed for post_request",
             balancer->name);
@@ -636,7 +631,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         }
     }
 
-    if ((rv = PROXY_GLOBAL_UNLOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
             "proxy: BALANCER: (%s). Unlock failed for post_request",
             balancer->name);
@@ -682,9 +677,9 @@ static apr_status_t lock_remove(void *data)
 
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-        if (balancer->mutex) {
-            apr_global_mutex_destroy(balancer->mutex);
-            balancer->mutex = NULL;
+        if (balancer->gmutex) {
+            apr_global_mutex_destroy(balancer->gmutex);
+            balancer->gmutex = NULL;
         }
     }
     return(0);
@@ -746,6 +741,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             }
             conf->slot = new;
         }
+        conf->storage = storage;
 
         /* Initialize shared scoreboard data */
         balancer = (proxy_balancer *)conf->balancers->elts;
@@ -762,9 +758,9 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             balancer->sname = apr_pstrcat(pconf, conf->id, "_", balancer->sname, NULL);
 
             /* Create global mutex */
-            rv = ap_global_mutex_create(&(balancer->mutex), NULL, balancer_mutex_type,
+            rv = ap_global_mutex_create(&(balancer->gmutex), NULL, balancer_mutex_type,
                                         balancer->sname, s, pconf, 0);
-            if (rv != APR_SUCCESS || !balancer->mutex) {
+            if (rv != APR_SUCCESS || !balancer->gmutex) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                              "mutex creation of %s : %s failed", balancer_mutex_type,
                              balancer->sname);
@@ -803,6 +799,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 return !OK;
             }
             balancer->slot = new;
+            balancer->storage = storage;
 
             /* sync all timestamps */
             balancer->wupdated = balancer->s->wupdated = tstamp;
@@ -878,13 +875,13 @@ static int balancer_handler(request_rec *r)
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
         apr_status_t rv;
-        if ((rv = PROXY_GLOBAL_LOCK(balancer)) != APR_SUCCESS) {
+        if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "proxy: BALANCER: (%s). Lock failed for balancer_handler",
                          balancer->name);
         }
         ap_proxy_update_members(balancer, r->server, conf);
-        if ((rv = PROXY_GLOBAL_UNLOCK(balancer)) != APR_SUCCESS) {
+        if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "proxy: BALANCER: (%s). Unlock failed for balancer_handler",
                          balancer->name);
@@ -1301,11 +1298,11 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         int i;
         void *sconf = s->module_config;
         proxy_server_conf *conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-        apr_size_t size;
-        unsigned int num;
         apr_status_t rv;
 
         if (conf->balancers->nelts) {
+            apr_size_t size;
+            unsigned int num;
             storage->attach(&(conf->slot), conf->id, &size, &num, p);
             if (!conf->slot) {
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
@@ -1314,40 +1311,16 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         }
 
         balancer = (proxy_balancer *)conf->balancers->elts;
-        for (i = 0; i < conf->balancers->nelts; i++) {
+        for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+            rv = ap_proxy_initialize_balancer(balancer, s, p);
 
-            /*
-             * for each balancer we need to init the global
-             * mutex and then attach to the shared worker shm
-             */
-            if (!balancer->mutex) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                             "no mutex %s: %s", balancer->name,
-                             balancer_mutex_type);
-                return;
-            }
-
-            /* Re-open the mutex for the child. */
-            rv = apr_global_mutex_child_init(&(balancer->mutex),
-                                             apr_global_mutex_lockfile(balancer->mutex),
-                                             p);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                             "Failed to reopen mutex %s: %s in child",
-                             balancer->name, balancer_mutex_type);
+                             "Failed to init balancer %s in child",
+                             balancer->name);
                 exit(1); /* Ugly, but what else? */
             }
-
-            /* now attach */
-            storage->attach(&(balancer->slot), balancer->sname, &size, &num, p);
-            if (!balancer->slot) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
-                exit(1); /* Ugly, but what else? */
-            }
-            if (balancer->s->lbmethod && balancer->s->lbmethod->reset)
-               balancer->s->lbmethod->reset(balancer, s);
-            init_balancer_members(conf, s, balancer);
-            balancer++;
+            init_balancer_members(conf->pool, s, balancer);
         }
         s = s->next;
     }
@@ -1395,7 +1368,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_re
             (*runtime)->hash = shm->hash;
             (*runtime)->context = NULL;
             (*runtime)->cp = NULL;
-            (*runtime)->mutex = NULL;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
             if ((rv = ap_proxy_initialize_worker(*runtime, s, conf->pool)) != APR_SUCCESS) {

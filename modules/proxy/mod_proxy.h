@@ -161,6 +161,7 @@ typedef struct {
     apr_sockaddr_t *source_address;
     apr_global_mutex_t  *mutex; /* global lock (needed??) */
     ap_slotmem_instance_t *slot;  /* balancers shm data - runtime */
+    ap_slotmem_provider_t *storage;
 
     int req_set:1;
     int viaopt_set:1;
@@ -375,7 +376,6 @@ struct proxy_worker {
     proxy_conn_pool     *cp;    /* Connection pool to use */
     proxy_worker_shared   *s;   /* Shared data */
     proxy_balancer  *balancer;  /* which balancer am I in? */
-    apr_thread_mutex_t  *mutex; /* Thread lock for updating address cache */
     void            *context;   /* general purpose storage */
 };
 
@@ -406,14 +406,16 @@ struct proxy_balancer {
     apr_array_header_t *workers;  /* initially configured workers */
     apr_array_header_t *errstatuses;  /* statuses to force members into error */
     ap_slotmem_instance_t *slot;  /* worker shm data - runtime */
+    ap_slotmem_provider_t *storage;
     int growth;                   /* number of post-config workers can added */
     int max_workers;              /* maximum number of allowed workers */
     const char *name;             /* name of the load balancer */
     const char *sname;            /* filesystem safe balancer name */
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
-    apr_global_mutex_t  *mutex; /* global lock for updating lb params */
-    void            *context;   /* general purpose storage */
-    proxy_balancer_shared *s;   /* Shared data */
+    apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
+    apr_thread_mutex_t  *tmutex; /* Thread lock for updating address cache and worker selection*/
+    void            *context;    /* general purpose storage */
+    proxy_balancer_shared *s;    /* Shared data */
 };
 
 struct proxy_balancer_method {
@@ -426,11 +428,11 @@ struct proxy_balancer_method {
     apr_status_t (*updatelbstatus)(proxy_balancer *balancer, proxy_worker *elected, server_rec *s);
 };
 
-#define PROXY_THREAD_LOCK(x)      apr_thread_mutex_lock((x)->mutex)
-#define PROXY_THREAD_UNLOCK(x)    apr_thread_mutex_unlock((x)->mutex)
+#define PROXY_THREAD_LOCK(x)      ( (x) && (x)->tmutex ? apr_thread_mutex_lock((x)->tmutex) : APR_SUCCESS)
+#define PROXY_THREAD_UNLOCK(x)    ( (x) && (x)->tmutex ? apr_thread_mutex_unlock((x)->tmutex) : APR_SUCCESS)
 
-#define PROXY_GLOBAL_LOCK(x)      apr_global_mutex_lock((x)->mutex)
-#define PROXY_GLOBAL_UNLOCK(x)    apr_global_mutex_unlock((x)->mutex)
+#define PROXY_GLOBAL_LOCK(x)      ( (x) && (x)->gmutex ? apr_global_mutex_lock((x)->gmutex) : APR_SUCCESS)
+#define PROXY_GLOBAL_UNLOCK(x)    ( (x) && (x)->gmutex ? apr_global_mutex_unlock((x)->gmutex) : APR_SUCCESS)
 
 /* hooks */
 
