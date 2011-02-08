@@ -761,6 +761,11 @@ static dav_error * dav_open_lockdb(request_rec *r, int ro, dav_lockdb **lockdb)
     return (*hooks->open_lockdb)(r, ro, 0, lockdb);
 }
 
+/**
+ * @return  1 if valid content-range,
+ *          0 if no content-range,
+ *         -1 if malformed content-range
+ */
 static int dav_parse_range(request_rec *r,
                            apr_off_t *range_start, apr_off_t *range_end)
 {
@@ -778,21 +783,20 @@ static int dav_parse_range(request_rec *r,
     if (strncasecmp(range, "bytes ", 6) != 0
         || (dash = ap_strchr(range, '-')) == NULL
         || (slash = ap_strchr(range, '/')) == NULL) {
-        /* malformed header. ignore it (per S14.16 of RFC2616) */
-        return 0;
+        /* malformed header */
+        return -1;
     }
 
     *dash++ = *slash++ = '\0';
 
-    /* ignore invalid ranges. (per S14.16 of RFC2616) */
+    /* detect invalid ranges */
     if (apr_strtoff(range_start, range + 6, &errp, 10)
         || *errp || *range_start < 0) {
-        return 0;
+        return -1;
     }
-
     if (apr_strtoff(range_end, dash, &errp, 10)
         || *errp || *range_end < 0 || *range_end < *range_start) {
-        return 0;
+        return -1;
     }
 
     if (*slash != '*') {
@@ -800,7 +804,7 @@ static int dav_parse_range(request_rec *r,
 
         if (apr_strtoff(&dummy, slash, &errp, 10)
             || *errp || dummy <= *range_end) {
-            return 0;
+            return -1;
         }
     }
 
@@ -939,20 +943,28 @@ static int dav_method_put(request_rec *r)
         return dav_handle_err(r, err, multi_response);
     }
 
+    has_range = dav_parse_range(r, &range_start, &range_end);
+    if (has_range < 0) {
+        /* RFC 2616 14.16: If we receive an invalid Content-Range we must
+         * not use the content.
+         */
+        body = apr_psprintf(r->pool,
+                            "Malformed Content-Range header for PUT %s.",
+                            ap_escape_html(r->pool, r->uri));
+        return dav_error_response(r, HTTP_BAD_REQUEST, body);
+    } else if (has_range) {
+        mode = DAV_MODE_WRITE_SEEKABLE;
+    }
+    else {
+        mode = DAV_MODE_WRITE_TRUNC;
+    }
+
     /* make sure the resource can be modified (if versioning repository) */
     if ((err = dav_auto_checkout(r, resource,
                                  0 /* not parent_only */,
                                  &av_info)) != NULL) {
         /* ### add a higher-level description? */
         return dav_handle_err(r, err, NULL);
-    }
-
-    /* truncate and rewrite the file unless we see a Content-Range */
-    mode = DAV_MODE_WRITE_TRUNC;
-
-    has_range = dav_parse_range(r, &range_start, &range_end);
-    if (has_range) {
-        mode = DAV_MODE_WRITE_SEEKABLE;
     }
 
     /* Create the new file in the repository */
