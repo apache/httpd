@@ -318,6 +318,7 @@ static void just_die(int sig)
 
 static void stop_listening(int sig)
 {
+    mpm_state = AP_MPMQ_STOPPING;
     ap_close_listeners();
 
     /* For a graceful stop, we want the child to exit when done */
@@ -338,6 +339,7 @@ static void sig_term(int sig)
          */
         return;
     }
+    mpm_state = AP_MPMQ_STOPPING;
     shutdown_pending = 1;
     is_graceful = (sig == AP_SIG_GRACEFUL_STOP);
 }
@@ -351,6 +353,7 @@ static void restart(int sig)
         /* Probably not an error - don't bother reporting it */
         return;
     }
+    mpm_state = AP_MPMQ_STOPPING;
     restart_pending = 1;
     is_graceful = (sig == AP_SIG_GRACEFUL);
 }
