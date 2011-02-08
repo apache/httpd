@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_cache: Make sure that we never allow a 304 Not Modified response
+     that we asked for to leak to the client should the 304 response be
+     uncacheable. PR45341 [Graham Leggett]
+
   *) mod_dav: Send 501 error if unknown Content-* header is received for a PUT
      request (RFC 2616 9.6). PR 42978. [Stefan Fritsch]
 
