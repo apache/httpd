@@ -98,16 +98,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304-fix-2.patch
      +1: minfrin, jim, covener
 
-   * mod_dav: If a malformed Content-Range header is received for a PUT request,
-     we must not use the supplied content per RFC 2616 14.16. Send 400 response
-     instead of ignoring the Content-Range.
-     PR: 49825
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=1026743&view=rev
-     Backport version for 2.2.x of patch:
-       Trunk version of patch works
-     +1: rpluem, jorton, covener
-
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
     must not ignore it but reply with 501 per RFC 2616 9.6.
     PR: 42978
