@@ -81,6 +81,10 @@
 #define DEFAULT_USER_DIR NULL
 #endif
 
+#define O_DEFAULT 0
+#define O_ENABLE 1
+#define O_DISABLE 2
+
 module AP_MODULE_DECLARE_DATA userdir_module;
 
 typedef struct {
@@ -100,7 +104,7 @@ static void *create_userdir_config(apr_pool_t *p, server_rec *s)
 {
     userdir_config *newcfg = apr_pcalloc(p, sizeof(*newcfg));
 
-    newcfg->globally_disabled = 0;
+    newcfg->globally_disabled = O_DEFAULT;
     newcfg->userdir = DEFAULT_USER_DIR;
     newcfg->enabled_users = apr_table_make(p, 4);
     newcfg->disabled_users = apr_table_make(p, 4);
@@ -108,9 +112,21 @@ static void *create_userdir_config(apr_pool_t *p, server_rec *s)
     return newcfg;
 }
 
-#define O_DEFAULT 0
-#define O_ENABLE 1
-#define O_DISABLE 2
+static void *merge_userdir_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    userdir_config *cfg = apr_pcalloc(p, sizeof(userdir_config));
+    userdir_config *base = basev, *overrides = overridesv;
+ 
+    cfg->globally_disabled = (overrides->globally_disabled != O_DEFAULT) ? overrides->globally_disabled : base->globally_disabled;
+    cfg->userdir = (overrides->userdir != DEFAULT_USER_DIR) ? overrides->userdir : base->userdir;
+ 
+    /* not merged */
+    cfg->enabled_users = overrides->enabled_users;
+    cfg->disabled_users = overrides->disabled_users;
+    
+    return cfg;
+}
+
 
 static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
 {
@@ -137,19 +153,15 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
          * need do no more at this point than record the fact.
          */
         if (strlen(usernames) == 0) {
-            s_cfg->globally_disabled = 1;
+            s_cfg->globally_disabled = O_DISABLE;
             return NULL;
         }
         usertable = s_cfg->disabled_users;
     }
     else if ((!strcasecmp(kw, "enable")) || (!strcasecmp(kw, "enabled"))) {
-        /*
-         * The "disable" keyword can stand alone or take a list of names, but
-         * the "enable" keyword requires the list.  Whinge if it doesn't have
-         * it.
-         */
         if (strlen(usernames) == 0) {
-            return "UserDir \"enable\" keyword requires a list of usernames";
+            s_cfg->globally_disabled = O_ENABLE;
+            return NULL;
         }
         usertable = s_cfg->enabled_users;
     }
@@ -234,7 +246,7 @@ static int translate_userdir(request_rec *r)
      * If there's a global interdiction on UserDirs, check to see if this
      * name is one of the Blessed.
      */
-    if (s_cfg->globally_disabled
+    if (s_cfg->globally_disabled == O_DISABLE
         && apr_table_get(s_cfg->enabled_users, w) == NULL) {
         return DECLINED;
     }
@@ -363,7 +375,7 @@ module AP_MODULE_DECLARE_DATA userdir_module = {
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */
     create_userdir_config,      /* server config */
-    NULL,                       /* merge server config */
+    merge_userdir_config,       /* merge server config */
     userdir_cmds,               /* command apr_table_t */
     register_hooks              /* register hooks */
 };
