@@ -38,8 +38,12 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-if [ -f /etc/sysconfig/httpd ]; then
-        . /etc/sysconfig/httpd
+# What were we called? Multiple instances of the same daemon can be
+# created by creating suitably named symlinks to this startup script
+prog=$(basename $0 | sed -e 's/^[SK][0-9][0-9]//')
+
+if [ -f /etc/sysconfig/${prog} ]; then
+        . /etc/sysconfig/${prog}
 fi
 
 # Start httpd in the C locale by default.
@@ -54,9 +58,8 @@ INITLOG_ARGS=""
 # work correctly with a thread-based MPM; notably PHP will refuse to start.
 
 httpd=${HTTPD-/usr/sbin/httpd}
-prog=httpd
-pidfile=${PIDFILE-/var/log/httpd/httpd.pid}
-lockfile=${LOCKFILE-/var/lock/subsys/httpd}
+pidfile=${PIDFILE-/var/log/httpd/${prog}.pid}
+lockfile=${LOCKFILE-/var/lock/subsys/${prog}}
 RETVAL=0
 
 # check for 1.3 configuration
