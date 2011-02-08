@@ -209,6 +209,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~poirier/AllowEncodedSlashes.22.patch
       +1 poirier, 
 
+  * prefork: Update MPM state in children; implement fast exit from
+    connection loop via ap_graceful_stop_signalled.  PR 41743.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1068389&view=rev
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26623
+    +1: jorton,
 
 PATCHES/ISSUES THAT ARE STALLED
 
