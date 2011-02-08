@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Make sure that we never allow a 304 Not Modified response
-     that we asked for to leak to the client should the 304 response be
-     uncacheable.
-     PR45341
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1001884
-     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-304-fix-2.patch
-     +1: minfrin, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
