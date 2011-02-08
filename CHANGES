@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_userdir: Add merging of enable, disable, and filename arguments
+     to UserDir directive, leaving enable/disable of userlists unmerged.
+     PR 44076 [Eric Covener]
+
   *) core: Honor 'AcceptPathInfo OFF' during internal redirects,
      such as per-directory mod_rewrite substitutions.  PR 50349.
      [Eric Covener]
