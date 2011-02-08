@@ -119,7 +119,7 @@ contenu</a></li>
 	  0.</dd>
 
           <dt><code>qs</code></dt>
-          <dd>un nombre en virgule flottante de 0.0 à 1.0, indiquant la
+          <dd>un nombre en virgule flottante de 0[.000] à 1[.000], indiquant la
 	  "qualité" relative de la variante courante par rapport aux
 	  autres variantes disponibles, indépendamment des possibilités
 	  du client. Par exemple, un fichier jpeg est en général une

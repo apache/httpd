@@ -111,7 +111,8 @@
 	plus efficace, mais nécessite que le serveur cible supporte le
 	protocole HTTP/1.1.</dd>
         <dt>proxy-interim-response</dt>
-        <dd>Cette variable peut prendre les valeurs <code>RFC</code> ou
+        <dd>Cette variable peut prendre les valeurs <code>RFC</code>
+	(valeur par défaut) ou
 	<code>Suppress</code>. Les versions précédentes de httpd
 	supprimaient les réponses intermédiaires HTTP (1xx) envoyées par
 	le serveur cible. En pratique, si un serveur cible envoie une
