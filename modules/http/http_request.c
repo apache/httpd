@@ -447,6 +447,11 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
                    apr_itoa(r->pool, r->status));
 
+    /* Begin by presuming any module can make its own path_info assumptions,
+     * until some module interjects and changes the value.
+     */
+    new->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
+
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need
      * to do their thing on internal redirects as well.  Perhaps this is a
