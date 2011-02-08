@@ -863,6 +863,17 @@ PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w);
 PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_rec *s,
                                                     proxy_server_conf *conf);
 
+
+/**
+ * Find the matched alias for this request and setup for proxy handler
+ * @param r     request
+ * @param ent   proxy_alias record
+ * @param dconf per-dir config or NULL
+ * @return      DECLINED, DONE or OK if matched
+ */
+PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
+                                        proxy_dir_conf *dconf);
+
 #define PROXY_LBMETHOD "proxylbmethod"
 
 /* The number of dynamic workers that can be added when reconfiguring.

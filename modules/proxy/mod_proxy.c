@@ -539,8 +539,8 @@ static apr_array_header_t *proxy_vars(request_rec *r,
     return ret;
 }
 
-static int proxy_trans_match(request_rec *r, struct proxy_alias *ent,
-        proxy_dir_conf *dconf)
+PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
+                                        proxy_dir_conf *dconf)
 {
     int len;
     const char *fake;
@@ -552,7 +552,7 @@ static int proxy_trans_match(request_rec *r, struct proxy_alias *ent,
     unsigned int nocanon = ent->flags & PROXYPASS_NOCANON;
     const char *use_uri = nocanon ? r->unparsed_uri : r->uri;
 
-    if ((dconf->interpolate_env == 1) && (ent->flags & PROXYPASS_INTERPOLATE)) {
+    if (dconf && (dconf->interpolate_env == 1) && (ent->flags & PROXYPASS_INTERPOLATE)) {
         fake = proxy_interpolate(r, ent->fake);
         real = proxy_interpolate(r, ent->real);
     }
@@ -653,7 +653,7 @@ static int proxy_trans(request_rec *r)
 
     /* short way - this location is reverse proxied? */
     if (dconf->alias) {
-        int rv = proxy_trans_match(r, dconf->alias, dconf);
+        int rv = ap_proxy_trans_match(r, dconf->alias, dconf);
         if (DONE != rv) {
             return rv;
         }
@@ -666,7 +666,7 @@ static int proxy_trans(request_rec *r)
     if (conf->aliases->nelts) {
         ent = (struct proxy_alias *) conf->aliases->elts;
         for (i = 0; i < conf->aliases->nelts; i++) {
-            int rv = proxy_trans_match(r, &ent[i], dconf);
+            int rv = ap_proxy_trans_match(r, &ent[i], dconf);
             if (DONE != rv) {
                 return rv;
             }
