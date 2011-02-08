@@ -1039,7 +1039,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     if (worker->s->is_address_reusable) {
         if (!worker->cp->addr) {
-            if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
+            if ((err = PROXY_THREAD_LOCK(worker->balancer)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
                              "proxy: FTP: lock");
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -1059,7 +1059,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                     address_pool);
     if (worker->s->is_address_reusable && !worker->cp->addr) {
         worker->cp->addr = connect_addr;
-        if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
+        if ((uerr = PROXY_THREAD_UNLOCK(worker->balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, uerr, r->server,
                          "proxy: FTP: unlock");
         }

@@ -1379,7 +1379,8 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
 
     (*balancer)->name = uri;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
-    (*balancer)->mutex = NULL;
+    (*balancer)->gmutex = NULL;
+    (*balancer)->tmutex = NULL;
 
     if (do_malloc)
         bshared = malloc(sizeof(proxy_balancer_shared));
@@ -1423,7 +1424,54 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer, server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv = APR_SUCCESS;
-    return rv;
+    ap_slotmem_provider_t *storage = balancer->storage;
+    apr_size_t size;
+    unsigned int num;
+
+    if (!storage) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                     "no provider for %s", balancer->name);
+        return APR_EGENERAL;
+    }
+    /*
+     * for each balancer we need to init the global
+     * mutex and then attach to the shared worker shm
+     */
+    if (!balancer->gmutex) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                     "no mutex %s", balancer->name);
+        return APR_EGENERAL;
+    }
+    
+    /* Re-open the mutex for the child. */
+    rv = apr_global_mutex_child_init(&(balancer->gmutex),
+                                     apr_global_mutex_lockfile(balancer->gmutex),
+                                     p);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "Failed to reopen mutex %s in child",
+                     balancer->name);
+        return rv;
+    }
+    
+    /* now attach */
+    storage->attach(&(balancer->slot), balancer->sname, &size, &num, p);
+    if (!balancer->slot) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
+        return APR_EGENERAL;
+    }
+    if (balancer->s->lbmethod && balancer->s->lbmethod->reset)
+        balancer->s->lbmethod->reset(balancer, s);
+    
+    if (balancer->tmutex == NULL) {
+        rv = apr_thread_mutex_create(&(balancer->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "can not create thread mutex");
+            return rv;
+        }
+    }    
+    return APR_SUCCESS;
 }
 
 /*
@@ -1765,7 +1813,6 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     (*worker)->hash = wshared->hash;
     (*worker)->context = NULL;
     (*worker)->cp = NULL;
-    (*worker)->mutex = NULL;
     (*worker)->balancer = balancer;
     (*worker)->s = wshared;
 
@@ -1849,15 +1896,6 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                 "can not create connection pool");
             return APR_EGENERAL;
-        }
-
-        if (worker->mutex == NULL) {
-            rv = apr_thread_mutex_create(&(worker->mutex), APR_THREAD_MUTEX_DEFAULT, p);
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                    "can not create thread mutex");
-                return rv;
-            }
         }
 
         if (worker->s->hmax) {
@@ -2255,7 +2293,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->pool);
     }
     else if (!worker->cp->addr) {
-        if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
+        if ((err = PROXY_THREAD_LOCK(worker->balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
                          "proxy: lock");
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -2272,7 +2310,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->port, 0,
                                     worker->cp->pool);
         conn->addr = worker->cp->addr;
-        if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
+        if ((uerr = PROXY_THREAD_UNLOCK(worker->balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, uerr, r->server,
                          "proxy: unlock");
         }
