@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     connection loop via ap_graceful_stop_signalled.  PR 41743.
     Trunk patch: http://svn.apache.org/viewvc?rev=1068389&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26623
-    +1: jorton,
+    +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
