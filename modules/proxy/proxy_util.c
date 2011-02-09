@@ -1467,7 +1467,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
         rv = apr_thread_mutex_create(&(balancer->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "can not create thread mutex");
+                         "can not create balancer thread mutex");
             return rv;
         }
     }    
@@ -1890,6 +1890,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "initializing worker %s local", worker->s->name);
         /* Now init local worker data */
+        if (worker->tmutex == NULL) {
+            rv = apr_thread_mutex_create(&(worker->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                             "can not create worker thread mutex");
+                return rv;
+            }
+        }    
         if (worker->cp == NULL)
             init_conn_pool(p, worker);
         if (worker->cp == NULL) {
@@ -2293,7 +2301,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->pool);
     }
     else if (!worker->cp->addr) {
-        if ((err = PROXY_THREAD_LOCK(worker->balancer)) != APR_SUCCESS) {
+        if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
                          "proxy: lock");
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -2310,7 +2318,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->port, 0,
                                     worker->cp->pool);
         conn->addr = worker->cp->addr;
-        if ((uerr = PROXY_THREAD_UNLOCK(worker->balancer)) != APR_SUCCESS) {
+        if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, uerr, r->server,
                          "proxy: unlock");
         }

@@ -376,6 +376,7 @@ struct proxy_worker {
     proxy_conn_pool     *cp;    /* Connection pool to use */
     proxy_worker_shared   *s;   /* Shared data */
     proxy_balancer  *balancer;  /* which balancer am I in? */
+    apr_thread_mutex_t  *tmutex; /* Thread lock for updating address cache */
     void            *context;   /* general purpose storage */
 };
 
@@ -413,7 +414,7 @@ struct proxy_balancer {
     const char *sname;            /* filesystem safe balancer name */
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
     apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
-    apr_thread_mutex_t  *tmutex; /* Thread lock for updating address cache and worker selection*/
+    apr_thread_mutex_t  *tmutex; /* Thread lock for updating shm */
     void            *context;    /* general purpose storage */
     proxy_balancer_shared *s;    /* Shared data */
 };
