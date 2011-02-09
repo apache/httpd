@@ -609,7 +609,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 
     apr_status_t rv;
 
-    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
+    if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
             "proxy: BALANCER: (%s). Lock failed for post_request",
             balancer->name);
