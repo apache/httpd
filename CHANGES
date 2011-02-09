@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_socache_dc: Make module compile by fixing some typos.
+     PR 50735 [Mark Montague <mark catseye.org>]
+
   *) prefork: Update MPM state in children during a graceful stop or
      restart.  PR 41743.  [Andrew Punch <andrew.punch 247realmedia.com>]
 
