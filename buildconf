@@ -73,7 +73,7 @@ if [ $apr_found -lt 1 ]; then
     echo "or specify the location of the source with " 
     echo "--with-apr=[path to apr] :"
     echo ""
-    echo "   svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr"
+    echo "   svn co http://svn.apache.org/repos/asf/apr/apr/branches/1.4.x srclib/apr"
     echo ""
     should_exit=1
 fi
@@ -91,11 +91,11 @@ done
 if [ $apu_found -lt 1 ]; then
     echo ""
     echo "You don't have a copy of the apr-util source in srclib/apr-util. "
-    echo "Please get one the source using the following instructions, "
+    echo "Please get the source using the following instructions, "
     echo "or specify the location of the source with "
-    echo "--with-apr-util=[path to apr-util]:"
+    echo "--with-apr-util=[path to apr-util] :"
     echo ""
-    echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/trunk srclib/apr-util"
+    echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/branches/1.3.x srclib/apr-util"
     echo ""
     should_exit=1
 fi
