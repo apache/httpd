@@ -217,6 +217,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 PATCHES/ISSUES THAT ARE STALLED
 
+  * mod_dav: If an unknown Content-* header is received for a PUT request, we
+    must not ignore it but reply with 501 per RFC 2616 9.6.
+    PR: 42978
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=1026746&view=rev
+    Backport version for 2.2.x of patch:
+      Trunk version of patch works
+    +1: rpluem, covener, poirier
+    -1: roy:
+
+This requirement will
+be (or has already been) removed from httpbis because it hinders
+extensibility and breaks content management systems, just as the
+change below causes content-language to be broken.  That is why
+we never implemented this requirement when it was added (without
+consensus) to RFC 2616.
+
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
     Trunk patch: http://svn.apache.org/viewvc?rev=909878&view=rev
