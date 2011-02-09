@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 922267 -->
+<!-- English Revision : 1068329 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -145,7 +145,7 @@
 	le message.</p>
       
 
-      <p>Si la directive ErrorDocument sp&eacute;cifie une redirection locale
+      <p>Si la directive ErrorDname-basedocument sp&eacute;cifie une redirection locale
       vers un script CGI, ce dernier doit ajouter un en-t&ecirc;te
       "<code>Status:</code>" dans sa sortie afin de s'assurer du bon
       acheminement jusqu'au client de la condition d'erreur qui a
