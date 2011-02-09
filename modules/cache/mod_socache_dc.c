@@ -100,10 +100,10 @@ static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s,
      * Uhm - because most things expire things at a specific time?
      * Were the API were thought out expiry - r->request_time is a good approximation
      */
-    expiry -= apr_time_t(NULL);
+    expiry -= apr_time_now();
     /* Send the serialised session to the distributed cache context */
     if (!DC_CTX_add_session(ctx->dc, id, idlen, der, der_len,
-                            apr_time_in_msec(expiry)) {
+                            apr_time_msec(expiry))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'store' failed");
         return APR_EGENERAL;
     }
