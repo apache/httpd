@@ -1332,18 +1332,21 @@ PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_re
 {
     proxy_worker **workers;
     int i;
-    unsigned int index;
+    int index;
     proxy_worker_shared *shm;
     if (b->s->wupdated <= b->wupdated)
         return APR_SUCCESS;
     /*
      * Look thru the list of workers in shm
-     * and see which one(s) we are lacking
+     * and see which one(s) we are lacking...
+     * again, the cast to unsigned int is safe
+     * since our upper limit is always max_workers
+     * which is int.
      */
     for (index = 0; index < b->max_workers; index++) {
         int found;
         apr_status_t rv;
-        if ((rv = storage->dptr(b->slot, index, (void *)&shm)) != APR_SUCCESS) {
+        if ((rv = storage->dptr(b->slot, (unsigned int)index, (void *)&shm)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
             return APR_EGENERAL;
         }
