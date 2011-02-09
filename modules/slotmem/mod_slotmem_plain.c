@@ -218,7 +218,7 @@ static unsigned int slotmem_num_free_slots(ap_slotmem_instance_t *slot)
 {
     unsigned int i, counter=0;
     char *inuse = slot->inuse;
-    for (i=0; i<desc.num; i++, inuse++) {
+    for (i = 0; i < slot->num; i++, inuse++) {
         if (!*inuse)
             counter++;
     }
@@ -284,7 +284,7 @@ static const ap_slotmem_provider_t storage = {
     &slotmem_get,
     &slotmem_put,
     &slotmem_num_slots,
-    &slotmem_num_free_slots
+    &slotmem_num_free_slots,
     &slotmem_slot_size,
     &slotmem_grab,
     &slotmem_release
