@@ -1373,6 +1373,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_re
             (*runtime)->cp = NULL;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;
+            (*runtime)->tmutex = NULL;
             if ((rv = ap_proxy_initialize_worker(*runtime, s, conf->pool)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot init worker");
                 return rv;
