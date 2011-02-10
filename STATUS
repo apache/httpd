@@ -193,6 +193,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~poirier/AllowEncodedSlashes.22.patch
       +1 poirier, jim
 
+  * configure: add basic support to build with MinGW/MSYS (backport of r422182)
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=422182
+     2.2.x patch: http://people.apache.org/~fuankg/diffs/r422182-2.2.x.diff
+     +1 fuankg
+   
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
