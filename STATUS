@@ -90,12 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * autoindex: fix merge of IndexOptions into per-dir configs 
-     without any autoindex options.  PR47766
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1031430
-     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-autoindex_merge.diff
-     +1 covener, rpluem, jim
-
   * mod_ssl: Correctly read full lines in input filter when the line is
     incomplete during first read. PR 50481.
       Trunk version of patch:
