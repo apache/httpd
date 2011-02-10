@@ -90,6 +90,27 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * autoindex: fix merge of IndexOptions into per-dir configs 
+     without any autoindex options.  PR47766
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1031430
+     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-autoindex_merge.diff
+     +1 covener, rpluem, jim
+
+  * mod_ssl: Correctly read full lines in input filter when the line is
+    incomplete during first read. PR 50481.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=1051468&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=1058133&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=1059037&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jorton, jim
+
+  * prefork: Update MPM state in children; implement fast exit from
+    connection loop via ap_graceful_stop_signalled.  PR 41743.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1068389&view=rev
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26623
+    +1: jorton, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -176,12 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      enabling/disabling the basic capability is not split out into mod_unixd 2.2.x.
      +1: trawick, covener
 
-   * autoindex: fix merge of IndexOptions into per-dir configs 
-     without any autoindex options.  PR47766
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1031430
-     2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-autoindex_merge.diff
-     +1 covener, rpluem, jim
-
    * mod_proxy_http: Become aware of ssl handshake failures when attempting
      to pass request. Makes it so workers are put in error state when a
      handshake failure is encountered.
@@ -191,16 +206,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26450
      +1: rpluem, jim
 
-  * mod_ssl: Correctly read full lines in input filter when the line is
-    incomplete during first read. PR 50481.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=1051468&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=1058133&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=1059037&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jorton, jim
-
   * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
     of encoded slashes in path info.  (This is already the behavior of
     AllowEncodedSlashes On in trunk.)
@@ -208,12 +213,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          http://people.apache.org/~poirier/AllowEncodedSlashes.22.patch
       +1 poirier, jim
-
-  * prefork: Update MPM state in children; implement fast exit from
-    connection loop via ap_graceful_stop_signalled.  PR 41743.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1068389&view=rev
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26623
-    +1: jorton, rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
