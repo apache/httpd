@@ -71,6 +71,7 @@ module AP_MODULE_DECLARE_DATA autoindex_module;
 #define IGNORE_CASE         (1 << 16)
 #define EMIT_XHTML          (1 << 17)
 #define SHOW_FORBIDDEN      (1 << 18)
+#define OPTION_UNSET        (1 << 19)
 
 #define K_NOADJUST 0
 #define K_ADJUST 1
@@ -621,7 +622,7 @@ static void *create_autoindex_config(apr_pool_t *p, char *dummy)
     new->ign_list = apr_array_make(p, 4, sizeof(struct item));
     new->hdr_list = apr_array_make(p, 4, sizeof(struct item));
     new->rdme_list = apr_array_make(p, 4, sizeof(struct item));
-    new->opts = 0;
+    new->opts = OPTION_UNSET;
     new->incremented_opts = 0;
     new->decremented_opts = 0;
     new->default_keyid = '\0';
@@ -655,9 +656,9 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
     new->desc_list = apr_array_append(p, add->desc_list, base->desc_list);
     new->icon_list = apr_array_append(p, add->icon_list, base->icon_list);
     new->rdme_list = apr_array_append(p, add->rdme_list, base->rdme_list);
-    if (add->opts & NO_OPTIONS) {
+    if (add->opts == NO_OPTIONS) {
         /*
-         * If the current directory says 'no options' then we also
+         * If the current directory explicitly says 'no options' then we also
          * clear any incremental mods from being inheritable further down.
          */
         new->opts = NO_OPTIONS;
@@ -671,7 +672,7 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
          * Contrariwise, we *do* inherit if the only settings here are
          * incremental ones.
          */
-        if (add->opts == 0) {
+        if (add->opts == OPTION_UNSET) {
             new->incremented_opts = (base->incremented_opts
                                      | add->incremented_opts)
                                     & ~add->decremented_opts;
