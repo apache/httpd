@@ -1327,63 +1327,6 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
 
 }
 
-PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_rec *s,
-                                                    proxy_server_conf *conf)
-{
-    proxy_worker **workers;
-    int i;
-    int index;
-    proxy_worker_shared *shm;
-    if (b->s->wupdated <= b->wupdated)
-        return APR_SUCCESS;
-    /*
-     * Look thru the list of workers in shm
-     * and see which one(s) we are lacking...
-     * again, the cast to unsigned int is safe
-     * since our upper limit is always max_workers
-     * which is int.
-     */
-    for (index = 0; index < b->max_workers; index++) {
-        int found;
-        apr_status_t rv;
-        if ((rv = storage->dptr(b->slot, (unsigned int)index, (void *)&shm)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
-            return APR_EGENERAL;
-        }
-        /* account for possible "holes" in the slotmem
-         * (eg: slots 0-2 are used, but 3 isn't, but 4-5 is)
-         */
-        if (!shm->hash)
-            continue;
-        found = 0;
-        workers = (proxy_worker **)b->workers->elts;
-        for (i = 0; i < b->workers->nelts; i++, workers++) {
-            proxy_worker *worker = *workers;
-            if (worker->hash == shm->hash) {
-                found = 1;
-                break;
-            }
-        }
-        if (!found) {
-            proxy_worker **runtime;
-            runtime = apr_array_push(b->workers);
-            *runtime = apr_palloc(conf->pool, sizeof(proxy_worker));
-            (*runtime)->hash = shm->hash;
-            (*runtime)->context = NULL;
-            (*runtime)->cp = NULL;
-            (*runtime)->balancer = b;
-            (*runtime)->s = shm;
-            (*runtime)->tmutex = NULL;
-            if ((rv = ap_proxy_initialize_worker(*runtime, s, conf->pool)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot init worker");
-                return rv;
-            }
-        }
-    }
-    b->wupdated = b->s->wupdated;
-    return APR_SUCCESS;
-}
-
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
     /* Only the mpm_winnt has child init hook handler.
