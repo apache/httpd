@@ -174,7 +174,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        with reason string for why suEXEC is disabled)
      Plz consider where doc for directive should go.  Patch has it in core, as
      enabling/disabling the basic capability is not split out into mod_unixd 2.2.x.
-     +1: trawick, covener
+     +1: trawick, covener, wrowe
 
    * mod_proxy_http: Become aware of ssl handshake failures when attempting
      to pass request. Makes it so workers are put in error state when a
@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1039304
                   http://svn.apache.org/viewvc?view=revision&revision=1053584
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26450
-     +1: rpluem, jim
+     +1: rpluem, jim, wrowe
 
   * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
     of encoded slashes in path info.  (This is already the behavior of
@@ -192,11 +192,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          http://people.apache.org/~poirier/AllowEncodedSlashes.22.patch
       +1 poirier, jim
+      +.1 wrowe; this essentially causes "%2F" -> "%2F" -> "%252F" to any backend,
+                 as mentioned previously trunk is broken and decoding to 'something'
+                 is necessary for routing such.  %2F cannot be distinguished from
+                 %252F on the front end, adding risks.  All this said, not against 
+                 an optional broken feature if this warning is placed in the docs.
+                 Non-optional broken features are worse :)
+                 Trunk must be patched identically.
 
   * configure: add basic support to build with MinGW/MSYS (backport of r422182)
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=422182
      2.2.x patch: http://people.apache.org/~fuankg/diffs/r422182-2.2.x.diff
-     +1 fuankg
+     +1 fuankg, wrowe
    
 PATCHES/ISSUES THAT ARE STALLED
 
