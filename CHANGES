@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_ssl: Correctly read full lines in input filter when the line is
+     incomplete during first read. PR 50481. [Ruediger Pluem]
+
   *) mod_autoindex: Merge IndexOptions from server to directory context when
      the directory has no mod_autoindex directives. PR 47766. [Eric Covener]
 
