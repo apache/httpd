@@ -90,11 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * prefork: Update MPM state in children; implement fast exit from
-    connection loop via ap_graceful_stop_signalled.  PR 41743.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1068389&view=rev
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26623
-    +1: jorton, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
