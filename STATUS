@@ -180,7 +180,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      without any autoindex options.  PR47766
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1031430
      2.2.x patch: http://people.apache.org/~covener/patches/2.2.x-autoindex_merge.diff
-     +1 covener, rpluem
+     +1 covener, rpluem, jim
 
    * mod_proxy_http: Become aware of ssl handshake failures when attempting
      to pass request. Makes it so workers are put in error state when a
@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1039304
                   http://svn.apache.org/viewvc?view=revision&revision=1053584
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26450
-     +1: rpluem,
+     +1: rpluem, jim
 
   * mod_ssl: Correctly read full lines in input filter when the line is
     incomplete during first read. PR 50481.
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=1059037&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, jorton, 
+      +1: rpluem, jorton, jim
 
   * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
     of encoded slashes in path info.  (This is already the behavior of
@@ -207,13 +207,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch: n/a
       Backport version for 2.2.x of patch:
          http://people.apache.org/~poirier/AllowEncodedSlashes.22.patch
-      +1 poirier, 
+      +1 poirier, jim
 
   * prefork: Update MPM state in children; implement fast exit from
     connection loop via ap_graceful_stop_signalled.  PR 41743.
     Trunk patch: http://svn.apache.org/viewvc?rev=1068389&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26623
-    +1: jorton, rpluem
+    +1: jorton, rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
