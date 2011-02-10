@@ -330,6 +330,7 @@ static void just_die(int sig)
 
 static void stop_listening(int sig)
 {
+    mpm_state = AP_MPMQ_STOPPING;
     ap_close_listeners();
 
     /* For a graceful stop, we want the child to exit when done */
@@ -350,6 +351,7 @@ static void sig_term(int sig)
          */
         return;
     }
+    mpm_state = AP_MPMQ_STOPPING;
     shutdown_pending = 1;
     is_graceful = (sig == AP_SIG_GRACEFUL_STOP);
 }
@@ -363,6 +365,7 @@ static void restart(int sig)
         /* Probably not an error - don't bother reporting it */
         return;
     }
+    mpm_state = AP_MPMQ_STOPPING;
     restart_pending = 1;
     is_graceful = (sig == AP_SIG_GRACEFUL);
 }
@@ -458,8 +461,10 @@ static int num_listensocks = 0;
 
 int ap_graceful_stop_signalled(void)
 {
-    /* not ever called anymore... */
-    return 0;
+    /* Return true if the server is stopping for whatever reason; the
+     * function is used to initiate a fast exit from the connection
+     * processing loop. */
+    return mpm_state == AP_MPMQ_STOPPING;
 }
 
 

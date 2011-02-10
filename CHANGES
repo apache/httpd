@@ -1,11 +1,21 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) prefork: Update MPM state in children during a graceful restart.
+     Allow the HTTP connection handling loop to terminate early 
+     during a graceful restart.  PR 41743.
+     [Andrew Punch <andrew.punch 247realmedia.com>]
+
   *) mod_ssl: Correctly read full lines in input filter when the line is
      incomplete during first read. PR 50481. [Ruediger Pluem]
 
   *) mod_autoindex: Merge IndexOptions from server to directory context when
      the directory has no mod_autoindex directives. PR 47766. [Eric Covener]
+
+  *) prefork: Update MPM state in children during a graceful restart.
+     Allow the HTTP connection handling loop to terminate early 
+     during a graceful restart.  PR 41743.
+     [Andrew Punch <andrew.punch 247realmedia.com>]
 
   *) mod_cache: Make sure that we never allow a 304 Not Modified response
      that we asked for to leak to the client should the 304 response be
