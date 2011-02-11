@@ -105,69 +105,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
- * unixd: set suexec_enabled correctly when httpd is run by non-root
-   PR 42175
-   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
-   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
-   +1: niq
-   -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
-              vs 2.6 kernels, potentially a suspect test for root.
-   sf:        Couldn't the linux 2.4 bug be worked around by calling access
-              twice? Once with R_OK and once with X_OK.
-   wrowe:     It would seem we only need to test for X_OK?
-
- * mod_disk_cache: Decline the opportunity to cache if the response is
-    a 206 Partial Content. This stops a reverse proxied partial response
-    from becoming cached, and then being served in subsequent responses.
-    Trunk patch: http://svn.apache.org/viewvc?rev=951222&view=rev
-    2.2.x patch: http://people.apache.org/~minfrin/httpd-cache-partial-2.2.patch
-    +1: minfrin
-    niq asks: I can see the logic of not cacheing partial responses,
-    but why should mod_disk_cache worry about them if mod_cache allows
-    them, as in the following proposal?
-    rpluem says: As poirier correctly mentions, the same must be done for mod_mem_cache
-    as well.
-
-  *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
-     Response if they so choose to do so. Previously an attempt to cache a 206
-     was arbitrarily allowed if the response contained an Expires or
-     Cache-Control header, and arbitrarily denied if both headers were missing.
-     Trunk patch: http://svn.apache.org/viewvc?rev=952823&view=rev
-     2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
-     +1: minfrin
-     -1: rpluem: Until the patch proposal above for mod_disk_cache is backported
-                 and a similar patch for mod_mem_cache is proposed (no backport
-                 possible since mod_mem_cache is no longer in trunk) and
-                 committed.
-
-   * config: fix/optimize SSL connections for IE6 browsers
-     PR 49484
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966055
-     2.2 patch: should apply cleanly
-     +1: gstein
-     -0: sf: If we change it, then change it to something that will be OK for
-         MSIE 10, too. Also, some people recommend keeping ssl-unclean-shutdown
-         for newer versions of MSIE.
-         See http://marc.info/?l=apache-httpd-dev&m=127970632901262&w=2 and
-         the links therein.
-
-   * mod_proxy: Release the backend connection as soon as EOS is detected,
-     so the backend isn't forced to wait for the client to eventually
-     acknowledge the data.
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1026665
-                  http://svn.apache.org/viewvc?view=revision&revision=1030850
-                  http://svn.apache.org/viewvc?view=revision&revision=1030855
-                  http://svn.apache.org/viewvc?view=revision&revision=1035605
-     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_proxy-closeearly22-4.patch
-     +1: minfrin
-     +1: jim (requires mmn bump due to proxy_conn_rec)
-     rpluem says: r1052224 r1052314 need to be added as well as the patch above
-                  has a thread safety issue.
-     minfrin: r1055246 needs to be added to r1052314 to ensure the cleanup
-              isn't attempted twice.
-     rpluem says: Mind to update the 2.2.x version of the patch with r1052224,
-                  r1052314, r1055246 and r1055570 (Comment fix by Jim)?
-
   * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
     of encoded slashes in path info.  (This is already the behavior of
     AllowEncodedSlashes On in trunk.)
@@ -309,3 +246,66 @@ consensus) to RFC 2616.
    2.2.x patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
    +1: niq, igalic
+
+ * unixd: set suexec_enabled correctly when httpd is run by non-root
+   PR 42175
+   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
+   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
+   +1: niq
+   -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
+              vs 2.6 kernels, potentially a suspect test for root.
+   sf:        Couldn't the linux 2.4 bug be worked around by calling access
+              twice? Once with R_OK and once with X_OK.
+   wrowe:     It would seem we only need to test for X_OK?
+
+ * mod_disk_cache: Decline the opportunity to cache if the response is
+    a 206 Partial Content. This stops a reverse proxied partial response
+    from becoming cached, and then being served in subsequent responses.
+    Trunk patch: http://svn.apache.org/viewvc?rev=951222&view=rev
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-cache-partial-2.2.patch
+    +1: minfrin
+    niq asks: I can see the logic of not cacheing partial responses,
+    but why should mod_disk_cache worry about them if mod_cache allows
+    them, as in the following proposal?
+    rpluem says: As poirier correctly mentions, the same must be done for mod_mem_cache
+    as well.
+
+  *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
+     Response if they so choose to do so. Previously an attempt to cache a 206
+     was arbitrarily allowed if the response contained an Expires or
+     Cache-Control header, and arbitrarily denied if both headers were missing.
+     Trunk patch: http://svn.apache.org/viewvc?rev=952823&view=rev
+     2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
+     +1: minfrin
+     -1: rpluem: Until the patch proposal above for mod_disk_cache is backported
+                 and a similar patch for mod_mem_cache is proposed (no backport
+                 possible since mod_mem_cache is no longer in trunk) and
+                 committed.
+
+   * config: fix/optimize SSL connections for IE6 browsers
+     PR 49484
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966055
+     2.2 patch: should apply cleanly
+     +1: gstein
+     -0: sf: If we change it, then change it to something that will be OK for
+         MSIE 10, too. Also, some people recommend keeping ssl-unclean-shutdown
+         for newer versions of MSIE.
+         See http://marc.info/?l=apache-httpd-dev&m=127970632901262&w=2 and
+         the links therein.
+
+   * mod_proxy: Release the backend connection as soon as EOS is detected,
+     so the backend isn't forced to wait for the client to eventually
+     acknowledge the data.
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1026665
+                  http://svn.apache.org/viewvc?view=revision&revision=1030850
+                  http://svn.apache.org/viewvc?view=revision&revision=1030855
+                  http://svn.apache.org/viewvc?view=revision&revision=1035605
+     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_proxy-closeearly22-4.patch
+     +1: minfrin
+     +1: jim (requires mmn bump due to proxy_conn_rec)
+     rpluem says: r1052224 r1052314 need to be added as well as the patch above
+                  has a thread safety issue.
+     minfrin: r1055246 needs to be added to r1052314 to ensure the cleanup
+              isn't attempted twice.
+     rpluem says: Mind to update the 2.2.x version of the patch with r1052224,
+                  r1052314, r1055246 and r1055570 (Comment fix by Jim)?
