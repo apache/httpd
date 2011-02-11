@@ -194,7 +194,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=422182
      2.2.x patch: http://people.apache.org/~fuankg/diffs/r422182-2.2.x.diff
      +1 fuankg, wrowe
-   
+
+  * mod_proxy: Avoid a segfault if the notes table does not contain an
+               SSL_connect_rv key.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=1069785&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
