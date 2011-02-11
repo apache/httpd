@@ -540,8 +540,16 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
         maxage_req = cache->control_in.max_age_value;
     }
 
-    /* extract max-age from response */
-    maxage_cresp = h->cache_obj->info.control.max_age_value;
+    /*
+     * extract max-age from response, if both s-maxage and max-age, s-maxage
+     * takes priority
+     */
+    if (smaxage != -1) {
+        maxage_cresp = smaxage;
+    }
+    else {
+        maxage_cresp = h->cache_obj->info.control.max_age_value;
+    }
 
     /*
      * if both maxage request and response, the smaller one takes priority
@@ -585,15 +593,14 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
         minfresh = 0;
     }
 
-    /* override maxstale if must-revalidate or proxy-revalidate */
+    /* override maxstale if must-revalidate, proxy-revalidate or s-maxage */
     if (maxstale && (h->cache_obj->info.control.must_revalidate
-            || h->cache_obj->info.control.proxy_revalidate)) {
+            || h->cache_obj->info.control.proxy_revalidate || smaxage != -1)) {
         maxstale = 0;
     }
 
     /* handle expiration */
-    if (((smaxage != -1) && (age < (smaxage - minfresh))) ||
-        ((maxage != -1) && (age < (maxage + maxstale - minfresh))) ||
+    if (((maxage != -1) && (age < (maxage + maxstale - minfresh))) ||
         ((smaxage == -1) && (maxage == -1) &&
          (info->expire != APR_DATE_BAD) &&
          (age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh)))) {
@@ -606,8 +613,7 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
                       apr_psprintf(r->pool, "%lu", (unsigned long)age));
 
         /* add warning if maxstale overrode freshness calculation */
-        if (!(((smaxage != -1) && age < smaxage) ||
-              ((maxage != -1) && age < maxage) ||
+        if (!(((maxage != -1) && age < maxage) ||
               (info->expire != APR_DATE_BAD &&
                (apr_time_sec(info->expire - info->date)) > age))) {
             /* make sure we don't stomp on a previous warning */
