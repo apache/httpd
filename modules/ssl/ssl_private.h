@@ -429,8 +429,16 @@ typedef struct {
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
     void           *pTmpKeys[SSL_TMP_KEY_MAX];
+
+    /* Two hash tables of pointers to ssl_asn1_t structures.  The
+     * structures are used to store certificates and private keys
+     * respectively, in raw DER format (serialized OpenSSL X509 and
+     * PrivateKey structures).  The tables are indexed by (vhost-id,
+     * algorithm type) using the function ssl_asn1_table_keyfmt(); for
+     * example the string "vhost.example.com:443:RSA". */
     apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;
+
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     const char     *szCryptoDevice;
 #endif
