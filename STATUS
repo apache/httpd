@@ -105,13 +105,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
- * mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
-   FIFO rather than LIFO, for more consistent performance
-   so that older requests don't suffer
-   Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
-   2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
-
-
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
    Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
@@ -194,6 +187,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=422182
      2.2.x patch: http://people.apache.org/~fuankg/diffs/r422182-2.2.x.diff
      +1 fuankg, wrowe
+
+ * mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
+   FIFO rather than LIFO, for more consistent performance
+   so that older requests don't suffer
+   Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
+   2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
 
   * mod_proxy: Avoid a segfault if the notes table does not contain an
                SSL_connect_rv key.
