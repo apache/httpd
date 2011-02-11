@@ -2,9 +2,8 @@
 
 Changes with Apache 2.3.11
 
-  *) mod_ssl: Fix a possible startup failure if multiple SSL vhosts
-     are configured with the same ServerName and private key file.
-     [Masahiro Matsuya <mmatsuya redhat.com>, Joe Orton]
+  *) mod_cache: Respect s-maxage as described by RFC2616 14.9.3, which must
+     take precedence if present. PR 35247. [Graham Leggett]
 
   *) mod_socache_dc: Make module compile by fixing some typos.
      PR 50735 [Mark Montague <mark catseye.org>]
