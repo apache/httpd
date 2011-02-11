@@ -1069,6 +1069,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
+            apr_table_set(c->notes, "SSL_connect_rv", "err");
             return HTTP_BAD_GATEWAY;
         }
 
@@ -1086,6 +1087,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                 }
                 /* ensure that the SSL structures etc are freed, etc: */
                 ssl_filter_io_shutdown(filter_ctx, c, 1);
+                apr_table_set(c->notes, "SSL_connect_rv", "err");
                 return HTTP_BAD_GATEWAY;
             }
             X509_free(cert);
@@ -1105,10 +1107,12 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                               hostname, hostname_note);
                 /* ensure that the SSL structures etc are freed, etc: */
                 ssl_filter_io_shutdown(filter_ctx, c, 1);
+                apr_table_set(c->notes, "SSL_connect_rv", "err");
                 return HTTP_BAD_GATEWAY;
             }
         }
 
+        apr_table_set(c->notes, "SSL_connect_rv", "ok");
         return APR_SUCCESS;
     }
 

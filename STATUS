@@ -102,15 +102,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      enabling/disabling the basic capability is not split out into mod_unixd 2.2.x.
      +1: trawick, covener, wrowe
 
-   * mod_proxy_http: Become aware of ssl handshake failures when attempting
-     to pass request. Makes it so workers are put in error state when a
-     handshake failure is encountered.
-     PR50332
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1039304
-                  http://svn.apache.org/viewvc?view=revision&revision=1053584
-     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26450
-     +1: rpluem, jim, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
