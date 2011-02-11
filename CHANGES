@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_proxy: Put the worker in error state if the SSL handshake with the
+     backend fails. PR 50332.
+     [Daniel Ruggeri <DRuggeri primary.net>, Ruediger Pluem]
+
   *) prefork: Update MPM state in children during a graceful restart.
      Allow the HTTP connection handling loop to terminate early 
      during a graceful restart.  PR 41743.

@@ -271,10 +271,16 @@ static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request body failed to %pI (%s)",
                      conn->addr, conn->hostname);
-        if (origin->aborted) { 
+        if (origin->aborted) {
+            if (strcmp(apr_table_get(origin->notes,
+                                     "SSL_connect_rv"), "err") == 0) {
+                return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR,
+                                     "Error during SSL Handshake with"
+                                     " remote server");
+            }
             return APR_STATUS_IS_TIMEUP(status) ? HTTP_GATEWAY_TIME_OUT : HTTP_BAD_GATEWAY;
         }
-        else { 
+        else {
             return HTTP_BAD_REQUEST; 
         }
     }
