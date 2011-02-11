@@ -132,6 +132,13 @@ static void pphrase_array_clear(apr_array_header_t *arr)
     arr->nelts = 0;
 }
 
+/* Abandon all hope, ye who read this code.  Don't believe the name:
+ * "passphrase handling" is really a peripheral (if complex) concern;
+ * the core purpose of this function to load into memory all
+ * configured certs and key from files.  The private key handling in
+ * here should be split out into a separate function for improved
+ * readability.  The myCtxVarGet abomination can be thrown away with
+ * SSLC support, vastly simplifying the code. */
 void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -157,7 +164,6 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     int i, j;
     ssl_algo_t algoCert, algoKey, at;
     char *an;
-    char *cp;
     apr_time_t pkey_mtime = 0;
     apr_status_t rv;
     /*
@@ -178,7 +184,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 
         cpVHostID = ssl_util_vhostid(p, pServ);
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, pServ,
-                     "Loading certificate & private key of SSL-aware server");
+                     "Loading certificate & private key of SSL-aware server '%s'",
+                     cpVHostID);
 
         /*
          * Read in server certificate(s): This is the easy part
@@ -193,11 +200,18 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             ssl_die();
         }
 
+        /* Bitmasks for all key algorithms configured for this server;
+         * initialize to zero. */
         algoCert = SSL_ALGO_UNKNOWN;
         algoKey  = SSL_ALGO_UNKNOWN;
+
+        /* Iterate through configured certificate files for this
+         * cert. */
         for (i = 0, j = 0; i < SSL_AIDX_MAX
                  && (sc->server->pks->cert_files[i] != NULL
                      || sc->server->pkcs7); i++) {
+            const char *key_id;
+
             if (sc->server->pkcs7) {
                 STACK_OF(X509) *certs = ssl_read_pkcs7(pServ,
                                                        sc->server->pkcs7);
@@ -236,6 +250,11 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             }
             algoCert |= at;
 
+            /* Determine the hash key used for this (vhost, algo-type)
+             * pair used to index both the mc->tPrivateKey and
+             * mc->tPublicCert tables: */
+            key_id = asn1_table_vhost_key(mc, p, cpVHostID, an);
+
             /*
              * Insert the certificate into global module configuration to let it
              * survive the processing between the 1st Apache API init round (where
@@ -243,9 +262,8 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * certificate is actually used to configure mod_ssl's per-server
              * configuration structures).
              */
-            cp = asn1_table_vhost_key(mc, p, cpVHostID, an);
             length = i2d_X509(pX509Cert, NULL);
-            ucp = ssl_asn1_table_set(mc->tPublicCert, cp, length);
+            ucp = ssl_asn1_table_set(mc->tPublicCert, key_id, length);
             (void)i2d_X509(pX509Cert, &ucp); /* 2nd arg increments */
 
             /*
@@ -512,14 +530,13 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * because the SSL library uses static variables inside a
              * RSA structure which do not survive DSO reloads!)
              */
-            cp = asn1_table_vhost_key(mc, p, cpVHostID, an);
             length = i2d_PrivateKey(pPrivateKey, NULL);
-            ucp = ssl_asn1_table_set(mc->tPrivateKey, cp, length);
+            ucp = ssl_asn1_table_set(mc->tPrivateKey, key_id, length);
             (void)i2d_PrivateKey(pPrivateKey, &ucp); /* 2nd arg increments */
 
             if (nPassPhraseDialogCur != 0) {
                 /* remember mtime of encrypted keys */
-                asn1 = ssl_asn1_table_get(mc->tPrivateKey, cp);
+                asn1 = ssl_asn1_table_get(mc->tPrivateKey, key_id);
                 asn1->source_mtime = pkey_mtime;
             }
 
