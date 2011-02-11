@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_ssl: Fix a possible startup failure if multiple SSL vhosts
+     are configured with the same ServerName and private key file.
+     [Masahiro Matsuya <mmatsuya redhat.com>, Joe Orton]
+
   *) mod_socache_dc: Make module compile by fixing some typos.
      PR 50735 [Mark Montague <mark catseye.org>]
 
