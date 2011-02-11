@@ -272,8 +272,10 @@ static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                      "proxy: pass request body failed to %pI (%s)",
                      p_conn->addr, p_conn->hostname);
         if (origin->aborted) {
-            if (strcmp(apr_table_get(origin->notes,
-                                     "SSL_connect_rv"), "err") == 0) {
+            const char *ssl_note;
+
+            if (((ssl_note = apr_table_get(origin->notes, "SSL_connect_rv"))
+                != NULL) && (strcmp(ssl_note, "err") == 0)) {
                 return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR,
                                      "Error during SSL Handshake with"
                                      " remote server");
