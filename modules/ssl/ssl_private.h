@@ -446,14 +446,19 @@ typedef struct {
     } rCtx;
 } SSLModConfigRec;
 
-/** public cert/private key */
+/** Structure representing configured filenames for certs and keys for
+ * a given vhost, and the corresponding in-memory structures once the
+ * files are parsed.  */
 typedef struct {
-    /** 
-     * server only has 1-2 certs/keys
-     * 1 RSA and/or 1 DSA
-     */
+    /* Lists of configured certs and keys for this server; from index
+     * 0 up to SSL_AIDX_MAX-1 or the first NULL pointer.  Note that
+     * these arrays are NOT indexed by algorithm type, they are simply
+     * unordered lists. */
     const char  *cert_files[SSL_AIDX_MAX];
     const char  *key_files[SSL_AIDX_MAX];
+    /* Loaded certs and keys; these arrays ARE indexed by the
+     * algorithm type, i.e.  keys[SSL_AIDX_RSA] maps to the RSA
+     * private key. */
     X509        *certs[SSL_AIDX_MAX];
     EVP_PKEY    *keys[SSL_AIDX_MAX];
 
