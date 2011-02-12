@@ -75,6 +75,12 @@ static authn_status check_password(request_rec *r, const char *user,
     apr_status_t status;
     char *file_password = NULL;
 
+    if (!conf->pwfile) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "AuthUserFile not specified in the configuration");
+        return AUTH_GENERAL_ERROR;
+    }
+
     status = ap_pcfg_openfile(&f, r->pool, conf->pwfile);
 
     if (status != APR_SUCCESS) {
@@ -123,6 +129,12 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
     char l[MAX_STRING_LEN];
     apr_status_t status;
     char *file_hash = NULL;
+
+    if (!conf->pwfile) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "AuthUserFile not specified in the configuration");
+        return AUTH_GENERAL_ERROR;
+    }
 
     status = ap_pcfg_openfile(&f, r->pool, conf->pwfile);
 
