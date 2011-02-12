@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_dav: Revert change to send 501 error if unknown Content-* header is
+    received for a PUT request. PR 42978. [Stefan Fritsch]
+
   *) mod_cache: Respect s-maxage as described by RFC2616 14.9.3, which must
      take precedence if present. PR 35247. [Graham Leggett]
 
