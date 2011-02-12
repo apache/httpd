@@ -298,11 +298,13 @@ static int cache_quick_handler(request_rec *r, int lookup)
  * second filter, and return true. If the second filter is not present at
  * all, the first filter is removed, and false is returned. If neither
  * filter is present, false is returned and this function does nothing.
+ * If a stop filter is specified, processing will stop once this filter is
+ * reached.
  */
 static int cache_replace_filter(ap_filter_t *next, ap_filter_rec_t *from,
-        ap_filter_rec_t *to) {
+        ap_filter_rec_t *to, ap_filter_rec_t *stop) {
     ap_filter_t *ffrom = NULL, *fto = NULL;
-    while (next) {
+    while (next && next->frec != stop) {
         if (next->frec == from && !next->ctx) {
             ffrom = next;
         }
@@ -439,7 +441,8 @@ static int cache_handler(request_rec *r)
                  * filter will remain in place.
                  */
                 if (cache_replace_filter(r->output_filters,
-                        cache_filter_handle, cache_save_handle)) {
+                        cache_filter_handle, cache_save_handle,
+                        ap_get_input_filter_handle("SUBREQ_CORE"))) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
                             r, "Replacing CACHE with CACHE_SAVE "
                             "filter for %s", r->uri);
@@ -513,7 +516,8 @@ static int cache_handler(request_rec *r)
      * lie *after* the original location of the CACHE filter will remain in
      * place.
      */
-    if (cache_replace_filter(r->output_filters, cache_filter_handle, cache_out_handle)) {
+    if (cache_replace_filter(r->output_filters, cache_filter_handle,
+            cache_out_handle, ap_get_input_filter_handle("SUBREQ_CORE"))) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
                 r, "Replacing CACHE with CACHE_OUT filter for %s",
                 r->uri);
