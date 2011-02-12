@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) modules: Fix many modules that were not correctly initializing if they
+     were not active during server startup but got enabled later during a
+     graceful restart. [Stefan Fritsch]
+
   *) core: Create new ap_state_query function that allows modules to determine
      if the current configuration run is the initial one at server startup,
      and if the server is started for testing/config dumping only.

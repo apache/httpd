@@ -20,6 +20,7 @@
 #include "mod_watchdog.h"
 #include "ap_provider.h"
 #include "ap_mpm.h"
+#include "http_core.h"
 #include "util_mutex.h"
 
 #define AP_WATCHODG_PGROUP    "watchdog"
@@ -444,11 +445,12 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
         if (!(wd_server_conf = apr_pcalloc(pproc, sizeof(wd_server_conf_t))))
             return APR_ENOMEM;
         apr_pool_create(&wd_server_conf->pool, pproc);
-        wd_server_conf->s = s;
-        apr_pool_userdata_set(wd_server_conf, pk, apr_pool_cleanup_null, pproc);
+    }
+
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         /* First time config phase -- skip. */
         return OK;
-    }
+
 #if defined(WIN32)
     {
         const char *ppid = getenv("AP_PARENT_PID");
