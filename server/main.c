@@ -259,6 +259,7 @@ static void destroy_and_exit_process(process_rec *process,
      * might get lost.
      */
     apr_sleep(TASK_SWITCH_SLEEP);
+    ap_main_state = AP_SQ_MS_EXITING;
     apr_pool_destroy(process->pool); /* and destroy all descendent pools */
     apr_terminate();
     exit(process_exit_value);
@@ -439,7 +440,7 @@ static void usage(process_rec *process)
 int main(int argc, const char * const argv[])
 {
     char c;
-    int configtestonly = 0, showcompile = 0;
+    int showcompile = 0;
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
     const char *temp_error_log = NULL;
@@ -516,10 +517,10 @@ int main(int argc, const char * const argv[])
             *new = apr_pstrdup(pcommands, opt_arg);
             /* Setting -D DUMP_VHOSTS is equivalent to setting -S */
             if (strcmp(opt_arg, "DUMP_VHOSTS") == 0)
-                configtestonly = 1;
+                ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             /* Setting -D DUMP_MODULES is equivalent to setting -M */
             if (strcmp(opt_arg, "DUMP_MODULES") == 0)
-                configtestonly = 1;
+                ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             break;
 
         case 'e':
@@ -545,16 +546,6 @@ int main(int argc, const char * const argv[])
             printf("Server built:   %s\n", ap_get_server_built());
             destroy_and_exit_process(process, 0);
 
-        case 'V':
-            if (strcmp(ap_show_mpm(), "")) { /* MPM built-in? */
-                show_compile_settings();
-                destroy_and_exit_process(process, 0);
-            }
-            else {
-                showcompile = 1;
-            }
-            break;
-
         case 'l':
             ap_show_modules();
             destroy_and_exit_process(process, 0);
@@ -564,7 +555,8 @@ int main(int argc, const char * const argv[])
             destroy_and_exit_process(process, 0);
 
         case 't':
-            configtestonly = 1;
+            if (ap_run_mode == AP_SQ_RM_UNKNOWN)
+                ap_run_mode = AP_SQ_RM_CONFIG_TEST;
             break;
 
        case 'T':
@@ -572,15 +564,26 @@ int main(int argc, const char * const argv[])
            break;
 
         case 'S':
-            configtestonly = 1;
+            ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_VHOSTS";
             break;
 
         case 'M':
-            configtestonly = 1;
+            ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_MODULES";
+            break;
+
+        case 'V':
+            if (strcmp(ap_show_mpm(), "")) { /* MPM built-in? */
+                show_compile_settings();
+                destroy_and_exit_process(process, 0);
+            }
+            else {
+                showcompile = 1;
+                ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
+            }
             break;
 
         case 'h':
@@ -589,11 +592,15 @@ int main(int argc, const char * const argv[])
         }
     }
 
+    if (ap_run_mode == AP_SQ_RM_UNKNOWN)
+        ap_run_mode = AP_SQ_RM_NORMAL;
+
     /* bad cmdline option?  then we die */
     if (rv != APR_EOF || opt->ind < opt->argc) {
         usage(process);
     }
 
+    ap_main_state = AP_SQ_MS_CREATE_PRE_CONFIG;
     apr_pool_create(&plog, ap_pglobal);
     apr_pool_tag(plog, "plog");
     apr_pool_create(&ptemp, pconf);
@@ -633,13 +640,15 @@ int main(int argc, const char * const argv[])
             destroy_and_exit_process(process, 1);
         }
 
-        if (configtestonly) {
-            ap_run_test_config(pconf, ap_server_conf);
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Syntax OK");
-            destroy_and_exit_process(process, 0);
-        }
-        else if (showcompile) { /* deferred due to dynamically loaded MPM */
-            show_compile_settings();
+        if (ap_run_mode != AP_SQ_RM_NORMAL) {
+            if (showcompile) { /* deferred due to dynamically loaded MPM */
+                show_compile_settings();
+            }
+            else {
+                ap_run_test_config(pconf, ap_server_conf);
+                if (ap_run_mode == AP_SQ_RM_CONFIG_TEST)
+                    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Syntax OK");
+            }
             destroy_and_exit_process(process, 0);
         }
     }
@@ -675,10 +684,12 @@ int main(int argc, const char * const argv[])
     apr_pool_destroy(ptemp);
 
     for (;;) {
+        ap_main_state = AP_SQ_MS_DESTROY_CONFIG;
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
         ap_clear_auth_internal();
 
+        ap_main_state = AP_SQ_MS_CREATE_CONFIG;
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
         }
@@ -734,6 +745,7 @@ int main(int argc, const char * const argv[])
 
         ap_run_optional_fn_retrieve();
 
+        ap_main_state = AP_SQ_MS_RUN_MPM;
         if (ap_run_mpm(pconf, plog, ap_server_conf) != OK)
             break;
 

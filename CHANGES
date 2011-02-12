@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.11
 
+  *) core: Create new ap_state_query function that allows modules to determine
+     if the current configuration run is the initial one at server startup,
+     and if the server is started for testing/config dumping only.
+     [Stefan Fritsch]
+
   *) mod_cache: When a bad Expires date is present, we need to behave as if
      the Expires is in the past, not as if the Expires is missing. PR 16521.
      [Co-Advisor <coad@measurement-factory.com>]
