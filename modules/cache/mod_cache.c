@@ -837,9 +837,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         exps = apr_table_get(r->headers_out, "Expires");
     }
     if (exps != NULL) {
-        if (APR_DATE_BAD == (exp = apr_date_parse_http(exps))) {
-            exps = NULL;
-        }
+        exp = apr_date_parse_http(exps);
     }
     else {
         exp = APR_DATE_BAD;

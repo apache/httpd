@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_cache: When a bad Expires date is present, we need to behave as if
+     the Expires is in the past, not as if the Expires is missing. PR 16521.
+     [Co-Advisor <coad@measurement-factory.com>]
+
   *) mod_cache: We must ignore quoted-string values that appear in a
      Cache-Control header. PR 50199. [Graham Leggett]
 
