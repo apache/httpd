@@ -27,6 +27,8 @@ extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 
 extern module AP_MODULE_DECLARE_DATA cache_module;
 
+#define CACHE_SEPARATOR ",   "
+
 /* Determine if "url" matches the hostname, scheme and port and path
  * in "filter". All but the path comparisons are case-insensitive.
  */
@@ -1022,6 +1024,74 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r)
 }
 
 /**
+ * String tokenizer that ignores separator characters within quoted strings
+ * and escaped characters, as per RFC2616 section 2.2.
+ */
+static char *cache_strqtok(char *str, const char *sep, char **last)
+{
+    char *token;
+    int quoted = 0;
+
+    if (!str) {         /* subsequent call */
+        str = *last;    /* start where we left off */
+    }
+
+    /* skip characters in sep (will terminate at '\0') */
+    while (*str && strchr(sep, *str)) {
+        ++str;
+    }
+
+    if (!*str) {        /* no more tokens */
+        return NULL;
+    }
+
+    token = str;
+
+    /* skip valid token characters to terminate token and
+     * prepare for the next call (will terminate at '\0)
+     * on the way, ignore all quoted strings, and within
+     * quoted strings, escaped characters.
+     */
+    *last = token + 1;
+    while (**last) {
+        if (!quoted) {
+            if (**last == '\"') {
+                quoted = 1;
+                ++*last;
+            }
+            else if (!strchr(sep, **last)) {
+                ++*last;
+            }
+            else {
+                break;
+            }
+        }
+        else {
+            if (**last == '\"') {
+                quoted = 0;
+                ++*last;
+            }
+            else if (**last == '\\') {
+                ++*last;
+                if (**last) {
+                    ++*last;
+                }
+            }
+            else {
+                ++*last;
+            }
+        }
+    }
+
+    if (**last) {
+        **last = '\0';
+        ++*last;
+    }
+
+    return token;
+}
+
+/**
  * Parse the Cache-Control and Pragma headers in one go, marking
  * which tokens appear within the header. Populate the structure
  * passed in.
@@ -1043,7 +1113,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
 
     if (pragma_header) {
         char *header = apr_pstrdup(r->pool, pragma_header);
-        const char *token = apr_strtok(header, ", ", &last);
+        const char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
         while (token) {
             /* handle most common quickest case... */
             if (!strcmp(token, "no-cache")) {
@@ -1053,14 +1123,14 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
             else if (!strcasecmp(token, "no-cache")) {
                 cc->no_cache = 1;
             }
-            token = apr_strtok(NULL, ", ", &last);
+            token = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
         }
         cc->pragma = 1;
     }
 
     if (cc_header) {
         char *header = apr_pstrdup(r->pool, cc_header);
-        const char *token = apr_strtok(header, ", ", &last);
+        const char *token = cache_strqtok(header, CACHE_SEPARATOR, &last);
         while (token) {
             switch (token[0]) {
             case 'n':
@@ -1178,7 +1248,7 @@ int ap_cache_control(request_rec *r, cache_control_t *cc,
                 break;
             }
             }
-            token = apr_strtok(NULL, ", ", &last);
+            token = cache_strqtok(NULL, CACHE_SEPARATOR, &last);
         }
         cc->cache_control = 1;
     }
