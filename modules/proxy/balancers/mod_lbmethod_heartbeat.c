@@ -387,19 +387,15 @@ static const proxy_balancer_method heartbeat =
 static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
-    const char *userdata_key = "mod_lbmethod_heartbeat_init";
-    void *data;
     apr_size_t size;
     unsigned int num;
     lb_hb_ctx_t *ctx = ap_get_module_config(s->module_config,
                                             &lbmethod_heartbeat_module);
     
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (!data) {
-        /* first call do nothing */
-        apr_pool_userdata_set((const void *)1, userdata_key, apr_pool_cleanup_null, s->process->pool);
+    /* do nothing on first call */
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
-    }
+
     storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
     if (!storage) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "ap_lookup_provider %s failed", AP_SLOTMEM_PROVIDER_GROUP);

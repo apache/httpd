@@ -20,6 +20,7 @@
 #include "apr_lib.h"
 #include "apr_strings.h"
 #include "http_log.h"
+#include "http_core.h"
 
 #if APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION < 4
 
@@ -41,7 +42,6 @@
 
 #define LOG_PREFIX "mod_session_crypto: "
 #define DRIVER_KEY "session_crypto_driver"
-#define INIT_KEY "session_crypto_init"
 
 module AP_MODULE_DECLARE_DATA session_crypto_module;
 
@@ -390,7 +390,6 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
 AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
         apr_pool_t *ptemp, server_rec *s)
 {
-    void *data;
     const apr_crypto_driver_t *driver = NULL;
 
     session_crypto_conf *conf = ap_get_module_config(s->module_config,
@@ -399,12 +398,8 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
     /* session_crypto_init() will be called twice. Don't bother
      * going through all of the initialization on the first call
      * because it will just be thrown away.*/
-    apr_pool_userdata_get(&data, INIT_KEY, s->process->pool);
-    if (!data) {
-        apr_pool_userdata_set((const void *)1, INIT_KEY,
-                apr_pool_cleanup_null, s->process->pool);
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
-    }
 
     if (conf->library) {
 

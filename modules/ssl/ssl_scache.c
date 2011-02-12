@@ -41,8 +41,6 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
-    void *data;
-    const char *userdata_key = "ssl_scache_init";
     struct ap_socache_hints hints;
     
     /* The very first invocation of this function will be the
@@ -50,12 +48,8 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
      * this first (and only the first) time through, since the pool
      * will be immediately cleared anyway.  For every subsequent
      * invocation, initialize the configured cache. */
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (!data) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                              apr_pool_cleanup_null, s->process->pool);
+    if (!ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return;
-    }
 
 #ifdef HAVE_OCSP_STAPLING
     if (mc->stapling_cache) {

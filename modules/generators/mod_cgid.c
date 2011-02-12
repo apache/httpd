@@ -891,7 +891,6 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                      server_rec *main_server)
 {
     apr_proc_t *procnew = NULL;
-    int first_time = 0;
     const char *userdata_key = "cgid_init";
     module **m;
     int ret = OK;
@@ -902,7 +901,6 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 
     apr_pool_userdata_get(&data, userdata_key, main_server->process->pool);
     if (!data) {
-        first_time = 1;
         procnew = apr_pcalloc(main_server->process->pool, sizeof(*procnew));
         procnew->pid = -1;
         procnew->err = procnew->in = procnew->out = NULL;
@@ -913,7 +911,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         procnew = data;
     }
 
-    if (!first_time) {
+    if (ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_CREATE_PRE_CONFIG) {
         char *tmp_sockname;
         total_modules = 0;
         for (m = ap_preloaded_modules; *m != NULL; m++)

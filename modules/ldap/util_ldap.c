@@ -2703,18 +2703,13 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                             ap_get_module_config(s->module_config,
                                                  &ldap_module);
 
-    void *data;
-    const char *userdata_key = "util_ldap_init";
     apr_ldap_err_t *result_err = NULL;
     int rc;
 
     /* util_ldap_post_config() will be called twice. Don't bother
      * going through all of the initialization on the first call
      * because it will just be thrown away.*/
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (!data) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                               apr_pool_cleanup_null, s->process->pool);
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
 
 #if APR_HAS_SHARED_MEMORY
         /* If the cache file already exists then delete it.  Otherwise we are

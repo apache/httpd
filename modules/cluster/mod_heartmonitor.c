@@ -665,8 +665,6 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
-    const char *userdata_key = "mod_heartmonitor_init";
-    void *data;
     hm_ctx_t *ctx = ap_get_module_config(s->module_config,
                                          &heartmonitor_module);
     APR_OPTIONAL_FN_TYPE(ap_watchdog_get_instance) *hm_watchdog_get_instance;
@@ -681,11 +679,8 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
     /* Create the slotmem */
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (!data) {
-        /* first call do nothing */
-        apr_pool_userdata_set((const void *)1, userdata_key, apr_pool_cleanup_null, s->process->pool);
-    } else {
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_CONFIG) {
+        /* this is the real thing */
         if (maxworkers) {
             storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
             if (!storage) {

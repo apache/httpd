@@ -690,21 +690,15 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
-    void *data;
     void *sconf = s->module_config;
     proxy_server_conf *conf = (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
-    const char *userdata_key = "mod_proxy_balancer_init";
     ap_slotmem_instance_t *new = NULL;
     apr_time_t tstamp;
 
-    /* balancer_post_config() will be called twice during startup.  So, only
+    /* balancer_post_config() will be called twice during startup.  So, don't
      * set up the static data the 1st time through. */
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (!data) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                               apr_pool_cleanup_null, s->process->pool);
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
-    }
 
     /*
      * Get slotmem setups
