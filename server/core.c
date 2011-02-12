@@ -110,6 +110,9 @@ static char errordocument_default;
 static apr_array_header_t *saved_server_config_defines = NULL;
 static apr_table_t *server_config_defined_vars = NULL;
 
+AP_DECLARE_DATA int ap_main_state = AP_SQ_MS_INITIAL_STARTUP;
+AP_DECLARE_DATA int ap_run_mode = AP_SQ_RM_UNKNOWN;
+
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
@@ -4339,6 +4342,18 @@ static int core_pre_connection(conn_rec *c, void *csd)
     ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
     ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL, net->c);
     return DONE;
+}
+
+AP_DECLARE(int) ap_state_query(int query)
+{
+    switch (query) {
+    case AP_SQ_MAIN_STATE:
+        return ap_main_state;
+    case AP_SQ_RUN_MODE:
+        return ap_run_mode;
+    default:
+        return AP_SQ_NOT_SUPPORTED;
+    }
 }
 
 static void register_hooks(apr_pool_t *p)

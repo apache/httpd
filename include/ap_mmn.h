@@ -299,6 +299,7 @@
  *                         Add pool argument to ap_add_file_conf().
  * 20110117.1 (2.3.11-dev) Add ap_pstr2_alnum() and ap_str2_alnum()
  * 20110203.0 (2.3.11-dev) Raise DYNAMIC_MODULE_LIMIT to 256
+ * 20110203.1 (2.3.11-dev) Add ap_state_query()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -306,7 +307,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110203
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
