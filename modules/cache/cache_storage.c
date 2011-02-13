@@ -389,6 +389,53 @@ int cache_select(cache_request_rec *cache, request_rec *r)
     return DECLINED;
 }
 
+/*
+ * invalidate a specific URL entity in all caches
+ *
+ * All cached entities for this URL are removed, usually in
+ * response to a POST/PUT or DELETE.
+ *
+ * This function returns OK if at least one entity was found and
+ * removed, and DECLINED if no cached entities were removed.
+ */
+int cache_invalidate(cache_request_rec *cache, request_rec *r)
+{
+    cache_provider_list *list;
+    apr_status_t rv, status = DECLINED;
+    cache_handle_t *h;
+
+    if (!cache) {
+        /* This should never happen */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+                "cache: No cache request information available for key"
+                " generation");
+        return DECLINED;
+    }
+
+    if (!cache->key) {
+        rv = cache_generate_key(r, r->pool, &cache->key);
+        if (rv != APR_SUCCESS) {
+            return DECLINED;
+        }
+    }
+
+    /* go through the cache types */
+    h = apr_palloc(r->pool, sizeof(cache_handle_t));
+
+    list = cache->providers;
+
+    while (list) {
+        rv = list->provider->open_entity(h, r, cache->key);
+        if (OK == rv) {
+            list->provider->remove_url(h, r);
+            status = OK;
+        }
+        list = list->next;
+    }
+
+    return status;
+}
+
 apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         const char **key)
 {
