@@ -75,11 +75,6 @@ static int cache_quick_handler(request_rec *r, int lookup)
     ap_filter_rec_t *cache_out_handle;
     cache_server_conf *conf;
 
-    /* Delay initialization until we know we are handling a GET */
-    if (r->method_number != M_GET) {
-        return DECLINED;
-    }
-
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
 
@@ -114,6 +109,25 @@ static int cache_quick_handler(request_rec *r, int lookup)
      * cached information at all? If not, just decline the request.
      */
     if (auth) {
+        return DECLINED;
+    }
+
+    /* Are we something other than GET or HEAD? If so, invalidate
+     * the cached entities.
+     */
+    if (r->method_number != M_GET) {
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+                "Invalidating all cached entities in response to '%s' request for %s",
+                r->method, r->uri);
+
+        cache_invalidate(cache, r);
+
+        /* we've got a cache invalidate! tell everyone who cares */
+        cache_run_cache_status(cache->handle, r, r->headers_out,
+                AP_CACHE_INVALIDATE, apr_psprintf(r->pool,
+                        "cache invalidated by %s", r->method));
+
         return DECLINED;
     }
 
@@ -176,9 +190,10 @@ static int cache_quick_handler(request_rec *r, int lookup)
                      * is available later during running the filter may be
                      * different due to an internal redirect.
                      */
-                    cache->remove_url_filter =
-                        ap_add_output_filter_handle(cache_remove_url_filter_handle,
-                                cache, r, r->connection);
+                    cache->remove_url_filter = ap_add_output_filter_handle(
+                            cache_remove_url_filter_handle, cache, r,
+                            r->connection);
+
                 }
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv,
@@ -356,11 +371,6 @@ static int cache_handler(request_rec *r)
     ap_filter_rec_t *cache_save_handle;
     cache_server_conf *conf;
 
-    /* Delay initialization until we know we are handling a GET */
-    if (r->method_number != M_GET) {
-        return DECLINED;
-    }
-
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
 
@@ -383,6 +393,26 @@ static int cache_handler(request_rec *r)
 
     /* save away the possible providers */
     cache->providers = providers;
+
+    /* Are we something other than GET or HEAD? If so, invalidate
+     * the cached entities.
+     */
+    if (r->method_number != M_GET) {
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+                "Invalidating all cached entities in response to '%s' request for %s",
+                r->method, r->uri);
+
+        cache_invalidate(cache, r);
+
+        /* we've got a cache invalidate! tell everyone who cares */
+        cache_run_cache_status(cache->handle, r, r->headers_out,
+                AP_CACHE_INVALIDATE, apr_psprintf(r->pool,
+                        "cache invalidated by %s", r->method));
+
+        return DECLINED;
+
+    }
 
     /*
      * Try to serve this request from the cache.
@@ -464,9 +494,10 @@ static int cache_handler(request_rec *r)
                  * is available later during running the filter may be
                  * different due to an internal redirect.
                  */
-                cache->remove_url_filter =
-                    ap_add_output_filter_handle(cache_remove_url_filter_handle,
-                            cache, r, r->connection);
+                cache->remove_url_filter
+                        = ap_add_output_filter_handle(
+                                cache_remove_url_filter_handle, cache, r,
+                                r->connection);
 
             }
             else {
@@ -1538,6 +1569,10 @@ static int cache_status(cache_handle_t *h, request_rec *r,
         apr_table_setn(r->subprocess_env, AP_CACHE_MISS_ENV, reason);
         break;
     }
+    case AP_CACHE_INVALIDATE: {
+        apr_table_setn(r->subprocess_env, AP_CACHE_INVALIDATE_ENV, reason);
+        break;
+    }
     }
 
     apr_table_setn(r->subprocess_env, AP_CACHE_STATUS_ENV, reason);
@@ -1549,11 +1584,11 @@ static int cache_status(cache_handle_t *h, request_rec *r,
         x_cache = conf->x_cache;
     }
     if (x_cache) {
-        apr_table_setn(headers, "X-Cache",
-                apr_psprintf(r->pool, "%s from %s",
-                        status == AP_CACHE_HIT ? "HIT" : status
-                                == AP_CACHE_REVALIDATE ? "REVALIDATE" : "MISS",
-                        r->server->server_hostname));
+        apr_table_setn(headers, "X-Cache", apr_psprintf(r->pool, "%s from %s",
+                status == AP_CACHE_HIT ? "HIT"
+                        : status == AP_CACHE_REVALIDATE ? "REVALIDATE" : status
+                                == AP_CACHE_INVALIDATE ? "INVALIDATE" : "MISS",
+                r->server->server_hostname));
     }
 
     if (dconf && dconf->x_cache_detail_set) {
