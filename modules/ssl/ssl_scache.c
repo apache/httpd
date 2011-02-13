@@ -48,7 +48,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
      * this first (and only the first) time through, since the pool
      * will be immediately cleared anyway.  For every subsequent
      * invocation, initialize the configured cache. */
-    if (!ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return;
 
 #ifdef HAVE_OCSP_STAPLING
