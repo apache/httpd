@@ -102,6 +102,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      enabling/disabling the basic capability is not split out into mod_unixd 2.2.x.
      +1: trawick, covener, wrowe
 
+  * mod_proxy: Avoid a segfault if the notes table does not contain an
+               SSL_connect_rv key.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=1069785&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, covener, sf
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -131,13 +139,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
    2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
 
-  * mod_proxy: Avoid a segfault if the notes table does not contain an
-               SSL_connect_rv key.
+  * mod_authn_file: Log friendly error message if AuthUserFile is not set.
       Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=1069785&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=1070096&view=rev
       Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, covener
+         Trunk version of patch works with offset
+      +1: sf
+    
 
 PATCHES/ISSUES THAT ARE STALLED
 
