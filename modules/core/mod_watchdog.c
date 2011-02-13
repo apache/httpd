@@ -440,13 +440,6 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
     apr_pool_t *pproc = s->process->pool;
     const apr_array_header_t *wl;
 
-    apr_pool_userdata_get((void *)&wd_server_conf, pk, pproc);
-    if (!wd_server_conf) {
-        if (!(wd_server_conf = apr_pcalloc(pproc, sizeof(wd_server_conf_t))))
-            return APR_ENOMEM;
-        apr_pool_create(&wd_server_conf->pool, pproc);
-    }
-
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         /* First time config phase -- skip. */
         return OK;
@@ -463,6 +456,14 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
         }
     }
 #endif
+
+    apr_pool_userdata_get((void *)&wd_server_conf, pk, pproc);
+    if (!wd_server_conf) {
+        if (!(wd_server_conf = apr_pcalloc(pproc, sizeof(wd_server_conf_t))))
+            return APR_ENOMEM;
+        apr_pool_create(&wd_server_conf->pool, pproc);
+        apr_pool_userdata_set(wd_server_conf, pk, apr_pool_cleanup_null, pproc);
+    }
     wd_server_conf->s = s;
     if ((wl = ap_list_provider_names(pconf, AP_WATCHODG_PGROUP,
                                             AP_WATCHODG_PVERSION))) {
