@@ -554,11 +554,24 @@ AP_DECLARE(int) ap_method_number_of(const char *method);
 AP_DECLARE(const char *) ap_method_name_of(apr_pool_t *p, int methnum);
 
 
-  /* Hooks */
-  /*
-   * post_read_request --- run right after read_request or internal_redirect,
-   *                  and not run during any subrequests.
-   */
+/* Hooks */
+/*
+ * pre_read_request --- run right before read_request_line(),
+ *                  and not run during any subrequests.
+ */
+/**
+ * This hook allows modules to affect the request or connection immediately before
+ * the request has been read, and before any other phases have been processes.
+ * @param r The current request of the soon-to-be-read request
+ * @param c The connection
+ * @return None/void
+ */
+AP_DECLARE_HOOK(void,pre_read_request,(request_rec *r, conn_rec *c))
+
+/*
+ * post_read_request --- run right after read_request or internal_redirect,
+ *                  and not run during any subrequests.
+ */
 /**
  * This hook allows modules to affect the request immediately after the request
  * has been read, and before any other phases have been processes.  This allows
@@ -567,7 +580,7 @@ AP_DECLARE(const char *) ap_method_name_of(apr_pool_t *p, int methnum);
  * @return OK or DECLINED
  */
 AP_DECLARE_HOOK(int,post_read_request,(request_rec *r))
-
+    
 /**
  * This hook allows modules to perform any module-specific logging activities
  * over and above the normal server things.

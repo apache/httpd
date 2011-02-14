@@ -60,6 +60,7 @@
 APLOG_USE_MODULE(core);
 
 APR_HOOK_STRUCT(
+    APR_HOOK_LINK(pre_read_request)
     APR_HOOK_LINK(post_read_request)
     APR_HOOK_LINK(log_transaction)
     APR_HOOK_LINK(http_scheme)
@@ -915,6 +916,8 @@ request_rec *ap_read_request(conn_rec *conn)
 
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
+    ap_run_pre_read_request(r, conn);
+    
     /* Get the request... */
     if (!read_request_line(r, tmp_bb)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE
@@ -1733,6 +1736,9 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 }
 
 
+AP_IMPLEMENT_HOOK_VOID(pre_read_request,
+                       (request_rec *r, conn_rec *c),
+                       (r, c))
 AP_IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,
                           (request_rec *r), (r), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,log_transaction,
