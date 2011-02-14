@@ -3483,6 +3483,10 @@ AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
 #endif
 AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
+#ifdef SUEXEC_BIN
+AP_INIT_FLAG("Suexec", unixd_set_suexec, NULL, RSRC_CONF,
+             "Enable or disable suEXEC support"),
+#endif
 { NULL }
 };
 

@@ -3257,6 +3257,23 @@ server</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>Suexec</name>
+<description>Enable or disable the suEXEC feature</description>
+<syntax>Suexec On|Off</syntax>
+<default>On if suexec binary exists with proper owner and mode,
+Off otherwise</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache httpd 2.2.18 and later</compatibility>
+
+<usage>
+    <p>When On, startup will fail if the suexec binary doesn't exist
+    or has an invalid owner or file mode.</p>
+    <p>When Off, suEXEC will be disabled even if the suexec binary exists
+    and has a valid owner and file mode.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>TimeOut</name>
 <description>Amount of time the server will wait for
 certain events before failing a request</description>

@@ -90,6 +90,9 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);
 #endif
 
+AP_DECLARE(const char *) unixd_set_suexec(cmd_parms *cmd, void *dummy, 
+                                          int arg);
+
 /**
  * One of the functions to set mutex permissions should be called in
  * the parent process on platforms that switch identity when the 

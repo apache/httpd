@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) suEXEC: Add Suexec directive to disable suEXEC without renaming the
+     binary (Suexec Off), or force startup failure if suEXEC is required
+     but not supported (Suexec On).  [Jeff Trawick]
+ 
   *) mod_proxy: Put the worker in error state if the SSL handshake with the
      backend fails. PR 50332.
      [Daniel Ruggeri <DRuggeri primary.net>, Ruediger Pluem]
