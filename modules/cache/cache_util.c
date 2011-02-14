@@ -1037,7 +1037,7 @@ static char *cache_strqtok(char *str, const char *sep, char **last)
     }
 
     /* skip characters in sep (will terminate at '\0') */
-    while (*str && strchr(sep, *str)) {
+    while (*str && ap_strchr_c(sep, *str)) {
         ++str;
     }
 
@@ -1059,7 +1059,7 @@ static char *cache_strqtok(char *str, const char *sep, char **last)
                 quoted = 1;
                 ++*last;
             }
-            else if (!strchr(sep, **last)) {
+            else if (!ap_strchr_c(sep, **last)) {
                 ++*last;
             }
             else {
