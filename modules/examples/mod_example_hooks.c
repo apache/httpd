@@ -1151,6 +1151,22 @@ static int x_process_connection(conn_rec *c)
  * phases have been processed.  This allows us to make decisions based upon
  * the input header fields.
  *
+ * This is a HOOK_VOID hook.
+ */
+void x_post_read_request(request_rec *r, conn_rec *c)
+{
+    /*
+     * We don't actually *do* anything here, except note the fact that we were
+     * called.
+     */
+    trace_request(r, "x_pre_read_request()");
+}
+
+/*
+ * This routine is called after the request has been read but before any other
+ * phases have been processed.  This allows us to make decisions based upon
+ * the input header fields.
+ *
  * This is a RUN_ALL hook.
  */
 static int x_post_read_request(request_rec *r)
@@ -1449,6 +1465,8 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_quick_handler(x_quick_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_connection(x_pre_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_process_connection(x_process_connection, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_read_request(x_pre_read_request, NULL, NULL,
+                              APR_HOOK_MIDDLE);
     /* [1] post read_request handling */
     ap_hook_post_read_request(x_post_read_request, NULL, NULL,
                               APR_HOOK_MIDDLE);
