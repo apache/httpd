@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.11
 
+  *) core: new hook: ap_run_pre_read_request. [Jim Jagielski]
+
   *) mod_cache: When a request other than GET or HEAD arrives, we must
      invalidate existing cache entities as per RFC2616 13.10. PR 15868.
      [Graham Leggett]
