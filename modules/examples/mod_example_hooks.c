@@ -1153,7 +1153,7 @@ static int x_process_connection(conn_rec *c)
  *
  * This is a HOOK_VOID hook.
  */
-void x_post_read_request(request_rec *r, conn_rec *c)
+static void x_pre_read_request(request_rec *r, conn_rec *c)
 {
     /*
      * We don't actually *do* anything here, except note the fact that we were
