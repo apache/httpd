@@ -1052,7 +1052,7 @@ static char *cache_strqtok(char *str, const char *sep, char **last)
      * on the way, ignore all quoted strings, and within
      * quoted strings, escaped characters.
      */
-    *last = token + 1;
+    *last = token;
     while (**last) {
         if (!quoted) {
             if (**last == '\"') {
