@@ -63,7 +63,7 @@ later.</compatibility>
     </example>
 
 </usage>
-
+<seealso><directive module="core">Suexec</directive></seealso>
 </directivesynopsis>
 </modulesynopsis>
 

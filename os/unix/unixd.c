@@ -237,6 +237,23 @@ AP_DECLARE(const char *) unixd_set_chroot_dir(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+AP_DECLARE(const char *) unixd_set_suexec(cmd_parms *cmd, void *dummy,
+                                          int arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (!unixd_config.suexec_enabled && arg) {
+        return "suEXEC isn't supported; check existence, owner, and "
+               "file mode of " SUEXEC_BIN;
+    }
+
+    unixd_config.suexec_enabled = arg;
+    return NULL;
+}
+
 AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp)
 {
     apr_finfo_t wrapper;
