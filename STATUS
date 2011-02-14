@@ -138,6 +138,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
    2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
 
+  * mod_win32: Add shebang check so that .vbs scripts can work as CGI.
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1054347
+     2.2.x patch: Trunk version of patch works with offset  
+     +1 fuankg
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
