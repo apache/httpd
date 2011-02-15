@@ -229,6 +229,10 @@ RedirectMatch (.*) http://www.example.com$1
 header, response header, or environment variable, replacing
 <module>mod_rewrite</module> in many common scenarios.</p>
 
+<p>See especially the <a href="../expr.html">expression evaluation
+documentation</a> for a overview of what types of expressions you can
+use in &lt;If&gt; sections, and in certain other directives.</p>
+
 </section>
 
 </manualpage> 
