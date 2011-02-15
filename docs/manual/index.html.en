@@ -74,8 +74,8 @@ Documentation</h1>
 <li><a href="vhosts/">Virtual Hosts</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / Tutorials</a></h2>
-<ul><li><a href="howto/auth.html">Authentication, Authorization, and Access
-    Control</a></li>
+<ul><li><a href="howto/auth.html">Authentication and Authorization</a></li>
+<li><a href="howto/access.html">Access Control</a></li>
 <li><a href="howto/cgi.html">CGI: Dynamic Content</a></li>
 <li><a href="howto/htaccess.html">.htaccess files</a></li>
 <li><a href="howto/ssi.html">Server Side Includes (SSI)</a></li>

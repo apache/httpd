@@ -8,10 +8,10 @@
 
   <variants>
     <variant outdated="yes">da</variant>
-    <variant>de</variant>
+    <variant outdated="yes">de</variant>
     <variant>en</variant>
     <variant outdated="yes">es</variant>
-    <variant>fr</variant>
+    <variant outdated="yes">fr</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
     <variant outdated="yes">pt-br</variant>
