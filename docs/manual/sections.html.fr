@@ -214,7 +214,7 @@ toute requête commençant par la chaîne de caractères <code>/private</code>.</p>
 &lt;LocationMatch ^/private&gt;<br />
 Order Allow,Deny<br />
 Deny from all<br />
-&lt;/Location&gt;
+&lt;/LocationMatch&gt;
 </code></p></div>
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
