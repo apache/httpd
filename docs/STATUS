@@ -172,6 +172,9 @@ To Do List
   different approaches and make intelligent remarks about the
   comparative value of each.
 
+- Remove all mentions of Order, Deny, and Allow. Make sure that all
+  examples use the new auth/access Require syntax, and have been tested.
+
 LaTeX Todo list
 ==================
 
