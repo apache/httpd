@@ -29,6 +29,9 @@
     someone is who they claim they are. Authorization is any
     process by which someone is allowed to be where they want to
     go, or to have information that they want to have.</p>
+
+    <p>For general access control, see the <a href="access.html">Access
+    Control How-To</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
