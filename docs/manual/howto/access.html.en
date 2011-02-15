@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Access Control - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Access Control</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/howto/access.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+    <p>Access control refers to any means of controlling access to any
+    resource. This is separate from <a href="auth.html">authentication and authorization</a>.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host">Access control by host</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">Access control by environment variable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Access control with mod_rewrite</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">Related Modules and Directives</a></h2>
+
+<p>Access control can be done by several different modules. The most
+important of these are <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> and
+<code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Other modules
+discussed in this document include <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="host" id="host">Access control by host</a></h2>
+    <p>
+    If you wish to restrict access to portions of your site based on the
+    host address of your visitors, this is most easily done using
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.
+    </p>
+
+    <p>The <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and
+    <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives let
+    you allow and deny access based on the host name, or host
+    address, of the machine requesting a document. The
+    <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code> directive goes
+    hand-in-hand with these two, and tells Apache in which order to
+    apply the filters.</p>
+
+    <p>The usage of these directives is:</p>
+
+    <div class="example"><p><code>
+      Require host <var>address</var><br />
+      Require ip <var>ip.address</var>
+    </code></p></div>
+
+    <p>In the first form, <var>address</var> is a fully qualified 
+    domain name (or a partial domain name); you may provide multiple 
+    addresses or domain names, if desired.</p>
+
+    <p>In the second form, <var>ip.address</var> is an IP address, a
+    partial IP address, a network/netmask pair, or a network/nnn CIDR
+    specification. Either IPv4 or IPv6 addresses may be used.</p>
+
+    <p>For example, if you have someone spamming your message
+    board, and you want to keep them out, you could do the
+    following:</p>
+
+    <div class="example"><p><code>
+      Require not ip 10.252.46.165
+    </code></p></div>
+
+    <p>Visitors coming from that address will not be able to see
+    the content covered by this directive. If, instead, you have a
+    machine name, rather than an IP address, you can use that.</p>
+
+    <div class="example"><p><code>
+      Require not host <var>host.example.com</var>
+    </code></p></div>
+
+    <p>And, if you'd like to block access from an entire domain,
+    you can specify just part of an address or domain name:</p>
+
+    <div class="example"><p><code>
+      Require not ip <var>192.168.205</var><br />
+      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var><br />
+      Require not gov
+    </code></p></div>
+
+    <p>Use of the <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, and <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> directives may be
+    used to enforce more complex sets of requirements.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="env" id="env">Access control by environment variable</a></h2>
+
+    <p>Using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
+    you can allow or deny access based on arbitrary environment
+    variables or request header values. For example, to deny access
+    based on user-agent (the browser type) you might do the
+    following:</p>
+
+    <div class="example"><p><code>
+    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;<br />
+    <span class="indent">
+        Require All Denied<br />
+    </span>
+    &lt;/If&gt;
+    </code></p></div>
+
+    <div class="note"><h3>Warning:</h3>
+    <p>Access control by <code>User-Agent</code> is an unreliable technique,
+    since the <code>User-Agent</code> header can be set to anything at all,
+    at the whim of the end user.</p>
+    </div>
+
+    <p>See <a href="../expr.html">the expressions document</a> for a
+    further discussion of what expression syntaxes and variables are
+    available to you.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewrite" id="rewrite">Access control with mod_rewrite</a></h2>
+
+<p>The <code>[F]</code> <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> flag causes a 403 Forbidden
+response to be sent. Using this, you can deny access to a resource based
+on arbitrary criteria.</p>
+
+<p>For example, if you wish to block access to a resource between 8pm
+and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+<div class="example"><p><code>
+RewriteEngine On<br />
+RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
+RewriteCond %{TIME_HOUR} &lt;07<br />
+RewriteRule ^/fridge - [F]
+</code></p></div>
+
+<p>This will return a 403 Forbidden response for any request after 8pm
+or before 7am. This technique can be used for any criteria that you wish
+to check. You can also redirect, or otherwise rewrite these requests, if
+that approach is preferred.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="moreinformation" id="moreinformation">More information</a></h2>
+    <p>You should also read the documentation for
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> and <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> which
+    contain some more information about how this all works.
+    <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code> can also help in simplifying certain
+    authentication configurations.</p>
+
+    <p>See the <a href="auth.html">Authentication and Authorization</a>
+    howto.</p>
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/howto/access.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
