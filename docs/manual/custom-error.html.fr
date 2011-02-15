@@ -151,7 +151,7 @@
 	le message.</p>
       
 
-      <p>Si la directive ErrorDocument spécifie une redirection locale
+      <p>Si la directive ErrorDname-basedocument spécifie une redirection locale
       vers un script CGI, ce dernier doit ajouter un en-tête
       "<code>Status:</code>" dans sa sortie afin de s'assurer du bon
       acheminement jusqu'au client de la condition d'erreur qui a
