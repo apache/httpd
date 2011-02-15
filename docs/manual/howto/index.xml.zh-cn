@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English revision : 420990 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>常见操作/教程</title>
+
+  <section id="howto">
+
+    <title>常见操作/教程</title>
+
+    <dl>
+      <dt>认证与授权</dt>
+      <dd>
+        <p>认证是你验证某人是所声称的人。
+        授权是允许某人执行他想要的操作，或者获得想要的信息。</p>
+
+        <p>参见: <a href="auth.html">认证，授权与访问控制</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>访问控制</dt>
+      <dd>
+        <p>访问控制是操作限制，或基于任意条件访问资源。这可以通过多种方法完成。</p>
+
+        <!-- <p>参见: <a href="access.html">访问控制</a></p> -->
+      </dd>
+    </dl>
+
+   <dl>
+      <dt>CGI 与动态内容</dt>
+      <dd>
+        <p>CGI (通用网管接口) 为 web 服务器定义了与外部的内容生成程序的操作接口，
+        通常称为 CGI 程序或 CGI 脚本。它是在 web 站点放入动态内容的最简单，
+        也最常用的方法。 本文简单介绍了在 Apache 服务器中配置 CGI 的方法，
+        以及如何编写 CGI 程序。</p>
+
+        <p>参见: <a href="cgi.html">CGI 与动态内容</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt><code>.htaccess</code> 文件</dt>
+      <dd>
+        <p><code>.htaccess</code> files provide a way to make configuration
+        changes on a per-directory basis. A file, containing one or more
+        configuration directives, is placed in a particular document directory,
+        and the directives apply to that directory, and all subdirectories thereof.</p>
+
+        <p>See: <a href="htaccess.html"><code>.htaccess</code> files</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>服务器端插入简介</dt>
+      <dd>
+        <p>SSI (服务器端插入) 是在 HTML 页面中放入的指令，在页面被访问的时候执行。
+        它允许你在现有的 HTML 页面增加动态生成的内容，不需要通过 CGI
+        程序或其它动态计数来生成整个页面。</p>
+
+        <p>参见: <a href="ssi.html">服务器端插入 (SSI)</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>用户私人网站目录</dt>
+      <dd>
+        <p>在有多个用户的系统中，使用 <directive
+        module="mod_userdir">UserDir</directive> 指令，可以允许每个用户在他们的根目录中都有一个
+        web 站点。 访问 URL <code>http://example.com/~username/</code> 会得到位于用户
+        "<code>username</code>" 根目录中由 <directive
+        module="mod_userdir">UserDir</directive> 指定的子目录中的内容。</p>
+
+        <p>参见: <a href="public_html.html"
+        >用户私人网站目录 (<code>public_html</code>)</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>

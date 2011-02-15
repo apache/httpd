@@ -10,4 +10,5 @@
 <item charset="ISO-8859-1" lang="pt-br">.html.pt-br</item>
 <item charset="KOI8-R" lang="ru">.html.ru.koi8-r</item>
 <item charset="UTF-8" lang="tr">.html.tr.utf8</item>
+<item charset="UTF-8" lang="zh-cn">.html.zh-cn</item>
 </items>

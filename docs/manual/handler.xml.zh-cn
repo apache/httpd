@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.zh-cn.xsl"?>
+<!-- English revision : 420990 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="handler.xml.meta">
+
+  <title>Apache 的处理器</title>
+
+  <summary>
+    <p>本页描述 Apache 处理器的用法。</p>
+  </summary>
+
+  <section id="definition">
+    <title>什么是处理器</title>
+    <related>
+      <modulelist>
+        <module>mod_actions</module>
+        <module>mod_asis</module>
+        <module>mod_cgi</module>
+        <module>mod_imagemap</module>
+        <module>mod_info</module>
+        <module>mod_mime</module>
+        <module>mod_negotiation</module>
+        <module>mod_status</module>
+     </modulelist>
+      <directivelist>
+        <directive module="mod_actions">Action</directive>
+        <directive module="mod_mime">AddHandler</directive>
+        <directive module="mod_mime">RemoveHandler</directive>
+        <directive module="core">SetHandler</directive>
+      </directivelist>
+    </related>
+
+
+    <p>“处理器”是当文件被调用时，Apache 要执行的动作的内部表示形式。
+    一般来说，每个文件都有基于其文件类型的隐式处理器。通常的文件会被
+    服务器简单处理，但是某些文件类型会被分别“处理”。</p>
+
+    <p>处理器也可以被基于扩展名或位置来明确配置。它们都很有用，这不仅
+    因为它是优雅的方案，而且还允许类型<strong>与</strong>处理器关联到文件
+    (参见<a href="mod/mod_mime.html#multipleext">文件与多个扩展名</a>)。</p>
+
+    <p>处理器可以编译到服务器中，或者包含在模块中，它们还可以被 <directive
+    module="mod_actions">Action</directive> 指令增加。标准发行版中内置的处理器有:</p>
+
+    <ul>
+      <li><strong>default-handler</strong>: 使用
+      <code>default_handler()</code> 发送文件，它是用来处理静态内容的处理器(核心)。</li>
+
+      <li><strong>send-as-is</strong>: 直接发送，不增加 HTTP 头(<module>mod_asis</module>)。</li>
+
+      <li><strong>cgi-script</strong>: 按 CGI 脚本处理(<module>mod_cgi</module>)。</li>
+
+      <li><strong>imap-file</strong>: 按 imagemap 规则处理(<module>mod_imagemap</module>)。</li>
+
+      <li><strong>server-info</strong>: 取得服务器配置信息(<module>mod_info</module>)。</li>
+
+      <li><strong>server-status</strong>: 取得服务器状态报告(<module>mod_status</module>)。</li>
+
+      <li><strong>type-map</strong>: 用于内容协商，按类型映射文件处理(<module>mod_negotiation</module>)。</li>
+    </ul>
+  </section>
+  <section id="examples">
+    <title>例子</title>
+
+    <section id="example1">
+      <title>使用 CGI 脚本修改静态内容</title>
+
+      <p>下面的指令将会使具有<code>html</code>扩展名的文件，触发 CGI 脚本<code>footer.pl</code>的执行。</p>
+
+      <example>
+        Action add-footer /cgi-bin/footer.pl<br/>
+        AddHandler add-footer .html
+      </example>
+
+      <p>于是 CGI 负责发送请求的文档(<code>PATH_TRANSLATED</code> 环境变量指向它)，按照需要作出  and making
+      whatever modifications or additions are desired.</p>
+
+    </section>
+    <section id="example2">
+      <title>含有 HTTP 头的文件</title>
+
+      <p>下面的指令会启用
+      <code>send-as-is</code> 处理器，用于包含自己的 HTTP 的文件。不管什么扩展名，
+      所有位于 <code>/web/htdocs/asis/</code> 目录的文件会被
+      <code>send-as-is</code> 处理器处理。</p>
+
+      <example>
+        &lt;Directory /web/htdocs/asis&gt;<br/>
+        SetHandler send-as-is<br/>
+        &lt;/Directory&gt;
+      </example>
+
+    </section>
+  </section>
+  <section id="programmer">
+    <title>对程序员的说明</title>
+
+    <p>为了实现处理器特性，增加了需要使用的 <a href="developer/API.html">Apache API</a>。
+    特别的，结构 <code>request_rec</code> 增加了新成员:</p>
+
+    <example>
+      char *handler
+    </example>
+
+    <p>如果你想要模块实现处理器，只需要在在处理请求，调用 <code>invoke_handler</code>
+    之前，将 <code>r-&gt;handler</code> 指向处理器名称。处理器的实现与以前一样，只是用处理器名称取代了内容类型。
+    虽然不是必要，处理器的命名约定是使用破折号分割的单词，没有斜杠，从而不侵入媒体类型名称空间。</p>
+  </section>
+</manualpage>

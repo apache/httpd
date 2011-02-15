@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English revision : 669736 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache HTTP 服务器与支持程序</title>
+
+<summary>
+    <p>本页描述了 Apache HTTP 服务器包含的所有可执行程序。</p>
+</summary>
+
+<section id="index"><title>索引</title>
+
+    <dl>
+      <dt><program>httpd</program></dt>
+
+      <dd>Apache 服务器。</dd>
+
+      <dt><program>apachectl</program></dt>
+
+      <dd>Apache HTTP 服务器控制工具。</dd>
+
+      <dt><program>ab</program></dt>
+
+      <dd>Apache HTTP 服务器性能基准工具。</dd>
+
+      <dt><program>apxs</program></dt>
+
+      <dd>Apache 扩展工具。</dd>
+
+      <dt><program>configure</program></dt>
+
+      <dd>配置源代码。</dd>
+
+      <dt><program>dbmmanage</program></dt>
+
+      <dd>为基本认证创建和更新 DBM 格式的用户认证文件。</dd>
+
+      <dt><program>fcgistarter</program></dt>
+
+      <dd>启动 FastCGI 程序。</dd>
+
+      <dt><program>htcacheclean</program></dt>
+      <dd>清理磁盘缓存。</dd>
+
+      <dt><program>htdigest</program></dt>
+
+      <dd>为摘要认证创建和更新用户认证文件。</dd>
+
+      <dt><program>htdbm</program></dt>
+
+      <dd>操作 DBM 密码数据库。</dd>
+
+      <dt><program>htpasswd</program></dt>
+
+      <dd>为基本认证创建和更新用户认证文件。</dd>
+
+      <dt><program>httxt2dbm</program></dt>
+
+      <dd>为 RewriteMap 创建 dbm 文件。</dd>
+
+      <dt><program>logresolve</program></dt>
+
+      <dd>将 Apache 日志文件中的 IP 地址解析到主机名称。</dd>
+
+      <dt><a href="other.html#log_server_status">log_server_status</a></dt>
+
+      <dd>周期性的记录服务器状态。</dd>
+
+      <dt><program>rotatelogs</program></dt>
+
+      <dd>不关闭 Apache 而切换日志文件。</dd>
+
+      <dt><a href="other.html#split-logfile">split-logfile</a></dt>
+
+      <dd>将多个虚拟主机的日志文件按照主机拆分。</dd>
+
+      <dt><program>suexec</program></dt>
+
+      <dd>执行外部程序前切换用户。</dd>
+    </dl>
+</section>
+
+</manualpage>

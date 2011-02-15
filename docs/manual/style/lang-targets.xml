@@ -23,9 +23,9 @@
 <project name="lang-targets">
 
 <target name="check-man"><if><not><available type="dir" file="../../man"/></not><then><property value="yes" name="skip-man"/></then></if></target>
-<target description="- builds all HTML files and nroff man pages" name="all" depends="da, de, en, es, fr, ja, ko, pt-br, ru, tr"/>
-<target description="- builds all zip download packages" name="zip-all" depends="zip-da, zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru, zip-tr"/>
-<target description="- builds all war download packages" name="war-all" depends="war-da, war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru, war-tr"/>
+<target description="- builds all HTML files and nroff man pages" name="all" depends="da, de, en, es, fr, ja, ko, pt-br, ru, tr, zh-cn"/>
+<target description="- builds all zip download packages" name="zip-all" depends="zip-da, zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru, zip-tr, zip-zh-cn"/>
+<target description="- builds all war download packages" name="war-all" depends="war-da, war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru, war-tr, war-zh-cn"/>
 
 <!-- Dansk                                                                -->
 <!-- ==================================================================== -->
@@ -261,6 +261,32 @@
     <nroff.generic lang="tr"/>
 </target>
 
+<!-- Simplified Chinese                                                   -->
+<!-- ==================================================================== -->
+<property value=".xml.zh-cn" name="inputext.zh-cn"/>
+<property value=".html.zh-cn" name="outputext.zh-cn"/>
+
+<target description="- builds Simplified Chinese HTML files" name="zh-cn">
+    <html.generic lang="zh-cn"/>
+</target>
+<target unless="-off.zh-cn.done" depends="metafiles" name="-off-zh-cn">
+    <dependencies.offline dir="_off" style="zip" lang="zh-cn"/>
+    <offline.generic dir="_off" style="zip" lang="zh-cn"/>
+    <property value="yes" name="-off.zh-cn.done"/>
+</target>
+<target description="- builds the Simplified Chinese zipped download package" depends="-off-zh-cn" name="zip-zh-cn">
+    <zip.generic lang="zh-cn"/>
+</target>
+<target description="- builds the Simplified Chinese Konqueror Web Archive" depends="-off-zh-cn" name="war-zh-cn">
+    <war.generic lang="zh-cn"/>
+</target>
+<target description="- builds the Simplified Chinese CHM file" name="chm-zh-cn">
+    <chm.generic lang="zh-cn"/>
+</target>
+<target description="- builds the Simplified Chinese nroff files" depends="check-man" name="man-zh-cn">
+    <nroff.generic lang="zh-cn"/>
+</target>
+
 <!-- XML validation.                                                      -->
 <!-- If you get an error during transformation, this task may be useful   -->
 <!-- because it mostly gives you a hint, where you forgot the </p> ;-)    -->
@@ -279,6 +305,7 @@
             <include name="**/*.xml.pt-br"/>
             <include name="**/*.xml.ru"/>
             <include name="**/*.xml.tr"/>
+            <include name="**/*.xml.zh-cn"/>
 
             <patternset refid="excludes"/>
             <patternset refid="scratch"/>

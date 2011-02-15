@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English revision : 420990 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache SSL/TLS 加密</title>
+
+<summary>
+<p>Apache HTTP 服务器模块 <module>mod_ssl</module>
+提供了与 <a href="http://www.openssl.org/">OpenSSL</a>
+的接口，它使用安全套接字层和传输层安全协议提供了强加密。
+此模块与这篇文档都基于
+Ralf S. Engelschall 的 mod_ssl 项目。</p>
+</summary>
+
+<section id="documentation"><title>文档</title>
+<ul>
+<li><a href="ssl_intro.html">简介</a></li>
+<li><a href="ssl_compat.html">兼容性</a></li>
+<li><a href="ssl_howto.html">常见操作</a></li>
+<li><a href="ssl_faq.html">常见问题</a></li>
+<li><a href="../glossary.html">术语</a></li>
+</ul>
+</section>
+
+<section id="mod-ssl"><title>mod_ssl</title>
+<p>此模块提供的指令和环境变量的文档位于 <a
+href="../mod/mod_ssl.html">mod_ssl 参考手册</a>。
+</p>
+</section>
+
+</manualpage>
+
+
