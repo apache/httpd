@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
-<metafile reference="index.xml">
-  <basename>index</basename>
+<metafile reference="access.xml">
+  <basename>access</basename>
   <path>/howto/</path>
   <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>
-    <variant outdated="yes">ja</variant>
-    <variant outdated="yes">ko</variant>
   </variants>
 </metafile>
