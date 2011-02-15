@@ -35,8 +35,8 @@
 
 <p>Access control can be done by several different modules. The most
 important of these are <module>mod_authz_core</module> and
-<module>mod_authz_host</module>. Other modules
-discussed in this document include <module>mod_rewrite</module>.</p>
+<module>mod_authz_host</module>. Also discussed in this document 
+is access control using <module>mod_rewrite</module>.</p>
 
 </section>
 
@@ -153,16 +153,25 @@ or before 7am. This technique can be used for any criteria that you wish
 to check. You can also redirect, or otherwise rewrite these requests, if
 that approach is preferred.</p>
 
+<p>The <directive type="section" module="core">If</directive> directive,
+added in 2.4, replaces many things that <module>mod_rewrite</module> has
+traditionally been used to do, and you should probably look there first
+before resorting to mod_rewrite.</p>
+
 </section>
 
 <section id="moreinformation"><title>More information</title>
-    <p>You should also read the documentation for
-    <module>mod_auth_basic</module> and <module>mod_authz_host</module> which
-    contain some more information about how this all works.
-    <module>mod_authn_alias</module> can also help in simplifying certain
-    authentication configurations.</p>
 
-    <p>See the <a href="auth.html">Authentication and Authorization</a>
+    <p>The <a href="../expr.html">expression engine</a> gives you a
+    great deal of power to do a variety of things based on arbitrary
+    server variables, and you should consult that document for more
+    detail.</p>
+
+    <p>Also, you should read the <module>mod_authz_core</module>
+    documentation for examples of combining multiple access requirements
+    and specifying how they interact.</p>
+
+    <p>See also the <a href="auth.html">Authentication and Authorization</a>
     howto.</p>
 </section>
 
