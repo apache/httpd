@@ -57,7 +57,7 @@ is access control using <module>mod_rewrite</module>.</p>
     whatever your access policy happens to be.</p>
 
     <note type="warning"><p>
-    <p>The <directive module="mod_access_compat">Allow</directive>,
+    The <directive module="mod_access_compat">Allow</directive>,
     <directive module="mod_access_compat">Deny</directive>, and 
     <directive module="mod_access_compat">Order</directive> directives,
     provided by <module>mod_access_compat</module>, are deprecated and
