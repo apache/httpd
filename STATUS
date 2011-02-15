@@ -90,17 +90,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * core: Add NoDecode option to AllowEncodedSlashes to turn off decoding
     of encoded slashes in path info.  (This is already the behavior of
     AllowEncodedSlashes On in trunk.)
       Trunk version of patch: n/a
       Backport version for 2.2.x of patch:
          http://people.apache.org/~poirier/AllowEncodedSlashes.22.patch
-      +1 poirier, jim
+      +1 poirier, jim, covener
       +.1 wrowe; this essentially causes "%2F" -> "%2F" -> "%252F" to any backend,
                  as mentioned previously trunk is broken and decoding to 'something'
                  is necessary for routing such.  %2F cannot be distinguished from
@@ -108,6 +104,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  an optional broken feature if this warning is placed in the docs.
                  Non-optional broken features are worse :)
                  Trunk must be patched identically.
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   * configure: add basic support to build with MinGW/MSYS (backport of r422182)
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=422182
