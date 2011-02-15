@@ -22,20 +22,11 @@
 <a href="../fr/ssl/ssl_howto.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-<blockquote>
-<p>The solution to this problem is trivial
-and is left as an exercise for the reader.</p>
 
-<p class="cite">-- <cite>Standard textbook cookie</cite></p>
-</blockquote>
-
-<p>How to solve particular security problems for an SSL-aware
-webserver is not always obvious because of the interactions between SSL,
-HTTP and Apache's way of processing requests. This chapter gives
-instructions on how to solve some typical situations. Treat it as a first
-step to find out the final solution, but always try to understand the 
-stuff before you use it. Nothing is worse than using a security solution
-without knowing its restrictions and how it interacts with other systems.</p>
+<p>This documented is intended to get you started, and get a few things
+working. You are strongly encouraged to read the rest of the SSL
+documentation, and arrive at a deeper understanding of the material,
+before progressing to the advanced techniques.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Basic Configuration Example</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Cipher Suites and Enforcing Strong Security</a></li>
