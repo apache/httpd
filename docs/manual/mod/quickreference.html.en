@@ -34,9 +34,9 @@
     information about each of these, see the <a href="directive-dict.html">Directive Dictionary</a>.</p>
 
     <p>The first column gives the directive name and usage.  The second
-    columns shows the default value of the directive, if a default exists.
-    If the default is too large to display, the first characters will be
-    followed by "+".</p>
+    column shows the default value of the directive, if a default exists.
+    If the default is too large to display, it will be truncated
+    and followed by "+".</p>
 
     <p>The third and fourth columns list the contexts where the directive
     is allowed and the status of the directive according to the legend
