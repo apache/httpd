@@ -214,6 +214,10 @@ RedirectMatch (.*) http://www.example.com$1
 header, response header, or environment variable, replacing
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> in many common scenarios.</p>
 
+<p>See especially the <a href="../expr.html">expression evaluation
+documentation</a> for a overview of what types of expressions you can
+use in &lt;If&gt; sections, and in certain other directives.</p>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/avoid.html" title="English">&nbsp;en&nbsp;</a></p>
