@@ -29,6 +29,7 @@
 <a href="../tr/mod/quickreference.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu hızlı yönerge kılavuzunda Apache yapılandırma yönergelerinin kullanımı, öntanımlı değerleri, durumu ve bağlamı gösterilmiştir. Bunların her biri hakkında ayrıntılı bilgi almak için <a href="directive-dict.html">Yönerge Sözlüğü</a>ne bakınız.</p>
 
