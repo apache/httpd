@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 421100:636524 (outdated) -->
+<!-- English Revision: 421100:1070905 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
