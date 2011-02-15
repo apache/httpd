@@ -38,9 +38,9 @@ Ralf S. Engelschall's mod_ssl project.</p>
 <div class="section">
 <h2><a name="documentation" id="documentation">Documentation</a></h2>
 <ul>
-<li><a href="ssl_intro.html">Introduction</a></li>
+<li><a href="ssl_howto.html">mod_ssl Configuration How-To</a></li>
+<li><a href="ssl_intro.html">Introduction To SSL</a></li>
 <li><a href="ssl_compat.html">Compatibility</a></li>
-<li><a href="ssl_howto.html">How-To</a></li>
 <li><a href="ssl_faq.html">Frequently Asked Questions</a></li>
 <li><a href="../glossary.html">Glossary</a></li>
 </ul>
