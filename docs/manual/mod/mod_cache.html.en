@@ -327,13 +327,15 @@
   </code></p></div>
 
   <p>Based on the caching decision made, the reason is also written to the
-  subprocess environment under one the following three keys, as appropriate:</p>
+  subprocess environment under one the following four keys, as appropriate:</p>
 
   <dl>
     <dt>cache-hit</dt><dd>The response was served from cache.</dd>
     <dt>cache-revalidate</dt><dd>The response was stale and was successfully
       revalidated, then served from cache.</dd>
     <dt>cache-miss</dt><dd>The response was served from the upstream server.</dd>
+    <dt>cache-invalidate</dt><dd>The cached entity was invalidated by a request
+      method other than GET or HEAD.</dd>
   </dl>
 
   <p>This makes it possible to support conditional logging of cached requests
@@ -343,8 +345,12 @@
     CustomLog cached-requests.log common env=cache-hit<br />
     CustomLog uncached-requests.log common env=cache-miss<br />
     CustomLog revalidated-requests.log common env=cache-revalidate<br />
+    CustomLog invalidated-requests.log common env=cache-invalidate<br />
   </code></p></div>
 
+  <p>For module authors, a hook called <var>cache_status</var> is available,
+  allowing modules to respond to the caching outcomes above in customised
+  ways.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a></h2>
