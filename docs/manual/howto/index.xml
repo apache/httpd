@@ -41,6 +41,18 @@
       </dd>
     </dl>
 
+    <dl>
+      <dt>Access Control</dt>
+      <dd>
+        <p>Access control refers to the process of restricting, or
+        granting access to a resource based on arbitrary criteria. There
+        are a variety of different ways that this can be
+        accomplished.</p>
+
+        <p>See: <a href="access.html">Access Control</a></p>
+      </dd>
+    </dl>
+
    <dl>
       <dt>Dynamic Content with CGI</dt>
       <dd>
