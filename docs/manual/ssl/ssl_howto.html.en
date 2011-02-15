@@ -43,7 +43,7 @@ following directives.</p>
 
 <div class="example"><p><code>
    Listen 443<br />
-   &lt;VirtualHost _default_:443&gt;<br />
+   &lt;VirtualHost *:443&gt;<br />
    <span class="indent">
         ServerName www.example.com<br />
         SSLEngine on<br />
