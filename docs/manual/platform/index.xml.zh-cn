@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English revision : 421100 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+  <parentdocument href="../"/>
+
+  <title>平台相关说明</title>
+
+  <section id="win">
+
+    <title>Microsoft Windows</title>
+
+    <dl>
+      <dt>使用 Apache</dt>
+      <dd>
+        <p>这篇文档解释了如何在 Microsoft Windows 中安装，配置，以及运行 Apache 2.0 。</p>
+
+        <p>参见: <a href="windows.html">在 Microsoft Windows 中使用 Apache</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>编译 Apache</dt>
+      <dd>
+        <p>这篇文档解释了编译 Apache 的要点。</p>
+
+        <p>参见: <a href="win_compiling.html">为 Microsoft Windows 编译 Apache</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+  <section id="other">
+
+    <title>其它平台</title>
+
+    <dl>
+      <dt>Novell NetWare</dt>
+      <dd>
+        <p>这篇文档解释了如何在 Novell NetWare 5.1 或更新的版本中，如何安装，配置，以及运行
+        Apache 2.0 。
+        </p>
+
+        <p>参见: <a href="netware.html">在 Novell NetWare 中使用 Apache</a></p>
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>EBCDIC</dt>
+      <dd>
+        <p>从 Apache HTTP 版本 1.3 开始支持使用 EBCDIC 字符集作为原生字符集的(非 ASCII)主机。</p>
+
+        <note type="warning"><strong>警告:</strong>
+        这篇文档尚未完全更新，以反映自 Apache HTTP 服务器版本 2.0
+        之后的修改。某些信息可能仍旧适用，但请小心使用它。</note>
+
+        <p>参见: <a href="ebcdic.html">Apache 与 EBCDIC 系统</a></p>
+      </dd>
+    </dl>
+
+  </section>
+
+</manualpage>

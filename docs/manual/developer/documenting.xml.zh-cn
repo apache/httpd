@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English revision : 586771 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="documenting.xml.meta">
+<parentdocument href="./">开发者文档</parentdocument>
+
+<title>Apache 2.0 文档</title>
+
+<summary>
+    <p>Apache 2.0 使用 <a href="http://www.doxygen.org/">Doxygen</a> 从代码中
+    生成 API 和全局变量的文档。下面是对使用 Doxygen 生成文档的简介。</p>
+</summary>
+
+<section id="brief"><title>简要说明</title>
+    <p>使用 <code>/**</code> 开始文档块<br />
+    使用 <code>*/</code> 结束文档块</p>
+
+    <p>在文档块中，我们可以使用多个标签:</p>
+
+    <example>
+      Description of this functions purpose<br />
+      @param parameter_name description<br />
+      @return description<br />
+      @deffunc signature of the function<br />
+    </example>
+      
+    <p>一般不需要 <code>deffunc</code> 。DoxyGen 没有完整的解析器，所以任何
+    在返回类型声明中使用宏的原型，都是太复杂了。这些函数就需要使用 <code>deffunc</code>。
+    例如 (使用 &amp;gt; 而不是 &gt;):</p>
+
+    <example>
+      /**<br />
+ &nbsp;* return the final element of the pathname<br />
+ &nbsp;* @param pathname The path to get the final element of<br />
+ &nbsp;* @return the final element of the path<br />
+ &nbsp;* @tip Examples:<br />
+ &nbsp;* &lt;pre&gt;<br />
+ &nbsp;*                 "/foo/bar/gum"   -&amp;gt; "gum"<br />
+ &nbsp;*                 "/foo/bar/gum/"  -&amp;gt; ""<br />
+ &nbsp;*                 "gum"            -&amp;gt; "gum"<br />
+ &nbsp;*                 "wi\\n32\\stuff" -&amp;gt; "stuff"<br />
+ &nbsp;* &lt;/pre&gt;<br />
+ &nbsp;* @deffunc const char * ap_filename_of_pathname(const char *pathname)<br />
+ &nbsp;*/
+    </example>
+
+    <p>总是在头文件开始包含:</p>
+    <example>
+      /**<br />
+ &nbsp;* @package Name of library header<br />
+ &nbsp;*/
+    </example>
+
+    <p>Doxygen 为每个包生成一个新的 HTML 文件，名字是
+    {Name_of_library_header}.html，所以请简化名称。</p>
+
+    <p>更深入的讨论，请参见
+    <a href="http://www.doxygen.org/">Doxygen 站点</a>。</p>
+</section>
+</manualpage>

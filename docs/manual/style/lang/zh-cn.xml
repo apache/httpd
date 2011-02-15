@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "../lang.dtd">
+<!-- $LastChangedRevision: -1 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<language id="zh-cn">
+    <name>Simplified Chinese</name>
+    <charset>UTF-8</charset>
+    <source-ext>.xml</source-ext>
+    <target-ext>.html.zh-cn</target-ext>
+
+    <chm>
+        <lang>936 Simplified Chinese</lang>
+        <toc-font>SimSun,12,0</toc-font>
+        <charset>GBK</charset>
+        <settings>Simplified Chinese</settings>
+    </chm>
+
+    <man>
+        <charset>UTF-8</charset>
+    </man>
+
+    <!-- Some strings might be used in other contexts, than stated in the -->
+    <!-- comments...                                                      -->
+    <messages>
+        <!-- language link titles -->
+        <message id="nativename">Simplified Chinese</message>
+
+        <!-- Used for the moduleindex -->
+        <message id="corefeatures">核心特性与多处理模块(MPM)</message>
+        <message id="othermodules">其它模块</message>
+        <message id="obsoletemodules">过时的模块</message>
+
+        <!-- Used for the modulesynopsis and sitemap -->
+        <message id="obsoleteapachemodule">过时的 Apache 模块</message>
+        <message id="apachemodule">Apache 模块</message>
+        <message id="apachecore">Apache 核心特性</message>
+        <message id="apachempmcommon">Apache MPM 通用指令</message>
+        <message id="apachempm">Apache MPM</message>
+
+        <!-- Used in description box for modulesynopsis -->
+        <message id="description">描述</message>
+        <message id="seealso">参见</message>
+        <message id="topics">主题</message>
+        <message id="status">状态</message>
+        <message id="moduleidentifier">模块标识</message>
+        <message id="sourcefile">源文件</message>
+        <message id="compatibility">兼容性</message>
+
+        <!-- Used in manualpage -->
+        <message id="relatedmodules">相关模块</message>
+        <message id="relateddirectives">相关指令</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">名称</message>
+        <message id="hyphenation"></message>
+
+        <!-- Used in description box for directives -->
+        <message id="syntax">语法</message>
+        <message id="default">默认</message>
+        <message id="context">上下文</message>
+        <message id="override">覆盖</message>
+        <message id="status">状态</message>
+        <message id="module">模块</message>
+
+        <!-- Status descriptions -->
+        <message id="base" letter="B">基础</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">核心</message>
+        <message id="extension" letter="E">扩展</message>
+        <message id="experimental" letter="X">实验</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig" letter="s">服务器配置</message>
+        <message id="virtualhost" letter="v">虚拟主机</message>
+        <message id="directory" letter="d">目录</message>
+        <message id="htaccess" letter="h">.htaccess</message>
+
+        <!-- Used for directive lists -->
+        <message id="directives">指令</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <message id="directive">指令</message>
+        <message id="nodirectives">此模块没有提供指令。</message>
+
+        <!-- Used in summaries -->
+        <message id="summary">摘要</message>
+
+        <!-- Used for glossary link titles -->
+        <message id="glossarylink">参见术语</message>
+
+        <!-- Used in headers and footers -->
+        <message id="apachetitle">- Apache HTTP 服务器</message>
+        <message id="apachehttpserver">Apache HTTP 服务器版本
+            &httpd.major;.&httpd.minor;</message>
+        <message id="apachedocalt">[APACHE 文档]</message>
+        <message id="search">Google 搜索</message> <!-- search button -->
+        <message id="index">索引</message> <!-- deprecated -->
+        <message id="home">主页</message> <!-- deprecated -->
+
+        <!-- breadcrumb links -->
+        <message id="apache">Apache</message>
+        <message id="http-server">HTTP 服务器</message>
+        <message id="documentation">文档</message>
+        <message id="version">版本 &httpd.major;.&httpd.minor;</message>
+
+        <!-- super menu -->
+        <message id="modules">模块</message>
+        <message id="faq">常见问题</message>
+        <message id="glossary">术语</message>
+        <message id="sitemap">网站导航</message>
+
+        <!-- footer line -->
+        <message id="before-license">基于</message>
+        <message id="after-license">许可证</message>
+        <message id="langavail">可用语言</message>
+
+        <!-- not up to date -->
+        <message id="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</message>
+        <!-- directive not translated yet -->
+        <message id="nottranslated">此指令的文档还没有被翻译。请阅读英文版。</message>
+    </messages>
+</language>
