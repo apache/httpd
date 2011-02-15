@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English revision : 420990 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<directiveindex metafile="directives.xml.meta">
+  <title>指令索引</title>
+  <summary>
+    <p>
+      每个在 Apache 标准发行版中可用的指令都列在这里。它们使用一致的格式描述，而且有<a
+      href="directive-dict.html" rel="Glossary">术语字典</a>。
+    </p>
+
+    <p>
+      <a href="quickreference.html">指令快速参考</a>用来以摘要的形式提供有关每个指令的详细信息。
+    </p>
+  </summary>
+</directiveindex>

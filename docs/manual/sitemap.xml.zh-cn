@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.zh-cn.xsl"?>
+<!-- English revision : 1044380 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<sitemap metafile="sitemap.xml.meta">
+
+  <title>站点导航</title>
+
+<summary>
+<p>本页列出了
+<a href="./">Apache HTTP 服务器 &httpd.major;.&httpd.minor;
+的全部文档</a>。</p>
+</summary>
+
+<category id="release">
+<title>发行说明</title>
+<page href="upgrading.html">从 2.2 升级到 2.4</page>
+<page href="new_features_2_4.html">Apache 2.3/2.4 的新特性</page>
+<page href="new_features_2_2.html">Apache 2.1/2.2 的新特性</page>
+<page href="new_features_2_0.html">Apache 2.0 的新特性</page>
+<page href="license.html">Apache 许可证</page>
+</category>
+
+<category id="using">
+<title>使用 Apache HTTP 服务器</title>
+<page href="install.html">编译与安装 Apache</page>
+<page href="invoking.html">启动 Apache</page>
+<page href="stopping.html">停止与重启 Apache</page>
+<page href="configuring.html">配置文件</page>
+<page href="sections.html">配置片段</page>
+<page href="caching.html">缓存指南</page>
+<page href="server-wide.html">服务器全局配置</page>
+<page href="logs.html">日志文件</page>
+<page href="urlmapping.html">从 URL 映射到文件系统</page>
+<page href="misc/security_tips.html">安全技巧</page>
+<page href="dso.html">动态共享对象(DSO)</page>
+<page href="content-negotiation.html">内容协商</page>
+<page href="custom-error.html">定制错误响应</page>
+<page href="bind.html">绑定指定地址与端口</page>
+<page href="mpm.html">多处理模块(MPM)</page>
+<page href="env.html">环境变量</page>
+<page href="handler.html">Apache 的处理器</page>
+<page href="filter.html">过滤器</page>
+<page href="suexec.html">执行 CGI 前的用户切换(suEXEC)</page>
+<page href="misc/perf-tuning.html">性能调谐</page>
+<page href="http://wiki.apache.org/httpd/FAQ">常见问题</page>
+</category>
+
+<category id="vhosts">
+<title>Apache 虚拟主机文档</title>
+<page separate="yes" href="vhosts/">概述</page>
+<page href="vhosts/name-based.html">基于名称的虚拟主机</page>
+<page href="vhosts/ip-based.html">基于 IP 的虚拟主机</page>
+<page href="vhosts/mass.html">动态配置的大规模虚拟主机</page>
+<page href="vhosts/examples.html">虚拟主机样例</page>
+<page href="vhosts/details.html">虚拟主机匹配的深入讨论</page>
+<page href="vhosts/fd-limits.html">文件句柄限制</page>
+<page href="dns-caveats.html">Apache 的 DNS 相关问题</page>
+</category>
+
+<category id="rewrite">
+<title>URL 改写指南</title>
+<page separate="yes" href="rewrite/">概述</page>
+<page href="mod/mod_rewrite.html">mod_rewrite 参考文档</page>
+<page href="rewrite/intro.html">简介</page>
+<page href="rewrite/flags.html">标志</page>
+<page href="rewrite/tech.html">技术细节</page>
+<page href="rewrite/remapping.html">重新映射 URL</page>
+<page href="rewrite/access.html">访问控制</page>
+<page href="rewrite/advanced.html">高级技术</page>
+</category>
+
+<category id="ssl">
+<title>Apache SSL/TLS 加密</title>
+<page separate="yes" href="ssl/">概述</page>
+<page href="ssl/ssl_intro.html">SSL/TLS 加密: 简介</page>
+<page href="ssl/ssl_compat.html">SSL/TLS 加密: 兼容性</page>
+<page href="ssl/ssl_howto.html">SSL/TLS 加密: 常见操作</page>
+<page href="ssl/ssl_faq.html">SSL/TLS 加密: 常见问题</page>
+</category>
+
+<category id="howto">
+<title>指南与教程</title>
+<page separate="yes" href="howto/">概述</page>
+<page href="howto/auth.html">认证，授权与访问控制</page>
+<page href="howto/cgi.html">CGI 与动态内容</page>
+<page href="howto/ssi.html">服务器端插入</page>
+<page href="howto/htaccess.html">.htaccess 文件</page>
+<page href="howto/public_html.html">用户私人网站目录(public_html)</page>
+</category>
+
+<category id="platform">
+<title>平台相关说明</title>
+<page separate="yes" href="platform/">概述</page>
+<page href="platform/windows.html">在 Microsoft Windows 中使用 Apache</page>
+<page href="platform/win_compiling.html">为 Microsoft Windows 编译 Apache</page>
+<page href="platform/netware.html">在 Novell NetWare 中使用 Apache</page>
+<page href="platform/perf-hp.html">在 HPUX 中运行高性能 web 服务器</page>
+<page href="platform/ebcdic.html">Apache 与 EBCDIC 系统</page>
+</category>
+
+<category id="programs">
+<title>Apache HTTP 服务器与支持程序</title>
+<page separate="yes" href="programs/">概述</page>
+<page href="programs/httpd.html">手册: httpd</page>
+<page href="programs/ab.html">手册: ab</page>
+<page href="programs/apachectl.html">手册: apachectl</page>
+<page href="programs/apxs.html">手册: apxs</page>
+<page href="programs/configure.html">手册: configure</page>
+<page href="programs/dbmmanage.html">手册: dbmmanage</page>
+<page href="programs/htcacheclean.html">手册: htcacheclean</page>
+<page href="programs/htdbm.html">手册: htdbm</page>
+<page href="programs/htdigest.html">手册: htdigest</page>
+<page href="programs/htpasswd.html">手册: htpasswd</page>
+<page href="programs/logresolve.html">手册: logresolve</page>
+<page href="programs/rotatelogs.html">手册: rotatelogs</page>
+<page href="programs/suexec.html">手册: suexec</page>
+<page href="programs/other.html">其它程序</page>
+</category>
+
+<category id="misc">
+<title>Apache 杂项文档</title>
+<page separate="yes" href="misc/">概述</page>
+<page href="misc/relevant_standards.html">相关标准</page>
+</category>
+
+<category id="modules">
+<title>Apache 模块</title>
+<page href="mod/module-dict.html">描述模块的术语</page>
+<page href="mod/directive-dict.html">描述指令的术语</page>
+</category>
+
+<category id="developer">
+<title>开发者文档</title>
+<page separate="yes" href="developer/">概述</page>
+<page href="developer/API.html">Apache API 说明</page>
+<page href="developer/debugging.html">在 APR 中调试内存分配</page>
+<page href="developer/documenting.html">Apache 2.x 文档</page>
+<page href="developer/hooks.html">Apache 2.x 钩子函数</page>
+<page href="developer/modules.html">将模块从 Apache 1.3 移植到 Apache 2.x</page>
+<page href="developer/request.html">Apache 2.x 中的请求处理</page>
+<page href="developer/filters.html">Apache 2.x 中的过滤器</page>
+</category>
+
+<category id="index">
+<title>术语与索引</title>
+<page href="glossary.html">术语</page>
+<page href="mod/">模块索引</page>
+<page href="mod/directives.html">指令索引</page>
+<page href="mod/quickreference.html">指令快速参考</page>
+</category>
+
+</sitemap>

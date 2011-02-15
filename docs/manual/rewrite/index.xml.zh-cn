@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English revision : 1028730 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache mod_rewrite</title>
+
+<summary>
+    <p><module>mod_rewrite</module> 提供了基于<a 
+    href="intro.html#regex">正则表达式</a>规则动态修改传入的请求的 URL 的方法。
+    这允许你以自己喜欢的任意方法映射任意 URL 到你的内部 URL 结构。</p>
+
+    <p>它支持无限的规则，以及为每个规则附加条件，从而提供了一个真正灵活且强大的 URL
+    操作机制。URL 操作可以依赖于各种测试，例如服务器变量，环境变量，HTTP
+    头，时戳，甚至外部数据库查询等，以便完成 URL 单元匹配。</p>
+
+    <p>这个模块在服务器上下文 (<code>httpd.conf</code>)，虚拟主机上下文 (<directive
+    type="section" module="core">VirtualHost</directive> 指令块)，目录上下文
+    (<code>.htaccess</code> 文件和 <code>&lt;Directory&gt;</code>
+    指令块) 对完整的 URL (包含目录信息部分和查询字符串部分) 操作。
+    重写结果可以导致新的规则处理，内部的后续处理，外部请求重定向，甚至透过内部代理，
+    这取决于你为规则附加的<a href="flags.html">标志</a>。</p>
+
+    <p>既然 mod_rewrite 这么强大，它当然是相当复杂。这篇文档作为<a
+    href="../mod/mod_rewrite.html">参考手册</a>的补充，试图减轻一些复杂性，
+    提供你可能使用 mod_rewrite 的常见场景的有充分注释的例子。
+    但是，我们也试图告诉你，在什么时候你不应当使用 mod_rewrite，
+    可以使用其它标准的 Apache 特性来达到目的，以避免无谓的复杂性。</p>
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></li>
+<li><a href="intro.html">正则表达式与 mod_rewrite 入门</a></li>
+<li><a href="remapping.html">使用 mod_rewrite 重定向和重新映射 URL</a></li>
+<li><a href="access.html">使用 mod_rewrite 控制访问</a></li>
+<li><a href="vhosts.html">动态虚拟主机与 mod_rewrite</a></li>
+<li><a href="proxy.html">动态代理与 mod_rewrite</a></li>
+<li><a href="rewritemap.html">使用 RewriteMap</a></li>
+<li><a href="advanced.html">高级技术与诀窍</a></li>
+<li><a href="avoid.html">何时 <strong>不要</strong>使用 mod_rewrite</a></li>
+<li><a href="flags.html">RewriteRule 标志</a></li>
+<li><a href="tech.html">技术细节</a></li>
+</ul>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></seealso>
+<seealso><a href="../urlmapping.html">从 URL 映射到文件系统</a></seealso>
+<seealso><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+wiki</a></seealso>
+<seealso><a href="../glossary.html">术语</a></seealso>
+
+</manualpage>

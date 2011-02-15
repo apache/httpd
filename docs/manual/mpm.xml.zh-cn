@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.zh-cn.xsl"?>
+<!-- English revision : 927046 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="mpm.xml.meta">
+
+  <title>多处理模块(MPM)</title>
+
+<summary>
+<p>本文档介绍了什么是多处理模块，以及 Apache HTTP 服务器如何使用它们。</p>
+</summary>
+
+<section id="introduction"><title>介绍</title>
+
+    <p>Apache HTTP 服务器被设计为一个功能强大，并且灵活的 web 服务器，
+    可以在很多平台与环境中工作。不同平台和不同的环境往往需要不同
+    的特性，或可能以不同的方式实现相同的特性最有效率。Apache httpd
+    通过模块化的设计来适应各种环境。这种设计允许网站管理员通过在
+    编译时或运行时，选择哪些模块将会加载在服务器中，来选择服务器特性。</p>
+
+    <p>Apache HTTP 服务器 2.0 扩展此模块化设计到最基本的 web 服务器功能。
+    它提供了可以选择的多处理模块(MPM)，用来绑定到网络端口上，接受请求，
+    以及调度子进程处理请求。</p>
+
+    <p>扩展到这一级别的服务器模块化设计，带来两个重要的好处:</p>
+
+    <ul>
+      <li>Apache httpd 能更优雅，更高效率的支持不同的平台。尤其是
+      Apache httpd 的 Windows 版本现在更有效率了，因为
+      <module>mpm_winnt</module> 能使用原生网络特性取代在
+      Apache httpd 1.3 中使用的 POSIX 层。它也可以扩展到其它平台
+      来使用专用的 MPM。</li>
+
+      <li>Apache httpd 能更好的为有特殊要求的站点定制。例如，要求
+      更高伸缩性的站点可以选择使用线程的 MPM，即
+      <module>worker</module> 或 <module>event</module>；
+      需要可靠性或者与旧软件兼容的站点可以使用
+      <module>prefork</module>。</li>
+    </ul>
+
+    <p>在用户看来，MPM 很像其它 Apache httpd 模块。主要是区别是，在任何时间，
+    必须有一个，而且只有一个 MPM 加载到服务器中。可用的 MPM 列表位于
+    <a href="mod/">模块索引页面</a>。</p>
+
+</section>
+
+<section id="defaults"><title>默认 MPM</title>
+
+<p>下表列出了不同系统的默认 MPM。如果你不在编译时选择，那么它就是你将要使用的 MPM。</p>
+
+<table border="1" style="zebra">
+<columnspec><column width=".2"/><column width=".2"/></columnspec>
+<tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
+<tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
+<tr><td>Unix</td><td><module>prefork</module>，<module>worker</module> 或
+    <module>event</module>，取决于平台特性</td></tr>
+<tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
+</table>
+</section>
+
+<section id="static"><title>构建 MPM 为静态模块</title>
+
+    <p>在全部平台中，MPM 都可以构建为静态模块。在构建时选择一种
+    MPM，链接到服务器中。如果要改变 MPM，必须重新构建。</p>
+
+    <p>为了使用指定的 MPM，请在执行 <program>configure</program> 脚本
+      时，使用参数 <code>--with-mpm=<em>NAME</em></code>。<em>NAME</em>
+      是指定的 MPM 名称。</p>
+
+    <p>编译完成后，可以使用 <code>./httpd -l</code> 来确定选择的 MPM。
+    此命令会列出编译到服务器程序中的所有模块，包括 MPM。</p>
+
+</section>
+
+<section id="dynamic"><title>构建 MPM 为动态模块</title>
+
+    <p>在 Unix 或类似平台中，MPM 可以构建为动态模块，与其它动态模块一样在运行时加载。
+    构建 MPM 为动态模块允许通过修改 <directive module="mod_so">LoadModule</directive>
+    指令内容来改变 MPM，而不用重新构建服务器程序。</p>
+
+    <p>在执行 <program>configure</program> 脚本时，使用
+    <code>--enable-mpms-shared</code> 选项可以启用此特性。
+    当给出的参数为 <code><em>all</em></code> 时，所有此平台支持的 MPM
+    模块都会被安装。还可以在参数中给出模块列表。</p>
+
+    <p>默认 MPM，可以自动选择或者在执行 <program>configure</program>
+    脚本时通过 <code>--with-mpm</code> 选项来指定，然后出现在生成的服务器配置文件中。
+    编辑 <directive module="mod_so">LoadModule</directive> 指令内容可以选择不同的 MPM。</p>
+
+</section>
+
+</manualpage>
