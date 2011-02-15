@@ -69,8 +69,8 @@ Documentation</title>
 </category>
 
 <category id="howto"><title>How-To / Tutorials</title>
-    <page href="howto/auth.html">Authentication, Authorization, and Access
-    Control</page>
+    <page href="howto/auth.html">Authentication and Authorization</page>
+    <page href="howto/access.html">Access Control</page>
     <page href="howto/cgi.html">CGI: Dynamic Content</page>
     <page href="howto/htaccess.html">.htaccess files</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
