@@ -289,15 +289,15 @@ pourront y accéder sans authentification. Voici comment y parvenir en
 utilisant la directive Satisfy :</p>
 
 <div class="example"><p><code>
-&lt;Directory /usr/local/apache/htdocs/sekrit&gt;
-  AuthType Basic
-  AuthName intranet
-  AuthUserFile /www/passwd/users
-  AuthGroupFile /www/passwd/groups
-  Require group customers
-  Order allow,deny
-  Allow from internal.com
-  Satisfy any
+&lt;Directory /usr/local/apache/htdocs/sekrit&gt;<br />
+  AuthType Basic<br />
+  AuthName intranet<br />
+  AuthUserFile /www/passwd/users<br />
+  AuthGroupFile /www/passwd/groups<br />
+  Require group customers<br />
+  Order allow,deny<br />
+  Allow from internal.com<br />
+  Satisfy any<br />
 &lt;/Directory&gt;
 </code></p></div>
 
