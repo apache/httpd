@@ -36,8 +36,8 @@
 
 <p>Access control can be done by several different modules. The most
 important of these are <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> and
-<code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Other modules
-discussed in this document include <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+<code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Also discussed in this document 
+is access control using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -150,16 +150,25 @@ or before 7am. This technique can be used for any criteria that you wish
 to check. You can also redirect, or otherwise rewrite these requests, if
 that approach is preferred.</p>
 
+<p>The <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive,
+added in 2.4, replaces many things that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> has
+traditionally been used to do, and you should probably look there first
+before resorting to mod_rewrite.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="moreinformation" id="moreinformation">More information</a></h2>
-    <p>You should also read the documentation for
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> and <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> which
-    contain some more information about how this all works.
-    <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code> can also help in simplifying certain
-    authentication configurations.</p>
 
-    <p>See the <a href="auth.html">Authentication and Authorization</a>
+    <p>The <a href="../expr.html">expression engine</a> gives you a
+    great deal of power to do a variety of things based on arbitrary
+    server variables, and you should consult that document for more
+    detail.</p>
+
+    <p>Also, you should read the <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+    documentation for examples of combining multiple access requirements
+    and specifying how they interact.</p>
+
+    <p>See also the <a href="auth.html">Authentication and Authorization</a>
     howto.</p>
 </div></div>
 <div class="bottomlang">
