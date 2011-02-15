@@ -47,13 +47,23 @@ is access control using <module>mod_rewrite</module>.</p>
     <module>mod_authz_host</module>.
     </p>
 
-    <p>The <directive module="mod_authz_host">Allow</directive> and
-    <directive module="mod_authz_host">Deny</directive> directives let
-    you allow and deny access based on the host name, or host
-    address, of the machine requesting a document. The
-    <directive module="mod_authz_host">Order</directive> directive goes
-    hand-in-hand with these two, and tells Apache in which order to
-    apply the filters.</p>
+    <p>The <directive module="mod_authz_core">Require</directive>
+    provides a variety of different ways to allow or deny access to
+    resources. In conjunction with the <directive
+    module="mod_authz_core">RequireAll</directive>, <directive
+    module="mod_authz_core">RequireAny</directive>, and <directive
+    module="mod_authz_core">RequireNone</directive> directives, these
+    requirements may be combined in arbitrarily complex ways, to enforce
+    whatever your access policy happens to be.</p>
+
+    <note type="warning"><p>
+    <p>The <directive module="mod_access_compat">Allow</directive>,
+    <directive module="mod_access_compat">Deny</directive>, and 
+    <directive module="mod_access_compat">Order</directive> directives,
+    provided by <module>mod_access_compat</module>, are deprecated and
+    will go away in a future version. You should avoid using them, and
+    avoid outdated tutorials recommending their use.
+    </p></note>
 
     <p>The usage of these directives is:</p>
 
