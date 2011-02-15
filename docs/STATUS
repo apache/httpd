@@ -99,8 +99,11 @@ To Do List
      - SSL docs need serious update and enhancement
         - compat docs are wrong
         - A basic how to has been started here:
-	http://wiki.apache.org/httpd/SettingUpModSSL
-	but it needs some work...
+            http://wiki.apache.org/httpd/SettingUpModSSL
+            but it needs some work...
+        - http://blag.esotericsystems.at/2011/01/answering-trivial-and-interesting-questions-with-openssl/
+          looks like a good starting point for overhauling the FAQ, and
+          has been placed at our disposal by the author.
 
 - API documentation
     - Ben Laurie has written some hooks documentation
