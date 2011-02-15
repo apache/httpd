@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn" xml:lang="zh-cn"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>多处理模块(MPM) - Apache HTTP 服务器</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">模块</a> | <a href="./mod/directives.html">指令</a> | <a href="./faq/">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a></p>
+<p class="apache">Apache HTTP 服务器版本 2.2</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="./">版本 2.2</a></div><div id="page-content"><div id="preamble"><h1>多处理模块(MPM)</h1>
+<div class="toplang">
+<p><span>可用语言: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./zh-cn/mpm.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+<p>本文档介绍了什么是多处理模块，以及 Apache HTTP 服务器如何使用它们。</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">介绍</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#choosing">选择 MPM</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#defaults">默认 MPM</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">介绍</a></h2>
+
+    <p>Apache HTTP 服务器被设计为一个功能强大，并且灵活的 web 服务器，
+    可以在很多平台与环境中工作。不同平台和不同的环境往往需要不同
+    的特性，或可能以不同的方式实现相同的特性最有效率。Apache
+    通过模块化的设计来适应各种环境。这种设计允许网站管理员通过在
+    编译时或运行时，选择哪些模块将会加载在服务器中，来选择服务器特性。</p>
+
+    <p>Apache 2.0 扩展此模块化设计到最基本的 web 服务器功能。
+    它提供了可以选择的多处理模块(MPM)，用来绑定到网络端口上，接受请求，
+    以及调度子进程处理请求。</p>
+
+    <p>扩展到这一级别的服务器模块化设计，带来两个重要的好处:</p>
+
+    <ul>
+      <li>Apache 能更优雅，更高效率的支持不同的平台。尤其是
+      Apache 的 Windows 版本现在更有效率了，因为
+      <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code> 能使用原生网络特性取代在
+      Apache 1.3 中使用的 POSIX 层。它也可以扩展到其它平台
+      来使用专用的 MPM。</li>
+
+      <li>Apache 能更好的为有特殊要求的站点定制。例如，要求
+      更高伸缩性的站点可以选择使用线程的 MPM，即
+      <code class="module"><a href="./mod/worker.html">worker</a></code> 或 <code class="module"><a href="./mod/event.html">event</a></code>；
+      需要可靠性或者与旧软件兼容的站点可以使用
+      <code class="module"><a href="./mod/prefork.html">prefork</a></code>。</li>
+    </ul>
+
+    <p>在用户看来，MPM 很像其它 Apache 模块。主要是区别是，在任何时间，
+    必须有一个，而且只有一个 MPM 加载到服务器中。可用的 MPM 列表位于
+    <a href="mod/">模块索引页面</a>。</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="choosing" id="choosing">选择 MPM</a></h2>
+
+    <p>MPM 必须在编译前夕，配置时指定，然后编译到服务器程序中。
+    仅当编译器知道使用了线程时，它才有能力优化许多函数。</p>
+
+    <p>为了使用指定的 MPM，请在执行 <code class="program"><a href="./programs/configure.html">configure</a></code>
+      时，使用参数 <code>--with-mpm=<em>NAME</em></code>。<em>NAME</em>
+      是指定的 MPM 名称。</p>
+
+    <p>编译完成后，可以使用 <code>./httpd -l</code> 来确定选择的 MPM。
+    此命令会列出编译到服务器程序中的所有模块，包括 MPM。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="defaults" id="defaults">默认 MPM</a></h2>
+
+<p>下表列出了不同系统的默认 MPM。如果你不在编译时选择，那么它就是你将要使用的 MPM。</p>
+
+<table>
+
+<tr><td>BeOS</td><td><code class="module"><a href="./mod/beos.html">beos</a></code></td></tr>
+<tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
+<tr><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
+<tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
+<tr><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
+</div></div>
+<div class="bottomlang">
+<p><span>可用语言: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/mpm.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/mpm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/mpm.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./zh-cn/mpm.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="menu"><a href="./mod/">模块</a> | <a href="./mod/directives.html">指令</a> | <a href="./faq/">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a></p></div>
+</body></html>
