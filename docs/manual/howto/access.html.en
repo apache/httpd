@@ -48,13 +48,20 @@ is access control using <code class="module"><a href="../mod/mod_rewrite.html">m
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.
     </p>
 
-    <p>The <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and
-    <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives let
-    you allow and deny access based on the host name, or host
-    address, of the machine requesting a document. The
-    <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code> directive goes
-    hand-in-hand with these two, and tells Apache in which order to
-    apply the filters.</p>
+    <p>The <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    provides a variety of different ways to allow or deny access to
+    resources. In conjunction with the <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, and <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> directives, these
+    requirements may be combined in arbitrarily complex ways, to enforce
+    whatever your access policy happens to be.</p>
+
+    <div class="warning"><p>
+    The <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
+    <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>, and 
+    <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code> directives,
+    provided by <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>, are deprecated and
+    will go away in a future version. You should avoid using them, and
+    avoid outdated tutorials recommending their use.
+    </p></div>
 
     <p>The usage of these directives is:</p>
 
