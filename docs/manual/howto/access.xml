@@ -34,9 +34,9 @@
 <section id="related"><title>Related Modules and Directives</title>
 
 <p>Access control can be done by several different modules. The most
-important of these is <module>mod_authz_host</module>. Other modules
-discussed in this document include <module>mod_setenvif</module> and
-<module>mod_rewrite</module>.</p>
+important of these are <module>mod_authz_core</module> and
+<module>mod_authz_host</module>. Other modules
+discussed in this document include <module>mod_rewrite</module>.</p>
 
 </section>
 
@@ -58,20 +58,24 @@ discussed in this document include <module>mod_setenvif</module> and
     <p>The usage of these directives is:</p>
 
     <example>
-      Allow from <var>address</var>
+      Require host <var>address</var><br />
+      Require ip <var>ip.address</var>
     </example>
 
-    <p>where <var>address</var> is an IP address (or a partial IP
-    address) or a fully qualified domain name (or a partial domain
-    name); you may provide multiple addresses or domain names, if
-    desired.</p>
+    <p>In the first form, <var>address</var> is a fully qualified 
+    domain name (or a partial domain name); you may provide multiple 
+    addresses or domain names, if desired.</p>
+
+    <p>In the second form, <var>ip.address</var> is an IP address, a
+    partial IP address, a network/netmask pair, or a network/nnn CIDR
+    specification. Either IPv4 or IPv6 addresses may be used.</p>
 
     <p>For example, if you have someone spamming your message
     board, and you want to keep them out, you could do the
     following:</p>
 
     <example>
-      Deny from 10.252.46.165
+      Require not ip 10.252.46.165
     </example>
 
     <p>Visitors coming from that address will not be able to see
@@ -79,51 +83,40 @@ discussed in this document include <module>mod_setenvif</module> and
     machine name, rather than an IP address, you can use that.</p>
 
     <example>
-      Deny from <var>host.example.com</var>
+      Require not host <var>host.example.com</var>
     </example>
 
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
 
     <example>
-      Deny from <var>192.168.205</var><br />
-      Deny from <var>phishers.example.com</var> <var>moreidiots.example</var><br />
-      Deny from ke
+      Require not ip <var>192.168.205</var><br />
+      Require not host <var>phishers.example.com</var> <var>moreidiots.example</var><br />
+      Require not gov
     </example>
 
-    <p>Using <directive module="mod_authz_host">Order</directive> will let you
-    be sure that you are actually restricting things to the group that you want
-    to let in, by combining a <directive
-    module="mod_authz_host">Deny</directive> and an <directive
-    module="mod_authz_host">Allow</directive> directive:</p>
+    <p>Use of the <directive
+    module="mod_authz_core">RequireAll</directive>, <directive
+    module="mod_authz_core">RequireAny</directive>, and <directive
+    module="mod_authz_core">RequireNone</directive> directives may be
+    used to enforce more complex sets of requirements.</p>
 
-    <example>
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from <var>dev.example.com</var>
-    </example>
-
-    <p>Listing just the <directive module="mod_authz_host">Allow</directive>
-    directive would not do what you want, because it will let folks from that
-    host in, in addition to letting everyone in. What you want is to let
-    <em>only</em> those folks in.</p>
 </section>
 
 <section id="env"><title>Access control by environment variable</title>
 
-    <p>
-    <module>mod_authz_host</module>, in conjunction with
-    <module>mod_setenvif</module>, can be used to restrict access to
-    your website based on the value of arbitrary environment variables.
-    This is done with the <code>Allow from env=</code> and <code>Deny
-    from env=</code> syntax.
-    </p>
+    <p>Using the <directive type="section" module="core">If</directive>,
+    you can allow or deny access based on arbitrary environment
+    variables or request header values. For example, to deny access
+    based on user-agent (the browser type) you might do the
+    following:</p>
 
     <example>
-    SetEnvIf User-Agent BadBot GoAway=1<br />
-    Order allow,deny<br />
-    Allow from all<br />
-    Deny from env=GoAway
+    &lt;If "%{HTTP_USER_AGENT} = 'BadBot'"&gt;<br />
+    <indent>
+        Require All Denied<br />
+    </indent>
+    &lt;/If&gt;
     </example>
 
     <note><title>Warning:</title>
@@ -132,20 +125,9 @@ discussed in this document include <module>mod_setenvif</module> and
     at the whim of the end user.</p>
     </note>
 
-    <p>
-    In the above example, the environment variable <code>GoAway</code>
-    is set to <code>1</code> if the <code>User-Agent</code> matches the
-    string <code>BadBot</code>. Then we deny access for any request when
-    this variable is set. This blocks that particular user agent from
-    the site.
-    </p>
-
-    <p>An environment variable test can be negated using the <code>=!</code>
-    syntax:</p>
-
-    <example><p>
-    Allow from env=!GoAway
-    </p></example>
+    <p>See <a href="../expr.html">the expressions document</a> for a
+    further discussion of what expression syntaxes and variables are
+    available to you.</p>
 
 </section>
 
