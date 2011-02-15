@@ -22,7 +22,7 @@
 
 <manualpage metafile="bind.xml.meta">
 
-  <title>Binding</title>
+  <title>Binding to Addresses and Ports</title>
 
   <summary>
     <p>Configuring Apache HTTP Server to listen on specific addresses and ports.</p>
