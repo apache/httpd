@@ -124,6 +124,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: Trunk version of patch works with offset  
      +1 fuankg
 
+  * mod_rewrite: Allow to unset environment variables.
+     Direct backport from trunk.
+     PR: 50746
+     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26646
+     (patch is simpler if viewed with whitespace changes ignored)
+     +1 rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
