@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn" xml:lang="zh-cn"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache HTTP 服务器与支持程序 - Apache HTTP 服务器</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="../faq/">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p>
+<p class="apache">Apache HTTP 服务器版本 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.2</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP 服务器与支持程序</h1>
+<div class="toplang">
+<p><span>可用语言: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/programs/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+    <p>本页描述了 Apache HTTP 服务器包含的所有可执行程序。</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="index" id="index">索引</a></h2>
+
+    <dl>
+      <dt><code class="program"><a href="../programs/httpd.html">httpd</a></code></dt>
+
+      <dd>Apache 服务器。</dd>
+
+      <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
+
+      <dd>Apache HTTP 服务器控制工具。</dd>
+
+      <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
+
+      <dd>Apache HTTP 服务器性能基准工具。</dd>
+
+      <dt><code class="program"><a href="../programs/apxs.html">apxs</a></code></dt>
+
+      <dd>Apache 扩展工具。</dd>
+
+      <dt><code class="program"><a href="../programs/configure.html">configure</a></code></dt>
+
+      <dd>配置源代码。</dd>
+
+      <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
+
+      <dd>为基本认证创建和更新 DBM 格式的用户认证文件。</dd>
+
+      <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
+      <dd>清理磁盘缓存。</dd>
+
+      <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
+
+      <dd>为摘要认证创建和更新用户认证文件。</dd>
+
+      <dt><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></dt>
+
+      <dd>操作 DBM 密码数据库。</dd>
+
+      <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
+
+      <dd>为基本认证创建和更新用户认证文件。</dd>
+
+      <dt><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code></dt>
+
+      <dd>为 RewriteMap 创建 dbm 文件。</dd>
+
+      <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
+
+      <dd>将 Apache 日志文件中的 IP 地址解析到主机名称。</dd>
+
+      <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
+
+      <dd>不关闭 Apache 而切换日志文件。</dd>
+
+      <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
+
+      <dd>执行外部程序前切换用户。</dd>
+
+      <dt><a href="other.html">其它程序</a></dt>
+      <dd>没有手册页的支持工具。</dd>
+    </dl>
+</div></div>
+<div class="bottomlang">
+<p><span>可用语言: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/programs/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="../faq/">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div>
+</body></html>

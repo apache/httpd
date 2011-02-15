@@ -14,5 +14,6 @@
     <variant outdated="yes">ko</variant>
     <variant outdated="yes">ru</variant>
     <variant>tr</variant>
+    <variant>zh-cn</variant>
   </variants>
 </metafile>
