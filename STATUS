@@ -129,7 +129,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 50746
      2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26646
      (patch is simpler if viewed with whitespace changes ignored)
-     +1 rjung
+     +1 rjung, covener
+        (needs doc too including the behavior change in 2.2.16)
+      
 
 PATCHES/ISSUES THAT ARE STALLED
 
