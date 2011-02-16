@@ -94,8 +94,7 @@
         Anonymous_LogEmail on<br />
         Anonymous anonymous guest www test welcome<br />
         <br />
-        Order Deny,Allow<br />
-        Allow from all<br />
+        Require all granted<br />
         <br />
         Require valid-user<br />
       </indent>

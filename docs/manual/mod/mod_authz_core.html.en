@@ -95,8 +95,7 @@
           Alias /secure /webpages/secure<br />
           &lt;Directory /webpages/secure&gt;<br />
           <span class="indent">
-             Order deny,allow<br />
-             Allow from all<br /><br />
+             Require all granted<br /><br />
         
              AuthBasicProvider file<br /><br />
         
