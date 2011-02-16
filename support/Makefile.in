@@ -31,7 +31,7 @@ install:
 
 htpasswd_OBJECTS = htpasswd.lo
 htpasswd: $(htpasswd_OBJECTS)
-	$(LINK) $(htpasswd_LTFLAGS) $(htpasswd_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) $(htpasswd_LTFLAGS) $(htpasswd_OBJECTS) $(PROGRAM_LDADD) $(CRYPT_LIBS)
 
 htdigest_OBJECTS = htdigest.lo
 htdigest: $(htdigest_OBJECTS)
@@ -47,7 +47,7 @@ logresolve: $(logresolve_OBJECTS)
 
 htdbm_OBJECTS = htdbm.lo
 htdbm: $(htdbm_OBJECTS)
-	$(LINK) $(htdbm_LTFLAGS) $(htdbm_OBJECTS) $(PROGRAM_LDADD)
+	$(LINK) $(htdbm_LTFLAGS) $(htdbm_OBJECTS) $(PROGRAM_LDADD) $(CRYPT_LIBS)
 
 ab_OBJECTS = ab.lo
 ab_LDADD = $(PROGRAM_LDADD) $(SSL_LIBS) $(MATH_LIBS)
