@@ -33,10 +33,10 @@
 
 <section id="related"><title>Related Modules and Directives</title>
 
-<p>Access control can be done by several different modules. The most
-important of these are <module>mod_authz_core</module> and
-<module>mod_authz_host</module>. Also discussed in this document 
-is access control using <module>mod_rewrite</module>.</p>
+    <p>Access control can be done by several different modules. The most
+    important of these are <module>mod_authz_core</module> and
+    <module>mod_authz_host</module>. Also discussed in this document 
+    is access control using <module>mod_rewrite</module>.</p>
 
 </section>
 
@@ -80,7 +80,12 @@ is access control using <module>mod_rewrite</module>.</p>
     partial IP address, a network/netmask pair, or a network/nnn CIDR
     specification. Either IPv4 or IPv6 addresses may be used.</p>
 
-    <p>For example, if you have someone spamming your message
+    <p>See <a href="../mod/mod_authz_host.html#requiredirectives">the
+    mod_authz_host documentation</a> for further examples of this
+    syntax.</p>
+
+    <p>You can insert <code>not</code> to negate a particular requirement.
+    For example, if you have someone spamming your message
     board, and you want to keep them out, you could do the
     following:</p>
 
@@ -113,7 +118,7 @@ is access control using <module>mod_rewrite</module>.</p>
 
 </section>
 
-<section id="env"><title>Access control by environment variable</title>
+<section id="env"><title>Access control by arbitrary variables</title>
 
     <p>Using the <directive type="section" module="core">If</directive>,
     you can allow or deny access based on arbitrary environment
@@ -143,30 +148,30 @@ is access control using <module>mod_rewrite</module>.</p>
 
 <section id="rewrite"><title>Access control with mod_rewrite</title>
 
-<p>The <code>[F]</code> <directive
-module="mod_rewrite">RewriteRule</directive> flag causes a 403 Forbidden
-response to be sent. Using this, you can deny access to a resource based
-on arbitrary criteria.</p>
+    <p>The <code>[F]</code> <directive
+    module="mod_rewrite">RewriteRule</directive> flag causes a 403 Forbidden
+    response to be sent. Using this, you can deny access to a resource based
+    on arbitrary criteria.</p>
 
-<p>For example, if you wish to block access to a resource between 8pm
-and 6am, you can do this using <module>mod_rewrite</module>.</p>
+    <p>For example, if you wish to block access to a resource between 8pm
+    and 6am, you can do this using <module>mod_rewrite</module>.</p>
 
-<example>
-RewriteEngine On<br />
-RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
-RewriteCond %{TIME_HOUR} &lt;07<br />
-RewriteRule ^/fridge - [F]
-</example>
+    <example>
+    RewriteEngine On<br />
+    RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
+    RewriteCond %{TIME_HOUR} &lt;07<br />
+    RewriteRule ^/fridge - [F]
+    </example>
 
-<p>This will return a 403 Forbidden response for any request after 8pm
-or before 7am. This technique can be used for any criteria that you wish
-to check. You can also redirect, or otherwise rewrite these requests, if
-that approach is preferred.</p>
+    <p>This will return a 403 Forbidden response for any request after 8pm
+    or before 7am. This technique can be used for any criteria that you wish
+    to check. You can also redirect, or otherwise rewrite these requests, if
+    that approach is preferred.</p>
 
-<p>The <directive type="section" module="core">If</directive> directive,
-added in 2.4, replaces many things that <module>mod_rewrite</module> has
-traditionally been used to do, and you should probably look there first
-before resorting to mod_rewrite.</p>
+    <p>The <directive type="section" module="core">If</directive> directive,
+    added in 2.4, replaces many things that <module>mod_rewrite</module> has
+    traditionally been used to do, and you should probably look there first
+    before resorting to mod_rewrite.</p>
 
 </section>
 
