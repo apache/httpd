@@ -48,9 +48,9 @@ AP_DECLARE_DATA extern server_rec *ap_server_conf;
 /** global pool, for access prior to creation of server_rec */
 AP_DECLARE_DATA extern apr_pool_t *ap_pglobal;
 /** state of the server (startup, exiting, ...) */
-AP_DECLARE_DATA int ap_main_state;
+AP_DECLARE_DATA extern int ap_main_state;
 /** run mode (normal, config test, config dump, ...) */
-AP_DECLARE_DATA int ap_run_mode;
+AP_DECLARE_DATA extern int ap_run_mode;
 
 /* for -C, -c and -D switches */
 /** An array of all -C directives.  These are processed before the server's
