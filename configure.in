@@ -414,6 +414,13 @@ MATH_LIBS="$LIBS"
 APACHE_SUBST(MATH_LIBS)
 LIBS="$saved_LIBS"
 
+saved_LIBS="$LIBS"
+LIBS=""
+AC_SEARCH_LIBS(crypt, crypt)
+CRYPT_LIBS="$LIBS"
+APACHE_SUBST(CRYPT_LIBS)
+LIBS="$saved_LIBS"
+
 dnl See Comment #Spoon
 
 AC_CHECK_FUNCS( \
