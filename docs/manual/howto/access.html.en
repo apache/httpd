@@ -26,7 +26,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#host">Access control by host</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#env">Access control by environment variable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">Access control by arbitrary variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Access control with mod_rewrite</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
 </ul></div>
@@ -34,10 +34,10 @@
 <div class="section">
 <h2><a name="related" id="related">Related Modules and Directives</a></h2>
 
-<p>Access control can be done by several different modules. The most
-important of these are <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> and
-<code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Also discussed in this document 
-is access control using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    <p>Access control can be done by several different modules. The most
+    important of these are <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> and
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Also discussed in this document 
+    is access control using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -78,7 +78,12 @@ is access control using <code class="module"><a href="../mod/mod_rewrite.html">m
     partial IP address, a network/netmask pair, or a network/nnn CIDR
     specification. Either IPv4 or IPv6 addresses may be used.</p>
 
-    <p>For example, if you have someone spamming your message
+    <p>See <a href="../mod/mod_authz_host.html#requiredirectives">the
+    mod_authz_host documentation</a> for further examples of this
+    syntax.</p>
+
+    <p>You can insert <code>not</code> to negate a particular requirement.
+    For example, if you have someone spamming your message
     board, and you want to keep them out, you could do the
     following:</p>
 
@@ -108,7 +113,7 @@ is access control using <code class="module"><a href="../mod/mod_rewrite.html">m
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">Access control by environment variable</a></h2>
+<h2><a name="env" id="env">Access control by arbitrary variables</a></h2>
 
     <p>Using the <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>,
     you can allow or deny access based on arbitrary environment
@@ -138,29 +143,29 @@ is access control using <code class="module"><a href="../mod/mod_rewrite.html">m
 <div class="section">
 <h2><a name="rewrite" id="rewrite">Access control with mod_rewrite</a></h2>
 
-<p>The <code>[F]</code> <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> flag causes a 403 Forbidden
-response to be sent. Using this, you can deny access to a resource based
-on arbitrary criteria.</p>
+    <p>The <code>[F]</code> <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> flag causes a 403 Forbidden
+    response to be sent. Using this, you can deny access to a resource based
+    on arbitrary criteria.</p>
 
-<p>For example, if you wish to block access to a resource between 8pm
-and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    <p>For example, if you wish to block access to a resource between 8pm
+    and 6am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-<div class="example"><p><code>
-RewriteEngine On<br />
-RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
-RewriteCond %{TIME_HOUR} &lt;07<br />
-RewriteRule ^/fridge - [F]
-</code></p></div>
+    <div class="example"><p><code>
+    RewriteEngine On<br />
+    RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
+    RewriteCond %{TIME_HOUR} &lt;07<br />
+    RewriteRule ^/fridge - [F]
+    </code></p></div>
 
-<p>This will return a 403 Forbidden response for any request after 8pm
-or before 7am. This technique can be used for any criteria that you wish
-to check. You can also redirect, or otherwise rewrite these requests, if
-that approach is preferred.</p>
+    <p>This will return a 403 Forbidden response for any request after 8pm
+    or before 7am. This technique can be used for any criteria that you wish
+    to check. You can also redirect, or otherwise rewrite these requests, if
+    that approach is preferred.</p>
 
-<p>The <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive,
-added in 2.4, replaces many things that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> has
-traditionally been used to do, and you should probably look there first
-before resorting to mod_rewrite.</p>
+    <p>The <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive,
+    added in 2.4, replaces many things that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> has
+    traditionally been used to do, and you should probably look there first
+    before resorting to mod_rewrite.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
