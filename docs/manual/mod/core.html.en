@@ -735,7 +735,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     be applied.</p>
 
    <p><strong>Note that the default access for
-    <code>&lt;Directory /&gt;</code> is <code>Allow from All</code>.
+    <code>&lt;Directory /&gt;</code> is to permit all access.
     This means that Apache httpd will serve any file mapped from an URL. It is
     recommended that you change this with a block such
     as</strong></p>
@@ -743,8 +743,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     <div class="example"><p><code>
       &lt;Directory /&gt;<br />
       <span class="indent">
-        Order Deny,Allow<br />
-        Deny from All<br />
+        Require all denied<br />
       </span>
       &lt;/Directory&gt;
     </code></p></div>

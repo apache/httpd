@@ -76,9 +76,9 @@ by other LDAP modules</description>
       &lt;Location /ldap-status&gt;<br />
       <indent>
         SetHandler ldap-status<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from yourdomain.example.com<br />
+
+        Require host yourdomain.example.com<br />
+
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "LDAP Protected"<br />
@@ -221,9 +221,9 @@ by other LDAP modules</description>
       &lt;Location /ldap-status&gt;<br />
       <indent>
         SetHandler ldap-status<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from yourdomain.example.com<br />
+
+        Require host yourdomain.example.com<br />
+
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "LDAP Protected"<br />
@@ -244,9 +244,9 @@ by other LDAP modules</description>
       &lt;Location /ldap-status&gt;<br />
       <indent>
         SetHandler ldap-status<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from yourdomain.example.com<br />
+
+        Require host yourdomain.example.com<br />
+
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "LDAP Protected"<br />
@@ -298,9 +298,9 @@ by other LDAP modules</description>
             &lt;Location /ldap-status&gt;<br />
             <indent>
                 SetHandler ldap-status<br />
-                Order deny,allow<br />
-                Deny from all<br />
-                Allow from yourdomain.example.com<br />
+
+                Require host yourdomain.example.com<br />
+
                 Satisfy any<br />
                 AuthType Basic<br />
                 AuthName "LDAP Protected"<br />
@@ -369,9 +369,9 @@ by other LDAP modules</description>
             &lt;Location /ldap-status&gt;<br />
             <indent>
                 SetHandler ldap-status<br />
-                Order deny,allow<br />
-                Deny from all<br />
-                Allow from yourdomain.example.com<br />
+
+                Require host yourdomain.example.com<br />
+
                 LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
                 LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
                 # CA certs respecified due to per-directory client certs<br />
