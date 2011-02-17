@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1066444:1070639 (outdated) -->
+<!-- English Revision: 1070639 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -3183,6 +3183,23 @@ belirler.</description>
      sıralanmalıdırlar.</p>
 </usage>
 <seealso><a href="../filter.html">Süzgeçler</a> belgesi</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Suexec</name>
+<description>suEXEC özelliğini açar veya kapar</description>
+<syntax>Suexec On|Off</syntax>
+<default>suexec çalıştırılabiliri doğru sahip ve kip ile mevcutsa etkin kılınır, yoksa etkin kılınmaz.</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Apache httpd 2.2.18 ve sonrasında kullanılabilir.</compatibility>
+
+<usage>
+    <p>Yönergeye On değeri verildiğinde, suexec çalıştırılabiliri mevcut değilse
+      veya çalıştırılabilir dosyanın sahibi veya kip geçersizse sunucu
+      başlatılamaz.</p>
+    <p>Off değeri verildiğinde ise, suexec çalıştırılabiliri doğru sahip ve kip
+      ile mevcutsa bile suEXEC iptal edilir.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

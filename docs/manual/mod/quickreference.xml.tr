@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 636524:1070905 (outdated) -->
+<!-- English Revision: 1070905 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -23,11 +27,18 @@
 <quickreference metafile="quickreference.xml.meta">
   <title>Hızlı Yönerge Kılavuzu</title>
   <summary>
-    <p>Bu hızlı yönerge kılavuzunda Apache yapılandırma yönergelerinin kullanımı, öntanımlı değerleri, durumu ve bağlamı gösterilmiştir. Bunların her biri hakkında ayrıntılı bilgi almak için <a
-    href="directive-dict.html">Yönerge Sözlüğü</a>ne bakınız.</p>
+    <p>Bu hızlı yönerge kılavuzunda Apache yapılandırma yönergelerinin kullanımı,
+      öntanımlı değerleri, durumu ve bağlamı gösterilmiştir. Bunların her biri
+      hakkında ayrıntılı bilgi almak için
+      <a href="directive-dict.html">Yönerge Sözlüğü</a>ne bakınız.</p>
 
-    <p>İlk sütunda yönergenin ismi ve kullanımı belirtilmiştir. İkinci sütunda yönergenin varsa öntanımlı değeri gösterilmiştir. Eğer öntanımlı değer sütuna sığmayacak kadar uzunsa sığmayan kısmın yerine “+” imi konmuştur.</p>
+    <p>İlk sütunda yönergenin ismi ve kullanımı belirtilmiştir. İkinci sütunda
+      yönergenin varsa öntanımlı değeri gösterilmiştir. Eğer öntanımlı değer
+      sütuna sığmayacak kadar uzunsa sığmayan kısım atılıp yerine “+” imi
+      konmuştur.</p>
 
-    <p>Aşağıda sağdaki gösterge tablolarına uygun olarak, üçüncü sütunda yönergenin kullanımına izin verilen bağlamlar, dördüncü sütunda ise  yönergenin durumu gösterilmiştir.</p>
+    <p>Aşağıda sağdaki gösterge tablolarına uygun olarak, üçüncü sütunda
+      yönergenin kullanımına izin verilen bağlamlar, dördüncü sütunda ise
+      yönergenin durumu gösterilmiştir.</p>
   </summary>
 </quickreference>
