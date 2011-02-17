@@ -696,7 +696,7 @@ typedef struct ap_errorlog_info {
 
     /** current request_rec. */
     const request_rec *r;
-    /** r->main if r is a subreqest, otherwise equal to r */
+    /** r->main if r is a subrequest, otherwise equal to r */
     const request_rec *rmain;
 
     /** name of source file where the log message was produced. */
