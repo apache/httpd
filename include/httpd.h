@@ -1853,6 +1853,33 @@ AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src,
  */
 AP_DECLARE(apr_status_t) ap_str2_alnum(const char *src, char *dest);
 
+/**
+ * Structure to store the contents of an HTTP form of the type
+ * application/x-www-form-urlencoded.
+ * 
+ * Currently it contains the name as a char* of maximum length
+ * HUGE_STRING_LEN, and a value in the form of a bucket brigade
+ * of arbitrary length.
+ */
+typedef struct {
+    const char *name;
+    apr_bucket_brigade *value;
+} ap_form_pair_t;
+
+/**
+ * Read the body and parse any form found, which must be of the
+ * type application/x-www-form-urlencoded.
+ * @param r request containing POSTed form data
+ * @param f filter
+ * @param ptr returned array of ap_form_pair_t
+ * @param num max num of params or -1 for unlimited
+ * @param size max size allowed for parsed data
+ * @return OK or HTTP error
+ */
+AP_DECLARE(int) ap_parse_form_data(request_rec *r, struct ap_filter_t *f,
+				   apr_array_header_t **ptr,
+                                   apr_size_t num, apr_size_t size);
+
 /* Misc system hackery */
 /**
  * Given the name of an object in the file system determine if it is a directory
