@@ -300,7 +300,8 @@
  * 20110117.1 (2.3.11-dev) Add ap_pstr2_alnum() and ap_str2_alnum()
  * 20110203.0 (2.3.11-dev) Raise DYNAMIC_MODULE_LIMIT to 256
  * 20110203.1 (2.3.11-dev) Add ap_state_query()
- * 20110203.2 (2.3.11-dev) Add ap_run_pre_read_request() hook
+ * 20110203.2 (2.3.11-dev) Add ap_run_pre_read_request() hook and
+ *                         ap_parse_form_data() util
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

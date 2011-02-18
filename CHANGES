@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) core: new util function: ap_parse_form_data(). Previously,
+     this capability was tucked away in mod_request. [Jim Jagielski]
+
   *) core: new hook: ap_run_pre_read_request. [Jim Jagielski]
 
   *) mod_cache: When a request other than GET or HEAD arrives, we must

@@ -46,9 +46,6 @@ static void (*ap_session_get_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char **value) = NULL;
 static void (*ap_session_set_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char *value) = NULL;
-static int (*ap_parse_request_form_fn) (request_rec * r, ap_filter_t *f,
-                                        apr_array_header_t ** ptr,
-                                        apr_size_t num, apr_size_t size) = NULL;
 static void (*ap_request_insert_filter_fn) (request_rec * r) = NULL;
 static void (*ap_request_remove_filter_fn) (request_rec * r) = NULL;
 
@@ -187,11 +184,10 @@ static const char *add_authn_provider(cmd_parms * cmd, void *config,
         }
     }
 
-    if (!ap_parse_request_form_fn || !ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
-        ap_parse_request_form_fn = APR_RETRIEVE_OPTIONAL_FN(ap_parse_request_form);
+    if (!ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
         ap_request_insert_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_insert_filter);
         ap_request_remove_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_remove_filter);
-        if (!ap_parse_request_form_fn || !ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
+        if (!ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
             return "You must load mod_request to enable the mod_auth_form "
                    "functions";
         }
@@ -607,7 +603,7 @@ static int get_form_auth(request_rec * r,
         return OK;
     }
 
-    res = ap_parse_request_form_fn(r, NULL, &pairs, -1, conf->form_size);
+    res = ap_parse_form_data(r, NULL, &pairs, -1, conf->form_size);
     if (res != OK) {
         return res;
     }
