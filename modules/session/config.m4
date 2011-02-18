@@ -34,7 +34,11 @@ APACHE_MODULE(session_cookie, session cookie module, $session_cookie_objects, , 
 APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , no, [
   saved_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES"
-  AC_CHECK_HEADERS(apr_crypto.h, [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
+  AC_TRY_COMPILE([#include <apr_crypto.h>],[
+#if APU_HAVE_CRYPTO == 0
+#error no crypto support
+#endif
+], [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
   CPPFLAGS="$saved_CPPFLAGS"
   if test $ap_HAVE_APR_CRYPTO = "no"; then
     AC_MSG_WARN([Your APR does not include SSL/EVP support.])
