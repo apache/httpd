@@ -296,7 +296,10 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_WORKER_MAX_SCHEME_SIZE    16
 #define PROXY_WORKER_MAX_ROUTE_SIZE     64
 #define PROXY_WORKER_MAX_NAME_SIZE      96
+#define PROXY_WORKER_MAX_HOSTNAME_SIZE  64
 #define PROXY_BALANCER_MAX_STICKY_SIZE  64
+
+#define PROXY_MAX_PROVIDER_NAME_SIZE    16
 
 #define PROXY_STRNCPY(dst, src) apr_cpystrn((dst), (src), sizeof(dst))
 
@@ -315,7 +318,7 @@ do {                             \
 typedef struct {
     char      name[PROXY_WORKER_MAX_NAME_SIZE];
     char      scheme[PROXY_WORKER_MAX_SCHEME_SIZE];   /* scheme to use ajp|http|https */
-    char      hostname[PROXY_WORKER_MAX_ROUTE_SIZE];  /* remote backend address */
+    char      hostname[PROXY_WORKER_MAX_HOSTNAME_SIZE];  /* remote backend address */
     char      route[PROXY_WORKER_MAX_ROUTE_SIZE];     /* balancing route */
     char      redirect[PROXY_WORKER_MAX_ROUTE_SIZE];  /* temporary balancing redirection route */
     char      flusher[PROXY_WORKER_MAX_SCHEME_SIZE];  /* flush provider used by mod_proxy_fdpass */
@@ -389,10 +392,10 @@ struct proxy_worker {
 typedef struct {
     char      sticky_path[PROXY_BALANCER_MAX_STICKY_SIZE];     /* URL sticky session identifier */
     char      sticky[PROXY_BALANCER_MAX_STICKY_SIZE];          /* sticky session identifier */
+    char      lbpname[PROXY_MAX_PROVIDER_NAME_SIZE];  /* lbmethod provider name */
     char nonce[APR_UUID_FORMATTED_LENGTH + 1];
     apr_interval_time_t timeout;  /* Timeout for waiting on free connection */
     apr_time_t      wupdated;     /* timestamp of last change to workers list */
-    proxy_balancer_method *lbmethod;
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
     unsigned int    sticky_force:1;   /* Disable failover for sticky sessions */
@@ -413,6 +416,7 @@ struct proxy_balancer {
     const char *name;             /* name of the load balancer */
     const char *sname;            /* filesystem safe balancer name */
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
+    proxy_balancer_method *lbmethod;
     apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
     apr_thread_mutex_t  *tmutex; /* Thread lock for updating shm */
     void            *context;    /* general purpose storage */
@@ -857,14 +861,14 @@ PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w);
 
 
 /**
- * Create readable representation of worker status bitfield
+ * Sync balancer and workers based on any updates w/i shm
  * @param b  balancer to check/update member list of
  * @param s  server rec
  * @param conf config
  * @return   APR_SUCCESS if all goes well
  */
-PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_rec *s,
-                                                    proxy_server_conf *conf);
+PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec *s,
+                                                   proxy_server_conf *conf);
 
 
 /**
