@@ -1381,23 +1381,24 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     (*balancer)->gmutex = NULL;
     (*balancer)->tmutex = NULL;
+    (*balancer)->lbmethod = lbmethod;
 
     if (do_malloc)
         bshared = malloc(sizeof(proxy_balancer_shared));
     else
         bshared = apr_palloc(p, sizeof(proxy_balancer_shared));
-    
+
     memset(bshared, 0, sizeof(proxy_balancer_shared));
-    
-    bshared->lbmethod = lbmethod;
+
     bshared->was_malloced = (do_malloc != 0);
+    PROXY_STRNCPY(bshared->lbpname, "byrequests");
 
     /* Retrieve a UUID and store the nonce for the lifetime of
      * the process. */
     apr_uuid_get(&uuid);
     apr_uuid_format(nonce, &uuid);
-    PROXY_STRNCPY(bshared->nonce, nonce);    
-    
+    PROXY_STRNCPY(bshared->nonce, nonce);
+
     (*balancer)->s = bshared;
 
     return NULL;
@@ -1410,6 +1411,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
                                                     proxy_balancer_shared *shm,
                                                     int i)
 {
+    proxy_balancer_method *lbmethod;
     if (!shm || !balancer->s)
         return APR_EINVAL;
 
@@ -1418,6 +1420,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
         free(balancer->s);
     balancer->s = shm;
     balancer->s->index = i;
+    /* the below should always succeed */
+    lbmethod = ap_lookup_provider(PROXY_LBMETHOD, balancer->s->lbpname, "0");
+    if (lbmethod)
+        balancer->lbmethod = lbmethod;
     return APR_SUCCESS;
 }
 
@@ -1442,7 +1448,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
                      "no mutex %s", balancer->name);
         return APR_EGENERAL;
     }
-    
+
     /* Re-open the mutex for the child. */
     rv = apr_global_mutex_child_init(&(balancer->gmutex),
                                      apr_global_mutex_lockfile(balancer->gmutex),
@@ -1453,16 +1459,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
                      balancer->name);
         return rv;
     }
-    
+
     /* now attach */
     storage->attach(&(balancer->slot), balancer->sname, &size, &num, p);
     if (!balancer->slot) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
         return APR_EGENERAL;
     }
-    if (balancer->s->lbmethod && balancer->s->lbmethod->reset)
-        balancer->s->lbmethod->reset(balancer, s);
-    
+    if (balancer->lbmethod && balancer->lbmethod->reset)
+        balancer->lbmethod->reset(balancer, s);
+
     if (balancer->tmutex == NULL) {
         rv = apr_thread_mutex_create(&(balancer->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
         if (rv != APR_SUCCESS) {
@@ -1470,7 +1476,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
                          "can not create balancer thread mutex");
             return rv;
         }
-    }    
+    }
     return APR_SUCCESS;
 }
 
@@ -1897,7 +1903,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                              "can not create worker thread mutex");
                 return rv;
             }
-        }    
+        }
         if (worker->cp == NULL)
             init_conn_pool(p, worker);
         if (worker->cp == NULL) {
@@ -2933,17 +2939,25 @@ PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w)
     return ret;
 }
 
-PROXY_DECLARE(apr_status_t) ap_proxy_update_members(proxy_balancer *b, server_rec *s,
+PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec *s,
                                                     proxy_server_conf *conf)
 {
     proxy_worker **workers;
     int i;
     int index;
     proxy_worker_shared *shm;
+    proxy_balancer_method *lbmethod;
     ap_slotmem_provider_t *storage = b->storage;
 
     if (b->s->wupdated <= b->wupdated)
         return APR_SUCCESS;
+    /* balancer sync */
+    lbmethod = ap_lookup_provider(PROXY_LBMETHOD, b->s->lbpname, "0");
+    if (lbmethod) {
+	b->lbmethod = lbmethod;
+    }
+    /* worker sync */
+
     /*
      * Look thru the list of workers in shm
      * and see which one(s) we are lacking...

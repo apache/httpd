@@ -331,7 +331,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
         return NULL;
     }
 
-    candidate = (*balancer->s->lbmethod->finder)(balancer, r);
+    candidate = (*balancer->lbmethod->finder)(balancer, r);
 
     if (candidate)
         candidate->s->elected++;
@@ -470,14 +470,14 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
     /* Step 3.5: Update member list for the balancer */
     /* TODO: Implement as provider! */
-    ap_proxy_update_members(*balancer, r->server, conf);
+    ap_proxy_sync_balancer(*balancer, r->server, conf);
 
     /* Step 4: find the session route */
     runtime = find_session_route(*balancer, r, &route, &sticky, url);
     if (runtime) {
-        if ((*balancer)->s->lbmethod && (*balancer)->s->lbmethod->updatelbstatus) {
+        if ((*balancer)->lbmethod && (*balancer)->lbmethod->updatelbstatus) {
             /* Call the LB implementation */
-            (*balancer)->s->lbmethod->updatelbstatus(*balancer, runtime, r->server);
+            (*balancer)->lbmethod->updatelbstatus(*balancer, runtime, r->server);
         }
         else { /* Use the default one */
             int i, total_factor = 0;
@@ -874,7 +874,7 @@ static int balancer_handler(request_rec *r)
                          "proxy: BALANCER: (%s). Lock failed for balancer_handler",
                          balancer->name);
         }
-        ap_proxy_update_members(balancer, r->server, conf);
+        ap_proxy_sync_balancer(balancer, r->server, conf);
         if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "proxy: BALANCER: (%s). Unlock failed for balancer_handler",
@@ -975,10 +975,15 @@ static int balancer_handler(request_rec *r)
         const char *val;
         int ival;
         if ((val = apr_table_get(params, "b_lbm"))) {
-            proxy_balancer_method *lbmethod;
-            lbmethod = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
-            if (lbmethod)
-                bsel->s->lbmethod = lbmethod;
+            if (strlen(val) < (sizeof(bsel->s->lbpname)-1)) {
+                proxy_balancer_method *lbmethod;
+                lbmethod = ap_lookup_provider(PROXY_LBMETHOD, bsel->s->lbpname, "0");
+                if (lbmethod) {
+                    PROXY_STRNCPY(bsel->s->lbpname, val);
+                    bsel->lbmethod = lbmethod;
+                    bsel->s->wupdated = apr_time_now();
+                }
+            }
         }
         if ((val = apr_table_get(params, "b_tmo"))) {
             ival = atoi(val);
@@ -997,7 +1002,7 @@ static int balancer_handler(request_rec *r)
             bsel->s->sticky_force = (ival != 0);
         }
         if ((val = apr_table_get(params, "b_ss")) && *val) {
-            if (strlen(val) < (PROXY_BALANCER_MAX_STICKY_SIZE-1)) {
+            if (strlen(val) < (sizeof(bsel->s->sticky_path)-1)) {
                 if (*val == '-' && *(val+1) == '\0')
                     *bsel->s->sticky_path = *bsel->s->sticky = '\0';
                 else {
@@ -1075,9 +1080,9 @@ static int balancer_handler(request_rec *r)
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                                  "proxy: BALANCER: (%s). Unlock failed for adding worker",
                                  bsel->name);
-                }                
+                }
             }
-            
+
         }
 
     }
@@ -1156,7 +1161,7 @@ static int balancer_handler(request_rec *r)
                 apr_time_sec(balancer->s->timeout));
             ap_rprintf(r, "<td align='center'>%d</td>\n", balancer->s->max_attempts);
             ap_rprintf(r, "<td align='center'>%s</td>\n",
-                       balancer->s->lbmethod->name);
+                       balancer->s->lbpname);
             ap_rputs("</table>\n<br />", r);
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
                 "<th>Worker URL</th>"
@@ -1244,7 +1249,7 @@ static int balancer_handler(request_rec *r)
                 pname = (ap_list_provider_names_t *)provs->elts;
                 for (i = 0; i < provs->nelts; i++, pname++) {
                     ap_rvputs(r,"<option value='", pname->provider_name, "'", NULL);
-                    if (strcmp(pname->provider_name, bsel->s->lbmethod->name) == 0)
+                    if (strcmp(pname->provider_name, bsel->s->lbpname) == 0)
                         ap_rputs(" selected ", r);
                     ap_rvputs(r, ">", pname->provider_name, "\n", NULL);
                 }
