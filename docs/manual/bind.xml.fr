@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1031215:1070889 (outdated) -->
+<!-- English Revision: 1070889 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,7 +24,7 @@
 
 <manualpage metafile="bind.xml.meta">
 
-  <title>Adresse IP et port d'&eacute;coute</title>
+  <title>Ecoute s&eacute;lective</title>
 
   <summary>
     <p>Configuration du serveur HTTP Apache pour l'&eacute;coute

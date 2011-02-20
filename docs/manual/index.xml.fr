@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1050960:1070894 (outdated) -->
+<!-- English Revision: 1070894 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -52,7 +52,7 @@
 </category>
 
 <category id="usersguide"><title>Guide de l'utilisateur</title>
-    <page href="bind.html">Adresse IP et port d'&eacute;coute</page>
+    <page href="bind.html">Ecoute s&eacute;lective</page>
     <page href="configuring.html">Fichiers de configuration</page>
     <page href="sections.html">Sections de configuration</page>
     <page href="caching.html">Mise en cache du contenu</page>
@@ -71,7 +71,8 @@
 </category>
 
 <category id="howto"><title>Recettes / Tutoriels</title>
-    <page href="howto/auth.html">Authentification, autorisation, et contr&ocirc;le d'acc&egrave;s</page>
+    <page href="howto/auth.html">Authentification et autorisation</page>
+    <page href="howto/access.html">Contr&ocirc;le d'acc&egrave;s</page>
     <page href="howto/cgi.html">CGI: Contenu dynamique</page>
     <page href="howto/htaccess.html">Fichiers .htaccess</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>

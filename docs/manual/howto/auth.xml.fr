@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 958741 -->
+<!-- English Revision : 1070891 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -32,6 +32,9 @@
     qu'une personne est bien celle qu'elle pr&eacute;tend &ecirc;tre. L'autorisation
     est un processus qui permet &agrave; une personne d'aller l&agrave; o&ugrave; elle veut
     aller, ou d'obtenir les informations qu'elle d&eacute;sire.</p>
+
+    <p>Pour le contr&ocirc;le d'acc&egrave;s en g&eacute;n&eacute;ral, voir le How-To <a
+    href="access.html">Contr&ocirc;le d'acc&egrave;s</a>.</p>
 </summary>
 
 <section id="related"><title>Modules et directives concern&eacute;s</title>
@@ -648,16 +651,16 @@ autorisation</title>
 
 <section id="socache"><title>Mise en cache de l'authentification</title>
     <p>Dans certains cas, l'authentification constitue une charge
-    inacceptable pour un fournisseur d'authentification ou votre réseau.
+    inacceptable pour un fournisseur d'authentification ou votre r&eacute;seau.
     Ceci est susceptible d'affecter les utilisateurs du module
     <module>mod_authn_dbd</module> (ou les fournisseurs
-    tiers/personnalisés). Pour résoudre ce problème, HTTPD 2.3/2.4
+    tiers/personnalis&eacute;s). Pour r&eacute;soudre ce probl&egrave;me, HTTPD 2.3/2.4
     propose un nouveau fournisseur de mise en cache,
     <module>mod_authn_socache</module>, qui permet de mettre en cache
-    les données d'authentification, et ainsi réduire la charge du/des
+    les donn&eacute;es d'authentification, et ainsi r&eacute;duire la charge du/des
     fournisseurs(s) originels.</p>
     <p>Cette mise en cache apportera un gain en performance substantiel
-    à certains utilisateurs.</p>
+    &agrave; certains utilisateurs.</p>
 </section>
 
 <section id="moreinformation"><title>Pour aller plus loin . . .</title>

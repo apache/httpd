@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1042758 -->
+<!-- English revision : 1070919 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,22 +28,12 @@
   <title>Chiffrement fort SSL/TLS : Mode d'emploi</title>
 
 <summary>
-<blockquote>
-<p>La solution &agrave; ce probl&egrave;me est &eacute;vidente et le lecteur la recherchera
-&agrave; titre d'exercice</p>
 
-<p class="cite">-- <cite>Phrase standard des manuels</cite></p>
-</blockquote>
-
-<p>R&eacute;soudre des probl&egrave;mes de s&eacute;curit&eacute; particuliers pour un serveur web
-utilisant SSL n'est pas toujours &eacute;vident &agrave; cause des interactions entre SSL,
-HTTP et la mani&egrave;re dont Apache traite les requ&ecirc;tes. Ce chapitre donne des
-instructions pour r&eacute;soudre certaines situations typiques. Consid&eacute;rez-le
-comme une premi&egrave;re &eacute;tape sur le chemin de la solution d&eacute;finitive, mais
-efforcez-vous toujours de comprendre ce que vous faites pour r&eacute;soudre le
-probl&egrave;me avant d'utiliser la solution. Rien n'est pire que d'utiliser une
-solution de s&eacute;curit&eacute; sans conna&icirc;tre ses restrictions et la mani&egrave;re dont elle
-interagit avec les autres syst&egrave;mes.</p>
+<p>Ce document doit vous permettre de d&eacute;marrer et de faire fonctionner
+une configuration de base. Avant de vous lancer dans l'application de
+techniques avanc&eacute;es, il est fortement recommand&eacute; de lire le reste
+de la documentation SSL afin d'en comprendre le fonctionnement de
+mani&egrave;re plus approfondie.</p>
 </summary>
 
 <section id="configexample">
@@ -54,11 +44,13 @@ suivantes :</p>
 
 <example>
    Listen 443
-   &lt;VirtualHost _default_:443&gt;<br />
+   &lt;VirtualHost *:443&gt;<br />
+   <indent>
         ServerName www.example.com<br />
         SSLEngine on<br />
         SSLCertificateFile /chemin/vers/www.example.com.cert<br />
         SSLCertificateKeyFile /chemin/vers/www.example.com.key<br />
+   </indent>
    &lt;/VirtualHost&gt;
 </example>
 
