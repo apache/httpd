@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1050958 -->
+<!-- English Revision : 1070650 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1043,9 +1043,9 @@ l'espace d'URLs du serveur local</description>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Dur&eacute;e de vie des connexions inactives et des entr&eacute;es
-	associ&eacute;es du jeu de connexions. Celles qui sont inutilis&eacute;es au
-	bout de <code>ttl</code> secondes seront respectivement ferm&eacute;es
-	et lib&eacute;r&eacute;es.
+	associ&eacute;es du jeu de connexions. Lorsque cette limite est
+	atteinte, la connexion concern&eacute;e ne sera plus utilis&eacute;e ; elle
+	sera ensuite ferm&eacute;e au bout d'un certain temps.
     </td></tr>
 
     </table>
