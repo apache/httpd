@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1066444 -->
+<!-- English Revision : 1070639 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3543,6 +3543,25 @@ du serveur</description>
     lequel vous souhaitez les voir agir sur les contenus.</p>
 </usage>
 <seealso><a href="../filter.html">Filters</a> documentation</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Suexec</name>
+<description>Active ou d&eacute;sactive la fonctionnalit&eacute; suEXEC</description>
+<syntax>Suexec On|Off</syntax>
+<default>On si le binaire suexec existe avec un mode et un propri&eacute;taire
+appropri&eacute;s, Off dans le cas contraire</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible depuis la version 2.2.18 d'Apache httpd</compatibility>
+
+<usage>
+    <p>Lorsque cette directive est d&eacute;finie &agrave; On, le d&eacute;marrage du serveur
+    &eacute;chouera si le binaire suexec n'existe pas, ou poss&egrave;de un mode de
+    fichier ou un propri&eacute;taire invalides.</p>
+    <p>Lorsque cette directive est d&eacute;finie &agrave; Off, la fonctionnalit&eacute;
+    suEXEC est d&eacute;sactiv&eacute;e, m&ecirc;me si le binaire suexec existe et poss&egrave;de
+    un mode de fichier et un propri&eacute;taire valides.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
