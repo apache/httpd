@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1061758 -->
+<!-- English Revision : 1071221 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -745,16 +745,15 @@ host</context>
     correspondante s'appliquera.</p>
 
    <p><strong>Notez que la politique d'acc&egrave;s par d&eacute;faut
-   dans les sections <code>&lt;Directory /&gt;</code> est <code>Allow
-   from All</code>. Ceci signifie qu'Apache httpd va servir tout fichier
+   dans les sections <code>&lt;Directory /&gt;</code> consiste &agrave;
+   autoriser tout acc&egrave;s sans restriction. Ceci signifie qu'Apache httpd va servir tout fichier
    correspondant &agrave; une URL. Il est recommand&eacute; de modifier cette
    situation &agrave; l'aide d'un bloc du style</strong></p>
 
     <example>
       &lt;Directory /&gt;<br />
       <indent>
-        Order Deny,Allow<br />
-        Deny from All<br />
+        Require all denied<br />
       </indent>
       &lt;/Directory&gt;
     </example>

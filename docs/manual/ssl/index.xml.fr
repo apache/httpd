@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 420990 -->
+<!-- English Revision : 1070915 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,9 +39,9 @@ sur le projet mod_ssl de Ralf S. Engelschall.</p>
 
 <section id="documentation"><title>Documentation</title>
 <ul>
-<li><a href="ssl_intro.html">Introduction</a></li>
+<li><a href="ssl_howto.html">Comment configurer SSL ?</a></li>
+<li><a href="ssl_intro.html">Introduction &agrave; SSL</a></li>
 <li><a href="ssl_compat.html">Compatibilit&eacute;</a></li>
-<li><a href="ssl_howto.html">Comment faire ... ?</a></li>
 <li><a href="ssl_faq.html">Foire aux questions</a></li>
 <li><a href="../glossary.html">Glossaire</a></li>
 </ul>

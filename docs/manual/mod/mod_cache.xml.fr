@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1043126 -->
+<!-- English Revision : 1070179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -344,7 +344,7 @@ cache</a></seealso>
   </example>
 
   <p>En fonction de la d&eacute;cision prise, l'information est aussi &eacute;crite
-  dans l'environnement du sous-processus sous une des trois cl&eacute;s
+  dans l'environnement du sous-processus sous une des quatre cl&eacute;s
   suivantes :</p>
 
   <dl>
@@ -353,6 +353,8 @@ cache</a></seealso>
     mis &agrave; jour avec succ&egrave;s, puis servi depuis le cache.</dd>
     <dt>cache-miss</dt><dd>Le contenu n'&eacute;tait pas dans le cache et a &eacute;t&eacute;
     servi directement depuis le serveur demand&eacute;.</dd>
+    <dt>cache-invalidate</dt><dd>L'entit&eacute; du cache est devenue invalide
+    suite &agrave; une requ&ecirc;te d'un type autre que GET ou HEAD.</dd>
   </dl>
 
   <p>Il est alors possible d'envisager une journalisation conditionnelle
@@ -363,7 +365,13 @@ cache</a></seealso>
     CustomLog requetes-depuis-cache.log common env=cache-hit<br />
     CustomLog requetes-hors-cache.log common env=cache-miss<br />
     CustomLog requetes-avec-mise-a-jour-du-cache.log common env=cache-revalidate<br />
+    CustomLog requetes-avec-invalidation.log common env=cache-invalidate<br />
   </example>
+
+  <p>Pour les concepteurs de modules, une accroche (hook) nomm&eacute;e
+  <var>cache_status</var> est disponible et permet aux modules de
+  r&eacute;pondre aux r&eacute;sultats de la v&eacute;rification du cache ci-dessus de mani&egrave;re
+  personnalis&eacute;e.</p>
 
 </section>
 
