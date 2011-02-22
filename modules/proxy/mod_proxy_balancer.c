@@ -837,7 +837,53 @@ static void create_radio(const char *name, unsigned int flag, request_rec *r)
     ap_rputs("></td>\n", r);
 }
 
+static void push2table(const char *input, apr_table_t *params,
+                       const char *allowed[], apr_pool_t *p)
+{
+    char *args;
+    char *tok, *val;
+    char *key;
+    
+    if (input == NULL) {
+        return;
+    }
+    args = apr_pstrdup(p, input);
+
+    key = apr_strtok(args, "&", &tok);
+    while (key) {
+        val = strchr(key, '=');
+        if (val) {
+            *val++ = '\0';
+        }
+        else {
+            val = "";
+        }
+        ap_unescape_url(key);
+        ap_unescape_url(val);
+        if (allowed == NULL) { /* allow all */
+            apr_table_set(params, key, val);
+        }
+        else {
+            const char *ok = *allowed;
+            while (ok) {
+                if (strcmp(ok, key) == 0) {
+                    apr_table_set(params, key, val);
+                    break;
+                }
+                ok++;
+            }
+        }
+        key = apr_strtok(NULL, "&", &tok);
+    }
+}
+
 /* Manages the loadfactors and member status
+ *   The balancer, worker and nonce are obtained from
+ *   the request args (?b=...&w=...&nonce=....).
+ *   All other params are pulled from any POST
+ *   data that exists.
+ * TODO:
+ *   /.../<whatever>/balancer/worker/nonce
  */
 static int balancer_handler(request_rec *r)
 {
@@ -847,18 +893,21 @@ static int balancer_handler(request_rec *r)
     proxy_worker *worker, *wsel = NULL;
     proxy_worker **workers = NULL;
     apr_table_t *params;
-    int access_status;
     int i, n;
     int ok2change = 1;
     const char *name;
+    const char *action;
+    apr_status_t rv;
 
     /* is this for us? */
     if (strcmp(r->handler, "balancer-manager")) {
         return DECLINED;
     }
 
-    r->allowed = (AP_METHOD_BIT << M_GET);
-    if (r->method_number != M_GET) {
+    r->allowed = 0
+    | (AP_METHOD_BIT << M_GET)
+    | (AP_METHOD_BIT << M_POST);
+    if ((r->method_number != M_GET) && (r->method_number != M_POST)) {
         return DECLINED;
     }
 
@@ -868,7 +917,6 @@ static int balancer_handler(request_rec *r)
 
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-        apr_status_t rv;
         if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "proxy: BALANCER: (%s). Lock failed for balancer_handler",
@@ -882,28 +930,27 @@ static int balancer_handler(request_rec *r)
         }
     }
 
-    if (r->args) {
-        char *args = apr_pstrdup(r->pool, r->args);
-        char *tok, *val;
-        while (args && *args) {
-            if ((val = ap_strchr(args, '='))) {
-                *val++ = '\0';
-                if ((tok = ap_strchr(val, '&')))
-                    *tok++ = '\0';
-                /*
-                 * Special case: workers are allowed path information
-                 */
-                if ((access_status = ap_unescape_url(val)) != OK)
-                    if ((strcmp(args, "w") && strcmp(args, "b_nwrkr")) || (access_status !=  HTTP_NOT_FOUND))
-                        return access_status;
-                apr_table_setn(params, args, val);
-                args = tok;
-            }
-            else
-                return HTTP_BAD_REQUEST;
-        }
-    }
+    if (r->args && (r->method_number == M_GET)) {
+        const char *allowed[] = { "w", "b", "nonce", NULL };
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "parsing r->args");
 
+        push2table(r->args, params, allowed, r->pool);
+    }
+    if (r->method_number == M_POST) {
+        apr_bucket_brigade *ib;
+        apr_size_t len;
+        char *buf = apr_pcalloc(r->pool, 1024);;
+        
+        ib = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
+        rv = ap_get_brigade(r->input_filters, ib, AP_MODE_READBYTES,
+                                APR_BLOCK_READ, 1024);
+        if (rv != APR_SUCCESS) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        apr_brigade_flatten(ib, buf, &len);
+        buf[len] = '\0';
+        push2table(buf, params, NULL, r->pool);
+    }
     if ((name = apr_table_get(params, "b")))
         bsel = ap_proxy_get_balancer(r->pool, conf,
             apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL));
@@ -930,6 +977,8 @@ static int balancer_handler(request_rec *r)
     /* First set the params */
     if (wsel && ok2change) {
         const char *val;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "settings worker params");
+
         if ((val = apr_table_get(params, "w_lf"))) {
             int ival = atoi(val);
             if (ival >= 1 && ival <= 100) {
@@ -974,6 +1023,7 @@ static int balancer_handler(request_rec *r)
     if (bsel && ok2change) {
         const char *val;
         int ival;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "settings balancer params");
         if ((val = apr_table_get(params, "b_lbm"))) {
             if (strlen(val) < (sizeof(bsel->s->lbpname)-1)) {
                 proxy_balancer_method *lbmethod;
@@ -1022,7 +1072,6 @@ static int balancer_handler(request_rec *r)
             (val = apr_table_get(params, "b_nwrkr"))) {
             char *ret;
             proxy_worker *nworker;
-            apr_status_t rv;
             nworker = ap_proxy_get_worker(conf->pool, bsel, conf, val);
             if (!nworker && storage->num_free_slots(bsel->slot)) {
                 if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
@@ -1086,6 +1135,9 @@ static int balancer_handler(request_rec *r)
         }
 
     }
+
+    action = ap_construct_url(r->pool, r->uri, r);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "genning page");
 
     if (apr_table_get(params, "xml")) {
         ap_set_content_type(r, "text/xml");
@@ -1203,9 +1255,9 @@ static int balancer_handler(request_rec *r)
         if (wsel && bsel) {
             ap_rputs("<h3>Edit worker settings for ", r);
             ap_rvputs(r, wsel->s->name, "</h3>\n", NULL);
-            ap_rvputs(r, "<form method='GET' action='", NULL);
-            ap_rvputs(r, r->uri, "'>\n<dl>", NULL);
-            ap_rputs("<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
+            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
+            ap_rvputs(r, action, "'>\n", NULL);
+            ap_rputs("<dl>\n<table><tr><td>Load factor:</td><td><input name='w_lf' id='w_lf' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbfactor);
             ap_rputs("<tr><td>LB Set:</td><td><input name='w_ls' id='w_ls' type=text ", r);
             ap_rprintf(r, "value='%d'></td></tr>\n", wsel->s->lbset);
@@ -1240,8 +1292,9 @@ static int balancer_handler(request_rec *r)
             int i;
             ap_rputs("<h3>Edit balancer settings for ", r);
             ap_rvputs(r, bsel->name, "</h3>\n", NULL);
-            ap_rvputs(r, "<form method='GET' action='", NULL);
-            ap_rvputs(r, r->uri, "'>\n<dl>\n<table>\n", NULL);
+            ap_rputs("<form method='POST' enctype='application/x-www-form-urlencoded' action='", r);
+            ap_rvputs(r, action, "'>\n", NULL);
+            ap_rputs("<dl>\n<table>\n", r);
             provs = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
             if (provs) {
                 ap_rputs("<tr><td>LBmethod:</td>", r);
@@ -1286,8 +1339,9 @@ static int balancer_handler(request_rec *r)
         }
         ap_rputs(ap_psignature("",r), r);
         ap_rputs("</body></html>\n", r);
-}
-    return OK;
+        ap_rflush(r);
+    }
+    return DONE;
 }
 
 static void balancer_child_init(apr_pool_t *p, server_rec *s)
