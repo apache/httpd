@@ -240,8 +240,8 @@
         Require expr %{TIME_HOUR} &gt;= 9 &amp; %{TIME_HOUR} &lt;= 17 <br />
     </example>
 
-    <p>TODO: Include a link to a description of the ap_expr syntax, once we have
-        such a description.</p>
+  <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
+  documentation.</p>
 
   </section>
 

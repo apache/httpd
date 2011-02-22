@@ -31,14 +31,20 @@
         for all configuration directives.
         This document describes the <em>ap_expr</em> expression parser.
     </p>
+    <p>The <em>ap_expr</em> expression is intended to replace most other
+        expression variants in HTTPD. For example, the deprecated
+        <directive module="mod_ssl">SSLRequire</directive> expressions can be
+        replaced by <a href="mod/mod_authz_core.html#reqexpr">Require expr</a>.
+    </p>
   </summary>
 
 <seealso><directive module="core">If</directive></seealso>
-<seealso><module>mod_rewrite</module></seealso>
-<seealso><module>mod_include</module></seealso>
-<seealso><module>mod_setenvif</module></seealso>
-<seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
+<seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
+<seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
+<seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><module>mod_include</module></seealso>
 
   <section id="grammar">
     <title>Grammar in Backus–Naur Form notation</title>
@@ -153,7 +159,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>REQUEST_URI</code></td>
         <td>The URI of the request</td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
-        <td></td></tr>
+        <td>The full local filesystem path to the file or script matching the
+            request, if this has already been determined by the server at the
+            time <code>REQUEST_FILENAME</code> is referenced. Otherwise, such
+            as when used in virtual host context, the same value as
+            <code>REQUEST_URI</code> </td></tr>
     <tr><td><code>SCRIPT_FILENAME</code></td>
         <td>Same as <code>REQUEST_FILENAME</code></td></tr>
     <tr><td><code>SCRIPT_USER</code></td>
@@ -161,7 +171,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>SCRIPT_GROUP</code></td>
         <td>The group name of the group of the script.</td></tr>
     <tr><td><code>PATH_INFO</code></td>
-        <td></td></tr>
+        <td>The trailing path name information, see
+            <directive module="core">AcceptPathInfo</directive></td></tr>
     <tr><td><code>QUERY_STRING</code></td>
         <td>The query string of the current request</td></tr>
     <tr><td><code>IS_SUBREQ</code></td>
