@@ -766,16 +766,15 @@ sous-répertoires, et à leur contenu.</td></tr>
     correspondante s'appliquera.</p>
 
    <p><strong>Notez que la politique d'accès par défaut
-   dans les sections <code>&lt;Directory /&gt;</code> est <code>Allow
-   from All</code>. Ceci signifie qu'Apache httpd va servir tout fichier
+   dans les sections <code>&lt;Directory /&gt;</code> consiste à
+   autoriser tout accès sans restriction. Ceci signifie qu'Apache httpd va servir tout fichier
    correspondant à une URL. Il est recommandé de modifier cette
    situation à l'aide d'un bloc du style</strong></p>
 
     <div class="example"><p><code>
       &lt;Directory /&gt;<br />
       <span class="indent">
-        Order Deny,Allow<br />
-        Deny from All<br />
+        Require all denied<br />
       </span>
       &lt;/Directory&gt;
     </code></p></div>

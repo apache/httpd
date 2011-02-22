@@ -28,6 +28,11 @@
         for all configuration directives.
         This document describes the <em>ap_expr</em> expression parser.
     </p>
+    <p>The <em>ap_expr</em> expression is intended to replace most other
+        expression variants in HTTPD. For example, the deprecated
+        <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> expressions can be
+        replaced by <a href="mod/mod_authz_core.html#reqexpr">Require expr</a>.
+    </p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#grammar">Grammar in Backus&#8211;Naur Form notation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#vars">Variables</a></li>
@@ -35,7 +40,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#unnop">Unary operators</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#functions">Functions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Other</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">If</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">If</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="grammar" id="grammar">Grammar in Backus&#8211;Naur Form notation</a></h2>
@@ -144,7 +149,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr><td><code>REQUEST_URI</code></td>
         <td>The URI of the request</td></tr>
 <tr class="odd"><td><code>REQUEST_FILENAME</code></td>
-        <td /></tr>
+        <td>The full local filesystem path to the file or script matching the
+            request, if this has already been determined by the server at the
+            time <code>REQUEST_FILENAME</code> is referenced. Otherwise, such
+            as when used in virtual host context, the same value as
+            <code>REQUEST_URI</code> </td></tr>
 <tr><td><code>SCRIPT_FILENAME</code></td>
         <td>Same as <code>REQUEST_FILENAME</code></td></tr>
 <tr class="odd"><td><code>SCRIPT_USER</code></td>
@@ -152,7 +161,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr><td><code>SCRIPT_GROUP</code></td>
         <td>The group name of the group of the script.</td></tr>
 <tr class="odd"><td><code>PATH_INFO</code></td>
-        <td /></tr>
+        <td>The trailing path name information, see
+            <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></td></tr>
 <tr><td><code>QUERY_STRING</code></td>
         <td>The query string of the current request</td></tr>
 <tr class="odd"><td><code>IS_SUBREQ</code></td>
