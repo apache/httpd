@@ -104,9 +104,9 @@ d'Apache</td></tr></table>
       &lt;Location /statut-ldap&gt;<br />
       <span class="indent">
         SetHandler ldap-status<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from votre-domaine.example.com<br />
+        
+        Require host votre-domaine.example.com<br />
+
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "Protégé par LDAP"<br />
@@ -260,9 +260,9 @@ d'Apache</td></tr></table>
       &lt;Location /statut-ldap&gt;<br />
       <span class="indent">
         SetHandler ldap-status<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from votre-domaine.example.com<br />
+
+        Require host votre-domaine.example.com<br />
+        
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "Protégé par LDAP"<br />
@@ -284,9 +284,9 @@ d'Apache</td></tr></table>
       &lt;Location /statut-ldap&gt;<br />
       <span class="indent">
         SetHandler ldap-status<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from votre-domaine.example.com<br />
+        
+        Require host votre-domaine.example.com<br />
+
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "Protégé par LDAP"<br />
@@ -342,9 +342,9 @@ d'Apache</td></tr></table>
             &lt;Location /statut-ldap&gt;<br />
             <span class="indent">
                 SetHandler ldap-status<br />
-                Order deny,allow<br />
-                Deny from all<br />
-                Allow from votre-domaine.example.com<br />
+                
+                Require host votre-domaine.example.com<br />
+
                 Satisfy any<br />
                 AuthType Basic<br />
                 AuthName "Protégé par LDAP"<br />
@@ -420,9 +420,9 @@ d'Apache</td></tr></table>
             &lt;Location /statut-ldap&gt;<br />
             <span class="indent">
                 SetHandler ldap-status<br />
-                Order deny,allow<br />
-                Deny from all<br />
-                Allow from votre-domaine.example.com<br />
+                
+                Require host votre-domaine.example.com<br />
+
                 LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
                 LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
                 Satisfy any<br />

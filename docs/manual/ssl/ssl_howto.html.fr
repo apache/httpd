@@ -22,22 +22,12 @@
 <a href="../fr/ssl/ssl_howto.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-<blockquote>
-<p>La solution à ce problème est évidente et le lecteur la recherchera
-à titre d'exercice</p>
 
-<p class="cite">-- <cite>Phrase standard des manuels</cite></p>
-</blockquote>
-
-<p>Résoudre des problèmes de sécurité particuliers pour un serveur web
-utilisant SSL n'est pas toujours évident à cause des interactions entre SSL,
-HTTP et la manière dont Apache traite les requêtes. Ce chapitre donne des
-instructions pour résoudre certaines situations typiques. Considérez-le
-comme une première étape sur le chemin de la solution définitive, mais
-efforcez-vous toujours de comprendre ce que vous faites pour résoudre le
-problème avant d'utiliser la solution. Rien n'est pire que d'utiliser une
-solution de sécurité sans connaître ses restrictions et la manière dont elle
-interagit avec les autres systèmes.</p>
+<p>Ce document doit vous permettre de démarrer et de faire fonctionner
+une configuration de base. Avant de vous lancer dans l'application de
+techniques avancées, il est fortement recommandé de lire le reste
+de la documentation SSL afin d'en comprendre le fonctionnement de
+manière plus approfondie.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configexample">Exemple de configuration basique</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites de chiffrement et mise en application de la sécurité
@@ -58,11 +48,13 @@ suivantes :</p>
 
 <div class="example"><p><code>
    Listen 443
-   &lt;VirtualHost _default_:443&gt;<br />
+   &lt;VirtualHost *:443&gt;<br />
+   <span class="indent">
         ServerName www.example.com<br />
         SSLEngine on<br />
         SSLCertificateFile /chemin/vers/www.example.com.cert<br />
         SSLCertificateKeyFile /chemin/vers/www.example.com.key<br />
+   </span>
    &lt;/VirtualHost&gt;
 </code></p></div>
 
