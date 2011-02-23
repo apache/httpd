@@ -938,12 +938,12 @@ static int balancer_handler(request_rec *r)
     }
     if (r->method_number == M_POST) {
         apr_bucket_brigade *ib;
-        apr_size_t len;
-        char *buf = apr_pcalloc(r->pool, 1024);;
+        apr_size_t len = 1024;
+        char *buf = apr_pcalloc(r->pool, len+1);
         
         ib = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
         rv = ap_get_brigade(r->input_filters, ib, AP_MODE_READBYTES,
-                                APR_BLOCK_READ, 1024);
+                                APR_BLOCK_READ, len);
         if (rv != APR_SUCCESS) {
             return HTTP_INTERNAL_SERVER_ERROR;
         }
