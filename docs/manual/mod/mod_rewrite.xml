@@ -485,7 +485,8 @@ RewriteRule ^index\.html$  newsite.html
                   browser to the server (e.g., "<code>GET
                   /index.html HTTP/1.1</code>"). This does not
                   include any additional headers sent by the
-                  browser.</dd>
+                  browser.  This value has not been unescaped 
+                  (decoded), unlike most other variables below.</dd>
 
                   <dt><code>REQUEST_URI</code></dt>
 
