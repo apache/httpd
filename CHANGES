@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.11
 
+  *) mod_proxy: balancer-manager now uses POST instead of GET.
+     [Jim Jagielski]
+
   *) core: new util function: ap_parse_form_data(). Previously,
      this capability was tucked away in mod_request. [Jim Jagielski]
 
@@ -19,6 +22,12 @@ Changes with Apache 2.3.11
      if the current configuration run is the initial one at server startup,
      and if the server is started for testing/config dumping only.
      [Stefan Fritsch]
+
+  *) mod_proxy: Runtime configuration of many parameters for existing
+     balancers via the balancer-manager. [Jim Jagielski]
+
+  *) mod_proxy: Runtime addition of new workers (BalancerMember) for existing
+     balancers via the balancer-manager. [Jim Jagielski]
 
   *) mod_cache: When a bad Expires date is present, we need to behave as if
      the Expires is in the past, not as if the Expires is missing. PR 16521.
