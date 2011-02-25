@@ -101,7 +101,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
           (head[0] == 0x12 && head[1] == 0x34))) {
 
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_check_msg_header() got bad signature %02x%02x",
+                      "ajp_msg_check_header() got bad signature %02x%02x",
                       head[0], head[1]);
 
         return AJP_EBAD_SIGNATURE;
@@ -112,7 +112,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
 
     if (msglen > msg->max_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                     "ajp_check_msg_header() incoming message is "
+                     "ajp_msg_check_header() incoming message is "
                      "too big %" APR_SIZE_T_FMT ", max is %" APR_SIZE_T_FMT,
                      msglen, msg->max_size);
         return AJP_ETOBIG;
