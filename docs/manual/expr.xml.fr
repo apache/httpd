@@ -34,14 +34,22 @@
     <em>ap_expr</em>, pour toutes les directives de configuration. Ce
     document d&eacute;crit l'interpr&eacute;teur d'expressions <em>ap_expr</em>.
     </p>
+    <p>Le type d'expression <em>ap_expr</em> est appel&eacute; &agrave; remplacer la
+    plupart des autres types d'expressions dans HTTPD. Par exemple, la
+    directive obsol&egrave;te <directive
+    module="mod_ssl">SSLRequire</directive> peut &ecirc;tre remplac&eacute;e par la
+    directive <a href="mod/mod_authz_core.html#reqexpr">Require
+    expr</a>.
+    </p>
   </summary>
 
 <seealso><directive module="core">If</directive></seealso>
-<seealso><module>mod_rewrite</module></seealso>
-<seealso><module>mod_include</module></seealso>
-<seealso><module>mod_setenvif</module></seealso>
-<seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
+<seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
+<seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
+<seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><module>mod_include</module></seealso>
 
   <section id="grammar">
     <title>Syntaxe en Forme de Backus-Naur</title>
@@ -158,7 +166,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>REQUEST_URI</code></td>
         <td>L'URI de la requ&ecirc;te</td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
-        <td></td></tr>
+        <td>Le chemin complet dans le syst&egrave;me de fichiers local du
+	fichier ou du script correspondant &agrave; la requ&ecirc;te, si le serveur
+	l'a d&egrave;j&agrave; d&eacute;termin&eacute; &agrave; l'instant o&ugrave; <code>REQUEST_FILENAME</code>
+	est r&eacute;f&eacute;renc&eacute;e. Dans le cas contraire, comme dans un
+	contexte de serveur virtuel, m&ecirc;me valeur que <code>REQUEST_URI</code> </td></tr>	
     <tr><td><code>SCRIPT_FILENAME</code></td>
         <td>Identique &agrave; <code>REQUEST_FILENAME</code></td></tr>
     <tr><td><code>SCRIPT_USER</code></td>
@@ -166,7 +178,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>SCRIPT_GROUP</code></td>
         <td>Le nom du groupe auquel appartient le script.</td></tr>
     <tr><td><code>PATH_INFO</code></td>
-        <td></td></tr>
+        <td>L'information relative au nom de chemin situ&eacute;e en fin, voir
+	la directive <directive module="core">AcceptPathInfo</directive></td></tr>
     <tr><td><code>QUERY_STRING</code></td>
         <td>La cha&icirc;ne de param&egrave;tres de la requ&ecirc;te courante</td></tr>
     <tr><td><code>IS_SUBREQ</code></td>

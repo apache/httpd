@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1063587 -->
+<!-- English Revision : 1073591 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -532,7 +532,9 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
                   <dd>La ligne de requ&ecirc;te HTTP compl&egrave;te envoy&eacute;e par le
 		  navigateur au serveur (par exemple, "<code>GET
                   /index.html HTTP/1.1</code>"), &agrave; l'exclusion de tout
-		  en-t&ecirc;te ajout&eacute; par le navigateur.</dd>
+		  en-t&ecirc;te ajout&eacute; par le navigateur. Cette
+		  valeur n'a pas &eacute;t&eacute; d&eacute;s&eacute;chapp&eacute;e (d&eacute;cod&eacute;e), &agrave; la
+		  diff&eacute;rence de la plupart des variables suivantes.</dd>
 
                   <dt><code>REQUEST_URI</code></dt>
 
