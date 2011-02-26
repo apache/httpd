@@ -65,7 +65,8 @@ RELEASE SHOWSTOPPERS:
   FOR GA:
 
   * Modules that are not ready for production use should be marked as
-    experimental.  Candidates:
+    experimental or be removed. The same for modules without documentation.
+    Candidates:
     - MPM simple
     - mod_serf
 
@@ -73,11 +74,6 @@ RELEASE SHOWSTOPPERS:
     practices and not use deprecated features.
 
   FOR BETA:
-
-  * Modules without documentation need to be moved to experimental or be
-    removed.
-      jim sez: why a blocker for beta??, pgollucci agrees with jim, this is GA
-        stuff
 
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
