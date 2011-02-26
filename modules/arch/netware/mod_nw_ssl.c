@@ -291,7 +291,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     }
 
     if (mutual) {
-        optParam = 0x07;  // SO_SSL_AUTH_CLIENT
+        optParam = 0x07;  /* SO_SSL_AUTH_CLIENT */
 
         if(WSAIoctl(s, SO_SSL_SET_FLAGS, (char*)&optParam,
             sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
@@ -346,17 +346,17 @@ static int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
     sWS2Opts.options = &sNWTLSOpts;
 
     if (numcerts) {
-        sNWTLSOpts.walletProvider = WAL_PROV_DER;   //the wallet provider defined in wdefs.h
-        sNWTLSOpts.TrustedRootList = certarray;     //array of certs in UNICODE format
-        sNWTLSOpts.numElementsInTRList = numcerts;  //number of certs in TRList
+        sNWTLSOpts.walletProvider = WAL_PROV_DER;   /* the wallet provider defined in wdefs.h */
+        sNWTLSOpts.TrustedRootList = certarray;     /* array of certs in UNICODE format       */
+        sNWTLSOpts.numElementsInTRList = numcerts;  /* number of certs in TRList              */
     }
     else {
         /* setup the socket for SSL */
         unicpy(keyFileName, L"SSL CertificateIP");
-        sWS2Opts.wallet = keyFileName;    /* no client certificate */
+        sWS2Opts.wallet = keyFileName;              /* no client certificate */
         sWS2Opts.walletlen = unilen(keyFileName);
 
-        sNWTLSOpts.walletProvider = WAL_PROV_KMO;  //the wallet provider defined in wdefs.h
+        sNWTLSOpts.walletProvider = WAL_PROV_KMO;   /* the wallet provider defined in wdefs.h */
     }
 
     /* make the IOCTL call */
@@ -406,7 +406,7 @@ static int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
 
     loc2uni(UNI_LOCAL_DEFAULT, SASKey, key, 0, 0);
 
-    //setup the tlsserveropts struct
+    /* setup the tlsserveropts struct */
     sWS2Opts.wallet = SASKey;
     sWS2Opts.walletlen = unilen(SASKey);
     sWS2Opts.sidtimeout = 0;
@@ -414,7 +414,7 @@ static int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
     sWS2Opts.siddir = NULL;
     sWS2Opts.options = &sNWTLSOpts;
 
-    //setup the nwtlsopts structure
+    /* setup the nwtlsopts structure */
 
     sNWTLSOpts.walletProvider               = WAL_PROV_KMO;
     sNWTLSOpts.keysList                     = NULL;

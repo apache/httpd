@@ -80,11 +80,11 @@ AP_DECLARE_DATA extern int ap_real_exit_code;
 AP_DECLARE(apr_status_t) ap_os_proc_filepath(char **binpath, apr_pool_t *p);
 
 typedef enum {
-    AP_DLL_WINBASEAPI = 0,    // kernel32 From WinBase.h
-    AP_DLL_WINADVAPI = 1,     // advapi32 From WinBase.h
-    AP_DLL_WINSOCKAPI = 2,    // mswsock  From WinSock.h
-    AP_DLL_WINSOCK2API = 3,   // ws2_32   From WinSock2.h
-    AP_DLL_defined = 4        // must define as last idx_ + 1
+    AP_DLL_WINBASEAPI = 0,    /* kernel32 From WinBase.h      */
+    AP_DLL_WINADVAPI = 1,     /* advapi32 From WinBase.h      */
+    AP_DLL_WINSOCKAPI = 2,    /* mswsock  From WinSock.h      */
+    AP_DLL_WINSOCK2API = 3,   /* ws2_32   From WinSock2.h     */
+    AP_DLL_defined = 4        /* must define as last idx_ + 1 */
 } ap_dlltoken_e;
 
 FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal);

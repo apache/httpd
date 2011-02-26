@@ -694,19 +694,19 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
          * depend on it.
          */
         /* ###: utf-ize */
-        schService = CreateService(schSCManager,         // SCManager database
-                                   mpm_service_name,     // name of service
-                                   mpm_display_name,     // name to display
-                                   SERVICE_ALL_ACCESS,   // access required
-                                   SERVICE_WIN32_OWN_PROCESS,  // service type
-                                   SERVICE_AUTO_START,   // start type
-                                   SERVICE_ERROR_NORMAL, // error control type
-                                   launch_cmd,           // service's binary
-                                   NULL,                 // no load svc group
-                                   NULL,                 // no tag identifier
-                                   "Tcpip\0Afd\0",       // dependencies
-                                   NULL,                 // use SYSTEM account
-                                   NULL);                // no password
+        schService = CreateService(schSCManager,         /* SCManager database */
+                                   mpm_service_name,     /* name of service    */
+                                   mpm_display_name,     /* name to display    */
+                                   SERVICE_ALL_ACCESS,   /* access required    */
+                                   SERVICE_WIN32_OWN_PROCESS,  /* service type */
+                                   SERVICE_AUTO_START,   /* start type         */
+                                   SERVICE_ERROR_NORMAL, /* error control type */
+                                   launch_cmd,           /* service's binary   */
+                                   NULL,                 /* no load svc group  */
+                                   NULL,                 /* no tag identifier  */
+                                   "Tcpip\0Afd\0",       /* dependencies       */
+                                   NULL,                 /* use SYSTEM account */
+                                   NULL);                /* no password        */
 
         if (!schService)
         {
@@ -893,7 +893,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
 
-    schSCManager = OpenSCManager(NULL, NULL, // default machine & database
+    schSCManager = OpenSCManager(NULL, NULL, /* default machine & database */
                                  SC_MANAGER_CONNECT);
 
     if (!schSCManager) {
