@@ -1997,30 +1997,30 @@ AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c);
 #ifdef AP_DEBUG
 
 #undef strchr
-# define strchr(s, c)	ap_strchr(s,c)
+# define strchr(s, c)  ap_strchr(s,c)
 #undef strrchr
-# define strrchr(s, c)  ap_strrchr(s,c)
+# define strrchr(s, c) ap_strrchr(s,c)
 #undef strstr
 # define strstr(s, c)  ap_strstr(s,c)
 
 #else
 
 /** use this instead of strchr */
-# define ap_strchr(s, c)	strchr(s, c)
+# define ap_strchr(s, c)     strchr(s, c)
 /** use this instead of strchr */
-# define ap_strchr_c(s, c)	strchr(s, c)
+# define ap_strchr_c(s, c)   strchr(s, c)
 /** use this instead of strrchr */
-# define ap_strrchr(s, c)	strrchr(s, c)
+# define ap_strrchr(s, c)    strrchr(s, c)
 /** use this instead of strrchr */
-# define ap_strrchr_c(s, c)	strrchr(s, c)
+# define ap_strrchr_c(s, c)  strrchr(s, c)
 /** use this instead of strrstr*/
-# define ap_strstr(s, c)	strstr(s, c)
+# define ap_strstr(s, c)     strstr(s, c)
 /** use this instead of strrstr*/
-# define ap_strstr_c(s, c)	strstr(s, c)
+# define ap_strstr_c(s, c)   strstr(s, c)
 
 #endif
 
-#define AP_NORESTART		APR_OS_START_USEERR + 1
+#define AP_NORESTART APR_OS_START_USEERR + 1
 
 #ifdef __cplusplus
 }
