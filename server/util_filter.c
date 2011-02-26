@@ -291,8 +291,8 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             outf = r_filters;
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "a content filter was added without a request: %s", frec->name);
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+                          "a content filter was added without a request: %s", frec->name);
             return NULL;
         }
     }
@@ -301,8 +301,8 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             outf = p_filters;
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                         "a protocol filter was added without a request: %s", frec->name);
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+                          "a protocol filter was added without a request: %s", frec->name);
             return NULL;
         }
     }
@@ -398,8 +398,8 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                 "an unknown filter was not added: %s", name);
+    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, r ? r->connection : c,
+                  "an unknown filter was not added: %s", name);
     return NULL;
 }
 

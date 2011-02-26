@@ -180,7 +180,7 @@ static apr_status_t create_namebased_scoreboard(apr_pool_t *pool,
 
     rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, fname, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "unable to create or access scoreboard \"%s\" "
                      "(name-based shared memory failure)", fname);
         return rv;
@@ -205,7 +205,7 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
      */
     rv = apr_pool_create(&global_pool, NULL);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Fatal error: unable to create global pool "
                      "for use by the scoreboard");
         return rv;
@@ -216,7 +216,7 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
         /* make sure it's an absolute pathname */
         fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
         if (!fname) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, APR_EBADPATH, NULL,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, APR_EBADPATH, ap_server_conf,
                          "Fatal error: Invalid Scoreboard path %s",
                          ap_scoreboard_fname);
             return APR_EBADPATH;
@@ -227,7 +227,7 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
         rv = apr_shm_create(&ap_scoreboard_shm, scoreboard_size, NULL,
                             global_pool); /* anonymous shared memory */
         if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                          "Unable to create or access scoreboard "
                          "(anonymous shared memory failure)");
             return rv;
@@ -255,7 +255,7 @@ apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached)
         return APR_SUCCESS;
     }
     if (apr_shm_size_get(ap_scoreboard_shm) < scoreboard_size) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
                      "Fatal error: shared scoreboard too small for child!");
         apr_shm_detach(ap_scoreboard_shm);
         ap_scoreboard_shm = NULL;
@@ -325,7 +325,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         /* A simple malloc will suffice */
         void *sb_mem = calloc(1, scoreboard_size);
         if (sb_mem == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
                          "(%d)%s: cannot allocate scoreboard",
                          errno, strerror(errno));
             return HTTP_INTERNAL_SERVER_ERROR;

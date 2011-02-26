@@ -323,7 +323,7 @@ void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
 
     rv = ap_reopen_scoreboard(s->process->pool, scoreboard_shm, 1);
     if (rv || !(sb_shared = apr_shm_baseaddr_get(*scoreboard_shm))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                      "Child %d: Unable to reopen the scoreboard from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }

@@ -148,7 +148,7 @@ static int noloris_monitor(apr_pool_t *pool, server_rec *s)
         if (*n >= default_max_connections) {
             /* if this isn't a trusted proxy, we mark it as bad */
             if (!apr_hash_get(trusted, ip, APR_HASH_KEY_STRING)) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, 0,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                        "noloris: banning %s with %d connections in READ state",
                        ip, *n);
                 strcpy(shm_rec, ip);

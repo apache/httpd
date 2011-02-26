@@ -124,7 +124,7 @@ pid_t os_fork(const char *user)
         pid = ufork(username);
         if (pid == -1 && errno == EPERM) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
-                         NULL, "ufork: Possible mis-configuration "
+                         ap_server_conf, "ufork: Possible mis-configuration "
                          "for user %s - Aborting.", user);
             exit(1);
         }
