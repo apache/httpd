@@ -307,7 +307,7 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
 #ifdef _OSD_POSIX
         apr_os_sock_get(&sockdes, csd);
         if (sockdes >= FD_SETSIZE) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
                          "new file descriptor %d is too large; you probably need "
                          "to rebuild Apache with a larger FD_SETSIZE "
                          "(currently %d)",
@@ -535,7 +535,7 @@ pid_t os_fork(const char *user)
         pid = ufork(username);
         if (pid == -1 && errno == EPERM) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
-                         NULL, "ufork: Possible mis-configuration "
+                         ap_server_conf, "ufork: Possible mis-configuration "
                          "for user %s - Aborting.", user);
             exit(1);
         }

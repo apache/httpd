@@ -285,11 +285,11 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             }
             if (!stopping) {
                 if (status == DAEMON_STARTUP_ERROR) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
                                  "cgid daemon failed to initialize");
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
                                  "cgid daemon process died, restarting");
                     cgid_start(root_pool, root_server, proc);
                 }
@@ -314,7 +314,7 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
              * guarantee the same permissions as when the socket was created.
              */
             if (unlink(sockname) < 0 && errno != ENOENT) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, errno, NULL,
+                ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
                              "Couldn't unlink unix domain socket %s",
                              sockname);
             }
