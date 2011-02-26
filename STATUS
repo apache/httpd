@@ -76,12 +76,13 @@ RELEASE SHOWSTOPPERS:
 
   * Modules without documentation need to be moved to experimental or be
     removed.
-      jim sez: why a blocker for beta??
+      jim sez: why a blocker for beta??, pgollucci agrees with jim, this is GA
+        stuff
 
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
       jim sez: Then we just ship with those... mark any others as
-                experimental
+                experimental, pgollucci +1 jim
 
   FOR NEXT ALPHA:
 
@@ -91,10 +92,11 @@ RELEASE SHOWSTOPPERS:
     jim sez: from what I can see, mod_session* is no worse that other
              modules that mix these 2 types... clean up is
              forthcoming but should not be considered a blocker, imo
+    pgollucci: +1 jim
 
   * mod_ssl's proxy support only allows one proxy client certificate per
     frontend virtual host. Lift this restriction.
-    jim sez: Why a blocker?
+    jim sez: Why a blocker?, pgollucci +1 jim
 
 
   OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.2 BUT OBVIOUSLY WEREN'T:
@@ -123,7 +125,7 @@ CURRENT VOTES:
     Recent discussion indicates we should designate a (short name).
     This is not yet a [Vote] - Your nominations please:
       * Apache HTTP Server (httpd)
-        +1: sctemme (why mess with it?)
+        +1: sctemme (why mess with it?), pgollucci
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
