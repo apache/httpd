@@ -24,12 +24,6 @@ apr_status_t ajp_ilink_send(apr_socket_t *sock, ajp_msg_t *msg)
     apr_status_t status;
     apr_size_t   length;
 
-    if (sock == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_ilink_send(): NULL socket provided");
-        return AJP_EINVAL;
-    }
-
     ajp_msg_end(msg);
 
     length = msg->len;
@@ -82,12 +76,6 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg)
     apr_status_t status;
     apr_size_t   hlen;
     apr_size_t   blen;
-
-    if (sock == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_ilink_receive(): NULL socket provided");
-        return AJP_EINVAL;
-    }
 
     hlen = msg->header_len;
 
