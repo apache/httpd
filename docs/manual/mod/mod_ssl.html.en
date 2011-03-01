@@ -1722,7 +1722,7 @@ the left-hand-side expression.</p></li>
 
 <div class="note"><h3>SSLRequire is deprecated</h3>
 <p><code>SSLRequire</code> is deprecated and should in general be replaced
-by <a href="mod/mod_authz_core.html#reqexpr">Require expr</a>. The so called
+by <a href="mod_authz_core.html#reqexpr">Require expr</a>. The so called
 <a href="../expr.html">ap_expr</a> syntax of <code>Require expr</code> is
 a superset of the syntax of <code>SSLRequire</code>, with the following
 exception:</p>
@@ -1747,7 +1747,7 @@ For the latter, there are also aliases without the leading dashes:
 <li><a href="../env.html">Environment Variables in Apache HTTP Server</a>,
 for additional examples.
 </li>
-<li><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></li>
+<li><a href="mod_authz_core.html#reqexpr">Require expr</a></li>
 <li><a href="../expr.html">Generic expression syntax in Apache HTTP Server</a>
 </li>
 </ul>
