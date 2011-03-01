@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 675610:1029134 (outdated) -->
+<!-- English Revision: 1029134 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -30,7 +30,7 @@
 
 <summary>
 
-    <p>Apache, içerik uzlaşımını HTTP/1.1 belirtiminde bahsedildiği şekliyle
+    <p>Apache HTTPD, içerik uzlaşımını HTTP/1.1 belirtiminde bahsedildiği şekliyle
       destekler. Bir özkaynağın en iyi gösterimini, tarayıcının sağladığı
       karakter kodlaması, karakter kümesi, dil, ortam türü gibi kullanıcı
       tercihlerine bağlı olarak seçebilir. Ayrıca, tarayıcının kullanıcı
@@ -73,11 +73,11 @@
       q=0.6, image/*; q=0.5, */*; q=0.1
     </example>
 
-    <p>Apache, HTTP/1.1 belirtiminde tanımlanan şekliyle ‘sunucu yönetiminde’
+    <p>httpd, HTTP/1.1 belirtiminde tanımlanan şekliyle ‘sunucu yönetiminde’
       içerik uzlaşımını destekler. <code>Accept</code>,
       <code>Accept-Language</code>, <code>Accept-Charset</code> ve
       <code>Accept-Encoding</code> istek başlıklarını tamamen destekler.
-      Apache ayrıca, RFC 2295 ve RFC 2296’da tanımlanan bir deneysel uzlaşım
+      httpd ayrıca, RFC 2295 ve RFC 2296’da tanımlanan bir deneysel uzlaşım
       olarak ‘şeffaf’ içerik uzlaşımını da destekler. Fakat ‘özellik
       uzlaşımını’ bu RFC’lerde tanımlandığı gibi desteklemez.</p>
 
@@ -93,7 +93,7 @@
       kaynaklandığından bahsedilebilir.</p>
 </section>
 
-<section id="negotiation"><title>Apache’de İçerik Uzlaşımı</title>
+<section id="negotiation"><title>httpd’de İçerik Uzlaşımı</title>
 
     <p>Bir özkaynak üzerinde uzlaşılırken gösterim çeşitlerinin her biri
       hakkında sunucuya bilgi verilmesi gerekir. Bu iki yolla yapılabilir:</p>
@@ -111,7 +111,7 @@
    <section id="type-map"><title>Bir türeşlem dosyası kullanmak</title>
 
     <p>Bir türeşlem dosyası, <code>type-map</code> eylemcisi ile ilişkili bir
-      belgedir (ya da eski Apache yapılandırmaları ile geriye uyumluluk için,
+      belgedir (ya da eski httpd yapılandırmaları ile geriye uyumluluk için,
       <code>application/x-type-map</code> <glossary>MIME türü</glossary>nde
       bir belgedir). Bu özelliği kullanmak için, yapılandırmada bir tür
       eşleyici olarak her dosya ismi uzantısı için bir <code>type-map</code>
@@ -175,7 +175,7 @@
       doğasına bakarak belirlenir.</p>
 
     <p>Tanınan başlıkların tam listesini <a
-      href="mod/mod_negotiation.html#typemaps" >mod_negotation</a> modülünün
+      href="mod/mod_negotiation.html#typemaps" >mod_negotiation</a> modülünün
       belgesinde bulabilirsiniz.</p>
   </section>
 
@@ -226,10 +226,10 @@
 
 <section id="methods"><title>Uzlaşım Yöntemleri</title>
 
-    <p>Apache’nin, bir türeşlem dosyası veya dizin içindeki bir dosya
+    <p>httpd’nin, bir türeşlem dosyası veya dizin içindeki bir dosya
       sayesinde belli bir özkaynağın gösterim çeşitlerinin bir listesini elde
       ettikten sonra ‘en uygun’ gösterime karar vermek için kullanabileceği
-      iki yöntem vardır. Apache’nin içerik uzlaşım özelliklerinin kullanımı
+      iki yöntem vardır. httpd’nin içerik uzlaşım özelliklerinin kullanımı
       sırasında uzlaşımın nasıl yerine getirileceği ile ilgili ayrıntıları
       bilmek aslında gerekli değildir. Bununla birlikte belgenin kalanında bu
       konu açıklanmaya çalışılmıştır.</p>
@@ -237,11 +237,11 @@
     <p>İki uzlaşım yöntemi vardır:</p>
 
     <ol>
-      <li>Normal durumda <strong>sunucu yönetiminde Apache uzlaşım
+      <li>Normal durumda <strong>sunucu yönetiminde httpd uzlaşım
         algoritması</strong> kullanılır. Bu algoritma aşağıda ayrıntılı olarak
-        açıklanmıştır. Bu algoritma kullanıldığı zaman, Apache, en iyi sonuca
+        açıklanmıştır. Bu algoritma kullanıldığı zaman, httpd, en iyi sonuca
         ulaşmak için bazen belli boyutların üstünlük katsayılarıyla ‘oynar’.
-        Apache’nin bu katsayılarla oynama işini nasıl yaptığı aşağıda daha
+        httpd’nin bu katsayılarla oynama işini nasıl yaptığı aşağıda daha
         ayrıntılı açıklanmıştır.</li>
 
       <li>İstemci bu işlem için özellikle RFC 2295’te tanımlanan mekanizmanın
@@ -251,7 +251,7 @@
         tarayıcının bu işlem için kullandığı algoritmanın başarısına bağlıdır.
         Şeffaf uzlaşım sürecinin bir parçası olarak, tarayıcı, RFC 2296’da
         tanımlanan ‘gösterim çeşidini uzaktan seçme algoritması’nın
-        çalıştırılmasını Apache’den isteyebilir.</li>
+        çalıştırılmasını httpd’den isteyebilir.</li>
     </ol>
 
   <section id="dimensions"><title>Uzlaşımın Boyutları</title>
@@ -301,9 +301,9 @@
     </table>
   </section>
 
-  <section id="algorithm"><title>Apache Uzlaşım Algoritması</title>
+  <section id="algorithm"><title>httpd Uzlaşım Algoritması</title>
 
-    <p>Apache, tarayıcıya döndürülecek en uygun gösterim çeşidini (varsa)
+    <p>httpd, tarayıcıya döndürülecek en uygun gösterim çeşidini (varsa)
       seçmek için aşağıdaki algoritmayı kullanabilir. Bu algoritma pek de
       yapılandırılabilir değildir. Şöyle çalışır:</p>
 
@@ -383,13 +383,13 @@
 
 <section id="better"><title>Üstünlük Değerleriyle Oynamak</title>
 
-    <p>Apache bazen yukarıdaki Apache uzlaşım algoritmasının kesin sonucunun
+    <p>httpd bazen yukarıdaki httpd uzlaşım algoritmasının kesin sonucunun
       beklenenden farklı olması için üstünlük değerleriyle oynar. Bunu tam ve
       doğru bilgi göndermeyen tarayıcılar için algoritmadan en iyi sonucu elde
       etmek amacıyla yapar. Bazen günümüzün en tanınmış tarayıcıları bile çoğu
       durumda yanlış bir seçimle sonuçlanmayacaksa <code>Accept</code> başlık
       bilgilerini göndermemektedir. Eğer tarayıcı eksiksiz ve doğru bilgi
-      gönderirse Apache bu değerlerle oynamayacaktır.</p>
+      gönderirse httpd bu değerlerle oynamayacaktır.</p>
 
   <section id="wildcards"><title>Ortam Türleri ve Dosyaismi Kalıpları</title>
 
@@ -423,7 +423,7 @@
       hiçbirinin bulunmaması halinde diğer türler eşleşecektir.</p>
 
     <p>Eğer <code>Accept:</code> başlığı <em>hiçbir</em> <code>q</code>
-      katsayısı içermiyorsa ve başlıkta "*/*" belirtilmişse, Apache istenen
+      katsayısı içermiyorsa ve başlıkta "*/*" belirtilmişse, httpd istenen
       davranışı taklit etmek için bu kalıba 0.01 katsayısını atar. Keza
       "type/*" kalıbına da 0.02 katsayısını atar (yani, */* kalıbına göre
       tercihli olur). Eğer  <code>Accept:</code> alanındaki her ortam türü bir
@@ -434,7 +434,7 @@
 
   <section id="exceptions"><title>Dil Uzlaşımında İstisnalar</title>
 
-    <p>Apache 2.0’dan itibaren, uzlaşım algoritmasına, bir eşleşme bulmak
+    <p>httpd 2.0’dan itibaren, uzlaşım algoritmasına, bir eşleşme bulmak
       konusunda algoritma başarılı olamadığı takdirde hoş bir son çareye izin
       vermek için bazı istisnalar eklenmiştir.</p>
 
@@ -442,7 +442,7 @@
       gönderilen <code>Accept-language</code> başlığıyla eşleşen tek bir sayfa
       bulamadığı takdirde istemciye ya “Kabul edilebilir bir gösterim çeşidi
       yok” ya da “Çok sayıda seçim belirtilmiş” yanıtını döndürür. Bu hata
-      iletilerinden kaçınmak için bu gibi durumlarda Apache
+      iletilerinden kaçınmak için bu gibi durumlarda httpd
       <code>Accept-language</code> başlığını yoksaymaya ayarlanabilir. Böylece
       istemcinin isteğine tam olarak uymasa da bir belge sağlanır. Bu hata
       iletilerinin birini veya her ikisini de geçersiz kılmak için <directive
@@ -466,7 +466,7 @@
       <directive module="mod_negotiation" >LanguagePriority</directive> son
       çaresine ayarlanmışsa alt küme belirtimini yok sayacak ve
       <code>en</code> belge isteklerine <code>en-GB</code> belgelerle yanıt
-      verecektir. Apache, lehçenin üyesi olduğu anadili, istemcinin kabul
+      verecektir. httpd, lehçenin üyesi olduğu anadili, istemcinin kabul
       edilebilir diller listesine örtük olarak düşük bir üstünlük değeri ile
       ekler. Yalnız şuna dikkat edin, eğer istemci tercihini "en-GB; q=0.9,
       fr; q=0.8" olarak belirtirse ve sunucuda sadece "en" ve "fr" belgeleri
@@ -475,7 +475,7 @@
       gibi çalışabilmek için bu gereklidir.</p>
 
     <p>Gelişmiş tekniklerin (çerezler, özel URL yolları gibi) desteklenmesi
-      sırasında, kullanıcının tercih ettiği dili saptamak için Apache 2.0.47
+      sırasında, kullanıcının tercih ettiği dili saptamak için httpd 2.0.47
       sürümünden beri <module>mod_negotiation</module> modülü
       <code>prefer-language</code> <a href="env.html">ortam değişkenini</a>
       tanımaktadır. Değişken mevcutsa ve uygun bir dil yaftası içeriyorsa
@@ -493,7 +493,7 @@
 <section id="extensions">
   <title>Şeffaf İçerik Uzlaşımının Genişletilmesi</title>
 
-  <p>Apache, şeffaf içerik uzlaşımı protokolünü (RFC 2295) şöyle genişletir:
+  <p>httpd, şeffaf içerik uzlaşımı protokolünü (RFC 2295) şöyle genişletir:
     Sadece içerik kodlamasına özgü olmak üzere gösterim çeşidi listelerinde
     gösterim çeşitlerini imlemek için yeni bir <code>{encoding ..}</code>
     elemanı kullanılır. RVSA/1.0 algoritmasının (RFC 2296) gerçeklenimi,
@@ -601,7 +601,7 @@
 
     <p>Yukarıdaki tabloya bakarak hiperbağlarda bir dosya ismini uzantısız
       olarak (<code>misal</code> gibi) kullanmanın daima mümkün olduğunu
-      farkedeceksiniz. Böylece br belgenin asıl türünü gizleyebilir ve
+      farkedeceksiniz. Böylece bir belgenin asıl türünü gizleyebilir ve
       sonradan bir hiperbağ değişikliği yapmaksızın örneğin
       <code>html</code>’den <code>shtml</code> veya <code>cgi</code>’ye
       geçebilirsiniz.</p>
@@ -617,9 +617,9 @@
       Böylece, sonradan aynı URL için bir istek yapıldığında kaydettiği
       gösterimi kullanabilir. Fakat özkaynak sunucuyla uzlaşılan türdeyse
       arabelleğe ilk istenen çeşit saklanmış olacağından isteğe yanlış
-      gösterimle yanıt verilmiş olacaktır. Bunun olmaması için Apache, normal
+      gösterimle yanıt verilmiş olacaktır. Bunun olmaması için httpd, normal
       olarak içerik uzlaşımının sonucu olarak döndürülen tüm yanıtları
-      HTTP/1.0 istemciler tarafından arabelleklenemez olarak imler. Apache
+      HTTP/1.0 istemciler tarafından arabelleklenemez olarak imler. httpd
       ayrıca, uzlaşımlı yanıtların arabelleklenmesini mümkün kılan HTTP/1.1
       protokolünü de destekler.</p>
 
@@ -631,7 +631,7 @@
       yapılandırılmasında kullanılabilir. Bunun HTTP/1.1 istemcilerinden gelen
       isteklere bir etkisi yoktur.</p>
 
-    <p>HTTP/1.1 istemciler için, Apache, yanıtın uzlaşım boyutlarını göstermek
+    <p>HTTP/1.1 istemciler için, httpd, yanıtın uzlaşım boyutlarını göstermek
       üzere bir <code>Vary</code> HTTP yanıt başlığı gönderir. Arabellekler bu
       bilgiyi sonraki istekleri yerel kopyadan sunarken kullanabilirler. Bir
       arabelleğin uzlaşım boyutlarına bakmaksızın yerel kopyasını kullanmaya

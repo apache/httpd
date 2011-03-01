@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 947280:1070889 (outdated) -->
+<!-- English Revision: 1070889 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -26,7 +26,7 @@
 
 <manualpage metafile="bind.xml.meta">
 
-  <title>Dinleme</title>
+  <title>Adresleri ve Portları Dinleme</title>
 
   <summary>
     <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
@@ -72,10 +72,6 @@
       böyle bir durumda belirtilen bütün adres ve portlardan gelen isteklere
       yanıt verecektir.</p>
 
-    <p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
-      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
-      sonuçlanacaktır.</p>
-
     <p>Örneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
       bağlantıları kabul etmesini sağlamak için,</p>
 
@@ -99,7 +95,18 @@
     <example>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
-  </section>
+
+    <note type="warning">
+      <p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
+      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
+      sonuçlanacaktır.</p>
+
+      <example>
+      (48)Address already in use: make_sock: could not bind to address [::]:80
+      </example>
+    </note>
+
+</section>
 
   <section id="ipv6">
     <title>IPv6 Adreslerin Durumu</title>
@@ -144,6 +151,25 @@
       adreslerin iptalini)  istiyorsanız <program>configure</program>
       betiğine <code>--disable-v4-mapped</code> seçeneğini belirtiniz. Bu
       seçenek FreeBSD, NetBSD ve OpenBSD’de öntanımlıdır.</p>
+  </section>
+
+  <section id="protocol">
+    <title>Protokolü Listen ile Belirtme</title>
+    <p><directive module="mpm_common">Listen</directive> yönergesinin isteğe
+      bağlı ikinci değiştirgesi <var>protokol</var> çoğu yapılandırmada gerekli
+      olmaz. Belirtilmediği takdirde, <code>https</code> için 443,
+      <code>http</code> için ise diğer bütün portlar öntanımlıdır. Protokol,
+      isteğin hangi modül tarafından işleneceğini ve <directive
+      module="core">AcceptFilter</directive> yönergesi ile uygulanacak
+      protokole özgü en iyilemeleri belirlemekte kullanılır.</p>
+
+    <p>Sadece standartdışı bir port kullanmak isterseniz protokolü belirtmeniz
+      gerekir. Örneğin, bir<code>https</code> sitesini port 8443 üzerinde
+      çalıştırmak isterseniz:</p>
+
+    <example>
+      Listen 192.170.2.1:8443 https
+    </example>
   </section>
 
   <section id="virtualhost">

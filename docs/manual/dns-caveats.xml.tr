@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 788974:1040785 (outdated) -->
+<!-- English Revision: 1040785 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -26,7 +26,7 @@
 
 <manualpage metafile="dns-caveats.xml.meta">
 
-  <title>Apache ve DNS ile ilgili Konular</title>
+  <title>Apache HTTP Sunucusu ve DNS ile ilgili Konular</title>
 
   <summary>
     <p>Bu sayfanın konusu şöyle özetlenebilirdi: Yapılandırma dosyalarınızda
@@ -34,7 +34,7 @@
       yapılandırma dosyalarınızda DNS sorgusu yapılarak çözümlenebilecek
       adresler bulunursa sunucunuz beklenmedik davranışlar (hiç
       başlamayabilir) gösterebileceği gibi hizmet reddi veya hizmet
-      hırsızlığı (bazı kullanıcıların diğerlerine giden sayfaları çalma
+      hırsızlığı (bazı sanal konakların diğerlerine giden sayfaları çalma
       olasılığı dahil) saldırılarına açık hale gelebilir.</p>
   </summary>
 
@@ -51,16 +51,15 @@
       &lt;/VirtualHost&gt;
     </example>
 
-    <p>Apache’nin beklendiği gibi işlemesi için her sanal konak için iki
+    <p>httpd’nin beklendiği gibi işlemesi için her sanal konak için iki
       veriye mutlaka ihtiyacı vardır: <directive module="core"
       >ServerName</directive> ve sunucunun bağlantı kabul edip hizmet
       sunacağı en az bir IP adresi. Yukarıdaki örnekte IP adresi
       bulunmamaktadır, dolayısıyla Apache, <code>falan.fesmekan.dom</code>
       adresi için bir DNS sorgusu yapmak zorundadır. Eğer sunucu,
       yapılandırma dosyasını çözümlediği sırada bir sebeple DNS sunucusuna
-      erişemezse bu sanal konak <em>yapılandırılmayacak</em> (hApache 1.2
-      öncesinde sunucu hiç başlatılmazdı) ve bu sanal konağa yapılan
-      isteklere yanıt verilemeyecektir.</p>
+      erişemezse bu sanal konak <em>yapılandırılmayacak</em> ve bu sanal konağa
+      yapılan isteklere yanıt verilemeyecektir.</p>
 
     <p><code>falan.fesmekan.dom</code>’un 192.168.2.1 IP adresine sahip
       olduğunu varsayarsak yapılandırma şöyle olurdu:</p>
@@ -76,12 +75,13 @@
     </example>
 
     <p>Ancak, bu sefer de bu sanal konağın sunucu ismini öğrenmek için
-      Apache’nin bir ters DNS sorgusu yapması gerekecektir. Eğer bu sorgu
-      başarısız olursa kısmi bir yapılandırmaya gidilir (Apache 1.2 öncesinde
-      sunucu hiç başlatılmazdı). Eğer sanal konak isme dayalı ise sanal konak
+      httpd’nin bir ters DNS sorgusu yapması gerekecektir. Eğer bu sorgu
+      başarısız olursa kısmi bir yapılandırmaya gidilir.
+      Eğer sanal konak isme dayalı ise sanal konak
       kısmen bile yapılandırılmaz. IP’ye dayalı sanal konaklar büyük oranda
-      çalışır, fakat sunucu ismini içeren tam bir adres üretilmesini
-      gerektiren bir durumda, sunucu geçerli bir adres üretemez.</p>
+      çalışır, fakat (örneğin, bir Redirect varlığında olduğu gibi) sunucu ismini
+      içeren tam bir adres üretilmesini gerektiren bir durumda, sunucu geçerli
+      bir adres üretemez.</p>
 
     <p>Her iki sorunu da çözen yapılandırma şöyle olurdu:</p>
 
@@ -99,17 +99,7 @@
   <section id="denial">
     <title>Hizmet Reddi</title>
 
-    <p>Hizmet reddinin meydana gelebilecek (en az) iki türü vardır.
-      Apache’nin 1.2 öncesi bir sürümünü kullanıyorsanız sanal
-      konaklarınızdan herhangi biri için yukarıdaki iki sorgudan biri
-      başarısız olursa sunucunuzu asla başlatamazsınız. Bazı durumlarda, DNS
-      sorgularından alınacak yanıtlar sizin denetiminizde olmayabilir;
-      örneğin <code>fesmekan.dom</code> müşterilerinizden birine aitse ve
-      kendi DNS sunucuları varsa <code>falan.fesmekan.dom</code> kaydını
-      silerek sunucunuzun hiç başlatılamamasına (1.2 öncesi) sebep
-      olabilirler.</p>
-
-    <p>Diğer türü biraz daha sinsidir. Şöyle bir yapılandırmanız olsun:</p>
+    <p>Şöyle bir yapılandırmanız olsun:</p>
 
     <example>
       &lt;VirtualHost falan.fesmekan.dom&gt;<br />
@@ -150,12 +140,11 @@
   <section id="main">
     <title>"Ana Sunucu" Adresi</title>
 
-    <p>Apache 1.1’de <a href="vhosts/name-based.html">isme dayalı sanal konak
-      desteği</a>ne ek olarak, Apache’nin, <program>httpd</program>’nin
-      çalıştığı makinenin IP adres(ler)ini de bilmeye ihtiyacı vardır. Bu
-      adresi elde etmek için sunucu, ya sunucu genelinde geçerli <directive
-      module="core">ServerName</directive> yönergesine bakar ya da bir C
-      işlevi olan <code>gethostname</code>’i kullanır (işlev, komut
+    <p><a href="vhosts/name-based.html">İsme dayalı sanal konak
+      desteği</a>, httpd’nin çalıştığı makinenin IP adres(ler)ini de bilmesini
+      gerektirir. Bu adresi elde etmek için sunucu, ya sunucu genelinde geçerli
+      <directive module="core">ServerName</directive> yönergesine bakar ya da bir
+      C işlevi olan <code>gethostname</code>’i kullanır (işlev, komut
       isteminden <code>hostname</code> komutuna dönen yanıtın aynısını
       döndürür) ve ardından bu adresle ilgili olarak bir DNS sorgusu yapar.
       Bu sorgudan kaçınmanın henüz bir yolu yoktur.</p>
@@ -169,7 +158,7 @@
       dosyasında bulunması gerekebilir.</p>
 
     <p>Herhangi bir nedenle sunucunuz bir DNS sorgusu yapmıyorsa veya
-      yapmamalıysa, Apache’yi <code>HOSTRESORDER</code> ortam değişkenine
+      yapmamalıysa, httpd’yi <code>HOSTRESORDER</code> ortam değişkenine
       "<code>local</code>" değerini atadıktan sonra çalıştırabilirsiniz. Bu
       tamamen işletim sistemine ve kullandığınız çözümleyici kütüphanelere
       bağlıdır. Ayrıca, ortamı denetlemek için <module>mod_env</module>
@@ -195,36 +184,4 @@
     </ul>
   </section>
 
-  <section id="appendix">
-    <title>Ek: Ufuk Turu</title>
-
-    <p>DNS ile ilgili durum hiç de arzu edildiği gibi değildir. Apache 1.2
-      için, DNS sorguları başarısız olsa bile sunucunun başlatılabilmesini
-      sağlamaya çalıştık, fakat belki yapabildiğimizden daha da iyisi
-      mümkündür. Günümüz Genel Ağ’ında IP adresleri sık sık değiştiğinden
-      yapılandırma dosyasına doğrudan IP adresini yazma gerekliliği asla arzu
-      edilen davranış değildir.</p>
-
-    <p>Yukarıda nasıl yapıldığı açıklanan hizmet hırsızlığı saldırısına karşı
-      önlem olarak, normal sorgudan dönen IP adresine bir ters DNS sorgusu
-      yapıp bu iki sonucu karşılaştırmak ve eşleşmeme durumunda sanal konağı
-      iptal etmek bir çözüm olabilir. Fakat bunun mümkün olabilmesi için
-      uygun bir ters DNS kaydına ihtiyaç vardır. (FTP sunucuları ve TCP
-      sarmalayıcılar tarafından yapılan çifte ters DNS sorgusu kullanımından
-      dolayı çoğu ağ yöneticisi bu konuda zaten bilgi sahibidir.)</p>
-
-    <p>Her halükarda, IP adreslerinin kullanılmaması nedeniyle yapılan DNS
-      sorgularının başarısız olması durumunda sanal konaklı bir sunucuyu
-      düzgün bir şekilde başlatmak olası görünmektedir. Yapılandırmayı kısmen
-      iptal etmek gibi kısmi çözümler, sunucudan beklentinizin ne olduğuna
-      bağlı olarak sunucuyu hiç başlatmamaktan daha iyi olabilir.</p>
-
-    <p>HTTP/1.1’de belirtildiği gibi <code>Host</code> başlığını göndererek
-      işlem yapabilen tarayıcılar ve vekiller IP’ye dayalı sanal konak
-      kullanımını tamamen ortadan kaldırmanın mümkün olabileceğini
-      göstermektedir. Bu durumda yapılandırmanın çözümlenmesi aşamasında DNS
-      sorgusu yapma gereği kalmayacaktır. Fakat 1997 Mart’ından beri önemli
-      sunucular üzerinde bunların yeterince geniş bir uygulama alanı
-      bulmadığı görülmektedir.</p>
-  </section>
 </manualpage>
