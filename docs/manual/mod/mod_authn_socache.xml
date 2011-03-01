@@ -100,12 +100,11 @@ the load on backends</description>
 <override>None</override>
 
 <usage>
-    <p>This is a server-wide setting.  If not set, your platform's
+    <p>This is a server-wide setting to select a provider for the
+    <a href="../socache.html">shared object cache</a>.
+    Values are "dbm", "dc", "mc", or "shmcb", each subject to the
+    appropriate module being loaded.  If not set, your platform's
        default will be used.</p>
-    <note><title>socache</title>
-      <p>The cache is built on the the <var>socache</var> framework.
-      We need a link here once that's documented!</p>
-    </note>
 </usage>
 </directivesynopsis>
 

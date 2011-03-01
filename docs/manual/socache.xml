@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="socache.xml.meta">
+
+  <title>Shared Object Cache in Apache HTTP Server</title>
+
+  <summary>
+    <p>The Shared Object Cache provides a means to share simple data
+    across all a server's workers, regardless of <a href="mpm.html">thread
+    and process models</a>.  It is used where the advantages of sharing
+    data across processes outweigh the performance overhead of
+    inter-process communication.</p>
+  </summary>
+
+<seealso><module>mod_socache_dbm</module></seealso>
+<seealso><module>mod_socache_dc</module></seealso>
+<seealso><module>mod_socache_memcache</module></seealso>
+<seealso><module>mod_socache_shmcb</module></seealso>
+
+  <section id="providers">
+    <title>Shared Object Cache Providers</title>
+    <p>The shared object cache as such is an abstraction.  Four different
+    modules implement it.  To use the cache, one or more of these modules
+    must be present, and configured.</p>
+    <p>The only configuration required is to select which cache provider
+    to use.  This is the responsibility of modules using the cache, and
+    they enable selecton using directives such as
+    <directive module="authn_socache">AuthnCacheSOCache</directive>,
+    <directive module="ssl">SSLSessionCache</directive>, and
+    <directive module="ssl">SSLStaplingCache</directive>.</p>
+    <p>Currently available providers are:</p>
+    <dl>
+    <dt><module>mod_socache_dbm</module> ("dbm")</dt>
+    <dd>This makes use of a DBM hash file.
+     The choice of underlying DBM configuration may be configurable
+     if the installed APR version supports multiple DBM implementations.</dd>
+    <dt><module>mod_socache_dc</module> ("dc")</dt>
+    <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>
+    distributed session caching libraries.</dd>
+    <dt><module>mod_socache_memcache</module> ("mc")</dt>
+    <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
+    high-performance, distributed memory object caching system.</dd>
+    <dt><module>mod_socache_shmcb</module> ("shmcb")</dt>
+    <dd>This makes use of a high-performance cyclic buffer inside a
+     shared memory segment.</dd>
+    </dl>
+  </section>
+
+</manualpage>

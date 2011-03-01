@@ -57,8 +57,10 @@ Documentation</a>.</p>
 <page href="bind.html">Setting which addresses and ports Apache uses</page>
 <page href="mpm.html">Multi-Processing Modules (MPMs)</page>
 <page href="env.html">Environment Variables in Apache</page>
+<page href="expr.html">Expression Parsing in Apache</page>
 <page href="handler.html">Apache's Handler Use</page>
 <page href="filter.html">Filters</page>
+<page href="socache.html">Shared Object Cache Support</page>
 <page href="suexec.html">suEXEC Support</page>
 <page href="misc/perf-tuning.html">Performance Hints</page>
 <page href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</page>
