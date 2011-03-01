@@ -31,11 +31,6 @@
     inter-process communication.</p>
   </summary>
 
-<seealso><module>mod_socache_dbm</module></seealso>
-<seealso><module>mod_socache_dc</module></seealso>
-<seealso><module>mod_socache_memcache</module></seealso>
-<seealso><module>mod_socache_shmcb</module></seealso>
-
   <section id="providers">
     <title>Shared Object Cache Providers</title>
     <p>The shared object cache as such is an abstraction.  Four different
@@ -49,17 +44,17 @@
     <directive module="ssl">SSLStaplingCache</directive>.</p>
     <p>Currently available providers are:</p>
     <dl>
-    <dt><module>mod_socache_dbm</module> ("dbm")</dt>
+    <dt>"dbm" (mod_socache_dbm)</dt>
     <dd>This makes use of a DBM hash file.
      The choice of underlying DBM configuration may be configurable
      if the installed APR version supports multiple DBM implementations.</dd>
-    <dt><module>mod_socache_dc</module> ("dc")</dt>
+    <dt>"dc" (mod_socache_dc)</dt>
     <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>
     distributed session caching libraries.</dd>
-    <dt><module>mod_socache_memcache</module> ("mc")</dt>
+    <dt>"mc" (mod_socache_memcache)</dt>
     <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
     high-performance, distributed memory object caching system.</dd>
-    <dt><module>mod_socache_shmcb</module> ("shmcb")</dt>
+    <dt>"shmcb" (mod_socache_shmcb)</dt>
     <dd>This makes use of a high-performance cyclic buffer inside a
      shared memory segment.</dd>
     </dl>
