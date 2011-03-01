@@ -25,9 +25,9 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-<p>Bu belgede Apache HTTP sunucusunu yapılandırmakta kullanılan dosyalar açıklanmıştır.</p>
+<p>Bu belgede Apache HTTP Sunucusunu yapılandırmakta kullanılan dosyalar
+açıklanmıştır.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">Ana Yapılandırma Dosyaları</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#syntax">Yapılandırma Dosyalarının Sözdizimi</a></li>
@@ -41,7 +41,7 @@
     
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
-    <p>Apache düz metin yapılandırma dosyalarına <a href="mod/directives.html">yönergeler</a> yerleştirilerek yapılandırılır.
+    <p>Apache HTTP Sunucusu düz metin yapılandırma dosyalarına <a href="mod/directives.html">yönergeler</a> yerleştirilerek yapılandırılır.
     Ana yapılandırma dosyasının ismi normalde <code>httpd.conf</code>’tur.
     Bu dosyanın yeri derleme sırasında belirlenir, ancak çalıştırma
     sırasında <code>-f</code> komut satırı seçeneği ile başka bir yer
@@ -50,7 +50,7 @@
     ve bu dosyaların isimleri belirtilirken dosya ismi şablonları
     kullanılabilir. Bu dosyaların içine de ana yapılandırma dosyasında
     olduğu gibi her türlü yönerge yerleştirilebilir. Ana yapılandırma
-    dosyalarındaki değişiklikler Apache tarafından sadece başlatma veya
+    dosyalarındaki değişiklikler httpd tarafından sadece başlatma veya
     yeniden başlatma sırasında etkin kılınır.</p>
 
     <p>Sunucu ayrıca MIME belge türlerini içeren bir dosya daha okur;
@@ -61,7 +61,7 @@
 <h2><a name="syntax" id="syntax">Yapılandırma Dosyalarının Sözdizimi</a></h2>
     
 
-    <p>Apache yapılandırma dosyalarının her satırında sadece bir yönerge
+    <p>httpd yapılandırma dosyalarının her satırında sadece bir yönerge
     bulunur ve bir yönergenin birden fazla satıra yayılması daha iyi
     olacaksa satır katlanabilir; devamı bir alt satırda olan her satırın
     son karakteri “\” (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü
@@ -75,9 +75,29 @@
     ve boş satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için
     yönergelerin girintilenebilmesi olanağını verir.</p>
 
-    <p>Yapılandırma dosyasındaki bir satırın uzunluğu, devam satırları
-    eklenip satır başındaki ve sonundaki boşluk karakterleri atıldıktan sonra
-    en fazla 8192 karakter olabilir.</p>
+
+    <p><code class="directive"><a href="./mod/core.html#define">Define</a></code> ile veya kabuğun ortam
+    değişkenleri ile tanımlanmış değişkenlerin değerleri, yapılandırma
+    dosyasının satırlarında <code>${VAR}</code> sözdizimi ile kullanılabilir.
+    "VAR" geçerli bir değişkenin adı olduğu takdirde, bu değişkenin değeri
+    yapılandırma dosyasının bu noktasında yerine konacak ve orada zaten
+    değişken yerine değeri varmış gibi işlem kaldığı yerden devam edecektir.
+    <code class="directive"><a href="./mod/core.html#define">Define</a></code> ile tanımlanmış değişkenler
+    kabuğun ortam değişkenlerinden önceliklidir. "VAR" diye bir değişken yoksa
+    <code>${VAR}</code> içindeki karakterler değişmeden kalır ve günlüğe bir
+    uyarı çıktılanır. <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    sözdizimi ile olası bir karışıklığı önlemek için, değişken isimleri iki
+    nokta imini (":") içeremez.</p>
+
+    <p>Kabuğun ortam değişkenlerinin, sadece, sunucu başlatılmadan önce
+    tanımlanmış değerleri kullanılabilir.  Yapılandırma dosyasının kendisinde
+    tanımlanmış ortam değişkenleri (örneğin,
+    <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code> ile), yapılandırma
+    dosyasındaki işlemlerde çok daha sonra yer alır.</p>
+
+    <p>Yapılandırma dosyasındaki bir satırın uzunluğu, değişken ikamesi
+    yapıldıkta, devam satırları eklenip satır başındaki ve sonundaki boşluk
+    karakterleri atıldıktan sonra en fazla 8192 karakter olabilir.</p>
 
     <p>Sunucuyu başlatmadan önce <code>apachectl configtest</code> ile veya
     <code>-t</code> komut satırı seçeneği ile yapılandırma dosyalarınızı
@@ -89,20 +109,25 @@
 
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
-    <p>Apache modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en
-    temel işlevselliği içermesi demektir. Ek özellikler, Apache’ye <a href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme
+    <p>httpd modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en
+    temel işlevselliği içermesi demektir. Ek özellikler, httpd’ye <a href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme
     sırasında sunucunun <a href="mod/module-dict.html#Status">temel</a> bir
     modül kümesi içermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen
     yüklenen</a> modülleri kullanmak üzere yapılandırılarak derlenirse modüller
     ayrı olarak derlenip gerektiği zaman <code class="directive"><a href="./mod/mod_so.html#&#10;    loadmodule">
     LoadModule</a></code> yönergesi kullanılarak yüklenebilir. Aksi takdirde,
-    ek modülleri yükleyebilmek veya kaldırabilmek için Apache’nin yeniden
+    ek modülleri yükleyebilmek veya kaldırabilmek için httpd’nin yeniden
     derlenmesi gerekir. Yapılandırma yönergeleri belli bir modülün varlığına
     dayalı olarak bir <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
-    bloku içine alınmak suretiyle sunucuya koşullu olarak eklenebilir.</p>
+    bloku içine alınmak suretiyle sunucuya koşullu olarak eklenebilir. Ancak,
+    <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> yönergeleri
+    gerekli değildir, önemli bir modülün yokluğu gibi durumlarda
+    maskelenebilir.</p>
 
-    <p>Sunucunun içinde derlenmiş modüllerin listesini görmek için <code>-l</code>
-    komut satırı seçeneğini kullanabilirsiniz.</p>
+    <p>Sunucunun içinde derlenmiş modüllerin listesini görmek için
+    <code>-l</code> komut satırı seçeneğini kullanabilirsiniz. Ayrıca,
+    <code>-M</code> komut satırı seçeneği ile hangi modüllerin devingen olarak
+    yüklendiğini görebilirsiniz.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="scope" id="scope">Yönergelerin Etki Alanı</a></h2>
@@ -118,7 +143,7 @@
     Yerine göre daha hassas ayarlamalar yapmak için bu bölgeler iç içe de
     kullanılabilir.</p>
 
-    <p>Apache, çok sayıda farklı siteyi aynı anda sunabilecek yetenektedir.
+    <p>httpd, çok sayıda farklı siteyi aynı anda sunabilecek yetenektedir.
     Buna <a href="vhosts/">Sanal Konaklık</a> adı verilir. Yönergelerin etki
     alanları ayrıca <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     bölümleri içine konarak da değiştirilebilir. Böylece belli bir siteye gelen
@@ -137,7 +162,7 @@
 
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
 
-    <p>Apache yapılandırma sorumluluğunu dağıtmak için site ağaçları içine özel
+    <p>httpd yapılandırma sorumluluğunu dağıtmak için site ağaçları içine özel
     dosyalar yerleştirilmesine izin verir. Bu özel dosyalar normalde
     <code>.htaccess</code> dosyaları olmakla birlikte <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code> yönergesi kullanılarak rasgele bir isim
     belirtilebilir. <code>.htaccess</code> dosyalarına yerleştirilen yönergeler
