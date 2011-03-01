@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Dinleme - Apache HTTP Sunucusu</title>
+<title>Adresleri ve Portları Dinleme - Apache HTTP Sunucusu</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.3</a></div><div id="page-content"><div id="preamble"><h1>Dinleme</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.3</a></div><div id="page-content"><div id="preamble"><h1>Adresleri ve Portları Dinleme</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -25,13 +25,13 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
     yapılandırılması.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Genel Bakış</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6 Adreslerin Durumu</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#protocol">Protokolü Listen ile Belirtme</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Sanal Konaklarla Nasıl Çalışır?</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="vhosts/">Sanal Konaklar</a></li><li><a href="dns-caveats.html">DNS Konuları</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -61,10 +61,6 @@
       böyle bir durumda belirtilen bütün adres ve portlardan gelen isteklere
       yanıt verecektir.</p>
 
-    <p>Bir <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesinin
-      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
-      sonuçlanacaktır.</p>
-
     <p>Örneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
       bağlantıları kabul etmesini sağlamak için,</p>
 
@@ -88,7 +84,18 @@
     <div class="example"><p><code>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+
+    <div class="warning">
+      <p>Bir <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesinin
+      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
+      sonuçlanacaktır.</p>
+
+      <div class="example"><p><code>
+      (48)Address already in use: make_sock: could not bind to address [::]:80
+      </code></p></div>
+    </div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ipv6" id="ipv6">IPv6 Adreslerin Durumu</a></h2>
     
@@ -133,6 +140,24 @@
       adreslerin iptalini)  istiyorsanız <code class="program"><a href="./programs/configure.html">configure</a></code>
       betiğine <code>--disable-v4-mapped</code> seçeneğini belirtiniz. Bu
       seçenek FreeBSD, NetBSD ve OpenBSD’de öntanımlıdır.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="protocol" id="protocol">Protokolü Listen ile Belirtme</a></h2>
+    
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesinin isteğe
+      bağlı ikinci değiştirgesi <var>protokol</var> çoğu yapılandırmada gerekli
+      olmaz. Belirtilmediği takdirde, <code>https</code> için 443,
+      <code>http</code> için ise diğer bütün portlar öntanımlıdır. Protokol,
+      isteğin hangi modül tarafından işleneceğini ve <code class="directive"><a href="./mod/core.html#acceptfilter">AcceptFilter</a></code> yönergesi ile uygulanacak
+      protokole özgü en iyilemeleri belirlemekte kullanılır.</p>
+
+    <p>Sadece standartdışı bir port kullanmak isterseniz protokolü belirtmeniz
+      gerekir. Örneğin, bir<code>https</code> sitesini port 8443 üzerinde
+      çalıştırmak isterseniz:</p>
+
+    <div class="example"><p><code>
+      Listen 192.170.2.1:8443 https
+    </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Sanal Konaklarla Nasıl Çalışır?</a></h2>
