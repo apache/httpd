@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 587444:1058587 (outdated) -->
+<!-- English Revision: 1058587 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Yücel Haluk Bugüner <haluk buguner.name.tr>
@@ -30,14 +30,12 @@
 
   <summary>
     <p>Apache HTTP Sunucusu modüler bir program olup, yönetici sadece bir
-      grup modül seçerek sunucuya işlevsellik ekleyebilir. Modüller sunucunun
-      derlenmesi sırasında doğrudan <program>httpd</program> programının
-      içinde derlenebileceği gibi Devingen Paylaşımlı Nesneler (DSO - Dynamic
-      Shared Object) halinde <program>httpd</program> programından ayrı
-      olarak da derlenebilir. DSO modülleri sunucunun derlenmesi sırasında
-      derlenebileceği gibi ayrı olarak derlenip daha sonra Apache Eklenti
-      Aracı (Apache Extension Tool) <program>apxs</program> programı
-      kullanılarak sunucuya eklenebilir.</p>
+      grup modül seçerek sunucuya işlevsellik ekleyebilir. Modüller, Devingen
+      Paylaşımlı Nesneler (DSO - Dynamic Shared Object) halinde
+      <program>httpd</program> programından ayrı olarak derlenir. DSO modülleri
+      sunucunun derlenmesi sırasında derlenebileceği gibi ayrı olarak derlenip
+      daha sonra Apache Eklenti Aracı (Apache Extension Tool)
+      <program>apxs</program> programı kullanılarak da sunucuya eklenebilir.</p>
 
     <p>Bu belgede DSO modüllerinin kullanımının yanında teorisine de
       değinilecektir.</p>
@@ -55,96 +53,91 @@
   </directivelist>
 </related>
 
-    <p>Apache modüllerini yüklemek için DSO desteği, Apache çekirdeğine
-      durağan olarak ilintilenerek derlenmiş olan <module>mod_so</module>
-      adında bir modül tarafından sağlanır. <module>core</module> modülünden
-      başka, bir DSO modülü olamayan tek modül <module>mod_so</module>
-      modülüdür. Hemen hemen tüm diğer Apache modülleri <a
-      href="install.html">kurulum belgesinde</a> de açıklandığı gibi
-      <program>configure</program> betiğinin
-      <code>--enable-<em>modül</em>=shared</code> seçeneği her modül için ayrı
-      ayrı belirtilerek birer DSO modülü olarak derlenebilir. Derlenmiş
+    <p>Apache httpd modüllerini yüklemek için DSO desteği, Apache httpd
+      çekirdeğine durağan olarak ilintilenerek derlenmiş olan
+      <module>mod_so</module> adında bir modül tarafından sağlanır.
+      <module>core</module> modülünden  başka, bir DSO modülü olamayan tek modül
+      <module>mod_so</module> modülüdür. Apache ile dağıtılan hemen hemen tüm
+      diğer Apache modülleri bir DSO modülüne yerleştirilebilir. Derlenmiş
       modüller <code>mod_filanca.so</code> biçeminde birer DSO ismi alırlar ve
       her biri istenirse <code>httpd.conf</code> dosyasında
       <module>mod_so</module> modülünün <directive module="mod_so"
       >LoadModule</directive> yönergesiyle belirtilerek sunucu başlatılırken
       veya yeniden başlatılırken sunucuya yüklenebilir.</p>
 
-    <p>Apache modülleri için (özellikle üçüncü parti modüller için) DSO
+    <p><a href="install.html">Kurulum belgesinde</a> açıklandığı gibi, her DSO
+      modülü <program>configure</program> programının
+      <code>--enable-mods-static</code> seçeneği ile devredışı bırakılabilir.</p>
+
+    <p>Apache httpd modülleri için (özellikle üçüncü parti modüller için) DSO
       dosyası üretimini kolaylaştırmak amacıyla <program>apxs</program>
       (<dfn>APache eXtenSion</dfn>) adında yeni bir destek programı
-      kullanılmaktadır. Bu program Apache modüllerini Apache kaynak ağacından
-      ayrı olarak derlemek için kullanılabilir. Fikir basittir: Apache
-      derlenirken DSO dosyalarını derlemek için platforma bağımlı
+      kullanılmaktadır. Bu program Apache httpd modüllerini Apache httpd kaynak
+      ağacından ayrı olarak derlemek için kullanılabilir. Fikir basittir: Apache
+      HTTP Sunucusu derlenirken DSO dosyalarını derlemek için platforma bağımlı
       derleyici ve ilintileyici seçenekleri <program>apxs</program>
-      programının içine konur ve Apache’nin <code>make install</code> ile
-      kurulumu sırasında Apache C başlık dosyaları da kurulur. Böylece
-      kullanıcı Apache dağıtımının kaynak ağacına ihtiyaç duymadan ve
+      programının içine konur ve <code>make install</code> ile kurulum sırasında
+      Apache httpd C başlık dosyaları da kurulur. Böylece
+      kullanıcı Apache httpd dağıtımının kaynak ağacına ihtiyaç duymadan ve
       platforma bağımlı derleyici ve ilintileyici seçeneklerini bilmek zorunda
-      kalmadan istediği Apache modülünü <program>apxs</program> programını
-      kullanarak derleyebilir.</p>
+      kalmadan istediği Apache httpd modülünü <program>apxs</program>
+      programını kullanarak derleyebilir.</p>
 </section>
 
-<section id="usage"><title>Kullanıcı Özeti</title>
+<section id="usage"><title>Kullanım Özeti</title>
 
-    <p>Apache 2.x’in DSO özelliklerine bir giriş olarak burada kısaca bir
-      bilgi vermekle yetinilecektir:</p>
+    <p>Apache HTTP Sunucusu 2.x’in DSO özelliklerine bir giriş olarak burada
+      kısaca bir bilgi vermekle yetinilecektir:</p>
 
     <ol>
-      <li>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
-        <em>özgün</em> Apache modülünü <code>mod_filanca.so</code> isminde bir
-        DSO modülü olarak derlemek ve kurmak için şöyle yapılır:
+      <li><p>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
+        <em>özgün</em> Apache htpd modülünü <code>mod_filanca.so</code> isminde
+        bir  DSO modülü olarak derlemek ve kurmak için şöyle yapılır:</p>
 
 <example>
-  $ ./configure --prefix=/kurulum/yeri --enable-filanca=shared<br />
+  $ ./configure --prefix=/kurulum/yeri --enable-filanca<br />
   $ make install
 </example>
       </li>
 
-      <li>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
-        <em>üçüncü parti</em> Apache modülünü <code>mod_filanca.so</code>
-        isminde bir DSO modülü olarak derlemek ve kurmak için şöyle yapılır:
+      <li><p>Apache HTTP Sunucusunu tüm modüller etkin ve paylaşımlı nesneler
+        yüklü olarak derleyebilir. Daha sonra <code>httpd.conf</code> içindeki
+        <directive module="mod_so">LoadModule</directive> yönergelerinden
+        istemediklerinizi açıklama satırları haline getirerek bunları iptal
+        edebilirsiniz.</p>
 
 <example>
-$ ./configure --add-module=<var>modül-türü</var>:/bir/kurulum/yeri/mod_filanca.c \<br />
-<indent>
-  --enable-filanca=shared<br />
-</indent>
+$ ./configure --enable-mods-shared=all<br />
 $ make install
 </example>
       </li>
 
-      <li>Paylaşımlı modülleri <em>sonradan kurmak için</em> Apache şöyle
-        yapılandırılır:
-
-<example>
-$ ./configure --enable-so<br />
-$ make install
-</example>
-      </li>
-
-      <li>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
-        <em>üçüncü parti</em> Apache modülü <code>mod_filanca.so</code>
-        isminde bir DSO modülü olarak Apache kaynak ağacının dışında
+      <li><p>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
+        <em>üçüncü parti</em> Apache httpd modülü <code>mod_filanca.so</code>
+        isminde bir DSO modülü olarak Apache httpd kaynak ağacının dışında
         <program>apxs</program> kullanarak derlemek ve kurmak için şöyle
-        yapılır:
+        yapılır:</p>
 
 <example>
 $ cd /bir/kurulum/yeri<br />
 $ apxs -c mod_filanca.c<br />
-$ apxs -i -a -n filanca mod_filanca.la
+$ apxs -aci filanca mod_filanca.la
 </example>
       </li>
     </ol>
 
-    <p>Tüm durumlarda derlenen paylaşımlı modülü Apache’nin etkin kılabilmesi
-      için <code>httpd.conf</code> dosyasında o modül için bir <directive
-      module="mod_so">LoadModule</directive> yönergesi bulunmalıdır.</p>
+    <p>Tüm durumlarda derlenen paylaşımlı modülü Apache httpd’nin etkin
+      kılabilmesi  için <code>httpd.conf</code> dosyasında o modül için bir
+      <directive module="mod_so">LoadModule</directive> yönergesi
+      bulunmalıdır.</p>
+
+    <p>Ayrıntılı bilgi için <a href="programs/apxs.html">apxs belgelerine</a>
+      bakınız.</p>
 </section>
 
 <section id="background"><title>Artalan Bilgisi</title>
 
-    <p>Günümüzün Unix türevlerinde var olan şık bir mekanizma sayesinde
+    <p>Günümüzün Unix türevlerinde var olan bir mekanizma sayesinde
       çalıştırılabilir bir programın adres uzayına çalışma anında yüklenmek
       veya ilintilenmek üzere <em>Devingen Paylaşımlı Nesneler</em> (DSO -
       Dynamic Shared Object) adı verilen, özel bir biçem kullanarak kodlanmış
@@ -230,19 +223,7 @@ $ apxs -i -a -n filanca mod_filanca.la
     <p>Paylaşımlı kütüphane yaklaşımı bu bakımdan türünün tek örneğidir,
       çünkü DSO mekanizması özellikle bunun için tasarlanmıştır, dolayısıyla
       işletim sisteminin sağladığı hemen hemen tüm kütüphaneler için
-      kullanılabilir. Diğer taraftan, bir programın işlevselliğini
-      genişletmek için paylaşımlı nesne kullanımı çoğu program tarafından
-      kullanılan bir şey değildir.</p>
-
-    <p>1998 itibariyle, DSO nesneleriyle çalışma anında çalıştırılabilir
-      program işlevselliğini genişleten başlıca birkaç yazılım paketi vardır:
-      Perl 5 (XS mekanizması ve DynaLoader modülü üzerinden), Netscape
-      Sunucusu, vd. 1.3 sürümünden itibaren Apache de bu gruba katıldı. Çünkü
-      Apache, modül kavramını zaten program işlevselliğini genişletmek için
-      kullanıyordu ve temel işlevselliğine dış modülleri ilintilemek için
-      dahili olarak dağıtım listesine dayalı bir yaklaşım kullanmaktaydı.
-      Dolayısıyla Apache, modüllerini çalışma anında yüklemek için DSO
-      kullanmaya baştan yazgılıydı.</p>
+      kullanılabilir.</p>
 </section>
 
 <section id="advantages"><title>Getiriler ve Götürüler</title>
@@ -251,36 +232,31 @@ $ apxs -i -a -n filanca mod_filanca.la
       şunlardır:</p>
 
     <ul>
-      <li>Sunucu paketi çalışma anında daha esnektir çünkü, asıl sunucuyu
+      <li>Sunucu paketi çalışma anında daha esnektir çünkü, sunucuyu
         oluşturan parçalar derleme sırasında <program>configure</program>
         seçenekleriyle birleştirilmek yerine <code>httpd.conf</code> içinde
         <directive module="mod_so">LoadModule</directive> yönergeleri
         sayesinde çalışma anında birleştirilebilmektedir. Bu yolla, örneğin
         tek bir Apache kurulumuyla birbirinden farklı yapılandırmalara sahip
         çok sayıda sunucu çalıştırmak mümkündür. (standart veya SSL sürümü;
-        basitleştirilmiş veya güçlendirilmiş sürümü [mod_perl, PHP3],
-        vs.)</li>
+        basitleştirilmiş veya devingen sürümü [mod_perl, PHP3], vs.)</li>
 
       <li>Sunucu paketi kurulumdan sonra bile üçüncü parti modüllerle kolayca
         genişletilebilir. Bu özellikle, bir Apache temel paketinin yanında
-        PHP3, mod_perl, mod_fastcgi gibi ek paketler oluşturan paket
+        PHP, mod_perl, mod_security gibi ek paketler oluşturan paket
         dağıtıcılarına büyük yarar sağlar.</li>
 
-      <li>Yeni Apache modülleri için daha kolay prototip geliştirilebilir:
-        Modül kaynak kodunu DSO/<program>apxs</program> çifti sayesinde
-        Apache kaynak ağacının dışında derleyip modülün yeni bir sürümünü bir
-        <code>apxs -i</code> komutunun ardından <code>apachectl
-        restart</code> yaparak çalışan bir Apache sunucusunda denemek daha
-        kolay hale getirilmiştir.</li>
+      <li>Yeni Apache httpd modülleri için daha kolay prototip
+        geliştirilebilir: Modül kaynak kodunu DSO/<program>apxs</program> çifti
+        sayesinde Apache httpd kaynak ağacının dışında derleyip modülün yeni
+        bir sürümünü bir <code>apxs -i</code> komutunun ardından
+        <code>apachectl restart</code> yaparak çalışan bir Apache HTTP
+        Sunucusunda denemek daha kolay hale getirilmiştir.</li>
     </ul>
 
     <p>DSO kullanımının götürüleri ise şunlardır:</p>
 
     <ul>
-      <li>Her platformda hazır olarak desteklenmeme: Tüm işletim sistemleri
-        bir programa devingen olarak kod yükleme becerisine sahip
-        olmadığından DSO mekanizması her platformda kullanılamaz.</li>
-
       <li>İlk yüklemede %20 yavaşlama: Unix yükleyicisi simgeleri çözümlemek
         zorunda olduğundan sunucu ilk başlatılırken yaklaşık %20 daha yavaş
         faaliyete geçer.</li>
@@ -297,11 +273,11 @@ $ apxs -i -a -n filanca mod_filanca.la
         kullanamazsınız (örneğin a.out temelli platformlar bu işlevselliği
         ELF temelli platformlar kadar iyi sağlamaz). Başka bir deyişle, DSO
         dosyaları olarak derlenmiş modüllerin kullanabileceği simgeler ya
-        Apache temel kodunda vardır ya Apache temel kodunun kullandığı C
-        kütüphanesinde (<code>libc</code>) ve diğer durağan ve devingen
-        kütüphanelerde vardır ya da konumdan bağımsız kodu içeren
+        Apache httpd temel kodunda vardır ya Apache httpd temel kodunun
+        kullandığı C kütüphanesinde (<code>libc</code>) ve diğer durağan ve
+        devingen kütüphanelerde vardır ya da konumdan bağımsız kodu içeren
         durağan kütüphane arşivlerinde (<code>libfilanca.a</code>)
-        vardır. Diğer modülleri kullanmak için tek şansınız ya Apache
+        vardır. Diğer modülleri kullanmak için tek şansınız ya Apache httpd
         çekirdeğinin modüle bir atıf içermesini sağlamak ya da modül kodunu
         <code>dlopen()</code> vasıtasıyla yüklemektir.</li>
     </ul>

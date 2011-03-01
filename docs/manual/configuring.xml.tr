@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 830237:1061758 (outdated) -->
+<!-- English Revision: 1061758 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,7 +25,8 @@
   <title>Yapılandırma Dosyaları</title>
 
 <summary>
-<p>Bu belgede Apache HTTP sunucusunu yapılandırmakta kullanılan dosyalar açıklanmıştır.</p>
+<p>Bu belgede Apache HTTP Sunucusunu yapılandırmakta kullanılan dosyalar
+açıklanmıştır.</p>
 </summary>
 
   <section id="main">
@@ -41,7 +42,7 @@
       </directivelist>
     </related>
 
-    <p>Apache düz metin yapılandırma dosyalarına <a
+    <p>Apache HTTP Sunucusu düz metin yapılandırma dosyalarına <a
     href="mod/directives.html">yönergeler</a> yerleştirilerek yapılandırılır.
     Ana yapılandırma dosyasının ismi normalde <code>httpd.conf</code>’tur.
     Bu dosyanın yeri derleme sırasında belirlenir, ancak çalıştırma
@@ -51,7 +52,7 @@
     ve bu dosyaların isimleri belirtilirken dosya ismi şablonları
     kullanılabilir. Bu dosyaların içine de ana yapılandırma dosyasında
     olduğu gibi her türlü yönerge yerleştirilebilir. Ana yapılandırma
-    dosyalarındaki değişiklikler Apache tarafından sadece başlatma veya
+    dosyalarındaki değişiklikler httpd tarafından sadece başlatma veya
     yeniden başlatma sırasında etkin kılınır.</p>
 
     <p>Sunucu ayrıca MIME belge türlerini içeren bir dosya daha okur;
@@ -63,7 +64,7 @@
   <section id="syntax">
     <title>Yapılandırma Dosyalarının Sözdizimi</title>
 
-    <p>Apache yapılandırma dosyalarının her satırında sadece bir yönerge
+    <p>httpd yapılandırma dosyalarının her satırında sadece bir yönerge
     bulunur ve bir yönergenin birden fazla satıra yayılması daha iyi
     olacaksa satır katlanabilir; devamı bir alt satırda olan her satırın
     son karakteri “\” (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü
@@ -77,9 +78,29 @@
     ve boş satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için
     yönergelerin girintilenebilmesi olanağını verir.</p>
 
-    <p>Yapılandırma dosyasındaki bir satırın uzunluğu, devam satırları
-    eklenip satır başındaki ve sonundaki boşluk karakterleri atıldıktan sonra
-    en fazla 8192 karakter olabilir.</p>
+
+    <p><directive module="core">Define</directive> ile veya kabuğun ortam
+    değişkenleri ile tanımlanmış değişkenlerin değerleri, yapılandırma
+    dosyasının satırlarında <code>${VAR}</code> sözdizimi ile kullanılabilir.
+    "VAR" geçerli bir değişkenin adı olduğu takdirde, bu değişkenin değeri
+    yapılandırma dosyasının bu noktasında yerine konacak ve orada zaten
+    değişken yerine değeri varmış gibi işlem kaldığı yerden devam edecektir.
+    <directive module="core">Define</directive> ile tanımlanmış değişkenler
+    kabuğun ortam değişkenlerinden önceliklidir. "VAR" diye bir değişken yoksa
+    <code>${VAR}</code> içindeki karakterler değişmeden kalır ve günlüğe bir
+    uyarı çıktılanır. <directive module="mod_rewrite">RewriteMap</directive>
+    sözdizimi ile olası bir karışıklığı önlemek için, değişken isimleri iki
+    nokta imini (":") içeremez.</p>
+
+    <p>Kabuğun ortam değişkenlerinin, sadece, sunucu başlatılmadan önce
+    tanımlanmış değerleri kullanılabilir.  Yapılandırma dosyasının kendisinde
+    tanımlanmış ortam değişkenleri (örneğin,
+    <directive module="mod_env">SetEnv</directive> ile), yapılandırma
+    dosyasındaki işlemlerde çok daha sonra yer alır.</p>
+
+    <p>Yapılandırma dosyasındaki bir satırın uzunluğu, değişken ikamesi
+    yapıldıkta, devam satırları eklenip satır başındaki ve sonundaki boşluk
+    karakterleri atıldıktan sonra en fazla 8192 karakter olabilir.</p>
 
     <p>Sunucuyu başlatmadan önce <code>apachectl configtest</code> ile veya
     <code>-t</code> komut satırı seçeneği ile yapılandırma dosyalarınızı
@@ -99,21 +120,26 @@
       </directivelist>
     </related>
 
-    <p>Apache modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en
-    temel işlevselliği içermesi demektir. Ek özellikler, Apache’ye <a
+    <p>httpd modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en
+    temel işlevselliği içermesi demektir. Ek özellikler, httpd’ye <a
     href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme
     sırasında sunucunun <a href="mod/module-dict.html#Status">temel</a> bir
     modül kümesi içermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen
     yüklenen</a> modülleri kullanmak üzere yapılandırılarak derlenirse modüller
     ayrı olarak derlenip gerektiği zaman <directive module="mod_so">
     LoadModule</directive> yönergesi kullanılarak yüklenebilir. Aksi takdirde,
-    ek modülleri yükleyebilmek veya kaldırabilmek için Apache’nin yeniden
+    ek modülleri yükleyebilmek veya kaldırabilmek için httpd’nin yeniden
     derlenmesi gerekir. Yapılandırma yönergeleri belli bir modülün varlığına
     dayalı olarak bir <directive module="core" type="section">IfModule</directive>
-    bloku içine alınmak suretiyle sunucuya koşullu olarak eklenebilir.</p>
+    bloku içine alınmak suretiyle sunucuya koşullu olarak eklenebilir. Ancak,
+    <directive module="core" type="section">IfModule</directive> yönergeleri
+    gerekli değildir, önemli bir modülün yokluğu gibi durumlarda
+    maskelenebilir.</p>
 
-    <p>Sunucunun içinde derlenmiş modüllerin listesini görmek için <code>-l</code>
-    komut satırı seçeneğini kullanabilirsiniz.</p>
+    <p>Sunucunun içinde derlenmiş modüllerin listesini görmek için
+    <code>-l</code> komut satırı seçeneğini kullanabilirsiniz. Ayrıca,
+    <code>-M</code> komut satırı seçeneği ile hangi modüllerin devingen olarak
+    yüklendiğini görebilirsiniz.</p>
   </section>
 
   <section id="scope">
@@ -145,7 +171,7 @@
     Yerine göre daha hassas ayarlamalar yapmak için bu bölgeler iç içe de
     kullanılabilir.</p>
 
-    <p>Apache, çok sayıda farklı siteyi aynı anda sunabilecek yetenektedir.
+    <p>httpd, çok sayıda farklı siteyi aynı anda sunabilecek yetenektedir.
     Buna <a href="vhosts/">Sanal Konaklık</a> adı verilir. Yönergelerin etki
     alanları ayrıca <directive module="core" type="section">VirtualHost</directive>
     bölümleri içine konarak da değiştirilebilir. Böylece belli bir siteye gelen
@@ -170,7 +196,7 @@
       </directivelist>
     </related>
 
-    <p>Apache yapılandırma sorumluluğunu dağıtmak için site ağaçları içine özel
+    <p>httpd yapılandırma sorumluluğunu dağıtmak için site ağaçları içine özel
     dosyalar yerleştirilmesine izin verir. Bu özel dosyalar normalde
     <code>.htaccess</code> dosyaları olmakla birlikte <directive module="core"
     >AccessFileName</directive> yönergesi kullanılarak rasgele bir isim
