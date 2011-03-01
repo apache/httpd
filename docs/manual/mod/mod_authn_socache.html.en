@@ -164,12 +164,11 @@ the load on backends</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_socache</td></tr>
 </table>
-    <p>This is a server-wide setting.  If not set, your platform's
+    <p>This is a server-wide setting to select a provider for the
+    <a href="../socache.html">shared object cache</a>.
+    Values are "dbm", "dc", "mc", or "shmcb", each subject to the
+    appropriate module being loaded.  If not set, your platform's
        default will be used.</p>
-    <div class="note"><h3>socache</h3>
-      <p>The cache is built on the the <var>socache</var> framework.
-      We need a link here once that's documented!</p>
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

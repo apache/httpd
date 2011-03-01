@@ -331,7 +331,9 @@ la réécriture soit effectuée
                   <dd>La ligne de requête HTTP complète envoyée par le
 		  navigateur au serveur (par exemple, "<code>GET
                   /index.html HTTP/1.1</code>"), à l'exclusion de tout
-		  en-tête ajouté par le navigateur.</dd>
+		  en-tête ajouté par le navigateur. Cette
+		  valeur n'a pas été déséchappée (décodée), à la
+		  différence de la plupart des variables suivantes.</dd>
 
                   <dt><code>REQUEST_URI</code></dt>
 

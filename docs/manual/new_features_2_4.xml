@@ -52,6 +52,49 @@
     </dl>
   </section>
 
+  <section id="newmods">
+    <title>New Modules</title>
+    <dl>
+      <dt><module>mod_allowmethods</module></dt>
+      <dd>New module to restrict certain HTTP methods without interfering with
+      authentication or authorization.</dd>
+
+      <dt><module>mod_buffer</module></dt>
+      <dd>Provides for buffering the input and output filter stacks</dd>
+
+      <dt><module>mod_lua</module></dt>
+      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd, 
+      for configuration and small business logic functions.</dd>
+
+      <dt><module>mod_proxy_fcgi</module></dt>
+      <dd>FastCGI Protocol backend for <module>mod_proxy</module></dd>
+
+      <dt><module>mod_proxy_scgi</module></dt>
+      <dd>SCGI Protocol backend for <module>mod_proxy</module></dd>
+
+      <dt><module>mod_ratelimit</module></dt>
+      <dd>Provides Bandwidth Rate Limiting for Clients</dd>
+
+      <dt><module>mod_reflector</module></dt>
+      <dd>Provides Reflection of a request body as a response via the output filter stack.</dd>
+
+      <dt><module>mod_remoteip</module></dt>
+      <dd>Replaces the apparent client remote IP address and hostname for the request
+      with the IP address list presented by a proxies or a load balancer via
+      the request headers.</dd>
+
+      <dt><module>mod_reqtimeout</module></dt>
+      <dd>Set timeout and minimum data rate for receiving requests</dd>
+
+      <dt><module>mod_request</module></dt>
+      <dd>Provides Filters to handle and make available HTTP request bodies</dd>
+
+      <dt><module>mod_slotmem_shm</module></dt>
+      <dd>Provides a Slot-based shared memory provider (ala the scoreboard).</dd>
+
+    </dl>
+  </section>
+
   <section id="module">
     <title>Module Enhancements</title>
     <dl>
@@ -70,11 +113,6 @@
       <dd><module>mod_ssl</module> can now be configured to share SSL Session 
       data between servers through memcached</dd>
  
-      <dt><module>mod_lua</module></dt>
-
-      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd, 
-      for configuration and small business logic functions.</dd>
-
       <dt><module>mod_proxy</module></dt>
 
       <dd>The <directive module="mod_proxy">ProxyPass</directive> directive
@@ -84,9 +122,13 @@
       block, and offers a significant performance advantage over the traditional
       two-parameter syntax when present in large numbers.</dd>
 
-      <dt><module>mod_proxy_fcgi</module></dt>
+      <dt><module>mod_proxy_balancer</module></dt>
 
-      <dd>FastCGI Protocol backend for <module>mod_proxy</module></dd>
+      <dd>More runtime configuration changes for BalancerMembers via balancer-manager</dd>
+
+      <dd>Additional BalancerMembers can be added at runtime via balancer-manager</dd>
+
+      <dd>Runtime configuration of a subset of Balancer parameters</dd>
 
       <dt><module>mod_cache</module></dt>
 
@@ -103,10 +145,6 @@
 
       <dd><module>mod_cache</module> can now insert HIT/MISS/REVALIDATE into
       an X-Cache header.</dd>
-
-      <dt><module>mod_allowmethods</module></dt>
-      <dd>New module to restrict certain HTTP methods without interfering with
-      authentication or authorization.</dd>
 
       <dt><module>mod_include</module></dt>
       <dd>Support for the 'onerror' attribute within an 'include' element,
@@ -197,4 +235,5 @@
     <p>The developer documentation contains a
     <a href="developer/new_api_2_4.html">detailed list of API changes</a>.</p>
   </section>
+
 </manualpage>
