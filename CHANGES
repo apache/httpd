@@ -1,5 +1,8 @@
                                                          -*- coding: utf-8 -*-
 
+Changes with Apache 2.3.12
+
+
 Changes with Apache 2.3.11
 
   *) mod_proxy: balancer-manager now uses POST instead of GET.
