@@ -49,6 +49,14 @@
       configured per module and per directory.  New levels <code>trace1</code>
       to <code>trace8</code> have been added above the <code>debug</code> log
       level.</dd>
+
+      <dt>Event MPM</dt>
+      <dd>The Event MPM is no longer experimental but is rather fully supported.</dd>
+ 
+      <dt>Asynchronous support</dt>
+      <dd>Better support for asynchronous read/write for supporting MPMs and
+      platforms.</dd>
+ 
     </dl>
   </section>
 
