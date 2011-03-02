@@ -585,16 +585,12 @@ static void child_main(int child_num_arg)
                 /* check for termination first so we don't sleep for a while in
                  * poll if already signalled
                  */
-                if (one_process && shutdown_pending) {
-                    SAFE_ACCEPT(accept_mutex_off());
-                    return;
-                }
-                else if (die_now) {
-                    /* In graceful stop/restart; drop the mutex
-                     * and terminate the child. */
+                if (die_now         /* in graceful stop/restart */
+                    || (one_process && shutdown_pending)) {
                     SAFE_ACCEPT(accept_mutex_off());
                     clean_child_exit(0);
                 }
+
                 /* timeout == 10 seconds to avoid a hang at graceful restart/stop
                  * caused by the closing of sockets by the signal handler
                  */
@@ -710,7 +706,7 @@ static int make_child(server_rec *s, int slot)
         apr_signal(SIGTERM, sig_term);
         ap_scoreboard_image->parent[slot].pid = getpid();
         child_main(slot);
-        return 0;
+        /* NOTREACHED */
     }
 
     (void) ap_update_child_status_from_indexes(slot, 0, SERVER_STARTING,
@@ -934,6 +930,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (one_process) {
         AP_MONCONTROL(1);
         make_child(ap_server_conf, 0);
+        /* NOTREACHED */
     }
     else {
     if (ap_daemons_max_free < ap_daemons_min_free + 1)  /* Don't thrash... */
