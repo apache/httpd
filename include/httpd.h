@@ -1936,7 +1936,7 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 #endif
 
 /**
- * @defgroup stopsignal Flags which indicate places where the sever should stop for debugging.
+ * @defgroup stopsignal Flags which indicate places where the server should stop for debugging.
  * @{
  * A set of flags which indicate places where the server should raise(SIGSTOP).
  * This is useful for debugging, because you can then attach to that process
