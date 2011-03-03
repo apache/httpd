@@ -132,13 +132,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: Trunk version of patch works with offset  
      +1 fuankg
 
-  * suEXEC: Fix backport r1070639 which breaks compilation for platforms which do
-     not support suexec. The patch also avoids printing the useless suexec path.     
-     Trunk patch: n/a
-     2.2.x patch: http://people.apache.org/~fuankg/diffs/httpd_h.diff
-     +1 fuankg, rpluem
-
-
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
