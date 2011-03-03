@@ -13,6 +13,7 @@ APACHE_MODULE(authn_file, file-based authentication control, , , yes)
 APACHE_MODULE(authn_dbm, DBM-based authentication control, , , most)
 APACHE_MODULE(authn_anon, anonymous user authentication control, , , most)
 APACHE_MODULE(authn_dbd, SQL-based authentication control, , , most)
+APACHE_MODULE(authn_socache, Cached authentication control, , , most)
 
 dnl General Authentication modules; module which implements the 
 dnl non-authn module specific directives.
