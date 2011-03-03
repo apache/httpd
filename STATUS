@@ -136,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      not support suexec. The patch also avoids printing the useless suexec path.     
      Trunk patch: n/a
      2.2.x patch: http://people.apache.org/~fuankg/diffs/httpd_h.diff
-     +1 fuankg
+     +1 fuankg, rpluem
 
 
 PATCHES/ISSUES THAT ARE STALLED
