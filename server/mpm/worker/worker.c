@@ -1331,6 +1331,7 @@ static int make_child(server_rec *s, int slot)
         set_signals();
         ap_scoreboard_image->parent[slot].pid = getpid();
         child_main(slot);
+        /* NOTREACHED */
     }
 
     if ((pid = fork()) == -1) {
@@ -1367,8 +1368,7 @@ static int make_child(server_rec *s, int slot)
 
         apr_signal(SIGTERM, just_die);
         child_main(slot);
-
-        clean_child_exit(0);
+        /* NOTREACHED */
     }
     /* else */
     if (ap_scoreboard_image->parent[slot].pid != 0) {
