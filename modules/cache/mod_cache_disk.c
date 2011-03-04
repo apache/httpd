@@ -1097,7 +1097,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         e = APR_BRIGADE_FIRST(in);
 
         /* are we done completely? if so, pass any trailing buckets right through */
-        if (dobj->done) {
+        if (dobj->done || !dobj->data.pool) {
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(out, e);
             continue;
