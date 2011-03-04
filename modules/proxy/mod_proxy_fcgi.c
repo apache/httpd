@@ -119,10 +119,12 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "proxy: FCGI: set r->filename to %s", r->filename);
 
-    r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+    if (apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo")) {
+        r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "proxy: FCGI: set r->path_info to %s", r->path_info);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "proxy: FCGI: set r->path_info to %s", r->path_info);
+    }
 
     return OK;
 }
