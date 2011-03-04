@@ -96,4 +96,21 @@
     </example>
 </section>
 
+<section id="env"><title>Environment Variables</title>
+    <p>In addition to the configuration directives that control the
+    behaviour of <module>mod_proxy</module>, there are a number of
+    <dfn>environment variables</dfn> that control the FCGI protocol
+    provider:</p>
+    <dl>
+        <dt>proxy-fcgi-pathinfo</dt>
+        <dd>By default <module>mod_proxy_fcgi</module> will neither create
+        nor export the <var>PATH_INFO</var> environment variable. This allows
+        the backend FCGI server to correctly determine <var>SCRIPT_NAME</var>
+        and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
+        If instead you need <module>mod_proxy_fcgi</module> to generate
+        a "best guess" for <var>PATH_INFO</var>, set this env-var.
+        This is a workaround for a bug in some FCGI implementations.</dd>
+    </dl>
+</section>
+
 </modulesynopsis>
