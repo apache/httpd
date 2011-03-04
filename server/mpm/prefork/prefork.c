@@ -133,9 +133,7 @@ static apr_pool_t *pchild;              /* Pool for httpd child stuff */
 static pid_t ap_my_pid; /* it seems silly to call getpid all the time */
 static pid_t parent_pid;
 static int my_child_num;
-static ap_generation_t volatile my_generation=0;
-
-static volatile int die_now = 0;
+static ap_generation_t my_generation=0;
 
 #ifdef GPROF
 /*
@@ -316,6 +314,12 @@ static void just_die(int sig)
     clean_child_exit(0);
 }
 
+/* volatile because they're updated from a signal handler */
+static int volatile shutdown_pending;
+static int volatile restart_pending;
+static int volatile is_graceful;
+static int volatile die_now = 0;
+
 static void stop_listening(int sig)
 {
     mpm_state = AP_MPMQ_STOPPING;
@@ -324,11 +328,6 @@ static void stop_listening(int sig)
     /* For a graceful stop, we want the child to exit when done */
     die_now = 1;
 }
-
-/* volatile just in case */
-static int volatile shutdown_pending;
-static int volatile restart_pending;
-static int volatile is_graceful;
 
 static void sig_term(int sig)
 {
