@@ -170,7 +170,7 @@ static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
 static int mpm_state = AP_MPMQ_STARTING;
 static int sick_child_detected;
-static ap_generation_t volatile my_generation = 0;
+static ap_generation_t my_generation = 0;
 
 static apr_thread_mutex_t *timeout_mutex;
 APR_RING_HEAD(timeout_head_t, conn_state_t);
@@ -443,11 +443,12 @@ static void just_die(int sig)
  * Connection structures and accounting...
  */
 
-/* volatile just in case */
+static int child_fatal;
+
+/* volatile because they're updated from a signal handler */
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
-static volatile int child_fatal;
 
 /*
  * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
