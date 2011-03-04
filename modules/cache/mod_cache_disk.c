@@ -432,8 +432,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
 
     /* Create and init the cache object */
-    h->cache_obj = obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
-    obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(disk_cache_object_t));
+    obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
+    dobj = apr_pcalloc(r->pool, sizeof(disk_cache_object_t));
 
     info = &(obj->info);
 
@@ -570,11 +570,20 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                     "cache_disk: Recalled cached URL info header %s", dobj->name);
 
+            /* make the configuration stick */
+            h->cache_obj = obj;
+            obj->vobj = dobj;
+
             return OK;
         }
 
     }
     else {
+
+        /* make the configuration stick */
+        h->cache_obj = obj;
+        obj->vobj = dobj;
+
         return OK;
     }
 
