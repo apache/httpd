@@ -1960,8 +1960,6 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     ++retained->module_loads;
     if (retained->module_loads == 2) {
-        is_graceful = 0;
-
         if (!one_process && !foreground) {
             rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
                                            : APR_PROC_DETACH_DAEMONIZE);
