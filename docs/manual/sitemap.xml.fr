@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1044380 -->
+<!-- English Revision : 1075625 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,8 +61,10 @@ Location et Files</page>
 Apache</page>
 <page href="mpm.html">Modules multi-processus (MPMs)</page>
 <page href="env.html">Les variables d'environnement d'Apache</page>
+<page href="expr.html">L'interpr&eacute;tation des expressions dans Apache</page>
 <page href="handler.html">Utilisation des gestionnaires d'Apache</page>
 <page href="filter.html">Filtres</page>
+<page href="socache.html">Support du cache des objets partag&eacute;s</page>
 <page href="suexec.html">Support de suEXEC</page>
 <page href="misc/perf-tuning.html">Optimisation des performances</page>
 <page href="http://wiki.apache.org/httpd/FAQ">Foire aux Questions</page>
