@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.12
 
+  *) worker, event, prefork: Correct several issues when built as
+     DSOs; most notably, the scoreboard was reinitialized during graceful
+     restart, such that processes of the previous generation were not
+     observable.  [Jeff Trawick]
 
 Changes with Apache 2.3.11
 
