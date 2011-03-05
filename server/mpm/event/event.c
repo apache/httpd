@@ -2442,7 +2442,6 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     }
     ++retained->module_loads;
     if (retained->module_loads == 2) {
-        is_graceful = 0;
         rv = apr_pollset_create(&event_pollset, 1, plog,
                                 APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
