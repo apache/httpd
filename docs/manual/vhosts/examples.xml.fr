@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 421100:989156 (outdated) -->
+<!-- English Revision: 989156 -->
 <!-- French translation by Vincent Deffontaines, Alain B., review by  -->
+<!-- updated by Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,7 +29,7 @@
 <summary>
 
     <p>Le but de ce document est d'essayer de répondre aux questions 
-    les plus répandues sur la configuration des serveurs virtuels. 
+    les plus répandues sur la configuration des <a href="index.html">serveurs virtuels</a>. 
     Les scénarios présentés ici se rencontrent quand plusieurs 
     serveurs Webs doivent tourner sur une seule et même machine au 
     moyen de serveurs virtuels <a href="name-based.html">par nom</a> 
@@ -41,8 +42,8 @@
 
     <p>Votre serveur ne dispose que d'une seule adresse IP, et de 
     nombreux alias (CNAMES) pointent vers cette adresse dans le DNS. 
-    Pour l'exemple, <code>www.example1.com</code> et 
-    <code>www.example2.org</code> doivent tourner sur cette machine.</p>
+    Pour l'exemple, <code>www.example.com</code> et 
+    <code>www.example.org</code> doivent tourner sur cette machine.</p>
 
     <note><title>Note&nbsp;:</title><p>La configuration de serveurs virtuels 
     sous Apache ne provoque pas leur apparition magique dans la 
@@ -66,7 +67,7 @@
     <br />
     &lt;VirtualHost *:80&gt;<br />
     <indent>
-      DocumentRoot /www/example1<br />
+      DocumentRoot /www/example.com<br />
       ServerName www.example1.com<br />
       <br />
       # Autres directives ici<br />
@@ -76,7 +77,7 @@
     <br />
     &lt;VirtualHost *:80&gt;<br />
     <indent>
-      DocumentRoot /www/example2<br />
+      DocumentRoot /www/example.org<br />
       ServerName www.example2.org<br />
       <br />
       # Autres directives ici<br />
@@ -87,10 +88,10 @@
 
     <p>Les astérisques correspondent à toutes les adresses, si bien que 
     le serveur principal ne répondra jamais à aucune requête. Comme 
-    <code>www.example1.com</code> se trouve en premier dans le fichier 
+    <code>www.example.com</code> se trouve en premier dans le fichier 
     de configuration, il a la plus grande priorité et peut être vu 
     comme serveur <cite>par défaut</cite> ou <cite>primaire</cite>&nbsp;; 
-    ce qui signifie que toute requête reçue ne correspondant pas à une 
+    ce qui signifie que toute requête reçue ne correspondant à aucune 
     des directives <code>ServerName</code> sera servie par ce premier 
     <code>VirtualHost</code>.</p>
 
@@ -155,8 +156,8 @@
         <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
-        DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        DocumentRoot /www/example.com<br />
+        ServerName www.example.com<br />
    	        <br />
         # D'autres directives ici ...<br />
                    <br />
@@ -165,8 +166,8 @@
         <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
-        DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        DocumentRoot /www/example.org<br />
+        ServerName www.example.org<br />
                 <br />
         # D'autres directives ici ...<br />
                 <br />
@@ -178,7 +179,7 @@
     <code>172.20.30.50</code> sera servie par le serveur principal. 
     Les requêtes vers <code>172.20.30.50</code> avec un nom de serveur 
     inconnu, ou sans en-tête <code>Host:</code>, seront servies par 
-    <code>www.example1.com</code>.</p>
+    <code>www.example.com</code>.</p>
 
     </section>
 
@@ -251,28 +252,28 @@
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
         DocumentRoot /www/domain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
-        ServerName www.example1.com<br />
+        ServerName www.example.com<br />
         DocumentRoot /www/domain-8080<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
-        ServerName www.example2.org<br />
+        ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-8080<br />
     </indent>
     &lt;/VirtualHost&gt;
@@ -284,7 +285,7 @@
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
-    <code>www.example1.com</code> et <code>www.example2.org</code>.</p>
+    <code>www.example.com</code> et <code>www.example.org</code>.</p>
 
     <example>
     <title>Configuration du serveur</title>
@@ -293,14 +294,14 @@
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example1<br />
+        DocumentRoot /www/example.com<br />
         ServerName www.example1.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
-        DocumentRoot /www/example2<br />
+        DocumentRoot /www/example.org<br />
         ServerName www.example2.org<br />
     </indent>
     &lt;/VirtualHost&gt;
@@ -318,7 +319,7 @@
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
-    <code>www.example1.com</code> et <code>www.example2.org</code>. 
+    <code>www.example.com</code> et <code>www.example.org</code>. 
     Pour chacun d'eux, nous voulons un hébergement sur les ports 80 
     et 8080.</p>
 
@@ -332,29 +333,29 @@
 		<br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
-        DocumentRoot /www/example1-80<br />
-        ServerName www.example1.com<br />
+        DocumentRoot /www/example.com-80<br />
+        ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
-        DocumentRoot /www/example1-8080<br />
-        ServerName www.example1.com<br />
+        DocumentRoot /www/example.com-8080<br />
+        ServerName www.example.com<br />
 		</indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
     <indent>
-        DocumentRoot /www/example2-80<br />
-        ServerName www.example1.org<br />
+        DocumentRoot /www/example.org-80<br />
+        ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.50:8080&gt;<br />
     <indent>
-        DocumentRoot /www/example2-8080<br />
-        ServerName www.example2.org<br />
+        DocumentRoot /www/example.org-8080<br />
+        ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;
     </example>
@@ -376,37 +377,37 @@
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example1<br />
-        ServerName www.example1.com<br />
+        DocumentRoot /www/example.com<br />
+        ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        DocumentRoot /www/example.org<br />
+        ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example3<br />
-        ServerName www.example3.net<br />
+        DocumentRoot /www/example.net<br />
+        ServerName www.example.net<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     # "par-IP"<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
-        DocumentRoot /www/example4<br />
-        ServerName www.example4.edu<br />
+        DocumentRoot /www/example.edu<br />
+        ServerName www.example.edu<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <indent>
-        DocumentRoot /www/example5<br />
-        ServerName www.example5.gov<br />
+        DocumentRoot /www/example.gov<br />
+        ServerName www.example.gov<br />
     </indent>
     &lt;/VirtualHost&gt;
     </example>
@@ -534,7 +535,7 @@
 	par nom en un serveur virtuel par IP</title>
 
     <p>Le serveur virtuel par nom avec le nom de domaine 
-    <code>www.example2.org</code> (de notre <a href="#name">exemple 
+    <code>www.example.org</code> (de notre <a href="#name">exemple 
     par nom</a>) devrait obtenir sa propre adresse IP. Pendant la 
     phase de migration, il est possible d'éviter les problèmes avec 
     les noms de serveurs et autres serveurs mandataires qui mémorisent 
@@ -547,24 +548,24 @@
     <title>Configuration du serveur</title>
 
     Listen 80<br />
-    ServerName www.example1.com<br />
-    DocumentRoot /www/example1<br />
+    ServerName www.example.com<br />
+    DocumentRoot /www/example.com<br />
 		<br />
     NameVirtualHost 172.20.30.40<br />
 		<br />
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <indent>
-        DocumentRoot /www/example2<br />
-        ServerName www.example2.org<br />
+        DocumentRoot /www/example.org<br />
+        ServerName www.example.org<br />
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
 		<br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
-        DocumentRoot /www/example3<br />
-        ServerName www.example3.net<br />
-        ServerAlias *.example3.net<br />
+        DocumentRoot /www/example.net<br />
+        ServerName www.example.net<br />
+        ServerAlias *.example.net<br />
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;
@@ -635,12 +636,12 @@
     Une requête sur une URL <code>http://www.sub1.domain.tld/</code> n'est 
     servie par le serveur sub1-vhost que si le client envoie un en-tête 
     <code>Host:</code> correct. Si aucun en-tête <code>Host:</code> 
-    n'est transmis, le serveur primaire sera utilisé.<br />
-    Notez qu'il y a une singularité&nbsp;: une requête sur 
+    n'est transmis, le serveur primaire sera utilisé.</p>
+    <p>Notez qu'il y a une singularité&nbsp;: une requête sur 
     <code>http://www.sub2.domain.tld/sub1/</code> est également servie 
     par le serveur sub1-vhost si le client n'envoie pas d'en-tête 
-    <code>Host:</code>.<br />
-    Les directives <directive module="mod_rewrite">RewriteRule</directive> 
+    <code>Host:</code>.</p>
+    <p>Les directives <directive module="mod_rewrite">RewriteRule</directive> 
     sont employées pour s'assurer que le client qui envoie un en-tête 
     <code>Host:</code> correct puisse utiliser d'autres variantes d'URLs, 
     <em>c'est-à-dire</em> avec ou sans préfixe d'URL.</p>
