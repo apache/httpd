@@ -102,17 +102,30 @@ static ap_pod_t *pod;
 typedef struct prefork_retained_data {
     int first_server_limit;
     int module_loads;
+    ap_generation_t my_generation;
+    int volatile is_graceful; /* set from signal handler */
+    int maxclients_reported;
+    /*
+     * The max child slot ever assigned, preserved across restarts.  Necessary
+     * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We
+     * use this value to optimize routines that have to scan the entire scoreboard.
+     */
+    int max_daemons_limit;
+    /*
+     * idle_spawn_rate is the number of children that will be spawned on the
+     * next maintenance cycle if there aren't enough idle servers.  It is
+     * doubled up to MAX_SPAWN_RATE, and reset only when a cycle goes by
+     * without the need to spawn.
+     */
+    int idle_spawn_rate;
+#ifndef MAX_SPAWN_RATE
+#define MAX_SPAWN_RATE  (32)
+#endif
+    int hold_off_on_exponential_spawning;
 } prefork_retained_data;
 static prefork_retained_data *retained;
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
-
-/*
- * The max child slot ever assigned, preserved across restarts.  Necessary
- * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We
- * use this value to optimize routines that have to scan the entire scoreboard.
- */
-static int max_daemons_limit = -1;
 
 /* one_process --- debugging mode variable; can be set from the command line
  * with the -X flag.  If set, this gets you the child_main loop running
@@ -133,7 +146,6 @@ static apr_pool_t *pchild;              /* Pool for httpd child stuff */
 static pid_t ap_my_pid; /* it seems silly to call getpid all the time */
 static pid_t parent_pid;
 static int my_child_num;
-static ap_generation_t my_generation=0;
 
 #ifdef GPROF
 /*
@@ -197,7 +209,7 @@ static void accept_mutex_on(void)
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't grab the accept mutex";
 
-        if (my_generation !=
+        if (retained->my_generation !=
             ap_scoreboard_image->global->running_generation) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, "%s", msg);
             clean_child_exit(0);
@@ -215,7 +227,7 @@ static void accept_mutex_off(void)
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't release the accept mutex";
 
-        if (my_generation !=
+        if (retained->my_generation !=
             ap_scoreboard_image->global->running_generation) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, "%s", msg);
             /* don't exit here... we have a connection to
@@ -285,7 +297,7 @@ static int prefork_query(int query_code, int *result, apr_status_t *rv)
         *result = mpm_state;
         break;
     case AP_MPMQ_GENERATION:
-        *result = my_generation;
+        *result = retained->my_generation;
         break;
     default:
         *rv = APR_ENOTIMPL;
@@ -317,7 +329,6 @@ static void just_die(int sig)
 /* volatile because they're updated from a signal handler */
 static int volatile shutdown_pending;
 static int volatile restart_pending;
-static int volatile is_graceful;
 static int volatile die_now = 0;
 
 static void stop_listening(int sig)
@@ -340,7 +351,7 @@ static void sig_term(int sig)
     }
     mpm_state = AP_MPMQ_STOPPING;
     shutdown_pending = 1;
-    is_graceful = (sig == AP_SIG_GRACEFUL_STOP);
+    retained->is_graceful = (sig == AP_SIG_GRACEFUL_STOP);
 }
 
 /* restart() is the signal handler for SIGHUP and AP_SIG_GRACEFUL
@@ -354,7 +365,7 @@ static void restart(int sig)
     }
     mpm_state = AP_MPMQ_STOPPING;
     restart_pending = 1;
-    is_graceful = (sig == AP_SIG_GRACEFUL);
+    retained->is_graceful = (sig == AP_SIG_GRACEFUL);
 }
 
 static void set_signals(void)
@@ -674,7 +685,7 @@ static void child_main(int child_num_arg)
         if (ap_mpm_pod_check(pod) == APR_SUCCESS) { /* selected as idle? */
             die_now = 1;
         }
-        else if (my_generation !=
+        else if (retained->my_generation !=
                  ap_scoreboard_image->global->running_generation) { /* restart? */
             /* yeah, this could be non-graceful restart, in which case the
              * parent will kill us soon enough, but why bother checking?
@@ -691,8 +702,8 @@ static int make_child(server_rec *s, int slot)
 {
     int pid;
 
-    if (slot + 1 > max_daemons_limit) {
-        max_daemons_limit = slot + 1;
+    if (slot + 1 > retained->max_daemons_limit) {
+        retained->max_daemons_limit = slot + 1;
     }
 
     if (one_process) {
@@ -783,19 +794,6 @@ static void startup_children(int number_to_start)
     }
 }
 
-
-/*
- * idle_spawn_rate is the number of children that will be spawned on the
- * next maintenance cycle if there aren't enough idle servers.  It is
- * doubled up to MAX_SPAWN_RATE, and reset only when a cycle goes by
- * without the need to spawn.
- */
-static int idle_spawn_rate = 1;
-#ifndef MAX_SPAWN_RATE
-#define MAX_SPAWN_RATE  (32)
-#endif
-static int hold_off_on_exponential_spawning;
-
 static void perform_idle_server_maintenance(apr_pool_t *p)
 {
     int i;
@@ -816,13 +814,13 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     for (i = 0; i < ap_daemons_limit; ++i) {
         int status;
 
-        if (i >= max_daemons_limit && free_length == idle_spawn_rate)
+        if (i >= retained->max_daemons_limit && free_length == retained->idle_spawn_rate)
             break;
         ws = &ap_scoreboard_image->servers[i][0];
         status = ws->status;
         if (status == SERVER_DEAD) {
             /* try to keep children numbers as low as possible */
-            if (free_length < idle_spawn_rate) {
+            if (free_length < retained->idle_spawn_rate) {
                 free_slots[free_length] = i;
                 ++free_length;
             }
@@ -842,36 +840,34 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             last_non_dead = i;
         }
     }
-    max_daemons_limit = last_non_dead + 1;
+    retained->max_daemons_limit = last_non_dead + 1;
     if (idle_count > ap_daemons_max_free) {
         /* kill off one child... we use the pod because that'll cause it to
          * shut down gracefully, in case it happened to pick up a request
          * while we were counting
          */
         ap_mpm_pod_signal(pod);
-        idle_spawn_rate = 1;
+        retained->idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {
         /* terminate the free list */
         if (free_length == 0) {
             /* only report this condition once */
-            static int reported = 0;
-
-            if (!reported) {
+            if (!retained->maxclients_reported) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
                             "server reached MaxClients setting, consider"
                             " raising the MaxClients setting");
-                reported = 1;
+                retained->maxclients_reported = 1;
             }
-            idle_spawn_rate = 1;
+            retained->idle_spawn_rate = 1;
         }
         else {
-            if (idle_spawn_rate >= 8) {
+            if (retained->idle_spawn_rate >= 8) {
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                     "server seems busy, (you may need "
                     "to increase StartServers, or Min/MaxSpareServers), "
                     "spawning %d children, there are %d idle, and "
-                    "%d total children", idle_spawn_rate,
+                    "%d total children", retained->idle_spawn_rate,
                     idle_count, total_non_dead);
             }
             for (i = 0; i < free_length; ++i) {
@@ -880,16 +876,16 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             /* the next time around we want to spawn twice as many if this
              * wasn't good enough, but not if we've just done a graceful
              */
-            if (hold_off_on_exponential_spawning) {
-                --hold_off_on_exponential_spawning;
+            if (retained->hold_off_on_exponential_spawning) {
+                --retained->hold_off_on_exponential_spawning;
             }
-            else if (idle_spawn_rate < MAX_SPAWN_RATE) {
-                idle_spawn_rate *= 2;
+            else if (retained->idle_spawn_rate < MAX_SPAWN_RATE) {
+                retained->idle_spawn_rate *= 2;
             }
         }
     }
     else {
-        idle_spawn_rate = 1;
+        retained->idle_spawn_rate = 1;
     }
 }
 
@@ -913,7 +909,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         return DONE;
     }
 
-    if (!is_graceful) {
+    if (!retained->is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
             mpm_state = AP_MPMQ_STOPPING;
             return DONE;
@@ -921,7 +917,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* fix the generation number in the global score; we just got a new,
          * cleared scoreboard
          */
-        ap_scoreboard_image->global->running_generation = my_generation;
+        ap_scoreboard_image->global->running_generation = retained->my_generation;
     }
 
     set_signals();
@@ -947,7 +943,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (remaining_children_to_start > ap_daemons_limit) {
         remaining_children_to_start = ap_daemons_limit;
     }
-    if (!is_graceful) {
+    if (!retained->is_graceful) {
         startup_children(remaining_children_to_start);
         remaining_children_to_start = 0;
     }
@@ -955,7 +951,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* give the system some time to recover before kicking into
          * exponential mode
          */
-        hold_off_on_exponential_spawning = 10;
+        retained->hold_off_on_exponential_spawning = 10;
     }
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
@@ -1001,7 +997,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     /* child detected a resource shortage (E[NM]FILE, ENOBUFS, etc)
                      * cut the fork rate to the minimum
                      */
-                    idle_spawn_rate = 1;
+                    retained->idle_spawn_rate = 1;
                 }
                 else if (remaining_children_to_start
                     && child_slot < ap_daemons_limit) {
@@ -1017,7 +1013,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 /* handled */
 #endif
             }
-            else if (is_graceful) {
+            else if (retained->is_graceful) {
                 /* Great, we've probably just lost a slot in the
                  * scoreboard.  Somehow we don't know about this
                  * child.
@@ -1053,7 +1049,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     mpm_state = AP_MPMQ_STOPPING;
 
-    if (shutdown_pending && !is_graceful) {
+    if (shutdown_pending && !retained->is_graceful) {
         /* Time to shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
@@ -1090,7 +1086,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_close_listeners();
 
         /* kill off the idle ones */
-        ap_mpm_pod_killpg(pod, max_daemons_limit);
+        ap_mpm_pod_killpg(pod, retained->max_daemons_limit);
 
         /* Send SIGUSR1 to the active children */
         active_children = 0;
@@ -1165,15 +1161,15 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* XXX: we really need to make sure this new generation number isn't in
      * use by any of the children.
      */
-    ++my_generation;
-    ap_scoreboard_image->global->running_generation = my_generation;
+    ++retained->my_generation;
+    ap_scoreboard_image->global->running_generation = retained->my_generation;
 
-    if (is_graceful) {
+    if (retained->is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                     "Graceful restart requested, doing restart");
 
         /* kill off the idle ones */
-        ap_mpm_pod_killpg(pod, max_daemons_limit);
+        ap_mpm_pod_killpg(pod, retained->max_daemons_limit);
 
         /* This is mostly for debugging... so that we know what is still
          * gracefully dealing with existing request.  This will break
@@ -1267,6 +1263,8 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     retained = ap_retained_data_get(userdata_key);
     if (!retained) {
         retained = ap_retained_data_create(userdata_key, sizeof(*retained));
+        retained->max_daemons_limit = -1;
+        retained->idle_spawn_rate = 1;
     }
     ++retained->module_loads;
     if (retained->module_loads == 2) {
@@ -1279,9 +1277,9 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
         }
-
-        parent_pid = ap_my_pid = getpid();
     }
+
+    parent_pid = ap_my_pid = getpid();
 
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
