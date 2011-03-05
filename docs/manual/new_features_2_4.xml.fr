@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1053353 -->
+<!-- English Revision : 1076021 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -57,6 +57,67 @@ serveur HTTP Apache</title>
       nouveaux niveaux <code>trace1</code> &agrave; <code>trace8</code> ont &eacute;t&eacute;
       ajout&eacute;s au dessus du niveau de journalisation <code>debug</code>.</dd>
 
+      <dt>MPM Event</dt>
+      <dd>Le MPM Event est sorti du mode exp&eacute;rimental pour &ecirc;tre
+      pleinement support&eacute;.</dd>
+ 
+      <dt>Support du mode asynchrone</dt>
+      <dd>Le support des lectures/&eacute;critures asynchrones pour les MPMs et
+      les plateformes qui l'impl&eacute;mentent a &eacute;t&eacute; am&eacute;lior&eacute;.</dd>
+ 
+    </dl>
+  </section>
+
+  <section id="newmods">
+    <title>Nouveau modules</title>
+    <dl>
+      <dt><module>mod_allowmethods</module></dt>
+      <dd>Nouveau module permettant de restreindre l'utilisation de
+      certaines m&eacute;thodes HTTP sans interf&eacute;rer avec l'authentification et
+      l'autorisation.</dd>
+
+      <dt><module>mod_buffer</module></dt>
+      <dd>Fournit un tampon pour les piles des filtres en entr&eacute;e et en
+      sortie.</dd>
+
+      <dt><module>mod_lua</module></dt>
+      <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
+      httpd pour la configuration et les fonctions logiques courantes.</dd>
+
+      <dt><module>mod_proxy_fcgi</module></dt>
+      <dd>Mise &agrave; disposition du protocole FastCGI pour
+      <module>mod_proxy</module>.</dd>
+
+      <dt><module>mod_proxy_scgi</module></dt>
+      <dd>Mise &agrave; disposition du protocole SCGI pour
+      <module>mod_proxy</module>.</dd>
+
+      <dt><module>mod_ratelimit</module></dt>
+      <dd>Permet de limiter le taux de bande passante pour certains
+      clients.</dd>
+
+      <dt><module>mod_reflector</module></dt>
+      <dd>Permet de renvoyer comme r&eacute;ponse le corps de la requ&ecirc;te via la
+      pile du filtre de sortie.</dd>
+
+      <dt><module>mod_remoteip</module></dt>
+      <dd>Remplace l'adresse IP distante et le nom d'h&ocirc;te apparents du
+      client pour la requ&ecirc;te courante par la liste d'adresses IP
+      pr&eacute;sent&eacute;e par un mandataire ou un r&eacute;partiteur de charge via les
+      en-t&ecirc;tes de la requ&ecirc;te.</dd>
+
+      <dt><module>mod_reqtimeout</module></dt>
+      <dd>D&eacute;finit le d&eacute;lai d'expiration et le taux de donn&eacute;es minimum
+      pour la r&eacute;ception des requ&ecirc;tes.</dd>
+
+      <dt><module>mod_request</module></dt>
+      <dd>Fournit des filtres permettant de g&eacute;rer et de mettre &agrave;
+      disposition les corps des requ&ecirc;tes HTTP.</dd>
+
+      <dt><module>mod_slotmem_shm</module></dt>
+      <dd>Met &agrave; disposition un fournisseur de m&eacute;moire partag&eacute;e &agrave; base de
+      slots (du style tableau de bord).</dd>
+
     </dl>
   </section>
 
@@ -81,11 +142,6 @@ serveur HTTP Apache</title>
       que celui-ci partage les donn&eacute;es de session SSL entre les serveurs
       via memcached.</dd>
  
-      <dt><module>mod_lua</module></dt>
-
-      <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
-      httpd, pour la configuration et des fonctions logiques simples.</dd>
-
       <dt><module>mod_proxy</module></dt>
 
       <dd>La directive <directive
@@ -96,9 +152,18 @@ serveur HTTP Apache</title>
       performances important par rapport &agrave; la syntaxe traditionnelle &agrave;
       deux param&egrave;tres lorsqu'elle est pr&eacute;sente en grand nombre.</dd>
  
-      <dt><module>mod_proxy_fcgi</module></dt>
+      <dt><module>mod_proxy_balancer</module></dt>
 
-      <dd>Support du protocole FastCGI pour <module>mod_proxy</module></dd>
+      <dd>D'avantage de possibilit&eacute;s de modifier la configuration &agrave;
+      l'ex&eacute;cution des membres de groupes de r&eacute;partition de charge via le
+      gestionnaire de r&eacute;partition de charge.</dd>
+
+      <dd>Le gestionnaire de r&eacute;partition de charge permet d'ajouter des
+      membres de groupes de r&eacute;partition de charge suppl&eacute;mentaires &agrave;
+      l'ex&eacute;cution.</dd>
+
+      <dd>Configuration &agrave; l'ex&eacute;cution d'un sous-ensemble de param&egrave;tres
+      de r&eacute;partition de charge.</dd>
 
       <dt><module>mod_cache</module></dt>
 
@@ -120,10 +185,6 @@ serveur HTTP Apache</title>
 
       <dd><module>mod_cache</module> peut maintenant ins&eacute;rer
       HIT/MISS/REVALIDATE dans un en-t&ecirc;te X-Cache.</dd>
-
-      <dt><module>mod_allowmethods</module></dt>
-      <dd>Nouveau module permettant de restreindre certaines m&eacute;thodes
-      HTTP sans interf&eacute;rer avec l'authentification et l'autorisation.</dd>
 
       <dt><module>mod_include</module></dt>
       <dd>Support de l'attribut 'onerror' dans un &eacute;l&eacute;ment 'include',
@@ -220,4 +281,5 @@ serveur HTTP Apache</title>
     href="developer/new_api_2_4.html">liste d&eacute;taill&eacute;e des modifications
     de l'API</a>.</p>
   </section>
+
 </manualpage>
