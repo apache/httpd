@@ -233,7 +233,7 @@ empty value.</p>
 [E=!VAR]
 </example>
 
-<p>allows to unset a previouslz set environment variable named
+<p>allows to unset a previously set environment variable named
 <code>VAR</code>.</p>
 
 <p>Environment variables can then be used in a variety of
