@@ -173,6 +173,13 @@
       clients which require such headers. (This affects all modules which
       use these environment variables.)</dd>
 
+      <dt><module>mod_authz_core</module>Authorization Logic Containers</dt>
+
+      <dd>Advanced authorization logic may now be specified using the
+          <directive module="mod_authz_core">Require</directive> directive
+          and the related container directives, such as
+          <directive module="mod_authz_core"
+          type="section">RequireAll</directive>.</dd>
     </dl>
   </section>
 
@@ -218,13 +225,11 @@
           <module>mod_include</module>.</dd>
 
       <dt>Authorization Logic Containers</dt>
-
-      <dd>Advanced authorization logic may now be specified using the
-          <directive module="mod_authz_core">Require</directive> directive
-          and the related container directives, such as
-          <directive module="mod_authz_core"
-          type="section">RequireAll</directive>, all
-          provided by the <module>mod_authz_core</module> module.</dd>
+      
+      <dd>Authorization modules now register as a provider, via
+      ap_register_auth_provider(), to support advanced authorization logic,
+      such as <directive module="mod_authz_core" type="section"
+      >RequireAll</directive>.</dd>
 
       <dt>Small-Object Caching Interface</dt>
 
