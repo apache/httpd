@@ -59,6 +59,10 @@
       <dt>Asynchronous support</dt>
       <dd>Better support for asynchronous read/write for supporting MPMs and
       platforms.</dd>
+
+      <dt>Per-request configuration sections</dt>
+      <dd>&lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt; sections can be used to 
+      set the configuration based on per-request criteria</dd>
  
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
