@@ -105,14 +105,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  Non-optional broken features are worse :)
                  Trunk must be patched identically.
 
-  * mod_rewrite: Allow to unset environment variables.
-     Direct backport from trunk.
-     PR: 50746
-     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=26646
-     (patch is simpler if viewed with whitespace changes ignored)
-     +1 rjung, covener, rpluem
-        (needs doc too including the behavior change in 2.2.16)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

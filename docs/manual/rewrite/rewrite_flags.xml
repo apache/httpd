@@ -108,7 +108,39 @@ is run, thus unsetting what you have set. See <a href="../env.html">the
 Environment Variables document</a> for more details on how Environment
 variables work.</p>
 
-<p>The following example sets an evironment variable called 'image' to a
+<p>The full syntax for this flag is:</p>
+
+<example>
+[E=VAR:VAL]
+[E=!VAR]
+</example>
+
+<p><code>VAL</code> may contain backreferences (<code>$N</code> or
+<code>%N</code>) which will be expanded.</p>
+
+<p>Using the short form</p>
+
+<example>
+[E=VAR]
+</example>
+
+<p>you can set the environment variable named <code>VAR</code> to an
+empty value.</p>
+
+<p>The form</p>
+
+<example>
+[E=!VAR]
+</example>
+
+<p>allows to unset a previously set environment variable named
+<code>VAR</code>.</p>
+
+<p>Environment variables can then be used in a variety of
+contexts, including CGI programs, other RewriteRule directives, or
+CustomLog directives.</p>
+
+<p>The following example sets an environment variable called 'image' to a
 value of '1' if the requested URI is an image file. Then, that
 environment variable is used to exclude those requests from the access
 log.</p>
