@@ -73,6 +73,10 @@ doivent s'exécuter</td></tr>
     </code></p></div>
 
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/core.html#suexec">Suexec</a></code></li>
+</ul>
 </div>
 </div>
 <div class="bottomlang">

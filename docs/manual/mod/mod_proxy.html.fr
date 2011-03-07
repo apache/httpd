@@ -1208,9 +1208,9 @@ l'espace d'URLs du serveur local</td></tr>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Durée de vie des connexions inactives et des entrées
-	associées du jeu de connexions. Celles qui sont inutilisées au
-	bout de <code>ttl</code> secondes seront respectivement fermées
-	et libérées.
+	associées du jeu de connexions. Lorsque cette limite est
+	atteinte, la connexion concernée ne sera plus utilisée ; elle
+	sera ensuite fermée au bout d'un certain temps.
     </td></tr>
 
     </table>

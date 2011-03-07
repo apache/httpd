@@ -587,7 +587,7 @@ extensions</td></tr>
 <tr><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
 [header=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
 [body=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
-</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
+</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
 </td></tr>
 <tr class="odd"><td><a href="core.html#require">Require <var>entity-name</var> [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Selects which authenticated users can access
 a resource</td></tr>
