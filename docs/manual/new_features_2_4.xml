@@ -56,6 +56,10 @@
       <dt>Asynchronous support</dt>
       <dd>Better support for asynchronous read/write for supporting MPMs and
       platforms.</dd>
+
+      <dt>Per-request configuration sections</dt>
+      <dd>&lt;<directive module="core">If</directive>&gt; sections can be used to 
+      set the configuration based on per-request criteria</dd>
  
     </dl>
   </section>
