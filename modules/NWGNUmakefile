@@ -15,9 +15,9 @@ SUBDIRS = \
 	aaa \
 	cache \
 	cluster \
-	dav\main \
-	dav\fs \
-	dav\lock \
+	dav/main \
+	dav/fs \
+	dav/lock \
 	echo \
 	examples \
 	generators \
@@ -53,12 +53,6 @@ SUBDIRS += lua \
 endif
 endif
 
-#If the mod_edir directory exists then build the mod_edir module
-ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
-SUBDIRS += mod_edir \
-	$(EOLIST)
-endif
-
 # Allow the experimental modules to be built if EXPERIMENTAL is defined
 ifdef EXPERIMENTAL
 SUBDIRS += experimental \
@@ -74,6 +68,12 @@ endif
 # Allow the test modules to be built if TEST is defined
 ifdef TEST
 SUBDIRS += test \
+	$(EOLIST)
+endif
+
+#If the mod_edir directory exists then build the mod_edir module
+ifeq "$(wildcard $(AP_WORK)/modules/mod_edir)" "$(AP_WORK)/modules/mod_edir"
+SUBDIRS += mod_edir \
 	$(EOLIST)
 endif
 

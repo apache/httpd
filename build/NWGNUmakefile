@@ -60,19 +60,19 @@ ifneq "$(BUILDTOOL_AS_NLM)" "1"
 
 $(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c $(FILES_prebuild_headers)
 	@echo $(DL)GEN  $@$(DL)
-	@$< $@
+	$< $@
 
 %.exe: $(PCRE)/%.c
 	@echo $(DL)Creating Build Helper $@$(DL)
-	@$(WIN_CC) $(WIN_CFLAGS) -DHAVE_CONFIG_H $< -o $@
+	$(HOST_CC) $(HOST_CFLAGS) -DHAVE_CONFIG_H $< -o $@
 
 $(NWOS)/test_char.h: gen_test_char.exe $(SERVER)/gen_test_char.c
 	@echo $(DL)GEN  $@$(DL)
-	@$< > $@
+	$< > $@
 
 %.exe: $(SERVER)/%.c
 	@echo $(DL)Creating Build Helper $@$(DL)
-	@$(WIN_CC) $(WIN_CFLAGS) -DCROSS_COMPILE $< -o $@
+	$(HOST_CC) $(HOST_CFLAGS) -DCROSS_COMPILE $< -o $@
 
 else
 
@@ -91,7 +91,7 @@ endif
 #
 chkapr: $(APR)/build/nw_ver.awk $(APR)/include/apr_version.h
 	@echo $(DL)Checking for APR version...$(DL)
-	@$(AWK) -v WANTED=$(APR_WANTED) -f $^
+	$(AWK) -v WANTED=$(APR_WANTED) -f $^
 
 #
 # You can use this target if all that is needed is to copy files to the

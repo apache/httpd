@@ -209,12 +209,19 @@ CLIB3S	= $(METROWERKS)/Novell Support/Metrowerks Support/Libraries/Runtime/mwcrt
 MATH3S	=
 PLIB3S	= $(METROWERKS)/Novell Support/Metrowerks Support/Libraries/MSL C++/MWCPP.lib
 
-# MetroWerks Win32 build flags to create build tool
-MWCW_MSL   = "$(METROWERKS)/MSL"
-MWCW_W32   = "$(METROWERKS)/Win32-x86 Support"
-WIN_CFLAGS =  -O2 -gccinc -nodefaults -proc 586 -w off
-WIN_CFLAGS += -ir $(MWCW_MSL) -ir $(MWCW_W32) -lr $(MWCW_MSL) -lr $(MWCW_W32)
-WIN_CFLAGS += -lMSL_All_x86.lib -lkernel32.lib -luser32.lib
+ifeq "$(OS)" "Windows_NT"
+# MetroWerks Win32 build flags to create build tools
+MWCW_MSL    = "$(METROWERKS)/MSL"
+MWCW_W32    = "$(METROWERKS)/Win32-x86 Support"
+HOST_CC     = $(WIN_CC)
+HOST_CFLAGS =  -O2 -gccinc -nodefaults -proc 586 -w off
+HOST_CFLAGS += -ir $(MWCW_MSL) -ir $(MWCW_W32) -lr $(MWCW_MSL) -lr $(MWCW_W32)
+HOST_CFLAGS += -lMSL_All_x86.lib -lkernel32.lib -luser32.lib
+else
+# GNUC build flags to create build tools
+HOST_CC     = gcc
+HOST_CFLAGS = -Wall -O2
+endif
 
 # Base compile flags
 # and prefix or precompiled header added here.
