@@ -216,10 +216,10 @@ FILES_nlm_Ximports = \
 	util_ldap_cache_getuserdn \
 	util_ldap_cache_compare \
 	util_ldap_cache_comparedn \
-	@$(APR)/aprlib.imp \
-	@$(NWOS)/httpd.imp \
+	@aprlib.imp \
+	@httpd.imp \
 	@libc.imp \
-	@$(LDAPSDK)/imports/lldapsdk.imp \
+	@lldapsdk.imp \
 	$(EOLIST)
 
 #
