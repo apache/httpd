@@ -35,12 +35,12 @@ ifeq "$(NLM_STACK_SIZE)" ""
 NLM_STACK_SIZE = 65536
 endif
 
-ifeq "$(NLM_ENTRY_SYM	=
-NLM_ENTRY_SYM	=
+ifeq "$(NLM_ENTRY_SYM)" ""
+NLM_ENTRY_SYM = _LibCPrelude
 endif
 
-ifeq "$(NLM_EXIT_SYM	=
-NLM_EXIT_SYM	=
+ifeq "$(NLM_EXIT_SYM)" ""
+NLM_EXIT_SYM = _LibCPostlude
 endif
 
 #
@@ -293,8 +293,8 @@ ifneq "$(NLM_VERSION)" ""
 else
 	@echo $(DL)version $(VERSION)$(DL)>> $(@:.opt=.def)
 endif
-	@echo $(DL)start $(NLM_ENTRY_SYM	=
-	@echo $(DL)exit $(NLM_EXIT_SYM	=
+	@echo $(DL)start $(NLM_ENTRY_SYM)$(DL)>> $(@:.opt=.def)
+	@echo $(DL)exit $(NLM_EXIT_SYM)$(DL)>> $(@:.opt=.def)
 ifneq "$(NLM_CHECK_SYM)" ""
 	@echo $(DL)check $(NLM_CHECK_SYM)$(DL)>> $(@:.opt=.def)
 endif
