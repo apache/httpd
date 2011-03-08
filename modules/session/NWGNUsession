@@ -204,8 +204,8 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
-	@$(APR)/aprlib.imp \
-	@$(NWOS)/httpd.imp \
+	@aprlib.imp \
+	@httpd.imp \
 	@libc.imp \
 	$(EOLIST)
 

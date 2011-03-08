@@ -215,7 +215,7 @@ FILE_nlm_copyright =
 #
 FILES_nlm_Ximports = \
 	@libc.imp \
-	@$(APR)/aprlib.imp \
+	@aprlib.imp \
 	@httpd.imp \
 	@mod_cache.imp \
 	$(EOLIST)

@@ -214,11 +214,11 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
-	@$(APR)/aprlib.imp \
-	@$(NWOS)/httpd.imp \
+	@aprlib.imp \
+	@httpd.imp \
 	@libc.imp \
-	@$(LDAPSDK)/imports/lldapsdk.imp \
-	@$(LDAPSDK)/imports/lldapssl.imp \
+	@lldapsdk.imp \
+	@lldapssl.imp \
 	$(EOLIST)
 
 #
