@@ -118,6 +118,9 @@ endif
 
 OBJDIR = obj_$(RELEASE)
 
+# Define minimum APR version to check for
+APR_WANTED = 1004000
+
 #
 # Setup compiler information
 #
@@ -131,9 +134,36 @@ WIN_CC	= mwcc
 
 # Setup build tools
 AWK	= awk
+SORT	= sort
 
-# Define minimum APR version to check for
-APR_WANTED = 1004000
+#
+# Declare Command and tool macros here
+#
+
+ifeq ($(findstring /sh,$(SHELL)),/sh)
+DEL	= rm -f $1
+RMDIR	= rm -rf $1
+MKDIR	= mkdir -p $1
+COPY	= cp -av $1 $2
+COPYR	= cp -ar $1 $2
+ECHONL	= echo ""
+DL	= '
+CAT	= cat
+else
+ifeq "$(OS)" "Windows_NT"
+DEL	= $(shell if exist $(subst /,\,$1) del /q /f 2>NUL $(subst /,\,$1))
+RMDIR	= $(shell if exist $(subst /,\,$1)\NUL rd /q /s 2>NUL $(subst /,\,$1))
+ECHONL	= cmd /c echo.
+else
+DEL	= $(shell if exist $(subst /,\,$1) del 2>NUL $(subst /,\,$1))
+RMDIR	= $(shell if exist $(subst /,\,$1)\NUL deltree /y 2>NUL $(subst /,\,$1))
+ECHONL	= command /c echo.
+endif
+MKDIR	= $(shell if not exist $(subst /,\,$1)\NUL md 2>NUL $(subst /,\,$1))
+COPY	= copy /y 2>NUL $(subst /,\,$1) $(subst /,\,$2)
+COPYR	= xcopy /y /e 2>NUL $(subst /,\,$1) $(subst /,\,$2)
+CAT	= type
+endif
 
 ifdef IPV6
 ifndef USE_STDSOCKETS
@@ -141,17 +171,23 @@ USE_STDSOCKETS=1
 endif
 endif
 
-NOVI	= $(NOVELLLIBC)\imports
+NOVI	= $(NOVELLLIBC)/imports
 
-INCDIRS	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
+INCDIRS	= $(NOVELLLIBC)/include;
+ifndef USE_STDSOCKETS
+INCDIRS	+= $(NOVELLLIBC)/include/winsock;
+endif
 ifneq "$(LDAPSDK)" ""
-INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
+#INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
+INCDIRS += $(LDAPSDK)/inc;
 endif
 ifneq "$(ZLIBSDK)" ""
-INCDIRS := $(INCDIRS);$(ZLIBSDK)
+#INCDIRS := $(INCDIRS);$(ZLIBSDK)
+INCDIRS += $(ZLIBSDK);
 endif
 ifneq "$(PCRESRC)" ""
-INCDIRS := $(INCDIRS);$(PCRESRC)
+#INCDIRS := $(INCDIRS);$(PCRESRC)
+INCDIRS += $(PCRESRC);
 endif
 
 DEFINES	= -DNETWARE 
@@ -169,9 +205,9 @@ VERSION_SKT = (WINSOCK)
 endif
 
 # MetroWerks static Libraries
-CLIB3S	= $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\Runtime\mwcrtl.lib
+CLIB3S	= $(METROWERKS)/Novell Support/Metrowerks Support/Libraries/Runtime/mwcrtl.lib
 MATH3S	=
-PLIB3S	= $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\MSL C++\MWCPP.lib
+PLIB3S	= $(METROWERKS)/Novell Support/Metrowerks Support/Libraries/MSL C++/MWCPP.lib
 
 # MetroWerks Win32 build flags to create build tool
 MWCW_MSL   = "$(METROWERKS)/MSL"
@@ -217,7 +253,9 @@ endif
 CFLAGS += -prefix pre_nw.h
 
 
+ifneq ($(findstring /sh,$(SHELL)),/sh)
 PATH:=$(PATH);$(METROWERKS)\bin;$(METROWERKS)\Other Metrowerks Tools\Command Line Tools
+endif
 
 #
 # Declare major project deliverables output directories here
@@ -238,8 +276,8 @@ endif
 endif
 
 ifndef INSTALL
-INSTALL = $(AP_WORK)\Dist
-INSTDIRS = $(AP_WORK)\Dist
+INSTALL = $(AP_WORK)/Dist
+INSTDIRS = $(AP_WORK)/Dist
 endif
 
 ifndef BASEDIR
@@ -276,69 +314,40 @@ endif
 
 INSTDEVDIRS := \
 	$(INSTDIRS) \
-	$(INSTALL)\$(BASEDIR)\include \
-	$(INSTALL)\$(BASEDIR)\lib \
+	$(INSTALL)/$(BASEDIR)/include \
+	$(INSTALL)/$(BASEDIR)/lib \
 
 INSTDIRS += \
-	$(INSTALL)\$(BASEDIR) \
-	$(INSTALL)\$(BASEDIR)\bin \
-	$(INSTALL)\$(BASEDIR)\cgi-bin \
-	$(INSTALL)\$(BASEDIR)\conf \
-	$(INSTALL)\$(BASEDIR)\error \
-	$(INSTALL)\$(BASEDIR)\htdocs \
-	$(INSTALL)\$(BASEDIR)\icons \
-	$(INSTALL)\$(BASEDIR)\logs \
-	$(INSTALL)\$(BASEDIR)\man \
-	$(INSTALL)\$(BASEDIR)\manual \
-	$(INSTALL)\$(BASEDIR)\modules \
-
-#
-# Declare Command and tool macros here
-#
-
-# Os2LibPath is an extra check to see if we are on NT
-ifdef Os2LibPath
-OS = Windows_NT
-endif
-
-ifeq "$(OS)" "Windows_NT"
-CMD = cmd /C
-DEL = del /F
-DELTREE = rd /s/q
-WINNT = 1
-XCOPYSW = /E
-else
-CMD = command /C
-DEL = del
-DELTREE = deltree /y
-XCOPYSW = /E /Y
-endif
-
-CHK = $(CMD) if exist
-CHKNOT = $(CMD) if not exist
-
-
-#
-# Setup base C compiler flags
-#
+	$(INSTALL)/$(BASEDIR) \
+	$(INSTALL)/$(BASEDIR)/bin \
+	$(INSTALL)/$(BASEDIR)/cgi-bin \
+	$(INSTALL)/$(BASEDIR)/conf \
+	$(INSTALL)/$(BASEDIR)/error \
+	$(INSTALL)/$(BASEDIR)/htdocs \
+	$(INSTALL)/$(BASEDIR)/icons \
+	$(INSTALL)/$(BASEDIR)/logs \
+	$(INSTALL)/$(BASEDIR)/man \
+	$(INSTALL)/$(BASEDIR)/manual \
+	$(INSTALL)/$(BASEDIR)/modules \
 
 #
 # Common directories
 #
 
-STDMOD		= $(AP_WORK)/modules
-NWOS		= $(AP_WORK)/os/netware
-SERVER		= $(AP_WORK)/server
-SRC		= $(AP_WORK)
+SRC		= $(subst \,/,$(AP_WORK))
+APBUILD		= $(SRC)/build
+STDMOD		= $(SRC)/modules
+HTTPD		= $(SRC)/modules/http
+NWOS		= $(SRC)/os/netware
+SERVER		= $(SRC)/server
+SUPMOD		= $(SRC)/support
 APR		= $(APR_WORK)
 APRUTIL		= $(APU_WORK)
 APULDAP		= $(APU_WORK)/ldap
-SUPMOD		= $(AP_WORK)/support
-PCRE		= $(PCRESRC)
-APRTEST		= $(APR_WORK)/test
-HTTPD		= $(AP_WORK)/modules/http
 XML		= $(APU_WORK)/xml
-PREBUILD_INST   = $(AP_WORK)/nwprebuild
+APRTEST		= $(APR_WORK)/test
+PCRE		= $(PCRESRC)
+PREBUILD_INST   = $(SRC)/nwprebuild
 
 #
 # Internal Libraries

@@ -83,7 +83,7 @@ endif
 # paths to tools
 #
 
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files
