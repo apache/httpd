@@ -329,7 +329,7 @@ FILE_nlm_copyright =
 #
 FILES_nlm_Ximports = \
 	@netware.imp \
-	@$(APR)/aprlib.imp \
+	@aprlib.imp \
 	@libc.imp \
 	GetCurrentAddressSpace \
 	$(EOLIST)
@@ -344,7 +344,7 @@ endif
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	@$(NWOS)/httpd.imp \
+	@httpd.imp \
 	$(EOLIST)
 
 #

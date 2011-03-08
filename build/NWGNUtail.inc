@@ -240,15 +240,16 @@ ifeq "$(RELEASE)" "debug"
 else
 	@echo $(DL)-sym internal$(DL)>> $@
 endif
-	@echo $(DL)-l $(NWOS)$(DL)>> $@
-	@echo $(DL)-l $(AP)/$(OBJDIR)$(DL)>> $@
-	@echo $(DL)-l $(APR)/$(OBJDIR)$(DL)>> $@
-	@echo $(DL)-l $(APRUTIL)/$(OBJDIR)$(DL)>> $@
-	@echo $(DL)-l $(PCRE)/$(OBJDIR)$(DL)>> $@
+	@echo $(DL)-l $(SRC)/$(OBJDIR)$(DL)>> $@
 	@echo $(DL)-l $(HTTPD)/$(OBJDIR)$(DL)>> $@
 	@echo $(DL)-l $(SERVER)/$(OBJDIR)$(DL)>> $@
 	@echo $(DL)-l $(STDMOD)/$(OBJDIR)$(DL)>> $@
 	@echo $(DL)-l $(NWOS)/$(OBJDIR)$(DL)>> $@
+	@echo $(DL)-l $(NWOS)$(DL)>> $@
+	@echo $(DL)-l $(APR)/$(OBJDIR)$(DL)>> $@
+	@echo $(DL)-l $(APR)$(DL)>> $@
+	@echo $(DL)-l $(APRUTIL)/$(OBJDIR)$(DL)>> $@
+	@echo $(DL)-l $(PCRE)/$(OBJDIR)$(DL)>> $@
 	@echo $(DL)-l "$(METROWERKS)/Novell Support/Metrowerks Support/Libraries/Runtime"$(DL)>> $@
 	@echo $(DL)-l "$(METROWERKS)/Novell Support/Metrowerks Support/Libraries/MSL C++"$(DL)>> $@
 ifneq "$(IPV6)" ""
