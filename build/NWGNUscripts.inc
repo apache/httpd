@@ -4,7 +4,7 @@ instscripts:: FORCE $(INSTALL)/$(BASEDIR)/ap2start.ncf $(INSTALL)/$(BASEDIR)/ap2
 
 $(INSTALL)/$(BASEDIR)/ap2start.ncf:
 	@echo $(DL)# NCF to start Apache 2.x in own address space$(DL)> $@
-	@echo $(DL)# Make sure that httpstk isn't listening on 80$(DL)>> $@
+	@echo $(DL)# Make sure that httpstk is not listening on 80$(DL)>> $@
 	@echo $(DL)# httpcloseport 80 /silent$(DL)>> $@
 	@echo $(DL)# search add SYS:/$(BASEDIR)$(DL)>> $@
 	@echo $(DL)load address space = $(BASEDIR) SYS:/$(BASEDIR)/apache2$(DL)>> $@
@@ -15,7 +15,7 @@ $(INSTALL)/$(BASEDIR)/ap2start.ncf:
 $(INSTALL)/$(BASEDIR)/ap2auto.ncf:
 	@echo $(DL)# NCF to start Apache 2.x in own address space$(DL)> $@
 	@echo $(DL)# and let automatically restart in case it crashes$(DL)>> $@
-	@echo $(DL)# Make sure that httpstk isn't listening on 80$(DL)>> $@
+	@echo $(DL)# Make sure that httpstk is not listening on 80$(DL)>> $@
 	@echo $(DL)# httpcloseport 80 /silent$(DL)>> $@
 	@echo $(DL)# search add SYS:/$(BASEDIR)$(DL)>> $@
 	@echo $(DL)restart address space = $(BASEDIR) SYS:/$(BASEDIR)/apache2$(DL)>> $@

@@ -49,7 +49,7 @@ $(INSTDEVDIRS) ::
 endif #NO_LICENSE_FILE check
 
 help :
-	@echo $(DL)targets for RELEASE=$(RELEASE):
+	@echo $(DL)targets for RELEASE=$(RELEASE):$(DL)
 	@echo $(DL)(default) . . . . libs nlms$(DL)
 	@echo $(DL)all . . . . . . . does everything (libs nlms install)$(DL)
 	@echo $(DL)libs. . . . . . . builds all libs$(DL)
