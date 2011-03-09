@@ -405,19 +405,19 @@ install :: nlms instscripts FORCE
 	$(call COPY,docs/conf/mime.types,        $(INSTALL)/$(BASEDIR)/conf/)
 	$(call COPY,docs/conf/charset.conv,      $(INSTALL)/$(BASEDIR)/conf/)
 	$(call COPY,docs/cgi-examples/printenv,  $(INSTALL)/$(BASEDIR)/cgi-bin/printenv.pl)
-	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -v SSLPORT=$(SSLPORT) -v MODSSL=$(WITH_MOD_SSL) -v BSDSKT=$(USE_STDSOCKETS) -f build\mkconfnw.awk docs/conf/httpd.conf.in >$(INSTALL)/$(BASEDIR)/conf\httpd.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -v SSLPORT=$(SSLPORT) -v MODSSL=$(WITH_MOD_SSL) -v BSDSKT=$(USE_STDSOCKETS) -f build/mkconfNW.awk docs/conf/httpd.conf.in >$(INSTALL)/$(BASEDIR)/conf\httpd.conf
 	$(call MKDIR,$(INSTALL)/$(BASEDIR)/conf/extra)
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-autoindex.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-autoindex.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-dav.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-dav.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-default.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-default.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-info.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-info.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-languages.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-languages.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-manual.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-manual.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-mpm.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-mpm.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-multilang-errordoc.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-multilang-errordoc.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs/conf/extra/httpd-userdir.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-userdir.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -f build\mkconfnw.awk docs/conf/extra/httpd-vhosts.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-vhosts.conf
-	-$(AWK) -v BDIR=$(BASEDIR) -v SSLPORT=$(SSLPORT) -f build\mkconfnw.awk docs/conf/extra/httpd-ssl.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-ssl.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-autoindex.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-autoindex.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-dav.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-dav.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-default.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-default.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-info.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-info.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-languages.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-languages.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-manual.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-manual.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-mpm.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-mpm.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-multilang-errordoc.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-multilang-errordoc.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build/mkconfNW.awk docs/conf/extra/httpd-userdir.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-userdir.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -f build/mkconfNW.awk docs/conf/extra/httpd-vhosts.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-vhosts.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -v SSLPORT=$(SSLPORT) -f build/mkconfNW.awk docs/conf/extra/httpd-ssl.conf.in >$(INSTALL)/$(BASEDIR)/conf/extra/httpd-ssl.conf
 	$(call COPYR,docs/docroot,               $(INSTALL)/$(BASEDIR)/htdocs)
 	$(call COPYR,docs/error,                 $(INSTALL)/$(BASEDIR)/)
 	$(call COPYR,docs/icons,                 $(INSTALL)/$(BASEDIR)/)

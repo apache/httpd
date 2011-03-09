@@ -243,7 +243,8 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\moddavlk.nlm $(INSTALL)\$(BASEDIR)\modules
+	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALL)/$(BASEDIR)/modules/)
+
 #
 # Any specialized rules here
 #
