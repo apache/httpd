@@ -192,7 +192,6 @@ FILES_nlm_libs = \
 FILES_nlm_modules = \
 	Apache2 \
 	Libc \
-	mod_cach \
 	$(EOLIST)
 
 #
@@ -217,7 +216,6 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	@aprlib.imp \
 	@httpd.imp \
-	@mod_cache.imp \
 	$(EOLIST)
 
 #
