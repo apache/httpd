@@ -72,7 +72,7 @@ SUBDIRS += test \
 endif
 
 #If the mod_edir directory exists then build the mod_edir module
-ifeq "$(wildcard $(AP_WORK)/modules/mod_edir)" "$(AP_WORK)/modules/mod_edir"
+ifeq "$(wildcard $(STDMOD)/mod_edir)" "$(STDMOD)/mod_edir"
 SUBDIRS += mod_edir \
 	$(EOLIST)
 endif
