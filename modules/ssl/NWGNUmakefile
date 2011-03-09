@@ -309,9 +309,9 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\mod_ssl.nlm $(INSTALL)\$(BASEDIR)\modules\*.*
-	-copy $(subst /,\,$(SSL_BIN))\openssl.nlm $(INSTALL)\$(BASEDIR)\bin\*.*
-	-copy $(subst /,\,$(SSL_APP))\openssl.cnf $(INSTALL)\$(BASEDIR)\bin\*.*
+	$(call COPY,$(OBJDIR)/*.nlm,        $(INSTALL)/$(BASEDIR)/modules/)
+	$(call COPY,$(SSL_BIN)/openssl.nlm, $(INSTALL)/$(BASEDIR)/bin/)
+	$(call COPY,$(SSL_APP)/openssl.cnf, $(INSTALL)/$(BASEDIR)/bin/)
 
 #
 # Any specialized rules here

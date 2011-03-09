@@ -230,7 +230,7 @@ $(OBJDIR)/$(NLM_NAME)_link.opt : $($(NLM_NAME)_LINKOPT_DEPENDS)
 	@echo $(DL)-zerobss$(DL)>> $@
 	@echo $(DL)-o $(TARGET_nlm)$(DL)>> $@
 ifneq "$(FILE_nlm_copyright)" ""
-	@-type $(FILE_nlm_copyright)$(DL)>> $@
+	@$(CAT) $(FILE_nlm_copyright)>> $@
 endif
 ifeq "$(RELEASE)" "debug"
 	@echo $(DL)-g$(DL)>> $@

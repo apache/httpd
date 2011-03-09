@@ -64,7 +64,7 @@ endif
 # endif
 
 ifndef METROWERKS
-METROWERKS = C:\Program Files\Metrowerks\CodeWarrior
+METROWERKS = $(ProgramFiles)\Metrowerks\CodeWarrior
 endif
 
 # If LM_LICENSE_FILE isn't defined, define a variable that can be used to
