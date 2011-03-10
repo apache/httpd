@@ -8,7 +8,7 @@
 #                   mod_setenvif, mod_negotiation
 #
 
-AliasMatch ^/manual(?:/(?:da|de|en|es|fr|ja|ko|pt-br|ru|tr))?(/.*)?$ "@exp_manualdir@$1"
+AliasMatch ^/manual(?:/(?:da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn))?(/.*)?$ "@exp_manualdir@$1"
 
 <Directory "@exp_manualdir@">
     Options Indexes
@@ -25,8 +25,8 @@ AliasMatch ^/manual(?:/(?:da|de|en|es|fr|ja|ko|pt-br|ru|tr))?(/.*)?$ "@exp_manua
 
     AddLanguage da .da
 
-    SetEnvIf Request_URI ^/manual/(da|de|en|es|fr|ja|ko|pt-br|ru|tr)/ prefer-language=$1
-    RedirectMatch 301 ^/manual(?:/(da|de|en|es|fr|ja|ko|pt-br|ru|tr)){2,}(/.*)?$ /manual/$1$2
+    SetEnvIf Request_URI ^/manual/(da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn)/ prefer-language=$1
+    RedirectMatch 301 ^/manual(?:/(da|de|en|es|fr|ja|ko|pt-br|ru|tr|zh-cn)){2,}(/.*)?$ /manual/$1$2
 
     LanguagePriority en da de es fr ja ko pt-br ru tr
     ForceLanguagePriority Prefer Fallback
