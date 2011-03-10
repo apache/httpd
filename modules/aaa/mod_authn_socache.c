@@ -126,11 +126,12 @@ static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 }
 static void authn_cache_child_init(apr_pool_t *p, server_rec *s)
 {
-    const char *lock = apr_global_mutex_lockfile(authn_cache_mutex);
+    const char *lock;
     apr_status_t rv;
     if (!configured) {
         return;       /* don't waste the overhead of creating mutex & cache */
     }
+    lock = apr_global_mutex_lockfile(authn_cache_mutex);
     rv = apr_global_mutex_child_init(&authn_cache_mutex, lock, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
