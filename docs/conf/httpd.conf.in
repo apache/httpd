@@ -121,6 +121,9 @@ DocumentRoot "@exp_htdocsdir@"
 # First, we configure the "default" to be a very restrictive set of 
 # features.  
 #
+# YOU SHOULD NOT RELAX THE CONFIGURATION FOR <Directory />. YOU ARE
+# PROBABLY LOOKING FOR THE <Directory> BLOCK IMMEDIATELY BELOW THIS ONE.
+#
 <Directory />
     Options FollowSymLinks
     AllowOverride None
