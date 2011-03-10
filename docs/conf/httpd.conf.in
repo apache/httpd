@@ -107,13 +107,6 @@ ServerAdmin you@example.com
 #ServerName www.example.com:@@Port@@
 
 #
-# DocumentRoot: The directory out of which you will serve your
-# documents. By default, all requests are taken from this directory, but
-# symbolic links and aliases may be used to point to other locations.
-#
-DocumentRoot "@exp_htdocsdir@"
-
-#
 # Deny access to the entirety of your server's filesystem. You must
 # explicitly permit access to web content directories in other 
 # <Directory> blocks below.
@@ -130,8 +123,11 @@ DocumentRoot "@exp_htdocsdir@"
 #
 
 #
-# This should be changed to whatever you set DocumentRoot to.
+# DocumentRoot: The directory out of which you will serve your
+# documents. By default, all requests are taken from this directory, but
+# symbolic links and aliases may be used to point to other locations.
 #
+DocumentRoot "@exp_htdocsdir@"
 <Directory "@exp_htdocsdir@">
     #
     # Possible values for the Options directive are "None", "All",
