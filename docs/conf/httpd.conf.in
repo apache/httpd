@@ -114,19 +114,11 @@ ServerAdmin you@example.com
 DocumentRoot "@exp_htdocsdir@"
 
 #
-# Each directory to which Apache has access can be configured with respect
-# to which services and features are allowed and/or disabled in that
-# directory (and its subdirectories). 
-#
-# First, we configure the "default" to be a very restrictive set of 
-# features.  
-#
-# YOU SHOULD NOT RELAX THE CONFIGURATION FOR <Directory />. YOU ARE
-# PROBABLY LOOKING FOR THE <Directory> BLOCK IMMEDIATELY BELOW THIS ONE.
+# Deny access to the entirety of your server's filesystem. You must
+# explicitly permit access to web content directories in other 
+# <Directory> blocks below.
 #
 <Directory />
-    Options FollowSymLinks
-    AllowOverride None
     Require all denied
 </Directory>
 
