@@ -50,9 +50,7 @@ $(error LDAPSDK does not point to a valid Novell CLDAP SDK)
 endif
 
 ifndef PCRESRC
-ifeq "$(wildcard $(AP_WORK)/srclib/pcre/pcre-config.in)" "$(AP_WORK)/srclib/pcre/pcre-config.in"
 PCRESRC = $(AP_WORK)/srclib/pcre
-endif
 endif
 ifneq "$(wildcard $(PCRESRC)/pcre-config.in)" "$(PCRESRC)/pcre-config.in"
 $(error PCRESRC does not point to a valid PCRE source tree) 
@@ -144,8 +142,8 @@ ifeq ($(findstring /sh,$(SHELL)),/sh)
 DEL	= rm -f $1
 RMDIR	= rm -rf $1
 MKDIR	= mkdir -p $1
-COPY	= cp -av $1 $2
-COPYR	= cp -ar $1 $2
+COPY	= -cp -av $1 $2
+COPYR	= -cp -ar $1 $2
 ECHONL	= echo ""
 DL	= '
 CAT	= cat
@@ -160,8 +158,8 @@ RMDIR	= $(shell if exist $(subst /,\,$1)\NUL deltree /y 2>NUL $(subst /,\,$1))
 ECHONL	= command /c echo.
 endif
 MKDIR	= $(shell if not exist $(subst /,\,$1)\NUL md 2>NUL $(subst /,\,$1))
-COPY	= copy /y 2>NUL $(subst /,\,$1) $(subst /,\,$2)
-COPYR	= xcopy /y /e 2>NUL $(subst /,\,$1) $(subst /,\,$2)
+COPY	= -copy /y 2>NUL $(subst /,\,$1) $(subst /,\,$2)
+COPYR	= -xcopy /y /e 2>NUL $(subst /,\,$1) $(subst /,\,$2)
 CAT	= type
 endif
 
@@ -245,7 +243,6 @@ endif
 
 # -g                    generate debugging information
 # -O0                   level 0 optimizations
-
 ifeq "$(RELEASE)" "debug"
 CFLAGS += -g -O0
 endif
@@ -256,7 +253,6 @@ CFLAGS += -O4,p
 endif
 
 # -prefix pre_nw.h      #include pre_nw.h for all files
-
 CFLAGS += -prefix pre_nw.h
 
 
@@ -329,6 +325,7 @@ INSTDIRS += \
 	$(INSTALL)/$(BASEDIR)/bin \
 	$(INSTALL)/$(BASEDIR)/cgi-bin \
 	$(INSTALL)/$(BASEDIR)/conf \
+	$(INSTALL)/$(BASEDIR)/conf/extra \
 	$(INSTALL)/$(BASEDIR)/error \
 	$(INSTALL)/$(BASEDIR)/htdocs \
 	$(INSTALL)/$(BASEDIR)/icons \

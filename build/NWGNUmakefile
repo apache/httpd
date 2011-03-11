@@ -22,7 +22,9 @@ FILES_prebuild_headers = \
 	$(PCRE)/pcre.h \
 	$(EOLIST) 
     
-nlms :: chkapr $(NWOS)/httpd.imp $(NWOS)/chartables.c
+nlms :: libs $(NWOS)/httpd.imp
+
+libs :: chkapr $(NWOS)/chartables.c
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo $(DL)GEN  $@$(DL)
@@ -58,11 +60,11 @@ $(PCRE)/%.h: $(PCRE)/%.hw
 
 ifneq "$(BUILDTOOL_AS_NLM)" "1"
 
-$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c $(FILES_prebuild_headers)
+$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c
 	@echo $(DL)GEN  $@$(DL)
 	$< $@
 
-%.exe: $(PCRE)/%.c
+%.exe: $(PCRE)/%.c $(PCRE)/config.h $(PCRE)/pcre.h
 	@echo $(DL)Creating Build Helper $@$(DL)
 	$(HOST_CC) $(HOST_CFLAGS) -DHAVE_CONFIG_H $< -o $@
 
