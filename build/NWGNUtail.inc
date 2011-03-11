@@ -99,7 +99,8 @@ endif
 
 ifneq ($(MAKECMDGOALS),clean)
 $(AP_WORK)/build/NWGNUversion.inc : $(AP_WORK)/build/nw_ver.awk $(AP_WORK)/include/ap_release.h
-	@echo Generating $(subst /,\,$@)
+#	@echo Generating $@
+	@echo $(DL)GEN  $@$(DL)
 	$(AWK) -f $^ > $@
 
 -include $(AP_WORK)/build/NWGNUversion.inc
@@ -199,7 +200,7 @@ endif
 else # We must have more than one target library so load the individual makefiles
 
 $(OBJDIR)/%.lib: NWGNU% $(APBUILD)/NWGNUhead.inc $(APBUILD)/NWGNUtail.inc $(APBUILD)/NWGNUenvironment.inc FORCE
-	@echo Calling $<
+	@echo $(DL)Calling $<$(DL)
 	$(MAKE) -f $< $(MAKECMDGOALS) RELEASE=$(RELEASE)
 
 endif
