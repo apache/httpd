@@ -38,10 +38,6 @@
 
 #include "mod_core.h"
 
-#if APR_HAVE_PROCESS_H
-#include <process.h>            /* for getpid() on Win32 */
-#endif
-
 /*
  * A pointer to this is used to memorize in the filter context that a bad
  * gateway error bucket had been seen. It is used as an invented unique pointer.
