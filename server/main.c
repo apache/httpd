@@ -620,6 +620,8 @@ int main(int argc, const char * const argv[])
     if (!ap_server_conf) {
         destroy_and_exit_process(process, 1);
     }
+    apr_pool_cleanup_register(pconf, &ap_server_conf, ap_pool_cleanup_set_null,
+                              NULL);
     apr_hook_sort_all();
 
     if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
@@ -706,6 +708,8 @@ int main(int argc, const char * const argv[])
         if (!ap_server_conf) {
             destroy_and_exit_process(process, 1);
         }
+        apr_pool_cleanup_register(pconf, &ap_server_conf,
+                                  ap_pool_cleanup_set_null, NULL);
         apr_hook_sort_all();
 
         if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
