@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.12
 
+  *) mod_cache: Make CacheEnable and CacheDisable configurable per
+     directory in addition to per server, making them work from within
+     a LocationMatch. [Graham Leggett]
+
   *) worker, event, prefork: Correct several issues when built as
      DSOs; most notably, the scoreboard was reinitialized during graceful
      restart, such that processes of the previous generation were not
