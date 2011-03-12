@@ -59,6 +59,7 @@ by other LDAP modules</td></tr>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcachettl">LDAPCacheTTL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldapconnectionpoolttl">LDAPConnectionPoolTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapconnectiontimeout">LDAPConnectionTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaplibrarydebug">LDAPLibraryDebug</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcacheentries">LDAPOpCacheEntries</a></li>
@@ -470,6 +471,29 @@ by other LDAP modules</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPConnectionPoolTTL" id="LDAPConnectionPoolTTL">LDAPConnectionPoolTTL</a> <a name="ldapconnectionpoolttl" id="ldapconnectionpoolttl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Discard backend connections that have been sitting in the connection pool too long</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPConnectionPoolTTL <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPConnectionPoolTTL -1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>Specifies the maximum age, in seconds, that a pooled LDAP connection can remain idle
+    and still be available for use.  Connections are cleaned up when they are next needed, 
+    not asynchronously.</p>
+
+    <p>A setting of 0 causes connections to never be saved in the backend 
+    connection pool.  The default value of -1, and any other negative value, 
+     allows connections of any age to be reused.</p>
+
+    <div class="note"><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), minutes (min), and hours (h).
+    </p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a> <a name="ldapconnectiontimeout" id="ldapconnectiontimeout">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the socket connection timeout in seconds</td></tr>
@@ -757,8 +781,8 @@ Certificate Authority or global client certificates</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Specifies whether to force the verification of a 
-     server certificate when establishing an SSL connection to the 
-     LDAP server.</p>
+    server certificate when establishing an SSL connection to the 
+    LDAP server.</p>
 
 </div>
 </div>
