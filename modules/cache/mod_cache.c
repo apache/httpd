@@ -1720,6 +1720,9 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 
     dconf->stale_on_error = DEFAULT_CACHE_STALE_ON_ERROR;
 
+    /* array of providers for this URL space */
+    dconf->cacheenable = apr_array_make(p, 10, sizeof(struct cache_enable));
+
     return dconf;
 }
 
@@ -1763,6 +1766,12 @@ static void *merge_dir_config(apr_pool_t *p, void *basev, void *addv) {
             : add->stale_on_error;
     new->stale_on_error_set = add->stale_on_error_set
             || base->stale_on_error_set;
+
+    new->cacheenable = add->enable_set ? apr_array_append(p, base->cacheenable,
+            add->cacheenable) : base->cacheenable;
+    new->enable_set = add->enable_set || base->enable_set;
+    new->disable = (add->disable_set == 0) ? base->disable : add->disable;
+    new->disable_set = add->disable_set || base->disable_set;
 
     return new;
 }
@@ -1993,6 +2002,7 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
                                     const char *type,
                                     const char *url)
 {
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
     cache_server_conf *conf;
     struct cache_enable *new;
 
@@ -2023,7 +2033,15 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
-    new = apr_array_push(conf->cacheenable);
+
+    if (parms->path) {
+        new = apr_array_push(dconf->cacheenable);
+        dconf->enable_set = 1;
+    }
+    else {
+        new = apr_array_push(conf->cacheenable);
+    }
+
     new->type = type;
     if (apr_uri_parse(parms->pool, url, &(new->url))) {
         return NULL;
@@ -2040,6 +2058,7 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
 static const char *add_cache_disable(cmd_parms *parms, void *dummy,
                                      const char *url)
 {
+    cache_dir_conf *dconf = (cache_dir_conf *)dummy;
     cache_server_conf *conf;
     struct cache_disable *new;
 
@@ -2065,6 +2084,13 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
+
+    if (parms->path) {
+        dconf->disable = 1;
+        dconf->disable_set = 1;
+        return NULL;
+    }
+
     new = apr_array_push(conf->cachedisable);
     if (apr_uri_parse(parms->pool, url, &(new->url))) {
         return NULL;

@@ -126,57 +126,80 @@ static int uri_meets_conditions(const apr_uri_t *filter, const int pathlen,
     return !strncmp(filter->path, url->path, pathlen);
 }
 
+static cache_provider_list *get_provider(request_rec *r, struct cache_enable *ent,
+        cache_provider_list *providers)
+{
+    /* Fetch from global config and add to the list. */
+    cache_provider *provider;
+    provider = ap_lookup_provider(CACHE_PROVIDER_GROUP, ent->type,
+                                  "0");
+    if (!provider) {
+        /* Log an error! */
+    }
+    else {
+        cache_provider_list *newp;
+        newp = apr_pcalloc(r->pool, sizeof(cache_provider_list));
+        newp->provider_name = ent->type;
+        newp->provider = provider;
+
+        if (!providers) {
+            providers = newp;
+        }
+        else {
+            cache_provider_list *last = providers;
+
+            while (last->next) {
+                if (last->provider == provider) {
+                    return providers;
+                }
+                last = last->next;
+            }
+            if (last->provider == provider) {
+                return providers;
+            }
+            last->next = newp;
+        }
+    }
+
+    return providers;
+}
+
 cache_provider_list *cache_get_providers(request_rec *r,
         cache_server_conf *conf,
         apr_uri_t uri)
 {
+    cache_dir_conf *dconf = dconf = ap_get_module_config(r->per_dir_config, &cache_module);
     cache_provider_list *providers = NULL;
     int i;
 
-    /* loop through all the cacheenable entries */
-    for (i = 0; i < conf->cacheenable->nelts; i++) {
-        struct cache_enable *ent =
-                                (struct cache_enable *)conf->cacheenable->elts;
-        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, &uri)) {
-            /* Fetch from global config and add to the list. */
-            cache_provider *provider;
-            provider = ap_lookup_provider(CACHE_PROVIDER_GROUP, ent[i].type,
-                                          "0");
-            if (!provider) {
-                /* Log an error! */
-            }
-            else {
-                cache_provider_list *newp;
-                newp = apr_pcalloc(r->pool, sizeof(cache_provider_list));
-                newp->provider_name = ent[i].type;
-                newp->provider = provider;
-
-                if (!providers) {
-                    providers = newp;
-                }
-                else {
-                    cache_provider_list *last = providers;
-
-                    while (last->next) {
-                        last = last->next;
-                    }
-                    last->next = newp;
-                }
-            }
-        }
+    /* per directory cache disable */
+    if (dconf->disable) {
+        return NULL;
     }
 
-    /* then loop through all the cachedisable entries
-     * Looking for urls that contain the full cachedisable url and possibly
-     * more.
-     * This means we are disabling cachedisable url and below...
-     */
+    /* global cache disable */
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent =
                                (struct cache_disable *)conf->cachedisable->elts;
         if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, &uri)) {
             /* Stop searching now. */
             return NULL;
+        }
+    }
+
+    /* loop through all the per directory cacheenable entries */
+    for (i = 0; i < dconf->cacheenable->nelts; i++) {
+        struct cache_enable *ent =
+                                (struct cache_enable *)dconf->cacheenable->elts;
+        providers = get_provider(r, &ent[i], providers);
+    }
+
+    /* loop through all the global cacheenable entries */
+    for (i = 0; i < conf->cacheenable->nelts; i++) {
+        struct cache_enable *ent =
+                                (struct cache_enable *)conf->cacheenable->elts;
+        if (uri_meets_conditions(&ent[i].url, ent[i].pathlen, &uri)) {
+            providers = get_provider(r, &ent[i], providers);
         }
     }
 

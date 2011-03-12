@@ -332,17 +332,20 @@
 <name>CacheEnable</name>
 <description>Enable caching of specified URLs using a specified storage
 manager</description>
-<syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
+<syntax>CacheEnable <var>cache_type</var> [<var>url-string</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
     <p>The <directive>CacheEnable</directive> directive instructs
     <module>mod_cache</module> to cache urls at or below
     <var>url-string</var>. The cache storage manager is specified with the
-    <var>cache_type</var> argument. If the <directive>CacheEnable</directive>
-    directive is placed inside a <directive type="section">Location</directive>
-    directive, the <var>url-string</var> becomes optional.
+    <var>cache_type</var> argument. The <directive>CacheEnable</directive>
+    directive can alternatively be placed inside either
+    <directive type="section">Location</directive> or
+    <directive type="section">LocationMatch</directive> sections to indicate
+    the content is cacheable.
     <var>cache_type</var> <code>disk</code> instructs
     <module>mod_cache</module> to use the disk based storage manager
     implemented by <module>mod_cache_disk</module>.</p>
@@ -351,13 +354,28 @@ manager</description>
     each possible storage manager will be run until the first one that
     actually processes the request. The order in which the storage managers are
     run is determined by the order of the <directive>CacheEnable</directive>
-    directives in the configuration file.</p>
+    directives in the configuration file. <directive>CacheEnable</directive>
+    directives within <directive type="section">Location</directive> or
+    <directive type="section">LocationMatch</directive> sections are processed
+    before globally defined <directive>CacheEnable</directive> directives.</p>
 
     <p>When acting as a forward proxy server, <var>url-string</var> can
     also be used to specify remote sites and proxy protocols which 
     caching should be enabled for.</p>
- 
+
     <example>
+      # Cache content<br />
+      &lt;Location /foo&gt;<br />
+      <indent>
+        CacheEnable disk<br />
+      </indent>
+      &lt;/Location&gt;<br /><br />
+      # Cache regex<br />
+      &lt;LocationMatch foo$&gt;<br />
+      <indent>
+        CacheEnable disk<br />
+      </indent>
+      &lt;/LocationMatch&gt;<br /><br />
       # Cache proxied url's<br />
       CacheEnable  disk  /<br /><br />
       # Cache FTP-proxied url's<br />
@@ -390,6 +408,7 @@ manager</description>
 <description>Disable caching of specified URLs</description>
 <syntax>CacheDisable <var>url-string</var> | <var>on</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -407,11 +426,13 @@ manager</description>
 
     <example><title>Example</title>
       &lt;Location /foo&gt;<br />
+      <indent>
         CacheDisable on<br />
+      </indent>
       &lt;/Location&gt;<br />
     </example>
 
-    <p> The <code>no-cache</code> environment variable can be set to 
+    <p>The <code>no-cache</code> environment variable can be set to 
     disable caching on a finer grained set of resources in versions
     2.2.12 and later.</p>
 

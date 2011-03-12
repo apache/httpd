@@ -164,6 +164,10 @@ typedef struct {
     apr_time_t defex;
     /* factor for estimating expires date */
     double factor;
+    /* cache enabled for this location */
+    apr_array_header_t *cacheenable;
+    /* cache disabled for this location */
+    int disable:1;
     /* set X-Cache headers */
     int x_cache:1;
     int x_cache_detail:1;
@@ -188,6 +192,8 @@ typedef struct {
     int store_expired_set:1;
     int store_private_set:1;
     int store_nostore_set:1;
+    int enable_set:1;
+    int disable_set:1;
 } cache_dir_conf;
 
 /* A linked-list of authn providers. */
