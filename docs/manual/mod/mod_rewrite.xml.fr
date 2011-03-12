@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1073592 -->
+<!-- English Revision : 1078933 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1536,14 +1536,16 @@ substitution !
 	r&eacute;sultat direct des substitutions, sans aucune information
 	PATH_INFO ajout&eacute;e..</p></dd>
 
-        <dt>
-        '<code>env|E=</code><em>VAR</em>[:<em>VAL</em>]'
+        <dt>'<code>env|E=!</code><em>VAR</em>[:<em>VAL</em>]'
         (d&eacute;finit une variable d'environnement)</dt><dd>
         Ce drapeau force la d&eacute;finition d'une variable d'environnement nomm&eacute;e
 	<em>VAR</em>. La valeur, si elle est fournie,  sera <em>VAL</em>, o&ugrave;
 	<em>VAL</em> peut contenir des r&eacute;f&eacute;rences arri&egrave;res vers des
 	expressions rationnelles (<code>$N</code> et <code>%N</code>)
-	qui seront &eacute;valu&eacute;es. Vous pouvez utiliser ce drapeau plusieurs
+	qui seront &eacute;valu&eacute;es. La forme !<em>VAR</em> annule
+	la d&eacute;finition de la variable d'environnement <em>VAR</em> qui, de
+	ce fait, peut plus recevoir aucune valeur <em>VAL</em>.
+	Vous pouvez utiliser ce drapeau plusieurs
 	fois pour d&eacute;finir plusieurs variables. Les variables peuvent
 	ensuite &ecirc;tre d&eacute;r&eacute;f&eacute;renc&eacute;es dans de nombreux cas, et le plus
 	souvent depuis XSSI (via <code>&lt;!--#echo
