@@ -65,6 +65,7 @@
 
 module AP_MODULE_DECLARE_DATA ldap_module;
 static const char *ldap_cache_mutex_type = "ldap-cache";
+static apr_status_t uldap_connection_unbind(void *param);
 
 #define LDAP_CACHE_LOCK() do {                                  \
     if (st->util_ldap_cache_lock)                               \
@@ -75,8 +76,6 @@ static const char *ldap_cache_mutex_type = "ldap-cache";
     if (st->util_ldap_cache_lock)                               \
         apr_global_mutex_unlock(st->util_ldap_cache_lock);      \
 } while (0)
-
-static apr_status_t util_ldap_connection_remove (void *param);
 
 static void util_ldap_strdup (char **str, const char *newstr)
 {
@@ -144,19 +143,12 @@ static int util_ldap_handler(request_rec *r)
 static void uldap_connection_close(util_ldap_connection_t *ldc)
 {
 
-    /*
-     * QUESTION:
-     *
-     * Is it safe leaving bound connections floating around between the
-     * different modules? Keeping the user bound is a performance boost,
-     * but it is also a potential security problem - maybe.
-     *
-     * For now we unbind the user when we finish with a connection, but
-     * we don't have to...
-     */
-
+     /* We leave bound LDAP connections floating around in our pool,
+      * but always check/fix the binddn/bindpw when we take them out
+      * of the pool
+      */
      if (!ldc->keep) { 
-         util_ldap_connection_remove(ldc);
+         uldap_connection_unbind(ldc);
      }
      else { 
          /* mark our connection as available for reuse */
@@ -182,51 +174,17 @@ static apr_status_t uldap_connection_unbind(void *param)
             ldc->ldap = NULL;
         }
         ldc->bound = 0;
-    }
 
-    return APR_SUCCESS;
-}
-
-
-/*
- * Clean up an LDAP connection by unbinding and unlocking the connection.
- * This cleanup does not remove the util_ldap_connection_t from the 
- * per-virtualhost list of connections, does not remove the storage
- * for the util_ldap_connection_t or its data, and is NOT run automatically.
- */
-static apr_status_t uldap_connection_cleanup(void *param)
-{
-    util_ldap_connection_t *ldc = param;
-
-    if (ldc) {
-        /* Release the rebind info for this connection. No more referral rebinds required. */
+        /* forget the rebind info for this conn */
         if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
             apr_ldap_rebind_remove(ldc->ldap);
+            apr_pool_clear(ldc->rebind_pool);
         }
-
-        /* unbind and disconnect from the LDAP server */
-        uldap_connection_unbind(ldc);
-
-        /* free the username and password */
-        if (ldc->bindpw) {
-            free((void*)ldc->bindpw);
-            ldc->bindpw = NULL;
-        }
-        if (ldc->binddn) {
-            free((void*)ldc->binddn);
-            ldc->binddn = NULL;
-        }
-        /* ldc->reason is allocated from r->pool */
-        if (ldc->reason) {
-            ldc->reason = NULL;
-        }
-        /* unlock this entry */
-        uldap_connection_close(ldc);
-
     }
 
     return APR_SUCCESS;
 }
+
 
 /*
  * util_ldap_connection_remove frees all storage associated with the LDAP
@@ -263,9 +221,6 @@ static apr_status_t util_ldap_connection_remove (void *param) {
         prev = l;
     }
 
-    /* Some unfortunate duplication between this method
-     * and uldap_connection_cleanup()
-    */
     if (ldc->bindpw) {
         free((void*)ldc->bindpw);
     }
@@ -339,7 +294,7 @@ static int uldap_connection_init(request_rec *r,
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* Now that we have an ldap struct, add it to the referral list for rebinds. */
-        rc = apr_ldap_rebind_add(ldc->pool, ldc->ldap, ldc->binddn, ldc->bindpw);
+        rc = apr_ldap_rebind_add(ldc->rebind_pool, ldc->ldap, ldc->binddn, ldc->bindpw);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
                     "LDAP: Unable to add rebind cross reference entry. Out of memory?");
@@ -732,7 +687,13 @@ static util_ldap_connection_t *
                 !compare_client_certs(dc->client_certs, l->client_certs))
             {
                 /* the bind credentials have changed */
-                l->bound = 0;
+                uldap_connection_unbind(l);
+                        
+                /* forget the rebind info for this conn */
+                if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
+                    apr_ldap_rebind_remove(l->ldap);
+                }
+
                 util_ldap_strdup((char**)&(l->binddn), binddn);
                 util_ldap_strdup((char**)&(l->bindpw), bindpw);
                 break;
@@ -800,6 +761,17 @@ static util_ldap_connection_t *
         l->client_certs = apr_array_copy_hdr(l->pool, dc->client_certs);
 
         l->keep = 1;
+
+        if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) { 
+            if (apr_pool_create(&(l->rebind_pool), l->pool) != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                              "util_ldap: Failed to create memory pool");
+#if APR_HAS_THREADS
+                apr_thread_mutex_unlock(st->mutex);
+#endif
+                return NULL;
+            }
+        }
 
         if (p) {
             p->next = l;
@@ -2949,7 +2921,6 @@ static void util_ldap_register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(uldap_connection_open);
     APR_REGISTER_OPTIONAL_FN(uldap_connection_close);
     APR_REGISTER_OPTIONAL_FN(uldap_connection_unbind);
-    APR_REGISTER_OPTIONAL_FN(uldap_connection_cleanup);
     APR_REGISTER_OPTIONAL_FN(uldap_connection_find);
     APR_REGISTER_OPTIONAL_FN(uldap_cache_comparedn);
     APR_REGISTER_OPTIONAL_FN(uldap_cache_compare);
