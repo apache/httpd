@@ -414,7 +414,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disable caching of specified URLs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDisable <var>url-string</var> | <var>on</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -432,11 +432,13 @@
 
     <div class="example"><h3>Example</h3><p><code>
       &lt;Location /foo&gt;<br />
+      <span class="indent">
         CacheDisable on<br />
+      </span>
       &lt;/Location&gt;<br />
     </code></p></div>
 
-    <p> The <code>no-cache</code> environment variable can be set to 
+    <p>The <code>no-cache</code> environment variable can be set to 
     disable caching on a finer grained set of resources in versions
     2.2.12 and later.</p>
 
@@ -451,17 +453,19 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable caching of specified URLs using a specified storage
 manager</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheEnable <var>cache_type</var> <var>url-string</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheEnable <var>cache_type</var> [<var>url-string</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheEnable</code> directive instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to cache urls at or below
     <var>url-string</var>. The cache storage manager is specified with the
-    <var>cache_type</var> argument. If the <code class="directive">CacheEnable</code>
-    directive is placed inside a <code class="directive">&lt;Location&gt;</code>
-    directive, the <var>url-string</var> becomes optional.
+    <var>cache_type</var> argument. The <code class="directive">CacheEnable</code>
+    directive can alternatively be placed inside either
+    <code class="directive">&lt;Location&gt;</code> or
+    <code class="directive">&lt;LocationMatch&gt;</code> sections to indicate
+    the content is cacheable.
     <var>cache_type</var> <code>disk</code> instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to use the disk based storage manager
     implemented by <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>.</p>
@@ -470,13 +474,28 @@ manager</td></tr>
     each possible storage manager will be run until the first one that
     actually processes the request. The order in which the storage managers are
     run is determined by the order of the <code class="directive">CacheEnable</code>
-    directives in the configuration file.</p>
+    directives in the configuration file. <code class="directive">CacheEnable</code>
+    directives within <code class="directive">&lt;Location&gt;</code> or
+    <code class="directive">&lt;LocationMatch&gt;</code> sections are processed
+    before globally defined <code class="directive">CacheEnable</code> directives.</p>
 
     <p>When acting as a forward proxy server, <var>url-string</var> can
     also be used to specify remote sites and proxy protocols which 
     caching should be enabled for.</p>
- 
+
     <div class="example"><p><code>
+      # Cache content<br />
+      &lt;Location /foo&gt;<br />
+      <span class="indent">
+        CacheEnable disk<br />
+      </span>
+      &lt;/Location&gt;<br /><br />
+      # Cache regex<br />
+      &lt;LocationMatch foo$&gt;<br />
+      <span class="indent">
+        CacheEnable disk<br />
+      </span>
+      &lt;/LocationMatch&gt;<br /><br />
       # Cache proxied url's<br />
       CacheEnable  disk  /<br /><br />
       # Cache FTP-proxied url's<br />

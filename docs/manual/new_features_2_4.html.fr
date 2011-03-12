@@ -31,6 +31,7 @@ serveur HTTP Apache</h1>
   de la version 2.2</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Améliorations du noyau</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#newmods">Nouveau modules</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#module">Améliorations des modules</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programs">Améliorations des programmes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#developer">Modifications pour le développeur de modules</a></li>
@@ -58,6 +59,67 @@ serveur HTTP Apache</h1>
       nouveaux niveaux <code>trace1</code> à <code>trace8</code> ont été
       ajoutés au dessus du niveau de journalisation <code>debug</code>.</dd>
 
+      <dt>MPM Event</dt>
+      <dd>Le MPM Event est sorti du mode expérimental pour être
+      pleinement supporté.</dd>
+ 
+      <dt>Support du mode asynchrone</dt>
+      <dd>Le support des lectures/écritures asynchrones pour les MPMs et
+      les plateformes qui l'implémentent a été amélioré.</dd>
+ 
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="newmods" id="newmods">Nouveau modules</a></h2>
+    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
+      <dd>Nouveau module permettant de restreindre l'utilisation de
+      certaines méthodes HTTP sans interférer avec l'authentification et
+      l'autorisation.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></dt>
+      <dd>Fournit un tampon pour les piles des filtres en entrée et en
+      sortie.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
+      <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
+      httpd pour la configuration et les fonctions logiques courantes.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
+      <dd>Mise à disposition du protocole FastCGI pour
+      <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></dt>
+      <dd>Mise à disposition du protocole SCGI pour
+      <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_ratelimit.html">mod_ratelimit</a></code></dt>
+      <dd>Permet de limiter le taux de bande passante pour certains
+      clients.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></dt>
+      <dd>Permet de renvoyer comme réponse le corps de la requête via la
+      pile du filtre de sortie.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code></dt>
+      <dd>Remplace l'adresse IP distante et le nom d'hôte apparents du
+      client pour la requête courante par la liste d'adresses IP
+      présentée par un mandataire ou un répartiteur de charge via les
+      en-têtes de la requête.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code></dt>
+      <dd>Définit le délai d'expiration et le taux de données minimum
+      pour la réception des requêtes.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></dt>
+      <dd>Fournit des filtres permettant de gérer et de mettre à
+      disposition les corps des requêtes HTTP.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code></dt>
+      <dd>Met à disposition un fournisseur de mémoire partagée à base de
+      slots (du style tableau de bord).</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -82,11 +144,6 @@ serveur HTTP Apache</h1>
       que celui-ci partage les données de session SSL entre les serveurs
       via memcached.</dd>
  
-      <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
-
-      <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
-      httpd, pour la configuration et des fonctions logiques simples.</dd>
-
       <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
       <dd>La directive <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> est maintenant configurée
@@ -94,9 +151,18 @@ serveur HTTP Apache</h1>
       performances important par rapport à la syntaxe traditionnelle à
       deux paramètres lorsqu'elle est présente en grand nombre.</dd>
  
-      <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
+      <dt><code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dt>
 
-      <dd>Support du protocole FastCGI pour <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
+      <dd>D'avantage de possibilités de modifier la configuration à
+      l'exécution des membres de groupes de répartition de charge via le
+      gestionnaire de répartition de charge.</dd>
+
+      <dd>Le gestionnaire de répartition de charge permet d'ajouter des
+      membres de groupes de répartition de charge supplémentaires à
+      l'exécution.</dd>
+
+      <dd>Configuration à l'exécution d'un sous-ensemble de paramètres
+      de répartition de charge.</dd>
 
       <dt><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></dt>
 
@@ -118,10 +184,6 @@ serveur HTTP Apache</h1>
 
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> peut maintenant insérer
       HIT/MISS/REVALIDATE dans un en-tête X-Cache.</dd>
-
-      <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
-      <dd>Nouveau module permettant de restreindre certaines méthodes
-      HTTP sans interférer avec l'authentification et l'autorisation.</dd>
 
       <dt><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></dt>
       <dd>Support de l'attribut 'onerror' dans un élément 'include',
