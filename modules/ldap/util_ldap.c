@@ -185,7 +185,8 @@ static apr_status_t uldap_connection_unbind(void *param)
     return APR_SUCCESS;
 }
 
-
+/* not presently used, not part of the API */
+#if 0
 /*
  * util_ldap_connection_remove frees all storage associated with the LDAP
  * connection and removes it completely from the per-virtualhost list of
@@ -239,6 +240,7 @@ static apr_status_t util_ldap_connection_remove (void *param) {
    
     return APR_SUCCESS;
 }
+#endif
 
 static int uldap_connection_init(request_rec *r,
                                  util_ldap_connection_t *ldc)
