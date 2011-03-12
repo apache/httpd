@@ -682,18 +682,19 @@ connection client certificates.</description>
 
 
 <directivesynopsis>
-<name>ldapverifyservercert</name>
-<description>force server certificate verification</description>
-<syntax>ldapverifyservercert <var>on|off</var></syntax>
-<default>ldapverifyservercert on</default>
+<name>LDAPVerifyServerCert</name>
+<description>Force server certificate verification</description>
+<syntax>LDAPVerifyServerCert <var>On|Off</var></syntax>
+<default>LDAPVerifyServerCert On</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>specifies whether to force the verification of a 
-     server certificate when establishing an ssl connection to the 
-     ldap server.</p>
+    <p>Specifies whether to force the verification of a 
+    server certificate when establishing an SSL connection to the 
+    LDAP server.</p>
 </usage>
 </directivesynopsis>
+
 
 <directivesynopsis>
 <name>LDAPConnectionPoolTTL</name>
