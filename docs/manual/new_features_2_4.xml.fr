@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1076021 -->
+<!-- English Revision : 1078939 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -64,6 +64,11 @@ serveur HTTP Apache</title>
       <dt>Support du mode asynchrone</dt>
       <dd>Le support des lectures/&eacute;critures asynchrones pour les MPMs et
       les plateformes qui l'impl&eacute;mentent a &eacute;t&eacute; am&eacute;lior&eacute;.</dd>
+
+      <dt>Sections de configuration au niveau de la requ&ecirc;te</dt>
+      <dd>Les sections &lt;<directive module="core">If</directive>&gt;
+      permettent de d&eacute;finir une configuration en fonction de crit&egrave;res
+      li&eacute;s &agrave; la requ&ecirc;te.</dd>
  
     </dl>
   </section>
@@ -202,6 +207,14 @@ serveur HTTP Apache</title>
       pr&eacute;sentent quelques pistes pour contourner ce probl&egrave;me avec les
       clients anciens qui n&eacute;cessitent de tels en-t&ecirc;tes (Ceci affecte
       tous les modules qui utilisent ces variables d'environnement).</dd>
+
+      <dt>Conteneurs de logique d'autorisation de <module>mod_authz_core</module></dt>
+
+      <dd>La directive <directive
+      module="mod_authz_core">Require</directive> et les directives de
+      conteneurs associ&eacute;es, comme <directive module="mod_authz_core"
+      type="section">RequireAll</directive>, permettent de d&eacute;finir une
+      logique d'autorisation avanc&eacute;e.</dd>
       
     </dl>
   </section>
@@ -248,12 +261,12 @@ serveur HTTP Apache</title>
       l'analyseur qu'on trouvait auparavant dans <module>mod_include</module>.</dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
-      <dd>On peut maintenant sp&eacute;cifier une logique d'autorisation
-      avanc&eacute;e &agrave; l'aide de la directive <directive
-      module="mod_authz_core">Require</directive> et des directives de
-      conteneur associ&eacute;es, comme <directive module="mod_authz_core"
-      type="section">RequireAll</directive>, toutes fournies par le module
-      <module>mod_authz_core</module>.</dd>
+      
+      <dd>Afin de fournir une logique d'autorisation avanc&eacute;e via des
+      directives telles que <directive module="mod_authz_core"
+      type="section">RequireAll</directive>, les modules d'autorisation
+      s'enregistrent maintenant en tant
+      que fournisseur par le biais de ap_register_auth_provider().</dd>
 
       <dt>Interface de mise en cache des petits objets</dt>
 

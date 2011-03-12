@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1070179 -->
+<!-- English Revision : 1080834 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -379,8 +379,10 @@ cache</a></seealso>
 <name>CacheEnable</name>
 <description>Active la mise en cache des URLs sp&eacute;cifi&eacute;es en utilisant le
 gestionnaire de stockage pr&eacute;cis&eacute;</description>
-<syntax>CacheEnable <var>type de cache</var> <var>cha&icirc;ne URL</var></syntax>
+<syntax>CacheEnable <var>type de cache</var> [<var>cha&icirc;ne
+URL</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -388,10 +390,11 @@ gestionnaire de stockage pr&eacute;cis&eacute;</description>
     <module>mod_cache</module> de mettre en cache l'URL pr&eacute;cis&eacute;e par
     <var>cha&icirc;ne URL</var>, ainsi que les URLs de niveaux inf&eacute;rieurs. Le
     gestionnaire de stockage du cache est sp&eacute;cifi&eacute; &agrave; l'aide de
-    l'argument <var>type de cache</var>. Si la directive
-    <directive>CacheEnable</directive> est situ&eacute;e &agrave; l'int&eacute;rieur d'une
-    section <directive type="section">Location</directive>, le param&egrave;tre
-    <var>url-string</var> devient optionnel. Si <var>type de cache</var>
+    l'argument <var>type de cache</var>. La directive
+    <directive>CacheEnable</directive> peut &ecirc;tre plac&eacute;e &agrave; l'int&eacute;rieur d'une
+    section <directive type="section">Location</directive> ou <directive
+    type="section">LocationMatch</directive> pour indiquer que le
+    contenu consid&eacute;r&eacute; peut &ecirc;tre mis en cache. Si <var>type de cache</var>
     a pour valeur <code>disk</code>, <module>mod_cache</module>
     utilisera le gestionnaire de stockage sur disque impl&eacute;ment&eacute; par
     <module>mod_cache_disk</module>.</p>
@@ -403,7 +406,12 @@ gestionnaire de stockage pr&eacute;cis&eacute;</description>
     L'ordre dans lequel les gestionnaires de stockage sont lanc&eacute;s est
     d&eacute;termin&eacute; par l'ordre dans lequel apparaissent les directives
     <directive>CacheEnable</directive> dans le fichier de
-    configuration.</p>
+    configuration. Les directives <directive>CacheEnable</directive>
+    situ&eacute;es &agrave; l'int&eacute;rieur de sections <directive
+    type="section">Location</directive> ou <directive
+    type="section">LocationMatch</directive> sont trait&eacute;es avant les
+    directives <directive>CacheEnable</directive> d&eacute;finies au niveau
+    global.</p>
 
     <p>En fonctionnement du type serveur mandataire direct, <var>cha&icirc;ne
     URL</var> peut aussi &ecirc;tre utilis&eacute; pour sp&eacute;cifier des sites distants
@@ -411,6 +419,18 @@ gestionnaire de stockage pr&eacute;cis&eacute;</description>
     &ecirc;tre activ&eacute;e.</p>
 
     <example>
+      # Mise en cache de contenu<br />
+      &lt;Location /foo&gt;<br />
+      <indent>
+        CacheEnable disk<br />
+      </indent>
+      &lt;/Location&gt;<br /><br />
+      # Mise en cache via une expression rationnelle<br />
+      &lt;LocationMatch foo$&gt;<br />
+      <indent>
+        CacheEnable disk<br />
+      </indent>
+      &lt;/LocationMatch&gt;<br /><br />
       # Mise en cache des URLs mandat&eacute;es<br />
       CacheEnable  disk  /<br /><br />
       # Mise en cache des URLs FTP mandat&eacute;es<br />
@@ -447,6 +467,7 @@ Apache</a></seealso>
 sp&eacute;cifi&eacute;es</description>
 <syntax>CacheDisable <var>cha&icirc;ne-url</var> | <var>on</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -467,7 +488,9 @@ sp&eacute;cifi&eacute;es</description>
 
     <example><title>Exemple</title>
       &lt;Location /foo&gt;<br />
+      <indent>
         CacheDisable on<br />
+      </indent>
       &lt;/Location&gt;<br />
     </example>
 
