@@ -121,6 +121,8 @@ typedef struct util_ldap_connection_t {
 
     int ChaseReferrals;                 /* [on|off] (default = AP_LDAP_CHASEREFERRALS_ON)*/
     int ReferralHopLimit;               /* # of referral hops to follow (default = AP_LDAP_DEFAULT_HOPLIMIT) */
+    apr_time_t freed;                   /* the time this conn was placed back in the pool */
+    apr_pool_t *rebind_pool;            /* frequently cleared pool for rebind data */
 } util_ldap_connection_t;
 
 typedef struct util_ldap_config_t {
@@ -163,7 +165,7 @@ typedef struct util_ldap_state_t {
     struct timeval *opTimeout;
 
     int debug_level;                    /* SDK debug level */
-
+    int connectionPoolTTL;
 } util_ldap_state_t;
 
 /* Used to store arrays of attribute labels/values. */
@@ -207,15 +209,6 @@ APR_DECLARE_OPTIONAL_FN(void,uldap_connection_close,(util_ldap_connection_t *ldc
  * @fn apr_status_t util_ldap_connection_unbind(util_ldap_connection_t *ldc)
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
-
-/**
- * Cleanup a connection to an LDAP server
- * @param ldc A structure containing the expanded details of the server
- *            that was connected.
- * @tip This functions unbinds and closes the connection to the LDAP server
- * @fn apr_status_t util_ldap_connection_cleanup(util_ldap_connection_t *ldc)
- */
-APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_cleanup,(void *param));
 
 /**
  * Find a connection in a list of connections

@@ -302,14 +302,18 @@
  * 20110203.1 (2.3.11-dev) Add ap_state_query()
  * 20110203.2 (2.3.11-dev) Add ap_run_pre_read_request() hook and
  *                         ap_parse_form_data() util
+ * 20110312.0 (2.3.12-dev) remove uldap_connection_cleanup and add 
+                           util_ldap_state_t.connectionPoolTTL,
+                           util_ldap_connection_t.freed, and
+                           util_ldap_connection_t.rebind_pool. 
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20110203
+#define MODULE_MAGIC_NUMBER_MAJOR 20110312
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
