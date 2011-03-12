@@ -463,6 +463,8 @@ vpath %.c server:modules/arch/netware:modules/http:modules/aaa:modules/mappers
 vpath %.c modules/generators:modules/metadata:modules/filters:modules/loggers
 vpath %.c modules/core:os/netware:server/mpm/netware:$(PCRE)
 
+$(OBJDIR)/chartables.o: os/netware/chartables.c
+
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
 # in this makefile
