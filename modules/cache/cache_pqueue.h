@@ -141,7 +141,7 @@ void cache_pq_print(cache_pqueue_t *q,
                     cache_pqueue_print_entry print);
 
 /**
- * dump the queue and it's internal structure
+ * dump the queue and its internal structure
  * @internal
  * debug function only
  * @param q the queue

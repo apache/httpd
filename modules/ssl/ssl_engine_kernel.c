@@ -1610,7 +1610,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
      * We come through this procedure for each certificate in the certificate
      * chain, starting with the root-CA's certificate. At each step we've to
      * both verify the signature on the CRL (to make sure it's a valid CRL)
-     * and it's revocation list (to make sure the current certificate isn't
+     * and its revocation list (to make sure the current certificate isn't
      * revoked).  But because to check the signature on the CRL we need the
      * public key of the issuing CA certificate (which was already processed
      * one round before), we've a little problem. But we can both solve it and
@@ -1634,7 +1634,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
 
     /*
      * Try to retrieve a CRL corresponding to the _subject_ of
-     * the current certificate in order to verify it's integrity.
+     * the current certificate in order to verify its integrity.
      */
     memset((char *)&obj, 0, sizeof(obj));
     rc = SSL_X509_STORE_lookup(mctx->crl,

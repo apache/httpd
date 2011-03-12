@@ -149,7 +149,7 @@ static char *get_path_param(apr_pool_t *pool, char *url,
         path += strlen(name);
         if (*path == '=') {
             /*
-             * Session path was found, get it's value
+             * Session path was found, get its value
              */
             ++path;
             if (*path) {
@@ -180,7 +180,7 @@ static char *get_cookie_param(request_rec *r, const char *name)
                     ++start_cookie;
                 if (*start_cookie++ == '=' && *start_cookie) {
                     /*
-                     * Session cookie was found, get it's value
+                     * Session cookie was found, get its value
                      */
                     char *end_cookie, *cookie;
                     cookie = apr_pstrdup(r->pool, start_cookie);
@@ -654,7 +654,7 @@ static void recalc_factors(proxy_balancer *balancer)
 
     /* Recalculate lbfactors */
     workers = (proxy_worker **)balancer->workers->elts;
-    /* Special case if there is only one worker it's
+    /* Special case if there is only one worker its
      * load factor will always be 1
      */
     if (balancer->workers->nelts == 1) {

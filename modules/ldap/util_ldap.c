@@ -192,7 +192,7 @@ static apr_status_t uldap_connection_unbind(void *param)
  * Clean up an LDAP connection by unbinding and unlocking the connection.
  * This cleanup does not remove the util_ldap_connection_t from the 
  * per-virtualhost list of connections, does not remove the storage
- * for the util_ldap_connection_t or it's data, and is NOT run automatically.
+ * for the util_ldap_connection_t or its data, and is NOT run automatically.
  */
 static apr_status_t uldap_connection_cleanup(void *param)
 {

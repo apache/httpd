@@ -813,7 +813,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     *cppPassPhraseCur = apr_pstrdup(p, buf);
 
     /*
-     * And return it's length to OpenSSL...
+     * And return its length to OpenSSL...
      */
     return (len);
 }
