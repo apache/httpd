@@ -682,18 +682,42 @@ connection client certificates.</description>
 
 
 <directivesynopsis>
-<name>LDAPVerifyServerCert</name>
-<description>Force server certificate verification</description>
-<syntax>LDAPVerifyServerCert <var>On|Off</var></syntax>
-<default>LDAPVerifyServerCert On</default>
+<name>ldapverifyservercert</name>
+<description>force server certificate verification</description>
+<syntax>ldapverifyservercert <var>on|off</var></syntax>
+<default>ldapverifyservercert on</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Specifies whether to force the verification of a 
-     server certificate when establishing an SSL connection to the 
-     LDAP server.</p>
+    <p>specifies whether to force the verification of a 
+     server certificate when establishing an ssl connection to the 
+     ldap server.</p>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPConnectionPoolTTL</name>
+<description>Discard backend connections that have been sitting in the connection pool too long</description>
+<syntax>LDAPConnectionPoolTTL <var>n</var></syntax>
+<default>LDAPConnectionPoolTTL -1</default>
+<compatability>Apache HTTP Server 2.3.12 and later</compatability>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>Specifies the maximum age, in seconds, that a pooled LDAP connection can remain idle
+    and still be available for use.  Connections are cleaned up when they are next needed, 
+    not asynchronously.</p>
+
+    <p>A setting of 0 causes connections to never be saved in the backend 
+    connection pool.  The default value of -1, and any other negative value, 
+     allows connections of any age to be reused.</p>
+
+    <note><p>This timeout defaults to units of seconds, but accepts
+    suffixes for milliseconds (ms), minutes (min), and hours (h).
+    </p></note>
+</usage>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>LDAPLibraryDebug</name>
