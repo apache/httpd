@@ -67,7 +67,7 @@ static const char *set_worker_param(apr_pool_t *p,
          */
         worker->s->lbfactor = atoi(val);
         if (worker->s->lbfactor < 1 || worker->s->lbfactor > 100)
-            return "LoadFactor must be number between 1..100";
+            return "LoadFactor must be a number between 1..100";
     }
     else if (!strcasecmp(key, "retry")) {
         /* If set it will give the retry timeout for the worker

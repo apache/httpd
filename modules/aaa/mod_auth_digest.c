@@ -1340,7 +1340,7 @@ static void note_digest_auth_failure(request_rec *r,
 
     /* don't send domain
      * - for proxy requests
-     * - if it's no specified
+     * - if it's not specified
      */
     if (r->proxyreq || !conf->uri_list) {
         domain = NULL;

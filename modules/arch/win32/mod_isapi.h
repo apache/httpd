@@ -257,7 +257,7 @@ typedef int (APR_THREAD_FUNC *PFN_TERMINATEEXTENSION)(apr_uint32_t flags);
 
 /* Module may return 0 if passed HSE_TERM_ADVISORY_UNLOAD, and the module
  * will remain loaded, or 1 if it consents to being unloaded. If the module
- * is passed HSE_TERM_MUST_UNLOAD, it's return value is ignored.
+ * is passed HSE_TERM_MUST_UNLOAD, its return value is ignored.
  */
 #define HSE_TERM_MUST_UNLOAD      1
 #define HSE_TERM_ADVISORY_UNLOAD  2

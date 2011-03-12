@@ -291,7 +291,7 @@ static int ReportStatusToSCMgr(int currentState, int waitHint,
 }
 
 /* Note this works on Win2000 and later due to ChangeServiceConfig2
- * Continue to test it's existence, but at least drop the feature
+ * Continue to test its existence, but at least drop the feature
  * of revising service description tags prior to Win2000.
  */
 

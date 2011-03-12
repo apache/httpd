@@ -231,7 +231,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->response_code_strings = new->response_code_strings;
     }
     else if (new->response_code_strings != NULL) {
-        /* If we merge, the merge-result must have it's own array
+        /* If we merge, the merge-result must have its own array
          */
         conf->response_code_strings = apr_pmemdup(a,
             base->response_code_strings,
@@ -297,7 +297,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->sec_file = new->sec_file;
     }
     else if (new->sec_file) {
-        /* If we merge, the merge-result must have it's own array
+        /* If we merge, the merge-result must have its own array
          */
         conf->sec_file = apr_array_append(a, base->sec_file, new->sec_file);
     }
@@ -308,7 +308,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->sec_if = new->sec_if;
     }
     else if (new->sec_if) {
-        /* If we merge, the merge-result must have it's own array
+        /* If we merge, the merge-result must have its own array
          */
         conf->sec_if = apr_array_append(a, base->sec_if, new->sec_if);
     }

@@ -102,9 +102,9 @@ typedef union {
 
 /** This configuration directive does not take any arguments */
 # define AP_NO_ARGS	func.no_args
-/** This configuration directive will handle it's own parsing of arguments*/
+/** This configuration directive will handle its own parsing of arguments*/
 # define AP_RAW_ARGS	func.raw_args
-/** This configuration directive will handle it's own parsing of arguments*/
+/** This configuration directive will handle its own parsing of arguments*/
 # define AP_TAKE_ARGV	func.take_argv
 /** This configuration directive takes 1 argument*/
 # define AP_TAKE1	func.take1
