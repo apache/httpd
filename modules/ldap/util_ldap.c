@@ -200,7 +200,9 @@ static apr_status_t uldap_connection_cleanup(void *param)
 
     if (ldc) {
         /* Release the rebind info for this connection. No more referral rebinds required. */
-        apr_ldap_rebind_remove(ldc->ldap);
+        if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
+            apr_ldap_rebind_remove(ldc->ldap);
+        }
 
         /* unbind and disconnect from the LDAP server */
         uldap_connection_unbind(ldc);
@@ -335,15 +337,17 @@ static int uldap_connection_init(request_rec *r,
         return(result->rc);
     }
 
+  if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
     /* Now that we have an ldap struct, add it to the referral list for rebinds. */
     rc = apr_ldap_rebind_add(ldc->pool, ldc->ldap, ldc->binddn, ldc->bindpw);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
                      "LDAP: Unable to add rebind cross reference entry. Out of memory?");
         uldap_connection_unbind(ldc);
         ldc->reason = "LDAP: Unable to add rebind cross reference entry.";
         return(rc);
     }
+  }
 
     /* always default to LDAP V3 */
     ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
@@ -374,6 +378,7 @@ static int uldap_connection_init(request_rec *r,
     ldap_option = ldc->deref;
     ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &ldap_option);
 
+ if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) { 
     /* Set options for rebind and referrals. */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "LDAP: Setting referrals to %s.",
@@ -414,6 +419,7 @@ static int uldap_connection_init(request_rec *r,
           return(result->rc);
         }
     }
+ }
 
 /*XXX All of the #ifdef's need to be removed once apr-util 1.2 is released */
 #ifdef APR_LDAP_OPT_VERIFY_CERT
