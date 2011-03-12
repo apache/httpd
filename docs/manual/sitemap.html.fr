@@ -77,8 +77,10 @@ Location et Files</a></li>
 Apache</a></li>
 <li><a href="mpm.html">Modules multi-processus (MPMs)</a></li>
 <li><a href="env.html">Les variables d'environnement d'Apache</a></li>
+<li><a href="expr.html">L'interprétation des expressions dans Apache</a></li>
 <li><a href="handler.html">Utilisation des gestionnaires d'Apache</a></li>
 <li><a href="filter.html">Filtres</a></li>
+<li><a href="socache.html">Support du cache des objets partagés</a></li>
 <li><a href="suexec.html">Support de suEXEC</a></li>
 <li><a href="misc/perf-tuning.html">Optimisation des performances</a></li>
 <li><a href="http://wiki.apache.org/httpd/FAQ">Foire aux Questions</a></li>
