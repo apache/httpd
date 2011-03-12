@@ -63,6 +63,9 @@
 #define AP_LDAP_CHASEREFERRALS_OFF 0
 #define AP_LDAP_CHASEREFERRALS_ON 1
 
+#define AP_LDAP_CONNPOOL_DEFAULT -1
+#define AP_LDAP_CONNPOOL_INFINITE -2
+
 module AP_MODULE_DECLARE_DATA ldap_module;
 static const char *ldap_cache_mutex_type = "ldap-cache";
 static apr_status_t uldap_connection_unbind(void *param);
@@ -152,6 +155,7 @@ static void uldap_connection_close(util_ldap_connection_t *ldc)
      }
      else { 
          /* mark our connection as available for reuse */
+         ldc->freed = apr_time_now();
 #if APR_HAS_THREADS
          apr_thread_mutex_unlock(ldc->lock);
 #endif
@@ -632,6 +636,7 @@ static util_ldap_connection_t *
 {
     struct util_ldap_connection_t *l, *p; /* To traverse the linked list */
     int secureflag = secure;
+    apr_time_t now = apr_time_now();
 
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
@@ -663,7 +668,19 @@ static util_ldap_connection_t *
             && (l->deref == deref) && (l->secure == secureflag)
             && !compare_client_certs(dc->client_certs, l->client_certs))
         {
-            break;
+            if (st->connectionPoolTTL > 0) { 
+                if (l->bound && (now - l->freed) > st->connectionPoolTTL) { 
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
+                                  "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago", 
+                                  (now - l->freed) / APR_USEC_PER_SEC);
+                    uldap_connection_unbind(l);
+                    /* Go ahead and use it, so we don't create more just to unbind some other old ones */
+                    break; 
+                }
+            }
+            else { 
+                break;
+            }
         }
 #if APR_HAS_THREADS
             /* If this connection didn't match the criteria, then we
@@ -689,13 +706,9 @@ static util_ldap_connection_t *
                 !compare_client_certs(dc->client_certs, l->client_certs))
             {
                 /* the bind credentials have changed */
+                /* no check for connectionPoolTTL, since we are unbinding any way */
                 uldap_connection_unbind(l);
                         
-                /* forget the rebind info for this conn */
-                if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
-                    apr_ldap_rebind_remove(l->ldap);
-                }
-
                 util_ldap_strdup((char**)&(l->binddn), binddn);
                 util_ldap_strdup((char**)&(l->bindpw), bindpw);
                 break;
@@ -762,7 +775,8 @@ static util_ldap_connection_t *
         /* save away a copy of the client cert list that is presently valid */
         l->client_certs = apr_array_copy_hdr(l->pool, dc->client_certs);
 
-        l->keep = 1;
+        /* whether or not to keep this connection in the pool when it's returned */
+        l->keep = (st->connectionPoolTTL == 0) ? 0 : 1;
 
         if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) { 
             if (apr_pool_create(&(l->rebind_pool), l->pool) != APR_SUCCESS) {
@@ -2559,7 +2573,24 @@ static const char *util_ldap_set_op_timeout(cmd_parms *cmd,
     return NULL;
 }
 
+static const char *util_ldap_set_conn_ttl(cmd_parms *cmd,
+                                            void *dummy,
+                                            const char *val)
+{
+    apr_interval_time_t timeout;
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                                  &ldap_module);
 
+    if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) { 
+        return "LDAPConnPoolTTL has wrong format";
+    }
+
+    st->connectionPoolTTL = timeout;
+    return NULL;
+}
+
+     
 
 static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 {
@@ -2589,6 +2620,7 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->opTimeout = apr_pcalloc(p, sizeof(struct timeval));
     st->opTimeout->tv_sec = 60;
     st->verify_svr_cert = 1;
+    st->connectionPoolTTL = AP_LDAP_CONNPOOL_DEFAULT; /* no limit */
 
     return st;
 }
@@ -2639,6 +2671,9 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->opTimeout = base->opTimeout;
     st->verify_svr_cert = base->verify_svr_cert;
     st->debug_level = base->debug_level;
+
+    st->connectionPoolTTL = (overrides->connectionPoolTTL == AP_LDAP_CONNPOOL_DEFAULT) ? 
+                                base->connectionPoolTTL : overrides->connectionPoolTTL;
 
     return st;
 }
@@ -2914,6 +2949,11 @@ static const command_rec util_ldap_cmds[] = {
                   NULL, RSRC_CONF,
                   "Specify the LDAP bind/search timeout in seconds "
                   "(0 = no limit). Default: 60"),
+    AP_INIT_TAKE1("LDAPConnectionPoolTTL", util_ldap_set_conn_ttl,
+                  NULL, RSRC_CONF,
+                  "Specify the maximum amount of time a bound connection can sit "
+                  "idle and still be considered valid for reuse"
+                  "(0 = no pool, -1 = no limit, n = time in seconds). Default: -1"),
 
     {NULL}
 };
