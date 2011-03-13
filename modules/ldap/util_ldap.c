@@ -2586,6 +2586,10 @@ static const char *util_ldap_set_conn_ttl(cmd_parms *cmd,
         return "LDAPConnPoolTTL has wrong format";
     }
 
+    if (timeout < 0) { 
+        /* reserve -1 for default value */
+        timeout =  AP_LDAP_CONNPOOL_INFINITE;
+    }
     st->connectionPoolTTL = timeout;
     return NULL;
 }
