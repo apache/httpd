@@ -4680,6 +4680,14 @@ static int hook_fixup(request_rec *r)
         return DECLINED;
     }
 
+    /*
+     * only do something under runtime if the engine is really enabled,
+     * for this directory, else return immediately!
+     */
+    if (dconf->state == ENGINE_DISABLED) {
+        return DECLINED;
+    }
+
     /* if there are no real (i.e. no RewriteRule directives!)
        per-dir config of us, we return also immediately */
     if (dconf->directory == NULL) {
@@ -4704,14 +4712,6 @@ static int hook_fixup(request_rec *r)
             !strncmp(r->filename, dconf->directory, l)) {
             return DECLINED;
         }
-    }
-
-    /*
-     *  only do something under runtime if the engine is really enabled,
-     *  for this directory, else return immediately!
-     */
-    if (!dconf || dconf->state == ENGINE_DISABLED) {
-        return DECLINED;
     }
 
     /* END flag was used as a RewriteRule flag on this request */ 
