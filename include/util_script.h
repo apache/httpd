@@ -140,6 +140,14 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
 
+/**
+ * Parse query args for the request and store in a new table allocated
+ * from the request pool.
+ * For args with no value, "1" will be used instead.
+ * If no query args were specified, the table will be entry.
+ * @param r The current request
+ * @param table A new table on output.
+ */
 AP_DECLARE(void) ap_args_to_table(request_rec *r, apr_table_t **table);
 
 #ifdef __cplusplus
