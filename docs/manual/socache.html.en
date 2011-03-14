@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Shared Object Cache in Apache HTTP Server - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Shared Object Cache in Apache HTTP Server</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="./en/socache.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+    <p>The Shared Object Cache provides a means to share simple data
+    across all a server's workers, regardless of <a href="mpm.html">thread
+    and process models</a>.  It is used where the advantages of sharing
+    data across processes outweigh the performance overhead of
+    inter-process communication.</p>
+  </div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="providers" id="providers">Shared Object Cache Providers</a></h2>
+    
+    <p>The shared object cache as such is an abstraction.  Four different
+    modules implement it.  To use the cache, one or more of these modules
+    must be present, and configured.</p>
+    <p>The only configuration required is to select which cache provider
+    to use.  This is the responsibility of modules using the cache, and
+    they enable selecton using directives such as
+    <code class="directive"><a href="./mod/authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code>,
+    <code class="directive"><a href="./mod/ssl.html#sslsessioncache">SSLSessionCache</a></code>, and
+    <code class="directive"><a href="./mod/ssl.html#sslstaplingcache">SSLStaplingCache</a></code>.</p>
+    <p>Currently available providers are:</p>
+    <dl>
+    <dt>"dbm" (mod_socache_dbm)</dt>
+    <dd>This makes use of a DBM hash file.
+     The choice of underlying DBM configuration may be configurable
+     if the installed APR version supports multiple DBM implementations.</dd>
+    <dt>"dc" (mod_socache_dc)</dt>
+    <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>
+    distributed session caching libraries.</dd>
+    <dt>"mc" (mod_socache_memcache)</dt>
+    <dd>This makes use of the <a href="http://memcached.org/">memcached</a>
+    high-performance, distributed memory object caching system.</dd>
+    <dt>"shmcb" (mod_socache_shmcb)</dt>
+    <dd>This makes use of a high-performance cyclic buffer inside a
+     shared memory segment.</dd>
+    </dl>
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./en/socache.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>
