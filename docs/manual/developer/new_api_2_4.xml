@@ -297,17 +297,32 @@
          eliminating that mechanism and relying on the use of
          different <code>APLOG_TRACEn</code> levels.  If expensive
          trace processing needs to be bypassed depending on the
-         configured log level, use
-         the <code>APLOGtrace<em>n</em></code>
-         and <code>APLOGrtrace<em>n</em></code> macros.</li>
+         configured log level, use the <code>APLOGtrace<em>n</em></code>
+         and <code>APLOGrtrace<em>n</em></code> macros to first check
+         if tracing is enabled.</li>
        </ul></p>
 
+    <p>Modules sometimes add process id and/or thread id to their log
+       messages.  These ids are now logged by default, so it may not
+       be necessary for the module to log them explicitly.  (Users may
+       remove them from the error log format, but they can be
+       instructed to add it back if necessary for problem diagnosis.)</p>
   </section>
 
   <section id="upgrading_byfunction">
-    <title>If your module uses these APIs...</title>
+    <title>If your module uses these existing APIs...</title>
 
     <dl>
+      <dt><code>ap_default_type()</code></dt>
+      <dd>This is no longer available; Content-Type must be configured
+          explicitly or added by the application.</dd>
+
+      <dt><code>ap_get_server_name()</code></dt>
+      <dd>If the returned server name is used in a URL,
+      use <code>ap_get_server_name_for_url()</code> instead.  This new
+      function handles the odd case where the server name is an IPv6
+      literal address.</dd>
+
       <dt><code>ap_get_server_version()</code></dt>
       <dd>For logging purposes, where detailed information is 
           appropriate, use <code>ap_get_server_description()</code>.
@@ -369,6 +384,8 @@
       0/APR_SUCCESS if there is no such error information, or a valid
       <code>apr_status_t</code> value otherwise.</dd>
 
+      <dt><code>unixd_config</code></dt>
+      <dd>This has been renamed to ap_unixd_config.</dd>
     </dl>
   </section>
 
@@ -376,17 +393,39 @@
     <title>If your module interfaces with this feature...</title>
     <dl>
       <dt>suEXEC</dt>
-      <dd>Optional: <code>ap_unixd_config.suexec_enabled</code> is
-          still provided, but new
-          field <code>suexec_disabled_reason</code> provides an
-          explanation if the feature is not available.</dd>
+      <dd>Optional: If your module logs an error
+          when <code>ap_unixd_config.suexec_enabled</code> is 0,
+          also log the value of the new
+          field <code>suexec_disabled_reason</code>, which contains an
+          explanation of why it is not available.</dd>
 
       <dt>Extended status data in the scoreboard</dt>
-      <dd>Instead of requiring mod_status and <code>ExtendedStatus
-          On</code>, just set <code>ap_extended_status</code>
-          to <code>1</code> in a pre-config hook.</dd>
+      <dd>In previous releases, <code>ExtendedStatus</code> had to be
+          set to <code>On</code>, which in turn required that
+          mod_status was loaded.  In 2.4, just
+          set <code>ap_extended_status</code> to <code>1</code> in a
+          pre-config hook and the extended status data will be
+          available.</dd>
 
     </dl>
+  </section>
+
+  <section id="upgrading_newfeatures">
+    <title>Does your module...</title>
+    <dt>Parse query args</dt>
+    <dd>Consider if <code>ap_args_to_table()</code> would be
+    helpful.</dd>
+
+    <dt>Parse form data...</dt>
+    <dd>Use <code>ap_parse_form_data()</code>.</dd>
+
+    <dt>Check for request header fields <code>Content-Length</code>
+    and <code>Transfer-Encoding</code> to see if a body was
+    specified</dt>
+    <dd>Use <code>ap_request_has_body()</code>.</dd>
+
+    <dt>Implement cleanups which clear pointer variables</dt>
+    <dd>Use <code>ap_pool_cleanup_set_null()</code>.</dd>
   </section>
 
 </section>
