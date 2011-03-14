@@ -285,6 +285,108 @@
        <code>APLOG_MARK</code> should only be used when calling
        <code>ap_log_*</code> without additional wrappers. In this way, the
        code will remain compatible with HTTPD 2.0 and 2.2.</p>
+
+    <p>Consider the following changes to take advantage of the new
+       <code>APLOG_TRACE1..8</code> log levels:
+       <ul>
+         <li>Check current use of <code>APLOG_DEBUG</code> and
+         consider if one of the <code>APLOG_TRACEn</code> levels is
+         more appropriate.</li>
+         <li>If your module currently has a mechanism for configuring
+         the amount of debug logging which is performed, consider
+         eliminating that mechanism and relying on the use of
+         different <code>APLOG_TRACEn</code> levels.  If expensive
+         trace processing needs to be bypassed depending on the
+         configured log level, use
+         the <code>APLOGtrace<em>n</em></code>
+         and <code>APLOGrtrace<em>n</em></code> macros.</li>
+       </ul></p>
+
+  </section>
+
+  <section id="upgrading_byfunction">
+    <title>If your module uses these APIs...</title>
+
+    <dl>
+      <dt><code>ap_get_server_version()</code></dt>
+      <dd>For logging purposes, where detailed information is 
+          appropriate, use <code>ap_get_server_description()</code>.
+          When generating output, where the amount of information
+          should be configurable by ServerTokens, use
+          <code>ap_get_server_banner()</code>.</dd>
+
+      <dt><code>ap_graceful_stop_signalled()</code></dt>
+      <dd>Replace with a call
+      to <code>ap_mpm_query(AP_MPMQ_MPM_STATE)</code> and checking for
+      state <code>AP_MPMQ_STOPPING</code>.</dd>
+
+      <dt><code>ap_max_daemons_limit</code>, <code>ap_my_generation</code>,
+          and <code>ap_threads_per_child</code></dt>
+      <dd>Use <code>ap_mpm_query()</code> query codes
+          <code>AP_MPMQ_MAX_DAEMON_USED</code>, <code>AP_MPMQ_GENERATION</code>,
+          and <code>AP_MPMQ_MAX_THREADS</code>, respectively.</dd>
+
+      <dt><code>ap_mpm_query()</code></dt>
+      <dd>Ensure that it is not used until after the register-hooks
+          hook has completed.  Otherwise, an MPM built as a DSO
+          would not have had a chance to enable support for this
+          function.</dd>
+
+      <dt><code>ap_server_conf->process->pool</code>
+      userdata</dt>
+      <dd>
+        Optional:
+        <ul>
+          <li>If your module uses this to determine which pass of the
+	  startup hooks is being run,
+	  use <code>ap_state_query(AP_SQ_MAIN_STATE)</code>.</li>
+          <li>If your module uses this to maintain data across the
+          unloading and reloading of your module, use
+          <code>ap_retained_data_create()</code> and
+          <code>ap_retained_data_get()</code>.</li>
+        </ul>
+      </dd>
+
+      <dt><code>apr_global_mutex_create()</code>,
+          <code>apr_proc_mutex_create()</code></dt>
+      <dd>Optional: See <code>ap_mutex_register()</code>,
+          <code>ap_global_mutex_create()</code>, and
+          <code>ap_proc_mutex_create()</code>; these allow your
+          mutexes to be configurable with
+          the <directive module="core">Mutex</directive> directive;
+          you can also remove any configuration mechanisms in your
+          module for such mutexes
+      </dd>
+
+      <dt><code>CORE_PRIVATE</code></dt>
+      <dd>This is now unnecessary and ignored.</dd>
+
+      <dt><code>dav_new_error()</code>
+      and <code>dav_new_error_tag()</code></dt>
+      <dd>Previously, these assumed that <code>errno</code> contained
+      information describing the failure.  Now,
+      an <code>apr_status_t</code> parameter must be provided.  Pass
+      0/APR_SUCCESS if there is no such error information, or a valid
+      <code>apr_status_t</code> value otherwise.</dd>
+
+    </dl>
+  </section>
+
+  <section id="upgrading_byfeature">
+    <title>If your module interfaces with this feature...</title>
+    <dl>
+      <dt>suEXEC</dt>
+      <dd>Optional: <code>ap_unixd_config.suexec_enabled</code> is
+          still provided, but new
+          field <code>suexec_disabled_reason</code> provides an
+          explanation if the feature is not available.</dd>
+
+      <dt>Extended status data in the scoreboard</dt>
+      <dd>Instead of requiring mod_status and <code>ExtendedStatus
+          On</code>, just set <code>ap_extended_status</code>
+          to <code>1</code> in a pre-config hook.</dd>
+
+    </dl>
   </section>
 
 </section>
