@@ -288,52 +288,43 @@ static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool) {
 
 #endif
 
-AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
-                                               ap_lua_vm_spec *spec,
-                                               apr_array_header_t *package_paths,
-                                               apr_array_header_t *package_cpaths,
-                                               ap_lua_state_open_callback cb,
-                                               void *btn)
+static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_pool)
 {
+    lua_State* L;
+    
+    ap_lua_vm_spec *spec = params;
 
-    lua_State *L;
-
-    if (!apr_pool_userdata_get((void **) &L, spec->file, lifecycle_pool)) {
-        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
-                      "creating lua_State with file %s", spec->file);
-        /* not available, so create */
-        L = luaL_newstate();
+    L = luaL_newstate();
 #ifdef AP_ENABLE_LUAJIT
-        luaopen_jit(L);
+    luaopen_jit(L);
 #endif
-        luaL_openlibs(L);
-        if (package_paths) {
-            munge_path(L, "path", "?.lua", "./?.lua", lifecycle_pool,
-                       package_paths, spec->file);
-        }
-        if (package_cpaths) {
-            munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,
-                       package_cpaths, spec->file);
-        }
+    luaL_openlibs(L);
+    if (spec->package_paths) {
+        munge_path(L, "path", "?.lua", "./?.lua", lifecycle_pool,
+            spec->package_paths, spec->file);
+    }
+    if (spec->package_cpaths) {
+        munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,
+            spec->package_cpaths, spec->file);
+    }
 
-        if (cb) {
-            cb(L, lifecycle_pool, btn);
-        }
+    if (spec->cb) {
+        spec->cb(L, lifecycle_pool, spec->cb_arg);
+    }
 
-        apr_pool_userdata_set(L, spec->file, &cleanup_lua, lifecycle_pool);
 
-        if (spec->bytecode && spec->bytecode_len > 0) {
-            luaL_loadbuffer(L, spec->bytecode, spec->bytecode_len, spec->file);
-            lua_pcall(L, 0, LUA_MULTRET, 0);
-        }
-        else {
-            int rc;
-            ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
-                          "loading lua file %s", spec->file);
-            rc = luaL_loadfile(L, spec->file);
-            if (rc != 0) {
-                char *err;
-                switch (rc) {
+    if (spec->bytecode && spec->bytecode_len > 0) {
+        luaL_loadbuffer(L, spec->bytecode, spec->bytecode_len, spec->file);
+        lua_pcall(L, 0, LUA_MULTRET, 0);
+    }
+    else {
+        int rc;
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
+            "loading lua file %s", spec->file);
+        rc = luaL_loadfile(L, spec->file);
+        if (rc != 0) {
+            char *err;
+            switch (rc) {
                 case LUA_ERRSYNTAX: 
                     err = "syntax error"; 
                     break;
@@ -346,20 +337,93 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                 default:
                     err = "unknown error"; 
                     break;
-                }
-                ap_log_perror(APLOG_MARK, APLOG_ERR, 0, lifecycle_pool,
-                              "Loading lua file %s: %s",
-                              spec->file, err);
-                return NULL;
             }
-            lua_pcall(L, 0, LUA_MULTRET, 0);
+            ap_log_perror(APLOG_MARK, APLOG_ERR, 0, lifecycle_pool,
+                "Loading lua file %s: %s",
+                spec->file, err);
+            return APR_EBADF;
         }
+        lua_pcall(L, 0, LUA_MULTRET, 0);
+    }
 
 #ifdef AP_ENABLE_LUAJIT
-        loadjitmodule(L, lifecycle_pool);
+    loadjitmodule(L, lifecycle_pool);
 #endif
-        lua_pushlightuserdata(L, lifecycle_pool);
-        lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Wombat.pool");
+    lua_pushlightuserdata(L, lifecycle_pool);
+    lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Wombat.pool");
+    *vm = L;
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t vm_destruct(void *vm, void *params, apr_pool_t *pool)
+{
+    lua_State *L = (lua_State *)vm; 
+
+    (void*)params;
+    (void*)pool;
+
+    cleanup_lua(L);
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t vm_release(lua_State* vm)
+{
+    apr_reslist_t* reslist;
+    lua_pushlightuserdata(vm,vm);
+    lua_rawget(vm,LUA_REGISTRYINDEX);
+    reslist = (apr_reslist_t*)lua_topointer(vm,-1);
+
+    return apr_reslist_release(reslist, vm);
+}
+
+static apr_status_t vm_reslist_destroy(void *data)
+{
+    return apr_reslist_destroy(data);
+}
+
+AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
+                                               ap_lua_vm_spec *spec)
+{
+    lua_State *L = NULL;
+
+    if (spec->scope == APL_SCOPE_SERVER) {
+        apr_reslist_t *reslist;
+
+        if (apr_pool_userdata_get(&reslist,"mod_lua",spec->pool)==APR_SUCCESS) {
+            if(reslist==NULL) {
+                if(apr_reslist_create(&reslist, 
+                    spec->vm_server_pool_min, 
+                    spec->vm_server_pool_max,
+                    spec->vm_server_pool_max,
+                    0,
+                    vm_construct,
+                    vm_destruct,
+                    spec,
+                    spec->pool)!=APR_SUCCESS)
+                    return NULL;
+
+                apr_pool_userdata_set(reslist, "mod_lua", vm_reslist_destroy, spec->pool);
+            }
+            apr_reslist_acquire(reslist, &L);
+            lua_pushlightuserdata(L, L);
+            lua_pushlightuserdata(L, reslist);
+            lua_rawset(L,LUA_REGISTRYINDEX);
+            apr_pool_userdata_set(L, spec->file, vm_release, lifecycle_pool);
+        }
+    } else {
+        if (apr_pool_userdata_get((void **) &L, spec->file, lifecycle_pool)==APR_SUCCESS) {
+
+            if(L==NULL) {
+                ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
+                    "creating lua_State with file %s", spec->file);
+                /* not available, so create */
+
+                if(!vm_construct(&L, spec, lifecycle_pool))
+                    apr_pool_userdata_set(L, spec->file, &cleanup_lua, lifecycle_pool);
+            }
+        }
     }
 
     return L;

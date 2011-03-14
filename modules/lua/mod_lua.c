@@ -121,9 +121,15 @@ static int lua_handler(request_rec *r)
             d = apr_palloc(r->pool, sizeof(mapped_request_details));
             spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
             spec->scope = dcfg->vm_scope;
-            spec->pool = r->pool;
+			spec->pool = spec->scope==APL_SCOPE_SERVER ? cfg->pool : r->pool;
             spec->file = r->filename;
             spec->code_cache_style = dcfg->code_cache_style;
+			spec->package_paths = cfg->package_paths;
+			spec->package_cpaths = cfg->package_cpaths;
+			spec->vm_server_pool_min = cfg->vm_server_pool_min;
+			spec->vm_server_pool_max = cfg->vm_server_pool_max;
+			spec->cb = &lua_open_callback;
+			spec->cb_arg = NULL;
             d->spec = spec;
             d->function_name = "handle";
         }
@@ -135,10 +141,7 @@ static int lua_handler(request_rec *r)
                       d->spec->file,
                       d->function_name);
         L = ap_lua_get_lua_state(r->pool,
-                              d->spec,
-                              cfg->package_paths,
-                              cfg->package_cpaths,
-                              &lua_open_callback, NULL);
+                              d->spec);
 
         if (!L) {
             /* TODO annotate spec with failure reason */
@@ -246,17 +249,20 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
             spec->file = hook_spec->file_name;
             spec->code_cache_style = hook_spec->code_cache_style;
             spec->scope = hook_spec->scope;
+			spec->vm_server_pool_min = cfg->vm_server_pool_min;
+			spec->vm_server_pool_max = cfg->vm_server_pool_max;
             spec->bytecode = hook_spec->bytecode;
             spec->bytecode_len = hook_spec->bytecode_len;
-            spec->pool = r->pool;
+            spec->pool = spec->scope==APL_SCOPE_SERVER ? cfg->pool : r->pool;
+			spec->package_paths = cfg->package_paths;
+			spec->package_cpaths = cfg->package_cpaths;
+			spec->cb = &lua_open_callback;
+			spec->cb_arg = NULL;
 
             apr_filepath_merge(&spec->file, server_cfg->root_path,
                                spec->file, APR_FILEPATH_NOTRELATIVE, r->pool);
             L = ap_lua_get_lua_state(r->pool,
-                                  spec,
-                                  cfg->package_paths,
-                                  cfg->package_cpaths,
-                                  &lua_open_callback, NULL);
+                                  spec);
 
 
 

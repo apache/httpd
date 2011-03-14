@@ -43,6 +43,23 @@
 #define APL_SCOPE_CONN          3
 #define APL_SCOPE_SERVER        4
 
+
+/**
+ * the ap_lua_?getvm family of functions is used to create and/or obtain
+ * a handle to a lua state. If there is not an extant vm matching the
+ * spec then a new one is created.
+ */
+/* lua_State* ap_lua_rgetvm(request_rec *r, ap_lua_vm_spec *spec); */
+
+/* returns NULL if the spec requires a request scope */
+/* lua_State* ap_lua_cgetvm(conn_rec *r, ap_lua_vm_spec *spec);*/
+
+/* returns NULL if the spec requires a request scope or conn scope */
+/* lua_State* ap_lua_sgetvm(server_rec *r, ap_lua_vm_spec *spec); */
+
+typedef void (*ap_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
+                                             void *ctx);
+
 /**
  * Specification for a lua virtual machine
  */
@@ -61,7 +78,11 @@ typedef struct
 
     /* APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER */
     int scope;
+	unsigned int vm_server_pool_min;
+	unsigned int vm_server_pool_max;
 
+	ap_lua_state_open_callback cb;
+	void* cb_arg;
     /* pool to use for lifecycle if APL_SCOPE_ONCE is set, otherwise unused */
     apr_pool_t *pool;
 
@@ -102,22 +123,6 @@ AP_LUA_DECLARE(void) ap_lua_registerlib(lua_State *L, char *name, lua_CFunction 
  */
 AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L);
 
-/**
- * the ap_lua_?getvm family of functions is used to create and/or obtain
- * a handle to a lua state. If there is not an extant vm matching the
- * spec then a new one is created.
- */
-/* lua_State* ap_lua_rgetvm(request_rec *r, ap_lua_vm_spec *spec); */
-
-/* returns NULL if the spec requires a request scope */
-/* lua_State* ap_lua_cgetvm(conn_rec *r, ap_lua_vm_spec *spec);*/
-
-/* returns NULL if the spec requires a request scope or conn scope */
-/* lua_State* ap_lua_sgetvm(server_rec *r, ap_lua_vm_spec *spec); */
-
-typedef void (*ap_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
-                                             void *ctx);
-
 /*
  * alternate means of getting lua_State (preferred eventually)
  * Obtain a lua_State which has loaded file and is associated with lifecycle_pool
@@ -131,11 +136,7 @@ typedef void (*ap_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
  * @ctx a baton passed to cb
  */
 AP_LUA_DECLARE(lua_State*) ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
-                                                ap_lua_vm_spec *spec,
-                                                apr_array_header_t *package_paths,
-                                                apr_array_header_t *package_cpaths,
-                                                ap_lua_state_open_callback cb, 
-                                                void *btn);
+                                                ap_lua_vm_spec *spec);
 
 
 
