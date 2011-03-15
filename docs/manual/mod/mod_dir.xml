@@ -131,8 +131,10 @@ a directory</description>
     <li>Relative URL references inside html pages will work correctly.</li>
     </ul>
 
-    <p>Well, if you don't want this effect <em>and</em> the reasons above don't
-    apply to you, you can turn off the redirect with:</p>
+    <p>If you don't want this effect <em>and</em> the reasons above don't
+    apply to you, you can turn off the redirect as shown below. However,
+    be aware that there are possible security implications to doing
+    this.</p>
 
     <example>
         # see security warning below!<br />
