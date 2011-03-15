@@ -126,7 +126,7 @@ a directory</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.51 and later</td></tr>
 </table>
-    <p>The <code class="directive">DirectorySlash</code> directive determines, whether
+    <p>The <code class="directive">DirectorySlash</code> directive determines whether
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> should fixup URLs pointing to a directory or
     not.</p>
 
@@ -143,8 +143,10 @@ a directory</td></tr>
     <li>Relative URL references inside html pages will work correctly.</li>
     </ul>
 
-    <p>Well, if you don't want this effect <em>and</em> the reasons above don't
-    apply to you, you can turn off the redirect with:</p>
+    <p>If you don't want this effect <em>and</em> the reasons above don't
+    apply to you, you can turn off the redirect as shown below. However,
+    be aware that there are possible security implications to doing
+    this.</p>
 
     <div class="example"><p><code>
         # see security warning below!<br />
