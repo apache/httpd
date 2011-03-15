@@ -108,7 +108,7 @@ a directory</description>
 <compatibility>Available in version 2.0.51 and later</compatibility>
 
 <usage>
-    <p>The <directive>DirectorySlash</directive> directive determines, whether
+    <p>The <directive>DirectorySlash</directive> directive determines whether
     <module>mod_dir</module> should fixup URLs pointing to a directory or
     not.</p>
 
@@ -125,8 +125,10 @@ a directory</description>
     <li>Relative URL references inside html pages will work correctly.</li>
     </ul>
 
-    <p>Well, if you don't want this effect <em>and</em> the reasons above don't
-    apply to you, you can turn off the redirect with:</p>
+    <p>If you don't want this effect <em>and</em> the reasons above don't
+    apply to you, you can turn off the redirect as shown below. However,
+    be aware that there are possible security implications to doing
+    this.</p>
 
     <example>
         # see security warning below!<br />
