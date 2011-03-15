@@ -114,7 +114,7 @@ a directory</description>
 <compatibility>Available in version 2.0.51 and later</compatibility>
 
 <usage>
-    <p>The <directive>DirectorySlash</directive> directive determines, whether
+    <p>The <directive>DirectorySlash</directive> directive determines whether
     <module>mod_dir</module> should fixup URLs pointing to a directory or
     not.</p>
 
