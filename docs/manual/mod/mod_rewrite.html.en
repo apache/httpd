@@ -1364,16 +1364,16 @@ cannot use <code>$N</code> in the substitution string!
         only the direct result of substitutions, without any PATH_INFO 
         appended.</p></dd>
 
-        <dt>
-        '<code>env|E=</code><em>VAR</em>[:<em>VAL</em>]'
+        <dt>'<code>env|E=!</code><em>VAR</em>[:<em>VAL</em>]'
         (set environment variable)</dt><dd>
         This forces an environment variable named <em>VAR</em> to
         be set. The value will be <em>VAL</em> if provided, where <em>VAL</em>
         can contain regexp backreferences (<code>$N</code> and
-        <code>%N</code>) which will be expanded. You can use this
-        flag more than once, to set more than one variable. The
-        variables can later be dereferenced in many situations, most commonly
-	from within XSSI (via <code>&lt;!--#echo
+        <code>%N</code>) which will be expanded. The form !<em>VAR</em> causes
+        the environment variable <em>VAR</em> to be unset and does not accept
+        any <em>VAL</em>. You can use this flag more than once, to set more
+        than one variable. The variables can later be dereferenced in many
+        situations, most commonly from within XSSI (via <code>&lt;!--#echo
         var="VAR"--&gt;</code>) or CGI (<code>$ENV{'VAR'}</code>). 
 	You can also dereference the variable in a later RewriteCond pattern, using
         <code>%{ENV:VAR}</code>. Use this to strip 
