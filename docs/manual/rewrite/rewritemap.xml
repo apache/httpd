@@ -120,7 +120,7 @@ may be used, and give examples of each.</p>
   <section id="txt">
     <title>txt: Plain text maps</title>
 
-    <p>When a MapType of <code>txt</code>is used, the MapSource is a filesystem path to a
+    <p>When a MapType of <code>txt</code> is used, the MapSource is a filesystem path to a
     plain-text mapping file, containing space-separated key/value pair
     per line. Optionally, a line may be contain a comment, starting with
     a '#' character.</p>
