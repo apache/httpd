@@ -457,7 +457,7 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive la mise en cache des URLs
 spécifiées</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDisable <var>chaîne-url</var> | <var>on</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -477,7 +477,9 @@ spécifiées</td></tr>
 
     <div class="example"><h3>Exemple</h3><p><code>
       &lt;Location /foo&gt;<br />
+      <span class="indent">
         CacheDisable on<br />
+      </span>
       &lt;/Location&gt;<br />
     </code></p></div>
 
@@ -496,8 +498,9 @@ Apache</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la mise en cache des URLs spécifiées en utilisant le
 gestionnaire de stockage précisé</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheEnable <var>type de cache</var> <var>chaîne URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheEnable <var>type de cache</var> [<var>chaîne
+URL</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
@@ -505,10 +508,10 @@ gestionnaire de stockage précisé</td></tr>
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> de mettre en cache l'URL précisée par
     <var>chaîne URL</var>, ainsi que les URLs de niveaux inférieurs. Le
     gestionnaire de stockage du cache est spécifié à l'aide de
-    l'argument <var>type de cache</var>. Si la directive
-    <code class="directive">CacheEnable</code> est située à l'intérieur d'une
-    section <code class="directive">&lt;Location&gt;</code>, le paramètre
-    <var>url-string</var> devient optionnel. Si <var>type de cache</var>
+    l'argument <var>type de cache</var>. La directive
+    <code class="directive">CacheEnable</code> peut être placée à l'intérieur d'une
+    section <code class="directive">&lt;Location&gt;</code> ou <code class="directive">&lt;LocationMatch&gt;</code> pour indiquer que le
+    contenu considéré peut être mis en cache. Si <var>type de cache</var>
     a pour valeur <code>disk</code>, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
     utilisera le gestionnaire de stockage sur disque implémenté par
     <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code>.</p>
@@ -520,7 +523,10 @@ gestionnaire de stockage précisé</td></tr>
     L'ordre dans lequel les gestionnaires de stockage sont lancés est
     déterminé par l'ordre dans lequel apparaissent les directives
     <code class="directive">CacheEnable</code> dans le fichier de
-    configuration.</p>
+    configuration. Les directives <code class="directive">CacheEnable</code>
+    situées à l'intérieur de sections <code class="directive">&lt;Location&gt;</code> ou <code class="directive">&lt;LocationMatch&gt;</code> sont traitées avant les
+    directives <code class="directive">CacheEnable</code> définies au niveau
+    global.</p>
 
     <p>En fonctionnement du type serveur mandataire direct, <var>chaîne
     URL</var> peut aussi être utilisé pour spécifier des sites distants
@@ -528,6 +534,18 @@ gestionnaire de stockage précisé</td></tr>
     être activée.</p>
 
     <div class="example"><p><code>
+      # Mise en cache de contenu<br />
+      &lt;Location /foo&gt;<br />
+      <span class="indent">
+        CacheEnable disk<br />
+      </span>
+      &lt;/Location&gt;<br /><br />
+      # Mise en cache via une expression rationnelle<br />
+      &lt;LocationMatch foo$&gt;<br />
+      <span class="indent">
+        CacheEnable disk<br />
+      </span>
+      &lt;/LocationMatch&gt;<br /><br />
       # Mise en cache des URLs mandatées<br />
       CacheEnable  disk  /<br /><br />
       # Mise en cache des URLs FTP mandatées<br />
