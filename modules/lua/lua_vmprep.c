@@ -368,7 +368,7 @@ static apr_status_t vm_destruct(void *vm, void *params, apr_pool_t *pool)
     return APR_SUCCESS;
 }
 
-static apr_status_t vm_release(lua_State* vm)
+static apr_status_t vm_release(void *vm)
 {
     apr_reslist_t* reslist;
     lua_pushlightuserdata(vm,vm);
@@ -391,7 +391,8 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
     if (spec->scope == APL_SCOPE_SERVER) {
         apr_reslist_t *reslist;
 
-        if (apr_pool_userdata_get(&reslist,"mod_lua",spec->pool)==APR_SUCCESS) {
+        if (apr_pool_userdata_get((void **)&reslist,
+                                  "mod_lua", spec->pool) == APR_SUCCESS) {
             if(reslist==NULL) {
                 if(apr_reslist_create(&reslist, 
                     spec->vm_server_pool_min, 
@@ -404,23 +405,25 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                     spec->pool)!=APR_SUCCESS)
                     return NULL;
 
-                apr_pool_userdata_set(reslist, "mod_lua", vm_reslist_destroy, spec->pool);
+                apr_pool_userdata_set(reslist, "mod_lua",
+                                      vm_reslist_destroy, spec->pool);
             }
-            apr_reslist_acquire(reslist, &L);
+            apr_reslist_acquire(reslist, (void **)&L);
             lua_pushlightuserdata(L, L);
             lua_pushlightuserdata(L, reslist);
             lua_rawset(L,LUA_REGISTRYINDEX);
-            apr_pool_userdata_set(L, spec->file, vm_release, lifecycle_pool);
+            apr_pool_userdata_set(L, spec->file, &vm_release, lifecycle_pool);
         }
     } else {
-        if (apr_pool_userdata_get((void **) &L, spec->file, lifecycle_pool)==APR_SUCCESS) {
+        if (apr_pool_userdata_get((void **)&L, spec->file,
+                                  lifecycle_pool) == APR_SUCCESS) {
 
             if(L==NULL) {
                 ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
                     "creating lua_State with file %s", spec->file);
                 /* not available, so create */
 
-                if(!vm_construct(&L, spec, lifecycle_pool))
+                if(!vm_construct((void **)&L, spec, lifecycle_pool))
                     apr_pool_userdata_set(L, spec->file, &cleanup_lua, lifecycle_pool);
             }
         }
