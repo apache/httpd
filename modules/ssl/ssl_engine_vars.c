@@ -59,7 +59,7 @@ static int ssl_is_https(conn_rec *c)
     return sslconn && sslconn->ssl;
 }
 
-static const char var_interface[] = "mod_ssl/" MOD_SSL_VERSION;
+static const char var_interface[] = "mod_ssl/" AP_SERVER_BASEREVISION;
 static char var_library_interface[] = SSL_LIBRARY_TEXT;
 static char *var_library = NULL;
 
