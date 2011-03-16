@@ -288,7 +288,7 @@
        code will remain compatible with HTTPD 2.0 and 2.2.</p>
 
     <p>Consider the following changes to take advantage of the new
-       <code>APLOG_TRACE1..8</code> log levels:
+       <code>APLOG_TRACE1..8</code> log levels:</p>
        <ul>
          <li>Check current use of <code>APLOG_DEBUG</code> and
          consider if one of the <code>APLOG_TRACEn</code> levels is
@@ -301,7 +301,7 @@
          configured log level, use the <code>APLOGtrace<em>n</em></code>
          and <code>APLOGrtrace<em>n</em></code> macros to first check
          if tracing is enabled.</li>
-       </ul></p>
+       </ul>
 
     <p>Modules sometimes add process id and/or thread id to their log
        messages.  These ids are now logged by default, so it may not
@@ -413,6 +413,7 @@
 
   <h3><a name="upgrading_newfeatures" id="upgrading_newfeatures">Does your module...</a></h3>
     
+    <dl>
     <dt>Parse query args</dt>
     <dd>Consider if <code>ap_args_to_table()</code> would be
     helpful.</dd>
@@ -427,6 +428,7 @@
 
     <dt>Implement cleanups which clear pointer variables</dt>
     <dd>Use <code>ap_pool_cleanup_set_null()</code>.</dd>
+    </dl>
   
 
 </div></div>
