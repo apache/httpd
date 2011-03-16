@@ -168,7 +168,7 @@ typedef struct {
     int bufbytes;
 } cgid_server_conf;
 
-#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS) 
+#if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS) 
 typedef struct { 
 #ifdef RLIMIT_CPU
     int    limit_cpu_set;
@@ -203,7 +203,8 @@ typedef struct {
     apr_size_t uri_len;
     apr_size_t args_len;
     int loglevel; /* to stuff in server_rec */
-#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+
+#if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
     cgid_rlimit_t limits;
 #endif
 } cgid_req_t;
@@ -459,7 +460,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
     *env = environ;
 
-#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+#if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
     if ((stat = sock_read(fd, &(req->limits), sizeof(cgid_rlimit_t))) != APR_SUCCESS)
          return stat;
 #endif
@@ -557,7 +558,7 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     }
 #endif
 
-#if defined (RLIMIT_CPU) || defined (RLMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+#if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
     if ( (stat = sock_write(fd, &(req.limits), sizeof(cgid_rlimit_t))) != APR_SUCCESS)
         return stat;
 #endif
