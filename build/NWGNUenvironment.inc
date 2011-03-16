@@ -134,16 +134,21 @@ WIN_CC	= mwcc
 AWK	= awk
 SORT	= sort
 
+# Setup distribution tools
+ZIP	= zip -qr9
+7ZA	= 7za >NUL a
+
 #
 # Declare Command and tool macros here
 #
 
 ifeq ($(findstring /sh,$(SHELL)),/sh)
 DEL	= rm -f $1
-RMDIR	= rm -rf $1
+RMDIR	= rm -fr $1
 MKDIR	= mkdir -p $1
-COPY	= -cp -av $1 $2
-COPYR	= -cp -ar $1 $2
+COPY	= -cp -afv $1 $2
+#COPYR	= -cp -afr $1/* $2
+COPYR	= -rsync -aC $1/* $2
 ECHONL	= echo ""
 DL	= '
 CAT	= cat
@@ -151,15 +156,14 @@ else
 ifeq "$(OS)" "Windows_NT"
 DEL	= $(shell if exist $(subst /,\,$1) del /q /f 2>NUL $(subst /,\,$1))
 RMDIR	= $(shell if exist $(subst /,\,$1)\NUL rd /q /s 2>NUL $(subst /,\,$1))
-ECHONL	= cmd /c echo.
 else
 DEL	= $(shell if exist $(subst /,\,$1) del 2>NUL $(subst /,\,$1))
 RMDIR	= $(shell if exist $(subst /,\,$1)\NUL deltree /y 2>NUL $(subst /,\,$1))
-ECHONL	= command /c echo.
 endif
+ECHONL	= $(ComSpec) /c echo.
 MKDIR	= $(shell if not exist $(subst /,\,$1)\NUL md 2>NUL $(subst /,\,$1))
 COPY	= -copy /y 2>NUL $(subst /,\,$1) $(subst /,\,$2)
-COPYR	= -xcopy /y /e 2>NUL $(subst /,\,$1) $(subst /,\,$2)
+COPYR	= -xcopy /q /y /e 2>NUL $(subst /,\,$1) $(subst /,\,$2)
 CAT	= type
 endif
 
