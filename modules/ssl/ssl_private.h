@@ -43,6 +43,7 @@
 #include "apr.h"
 #include "apr_strings.h"
 #define APR_WANT_STRFUNC
+#define APR_WANT_MEMFUNC
 #include "apr_want.h"
 #include "apr_tables.h"
 #include "apr_lib.h"
@@ -53,7 +54,9 @@
 #include "ap_socache.h"
 #include "mod_auth.h"
 
-#define MOD_SSL_VERSION AP_SERVER_BASEREVISION
+#ifdef APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 #ifndef FALSE
 #define FALSE 0
@@ -63,26 +66,9 @@
 #define TRUE !FALSE
 #endif
 
-#ifndef YY_NULL
-#define YY_NULL 0
-#endif
-
-#ifndef MIN
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#endif
-
 #ifndef BOOL
 #define BOOL unsigned int
 #endif
-
-#ifndef NULL
-#define NULL (void *)0
-#endif
-
-#ifndef NUL
-#define NUL '\0'
-#endif
-
 
 /* mod_ssl headers */
 #include "ssl_toolkit_compat.h"
