@@ -124,7 +124,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     if (!r->proxyreq && r->parsed_uri.path) {
         d = ap_get_module_config(r->per_dir_config, &core_module);
         if (d->allow_encoded_slashes) {
-            access_status = ap_unescape_url_keep2f(r->parsed_uri.path);
+            access_status = ap_unescape_url_keep2f(r->parsed_uri.path, d->decode_encoded_slashes);
         }
         else {
             access_status = ap_unescape_url(r->parsed_uri.path);

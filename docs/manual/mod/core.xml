@@ -269,26 +269,35 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
 <name>AllowEncodedSlashes</name>
 <description>Determines whether encoded path separators in URLs are allowed to
 be passed through</description>
-<syntax>AllowEncodedSlashes On|Off</syntax>
+<syntax>AllowEncodedSlashes On|Off|NoDecode</syntax>
 <default>AllowEncodedSlashes Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache httpd 2.0.46 and later</compatibility>
+<compatibility>Available in Apache httpd 2.0.46 and later.
+NoDecode option available in 2.3.12 and later.</compatibility>
 
 <usage>
     <p>The <directive>AllowEncodedSlashes</directive> directive allows URLs
     which contain encoded path separators (<code>%2F</code> for <code>/</code>
     and additionally <code>%5C</code> for <code>\</code> on according systems)
-    to be used. Normally such URLs are refused with a 404 (Not found) error.</p>
+    to be used in the path info.</p>
+
+    <p>With the default value, <code>Off</code>, such URLs are refused
+    with a 404 (Not found) error.</p>
+
+    <p>With the value <code>On</code>, such URLs are accepted, and encoded
+      slashes are decoded like all other encoded characters.</p>
+
+    <p>With the value <code>NoDecode</code>, such URLs are accepted, but
+      encoded slashes are not decoded but left in their encoded state.</p>
 
     <p>Turning <directive>AllowEncodedSlashes</directive> <code>On</code> is
     mostly useful when used in conjunction with <code>PATH_INFO</code>.</p>
 
     <note><title>Note</title>
-      <p>Allowing encoded slashes does <em>not</em> imply <em>decoding</em>.
-      Occurrences of <code>%2F</code> or <code>%5C</code> (<em>only</em> on
-      according systems) will be left as such in the otherwise decoded URL
-      string.</p>
+      <p>If encoded slashes are needed in path info, use of <code>NoDecode</code> is
+      strongly recommended as a security measure.  Allowing slashes
+      to be decoded could potentially allow unsafe paths.</p>
     </note>
 </usage>
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>

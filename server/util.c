@@ -79,8 +79,10 @@
  */
 #ifdef CASE_BLIND_FILESYSTEM
 #define IS_SLASH(s) ((s == '/') || (s == '\\'))
+#define SLASHES "/\\"
 #else
 #define IS_SLASH(s) (s == '/')
+#define SLASHES "/"
 #endif
 
 APLOG_USE_MODULE(core);
@@ -1514,16 +1516,18 @@ static int unescape_url(char *url, const char *forbid, const char *reserved)
 AP_DECLARE(int) ap_unescape_url(char *url)
 {
     /* Traditional */
-#ifdef CASE_BLIND_FILESYSTEM
-    return unescape_url(url, "/\\", NULL);
-#else
-    return unescape_url(url, "/", NULL);
-#endif
+    return unescape_url(url, SLASHES, NULL);
 }
-AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
+AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes)
 {
     /* AllowEncodedSlashes (corrected) */
-    return unescape_url(url, NULL, "/");
+    if (decode_slashes) {
+        /* no chars reserved */
+        return unescape_url(url, NULL, NULL);
+    } else {
+        /* reserve (do not decode) encoded slashes */
+        return unescape_url(url, NULL, SLASHES);
+    }
 }
 #ifdef NEW_APIS
 /* IFDEF these out until they've been thought through.
