@@ -540,6 +540,8 @@ typedef struct {
 
     /** per-dir log config */
     struct ap_logconf *log;
+
+    unsigned int decode_encoded_slashes : 1; /* whether to decode encoded slashes in URLs */
 } core_dir_config;
 
 /* macro to implement off by default behaviour */

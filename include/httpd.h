@@ -1496,7 +1496,7 @@ AP_DECLARE(int) ap_unescape_url(char *url);
  * @param url The url to unescape
  * @return 0 on success, non-zero otherwise
  */
-AP_DECLARE(int) ap_unescape_url_keep2f(char *url);
+AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes);
 
 /**
  * Convert all double slashes to single slashes

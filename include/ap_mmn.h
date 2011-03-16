@@ -306,6 +306,7 @@
                            util_ldap_state_t.connectionPoolTTL,
                            util_ldap_connection_t.freed, and
                            util_ldap_connection_t.rebind_pool. 
+ * 20110312.1 (2.3.12-dev) Add core_dir_config.decode_encoded_slashes.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -313,7 +314,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110312
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
