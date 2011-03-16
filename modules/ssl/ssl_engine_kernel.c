@@ -202,7 +202,7 @@ int ssl_hook_ReadReq(request_rec *r)
         if (rv != APR_SUCCESS || scope_id) {
             return HTTP_BAD_REQUEST;
         }
-        if (strcmp(host, servername)) {
+        if (strcasecmp(host, servername)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                         "Hostname %s provided via SNI and hostname %s provided"
                         " via HTTP are different", servername, host);

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) mod_ssl: Check SNI hostname against Host header case-insensitively.
+     PR 49491.  [Mayank Agrawal <magrawal.08 gmail.com>]
+
   *) mod_ldap: Add LDAPConnectionPoolTTL to give control over lifetime
      of bound backend LDAP connections.  PR47634 [Eric Covener]
    
