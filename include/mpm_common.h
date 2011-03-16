@@ -199,6 +199,19 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name);
 AP_DECLARE(gid_t) ap_gname2id(const char *name);
 #endif
 
+#ifndef HAVE_INITGROUPS
+/**
+ * The initgroups() function initializes the group access list by reading the
+ * group database /etc/group and using all groups of which user is a member.
+ * The additional group basegid is also added to the list. 
+ * @param name The user name - must be non-NULL
+ * @param basegid The basegid to add
+ * @return returns 0 on success
+ * @fn int initgroups(const char *name, gid_t basegid)
+ */
+int initgroups(const char *name, gid_t basegid);
+#endif
+
 typedef struct ap_pod_t ap_pod_t;
 
 struct ap_pod_t {

@@ -222,7 +222,7 @@ int initgroups(const char *name, gid_t basegid)
     return setgroups(index, groups);
 #endif
 }
-#endif /* def NEED_INITGROUPS */
+#endif /* def HAVE_INITGROUPS */
 
 /* standard mpm configuration handling */
 const char *ap_pid_fname = NULL;
