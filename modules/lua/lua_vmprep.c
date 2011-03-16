@@ -412,7 +412,7 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
             lua_pushlightuserdata(L, L);
             lua_pushlightuserdata(L, reslist);
             lua_rawset(L,LUA_REGISTRYINDEX);
-            apr_pool_userdata_set(L, spec->file, &vm_release, lifecycle_pool);
+            apr_pool_userdata_set(L, spec->file, vm_release, lifecycle_pool);
         }
     } else {
         if (apr_pool_userdata_get((void **)&L, spec->file,
@@ -420,11 +420,12 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
 
             if(L==NULL) {
                 ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
-                    "creating lua_State with file %s", spec->file);
+                              "creating lua_State with file %s", spec->file);
                 /* not available, so create */
 
                 if(!vm_construct((void **)&L, spec, lifecycle_pool))
-                    apr_pool_userdata_set(L, spec->file, &cleanup_lua, lifecycle_pool);
+                    apr_pool_userdata_set(L, spec->file, cleanup_lua,
+                                          lifecycle_pool);
             }
         }
     }
