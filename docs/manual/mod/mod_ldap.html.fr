@@ -507,6 +507,7 @@ valides.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Apache HTTP Server 2.3.12 and later</td></tr>
 </table><p>La documentation de cette directive
 	n'a pas encore t traduite. Veuillez vous reporter  la version
 	en langue anglaise.</p></div>
