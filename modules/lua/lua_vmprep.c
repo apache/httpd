@@ -395,14 +395,14 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                   "mod_lua", spec->pool) == APR_SUCCESS) {
             if(reslist==NULL) {
                 if(apr_reslist_create(&reslist, 
-                    spec->vm_server_pool_min, 
-                    spec->vm_server_pool_max,
-                    spec->vm_server_pool_max,
-                    0,
-                    vm_construct,
-                    vm_destruct,
-                    spec,
-                    spec->pool)!=APR_SUCCESS)
+                                      spec->vm_server_pool_min, 
+                                      spec->vm_server_pool_max,
+                                      spec->vm_server_pool_max,
+                                      0,
+                                      vm_construct,
+                                      vm_destruct,
+                                      spec,
+                                      spec->pool) != APR_SUCCESS)
                     return NULL;
 
                 apr_pool_userdata_set(reslist, "mod_lua",
