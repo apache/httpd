@@ -701,8 +701,8 @@ connection client certificates.</description>
 <description>Discard backend connections that have been sitting in the connection pool too long</description>
 <syntax>LDAPConnectionPoolTTL <var>n</var></syntax>
 <default>LDAPConnectionPoolTTL -1</default>
-<compatability>Apache HTTP Server 2.3.12 and later</compatability>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Apache HTTP Server 2.3.12 and later</compatibility>
 
 <usage>
     <p>Specifies the maximum age, in seconds, that a pooled LDAP connection can remain idle
