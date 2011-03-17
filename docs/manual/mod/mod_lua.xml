@@ -36,6 +36,10 @@ request processing</description>
 Include a link to <a href="http://www.lua.org/">the Lua website</a>.
 </p>
 
+<note><code>mod_lua</code> is still in experimental state.
+Until it is declared stable, usage and behavior may change
+at any time.</note>
+
 </summary>
 
 <section id="basicconf"><title>Basic Configuration</title>
