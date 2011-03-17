@@ -1295,6 +1295,10 @@ static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
         ap_log_set_writer_init(ap_buffered_log_writer_init);
         ap_log_set_writer(ap_buffered_log_writer);
     }
+    else {
+        ap_log_set_writer_init(ap_default_log_writer_init);
+        ap_log_set_writer(ap_default_log_writer);
+    }
     return NULL;
 }
 static const command_rec config_log_cmds[] =
@@ -1667,6 +1671,11 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "s", log_status, 1);
         log_pfn_register(p, "R", log_handler, 1);
     }
+
+    /* reset to default conditions */
+    ap_log_set_writer_init(ap_default_log_writer_init);
+    ap_log_set_writer(ap_default_log_writer);
+    buffered_logs = 0;
 
     return OK;
 }

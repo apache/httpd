@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) mod_log_config: Prevent segfault. PR 50861. [Torsten Förtsch
+     <torsten.foertsch gmx.net>]
+
   *) core: AllowEncodedSlashes new option NoDecode to allow encoded slashes
      in request URL path info but not decode them. Change behavior of option
      "On" to decode the encoded slashes as 2.0 and 2.2 do.  PR 35256,
