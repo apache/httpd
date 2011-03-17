@@ -1606,7 +1606,7 @@ static void test(void)
      * XXX: would be nice.
      */
     stats = calloc(requests, sizeof(struct data));
-    if (stats == NULL) {
+    if (stats == NULL || con == NULL) {
     	err("Cannot allocate memory for result statistics");
     }
 
