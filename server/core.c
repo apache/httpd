@@ -164,6 +164,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->enable_mmap = ENABLE_MMAP_UNSET;
     conf->enable_sendfile = ENABLE_SENDFILE_UNSET;
     conf->allow_encoded_slashes = 0;
+    conf->decode_encoded_slashes = 0;
 
     return (void *)conf;
 }
@@ -450,6 +451,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
 
     conf->allow_encoded_slashes = new->allow_encoded_slashes;
+    conf->decode_encoded_slashes = new->decode_encoded_slashes;
 
     return (void*)conf;
 }
@@ -2435,7 +2437,7 @@ static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-static const char *set_allow2f(cmd_parms *cmd, void *d_, int arg)
+static const char *set_allow2f(cmd_parms *cmd, void *d_, const char *arg)
 {
     core_dir_config *d = d_;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
@@ -2444,7 +2446,20 @@ static const char *set_allow2f(cmd_parms *cmd, void *d_, int arg)
         return err;
     }
 
-    d->allow_encoded_slashes = arg != 0;
+    if (0 == strcasecmp(arg, "on")) {
+        d->allow_encoded_slashes = 1;
+        d->decode_encoded_slashes = 1;
+    } else if (0 == strcasecmp(arg, "off")) {
+        d->allow_encoded_slashes = 0;
+        d->decode_encoded_slashes = 0;
+    } else if (0 == strcasecmp(arg, "nodecode")) {
+        d->allow_encoded_slashes = 1;
+        d->decode_encoded_slashes = 0;
+    } else {
+        return apr_pstrcat(cmd->pool,
+                           cmd->cmd->name, " must be On, Off, or NoDecode",
+                           NULL);
+    }
     return NULL;
 }
 
@@ -3437,7 +3452,7 @@ AP_INIT_TAKE1("SetInputFilter", ap_set_string_slot,
 AP_INIT_ITERATE2("AddOutputFilterByType", add_ct_output_filters,
        (void *)APR_OFFSETOF(core_dir_config, ct_output_filters), OR_FILEINFO,
      "output filter name followed by one or more content-types"),
-AP_INIT_FLAG("AllowEncodedSlashes", set_allow2f, NULL, RSRC_CONF,
+AP_INIT_TAKE1("AllowEncodedSlashes", set_allow2f, NULL, RSRC_CONF,
              "Allow URLs containing '/' encoded as '%2F'"),
 
 /*
