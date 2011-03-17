@@ -22,6 +22,7 @@ Patches considered for backport are noted in their branches' STATUS:
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
 
 
+
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
@@ -60,6 +61,12 @@ Contributors looking for a mission:
 CURRENT RELEASE NOTES:
 
 
+GA PLAN:
+
+ Jim proposes another beta release the end of March, another in
+ April with a goal towards GA in May (at the latest). Jim volunteers
+ to RM these.
+
 RELEASE SHOWSTOPPERS:
 
   FOR GA:
@@ -73,14 +80,10 @@ RELEASE SHOWSTOPPERS:
   * Review the example configuration. It should be based on current best
     practices and not use deprecated features.
 
-  FOR BETA:
-
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
       jim sez: Then we just ship with those... mark any others as
                 experimental, pgollucci +1 jim
-
-  FOR NEXT ALPHA:
 
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
@@ -93,6 +96,8 @@ RELEASE SHOWSTOPPERS:
   * mod_ssl's proxy support only allows one proxy client certificate per
     frontend virtual host. Lift this restriction.
     jim sez: Why a blocker?, pgollucci +1 jim
+
+  FOR BETA:
 
 
   OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.2 BUT OBVIOUSLY WEREN'T:
