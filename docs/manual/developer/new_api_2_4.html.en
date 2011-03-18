@@ -278,14 +278,32 @@
     </code></p></div>
     <p>The number of parameters of the <code>ap_log_*</code> functions and the
        definition of <code>APLOG_MARK</code> has changed. Normally, the change
-       is completely transparent. However, if a module implements wrapper
-       functions for <code>ap_log_*</code> and uses <code>APLOG_MARK</code>
-       when calling these wrappers, some adjustments are necessary.
-       The easiest way is for the module to define and use a different macro
-       that expands to the parameters required by the log wrapper functions.
-       <code>APLOG_MARK</code> should only be used when calling
-       <code>ap_log_*</code> without additional wrappers. In this way, the
-       code will remain compatible with HTTPD 2.0 and 2.2.</p>
+       is completely transparent. However, changes are required if a
+       module uses <code>APLOG_MARK</code> as a parameter to its own functions
+       or if a module calls <code>ap_log_*</code> without passing
+       <code>APLOG_MARK</code>.  A module which uses wrappers
+       around <code>ap_log_*</code> typically uses both of these constructs.</p>
+
+    <p>The easiest way to change code which passes <code>APLOG_MARK</code> to
+       its own functions is to define and use a different macro that expands to
+       the parameters required by those functions, as <code>APLOG_MARK</code>
+       should only be used when calling <code>ap_log_*</code>
+       directly.  In this way, the code will remain compatible with HTTPD 2.0
+       and 2.2.</p>
+
+    <p>Code which calls <code>ap_log_*</code> without passing 
+       <code>APLOG_MARK</code> will necessarily differ between 2.4 and earlier
+       releases, as 2.4 requires a new third argument,
+       <code>APLOG_MODULE_INDEX</code>.</p>
+
+    <div class="example"><p><code>
+       /* code for httpd 2.0/2.2 */<br />
+       ap_log_perror(file, line, APLOG_ERR, 0, p, "Failed to allocate dynamic lock structure");<br />
+       <br />
+       /* code for httpd 2.4 */<br />
+       ap_log_perror(file, line, APLOG_MODULE_INDEX, APLOG_ERR, 0, p, "Failed to allocate dynamic lock structure");<br />
+       <br />
+    </code></p></div>
 
     <p>A <code>server_rec</code> pointer must be passed to 
        <code>ap_log_error()</code> when called after startup.  This
