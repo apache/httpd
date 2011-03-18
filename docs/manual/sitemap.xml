@@ -80,12 +80,16 @@ Documentation</a>.</p>
 <page separate="yes" href="rewrite/">Overview</page>
 <page href="mod/mod_rewrite.html">mod_rewrite reference
 documentation</page>
-<page href="rewrite/rewrite_intro.html">Introduction</page>
-<page href="rewrite/rewrite_flags.html">Flags</page>
-<page href="rewrite/rewrite_tech.html">Technical details</page>
-<page href="rewrite/rewrite_guide.html">Rewrite Guide - useful examples</page>
-<page href="rewrite/rewrite_guide_advanced.html">Advanced Rewrite Guide - more
-useful examples</page>
+<page href="rewrite/intro.html">Introduction</page>
+<page href="rewrite/flags.html">Flags</page>
+<page href="rewrite/tech.html">Technical details</page>
+<page href="remapping.html">Using mod_rewrite for redirection and remapping of URLs</page>
+<page href="access.html">Using mod_rewrite to control access</page>
+<page href="vhosts.html">Dynamic virtual hosts with mod_rewrite</page>
+<page href="proxy.html">Dynamic proxying with mod_rewrite</page>
+<page href="rewritemap.html">Using RewriteMap</page>
+<page href="advanced.html">Advanced techniques and tricks</page>
+<page href="avoid.html">When <strong>NOT</strong> to use mod_rewrite</page>
 </category>
 
 <category id="ssl">
