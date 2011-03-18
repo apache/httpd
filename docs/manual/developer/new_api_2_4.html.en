@@ -287,6 +287,18 @@
        <code>ap_log_*</code> without additional wrappers. In this way, the
        code will remain compatible with HTTPD 2.0 and 2.2.</p>
 
+    <p>A <code>server_rec</code> pointer must be passed to 
+       <code>ap_log_error()</code> when called after startup.  This
+       was always appropriate, but there are even more limitations with
+       a <code>NULL</code> <code>server_rec</code> in 2.4 than in
+       previous releases.  Beginning with 2.3.12, the global variable
+       <code>ap_server_conf</code> can always be used as
+       the <code>server_rec</code> parameter, as it will be
+       <code>NULL</code> only when it is valid to pass <code>NULL</code>
+       to <code>ap_log_error()</code>.  <code>ap_server_conf</code>
+       should be used only when a more appropriate <code>server_rec</code>
+       is not available.</p> 
+
     <p>Consider the following changes to take advantage of the new
        <code>APLOG_TRACE1..8</code> log levels:</p>
        <ul>
