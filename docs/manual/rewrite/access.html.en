@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Using mod_rewrite to control access - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Using mod_rewrite to control access</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/rewrite/access.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+
+<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
+how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to control access to
+various resources, and other related techniques.
+This includes many examples of common uses of mod_rewrite,
+including detailed descriptions of how each works.</p>
+
+<div class="warning">Note that many of these examples won't work unchanged in your
+particular server configuration, so it's important that you understand
+them, rather than merely cutting and pasting the examples into your
+configuration.</div>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Forbidding Image "Hotlinking"</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocking of Robots</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Denying Hosts in a Blacklist</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Referer-based Deflector</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques and tricks</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="blocked-inline-images" id="blocked-inline-images">Forbidding Image "Hotlinking"</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>The following technique forbids the practice of other sites
+          including your images inline in their pages. This practice is
+          often referred to as "hotlinking", and results in
+          your bandwidth being used to serve content for someone else's
+          site.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>This technique relies on the value of the
+          <code>HTTP_REFERER</code> variable, which is optional. As
+          such, it's possible for some people to circumvent this
+          limitation. However, most users will experience the failed
+          request, which should, over time, result in the image being
+          removed from that other site.</p>
+          <p>There are several ways that you can handle this
+          situation.</p>
+
+    <p>In this first example, we simply deny the request, if it didn't
+    initiate from a page on our site. For the purpose of this example,
+    we assume that our site is <code>www.example.com</code>.</p>
+
+<div class="example"><p><code>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
+</code></p></div>
+
+    <p>In this second example, instead of failing the request, we display
+    an alternate image instead.</p>
+
+<div class="example"><p><code>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
+</code></p></div>
+
+    <p>In the third example, we redirect the request to an image on some
+    other site.</p>
+
+<div class="example"><p><code>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />
+RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.example.com/image.gif   [R,NC]
+</code></p></div>
+
+    <p>Of these techniques, the last two tend to be the most effective
+    in getting people to stop hotlinking your images, because they will
+    simply not see the image that they expected to see.</p>
+
+        </dd>
+
+        <dt>Discussion:</dt>
+
+        <dd>
+        <p>If all you wish to do is deny access to the resource, rather
+        than redirecting that request elsewhere, this can be
+        accomplished without the use of mod_rewrite:</p>
+
+        <div class="example"><p><code>
+        SetEnvIf Referer example\.com localreferer<br />
+        &lt;FilesMatch \.(jpg|png|gif)$&gt;<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from env=localreferer<br />
+        &lt;/FilesMatch&gt;
+        </code></p></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="blocking-of-robots" id="blocking-of-robots">Blocking of Robots</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+        <p>
+        In this recipe, we discuss how to block persistent requests from
+        a particular robot, or user agent.</p>
+
+        <p>The standard for robot exclusion defines a file,
+        <code>/robots.txt</code> that specifies those portions of your
+        website where you which to exclude robots. However, some robots
+        do not honor these files.
+        </p>
+
+        <p>Note that there are methods of accomplishing this which do
+        not use mod_rewrite. Note also that any technique that relies on
+        the clients <code>USER_AGENT</code> string can be circumvented
+        very easily, since that string can be changed.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+        <p>We use a ruleset that specifies the directory to be
+        protected, and the client <code>USER_AGENT</code> that
+        identifies the malicious or persistent robot.</p>
+
+        <p>In this example, we are blocking a robot called
+        <code>NameOfBadRobot</code> from a location
+        <code>/secret/files</code>. You may also specify an IP address
+        range, if you are trying to block that user agent only from the
+        particular source.</p>
+
+<div class="example"><p><code>
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong><br />
+RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong><br />
+RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
+</code></p></div>
+        </dd>
+
+      <dt>Discussion:</dt>
+
+      <dd>
+      <p>
+        Rather than using mod_rewrite for this, you can accomplish the
+        same end using alternate means, as illustrated here:
+      </p>
+      <div class="example"><p><code>
+      SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway<br />
+      &lt;Location /secret/files&gt;<br />
+      Order allow,deny<br />
+      Allow from all<br />
+      Deny from env=goaway<br />
+      &lt;/Location&gt;
+      </code></p></div>
+      <p>
+      As noted above, this technique is trivial to circumvent, by simply
+      modifying the <code>USER_AGENT</code> request header. If you
+      are experiencing a sustained attack, you should consider blocking
+      it at a higher level, such as at your firewall.
+      </p>
+
+      </dd>
+
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="host-deny" id="host-deny">Denying Hosts in a Blacklist</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to maintain a blacklist of hosts, rather like
+      <code>hosts.deny</code>, and have those hosts blocked from
+      accessing our server.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+<div class="example"><p><code>
+RewriteEngine on<br />
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny<br />
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]<br />
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND<br />
+RewriteRule   ^  -  [F]
+</code></p></div>
+
+<div class="example"><p><code>
+##<br />
+##  hosts.deny<br />
+##<br />
+##  ATTENTION! This is a map, not a list, even when we treat it as such.<br />
+##             mod_rewrite parses it for key/value pairs, so at least a<br />
+##             dummy value "-" must be present for each entry.<br />
+##<br />
+<br />
+193.102.180.41 -<br />
+bsdti1.sdm.de  -<br />
+192.76.162.40  -<br />
+</code></p></div>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>
+    <p>
+    The second RewriteCond assumes that you have HostNameLookups turned
+    on, so that client IP addresses will be resolved. If that's not the
+    case, you should drop the second RewriteCond, and drop the
+    <code>[OR]</code> flag from the first RewriteCond.
+    </p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="referer-deflector" id="referer-deflector">Referer-based Deflector</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Redirect requests based on the Referer from which the request
+      came, with different targets per Referer.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+  <p>The following ruleset uses a map file to associate each Referer
+  with a redirection target.</p>
+
+<div class="example"><p><code>
+RewriteMap  deflector txt:/path/to/deflector.map<br />
+<br />
+RewriteCond %{HTTP_REFERER} !=""<br />
+RewriteCond ${deflector:%{HTTP_REFERER}} =-<br />
+RewriteRule ^ %{HTTP_REFERER} [R,L]<br />
+<br />
+RewriteCond %{HTTP_REFERER} !=""<br />
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND<br />
+RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
+</code></p></div>
+
+      <p>The map file lists redirection targets for each referer, or, if
+      we just wish to redirect back to where they came from, a "-" is
+      placed in the map:</p>
+
+<div class="example"><p><code>
+##<br />
+##  deflector.map<br />
+##<br />
+<br />
+http://badguys.example.com/bad/index.html    -<br />
+http://badguys.example.com/bad/index2.html   -<br />
+http://badguys.example.com/bad/index3.html   http://somewhere.example.com/
+</code></p></div>
+
+    </dd>
+  </dl>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/rewrite/access.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

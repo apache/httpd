@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Détails techniques sur le module Apache mod_rewrite - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Détails techniques sur le module Apache mod_rewrite</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+
+<p>Ce document passe en revue certains détails techniques à propos du
+module mod_rewrite et de la mise en correspondance des URLs</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Internal">Fonctionnement interne</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">Phases de l'API</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Traitement du jeu de règles</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
+correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées et astuces</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Internal" id="Internal">Fonctionnement interne</a></h2>
+
+      <p>Le fonctionnement interne de ce module est très complexe, mais
+      il est nécessaire de l'expliquer, même à l'utilisateur "standard",
+      afin d'éviter les erreurs courantes et de pouvoir exploiter toutes
+      ses fonctionnalités.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="InternalAPI" id="InternalAPI">Phases de l'API</a></h2>
+
+      <p>Il faut tout d'abord bien comprendre que le traitement d'une
+      requête HTTP par Apache s'effectue en plusieurs phases. L'API
+      d'Apache fournit un point d'accroche (hook) pour chacune de ces
+      phases. Mod_rewrite utilise deux de ces hooks : le hook de
+      conversion des URLs en noms de fichiers qui est utilisé quand la
+      requête HTTP a été lue mais avant le démarrage de tout processus
+      d'autorisation, et le hook "Fixup" qui est déclenché après les
+      phases d'autorisation et après la lecture des fichiers de
+      configuration niveau répertoire (<code>.htaccess</code>), mais
+      avant que le gestionnaire de contenu soit activé.</p>
+
+      <p>Donc, lorsqu'une requête arrive et quand Apache a déterminé le
+      serveur correspondant (ou le serveur virtuel), le moteur de
+      réécriture commence le traitement de toutes les directives de
+      mod_rewrite de la configuration du serveur principal dans la phase
+      de conversion URL vers nom de fichier. Une fois ces étapes
+      franchies, lorsque les repertoires de données finaux ont été
+      trouvés, les directives de configuration de mod_rewrite au niveau
+      répertoire sont éxécutées dans la phase Fixup. Dans les deux cas,
+      mod_rewrite réécrit les URLs soit en nouvelles URLs, soit en noms
+      de fichiers, bien que la distinction entre les deux ne soit pas
+      évidente. Cette utilisation de l'API n'était pas sensée s'opérer
+      de cette manière lorsque l'API fut conçue, mais depuis Apache 1.x,
+      c'est le seul mode opératoire possible pour mod_rewrite. Afin de
+      rendre les choses plus claires, souvenez-vous de ces deux points :</p>
+
+      <ol>
+        <li>Bien que mod_rewrite réécrive les URLs en URLs, les URLs en
+	noms de fichiers et même des noms de fichiers en d'autres noms
+	de fichiers, l'API ne propose actuellement qu'un hook URL vers
+	nom de fichier. Les deux hooks manquants seront ajoutés dans
+	Apache à partir de la version 2.0 afin de rendre le processus
+	plus clair. Mais ce point ne présente pas d'inconvénient pour
+	l'utilisateur, il s'agit simplement d'un fait que vous devez
+	garder à l'esprit : Apache en fait plus avec le hook URL vers
+	nom de fichier que l'API n'a la prétention d'en faire.</li>
+
+        <li>
+          Paradoxalement, mod_rewrite permet la manipulation d'URLs dans
+	  un contexte de répertoire, <em>c'est à dire</em> dans les
+	  fichiers <code>.htaccess</code>, bien que ces derniers
+	  soient traités bien longtemps après que les URLs n'aient été
+	  traduites en noms de fichiers. Les choses doivent se dérouler
+	  ainsi car les fichiers <code>.htaccess</code> résident dans le
+	  système de fichiers, et le traitement a déjà atteint
+	  cette étape. Autrement dit, en accord avec les phases de
+	  l'API, à ce point du traitement, il est trop tard pour
+	  effectuer des manipulations d'URLs. Pour résoudre ce problème
+	  d'antériorité, mod_rewrite utilise une astuce : pour effectuer
+	  une manipulation URL/nom de fichier dans un contexte de
+	  répertoire, mod_rewrite réécrit tout d'abord le nom de fichier
+	  en son URL d'origine (ce qui est normalement impossible, mais
+	  voir ci-dessous l'astuce utilisée par la directive
+	  <code>RewriteBase</code> pour y parvenir), puis
+	  initialise une nouvelle sous-requête interne avec la nouvelle
+	  URL ; ce qui a pour effet de redémarrer le processus des
+	  phases de l'API.
+
+          <p>Encore une fois, mod_rewrite fait tout ce qui est en son
+	  pouvoir pour rendre la complexité de cette étape complètement
+	  transparente à l'utilisateur, mais vous devez garder ceci à
+	  l'esprit : alors que les manipulations d'URLs dans le contexte
+	  du serveur sont vraiment rapides et efficaces, les réécritures
+	  dans un contexte de répertoire sont lentes et inefficaces à
+	  cause du problème d'antériorité précité. Cependant, c'est la
+	  seule manière dont mod_rewrite peut proposer des manipulations
+	  d'URLs (limitées à une branche du système de fichiers) à
+	  l'utilisateur standard.</p>
+        </li>
+      </ol>
+
+      <p>Ne perdez pas de vue ces deux points!</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="InternalRuleset" id="InternalRuleset">Traitement du jeu de règles</a></h2>
+
+      <p>Maintenant, quand mod_rewrite se lance dans ces deux phases de
+      l'API, il lit le jeu de règles configurées depuis la structure
+      contenant sa configuration (qui a été elle-même créée soit au
+      démarrage d'Apache pour le contexte du serveur, soit lors du
+      parcours des répertoires par le noyau d'Apache pour le contexte de
+      répertoire). Puis le moteur de réécriture est démarré avec le jeu
+      de règles contenu (une ou plusieurs règles associées à leurs
+      conditions). En lui-même, le mode opératoire du moteur de
+      réécriture d'URLs est exactement le même dans les deux contextes
+      de configuration. Seul le traitement du résultat final diffère.</p>
+
+      <p>L'ordre dans lequel les règles sont définies est important car
+      le moteur de réécriture les traite selon une chronologie
+      particulière (et pas très évidente). Le principe est le suivant :
+      le moteur de réécriture traite les règles (les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) les unes
+      à la suite des autres, et lorsqu'une règle s'applique, il parcourt
+      les éventuelles conditions (directives
+      <code>RewriteCond</code>directives) associées.
+      Pour des raisons historiques, les
+      conditions précèdent les règles, si bien que le déroulement du
+      contrôle est un peu compliqué. Voir la figure 1 pour plus de
+      détails.</p>
+<p class="figure">
+      <img src="../images/rewrite_rule_flow.png" alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
+      <dfn>Figure 1:</dfn>Déroulement du contrôle à travers le jeu de
+      règles de réécriture
+</p>
+      <p>Comme vous pouvez le voir, l'URL est tout d'abord comparée au
+      <em>Modèle</em> de chaque règle. Lorsqu'une règle ne s'applique
+      pas, mod_rewrite stoppe immédiatement le traitement de cette règle
+      et passe à la règle suivante. Si l'URL correspond au
+      <em>Modèle</em>, mod_rewrite recherche la présence de conditions
+      correspondantes. S'il n'y en a pas, mod_rewrite remplace
+      simplement l'URL par une chaîne élaborée à partir de la chaîne de
+      <em>Substitution</em>, puis passe à la règle suivante. Si des
+      conditions sont présentes, mod_rewrite lance un bouclage
+      secondaire afin de les traiter selon l'ordre dans lequel elles
+      sont définies. La logique de traitement des conditions est
+      différente : on ne compare pas l'URL à un modèle. Une chaîne de
+      test <em>TestString</em> est tout d'abord élaborée en développant
+      des variables, des références arrières, des recherches dans des
+      tables de correspondances, etc..., puis cette chaîne de test est
+      comparée au modèle de condition <em>CondPattern</em>. Si le modèle
+      ne correspond pas, les autres conditions du jeu ne sont pas
+      examinées et la règle correspondante ne s'applique pas. Si le
+      modèle correspond, la condition suivante est examinée et ainsi de
+      suite jusqu'à la dernière condition. Si toutes les conditions sont
+      satisfaites, le traitement de la règle en cours se poursuit avec
+      le remplacement de l'URL par la chaîne de <em>Substitution</em>.</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>
