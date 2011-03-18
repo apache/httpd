@@ -217,7 +217,7 @@ FILES_nlm_objs := $(patsubst %.c,$(OBJDIR)/%.o,$(wildcard *.c))
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	libcpre.o \
+	$(PRELUDE) \
 	$(EOLIST)
 
 ifneq "$(USE_NTLS)" "1"

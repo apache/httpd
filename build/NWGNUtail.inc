@@ -209,8 +209,6 @@ endif
 # Rules to build nlms.
 #
 
-vpath libcpre.o $(NOVI)
-
 # If we only have one target NLM then build it
 ifeq "$(words $(strip $(TARGET_nlm)))" "1"
 

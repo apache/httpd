@@ -297,7 +297,7 @@ endif
 #
 FILES_nlm_libs = \
 	$(PCRELIB) \
-	libcpre.o \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
