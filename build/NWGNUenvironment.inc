@@ -320,24 +320,26 @@ endif
 
 endif
 
+INSTALLBASE := $(INSTALL)/$(BASEDIR)
+
 INSTDEVDIRS := \
 	$(INSTDIRS) \
-	$(INSTALL)/$(BASEDIR)/include \
-	$(INSTALL)/$(BASEDIR)/lib \
+	$(INSTALLBASE)/include \
+	$(INSTALLBASE)/lib \
 
 INSTDIRS += \
 	$(INSTALL)/$(BASEDIR) \
-	$(INSTALL)/$(BASEDIR)/bin \
-	$(INSTALL)/$(BASEDIR)/cgi-bin \
-	$(INSTALL)/$(BASEDIR)/conf \
-	$(INSTALL)/$(BASEDIR)/conf/extra \
-	$(INSTALL)/$(BASEDIR)/error \
-	$(INSTALL)/$(BASEDIR)/htdocs \
-	$(INSTALL)/$(BASEDIR)/icons \
-	$(INSTALL)/$(BASEDIR)/logs \
-	$(INSTALL)/$(BASEDIR)/man \
-	$(INSTALL)/$(BASEDIR)/manual \
-	$(INSTALL)/$(BASEDIR)/modules \
+	$(INSTALLBASE)/bin \
+	$(INSTALLBASE)/cgi-bin \
+	$(INSTALLBASE)/conf \
+	$(INSTALLBASE)/conf/extra \
+	$(INSTALLBASE)/error \
+	$(INSTALLBASE)/htdocs \
+	$(INSTALLBASE)/icons \
+	$(INSTALLBASE)/logs \
+	$(INSTALLBASE)/man \
+	$(INSTALLBASE)/manual \
+	$(INSTALLBASE)/modules \
 
 #
 # Common directories
