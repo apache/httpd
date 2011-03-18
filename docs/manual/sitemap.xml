@@ -83,13 +83,13 @@ documentation</page>
 <page href="rewrite/intro.html">Introduction</page>
 <page href="rewrite/flags.html">Flags</page>
 <page href="rewrite/tech.html">Technical details</page>
-<page href="remapping.html">Using mod_rewrite for redirection and remapping of URLs</page>
-<page href="access.html">Using mod_rewrite to control access</page>
-<page href="vhosts.html">Dynamic virtual hosts with mod_rewrite</page>
-<page href="proxy.html">Dynamic proxying with mod_rewrite</page>
-<page href="rewritemap.html">Using RewriteMap</page>
-<page href="advanced.html">Advanced techniques and tricks</page>
-<page href="avoid.html">When <strong>NOT</strong> to use mod_rewrite</page>
+<page href="rewrite/remapping.html">Using mod_rewrite for redirection and remapping of URLs</page>
+<page href="rewrite/access.html">Using mod_rewrite to control access</page>
+<page href="rewrite/vhosts.html">Dynamic virtual hosts with mod_rewrite</page>
+<page href="rewrite/proxy.html">Dynamic proxying with mod_rewrite</page>
+<page href="rewrite/rewritemap.html">Using RewriteMap</page>
+<page href="rewrite/advanced.html">Advanced techniques and tricks</page>
+<page href="rewrite/avoid.html">When <strong>NOT</strong> to use mod_rewrite</page>
 </category>
 
 <category id="ssl">
