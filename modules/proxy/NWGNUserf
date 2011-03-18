@@ -232,7 +232,7 @@ endif
 FILES_nlm_libs = \
 	$(OSSLLIB)/crypto.lib \
 	$(OSSLLIB)/ssl.lib \
-	libcpre.o \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
