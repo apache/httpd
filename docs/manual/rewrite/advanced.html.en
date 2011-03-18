@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Advanced Techniques with mod_rewrite - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Advanced Techniques with mod_rewrite</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/rewrite/avoid.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+
+<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It provides 
+a few advanced techniques and tricks using mod_rewrite.</p>
+
+<div class="warning">Note that many of these examples won't work unchanged in your
+particular server configuration, so it's important that you understand
+them, rather than merely cutting and pasting the examples into your
+configuration.</div>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#sharding">URL-based sharding accross multiple backends</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Load Balancing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#autorefresh">Document With Autorefresh</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Userdirs</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvvars">Set Environment Variables Based On URL Parts</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="sharding" id="sharding">URL-based sharding accross multiple backends</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>A common technique for distributing the burden of 
+      server load or storage space is called "sharding". 
+      When using this method, a front-end server will use the
+      url to consistently "shard" users or objects to separate
+      backend servers.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>A mapping is maintained, from users to target servers, in
+      external map files. They look like:</p>
+
+<div class="example"><p><code>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
+:      :
+</code></p></div>
+
+  <p>We put this into a <code>map.users-to-hosts</code> file. The
+    aim is to map;</p>
+
+<div class="example"><p><code>
+/u/user1/anypath
+</code></p></div>
+
+  <p>to</p>
+
+<div class="example"><p><code>
+http://physical_host_of_user1/u/user/anypath
+</code></p></div>
+
+      <p>thus every URL path need not be valid on every backend physical
+      host. The following ruleset does this for us with the help of the map
+      files assuming that server0 is a default server which will be used if
+      a user has no entry in the map:</p>
+
+<div class="example"><p><code>
+RewriteEngine on<br />
+<br />
+RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts<br />
+<br />
+RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hosts:$1|server0}</strong>/u/$1/$2
+</code></p></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="on-the-fly-content" id="on-the-fly-content">On-the-fly Content-Regeneration</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to dynamically generate content, but store it
+      statically once it is generated. This rule will check for the
+      existence of the static file, and if it's not there, generate
+      it. The static files can be removed periodically, if desired (say,
+      via cron) and will be regenerated on demand.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      This is done via the following ruleset:
+
+<div class="example"><p><code>
+# This example is valid in per-directory context only<br />
+RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong><br />
+RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
+</code></p></div>
+
+      <p>Here a request for <code>page.html</code> leads to an
+      internal run of a corresponding <code>page.cgi</code> if
+      <code>page.html</code> is missing or has filesize
+      null. The trick here is that <code>page.cgi</code> is a
+      CGI script which (additionally to its <code>STDOUT</code>)
+      writes its output to the file <code>page.html</code>.
+      Once it has completed, the server sends out
+      <code>page.html</code>. When the webmaster wants to force
+      a refresh of the contents, he just removes
+      <code>page.html</code> (typically from <code>cron</code>).</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="load-balancing" id="load-balancing">Load Balancing</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to randomly distribute load across several servers
+      using mod_rewrite.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We'll use <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> and a list of servers
+      to accomplish this.</p>
+
+<div class="example"><p><code>
+RewriteEngine on<br />
+RewriteMap lb rnd:/path/to/serverlist.txt<br />
+<br />
+RewriteRule ^/(.*) http://${lb:servers}/$1 [P,L]
+</code></p></div>
+
+<p><code>serverlist.txt</code> will contain a list of the servers:</p>
+
+<div class="example"><p><code>
+## serverlist.txt<br />
+<br />
+servers one.example.com|two.example.com|three.example.com<br />
+</code></p></div>
+
+<p>If you want one particular server to get more of the load than the
+others, add it more times to the list.</p>
+
+   </dd>
+
+   <dt>Discussion</dt>
+   <dd>
+<p>Apache comes with a load-balancing module -
+<code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> - which is far more flexible and
+featureful than anything you can cobble together using mod_rewrite.</p>
+   </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="autorefresh" id="autorefresh">Document With Autorefresh</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Wouldn't it be nice, while creating a complex web page, if
+      the web browser would automatically refresh the page every
+      time we save a new version from within our editor?
+      Impossible?</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>No! We just combine the MIME multipart feature, the
+      web server NPH feature, and the URL manipulation power of
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. First, we establish a new
+      URL feature: Adding just <code>:refresh</code> to any
+      URL causes the 'page' to be refreshed every time it is
+      updated on the filesystem.</p>
+
+<div class="example"><p><code>
+RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /internal/cgi/apache/nph-refresh?f=$1
+</code></p></div>
+
+      <p>Now when we reference the URL</p>
+
+<div class="example"><p><code>
+/u/foo/bar/page.html:refresh
+</code></p></div>
+
+      <p>this leads to the internal invocation of the URL</p>
+
+<div class="example"><p><code>
+/internal/cgi/apache/nph-refresh?f=/u/foo/bar/page.html
+</code></p></div>
+
+      <p>The only missing part is the NPH-CGI script. Although
+      one would usually say "left as an exercise to the reader"
+      ;-) I will provide this, too.</p>
+
+<div class="example"><pre>
+#!/sw/bin/perl
+##
+##  nph-refresh -- NPH/CGI script for auto refreshing pages
+##  Copyright (c) 1997 Ralf S. Engelschall, All Rights Reserved.
+##
+$| = 1;
+
+#   split the QUERY_STRING variable
+@pairs = split(/&amp;/, $ENV{'QUERY_STRING'});
+foreach $pair (@pairs) {
+($name, $value) = split(/=/, $pair);
+$name =~ tr/A-Z/a-z/;
+$name = 'QS_' . $name;
+$value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+eval "\$$name = \"$value\"";
+}
+$QS_s = 1 if ($QS_s eq '');
+$QS_n = 3600 if ($QS_n eq '');
+if ($QS_f eq '') {
+print "HTTP/1.0 200 OK\n";
+print "Content-type: text/html\n\n";
+print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: No file given\n";
+exit(0);
+}
+if (! -f $QS_f) {
+print "HTTP/1.0 200 OK\n";
+print "Content-type: text/html\n\n";
+print "&amp;lt;b&amp;gt;ERROR&amp;lt;/b&amp;gt;: File $QS_f not found\n";
+exit(0);
+}
+
+sub print_http_headers_multipart_begin {
+print "HTTP/1.0 200 OK\n";
+$bound = "ThisRandomString12345";
+print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
+&amp;print_http_headers_multipart_next;
+}
+
+sub print_http_headers_multipart_next {
+print "\n--$bound\n";
+}
+
+sub print_http_headers_multipart_end {
+print "\n--$bound--\n";
+}
+
+sub displayhtml {
+local($buffer) = @_;
+$len = length($buffer);
+print "Content-type: text/html\n";
+print "Content-length: $len\n\n";
+print $buffer;
+}
+
+sub readfile {
+local($file) = @_;
+local(*FP, $size, $buffer, $bytes);
+($x, $x, $x, $x, $x, $x, $x, $size) = stat($file);
+$size = sprintf("%d", $size);
+open(FP, "&amp;lt;$file");
+$bytes = sysread(FP, $buffer, $size);
+close(FP);
+return $buffer;
+}
+
+$buffer = &amp;readfile($QS_f);
+&amp;print_http_headers_multipart_begin;
+&amp;displayhtml($buffer);
+
+sub mystat {
+local($file) = $_[0];
+local($time);
+
+($x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime) = stat($file);
+return $mtime;
+}
+
+$mtimeL = &amp;mystat($QS_f);
+$mtime = $mtime;
+for ($n = 0; $n &amp;lt; $QS_n; $n++) {
+while (1) {
+    $mtime = &amp;mystat($QS_f);
+    if ($mtime ne $mtimeL) {
+        $mtimeL = $mtime;
+        sleep(2);
+        $buffer = &amp;readfile($QS_f);
+        &amp;print_http_headers_multipart_next;
+        &amp;displayhtml($buffer);
+        sleep(5);
+        $mtimeL = &amp;mystat($QS_f);
+        last;
+    }
+    sleep($QS_s);
+}
+}
+
+&amp;print_http_headers_multipart_end;
+
+exit(0);
+
+##EOF##
+</pre></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="structuredhomedirs" id="structuredhomedirs">Structured Userdirs</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Some sites with thousands of users use a
+      structured homedir layout, <em>i.e.</em> each homedir is in a
+      subdirectory which begins (for instance) with the first
+      character of the username. So, <code>/~larry/anypath</code>
+      is <code>/home/<strong>l</strong>/larry/public_html/anypath</code>
+      while <code>/~waldo/anypath</code> is
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We use the following ruleset to expand the tilde URLs
+      into the above layout.</p>
+
+<div class="example"><p><code>
+RewriteEngine on<br />
+RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
+</code></p></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirectanchors" id="redirectanchors">Redirecting Anchors</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>By default, redirecting to an HTML anchor doesn't work,
+    because mod_rewrite escapes the <code>#</code> character,
+    turning it into <code>%23</code>. This, in turn, breaks the
+    redirection.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the <code>[NE]</code> flag on the
+      <code>RewriteRule</code>. NE stands for No Escape.
+      </p>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>This technique will of course also work with other 
+    special characters that mod_rewrite, by default, URL-encodes.</dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="time-dependent" id="time-dependent">Time-Dependent Rewriting</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to use mod_rewrite to serve different content based on
+      the time of day.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>There are a lot of variables named <code>TIME_xxx</code>
+      for rewrite conditions. In conjunction with the special
+      lexicographic comparison patterns <code>&lt;STRING</code>,
+      <code>&gt;STRING</code> and <code>=STRING</code> we can
+      do time-dependent redirects:</p>
+
+<div class="example"><p><code>
+RewriteEngine on<br />
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700<br />
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900<br />
+RewriteRule   ^foo\.html$             foo.day.html [L]<br />
+RewriteRule   ^foo\.html$             foo.night.html
+</code></p></div>
+
+      <p>This provides the content of <code>foo.day.html</code>
+      under the URL <code>foo.html</code> from
+      <code>07:01-18:59</code> and at the remaining time the
+      contents of <code>foo.night.html</code>.</p>
+
+      <div class="warning"><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, intermediate proxies
+      and browsers may each cache responses and cause the either page to be
+      shown outside of the time-window configured.
+      <code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> may be used to control this
+      effect. You are, of course, much better off simply serving the
+      content dynamically, and customizing it based on the time of day.</div>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="setenvvars" id="setenvvars">Set Environment Variables Based On URL Parts</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>At time, we want to maintain some kind of status when we
+      perform a rewrite. For example, you want to make a note that
+      you've done that rewrite, so that you can check later to see if a
+      request can via that rewrite. One way to do this is by setting an
+      environment variable.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the [E] flag to set an environment variable.</p>
+
+<div class="example"><p><code>
+RewriteEngine on<br />
+RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
+</code></p></div>
+
+    <p>Later in your ruleset you might check for this environment
+    variable using a RewriteCond:</p>
+
+<div class="example"><p><code>
+RewriteCond %{ENV:rewritten} =1
+</code></p></div>
+
+    </dd>
+  </dl>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/rewrite/avoid.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

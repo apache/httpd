@@ -19,77 +19,66 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-      <blockquote>
-            <p>``The great thing about mod_rewrite is it gives you
-            all the configurability and flexibility of Sendmail.
-            The downside to mod_rewrite is that it gives you all
-            the configurability and flexibility of Sendmail.''</p>
 
-            <p class="cite">-- <cite>Brian Behlendorf</cite><br />
-            Apache Group</p>
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> provides a way to modify incoming
+    URL requests, dynamically, based on <a href="intro.html#regex">regular 
+    expression</a> rules. This allows you to map arbitrary URLs onto
+    your internal URL structure in any way you like.</p>
 
-      </blockquote>
-
-      <blockquote>
-            <p>``Despite the tons of examples and docs,
-            mod_rewrite is voodoo. Damned cool voodoo, but still
-            voodoo.''</p>
-
-            <p class="cite">-- <cite>Brian Moore</cite><br />
-            bem@news.cmc.net</p>
-
-      </blockquote>
-
-      <p>Welcome to mod_rewrite, the Swiss Army Knife of URL
-      manipulation!</p>
-
-      <p>This module uses a rule-based rewriting engine (based on a
-      regular-expression parser) to rewrite requested URLs on the
-      fly. It supports an unlimited number of rules and an
+      <p>It supports an unlimited number of rules and an
       unlimited number of attached rule conditions for each rule to
       provide a really flexible and powerful URL manipulation
-      mechanism. The URL manipulations can depend on various tests,
-      for instance server variables, environment variables, HTTP
-      headers, time stamps and even external database lookups in
-      various formats can be used to achieve granular URL
+      mechanism. The URL manipulations can depend on various tests:
+      server variables, environment variables, HTTP
+      headers, time stamps, external database lookups, and various other
+      external programs or handlers, can be used to achieve granular URL
       matching.</p>
 
-      <p>This module operates on the full URLs (including the
-      path-info part) both in per-server context
-      (<code>httpd.conf</code>) and per-directory context
-      (<code>.htaccess</code> files and <code>&lt;Directory&gt;</code>
-      blocks) and can even generate query-string
-      parts on result. The rewritten result can lead to internal
-      sub-processing, external request redirection or even to an
-      internal proxy throughput.</p>
+      <p>Rewrite rules can operate on the full URLs, including the path-info
+      and query string portions, and may be used in per-server context
+      (<code>httpd.conf</code>), per-virtualhost context (<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blocks), or
+      per-directory context (<code>.htaccess</code> files and <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks). The
+      rewritten result can lead to further rules, internal
+      sub-processing, external request redirection, or proxy
+      passthrough, depending on what <a href="flags.html">flags</a> you
+      attach to the rules.</p>
 
-      <p>But all this functionality and flexibility has its
-      drawback: complexity. So don't expect to understand this
-      entire module in just one day.</p>
+      <p>Since mod_rewrite is so powerful, it can indeed be rather
+      complex. This document supplements the <a href="../mod/mod_rewrite.html">reference documentation</a>, and
+      attempts to allay some of that complexity, and provide highly
+      annoted examples of common scenarios that you may handle with
+      mod_rewrite. But we also attempt to show you when you should not
+      use mod_rewrite, and use other standard Apache features instead,
+      thus avoiding this unnecessary complexity.</p>
 
-</div>
-<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
-wiki</a></li><li><a href="../glossary.html">Glossary</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="documentation" id="documentation">Documentation</a></h2>
+
 <ul>
 <li><a href="../mod/mod_rewrite.html">mod_rewrite reference
 documentation</a></li>
-<li><a href="rewrite_intro.html">Introduction</a></li>
-<li><a href="rewrite_flags.html">Flags</a></li>
-<li><a href="rewrite_tech.html">Technical details</a></li>
-<li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
-<li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - more
-useful examples</a></li>
+<li><a href="intro.html">Introduction to regular expressions and mod_rewrite</a></li>
+<li><a href="remapping.html">Using mod_rewrite for redirection and remapping of URLs</a></li>
+<li><a href="access.html">Using mod_rewrite to control access</a></li>
+<li><a href="vhosts.html">Dynamic virtual hosts with mod_rewrite</a></li>
+<li><a href="proxy.html">Dynamic proxying with mod_rewrite</a></li>
+<li><a href="rewritemap.html">Using RewriteMap</a></li>
+<li><a href="advanced.html">Advanced techniques and tricks</a></li>
+<li><a href="avoid.html">When <strong>NOT</strong> to use mod_rewrite</a></li>
+<li><a href="flags.html">RewriteRule Flags</a></li>
+<li><a href="tech.html">Technical details</a></li>
 </ul>
-</div></div>
+</div>
+<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite reference
+documentation</a></li><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+wiki</a></li><li><a href="../glossary.html">Glossary</a></li></ul></div>
+</div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
