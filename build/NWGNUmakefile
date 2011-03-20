@@ -22,9 +22,13 @@ FILES_prebuild_headers = \
 	$(PCRE)/pcre.h \
 	$(EOLIST) 
     
-nlms :: libs $(NWOS)/httpd.imp
+nlms :: libs $(NWOS)/httpd.imp $(DAV)/main/dav.imp
 
 libs :: chkapr $(NWOS)/chartables.c
+
+$(DAV)/main/dav.imp : make_nw_export.awk $(DAV)/main/mod_dav.h
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ | $(SORT) >$@
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo $(DL)GEN  $@$(DL)
@@ -104,6 +108,7 @@ install :: nlms FORCE
 clean ::
 	$(call DEL,$(PCRE)/config.h)
 	$(call DEL,$(PCRE)/pcre.h)
+	$(call DEL,$(DAV)/main/dav.imp)
 	$(call DEL,$(NWOS)/httpd.imp)
 	$(call DEL,nw_export.i)
 	$(call DEL,cc.opt)

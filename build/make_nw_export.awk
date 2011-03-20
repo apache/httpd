@@ -25,8 +25,8 @@ BEGIN {
 #/ap_some_name/{next}
 /ap_mpm_pod_/{next}
 
-/^[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
-    sub("[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
+/^[ \t]*(AP|DAV)([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
+    sub("[ \t]*(AP|DAV)([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
     sub("[(].*", "")
     sub("([^ ]* (^([ \t]*[(])))+", "")
     add_symbol($0)
@@ -46,12 +46,14 @@ BEGIN {
 
 /^[ \t]*AP[RU]?_DECLARE_EXTERNAL_HOOK[^(]*[(][^)]*/ {
     split($0, args, ",")
+    prefix = args[1]
+    sub("^.*[(]", "", prefix)
     symbol = args[4]
     sub("^[ \t]+", "", symbol)
     sub("[ \t]+$", "", symbol)
-    add_symbol("ap_hook_" symbol)
-    add_symbol("ap_hook_get_" symbol)
-    add_symbol("ap_run_" symbol)
+    add_symbol(prefix "_hook_" symbol)
+    add_symbol(prefix "_hook_get_" symbol)
+    add_symbol(prefix "_run_" symbol)
     next
 }
 
