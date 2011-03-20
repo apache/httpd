@@ -99,7 +99,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= mod_DAV
+NLM_NAME	= mod_dav
 
 #
 # This is used by the link '-desc ' directive.
@@ -111,7 +111,7 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) DAV module
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= mod_DAV
+NLM_THREAD_NAME	= $(NLM_NAME) Thread
 
 #
 # If this is specified, it will override VERSION value in
@@ -160,7 +160,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/mod_dav.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
@@ -175,12 +175,12 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_dav.o \
-	$(OBJDIR)/props.o \
-	$(OBJDIR)/util.o \
-	$(OBJDIR)/util_lock.o \
 	$(OBJDIR)/liveprop.o \
+	$(OBJDIR)/props.o \
 	$(OBJDIR)/providers.o \
 	$(OBJDIR)/std_liveprop.o \
+	$(OBJDIR)/util.o \
+	$(OBJDIR)/util_lock.o \
 	$(EOLIST)
 
 #

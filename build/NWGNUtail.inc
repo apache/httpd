@@ -47,28 +47,18 @@ endif
 # Create dependency lists based on the files available
 #
 
-CCOPT_DEPENDS 	= \
+STANDARD_DEPENDS	= \
 				$(APBUILD)/NWGNUhead.inc \
 				$(APBUILD)/NWGNUenvironment.inc \
 				$(APBUILD)/NWGNUtail.inc \
-				NWGNUmakefile \
 				$(CUSTOM_INI) \
 				$(EOLIST)
 
-CPPOPT_DEPENDS	= \
-				$(APBUILD)/NWGNUhead.inc \
-				$(APBUILD)/NWGNUenvironment.inc \
-				$(APBUILD)/NWGNUtail.inc \
-				NWGNUmakefile \
-				$(CUSTOM_INI) \
-				$(EOLIST)
+CCOPT_DEPENDS	= $(STANDARD_DEPENDS)
 
 $(NLM_NAME)_LINKOPT_DEPENDS	= \
 				$(TARGET_lib) \
-				$(APBUILD)/NWGNUenvironment.inc \
-				NWGNUmakefile \
-				$(APBUILD)/NWGNUtail.inc \
-				$(CUSTOM_INI) \
+				$(STANDARD_DEPENDS) \
 				$(VERSION_INC) \
 				$(EOLIST)
 
@@ -76,22 +66,26 @@ ifeq "$(words $(strip $(TARGET_lib)))" "1"
 LIB_NAME			= $(basename $(notdir $(TARGET_lib)))
 $(LIB_NAME)_LIBLST_DEPENDS	= \
 				$(FILES_lib_objs) \
-				$(APBUILD)/NWGNUenvironment.inc \
-				NWGNUmakefile \
-				$(APBUILD)/NWGNUtail.inc \
+				$(STANDARD_DEPENDS) \
 				$(CUSTOM_INI) \
 				$(EOLIST)
 endif
 
 ifeq "$(wildcard NWGNU$(LIB_NAME))" "NWGNU$(LIB_NAME)"
 $(LIB_NAME)_LIBLST_DEPENDS	+= NWGNU$(LIB_NAME)
+CCOPT_DEPENDS	+= NWGNU$(LIB_NAME)
+else
+CCOPT_DEPENDS	+= NWGNUmakefile
 endif
 
 ifeq "$(wildcard NWGNU$(NLM_NAME))" "NWGNU$(NLM_NAME)"
 $(NLM_NAME)_LINKOPT_DEPENDS	+= NWGNU$(NLM_NAME)
-CCOPT_DEPENDS 	+= NWGNU$(NLM_NAME)
-CPPOPT_DEPENDS 	+= NWGNU$(NLM_NAME)
+CCOPT_DEPENDS	+= NWGNU$(NLM_NAME)
+else
+CCOPT_DEPENDS	+= NWGNUmakefile
 endif
+
+CPPOPT_DEPENDS	= $(CCOPT_DEPENDS)
 
 #
 # Generic compiler rules
@@ -103,10 +97,10 @@ $(AP_WORK)/build/NWGNUversion.inc : $(AP_WORK)/build/nw_ver.awk $(AP_WORK)/inclu
 	@echo $(DL)GEN  $@$(DL)
 	$(AWK) -f $^ > $@
 
--include $(AP_WORK)/build/NWGNUversion.inc
+-include $(APBUILD)/NWGNUversion.inc
 
 ifneq "$(strip $(VERSION_STR))" ""
-VERSION_INC = $(AP_WORK)/build/NWGNUversion.inc
+VERSION_INC = $(APBUILD)/NWGNUversion.inc
 else
 VERSION		= 2,3,0
 VERSION_STR	= 2.3.0
@@ -199,7 +193,7 @@ endif
 
 else # We must have more than one target library so load the individual makefiles
 
-$(OBJDIR)/%.lib: NWGNU% $(APBUILD)/NWGNUhead.inc $(APBUILD)/NWGNUtail.inc $(APBUILD)/NWGNUenvironment.inc FORCE
+$(OBJDIR)/%.lib: NWGNU% $(STANDARD_DEPENDS) FORCE
 	@echo $(DL)Calling $<$(DL)
 	$(MAKE) -f $< $(MAKECMDGOALS) RELEASE=$(RELEASE)
 
@@ -324,7 +318,7 @@ else # more than one target so look for individual makefiles.
 
 ifndef NO_LICENSE_FILE
 
-$(OBJDIR)/%.nlm: NWGNU% $(APBUILD)/NWGNUhead.inc $(APBUILD)/NWGNUtail.inc $(APBUILD)/NWGNUenvironment.inc $(CUSTOM_INI) $(VERSION_INC) FORCE
+$(OBJDIR)/%.nlm: NWGNU% $($(NLM_NAME)_LINKOPT_DEPENDS) FORCE
 	@echo $(DL)Calling $<$(DL)
 	$(MAKE) -f $< $(MAKECMDGOALS) RELEASE=$(RELEASE)
 	@$(ECHONL)
