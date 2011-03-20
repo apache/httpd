@@ -7421,7 +7421,3 @@ Changes with Apache pthreads
   *) Initial pthread implementation from from Dean's apache-nspr code.
      [Bill Stoddard, Ryan Bloom]
 
-
-Changes with Apache 1.3.x and later:
-
-  *) http://svn.apache.org/viewvc/httpd/httpd/branches/1.3.x/src/CHANGES?view=markup
