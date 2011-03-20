@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1071221 -->
+<!-- English Revision : 1082203 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -509,6 +509,35 @@ valides.</description>
     pendant laquelle une entr&eacute;e du cache de recherche/identification
     reste valide. La valeur par d&eacute;faut est de 600 secondes (10
     minutes).</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPConnectionPoolTTL</name>
+<description>D&eacute;sactive les connexions d'arri&egrave;re-plan qui sont rest&eacute;es
+inactives trop longtemps au sein du jeu de connexions.</description>
+<syntax>LDAPConnectionPoolTTL <var>n</var></syntax>
+<default>LDAPConnectionPoolTTL -1</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.3.12 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier la dur&eacute;e maximale, en
+    secondes, pendant laquelle une connexion LDAP du jeu de connexions
+    peut demeurer inactive, mais rester quand-m&ecirc;me disponible pour une
+    utilisation &eacute;ventuelle. Le jeu de connexions est nettoy&eacute; au fur et &agrave;
+    mesure des besoins, de mani&egrave;re non asynchrone.</p>
+
+    <p>Si cette directive est d&eacute;finie &agrave; 0, les connexions ne sont jamais
+    sauvegard&eacute;es dans le jeu de connexions d'arri&egrave;re-plan. Avec la
+    valeur par d&eacute;faut -1, ou toute autre valeur n&eacute;gative, les connexions
+    peuvent &ecirc;tre r&eacute;utilis&eacute;es sans limite de dur&eacute;e.</p>
+
+    <note><p>Cette dur&eacute;e de vie s'exprime par d&eacute;faut en secondes, mais
+    il est possible d'utiliser d'autres unit&eacute;s en ajoutant un suffixe :
+    millisecondes (ms), minutes (min), ou heures (h).
+    </p></note>
 </usage>
 </directivesynopsis>
 

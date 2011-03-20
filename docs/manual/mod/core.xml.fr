@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1071221 -->
+<!-- English Revision : 1082196 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -298,30 +298,42 @@ type de contenu d'une r&eacute;ponse est <code>text/plain</code> ou
 <name>AllowEncodedSlashes</name>
 <description>D&eacute;termine si les s&eacute;parateurs de chemin encod&eacute;s sont
 autoris&eacute;s &agrave; transiter dans les URLs tels quels</description>
-<syntax>AllowEncodedSlashes On|Off</syntax>
+<syntax>AllowEncodedSlashes On|Off|NoDecode</syntax>
 <default>AllowEncodedSlashes Off</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
 <compatibility>Disponible dans Apache httpd version 2.0.46 et
-sup&eacute;rieures</compatibility>
+sup&eacute;rieures. L'option NoDecode est disponible depuis la version
+2.3.12.</compatibility>
 
 <usage>
     <p>La directive <directive>AllowEncodedSlashes</directive> permet
-    l'utilisation des URLs contenant des s&eacute;parateurs de chemin encod&eacute;s
+    l'utilisation des URLs contenant des s&eacute;parateurs de chemin
+    encod&eacute;s dans la partie chemin
     (<code>%2F</code> pour <code>/</code> et m&ecirc;me <code>%5C</code> pour
-    <code>\</code> sur les syst&egrave;mes concern&eacute;s). Habituellement, ces URLs
-    sont rejet&eacute;es avec un code d'erreur 404 (Not found).</p>
+    <code>\</code> sur les syst&egrave;mes concern&eacute;s).</p>
+
+    <p>Avec la valeur par d&eacute;faut, <code>Off</code>, de telles URLs sont
+    refus&eacute;es et provoquent le renvoi d'une erreur 404 (Not found).</p>
+
+    <p>Avec la valeur <code>On</code>, ces URLs sont accept&eacute;es, et les
+    slashes encod&eacute;s sont d&eacute;cod&eacute;s comme tout autre caract&egrave;re cod&eacute;.</p>
+
+    <p>Avec la valeur <code>NoDecode</code>, ces URLs sont accept&eacute;es,
+    mais les slashes cod&eacute;s ne sont pas d&eacute;cod&eacute;s et laiss&eacute;s dans leur &eacute;tat
+    cod&eacute;.</p>
 
     <p>D&eacute;finir <directive>AllowEncodedSlashes</directive> &agrave;
     <code>On</code> est surtout utile en association avec
     <code>PATH_INFO</code>.</p>
 
     <note><title>Note</title>
-      <p>Permettre les slashes encod&eacute;s n'implique <em>pas</em> leur
-      <em>d&eacute;codage</em>. Toutes les occurrences de <code>%2F</code> ou
-      <code>%5C</code> (<em>seulement</em> sur les syst&egrave;mes concern&eacute;s)
-      seront laiss&eacute;s telles quelles dans la cha&icirc;ne de l'URL d&eacute;cod&eacute;e.</p>
+      <p>Si le codage des slashes dans la partie chemin est n&eacute;cessaire,
+      l'utilisation de l'option <code>NoDecode</code> est fortement
+      recommand&eacute;e par mesure de s&eacute;curit&eacute;. Permettre le d&eacute;codage des
+      slashes pourrait &eacute;ventuellement induire l'autorisation de chemins
+      non s&ucirc;rs.</p>
     </note>
 </usage>
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
