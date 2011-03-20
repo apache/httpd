@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1028730 $ -->
+<!-- English Revision : 1082915 $ -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -78,8 +78,6 @@
 r&eacute;f&eacute;rence de mod_rewrite</a></li>
 <li><a href="intro.html">Introduction aux expressions rationnelles et &agrave;
 mod_rewrite</a></li>
-<li><a href="rewrite_guide.html">Guide de la r&eacute;&eacute;criture -
-exemples utiles</a></li>
 <li><a href="remapping.html">Utilisation de mod_rewrite pour la
 redirection et la remise en corespondance avec le syst&egrave;me de
 fichiers des URLs</a></li>
