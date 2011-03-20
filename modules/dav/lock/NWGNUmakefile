@@ -101,7 +101,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= modDAVLK
+NLM_NAME	= moddavlk
 
 #
 # This is used by the link '-desc ' directive.
@@ -113,7 +113,7 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) DAV Database Lock Sub-Module
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= modDAVLK Thread
+NLM_THREAD_NAME	= $(NLM_NAME) Thread
 
 #
 # If this is specified, it will override VERSION value in
@@ -155,7 +155,7 @@ NLM_FLAGS	=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/moddavlk.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
