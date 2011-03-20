@@ -2,9 +2,9 @@
 # Setup needed Tools and Libraries
 #
 
-ifeq "$(wildcard $(AP_WORK)\NWGNUcustom.ini)" "$(AP_WORK)\NWGNUcustom.ini"
-include $(AP_WORK)\NWGNUcustom.ini
-CUSTOM_INI = $(AP_WORK)\NWGNUcustom.ini
+ifeq "$(wildcard $(AP_WORK)/NWGNUcustom.ini)" "$(AP_WORK)/NWGNUcustom.ini"
+include $(AP_WORK)/NWGNUcustom.ini
+CUSTOM_INI = $(AP_WORK)/NWGNUcustom.ini
 endif
 
 ifndef VERBOSE
@@ -181,15 +181,12 @@ ifndef USE_STDSOCKETS
 INCDIRS	+= $(NOVELLLIBC)/include/winsock;
 endif
 ifneq "$(LDAPSDK)" ""
-#INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
 INCDIRS += $(LDAPSDK)/inc;
 endif
 ifneq "$(ZLIBSDK)" ""
-#INCDIRS := $(INCDIRS);$(ZLIBSDK)
 INCDIRS += $(ZLIBSDK);
 endif
 ifneq "$(PCRESRC)" ""
-#INCDIRS := $(INCDIRS);$(PCRESRC)
 INCDIRS += $(PCRESRC);
 endif
 
@@ -269,30 +266,6 @@ endif
 # Declare major project deliverables output directories here
 #
 
-ifdef DEST
-INSTALL = $(DEST)
-ifeq (\, $(findstring \,$(INSTALL)))
-INSTDIRS = $(DEST)
-endif
-endif
-
-ifdef dest
-INSTALL = $(dest)
-ifeq (\, $(findstring \,$(INSTALL)))
-INSTDIRS = $(dest)
-endif
-endif
-
-ifndef INSTALL
-INSTALL = $(AP_WORK)/Dist
-INSTDIRS = $(AP_WORK)/Dist
-endif
-
-ifndef BASEDIR
-BASEDIR = Apache23
-export BASEDIR
-endif
-
 ifndef PORT
 PORT = 80
 endif
@@ -301,10 +274,34 @@ ifndef SSLPORT
 SSLPORT = 443
 endif
 
+ifdef DEST
+INSTALL = $(subst \,/,$(DEST))
+ifeq (/, $(findstring /,$(INSTALL)))
+INSTDIRS = $(INSTALL)
+endif
+endif
+
+ifdef dest
+INSTALL = $(subst \,/,$(dest))
+ifeq (/, $(findstring /,$(INSTALL)))
+INSTDIRS = $(INSTALL)
+endif
+endif
+
+ifndef INSTALL
+INSTALL = $(AP_WORK)/Dist
+INSTDIRS = $(INSTALL)
+endif
+
+ifndef BASEDIR
+BASEDIR = Apache23
+export BASEDIR
+endif
+
 # Add support for building IPV6 alongside
 ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
-# INCDIRS := $(NOVELLLIBC)\include\winsock\IPV6;$(INCDIRS)
+# INCDIRS := $(NOVELLLIBC)/include/winsock/IPV6;$(INCDIRS)
 
 ifneq "$(findstring IPV6,$(OBJDIR))" "IPV6"
 OBJDIR := $(OBJDIR)_IPV6
@@ -323,12 +320,15 @@ endif
 INSTALLBASE := $(INSTALL)/$(BASEDIR)
 
 INSTDEVDIRS := \
-	$(INSTDIRS) \
+	$(INSTALL) \
+	$(INSTALLBASE) \
+	$(INSTALLBASE)/build \
 	$(INSTALLBASE)/include \
 	$(INSTALLBASE)/lib \
+	$(EOLIST) 
 
 INSTDIRS += \
-	$(INSTALL)/$(BASEDIR) \
+	$(INSTALLBASE) \
 	$(INSTALLBASE)/bin \
 	$(INSTALLBASE)/cgi-bin \
 	$(INSTALLBASE)/conf \
@@ -340,25 +340,27 @@ INSTDIRS += \
 	$(INSTALLBASE)/man \
 	$(INSTALLBASE)/manual \
 	$(INSTALLBASE)/modules \
+	$(EOLIST) 
 
 #
 # Common directories
 #
 
 SRC		= $(subst \,/,$(AP_WORK))
+APR		= $(subst \,/,$(APR_WORK))
+APRUTIL		= $(subst \,/,$(APU_WORK))
 APBUILD		= $(SRC)/build
 STDMOD		= $(SRC)/modules
 HTTPD		= $(SRC)/modules/http
 NWOS		= $(SRC)/os/netware
 SERVER		= $(SRC)/server
 SUPMOD		= $(SRC)/support
-APR		= $(APR_WORK)
-APRUTIL		= $(APU_WORK)
-APULDAP		= $(APU_WORK)/ldap
-XML		= $(APU_WORK)/xml
-APRTEST		= $(APR_WORK)/test
+APULDAP		= $(APRUTIL)/ldap
+XML		= $(APRUTIL)/xml
+APRTEST		= $(APR)/test
 PCRE		= $(PCRESRC)
-PREBUILD_INST   = $(SRC)/nwprebuild
+
+PREBUILD_INST	= $(SRC)/nwprebuild
 
 #
 # Internal Libraries
