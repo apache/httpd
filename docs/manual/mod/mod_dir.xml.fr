@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1044701 -->
+<!-- English Revision : 1081659 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -148,9 +148,11 @@ d'Apache</compatibility>
     fonctionneront alors correctement.</li>
     </ul>
 
-    <p>Donc, si vous ne souhaitez pas voir ces effets, <em>et</em> si
+    <p>Si vous ne souhaitez pas voir ces effets, <em>et</em> si
     les raisons &eacute;voqu&eacute;es ci-dessus ne s'appliquent pas &agrave; vous, vous
-    pouvez d&eacute;sactiver la redirection de la mani&egrave;re suivante :</p>
+    pouvez d&eacute;sactiver la redirection comme indiqu&eacute; ci-dessous.
+    Gardez cependant &agrave; l'esprit que ceci peut avoir des r&eacute;percutions en
+    mati&egrave;re de s&eacute;curit&eacute;.</p>
 
     <example>
         # voir l'avertissement de s&eacute;curit&eacute; ci-dessous !<br />
