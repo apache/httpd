@@ -293,9 +293,14 @@ INSTALL = $(AP_WORK)/Dist
 INSTDIRS = $(INSTALL)
 endif
 
+ifeq ($(MAKECMDGOALS),installdev)
 ifndef BASEDIR
-BASEDIR = Apache23
-export BASEDIR
+export BASEDIR = apache_$(VERSION_STR)-sdk
+endif
+else
+ifndef BASEDIR
+export BASEDIR = Apache$(VERSION_MAJMIN)
+endif
 endif
 
 # Add support for building IPV6 alongside
@@ -317,9 +322,9 @@ endif
 
 endif
 
-INSTALLBASE := $(INSTALL)/$(BASEDIR)
+INSTALLBASE = $(INSTALL)/$(BASEDIR)
 
-INSTDEVDIRS := \
+INSTDEVDIRS = \
 	$(INSTALL) \
 	$(INSTALLBASE) \
 	$(INSTALLBASE)/build \
