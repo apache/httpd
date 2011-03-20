@@ -357,6 +357,7 @@ APRUTIL		= $(subst \,/,$(APU_WORK))
 APBUILD		= $(SRC)/build
 STDMOD		= $(SRC)/modules
 HTTPD		= $(SRC)/modules/http
+DAV		= $(SRC)/modules/dav
 NWOS		= $(SRC)/os/netware
 SERVER		= $(SRC)/server
 SUPMOD		= $(SRC)/support
