@@ -2411,9 +2411,6 @@ struct dav_hooks_search {
 ** MISCELLANEOUS STUFF
 */
 
-/* fetch the "LimitXMLRequestBody" in force for this resource */
-DAV_DECLARE(apr_size_t) dav_get_limit_xml_body(const request_rec *r);
-
 typedef struct {
     int propid;                          /* live property ID */
     const dav_hooks_liveprop *provider;  /* the provider defining this prop */
