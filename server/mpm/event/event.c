@@ -551,7 +551,10 @@ static void set_signals(void)
                      "sigaction(SIGXCPU)");
 #endif
 #ifdef SIGXFSZ
-    sa.sa_handler = SIG_DFL;
+    /* For systems following the LFS standard, ignoring SIGXFSZ allows
+     * a write() beyond the 2GB limit to fail gracefully with E2BIG
+     * rather than terminate the process. */
+    sa.sa_handler = SIG_IGN;
     if (sigaction(SIGXFSZ, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
                      "sigaction(SIGXFSZ)");
@@ -580,7 +583,7 @@ static void set_signals(void)
         apr_signal(SIGXCPU, SIG_DFL);
 #endif /* SIGXCPU */
 #ifdef SIGXFSZ
-        apr_signal(SIGXFSZ, SIG_DFL);
+        apr_signal(SIGXFSZ, SIG_IGN);
 #endif /* SIGXFSZ */
     }
 
