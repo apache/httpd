@@ -501,16 +501,33 @@ valides.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPConnectionPoolTTL" id="LDAPConnectionPoolTTL">LDAPConnectionPoolTTL</a> <a name="ldapconnectionpoolttl" id="ldapconnectionpoolttl">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Discard backend connections that have been sitting in the connection pool too long</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive les connexions d'arrière-plan qui sont restées
+inactives trop longtemps au sein du jeu de connexions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPConnectionPoolTTL <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPConnectionPoolTTL -1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Apache HTTP Server 2.3.12 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.12 du serveur HTTP
+Apache</td></tr>
+</table>
+    <p>Cette directive permet de spécifier la durée maximale, en
+    secondes, pendant laquelle une connexion LDAP du jeu de connexions
+    peut demeurer inactive, mais rester quand-même disponible pour une
+    utilisation éventuelle. Le jeu de connexions est nettoyé au fur et à
+    mesure des besoins, de manière non asynchrone.</p>
+
+    <p>Si cette directive est définie à 0, les connexions ne sont jamais
+    sauvegardées dans le jeu de connexions d'arrière-plan. Avec la
+    valeur par défaut -1, ou toute autre valeur négative, les connexions
+    peuvent être réutilisées sans limite de durée.</p>
+
+    <div class="note"><p>Cette durée de vie s'exprime par défaut en secondes, mais
+    il est possible d'utiliser d'autres unités en ajoutant un suffixe :
+    millisecondes (ms), minutes (min), ou heures (h).
+    </p></div>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a> <a name="ldapconnectiontimeout" id="ldapconnectiontimeout">Directive</a></h2>
 <table class="directive">
