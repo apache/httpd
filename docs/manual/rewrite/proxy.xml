@@ -80,7 +80,7 @@ ProxyPassReverse /products/widget/ http://product.example.com/widget/
 <example>
 RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong><br />
 RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong><br />
-RewriteRule ^/(.*) http://<strong>old</strong>.example.com$1 [<strong>P</strong>]<br />
+RewriteRule ^/(.*) http://<strong>old</strong>.example.com/$1 [<strong>P</strong>]<br />
 ProxyPassReverse / http://old.example.com/
 </example>
     </dd>
