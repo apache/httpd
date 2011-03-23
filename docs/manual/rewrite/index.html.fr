@@ -71,8 +71,6 @@
 référence de mod_rewrite</a></li>
 <li><a href="intro.html">Introduction aux expressions rationnelles et à
 mod_rewrite</a></li>
-<li><a href="rewrite_guide.html">Guide de la réécriture -
-exemples utiles</a></li>
 <li><a href="remapping.html">Utilisation de mod_rewrite pour la
 redirection et la remise en corespondance avec le système de
 fichiers des URLs</a></li>
