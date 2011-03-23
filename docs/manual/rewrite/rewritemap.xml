@@ -358,11 +358,6 @@ by many requests.
     module="mod_rewrite">RewriteEngine</directive> set to
     <code>on</code>.</p>
 
-    <p>This feature utilizes the <code>rewrite-map</code> mutex,
-    which is required for reliable communication with the program.
-    The mutex mechanism and lock file can be configured with the
-    <directive module="core">Mutex</directive> directive.</p>
-
     <p>A simple example is shown here which will replace all dashes with
     underscores in a request URI.</p>
 
@@ -401,33 +396,6 @@ this process, or if the script itself is very slow.</li>
 
 </section>
 
-
-  <section id="dbd">
-    <title>dbd or fastdbd: SQL Query</title>
-
-    <p>When a MapType of <code>dbd</code> or <code>fastdbd</code> is
-    used, the MapSource is a SQL SELECT statement that takes a single
-    argument and returns a single value.</p>
-
-    <p><module>mod_dbd</module> will need to be configured to point at
-    the right database for this statement to be executed.</p>
-
-    <p>There are two forms of this MapType.
-    Using a MapType of <code>dbd</code> causes the query to be
-    executed with each map request, while using <code>fastdbd</code>
-    caches the database lookups internally. So, while
-    <code>fastdbd</code> is more efficient, and therefore faster, it
-    won't pick up on changes to the database until the server is
-    restarted.</p>
-
-    <p>If a query returns more than one row, a random row from
-the result set is used.</p>
-
-    <example><title>Example</title>
-RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
-    </example>
-
-  </section>
   <section id="summary">
     <title>Summary</title>
 
