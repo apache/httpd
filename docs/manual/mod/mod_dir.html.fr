@@ -157,9 +157,11 @@ d'Apache</td></tr>
     fonctionneront alors correctement.</li>
     </ul>
 
-    <p>Donc, si vous ne souhaitez pas voir ces effets, <em>et</em> si
+    <p>Si vous ne souhaitez pas voir ces effets, <em>et</em> si
     les raisons évoquées ci-dessus ne s'appliquent pas à vous, vous
-    pouvez désactiver la redirection de la manière suivante :</p>
+    pouvez désactiver la redirection comme indiqué ci-dessous.
+    Gardez cependant à l'esprit que ceci peut avoir des répercutions en
+    matière de sécurité.</p>
 
     <div class="example"><p><code>
         # voir l'avertissement de sécurité ci-dessous !<br />
