@@ -131,9 +131,8 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <h2><a name="Solutions" id="Solutions">Practical Solutions</a></h2>
 
     <p>For numerous examples of common, and not-so-common, uses for
-    mod_rewrite, see the <a href="../rewrite/rewrite_guide.html">Rewrite
-    Guide</a>, and the <a href="../rewrite/rewrite_guide_advanced.html">Advanced Rewrite
-    Guide</a> documents.</p>
+    mod_rewrite, see the <a href="../rewrite/">extended rewrite
+    documentation</a></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
