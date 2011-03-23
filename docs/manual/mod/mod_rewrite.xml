@@ -114,10 +114,8 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <section id="Solutions"><title>Practical Solutions</title>
 
     <p>For numerous examples of common, and not-so-common, uses for
-    mod_rewrite, see the <a href="../rewrite/rewrite_guide.html">Rewrite
-    Guide</a>, and the <a
-    href="../rewrite/rewrite_guide_advanced.html">Advanced Rewrite
-    Guide</a> documents.</p>
+    mod_rewrite, see the <a href="../rewrite/">extended rewrite
+    documentation</a></p>
 
 </section>
 
