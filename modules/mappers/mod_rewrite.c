@@ -4728,8 +4728,9 @@ static int hook_fixup(request_rec *r)
     if (!(ap_allow_options(r) & (OPT_SYM_LINKS | OPT_SYM_OWNER))) {
         /* FollowSymLinks is mandatory! */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                     "Options FollowSymLinks or SymLinksIfOwnerMatch is off "
-                     "which implies that RewriteRule directive is forbidden: "
+                     "Options FollowSymLinks or SymLinksIfOwnerMatch is off, "
+                     "so the RewriteRule directive is also forbidden "
+                     "due to its similar ability to circumvent directory restrictions : "
                      "%s", r->filename);
         return HTTP_FORBIDDEN;
     }
