@@ -964,6 +964,7 @@ application/winhlp				hlp
 # application/wordperfect5.1
 application/wsdl+xml				wsdl
 application/wspolicy+xml			wspolicy
+application/x-7z-compressed			7z
 application/x-abiword				abw
 application/x-ace-compressed			ace
 application/x-authorware-bin			aab x32 u32 vox
