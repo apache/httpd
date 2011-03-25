@@ -184,7 +184,7 @@ The Apache project is a meritocracy -- the more work you have done, the more
 you are allowed to do.  The group founders set the original rules, but
 they can be changed by vote of the active members.  There is a group
 of people who have logins on our server (apache.org) and access to the
-CVS repository.  Everyone has access to the CVS snapshots.  Changes to
+svn repository.  Everyone has access to the svn snapshots.  Changes to
 the code are proposed on the mailing list and usually voted on by active
 members -- three +1 (yes votes) and no -1 (no votes, or vetoes) are needed
 to commit a code change during a release cycle; docs are usually committed
@@ -197,7 +197,7 @@ in the web server community, release dates, etc.  The actual code development
 takes place on the developers' local machines, with proposed changes
 communicated using a patch (output of a unified "diff -u oldfile newfile"
 command), and committed to the source repository by one of the core
-developers using remote CVS.  Anyone on the mailing list can vote on a
+developers using remote svn.  Anyone on the mailing list can vote on a
 particular issue, but we only count those made by active members or people
 who are known to be experts on that part of the server.  Vetoes must be
 accompanied by a convincing explanation.
