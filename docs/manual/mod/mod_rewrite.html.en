@@ -1188,7 +1188,7 @@ cannot use <code>$N</code> in the substitution string!
         rules if the current rule matches. <em><a href="../rewrite/flags.html#flag_s">details ...</a></em></td>
     </tr>
     <tr>
-        <td>tyle|T=<em>MIME-type</em></td>
+        <td>type|T=<em>MIME-type</em></td>
         <td>Force the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> of the target file
         to be the specified type. <em><a href="../rewrite/flags.html#flag_t">details ...</a></em></td>
     </tr>
