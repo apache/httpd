@@ -999,6 +999,7 @@ application/x-font-snf				snf
 # application/x-font-sunos-news
 application/x-font-ttf				ttf ttc
 application/x-font-type1			pfa pfb pfm afm
+application/x-font-woff				woff
 # application/x-font-vfont
 application/x-futuresplash			spl
 application/x-gnumeric				gnumeric
@@ -1261,6 +1262,7 @@ image/vnd.net-fpx				npx
 # image/vnd.svf
 image/vnd.wap.wbmp				wbmp
 image/vnd.xiff					xif
+image/webp					webp
 image/x-cmu-raster				ras
 image/x-cmx					cmx
 image/x-freehand				fh fhc fh4 fh5 fh7
