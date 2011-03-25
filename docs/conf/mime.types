@@ -1201,6 +1201,7 @@ audio/vnd.rip					rip
 # audio/vnd.vmx.cvsd
 # audio/vorbis
 # audio/vorbis-config
+audio/webm					weba
 audio/x-aac					aac
 audio/x-aiff					aif aiff aifc
 audio/x-mpegurl					m3u
@@ -1458,6 +1459,7 @@ video/vnd.ms-playready.media.pyv		pyv
 # video/vnd.sealedmedia.softseal.mov
 video/vnd.uvvu.mp4				uvu uvvu
 video/vnd.vivo					viv
+video/webm					webm
 video/x-f4v					f4v
 video/x-fli					fli
 video/x-flv					flv
