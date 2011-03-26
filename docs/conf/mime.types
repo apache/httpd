@@ -1339,6 +1339,7 @@ text/csv					csv
 # text/example
 text/html					html htm
 # text/javascript
+text/n3						n3
 # text/parityfec
 text/plain					txt text conf def list log in
 # text/prs.fallenstein.rst
@@ -1354,6 +1355,7 @@ text/sgml					sgml sgm
 # text/t140
 text/tab-separated-values			tsv
 text/troff					t tr roff man me ms
+text/turtle					ttl
 # text/ulpfec
 text/uri-list					uri uris urls
 # text/vnd.abc
