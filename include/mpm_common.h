@@ -143,9 +143,8 @@ int ap_unregister_extra_mpm_process(pid_t pid);
 apr_status_t ap_mpm_safe_kill(pid_t pid, int sig);
 
 /**
- * Determine if any child process has died.  If no child process died, then
- * this process sleeps for the amount of time specified by the MPM defined
- * macro SCOREBOARD_MAINTENANCE_INTERVAL.
+ * Run the monitor hook (once every ten calls), determine if any child
+ * process has died and, if none died, sleep one second.
  * @param status The return code if a process has died
  * @param exitcode The returned exit status of the child, if a child process 
  *                 dies, or the signal that caused the child to die.
