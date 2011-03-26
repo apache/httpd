@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) Correct C++ incompatibility with http_log.h.  [Stefan Fritsch, Jeff
+     Trawick]
+
   *) mod_log_config: Prevent segfault. PR 50861. [Torsten Förtsch
      <torsten.foertsch gmx.net>]
 
