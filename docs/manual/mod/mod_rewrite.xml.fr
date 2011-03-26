@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1073591 -->
+<!-- English Revision : 1085361 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1333,7 +1333,7 @@ substitution !
         href="../rewrite/flags.html#flag_s">d&eacute;tails ...</a></em></td>
     </tr>
     <tr>
-        <td>tyle|T=<em>Type-MIME</em></td>
+        <td>type|T=<em>MIME-type</em></td>
         <td>Force l'attribution du <glossary>Type-MIME</glossary>
 	sp&eacute;cifi&eacute; au fichier cible. <em><a
         href="../rewrite/flags.html#flag_t">d&eacute;tails ...</a></em></td>
