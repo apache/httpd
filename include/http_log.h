@@ -121,6 +121,14 @@ extern "C" {
  */
 #define APLOG_NO_MODULE         -1
 
+#ifdef __cplusplus
+/**
+ * C++ modules must invoke ::APLOG_USE_MODULE or ::AP_DECLARE_MODULE in
+ * every file which uses ap_log_*.
+ * (C modules *should* do that as well, to enable module-specific log
+ * levels).
+ */
+#else /* __cplusplus */
 /**
  * Constant to store module_index for the current file.
  * Objects with static storage duration are set to NULL if not
@@ -130,6 +138,7 @@ extern "C" {
  * use ::APLOG_NO_MODULE. This variable will usually be optimized away.
  */
 static int * const aplog_module_index;
+#endif /* __cplusplus */
 
 /**
  * APLOG_MODULE_INDEX contains the module_index of the current module if
