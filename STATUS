@@ -110,6 +110,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: Trunk version of patch works with offset  
      +1 fuankg
 
+  * HTTP Protocol: Fix handling of extra request data sent with Expect: 100
+    PR 47087
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=888310
+    2.2.x: Trunk works with offset
+    +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
