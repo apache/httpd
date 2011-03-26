@@ -130,7 +130,7 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
         return;
     }
 
-    apr_sleep(1000000);
+    apr_sleep(apr_time_from_sec(1));
     ret->pid = -1;
     return;
 }
