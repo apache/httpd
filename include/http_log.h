@@ -154,8 +154,12 @@ static int * const aplog_module_index;
  * @see APLOG_MARK
  * @see ap_log_error
  */
+#ifdef __cplusplus
+#define APLOG_MODULE_INDEX (*aplog_module_index)
+#else /* __cplusplus */
 #define APLOG_MODULE_INDEX  \
     (aplog_module_index ? *aplog_module_index : APLOG_NO_MODULE)
+#endif /* __cplusplus */
 
 /**
  * APLOG_MAX_LOGLEVEL can be defined to remove logging above some
