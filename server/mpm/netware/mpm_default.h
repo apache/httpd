@@ -24,27 +24,6 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
-/* Number of servers to spawn off by default --- also, if fewer than
- * this free when the caretaker checks, it will spawn more.
- */
-#ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 1
-#endif
-
-/* Maximum number of *free* server processes --- more than this, and
- * they will die off.
- */
-
-#ifndef DEFAULT_MAX_FREE_DAEMON
-#define DEFAULT_MAX_FREE_DAEMON 1
-#endif
-
-/* Minimum --- fewer than this, and more will be created */
-
-#ifndef DEFAULT_MIN_FREE_DAEMON
-#define DEFAULT_MIN_FREE_DAEMON 1
-#endif
-
 /* Limit on the threads per process.  Clients will be locked out if more than
  * this  * HARD_SERVER_LIMIT are needed.
  *

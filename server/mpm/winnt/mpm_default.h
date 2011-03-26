@@ -55,12 +55,6 @@
  */
 #define HARD_SERVER_LIMIT 1
 
-/* Number of servers to spawn off by default
- */
-#ifndef DEFAULT_NUM_DAEMON
-#define DEFAULT_NUM_DAEMON 1
-#endif
-
 /* Check for definition of DEFAULT_REL_RUNTIMEDIR */
 #ifndef DEFAULT_REL_RUNTIMEDIR
 #define DEFAULT_REL_RUNTIMEDIR "logs"
