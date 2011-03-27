@@ -43,9 +43,11 @@ to provide the cryptography engine.</p>
 
 <section id="envvars"><title>Environment Variables</title>
 
-<p>This module provides a lot of SSL information as additional environment
-variables to the SSI and CGI namespace. The generated variables are listed in
-the table below. For backward compatibility the information can
+<p>This module can be configured to privide several items of SSL information 
+as additional environment variables to the SSI and CGI namespace. This
+information is not provided by default for performance reasons. (See
+<directive>SSLOptions</directive> StdEnvVars, below.) The generated variables 
+are listed in the table below. For backward compatibility the information can
 be made available under different names, too. Look in the <a
 href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
