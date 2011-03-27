@@ -49,7 +49,7 @@ int cache_select(cache_request_rec *cache, request_rec *r);
  *
  * This function returns OK if at least one entity was found and
  * removed, and DECLINED if no cached entities were removed.
- * @param h cache_handle_t
+ * @param cache cache_request_rec
  * @param r request_rec
  */
 int cache_invalidate(cache_request_rec *cache, request_rec *r);
