@@ -232,8 +232,9 @@
 #include "os.h"
 #if (!defined(WIN32) && !defined(NETWARE)) || defined(__MINGW32__)
 #include "ap_config_auto.h"
-#include "ap_config_layout.h"
 #endif
+#include "ap_config_layout.h"
+
 #if defined(NETWARE)
 #define AP_NONBLOCK_WHEN_MULTI_LISTEN 1
 #endif
