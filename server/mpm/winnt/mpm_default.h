@@ -55,11 +55,6 @@
  */
 #define HARD_SERVER_LIMIT 1
 
-/* Check for definition of DEFAULT_REL_RUNTIMEDIR */
-#ifndef DEFAULT_REL_RUNTIMEDIR
-#define DEFAULT_REL_RUNTIMEDIR "logs"
-#endif
-
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
 #define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"

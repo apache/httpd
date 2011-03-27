@@ -53,12 +53,7 @@ struct ap_socache_instance_t {
  */
 #define DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
-/* Check for definition of DEFAULT_REL_RUNTIMEDIR */
-#ifndef DEFAULT_REL_RUNTIMEDIR
-#define DEFAULT_DBM_PREFIX "logs/socache-dbm-"
-#else
 #define DEFAULT_DBM_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-dbm-"
-#endif
 
 /* ### this should use apr_dbm_usednames. */
 #if !defined(DBM_FILE_SUFFIX_DIR) && !defined(DBM_FILE_SUFFIX_PAG)

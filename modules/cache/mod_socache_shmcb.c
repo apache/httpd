@@ -32,12 +32,7 @@
 
 #define SHMCB_MAX_SIZE (64 * 1024 * 1024)
 
-/* Check for definition of DEFAULT_REL_RUNTIMEDIR */
-#ifndef DEFAULT_REL_RUNTIMEDIR
-#define DEFAULT_SHMCB_PREFIX "logs/socache-shmcb-"
-#else
 #define DEFAULT_SHMCB_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-shmcb-"
-#endif
 
 #define DEFAULT_SHMCB_SUFFIX ".cache"
 
