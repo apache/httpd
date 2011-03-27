@@ -624,30 +624,6 @@ SOURCE=.\include\mpm_common.h
 
 SOURCE=.\server\mpm\winnt\mpm_default.h
 
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm_default.h
-InputPath=.\server\mpm\winnt\mpm_default.h
-
-".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm_default.h
-InputPath=.\server\mpm\winnt\mpm_default.h
-
-".\include\mpm_default.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm_default.h > .\include\mpm_default.h
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
