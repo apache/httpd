@@ -402,7 +402,7 @@ struct module_struct {
  * APLOG_USE_MODULE indirectly sets APLOG_MODULE_INDEX and APLOG_MARK.
  *
  * If a module should be backward compatible with versions before 2.3.6,
- * APLOG_USE_MODULE needs to be enclosed in a #ifdef APLOG_USE_MODULE block.
+ * APLOG_USE_MODULE needs to be enclosed in a ifdef APLOG_USE_MODULE block.
  *
  * @param foo name of the module symbol of the current module, without the
  *            trailing "_module" part

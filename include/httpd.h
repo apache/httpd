@@ -1494,6 +1494,7 @@ AP_DECLARE(int) ap_unescape_url(char *url);
 /**
  * Unescape a URL, but leaving %2f (slashes) escaped
  * @param url The url to unescape
+ * @param decode_slashes Whether or not slashes should be decoded
  * @return 0 on success, non-zero otherwise
  */
 AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes);
