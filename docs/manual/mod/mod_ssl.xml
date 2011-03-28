@@ -43,7 +43,7 @@ to provide the cryptography engine.</p>
 
 <section id="envvars"><title>Environment Variables</title>
 
-<p>This module can be configured to privide several items of SSL information 
+<p>This module can be configured to provide several items of SSL information 
 as additional environment variables to the SSI and CGI namespace. This
 information is not provided by default for performance reasons. (See
 <directive>SSLOptions</directive> StdEnvVars, below.) The generated variables 
