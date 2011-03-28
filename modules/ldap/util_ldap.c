@@ -668,8 +668,8 @@ static util_ldap_connection_t *
             && (l->deref == deref) && (l->secure == secureflag)
             && !compare_client_certs(dc->client_certs, l->client_certs))
         {
-            if (st->connectionPoolTTL > 0) { 
-                if (l->bound && (now - l->freed) > st->connectionPoolTTL) { 
+            if (st->connection_pool_ttl > 0) { 
+                if (l->bound && (now - l->freed) > st->connection_pool_ttl) { 
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
                                   "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago", 
                                   (now - l->freed) / APR_USEC_PER_SEC);
@@ -706,7 +706,7 @@ static util_ldap_connection_t *
                 !compare_client_certs(dc->client_certs, l->client_certs))
             {
                 /* the bind credentials have changed */
-                /* no check for connectionPoolTTL, since we are unbinding any way */
+                /* no check for connection_pool_ttl, since we are unbinding any way */
                 uldap_connection_unbind(l);
                         
                 util_ldap_strdup((char**)&(l->binddn), binddn);
@@ -776,7 +776,7 @@ static util_ldap_connection_t *
         l->client_certs = apr_array_copy_hdr(l->pool, dc->client_certs);
 
         /* whether or not to keep this connection in the pool when it's returned */
-        l->keep = (st->connectionPoolTTL == 0) ? 0 : 1;
+        l->keep = (st->connection_pool_ttl == 0) ? 0 : 1;
 
         if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) { 
             if (apr_pool_create(&(l->rebind_pool), l->pool) != APR_SUCCESS) {
@@ -2590,7 +2590,7 @@ static const char *util_ldap_set_conn_ttl(cmd_parms *cmd,
         /* reserve -1 for default value */
         timeout =  AP_LDAP_CONNPOOL_INFINITE;
     }
-    st->connectionPoolTTL = timeout;
+    st->connection_pool_ttl = timeout;
     return NULL;
 }
 
@@ -2624,7 +2624,7 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->opTimeout = apr_pcalloc(p, sizeof(struct timeval));
     st->opTimeout->tv_sec = 60;
     st->verify_svr_cert = 1;
-    st->connectionPoolTTL = AP_LDAP_CONNPOOL_DEFAULT; /* no limit */
+    st->connection_pool_ttl = AP_LDAP_CONNPOOL_DEFAULT; /* no limit */
 
     return st;
 }
@@ -2676,8 +2676,8 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->verify_svr_cert = base->verify_svr_cert;
     st->debug_level = base->debug_level;
 
-    st->connectionPoolTTL = (overrides->connectionPoolTTL == AP_LDAP_CONNPOOL_DEFAULT) ? 
-                                base->connectionPoolTTL : overrides->connectionPoolTTL;
+    st->connection_pool_ttl = (overrides->connection_pool_ttl == AP_LDAP_CONNPOOL_DEFAULT) ? 
+                                base->connection_pool_ttl : overrides->connection_pool_ttl;
 
     return st;
 }
