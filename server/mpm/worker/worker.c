@@ -1778,14 +1778,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
-            const char *pidfile = NULL;
-            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
-            if ( pidfile != NULL && unlink(pidfile) == 0)
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0,
-                             ap_server_conf,
-                             "removed PID file %s (pid=%" APR_PID_T_FMT ")",
-                             pidfile, getpid());
-
+            ap_remove_pid(pconf, ap_pid_fname);
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
                          ap_server_conf, "caught SIGTERM, shutting down");
         }
@@ -1805,14 +1798,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
-            const char *pidfile = NULL;
-            pidfile = ap_server_root_relative (pconf, ap_pid_fname);
-            if ( pidfile != NULL && unlink(pidfile) == 0)
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0,
-                             ap_server_conf,
-                             "removed PID file %s (pid=%" APR_PID_T_FMT ")",
-                             pidfile, getpid());
-
+            ap_remove_pid(pconf, ap_pid_fname);
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                          "caught " AP_SIG_GRACEFUL_STOP_STRING
                          ", shutting down gracefully");

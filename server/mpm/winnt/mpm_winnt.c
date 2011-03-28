@@ -1707,13 +1707,7 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         if (!restart)
         {
             /* Shutting down. Clean up... */
-            const char *pidfile = ap_server_root_relative (pconf, ap_pid_fname);
-
-            if (pidfile != NULL && unlink(pidfile) == 0) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS,
-                             ap_server_conf, "removed PID file %s (pid=%ld)",
-                             pidfile, GetCurrentProcessId());
-            }
+            ap_remove_pid(pconf, ap_pid_fname);
             apr_proc_mutex_destroy(start_mutex);
 
             CloseHandle(restart_event);

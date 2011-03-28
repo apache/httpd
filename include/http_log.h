@@ -560,14 +560,21 @@ AP_DECLARE(void) ap_log_command_line(apr_pool_t *p, server_rec *s);
 
 /**
  * Log the current pid of the parent process
- * @param p The pool to use for logging
+ * @param p The pool to use for processing
  * @param fname The name of the file to log to
  */
 AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *fname);
 
 /**
+ * Remove the pidfile.
+ * @param p The pool to use for processing
+ * @param fname The name of the pid file to remove
+ */
+AP_DECLARE(void) ap_remove_pid(apr_pool_t *p, const char *fname);
+
+/**
  * Retrieve the pid from a pidfile.
- * @param p The pool to use for logging
+ * @param p The pool to use for processing
  * @param filename The name of the file containing the pid
  * @param mypid Pointer to pid_t (valid only if return APR_SUCCESS)
  */
