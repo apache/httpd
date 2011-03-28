@@ -46,11 +46,6 @@
 #define DEFAULT_MIN_FREE_DAEMON 5
 #endif
 
-/* Where the main/parent process's pid is logged */
-#ifndef DEFAULT_PIDLOG
-#define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"
-#endif
-
 /* Number of requests to try to handle in a single process.  If <= 0,
  * the children don't die off.
  */

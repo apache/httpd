@@ -60,12 +60,6 @@
 #define DEFAULT_MIN_FREE_THREADS 10
 #endif
 
-/* Where the main/parent process's pid is logged */
-/*#ifndef DEFAULT_PIDLOG
-  #define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"
-  #endif
-*/
-
 /*
  * Interval, in microseconds, between scoreboard maintenance.
  */
