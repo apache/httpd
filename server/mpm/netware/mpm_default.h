@@ -67,13 +67,6 @@
 #define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
 #endif
 
-/* Number of requests to try to handle in a single process.  If <= 0,
- * the children don't die off.
- */
-#ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 0
-#endif
-
 /* Default stack size allocated for each worker thread.
  */
 #ifndef DEFAULT_THREAD_STACKSIZE

@@ -26,11 +26,6 @@
 
 static simple_core_t *g_simple_core;
 
-#ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 0
-#endif
-
-
 APLOG_USE_MODULE(mpm_simple);
 
 simple_core_t *simple_core_get()
@@ -58,7 +53,7 @@ apr_status_t simple_core_init_once(void)
     sc->mpm_state = AP_MPMQ_STARTING;
     sc->procmgr.proc_count = SIMPLE_DEF_PROC;
     sc->procmgr.thread_count = SIMPLE_DEF_THREADS;
-    sc->procmgr.max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
+    sc->procmgr.max_requests_per_child = 0; /* unlimited */
 
     sc->children = apr_hash_make(sc->pool);
     /* TODO: configurable spawning mech */
