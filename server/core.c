@@ -3799,7 +3799,7 @@ AP_INIT_TAKE1("AllowEncodedSlashes", set_allow2f, NULL, RSRC_CONF,
              "Allow URLs containing '/' encoded as '%2F'"),
 
 /* scoreboard.c directives */
-AP_INIT_TAKE1("ScoreboardFile", ap_set_scoreboard, NULL, RSRC_CONF,
+AP_INIT_TAKE1("ScoreBoardFile", ap_set_scoreboard, NULL, RSRC_CONF,
               "A file for Apache to maintain runtime process management information"),
 AP_INIT_FLAG("ExtendedStatus", ap_set_extended_status, NULL, RSRC_CONF,
              "\"On\" to track extended status information, \"Off\" to disable"),
