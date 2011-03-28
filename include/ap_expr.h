@@ -178,7 +178,8 @@ typedef const char *(ap_expr_string_func_t)(ap_expr_eval_ctx_t *ctx,
  * @param arg The argument
  * @return The functions result list of strings, may be NULL for 'empty array'
  */
-typedef apr_array_header_t *(ap_expr_list_func_t)(ap_expr_eval_ctx_t *ctx, const void *data,
+typedef apr_array_header_t *(ap_expr_list_func_t)(ap_expr_eval_ctx_t *ctx,
+                                                  const void *data,
                                                   const char *arg);
 
 /** Variable lookup function, takes no argument and returns a string
@@ -186,7 +187,8 @@ typedef apr_array_header_t *(ap_expr_list_func_t)(ap_expr_eval_ctx_t *ctx, const
  * @param data An opaque context provided by the lookup hook function
  * @return The expanded variable
  */
-typedef const char *(ap_expr_var_func_t)(ap_expr_eval_ctx_t *ctx, const void *data);
+typedef const char *(ap_expr_var_func_t)(ap_expr_eval_ctx_t *ctx,
+                                         const void *data);
 
 /** parameter struct passed to the lookup hook functions */
 typedef struct {
