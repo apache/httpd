@@ -75,7 +75,6 @@ static apr_pool_t *pconf = NULL;  /* Pool for config stuff */
 static int one_process = 0;
 static int ap_daemons_to_start = 0;
 static int ap_thread_limit = 0;
-static int ap_max_requests_per_child = 0;
 int ap_min_spare_threads = 0;
 int ap_max_spare_threads = 0;
 
