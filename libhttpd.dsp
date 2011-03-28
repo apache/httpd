@@ -199,6 +199,35 @@ SOURCE=.\include\httpd.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\os\win32\win32_config_layout.h
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/ap_config_layout.h
+InputPath=.\os\win32\win32_config_layout.h
+
+".\include\ap_config_layout.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\os\win32\win32_config_layout.h > .\include\ap_config_layout.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating include/ap_config_layout.h
+InputPath=.\os\win32\win32_config_layout.h
+
+".\include\ap_config_layout.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type .\os\win32\win32_config_layout.h > .\include\ap_config_layout.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\generators\mod_cgi.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
