@@ -350,6 +350,11 @@ AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
  */
 #define AP_ACCEPT_MUTEX_TYPE "mpm-accept"
 
+/* internal pre-config logic for MPM-related settings, callable only from
+ * core's pre-config hook
+ */
+void mpm_common_pre_config(apr_pool_t *pconf);
+  
 #ifdef __cplusplus
 }
 #endif

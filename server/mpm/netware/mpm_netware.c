@@ -987,12 +987,10 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_threads_min_free = DEFAULT_MIN_FREE_THREADS;
     ap_threads_max_free = DEFAULT_MAX_FREE_THREADS;
     ap_threads_limit = HARD_THREAD_LIMIT;
-    ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
+
+    /* override core's default thread stacksize */
     ap_thread_stacksize = DEFAULT_THREAD_STACKSIZE;
-#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-    ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
-#endif
 
     return OK;
 }
@@ -1082,7 +1080,12 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
 
 static void netware_mpm_hooks(apr_pool_t *p)
 {
-    ap_hook_pre_config(netware_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    /* Run the pre-config hook after core's so that it can override the
+     * default setting of ThreadStackSize for NetWare.
+     */
+    static const char * const predecessors[] = {"core.c", NULL};
+
+    ap_hook_pre_config(netware_pre_config, predecessors, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_config(netware_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     //ap_hook_post_config(netware_post_config, NULL, NULL, 0);
     //ap_hook_child_init(netware_child_init, NULL, NULL, APR_HOOK_MIDDLE);

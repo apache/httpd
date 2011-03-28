@@ -103,6 +103,30 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(const char *, mpm_get_name,
                             (void),
                             (), NULL)
 
+/* variables representing config directives implemented here */
+const char *ap_pid_fname;
+int ap_max_requests_per_child;
+char ap_coredump_dir[MAX_STRING_LEN];
+int ap_coredumpdir_configured;
+int ap_graceful_shutdown_timeout;
+apr_uint32_t ap_max_mem_free;
+apr_size_t ap_thread_stacksize;
+
+/* Set defaults for config directives implemented here.  This is
+ * called from core's pre-config hook, so MPMs which need to override
+ * one of these should run their pre-config hook after that of core.
+ */
+void mpm_common_pre_config(apr_pool_t *pconf)
+{
+    ap_pid_fname = DEFAULT_PIDLOG;
+    ap_max_requests_per_child = 0; /* unlimited */
+    apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+    ap_coredumpdir_configured = 0;
+    ap_graceful_shutdown_timeout = 0; /* unlimited */
+    ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+    ap_thread_stacksize = 0; /* use system default */
+}
+
 /* number of calls to wait_or_timeout between writable probes */
 #ifndef INTERVAL_OF_WRITABLE_PROBES
 #define INTERVAL_OF_WRITABLE_PROBES 10
@@ -225,7 +249,6 @@ int initgroups(const char *name, gid_t basegid)
 #endif /* def HAVE_INITGROUPS */
 
 /* standard mpm configuration handling */
-const char *ap_pid_fname = NULL;
 
 const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
                                const char *arg)
@@ -242,8 +265,6 @@ const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
     ap_pid_fname = arg;
     return NULL;
 }
-
-int ap_max_requests_per_child = 0;
 
 const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
                                     const char *arg)
@@ -263,9 +284,6 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
 
     return NULL;
 }
-
-char ap_coredump_dir[MAX_STRING_LEN];
-int ap_coredumpdir_configured;
 
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg)
@@ -295,8 +313,6 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-int ap_graceful_shutdown_timeout = 0;
-
 const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
                                           const char *arg)
 {
@@ -307,8 +323,6 @@ const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
     ap_graceful_shutdown_timeout = atoi(arg);
     return NULL;
 }
-
-apr_uint32_t ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 
 const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
                                     const char *arg)
@@ -328,8 +342,6 @@ const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
 
     return NULL;
 }
-
-apr_size_t ap_thread_stacksize = 0; /* use system default */
 
 const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
                                         const char *arg)
