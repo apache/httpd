@@ -2,7 +2,8 @@
 
 Changes with Apache 2.3.12
 
-  *) MPM helper function ap_remove_pid() added.  [Jeff Trawick]
+  *) Restore visibility of DEFAULT_PIDLOG to core and modules.  MPM 
+     helper function ap_remove_pid() added.  [Jeff Trawick]
 
   *) Enable DEFAULT_REL_RUNTIMEDIR on Windows and NetWare.  [various]
 

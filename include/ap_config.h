@@ -235,6 +235,11 @@
 #endif
 #include "ap_config_layout.h"
 
+/* Where the main/parent process's pid is logged */
+#ifndef DEFAULT_PIDLOG
+#define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"
+#endif
+
 #if defined(NETWARE)
 #define AP_NONBLOCK_WHEN_MULTI_LISTEN 1
 #endif
