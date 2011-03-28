@@ -2906,7 +2906,7 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
     }
 }
 
-PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(const char c, int set, proxy_worker *w)
+PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, proxy_worker *w)
 {
     unsigned int *status = &w->s->status;
     char flag = toupper(c);
