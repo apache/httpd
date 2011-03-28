@@ -275,6 +275,9 @@
         APLOG_USE_MODULE(foo);<br/>
         #endif
     </example>
+    <p>Note: This is absolutely required for C++-language modules.  It
+    can be skipped for C-language modules, though that breaks
+    module-specific log level support for files without it.</p>
     <p>The number of parameters of the <code>ap_log_*</code> functions and the
        definition of <code>APLOG_MARK</code> has changed. Normally, the change
        is completely transparent. However, changes are required if a
@@ -413,6 +416,15 @@
       an <code>apr_status_t</code> parameter must be provided.  Pass
       0/APR_SUCCESS if there is no such error information, or a valid
       <code>apr_status_t</code> value otherwise.</dd>
+
+      <dt><code>mpm_default.h</code>, <code>DEFAULT_LOCKFILE</code>,
+      <code>DEFAULT_THREAD_LIMIT</code>, <code>DEFAULT_PIDLOG</code>,
+      etc.</dt>
+      <dd>The header file and most of the default configuration
+      values set in it are no longer visible to modules.  (Most can
+      still be overridden at build time.)  <code>DEFAULT_PIDLOG</code>
+      and <code>DEFAULT_REL_RUNTIMEDIR</code> are now universally
+      available via <code>ap_config.h</code>.</dd>
 
       <dt><code>unixd_config</code></dt>
       <dd>This has been renamed to ap_unixd_config.</dd>
