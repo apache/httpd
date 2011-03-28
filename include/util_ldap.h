@@ -165,7 +165,7 @@ typedef struct util_ldap_state_t {
     struct timeval *opTimeout;
 
     int debug_level;                    /* SDK debug level */
-    int connectionPoolTTL;
+    apr_interval_time_t connection_pool_ttl;
 } util_ldap_state_t;
 
 /* Used to store arrays of attribute labels/values. */
