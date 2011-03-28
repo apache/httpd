@@ -674,13 +674,10 @@ static util_ldap_connection_t *
                                   "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago", 
                                   (now - l->freed) / APR_USEC_PER_SEC);
                     uldap_connection_unbind(l);
-                    /* Go ahead and use it, so we don't create more just to unbind some other old ones */
-                    break; 
+                    /* Go ahead (by falling through) and use it, so we don't create more just to unbind some other old ones */
                 }
             }
-            else { 
-                break;
-            }
+            break;
         }
 #if APR_HAS_THREADS
             /* If this connection didn't match the criteria, then we
