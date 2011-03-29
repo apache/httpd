@@ -102,6 +102,8 @@
       <li>New API to retain data across module unload/load</li>
       <li>New check_config hook</li>
       <li>New ap_process_fnmatch_configs() to process wildcards</li>
+      <li>Change ap_configfile_t, ap_cfg_getline(), ap_cfg_getc() to return error
+          code, new ap_pcfg_strerror().</li>
     </ul>
   
 
