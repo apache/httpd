@@ -79,9 +79,11 @@ performance</description>
     configuration file</p>
 <example>
     &lt;Location /server-status&gt;<br />
+    <indent>
     SetHandler server-status<br />
 <br />
     Require host example.com<br />
+    </indent>
     &lt;/Location&gt;
 </example>
 

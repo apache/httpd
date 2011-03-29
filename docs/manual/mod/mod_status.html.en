@@ -92,9 +92,11 @@ performance</td></tr>
     configuration file</p>
 <div class="example"><p><code>
     &lt;Location /server-status&gt;<br />
+    <span class="indent">
     SetHandler server-status<br />
 <br />
     Require host example.com<br />
+    </span>
     &lt;/Location&gt;
 </code></p></div>
 
