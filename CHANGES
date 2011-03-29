@@ -7,7 +7,7 @@ Changes with Apache 2.3.12
      Partial fix for PR 50824. [Stefan Fritsch]
 
   *) mod_info: Dump config to stdout during startup if -DDUMP_CONFIG is
-     specified. [Stefan Fritsch]
+     specified. PR 31956. [Stefan Fritsch]
 
   *) Restore visibility of DEFAULT_PIDLOG to core and modules.  MPM 
      helper function ap_remove_pid() added.  [Jeff Trawick]

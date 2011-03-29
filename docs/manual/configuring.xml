@@ -104,6 +104,13 @@ Server.</p>
     without starting the server by using <code>apachectl
     configtest</code> or the <code>-t</code> command line
     option.</p>
+
+    <p>You can use <module>mod_info</module>'s <code>-DDUMP_CONFIG</code> to
+    dump the configuration with all included files and environment
+    variables resolved and all comments and non-matching
+    <directive module="core" type="section">IfDefine</directive> and
+    <directive module="core" type="section">IfModule</directive> sections
+    removed.</p>
   </section>
 
   <section id="modules">
