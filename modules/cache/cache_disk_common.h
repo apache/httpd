@@ -58,8 +58,8 @@ typedef struct {
     apr_ino_t inode;
     apr_dev_t device;
     /* Does this cached request have a body? */
-    int has_body:1;
-    int header_only:1;
+    unsigned int has_body:1;
+    unsigned int header_only:1;
     /* The parsed cache control header */
     cache_control_t control;
 } disk_cache_info_t;

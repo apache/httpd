@@ -127,32 +127,32 @@ typedef struct {
     apr_time_t lockmaxage;
     apr_uri_t *base_uri;
     /** ignore client's requests for uncached responses */
-    int ignorecachecontrol:1;
+    unsigned int ignorecachecontrol:1;
     /** ignore query-string when caching */
-    int ignorequerystring:1;
+    unsigned int ignorequerystring:1;
     /** run within the quick handler */
-    int quick:1;
+    unsigned int quick:1;
     /* thundering herd lock */
-    int lock:1;
-    int x_cache:1;
-    int x_cache_detail:1;
+    unsigned int lock:1;
+    unsigned int x_cache:1;
+    unsigned int x_cache_detail:1;
     /* flag if CacheIgnoreHeader has been set */
     #define CACHE_IGNORE_HEADERS_SET   1
     #define CACHE_IGNORE_HEADERS_UNSET 0
-    int ignore_headers_set:1;
+    unsigned int ignore_headers_set:1;
     /* flag if CacheIgnoreURLSessionIdentifiers has been set */
     #define CACHE_IGNORE_SESSION_ID_SET   1
     #define CACHE_IGNORE_SESSION_ID_UNSET 0
-    int ignore_session_id_set:1;
-    int base_uri_set:1;
-    int ignorecachecontrol_set:1;
-    int ignorequerystring_set:1;
-    int quick_set:1;
-    int lock_set:1;
-    int lockpath_set:1;
-    int lockmaxage_set:1;
-    int x_cache_set:1;
-    int x_cache_detail_set:1;
+    unsigned int ignore_session_id_set:1;
+    unsigned int base_uri_set:1;
+    unsigned int ignorecachecontrol_set:1;
+    unsigned int ignorequerystring_set:1;
+    unsigned int quick_set:1;
+    unsigned int lock_set:1;
+    unsigned int lockpath_set:1;
+    unsigned int lockmaxage_set:1;
+    unsigned int x_cache_set:1;
+    unsigned int x_cache_detail_set:1;
 } cache_server_conf;
 
 typedef struct {
@@ -167,33 +167,33 @@ typedef struct {
     /* cache enabled for this location */
     apr_array_header_t *cacheenable;
     /* cache disabled for this location */
-    int disable:1;
+    unsigned int disable:1;
     /* set X-Cache headers */
-    int x_cache:1;
-    int x_cache_detail:1;
+    unsigned int x_cache:1;
+    unsigned int x_cache_detail:1;
     /* serve stale on error */
-    int stale_on_error:1;
+    unsigned int stale_on_error:1;
     /** ignore the last-modified header when deciding to cache this request */
-    int no_last_mod_ignore:1;
+    unsigned int no_last_mod_ignore:1;
     /** ignore expiration date from server */
-    int store_expired:1;
+    unsigned int store_expired:1;
     /** ignore Cache-Control: private header from server */
-    int store_private:1;
+    unsigned int store_private:1;
     /** ignore Cache-Control: no-store header from client or server */
-    int store_nostore:1;
-    int minex_set:1;
-    int maxex_set:1;
-    int defex_set:1;
-    int factor_set:1;
-    int x_cache_set:1;
-    int x_cache_detail_set:1;
-    int stale_on_error_set:1;
-    int no_last_mod_ignore_set:1;
-    int store_expired_set:1;
-    int store_private_set:1;
-    int store_nostore_set:1;
-    int enable_set:1;
-    int disable_set:1;
+    unsigned int store_nostore:1;
+    unsigned int minex_set:1;
+    unsigned int maxex_set:1;
+    unsigned int defex_set:1;
+    unsigned int factor_set:1;
+    unsigned int x_cache_set:1;
+    unsigned int x_cache_detail_set:1;
+    unsigned int stale_on_error_set:1;
+    unsigned int no_last_mod_ignore_set:1;
+    unsigned int store_expired_set:1;
+    unsigned int store_private_set:1;
+    unsigned int store_nostore_set:1;
+    unsigned int enable_set:1;
+    unsigned int disable_set:1;
 } cache_dir_conf;
 
 /* A linked-list of authn providers. */
