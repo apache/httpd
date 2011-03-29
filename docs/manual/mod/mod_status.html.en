@@ -81,6 +81,7 @@ performance</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Status Support</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">Automatic Updates</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Machine Readable Status File</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Using server-status to troubleshoot</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -133,6 +134,37 @@ performance</td></tr>
       <code>.htaccess</code>). This may have security-related
       ramifications for your site.</strong>
     </div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="troubleshoot" id="troubleshoot">Using server-status to troubleshoot</a></h2>
+    
+    
+    <p>The <code>server-status</code> page may be used as a starting
+    place for troubleshooting a situation where your server is consuming
+    all available resources (CPU or memory), and you wish to identify
+    which requests or clients are causing the problem.</p>
+
+    <p>First, ensure that you have <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> set on, so that you can see
+    the full request and client information for each child or
+    thread.</p>
+
+    <p>Now look in your process list (using <code>top</code>, or similar
+    process viewing utility) to identify the specific processes that are
+    the main culprits. Order the output of <code>top</code> by CPU
+    usage, or memory usage, depending on what problem you're trying to
+    address.</p>
+
+    <p>Reload the <code>server-status</code> poage, and look for those process
+    ids, and you'll be able to see what request is being served by that
+    process, for what client. Requests are transient, so you may need to
+    try several times before you catch it in the act, so to speak.</p>
+
+    <p>This process <em>should</em> give you some idea what client, or
+    what type of requests, are primarily responsible for your load
+    problems. Often you will identify a particular web application that
+    is misbehaving, or a particular client that is attacking your
+    site.</p>
 
 </div>
 </div>
