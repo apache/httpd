@@ -123,5 +123,37 @@ performance</description>
 
 </section>
 
+<section id="troubleshoot">
+    <title>Using server-status to troubleshoot</title>
+    
+    <p>The <code>server-status</code> page may be used as a starting
+    place for troubleshooting a situation where your server is consuming
+    all available resources (CPU or memory), and you wish to identify
+    which requests or clients are causing the problem.</p>
+
+    <p>First, ensure that you have <directive
+    module="core">ExtendedStatus</directive> set on, so that you can see
+    the full request and client information for each child or
+    thread.</p>
+
+    <p>Now look in your process list (using <code>top</code>, or similar
+    process viewing utility) to identify the specific processes that are
+    the main culprits. Order the output of <code>top</code> by CPU
+    usage, or memory usage, depending on what problem you're trying to
+    address.</p>
+
+    <p>Reload the <code>server-status<.code> poage, and look for those process
+    ids, and you'll be able to see what request is being served by that
+    process, for what client. Requests are transient, so you may need to
+    try several times before you catch it in the act, so to speak.</p>
+
+    <p>This process <em>should</em> give you some idea what client, or
+    what type of requests, are primarily responsible for your load
+    problems. Often you will identify a particular web application that
+    is misbehaving, or a particular client that is attacking your
+    site.</p>
+
+</section>
+
 </modulesynopsis>
 
