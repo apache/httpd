@@ -72,25 +72,25 @@ is today more widely used than all other web servers combined.
 The current project management committe of the Apache HTTP Server
 project (as of March, 2011) is:
 
-    Aaron Bannert       André Malo          Astrid Stolper
-    Ben Laurie          Bojan Smojver       Brad Nicholes
-    Brian Havard        Brian McCallister   Chris Darroch
-    Chuck Murcko        Colm MacCárthaigh   Dirk-Willem van Gulik
-    Doug MacEachern     Eric Covener        Erik Abele
-    Graham Dumpleton    Graham Leggett      Greg Ames
-    Greg Stein          Gregory Trubetskoy  Guenter Knauf
-    Issac Goldstand     Jeff Trawick        Jim Gallacher
-    Jim Jagielski       Joe Orton           Joe Schaefer
-    Joshua Slive        Justin Erenkrantz   Ken Coar
-    Lars Eilebrecht     Manoj Kasichainula  Marc Slemko
-    Mark J. Cox         Martin Kraemer      Maxime Petazzoni
-    Nick Kew            Nicolas Lehuen      Noirin Shirley
-    Paul Querna         Philip M. Gollucci  Ralf S. Engelschall
-    Randy Kobes         Rasmus Lerdorf      Rich Bowen
-    Roy T. Fielding     Rüdiger Plüm        Sander Striker
-    Sander Temme        Stefan Fritsch      Tony Stevenson
-    Wilfredo Sanchez    William A. Rowe Jr.
-    Yoshiki Hayashi     Victor J. Orlikowski
+    Aaron Bannert       André Malo              Astrid Stolper
+    Ben Laurie          Bojan Smojver           Brad Nicholes
+    Brian Havard        Brian McCallister       Chris Darroch
+    Chuck Murcko        Colm MacCárthaigh       Dan Poirier
+    Dirk-Willem van Gulik                       Doug MacEachern     
+    Eric Covener        Erik Abele              Graham Dumpleton    
+    Graham Leggett      Greg Ames               Greg Stein 
+    Gregory Trubetskoy  Guenter Knauf           Issac Goldstand     
+    Jeff Trawick        Jim Gallacher           Jim Jagielski      
+    Joe Orton           Joe Schaefer            Joshua Slive
+    Justin Erenkrantz   Ken Coar                Lars Eilebrecht
+    Manoj Kasichainula  Marc Slemko             Mark J. Cox
+    Martin Kraemer      Maxime Petazzoni        Nick Kew
+    Nicolas Lehuen      Noirin Shirley          Paul Querna
+    Philip M. Gollucci  Ralf S. Engelschall     Randy Kobes
+    Rasmus Lerdorf      Rich Bowen              Roy T. Fielding
+    Rüdiger Plüm        Sander Striker          Sander Temm
+    Stefan Fritsch      Tony Stevenson          Victor J. Orlikowski
+    Wilfredo Sanchez    William A. Rowe Jr.     Yoshiki Hayashi     
 
 Other major contributors
 
