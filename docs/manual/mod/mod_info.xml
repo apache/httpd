@@ -115,6 +115,13 @@ configuration</description>
     </dl>
 </section>
 
+<section id="startup"><title>Dumping the configuration on startup</title>
+    <p>If the config define <code>-DDUMP_CONFIG</code> is set,
+    <module>mod_info</module> will dump the pre-parsed configuration to
+    <code>stdout</code> during server startup. This is roughly equivalent
+    to the <code>?config</code> query.</p>
+</section>
+
 <section id="limitations"><title>Known Limitations</title>
     <p><module>mod_info</module> provides its information by reading the
     parsed configuration, rather than reading the original configuration

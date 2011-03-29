@@ -173,13 +173,17 @@
       clients which require such headers. (This affects all modules which
       use these environment variables.)</dd>
 
-      <dt><module>mod_authz_core</module>Authorization Logic Containers</dt>
+      <dt><module>mod_authz_core</module> Authorization Logic Containers</dt>
 
       <dd>Advanced authorization logic may now be specified using the
           <directive module="mod_authz_core">Require</directive> directive
           and the related container directives, such as
           <directive module="mod_authz_core"
           type="section">RequireAll</directive>.</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd><module>mod_info</module> can now dump the pre-parsed configuration
+          to stdout during server startup.</dd>
     </dl>
   </section>
 
