@@ -18,7 +18,7 @@
 # based on Ryan Bloom's make_export.pl
 
 BEGIN {
-    printf(" ("EXPPREFIX")\n")
+    printf(" (%s)\n", EXPPREFIX)
 }
 
 # List of functions that we don't support, yet??
