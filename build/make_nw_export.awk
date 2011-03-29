@@ -79,7 +79,7 @@ BEGIN {
 }
 
 /^[ \t]*(extern[ \t]+)?AP[RU]?_DECLARE_DATA .*;/ {
-    gsub(/[*;]/, "", $NF)
+    gsub(/[*;\n\r]/, "", $NF)
     gsub(/\[.*\]/, "", $NF)
     add_symbol($NF)
 }
