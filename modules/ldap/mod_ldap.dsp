@@ -105,6 +105,10 @@ SOURCE=.\util_ldap.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\util_ldap.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\util_ldap_cache.c
 # End Source File
 # Begin Source File
