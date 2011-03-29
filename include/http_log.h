@@ -124,9 +124,10 @@ extern "C" {
 #ifdef __cplusplus
 /**
  * C++ modules must invoke ::APLOG_USE_MODULE or ::AP_DECLARE_MODULE in
- * every file which uses ap_log_*.
+ * every file which uses ap_log_* before the first use of ::APLOG_MARK
+ * or ::APLOG_MODULE_INDEX.
  * (C modules *should* do that as well, to enable module-specific log
- * levels).
+ * levels. C modules need not obey the ordering, though).
  */
 #else /* __cplusplus */
 /**
