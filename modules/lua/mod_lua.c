@@ -317,8 +317,8 @@ static apr_size_t config_getstr(ap_configfile_t *cfg, char *buf,
     apr_size_t i = 0;
 
     if (cfg->getstr) {
-        const char *res = (cfg->getstr) (buf, bufsiz, cfg->param);
-        if (res) {
+        apr_status_t rc = (cfg->getstr) (buf, bufsiz, cfg->param);
+        if (rc == APR_SUCCESS) {
             i = strlen(buf);
             if (i && buf[i - 1] == '\n')
                 ++cfg->line_number;
@@ -330,8 +330,9 @@ static apr_size_t config_getstr(ap_configfile_t *cfg, char *buf,
     }
     else {
         while (i < bufsiz) {
-            int ch = (cfg->getch) (cfg->param);
-            if (ch == EOF)
+            char ch;
+            apr_status_t rc = (cfg->getch) (&ch, cfg->param);
+            if (rc != APR_SUCCESS)
                 break;
             buf[i++] = ch;
             if (ch == '\n') {

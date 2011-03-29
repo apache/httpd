@@ -766,30 +766,20 @@ AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp)
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
 }
 
+/* we can't use apr_file_* directly because of linking issues on Windows */
 static apr_status_t cfg_close(void *param)
 {
-    apr_file_t *cfp = (apr_file_t *) param;
-    return (apr_file_close(cfp));
+    return apr_file_close(param);
 }
 
-static int cfg_getch(void *param)
+static apr_status_t cfg_getch(char *ch, void *param)
 {
-    char ch;
-    apr_file_t *cfp = (apr_file_t *) param;
-    if (apr_file_getc(&ch, cfp) == APR_SUCCESS)
-        return ch;
-    return (int)EOF;
+    return apr_file_getc(ch, param);
 }
 
-static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
+static apr_status_t cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
-    apr_file_t *cfp = (apr_file_t *) param;
-    apr_status_t rv;
-    rv = apr_file_gets(buf, bufsiz, cfp);
-    if (rv == APR_SUCCESS) {
-        return buf;
-    }
-    return NULL;
+    return apr_file_gets(buf, bufsiz, param);
 }
 
 /* Open a ap_configfile_t as FILE, return open ap_configfile_t struct pointer */
@@ -864,9 +854,9 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
     new_cfg = apr_palloc(p, sizeof(*new_cfg));
     new_cfg->param = file;
     new_cfg->name = apr_pstrdup(p, name);
-    new_cfg->getch = (int (*)(void *)) cfg_getch;
-    new_cfg->getstr = (void *(*)(void *, size_t, void *)) cfg_getstr;
-    new_cfg->close = (int (*)(void *)) cfg_close;
+    new_cfg->getch = cfg_getch;
+    new_cfg->getstr = cfg_getstr;
+    new_cfg->close = cfg_close;
     new_cfg->line_number = 0;
     *ret_cfg = new_cfg;
     return APR_SUCCESS;
@@ -874,170 +864,156 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 
 
 /* Allocate a ap_configfile_t handle with user defined functions and params */
-AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p,
-                       const char *descr,
-                       void *param,
-                       int(*getch)(void *param),
-                       void *(*getstr) (void *buf, size_t bufsiz, void *param),
-                       int(*close_func)(void *param))
+AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(
+            apr_pool_t *p, const char *descr, void *param,
+            apr_status_t (*getc_func) (char *ch, void *param),
+            apr_status_t (*gets_func) (void *buf, size_t bufsize, void *param),
+            apr_status_t (*close_func) (void *param))
 {
     ap_configfile_t *new_cfg = apr_palloc(p, sizeof(*new_cfg));
-#ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                 "Opening config handler %s", descr);
-#endif
     new_cfg->param = param;
     new_cfg->name = descr;
-    new_cfg->getch = getch;
-    new_cfg->getstr = getstr;
+    new_cfg->getch = getc_func;
+    new_cfg->getstr = gets_func;
     new_cfg->close = close_func;
     new_cfg->line_number = 0;
     return new_cfg;
 }
 
 /* Read one character from a configfile_t */
-AP_DECLARE(int) ap_cfg_getc(ap_configfile_t *cfp)
+AP_DECLARE(apr_status_t) ap_cfg_getc(char *ch, ap_configfile_t *cfp)
 {
-    register int ch = cfp->getch(cfp->param);
-    if (ch == LF)
+    apr_status_t rc = cfp->getch(ch, cfp->param);
+    if (rc == APR_SUCCESS && *ch == LF)
         ++cfp->line_number;
-    return ch;
+    return rc;
+}
+
+AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
+                                          apr_status_t rc)
+{
+    char buf[MAX_STRING_LEN];
+    if (rc == APR_SUCCESS)
+        return NULL;
+    return apr_psprintf(p, "Error reading %s at line %d: %s",
+                        cfp->name, cfp->line_number,
+                        rc == APR_ENOSPC ? "Line too long"
+                                         : apr_strerror(rc, buf, sizeof(buf)));
 }
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
-AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
+AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
 {
+    apr_status_t rc;
+    char *src, *dst;
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {
-        char *src, *dst;
         char *cp;
         char *cbuf = buf;
         size_t cbufsize = bufsize;
 
         while (1) {
             ++cfp->line_number;
-            if (cfp->getstr(cbuf, cbufsize, cfp->param) == NULL)
-                return 1;
+            rc = cfp->getstr(cbuf, cbufsize, cfp->param);
+            if (rc == APR_EOF) {
+                if (cbuf != buf) {
+		    *cbuf = '\0';
+                    break;
+		}
+                else {
+                    return APR_EOF;
+		}
+            }
+            if (rc != APR_SUCCESS) {
+                return rc;
+            }
 
             /*
              *  check for line continuation,
              *  i.e. match [^\\]\\[\r]\n only
              */
             cp = cbuf;
-            while (cp < cbuf+cbufsize && *cp != '\0')
-                cp++;
+            cp += strlen(cp);
             if (cp > cbuf && cp[-1] == LF) {
                 cp--;
                 if (cp > cbuf && cp[-1] == CR)
                     cp--;
                 if (cp > cbuf && cp[-1] == '\\') {
                     cp--;
-                    if (!(cp > cbuf && cp[-1] == '\\')) {
-                        /*
-                         * line continuation requested -
-                         * then remove backslash and continue
-                         */
-                        cbufsize -= (cp-cbuf);
-                        cbuf = cp;
-                        continue;
-                    }
-                    else {
-                        /*
-                         * no real continuation because escaped -
-                         * then just remove escape character
-                         */
-                        for ( ; cp < cbuf+cbufsize && *cp != '\0'; cp++)
-                            cp[0] = cp[1];
-                    }
+                    /*
+                     * line continuation requested -
+                     * then remove backslash and continue
+                     */
+                    cbufsize -= (cp-cbuf);
+                    cbuf = cp;
+                    continue;
                 }
+            }
+            else if (cp - buf >= bufsize - 1) {
+                return APR_ENOSPC;
             }
             break;
         }
-
-        /*
-         * Leading and trailing white space is eliminated completely
-         */
-        src = buf;
-        while (apr_isspace(*src))
-            ++src;
-        /* blast trailing whitespace */
-        dst = &src[strlen(src)];
-        while (--dst >= src && apr_isspace(*dst))
-            *dst = '\0';
-        /* Zap leading whitespace by shifting */
-        if (src != buf)
-            for (dst = buf; (*dst++ = *src++) != '\0'; )
-                ;
-
-#ifdef DEBUG_CFG_LINES
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "Read config: %s", buf);
-#endif
-        return 0;
     } else {
         /* No "get string" function defined; read character by character */
-        register int c;
-        register size_t i = 0;
+        size_t i = 0;
 
-        buf[0] = '\0';
-        /* skip leading whitespace */
-        do {
-            c = cfp->getch(cfp->param);
-        } while (c == '\t' || c == ' ');
-
-        if (c == EOF)
-            return 1;
-
-        if(bufsize < 2) {
+        if (bufsize < 2) {
             /* too small, assume caller is crazy */
-            return 1;
+            return APR_EINVAL;
         }
+        buf[0] = '\0';
 
         while (1) {
-            if ((c == '\t') || (c == ' ')) {
-                buf[i++] = ' ';
-                while ((c == '\t') || (c == ' '))
-                    c = cfp->getch(cfp->param);
+            char c;
+            rc = cfp->getch(&c, cfp->param);
+            if (rc == APR_EOF) {
+                if (i > 0)
+                    break;
+                else
+                    return APR_EOF;
             }
-            if (c == CR) {
-                /* silently ignore CR (_assume_ that a LF follows) */
-                c = cfp->getch(cfp->param);
-            }
+            if (rc != APR_SUCCESS)
+                return rc;
             if (c == LF) {
-                /* increase line number and return on LF */
                 ++cfp->line_number;
-            }
-            if (c == EOF || c == 0x4 || c == LF || i >= (bufsize - 2)) {
-                /*
-                 *  check for line continuation
-                 */
+                /* check for line continuation */
                 if (i > 0 && buf[i-1] == '\\') {
                     i--;
-                    if (!(i > 0 && buf[i-1] == '\\')) {
-                        /* line is continued */
-                        c = cfp->getch(cfp->param);
-                        continue;
-                    }
-                    /* else nothing needs be done because
-                     * then the backslash is escaped and
-                     * we just strip to a single one
-                     */
+                    continue;
                 }
-                /* blast trailing whitespace */
-                while (i > 0 && apr_isspace(buf[i - 1]))
-                    --i;
-                buf[i] = '\0';
-#ifdef DEBUG_CFG_LINES
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                             "Read config: %s", buf);
-#endif
-                return 0;
+                else {
+                    break;
+                }
+            }
+            else if (i >= bufsize - 2) {
+                return APR_ENOSPC;
             }
             buf[i] = c;
             ++i;
-            c = cfp->getch(cfp->param);
         }
+	buf[i] = '\0';
     }
+
+    /*
+     * Leading and trailing white space is eliminated completely
+     */
+    src = buf;
+    while (apr_isspace(*src))
+        ++src;
+    /* blast trailing whitespace */
+    dst = &src[strlen(src)];
+    while (--dst >= src && apr_isspace(*dst))
+        *dst = '\0';
+    /* Zap leading whitespace by shifting */
+    if (src != buf)
+        memmove(buf, src, dst - src + 2);
+
+#ifdef DEBUG_CFG_LINES
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL, "Read config: '%s'", buf);
+#endif
+    return APR_SUCCESS;
 }
 
 /* Size an HTTP header field list item, as separated by a comma.
