@@ -1,8 +1,8 @@
 # Makefile for Windows NT and Windows 95/98/2000
 
 # Targets are:
-#   _apacher   - build Apache in Release mode
-#   _apached   - build Apache in Debug mode
+#   _buildr   - build Apache in Release mode
+#   _buildd   - build Apache in Debug mode
 #   installr   - build and install a Release build
 #   installd   - build and install a Debug build
 #   clean      - remove (most) generated files
@@ -57,7 +57,7 @@ USEMAK=0
 USEDSW=1
 !ENDIF
 
-default: _apacher
+default: _buildr
 
 !IF ("$(CTARGET)" == "") && ($(USESLN) == 1)
 CTARGET=/build
@@ -277,10 +277,10 @@ _browse:
 	  bscmake.exe -nologo -Iu -o Apache.bsc *.sbr
 	cd ..
 
-_apacher: 
+_buildr: 
 	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release _build
 
-_apached: 
+_buildd: 
 	@$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=D LONG=Debug   _build
 
 installr: 
