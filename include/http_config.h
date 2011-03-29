@@ -786,8 +786,9 @@ AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile
 
 /**
  * Read one char from open configfile_t, increase line number upon LF 
+ * @param ch place to store the char read
  * @param cfp The file to read from
- * @return the character read
+ * @return error status
  */
 AP_DECLARE(apr_status_t) ap_cfg_getc(char *ch, ap_configfile_t *cfp);
 
