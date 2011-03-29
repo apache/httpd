@@ -309,12 +309,14 @@
  * 20110312.1 (2.3.12-dev) Add core_dir_config.decode_encoded_slashes.
  * 20110328.0 (2.3.12-dev) change type and name of connectionPoolTTL in util_ldap_state_t 
                            connectionPoolTTL (connection_pool_ttl, int->apr_interval_t)
+ * 20110329.0 (2.3.12-dev) Change single-bit signed fields to unsigned in
+ *                         proxy and cache interfaces.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20110328
+#define MODULE_MAGIC_NUMBER_MAJOR 20110329
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
 

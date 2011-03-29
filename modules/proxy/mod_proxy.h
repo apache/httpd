@@ -163,15 +163,15 @@ typedef struct {
     ap_slotmem_instance_t *slot;  /* balancers shm data - runtime */
     ap_slotmem_provider_t *storage;
 
-    int req_set:1;
-    int viaopt_set:1;
-    int recv_buffer_size_set:1;
-    int io_buffer_size_set:1;
-    int maxfwd_set:1;
-    int timeout_set:1;
-    int badopt_set:1;
-    int proxy_status_set:1;
-    int source_address_set:1;
+    unsigned int req_set:1;
+    unsigned int viaopt_set:1;
+    unsigned int recv_buffer_size_set:1;
+    unsigned int io_buffer_size_set:1;
+    unsigned int maxfwd_set:1;
+    unsigned int timeout_set:1;
+    unsigned int badopt_set:1;
+    unsigned int proxy_status_set:1;
+    unsigned int source_address_set:1;
 } proxy_server_conf;
 
 
@@ -204,12 +204,12 @@ typedef struct {
      * the error page, (so it will look like a error
      * returned from the rest of the system
      */
-    int error_override:1;
-    int preserve_host:1;
-    int preserve_host_set:1;
-    int error_override_set:1;
-    int alias_set:1;
-    int add_forwarded_headers:1;
+    unsigned int error_override:1;
+    unsigned int preserve_host:1;
+    unsigned int preserve_host_set:1;
+    unsigned int error_override_set:1;
+    unsigned int alias_set:1;
+    unsigned int add_forwarded_headers:1;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
@@ -235,11 +235,11 @@ typedef struct {
     void         *forward;     /* opaque forward proxy data */
     apr_uint32_t flags;        /* Connection flags */
     apr_port_t   port;
-    int          is_ssl:1;
-    int          close:1;      /* Close 'this' connection */
-    int          need_flush:1; /* Flag to decide whether we need to flush the
+    unsigned int is_ssl:1;
+    unsigned int close:1;      /* Close 'this' connection */
+    unsigned int need_flush:1; /* Flag to decide whether we need to flush the
                                 * filter chain or not */
-    int          inreslist:1;  /* connection in apr_reslist? */
+    unsigned int inreslist:1;  /* connection in apr_reslist? */
 } proxy_conn_rec;
 
 typedef struct {

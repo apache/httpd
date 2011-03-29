@@ -314,8 +314,8 @@ typedef struct {
     apr_array_header_t *rewriteconds; /* the RewriteCond entries (temp.)    */
     apr_array_header_t *rewriterules; /* the RewriteRule entries            */
     server_rec   *server;             /* the corresponding server indicator */
-    int state_set:1;
-    int options_set:1;
+    unsigned int state_set:1;
+    unsigned int options_set:1;
 } rewrite_server_conf;
 
 typedef struct {
@@ -325,9 +325,9 @@ typedef struct {
     apr_array_header_t *rewriterules; /* the RewriteRule entries           */
     char         *directory;          /* the directory where it applies    */
     const char   *baseurl;            /* the base-URL  where it applies    */
-    int state_set:1;
-    int options_set:1;
-    int baseurl_set:1;
+    unsigned int state_set:1;
+    unsigned int options_set:1;
+    unsigned int baseurl_set:1;
 } rewrite_perdir_conf;
 
 /* the (per-child) cache structures.

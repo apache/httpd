@@ -54,7 +54,7 @@ typedef struct disk_cache_object {
     apr_table_t *headers_out;    /* Output headers to save */
     apr_off_t offset;            /* Max size to set aside */
     apr_time_t timeout;          /* Max time to set aside */
-    int done:1;                  /* Is the attempt to cache complete? */
+    unsigned int done:1;         /* Is the attempt to cache complete? */
 } disk_cache_object_t;
 
 
@@ -82,10 +82,10 @@ typedef struct {
     apr_off_t maxfs;             /* maximum file size for cached files */
     apr_off_t readsize;          /* maximum data to attempt to cache in one go */
     apr_time_t readtime;         /* maximum time taken to cache in one go */
-    int minfs_set:1;
-    int maxfs_set:1;
-    int readsize_set:1;
-    int readtime_set:1;
+    unsigned int minfs_set:1;
+    unsigned int maxfs_set:1;
+    unsigned int readsize_set:1;
+    unsigned int readtime_set:1;
 } disk_cache_dir_conf;
 
 #endif /*MOD_CACHE_DISK_H*/
