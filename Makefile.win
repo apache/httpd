@@ -350,12 +350,6 @@ _build:
 	cd modules\ldap
 	 $(MAKE) $(MAKEOPT) -f mod_ldap.mak        CFG="mod_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-# build session prior to auth_form
-	cd modules\session
-	 $(MAKE) $(MAKEOPT) -f mod_session.mak        CFG="mod_session - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_session_cookie.mak CFG="mod_session_cookie - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_session_dbd.mak    CFG="mod_session_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
 	cd modules\database
 	 $(MAKE) $(MAKEOPT) -f mod_dbd.mak         CFG="mod_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -509,6 +503,11 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_rr.mak CFG="mod_lbmethod_rr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 !ENDIF
+	cd modules\session
+	 $(MAKE) $(MAKEOPT) -f mod_session.mak        CFG="mod_session - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_session_cookie.mak CFG="mod_session_cookie - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_session_dbd.mak    CFG="mod_session_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd modules\slotmem
 	 $(MAKE) $(MAKEOPT) -f mod_slotmem_plain.mak  CFG="mod_slotmem_plain - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_slotmem_shm.mak    CFG="mod_slotmem_shm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
