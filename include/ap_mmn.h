@@ -311,6 +311,8 @@
                            connectionPoolTTL (connection_pool_ttl, int->apr_interval_t)
  * 20110329.0 (2.3.12-dev) Change single-bit signed fields to unsigned in
  *                         proxy and cache interfaces.
+ *                         Change ap_configfile_t/ap_cfg_getline()/
+ *                         ap_cfg_getc() API, add ap_pcfg_strerror()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

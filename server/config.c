@@ -1169,6 +1169,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
     char *bracket;
     const char *retval;
     ap_directive_t *sub_tree = NULL;
+    apr_status_t rc;
 
     /* Since this function can be called recursively, allocate
      * the temporary 8k string buffer from the temp_pool rather
@@ -1177,7 +1178,8 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
     l = apr_palloc(temp_pool, MAX_STRING_LEN);
 
     bracket = apr_pstrcat(temp_pool, orig_directive + 1, ">", NULL);
-    while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
+    while ((rc = ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))
+           == APR_SUCCESS) {
         if (!memcmp(l, "</", 2)
             && (strcasecmp(l + 2, bracket) == 0)
             && (*curr_parent == NULL)) {
@@ -1196,6 +1198,8 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
             sub_tree = *current;
         }
     }
+    if (rc != APR_EOF && rc != APR_SUCCESS)
+        return ap_pcfg_strerror(temp_pool, parms->config_file, rc);
 
     *current = sub_tree;
     return NULL;
@@ -1290,6 +1294,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
     char *l = apr_palloc (temp_pool, MAX_STRING_LEN);
     const char *errmsg;
     ap_directive_t **last_ptr = NULL;
+    apr_status_t rc;
 
     if (current != NULL) {
         /* If we have to traverse the whole tree again for every included
@@ -1313,7 +1318,8 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
         }
     }
 
-    while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
+    while ((rc = ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))
+           == APR_SUCCESS) {
         errmsg = ap_build_config_sub(p, temp_pool, l, parms,
                                      &current, &curr_parent, conftree);
         if (errmsg != NULL)
@@ -1327,6 +1333,8 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
             *conftree = current;
         }
     }
+    if (rc != APR_EOF && rc != APR_SUCCESS)
+        return ap_pcfg_strerror(temp_pool, parms->config_file, rc);
 
     if (curr_parent != NULL) {
         errmsg = "";
@@ -1499,8 +1507,10 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
     char l[MAX_STRING_LEN];
     const char *args;
     char *cmd_name;
+    apr_status_t rc;
 
-    while(!(ap_cfg_getline(l, MAX_STRING_LEN, cmd->config_file))) {
+    while((rc = ap_cfg_getline(l, MAX_STRING_LEN, cmd->config_file))
+          == APR_SUCCESS) {
 #if RESOLVE_ENV_PER_TOKEN
         args = l;
 #else
@@ -1533,6 +1543,8 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
             }
         }
     }
+    if (rc != APR_EOF && rc != APR_SUCCESS)
+        return ap_pcfg_strerror(cmd->temp_pool, cmd->config_file, rc);
 
     return apr_pstrcat(cmd->pool, "Expected </",
                        directive + 1, "> before end of configuration",
@@ -1592,31 +1604,31 @@ typedef struct {
 
 
 /* arr_elts_getstr() returns the next line from the string array. */
-static void *arr_elts_getstr(void *buf, size_t bufsiz, void *param)
+static apr_status_t arr_elts_getstr(void *buf, size_t bufsiz, void *param)
 {
     arr_elts_param_t *arr_param = (arr_elts_param_t *)param;
+    char *elt;
 
     /* End of array reached? */
     if (++arr_param->curr_idx > arr_param->array->nelts)
-        return NULL;
+        return APR_EOF;
 
     /* return the line */
-    apr_cpystrn(buf,
-                ((char **)arr_param->array->elts)[arr_param->curr_idx - 1],
-                bufsiz);
-
-    return buf;
+    elt = ((char **)arr_param->array->elts)[arr_param->curr_idx - 1];
+    if (apr_cpystrn(buf, elt, bufsiz) - (char *)buf >= bufsiz - 1)
+        return APR_ENOSPC;
+    return APR_SUCCESS;
 }
 
 
 /* arr_elts_close(): dummy close routine (makes sure no more lines can be read) */
-static int arr_elts_close(void *param)
+static apr_status_t arr_elts_close(void *param)
 {
     arr_elts_param_t *arr_param = (arr_elts_param_t *)param;
 
     arr_param->curr_idx = arr_param->array->nelts;
 
-    return 0;
+    return APR_SUCCESS;
 }
 
 static const char *process_command_config(server_rec *s,
@@ -1700,9 +1712,12 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
     ap_cfg_closefile(cfp);
 
     if (error) {
-        return apr_psprintf(p, "Syntax error on line %d of %s: %s",
-                            parms.err_directive->line_num,
-                            parms.err_directive->filename, error);
+        if (parms.err_directive)
+            return apr_psprintf(p, "Syntax error on line %d of %s: %s",
+                                parms.err_directive->line_num,
+                                parms.err_directive->filename, error);
+        else
+            return error;
     }
 
     return NULL;
@@ -1956,10 +1971,11 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
 
     errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
     if (errmsg) {
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
-                     "Syntax error on line %d of %s:",
-                     parms.err_directive->line_num,
-                     parms.err_directive->filename);
+        if (parms.err_directive)
+            ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
+                          "Syntax error on line %d of %s:",
+                          parms.err_directive->line_num,
+                          parms.err_directive->filename);
         ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
                      "%s", errmsg);
         return HTTP_INTERNAL_SERVER_ERROR;

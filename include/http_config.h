@@ -257,13 +257,18 @@ struct command_struct {
 /** Common structure for reading of config files / passwd files etc. */
 typedef struct ap_configfile_t ap_configfile_t;
 struct ap_configfile_t {
-    int (*getch) (void *param);	    /**< a getc()-like function */
-    void *(*getstr) (void *buf, size_t bufsiz, void *param);
-				    /**< a fgets()-like function */
-    int (*close) (void *param);	    /**< a close handler function */
-    void *param;                    /**< the argument passed to getch/getstr/close */
-    const char *name;               /**< the filename / description */
-    unsigned line_number;           /**< current line number, starting at 1 */
+    /**< an apr_file_getc()-like function */
+    apr_status_t (*getch) (char *ch, void *param);
+    /**< an apr_file_gets()-like function */
+    apr_status_t (*getstr) (void *buf, size_t bufsiz, void *param);
+    /**< a close handler function */
+    apr_status_t (*close) (void *param);
+    /**< the argument passed to getch/getstr/close */
+    void *param;
+    /**< the filename / description */
+    const char *name;
+    /**< current line number, starting at 1 */
+    unsigned line_number;
 };
 
 /**
@@ -765,25 +770,26 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, 
     const char *descr,
     void *param,
-    int(*getc_func)(void*),
-    void *(*gets_func) (void *buf, size_t bufsiz, void *param),
-    int(*close_func)(void *param));
+    apr_status_t (*getc_func) (char *ch, void *param),
+    apr_status_t (*gets_func) (void *buf, size_t bufsiz, void *param),
+    apr_status_t (*close_func) (void *param));
 
 /**
- * Read one line from open ap_configfile_t, strip LF, increase line number
+ * Read one line from open ap_configfile_t, strip leading and trailing
+ * whitespace, increase line number
  * @param buf place to store the line read
  * @param bufsize size of the buffer
  * @param cfp File to read from
- * @return 1 on success, 0 on failure
+ * @return error status, APR_ENOSPC if bufsize is too small for the line
  */
-AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp);
+AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp);
 
 /**
  * Read one char from open configfile_t, increase line number upon LF 
  * @param cfp The file to read from
  * @return the character read
  */
-AP_DECLARE(int) ap_cfg_getc(ap_configfile_t *cfp);
+AP_DECLARE(apr_status_t) ap_cfg_getc(char *ch, ap_configfile_t *cfp);
 
 /**
  * Detach from open ap_configfile_t, calling the close handler
@@ -791,6 +797,16 @@ AP_DECLARE(int) ap_cfg_getc(ap_configfile_t *cfp);
  * @return 1 on sucess, 0 on failure
  */
 AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp);
+
+/**
+ * Convert a return value from ap_cfg_getline or ap_cfg_getc to a user friendly
+ * string.
+ * @param p The pool to allocate the string from
+ * @param cfp The config file
+ * @return The error string, NULL if rc == APR_SUCCESS
+ */
+AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
+                                          apr_status_t rc);
 
 /**
  * Read all data between the current &lt;foo&gt; and the matching &lt;/foo&gt;.  All
