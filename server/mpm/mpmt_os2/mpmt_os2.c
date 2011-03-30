@@ -450,13 +450,6 @@ static apr_status_t mpmt_os2_query(int query_code, int *result, apr_status_t *rv
 
 
 
-static const char *mpmt_os2_note_child_killed(int childnum)
-{
-  ap_scoreboard_image->parent[childnum].pid = 0;
-  return APR_SUCCESS;
-}
-
-
 
 static const char *mpmt_os2_get_name(void)
 {
@@ -539,7 +532,6 @@ static void mpmt_os2_hooks(apr_pool_t *p)
     ap_hook_mpm(mpmt_os2_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(mpmt_os2_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(mpmt_os2_get_name, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_mpm_note_child_killed(mpmt_os2_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 

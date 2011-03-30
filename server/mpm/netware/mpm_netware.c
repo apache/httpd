@@ -251,12 +251,6 @@ static int netware_query(int query_code, int *result, apr_status_t *rv)
     return OK;
 }
 
-static apr_status_t netware_note_child_killed(int childnum)
-{
-    ap_scoreboard_image->parent[childnum].pid = 0;
-    return APR_SUCCESS;
-}
-
 static const char *netware_get_name(void)
 {
     return "NetWare";
@@ -1092,7 +1086,6 @@ static void netware_mpm_hooks(apr_pool_t *p)
     //ap_hook_open_logs(netware_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     ap_hook_mpm(netware_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(netware_query, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_mpm_note_child_killed(netware_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(netware_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
