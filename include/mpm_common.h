@@ -321,8 +321,6 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
 
-AP_DECLARE(apr_status_t) ap_mpm_note_child_killed(int childnum);
-
 AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p, server_rec *s))
 
 /* register modules that undertake to manage system security */
@@ -335,7 +333,11 @@ AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
  */
 AP_DECLARE_HOOK(int, mpm_query, (int query_code, int *result, apr_status_t *rv))
 
-/* child specified by index has been killed */
+/* child specified by index has been killed; MPMs which use
+ * ap_reclaim_child_processes() or ap_relieve_child_processes() must
+ * implement this in order to update the scoreboard and handle any
+ * MPM-specific actions
+ */
 AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum))
 
 /* register the specified callback */
