@@ -81,34 +81,35 @@ extern "C" {
 #define AP_SIG_GRACEFUL_STOP_STRING "SIGWINCH"
 
 /**
+ * Callback function used for ap_reclaim_child_processes() and
+ * ap_relieve_child_processes().  The callback function will be
+ * called for each terminated child process.
+ */
+typedef void ap_reclaim_callback_fn_t(int childnum);
+
+/**
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
  * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
- * @note This function requires that a hook is implemented by the MPM: <pre>
- *  mpm_note_child_killed -- Note the child died in the scoreboard
- * </pre>
  *
  * @note The MPM child processes which are reclaimed are those listed
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
-void ap_reclaim_child_processes(int terminate);
+void ap_reclaim_child_processes(int terminate,
+                                ap_reclaim_callback_fn_t *mpm_callback);
 
 /**
  * Catch any child processes that have been spawned by the parent process
  * which have exited. This includes processes registered as "other_children".
  *
- * @note This function requires that a hook is implemented by the MPM: <pre>
- *  mpm_note_child_killed -- Note the child died in the scoreboard
- * </pre>
- *
  * @note The MPM child processes which are relieved are those listed
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
-void ap_relieve_child_processes(void);
+void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback);
 
 /**
  * Tell ap_reclaim_child_processes() and ap_relieve_child_processes() about 
@@ -332,13 +333,6 @@ AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
  * modules which intercede for specific query codes should DECLINE for others.
  */
 AP_DECLARE_HOOK(int, mpm_query, (int query_code, int *result, apr_status_t *rv))
-
-/* child specified by index has been killed; MPMs which use
- * ap_reclaim_child_processes() or ap_relieve_child_processes() must
- * implement this in order to update the scoreboard and handle any
- * MPM-specific actions
- */
-AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum))
 
 /* register the specified callback */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,

@@ -65,7 +65,6 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(drop_privileges)
     APR_HOOK_LINK(mpm)
     APR_HOOK_LINK(mpm_query)
-    APR_HOOK_LINK(mpm_note_child_killed)
     APR_HOOK_LINK(mpm_register_timed_callback)
     APR_HOOK_LINK(mpm_get_name)
 )
@@ -77,7 +76,6 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(drop_privileges)
     APR_HOOK_LINK(mpm)
     APR_HOOK_LINK(mpm_query)
-    APR_HOOK_LINK(mpm_note_child_killed)
     APR_HOOK_LINK(mpm_register_timed_callback)
     APR_HOOK_LINK(mpm_get_name)
 )
@@ -93,9 +91,6 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm_query,
                             (int query_code, int *result, apr_status_t *_rv),
                             (query_code, result, _rv), DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_note_child_killed,
-                            (int childnum),
-                            (childnum), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
                             (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton),
                             (t, cbfn, baton), APR_ENOTIMPL)

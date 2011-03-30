@@ -165,7 +165,8 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     return 0;
 }
 
-void ap_reclaim_child_processes(int terminate)
+void ap_reclaim_child_processes(int terminate,
+                                ap_reclaim_callback_fn_t *mpm_callback)
 {
     apr_time_t waittime = 1024 * 16;
     int i;
@@ -228,7 +229,7 @@ void ap_reclaim_child_processes(int terminate)
             }
 
             if (reclaim_one_pid(pid, action_table[cur_action].action)) {
-                ap_run_mpm_note_child_killed(i);
+                mpm_callback(i);
             }
             else {
                 ++not_dead_yet;
@@ -255,7 +256,7 @@ void ap_reclaim_child_processes(int terminate)
              action_table[cur_action].action != GIVEUP);
 }
 
-void ap_relieve_child_processes(void)
+void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback)
 {
     int i;
     extra_process_t *cur_extra;
@@ -273,7 +274,7 @@ void ap_relieve_child_processes(void)
         }
 
         if (reclaim_one_pid(pid, DO_NOTHING)) {
-            ap_run_mpm_note_child_killed(i);
+            mpm_callback(i);
         }
     }
 
