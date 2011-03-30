@@ -228,7 +228,7 @@ void ap_reclaim_child_processes(int terminate)
             }
 
             if (reclaim_one_pid(pid, action_table[cur_action].action)) {
-                ap_mpm_note_child_killed(i);
+                ap_run_mpm_note_child_killed(i);
             }
             else {
                 ++not_dead_yet;
@@ -273,7 +273,7 @@ void ap_relieve_child_processes(void)
         }
 
         if (reclaim_one_pid(pid, DO_NOTHING)) {
-            ap_mpm_note_child_killed(i);
+            ap_run_mpm_note_child_killed(i);
         }
     }
 
