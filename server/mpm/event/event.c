@@ -424,10 +424,9 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
     return OK;
 }
 
-static apr_status_t event_note_child_killed(int childnum)
+static void event_note_child_killed(int childnum)
 {
     ap_scoreboard_image->parent[childnum].pid = 0;
-    return APR_SUCCESS;
 }
 
 static const char *event_get_name(void)
@@ -2256,7 +2255,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
          * Kill child processes, tell them to call child_exit, etc...
          */
         ap_event_pod_killpg(pod, ap_daemons_limit, FALSE);
-        ap_reclaim_child_processes(1);  /* Start with SIGTERM */
+        ap_reclaim_child_processes(1, /* Start with SIGTERM */
+                                   event_note_child_killed);
 
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
@@ -2276,7 +2276,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         /* Close our listeners, and then ask our children to do same */
         ap_close_listeners();
         ap_event_pod_killpg(pod, ap_daemons_limit, TRUE);
-        ap_relieve_child_processes();
+        ap_relieve_child_processes(event_note_child_killed);
 
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
@@ -2298,7 +2298,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
             apr_sleep(apr_time_from_sec(1));
 
             /* Relieve any children which have now exited */
-            ap_relieve_child_processes();
+            ap_relieve_child_processes(event_note_child_killed);
 
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
@@ -2316,7 +2316,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
          * really dead.
          */
         ap_event_pod_killpg(pod, ap_daemons_limit, FALSE);
-        ap_reclaim_child_processes(1);
+        ap_reclaim_child_processes(1, event_note_child_killed);
 
         return DONE;
     }
@@ -2356,7 +2356,8 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
          */
         ap_event_pod_killpg(pod, ap_daemons_limit, FALSE);
 
-        ap_reclaim_child_processes(1);  /* Start with SIGTERM */
+        ap_reclaim_child_processes(1,  /* Start with SIGTERM */
+                                   event_note_child_killed);
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                      "SIGHUP received.  Attempting to restart");
     }
@@ -2720,7 +2721,6 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_check_config(event_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm(event_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(event_query, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_mpm_note_child_killed(event_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_register_timed_callback(event_register_timed_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(event_get_name, NULL, NULL, APR_HOOK_MIDDLE);

@@ -313,6 +313,9 @@
  *                         proxy and cache interfaces.
  *                         Change ap_configfile_t/ap_cfg_getline()/
  *                         ap_cfg_getc() API, add ap_pcfg_strerror()
+ *                         Axe mpm_note_child_killed hook, change
+ *                         ap_reclaim_child_process and ap_recover_child_process
+ *                         interfaces.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

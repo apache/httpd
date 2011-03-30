@@ -306,10 +306,9 @@ static int prefork_query(int query_code, int *result, apr_status_t *rv)
     return OK;
 }
 
-static apr_status_t prefork_note_child_killed(int childnum)
+static void prefork_note_child_killed(int childnum)
 {
     ap_scoreboard_image->parent[childnum].pid = 0;
-    return APR_SUCCESS;
 }
 
 static const char *prefork_get_name(void)
@@ -1059,7 +1058,8 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         if (ap_unixd_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGTERM");
         }
-        ap_reclaim_child_processes(1);          /* Start with SIGTERM */
+        ap_reclaim_child_processes(1, /* Start with SIGTERM */
+                                   prefork_note_child_killed);
 
         /* cleanup pid file on normal shutdown */
         ap_remove_pid(pconf, ap_pid_fname);
@@ -1093,7 +1093,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         }
 
         /* Allow each child which actually finished to exit */
-        ap_relieve_child_processes();
+        ap_relieve_child_processes(prefork_note_child_killed);
 
         /* cleanup pid file */
         ap_remove_pid(pconf, ap_pid_fname);
@@ -1112,7 +1112,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             sleep(1);
 
             /* Relieve any children which have now exited */
-            ap_relieve_child_processes();
+            ap_relieve_child_processes(prefork_note_child_killed);
 
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
@@ -1180,7 +1180,8 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         if (ap_unixd_killpg(getpgrp(), SIGHUP) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGHUP");
         }
-        ap_reclaim_child_processes(0);          /* Not when just starting up */
+        ap_reclaim_child_processes(0, /* Not when just starting up */
+                                   prefork_note_child_killed);
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                     "SIGHUP received.  Attempting to restart");
     }
@@ -1415,7 +1416,6 @@ static void prefork_hooks(apr_pool_t *p)
     ap_hook_check_config(prefork_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm(prefork_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(prefork_query, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_mpm_note_child_killed(prefork_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(prefork_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
