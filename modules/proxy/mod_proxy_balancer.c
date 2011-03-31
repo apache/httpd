@@ -1007,6 +1007,10 @@ static int balancer_handler(request_rec *r)
         }
         if ((val = apr_table_get(params, "w_status_D"))) {
             ap_proxy_set_wstatus('D', atoi(val), wsel);
+            /* if enabling, we need to reset all lb params */
+            if (bsel && !(atoi(val))) {
+                bsel->s->need_reset = 1;
+            }
         }
         if ((val = apr_table_get(params, "w_status_H"))) {
             ap_proxy_set_wstatus('H', atoi(val), wsel);
@@ -1025,13 +1029,15 @@ static int balancer_handler(request_rec *r)
         int ival;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "settings balancer params");
         if ((val = apr_table_get(params, "b_lbm"))) {
-            if (strlen(val) < (sizeof(bsel->s->lbpname)-1)) {
+            if ((strlen(val) < (sizeof(bsel->s->lbpname)-1)) &&
+                strcmp(val, bsel->s->lbpname)) {
                 proxy_balancer_method *lbmethod;
-                lbmethod = ap_lookup_provider(PROXY_LBMETHOD, bsel->s->lbpname, "0");
+                lbmethod = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
                 if (lbmethod) {
                     PROXY_STRNCPY(bsel->s->lbpname, val);
                     bsel->lbmethod = lbmethod;
                     bsel->s->wupdated = apr_time_now();
+                    bsel->s->need_reset = 1;
                 }
             }
         }
