@@ -13,12 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#
 # Based on apr's make_export.awk, which is
 # based on Ryan Bloom's make_export.pl
+#
 
 BEGIN {
-    printf(" (%s)\n", EXPPREFIX)
+}
+
+function add_symbol(sym_name) {
+    sub(" ", "", sym_name)
+    exports[++idx] = sym_name
 }
 
 # List of functions that we don't support, yet??
@@ -84,14 +88,31 @@ BEGIN {
     add_symbol($NF)
 }
 
-#END {
-#    printf("\n\n#found: %d symbols.\n", found)
-#}
 
-function add_symbol(sym_name) {
-    found++
-    sub (" ", "", sym_name)
-    printf(" %s,\n", sym_name)
+END {
+    printf("Added %d symbols to export list.\n", idx) > "/dev/stderr"
+    # sort symbols with shell sort
+    increment = int(idx / 2)
+    while (increment > 0) {
+        for (i = increment+1; i <= idx; i++) {
+            j = i
+            temp = exports[i]
+            while ((j >= increment+1) && (exports[j-increment] > temp)) {
+                exports[j] = exports[j-increment]
+                j -= increment
+            }
+            exports[j] = temp
+        }
+        if (increment == 2)
+            increment = 1
+        else
+            increment = int(increment*5/11)
+    }
+    # print the array
+    printf(" (%s)\n", EXPPREFIX)
+    while (x < idx - 1) {
+        printf(" %s,\n", exports[++x])
+    }
+    printf(" %s\n", exports[++x])
 }
-
 
