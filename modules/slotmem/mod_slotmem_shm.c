@@ -207,7 +207,6 @@ static apr_status_t cleanup_slotmem(void *param)
 
     if (*mem) {
         ap_slotmem_instance_t *next = *mem;
-        apr_pool_t *p = next->gpool;
         while (next) {
             if (AP_SLOTMEM_IS_PERSIST(next)) {
                 store_slotmem(next);
@@ -215,11 +214,6 @@ static apr_status_t cleanup_slotmem(void *param)
             apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
         }
-        apr_pool_destroy(p);
-    } else {
-        /* If shared mem was never called, then just remove
-         * the global pool */
-        apr_pool_destroy(gpool);
     }
     return APR_SUCCESS;
 }
@@ -572,7 +566,7 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
         }
     }
     if (i >= slot->desc.num) {
-        return APR_ENOSHMAVAIL;
+        return APR_EINVAL;
     }
     *inuse = 1;
     *id = i;
@@ -623,7 +617,9 @@ static const ap_slotmem_provider_t *slotmem_shm_getstorage(void)
 /* initialise the global pool */
 static void slotmem_shm_initgpool(apr_pool_t *p)
 {
-    gpool = p;
+    if (!gpool && p) {
+        gpool = p;
+    }
 }
 
 /* Add the pool_clean routine */
