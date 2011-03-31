@@ -808,6 +808,8 @@ AP_DECLARE(int) ap_state_query(int query_code);
 #define AP_SQ_MAIN_STATE        0
   /** are we going to serve requests or are we just testing/dumping config */
 #define AP_SQ_RUN_MODE          1
+    /** generation of the top-level apache parent */
+#define AP_SQ_CONFIG_GEN        2
 
 /*
  * return values for ap_state_query()

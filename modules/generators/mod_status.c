@@ -390,7 +390,9 @@ static int status_handler(request_rec *r)
                              ap_scoreboard_image->global->restart_time,
                              DEFAULT_TIME_FORMAT, 0),
                   "</dt>\n", NULL);
-        ap_rprintf(r, "<dt>Parent Server Generation: %d</dt>\n",
+        ap_rprintf(r, "<dt>Parent Server Config. Generation: %d</dt>\n",
+                   ap_state_query(AP_SQ_CONFIG_GEN));
+        ap_rprintf(r, "<dt>Parent Server MPM Generation: %d</dt>\n",
                    (int)mpm_generation);
         ap_rputs("<dt>Server uptime: ", r);
         show_time(r, up_time);

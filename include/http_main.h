@@ -51,6 +51,8 @@ AP_DECLARE_DATA extern apr_pool_t *ap_pglobal;
 AP_DECLARE_DATA extern int ap_main_state;
 /** run mode (normal, config test, config dump, ...) */
 AP_DECLARE_DATA extern int ap_run_mode;
+/** run mode (normal, config test, config dump, ...) */
+AP_DECLARE_DATA extern int ap_config_generation;
 
 /* for -C, -c and -D switches */
 /** An array of all -C directives.  These are processed before the server's
