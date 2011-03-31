@@ -15,7 +15,7 @@ SUBDIRS = \
 # paths to tools
 #
 
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files
@@ -129,7 +129,7 @@ NLM_THREAD_NAME	= $(NLM_NAME)
 
 #
 # If this is specified, it will override VERSION value in 
-# $(AP_WORK)\build\NWGNUenvironment.inc
+# $(AP_WORK)/build/NWGNUenvironment.inc
 #
 NLM_VERSION	= 
 
@@ -142,12 +142,12 @@ NLM_STACK_SIZE	= 8192
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	= _LibCPrelude
+NLM_ENTRY_SYM	=
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	= _LibCPostlude
+NLM_EXIT_SYM	=
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -157,7 +157,7 @@ NLM_CHECK_SYM	=
 #
 # If this is specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
+NLM_FLAGS	=
  
 #
 # If this is specified it will be linked in with the XDCData option in the def 
@@ -195,7 +195,7 @@ FILES_nlm_objs := $(patsubst %.c,$(OBJDIR)/%.o,$(wildcard *.c))
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	libcpre.o \
+	$(PRELUDE) \
 	$(OSSLLIB)/crypto.lib \
 	$(OSSLLIB)/ssl.lib \
 	$(EOLIST)
@@ -229,7 +229,7 @@ FILE_nlm_copyright =
 #
 FILES_nlm_Ximports = \
 	@libc.imp \
-	@$(APR)/aprlib.imp \
+	@aprlib.imp \
 	@httpd.imp \
 	GetProcessSwitchCount \
 	RunningProcess \
@@ -266,7 +266,7 @@ nlms :: libs $(TARGET_nlm)
 
 #
 # Updated this target to create necessary directories and copy files to the 
-# correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
+# correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
 	copy $(OBJDIR)\mod_ssl.nlm $(INSTALL)\$(BASEDIR)\modules\*.*
@@ -293,6 +293,6 @@ ssl_expr_scan.c : ssl_expr_scan.l
 # in this makefile
 #
 
-include $(AP_WORK)\build\NWGNUtail.inc
+include $(APBUILD)/NWGNUtail.inc
 
 

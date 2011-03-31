@@ -14,9 +14,9 @@ endif
 SUBDIRS = \
 	aaa \
 	cache \
-	dav\main \
-	dav\fs \
-	dav\lock \
+	dav/main \
+	dav/fs \
+	dav/lock \
 	echo \
 	generators \
 	loggers \
@@ -65,7 +65,7 @@ endif
 # paths to tools
 #
 
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files

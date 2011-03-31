@@ -3,6 +3,7 @@
 #
 
 SUBDIRS = \
+	$(APR_WORK)/build \
 	$(EOLIST) 
 
 #
@@ -10,76 +11,74 @@ SUBDIRS = \
 # paths to tools
 #
 
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files
 
 FILES_prebuild_headers = \
-	$(APR)/include/apr.h \
-	$(APRUTIL)/include/apu.h \
-	$(APRUTIL)/include/apr_ldap.h \
 	$(NWOS)/test_char.h \
 	$(PCRE)/config.h \
 	$(PCRE)/pcre.h \
 	$(EOLIST) 
     
-nlms :: $(NWOS)/httpd.imp $(NWOS)/chartables.c
+nlms :: libs $(NWOS)/httpd.imp $(DAV)/main/dav.imp
+
+libs :: chkapr $(NWOS)/chartables.c
+
+$(DAV)/main/dav.imp : make_nw_export.awk $(DAV)/main/mod_dav.h
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
-	@echo Generating $(subst /,\,$@)
-	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ | sort >$@
+	@echo $(DL)GEN  $@$(DL)
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
     
 nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
-	@echo Generating $(subst /,\,$@)
+	@echo $(DL)GEN  $@$(DL)
 	$(CC) $< @cc.opt
-	
-cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NWGNUtail.inc $(AP_WORK)\build\NWGNUhead.inc
-	$(CHK) $@ $(DEL) $@
-	@echo -P >> $@
-	@echo -EP >> $@
-	@echo -nosyspath >> $@
-	@echo -w nocmdline >> $@
-	@echo $(DEFINES) >> $@
-	@echo -DCORE_PRIVATE >> $@
-	@echo -I..\include >> $@
-	@echo -I..\modules\http >> $@
-	@echo -I..\modules\aaa >> $@
-	@echo -I..\os\netware >> $@
-	@echo -I..\server\mpm\netware >> $@
-	@echo -I$(APR)\include >> $@
-	@echo -I$(APRUTIL)\include >> $@
-	@echo -ir $(NOVELLLIBC) >> $@
 
-$(APR)/include/%.h: $(subst /,\,$(APR))\include\%.hnw
-	@echo Creating $(subst /,\,$@)
-	copy $< $(subst /,\,$(APR))\include\$(@F)
+cc.opt : NWGNUmakefile $(APBUILD)/NWGNUenvironment.inc $(APBUILD)/NWGNUtail.inc $(APBUILD)/NWGNUhead.inc
+	@echo $(DL)-P$(DL)> $@
+	@echo $(DL)-EP$(DL)>> $@
+	@echo $(DL)-nosyspath$(DL)>> $@
+	@echo $(DL)-w nocmdline$(DL)>> $@
+	@echo $(DL)$(DEFINES)$(DL)>> $@
+	@echo $(DL)-DCORE_PRIVATE$(DL) >> $@
+	@echo $(DL)-I$(SRC)/include$(DL)>> $@
+	@echo $(DL)-I$(HTTPD)$(DL)>> $@
+	@echo $(DL)-I$(STDMOD)/aaa$(DL)>> $@
+	@echo $(DL)-I$(NWOS)$(DL)>> $@
+	@echo $(DL)-I$(SERVER)/mpm/netware$(DL)>> $@
+	@echo $(DL)-I$(APR)/include$(DL)>> $@
+	@echo $(DL)-I$(APRUTIL)/include$(DL)>> $@
+	@echo $(DL)-ir $(NOVELLLIBC)$(DL)>> $@
 
-$(APRUTIL)/include/%.h: $(subst /,\,$(APRUTIL))\include\%.hnw
-	@echo Creating $(subst /,\,$@)
-	copy $< $(subst /,\,$(APRUTIL))\include\$(@F)
+$(PCRE)/%.h: $(PCRE)/%.h.generic
+	@echo Creating $@
+	$(call COPY,$<,$@)
 
-$(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
-	@echo Creating $(subst /,\,$@)
-	copy $< $(subst /,\,$(PCRE))\$(@F)
+$(PCRE)/%.h: $(PCRE)/%.hw
+	@echo Creating $@
+	$(call COPY,$<,$@)
 
 ifneq "$(BUILDTOOL_AS_NLM)" "1"
 
-$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c $(FILES_prebuild_headers)
-	@echo Creating $(subst /,\,$@)
-	@$< $@
+$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c
+	@echo $(DL)GEN  $@$(DL)
+	$< $@
 
-%.exe: $(PCRE)/%.c
-	@echo Creating Build Helper $@
-	@$(WIN_CC) $(WIN_CFLAGS) $< -o $@
+%.exe: $(PCRE)/%.c $(PCRE)/config.h $(PCRE)/pcre.h
+	@echo $(DL)Creating Build Helper $@$(DL)
+	$(HOST_CC) $(HOST_CFLAGS) -DHAVE_CONFIG_H $< -o $@
 
-$(NWOS)/test_char.h: gen_test_char.exe $(AP_WORK)/server/gen_test_char.c
-	@echo Creating $(subst /,\,$@)
-	@$< > $@
+$(NWOS)/test_char.h: gen_test_char.exe $(SERVER)/gen_test_char.c
+	@echo $(DL)GEN  $@$(DL)
+	$< > $@
 
-%.exe: $(AP_WORK)/server/%.c
-	@echo Creating Build Helper $@
-	@$(WIN_CC) $(WIN_CFLAGS) -DCROSS_COMPILE $< -o $@
+%.exe: $(SERVER)/%.c
+	@echo $(DL)Creating Build Helper $@$(DL)
+	$(HOST_CC) $(HOST_CFLAGS) -DCROSS_COMPILE $< -o $@
 
 else
 
@@ -94,24 +93,32 @@ endif
 endif
 
 #
+# Check for minimum APR version
+#
+chkapr: $(APR)/build/nw_ver.awk $(APR)/include/apr_version.h
+	@echo $(DL)Checking for APR version...$(DL)
+	$(AWK) -v WANTED=$(APR_WANTED) -f $^
+
+#
 # You can use this target if all that is needed is to copy files to the
 # installation area
 #
 install :: nlms FORCE
 
 clean ::
-	$(CHK) nw_export.i                                 $(DEL) nw_export.i
-	$(CHK) cc.opt                                      $(DEL) cc.opt
-	$(CHK) NWGNUversion.inc                            $(DEL) NWGNUversion.inc
-	$(CHK) $(subst /,\,$(PCRE))\config.h               $(DEL) $(subst /,\,$(PCRE))\config.h
-	$(CHK) $(subst /,\,$(PCRE))\pcre.h                 $(DEL) $(subst /,\,$(PCRE))\pcre.h
-	$(CHK) $(subst /,\,$(NWOS))\httpd.imp              $(DEL) $(subst /,\,$(NWOS))\httpd.imp
-	$(MAKE) -C $(APR) -f NWGNUmakefile clean
+	$(call DEL,$(SRC)/include/ap_config_layout.h)
+	$(call DEL,$(PCRE)/config.h)
+	$(call DEL,$(PCRE)/pcre.h)
+	$(call DEL,$(DAV)/main/dav.imp)
+	$(call DEL,$(NWOS)/httpd.imp)
+	$(call DEL,nw_export.i)
+	$(call DEL,cc.opt)
+	$(call DEL,NWGNUversion.inc)
 ifneq "$(BUILDTOOL_AS_NLM)" "1"
-	$(CHK) $(subst /,\,$(NWOS))\chartables.c           $(DEL) $(subst /,\,$(NWOS))\chartables.c
-	$(CHK) $(subst /,\,$(NWOS))\test_char.h            $(DEL) $(subst /,\,$(NWOS))\test_char.h
-	$(CHK) dftables.exe                                $(DEL) dftables.exe
-	$(CHK) gen_test_char.exe                           $(DEL) gen_test_char.exe
+	$(call DEL,$(NWOS)/chartables.c)
+	$(call DEL,$(NWOS)/test_char.h)
+	$(call DEL,dftables.exe)
+	$(call DEL,gen_test_char.exe)
 endif
 
 #
@@ -119,5 +126,5 @@ endif
 # in this makefile
 #
 
-include $(AP_WORK)\build\NWGNUtail.inc
+include $(APBUILD)/NWGNUtail.inc
     
