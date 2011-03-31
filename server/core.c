@@ -112,6 +112,7 @@ static apr_table_t *server_config_defined_vars = NULL;
 
 AP_DECLARE_DATA int ap_main_state = AP_SQ_MS_INITIAL_STARTUP;
 AP_DECLARE_DATA int ap_run_mode = AP_SQ_RM_UNKNOWN;
+AP_DECLARE_DATA int ap_config_generation = 1;
 
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
@@ -4368,6 +4369,8 @@ AP_DECLARE(int) ap_state_query(int query)
         return ap_main_state;
     case AP_SQ_RUN_MODE:
         return ap_run_mode;
+    case AP_SQ_CONFIG_GEN:
+        return ap_config_generation;
     default:
         return AP_SQ_NOT_SUPPORTED;
     }

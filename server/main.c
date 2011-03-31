@@ -686,6 +686,7 @@ int main(int argc, const char * const argv[])
     apr_pool_destroy(ptemp);
 
     for (;;) {
+        ap_config_generation++;
         ap_main_state = AP_SQ_MS_DESTROY_CONFIG;
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
