@@ -43,6 +43,10 @@ ifeq "$(NLM_EXIT_SYM)" ""
 NLM_EXIT_SYM = _LibCPostlude
 endif
 
+ifeq "$(NLM_VERSION)" ""
+NLM_VERSION = $(VERSION)
+endif
+
 #
 # Create dependency lists based on the files available
 #
@@ -282,11 +286,7 @@ endif
 	@echo $(DL)threadname "$(NLM_THREAD_NAME)"$(DL)>> $(@:.opt=.def)
 	@echo $(DL)screenname "$(NLM_SCREEN_NAME)"$(DL)>> $(@:.opt=.def)
 	@echo $(DL)stacksize $(subst K,000,$(subst k,K,$(strip $(NLM_STACK_SIZE))))$(DL)>> $(@:.opt=.def)
-ifneq "$(NLM_VERSION)" ""
-	@echo $(DL)version $(NLM_VERSION)$(DL)>> $(@:.opt=.def)
-else
-	@echo $(DL)version $(VERSION)$(DL)>> $(@:.opt=.def)
-endif
+	@echo $(DL)version $(NLM_VERSION) $(DL)>> $(@:.opt=.def)
 	@echo $(DL)start $(NLM_ENTRY_SYM)$(DL)>> $(@:.opt=.def)
 	@echo $(DL)exit $(NLM_EXIT_SYM)$(DL)>> $(@:.opt=.def)
 ifneq "$(NLM_CHECK_SYM)" ""
