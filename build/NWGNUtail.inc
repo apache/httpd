@@ -116,13 +116,11 @@ endif
 ifeq "$(words $(strip $(TARGET_nlm)))" "1"
 
 $(OBJDIR)/%.o: %.c $(OBJDIR)/$(NLM_NAME)_cc.opt
-#	@echo Compiling $<
 	@echo $(DL)CC   $<$(DL)
 	$(CC) -o $@ $< @$(word 2, $^)
 
 $(OBJDIR)/$(NLM_NAME)_cc.opt: $(CCOPT_DEPENDS)
 	$(call DEL,$@)
-#	@echo Generating $@
 	@echo $(DL)GEN  $@$(DL)
 ifneq "$(strip $(CFLAGS))" ""
 	@echo $(DL)$(CFLAGS)$(DL)>> $@
@@ -144,13 +142,11 @@ ifneq "$(strip $(XDEFINES))" ""
 endif
 
 $(OBJDIR)/%.o: %.cpp $(OBJDIR)/$(NLM_NAME)_cpp.opt
-#	@echo Compiling $<
 	@echo $(DL)CC   $<$(DL)
 	$(CC) -o $@ $< @$(word 2, $^)
 
 $(OBJDIR)/$(NLM_NAME)_cpp.opt: $(CPPOPT_DEPENDS)
 	$(call DEL,$@)
-#	@echo Generating $@
 	@echo $(DL)GEN  $@$(DL)
 ifneq "$(strip $(CFLAGS))" ""
 	@echo $(DL)$(CFLAGS)$(DL)>> $@
@@ -183,14 +179,12 @@ ifeq "$(words $(strip $(TARGET_lib)))" "1"
 
 $(TARGET_lib) : $(OBJDIR)/$(LIB_NAME)_lib.lst
 	$(call DEL,$@)
-#	@echo Generating $@
 	@echo $(DL)AR   $@$(DL)
 	$(LIB) -o $@ @$<
 
 $(OBJDIR)/$(LIB_NAME)_lib.lst: $($(LIB_NAME)_LIBLST_DEPENDS)
 	$(call DEL,$@)
 ifneq "$(strip $(FILES_lib_objs))" ""
-#	@echo Generating $@
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL)$(FILES_lib_objs)$(DL)>> $@
 endif
@@ -211,7 +205,6 @@ endif
 ifeq "$(words $(strip $(TARGET_nlm)))" "1"
 
 $(TARGET_nlm) : $(FILES_nlm_objs) $(FILES_nlm_libs) $(OBJDIR)/$(NLM_NAME)_link.opt
-#	@echo Linking $@
 	@echo $(DL)LINK $@$(DL)
 	$(LINK) @$(OBJDIR)/$(NLM_NAME)_link.opt
 
@@ -221,7 +214,6 @@ $(TARGET_nlm) : $(FILES_nlm_objs) $(FILES_nlm_libs) $(OBJDIR)/$(NLM_NAME)_link.o
 $(OBJDIR)/$(NLM_NAME)_link.opt : $($(NLM_NAME)_LINKOPT_DEPENDS)
 	$(call DEL,$@)
 	$(call DEL,$(@:.opt=.def))
-#	@echo Generating $@
 	@echo $(DL)GEN  $@$(DL)
 	@echo $(DL)-warnings off$(DL)>> $@
 	@echo $(DL)-zerobss$(DL)>> $@
