@@ -1006,9 +1006,10 @@ static int balancer_handler(request_rec *r)
             ap_proxy_set_wstatus('N', atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_D"))) {
+            int was_usable = PROXY_WORKER_IS_USABLE(wsel);
             ap_proxy_set_wstatus('D', atoi(val), wsel);
             /* if enabling, we need to reset all lb params */
-            if (bsel && !(atoi(val))) {
+            if (!was_usable && PROXY_WORKER_IS_USABLE(wsel)) {
                 bsel->s->need_reset = 1;
             }
         }
@@ -1225,7 +1226,7 @@ static int balancer_handler(request_rec *r)
                 "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
                 "<th>Factor</th><th>Set</th><th align='center'>Status</th>"
-                "<th>Elected</th><th>To</th><th>From</th>"
+                "<th>Elected</th><th>Busy</th><th>Load</th><th>To</th><th>From</th>"
                 "</tr>\n", r);
 
             workers = (proxy_worker **)balancer->workers->elts;
@@ -1246,7 +1247,9 @@ static int balancer_handler(request_rec *r)
                 ap_rprintf(r, "<td align='center'>%d</td><td align='center'>", worker->s->lbset);
                 ap_rvputs(r, ap_proxy_parse_wstatus(r->pool, worker), NULL);
                 ap_rputs("</td>", r);
-                ap_rprintf(r, "<td align='center'>%" APR_SIZE_T_FMT "</td><td align='center'>", worker->s->elected);
+                ap_rprintf(r, "<td align='center'>%" APR_SIZE_T_FMT "</td>", worker->s->elected);
+                ap_rprintf(r, "<td align='center'>%" APR_SIZE_T_FMT "</td>", worker->s->busy);
+                ap_rprintf(r, "<td align='center'>%d</td><td align='center'>", worker->s->lbstatus);
                 ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
                 ap_rputs("</td><td align='center'>", r);
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
