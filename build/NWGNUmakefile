@@ -29,11 +29,11 @@ libs :: chkapr $(NWOS)/chartables.c
 
 $(DAV)/main/dav.imp : make_nw_export.awk $(DAV)/main/mod_dav.h
 	@echo $(DL)GEN  $@$(DL)
-	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ | $(SORT) >$@
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo $(DL)GEN  $@$(DL)
-	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ | $(SORT) >$@
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ >$@
     
 nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
 	@echo $(DL)GEN  $@$(DL)

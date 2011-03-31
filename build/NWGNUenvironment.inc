@@ -132,7 +132,6 @@ WIN_CC	= mwcc
 
 # Setup build tools
 AWK	= awk
-SORT	= sort
 
 # Setup distribution tools
 ZIP	= zip -qr9
