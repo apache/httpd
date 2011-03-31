@@ -977,6 +977,8 @@ static int balancer_handler(request_rec *r)
     /* First set the params */
     if (wsel && ok2change) {
         const char *val;
+        int was_usable = PROXY_WORKER_IS_USABLE(wsel);
+
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "settings worker params");
 
         if ((val = apr_table_get(params, "w_lf"))) {
@@ -1006,12 +1008,7 @@ static int balancer_handler(request_rec *r)
             ap_proxy_set_wstatus('N', atoi(val), wsel);
         }
         if ((val = apr_table_get(params, "w_status_D"))) {
-            int was_usable = PROXY_WORKER_IS_USABLE(wsel);
             ap_proxy_set_wstatus('D', atoi(val), wsel);
-            /* if enabling, we need to reset all lb params */
-            if (!was_usable && PROXY_WORKER_IS_USABLE(wsel)) {
-                bsel->s->need_reset = 1;
-            }
         }
         if ((val = apr_table_get(params, "w_status_H"))) {
             ap_proxy_set_wstatus('H', atoi(val), wsel);
@@ -1021,6 +1018,10 @@ static int balancer_handler(request_rec *r)
             if (ival >= 0 && ival <= 99) {
                 wsel->s->lbset = ival;
              }
+        }
+        /* if enabling, we need to reset all lb params */
+        if (bsel && !was_usable && PROXY_WORKER_IS_USABLE(wsel)) {
+            bsel->s->need_reset = 1;
         }
 
     }
