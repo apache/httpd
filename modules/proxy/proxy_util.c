@@ -3002,6 +3002,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
             }
         }
     }
+    if (b->s->need_reset) {
+        if (b->lbmethod && b->lbmethod->reset)
+            b->lbmethod->reset(b, s);
+        b->s->need_reset = 0;
+    }
     b->wupdated = b->s->wupdated;
     return APR_SUCCESS;
 }
