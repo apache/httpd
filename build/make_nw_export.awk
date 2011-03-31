@@ -13,35 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-#
 # Based on apr's make_export.awk, which is
 # based on Ryan Bloom's make_export.pl
+#
 
 BEGIN {
-    printf(" ("EXPPREFIX")\n")
+}
+
+function add_symbol(sym_name) {
+    sub(" ", "", sym_name)
+    exports[++idx] = sym_name
 }
 
 # List of functions that we don't support, yet??
 #/ap_some_name/{next}
 
-function add_symbol (sym_name) {
-	if (count) {
-		found++
-	}
-    gsub (/ /, "", sym_name)
-	line = line sym_name ",\n"
-
-	if (count == 0) {
-		printf(" %s", line)
-		line = ""
-	}
-}
-
-/^[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
-    sub("[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
+/^[ \t]*(AP|DAV)([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
+    sub("[ \t]*(AP|DAV)([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
     sub("[(].*", "")
     sub("([^ ]* (^([ \t]*[(])))+", "")
-
     add_symbol($0)
     next
 }
@@ -51,10 +41,22 @@ function add_symbol (sym_name) {
     symbol = args[2]
     sub("^[ \t]+", "", symbol)
     sub("[ \t]+$", "", symbol)
-
     add_symbol("ap_hook_" symbol)
     add_symbol("ap_hook_get_" symbol)
     add_symbol("ap_run_" symbol)
+    next
+}
+
+/^[ \t]*AP[RU]?_DECLARE_EXTERNAL_HOOK[^(]*[(][^)]*/ {
+    split($0, args, ",")
+    prefix = args[1]
+    sub("^.*[(]", "", prefix)
+    symbol = args[4]
+    sub("^[ \t]+", "", symbol)
+    sub("[ \t]+$", "", symbol)
+    add_symbol(prefix "_hook_" symbol)
+    add_symbol(prefix "_hook_get_" symbol)
+    add_symbol(prefix "_run_" symbol)
     next
 }
 
@@ -79,13 +81,37 @@ function add_symbol (sym_name) {
     next
 }
 
-/^[ \t]*(extern[ \t]+)?AP[RU]?_DECLARE_DATA .*;$/ {
-       varname = $NF;
-       gsub( /[*;]/, "", varname);
-       gsub( /\[.*\]/, "", varname);
-       add_symbol(varname);
+/^[ \t]*(extern[ \t]+)?AP[RU]?_DECLARE_DATA .*;/ {
+    gsub(/[*;\n\r]/, "", $NF)
+    gsub(/\[.*\]/, "", $NF)
+    add_symbol($NF)
 }
 
-#END {
-#	printf(" %s", line)
-#}
+
+END {
+    printf("Added %d symbols to export list.\n", idx) > "/dev/stderr"
+    # sort symbols with shell sort
+    increment = int(idx / 2)
+    while (increment > 0) {
+        for (i = increment+1; i <= idx; i++) {
+            j = i
+            temp = exports[i]
+            while ((j >= increment+1) && (exports[j-increment] > temp)) {
+                exports[j] = exports[j-increment]
+                j -= increment
+            }
+            exports[j] = temp
+        }
+        if (increment == 2)
+            increment = 1
+        else
+            increment = int(increment*5/11)
+    }
+    # print the array
+    printf(" (%s)\n", EXPPREFIX)
+    while (x < idx - 1) {
+        printf(" %s,\n", exports[++x])
+    }
+    printf(" %s\n", exports[++x])
+}
+

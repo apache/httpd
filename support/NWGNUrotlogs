@@ -8,7 +8,7 @@
 #
 
 ifndef EnvironmentDefined
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 endif
 
 #
@@ -113,7 +113,7 @@ NLM_SCREEN_NAME	= DEFAULT
 
 #
 # If this is specified, it will override VERSION value in 
-# $(AP_WORK)\build\NWGNUenvironment.inc
+# $(AP_WORK)/build/NWGNUenvironment.inc
 #
 NLM_VERSION	=
 
@@ -126,12 +126,12 @@ NLM_STACK_SIZE	= 98304
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	= _LibCPrelude
+NLM_ENTRY_SYM	=
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	= _LibCPostlude
+NLM_EXIT_SYM	=
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -176,7 +176,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	libcpre.o \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
@@ -207,7 +207,7 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
-	@$(APR)/aprlib.imp \
+	@aprlib.imp \
 	@libc.imp \
 	$(EOLIST)
  
@@ -234,7 +234,7 @@ nlms :: libs $(TARGET_nlm)
 
 #
 # Updated this target to create necessary directories and copy files to the 
-# correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
+# correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
 
@@ -247,6 +247,6 @@ install :: nlms FORCE
 # in this makefile
 #
 
-include $(AP_WORK)\build\NWGNUtail.inc
+include $(APBUILD)/NWGNUtail.inc
 
 

@@ -45,7 +45,7 @@ SUBDIRS = \
 # paths to tools
 #
 
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files
@@ -165,7 +165,7 @@ NLM_SCREEN_NAME = Apache $(VERSION_STR) for NetWare
 
 #
 # If this is specified, it will override VERSION value in
-# $(AP_WORK)\build\NWGNUenvironment.inc
+# $(AP_WORK)/build/NWGNUenvironment.inc
 #
 NLM_VERSION	=
 
@@ -178,12 +178,12 @@ NLM_STACK_SIZE	= 65536
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	= _LibCPrelude
+NLM_ENTRY_SYM	=
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	= _LibCPostlude
+NLM_EXIT_SYM	=
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -281,7 +281,7 @@ endif
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	libcpre.o \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
@@ -313,7 +313,7 @@ FILE_nlm_copyright =
 #
 FILES_nlm_Ximports = \
 	@netware.imp \
-	@$(APR)/aprlib.imp \
+	@aprlib.imp \
 	@libc.imp \
 	GetCurrentAddressSpace \
 	$(EOLIST)
@@ -328,7 +328,7 @@ endif
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	@$(NWOS)/httpd.imp \
+	@httpd.imp \
 	$(EOLIST)
 
 #
@@ -348,7 +348,7 @@ nlms :: libs $(TARGET_nlm)
 
 #
 # Updated this target to create necessary directories and copy files to the
-# correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
+# correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms instscripts FORCE
 	-copy $(OBJDIR)\$(NLM_NAME).nlm  $(INSTALL)\$(BASEDIR)\*.*
@@ -414,8 +414,8 @@ vpath %.c os/netware:server/mpm/netware:srclib/pcre
 # in this makefile
 #
 
-include $(AP_WORK)\build\NWGNUtail.inc
+include $(APBUILD)/NWGNUtail.inc
 
-include $(AP_WORK)\build\NWGNUscripts.inc
+include $(AP_WORK)/build/NWGNUscripts.inc
 
 

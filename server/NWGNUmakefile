@@ -11,7 +11,7 @@ SUBDIRS = \
 # paths to tools
 #
 
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files
@@ -112,7 +112,7 @@ NLM_THREAD_NAME	= genchars
 
 #
 # If this is specified, it will override VERSION value in 
-# $(AP_WORK)\build\NWGNUenvironment.inc
+# $(AP_WORK)/build/NWGNUenvironment.inc
 #
 NLM_VERSION	=
 
@@ -124,12 +124,12 @@ NLM_STACK_SIZE	= 8192
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	=_LibCPrelude 
+NLM_ENTRY_SYM	=
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	=_LibCPostlude 
+NLM_EXIT_SYM	=
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -178,7 +178,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-	libcpre.o \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
@@ -247,5 +247,5 @@ install :: nlms FORCE
 # in this makefile
 #
 
-include $(AP_WORK)\build\NWGNUtail.inc
+include $(APBUILD)/NWGNUtail.inc
                           
