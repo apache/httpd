@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) mod_proxy_fcgi: Add support for 'ProxyErrorOverride on' PR 50913.
+     [Mark Montague <mark catseye.org>, Jim Jagielski]
+
   *) core: Change the APIs of ap_cfg_getline() and ap_cfg_getc() to return an
      error code. Abort with a nice error message if a config line is too long.
      Partial fix for PR 50824. [Stefan Fritsch]
