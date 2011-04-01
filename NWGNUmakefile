@@ -357,6 +357,8 @@ FILES_lib_objs = \
 	$(OBJDIR)/chartables.o \
 	$(EOLIST)
 
+XDEFINES += -DHAVE_CONFIG_H
+
 endif
 
 #
@@ -440,7 +442,7 @@ prebuild :: FORCE
 
 vpath %.c server:modules/arch/netware:modules/http:modules/aaa:modules/mappers
 vpath %.c modules/generators:modules/metadata:modules/filters:modules/loggers
-vpath %.c os/netware:server/mpm/netware:srclib/pcre
+vpath %.c os/netware:server/mpm/netware:$(PCRE)
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined

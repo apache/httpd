@@ -49,9 +49,9 @@ ifneq "$(wildcard $(LDAPSDK)/inc/ldap.h)" "$(LDAPSDK)/inc/ldap.h"
 $(error LDAPSDK does not point to a valid Novell CLDAP SDK) 
 endif
 
-#ifndef PCRESRC
+ifndef PCRESRC
 PCRESRC = $(AP_WORK)/srclib/pcre
-#endif
+endif
 ifneq "$(wildcard $(PCRESRC)/pcre-config.in)" "$(PCRESRC)/pcre-config.in"
 $(error PCRESRC does not point to a valid PCRE source tree) 
 endif
