@@ -421,19 +421,16 @@ enum {
   HDR_STATE_DONE_WITH_HEADERS
 };
 
-/* Try to parse the script headers in the response from the back end fastcgi
- * server.  Assumes that the contents of READBUF have already been added to
- * the end of OB.  STATE holds the current header parsing state for this
+/* Try to find the end of the script headers in the response from the back
+ * end fastcgi server. STATE holds the current header parsing state for this
  * request.
  *
- * Returns -1 on error, 0 if it can't find the end of the headers, and 1 if
- * it found the end of the headers and scans them successfully. */
+ * Returns 0 if it can't find the end of the headers, and 1 if it found the
+ * end of the headers. */
 static int handle_headers(request_rec *r,
                           int *state,
-                          char *readbuf,
-                          apr_bucket_brigade *ob)
+                          char *readbuf)
 {
-    conn_rec *c = r->connection;
     const char *itr = readbuf;
 
     while (*itr) {
@@ -478,28 +475,7 @@ static int handle_headers(request_rec *r,
     }
 
     if (*state == HDR_STATE_DONE_WITH_HEADERS) {
-        int status = ap_scan_script_header_err_brigade(r, ob, NULL);
-        if (status != OK) {
-            apr_bucket *b;
-
-            r->status = status;
-
-            apr_brigade_cleanup(ob);
-
-            b = apr_bucket_eos_create(c->bucket_alloc);
-
-            APR_BRIGADE_INSERT_TAIL(ob, b);
-
-            ap_pass_brigade(r->output_filters, ob);
-
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                         "proxy: FCGI: Error parsing script headers");
-
-            return -1;
-        }
-        else {
-            return 1;
-        }
+        return 1;
     }
 
     return 0;
@@ -566,12 +542,13 @@ static void dump_header_to_log(request_rec *r, unsigned char fheader[],
 #endif
 }
 
-static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
-                             int request_id)
+static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
+                             request_rec *r, int request_id)
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0;
     apr_status_t rv = APR_SUCCESS;
+    int script_error_status = HTTP_OK;
     conn_rec *c = r->connection;
     struct iovec vec[2];
     fcgi_header header;
@@ -758,23 +735,51 @@ recv_again:
                     APR_BRIGADE_INSERT_TAIL(ob, b);
 
                     if (! seen_end_of_headers) {
-                        int st = handle_headers(r, &header_state, readbuf, ob);
+                        int st = handle_headers(r, &header_state, readbuf);
 
                         if (st == 1) {
+                            int status;
                             seen_end_of_headers = 1;
 
-                            rv = ap_pass_brigade(r->output_filters, ob);
-                            if (rv != APR_SUCCESS) {
+                            status = ap_scan_script_header_err_brigade(r, ob,
+                                NULL);
+                            /* suck in all the rest */
+                            if (status != OK) {
+                                apr_bucket *tmp_b;
+                                apr_brigade_cleanup(ob);
+                                tmp_b = apr_bucket_eos_create(c->bucket_alloc);
+                                APR_BRIGADE_INSERT_TAIL(ob, tmp_b);
+                                ap_pass_brigade(r->output_filters, ob);
+                                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                                    "proxy: FCGI: Error parsing script headers");
+                                r->status = status;
+                                rv = APR_EINVAL;
                                 break;
                             }
 
+                            if (conf->error_override &&
+                                ap_is_HTTP_ERROR(r->status)) {
+                                /*
+                                 * set script_error_status to discard
+                                 * everything after the headers
+                                 */
+                                script_error_status = r->status;
+                                /*
+                                 * prevent ap_die() from treating this as a
+                                 * recursive error, initially:
+                                 */
+                                r->status = HTTP_OK;
+                            }
+
+                            if (script_error_status == HTTP_OK) {
+                                rv = ap_pass_brigade(r->output_filters, ob);
+                                if (rv != APR_SUCCESS) {
+                                    break;
+                                }
+                            }
                             apr_brigade_cleanup(ob);
 
                             apr_pool_clear(setaside_pool);
-                        }
-                        else if (st == -1) {
-                            rv = APR_EINVAL;
-                            break;
                         }
                         else {
                             /* We're still looking for the end of the
@@ -790,9 +795,11 @@ recv_again:
                          * but that could be a huge amount of data; so we pass
                          * along smaller chunks
                          */
-                        rv = ap_pass_brigade(r->output_filters, ob);
-                        if (rv != APR_SUCCESS) {
-                            break;
+                        if (script_error_status == HTTP_OK) {
+                            rv = ap_pass_brigade(r->output_filters, ob);
+                            if (rv != APR_SUCCESS) {
+                                break;
+                            }
                         }
                         apr_brigade_cleanup(ob);
                     }
@@ -806,13 +813,13 @@ recv_again:
                 } else {
                     /* XXX what if we haven't seen end of the headers yet? */
 
-                    b = apr_bucket_eos_create(c->bucket_alloc);
-
-                    APR_BRIGADE_INSERT_TAIL(ob, b);
-
-                    rv = ap_pass_brigade(r->output_filters, ob);
-                    if (rv != APR_SUCCESS) {
-                        break;
+                    if (script_error_status == HTTP_OK) {
+                        b = apr_bucket_eos_create(c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(ob, b);
+                        rv = ap_pass_brigade(r->output_filters, ob);
+                        if (rv != APR_SUCCESS) {
+                            break;
+                        }
                     }
 
                     /* XXX Why don't we cleanup here?  (logic from AJP) */
@@ -856,6 +863,10 @@ recv_again:
     apr_brigade_destroy(ib);
     apr_brigade_destroy(ob);
 
+    if (script_error_status != HTTP_OK) {
+        ap_die(script_error_status, r); /* send ErrorDocument */
+    }
+
     return rv;
 }
 
@@ -898,7 +909,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     }
 
     /* Step 3: Read records from the back end server and handle them. */
-    rv = dispatch(conn, r, request_id);
+    rv = dispatch(conn, conf, r, request_id);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: FCGI: Error dispatching request to %s:",
