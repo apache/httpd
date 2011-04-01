@@ -279,6 +279,9 @@ install :: nlms FORCE
 vpath %.c $(AP_WORK)/modules/arch/netware
 
 # Make sure that the build doesn't attempt to regenerate the shipping files.
+# On Windows we use 'copy /b file.ext +,,' to assign the current time and date
+# to a file without modifying the file (the TOUCH macro uses this) - see also:
+# http://technet.microsoft.com/en-us/library/bb490886.aspx
 ssl_expr_parse.h : ssl_expr_parse.y
 	$(call TOUCH, $@)
 
