@@ -132,6 +132,7 @@ WIN_CC	= mwcc
 
 # Setup build tools
 AWK	= awk
+TOUCH	= touch
 
 # Setup distribution tools
 ZIP	= zip -qr9
