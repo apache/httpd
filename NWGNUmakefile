@@ -218,7 +218,7 @@ TARGET_nlm = \
 # If there is an LIB target, put it here
 #
 TARGET_lib = \
-	$(OBJDIR)/pcre.lib \
+	$(PCRELIB) \
 	$(EOLIST)
 
 #
@@ -369,13 +369,10 @@ FILES_lib_objs = \
 	$(OBJDIR)/pcre_tables.o \
 	$(OBJDIR)/pcre_try_flipped.o \
 	$(OBJDIR)/pcre_version.o \
+	$(OBJDIR)/chartables.o \
 	$(EOLIST)
 
 endif
-
-FILES_lib_objs += \
-	$(OBJDIR)/chartables.o \
-	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
