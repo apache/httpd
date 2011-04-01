@@ -215,6 +215,8 @@ static apr_status_t cleanup_slotmem(void *param)
             next = next->next;
         }
     }
+    apr_pool_destroy(gpool);
+    gpool = NULL;
     return APR_SUCCESS;
 }
 
