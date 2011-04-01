@@ -164,7 +164,7 @@ ECHONL	= $(ComSpec) /c echo.
 MKDIR	= $(shell if not exist $(subst /,\,$1)\NUL md 2>NUL $(subst /,\,$1))
 COPY	= -copy /y 2>NUL $(subst /,\,$1) $(subst /,\,$2)
 COPYR	= -xcopy /q /y /e 2>NUL $(subst /,\,$1) $(subst /,\,$2)
-TOUCH	= -copy /b 2>NUL $1 +,,
+TOUCH	= -copy /b 2>&1>NUL $(subst /,\,$1) +,,
 CAT	= type
 endif
 
