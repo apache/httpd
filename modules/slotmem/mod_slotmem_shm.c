@@ -57,6 +57,7 @@ typedef struct {
 
 struct ap_slotmem_instance_t {
     char                 *name;       /* per segment name */
+    int                  fbased;      /* filebased? */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
     void                 *base;       /* data set start */
     apr_pool_t           *gpool;      /* per segment global pool */
@@ -211,12 +212,15 @@ static apr_status_t cleanup_slotmem(void *param)
             if (AP_SLOTMEM_IS_PERSIST(next)) {
                 store_slotmem(next);
             }
+            if (next->fbased) {
+                apr_shm_remove(next->name, next->gpool);
+            }
             apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
         }
     }
-    apr_pool_destroy(gpool);
-    gpool = NULL;
+    /* apr_pool_destroy(gpool); */
+    globallistmem = NULL;
     return APR_SUCCESS;
 }
 
@@ -253,6 +257,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
                                    ap_slotmem_type_t type, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
+    int fbased;
     char *ptr;
     sharedslotdesc_t desc;
     ap_slotmem_instance_t *res;
@@ -294,7 +299,8 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     }
 
     /* first try to attach to existing shared memory */
-    if (name && name[0] != ':') {
+    fbased = (name && name[0] != ':');
+    if (fbased) {
         rv = apr_shm_attach(&shm, fname, gpool);
     }
     else {
@@ -316,7 +322,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     }
     else {
         apr_size_t dsize = size - AP_SLOTMEM_OFFSET;
-        if (name && name[0] != ':') {
+        if (fbased) {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, size, fname, gpool);
         }
@@ -326,7 +332,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        if (name && name[0] != ':') {
+        if (fbased) {
             /* Set permissions to shared memory
              * so it can be attached by child process
              * having different user credentials
@@ -355,6 +361,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
                                                 sizeof(ap_slotmem_instance_t));
     res->name = apr_pstrdup(gpool, fname);
+    res->fbased = fbased;
     res->shm = shm;
     res->num_free = (unsigned int *)ptr;
     *res->num_free = item_num;
@@ -436,6 +443,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new,
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool,
                                                 sizeof(ap_slotmem_instance_t));
     res->name = apr_pstrdup(gpool, fname);
+    res->fbased = 1;
     res->shm = shm;
     res->num_free = (unsigned int *)ptr;
     res->persist = (void *)ptr;
@@ -619,9 +627,7 @@ static const ap_slotmem_provider_t *slotmem_shm_getstorage(void)
 /* initialise the global pool */
 static void slotmem_shm_initgpool(apr_pool_t *p)
 {
-    if (!gpool && p) {
-        gpool = p;
-    }
+    gpool = p;
 }
 
 /* Add the pool_clean routine */
@@ -647,8 +653,8 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
     apr_pool_t *global_pool;
     apr_status_t rv;
 
-    rv = apr_pool_create(&global_pool, NULL);
-    if (rv != APR_SUCCESS) {
+    rv = apr_pool_create(&global_pool, p);
+    if (rv != APR_SUCCESS || !global_pool) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
             "Fatal error: unable to create global pool for shared slotmem");
         return rv;
