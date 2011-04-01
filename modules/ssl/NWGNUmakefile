@@ -269,10 +269,10 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\mod_ssl.nlm $(INSTALL)\$(BASEDIR)\modules\*.*
-	-copy $(subst /,\,$(OSSLLIB))\openssl.nlm $(INSTALL)\$(BASEDIR)\bin\*.*
-	-copy $(subst /,\,$(OSSLAPP))\openssl.cnf $(INSTALL)\$(BASEDIR)\bin\*.*
-    
+	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALLBASE)/modules/)
+	$(call COPY,$(OSSLLIB)/openssl.nlm ,$(INSTALLBASE)/bin/)
+	$(call COPY,$(OSSLAPP)/openssl.cnf ,$(INSTALLBASE)/bin/)
+
 #
 # Any specialized rules here
 #
@@ -282,11 +282,11 @@ vpath %.c $(AP_WORK)/modules/arch/netware
 # This requires a 'touch' utility.  Can be downloaded from 'coreutils' at
 #  http://sourceforge.net/projects/gnuwin32/
 ssl_expr_parse.h : ssl_expr_parse.y
-	touch ssl_expr_parse.h
+	$(TOUCH) touch ssl_expr_parse.h
 ssl_expr_parse.c : ssl_expr_parse.y
-	touch ssl_expr_parse.c
+	$(TOUCH) ssl_expr_parse.c
 ssl_expr_scan.c : ssl_expr_scan.l
-	touch ssl_expr_scan.c
+	$(TOUCH) ssl_expr_scan.c
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
