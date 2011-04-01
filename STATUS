@@ -116,6 +116,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x: Trunk works with offset
     +1: niq
 
+  * htpasswd.c: Syncronize with trunk version. This includes a couple of fixes:
+     r826805, r826822, r829162, r829355, r829431. The patch below covers only
+     the C code - we also need to apply the docs and CHANGES parts of r826805.
+     2.2.x patch: http://people.apache.org/~fuankg/diffs/htpasswd.c.diff
+     +1 fuankg
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
