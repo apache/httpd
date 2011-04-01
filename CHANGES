@@ -2,7 +2,10 @@
 
 Changes with Apache 2.3.12
 
-  *) mod_proxy_fcgi: Add support for 'ProxyErrorOverride on' PR 50913.
+  *) mod_proxy_ajp: Add support for 'ProxyErrorOverride on'. PR 50945.
+     [Peter Pramberger <peter pramberger.at>, Jim Jagielski]
+
+  *) mod_proxy_fcgi: Add support for 'ProxyErrorOverride on'. PR 50913.
      [Mark Montague <mark catseye.org>, Jim Jagielski]
 
   *) core: Change the APIs of ap_cfg_getline() and ap_cfg_getc() to return an
