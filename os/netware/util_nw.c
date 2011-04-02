@@ -16,9 +16,15 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "ap_mpm.h"
 
 #include <netware.h>
 #include <nks/netware.h>
+#include <nks/vm.h>
+
+void ap_down_server_cb(void *, void *);
+void ap_dummy_cb(void *, void *);
+void ap_cb_destroy(void *);
 
 int nlmUnloadSignaled(int wait);
 event_handle_t eh;
@@ -35,31 +41,31 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     return apr_proc_create(newproc, progname, args, env, attr, p);
 }
 
-int  _NonAppCheckUnload( void )
+int _NonAppCheckUnload(void)
 {
-        return nlmUnloadSignaled(1);
+    return nlmUnloadSignaled(1);
 }
 
-// down server event callback
-void ap_down_server_cb(void *, void *)
+/* down server event callback */
+void ap_down_server_cb(void *a, void *b)
 {
-        nlmUnloadSignaled(0);
+    nlmUnloadSignaled(0);
     return;
 }
 
-// Required place holder event callback
-void ap_dummy_cb(void *, void *)
+/* Required place holder event callback */
+void ap_dummy_cb(void *a, void *b)
 {
     return;
 }
 
-// destroy callback resources
-void ap_cb_destroy(void *)
+/* destroy callback resources */
+void ap_cb_destroy(void *a)
 {
-  // cleanup down event notification
-  UnRegisterEventNotification(eh);
-  NX_UNWRAP_INTERFACE(ref);
-  NX_UNWRAP_INTERFACE(dum);
+    /* cleanup down event notification */
+    UnRegisterEventNotification(eh);
+    NX_UNWRAP_INTERFACE(ref);
+    NX_UNWRAP_INTERFACE(dum);
 }
 
 int _NonAppStart
@@ -88,7 +94,7 @@ int _NonAppStart
 #pragma unused(messageCount)
 #pragma unused(messages)
 
-    // register for down server event
+    /* register for down server event */
     rtag_t rt = AllocateResourceTag(NLMHandle, "Apache2 Down Server Callback",
                                     EventSignature);
 
@@ -98,8 +104,9 @@ int _NonAppStart
                                       EVENT_PRIORITY_APPLICATION,
                                       ref, dum, NULL);
 
-    // clean-up
+    /* clean-up */
     NXVmRegisterExitHandler(ap_cb_destroy, NULL);
 
+    return 0;
 }
 
