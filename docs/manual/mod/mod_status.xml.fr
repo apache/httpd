@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1031084 -->
+<!-- English Revision : 1086608 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -83,9 +83,11 @@ du serveur</description>
     fichier de configuration <code>httpd.conf</code> :</p>
 <example>
     &lt;Location /etat-serveur&gt;<br />
+    <indent>
     SetHandler server-status<br />
 <br />
     Require host example.com<br />
+    </indent>
     &lt;/Location&gt;
 </example>
 
@@ -125,6 +127,42 @@ du serveur</description>
     </note>
 
 </section>
+
+<section id="troubleshoot">
+    <title>Utilisation de server-status pour la recherche de d&eacute;fauts de
+    fonctionnement</title>
+    
+    <p>La page <code>server-status</code> peut servir de point de d&eacute;part
+    &agrave; la recherche de d&eacute;fauts de fonctionnement lorsque votre serveur
+    mobilise toutes les ressources disponibles (CPU ou m&eacute;moire), pour
+    identifier quels clients ou requ&ecirc;tes sont la cause du probl&egrave;me.</p>
+
+    <p>Tout d'abord, assurez-vous que la directive <directive
+    module="core">ExtendedStatus</directive> est bien d&eacute;finie &agrave; on, de
+    fa&ccedil;on &agrave; ce que vous puissiez avoir acc&egrave;s &agrave; toutes les informations &agrave;
+    propos de la requ&ecirc;te et du client pour chaque processus enfant ou
+    thread.</p>
+
+    <p>Consultez ensuite la liste des processus en cours (&agrave; l'aide de
+    <code>top</code>, ou d'un utilitaire de listage des processus
+    similaire), afin d'identifier les processus coupables. Triez
+    l'affichage de <code>top</code> par utilisation CPU ou m&eacute;moire, en
+    fonction du probl&egrave;me rencontr&eacute;.</p>
+
+    <p>Rechargez la page <code>server-status</code> et recherchez
+    les identifiants des processus trouv&eacute;s pr&eacute;c&eacute;demment ; vous pourrez
+    alors d&eacute;terminer quelle requ&ecirc;te est trait&eacute;e par ces processus, pour
+    quel client. Les requ&ecirc;tes peuvent appara&icirc;tre de mani&egrave;re fugitive, et
+    il se peut que vous deviez effectuer plusieurs essais avant de
+    parvenir &agrave; les prendre en flagrant d&eacute;lit, pour ainsi dire.</p>
+
+    <p>Cette proc&eacute;dure <em>devrait</em> vous permettre de cerner quel
+    client, ou type de requ&ecirc;te, sont &agrave; l'origine de vos probl&egrave;mes de
+    charge. Il est probable que vous identifiiez une application web au
+    comportement anormal, ou un client en train d'attaquer votre site.</p>
+
+</section>
+
 
 </modulesynopsis>
 

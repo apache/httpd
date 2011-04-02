@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1055611 -->
+<!-- English Revision : 1086908 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -267,7 +267,7 @@ en faisant intervenir les expressions rationnelles</description>
 <name>Redirect</name>
 <description>Envoie une redirection externe demandant au client
 d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
-<syntax>Redirect [<var>statut</var>] <var>chemin URL</var>
+<syntax>Redirect [<var>&eacute;tat</var>] <var>chemin URL</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -324,40 +324,42 @@ d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
     Alias et ScriptAlias, quel que soit leur ordre d'apparition dans le
     fichier de configuration.</p></note>
 
-    <p>Si aucun argument <var>statut</var> n'est sp&eacute;cifi&eacute;, la
-    redirection sera temporaire (statut HTTP 302). Le client est alors
+    <p>Si aucun argument <var>&eacute;tat</var> n'est sp&eacute;cifi&eacute;, la
+    redirection sera temporaire (code HTTP 302). Le client est alors
     inform&eacute; que la ressource a &eacute;t&eacute; temporairement d&eacute;plac&eacute;e. On peut
-    utiliser l'argument <var>statut</var> pour renvoyer d'autres codes
-    de statut HTTP :</p>
+    utiliser l'argument <var>&eacute;tat</var> pour renvoyer d'autres codes HTTP :</p>
 
     <dl>
       <dt>permanent</dt>
 
-      <dd>Renvoie un statut de redirection permanente (301), indiquant
+      <dd>Renvoie un code de redirection permanente (301), indiquant
       que la ressource a &eacute;t&eacute; d&eacute;finitivement d&eacute;plac&eacute;e.</dd>
 
       <dt>temp</dt>
 
-      <dd>Renvoie un statut de redirection temporaire (302). C'est le
+      <dd>Renvoie un code de redirection temporaire (302). C'est le
       comportement par d&eacute;faut.</dd>
 
       <dt>seeother</dt>
 
-      <dd>Renvoie un statut "See Other" (303) indiquant que la ressource
+      <dd>Renvoie un code "See Other" (303) indiquant que la ressource
       a &eacute;t&eacute; remplac&eacute;e par une autre.</dd>
 
       <dt>gone</dt>
 
-      <dd>Renvoie un statut "Gone" (410) indiquant que la ressource a
-      &eacute;t&eacute; d&eacute;finitivement supprim&eacute;e. Lorsque ce statut est d&eacute;fini, on ne
+      <dd>Renvoie un code "Gone" (410) indiquant que la ressource a
+      &eacute;t&eacute; d&eacute;finitivement supprim&eacute;e. Lorsque
+      ce code est utilis&eacute;, on ne
       doit pas utiliser l'argument <var>URL</var>.</dd>
     </dl>
 
-    <p>On peut renvoyer d'autres codes de statut en sp&eacute;cifiant le code
-    de statut num&eacute;rique comme valeur de l'argument of <var>statut</var>.
-    Si le code de statut est compris entre 300 et 399, l'argument
-    <var>URL</var> doit &ecirc;tre pr&eacute;sent, sinon il ne doit pas &ecirc;tre utilis&eacute;.
-    Notez que le statut doit &ecirc;tre connu du code d'Apache (voir la
+    <p>On peut renvoyer d'autres codes en sp&eacute;cifiant le code
+    num&eacute;rique comme valeur de l'argument of <var>&eacute;tat</var>.
+    Si le code est compris entre 300 et 399, l'argument
+    <var>URL</var> doit &ecirc;tre pr&eacute;sent. Si le code
+    n'est <em>pas</em> compris entre 300 et 399, l'argument
+    <var>URL</var> ne doit pas appara&icirc;tre. Le code doit &ecirc;tre un code
+    HTTP valide, connu du serveur HTTP Apache (voir la
     fonction <code>send_error_response</code> dans
     http_protocol.c).</p>
 
@@ -374,7 +376,7 @@ d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
 <description>Envoie une redirection externe faisant appel aux
 expressions rationnelles pour la mise en correspondance de l'URL
 courante</description>
-<syntax>RedirectMatch [<var>statut</var>] <var>regex</var>
+<syntax>RedirectMatch [<var>&eacute;tat</var>] <var>regex</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -420,7 +422,7 @@ diff&eacute;rente</description>
 
 <usage>
     <p>Cette directive informe le client que la redirection n'est
-    que temporaire (statut 302). Son comportement est exactement le m&ecirc;me
+    que temporaire (code 302). Son comportement est exactement le m&ecirc;me
     que celui de <code>Redirect temp</code>.</p>
 </usage>
 </directivesynopsis>
@@ -437,7 +439,7 @@ diff&eacute;rente</description>
 
 <usage>
     <p>Cette directive informe le client que la redirection est
-    permanente (statut 301). Son comportement est exactement le m&ecirc;me
+    permanente (code 301). Son comportement est exactement le m&ecirc;me
     que celui de <code>Redirect permanent</code>.</p>
 </usage>
 </directivesynopsis>
