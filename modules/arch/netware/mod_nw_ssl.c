@@ -41,9 +41,11 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_connection.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "http_core.h"
+#include "http_request.h"
 #include "ap_listen.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
@@ -132,7 +134,7 @@ static ap_listen_rec *nw_old_listeners;
 #define get_nwssl_cfg(srv) (NWSSLSrvConfigRec *) ap_get_module_config(srv->module_config, &nwssl_module)
 
 
-static void build_cert_list (apr_pool_t *p)
+static void build_cert_list(apr_pool_t *p)
 {
     int i;
     char **rootcerts = (char **)certlist->elts;
@@ -233,12 +235,10 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
                               char* key, int mutual, server_rec *sconf)
 {
     int s;
-    int one = 1;
     char addr[MAX_ADDRESS];
     struct sslserveropts opts;
     unsigned int optParam;
     WSAPROTOCOL_INFO SecureProtoInfo;
-    int no = 1;
 
     if (server->sin_addr.s_addr != htonl(INADDR_ANY))
         apr_snprintf(addr, sizeof(addr), "address %s port %d",
@@ -291,7 +291,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     }
 
     if (mutual) {
-        optParam = 0x07;  // SO_SSL_AUTH_CLIENT
+        optParam = 0x07;  /* SO_SSL_AUTH_CLIENT */
 
         if(WSAIoctl(s, SO_SSL_SET_FLAGS, (char*)&optParam,
             sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
@@ -309,7 +309,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     return s;
 }
 
-int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
+static int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
 {
         int rcode;
         struct tlsclientopts sWS2Opts;
@@ -346,17 +346,17 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
     sWS2Opts.options = &sNWTLSOpts;
 
     if (numcerts) {
-        sNWTLSOpts.walletProvider = WAL_PROV_DER;   //the wallet provider defined in wdefs.h
-        sNWTLSOpts.TrustedRootList = certarray;     //array of certs in UNICODE format
-        sNWTLSOpts.numElementsInTRList = numcerts;  //number of certs in TRList
+        sNWTLSOpts.walletProvider = WAL_PROV_DER;   /* the wallet provider defined in wdefs.h */
+        sNWTLSOpts.TrustedRootList = certarray;     /* array of certs in UNICODE format       */
+        sNWTLSOpts.numElementsInTRList = numcerts;  /* number of certs in TRList              */
     }
     else {
         /* setup the socket for SSL */
         unicpy(keyFileName, L"SSL CertificateIP");
-        sWS2Opts.wallet = keyFileName;    /* no client certificate */
+        sWS2Opts.wallet = keyFileName;              /* no client certificate */
         sWS2Opts.walletlen = unilen(keyFileName);
 
-        sNWTLSOpts.walletProvider = WAL_PROV_KMO;  //the wallet provider defined in wdefs.h
+        sNWTLSOpts.walletProvider = WAL_PROV_KMO;   /* the wallet provider defined in wdefs.h */
     }
 
     /* make the IOCTL call */
@@ -364,7 +364,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
                      sizeof(struct tlsclientopts), NULL, 0, NULL,
                      NULL, NULL);
 
-    /* make sure that it was successfull */
+    /* make sure that it was successful */
         if(SOCKET_ERROR == rcode ){
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "Error: %d with ioctl (SO_TLS_SET_CLIENT)", WSAGetLastError());
@@ -372,7 +372,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
         return rcode;
 }
 
-int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
+static int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
 {
     int rcode;
     struct tlsserveropts sWS2Opts;
@@ -406,7 +406,7 @@ int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
 
     loc2uni(UNI_LOCAL_DEFAULT, SASKey, key, 0, 0);
 
-    //setup the tlsserveropts struct
+    /* setup the tlsserveropts struct */
     sWS2Opts.wallet = SASKey;
     sWS2Opts.walletlen = unilen(SASKey);
     sWS2Opts.sidtimeout = 0;
@@ -414,7 +414,7 @@ int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
     sWS2Opts.siddir = NULL;
     sWS2Opts.options = &sNWTLSOpts;
 
-    //setup the nwtlsopts structure
+    /* setup the nwtlsopts structure */
 
     sNWTLSOpts.walletProvider               = WAL_PROV_KMO;
     sNWTLSOpts.keysList                     = NULL;
@@ -546,7 +546,6 @@ static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy,
                                        const char *ips, const char* key)
 {
     NWSSLSrvConfigRec* sc = get_nwssl_cfg(cmd->server);
-    seclistenup_rec *listen_node;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     char *ports, *addr;
     unsigned short port;
@@ -626,8 +625,6 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp)
 {
     seclisten_rec* ap_old_seclisteners;
-    char *ports, *addr;
-    unsigned short port;
     ap_listen_rec **walk;
     seclisten_rec **secwalk;
     apr_sockaddr_t *sa;
@@ -724,7 +721,6 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_listen_rec *walk;
     seclisten_rec *secwalk, *lastsecwalk;
     apr_sockaddr_t *sa;
-    int found_listener = 0;
 
     /* Walk the old listeners list and compare it to the secure
        listeners list and remove any secure listener records that
@@ -896,8 +892,6 @@ static int isSecureUpgraded (const request_rec *r)
 
 static int nwssl_hook_Fixup(request_rec *r)
 {
-    int i;
-
     if (!isSecure(r) && !isSecureUpgraded(r))
         return DECLINED;
 
