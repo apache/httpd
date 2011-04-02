@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!--English Revision : 1061758 -->
+<!-- English Revision : 1086771 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -119,6 +119,13 @@ le Serveur HTTP Apache.</p>
     de configuration sans d&eacute;marrer le serveur &agrave; l'aide de la commande
     <code>apachectl configtest</code> ou de l'option de ligne de commande
     <code>-t</code>.</p>
+
+    <p>Vous pouvez utiliser la d&eacute;finition <code>-DDUMP_CONFIG</code> de
+    <module>mod_info</module> pour afficher la configuration avec tous
+    les fichiers inclus et les variables d'environnement &eacute;valu&eacute;es, tous
+    les commentaires et les sections <directive module="core"
+    type="section">IfDefine</directive> et <directive module="core"
+    type="section">IfModule</directive> non actives ayant &eacute;t&eacute; supprim&eacute;s.</p>
   </section>
 
   <section id="modules">

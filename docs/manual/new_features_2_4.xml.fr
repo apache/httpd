@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1078939 -->
+<!-- English Revision : 1086771 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -208,13 +208,18 @@ serveur HTTP Apache</title>
       clients anciens qui n&eacute;cessitent de tels en-t&ecirc;tes (Ceci affecte
       tous les modules qui utilisent ces variables d'environnement).</dd>
 
-      <dt>Conteneurs de logique d'autorisation de <module>mod_authz_core</module></dt>
+      <dt><module>mod_authz_core</module>Conteneurs de logique d'autorisation</dt>
 
       <dd>La directive <directive
       module="mod_authz_core">Require</directive> et les directives de
       conteneurs associ&eacute;es, comme <directive module="mod_authz_core"
       type="section">RequireAll</directive>, permettent de d&eacute;finir une
       logique d'autorisation avanc&eacute;e.</dd>
+
+      <dt><module>mod_info</module></dt>
+      <dd><module>mod_info</module> est maintenant capable d'afficher la
+      configuration pr&eacute;interpr&eacute;t&eacute;e sur stdout au cours du d&eacute;marrage du
+      serveur.</dd>
       
     </dl>
   </section>
