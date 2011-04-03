@@ -597,7 +597,9 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
  * @param i       index into shm
  * @return        APR_SUCCESS or error code
  */
-PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker, proxy_worker_shared *shm, int i);
+PROXY_DECLARE(apr_status_t) ap_proxy_share_worker(proxy_worker *worker,
+                                                  proxy_worker_shared *shm,
+                                                  int i);
 
 /**
  * Initialize the worker by setting up worker connection pool and mutex
@@ -664,8 +666,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
  * @return         APR_SUCCESS or error code
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer,
-                                                       server_rec *s,
-                                                       apr_pool_t *p);
+                                                         server_rec *s,
+                                                         apr_pool_t *p);
 
 /**
  * Get the most suitable worker and/or balancer for the request
@@ -827,9 +829,9 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
  * @return     APR_SUCCESS if all buckets could be transformed APR_EGENERAL
  *             otherwise
  */
-PROXY_DECLARE(apr_status_t)
-ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
-                                        apr_bucket_brigade *to);
+PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
+                                                                apr_bucket_brigade *from,
+                                                                apr_bucket_brigade *to);
 /**
  * Return a hash based on the passed string
  * @param str     string to produce hash from
@@ -868,7 +870,8 @@ PROXY_DECLARE(char *) ap_proxy_parse_wstatus(apr_pool_t *p, proxy_worker *w);
  * @param conf config
  * @return   APR_SUCCESS if all goes well
  */
-PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec *s,
+PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b,
+                                                   server_rec *s,
                                                    proxy_server_conf *conf);
 
 
@@ -879,7 +882,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
  * @param dconf per-dir config or NULL
  * @return      DECLINED, DONE or OK if matched
  */
-PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
+PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r,
+                                        struct proxy_alias *ent,
                                         proxy_dir_conf *dconf);
 
 #define PROXY_LBMETHOD "proxylbmethod"
