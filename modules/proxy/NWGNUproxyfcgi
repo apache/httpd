@@ -165,7 +165,6 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_proxy_fcgi.o \
-	$(OBJDIR)/proxy_util.o \
 	$(OBJDIR)/libprews.o \
 	$(EOLIST)
 
