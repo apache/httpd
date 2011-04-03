@@ -164,7 +164,6 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_proxy_ajp.o \
-	$(OBJDIR)/proxy_util.o \
 	$(OBJDIR)/ajp_header.o \
 	$(OBJDIR)/ajp_msg.o \
 	$(OBJDIR)/ajp_link.o \
