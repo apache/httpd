@@ -877,8 +877,8 @@ to perform a DN lookup</description>
         the verbatim username is used.
     </note>
 </usage>
-<seealso><directive module="mod_authnnz_ldap">AuthLDAPInitialBindAsUser</directive></seealso>
-<seealso><directive module="mod_authnnz_ldap">AuthLDAPBindDN</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPInitialBindAsUser</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPBindDN</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
