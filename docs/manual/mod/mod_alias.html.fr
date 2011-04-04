@@ -268,7 +268,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Redirect [<var>statut</var>] <var>chemin URL</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Redirect [<var>état</var>] <var>chemin URL</var>
 <var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
@@ -324,40 +324,42 @@ d'effectuer une autre requête avec une URL différente</td></tr>
     Alias et ScriptAlias, quel que soit leur ordre d'apparition dans le
     fichier de configuration.</p></div>
 
-    <p>Si aucun argument <var>statut</var> n'est spécifié, la
-    redirection sera temporaire (statut HTTP 302). Le client est alors
+    <p>Si aucun argument <var>état</var> n'est spécifié, la
+    redirection sera temporaire (code HTTP 302). Le client est alors
     informé que la ressource a été temporairement déplacée. On peut
-    utiliser l'argument <var>statut</var> pour renvoyer d'autres codes
-    de statut HTTP :</p>
+    utiliser l'argument <var>état</var> pour renvoyer d'autres codes HTTP :</p>
 
     <dl>
       <dt>permanent</dt>
 
-      <dd>Renvoie un statut de redirection permanente (301), indiquant
+      <dd>Renvoie un code de redirection permanente (301), indiquant
       que la ressource a été définitivement déplacée.</dd>
 
       <dt>temp</dt>
 
-      <dd>Renvoie un statut de redirection temporaire (302). C'est le
+      <dd>Renvoie un code de redirection temporaire (302). C'est le
       comportement par défaut.</dd>
 
       <dt>seeother</dt>
 
-      <dd>Renvoie un statut "See Other" (303) indiquant que la ressource
+      <dd>Renvoie un code "See Other" (303) indiquant que la ressource
       a été remplacée par une autre.</dd>
 
       <dt>gone</dt>
 
-      <dd>Renvoie un statut "Gone" (410) indiquant que la ressource a
-      été définitivement supprimée. Lorsque ce statut est défini, on ne
+      <dd>Renvoie un code "Gone" (410) indiquant que la ressource a
+      été définitivement supprimée. Lorsque
+      ce code est utilisé, on ne
       doit pas utiliser l'argument <var>URL</var>.</dd>
     </dl>
 
-    <p>On peut renvoyer d'autres codes de statut en spécifiant le code
-    de statut numérique comme valeur de l'argument of <var>statut</var>.
-    Si le code de statut est compris entre 300 et 399, l'argument
-    <var>URL</var> doit être présent, sinon il ne doit pas être utilisé.
-    Notez que le statut doit être connu du code d'Apache (voir la
+    <p>On peut renvoyer d'autres codes en spécifiant le code
+    numérique comme valeur de l'argument of <var>état</var>.
+    Si le code est compris entre 300 et 399, l'argument
+    <var>URL</var> doit être présent. Si le code
+    n'est <em>pas</em> compris entre 300 et 399, l'argument
+    <var>URL</var> ne doit pas apparaître. Le code doit être un code
+    HTTP valide, connu du serveur HTTP Apache (voir la
     fonction <code>send_error_response</code> dans
     http_protocol.c).</p>
 
@@ -374,7 +376,7 @@ d'effectuer une autre requête avec une URL différente</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe faisant appel aux
 expressions rationnelles pour la mise en correspondance de l'URL
 courante</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectMatch [<var>statut</var>] <var>regex</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectMatch [<var>état</var>] <var>regex</var>
 <var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
@@ -415,7 +417,7 @@ différente</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive informe le client que la redirection est
-    permanente (statut 301). Son comportement est exactement le même
+    permanente (code 301). Son comportement est exactement le même
     que celui de <code>Redirect permanent</code>.</p>
 
 </div>
@@ -432,7 +434,7 @@ différente</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive informe le client que la redirection n'est
-    que temporaire (statut 302). Son comportement est exactement le même
+    que temporaire (code 302). Son comportement est exactement le même
     que celui de <code>Redirect temp</code>.</p>
 
 </div>
