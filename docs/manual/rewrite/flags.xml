@@ -255,6 +255,15 @@ module="mod_setenvif">SetEnvIf</directive>. This technique is offered as
 an example, not as a recommendation.</p>
 </section>
 
+<section id="flag_end"><title>END</title>
+<p>Using the [END] flag terminates not only the current round ot rewrite
+processing (like [L]) but also prevents any subsequent rewrite
+processing from occurring in per-directory (htaccess) context.<p>
+
+<p>This does not apply to new requests resulting from external
+redirects.</p>
+</section>
+
 <section id="flag_f"><title>F|forbidden</title>
 <p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
