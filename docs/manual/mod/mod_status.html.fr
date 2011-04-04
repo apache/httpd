@@ -82,6 +82,8 @@ du serveur</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation du rapport d'état</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">Actualisation automatique</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Fichier d'état lisible par une machine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Utilisation de server-status pour la recherche de défauts de
+    fonctionnement</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -93,9 +95,11 @@ du serveur</td></tr>
     fichier de configuration <code>httpd.conf</code> :</p>
 <div class="example"><p><code>
     &lt;Location /etat-serveur&gt;<br />
+    <span class="indent">
     SetHandler server-status<br />
 <br />
     Require host example.com<br />
+    </span>
     &lt;/Location&gt;
 </code></p></div>
 
@@ -133,6 +137,40 @@ du serveur</td></tr>
       exemple <code>.htaccess</code>), ce qui peut avoir des
       répercutions quant à la sécurité de votre site.</strong>
     </div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="troubleshoot" id="troubleshoot">Utilisation de server-status pour la recherche de défauts de
+    fonctionnement</a></h2>
+    
+    
+    <p>La page <code>server-status</code> peut servir de point de départ
+    à la recherche de défauts de fonctionnement lorsque votre serveur
+    mobilise toutes les ressources disponibles (CPU ou mémoire), pour
+    identifier quels clients ou requêtes sont la cause du problème.</p>
+
+    <p>Tout d'abord, assurez-vous que la directive <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> est bien définie à on, de
+    façon à ce que vous puissiez avoir accès à toutes les informations à
+    propos de la requête et du client pour chaque processus enfant ou
+    thread.</p>
+
+    <p>Consultez ensuite la liste des processus en cours (à l'aide de
+    <code>top</code>, ou d'un utilitaire de listage des processus
+    similaire), afin d'identifier les processus coupables. Triez
+    l'affichage de <code>top</code> par utilisation CPU ou mémoire, en
+    fonction du problème rencontré.</p>
+
+    <p>Rechargez la page <code>server-status</code> et recherchez
+    les identifiants des processus trouvés précédemment ; vous pourrez
+    alors déterminer quelle requête est traitée par ces processus, pour
+    quel client. Les requêtes peuvent apparaître de manière fugitive, et
+    il se peut que vous deviez effectuer plusieurs essais avant de
+    parvenir à les prendre en flagrant délit, pour ainsi dire.</p>
+
+    <p>Cette procédure <em>devrait</em> vous permettre de cerner quel
+    client, ou type de requête, sont à l'origine de vos problèmes de
+    charge. Il est probable que vous identifiiez une application web au
+    comportement anormal, ou un client en train d'attaquer votre site.</p>
 
 </div>
 </div>
