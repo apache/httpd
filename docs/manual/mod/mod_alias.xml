@@ -331,7 +331,7 @@ a different URL</description>
     status code as the value of <var>status</var>. If the status is
     between 300 and 399, the <var>URL</var> argument must be present.
     If the status is <em>not</em> between 300 and 399, the
-    <var>URL</var> agument must be omitted. The status must be a valid
+    <var>URL</var> argument must be omitted. The status must be a valid
     HTTP status code, known to the Apache HTTP Server (see the function
     <code>send_error_response</code> in http_protocol.c).</p>
 
