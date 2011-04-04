@@ -184,6 +184,12 @@
       <dt><module>mod_info</module></dt>
       <dd><module>mod_info</module> can now dump the pre-parsed configuration
           to stdout during server startup.</dd>
+
+      <dt><module>mod_rewrite</module></td>
+      <dd><module>mod_rewrite</module> adds the <code>[QSD]</code>
+      (Query String Discard) and <code>[END]</code> flags for
+      <directive module="mod_rewrite">RewriteRule</directive> to
+      simplify common rewriting scenarios.</dd>
     </dl>
   </section>
 
