@@ -521,6 +521,9 @@ start_over:
     /* build the username filter */
     authn_ldap_build_filter(filtbuf, r, user, NULL, sec);
 
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                      "auth_ldap authenticate: final authn filter is %s", filtbuf);
+
     /* convert password to utf-8 */
     utfpassword = authn_ldap_xlate_password(r, password);
 
@@ -1012,7 +1015,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                "auth_ldap authorise: User DN not found, %s", ldc->reason);
+                "auth_ldap authorise: User DN not found with filter %s: %s", filtbuf, ldc->reason);
             return AUTHZ_DENIED;
         }
 
@@ -1122,7 +1125,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                "auth_ldap authorise: User DN not found, %s", ldc->reason);
+                "auth_ldap authorise: User DN not found with filter %s: %s", filtbuf, ldc->reason);
             return AUTHZ_DENIED;
         }
 
@@ -1236,7 +1239,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
         /* Search failed, log error and return failure */
         if(result != LDAP_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                "auth_ldap authorise: User DN not found, %s", ldc->reason);
+                "auth_ldap authorise: User DN not found with filter %s: %s", filtbuf, ldc->reason);
             return AUTHZ_DENIED;
         }
 
@@ -1410,7 +1413,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 
     sec->have_ldap_url = 1;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, cmd->server,
                  "auth_ldap url parse: `%s', Host: %s, Port: %d, DN: %s, "
                  "attrib: %s, scope: %s, filter: %s, connection mode: %s",
                  url,
