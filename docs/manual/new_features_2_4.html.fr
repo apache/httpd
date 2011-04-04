@@ -206,11 +206,16 @@ serveur HTTP Apache</h1>
       clients anciens qui nécessitent de tels en-têtes (Ceci affecte
       tous les modules qui utilisent ces variables d'environnement).</dd>
 
-      <dt>Conteneurs de logique d'autorisation de <code class="module"><a href="./mod/mod_authz_core.html">mod_authz_core</a></code></dt>
+      <dt><code class="module"><a href="./mod/mod_authz_core.html">mod_authz_core</a></code>Conteneurs de logique d'autorisation</dt>
 
       <dd>La directive <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> et les directives de
       conteneurs associées, comme <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>, permettent de définir une
       logique d'autorisation avancée.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_info.html">mod_info</a></code> est maintenant capable d'afficher la
+      configuration préinterprétée sur stdout au cours du démarrage du
+      serveur.</dd>
       
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

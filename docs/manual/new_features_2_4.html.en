@@ -186,6 +186,12 @@
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd><code class="module"><a href="./mod/mod_info.html">mod_info</a></code> can now dump the pre-parsed configuration
           to stdout during server startup.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> adds the <code>[QSD]</code>
+      (Query String Discard) and <code>[END]</code> flags for
+      <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to
+      simplify common rewriting scenarios.</dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
