@@ -142,7 +142,7 @@ performance</description>
     usage, or memory usage, depending on what problem you're trying to
     address.</p>
 
-    <p>Reload the <code>server-status</code> poage, and look for those process
+    <p>Reload the <code>server-status</code> page, and look for those process
     ids, and you'll be able to see what request is being served by that
     process, for what client. Requests are transient, so you may need to
     try several times before you catch it in the act, so to speak.</p>
