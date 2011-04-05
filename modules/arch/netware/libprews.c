@@ -25,9 +25,8 @@
   provide.
 ------------------------------------------------------------------*/
 #include <netware.h>
-//#include "stddef.h"
 #ifdef USE_WINSOCK
-#include "novsock2.h"
+#include <novsock2.h>
 #endif
 
 int _NonAppStart
@@ -70,11 +69,11 @@ void _NonAppStop( void )
 #ifdef USE_WINSOCK
     WSACleanup();
 #else
-    return;0;
+    return;
 #endif
 }
 
 int  _NonAppCheckUnload( void )
 {
-        return 0;
+    return 0;
 }
