@@ -96,7 +96,7 @@ CPPOPT_DEPENDS	= $(CCOPT_DEPENDS)
 #
 
 ifneq ($(MAKECMDGOALS),clean)
-$(AP_WORK)/build/NWGNUversion.inc : $(AP_WORK)/build/nw_ver.awk $(AP_WORK)/include/ap_release.h
+$(APBUILD)/NWGNUversion.inc: $(APBUILD)/nw_ver.awk $(SRC)/include/ap_release.h
 #	@echo Generating $@
 	@echo $(DL)GEN  $@$(DL)
 	$(AWK) -f $^ > $@
