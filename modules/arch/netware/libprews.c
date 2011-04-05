@@ -25,8 +25,7 @@
   provide.
 ------------------------------------------------------------------*/
 #include <netware.h>
-//#include "stddef.h"
-#include "novsock2.h"
+#include <novsock2.h>
 
 int _NonAppStart
 (
@@ -66,5 +65,5 @@ void _NonAppStop( void )
 
 int  _NonAppCheckUnload( void )
 {
-	return 0;
+    return 0;
 }
