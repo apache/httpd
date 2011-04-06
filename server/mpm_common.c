@@ -386,10 +386,21 @@ AP_DECLARE(const char *)ap_show_mpm(void)
 
 AP_DECLARE(const char *)ap_check_mpm(void)
 {
+    static const char *last_mpm_name = NULL;
+
     if (!_hooks.link_mpm || _hooks.link_mpm->nelts == 0)
         return "No MPM loaded.";
     else if (_hooks.link_mpm->nelts > 1)
         return "More than one MPM loaded.";
-    else
-        return NULL;
+
+    if (last_mpm_name) {
+        if (strcmp(last_mpm_name, ap_show_mpm())) {
+            return "The MPM cannot be changed during restart.";
+        }
+    }
+    else {
+        last_mpm_name = apr_pstrdup(ap_pglobal, ap_show_mpm());
+    }
+
+    return NULL;
 }

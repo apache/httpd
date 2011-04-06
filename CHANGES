@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.12
 
+  *) core: Abort if the MPM is changed across restart.  [Jeff Trawick]
+
   *) mod_proxy_ajp: Add support for 'ProxyErrorOverride on'. PR 50945.
      [Peter Pramberger <peter pramberger.at>, Jim Jagielski]
 
