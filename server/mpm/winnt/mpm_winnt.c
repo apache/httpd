@@ -114,7 +114,7 @@ AP_DECLARE(apr_array_header_t *) ap_get_status_table(apr_pool_t *p)
  * Command processors
  */
 
-static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -258,9 +258,9 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
  *   start mutex [signal from the parent to begin accept()]
  *   scoreboard shm handle [to recreate the ap_scoreboard]
  */
-void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
-                             apr_proc_mutex_t **child_start_mutex,
-                             apr_shm_t **scoreboard_shm)
+static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
+                                    apr_proc_mutex_t **child_start_mutex,
+                                    apr_shm_t **scoreboard_shm)
 {
     HANDLE hScore;
     HANDLE ready_event;
@@ -423,7 +423,7 @@ static int send_handles_to_child(apr_pool_t *p,
  * exclusively in the child process, receives them from the parent and
  * makes them availeble in the child.
  */
-void get_listeners_from_parent(server_rec *s)
+static void get_listeners_from_parent(server_rec *s)
 {
     WSAPROTOCOL_INFO WSAProtocolInfo;
     ap_listen_rec *lr;
@@ -962,7 +962,7 @@ static int inst_argc;
 static const char * const *inst_argv;
 static const char *service_name = NULL;
 
-void winnt_rewrite_args(process_rec *process)
+static void winnt_rewrite_args(process_rec *process)
 {
     /* Handle the following SCM aspects in this phase:
      *

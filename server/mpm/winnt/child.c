@@ -849,7 +849,7 @@ static void cleanup_thread(HANDLE *handles, int *thread_cnt,
  * monitors the child process for maintenance and shutdown
  * events.
  */
-static void create_listener_thread()
+static void create_listener_thread(void)
 {
     unsigned tid;
     int num_listeners = 0;

@@ -89,7 +89,7 @@ typedef enum {
 
 FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal);
 
-PSECURITY_ATTRIBUTES GetNullACL();
+PSECURITY_ATTRIBUTES GetNullACL(void);
 void CleanNullACL(void *sa);
 
 int set_listeners_noninheritable(apr_pool_t *p);

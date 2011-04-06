@@ -89,5 +89,9 @@ typedef enum {
 AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type);
 
 void hold_console_open_on_error(void);
+
+/* From child.c: */
+void child_main(apr_pool_t *pconf);
+
 #endif /* APACHE_MPM_WINNT_H */
 /** @} */

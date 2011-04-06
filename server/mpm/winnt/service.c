@@ -426,7 +426,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 }
 
 
-DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
+static DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 {
     apr_status_t rv = APR_SUCCESS;
 
@@ -546,7 +546,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
 }
 
 
-void service_stopped(void)
+static void service_stopped(void)
 {
     /* Still have a thread & window to clean up, so signal now */
     if (globdat.service_thread)
