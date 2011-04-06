@@ -149,7 +149,8 @@ void hold_console_open_on_error(void)
                 return;
         }
         remains = ((start + 30) - time(NULL));
-        sprintf (count, "%d...", remains);
+        sprintf(count, "%d...",
+                (int)remains); /* 30 or less, so can't overflow int */
         if (!SetConsoleCursorPosition(hConErr, coninfo.dwCursorPosition))
             return;
         if (!WriteConsole(hConErr, count, (DWORD)strlen(count), &result, NULL)
