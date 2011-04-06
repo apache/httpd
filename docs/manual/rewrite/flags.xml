@@ -171,7 +171,7 @@ minutes (24 hours) and will be returned for all URIs.</p>
 
 </section>
 
-<section id="flag_dpi"><title>DPI|discardpathinfo</title>
+<section id="flag_dpi"><title>DPI|discardpath</title>
 <p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
 discarded.</p>
 <p>This flag is available in version 2.2.12 and later.</p>
