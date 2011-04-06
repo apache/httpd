@@ -30,7 +30,7 @@ providing detailed explanations and examples.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (escape backreferences)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpathinfo</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_e">E|env</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_end">END</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_f">F|forbidden</a></li>
@@ -179,7 +179,7 @@ minutes (24 hours) and will be returned for all URIs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpathinfo</a></h2>
+<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a></h2>
 <p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
 discarded.</p>
 <p>This flag is available in version 2.2.12 and later.</p>
