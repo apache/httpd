@@ -91,25 +91,6 @@ void child_main(apr_pool_t *pconf);
  */
 static HANDLE pipe;
 
-/* Stub functions until this MPM supports the connection status API */
-
-AP_DECLARE(void) ap_update_connection_status(long conn_id, const char *key, \
-                                             const char *value)
-{
-    /* NOP */
-}
-
-AP_DECLARE(void) ap_reset_connection_status(long conn_id)
-{
-    /* NOP */
-}
-
-AP_DECLARE(apr_array_header_t *) ap_get_status_table(apr_pool_t *p)
-{
-    /* NOP */
-    return NULL;
-}
-
 /*
  * Command processors
  */

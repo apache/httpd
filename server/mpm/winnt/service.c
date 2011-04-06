@@ -159,8 +159,6 @@ void hold_console_open_on_error(void)
     while ((remains > 0) && WaitForSingleObject(hConIn, 1000) != WAIT_FAILED);
 }
 
-static BOOL  die_on_logoff = FALSE;
-
 static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
 {
     switch (ctrl_type)
@@ -207,39 +205,6 @@ void mpm_start_console_handler(void)
 {
     SetConsoleCtrlHandler(console_control_handler, TRUE);
     atexit(stop_console_handler);
-}
-
-
-/* Special situation - children of services need to mind their
- * P's & Q's and wait quietly, ignoring the mean OS signaling
- * shutdown and other horrors, to kill them gracefully...
- */
-
-static BOOL CALLBACK child_control_handler(DWORD ctrl_type)
-{
-    switch (ctrl_type)
-    {
-        case CTRL_C_EVENT:
-        case CTRL_BREAK_EVENT:
-            /* for Interrupt signals, ignore them.
-             * The system will also signal the parent process,
-             * which will terminate Apache.
-             */
-            return TRUE;
-
-        case CTRL_CLOSE_EVENT:
-        case CTRL_LOGOFF_EVENT:
-        case CTRL_SHUTDOWN_EVENT:
-            /* for Shutdown signals, ignore them, but...             .
-             * The system will also signal the parent process,
-             * which will terminate Apache, so we need to wait.
-             */
-            Sleep(30000);
-            return TRUE;
-    }
-
-    /* We should never get here, but this is (mostly) harmless */
-    return FALSE;
 }
 
 
@@ -302,7 +267,6 @@ static void set_service_description(void)
 {
     const char *full_description;
     SC_HANDLE schSCManager;
-    BOOL ret = 0;
 
     /* Nothing to do if we are a console
      */

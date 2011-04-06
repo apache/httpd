@@ -132,10 +132,8 @@ void mpm_nt_eventlog_stderr_flush(void)
 void mpm_nt_eventlog_stderr_open(char *argv0, apr_pool_t *p)
 {
     SECURITY_ATTRIBUTES sa;
-    HANDLE hProc = GetCurrentProcess();
     HANDLE hPipeRead = NULL;
     HANDLE hPipeWrite = NULL;
-    HANDLE hDup = NULL;
     DWORD  threadid;
     apr_file_t *eventlog_file;
     apr_file_t *stderr_file;
