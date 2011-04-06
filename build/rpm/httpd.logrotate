@@ -3,6 +3,6 @@
     notifempty
     sharedscripts
     postrotate
-	/bin/kill -HUP `cat /var/run/httpd.pid 2>/dev/null` 2> /dev/null || true
+	/sbin/service httpd graceful 2> /dev/null || true
     endscript
 }
