@@ -99,7 +99,7 @@ static DWORD WINAPI service_stderr_thread(LPVOID hPipe)
 
     if ((errres = GetLastError()) != ERROR_BROKEN_PIPE) {
         apr_snprintf(errbuf, sizeof(errbuf),
-                     "Win32 error %d reading stderr pipe stream\r\n",
+                     "Win32 error %lu reading stderr pipe stream\r\n",
                      GetLastError());
 
         ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0,
