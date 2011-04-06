@@ -473,7 +473,7 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId,
         lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
         apr_os_sock_get(&nsd, lr->sd);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "Parent: Duplicating socket %d and sending it to child process %d",
+                     "Parent: Duplicating socket %d and sending it to child process %lu",
                      nsd, dwProcessId);
         if (WSADuplicateSocket(nsd, dwProcessId,
                                lpWSAProtocolInfo) == SOCKET_ERROR) {
@@ -492,7 +492,7 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                 "Parent: Sent %d listeners to child %d", lcnt, dwProcessId);
+                 "Parent: Sent %d listeners to child %lu", lcnt, dwProcessId);
     return 0;
 }
 
@@ -593,7 +593,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     }
     env = apr_palloc(ptemp, (envc + 2) * sizeof (char*));  
     memcpy(env, _environ, envc * sizeof (char*));
-    apr_snprintf(pidbuf, sizeof(pidbuf), "AP_PARENT_PID=%i", parent_pid);
+    apr_snprintf(pidbuf, sizeof(pidbuf), "AP_PARENT_PID=%lu", parent_pid);
     env[envc] = pidbuf;
     env[envc + 1] = NULL;
 
@@ -807,14 +807,14 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             || exitcode == APEXIT_CHILDINIT
             || exitcode == APEXIT_INIT) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
-                         "Parent: child process exited with status %u -- Aborting.", exitcode);
+                         "Parent: child process exited with status %lu -- Aborting.", exitcode);
             shutdown_pending = 1;
         }
         else {
             int i;
             restart_pending = 1;
             ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                         "Parent: child process exited with status %u -- Restarting.", exitcode);
+                         "Parent: child process exited with status %lu -- Restarting.", exitcode);
             for (i = 0; i < ap_threads_per_child; i++) {
                 ap_update_child_status_from_indexes(0, i, SERVER_DEAD, NULL);
             }
@@ -1518,7 +1518,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
              * across a restart
              */
             PSECURITY_ATTRIBUTES sa = GetNullACL();  /* returns NULL if invalid (Win95?) */
-            setup_signal_names(apr_psprintf(pconf,"ap%d", parent_pid));
+            setup_signal_names(apr_psprintf(pconf, "ap%lu", parent_pid));
 
             ap_log_pid(pconf, ap_pid_fname);
 
@@ -1608,7 +1608,7 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
 {
     apr_status_t rv;
 
-    setup_signal_names(apr_psprintf(pchild,"ap%d", parent_pid));
+    setup_signal_names(apr_psprintf(pchild, "ap%lu", parent_pid));
 
     /* This is a child process, not in single process mode */
     if (!one_process) {
