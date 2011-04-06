@@ -787,7 +787,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         }
         if (SetEvent(child_exit_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
-                         "Parent: SetEvent for child process %d failed.",
+                         "Parent: SetEvent for child process %pp failed.",
                          event_handles[CHILD_HANDLE]);
         }
         /* Don't wait to verify that the child process really exits,
@@ -842,7 +842,8 @@ die_now:
         /* Signal the child processes to exit */
         if (SetEvent(child_exit_event) == 0) {
                 ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), ap_server_conf,
-                             "Parent: SetEvent for child process %d failed", event_handles[CHILD_HANDLE]);
+                             "Parent: SetEvent for child process %pp failed",
+                             event_handles[CHILD_HANDLE]);
         }
         if (event_handles[CHILD_HANDLE]) {
             rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
@@ -854,7 +855,8 @@ die_now:
             }
             else {
                 ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                             "Parent: Forcing termination of child process %d ", event_handles[CHILD_HANDLE]);
+                             "Parent: Forcing termination of child process %pp",
+                             event_handles[CHILD_HANDLE]);
                 TerminateProcess(event_handles[CHILD_HANDLE], 1);
                 CloseHandle(event_handles[CHILD_HANDLE]);
                 event_handles[CHILD_HANDLE] = NULL;
