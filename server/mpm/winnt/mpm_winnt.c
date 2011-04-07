@@ -257,7 +257,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(HANDLE))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Child %d: Unable to retrieve the ready event from the parent", my_pid);
+                     "Child: Unable to retrieve the ready event from the parent");
         exit(APEXIT_CHILDINIT);
     }
 
@@ -268,7 +268,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(HANDLE))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Child %d: Unable to retrieve the exit event from the parent", my_pid);
+                     "Child: Unable to retrieve the exit event from the parent");
         exit(APEXIT_CHILDINIT);
     }
 
@@ -276,14 +276,14 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(os_start))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Child %d: Unable to retrieve the start_mutex from the parent", my_pid);
+                     "Child: Unable to retrieve the start_mutex from the parent");
         exit(APEXIT_CHILDINIT);
     }
     *child_start_mutex = NULL;
     if ((rv = apr_os_proc_mutex_put(child_start_mutex, &os_start, s->process->pool))
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                     "Child %d: Unable to access the start_mutex from the parent", my_pid);
+                     "Child: Unable to access the start_mutex from the parent");
         exit(APEXIT_CHILDINIT);
     }
 
@@ -291,21 +291,21 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(hScore))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Child %d: Unable to retrieve the scoreboard from the parent", my_pid);
+                     "Child: Unable to retrieve the scoreboard from the parent");
         exit(APEXIT_CHILDINIT);
     }
     *scoreboard_shm = NULL;
     if ((rv = apr_os_shm_put(scoreboard_shm, &hScore, s->process->pool))
             != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                     "Child %d: Unable to access the scoreboard from the parent", my_pid);
+                     "Child: Unable to access the scoreboard from the parent");
         exit(APEXIT_CHILDINIT);
     }
 
     rv = ap_reopen_scoreboard(s->process->pool, scoreboard_shm, 1);
     if (rv || !(sb_shared = apr_shm_baseaddr_get(*scoreboard_shm))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                     "Child %d: Unable to reopen the scoreboard from the parent", my_pid);
+                     "Child: Unable to reopen the scoreboard from the parent");
         exit(APEXIT_CHILDINIT);
     }
     /* We must 'initialize' the scoreboard to relink all the
@@ -314,7 +314,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     ap_init_scoreboard(sb_shared);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                 "Child %d: Retrieved our scoreboard from the parent.", my_pid);
+                 "Child: Retrieved our scoreboard from the parent.");
 }
 
 
@@ -439,7 +439,7 @@ static void get_listeners_from_parent(server_rec *s)
                         &WSAProtocolInfo, 0, 0);
         if (nsd == INVALID_SOCKET) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf,
-                         "Child %d: setup_inherited_listeners(), WSASocket failed to open the inherited socket.", my_pid);
+                         "Child: setup_inherited_listeners(), WSASocket failed to open the inherited socket.");
             exit(APEXIT_CHILDINIT);
         }
 
@@ -451,7 +451,7 @@ static void get_listeners_from_parent(server_rec *s)
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                 "Child %d: retrieved %d listeners from parent", my_pid, lcnt);
+                 "Child: retrieved %d listeners from parent", lcnt);
 }
 
 
@@ -1630,8 +1630,8 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
                                    APR_LOCK_DEFAULT, s->process->pool);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
-                         "%s child %d: Unable to init the start_mutex.",
-                         service_name, my_pid);
+                         "%s child: Unable to init the start_mutex.",
+                         service_name);
             exit(APEXIT_CHILDINIT);
         }
 
@@ -1662,12 +1662,12 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         /* The child process or in one_process (debug) mode
          */
         ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                     "Child %d: Child process is running", my_pid);
+                     "Child process is running");
 
         child_main(pconf);
 
         ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                     "Child %d: Child process is exiting", my_pid);
+                     "Child process is exiting");
         return DONE;
     }
     else
