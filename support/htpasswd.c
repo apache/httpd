@@ -104,6 +104,13 @@ apr_file_t *ftemp = NULL;
 
 #define NL APR_EOL_STR
 
+#if defined(WIN32) || defined(NETWARE)
+#define CRYPT_ALGO_SUPPORTED 0
+#else
+#define CRYPT_ALGO_SUPPORTED 1
+#endif
+
+#if CRYPT_ALGO_SUPPORTED
 static void to64(char *s, unsigned long v, int n)
 {
     static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
@@ -114,6 +121,7 @@ static void to64(char *s, unsigned long v, int n)
         v >>= 6;
     }
 }
+#endif
 
 static void generate_salt(char *s, size_t size)
 {
@@ -209,7 +217,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         apr_cpystrn(cpw,pw,sizeof(cpw));
         break;
 
-#if (!(defined(WIN32) || defined(NETWARE)))
+#if CRYPT_ALGO_SUPPORTED
     case ALG_CRYPT:
     default:
         if (seed_rand()) {
@@ -229,7 +237,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
             free(truncpw);
         }
         break;
-#endif
+#endif /* CRYPT_ALGO_SUPPORTED */
     }
     memset(pw, '\0', strlen(pw));
 
@@ -476,14 +484,14 @@ int main(int argc, const char * const argv[])
     check_args(pool, argc, argv, &alg, &mask, &user, &pwfilename, &password);
 
 
-#if defined(WIN32) || defined(NETWARE)
+#if !CRYPT_ALGO_SUPPORTED
     if (alg == ALG_CRYPT) {
         alg = ALG_APMD5;
         apr_file_printf(errfile, "Automatically using MD5 format." NL);
     }
 #endif
 
-#if (!(defined(WIN32) || defined(NETWARE)))
+#if CRYPT_ALGO_SUPPORTED
     if (alg == ALG_PLAIN) {
         apr_file_printf(errfile,"Warning: storing passwords as plain text "
                         "might just not work on this platform." NL);
