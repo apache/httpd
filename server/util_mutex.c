@@ -390,6 +390,7 @@ static void log_create_failure(apr_status_t rv, server_rec *s, const char *type,
                  fname ? ")" : "");
 }
 
+#ifdef AP_NEED_SET_MUTEX_PERMS
 static void log_perms_failure(apr_status_t rv, server_rec *s, const char *type)
 {
     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
@@ -397,6 +398,7 @@ static void log_perms_failure(apr_status_t rv, server_rec *s, const char *type)
                  "check User and Group directives",
                  type);
 }
+#endif
 
 AP_DECLARE(apr_status_t) ap_global_mutex_create(apr_global_mutex_t **mutex,
                                                 const char **name,
