@@ -98,7 +98,7 @@ int set_listeners_noninheritable(apr_pool_t *p);
 #define AP_DECLARE_LATE_DLL_FUNC(lib, rettype, calltype, fn, ord, args, names) \
     typedef rettype (calltype *ap_winapi_fpt_##fn) args; \
     static ap_winapi_fpt_##fn ap_winapi_pfn_##fn = NULL; \
-    __inline rettype ap_winapi_##fn args \
+    static APR_INLINE rettype ap_winapi_##fn args \
     {   if (!ap_winapi_pfn_##fn) \
             ap_winapi_pfn_##fn = (ap_winapi_fpt_##fn) ap_load_dll_func(lib, #fn, ord); \
         return (*(ap_winapi_pfn_##fn)) names; }; \
