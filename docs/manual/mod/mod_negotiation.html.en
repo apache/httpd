@@ -158,6 +158,45 @@ Negotiation</a></li>
       </code></p></div>
       </dd>
     </dl>
+
+    <p>Consider, for example, a resource called
+    <code>document.html</code> which is available in English, French,
+    and German. The files for each of these are called
+    <code>document.html.en</code>, <code>document.html.fr</code>, and
+    <code>document.html.de</code>, respectively. The type map file will
+    be called <code>index.html.var</code>, and will contain the
+    following:</p>
+    
+    <div class="example"><h3>index.html.var</h3><p><code>
+
+    Content-language: en<br />
+    Content-type: text/html<br />
+    URI: document.html.en<br />
+    <br />
+    Content-language: fr<br />
+    Content-type: text/html<br />
+    URI: document.html.fr<br />
+    <br />
+    Content-language: de<br />
+    Content-type: text/html<br />
+    URI: document.html.de<br />
+    <br />
+
+    </code></p></div>
+
+    <p>All four of these files should be placed in the same directory,
+    and the <code>.var</code> file should be associated with the
+    <code>type-map</code> handler with an <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive:</p>
+
+    <div class="example"><p><code>
+    AddHandler type-map .var
+    </code></p></div>
+
+    <p>A request for <code>document.html</code> in this directory will
+    result in <code>document.html.var</code> being consulted, and the
+    variant chosen which most closely matches the language preference
+    specified in the user's <code>Accept-Language</code> request
+    header.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multiviews" id="multiviews">Multiviews</a></h2>
