@@ -178,7 +178,7 @@ Negotiation</a></seealso>
 
     <example>
     AddHandler type-map .var
-    <example>
+    </example>
 
     <p>A request for <code>document.html</code> in this directory will
     result in <code>document.html.var</code> being consulted, and the
