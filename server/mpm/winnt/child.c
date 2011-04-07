@@ -338,7 +338,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
-                 "Child %d: Accept thread listening on %s:%d using %s", my_pid,
+                 "Child: Accept thread listening on %s:%d using %s",
                  lr->bind_addr->hostname ? lr->bind_addr->hostname : "*",
                  lr->bind_addr->port, accf_name);
 
@@ -443,11 +443,10 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                     ++err_count;
                     if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
                         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                                     "Child %d: Encountered too many AcceptEx "
+                                     "Child: Encountered too many AcceptEx "
                                      "faults accepting client connections. "
                                      "Possible causes: dynamic address renewal, "
-                                     "or incompatible VPN or firewall software. ",
-                                     my_pid);
+                                     "or incompatible VPN or firewall software. ");
                         ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
                                      "winnt_mpm: falling back to "
                                      "'AcceptFilter none'.");
@@ -465,9 +464,8 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                     ++err_count;
                     if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
                         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                                     "Child %d: Encountered too many AcceptEx "
-                                     "faults accepting client connections.",
-                                     my_pid);
+                                     "Child: Encountered too many AcceptEx "
+                                     "faults accepting client connections.");
                         ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
                                      "winnt_mpm: falling back to "
                                      "'AcceptFilter none'.");
@@ -605,9 +603,8 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                     ++err_count;
                     if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
                         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                                     "Child %d: Encountered too many accept() "
-                                     "resource faults, aborting.",
-                                     my_pid);
+                                     "Child: Encountered too many accept() "
+                                     "resource faults, aborting.");
                         break;
                     }
                     continue;
@@ -658,7 +655,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Accept thread exiting.", my_pid);
+                 "Child: Accept thread exiting.");
     return 0;
 }
 
@@ -687,8 +684,8 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
         if (!rc) {
             rc = apr_get_os_error();
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, ap_server_conf,
-                         "Child %d: GetQueuedComplationStatus returned %d",
-                         my_pid, rc);
+                         "Child: GetQueuedComplationStatus returned %d",
+                         rc);
             continue;
         }
 
@@ -910,8 +907,7 @@ void child_main(apr_pool_t *pconf)
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!max_requests_per_child_event) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Child %d: Failed to create a max_requests event.", 
-                     my_pid);
+                     "Child: Failed to create a max_requests event.");
         exit(APEXIT_CHILDINIT);
     }
     child_events[0] = exit_event;
@@ -925,12 +921,12 @@ void child_main(apr_pool_t *pconf)
     status = apr_proc_mutex_lock(start_mutex);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
-                     "Child %d: Failed to acquire the start_mutex. "
-                     "Process will exit.", my_pid);
+                     "Child: Failed to acquire the start_mutex. "
+                     "Process will exit.");
         exit(APEXIT_CHILDINIT);
     }
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Acquired the start mutex.", my_pid);
+                 "Child: Acquired the start mutex.");
 
     /*
      * Create the worker thread dispatch IOCompletionPort
@@ -943,7 +939,7 @@ void child_main(apr_pool_t *pconf)
     if (!qwait_event) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), 
                      ap_server_conf,
-                     "Child %d: Failed to create a qwait event.", my_pid);
+                     "Child: Failed to create a qwait event.");
         exit(APEXIT_CHILDINIT);
     }
 
@@ -951,8 +947,7 @@ void child_main(apr_pool_t *pconf)
      * Create the pool of worker threads
      */
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Starting %d worker threads.",
-                 my_pid, ap_threads_per_child);
+                 "Child: Starting %d worker threads.", ap_threads_per_child);
     child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child
                                                   * sizeof(HANDLE));
     apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
@@ -972,11 +967,11 @@ void child_main(apr_pool_t *pconf)
             if (child_handles[i] == 0) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                              ap_server_conf,
-                             "Child %d: CreateThread failed. Unable to "
+                             "Child: CreateThread failed. Unable to "
                              "create all worker threads. Created %d of the %d "
                              "threads requested with the ThreadsPerChild "
                              "configuration directive.",
-                             my_pid, threads_created, ap_threads_per_child);
+                             threads_created, ap_threads_per_child);
                 ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
                 goto shutdown;
             }
@@ -1048,15 +1043,14 @@ void child_main(apr_pool_t *pconf)
             /* Something serious is wrong */
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                          ap_server_conf,
-                         "Child %d: WAIT_FAILED -- shutting down server", 
-                         my_pid);
+                         "Child: WAIT_FAILED -- shutting down server");
             break;
         }
         else if (cld == 0) {
             /* Exit event was signaled */
             ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                         "Child %d: Exit event signaled. Child process is "
-                         "ending.", my_pid);
+                         "Child: Exit event signaled. Child process is "
+                         "ending.");
             break;
         }
         else {
@@ -1064,9 +1058,9 @@ void child_main(apr_pool_t *pconf)
              * Signal the parent to restart
              */
             ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                         "Child %d: Process exiting because it reached "
+                         "Child: Process exiting because it reached "
                          "MaxConnectionsPerChild. Signaling the parent to "
-                         "restart a new child process.", my_pid);
+                         "restart a new child process.");
             ap_signal_parent(SIGNAL_PARENT_RESTART);
             break;
         }
@@ -1105,11 +1099,11 @@ void child_main(apr_pool_t *pconf)
     rv = apr_proc_mutex_unlock(start_mutex);
     if (rv == APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
-                     "Child %d: Released the start mutex", my_pid);
+                     "Child: Released the start mutex");
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                     "Child %d: Failure releasing the start mutex", my_pid);
+                     "Child: Failure releasing the start mutex");
     }
 
     /* Shutdown the worker threads
@@ -1117,8 +1111,8 @@ void child_main(apr_pool_t *pconf)
      */
     while (g_blocked_threads > 0) {
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                     "Child %d: %d threads blocked on the completion port",
-                     my_pid, g_blocked_threads);
+                     "Child: %d threads blocked on the completion port",
+                     g_blocked_threads);
         for (i=g_blocked_threads; i > 0; i--) {
             PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, 
                                        IOCP_SHUTDOWN, NULL);
@@ -1158,9 +1152,9 @@ void child_main(apr_pool_t *pconf)
             if ((time_remains % 30000) == 0) {
                 ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, 
                              ap_server_conf,
-                             "Child %d: Waiting %d more seconds "
+                             "Child: Waiting %d more seconds "
                              "for %d worker threads to finish.", 
-                             my_pid, time_remains / 1000, threads_created);
+                             time_remains / 1000, threads_created);
             }
             /* We'll poll from the top, 10 times per second */
             Sleep(100);
@@ -1202,8 +1196,8 @@ void child_main(apr_pool_t *pconf)
     /* Kill remaining threads off the hard way */
     if (threads_created) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                     "Child %d: Terminating %d threads that failed to exit.",
-                     my_pid, threads_created);
+                     "Child: Terminating %d threads that failed to exit.",
+                     threads_created);
     }
     for (i = 0; i < threads_created; i++) {
         int *score_idx;
@@ -1216,7 +1210,7 @@ void child_main(apr_pool_t *pconf)
         }
     }
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                 "Child %d: All worker threads have exited.", my_pid);
+                 "Child: All worker threads have exited.");
 
     apr_thread_mutex_destroy(child_lock);
     apr_thread_mutex_destroy(qlock);
