@@ -140,7 +140,7 @@ Negotiation</a></li>
       requested directly.</dd>
 
       <dt><code>Body:</code></dt>
-      <dd>New in Apache 2.0, the actual content of the resource may
+      <dd>The actual content of the resource may
       be included in the type-map file using the Body header.  This
       header must contain a string that designates a delimiter for
       the body content. Then all following lines in the type map
@@ -227,7 +227,6 @@ cached by proxy servers</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The syntax changed in version 2.0.</td></tr>
 </table>
     <p>If set, this directive allows content-negotiated documents
     to be cached by proxy servers. This could mean that clients
@@ -240,10 +239,6 @@ cached by proxy servers</td></tr>
     the caching of negotiated documents, and this directive has no
     effect in responses to HTTP/1.1 requests.</p>
 
-    <p>Prior to version 2.0,
-    <code class="directive">CacheNegotiatedDocs</code> did not take an
-    argument; it was turned on by the presence of the directive by
-    itself.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
