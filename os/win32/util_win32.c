@@ -20,6 +20,7 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "ap_mpm.h"
 
 #include <stdarg.h>
 #include <time.h>
