@@ -151,11 +151,12 @@ Negotiation</a></seealso>
     and German. The files for each of these are called
     <code>document.html.en</code>, <code>document.html.fr</code>, and
     <code>document.html.de</code>, respectively. The type map file will
-    be called <code>index.html.var</code>, and will contain the
+    be called <code>document.html.var</code>, and will contain the
     following:</p>
     
-    <example><title>index.html.var</title>
-
+    <example>
+    URI: document.html<br />
+    <br />
     Content-language: en<br />
     Content-type: text/html<br />
     URI: document.html.en<br />
