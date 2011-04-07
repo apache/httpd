@@ -57,43 +57,6 @@ static nt_service_ctx_t globdat;
 static int ReportStatusToSCMgr(int currentState, int waitHint,
                                nt_service_ctx_t *ctx);
 
-
-#define PRODREGKEY "SOFTWARE\\" AP_SERVER_BASEVENDOR "\\" \
-                   AP_SERVER_BASEPRODUCT "\\" AP_SERVER_BASEREVISION
-
-/*
- * Get the server root from the registry into 'dir' which is
- * size bytes long. Returns 0 if the server root was found
- * or if the serverroot key does not exist (in which case
- * dir will contain an empty string), or -1 if there was
- * an error getting the key.
- */
-apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
-{
-    apr_status_t rv;
-    ap_regkey_t *key;
-
-    if ((rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, PRODREGKEY,
-                             APR_READ, p)) == APR_SUCCESS) {
-        rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
-        ap_regkey_close(key);
-        if (rv == APR_SUCCESS)
-            return rv;
-    }
-
-    if ((rv = ap_regkey_open(&key, AP_REGKEY_CURRENT_USER, PRODREGKEY,
-                             APR_READ, p)) == APR_SUCCESS) {
-        rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
-        ap_regkey_close(key);
-        if (rv == APR_SUCCESS)
-            return rv;
-    }
-
-    *buf = NULL;
-    return rv;
-}
-
-
 /* exit() for Win32 is macro mapped (horrible, we agree) that allows us
  * to catch the non-zero conditions and inform the console process that
  * the application died, and hang on to the console a bit longer.
