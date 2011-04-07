@@ -43,7 +43,7 @@ AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i)
 }
 
 
-apr_status_t regkey_cleanup(void *key)
+static apr_status_t regkey_cleanup(void *key)
 {
     ap_regkey_t *regkey = key;
 
@@ -468,8 +468,6 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
     {
         apr_size_t alloclen;
         apr_size_t valuelen = strlen(valuename) + 1;
-        apr_size_t wvallen = 256;
-        apr_wchar_t *wvalue = (apr_wchar_t *)value;
 
         /* ###: deliberately overallocate plus two extra nulls.
          * We could precalculate the exact buffer here instead, the question
