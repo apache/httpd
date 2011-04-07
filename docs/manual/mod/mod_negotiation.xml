@@ -145,6 +145,46 @@ Negotiation</a></seealso>
       </example>
       </dd>
     </dl>
+
+    <p>Consider, for example, a resource called
+    <code>document.html</code> which is available in English, French,
+    and German. The files for each of these are called
+    <code>document.html.en</code>, <code>document.html.fr</code>, and
+    <code>document.html.de</code>, respectively. The type map file will
+    be called <code>index.html.var</code>, and will contain the
+    following:</p>
+    
+    <example><title>index.html.var</title>
+
+    Content-language: en<br />
+    Content-type: text/html<br />
+    URI: document.html.en<br />
+    <br />
+    Content-language: fr<br />
+    Content-type: text/html<br />
+    URI: document.html.fr<br />
+    <br />
+    Content-language: de<br />
+    Content-type: text/html<br />
+    URI: document.html.de<br />
+    <br />
+
+    </example>
+
+    <p>All four of these files should be placed in the same directory,
+    and the <code>.var</code> file should be associated with the
+    <code>type-map</code> handler with an <directive
+    module="mod_mime">AddHandler</directive> directive:</p>
+
+    <example>
+    AddHandler type-map .var
+    <example>
+
+    <p>A request for <code>document.html</code> in this directory will
+    result in <code>document.html.var</code> being consulted, and the
+    variant chosen which most closely matches the language preference
+    specified in the user's <code>Accept-Language</code> request
+    header.</p>
 </section>
 
 <section id="multiviews"><title>Multiviews</title>
