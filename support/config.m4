@@ -114,6 +114,20 @@ fi
 ])
 APACHE_SUBST(fcgistarter_LTFLAGS)
 
+# Configure or check which of the non-portable support programs can be enabled.
+
+NONPORTABLE_SUPPORT=""
+case $host in
+    *mingw*)
+        ;;
+    *)
+        NONPORTABLE_SUPPORT="checkgid fcgistarter"
+        ;;
+esac
+APACHE_SUBST(NONPORTABLE_SUPPORT)
+
+# Configure the ulimit -n command used by apachectl.
+
 case $host in
     *aix*)
         # this works in any locale, unlike the default command below, which
