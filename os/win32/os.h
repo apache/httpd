@@ -53,6 +53,7 @@
 #define CASE_BLIND_FILESYSTEM
 
 #include <stddef.h>
+#include <stdlib.h> /* for exit() */
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,9 +92,6 @@ FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal);
 
 PSECURITY_ATTRIBUTES GetNullACL(void);
 void CleanNullACL(void *sa);
-
-int set_listeners_noninheritable(apr_pool_t *p);
-
 
 #define AP_DECLARE_LATE_DLL_FUNC(lib, rettype, calltype, fn, ord, args, names) \
     typedef rettype (calltype *ap_winapi_fpt_##fn) args; \
