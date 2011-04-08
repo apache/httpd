@@ -431,7 +431,7 @@ static void get_listeners_from_parent(server_rec *s)
         if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO),
                       &BytesRead, (LPOVERLAPPED) NULL)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                         "setup_inherited_listeners: Unable to read socket data from parent");
+                         "Child: Unable to read socket data from parent");
             exit(APEXIT_CHILDINIT);
         }
 
@@ -439,13 +439,13 @@ static void get_listeners_from_parent(server_rec *s)
                         &WSAProtocolInfo, 0, 0);
         if (nsd == INVALID_SOCKET) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf,
-                         "Child: setup_inherited_listeners(), WSASocket failed to open the inherited socket.");
+                         "Child: WSASocket failed to open the inherited socket");
             exit(APEXIT_CHILDINIT);
         }
 
         if (!SetHandleInformation((HANDLE)nsd, HANDLE_FLAG_INHERIT, 0)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
-                         "set_listeners_noninheritable: SetHandleInformation failed.");
+                         "Child: SetHandleInformation failed");
         }
         apr_os_sock_put(&lr->sd, &nsd, s->process->pool);
     }
@@ -755,13 +755,13 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     if (rv == WAIT_FAILED) {
         /* Something serious is wrong */
         ap_log_error(APLOG_MARK,APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "master_main: WaitForMultipeObjects WAIT_FAILED -- doing server shutdown");
+                     "master_main: WaitForMultipleObjects WAIT_FAILED -- doing server shutdown");
         shutdown_pending = 1;
     }
     else if (rv == WAIT_TIMEOUT) {
         /* Hey, this cannot happen */
         ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
-                     "master_main: WaitForMultipeObjects with INFINITE wait exited with WAIT_TIMEOUT");
+                     "master_main: WaitForMultipleObjects with INFINITE wait exited with WAIT_TIMEOUT");
         shutdown_pending = 1;
     }
     else if (cld == SHUTDOWN_HANDLE) {
