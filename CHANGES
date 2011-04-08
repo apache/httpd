@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) mod_ssl, ab: Support OpenSSL compiled without SSLv2 support.
+     [Stefan Fritsch]
+
   *) core: Abort if the MPM is changed across restart.  [Jeff Trawick]
 
   *) mod_proxy_ajp: Add support for 'ProxyErrorOverride on'. PR 50945.
