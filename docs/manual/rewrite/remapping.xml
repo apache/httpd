@@ -488,8 +488,8 @@ com       http://www.example.com/<br />
 RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*<br />
 RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]<br />
 <br />
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>.*         [OR]<br />
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>.*<br />
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>         [OR]<br />
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong><br />
 RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]<br />
 <br />
 RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
