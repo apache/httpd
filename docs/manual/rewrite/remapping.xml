@@ -448,6 +448,8 @@ com       http://www.example.com/<br />
       user-agent, which is requesting the content.</p>
     </dd>
 
+    <!-- It would be nice to bring this example into the 21st century.  -->
+
     <dt>Solution:</dt>
 
     <dd>
@@ -462,11 +464,11 @@ com       http://www.example.com/<br />
       This is done with the following ruleset:</p>
 
 <example>
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*<br />
+RewriteCond %{HTTP_USER_AGENT}  <strong>Mozilla/3</strong>.*<br />
 RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]<br />
 <br />
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>         [OR]<br />
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong><br />
+RewriteCond %{HTTP_USER_AGENT}  <strong>Lynx/</strong>         [OR]<br />
+RewriteCond %{HTTP_USER_AGENT}  <strong>Mozilla/[12]</strong><br />
 RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]<br />
 <br />
 RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
