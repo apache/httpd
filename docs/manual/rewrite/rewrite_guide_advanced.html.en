@@ -447,10 +447,10 @@ com       ftp://ftp.cxan.com/CxAN/
           This is done with the following ruleset:</p>
 
 <div class="example"><pre>
-RewriteCond %{HTTP_USER_AGENT}  <strong>Mozilla/3</strong>
+RewriteCond %{HTTP_USER_AGENT}  <strong>^Mozilla/3</strong>
 RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
 
-RewriteCond %{HTTP_USER_AGENT}  <strong>Lynx/</strong>         [OR]
+RewriteCond %{HTTP_USER_AGENT}  <strong>^Lynx/</strong>         [OR]
 RewriteCond %{HTTP_USER_AGENT}  <strong>Mozilla/[12]</strong>
 RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
 
