@@ -223,7 +223,9 @@
       <li>REMOVES: accept, lockfile, lock_mech, set_scoreboard (locking uses the new ap_mutex API)</li>
       <li>NEW API to drop privileges (delegates this platform-dependent
           function to modules)</li>
-      <li>NEW Hooks: mpm_query, mpm_note_child_killed, timed_callback, get_name, and function ap_mpm_note_child_killed</li>
+      <li>NEW Hooks: mpm_query, timed_callback, and get_name</li>
+      <li>CHANGED interfaces: monitor hook,
+      ap_reclaim_child_processes, ap_relieve_child_processes</li>
     </ul>
   
 
