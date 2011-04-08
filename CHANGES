@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) core: Support module names with colons in loglevel configuration.
+     [Torsten Förtsch <torsten foertsch gmx net>]
+
   *) mod_ssl, ab: Support OpenSSL compiled without SSLv2 support.
      [Stefan Fritsch]
 

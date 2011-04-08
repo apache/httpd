@@ -2842,7 +2842,7 @@ static const char *set_loglevel(cmd_parms *cmd, void *config_, const char *arg_)
     if (arg == NULL)
         return "LogLevel requires level keyword or module loglevel specifier";
 
-    level_str = ap_strchr(arg, ':');
+    level_str = ap_strrchr(arg, ':');
 
     if (level_str == NULL) {
         err = ap_parse_log_level(arg, &log->level);
