@@ -852,10 +852,10 @@ RewriteRule ...some special stuff for any of these hosts...
 
 <example>
 <pre>
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
+RewriteCond  %{HTTP_USER_AGENT}  Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
+RewriteCond  %{HTTP_USER_AGENT}  Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
