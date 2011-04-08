@@ -500,16 +500,18 @@ static void ssl_init_ctx_protocol(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                  "Creating new SSL context (protocols: %s)", cp);
 
-    if (protocol == SSL_PROTOCOL_SSLV2) {
-        method = mctx->pkp ?
-            SSLv2_client_method() : /* proxy */
-            SSLv2_server_method();  /* server */
-    }
-    else if (protocol == SSL_PROTOCOL_SSLV3) {
+    if (protocol == SSL_PROTOCOL_SSLV3) {
         method = mctx->pkp ?
             SSLv3_client_method() : /* proxy */
             SSLv3_server_method();  /* server */
     }
+#ifndef OPENSSL_NO_SSL2
+    else if (protocol == SSL_PROTOCOL_SSLV2) {
+        method = mctx->pkp ?
+            SSLv2_client_method() : /* proxy */
+            SSLv2_server_method();  /* server */
+    }
+#endif
     else if (protocol == SSL_PROTOCOL_TLSV1) {
         method = mctx->pkp ?
             TLSv1_client_method() : /* proxy */
