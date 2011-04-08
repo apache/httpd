@@ -338,7 +338,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
-                 "Child: Accept thread listening on %s:%d using %s",
+                 "Child: Accept thread listening on %s:%d using AcceptFilter %s",
                  lr->bind_addr->hostname ? lr->bind_addr->hostname : "*",
                  lr->bind_addr->port, accf_name);
 
@@ -591,7 +591,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                     continue;
                 }
 
-                /* A more serious error that 'retry', log it */
+                /* A more serious error than 'retry', log it */
                 ap_log_error(APLOG_MARK, APLOG_WARNING,
                              rv, ap_server_conf,
                              "accept() failed.");
