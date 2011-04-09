@@ -165,7 +165,7 @@ static winnt_conn_ctx_t *mpm_get_completion_context(void)
                 /* All workers are busy, need to wait for one */
                 static int reported = 0;
                 if (!reported) {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
                                  "Server ran out of threads to serve "
                                  "requests. Consider raising the "
                                  "ThreadsPerChild setting");
@@ -180,8 +180,22 @@ static winnt_conn_ctx_t *mpm_get_completion_context(void)
                 rv = WaitForSingleObject(qwait_event, 1000);
                 if (rv == WAIT_OBJECT_0)
                     continue;
-                else /* Hopefully, WAIT_TIMEOUT */
+                else {
+                    if (rv == WAIT_TIMEOUT) {
+                        /* somewhat-normal condition where threads are busy */
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                                     "mpm_get_completion_context: Failed to get a "
+                                     "free context within 1 second");
+                    }
+                    else {
+                        /* should be the unexpected, generic WAIT_FAILED */
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_os_error(),
+                                     ap_server_conf,
+                                     "mpm_get_completion_context: "
+                                     "WaitForSingleObject failed to get free context");
+                    }
                     return NULL;
+                }
             } else {
                 /* Allocate another context.
                  * Note: Multiple failures in the next two steps will cause
@@ -349,17 +363,11 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 /* Hopefully a temporary condition in the provider? */
                 ++err_count;
                 if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
                                  "winnt_accept: Too many failures grabbing a "
                                  "connection ctx.  Aborting.");
                     break;
                 }
-
-                /* Temporary resource constraint? */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, apr_get_netos_error(), 
-                             ap_server_conf,
-                             "winnt_accept: Failed to grab a connection ctx."
-                             "  Temporary resource constraint? Retrying.");
                 Sleep(100);
                 continue;
             }
