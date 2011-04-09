@@ -25,6 +25,8 @@
  * does not belong in src/os/unix
  */
 
+#ifndef WIN32
+
 #include "apr.h"
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
@@ -918,3 +920,5 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
 
     return APR_SUCCESS;
 }
+
+#endif /* WIN32 */
