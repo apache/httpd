@@ -137,11 +137,12 @@ static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
     }
 }
 
-static winnt_conn_ctx_t *mpm_get_completion_context(void)
+static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
 {
     apr_status_t rv;
     winnt_conn_ctx_t *context = NULL;
 
+    *timeout = 0;
     while (1) {
         /* Grab a context off the queue */
         apr_thread_mutex_lock(qlock);
@@ -186,6 +187,7 @@ static winnt_conn_ctx_t *mpm_get_completion_context(void)
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                      "mpm_get_completion_context: Failed to get a "
                                      "free context within 1 second");
+                        *timeout = 1;
                     }
                     else {
                         /* should be the unexpected, generic WAIT_FAILED */
@@ -358,15 +360,19 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
 
     while (!shutdown_in_progress) {
         if (!context) {
-            context = mpm_get_completion_context();
+            int timeout;
+
+            context = mpm_get_completion_context(&timeout);
             if (!context) {
-                /* Hopefully a temporary condition in the provider? */
-                ++err_count;
-                if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
-                                 "winnt_accept: Too many failures grabbing a "
-                                 "connection ctx.  Aborting.");
-                    break;
+                if (!timeout) {
+                    /* Hopefully a temporary condition in the provider? */
+                    ++err_count;
+                    if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
+                        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
+                                     "winnt_accept: Too many failures grabbing a "
+                                     "connection ctx.  Aborting.");
+                        break;
+                    }
                 }
                 Sleep(100);
                 continue;
