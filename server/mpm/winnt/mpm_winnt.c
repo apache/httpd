@@ -721,13 +721,14 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
 static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_event)
 {
     int rv, cld;
+    int child_created;
     int restart_pending;
     int shutdown_pending;
     HANDLE child_exit_event;
     HANDLE event_handles[NUM_WAIT_HANDLES];
     DWORD child_pid;
 
-    restart_pending = shutdown_pending = 0;
+    child_created = restart_pending = shutdown_pending = 0;
 
     event_handles[SHUTDOWN_HANDLE] = shutdown_event;
     event_handles[RESTART_HANDLE] = restart_event;
@@ -742,6 +743,9 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         shutdown_pending = 1;
         goto die_now;
     }
+
+    child_created = 1;
+
     if (!strcasecmp(signal_arg, "runservice")) {
         mpm_service_started();
     }
@@ -835,6 +839,10 @@ die_now:
     {
         int timeout = 30000;  /* Timeout is milliseconds */
         winnt_mpm_state = AP_MPMQ_STOPPING;
+
+        if (!child_created) {
+            return 0;  /* Tell the caller we do not want to restart */
+        }
 
         /* This shutdown is only marginally graceful. We will give the
          * child a bit of time to exit gracefully. If the time expires,
