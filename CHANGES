@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) MinGW build improvements.  PR 49535.  [John Vandenberg 
+     <jayvdb gmail.com>, Jeff Trawick]
+
   *) core: Support module names with colons in loglevel configuration.
      [Torsten Förtsch <torsten foertsch gmx net>]
 

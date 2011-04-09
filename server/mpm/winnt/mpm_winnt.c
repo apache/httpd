@@ -44,6 +44,10 @@
 #define _environ environ
 #endif
 
+#ifndef STACK_SIZE_PARAM_IS_A_RESERVATION /* missing on MinGW */
+#define STACK_SIZE_PARAM_IS_A_RESERVATION 0x00010000
+#endif
+
 /* scoreboard.c does the heavy lifting; all we do is create the child
  * score by moving a handle down the pipe into the child's stdin.
  */
