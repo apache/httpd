@@ -1380,7 +1380,6 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 EC_KEY *ssl_callback_TmpECDH(SSL *ssl, int export, int keylen)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-    SSLModConfigRec *mc = myModConfig(c->base_server);
     static EC_KEY *ecdh = NULL;
     static int init = 0;
 
