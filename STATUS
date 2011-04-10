@@ -90,16 +90,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * configure: add basic support to build with MinGW/MSYS (backport of r422182)
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=422182
+     2.2.x patch: http://people.apache.org/~fuankg/diffs/r422182-2.2.x.diff
+     +1 fuankg, wrowe, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  * configure: add basic support to build with MinGW/MSYS (backport of r422182)
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=422182
-     2.2.x patch: http://people.apache.org/~fuankg/diffs/r422182-2.2.x.diff
-     +1 fuankg, wrowe
-
- * mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
+* mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
    FIFO rather than LIFO, for more consistent performance
    so that older requests don't suffer
    Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
@@ -127,17 +126,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mpm_common.h: Add prototype for initgroups().
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
      2.2.x patch: Trunk version of patch works with offset  
-     +1 fuankg
+     +1 fuankg, trawick
 
   * configure: Fix linking htpasswd/htdbm with crypt
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1071426
      2.2.x patch: Trunk version of patch works with fuzz
-     +1: sf
+     +1: sf, trawick
 
   * mod_ssl/ab: Support OpenSSL compiled without SSLv2 support
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090367
      2.2.x patch: http://people.apache.org/~sf/support-openssl-without-sslv2.patch
-     +1: sf
+     +1: sf, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
