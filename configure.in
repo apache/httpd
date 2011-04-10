@@ -302,6 +302,10 @@ case $host in
       APR_SETVAR(APACHE_MPM, [prefork])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
+  *mingw32*)
+      APR_SETVAR(APACHE_MPM, [winnt])
+      APR_ADDTO(CPPFLAGS, [-DAP_DECLARE_EXPORT])
+      ;;
   *aix*)
       aixver=`echo $host | sed 's/^[[^0-9]]*//' | sed 's/\.//g'`
       if test $aixver -ge 4320; then

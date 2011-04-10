@@ -17,6 +17,10 @@ bs2000*)
   OS="cygwin"
   OS_DIR="unix"
   ;;
+*mingw32*)
+  OS="win32"
+  OS_DIR=$OS
+  ;;
 *)
   OS="unix"
   OS_DIR=$OS;;
