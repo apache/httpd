@@ -73,7 +73,7 @@ ejecución</a></li>
 <li><a href="server-wide.html">Configuración Básica de Apache</a></li>
 <li><a href="ssl/">Encriptado SSL/TLS</a></li>
 <li><a href="suexec.html">Ejecución de Suexec para CGIs</a></li>
-<li><a href="misc/rewriteguide.html">Documentación adicional
+<li><a href="rewrite/">Documentación adicional
     sobre mod_rewrite</a></li>
 <li><a href="vhosts/">Hosting Virtual</a></li>
 </ul>

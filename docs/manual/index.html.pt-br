@@ -68,7 +68,7 @@
 <li><a href="server-wide.html">Configurações do Servidor</a></li>
 <li><a href="ssl/">Codificação SSL/TLS</a></li>
 <li><a href="suexec.html">Execução Suexec para CGI</a></li>
-<li><a href="misc/rewriteguide.html">Guia para Reescrever URL</a></li>
+<li><a href="rewrite/">Guia para Reescrever URL</a></li>
 <li><a href="vhosts/">Hospedeiros Virtuais</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / Tutoriais</a></h2>

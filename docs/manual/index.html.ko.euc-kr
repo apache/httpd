@@ -65,7 +65,7 @@
 <li><a href="server-wide.html">서버 전역 설정</a></li>
 <li><a href="ssl/">SSL/TLS 암호화</a></li>
 <li><a href="suexec.html">CGI의 Suexec 실행</a></li>
-<li><a href="misc/rewriteguide.html">URL 재작성(rewriting) 지침서</a></li>
+<li><a href="rewrite/">URL 재작성(rewriting) 지침서</a></li>
 <li><a href="vhosts/">가상호스트</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / 투토리얼</a></h2>
