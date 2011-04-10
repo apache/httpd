@@ -120,12 +120,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      r826805, r826822, r829162, r829355, r829431. The patch below covers only
      the C code - we also need to apply the docs and CHANGES parts of r826805.
      2.2.x patch: http://people.apache.org/~fuankg/diffs/htpasswd.c.diff
+     sf: this will change the default algorithm from crypt to md5 (I am not
+         against it)
      +1 fuankg
 
   * mpm_common.h: Add prototype for initgroups().
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
      2.2.x patch: Trunk version of patch works with offset  
      +1 fuankg
+
+  * configure: Fix linking htpasswd/htdbm with crypt
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1071426
+     2.2.x patch: Trunk version of patch works with fuzz
+     +1: sf
+
+  * mod_ssl/ab: Support OpenSSL compiled without SSLv2 support
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090367
+     2.2.x patch: http://people.apache.org/~sf/support-openssl-without-sslv2.patch
+     +1: sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
