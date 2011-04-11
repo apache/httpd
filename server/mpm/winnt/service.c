@@ -750,7 +750,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                                const char * const * argv)
 {
     apr_status_t rv;
-    char **start_argv;
+    const CHAR **start_argv;
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
 
