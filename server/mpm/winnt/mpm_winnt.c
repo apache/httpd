@@ -1189,7 +1189,7 @@ static void winnt_rewrite_args(process_rec *process)
          * after logging begins, and the failure can land in the log.
          */
         if (!errout) {
-            mpm_nt_eventlog_stderr_open((char*)service_name, process->pool);
+            mpm_nt_eventlog_stderr_open(service_name, process->pool);
         }
         service_to_start_success = mpm_service_to_start(&service_name,
                                                         process->pool);
