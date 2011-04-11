@@ -22,7 +22,7 @@
 #include "apr_portable.h"
 #include "ap_regkey.h"
 
-static char  *display_name  = NULL;
+static const char *display_name  = NULL;
 static HANDLE stderr_thread = NULL;
 static HANDLE stderr_ready;
 
@@ -129,7 +129,7 @@ void mpm_nt_eventlog_stderr_flush(void)
 }
 
 
-void mpm_nt_eventlog_stderr_open(char *argv0, apr_pool_t *p)
+void mpm_nt_eventlog_stderr_open(const char *argv0, apr_pool_t *p)
 {
     SECURITY_ATTRIBUTES sa;
     HANDLE hPipeRead = NULL;
