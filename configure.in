@@ -512,28 +512,6 @@ esac
 
 APACHE_SUBST(DTRACE)
 
-APR_CHECK_APR_DEFINE(APR_HAVE_IPV6)
-
-AC_ARG_ENABLE(v4-mapped,APACHE_HELP_STRING(--enable-v4-mapped,Allow IPv6 sockets to handle IPv4 connections),
-[ 
-  v4mapped=$enableval
-],
-[
-    case $host in
-    *freebsd5*|*netbsd*|*openbsd*)
-        v4mapped=no
-        ;;
-    *)
-        v4mapped=yes
-        ;;
-esac
-])
-
-if test $v4mapped = "yes" -a $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
-    AC_DEFINE(AP_ENABLE_V4_MAPPED, 1,
-              [Allow IPv4 connections on IPv6 listening sockets])
-fi
-
 AC_ARG_ENABLE(exception-hook,APACHE_HELP_STRING(--enable-exception-hook,Enable fatal exception hook),
 [
     AC_DEFINE(AP_ENABLE_EXCEPTION_HOOK, 1,
@@ -714,6 +692,31 @@ if test "$AP_NONBLOCK_WHEN_MULTI_LISTEN" = "1"; then
               [Listening sockets are non-blocking when there are more than 1])
 fi
 
+APR_CHECK_APR_DEFINE(APR_HAVE_IPV6)
+
+AC_ARG_ENABLE(v4-mapped,APACHE_HELP_STRING(--enable-v4-mapped,Allow IPv6 sockets to handle IPv4 connections),
+[ 
+  v4mapped=$enableval
+],
+[
+    case $host in
+    *freebsd5*|*netbsd*|*openbsd*)
+        v4mapped=no
+        ;;
+    *)
+        v4mapped=yes
+        ;;
+    esac
+    if ap_mpm_is_enabled winnt; then
+        dnl WinNT MPM doesn't support this.
+        v4mapped=no
+    fi
+])
+
+if test $v4mapped = "yes" -a $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
+    AC_DEFINE(AP_ENABLE_V4_MAPPED, 1,
+              [Allow IPv4 connections on IPv6 listening sockets])
+fi
 
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
