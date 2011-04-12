@@ -48,6 +48,16 @@
 #define STACK_SIZE_PARAM_IS_A_RESERVATION 0x00010000
 #endif
 
+/* Because ap_setup_listeners() is skipped in the child, any merging
+ * of [::]:80 and 0.0.0.0:80 for AP_ENABLE_V4_MAPPED in the parent
+ * won't have taken place in the child, so the child will expect to
+ * read two sockets for "Listen 80" but the parent will send only
+ * one.
+ */
+#ifdef AP_ENABLE_V4_MAPPED
+#error The WinNT MPM does not currently support AP_ENABLE_V4_MAPPED
+#endif
+
 /* scoreboard.c does the heavy lifting; all we do is create the child
  * score by moving a handle down the pipe into the child's stdin.
  */
