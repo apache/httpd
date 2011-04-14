@@ -96,12 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: Trunk version of patch works with fuzz
      +1: sf, trawick, wrowe
 
-  * mod_ssl/ab: Support OpenSSL compiled without SSLv2 support
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090367
-     2.2.x patch: http://people.apache.org/~sf/support-openssl-without-sslv2.patch
-     +1: sf, trawick, wrowe
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

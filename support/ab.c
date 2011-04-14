@@ -1876,7 +1876,11 @@ static void usage(const char *progname)
     fprintf(stderr, "    -h              Display usage information (this message)\n");
 #ifdef USE_SSL
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
+#ifndef OPENSSL_NO_SSL2
     fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL)\n");
+#else
+    fprintf(stderr, "    -f protocol     Specify SSL/TLS protocol (SSL3, TLS1, or ALL)\n");
+#endif
 #endif
     exit(EINVAL);
 }
@@ -2209,8 +2213,10 @@ int main(int argc, const char * const argv[])
             case 'f':
                 if (strncasecmp(optarg, "ALL", 3) == 0) {
                     meth = SSLv23_client_method();
+#ifndef OPENSSL_NO_SSL2
                 } else if (strncasecmp(optarg, "SSL2", 4) == 0) {
                     meth = SSLv2_client_method();
+#endif
                 } else if (strncasecmp(optarg, "SSL3", 4) == 0) {
                     meth = SSLv3_client_method();
                 } else if (strncasecmp(optarg, "TLS1", 4) == 0) {

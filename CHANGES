@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_ssl, ab: Support OpenSSL compiled without SSLv2 support.
+     [Stefan Fritsch]
+
   *) core: AllowEncodedSlashes new option NoDecode to allow encoded slashes
      in request URL path info but not decode them. PR 35256,
      PR 46830.  [Dan Poirier]

@@ -218,7 +218,11 @@ typedef int ssl_opt_t;
 #define SSL_PROTOCOL_SSLV2 (1<<0)
 #define SSL_PROTOCOL_SSLV3 (1<<1)
 #define SSL_PROTOCOL_TLSV1 (1<<2)
+#ifndef OPENSSL_NO_SSL2
 #define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_SSLV2|SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1)
+#else
+#define SSL_PROTOCOL_ALL   (SSL_PROTOCOL_SSLV3|SSL_PROTOCOL_TLSV1)
+#endif
 typedef int ssl_proto_t;
 
 /**
