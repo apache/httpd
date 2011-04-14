@@ -11,15 +11,30 @@ APACHE_MODULE(info, server information, , , most)
 APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
               other_targets=suexec ] )
 
-if ap_mpm_is_threaded; then
-# if we are using a threaded MPM, we will get better performance with
-# mod_cgid, so make it the default.
+# Is mod_cgid needed?
+case $host in
+    *mingw*)
+        dnl No fork+thread+fd issues, and cgid doesn't work anyway.
+        cgid_needed="no"
+        ;;
+    *)
+        if ap_mpm_is_threaded; then
+            dnl if we are using a threaded MPM on Unix, we can get better
+            dnl performance with mod_cgid, and also avoid potential issues
+            dnl with forking from a threaded process.
+            cgid_needed="yes"
+        else
+            dnl if we are using a non-threaded MPM, it makes little sense to
+            dnl use mod_cgid, and it just opens up holes we don't need.
+            cgid_needed="no"
+        fi
+        ;;
+esac
+
+if test $cgid_needed = "yes"; then
     APACHE_MODULE(cgid, CGI scripts, , , yes)
     APACHE_MODULE(cgi, CGI scripts, , , no)
 else
-# if we are using a non-threaded MPM, it makes little sense to use
-# mod_cgid, and it just opens up holes we don't need.  Make mod_cgi the
-# default
     APACHE_MODULE(cgi, CGI scripts, , , yes)
     APACHE_MODULE(cgid, CGI scripts, , , no)
 fi
