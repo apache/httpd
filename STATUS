@@ -145,6 +145,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~trawick/mingw_april_10.txt
      +1: trawick
 
+  * Avoid need for --disable-v4-mapped on MinGW
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1091467
+     2.2.x patch: http://people.apache.org/~trawick/mingw_v4_mapped.txt
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
