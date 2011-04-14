@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://people.apache.org/~trawick/mingw_r1092398_warnings.txt
     2.2.x warnings with patch:
                  http://people.apache.org/~trawick/mingw_patch_warnings.txt
-    +1: trawick
+    +1: trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
