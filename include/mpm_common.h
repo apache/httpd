@@ -216,8 +216,6 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name);
 
 #define AP_MPM_HARD_LIMITS_FILE APACHE_MPM_DIR "/mpm_default.h"
 
-#ifdef AP_MPM_USES_POD
-
 #ifndef HAVE_INITGROUPS
 /**
  * The initgroups() function initializes the group access list by reading the
@@ -230,6 +228,8 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name);
  */
 int initgroups(const char *name, gid_t basegid);
 #endif
+
+#ifdef AP_MPM_USES_POD
 
 typedef struct ap_pod_t ap_pod_t;
 
