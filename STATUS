@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mpm_common.h: Add prototype for initgroups().
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
-     2.2.x patch: Trunk version of patch works with offset  
-     +1 fuankg, trawick, wrowe
-
   * configure: Fix linking htpasswd/htdbm with crypt
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1071426
      2.2.x patch: Trunk version of patch works with fuzz
