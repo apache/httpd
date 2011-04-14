@@ -87,28 +87,46 @@ RELEASE SHOWSTOPPERS:
 * Wait for a release of APR-UTIL 1.3.11 as 1.3.10 contains a regression within
   the bundled expat make files (https://issues.apache.org/bugzilla/show_bug.cgi?id=50162)
 
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+  * mpm_common.h: Add prototype for initgroups().
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
+     2.2.x patch: Trunk version of patch works with offset  
+     +1 fuankg, trawick, wrowe
+
+  * configure: Fix linking htpasswd/htdbm with crypt
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1071426
+     2.2.x patch: Trunk version of patch works with fuzz
+     +1: sf, trawick, wrowe
+
+  * mod_ssl/ab: Support OpenSSL compiled without SSLv2 support
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090367
+     2.2.x patch: http://people.apache.org/~sf/support-openssl-without-sslv2.patch
+     +1: sf, trawick, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-* mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
-   FIFO rather than LIFO, for more consistent performance
-   so that older requests don't suffer
-   Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
-   2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
+  * mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
+    FIFO rather than LIFO, for more consistent performance
+    so that older requests don't suffer
+    Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
+    2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
 
   * mod_win32: Add shebang check so that .vbs scripts can work as CGI.
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1054347
      2.2.x patch: Trunk version of patch works with offset  
-     +1 fuankg
+     +1 fuankg, wrowe
+     wrowe notes: CHANGES needs to be clearer than the text above.
 
   * HTTP Protocol: Fix handling of extra request data sent with Expect: 100
     PR 47087
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=888310
     2.2.x: Trunk works with offset
-    +1: niq
+    +1: niq, wrowe
 
   * htpasswd.c: Syncronize with trunk version. This includes a couple of fixes:
      r826805, r826822, r829162, r829355, r829431. The patch below covers only
@@ -116,22 +134,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~fuankg/diffs/htpasswd.c.diff
      sf: this will change the default algorithm from crypt to md5 (I am not
          against it)
-     +1 fuankg
-
-  * mpm_common.h: Add prototype for initgroups().
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082250
-     2.2.x patch: Trunk version of patch works with offset  
-     +1 fuankg, trawick
-
-  * configure: Fix linking htpasswd/htdbm with crypt
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1071426
-     2.2.x patch: Trunk version of patch works with fuzz
-     +1: sf, trawick
-
-  * mod_ssl/ab: Support OpenSSL compiled without SSLv2 support
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090367
-     2.2.x patch: http://people.apache.org/~sf/support-openssl-without-sslv2.patch
-     +1: sf, trawick
+     +1 fuankg, wrowe
 
   * Critical MinGW build issues, svn:ignore
      This serves pages and doesn't have junk in "svn status" output ;)
@@ -143,12 +146,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          r1090417: include <stdlib.h> in win32/os.h before creating exit() macro
           a few other tiny bits of code and svn:ignore entries
      2.2.x patch: http://people.apache.org/~trawick/mingw_april_10.txt
-     +1: trawick
+     +1: trawick, wrowe
 
   * Avoid need for --disable-v4-mapped on MinGW
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1091467
      2.2.x patch: http://people.apache.org/~trawick/mingw_v4_mapped.txt
-     +1: trawick
+     +1: trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
