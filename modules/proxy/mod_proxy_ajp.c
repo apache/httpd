@@ -341,7 +341,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          * we assume it is a request that cause a back-end timeout,
          * but doesn't affect the whole worker.
          */
-        if (status == APR_TIMEUP && conn->worker->ping_timeout_set) {
+        if (status == APR_TIMEUP && conn->worker->s->ping_timeout_set) {
             return HTTP_GATEWAY_TIME_OUT;
         }
 
