@@ -59,7 +59,7 @@ server_rec *ap_server_conf;
 static HANDLE shutdown_event;  /* used to signal the parent to shutdown */
 static HANDLE restart_event;   /* used to signal the parent to restart */
 
-static char ap_coredump_dir[MAX_STRING_LEN];
+char ap_coredump_dir[MAX_STRING_LEN];
 
 static int one_process = 0;
 static char const* signal_arg = NULL;

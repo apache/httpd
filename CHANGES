@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) MinGW build improvements.  PR 49535.  [John Vandenberg 
+     <jayvdb gmail.com>, Jeff Trawick]
+
   *) mod_ssl, ab: Support OpenSSL compiled without SSLv2 support.
      [Stefan Fritsch]
 
