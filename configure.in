@@ -467,6 +467,11 @@ AC_ARG_ENABLE(v4-mapped,APACHE_HELP_STRING(--enable-v4-mapped,Allow IPv6 sockets
     *freebsd5*|*netbsd*|*openbsd*)
         v4mapped=no
         ;;
+    *mingw*)
+        dnl WinNT is the only MPM on this platform, and it doesn't support
+        dnl this feature.
+        v4mapped=no
+        ;;
     *)
         v4mapped=yes
         ;;

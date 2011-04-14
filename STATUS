@@ -108,11 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~trawick/mingw_april_10.txt
      +1: trawick, wrowe, fuankg
 
-  * Avoid need for --disable-v4-mapped on MinGW
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1091467
-     2.2.x patch: http://people.apache.org/~trawick/mingw_v4_mapped.txt
-     +1: trawick, wrowe, fuankg
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
