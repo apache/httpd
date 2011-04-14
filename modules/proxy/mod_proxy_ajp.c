@@ -336,6 +336,15 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: read response failed from %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->s->hostname);
+
+        /* If we had a successful cping/cpong and then a timeout
+         * we assume it is a request that cause a back-end timeout,
+         * but doesn't affect the whole worker.
+         */
+        if (status == APR_TIMEUP && conn->worker->ping_timeout_set) {
+            return HTTP_GATEWAY_TIME_OUT;
+        }
+
         /*
          * This is only non fatal when we have not sent (parts) of a possible
          * request body so far (we do not store it and thus cannot send it
