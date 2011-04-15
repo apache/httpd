@@ -107,19 +107,17 @@ skipped.</p>
 <section id="flag_co"><title>CO|cookie</title>
 <p>The [CO], or [cookie] flag, allows you to set a cookie when a
 particular <directive module="mod_rewrite">RewriteRule</directive>
-matches. The argument consists of three required fields and five optional
+matches. The argument consists of three required fields and four optional
 fields.</p>
 
 <p>The full syntax for the flag, including all attributes, is as
 follows:</p>
 
 <example>
-[CO=NAME:VALUE:domain:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
 </example>
 
-<p>You must declare a name and value for the cookie to be set.</p>
-
-<p>You may optionally also set the following values:</p>
+<p>You must declare a name, a value, and a domain for the cookie to be set.</p>
 
 <dl>
 <dt>Domain</dt>
@@ -129,8 +127,11 @@ such as <code>.example.com</code>. It must be at least two parts
 separated by a dot. That is, it may not be merely <code>.com</code> or
 <code>.net</code>. Cookies of that kind are forbidden by the cookie
 security model.</dd>
-<dd>The default value for the domain is the current domain.</dd>
+</dl>
 
+<p>You may optionally also set the following values:</p>
+
+<dl>
 <dt>Lifetime</dt>
 <dd>The time for which the cookie will persist, in minutes.</dd>
 <dd>A value of 0 indicates that the cookie will persist only for the
