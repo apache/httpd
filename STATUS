@@ -96,6 +96,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: Trunk version of patch works with fuzz
      +1: sf, trawick, wrowe
 
+  * mod_win32: Add shebang check so that .vbs scripts can work as CGI.
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1054347
+     2.2.x patch: Trunk version of patch works with offset  
+     +1 fuankg, wrowe, trawick
+     wrowe notes: CHANGES needs to be clearer than the text above.
+     Trunk/CHANGES and 2.2.x/CHANGES need an update.
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -104,12 +111,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     so that older requests don't suffer
     Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
     2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
-
-  * mod_win32: Add shebang check so that .vbs scripts can work as CGI.
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1054347
-     2.2.x patch: Trunk version of patch works with offset  
-     +1 fuankg, wrowe
-     wrowe notes: CHANGES needs to be clearer than the text above.
 
   * HTTP Protocol: Fix handling of extra request data sent with Expect: 100
     PR 47087
