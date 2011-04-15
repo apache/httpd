@@ -1088,7 +1088,7 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
         <td>Sets a cookie in the client browser. Full syntax is: 
-        CO=<em>NAME</em>:<em>VAL</em>[:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
+        CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
         </td>
     </tr>
     <tr>
