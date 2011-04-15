@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) core: Prevent segfault if DYNAMIC_MODULE_LIMIT is reached. PR 51072.
+     [Torsten Förtsch <torsten foertsch gmx net>]
+
   *) WinNT MPM: Improve robustness under heavy load.  [Jeff Trawick]
 
   *) MinGW build improvements.  PR 49535.  [John Vandenberg 

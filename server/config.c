@@ -541,21 +541,16 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
                             m->name, m->version, MODULE_MAGIC_NUMBER_MAJOR);
     }
 
-    if (m->next == NULL) {
-        m->next = ap_top_module;
-        ap_top_module = m;
-    }
-
     if (m->module_index == -1) {
-        m->module_index = total_modules++;
-        dynamic_modules++;
-
-        if (dynamic_modules > DYNAMIC_MODULE_LIMIT) {
+        if (dynamic_modules >= DYNAMIC_MODULE_LIMIT) {
             return apr_psprintf(p, "Module \"%s\" could not be loaded, "
                                 "because the dynamic module limit was "
                                 "reached. Please increase "
                                 "DYNAMIC_MODULE_LIMIT and recompile.", m->name);
         }
+
+        m->module_index = total_modules++;
+        dynamic_modules++;
 
     }
     else if (!sym_name) {
@@ -566,6 +561,11 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
             }
             sym++;
         }
+    }
+
+    if (m->next == NULL) {
+        m->next = ap_top_module;
+        ap_top_module = m;
     }
 
     if (sym_name) {
