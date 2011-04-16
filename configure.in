@@ -401,6 +401,13 @@ AC_C_CONST
 dnl ## Check for library functions
 AC_SEARCH_LIBS(sqrt, m)
 
+saved_LIBS="$LIBS"
+LIBS=""
+AC_SEARCH_LIBS(crypt, crypt)
+CRYPT_LIBS="$LIBS"
+APACHE_SUBST(CRYPT_LIBS)
+LIBS="$saved_LIBS"
+
 dnl See Comment #Spoon
 
 AC_CHECK_FUNCS( \

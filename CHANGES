@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) configure: Fix htpasswd/htdbm libcrypt link errors with some newer
+     linkers. [Stefan Fritsch]
+
   *) MinGW build improvements.  PR 49535.  [John Vandenberg 
      <jayvdb gmail.com>, Jeff Trawick]
 
