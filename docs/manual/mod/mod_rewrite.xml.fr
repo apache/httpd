@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1085362 -->
+<!-- English Revision : 1092802 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1152,9 +1152,9 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
 <example>
 <pre>
-RewriteCond %{REMOTE_HOST}  ^hote1.*  [OR]
-RewriteCond %{REMOTE_HOST}  ^hote2.*  [OR]
-RewriteCond %{REMOTE_HOST}  ^hote3.*
+RewriteCond %{REMOTE_HOST}  ^hote1  [OR]
+RewriteCond %{REMOTE_HOST}  ^hote2  [OR]
+RewriteCond %{REMOTE_HOST}  ^hote3
 RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
 </pre>
 </example>
@@ -1185,10 +1185,10 @@ RewriteRule ...r&egrave;gles concernant tous ces h&ocirc;tes...
 
 <example>
 <pre>
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla.*
+RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx.*
+RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
@@ -1469,7 +1469,7 @@ substitution !
     <tr>
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
         <td>Sets a cookie in the client browser. Full syntax is: 
-        CO=<em>NAME</em>:<em>VAL</em>[:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
+        CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
         </td>
     </tr>
     <tr>
