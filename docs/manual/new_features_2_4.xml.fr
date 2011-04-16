@@ -28,10 +28,10 @@
 serveur HTTP Apache</title>
 
 <summary>
-  <p>Ce document d&eacute;crit certaines modifications majeures entre les versions
-  2.2 et 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s
-  ajout&eacute;es depuis la version 2.0, se r&eacute;f&eacute;rer au document
-  <a href="new_features_2_2.html">nouvelles fonctionnalit&eacute;s
+  <p>Ce document d&eacute;crit les modifications majeures apportées par
+  la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s
+  ajout&eacute;es par la version 2.2, se r&eacute;f&eacute;rer au document
+  <a href="new_features_2_2.html">Nouvelles fonctionnalit&eacute;s
   de la version 2.2</a>.</p>
 </summary>
 
@@ -45,9 +45,9 @@ serveur HTTP Apache</title>
       pr&eacute;ciser une dur&eacute;e de vie en millisecondes.
       </dd>
  
-      <dt>MPMs chargeables</dt>
+      <dt>Modules multiprocessus (MPMs) chargeables</dt>
       <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
-      chargeables. La configuration du MPM choisi s'effectue &agrave;
+      chargeables. Le choix du MPM à utiliser s'effectue &agrave;
       l'ex&eacute;cution.</dd>
 
       <dt>Configuration du niveau de journalisation (LogLevel) par
@@ -58,7 +58,7 @@ serveur HTTP Apache</title>
       ajout&eacute;s au dessus du niveau de journalisation <code>debug</code>.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le MPM Event est sorti du mode exp&eacute;rimental pour &ecirc;tre
+      <dd>Le MPM Event est sorti du stade exp&eacute;rimental pour &ecirc;tre
       pleinement support&eacute;.</dd>
  
       <dt>Support du mode asynchrone</dt>
@@ -77,7 +77,7 @@ serveur HTTP Apache</title>
     <title>Nouveau modules</title>
     <dl>
       <dt><module>mod_allowmethods</module></dt>
-      <dd>Nouveau module permettant de restreindre l'utilisation de
+      <dd>Permet de restreindre l'utilisation de
       certaines m&eacute;thodes HTTP sans interf&eacute;rer avec l'authentification et
       l'autorisation.</dd>
 
@@ -98,7 +98,7 @@ serveur HTTP Apache</title>
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_ratelimit</module></dt>
-      <dd>Permet de limiter le taux de bande passante pour certains
+      <dd>Permet de limiter la bande passante pour certains
       clients.</dd>
 
       <dt><module>mod_reflector</module></dt>
@@ -112,7 +112,7 @@ serveur HTTP Apache</title>
       en-t&ecirc;tes de la requ&ecirc;te.</dd>
 
       <dt><module>mod_reqtimeout</module></dt>
-      <dd>D&eacute;finit le d&eacute;lai d'expiration et le taux de donn&eacute;es minimum
+      <dd>D&eacute;finit la durée de vie et le taux de transfert de donn&eacute;es minimum
       pour la r&eacute;ception des requ&ecirc;tes.</dd>
 
       <dt><module>mod_request</module></dt>
@@ -136,14 +136,14 @@ serveur HTTP Apache</title>
       un serveur OCSP. Il est possible de d&eacute;finir un
       r&eacute;pondeur par d&eacute;faut, et de choisir si l'on
       pr&eacute;f&egrave;re le r&eacute;pondeur d&eacute;sign&eacute;
-      dans le certificat client lui-m&ecirc;me.</dd>
+      dans le certificat client.</dd>
 
-	<dd><module>mod_ssl</module> supporte aussi maintenant le lien
-	OCSP, par lequel le serveur obtient activement une v&eacute;rification
-	OCSP de son certificat et la transmet au client durant la phase
-	de n&eacute;gociation de la connexion.</dd>
+	<dd>En outre, <module>mod_ssl</module> supporte maintenant
+	l'estampillage OCSP (OCSP stapling), qui permet au serveur
+	d'attester la validité de son certificat auprès du client au
+	cours de la phase de négociation de la connexion.</dd>
       
-      <dd>On peut maintenant configurer <module>mod_ssl</module> pour
+      <dd>Enfin, <module>mod_ssl</module> peut maintenant être configuré pour
       que celui-ci partage les donn&eacute;es de session SSL entre les serveurs
       via memcached.</dd>
  
@@ -151,7 +151,7 @@ serveur HTTP Apache</title>
 
       <dd>La directive <directive
       module="mod_proxy">ProxyPass</directive> est maintenant configur&eacute;e
-      de la mani&egrave;re la plus optimale dans les sections <directive
+      de mani&egrave;re optimale dans les sections <directive
       module="core">Location</directive> ou <directive
       module="core">LocationMatch</directive>, et offre un gain de
       performances important par rapport &agrave; la syntaxe traditionnelle &agrave;
@@ -159,13 +159,10 @@ serveur HTTP Apache</title>
  
       <dt><module>mod_proxy_balancer</module></dt>
 
-      <dd>D'avantage de possibilit&eacute;s de modifier la configuration &agrave;
-      l'ex&eacute;cution des membres de groupes de r&eacute;partition de charge via le
-      gestionnaire de r&eacute;partition de charge.</dd>
-
-      <dd>Le gestionnaire de r&eacute;partition de charge permet d'ajouter des
-      membres de groupes de r&eacute;partition de charge suppl&eacute;mentaires &agrave;
-      l'ex&eacute;cution.</dd>
+      <dd>Le gestionnaire de répartition de charge propose de nouvelles
+      fonctionnalités. Ainsi, les possibilités de configuration des
+      membres du groupe de répartition de charge pendant l'exécution ont
+      été améliorées (possibilité d'ajout d'un membre supplémentaire).</dd>
 
       <dd>Configuration &agrave; l'ex&eacute;cution d'un sous-ensemble de param&egrave;tres
       de r&eacute;partition de charge.</dd>
@@ -193,7 +190,7 @@ serveur HTTP Apache</title>
 
       <dt><module>mod_include</module></dt>
       <dd>Support de l'attribut 'onerror' dans un &eacute;l&eacute;ment 'include',
-      permettant de servir un message d'erreur personnalis&eacute; &agrave; la place
+      permettant de renvoyer un message d'erreur personnalis&eacute; &agrave; la place
       du message d'erreur par d&eacute;faut.</dd>
 
       <dt><module>mod_cgi</module>, <module>mod_include</module>,
@@ -204,7 +201,7 @@ serveur HTTP Apache</title>
       en-t&ecirc;tes contenant des caract&egrave;res invalides (comme les caract&egrave;res
       de soulignement) sont maintenant ignor&eacute;s. Le document <a
       href="env.html">Les variables d'environnement dans Apache</a>
-      pr&eacute;sentent quelques pistes pour contourner ce probl&egrave;me avec les
+      pr&eacute;sente quelques pistes pour contourner ce probl&egrave;me avec les
       clients anciens qui n&eacute;cessitent de tels en-t&ecirc;tes (Ceci affecte
       tous les modules qui utilisent ces variables d'environnement).</dd>
 
@@ -239,7 +236,7 @@ serveur HTTP Apache</title>
 	<dt>htcacheclean</dt>
         <dd>Les URLs pr&eacute;sentes dans le cache peuvent maintenant &ecirc;tre
 	affich&eacute;es, accompagn&eacute;es &eacute;ventuellement de leurs m&eacute;tadonn&eacute;es.</dd>
-        <dd>Permet d'effacer explicitement des URLs individuelles
+        <dd>Possibilité de supprimer explicitement des URLs individuelles
 	pr&eacute;sentes dans le cache.</dd>
         <dd>Les tailles de fichiers peuvent maintenant &ecirc;tre arrondies au
 	multiple de la taille de bloc donn&eacute;e, les limites de taille
@@ -251,7 +248,7 @@ serveur HTTP Apache</title>
     </section>
 
   <section id="developer">
-    <title>Modifications pour le d&eacute;veloppeur de modules</title>
+    <title>Modifications concernant les d&eacute;veloppeur de modules</title>
     <dl>
       <dt>Ajout de code pour la v&eacute;rification de la configuration</dt>
 

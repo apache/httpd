@@ -1509,7 +1509,7 @@ host</context>
     <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>, et si un de
     ses sous-r&eacute;pertoires contient <code>FileETag&nbsp;-INode</code>, la
     configuration de ce sous-r&eacute;pertoire (qui sera propag&eacute;e vers tout
-    sou-r&eacute;pertoire qui ne la supplante pas), sera &eacute;quivalente &agrave;
+    sous-r&eacute;pertoire qui ne la supplante pas), sera &eacute;quivalente &agrave;
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
     <note type="warning"><title>Avertissement</title>
     Ne modifiez pas les valeurs par d&eacute;faut pour les r&eacute;pertoires ou
