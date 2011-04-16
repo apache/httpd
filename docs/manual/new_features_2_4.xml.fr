@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1086771 -->
+<!-- English Revision : 1088588 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -220,6 +220,13 @@ serveur HTTP Apache</title>
       <dd><module>mod_info</module> est maintenant capable d'afficher la
       configuration pr&eacute;interpr&eacute;t&eacute;e sur stdout au cours du d&eacute;marrage du
       serveur.</dd>
+
+      <dt><module>mod_rewrite</module></dt>
+      <dd>La directive <directive
+      module="mod_rewrite">RewriteRule</directive> dispose maintenant
+      des drapeaux <code>[QSD]</code> (Query String Discard) et
+      <code>[END]</code> qui permettent de simplifier les sc&eacute;narios de
+      r&eacute;&eacute;criture courants.</dd>
       
     </dl>
   </section>

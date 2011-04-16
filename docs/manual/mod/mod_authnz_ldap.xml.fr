@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1042758-->
+<!-- English Revision : 1088619 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -936,8 +936,8 @@ codées en dur pour le serveur</description>
 	 n'est utilisé que pour les processus d'autorisation.
      </note>
 </usage>
-<seealso><directive module="mod_authnnz_ldap">AuthLDAPInitialBindPattern</directive></seealso>
-<seealso><directive module="mod_authnnz_ldap">AuthLDAPBindDN</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPInitialBindPattern</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPBindDN</directive></seealso>
 <seealso><directive module="mod_authnz_ldap">AuthLDAPCompareAsUser</directive></seealso>
 <seealso><directive module="mod_authnz_ldap">AuthLDAPSearchAsUser</directive></seealso>
 </directivesynopsis>
