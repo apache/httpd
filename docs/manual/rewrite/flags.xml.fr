@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1078897 -->
+<!-- English Revision : 1092798 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -117,19 +117,18 @@ cha&icirc;n&eacute;es qui suivent, seront saut&eacute;es.</p>
 <p>Le drapeau [CO], ou [cookie], vous permet de d&eacute;finir un cookie
 lorsqu'une r&egrave;gle <directive module="mod_rewrite">RewriteRule</directive>
 s'applique. Il poss&egrave;de trois arguments obligatoires et
-cinq arguments optionnels.</p>
+quatre arguments optionnels.</p>
 
 <p>La syntaxe compl&egrave;te de ce drapeau, avec tous ses attributs, est la
 suivante :</p>
 
 <example>
-[CO=NAME:VALUE:domain:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
 </example>
 
-<p>Vous devez d&eacute;clarer un nom et une valeur pour que le cookie puisse
-&ecirc;tre d&eacute;fini.</p>
+<p>Vous devez d&eacute;clarer un nom, une valeur et un domaine pour que
+le cookie puisse &ecirc;tre d&eacute;fini.</p>
 
-<p>Vous pouvez aussi d&eacute;finir les valeurs suivantes :</p>
 
 <dl>
 <dt>Domain</dt>
@@ -139,8 +138,11 @@ domaine, comme <code>.example.com</code>. Il doit comporter au moins
 deux parties s&eacute;par&eacute;es par un point. C'est &agrave; dire que vous ne pouvez pas
 utiliser les valeurs <code>.com</code> ou <code>.net</code>. En effet,
 ce style de cookie est interdit par le mod&egrave;le de s&eacute;curit&eacute; des cookies.</dd>
-<dd>La valeur par d&eacute;faut est le domaine courant.</dd>
+</dl>
+ 
+<p>Vous pouvez aussi d&eacute;finir les valeurs suivantes :</p>
 
+<dl>
 <dt>Lifetime</dt>
 <dd>La dur&eacute;e de vie du cookie, en minutes.</dd>
 <dd>Une valeur de 0 indique une dur&eacute;e de vie correspondant &agrave; la session
@@ -184,7 +186,7 @@ pour tous les URIs.</p>
 
 </section>
 
-<section id="flag_dpi"><title>DPI|discardpathinfo</title>
+<section id="flag_dpi"><title>DPI|discardpath</title>
 <p>Avec le drapeau DPI, la partie PATH_INFO de l'URI
 r&eacute;&eacute;crit est supprim&eacute;e.</p>
 <p>Ce drapeau est disponible dans les versions 2.2.12 et sup&eacute;rieures.</p>
@@ -266,6 +268,16 @@ CustomLog logs/access_log combined env=!image
 <p>Notez que le m&ecirc;me effet peut &ecirc;tre obtenu &agrave; l'aide de la directive
 <directive module="mod_setenvif">SetEnvIf</directive>. Cette technique
 est pr&eacute;sent&eacute;e &agrave; titre d'exemple et non de recommandation.</p>
+</section>
+
+<section id="flag_end"><title>END</title>
+<p>L'utilisation du drapeau [END] permet non seulement de terminer le
+processus de r&eacute;&eacute;criture en cours (comme [L]), mais aussi d'emp&ecirc;cher tout
+processus de r&eacute;&eacute;criture ult&eacute;rieur dans un contexte de r&eacute;pertoire
+(htaccess).</p>
+
+<p>Ceci ne s'applique pas aux nouvelles requ&ecirc;tes r&eacute;sultant d'une
+redirection externe.</p>
 </section>
 
 <section id="flag_f"><title>F|forbidden</title>

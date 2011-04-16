@@ -78,7 +78,7 @@
         <message id="syntax">Syntaxe</message>
         <message id="default">D&#233;faut</message>
         <message id="context">Contexte</message>
-        <message id="override">Annuler</message>
+        <message id="override">AllowOverride</message>
         <message id="status">Statut</message>
         <message id="module">Module</message>
 

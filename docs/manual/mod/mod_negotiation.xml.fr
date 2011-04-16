@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1066440 -->
+<!-- English Revision : 1089719 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -135,7 +135,7 @@ contenu</a></seealso>
       requis directement.</dd>
 
       <dt><code>Body:</code></dt>
-      <dd>une nouveaut&eacute; d'Apache 2.0 : le contenu r&eacute;el de la ressource
+      <dd>Le contenu r&eacute;el de la ressource
       peut &ecirc;tre inclus dans la table de correspondances en utilisant
       l'en-t&ecirc;te Body. Cet en-t&ecirc;te doit contenir une cha&icirc;ne d&eacute;signant un
       d&eacute;limiteur pour le contenu du corps. Les lignes suivantes du
@@ -154,6 +154,47 @@ contenu</a></seealso>
       </example>
       </dd>
     </dl>
+
+    <p>Consid&eacute;rons une ressource, <code>document.html</code>, disponible
+    en anglais, en fran&ccedil;ais et en allemand. Les fichiers correspondants
+    se nomment respectivement <code>document.html.en</code>,
+    <code>document.html.fr</code>, et <code>document.html.de</code>. Le
+    fichier de correspondances de types se nommera
+    <code>document.html.var</code> et contiendra ce qui suit :</p>
+    
+    <example>
+    URI: document.html<br />
+    <br />
+    Content-language: en<br />
+    Content-type: text/html<br />
+    URI: document.html.en<br />
+    <br />
+    Content-language: fr<br />
+    Content-type: text/html<br />
+    URI: document.html.fr<br />
+    <br />
+    Content-language: de<br />
+    Content-type: text/html<br />
+    URI: document.html.de<br />
+    <br />
+
+    </example>
+
+    <p>Ces quatre fichiers doivent se trouver dans le m&ecirc;me r&eacute;pertoire,
+    et le fichier <code>.var</code> doit &ecirc;tre associ&eacute; au gestionnaire
+    <code>type-map</code> via une directive <directive
+    module="mod_mime">AddHandler</directive> :</p>
+
+    <example>
+    AddHandler type-map .var
+    </example>
+
+    <p>A l'arriv&eacute;e d'une requ&ecirc;te pour la ressource
+    <code>document.html</code>, le fichier
+    <code>document.html.var</code> sera consult&eacute;, et la variante de
+    <code>document.html</code> qui correspond le mieux &agrave; la pr&eacute;ference
+    de langage sp&eacute;cifi&eacute;e dans l'en-t&ecirc;te de la requ&ecirc;te de l'utilisateur
+    <code>Accept-Language</code> sera choisie.</p>
 </section>
 
 <section id="multiviews"><title>Multivues</title>
@@ -183,8 +224,6 @@ des documents dont le contenu a &eacute;t&eacute; n&eacute;goci&eacute;</descrip
 <default>CacheNegotiatedDocs Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>La syntaxe a &eacute;t&eacute; modifi&eacute;e dans la version
-2.0.</compatibility>
 
 <usage>
     <p>Si elle est d&eacute;finie &agrave; "on", cette directive permet la mise en
@@ -200,10 +239,6 @@ des documents dont le contenu a &eacute;t&eacute; n&eacute;goci&eacute;</descrip
     directive n'a aucun effet sur les r&eacute;ponses aux requ&ecirc;tes
     HTTP/1.1.</p>
 
-    <p>Avant la version 2.0, la directive
-    <directive>CacheNegotiatedDocs</directive> n'acceptait aucun
-    argument ; la seule pr&eacute;sence de la directive suffisait &agrave; la d&eacute;finir
-    &agrave; "on".</p>
 </usage>
 </directivesynopsis>
 
