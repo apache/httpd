@@ -1284,7 +1284,7 @@ de l'en-t&ecirc;te de r&eacute;ponse HTTP ETag pour les fichiers statiques</desc
     d'Apache, la valeur de l'en-t&ecirc;te <code>ETag</code> se composait
     <em>toujours</em> de l'inode du fichier, de sa taille et de sa date
     de derni&egrave;re modification (mtime). La directive
-    <directive>FileETag</directive> vous permet d&eacute;zsormais de choisir
+    <directive>FileETag</directive> vous permet d&eacute;sormais de choisir
     quelles caract&eacute;ristiques du fichier vont &ecirc;tre &eacute;ventuellement
     utilis&eacute;es. Les mots-cl&eacute;s reconnus sont :
     </p>
@@ -1318,7 +1318,7 @@ de l'en-t&ecirc;te de r&eacute;ponse HTTP ETag pour les fichiers statiques</desc
     <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>, et si un de
     ses sous-r&eacute;pertoires contient <code>FileETag&nbsp;-INode</code>, la
     configuration de ce sous-r&eacute;pertoire (qui sera propag&eacute;e vers tout
-    sou-r&eacute;pertoire qui ne la supplante pas), sera &eacute;quivalente &agrave;
+    sous-r&eacute;pertoire qui ne la supplante pas), sera &eacute;quivalente &agrave;
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
     <note type="warning"><title>Avertissement</title>
     Ne modifiez pas les valeurs par d&eacute;faut pour les r&eacute;pertoires ou
