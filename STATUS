@@ -138,6 +138,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://people.apache.org/~trawick/mingw_patch_warnings.txt
     +1: trawick, wrowe
 
+  * WinNT MPM: don't try to shut down child if it wasn't created
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090634
+    2.2.x patch: Trunk patch applies with offset
+    +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * mod_dav: If an unknown Content-* header is received for a PUT request, we
