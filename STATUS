@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * configure: Fix linking htpasswd/htdbm with crypt
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1071426
-     2.2.x patch: Trunk version of patch works with fuzz
-     +1: sf, trawick, wrowe
-
   * mod_win32: Add shebang check so that .vbs scripts can work as CGI.
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1054347
      2.2.x patch: Trunk version of patch works with offset  
