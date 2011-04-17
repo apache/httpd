@@ -236,7 +236,7 @@ struct command_struct {
                                 and .htaccess when AllowOverride AuthConfig */
 #define OR_INDEXES 16        /**< *.conf anywhere
                                 and .htaccess when AllowOverride Indexes */
-#define OR_UNSET 32          /**< unset a directive (in Allow) */
+#define OR_UNSET 32          /**< bit to indicate that AllowOverride has not been set */
 #define ACCESS_CONF 64       /**< *.conf inside &lt;Directory&gt; or &lt;Location&gt; */
 #define RSRC_CONF 128        /**< *.conf outside &lt;Directory&gt; or &lt;Location&gt; */
 #define EXEC_ON_READ 256     /**< force directive to execute a command
