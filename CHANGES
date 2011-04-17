@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) htpasswd: Change the default algorithm for htpasswd to MD5 on all
+     platforms. Crypt with its 8 character limit is not useful anymore;
+     improve out of disk space handling (PR 30877); print a warning if
+     a password is truncated by crypt. [Stefan Fritsch]
+
   *) mod_win32: Added shebang check for '! so that .vbs scripts can work as CGI.
      Win32's cscript interpreter can only use a single quote as comment char.
      [Guenter Knauf]
