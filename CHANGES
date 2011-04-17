@@ -64,6 +64,10 @@ Changes with Apache 2.3.12
 
 Changes with Apache 2.3.11
 
+  *) mod_win32: Added shebang check for '! so that .vbs scripts can work as CGI.
+     Win32's cscript interpreter can only use a single quote as comment char.
+     [Guenter Knauf]
+
   *) mod_proxy: balancer-manager now uses POST instead of GET.
      [Jim Jagielski]
 
