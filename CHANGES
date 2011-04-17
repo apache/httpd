@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) mod_win32: Added shebang check for '! so that .vbs scripts can work as CGI.
+     Win32's cscript interpreter can only use a single quote as comment char.
+     [Guenter Knauf]
+
   *) configure: Fix htpasswd/htdbm libcrypt link errors with some newer
      linkers. [Stefan Fritsch]
 
