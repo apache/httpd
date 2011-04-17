@@ -91,13 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_win32: Add shebang check so that .vbs scripts can work as CGI.
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1054347
-     2.2.x patch: Trunk version of patch works with offset  
-     +1 fuankg, wrowe, trawick
-     wrowe notes: CHANGES needs to be clearer than the text above.
-     Trunk/CHANGES and 2.2.x/CHANGES need an update.
-
   * htpasswd.c: Syncronize with trunk version. This includes a couple of fixes:
      r826805, r826822, r829162, r829355, r829431. The patch below covers only
      the C code - we also need to apply the docs and CHANGES parts of r826805.

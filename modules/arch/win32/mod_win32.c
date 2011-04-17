@@ -475,8 +475,11 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
             memmove(buffer, buffer + 3, bytes -= 3);
         }
 
-        /* Script or executable, that is the question... */
-        if ((bytes >= 2) && (buffer[0] == '#') && (buffer[1] == '!')) {
+        /* Script or executable, that is the question...
+         * we check here also for '! so that .vbs scripts can work as CGI.
+         */
+        if ((bytes >= 2) && ((buffer[0] == '#') || (buffer[0] == '\''))
+                         && (buffer[1] == '!')) {
             /* Assuming file is a script since it starts with a shebang */
             for (i = 2; i < bytes; i++) {
                 if ((buffer[i] == '\r') || (buffer[i] == '\n')) {
@@ -511,7 +514,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     if (!interpreter) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "%s is not executable; ensure interpreted scripts have "
-                      "\"#!\" first line", *cmd);
+                      "\"#!\" or \"'!\" first line", *cmd);
         return APR_EBADF;
     }
 
