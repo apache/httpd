@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * WinNT MPM: don't try to shut down child if it wasn't created
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090634
     2.2.x patch: Trunk patch applies with offset
-    +1: trawick
+    +1: trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
