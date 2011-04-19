@@ -4153,7 +4153,7 @@ static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
 
     mpm_common_pre_config(pconf);
 
-    return APR_SUCCESS;
+    return OK;
 }
 
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
