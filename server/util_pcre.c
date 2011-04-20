@@ -82,7 +82,7 @@ addlength = (preg != NULL && (int)preg->re_erroffset != -1)?
 if (errbuf_size > 0)
   {
   if (addlength > 0 && errbuf_size >= length + addlength)
-      apr_snprintf(errbuf, sizeof errbuf,
+      apr_snprintf(errbuf, errbuf_size,
                    "%s%s%-6d", message, addmessage, (int)preg->re_erroffset);
   else
     apr_cpystrn(errbuf, message, errbuf_size);
