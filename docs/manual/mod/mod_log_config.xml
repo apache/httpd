@@ -317,6 +317,16 @@
         <dt>Agent (Browser) log format</dt>
         <dd><code>"%{User-agent}i"</code></dd>
       </dl>
+
+      <p>You can use the <code>%{format}t</code> directive multiple
+      times to build up a time format using the extended format tokens
+      like <code>msec_frac</code>:</p>
+      <dl>
+<dt>Timestamp including milliseconds</dt>
+<dd><code>"%{%d/%b/%Y %T}t.%{msec_frac}t %{%z}t"</code></dd>
+
+      </dl>
+
     </section>
 </section>
 
