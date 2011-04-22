@@ -369,7 +369,7 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                 }
                 else {
                     /* need something non-null */
-                    found = apr_pstrdup(r->pool, "");
+                    found = "";
                 }
             }
         }
