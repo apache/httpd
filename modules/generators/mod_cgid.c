@@ -421,7 +421,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
 
     /* handle module indexes and such */
-    rconf = (void **) apr_pcalloc(r->pool, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    rconf = (void **)ap_create_request_config(r->pool);
 
     temp_core = (core_request_config *)apr_palloc(r->pool, sizeof(core_module));
     rconf[req->core_module_index] = (void *)temp_core;

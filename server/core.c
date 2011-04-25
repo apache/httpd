@@ -4380,6 +4380,7 @@ static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
     ap_register_log_hooks(p);
+    ap_register_config_hooks(p);
     ap_expr_init(p);
 
     /* create_connection and pre_connection should always be hooked

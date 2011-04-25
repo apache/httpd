@@ -766,7 +766,8 @@ typedef struct {
     unsigned int min_loglevel;
 } ap_errorlog_format_item;
 
-AP_DECLARE(void) ap_register_log_hooks(apr_pool_t *p);
+AP_CORE_DECLARE(void) ap_register_log_hooks(apr_pool_t *p);
+AP_CORE_DECLARE(void) ap_register_config_hooks(apr_pool_t *p);
 
 /* ----------------------------------------------------------------------
  *

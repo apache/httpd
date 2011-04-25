@@ -988,6 +988,23 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p);
 AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p,
                                         server_rec *main_server);
 
+/**
+ * Reserve some modules slots for modules loaded by other means than
+ * EXEC_ON_READ directives.
+ * Relevant modules should call this in the pre_config stage.
+ * @param count The number of slots to reserve.
+ */
+AP_DECLARE(void) ap_reserve_module_slots(int count);
+
+/**
+ * Reserve some modules slots for modules loaded by a specific
+ * non-EXEC_ON_READ config directive.
+ * This counts how often the given directive is used in the config and calls
+ * ap_reserve_module_slots() accordingly.
+ * @param directive The name of the directive
+ */
+AP_DECLARE(void) ap_reserve_module_slots_directive(const char *directive);
+
 /* For http_request.c... */
 
 /**
@@ -995,7 +1012,7 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p,
  * @param p The pool to allocate the config vector from
  * @return The config vector
  */
-AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_request_config(apr_pool_t *p);
+AP_DECLARE(ap_conf_vector_t*) ap_create_request_config(apr_pool_t *p);
 
 /**
  * Setup the config vector for per dir module configs

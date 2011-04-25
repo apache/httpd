@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.12
 
+  *) Add new ap_reserve_module_slots/ap_reserve_module_slots_directive API,
+     necessary if a module (like mod_perl) registers additional modules late
+     in the startup phase. [Stefan Fritsch]
+
   *) core: Prevent segfault if DYNAMIC_MODULE_LIMIT is reached. PR 51072.
      [Torsten Förtsch <torsten foertsch gmx net>]
 

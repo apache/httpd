@@ -198,6 +198,8 @@ static int max_modules = 0;
  */
 static int conf_vector_length = 0;
 
+static int reserved_module_slots = 0;
+
 AP_DECLARE_DATA module *ap_top_module = NULL;
 AP_DECLARE_DATA module **ap_loaded_modules=NULL;
 
@@ -548,6 +550,10 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
                                 "reached. Please increase "
                                 "DYNAMIC_MODULE_LIMIT and recompile.", m->name);
         }
+        /*
+         * If this fails some module forgot to call ap_reserve_module_slots*.
+         */
+        ap_assert(total_modules < conf_vector_length);
 
         m->module_index = total_modules++;
         dynamic_modules++;
@@ -2257,8 +2263,34 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
 
 static apr_status_t reset_conf_vector_length(void *dummy)
 {
+    reserved_module_slots = 0;
     conf_vector_length = max_modules;
     return APR_SUCCESS;
+}
+
+static int conf_vector_length_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                                         apr_pool_t *ptemp)
+{
+    /*
+     * We have loaded all modules that are loaded by EXEC_ON_READ directives.
+     * From now on we reduce the size of the config vectors to what we need,
+     * plus what has been reserved (e.g. by mod_perl) for additional modules
+     * loaded later on.
+     * If max_modules is too small, ap_add_module() will abort.
+     */
+    if (total_modules + reserved_module_slots < max_modules) {
+        conf_vector_length = total_modules + reserved_module_slots;
+    }
+    apr_pool_cleanup_register(pconf, NULL, reset_conf_vector_length,
+                              apr_pool_cleanup_null);
+    return OK;
+}
+
+
+AP_CORE_DECLARE(void) ap_register_config_hooks(apr_pool_t *p)
+{
+    ap_hook_pre_config(conf_vector_length_pre_config, NULL, NULL,
+                       APR_HOOK_REALLY_LAST);
 }
 
 AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
@@ -2308,14 +2340,6 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
                      "%s: Configuration error: %s", ap_server_argv0, error);
         return NULL;
     }
-
-    /*
-     * We have loaded the dynamic modules. From now on we know exactly how
-     * long the config vectors need to be.
-     */
-    conf_vector_length = total_modules;
-    apr_pool_cleanup_register(p, NULL, reset_conf_vector_length,
-                              apr_pool_cleanup_null);
 
     error = process_command_config(s, ap_server_post_read_config, conftree,
                                    p, ptemp);
@@ -2486,4 +2510,27 @@ AP_DECLARE(void *) ap_retained_data_create(const char *key, apr_size_t size)
     retained = apr_pcalloc(ap_pglobal, size);
     apr_pool_userdata_set((const void *)retained, key, apr_pool_cleanup_null, ap_pglobal);
     return retained;
+}
+
+static int count_directives_sub(const char *directive, ap_directive_t *current)
+{
+    int count = 0;
+    while (current != NULL) {
+        if (current->first_child != NULL)
+            count += count_directives_sub(directive, current->first_child);
+        if (strcasecmp(current->directive, directive) == 0)
+            count++;
+        current = current->next;
+    }
+    return count;
+}
+
+AP_DECLARE(void) ap_reserve_module_slots(int count)
+{
+    reserved_module_slots += count;
+}
+
+AP_DECLARE(void) ap_reserve_module_slots_directive(const char *directive)
+{
+    ap_reserve_module_slots(count_directives_sub(directive, ap_conftree));
 }
