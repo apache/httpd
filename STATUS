@@ -91,6 +91,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * HTTP Protocol: Fix handling of extra request data sent with Expect: 100
+    PR 47087
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=888310
+    2.2.x: Trunk works with offset
+    +1: niq, wrowe, sf
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -99,12 +105,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     so that older requests don't suffer
     Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
     2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
-
-  * HTTP Protocol: Fix handling of extra request data sent with Expect: 100
-    PR 47087
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=888310
-    2.2.x: Trunk works with offset
-    +1: niq, wrowe
 
   * Fixes for gcc -Wall warnings in Windows code
     Trunk patch: revisions/descriptions at
@@ -123,24 +123,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: Trunk patch applies with offset
     +1: trawick, wrowe
 
+  * core: Send error 408 instead of 400 or 413 when appropriate
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=820760
+                   http://svn.apache.org/viewvc?view=revision&revision=919323
+                   http://svn.apache.org/viewvc?view=revision&revision=937858
+                   http://svn.apache.org/viewvc?view=revision&revision=938265
+    2.2.x patch: http://people.apache.org/~sf/408.diff
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
-
-  * mod_dav: If an unknown Content-* header is received for a PUT request, we
-    must not ignore it but reply with 501 per RFC 2616 9.6.
-    PR: 42978
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=1026746&view=rev
-    Backport version for 2.2.x of patch:
-      Trunk version of patch works
-    +1: rpluem, covener, poirier
-    -1: roy:
-
-This requirement will
-be (or has already been) removed from httpbis because it hinders
-extensibility and breaks content management systems, just as the
-change below causes content-language to be broken.  That is why
-we never implemented this requirement when it was added (without
-consensus) to RFC 2616.
 
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
