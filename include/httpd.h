@@ -1150,7 +1150,7 @@ struct conn_state_t {
     apr_pool_t *p;
     /** bucket allocator */
     apr_bucket_alloc_t *bucket_alloc;
-    /** poll file decriptor information */
+    /** poll file descriptor information */
     apr_pollfd_t pfd;
     /** Current state of the connection */
     conn_state_e state;
