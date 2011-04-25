@@ -3304,7 +3304,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         (newcond->flags & CONDFLAG_NOCASE)) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                      "RewriteCond: NoCase option for non-regex pattern '%s' "
-                     "is not supported and will be ignored.", a2);
+                     "is not supported and will be ignored. (%s:%d)", a2,
+		     cmd->directive->filename, cmd->directive->line_num);
         newcond->flags &= ~CONDFLAG_NOCASE;
     }
 
