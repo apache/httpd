@@ -131,6 +131,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~sf/408.diff
     +1: sf
 
+  * mod_cache: Realign the cache_quick_handler() to behave identically
+    to the default_handler() when reacting to errors when writing to the
+    filter stack. Stops APR errors appearing in access_log as result codes.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
+    +1: minfrin
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
