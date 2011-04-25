@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.12
 
+  *) mod_ldap: Make LDAPSharedCacheSize 0 create a non-shared-memory cache per
+     process as opposed to disabling caching completely. This allows to use
+     the non-shared-memory cache as a workaround for the shared memory cache
+     not being available during graceful restarts. PR 48958. [Stefan Fritsch]
+
   *) Add new ap_reserve_module_slots/ap_reserve_module_slots_directive API,
      necessary if a module (like mod_perl) registers additional modules late
      in the startup phase. [Stefan Fritsch]

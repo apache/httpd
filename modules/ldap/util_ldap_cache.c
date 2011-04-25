@@ -420,27 +420,29 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
     apr_status_t result;
     apr_size_t size;
 
-    if (st->cache_file) {
-        /* Remove any existing shm segment with this name. */
-        apr_shm_remove(st->cache_file, st->pool);
-    }
+    if (st->cache_bytes > 0) {
+        if (st->cache_file) {
+            /* Remove any existing shm segment with this name. */
+            apr_shm_remove(st->cache_file, st->pool);
+        }
 
-    size = APR_ALIGN_DEFAULT(st->cache_bytes);
+        size = APR_ALIGN_DEFAULT(st->cache_bytes);
 
-    result = apr_shm_create(&st->cache_shm, size, st->cache_file, st->pool);
-    if (result != APR_SUCCESS) {
-        return result;
-    }
+        result = apr_shm_create(&st->cache_shm, size, st->cache_file, st->pool);
+        if (result != APR_SUCCESS) {
+            return result;
+        }
 
-    /* Determine the usable size of the shm segment. */
-    size = apr_shm_size_get(st->cache_shm);
+        /* Determine the usable size of the shm segment. */
+        size = apr_shm_size_get(st->cache_shm);
 
-    /* This will create a rmm "handler" to get into the shared memory area */
-    result = apr_rmm_init(&st->cache_rmm, NULL,
-                          apr_shm_baseaddr_get(st->cache_shm), size,
-                          st->pool);
-    if (result != APR_SUCCESS) {
-        return result;
+        /* This will create a rmm "handler" to get into the shared memory area */
+        result = apr_rmm_init(&st->cache_rmm, NULL,
+                              apr_shm_baseaddr_get(st->cache_shm), size,
+                              st->pool);
+        if (result != APR_SUCCESS) {
+            return result;
+        }
     }
 
 #endif
