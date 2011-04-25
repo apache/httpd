@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.12
 
+  *) Add child_status hook for tracking creation/termination of MPM child
+     processes.  Add end_generation hook for notification when the last
+     MPM child of a generation exits. [Jeff Trawick]
+
   *) mod_ldap: Make LDAPSharedCacheSize 0 create a non-shared-memory cache per
      process as opposed to disabling caching completely. This allows to use
      the non-shared-memory cache as a workaround for the shared memory cache

@@ -39,6 +39,7 @@
 
 #include "ap_config.h"
 #include "ap_mpm.h"
+#include "scoreboard.h"
 
 #if APR_HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>    /* for TCP_NODELAY */
@@ -85,7 +86,8 @@ extern "C" {
  * ap_relieve_child_processes().  The callback function will be
  * called for each terminated child process.
  */
-typedef void ap_reclaim_callback_fn_t(int childnum);
+typedef void ap_reclaim_callback_fn_t(int childnum, pid_t pid,
+                                      ap_generation_t gen);
 
 /**
  * Make sure all child processes that have been spawned by the parent process
@@ -116,21 +118,23 @@ void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback);
  * an MPM child process which has no entry in the scoreboard.
  * @param pid The process id of an MPM child process which should be
  * reclaimed when ap_reclaim_child_processes() is called.
+ * @param gen The generation of this MPM child process.
  *
  * @note If an extra MPM child process terminates prior to calling
  * ap_reclaim_child_processes(), remove it from the list of such processes
  * by calling ap_unregister_extra_mpm_process().
  */
-void ap_register_extra_mpm_process(pid_t pid);
+void ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen);
 
 /**
  * Unregister an MPM child process which was previously registered by a
  * call to ap_register_extra_mpm_process().
  * @param pid The process id of an MPM child process which no longer needs to
  * be reclaimed.
+ * @param old_gen Set to the server generation of the process, if found.
  * @return 1 if the process was found and removed, 0 otherwise
  */
-int ap_unregister_extra_mpm_process(pid_t pid);
+int ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *old_gen);
 
 /**
  * Safely signal an MPM child process, if the process is in the
@@ -320,6 +324,10 @@ extern const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
 
 extern apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *pconf);
 extern apr_status_t ap_fatal_signal_child_setup(server_rec *s);
+
+/* core's implementation of child_status hook */
+extern void ap_core_child_status(server_rec *s, pid_t pid, ap_generation_t gen,
+                                 int slot, mpm_child_status status);
 
 #if AP_ENABLE_EXCEPTION_HOOK
 extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,

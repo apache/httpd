@@ -28,6 +28,7 @@
 
 #include "apr_thread_proc.h"
 #include "httpd.h"
+#include "scoreboard.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -165,7 +166,44 @@ typedef void (ap_mpm_callback_fn_t)(void *baton);
 AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
                                                        ap_mpm_callback_fn_t *cbfn,
                                                        void *baton);
-    
+
+typedef enum mpm_child_status {
+    MPM_CHILD_STARTED,
+    MPM_CHILD_EXITED,
+    MPM_CHILD_LOST_SLOT
+} mpm_child_status;
+
+/**
+ * Allow a module to remain aware of MPM child process state changes,
+ * along with the generation and scoreboard slot of the process changing
+ * state.
+ *
+ * With some MPMs (event and worker), an active MPM child process may lose
+ * its scoreboard slot if the child process is exiting and the scoreboard
+ * slot is needed by other processes.  When this occurs, the hook will be
+ * called with the MPM_CHILD_LOST_SLOT state.
+ *
+ * @param s The main server_rec.
+ * @param pid The id of the MPM child process.
+ * @param gen The server generation of that child process.
+ * @param slot The scoreboard slot number, or -1.  It will be -1 when an
+ * MPM child process exits, and that child had previously lost its
+ * scoreboard slot.
+ * @param state One of the mpm_child_status values.  Modules should ignore
+ * unrecognized values.
+ */
+AP_DECLARE_HOOK(void,child_status,(server_rec *s, pid_t pid, ap_generation_t gen,
+                                   int slot, mpm_child_status state))
+
+/**
+ * Allow a module to be notified when the last child process of a generation
+ * exits.
+ *
+ * @param s The main server_rec.
+ * @param gen The server generation which is now completely finished.
+ */
+AP_DECLARE_HOOK(void,end_generation,(server_rec *s, ap_generation_t gen))
+
 /* Defining GPROF when compiling uses the moncontrol() function to
  * disable gprof profiling in the parent, and enable it only for
  * request processing in children (or in one_process mode).  It's

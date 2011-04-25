@@ -319,6 +319,7 @@
  * 20110329.1 (2.3.12-dev) Add ap_reserve_module_slots()/ap_reserve_module_slots_directive()
  *                         change AP_CORE_DECLARE to AP_DECLARE: ap_create_request_config()
  *                         change AP_DECLARE to AP_CORE_DECLARE: ap_register_log_hooks()
+ * 20110329.2 (2.3.12-dev) Add child_status and end_generation hooks.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -326,7 +327,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110329
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

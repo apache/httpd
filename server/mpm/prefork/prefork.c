@@ -189,6 +189,25 @@ static void chdir_for_gprof(void)
 #define chdir_for_gprof()
 #endif
 
+static void prefork_note_child_killed(int childnum, pid_t pid,
+                                      ap_generation_t gen)
+{
+    AP_DEBUG_ASSERT(childnum != -1); /* no scoreboard squatting with this MPM */
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[childnum].pid,
+                        ap_scoreboard_image->parent[childnum].generation,
+                        childnum, MPM_CHILD_EXITED);
+    ap_scoreboard_image->parent[childnum].pid = 0;
+}
+
+static void prefork_note_child_started(int slot, pid_t pid)
+{
+    ap_scoreboard_image->parent[slot].pid = pid;
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[slot].pid,
+                        retained->my_generation, slot, MPM_CHILD_STARTED);
+}
+
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
@@ -198,6 +217,11 @@ static void clean_child_exit(int code)
     if (pchild) {
         apr_pool_destroy(pchild);
     }
+
+    if (one_process) {
+        prefork_note_child_killed(/* slot */ 0, 0, 0);
+    }
+
     ap_mpm_pod_close(pod);
     chdir_for_gprof();
     exit(code);
@@ -304,11 +328,6 @@ static int prefork_query(int query_code, int *result, apr_status_t *rv)
         break;
     }
     return OK;
-}
-
-static void prefork_note_child_killed(int childnum)
-{
-    ap_scoreboard_image->parent[childnum].pid = 0;
 }
 
 static const char *prefork_get_name(void)
@@ -716,7 +735,7 @@ static int make_child(server_rec *s, int slot)
         apr_signal(SIGQUIT, SIG_DFL);
 #endif
         apr_signal(SIGTERM, sig_term);
-        ap_scoreboard_image->parent[slot].pid = getpid();
+        prefork_note_child_started(slot, getpid());
         child_main(slot);
         /* NOTREACHED */
     }
@@ -774,7 +793,7 @@ static int make_child(server_rec *s, int slot)
         child_main(slot);
     }
 
-    ap_scoreboard_image->parent[slot].pid = pid;
+    prefork_note_child_started(slot, pid);
 
     return 0;
 }
@@ -995,6 +1014,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             if (child_slot >= 0) {
                 (void) ap_update_child_status_from_indexes(child_slot, 0, SERVER_DEAD,
                                                            (request_rec *) NULL);
+                prefork_note_child_killed(child_slot, 0, 0);
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* child detected a resource shortage (E[NM]FILE, ENOBUFS, etc)
                      * cut the fork rate to the minimum

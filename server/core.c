@@ -4407,6 +4407,7 @@ static void register_hooks(apr_pool_t *p)
     APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL,
                       APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(ap_create_scoreboard, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_status(ap_core_child_status, NULL, NULL, APR_HOOK_MIDDLE);
 
     /* register the core's insert_filter hook and register core-provided
      * filters
