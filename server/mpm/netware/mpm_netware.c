@@ -880,6 +880,11 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     /* Only set slot 0 since that is all NetWare will ever have. */
     ap_scoreboard_image->parent[0].pid = getpid();
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[0].pid,
+                        ap_my_generation,
+                        0,
+                        MPM_CHILD_STARTED);
 
     set_signals();
 
@@ -917,6 +922,11 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
     mpm_state = AP_MPMQ_STOPPING;
 
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[0].pid,
+                        ap_my_generation,
+                        0,
+                        MPM_CHILD_EXITED);
 
     /* Shutdown the listen sockets so that we don't get stuck in a blocking call.
     shutdown_listeners();*/

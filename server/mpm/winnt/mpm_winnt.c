@@ -139,6 +139,22 @@ AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
 { NULL }
 };
 
+static void winnt_note_child_started(int slot, pid_t pid)
+{
+    ap_scoreboard_image->parent[slot].pid = pid;
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[slot].pid,
+                        my_generation, slot, MPM_CHILD_STARTED);
+}
+
+static void winnt_note_child_killed(int slot)
+{
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[slot].pid,
+                        ap_scoreboard_image->parent[slot].generation,
+                        slot, MPM_CHILD_EXITED);
+    ap_scoreboard_image->parent[slot].pid = 0;
+}
 
 /*
  * Signalling Apache on NT.
@@ -767,7 +783,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
      * child at once.
      */
     ap_scoreboard_image->parent[0].quiescing = 0;
-    ap_scoreboard_image->parent[0].pid = child_pid;
+    winnt_note_child_started(/* slot */ 0, child_pid);
 
     /* Wait for shutdown or restart events or for child death */
     winnt_mpm_state = AP_MPMQ_RUNNING;
@@ -843,6 +859,9 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         CloseHandle(event_handles[CHILD_HANDLE]);
         event_handles[CHILD_HANDLE] = NULL;
     }
+
+    winnt_note_child_killed(/* slot */ 0);
+
     if (restart_pending) {
         ++my_generation;
         ap_scoreboard_image->global->running_generation = my_generation;

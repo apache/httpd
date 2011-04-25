@@ -372,9 +372,47 @@ static int worker_query(int query_code, int *result, apr_status_t *rv)
     return OK;
 }
 
-static void worker_note_child_killed(int childnum)
+static void worker_note_child_killed(int childnum, pid_t pid, ap_generation_t gen)
 {
-    ap_scoreboard_image->parent[childnum].pid = 0;
+    if (childnum != -1) { /* child had a scoreboard slot? */
+        ap_run_child_status(ap_server_conf,
+                            ap_scoreboard_image->parent[childnum].pid,
+                            ap_scoreboard_image->parent[childnum].generation,
+                            childnum, MPM_CHILD_EXITED);
+        ap_scoreboard_image->parent[childnum].pid = 0;
+    }
+    else {
+        ap_run_child_status(ap_server_conf, pid, gen, -1, MPM_CHILD_EXITED);
+    }
+}
+
+static void worker_note_child_started(int slot, pid_t pid)
+{
+    ap_scoreboard_image->parent[slot].pid = pid;
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[slot].pid,
+                        retained->my_generation, slot, MPM_CHILD_STARTED);
+}
+
+static void worker_note_child_lost_slot(int slot, pid_t newpid)
+{
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                 "pid %" APR_PID_T_FMT " taking over scoreboard slot from "
+                 "%" APR_PID_T_FMT "%s",
+                 newpid,
+                 ap_scoreboard_image->parent[slot].pid,
+                 ap_scoreboard_image->parent[slot].quiescing ?
+                 " (quiescing)" : "");
+    ap_run_child_status(ap_server_conf,
+                        ap_scoreboard_image->parent[slot].pid,
+                        ap_scoreboard_image->parent[slot].generation,
+                        slot, MPM_CHILD_LOST_SLOT);
+    /* Don't forget about this exiting child process, or we
+     * won't be able to kill it if it doesn't exit by the
+     * time the server is shut down.
+     */
+    ap_register_extra_mpm_process(ap_scoreboard_image->parent[slot].pid,
+                                  ap_scoreboard_image->parent[slot].generation);
 }
 
 static const char *worker_get_name(void)
@@ -390,6 +428,11 @@ static void clean_child_exit(int code)
     if (pchild) {
         apr_pool_destroy(pchild);
     }
+
+    if (one_process) {
+        worker_note_child_killed(/* slot */ 0, 0, 0);
+    }
+
     exit(code);
 }
 
@@ -1344,7 +1387,7 @@ static int make_child(server_rec *s, int slot)
 
     if (one_process) {
         set_signals();
-        ap_scoreboard_image->parent[slot].pid = getpid();
+        worker_note_child_started(slot, getpid());
         child_main(slot);
         /* NOTREACHED */
     }
@@ -1390,19 +1433,11 @@ static int make_child(server_rec *s, int slot)
         /* This new child process is squatting on the scoreboard
          * entry owned by an exiting child process, which cannot
          * exit until all active requests complete.
-         * Don't forget about this exiting child process, or we
-         * won't be able to kill it if it doesn't exit by the
-         * time the server is shut down.
          */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                     "taking over scoreboard slot from %" APR_PID_T_FMT "%s",
-                     ap_scoreboard_image->parent[slot].pid,
-                     ap_scoreboard_image->parent[slot].quiescing ?
-                         " (quiescing)" : "");
-        ap_register_extra_mpm_process(ap_scoreboard_image->parent[slot].pid);
+        worker_note_child_lost_slot(slot, pid);
     }
     ap_scoreboard_image->parent[slot].quiescing = 0;
-    ap_scoreboard_image->parent[slot].pid = pid;
+    worker_note_child_started(slot, pid);
     return 0;
 }
 
@@ -1611,6 +1646,7 @@ static void perform_idle_server_maintenance(void)
 
 static void server_main_loop(int remaining_children_to_start)
 {
+    ap_generation_t old_gen;
     int child_slot;
     apr_exit_why_e exitwhy;
     int status, processed_status;
@@ -1640,7 +1676,7 @@ static void server_main_loop(int remaining_children_to_start)
                     ap_update_child_status_from_indexes(child_slot, i, SERVER_DEAD,
                                                         (request_rec *) NULL);
 
-                ap_scoreboard_image->parent[child_slot].pid = 0;
+                worker_note_child_killed(child_slot, 0, 0);
                 ap_scoreboard_image->parent[child_slot].quiescing = 0;
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* resource shortage, minimize the fork rate */
@@ -1655,8 +1691,9 @@ static void server_main_loop(int remaining_children_to_start)
                     --remaining_children_to_start;
                 }
             }
-            else if (ap_unregister_extra_mpm_process(pid.pid) == 1) {
-                /* handled */
+            else if (ap_unregister_extra_mpm_process(pid.pid, &old_gen) == 1) {
+                worker_note_child_killed(-1, /* already out of the scoreboard */
+                                         pid.pid, old_gen);
 #if APR_HAS_OTHER_CHILD
             }
             else if (apr_proc_other_child_alert(&pid, APR_OC_REASON_DEATH,

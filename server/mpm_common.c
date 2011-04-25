@@ -67,6 +67,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm_query)
     APR_HOOK_LINK(mpm_register_timed_callback)
     APR_HOOK_LINK(mpm_get_name)
+    APR_HOOK_LINK(end_generation)
+    APR_HOOK_LINK(child_status)
 )
 AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
                           (ap_exception_info_t *ei), (ei), OK, DECLINED)
@@ -78,6 +80,8 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm_query)
     APR_HOOK_LINK(mpm_register_timed_callback)
     APR_HOOK_LINK(mpm_get_name)
+    APR_HOOK_LINK(end_generation)
+    APR_HOOK_LINK(child_status)
 )
 #endif
 AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
@@ -97,6 +101,22 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
 AP_IMPLEMENT_HOOK_RUN_FIRST(const char *, mpm_get_name,
                             (void),
                             (), NULL)
+AP_IMPLEMENT_HOOK_VOID(end_generation,
+                       (server_rec *s, ap_generation_t gen),
+                       (s, gen))
+AP_IMPLEMENT_HOOK_VOID(child_status,
+                       (server_rec *s, pid_t pid, ap_generation_t gen, int slot, mpm_child_status status),
+                       (s,pid,gen,slot,status))
+
+typedef struct mpm_gen_info_t {
+    APR_RING_ENTRY(mpm_gen_info_t) link;
+    int gen;          /* which gen? */
+    int active;       /* number of active processes */
+} mpm_gen_info_t;
+
+APR_RING_HEAD(mpm_gen_info_head_t, mpm_gen_info_t);
+static struct mpm_gen_info_head_t geninfo, unused_geninfo;
+static int gen_head_init; /* yuck */
 
 /* variables representing config directives implemented here */
 const char *ap_pid_fname;
@@ -366,6 +386,75 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
     }
 
     return rv;
+}
+
+/* core's child-status hook
+ * tracks number of remaining children per generation and
+ * runs the end-generation hook when a generation finishes
+ */
+void ap_core_child_status(server_rec *s, pid_t pid,
+                          ap_generation_t gen, int slot,
+                          mpm_child_status status)
+{
+    mpm_gen_info_t *cur;
+    const char *status_msg = "unknown status";
+
+    if (!gen_head_init) { /* where to run this? */
+        gen_head_init = 1;
+        APR_RING_INIT(&geninfo, mpm_gen_info_t, link);
+        APR_RING_INIT(&unused_geninfo, mpm_gen_info_t, link);
+    }
+
+    cur = APR_RING_FIRST(&geninfo);
+    while (cur != APR_RING_SENTINEL(&geninfo, mpm_gen_info_t, link) &&
+           cur->gen != gen) {
+        cur = APR_RING_NEXT(cur, link);
+    }
+
+    switch(status) {
+    case MPM_CHILD_STARTED:
+        status_msg = "started";
+        if (cur == APR_RING_SENTINEL(&geninfo, mpm_gen_info_t, link)) {
+            /* first child for this generation */
+            if (!APR_RING_EMPTY(&unused_geninfo, mpm_gen_info_t, link)) {
+                cur = APR_RING_FIRST(&unused_geninfo);
+                APR_RING_REMOVE(cur, link);
+            }
+            else {
+                cur = apr_pcalloc(s->process->pool, sizeof *cur);
+            }
+            cur->gen = gen;
+            APR_RING_ELEM_INIT(cur, link);
+            APR_RING_INSERT_HEAD(&geninfo, cur, mpm_gen_info_t, link);
+        }
+        ++cur->active;
+        break;
+    case MPM_CHILD_EXITED:
+        status_msg = "exited";
+        if (cur == APR_RING_SENTINEL(&geninfo, mpm_gen_info_t, link)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                         "no record of generation %d of exiting child %" APR_PID_T_FMT,
+                         gen, pid);
+        }
+        else {
+            --cur->active;
+            if (!cur->active) {
+                ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, ap_server_conf,
+                             "end of generation %d", gen);
+                ap_run_end_generation(ap_server_conf, gen);
+                APR_RING_REMOVE(cur, link);
+                APR_RING_INSERT_HEAD(&unused_geninfo, cur, mpm_gen_info_t, link);
+            }
+        }
+        break;
+    case MPM_CHILD_LOST_SLOT:
+        status_msg = "lost slot";
+        /* we don't track by slot, so it doesn't matter */
+        break;
+    }
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
+                 "mpm child %" APR_PID_T_FMT " (gen %d/slot %d) %s",
+                 pid, gen, slot, status_msg);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton)

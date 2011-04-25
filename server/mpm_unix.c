@@ -65,20 +65,22 @@ typedef enum {DO_NOTHING, SEND_SIGTERM, SEND_SIGKILL, GIVEUP} action_t;
 typedef struct extra_process_t {
     struct extra_process_t *next;
     pid_t pid;
+    ap_generation_t gen;
 } extra_process_t;
 
 static extra_process_t *extras;
 
-void ap_register_extra_mpm_process(pid_t pid)
+void ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen)
 {
     extra_process_t *p = (extra_process_t *)malloc(sizeof(extra_process_t));
 
     p->next = extras;
     p->pid = pid;
+    p->gen = gen;
     extras = p;
 }
 
-int ap_unregister_extra_mpm_process(pid_t pid)
+int ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *gen)
 {
     extra_process_t *cur = extras;
     extra_process_t *prev = NULL;
@@ -95,6 +97,7 @@ int ap_unregister_extra_mpm_process(pid_t pid)
         else {
             extras = cur->next;
         }
+        *gen = cur->gen;
         free(cur);
         return 1; /* found */
     }
@@ -231,7 +234,7 @@ void ap_reclaim_child_processes(int terminate,
             }
 
             if (reclaim_one_pid(pid, action_table[cur_action].action)) {
-                mpm_callback(i);
+                mpm_callback(i, 0, 0);
             }
             else {
                 ++not_dead_yet;
@@ -240,10 +243,12 @@ void ap_reclaim_child_processes(int terminate,
 
         cur_extra = extras;
         while (cur_extra) {
+            ap_generation_t old_gen;
             extra_process_t *next = cur_extra->next;
 
             if (reclaim_one_pid(cur_extra->pid, action_table[cur_action].action)) {
-                AP_DEBUG_ASSERT(1 == ap_unregister_extra_mpm_process(cur_extra->pid));
+                AP_DEBUG_ASSERT(1 == ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen));
+                mpm_callback(-1, cur_extra->pid, old_gen);
             }
             else {
                 ++not_dead_yet;
@@ -276,16 +281,18 @@ void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback)
         }
 
         if (reclaim_one_pid(pid, DO_NOTHING)) {
-            mpm_callback(i);
+            mpm_callback(i, 0, 0);
         }
     }
 
     cur_extra = extras;
     while (cur_extra) {
+        ap_generation_t old_gen;
         extra_process_t *next = cur_extra->next;
 
         if (reclaim_one_pid(cur_extra->pid, DO_NOTHING)) {
-            AP_DEBUG_ASSERT(1 == ap_unregister_extra_mpm_process(cur_extra->pid));
+            AP_DEBUG_ASSERT(1 == ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen));
+            mpm_callback(-1, cur_extra->pid, old_gen);
         }
         cur_extra = next;
     }
