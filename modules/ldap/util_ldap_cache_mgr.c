@@ -331,16 +331,19 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
 {
     util_ald_cache_t *cache;
     unsigned long i;
+#if APR_HAS_SHARED_MEMORY
+    apr_rmm_off_t block;
+#endif
 
     if (cache_size <= 0)
         return NULL;
 
 #if APR_HAS_SHARED_MEMORY
     if (!st->cache_rmm) {
-        return NULL;
+        cache = (util_ald_cache_t *)calloc(sizeof(util_ald_cache_t), 1);
     }
     else {
-        apr_rmm_off_t block = apr_rmm_calloc(st->cache_rmm, sizeof(util_ald_cache_t));
+        block = apr_rmm_calloc(st->cache_rmm, sizeof(util_ald_cache_t));
         cache = block ? (util_ald_cache_t *)apr_rmm_addr_get(st->cache_rmm, block) : NULL;
     }
 #else
@@ -363,6 +366,14 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
     cache->nodes = (util_cache_node_t **)util_ald_alloc(cache, cache->size * sizeof(util_cache_node_t *));
     if (!cache->nodes) {
         util_ald_free(cache, cache);
+#if APR_HAS_SHARED_MEMORY
+        if (!st->cache_rmm)
+            free(cache);
+        else
+            apr_rmm_free(st->cache_rmm, block);
+#else
+        free(cache);
+#endif
         return NULL;
     }
 

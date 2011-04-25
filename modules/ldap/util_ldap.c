@@ -2728,9 +2728,12 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
 
 #if APR_HAS_SHARED_MEMORY
-        /* If the cache file already exists then delete it.  Otherwise we are
-         * going to run into problems creating the shared memory. */
-        if (st->cache_file) {
+        /*
+         * If we are using shared memory caching and the cache file already
+         * exists then delete it.  Otherwise we are going to run into problems
+         * creating the shared memory.
+         */
+        if (st->cache_file && st->cache_bytes > 0) {
             char *lck_file = apr_pstrcat(ptemp, st->cache_file, ".lck",
                                          NULL);
             apr_file_remove(lck_file, ptemp);
@@ -2740,10 +2743,10 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
 #if APR_HAS_SHARED_MEMORY
-    /* initializing cache if shared memory size is not zero and we already
-     * don't have shm address
+    /*
+     * initializing cache if we don't already have a shm address
      */
-    if (!st->cache_shm && st->cache_bytes > 0) {
+    if (!st->cache_shm) {
 #endif
         result = util_ldap_cache_init(p, st);
         if (result != APR_SUCCESS) {
@@ -2865,7 +2868,7 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPSharedCacheSize", util_ldap_set_cache_bytes,
                   NULL, RSRC_CONF,
                   "Set the size of the shared memory cache (in bytes). Use "
-                  "0 to disable the shared memory cache. (default: 100000)"),
+                  "0 to disable the shared memory cache. (default: 500000)"),
 
     AP_INIT_TAKE1("LDAPSharedCacheFile", util_ldap_set_cache_file,
                   NULL, RSRC_CONF,
