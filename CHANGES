@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) support: Make sure check_forensic works with mod_unique_id loaded
+     [Joe Schaefer]
+
   *) Add child_status hook for tracking creation/termination of MPM child
      processes.  Add end_generation hook for notification when the last
      MPM child of a generation exits. [Jeff Trawick]
