@@ -43,8 +43,8 @@ out=$name
 trap "rm -f -- \"$all\" \"$in\" \"$out\";" 0 1 2 3 13 15
 
 cut -f 1 -d '|' $F  > $all
-grep + < $all | cut -c2- | sort > $in
-grep -- - < $all | cut -c2- | sort > $out
+grep ^+ < $all | cut -c2- | sort > $in
+grep -- ^- < $all | cut -c2- | sort > $out
 
 # use -i instead of -I for GNU xargs
 join -v 1 $in $out | xargs -I xx egrep "^\\+xx" $F
