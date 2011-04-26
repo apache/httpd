@@ -365,15 +365,8 @@ util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
 
     cache->nodes = (util_cache_node_t **)util_ald_alloc(cache, cache->size * sizeof(util_cache_node_t *));
     if (!cache->nodes) {
+        /* This frees cache in the right way even if !APR_HAS_SHARED_MEMORY or !st->cache_rmm */
         util_ald_free(cache, cache);
-#if APR_HAS_SHARED_MEMORY
-        if (!st->cache_rmm)
-            free(cache);
-        else
-            apr_rmm_free(st->cache_rmm, block);
-#else
-        free(cache);
-#endif
         return NULL;
     }
 
