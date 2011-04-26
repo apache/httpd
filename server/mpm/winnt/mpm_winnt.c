@@ -962,7 +962,7 @@ static int winnt_query(int query_code, int *result, apr_status_t *rv)
             *result = ap_max_requests_per_child;
             break;
         case AP_MPMQ_MAX_DAEMONS:
-            *result = 0;
+            *result = 1;
             break;
         case AP_MPMQ_MPM_STATE:
             *result = winnt_mpm_state;
