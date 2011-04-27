@@ -183,7 +183,7 @@ static int status_handler(request_rec *r)
     const char *loc;
     apr_time_t nowtime;
     apr_interval_time_t up_time;
-    int j, i, res;
+    int j, i, res, written;
     int ready;
     int busy;
     unsigned long count;
@@ -470,13 +470,17 @@ static int status_handler(request_rec *r)
     else
         ap_rputs("Scoreboard: ", r);
 
+    written = 0;
     for (i = 0; i < server_limit; ++i) {
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
-            ap_rputc(stat_buffer[indx], r);
-            if ((indx % STATUS_MAXLINE == (STATUS_MAXLINE - 1))
-                && !short_report)
-                ap_rputs("\n", r);
+            if (stat_buffer[indx] != status_flags[SERVER_DISABLED]) {
+                ap_rputc(stat_buffer[indx], r);
+                if ((written % STATUS_MAXLINE == (STATUS_MAXLINE - 1))
+                    && !short_report)
+                    ap_rputs("\n", r);
+                written++;
+            }
         }
     }
 
@@ -496,7 +500,6 @@ static int status_handler(request_rec *r)
         ap_rputs("\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n", r);
         ap_rputs("\"<b><code>I</code></b>\" Idle cleanup of worker, \n", r);
         ap_rputs("\"<b><code>.</code></b>\" Open slot with no current process,<br />\n", r);
-        ap_rputs("\"<b><code> </code></b>\" Slot disabled by MaxClients setting</p>\n", r);
         ap_rputs("<p />\n", r);
         if (!ap_extended_status) {
             int j;
