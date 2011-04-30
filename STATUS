@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=937858
                    http://svn.apache.org/viewvc?view=revision&revision=938265
     2.2.x patch: http://people.apache.org/~sf/408.diff
-    +1: sf
+    +1: sf, trawick
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
     to the default_handler() when reacting to errors when writing to the
@@ -132,6 +132,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
     2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
     +1: minfrin
+    trawick: any reason it shouldn't be completely aligned with default_handler's
+             choice to return OK vs. 500?
 
 PATCHES/ISSUES THAT ARE STALLED
 
