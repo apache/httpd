@@ -91,11 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * HTTP Protocol: Fix handling of extra request data sent with Expect: 100
-    PR 47087
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=888310
-    2.2.x: Trunk works with offset
-    +1: niq, wrowe, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
