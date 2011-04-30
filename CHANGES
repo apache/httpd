@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) Core HTTP: disable keepalive when the Client has sent
+     Expect: 100-continue
+     but we respond directly with a non-100 response.  Keepalive here led
+     to data from clients continuing being treated as a new request.
+     PR 47087.  [Nick Kew]
+
   *) htpasswd: Change the default algorithm for htpasswd to MD5 on all
      platforms. Crypt with its 8 character limit is not useful anymore;
      improve out of disk space handling (PR 30877); print a warning if

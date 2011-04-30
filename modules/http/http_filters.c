@@ -331,6 +331,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 char *tmp;
                 int len;
 
+                /* if we send an interim response, we're no longer
+                 * in a state of expecting one.
+                 */
+                f->r->expecting_100 = 0;
                 tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
                                   ap_get_status_line(100), CRLF CRLF, NULL);
                 len = strlen(tmp);
