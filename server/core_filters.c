@@ -599,7 +599,6 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
     for (bucket = APR_BRIGADE_FIRST(bb);
          bucket != APR_BRIGADE_SENTINEL(bb);
          bucket = next) {
-        int did_sendfile = 0;
         next = APR_BUCKET_NEXT(bucket);
 #if APR_HAS_SENDFILE
         if (APR_BUCKET_IS_FILE(bucket)) {
@@ -613,7 +612,6 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
 
             if ((apr_file_flags_get(fd) & APR_SENDFILE_ENABLED) &&
                 (bucket->length >= AP_MIN_SENDFILE_BYTES)) {
-                did_sendfile = 1;
                 if (nvec > 0) {
                     (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 1);
                     rv = writev_nonblocking(s, vec, nvec, bb, bytes_written, c);
@@ -634,7 +632,8 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
             }
         }
 #endif /* APR_HAS_SENDFILE */
-        if (!did_sendfile && !APR_BUCKET_IS_METADATA(bucket)) {
+        /* didn't sendfile */
+        if (!APR_BUCKET_IS_METADATA(bucket)) {
             const char *data;
             apr_size_t length;
             rv = apr_bucket_read(bucket, &data, &length, APR_BLOCK_READ);

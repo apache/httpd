@@ -306,7 +306,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
             continue;
         }
         /* deal with %-N+.-M+ -- syntax is already checked */
-        N = M = 0;   /* value */
+        M = 0;   /* value */
         Np = Mp = 0; /* is there a plus? */
         Nd = Md = 0; /* is there a dash? */
         if (*map == '-') ++map, Nd = 1;

@@ -1479,7 +1479,6 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
             }
 
             if (nbytes == 1 && !found_nl) {
-                i = 0;
                 continue;
             }
         }
@@ -4254,7 +4253,6 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
                 while (   i < rewriterules->nelts
                        && s > 0) {
                     i++;
-                    p = &entries[i];
                     s--;
                 }
             }

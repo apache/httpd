@@ -1504,7 +1504,6 @@ static void output_directories(struct ent **ar, int n,
 {
     int x;
     apr_size_t rv;
-    char *name = r->uri;
     char *tp;
     int static_columns = !!(autoindex_opts & SUPPRESS_COLSORT);
     apr_pool_t *scratch;
@@ -1515,9 +1514,6 @@ static void output_directories(struct ent **ar, int n,
     char *breakrow = "";
 
     apr_pool_create(&scratch, r->pool);
-    if (name[0] == '\0') {
-        name = "/";
-    }
 
     name_width = d->name_width;
     desc_width = d->desc_width;

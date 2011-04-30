@@ -217,7 +217,7 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
     char base = 'X';
     int modifier = 0;
     int num = 0;
-    int factor = 0;
+    int factor;
 
     /* 0.0.4 compatibility?
      */
@@ -274,7 +274,6 @@ static char *check_code(apr_pool_t *p, const char *code, char **real_code)
             return apr_pstrcat(p, "bad expires code, missing <type>", NULL);
         }
 
-        factor = 0;
         if (!strncasecmp(word, "years", 1)) {
             factor = 60 * 60 * 24 * 365;
         }

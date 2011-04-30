@@ -1583,7 +1583,6 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
                 p = NULL;
                 bestthistag = NULL;
                 longest_lang_range_len = 0;
-                alen = 0;
 
                 /* lang is the variant's language-tag, which is the one
                  * we are allowed to use the prefix of in HTTP/1.1

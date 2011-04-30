@@ -453,7 +453,6 @@ static const char *add_setenvifexpr(cmd_parms *cmd, void *mconfig,
     char *expr;
     sei_cfg_rec *sconf;
     sei_entry *new;
-    sei_entry *entries;
     const char *err;
 
     /*
@@ -465,7 +464,6 @@ static const char *add_setenvifexpr(cmd_parms *cmd, void *mconfig,
       ? (sei_cfg_rec *) mconfig
       : (sei_cfg_rec *) ap_get_module_config(cmd->server->module_config,
                                                &setenvif_module);
-    entries = (sei_entry *) sconf->conditionals->elts;
     /* get expr */
     expr = ap_getword_conf(cmd->pool, &args);
     if (!*expr) {
