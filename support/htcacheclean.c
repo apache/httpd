@@ -614,7 +614,6 @@ static int process_dir(char *path, apr_pool_t *pool, apr_off_t *nodes)
     apr_pool_create(&p, pool);
     h = apr_hash_make(p);
     fd = NULL;
-    skip = 0;
     deviation = MAXDEVIATION * APR_USEC_PER_SEC;
 
     if (apr_dir_open(&dir, path, p) != APR_SUCCESS) {

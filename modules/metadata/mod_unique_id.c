@@ -307,7 +307,6 @@ static const char *gen_unique_id(const request_rec *r)
     /* we'll use a temporal buffer to avoid uuencoding the possible internal
      * paddings of the original structure */
     x = (unsigned char *) &paddedbuf;
-    y = (unsigned char *) &new_unique_id;
     k = 0;
     for (i = 0; i < UNIQUE_ID_REC_MAX; i++) {
         y = ((unsigned char *) &new_unique_id) + unique_id_rec_offset[i];

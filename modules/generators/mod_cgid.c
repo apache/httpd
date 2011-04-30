@@ -1444,13 +1444,6 @@ static int cgid_handler(request_rec *r)
     apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
     apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
-    if ((argv0 = strrchr(r->filename, '/')) != NULL) {
-        argv0++;
-    }
-    else {
-        argv0 = r->filename;
-    }
-
     /* Transfer any put/post args, CERN style...
      * Note that we already ignore SIGPIPE in the core server.
      */

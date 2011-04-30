@@ -252,8 +252,9 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
         char *t;
         apr_table_t *hbt = apr_table_make(pool, 10);
         apr_bucket_alloc_t *ba = apr_bucket_alloc_create(pool);
-        apr_bucket_brigade *bb = apr_brigade_create(pool, ba);
-        apr_bucket_brigade *tmpbb = apr_brigade_create(pool, ba);
+        apr_bucket_brigade *bb;
+        apr_bucket_brigade *tmpbb;
+
         rv = apr_file_info_get(&fi, APR_FINFO_SIZE | APR_FINFO_MTIME, fpin);
         if (rv) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,

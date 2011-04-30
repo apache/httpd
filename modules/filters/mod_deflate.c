@@ -540,7 +540,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 /* skip parameters, XXX: ;q=foo evaluation? */
                 while (*accepts == ';') {
                     ++accepts;
-                    token = ap_get_token(r->pool, &accepts, 1);
+                    ap_get_token(r->pool, &accepts, 1);
                 }
 
                 /* retrieve next token */
