@@ -360,8 +360,8 @@ static apr_status_t vm_destruct(void *vm, void *params, apr_pool_t *pool)
 {
     lua_State *L = (lua_State *)vm; 
 
-    (void*)params;
-    (void*)pool;
+    (void)params;
+    (void)pool;
 
     cleanup_lua(L);
 
