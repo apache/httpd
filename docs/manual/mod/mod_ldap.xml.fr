@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1082203 -->
+<!-- English Revision : 1096577 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -460,7 +460,7 @@ d'Apache</compatibility>
     pour le cache en m&eacute;moire partag&eacute;e. La valeur par
     d&eacute;faut est 500kb.
     Si elle est d&eacute;finie &agrave; 0, le cache en m&eacute;moire partag&eacute;e ne sera pas
-    utilis&eacute;.</p>
+    utilis&eacute; et chaque processus HTTPD va cr&eacute;er son propre cache.</p>
 </usage>
 </directivesynopsis>
 
