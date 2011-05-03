@@ -559,7 +559,7 @@ application/vnd.ms-fontobject			eot
 application/vnd.ms-htmlhelp			chm
 application/vnd.ms-ims				ims
 application/vnd.ms-lrm				lrm
-application/vnd.ms-office.activex+xml			
+# application/vnd.ms-office.activex+xml
 application/vnd.ms-officetheme			thmx
 application/vnd.ms-pki.seccat			cat
 application/vnd.ms-pki.stl			stl
@@ -632,7 +632,7 @@ application/vnd.oasis.opendocument.presentation-template	otp
 application/vnd.oasis.opendocument.spreadsheet		ods
 application/vnd.oasis.opendocument.spreadsheet-template	ots
 application/vnd.oasis.opendocument.text			odt
-application/vnd.oasis.opendocument.text-master		otm
+application/vnd.oasis.opendocument.text-master		odm
 application/vnd.oasis.opendocument.text-template	ott
 application/vnd.oasis.opendocument.text-web		oth
 # application/vnd.obn
@@ -1436,7 +1436,7 @@ video/quicktime					qt mov
 # video/vnd.cctv
 video/vnd.dece.hd				uvh uvvh
 video/vnd.dece.mobile				uvm uvvm
-video/vnd.dece.mp4					
+# video/vnd.dece.mp4
 video/vnd.dece.pd				uvp uvvp
 video/vnd.dece.sd				uvs uvvs
 video/vnd.dece.video				uvv uvvv
