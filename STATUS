@@ -135,14 +135,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trawick: any reason it shouldn't be completely aligned with default_handler's
              choice to return OK vs. 500?
 
-  * mime.types: Syncing from trunk.
-    At the moment trunk is 2.2 plus many additional entries
-    plus r1099022 (Fixes one suffix, comments out two unused entries)
-    plus r1085498 (Fixes one duplicate definition).
-    Syncing by simply copying from trunk to 2.2 seems to be low-hanging fruit.
-    Not sure, whether mime.types is actually CTR.
-    +1: rjung
-
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
