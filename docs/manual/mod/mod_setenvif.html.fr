@@ -76,7 +76,7 @@ contenu de l'en-tête HTTP User-Agent</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrowserMatch <em>regex [!]env-variable</em>[=<em>valeur</em>]
 [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
@@ -107,7 +107,7 @@ casse</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>valeur</em>]
     [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
@@ -140,7 +140,7 @@ attributs de la requête</td></tr>
     regex [!]env-variable</em>[=<em>valeur</em>]
     [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
@@ -281,7 +281,7 @@ serveur HTTP Apache</a> pour des exemples supplémentaires.
     [!]env-variable</em>[=<em>valeur</em>]
     [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>
@@ -326,7 +326,7 @@ attributs de la requête sans tenir compte de la casse</td></tr>
         [!]env-variable</em>[=<em>valeur</em>]
     [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
 </table>

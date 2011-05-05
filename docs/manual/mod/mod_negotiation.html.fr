@@ -145,7 +145,7 @@ contenu</a></li>
       requis directement.</dd>
 
       <dt><code>Body:</code></dt>
-      <dd>une nouveauté d'Apache 2.0 : le contenu réel de la ressource
+      <dd>Le contenu réel de la ressource
       peut être inclus dans la table de correspondances en utilisant
       l'en-tête Body. Cet en-tête doit contenir une chaîne désignant un
       délimiteur pour le contenu du corps. Les lignes suivantes du
@@ -164,6 +164,46 @@ contenu</a></li>
       </code></p></div>
       </dd>
     </dl>
+
+    <p>Considérons une ressource, <code>document.html</code>, disponible
+    en anglais, en français et en allemand. Les fichiers correspondants
+    se nomment respectivement <code>document.html.en</code>,
+    <code>document.html.fr</code>, et <code>document.html.de</code>. Le
+    fichier de correspondances de types se nommera
+    <code>document.html.var</code> et contiendra ce qui suit :</p>
+    
+    <div class="example"><p><code>
+    URI: document.html<br />
+    <br />
+    Content-language: en<br />
+    Content-type: text/html<br />
+    URI: document.html.en<br />
+    <br />
+    Content-language: fr<br />
+    Content-type: text/html<br />
+    URI: document.html.fr<br />
+    <br />
+    Content-language: de<br />
+    Content-type: text/html<br />
+    URI: document.html.de<br />
+    <br />
+
+    </code></p></div>
+
+    <p>Ces quatre fichiers doivent se trouver dans le même répertoire,
+    et le fichier <code>.var</code> doit être associé au gestionnaire
+    <code>type-map</code> via une directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> :</p>
+
+    <div class="example"><p><code>
+    AddHandler type-map .var
+    </code></p></div>
+
+    <p>A l'arrivée d'une requête pour la ressource
+    <code>document.html</code>, le fichier
+    <code>document.html.var</code> sera consulté, et la variante de
+    <code>document.html</code> qui correspond le mieux à la préference
+    de langage spécifiée dans l'en-tête de la requête de l'utilisateur
+    <code>Accept-Language</code> sera choisie.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multiviews" id="multiviews">Multivues</a></h2>
@@ -192,8 +232,6 @@ des documents dont le contenu a été négocié</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La syntaxe a été modifiée dans la version
-2.0.</td></tr>
 </table>
     <p>Si elle est définie à "on", cette directive permet la mise en
     cache au niveau des serveurs mandataires des documents dont le
@@ -208,10 +246,6 @@ des documents dont le contenu a été négocié</td></tr>
     directive n'a aucun effet sur les réponses aux requêtes
     HTTP/1.1.</p>
 
-    <p>Avant la version 2.0, la directive
-    <code class="directive">CacheNegotiatedDocs</code> n'acceptait aucun
-    argument ; la seule présence de la directive suffisait à la définir
-    à "on".</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -222,7 +256,7 @@ n'est pas trouvé</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ForceLanguagePriority Prefer</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.0.30</td></tr>
@@ -283,7 +317,7 @@ cas où le client n'a pas formulé de préférences</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LanguagePriority <var>langage-MIME</var> [<var>langage-MIME</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_negotiation</td></tr>
 </table>

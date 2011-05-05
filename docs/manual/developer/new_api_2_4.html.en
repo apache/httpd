@@ -131,7 +131,11 @@
       <li>Support for mod_request kept_body</li>
       <li>Support buffering filter data for async requests</li>
       <li>New CONN_STATE values</li>
-      <li>Function changes: ap_escape_html updated; ap_unescape_all, ap_escape_path_segment_buffer</li>
+      <li>Function changes: ap_escape_html updated; ap_unescape_all,
+          ap_escape_path_segment_buffer</li>
+      <li>Modules that load other modules later than the EXEC_ON_READ config
+          reading stage need to call ap_reserve_module_slots() or
+          ap_reserve_module_slots_directive() in their pre_config hook.</li>
     </ul>
   
 

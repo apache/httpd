@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Mise à jour vers 2.4 depuis 2.2 - Serveur Apache HTTP</title>
+<title>Mise à jour de la version 2.2 vers la version 2.4 - Serveur Apache HTTP</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Mise à jour vers 2.4 depuis 2.2</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Mise à jour de la version 2.2 vers la version 2.4</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -35,7 +35,7 @@
 
   <p>Ce document présente les changements de comportement du serveur qui
   peuvent nécessiter une modification de la configuration, et la manière
-  d'utiliser la version 2.4 du serveur en continuant d'utiliser la
+  d'utiliser la version 2.4 du serveur en parallèle avec la
   version 2.2. Pour tirer parti des nouvelles fonctionnalités de la
   version 2.4, reportez-vous au document "Nouvelles fonctionnalités".</p>
 
@@ -46,7 +46,7 @@
   à jour de 2.0 vers 2.2.</a></p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Modifications de la configuration au moment de la compilation</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Modifications des paramètres de compilation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#run-time">Modifications de la configuration à l'exécution</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Changements divers</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#third-party">Modules tiers</a></li>
@@ -55,7 +55,7 @@
 fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile-time" id="compile-time">Modifications de la configuration au moment de la compilation</a></h2>
+<h2><a name="compile-time" id="compile-time">Modifications des paramètres de compilation</a></h2>
     
      <p>Le processus de compilation est très similaire à celui de la
      version 2.2. Dans la plupart des cas, vous pourrez utiliser votre
@@ -67,7 +67,7 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
     <ul>
       <li>Les modules suivants ont été supprimés : mod_authn_default,
       mod_authz_default et mod_mem_cache. Si vous utilisiez
-      mod_mem_cache sous la version 2.2, reportez-vous à
+      mod_mem_cache sous la version 2.2, vous devez maintenant utiliser
       <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code> dans la version 2.4.</li>
 
       <li>Toutes les implémentations de répartition de charge ont été
@@ -77,8 +77,8 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
       utilise.</li>
 
       <li>Le support de BeOS, TPF, et des anciennes plates-formes telles
-      que A/UX, Next, et Tandem a été supprimé, car il a été supposé
-      qu'elles n'étaient plus maintenues.</li>
+      que A/UX, Next, et Tandem a été supprimé, car
+      elles ne sont plus considérées comme maintenues.</li>
 
       <li>configure: les modules dynamiques (DSO) sont compilés par
       défaut</li>
@@ -92,14 +92,14 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
     
 <p>Des changements significatifs dans la configuration de
 l'autorisation, ainsi que quelques changements mineurs, peuvent
-nécessiter une modification des fichiers de configuration de la version
+nécessiter une mise à jour des fichiers de configuration de la version
 2.2 avant de les utiliser sous la version 2.4.</p>
 
     <h3><a name="authz" id="authz">Autorisation</a></h3>
       
 
       <p>Tout fichier de configuration qui gère des autorisations devra
-      probablement être modifié.</p>
+      probablement être mis à jour.</p>
 
     <p>Vous devez vous reporter au document <a href="howto/auth.html">Authentification, autorisation et contrôle
     d'accès</a>, et plus particulièrement à la section <a href="howto/auth.html#beyond">Plus loin qu'une simple
@@ -112,7 +112,7 @@ nécessiter une modification des fichiers de configuration de la version
 
       <p>Dans la version 2.2, le contrôle d'accès basé sur le nom d'hôte
       du client, son adresse IP, ou d'autres caractéristiques de la
-      requête du client était assuré via les directives <code class="directive"><a href="./mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#deny">Deny</a></code>, et <code class="directive"><a href="./mod/mod_access_compat.html#satisfy">Satisfy</a></code>.</p>
+      requête était assuré via les directives <code class="directive"><a href="./mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#deny">Deny</a></code>, et <code class="directive"><a href="./mod/mod_access_compat.html#satisfy">Satisfy</a></code>.</p>
 
       <p>Dans la version 2.4, ce contrôle d'accès est assuré, comme tout
       contrôle d'autorisation, via le nouveau module
@@ -164,7 +164,7 @@ nécessiter une modification des fichiers de configuration de la version
 
     
 
-    <h3><a name="config" id="config">Autres changements de configuration</a></h3>
+    <h3><a name="config" id="config">Autres changements dans la configuration</a></h3>
       
 
       <p>D'autres ajustements mineurs peuvent s'avérer nécessaires pour
@@ -206,7 +206,7 @@ nécessiter une modification des fichiers de configuration de la version
 	remplacées par la directive <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.</li>
 
         <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: la directive <code class="directive"><a href="./mod/cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
-	effectue maintenent une correspondance exacte dans la chaîne de
+	effectue maintenant une correspondance exacte dans la chaîne de
 	paramètres au lieu d'une correspondance partielle. Si votre
 	configuration mettait en jeu des sous-chaînes comme
 	<code>sessionid</code> pour correspondre à
