@@ -97,7 +97,7 @@ serveur</td></tr>
 d'environnement</var>
 [<var>hôte</var>|env=[!]<var>variable d'environnement</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Limit</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
@@ -231,7 +231,7 @@ serveur</td></tr>
 d'environnement</var>
 [<var>hôte</var>|env=[!]<var>variable d'environnement</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Limit</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
@@ -251,7 +251,7 @@ les directives <code class="directive">Allow</code> et
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> Order <var>ordre</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Order Deny,Allow</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Limit</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
@@ -406,7 +406,7 @@ et l'authentification utilisateur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Satisfy Any|All</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Satisfy All</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Affecté par <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> à partir de la version

@@ -30,8 +30,9 @@ des explications détaillées et des exemples.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (échappement dans les références arrières)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpathinfo</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_e">E|env</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_end">END</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_f">F|forbidden</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_g">G|gone</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_h">H|handler</a></li>
@@ -121,19 +122,18 @@ chaînées qui suivent, seront sautées.</p>
 <p>Le drapeau [CO], ou [cookie], vous permet de définir un cookie
 lorsqu'une règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 s'applique. Il possède trois arguments obligatoires et
-cinq arguments optionnels.</p>
+quatre arguments optionnels.</p>
 
 <p>La syntaxe complète de ce drapeau, avec tous ses attributs, est la
 suivante :</p>
 
 <div class="example"><p><code>
-[CO=NAME:VALUE:domain:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
 </code></p></div>
 
-<p>Vous devez déclarer un nom et une valeur pour que le cookie puisse
-être défini.</p>
+<p>Vous devez déclarer un nom, une valeur et un domaine pour que
+le cookie puisse être défini.</p>
 
-<p>Vous pouvez aussi définir les valeurs suivantes :</p>
 
 <dl>
 <dt>Domain</dt>
@@ -143,8 +143,11 @@ domaine, comme <code>.example.com</code>. Il doit comporter au moins
 deux parties séparées par un point. C'est à dire que vous ne pouvez pas
 utiliser les valeurs <code>.com</code> ou <code>.net</code>. En effet,
 ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
-<dd>La valeur par défaut est le domaine courant.</dd>
+</dl>
+ 
+<p>Vous pouvez aussi définir les valeurs suivantes :</p>
 
+<dl>
 <dt>Lifetime</dt>
 <dd>La durée de vie du cookie, en minutes.</dd>
 <dd>Une valeur de 0 indique une durée de vie correspondant à la session
@@ -188,7 +191,7 @@ pour tous les URIs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpathinfo</a></h2>
+<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a></h2>
 <p>Avec le drapeau DPI, la partie PATH_INFO de l'URI
 réécrit est supprimée.</p>
 <p>Ce drapeau est disponible dans les versions 2.2.12 et supérieures.</p>
@@ -270,6 +273,16 @@ CustomLog logs/access_log combined env=!image
 <p>Notez que le même effet peut être obtenu à l'aide de la directive
 <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. Cette technique
 est présentée à titre d'exemple et non de recommandation.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_end" id="flag_end">END</a></h2>
+<p>L'utilisation du drapeau [END] permet non seulement de terminer le
+processus de réécriture en cours (comme [L]), mais aussi d'empêcher tout
+processus de réécriture ultérieur dans un contexte de répertoire
+(htaccess).</p>
+
+<p>Ceci ne s'applique pas aux nouvelles requêtes résultant d'une
+redirection externe.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>

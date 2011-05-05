@@ -647,7 +647,8 @@ valid</td></tr>
 </table>
     <p>Specifies the number of bytes to allocate for the shared
     memory cache. The default is 500kb. If set to 0, shared memory
-    caching will not be used.</p>
+    caching will not be used and every HTTPD process will create its
+    own cache.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
