@@ -85,6 +85,13 @@ switch before dumping core</td></tr>
       on Linux 2.4 and beyond, but only if you explicitly configure a <code class="directive">CoreDumpDirectory</code>.</p>
     </div>
 
+    <div class="note">
+    <h3>Core Dumps on BSD</h3>
+    <p>To enable core-dumping of suid-executables on BSD-systems (such
+    as FreeBSD), set <code>kern.sugid_coredump</code> to 1.
+    </p>
+    </div>
+
     <div class="note"><h3>Specific signals</h3>
       <p><code class="directive">CoreDumpDirectory</code> processing only occurs for 
       a select set of fatal signals: SIGFPE, SIGILL, SIGABORT, 

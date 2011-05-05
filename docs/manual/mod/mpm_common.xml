@@ -58,6 +58,13 @@ switch before dumping core</description>
       >CoreDumpDirectory</directive>.</p>
     </note>
 
+    <note>
+    <title>Core Dumps on BSD</title>
+    <p>To enable core-dumping of suid-executables on BSD-systems (such
+    as FreeBSD), set <code>kern.sugid_coredump</code> to 1.
+    </p>
+    </note>
+
     <note><title>Specific signals</title>
       <p><directive>CoreDumpDirectory</directive> processing only occurs for 
       a select set of fatal signals: SIGFPE, SIGILL, SIGABORT, 
