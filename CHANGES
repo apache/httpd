@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.18
 
+  *) Log an error for failures to read a chunk-size, and return 408 instead
+     413 when this is due to a read timeout.  This change also fixes some cases 
+     of two error documents being sent in the response for the same scenario. 
+     [Eric Covener] PR49167
+
+  *) core: Only log a 408 if it is no keepalive timeout. PR 39785
+     [Ruediger Pluem,  Mark Montague <markmont umich.edu>]
+
+  *) core: Treat timeout reading request as 408 error, not 400.
+     Log 408 errors in access log as was done in Apache 1.3.x.
+     PR 39785 [Nobutaka Mantani <nobutaka nobutaka.org>, Stefan Fritsch,
+     Dan Poirier]
+
   *) Core HTTP: disable keepalive when the Client has sent
      Expect: 100-continue
      but we respond directly with a non-100 response.  Keepalive here led

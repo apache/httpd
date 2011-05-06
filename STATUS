@@ -108,14 +108,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: Trunk patch applies with offset
     +1: trawick, wrowe, covener
 
-  * core: Send error 408 instead of 400 or 413 when appropriate
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=820760
-                   http://svn.apache.org/viewvc?view=revision&revision=919323
-                   http://svn.apache.org/viewvc?view=revision&revision=937858
-                   http://svn.apache.org/viewvc?view=revision&revision=938265
-    2.2.x patch: http://people.apache.org/~sf/408.diff
-    +1: sf, trawick, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
