@@ -187,16 +187,16 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_path));
 
 #ifdef WIN32
-    if (env_temp = getenv("SystemRoot")) {
+    if ((env_temp = getenv("SystemRoot")) != NULL) {
         apr_table_addn(e, "SystemRoot", env_temp);
     }
-    if (env_temp = getenv("COMSPEC")) {
+    if ((env_temp = getenv("COMSPEC")) != NULL) {
         apr_table_addn(e, "COMSPEC", env_temp);
     }
-    if (env_temp = getenv("PATHEXT")) {
+    if ((env_temp = getenv("PATHEXT")) != NULL) {
         apr_table_addn(e, "PATHEXT", env_temp);
     }
-    if (env_temp = getenv("WINDIR")) {
+    if ((env_temp = getenv("WINDIR")) != NULL) {
         apr_table_addn(e, "WINDIR", env_temp);
     }
 #endif

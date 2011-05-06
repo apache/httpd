@@ -34,6 +34,7 @@
 #endif
 #undef _WINUSER_
 #include <winuser.h>
+#include <time.h>
 
 static char *mpm_service_name = NULL;
 static char *mpm_display_name = NULL;
@@ -50,42 +51,6 @@ static struct
 } globdat;
 
 static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
-
-
-#define PRODREGKEY "SOFTWARE\\" AP_SERVER_BASEVENDOR "\\" \
-                   AP_SERVER_BASEPRODUCT "\\" AP_SERVER_BASEREVISION
-
-/*
- * Get the server root from the registry into 'dir' which is
- * size bytes long. Returns 0 if the server root was found
- * or if the serverroot key does not exist (in which case
- * dir will contain an empty string), or -1 if there was
- * an error getting the key.
- */
-apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
-{
-    apr_status_t rv;
-    ap_regkey_t *key;
-
-    if ((rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, PRODREGKEY,
-                             APR_READ, p)) == APR_SUCCESS) {
-        rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
-        ap_regkey_close(key);
-        if (rv == APR_SUCCESS)
-            return rv;
-    }
-
-    if ((rv = ap_regkey_open(&key, AP_REGKEY_CURRENT_USER, PRODREGKEY,
-                             APR_READ, p)) == APR_SUCCESS) {
-        rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
-        ap_regkey_close(key);
-        if (rv == APR_SUCCESS)
-            return rv;
-    }
-
-    *buf = NULL;
-    return rv;
-}
 
 
 /* The service configuration's is stored under the following trees:
@@ -157,7 +122,8 @@ void hold_console_open_on_error(void)
                 return;
         }
         remains = ((start + 30) - time(NULL));
-        sprintf (count, "%d...", remains);
+        sprintf(count, "%d...",
+                (int)remains); /* 30 or less, so can't overflow int */
         if (!SetConsoleCursorPosition(hConErr, coninfo.dwCursorPosition))
             return;
         if (!WriteConsole(hConErr, count, (DWORD)strlen(count), &result, NULL)
@@ -427,7 +393,6 @@ static void set_service_description(void)
 {
     const char *full_description;
     SC_HANDLE schSCManager;
-    BOOL ret = 0;
 
     /* Nothing to do if we are a console
      */
@@ -565,7 +530,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 }
 
 
-DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
+static DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 {
     apr_status_t rv = APR_SUCCESS;
 
@@ -675,7 +640,7 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
 }
 
 
-void service_stopped(void)
+static void service_stopped(void)
 {
     /* Still have a thread & window to clean up, so signal now */
     if (globdat.service_thread)
@@ -1075,7 +1040,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-        char **start_argv;
+        const CHAR **start_argv;
         SC_HANDLE   schService;
         SC_HANDLE   schSCManager;
 

@@ -20,6 +20,7 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "ap_mpm.h"
 
 #include <stdarg.h>
 #include <time.h>
@@ -105,7 +106,7 @@ FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal)
 /* To share the semaphores with other processes, we need a NULL ACL
  * Code from MS KB Q106387
  */
-PSECURITY_ATTRIBUTES GetNullACL()
+PSECURITY_ATTRIBUTES GetNullACL(void)
 {
     PSECURITY_DESCRIPTOR pSD;
     PSECURITY_ATTRIBUTES sa;
