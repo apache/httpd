@@ -91,17 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Fixes for gcc -Wall warnings in Windows code
-    Trunk patch: revisions/descriptions at
-                 http://people.apache.org/~trawick/mingw_patch_revisions.txt
-    2.2.x patch: http://people.apache.org/~trawick/mingw_fix_warnings.txt
-                 (It is worth pointing out that DWORD = unsigned long for 16-,
-                 32-, and 64-bit builds.)
-    2.2.x warnings without patch:
-                 http://people.apache.org/~trawick/mingw_r1092398_warnings.txt
-    2.2.x warnings with patch:
-                 http://people.apache.org/~trawick/mingw_patch_warnings.txt
-    +1: trawick, wrowe, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

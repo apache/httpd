@@ -62,7 +62,7 @@ void mpm_start_child_console_handler(void);
 
 /* From nt_eventlog.c: */
 
-void mpm_nt_eventlog_stderr_open(char *display_name, apr_pool_t *p);
+void mpm_nt_eventlog_stderr_open(const char *display_name, apr_pool_t *p);
 void mpm_nt_eventlog_stderr_flush(void);
 
 /* From winnt.c: */
@@ -126,5 +126,9 @@ PCOMP_CONTEXT mpm_get_completion_context(void);
 void          mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext);
 apr_status_t  mpm_post_completion_context(PCOMP_CONTEXT pCompContext, io_state_e state);
 void hold_console_open_on_error(void);
+
+/* From child.c: */
+void child_main(apr_pool_t *pconf);
+
 #endif /* APACHE_MPM_WINNT_H */
 /** @} */

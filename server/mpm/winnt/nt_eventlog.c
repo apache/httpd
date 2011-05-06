@@ -24,7 +24,7 @@
 #include "apr_portable.h"
 #include "ap_regkey.h"
 
-static char  *display_name  = NULL;
+static const char *display_name  = NULL;
 static HANDLE stderr_thread = NULL;
 static HANDLE stderr_ready;
 
@@ -101,7 +101,7 @@ static DWORD WINAPI service_stderr_thread(LPVOID hPipe)
 
     if ((errres = GetLastError()) != ERROR_BROKEN_PIPE) {
         apr_snprintf(errbuf, sizeof(errbuf),
-                     "Win32 error %d reading stderr pipe stream\r\n",
+                     "Win32 error %lu reading stderr pipe stream\r\n",
                      GetLastError());
 
         ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0,
@@ -131,13 +131,11 @@ void mpm_nt_eventlog_stderr_flush(void)
 }
 
 
-void mpm_nt_eventlog_stderr_open(char *argv0, apr_pool_t *p)
+void mpm_nt_eventlog_stderr_open(const char *argv0, apr_pool_t *p)
 {
     SECURITY_ATTRIBUTES sa;
-    HANDLE hProc = GetCurrentProcess();
     HANDLE hPipeRead = NULL;
     HANDLE hPipeWrite = NULL;
-    HANDLE hDup = NULL;
     DWORD  threadid;
     apr_file_t *eventlog_file;
     apr_file_t *stderr_file;
