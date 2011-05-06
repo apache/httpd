@@ -91,16 +91,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  * mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
-    FIFO rather than LIFO, for more consistent performance
-    so that older requests don't suffer
-    Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
-    2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
-
   * Fixes for gcc -Wall warnings in Windows code
     Trunk patch: revisions/descriptions at
                  http://people.apache.org/~trawick/mingw_patch_revisions.txt
@@ -111,12 +101,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://people.apache.org/~trawick/mingw_r1092398_warnings.txt
     2.2.x warnings with patch:
                  http://people.apache.org/~trawick/mingw_patch_warnings.txt
-    +1: trawick, wrowe
+    +1: trawick, wrowe, covener
 
   * WinNT MPM: don't try to shut down child if it wasn't created
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090634
     2.2.x patch: Trunk patch applies with offset
-    +1: trawick, wrowe
+    +1: trawick, wrowe, covener
 
   * core: Send error 408 instead of 400 or 413 when appropriate
     Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=820760
@@ -124,7 +114,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?view=revision&revision=937858
                    http://svn.apache.org/viewvc?view=revision&revision=938265
     2.2.x patch: http://people.apache.org/~sf/408.diff
-    +1: sf, trawick
+    +1: sf, trawick, covener
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  * mpm worker/mpm event: Revert an old (~10yr) change to the fd Q; move back to
+    FIFO rather than LIFO, for more consistent performance
+    so that older requests don't suffer
+    Trunk patch (applies for worker): http://svn.apache.org/viewvc?view=revision&revision=1064269
+    2.2.x patch (for event): http://people.apache.org/~igalic/patches/event-mpm-fdqueue.patch
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
     to the default_handler() when reacting to errors when writing to the
