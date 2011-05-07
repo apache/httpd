@@ -1040,7 +1040,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
-        const CHAR **start_argv;
+        CHAR **start_argv;
         SC_HANDLE   schService;
         SC_HANDLE   schSCManager;
 
