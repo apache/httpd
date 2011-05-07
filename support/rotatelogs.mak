@@ -295,14 +295,14 @@ SOURCE=..\build\win32\httpd.rc
 
 
 "$(INTDIR)\rotatelogs.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\rotatelogs.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="rotatelogs.exe" /d LONG_NAME="Apache rotatelogs command line pipe" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\rotatelogs.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="rotatelogs.exe" /d LONG_NAME="Apache rotatelogs command line pipe" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "rotatelogs - Win32 Debug"
 
 
 "$(INTDIR)\rotatelogs.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\rotatelogs.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="rotatelogs.exe" /d LONG_NAME="Apache rotatelogs command line pipe" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\rotatelogs.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="rotatelogs.exe" /d LONG_NAME="Apache rotatelogs command line pipe" $(SOURCE)
 
 
 !ENDIF 

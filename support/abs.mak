@@ -319,14 +319,14 @@ SOURCE=..\build\win32\httpd.rc
 
 
 "$(INTDIR)\ab.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\ab.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="ab.exe" /d LONG_NAME="ApacheBench/SSL command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\ab.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="ab.exe" /d LONG_NAME="ApacheBench/SSL command line utility" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "abs - Win32 Debug"
 
 
 "$(INTDIR)\ab.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\ab.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="ab.exe" /d LONG_NAME="ApacheBench/SSL command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\ab.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="ab.exe" /d LONG_NAME="ApacheBench/SSL command line utility" $(SOURCE)
 
 
 !ENDIF 

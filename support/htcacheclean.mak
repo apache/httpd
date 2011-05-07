@@ -300,14 +300,14 @@ SOURCE=..\build\win32\httpd.rc
 
 
 "$(INTDIR)\htcacheclean.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\htcacheclean.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="htcacheclean.exe" /d LONG_NAME="Apache htcacheclean command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\htcacheclean.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="htcacheclean.exe" /d LONG_NAME="Apache htcacheclean command line utility" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "htcacheclean - Win32 Debug"
 
 
 "$(INTDIR)\htcacheclean.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\htcacheclean.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="htcacheclean.exe" /d LONG_NAME="Apache htcacheclean command line utility" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\htcacheclean.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="htcacheclean.exe" /d LONG_NAME="Apache htcacheclean command line utility" $(SOURCE)
 
 
 !ENDIF 

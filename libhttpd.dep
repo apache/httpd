@@ -62,41 +62,18 @@
 	".\include\util_filter.h"\
 	".\include\util_time.h"\
 	".\modules\http\mod_core.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_signal.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\http\chunk_filter.c : \
@@ -118,38 +95,15 @@
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
 	".\modules\http\mod_core.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\config.c : \
@@ -170,38 +124,16 @@
 	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_fnmatch.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\connection.c : \
@@ -223,37 +155,15 @@
 	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\core.c : \
@@ -284,44 +194,20 @@
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
 	".\include\util_md5.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_md5.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apr_reslist.h"\
 	".\srclib\apr-util\include\apr_strmatch.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_fnmatch.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\core_filters.c : \
@@ -352,44 +238,20 @@
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
 	".\include\util_md5.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_md5.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apr_reslist.h"\
 	".\srclib\apr-util\include\apr_strmatch.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_fnmatch.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\http\http_core.c : \
@@ -411,38 +273,15 @@
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
 	".\modules\http\mod_core.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\http\http_etag.c : \
@@ -459,37 +298,15 @@
 	".\include\os.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\http\http_filters.c : \
@@ -513,41 +330,18 @@
 	".\include\util_filter.h"\
 	".\include\util_time.h"\
 	".\modules\http\mod_core.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_signal.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\http\http_protocol.c : \
@@ -571,41 +365,18 @@
 	".\include\util_filter.h"\
 	".\include\util_time.h"\
 	".\modules\http\mod_core.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_signal.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\http\http_request.c : \
@@ -626,39 +397,16 @@
 	".\include\util_charset.h"\
 	".\include\util_filter.h"\
 	".\modules\http\mod_core.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_fnmatch.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\log.c : \
@@ -676,34 +424,16 @@
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
 	".\include\util_time.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
 	".\srclib\apr\include\apr_signal.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\protocol.c : \
@@ -726,41 +456,18 @@
 	".\include\util_charset.h"\
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_strmatch.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_signal.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\request.c : \
@@ -781,39 +488,16 @@
 	".\include\util_charset.h"\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_fnmatch.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\vhost.c : \
@@ -830,38 +514,16 @@
 	".\include\os.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\mappers\mod_so.c : \
@@ -877,33 +539,14 @@
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
 	".\modules\mappers\mod_so.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\modules\arch\win32\mod_win32.c : \
@@ -925,38 +568,16 @@
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\os\win32\modules.c : \
@@ -968,28 +589,11 @@
 	".\include\httpd.h"\
 	".\include\os.h"\
 	".\include\util_cfgtree.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\eoc_bucket.c : \
@@ -1000,28 +604,11 @@
 	".\include\http_connection.h"\
 	".\include\httpd.h"\
 	".\include\os.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\error_bucket.c : \
@@ -1033,35 +620,13 @@
 	".\include\httpd.h"\
 	".\include\os.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\util.c : \
@@ -1081,38 +646,15 @@
 	".\include\util_filter.h"\
 	".\server\test_char.h"\
 	".\srclib\apr-util\include\apr_base64.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\util_cfgtree.c : \
@@ -1121,15 +663,6 @@
 	".\include\util_cfgtree.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\util_filter.c : \
@@ -1141,32 +674,14 @@
 	".\include\httpd.h"\
 	".\include\os.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\util_md5.c : \
@@ -1179,37 +694,14 @@
 	".\include\util_charset.h"\
 	".\include\util_ebcdic.h"\
 	".\include\util_md5.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_md5.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\util_pcre.c : \
@@ -1219,29 +711,12 @@
 	".\include\ap_release.h"\
 	".\include\httpd.h"\
 	".\include\os.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	".\srclib\pcre\pcre.h"\
 	
 
@@ -1263,40 +738,17 @@
 	".\include\util_ebcdic.h"\
 	".\include\util_filter.h"\
 	".\include\util_script.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_date.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\util_time.c : \
@@ -1307,74 +759,33 @@
 	".\include\httpd.h"\
 	".\include\os.h"\
 	".\include\util_time.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\os\win32\util_win32.c : \
 	".\include\ap_config.h"\
 	".\include\ap_mmn.h"\
+	".\include\ap_mpm.h"\
 	".\include\ap_regex.h"\
 	".\include\ap_release.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\os.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
-	".\srclib\apr\include\arch\apr_private_common.h"\
 	".\srclib\apr\include\arch\win32\apr_arch_file_io.h"\
-	".\srclib\apr\include\arch\win32\apr_arch_misc.h"\
 	".\srclib\apr\include\arch\win32\apr_arch_utf8.h"\
-	".\srclib\apr\include\arch\win32\apr_private.h"\
 	
 
 .\server\util_xml.c : \
@@ -1390,38 +801,15 @@
 	".\include\util_charset.h"\
 	".\include\util_filter.h"\
 	".\include\util_xml.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apr_xlate.h"\
 	".\srclib\apr-util\include\apr_xml.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\os\win32\ap_regkey.c : \
@@ -1430,35 +818,12 @@
 	".\include\os.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_shm.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
-	".\srclib\apr\include\arch\apr_private_common.h"\
 	".\srclib\apr\include\arch\win32\apr_arch_file_io.h"\
-	".\srclib\apr\include\arch\win32\apr_arch_misc.h"\
 	".\srclib\apr\include\arch\win32\apr_arch_utf8.h"\
-	".\srclib\apr\include\arch\win32\apr_private.h"\
 	
 
 .\server\mpm\winnt\child.c : \
@@ -1482,40 +847,18 @@
 	".\include\util_filter.h"\
 	".\server\mpm\winnt\mpm_default.h"\
 	".\server\mpm\winnt\mpm_winnt.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
 	".\srclib\apr\include\apr_atomic.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\listen.c : \
@@ -1534,37 +877,15 @@
 	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -1590,38 +911,16 @@
 	".\include\os.h"\
 	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_signal.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -1651,40 +950,18 @@
 	".\include\util_filter.h"\
 	".\server\mpm\winnt\mpm_default.h"\
 	".\server\mpm\winnt\mpm_winnt.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
 	".\srclib\apr\include\apr_atomic.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\mpm\winnt\nt_eventlog.c : \
@@ -1700,36 +977,14 @@
 	".\include\os.h"\
 	".\include\util_cfgtree.h"\
 	".\server\mpm\winnt\mpm_winnt.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\provider.c : \
@@ -1738,17 +993,8 @@
 	".\include\os.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\scoreboard.c : \
@@ -1767,38 +1013,16 @@
 	".\include\scoreboard.h"\
 	".\include\util_cfgtree.h"\
 	".\include\util_filter.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_dso.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_global_mutex.h"\
 	".\srclib\apr\include\apr_hash.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
 	".\srclib\apr\include\apr_portable.h"\
-	".\srclib\apr\include\apr_proc_mutex.h"\
-	".\srclib\apr\include\apr_ring.h"\
-	".\srclib\apr\include\apr_shm.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 .\server\mpm\winnt\service.c : \
@@ -1814,31 +1038,13 @@
 	".\include\os.h"\
 	".\include\util_cfgtree.h"\
 	".\server\mpm\winnt\mpm_winnt.h"\
-	".\srclib\apr-util\include\apr_buckets.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
 	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
-	".\srclib\apr-util\include\apu.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_file_info.h"\
-	".\srclib\apr\include\apr_file_io.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_inherit.h"\
 	".\srclib\apr\include\apr_lib.h"\
 	".\srclib\apr\include\apr_mmap.h"\
-	".\srclib\apr\include\apr_network_io.h"\
 	".\srclib\apr\include\apr_poll.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_ring.h"\
 	".\srclib\apr\include\apr_strings.h"\
-	".\srclib\apr\include\apr_tables.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_thread_proc.h"\
-	".\srclib\apr\include\apr_time.h"\
-	".\srclib\apr\include\apr_user.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
@@ -1849,11 +1055,4 @@
 
 .\build\win32\httpd.rc : \
 	".\include\ap_release.h"\
-	".\srclib\apr\include\apr.h"\
-	".\srclib\apr\include\apr_allocator.h"\
-	".\srclib\apr\include\apr_errno.h"\
-	".\srclib\apr\include\apr_general.h"\
-	".\srclib\apr\include\apr_pools.h"\
-	".\srclib\apr\include\apr_thread_mutex.h"\
-	".\srclib\apr\include\apr_want.h"\
 	
