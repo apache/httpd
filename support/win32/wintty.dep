@@ -2,11 +2,4 @@
 
 ..\..\build\win32\httpd.rc : \
 	"..\..\include\ap_release.h"\
-	"..\..\srclib\apr\include\apr.h"\
-	"..\..\srclib\apr\include\apr_allocator.h"\
-	"..\..\srclib\apr\include\apr_errno.h"\
-	"..\..\srclib\apr\include\apr_general.h"\
-	"..\..\srclib\apr\include\apr_pools.h"\
-	"..\..\srclib\apr\include\apr_thread_mutex.h"\
-	"..\..\srclib\apr\include\apr_want.h"\
 	

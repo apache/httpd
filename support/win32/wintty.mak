@@ -295,14 +295,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\wintty.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\wintty.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="wintty.exe" /d LONG_NAME="Apache wintty console pipe" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\wintty.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="wintty.exe" /d LONG_NAME="Apache wintty console pipe" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "wintty - Win32 Debug"
 
 
 "$(INTDIR)\wintty.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\wintty.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="wintty.exe" /d LONG_NAME="Apache wintty console pipe" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\wintty.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="wintty.exe" /d LONG_NAME="Apache wintty console pipe" $(SOURCE)
 
 
 !ENDIF 

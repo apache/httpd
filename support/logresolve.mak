@@ -295,14 +295,14 @@ SOURCE=..\build\win32\httpd.rc
 
 
 "$(INTDIR)\logresolve.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\logresolve.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="logresolve.exe" /d LONG_NAME="Apache logresolve command line pipe" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\logresolve.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="logresolve.exe" /d LONG_NAME="Apache logresolve command line pipe" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "logresolve - Win32 Debug"
 
 
 "$(INTDIR)\logresolve.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\logresolve.res" /i "../include" /i "../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="logresolve.exe" /d LONG_NAME="Apache logresolve command line pipe" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\logresolve.res" /i "../include" /i "../srclib/apr/include" /i ".\..\build\win32" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="logresolve.exe" /d LONG_NAME="Apache logresolve command line pipe" $(SOURCE)
 
 
 !ENDIF 
