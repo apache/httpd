@@ -615,7 +615,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
                 r->proto_num = HTTP_VERSION(1,0);
                 r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
             }
-            else if (rv == APR_TIMEUP) {
+            else if (APR_STATUS_IS_TIMEUP(rv)) {
                 r->status = HTTP_REQUEST_TIME_OUT;
             }
             else if (rv == APR_EINVAL) {
@@ -710,7 +710,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                          &len, r, 0, bb);
 
         if (rv != APR_SUCCESS) {
-            if (rv == APR_TIMEUP) {
+            if (APR_STATUS_IS_TIMEUP(rv)) {
                 r->status = HTTP_REQUEST_TIME_OUT;
             }
             else {
