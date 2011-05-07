@@ -331,14 +331,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_unique_id.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_unique_id.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d BIN_NAME="mod_unique_id.so" /d LONG_NAME="unique_id_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_unique_id.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "NDEBUG" /d BIN_NAME="mod_unique_id.so" /d LONG_NAME="unique_id_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_unique_id - Win32 Debug"
 
 
 "$(INTDIR)\mod_unique_id.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_unique_id.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d BIN_NAME="mod_unique_id.so" /d LONG_NAME="unique_id_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_unique_id.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "_DEBUG" /d BIN_NAME="mod_unique_id.so" /d LONG_NAME="unique_id_module for Apache" $(SOURCE)
 
 
 !ENDIF 

@@ -359,14 +359,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_authn_default.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_default.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d BIN_NAME="mod_authn_default.so" /d LONG_NAME="authn_default_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_default.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "NDEBUG" /d BIN_NAME="mod_authn_default.so" /d LONG_NAME="authn_default_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_authn_default - Win32 Debug"
 
 
 "$(INTDIR)\mod_authn_default.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_default.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d BIN_NAME="mod_authn_default.so" /d LONG_NAME="authn_default_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_authn_default.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "_DEBUG" /d BIN_NAME="mod_authn_default.so" /d LONG_NAME="authn_default_module for Apache" $(SOURCE)
 
 
 !ENDIF 

@@ -331,14 +331,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_userdir.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_userdir.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d BIN_NAME="mod_userdir.so" /d LONG_NAME="userdir_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_userdir.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "NDEBUG" /d BIN_NAME="mod_userdir.so" /d LONG_NAME="userdir_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_userdir - Win32 Debug"
 
 
 "$(INTDIR)\mod_userdir.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_userdir.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d BIN_NAME="mod_userdir.so" /d LONG_NAME="userdir_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_userdir.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "_DEBUG" /d BIN_NAME="mod_userdir.so" /d LONG_NAME="userdir_module for Apache" $(SOURCE)
 
 
 !ENDIF 
