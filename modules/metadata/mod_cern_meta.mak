@@ -331,14 +331,14 @@ SOURCE=..\..\build\win32\httpd.rc
 
 
 "$(INTDIR)\mod_cern_meta.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cern_meta.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "NDEBUG" /d BIN_NAME="mod_cern_meta.so" /d LONG_NAME="cern_meta_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cern_meta.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "NDEBUG" /d BIN_NAME="mod_cern_meta.so" /d LONG_NAME="cern_meta_module for Apache" $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "mod_cern_meta - Win32 Debug"
 
 
 "$(INTDIR)\mod_cern_meta.res" : $(SOURCE) "$(INTDIR)"
-	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cern_meta.res" /i "../../include" /i "../../srclib/apr/include" /i "\local0\asf\release\build-2.2.17\build\win32" /d "_DEBUG" /d BIN_NAME="mod_cern_meta.so" /d LONG_NAME="cern_meta_module for Apache" $(SOURCE)
+	$(RSC) /l 0x409 /fo"$(INTDIR)\mod_cern_meta.res" /i "../../include" /i "../../srclib/apr/include" /i ".\..\..\build\win32" /d "_DEBUG" /d BIN_NAME="mod_cern_meta.so" /d LONG_NAME="cern_meta_module for Apache" $(SOURCE)
 
 
 !ENDIF 
