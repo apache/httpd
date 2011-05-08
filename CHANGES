@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) mod_authnz_ldap: Resolve crash when LDAP is used for authorization only
+     [Scott Hill <shill genscape.com>]
+
   *) support: Make sure check_forensic works with mod_unique_id loaded
      [Joe Schaefer]
 
