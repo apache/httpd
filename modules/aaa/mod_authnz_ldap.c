@@ -827,6 +827,8 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
             "ldap authorize: Creating LDAP req structure");
 
+        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
+            sizeof(authn_ldap_request_t));
         /* Build the username filter */
         authn_ldap_build_filter(filtbuf, r, r->user, NULL, sec);
 
@@ -841,8 +843,6 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
             return AUTHZ_DENIED;
         }
 
-        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
-            sizeof(authn_ldap_request_t));
         ap_set_module_config(r->request_config, &authnz_ldap_module, req);
         req->dn = apr_pstrdup(r->pool, dn);
         req->user = r->user;
@@ -1005,6 +1005,8 @@ static authz_status ldapdn_check_authorization(request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
             "ldap authorize: Creating LDAP req structure");
 
+        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
+            sizeof(authn_ldap_request_t));
         /* Build the username filter */
         authn_ldap_build_filter(filtbuf, r, r->user, NULL, sec);
 
@@ -1019,8 +1021,6 @@ static authz_status ldapdn_check_authorization(request_rec *r,
             return AUTHZ_DENIED;
         }
 
-        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
-            sizeof(authn_ldap_request_t));
         ap_set_module_config(r->request_config, &authnz_ldap_module, req);
         req->dn = apr_pstrdup(r->pool, dn);
         req->user = r->user;
@@ -1115,6 +1115,8 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
             "ldap authorize: Creating LDAP req structure");
 
+        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
+            sizeof(authn_ldap_request_t));
         /* Build the username filter */
         authn_ldap_build_filter(filtbuf, r, r->user, NULL, sec);
 
@@ -1129,8 +1131,6 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
             return AUTHZ_DENIED;
         }
 
-        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
-            sizeof(authn_ldap_request_t));
         ap_set_module_config(r->request_config, &authnz_ldap_module, req);
         req->dn = apr_pstrdup(r->pool, dn);
         req->user = r->user;
@@ -1229,6 +1229,8 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
             "ldap authorize: Creating LDAP req structure");
 
+        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
+            sizeof(authn_ldap_request_t));
         /* Build the username filter */
         authn_ldap_build_filter(filtbuf, r, r->user, NULL, sec);
 
@@ -1243,8 +1245,6 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
             return AUTHZ_DENIED;
         }
 
-        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
-            sizeof(authn_ldap_request_t));
         ap_set_module_config(r->request_config, &authnz_ldap_module, req);
         req->dn = apr_pstrdup(r->pool, dn);
         req->user = r->user;
