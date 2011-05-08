@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 911498 -->
+<!-- English Revision : 1098874 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -54,6 +54,11 @@ l'utilisateur</description>
     2616 section 14.9</a>), vous pouvez utiliser la directive <directive
     module="mod_headers">Header</directive>.</p>
 
+    <p>Lorsque l'en-t&ecirc;te <code>Expires</code> est d&eacute;j&agrave; pr&eacute;sent dans la
+    r&eacute;ponse g&eacute;n&eacute;r&eacute;e par le serveur, par exemple s'il a &eacute;t&eacute; cr&eacute;&eacute; par un
+    script CGI ou un serveur original via un serveur mandataire, ce
+    module n'ajoute aucun en-t&ecirc;te <code>Expires</code> ou
+    <code>Cache-Control</code>.</p>
 </summary>
 
 <section id="AltSyn"><title>Autre syntaxe de d&eacute;finition de
