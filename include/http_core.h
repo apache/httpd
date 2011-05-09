@@ -718,6 +718,9 @@ typedef struct ap_errorlog_info {
     int using_syslog;
     /** 1 if APLOG_STARTUP was set for the log message, 0 otherwise */
     int startup;
+
+    /** message format */
+    const char *format;
 } ap_errorlog_info;
 
 /**
