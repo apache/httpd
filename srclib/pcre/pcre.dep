@@ -1,0 +1,51 @@
+# Microsoft Developer Studio Generated Dependency File, included by pcre.mak
+
+!IF  "$(CFG)" == "pcre - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "pcre - Win32 Debug"
+
+!ENDIF 
+
+.\get.c : \
+	".\config.h"\
+	".\internal.h"\
+	".\pcre.h"\
+	
+
+.\maketables.c : \
+	".\config.h"\
+	".\internal.h"\
+	".\pcre.h"\
+	
+
+.\pcre.c : \
+	".\chartables.c"\
+	".\config.h"\
+	".\internal.h"\
+	".\pcre.h"\
+	".\printint.c"\
+	".\ucp.c"\
+	".\ucp.h"\
+	".\ucpinternal.h"\
+	".\ucptable.c"\
+	".\ucptypetable.c"\
+	
+
+.\study.c : \
+	".\config.h"\
+	".\internal.h"\
+	".\pcre.h"\
+	
+
+!IF  "$(CFG)" == "pcre - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "pcre - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "pcre - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "pcre - Win32 Debug"
+
+!ENDIF 
+

@@ -1,0 +1,21 @@
+# Microsoft Developer Studio Generated Dependency File, included by dftables.mak
+
+.\dftables.c : \
+	".\config.h"\
+	".\internal.h"\
+	".\maketables.c"\
+	".\pcre.h"\
+	
+
+!IF  "$(CFG)" == "dftables - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "dftables - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "dftables - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "dftables - Win32 Debug"
+
+!ENDIF 
+
