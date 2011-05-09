@@ -1166,7 +1166,7 @@ static void log_error_core(const char *file, int line, int module_index,
     info.status        = 0;
     info.using_syslog  = (logf == NULL);
     info.startup       = ((level & APLOG_STARTUP) == APLOG_STARTUP);
-
+    info.format        = fmt;
 
     while (!done) {
         apr_array_header_t *log_format;
