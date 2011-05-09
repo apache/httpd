@@ -258,7 +258,7 @@
     <p>Pour rendre cette technique fonctionnelle, mettez un lien 
     dans votre serveur virtuel primaire vers 
     <code>http://www.domain.tld/domain/</code>. Ensuite, dans les 
-    pages de ce serveur virtuel, assurez vous ne n'utiliser que 
+    pages de ce serveur virtuel, assurez vous de n'utiliser que 
     des liens relatifs (<em>par exemple</em>, "<code>file.html</code>" 
     ou "<code>../icons/image.gif</code>") ou des liens contenant 
     le préfixe <code>/domain/</code> (<em>par exemple</em>, 

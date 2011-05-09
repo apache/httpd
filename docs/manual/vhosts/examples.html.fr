@@ -83,8 +83,8 @@
     # Apache doit écouter sur le port 80<br />
     Listen 80<br />
     <br />
-    # Toutes les adresses IP doivent répondre aux requêtes sur les 
-    # serveurs virtuels
+    # Toutes les adresses IP doivent répondre aux requêtes sur les <br />
+    # serveurs virtuels<br />
     NameVirtualHost *:80<br />
     <br />
     &lt;VirtualHost *:80&gt;<br />

@@ -121,19 +121,17 @@ chaînées qui suivent, seront sautées.</p>
 <p>Le drapeau [CO], ou [cookie], vous permet de définir un cookie
 lorsqu'une règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 s'applique. Il possède trois arguments obligatoires et
-cinq arguments optionnels.</p>
+quatre arguments optionnels.</p>
 
 <p>La syntaxe complète de ce drapeau, avec tous ses attributs, est la
 suivante :</p>
 
 <div class="example"><p><code>
-[CO=NAME:VALUE:domain:lifetime:path:secure:httponly]
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly]
 </code></p></div>
 
-<p>Vous devez déclarer un nom et une valeur pour que le cookie puisse
-être défini.</p>
-
-<p>Vous pouvez aussi définir les valeurs suivantes :</p>
+<p>Vous devez déclarer un nom, une valeur et un domaine pour que
+le cookie puisse être défini.</p>
 
 <dl>
 <dt>Domain</dt>
@@ -143,8 +141,11 @@ domaine, comme <code>.example.com</code>. Il doit comporter au moins
 deux parties séparées par un point. C'est à dire que vous ne pouvez pas
 utiliser les valeurs <code>.com</code> ou <code>.net</code>. En effet,
 ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
-<dd>La valeur par défaut est le domaine courant.</dd>
+</dl>
+ 
+<p>Vous pouvez aussi définir les valeurs suivantes :</p>
 
+<dl>
 <dt>Lifetime</dt>
 <dd>La durée de vie du cookie, en minutes.</dd>
 <dd>Une valeur de 0 indique une durée de vie correspondant à la session
