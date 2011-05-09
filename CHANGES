@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.12
 
+  *) Silence autoconf 2.68 warnings.  [Rainer Jung]
+
   *) mod_authnz_ldap: Resolve crash when LDAP is used for authorization only
      [Scott Hill <shill genscape.com>]
 
