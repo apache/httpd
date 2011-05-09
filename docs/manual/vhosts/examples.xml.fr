@@ -61,7 +61,8 @@
     # Apache doit écouter sur le port 80<br />
     Listen 80<br />
     <br />
-    <br />
+    # Toutes les adresses IP doivent répondre aux requêtes sur les <br />
+    # serveurs virtuels<br />
     &lt;VirtualHost *:80&gt;<br />
     <indent>
       DocumentRoot /www/example.com<br />
