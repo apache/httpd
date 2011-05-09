@@ -47,7 +47,6 @@
 #ifndef APACHE_HTTP_REQUEST_H
 #define APACHE_HTTP_REQUEST_H
 
-#include "apr_hooks.h"
 #include "apr_optional.h"
 #include "util_filter.h"
 

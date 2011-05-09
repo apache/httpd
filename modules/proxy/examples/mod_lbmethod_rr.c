@@ -25,7 +25,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
-#include "apr_hooks.h"
+#include "ap_hooks.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h> /* for getpid() */

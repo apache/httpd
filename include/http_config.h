@@ -26,7 +26,6 @@
 #ifndef APACHE_HTTP_CONFIG_H
 #define APACHE_HTTP_CONFIG_H
 
-#include "apr_hooks.h"
 #include "util_cfgtree.h"
 #include "ap_config.h"
 

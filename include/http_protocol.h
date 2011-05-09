@@ -27,7 +27,6 @@
 #define APACHE_HTTP_PROTOCOL_H
 
 #include "httpd.h"
-#include "apr_hooks.h"
 #include "apr_portable.h"
 #include "apr_mmap.h"
 #include "apr_buckets.h"

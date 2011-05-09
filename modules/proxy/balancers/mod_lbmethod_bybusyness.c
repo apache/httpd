@@ -18,7 +18,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
-#include "apr_hooks.h"
+#include "ap_hooks.h"
 
 module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module;
 
