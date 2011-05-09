@@ -20,7 +20,7 @@
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
-#include "apr_hooks.h"
+#include "ap_hooks.h"
 #include "apr_date.h"
 
 static const char *balancer_mutex_type = "proxy-balancer-shm";

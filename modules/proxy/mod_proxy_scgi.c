@@ -25,7 +25,7 @@
 #define APR_WANT_MEMFUNC
 #define APR_WANT_STRFUNC
 #include "apr_strings.h"
-#include "apr_hooks.h"
+#include "ap_hooks.h"
 #include "apr_optional_hooks.h"
 #include "apr_buckets.h"
 

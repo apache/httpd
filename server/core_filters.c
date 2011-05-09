@@ -25,7 +25,6 @@
 #include "apr_fnmatch.h"
 #include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
-#include "apr_hooks.h"
 
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC

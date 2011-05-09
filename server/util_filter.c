@@ -29,7 +29,7 @@
    so we depend on a global to hold the correct pool
 */
 #define FILTER_POOL     apr_hook_global_pool
-#include "apr_hooks.h"   /* for apr_hook_global_pool */
+#include "ap_hooks.h"   /* for apr_hook_global_pool */
 
 /*
 ** This macro returns true/false if a given filter should be inserted BEFORE
