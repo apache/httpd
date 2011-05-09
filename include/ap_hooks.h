@@ -28,6 +28,10 @@
  * @ingroup  APACHE_CORE
  */
 
+#if defined(AP_HOOK_PROBES_ENABLED) && !defined(APR_HOOK_PROBES_ENABLED)
+#define APR_HOOK_PROBES_ENABLED 1
+#endif
+
 #ifdef APR_HOOK_PROBES_ENABLED
 #include "ap_hook_probes.h"
 #endif
