@@ -215,8 +215,8 @@ fi
 %post -n mod_ssl
 umask 077
 
-if [ ! -f %{_sysconfdir}/httpd/conf/ssl.key/server.key ] ; then
-%{_bindir}/openssl genrsa -rand /proc/apm:/proc/cpuinfo:/proc/dma:/proc/filesystems:/proc/interrupts:/proc/ioports:/proc/pci:/proc/rtc:/proc/uptime 1024 > %{_sysconfdir}/httpd/conf/ssl.key/server.key 2> /dev/null
+if [ ! -f %{_sysconfdir}/httpd/conf/server.key ] ; then
+%{_bindir}/openssl genrsa -rand /proc/apm:/proc/cpuinfo:/proc/dma:/proc/filesystems:/proc/interrupts:/proc/ioports:/proc/pci:/proc/rtc:/proc/uptime 1024 > %{_sysconfdir}/httpd/conf/server.key 2> /dev/null
 fi
 
 FQDN=`hostname`
@@ -224,8 +224,8 @@ if [ "x${FQDN}" = "x" ]; then
    FQDN=localhost.localdomain
 fi
 
-if [ ! -f %{_sysconfdir}/httpd/conf/ssl.crt/server.crt ] ; then
-cat << EOF | %{_bindir}/openssl req -new -key %{_sysconfdir}/httpd/conf/ssl.key/server.key -x509 -days 365 -out %{_sysconfdir}/httpd/conf/ssl.crt/server.crt 2>/dev/null
+if [ ! -f %{_sysconfdir}/httpd/conf/server.crt ] ; then
+cat << EOF | %{_bindir}/openssl req -new -key %{_sysconfdir}/httpd/conf/server.key -x509 -days 365 -out %{_sysconfdir}/httpd/conf/server.crt 2>/dev/null
 --
 SomeState
 SomeCity
