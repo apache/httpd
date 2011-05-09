@@ -376,5 +376,3 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/build/config.nice
 %{_libdir}/httpd/build/mkdir.sh
 
-%changelog
-* See http://www.apache.org/dist/httpd/CHANGES_2.3
