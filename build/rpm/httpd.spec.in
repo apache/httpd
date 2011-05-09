@@ -16,7 +16,7 @@ Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
 BuildPrereq: /usr/bin/apr-1-config, /usr/bin/apu-1-config
-Requires: apr >= 1.4.2, apr-util >= 1.3.10, pcre-devel >= 5.0, gawk, /usr/share/magic.mime, /usr/bin/find, openldap
+Requires: apr >= 1.4.2, apr-util >= 1.3.10, pcre-devel >= 5.0, gawk, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Prereq: sh-utils, textutils, /usr/sbin/useradd
 Provides: webserver
