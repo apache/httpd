@@ -104,6 +104,8 @@ APR_SETIFNULL(CC, `$apr_config --cc`)
 APR_SETIFNULL(CPP, `$apr_config --cpp`)
 APR_ADDTO(CFLAGS, `$apr_config --cflags`)
 APR_ADDTO(CPPFLAGS, `$apr_config --cppflags`)
+dnl internal-only CPPFLAGS (shouldn't affect third-party module builds)
+INTERNAL_CPPFLAGS=""
 APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
 SHLIBPATH_VAR=`$apr_config --shlib-path-var`
 APR_BINDIR=`$apr_config --bindir`
@@ -305,7 +307,7 @@ case $host in
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
   *mingw32*)
-      APR_ADDTO(CPPFLAGS, [-DAP_DECLARE_EXPORT])
+      APR_ADDTO(INTERNAL_CPPFLAGS, [-DAP_DECLARE_EXPORT])
       APR_SETIFNULL(ac_cv_func_times, [no])
       APR_SETIFNULL(ac_cv_func_getpwnam, [no])
       APR_SETIFNULL(ac_cv_func_getgrnam, [no])
@@ -514,7 +516,7 @@ AC_ARG_ENABLE(hook-probes,APACHE_HELP_STRING(--enable-hook-probes,Enable APR hoo
 [
     AC_DEFINE(AP_HOOK_PROBES_ENABLED, 1,
         [Enable the APR hook probes capability, reading from ap_hook_probes.h])
-    APR_ADDTO(CPPFLAGS, -DAP_HOOK_PROBES_ENABLED)
+    APR_ADDTO(INTERNAL_CPPFLAGS, -DAP_HOOK_PROBES_ENABLED)
 ])dnl
 
 AC_ARG_ENABLE(exception-hook,APACHE_HELP_STRING(--enable-exception-hook,Enable fatal exception hook),
