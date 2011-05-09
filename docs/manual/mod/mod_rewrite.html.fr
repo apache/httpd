@@ -151,7 +151,7 @@ répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteBase <em>chemin URL</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Voir utilisation pour plus d'informations.</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
@@ -235,7 +235,7 @@ Résultat :
 	      réécriture au niveau du répertoire intervient plus tard
 	      au cours du traitement, la requête de réécriture doit être
 	      réinjectée dans le noyau d'Apache, comme s'il s'agissait
-	      d'une nouvelle requête (Voir les <a href="../rewrite/rewrite_tech.html">détails techniques à
+	      d'une nouvelle requête (Voir les <a href="../rewrite/tech.html">détails techniques à
 	      propos de mod_rewrite</a>). La surcharge
 	      correspondante n'est pas aussi importante qu'il n'y
 	      paraît, car la réinjection est entièrement prise en charge
@@ -255,7 +255,7 @@ la réécriture soit effectuée
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> RewriteCond
       <em>chaîne de test</em> <em>expression de comparaison</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
@@ -660,9 +660,9 @@ la réécriture soit effectuée
 	  lieu du AND implicite. Exemple typique :
 
 <div class="example"><pre>
-RewriteCond %{REMOTE_HOST}  ^hote1.*  [OR]
-RewriteCond %{REMOTE_HOST}  ^hote2.*  [OR]
-RewriteCond %{REMOTE_HOST}  ^hote3.*
+RewriteCond %{REMOTE_HOST}  ^hote1  [OR]
+RewriteCond %{REMOTE_HOST}  ^hote2  [OR]
+RewriteCond %{REMOTE_HOST}  ^hote3
 RewriteRule ...règles concernant tous ces hôtes...
 </pre></div>
 
@@ -691,10 +691,10 @@ RewriteRule ...règles concernant tous ces hôtes...
        pouvez utiliser ce qui suit : </p>
 
 <div class="example"><pre>
-RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla.*
+RewriteCond  %{HTTP_USER_AGENT}  ^Mozilla
 RewriteRule  ^/$                 /homepage.max.html  [L]
 
-RewriteCond  %{HTTP_USER_AGENT}  ^Lynx.*
+RewriteCond  %{HTTP_USER_AGENT}  ^Lynx
 RewriteRule  ^/$                 /homepage.min.html  [L]
 
 RewriteRule  ^/$                 /homepage.std.html  [L]
@@ -724,7 +724,7 @@ moteur de réécriture</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteEngine on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RewriteEngine off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
@@ -1163,7 +1163,7 @@ recherche externe n'intervient qu'une seule fois !
 pour le moteur de réécriture</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteOptions <var>Options</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td><code>MaxRedirects</code> n'est plus disponible depuis
@@ -1203,7 +1203,7 @@ la version version 2.1</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteRule
       <em>Modèle</em> <em>Substitution</em> [<em>drapeaux</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
@@ -1440,7 +1440,7 @@ substitution !
     <tr>
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
         <td>Sets a cookie in the client browser. Full syntax is: 
-        CO=<em>NAME</em>:<em>VAL</em>[:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
+        CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
         </td>
     </tr>
     <tr>
