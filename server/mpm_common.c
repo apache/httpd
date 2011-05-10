@@ -98,15 +98,30 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm_query,
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
                             (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton),
                             (t, cbfn, baton), APR_ENOTIMPL)
-AP_IMPLEMENT_HOOK_RUN_FIRST(const char *, mpm_get_name,
-                            (void),
-                            (), NULL)
 AP_IMPLEMENT_HOOK_VOID(end_generation,
                        (server_rec *s, ap_generation_t gen),
                        (s, gen))
 AP_IMPLEMENT_HOOK_VOID(child_status,
                        (server_rec *s, pid_t pid, ap_generation_t gen, int slot, mpm_child_status status),
                        (s,pid,gen,slot,status))
+
+/* hooks with no args are implemented last, after disabling APR hook probes */
+#if defined(APR_HOOK_PROBES_ENABLED)
+#undef APR_HOOK_PROBES_ENABLED
+#undef APR_HOOK_PROBE_ENTRY
+#define APR_HOOK_PROBE_ENTRY(ud,ns,name,args)
+#undef APR_HOOK_PROBE_RETURN
+#define APR_HOOK_PROBE_RETURN(ud,ns,name,rv,args)
+#undef APR_HOOK_PROBE_INVOKE
+#define APR_HOOK_PROBE_INVOKE(ud,ns,name,src,args)
+#undef APR_HOOK_PROBE_COMPLETE
+#define APR_HOOK_PROBE_COMPLETE(ud,ns,name,src,rv,args)
+#undef APR_HOOK_INT_DCL_UD
+#define APR_HOOK_INT_DCL_UD
+#endif
+AP_IMPLEMENT_HOOK_RUN_FIRST(const char *, mpm_get_name,
+                            (void),
+                            (), NULL)
 
 typedef struct mpm_gen_info_t {
     APR_RING_ENTRY(mpm_gen_info_t) link;
