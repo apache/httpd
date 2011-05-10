@@ -167,6 +167,20 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, handler, (request_rec *r),
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, quick_handler, (request_rec *r, int lookup),
                             (r, lookup), DECLINED)
 
+/* hooks with no args are implemented last, after disabling APR hook probes */
+#if defined(APR_HOOK_PROBES_ENABLED)
+#undef APR_HOOK_PROBES_ENABLED
+#undef APR_HOOK_PROBE_ENTRY
+#define APR_HOOK_PROBE_ENTRY(ud,ns,name,args)
+#undef APR_HOOK_PROBE_RETURN
+#define APR_HOOK_PROBE_RETURN(ud,ns,name,rv,args)
+#undef APR_HOOK_PROBE_INVOKE
+#define APR_HOOK_PROBE_INVOKE(ud,ns,name,src,args)
+#undef APR_HOOK_PROBE_COMPLETE
+#define APR_HOOK_PROBE_COMPLETE(ud,ns,name,src,rv,args)
+#undef APR_HOOK_INT_DCL_UD
+#define APR_HOOK_INT_DCL_UD
+#endif
 AP_IMPLEMENT_HOOK_VOID(optional_fn_retrieve, (void), ())
 
 /****************************************************************
