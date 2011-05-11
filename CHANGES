@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.12
 
+  *) configure, core: Provide easier support for APR's hook probe
+     capability. [Jim Jagielski, Jeff Trawick]
+
   *) Silence autoconf 2.68 warnings.  [Rainer Jung]
 
   *) mod_authnz_ldap: Resolve crash when LDAP is used for authorization only
