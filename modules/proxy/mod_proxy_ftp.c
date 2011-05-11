@@ -1846,7 +1846,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     if (use_port) {
         for (;;) {
             rv = apr_socket_accept(&data_sock, local_sock, r->pool);
-            if (rv == APR_EINTR) {
+            if (APR_STATUS_IS_EINTR(rv)) {
                 continue;
             }
             else if (rv == APR_SUCCESS) {

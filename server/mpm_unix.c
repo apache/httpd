@@ -643,7 +643,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
 
     rv = ap_read_pid(pconf, ap_pid_fname, &otherpid);
     if (rv != APR_SUCCESS) {
-        if (rv != APR_ENOENT) {
+        if (!APR_STATUS_IS_ENOENT(rv)) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rv, NULL,
                          "Error retrieving pid file %s", ap_pid_fname);
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,

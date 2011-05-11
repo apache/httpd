@@ -610,7 +610,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
              * buffer before finding the end-of-line.  This is only going to
              * happen if it exceeds the configured limit for a request-line.
              */
-            if (rv == APR_ENOSPC) {
+            if (APR_STATUS_IS_ENOSPC(rv)) {
                 r->status    = HTTP_REQUEST_URI_TOO_LARGE;
                 r->proto_num = HTTP_VERSION(1,0);
                 r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
@@ -618,7 +618,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             else if (APR_STATUS_IS_TIMEUP(rv)) {
                 r->status = HTTP_REQUEST_TIME_OUT;
             }
-            else if (rv == APR_EINVAL) {
+            else if (APR_STATUS_IS_EINVAL(rv)) {
                 r->status = HTTP_BAD_REQUEST;
             }
             return 0;
