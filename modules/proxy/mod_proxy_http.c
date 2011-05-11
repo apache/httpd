@@ -1371,7 +1371,7 @@ apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec
 
     if (rv == APR_SUCCESS) {
         *writen = (int) len;
-    } else if (rv == APR_ENOSPC) {
+    } else if (APR_STATUS_IS_ENOSPC(rv)) {
         *writen = n;
     } else {
         *writen = -1;

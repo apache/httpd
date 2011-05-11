@@ -1083,7 +1083,7 @@ static apr_status_t remove_directory(apr_pool_t *pool, const char *dir)
     apr_finfo_t dirent;
 
     rv = apr_dir_open(&dirp, dir, pool);
-    if (rv == APR_ENOENT) {
+    if (APR_STATUS_IS_ENOENT(rv)) {
         return rv;
     }
     if (rv != APR_SUCCESS) {
@@ -1193,7 +1193,7 @@ static apr_status_t find_directory(apr_pool_t *pool, const char *base,
 
             remove = apr_pstrcat(pool, base, "/", header, NULL);
             status = apr_file_remove(remove, pool);
-            if (status != APR_SUCCESS && status != APR_ENOENT) {
+            if (status != APR_SUCCESS && !APR_STATUS_IS_ENOENT(status)) {
                 char errmsg[120];
                 apr_file_printf(errfile, "Could not remove file %s: %s" APR_EOL_STR,
                         remove, apr_strerror(status, errmsg, sizeof errmsg));
@@ -1202,7 +1202,7 @@ static apr_status_t find_directory(apr_pool_t *pool, const char *base,
 
             remove = apr_pstrcat(pool, base, "/", data, NULL);
             status = apr_file_remove(remove, pool);
-            if (status != APR_SUCCESS && status != APR_ENOENT) {
+            if (status != APR_SUCCESS && !APR_STATUS_IS_ENOENT(status)) {
                 char errmsg[120];
                 apr_file_printf(errfile, "Could not remove file %s: %s" APR_EOL_STR,
                         remove, apr_strerror(status, errmsg, sizeof errmsg));
@@ -1210,7 +1210,7 @@ static apr_status_t find_directory(apr_pool_t *pool, const char *base,
             }
 
             status = remove_directory(pool, apr_pstrcat(pool, base, "/", vdir, NULL));
-            if (status != APR_SUCCESS && status != APR_ENOENT) {
+            if (status != APR_SUCCESS && !APR_STATUS_IS_ENOENT(status)) {
                 rv = status;
             }
         }
