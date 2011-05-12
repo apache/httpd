@@ -16,7 +16,7 @@ AC_ARG_WITH(
     :)
 
 dnl # Determine lua lib directory
-if test -z $lua_path; then
+if test -z "$lua_path"; then
     test_paths=". /usr/local /usr"
 else
     test_paths="${lua_path}"

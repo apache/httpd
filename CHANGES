@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.13
 
+  *) configure: Fix script error when configuring module set "reallyall".
+     [Rainer Jung]
 
 Changes with Apache 2.3.12
 
