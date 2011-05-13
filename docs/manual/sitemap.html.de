@@ -29,9 +29,6 @@
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
 <p>Diese Seite verzeichnet die zur Zeit verfügbaren Dokumente der
 <a href="./">Dokumentation zum Apache HTTP Server Version
@@ -246,6 +243,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache-Modul mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Apache-Modul mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache-Modul mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_express.html">Apache-Modul mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Apache-Modul mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Apache-Modul mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache-Modul mod_proxy_ftp</a></li>

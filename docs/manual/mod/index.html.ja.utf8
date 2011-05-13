@@ -28,8 +28,6 @@
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p>
       以下は Apache の配布の一部として配られているすべてのモジュールの
@@ -161,6 +159,8 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd>負荷分散のための <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 拡張</dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code>CONNECT</code> リクエストを扱う
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 用の拡張</dd>
+<dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Dynamic mass reverse proxy extension for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></dt><dd>FastCGI support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_fdpass.html">mod_proxy_fdpass</a></dt><dd>fdpass external process support module for

@@ -24,8 +24,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta tradução pode estar desatualizada. 
-        Confira a versão em Inglês para mudanças recentes.</div>
 
 <p>Arquivos <code>.htaccess</code> oferecem um meio de fazer mudanças
  nas configurações por-diretório.</p>
