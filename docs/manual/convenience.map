@@ -252,6 +252,7 @@ keptbodysize	mod/mod_request.html#keptbodysize
 languagepriority	mod/mod_negotiation.html#languagepriority
 ldapcacheentries	mod/mod_ldap.html#ldapcacheentries
 ldapcachettl	mod/mod_ldap.html#ldapcachettl
+ldapconnectionpoolttl	mod/mod_ldap.html#ldapconnectionpoolttl
 ldapconnectiontimeout	mod/mod_ldap.html#ldapconnectiontimeout
 ldaplibrarydebug	mod/mod_ldap.html#ldaplibrarydebug
 ldapopcacheentries	mod/mod_ldap.html#ldapopcacheentries
@@ -332,6 +333,9 @@ proxybadheader	mod/mod_proxy.html#proxybadheader
 proxyblock	mod/mod_proxy.html#proxyblock
 proxydomain	mod/mod_proxy.html#proxydomain
 proxyerroroverride	mod/mod_proxy.html#proxyerroroverride
+proxyexpressdbmfile	mod/mod_proxy_express.html#proxyexpressdbmfile
+proxyexpressdbmtype	mod/mod_proxy_express.html#proxyexpressdbmtype
+proxyexpressenable	mod/mod_proxy_express.html#proxyexpressenable
 proxyftpdircharset	mod/mod_proxy_ftp.html#proxyftpdircharset
 proxyftpescapewildcards	mod/mod_proxy_ftp.html#proxyftpescapewildcards
 proxyftplistonwildcard	mod/mod_proxy_ftp.html#proxyftplistonwildcard

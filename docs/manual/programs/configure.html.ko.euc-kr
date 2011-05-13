@@ -22,8 +22,6 @@
 <a href="../ko/programs/configure.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p><code>configure</code> 스크립트는 특정 플래폼에서 아파치
     웹서버를 컴파일하고 설치하기위해 소스 트리를 구성한다. 여러

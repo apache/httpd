@@ -24,7 +24,7 @@ serveur HTTP Apache</h1>
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-  <p>Ce document décrit les modifications majeures apportÃ©es par
+  <p>Ce document décrit les modifications majeures apportées par
   la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
   ajoutées par la version 2.2, se référer au document
   <a href="new_features_2_2.html">Nouvelles fonctionnalités
@@ -49,7 +49,7 @@ serveur HTTP Apache</h1>
  
       <dt>Modules multiprocessus (MPMs) chargeables</dt>
       <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
-      chargeables. Le choix du MPM Ã&nbsp; utiliser s'effectue à
+      chargeables. Le choix du MPM à utiliser s'effectue à
       l'exécution.</dd>
 
       <dt>Configuration du niveau de journalisation (LogLevel) par
@@ -114,7 +114,7 @@ serveur HTTP Apache</h1>
       en-têtes de la requête.</dd>
 
       <dt><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code></dt>
-      <dd>Définit la durÃ©e de vie et le taux de transfert de données minimum
+      <dd>Définit la durée de vie et le taux de transfert de données minimum
       pour la réception des requêtes.</dd>
 
       <dt><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></dt>
@@ -142,10 +142,10 @@ serveur HTTP Apache</h1>
 
 	<dd>En outre, <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> supporte maintenant
 	l'estampillage OCSP (OCSP stapling), qui permet au serveur
-	d'attester la validitÃ© de son certificat auprÃ¨s du client au
-	cours de la phase de nÃ©gociation de la connexion.</dd>
+	d'attester la validité de son certificat auprès du client au
+	cours de la phase de négociation de la connexion.</dd>
       
-      <dd>Enfin, <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> peut maintenant Ãªtre configurÃ© pour
+      <dd>Enfin, <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> peut maintenant être configuré pour
       que celui-ci partage les données de session SSL entre les serveurs
       via memcached.</dd>
  
@@ -158,10 +158,10 @@ serveur HTTP Apache</h1>
  
       <dt><code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dt>
 
-      <dd>Le gestionnaire de rÃ©partition de charge propose de nouvelles
-      fonctionnalitÃ©s. Ainsi, les possibilitÃ©s de configuration des
-      membres du groupe de rÃ©partition de charge pendant l'exÃ©cution ont
-      Ã©tÃ© amÃ©liorÃ©es (possibilitÃ© d'ajout d'un membre supplÃ©mentaire).</dd>
+      <dd>Le gestionnaire de répartition de charge propose de nouvelles
+      fonctionnalités. Ainsi, les possibilités de configuration des
+      membres du groupe de répartition de charge pendant l'exécution ont
+      été améliorées (possibilité d'ajout d'un membre supplémentaire).</dd>
 
       <dd>Configuration à l'exécution d'un sous-ensemble de paramètres
       de répartition de charge.</dd>
@@ -231,7 +231,7 @@ serveur HTTP Apache</h1>
 	<dt>htcacheclean</dt>
         <dd>Les URLs présentes dans le cache peuvent maintenant être
 	affichées, accompagnées éventuellement de leurs métadonnées.</dd>
-        <dd>PossibilitÃ© de supprimer explicitement des URLs individuelles
+        <dd>Possibilité de supprimer explicitement des URLs individuelles
 	présentes dans le cache.</dd>
         <dd>Les tailles de fichiers peuvent maintenant être arrondies au
 	multiple de la taille de bloc donnée, les limites de taille

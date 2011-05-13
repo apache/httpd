@@ -27,10 +27,6 @@
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>
       Abajo se muestra una lista con todos los módulos que forman
@@ -173,6 +169,8 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for load balancing </dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for
 <code>CONNECT</code> request handling</dd>
+<dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Dynamic mass reverse proxy extension for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></dt><dd>FastCGI support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_fdpass.html">mod_proxy_fdpass</a></dt><dd>fdpass external process support module for

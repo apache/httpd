@@ -254,6 +254,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Module Apache mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Module Apache mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Module Apache mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_express.html">Module Apache mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Module Apache mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Module Apache mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Module Apache mod_proxy_ftp</a></li>

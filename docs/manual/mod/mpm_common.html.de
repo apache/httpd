@@ -26,9 +26,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Eine Sammlung von Direktiven, die in mehr als einem
   Multi-Processing-Modul (MPM) implementiert sind.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr></table>

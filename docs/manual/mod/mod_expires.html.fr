@@ -53,6 +53,11 @@ l'utilisateur</td></tr>
     que <code>max-age</code> (voir la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
     2616 section 14.9</a>), vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>.</p>
 
+    <p>Lorsque l'en-tête <code>Expires</code> est déjà présent dans la
+    réponse générée par le serveur, par exemple s'il a été créé par un
+    script CGI ou un serveur original via un serveur mandataire, ce
+    module n'ajoute aucun en-tête <code>Expires</code> ou
+    <code>Cache-Control</code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">

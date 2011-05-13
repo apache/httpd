@@ -27,8 +27,6 @@
 <a href="../ja/mod/mod_info.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバの設定の包括的な概観を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>info_module</td></tr>

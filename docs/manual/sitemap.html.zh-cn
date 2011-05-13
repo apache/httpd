@@ -235,6 +235,7 @@
 <li><a href="mod/mod_proxy_ajp.html">Apache 模块 mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Apache 模块 mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache 模块 mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_express.html">Apache 模块 mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Apache 模块 mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Apache 模块 mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache 模块 mod_proxy_ftp</a></li>

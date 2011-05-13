@@ -24,7 +24,6 @@
 <a href="../tr/ssl/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/ssl/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Apache HTTP Sunucusunun <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> modülü, Güvenli Soketler
     Katmanı (SSL) ve Aktarım Katmanı Güvenliği (TLS) protokollerinin

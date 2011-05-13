@@ -29,7 +29,6 @@
 <a href="./tr/sitemap.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 <p>Bu sayfada <a href="./">Apache HTTP Sunucusu Sürüm 2.3
 Belgeleri</a>nin tamamı listelenmiştir.</p>
@@ -236,6 +235,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache Modülü mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Apache Modülü mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache Modülü mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_express.html">Apache Modülü mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Apache Modülü mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Apache Modülü mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache Modülü mod_proxy_ftp</a></li>

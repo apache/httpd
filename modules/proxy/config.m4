@@ -68,6 +68,8 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     fi
 ])
 
+APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , most)
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 APACHE_MODPATH_FINISH

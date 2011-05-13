@@ -30,8 +30,6 @@
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
 <p>このページは現時点で利用可能な
 <a href="./">Apache HTTP サーババージョン 2.3 のドキュメンテーション</a>
@@ -235,6 +233,7 @@
 <li><a href="mod/mod_proxy_ajp.html">Apache モジュール mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Apache モジュール mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache モジュール mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_express.html">Apache モジュール mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Apache モジュール mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Apache モジュール mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache モジュール mod_proxy_ftp</a></li>

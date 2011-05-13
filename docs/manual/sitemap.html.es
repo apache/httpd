@@ -29,10 +29,6 @@
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
 <p>Esta página contiene la lista con los documentos actualmente
 disponibles de la <a href="./">Versión 2.3 de la
@@ -237,6 +233,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Módulo Apache mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Módulo Apache mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Módulo Apache mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_express.html">Módulo Apache mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Módulo Apache mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Módulo Apache mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Módulo Apache mod_proxy_ftp</a></li>

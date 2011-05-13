@@ -25,8 +25,6 @@
 <p><span>言語: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</td></tr>
