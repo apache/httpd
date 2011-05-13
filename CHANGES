@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_proxy_express: New mass reverse-proxy switch extension for
+     mod_proxy. [Jim Jagielski]
+
   *) configure: Fix script error when configuring module set "reallyall".
      [Rainer Jung]
 
