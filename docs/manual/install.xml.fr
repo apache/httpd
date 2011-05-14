@@ -121,9 +121,9 @@
 
     <dl>
       <dt>Espace disque</dt>
-      <dd>Assurez-vous d'avoir au moins 50 MB d'espace disque disponible
+      <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
       temporaire. Apr&egrave;s l'installation le serveur occupe
-      approximativement 10 MB d'espace disque. L'espace disque r&eacute;ellement
+      approximativement 10 Mo d'espace disque. L'espace disque r&eacute;ellement
       n&eacute;cessaire va varier consid&eacute;rablement en fonction de vos options
       de configuration, de la pr&eacute;sence &eacute;ventuelle de
       modules tiers, et bien entendu de la taille de votre site web et
@@ -229,8 +229,9 @@ $ tar xvf httpd-<em>NN</em>.tar
     du r&eacute;pertoire d'installation d'Apache, car Apache doit &ecirc;tre configur&eacute;
     en fonction de ce chemin pour pouvoir fonctionner correctement.
     Il est possible de d&eacute;finir plus finement le chemin d'installation des fichiers
-    &agrave; l'aide d'<a href="programs/configure.html#installationdirectories">
-    options suppl&eacute;mentaires de configure</a>.</p>
+    &agrave; l'aide d'<a
+    href="programs/configure.html#installationdirectories">options
+    suppl&eacute;mentaires de configure</a>.</p>
 
     <p>&Agrave; ce niveau, vous pouvez aussi sp&eacute;cifier de quelles <a
     href="programs/configure.html#optionalfeatures">fonctionnalit&eacute;s</a> vous
@@ -424,7 +425,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>Une  <a
     href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
-    de ces distributions tierses</a> est maintenue dans le wiki du
+    de ces distributions tierces</a> est maintenue dans le wiki du
     serveur HTTP, et doit en refl&eacute;ter l'&eacute;tat actuel. Vous devrez
     cependant vous familiariser par vous-m&ecirc;me avec la gestion du paquet
     de votre plate-forme particuli&egrave;re et les proc&eacute;dures d'installation.</p>
