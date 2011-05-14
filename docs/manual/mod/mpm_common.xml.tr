@@ -134,7 +134,7 @@
     <note><title>BSD üzerinde <code>core</code> dökümlemek</title>
       <p>BSD-sistemlerde (FreeBSD gibi) suid-çalıştırılabilirlerinin
         <code>core</code> dökümlemesini etkinleştirmek için
-        <code>kern.sugid_coredump</code> değişkenine 1 atayın.
+      <code>kern.sugid_coredump</code> değişkenine 1 atayın.
     </p></note>
 
 </usage>

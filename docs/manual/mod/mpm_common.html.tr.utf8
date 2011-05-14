@@ -26,7 +26,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -179,6 +178,13 @@
         sonrasında <code>core</code> dökümlemeyi yeniden
         etkinleştirecektir.</p>
     </div>
+
+    <div class="note"><h3>BSD üzerinde <code>core</code> dökümlemek</h3>
+      <p>BSD-sistemlerde (FreeBSD gibi) suid-çalıştırılabilirlerinin
+        <code>core</code> dökümlemesini etkinleştirmek için
+      <code>kern.sugid_coredump</code> değişkenine 1 atayın.
+    </p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

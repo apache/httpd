@@ -125,7 +125,7 @@ eşler.</td></tr>
 server</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <var>port</var> [<var>port</var>] ...</a></td><td> 443 563 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
 proxy</td></tr>
-<tr><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off</a></td><td> Off </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Kodlanmış dosya yolu ayracı içeren URL’lere izin verilip
+<tr><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off|NoDecode</a></td><td> Off </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Kodlanmış dosya yolu ayracı içeren URL’lere izin verilip
   verilmeyeceğini belirler.</td></tr>
 <tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>yönerge-türü</var>
 [<var>yönerge-türü</var>] ...</a></td><td> All </td><td>d</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>.htaccess</code> dosyalarında bulunmasına izin verilen
