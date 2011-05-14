@@ -116,6 +116,8 @@ RELEASE SHOWSTOPPERS:
   * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
     a painless event mpm experience.
 
+  * Decouple from apr_ldap to ease the transition to apr-2.0
+
   FOR BETA:
 
 
