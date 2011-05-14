@@ -872,6 +872,16 @@ static const char *file_func(ap_expr_eval_ctx_t *ctx, const void *data,
     return buf;
 }
 
+static const char *filesize_func(ap_expr_eval_ctx_t *ctx, const void *data,
+                                  char *arg)
+{
+    apr_finfo_t sb;
+    if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) == APR_SUCCESS
+        && sb.filetype == APR_REG && sb.size > 0)
+        return apr_psprintf(ctx->p, "%" APR_OFF_T_FMT, sb.size);
+    else
+        return "0";
+}
 
 static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                  const char *arg)
@@ -892,6 +902,50 @@ static int op_nz(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
     else
         return (arg[0] != '\0');
 }
+
+static int op_file_min(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    apr_finfo_t sb;
+    const char *name = (const char *)data;
+    if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) != APR_SUCCESS)
+        return 0;
+    switch (name[0]) {
+    case 'd':
+        return (sb.filetype == APR_DIR);
+    case 'e':
+        return 1;
+    case 'f':
+        return (sb.filetype == APR_REG);
+    case 's':
+        return (sb.filetype == APR_REG && sb.size > 0);
+    default:
+        ap_assert(0);
+    }
+    return 0;
+}
+
+static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    apr_finfo_t sb;
+#if !defined(OS2)
+    if (apr_stat(&sb, arg, APR_FINFO_MIN | APR_FINFO_LINK, ctx->p) == APR_SUCCESS
+        && sb.filetype == APR_LNK) {
+        return 1;
+    }
+#endif
+    return 0;
+}
+
+static int op_file_xbit(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    apr_finfo_t sb;
+    if (apr_stat(&sb, arg, APR_FINFO_PROT| APR_FINFO_LINK, ctx->p) == APR_SUCCESS
+        && (sb.protection & (APR_UEXECUTE | APR_GEXECUTE | APR_WEXECUTE))) {
+        return 1;
+    }
+    return 0;
+}
+
 
 APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
@@ -1255,15 +1309,23 @@ static const struct expr_provider_single string_func_providers[] = {
     { escape_func,          "escape",         NULL },
     { unescape_func,        "unescape",       NULL },
     { file_func,            "file",           NULL },
+    { filesize_func,        "filesize",       NULL },
     { NULL, NULL, NULL}
 };
 /* XXX: base64 encode/decode ? */
 
 static const struct expr_provider_single unary_op_providers[] = {
-    { op_nz, "n", NULL },
-    { op_nz, "z", NULL },
-    { op_R,  "R", subnet_parse_arg },
-    { op_T,  "T", NULL },
+    { op_nz,        "n", NULL },
+    { op_nz,        "z", NULL },
+    { op_R,         "R", subnet_parse_arg },
+    { op_T,         "T", NULL },
+    { op_file_min,  "d", NULL },
+    { op_file_min,  "e", NULL },
+    { op_file_min,  "f", NULL },
+    { op_file_min,  "s", NULL },
+    { op_file_link, "L", NULL },
+    { op_file_link, "h", NULL },
+    { op_file_xbit, "x", NULL },
     { NULL, NULL, NULL }
 };
 
