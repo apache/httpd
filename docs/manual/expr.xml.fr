@@ -142,7 +142,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <table border="1" style="zebra">
     <columnspec><column width="1"/></columnspec>
 
-    <tr><th>Name</th></tr>
+    <tr><th>Nom</th></tr>
     <tr><td><code>HTTP_ACCEPT</code></td></tr>
     <tr><td><code>HTTP_FORWARDED</code></td></tr>
     <tr><td><code>HTTP_HOST</code></td></tr>
@@ -361,6 +361,18 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
 
     <tr><th>Nom</th><th>Description</th></tr>
+    <tr><td><code>-d</code></td>
+        <td>Vrai si le fichier existe et correspond &agrave; un r&eacute;pertoire</td></tr>
+    <tr><td><code>-e</code></td>
+        <td>Vrai si le fichier (ou dir ou special) existe</td></tr>
+    <tr><td><code>-f</code></td>
+        <td>Vrai si le fichier existe et correspond &agrave; un fichier
+	r&eacute;gulier</td></tr>
+    <tr><td><code>-L</code></td>
+        <td>Vrai si le fichier existe et correspond &agrave; un lien symbolique</td></tr>
+    <tr><td><code>-h</code></td>
+        <td>Vrai si le fichier existe et correspond &agrave; un lien symbolique
+	(identique &agrave; <code>-L</code>)</td></tr>
     <tr><td><code>-n</code></td>
         <td>Vrai si la cha&icirc;ne n'est pas vide</td></tr>
     <tr><td><code>-z</code></td>
@@ -414,6 +426,10 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	le codage des caract&egrave;res sp&eacute;ciaux aux URLs (XXX: describe better)</td></tr>
     <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td></tr>
+    <tr><td><code>filesize</code></td>
+        <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
+	pas ou ne correspond pas &agrave; un fichier r&eacute;gulier)</td></tr>
+
     </table>
 
     <p>En plus des fonctions dont la valeur est une cha&icirc;ne, il existe
