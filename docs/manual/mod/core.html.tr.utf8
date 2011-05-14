@@ -27,7 +27,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -388,28 +387,39 @@ kullanımı önerilmemektedir.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Kodlanmış dosya yolu ayracı içeren URL’lere izin verilip
   verilmeyeceğini belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AllowEncodedSlashes On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AllowEncodedSlashes On|Off|NoDecode</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>AllowEncodedSlashes Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0.46 ve sonrasında mevcuttur.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0.46 ve sonrasında mevcuttur. NoDecode seçeneği 2.2.18
+  ve sonrasında kullanılabilir.</td></tr>
 </table>
-    <p><code class="directive">AllowEncodedSlashes</code> yönergesi kodlanmış dosya
-      yolu ayracı içeren URL’lere izin verir (<code>/</code> yerine
-      <code>%2F</code> ve ek olarak <code>\</code> için ilgili sistemlerde
-      <code>%5C</code> kullanılmış URL’ler). Normalde böyle URL’ler bir 404
-      (Nesne bulunamadı) hatasıyla reddedilirler.</p>
+    <p><code class="directive">AllowEncodedSlashes</code> yönergesi
+      <code>PATH_INFO</code> içinde kodlanmış dosya yolu ayracı içeren URL’lere
+      izin verir (<code>/</code> yerine <code>%2F</code> ve ek olarak
+      <code>\</code> için ilgili sistemlerde <code>%5C</code> kullanılmış
+      URL’ler).</p>
+
+    <p><code>Off</code> öntanımlı değeri ile böyle URL'ler bir 404 (bulunamadı)
+      hatasıyla reddedilir.</p>
+
+    <p><code>On</code> değeri ile böyle URL'ler kabul edilir ve kodlanmış bölü
+      çizgileri diğer kodlanmış karakterler gibi çözümlenir.</p>
+
+    <p><code>NoDecode</code> değeri ile böyle URL'ler kabul edilir fakat
+      kodlanmış bölü çizgileri çözümlenmeden bırakılır.</p>
 
     <p><code class="directive">AllowEncodedSlashes</code> <code>On</code>, çoğunlukla
       <code>PATH_INFO</code> ile bir arada kullanıldığı zaman
       kullanışlıdır.</p>
 
     <div class="note"><h3>Ek Bilgi</h3>
-      <p>Kodlanmış bölü çizgilerine izin vermek bu kodlamanın karakter olarak
-        çözümleneceği anlamına gelmez. URL içindeki <code>%2F</code> veya
-        <code>%5C</code>’ler (sadece ilgili sistemlerde), tıpkı normal
-        URL’lere yapıldığı gibi, oldukları gibi bırakılırlar.</p>
+      <p><code>PATH_INFO</code> içinde kodlanmış bölü çizgilerini kullanmaktan
+        başka çare yoksa bir güvenlik ölçütü olarak <code>NoDecode</code>
+        kullanmanız şiddetle tavsiye edilir. Bölü çizgilerinin çözümlenmeye
+        çalışılması yanlış yol çözümlemesi gibi güvenilmez bir olasılığa yol
+        açabilir.</p>
     </div>
 
 <h3>Ayrıca bakınız:</h3>
