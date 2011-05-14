@@ -1,4 +1,4 @@
-APACHE 2.3 STATUS:                                              -*-text-*-
+﻿APACHE 2.3 STATUS:                                              -*-text-*-
 Last modified at [$Date$]
 
 The current version of this file can be found at:
@@ -71,19 +71,22 @@ RELEASE SHOWSTOPPERS:
 
   FOR GA:
 
-  * Modules that are not ready for production use should be marked as
-    experimental or be removed. The same for modules without documentation.
+  * Modules that are not ready for production use must be removed.
+    The same for modules without documentation.
     Candidates:
     - MPM simple
-    - mod_serf
+    - mod_serf (which is optimal for async httpd anyways)
 
   * Review the example configuration. It should be based on current best
     practices and not use deprecated features.
+      wrowe sez: be specific or this isn't a SHOWSTOPPER
 
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
       jim sez: Then we just ship with those... mark any others as
                 experimental, pgollucci +1 jim
+      wrowe sez: no... Then we just don't ship those (see #1 above)
+                 Is this still an issue, didn't jtrawick fix this?
 
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
@@ -92,10 +95,26 @@ RELEASE SHOWSTOPPERS:
              modules that mix these 2 types... clean up is
              forthcoming but should not be considered a blocker, imo
     pgollucci: +1 jim
-
+    wrowe asks: what's the API change required?
+    wrowe asks; why are we shipping this if it requires apr_ssl
+ 
   * mod_ssl's proxy support only allows one proxy client certificate per
     frontend virtual host. Lift this restriction.
     jim sez: Why a blocker?, pgollucci +1 jim
+    wrowe asks: what's the API change required?
+
+  * Basic -f, -d file existance tests are missing from ap_expr
+
+  * mod_includes aught to use ap_expr
+
+  * Clarify/potentially change the meaning of MaxConnections for Event MPM 
+    with respect to accepting new connections and keep alive requests for 
+    the docs and example config.  This shouldn't change after users and 
+    vendors have set up their stock config for event.  This will end up
+    as a per-process thing for efficiency.
+
+  * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
+    a painless event mpm experience.
 
   FOR BETA:
 
