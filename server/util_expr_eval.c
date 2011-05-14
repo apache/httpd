@@ -22,6 +22,7 @@
 #include "http_log.h"
 #include "http_core.h"
 #include "http_protocol.h"
+#include "http_request.h"
 #include "ap_provider.h"
 #include "util_expr_private.h"
 
@@ -36,6 +37,8 @@ APR_HOOK_STRUCT(
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, expr_lookup, (ap_expr_lookup_parms *parms),
                             (parms), DECLINED)
+
+#define  LOG_MARK(info)  __FILE__, __LINE__, (info)->module_index
 
 static const char *ap_expr_eval_string_func(ap_expr_eval_ctx_t *ctx,
                                             const ap_expr_t *info,
@@ -722,14 +725,14 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     *err = NULL;
     rc = ap_expr_eval(&ctx, info->root_node);
     if (*err != NULL) {
-        ap_log_rerror(__FILE__, __LINE__, info->module_index, APLOG_ERR, 0,
-                      r, "Evaluation of expression from %s:%d failed: %s",
+        ap_log_rerror(LOG_MARK(info), APLOG_ERR, 0, r,
+                      "Evaluation of expression from %s:%d failed: %s",
                       info->filename, info->line_number, *err);
         return -1;
     } else {
         rc = rc ? 1 : 0;
-        ap_log_rerror(__FILE__, __LINE__, info->module_index, APLOG_TRACE4, 0,
-                      r, "Evaluation of expression from %s:%d gave: %d",
+        ap_log_rerror(LOG_MARK(info), APLOG_TRACE4, 0, r,
+                      "Evaluation of expression from %s:%d gave: %d",
                       info->filename, info->line_number, rc);
 
         if (vary_this)
@@ -944,6 +947,49 @@ static int op_file_xbit(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
         return 1;
     }
     return 0;
+}
+
+static int op_url_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    int rc = 0;
+    request_rec  *rsub, *r = ctx->r;
+    if (!r)
+        return 0;
+    /* avoid some infinite recursions */
+    if (r->main && r->main->uri && r->uri && strcmp(r->main->uri, r->uri) == 0)
+        return 0;
+
+    rsub = ap_sub_req_lookup_uri(arg, r, NULL);
+    if (rsub->status < 400) {
+            rc = 1;
+    }
+    ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
+                  "Subrequest for -U %s at %s:%d gave status: %d",
+                  arg, ctx->info->filename, ctx->info->line_number,
+		  rsub->status);
+    ap_destroy_sub_req(rsub);
+    return rc;
+}
+
+static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
+{
+    int rc = 0;
+    apr_finfo_t sb;
+    request_rec *rsub, *r = ctx->r;
+    if (!r)
+        return 0;
+    rsub = ap_sub_req_lookup_file(arg, r, NULL);
+    if (rsub->status < 300 &&
+        /* double-check that file exists since default result is 200 */
+        apr_stat(&sb, rsub->filename, APR_FINFO_MIN, ctx->p) == APR_SUCCESS) {
+        rc = 1;
+    }
+    ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
+                  "Subrequest for -F %s at %s:%d gave status: %d",
+                  arg, ctx->info->filename, ctx->info->line_number,
+		  rsub->status);
+    ap_destroy_sub_req(rsub);
+    return rc;
 }
 
 
@@ -1326,6 +1372,8 @@ static const struct expr_provider_single unary_op_providers[] = {
     { op_file_link, "L", NULL },
     { op_file_link, "h", NULL },
     { op_file_xbit, "x", NULL },
+    { op_file_subr, "F", NULL },
+    { op_url_subr,  "U", NULL },
     { NULL, NULL, NULL }
 };
 
