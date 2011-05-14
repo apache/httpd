@@ -719,6 +719,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate,
                                     Z_SYNC_FLUSH, NO_UPDATE_CRC);
             if (zRC != Z_OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Zlib error %d flushing zlib output buffer (%s)",
+                              zRC, ctx->stream.msg);
                 return APR_EGENERAL;
             }
 
@@ -775,6 +778,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             zRC = deflate(&(ctx->stream), Z_NO_FLUSH);
 
             if (zRC != Z_OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Zlib error %d deflating data (%s)", zRC,
+                              ctx->stream.msg);
                 return APR_EGENERAL;
             }
         }
@@ -858,11 +864,14 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         if (len != 10 ||
             deflate_hdr[0] != deflate_magic[0] ||
             deflate_hdr[1] != deflate_magic[1]) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "Zlib: Invalid header");
             return APR_EGENERAL;
         }
 
         /* We can't handle flags for now. */
         if (deflate_hdr[3] != 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "Zlib: Unsupported flags %02x", (int)deflate_hdr[3]);
             return APR_EGENERAL;
         }
 
@@ -905,6 +914,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             /* If we actually see the EOS, that means we screwed up! */
             if (APR_BUCKET_IS_EOS(bkt)) {
                 inflateEnd(&ctx->stream);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Encountered EOS bucket in inflate filter (bug?)");
                 return APR_EGENERAL;
             }
 
@@ -913,6 +924,9 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
                 if (zRC != Z_OK) {
                     inflateEnd(&ctx->stream);
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                                  "Zlib error %d inflating data (%s)", zRC,
+                                  ctx->stream.msg);
                     return APR_EGENERAL;
                 }
 
@@ -961,6 +975,9 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
                 if (zRC != Z_OK) {
                     inflateEnd(&ctx->stream);
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                                  "Zlib error %d inflating data (%s)", zRC,
+                                  ctx->stream.msg);
                     return APR_EGENERAL;
                 }
             }
@@ -986,12 +1003,18 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     compCRC = getLong(ctx->stream.next_in);
                     if (ctx->crc != compCRC) {
                         inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                                      "Zlib: CRC error inflating data");
                         return APR_EGENERAL;
                     }
                     ctx->stream.next_in += 4;
                     compLen = getLong(ctx->stream.next_in);
                     if (ctx->stream.total_out != compLen) {
                         inflateEnd(&ctx->stream);
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                                      "Zlib: Length %ld of inflated data does "
+                                      "not match expected value %ld",
+                                      ctx->stream.total_out, compLen);
                         return APR_EGENERAL;
                     }
                 }
@@ -999,6 +1022,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     /* FIXME: We need to grab the 8 verification bytes
                      * from the wire! */
                     inflateEnd(&ctx->stream);
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                                  "Verification data not available (bug?)");
                     return APR_EGENERAL;
                 }
 
@@ -1210,6 +1235,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate,
                                     Z_SYNC_FLUSH, UPDATE_CRC);
             if (zRC != Z_OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Zlib error %d flushing inflate buffer (%s)",
+                              zRC, ctx->stream.msg);
                 return APR_EGENERAL;
             }
 
@@ -1363,6 +1391,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             }
 
             if (zRC != Z_OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                              "Zlib error %d inflating data (%s)", zRC,
+                              ctx->stream.msg);
                 return APR_EGENERAL;
             }
         }
