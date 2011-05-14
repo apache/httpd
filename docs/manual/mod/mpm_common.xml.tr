@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1055702:1099787 (outdated) -->
+<!-- English Revision: 1099787 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -130,6 +130,13 @@
         sonrasında <code>core</code> dökümlemeyi yeniden
         etkinleştirecektir.</p>
     </note>
+
+    <note><title>BSD üzerinde <code>core</code> dökümlemek</title>
+      <p>BSD-sistemlerde (FreeBSD gibi) suid-çalıştırılabilirlerinin
+        <code>core</code> dökümlemesini etkinleştirmek için
+        <code>kern.sugid_coredump</code> değişkenine 1 atayın.
+    </p></note>
+
 </usage>
 </directivesynopsis>
 

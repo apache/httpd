@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1055866:1081769 (outdated) -->
+<!-- English Revision: 1081769 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -128,7 +128,9 @@
     </ul>
 
     <p>Siz yine de bu etkiyi istemezseniz ve yukarıdaki sebepler de size uygun
-      değilse yönlendirmeyi şöyle kapatabilirsiniz:</p>
+      değilse yönlendirmeyi aşağıdaki gibi kapatabilirsiniz. Ancak, bunu yapmanın
+      olası bir güvenlik açığını da beraberinde getireceği dikkate
+      alınmalıdır.</p>
 
     <example>
         # Aşağıdaki güvenlik uyarısına bakınız!<br />

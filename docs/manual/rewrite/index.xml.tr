@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 636374:1082915 (outdated) -->
+<!-- English Revision: 1082915 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -31,67 +31,62 @@
 
 <summary>
     <blockquote>
-        <p>``mod_rewrite’ı harika yapan şey, Sendmail’ın tüm yapılandırma
-          kolaylığı ve esnekliğine sahip olmasıdır. mod_rewrite’ı kötü yapan
-          şey ise Sendmail’ın tüm yapılandırma kolaylığı ve esnekliğine sahip
-          olmasıdır.''</p>
-
-        <p class="cite">-- <cite>Brian Behlendorf</cite><br />
-        Apache Group</p>
+        <p><module>mod_rewrite</module> gelen URL isteklerini
+        <a href="intro.html#regex">düzenli ifade</a> kurallarına dayanarak
+        devingen olarak dönüştürmek için bir yöntem sağlar. Böylece keyfi URL'leri
+        kendi URL yapınızla istediğiniz şekilde eşleştirmeniz mümkün olur.</p>
     </blockquote>
 
-    <blockquote>
-        <p>``Hakkında tonlarca örnek ve belge olmasına rağmen mod_rewrite kara
-          büyüdür. Müthiş güzel bir kara büyü ama yine de kara büyü.''</p>
-
-        <p class="cite">-- <cite>Brian Moore</cite><br />
-        bem@news.cmc.net</p>
-    </blockquote>
-
-    <p>URL kurgulamasının İsviçre Çakısı olan <code>mod_rewrite</code>
-      modülünün belgelerine hoşgeldiniz!</p>
-
-    <p>Bu modül istenen URL’leri çalışma anında yeniden yazmak için (düzenli
-      ifade çözümleyiciden yararlanan) kurallara dayalı bir yeniden yazma
-      motoru kullanır. Gerçekten esnek ve güçlü bir URL kurgulama
+    <p>Gerçekten esnek ve güçlü bir URL kurgulama
       mekanizması oluşturmak için sınısız sayıda kural ve her kural için de
       sınırsız sayıda koşul destekler. URL değişiklikleri çeşitli sınamalara
-      dayanır; sunucu değişkenleri, HTTP başlıkları, ortam değişkenleri,
-      zaman damgaları hatta çeşitli biçimlerde harici veritabanı sorguları
-      bile bu amaçla kullanılabilir.</p>
+      bağlı olabilir: sunucu değişkenleri, HTTP başlıkları, ortam değişkenleri,
+      zaman damgaları, çeşitli biçimlerde harici veritabanı sorguları. Ayrıca,
+      harici birtakım uygulamalar da bu amaçla kullanılabilir.</p>
 
-    <p>Bu modül URL’lerin tamamında (path-info kısmı dahil) hem sunucu
-      bağlamında (<code>httpd.conf</code>) hem de dizin bağlamında
-      (<code>.htaccess</code> dosyaları ve <code>&lt;Directory&gt;</code>
-      bölümleri) çalışır ve URL üzerinde sorgu dizgesi bölümleri bile
-      oluşturabilir. Yeniden yazılan URL sonuçta dahili işlemlerde, harici
-      yönlendirmelerde ve hatta dahili vekalet işlemlerinde
-      kullanılabilir.</p>
+    <p>Bu modül URL’lerin tamamında (path-info kısmı dahil), sunucu
+      bağlamında (<code>httpd.conf</code>), sanal konaklar bağlamında (<directive
+      type="section" module="core">VirtualHost</directive> bölümleri), dizin
+      bağlamında (<code>.htaccess</code> dosyaları ve
+      <code>&lt;Directory&gt;</code> bölümleri) çalışır. Kurallara eklediğiniz
+      <a href="flags.html">seçeneklere</a> bağlı olarak, yeniden yazılan URL
+      sonuçta dahili işlemlerde, harici yönlendirmelerde ve hatta dahili vekalet
+      işlemlerinde kullanılabilir.</p>
 
-    <p>Fakat tüm bu işlevsellik ve esnekliğin bir bedeli vardır: karmaşıklık.
-      Bu yüzden bu modülün yapabildiklerini bir günde anlayabilmeyi
-      beklemeyin.</p>
+    <p><module>mod_rewrite</module> çok güçlü bir araç olduğundan oldukça
+      karmaşık görünebilir. Bu belge
+      <a href="../mod/mod_rewrite.html">mod_rewrite başvuru kılavuzunun</a>
+      tamamlayıcısı olup bu karmaşıklığı biraz hafifletmeyi amaçlar ve
+      <module>mod_rewrite</module> ile elde edilebilen kullanışlı ve oldukça
+      açıklamalı senaryo örnekleri içerir. Ayrıca,
+      <module>mod_rewrite</module>'ı hangi durumlarda kullanmamanız gerektiğini
+      ve bunun yerine standart Apache özelliklerinin kullanımını göstermeye,
+      böylece gereksiz karmaşıklıktan sizi kurtarmayı amaçladık. </p>
+
+  <ul>
+    <li><a href="intro.html">mod_rewrite ve düzenli ifadelere giriş</a></li>
+    <li><a href="remapping.html">URL'lerin yeniden eşlenmesi ve yönlendirilmesi
+      için mod_rewrite kullanımı</a></li>
+    <li><a href="access.html">Erişim denetimi için mod_rewrite
+      kullanımı</a></li>
+    <li><a href="vhosts.html">mod_rewrite ile devingen sanal konaklar</a></li>
+    <li><a href="proxy.html">mod_rewrite ile devingen vekil kullanımı</a></li>
+    <li><a href="rewritemap.html">RewriteMap kullanımı</a></li>
+    <li><a href="advanced.html">Gelişkin teknikler ve püfler</a></li>
+    <li><a href="avoid.html">mod_rewrite ne zaman
+      kullanıl<strong>MAZ</strong></a></li>
+    <li><a href="flags.html">RewriteRule Seçenekleri</a></li>
+    <li><a href="tech.html">Teknik ayrıntılar</a></li>
+  </ul>
 
 </summary>
-
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite Başvuru Kılavuzu</a>
+</seealso>
 <seealso><a href="../urlmapping.html">URL’lerin Dosya Sistemine Eşlenmesi</a>
 </seealso>
 <seealso><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite wiki</a>
 </seealso>
 <seealso><a href="../glossary.html">Terimler</a></seealso>
-
-<section id="documentation"><title>Belgeler</title>
-  <ul>
-    <li><a href="../mod/mod_rewrite.html">mod_rewrite Başvuru Kılavuzu</a></li>
-    <li><a href="intro.html">Giriş</a></li>
-    <li><a href="flags.html">Seçenekler</a></li>
-    <li><a href="tech.html">Teknik Ayrıntılar</a></li>
-    <li><a href="rewrite_guide.html">Yeniden Yazma Rehberi -
-    yararlı örnekler</a></li>
-    <li><a href="rewrite_guide_advanced.html">Gelişkin Yeniden Yazma Rehberi -
-    daha yararlı örnekler</a></li>
-  </ul>
-</section>
 
 </manualpage>
 
