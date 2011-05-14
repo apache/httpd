@@ -89,7 +89,7 @@ documentation</page>
 <page href="rewrite/proxy.html">Dynamic proxying with mod_rewrite</page>
 <page href="rewrite/rewritemap.html">Using RewriteMap</page>
 <page href="rewrite/advanced.html">Advanced techniques and tricks</page>
-<page href="rewrite/avoid.html">When <strong>NOT</strong> to use mod_rewrite</page>
+<page href="rewrite/avoid.html">When NOT to use mod_rewrite</page>
 </category>
 
 <category id="ssl">
