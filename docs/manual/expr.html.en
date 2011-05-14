@@ -319,21 +319,38 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <h2><a name="unnop" id="unnop">Unary operators</a></h2>
     
 
-    <p>Unary operators have the form "<code>-[a-zA-Z]</code>", i.e. a
-    minus and one character. The name <em>is</em> case sensitive.
+    <p>Unary operators take one argument and have the form
+    "<code>-[a-zA-Z]</code>", i.e. a minus and one character.
+    The name <em>is</em> case sensitive.
     Modules may register additional unary operators.</p>
 
     <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
 <tr><td><code>-d</code></td>
-        <td>True if file exists and is a directory</td></tr>
+        <td>The argument is treated as a filename.
+            True if the file exists and is a directory</td></tr>
 <tr class="odd"><td><code>-e</code></td>
-        <td>True if file (or dir or special) exists</td></tr>
+        <td>The argument is treated as a filename.
+            True if the file (or dir or special) exists</td></tr>
 <tr><td><code>-f</code></td>
-        <td>True if file exists and is regular file</td></tr>
+        <td>The argument is treated as a filename.
+            True if the file exists and is regular file</td></tr>
 <tr class="odd"><td><code>-L</code></td>
-        <td>True if file exists and is symlink</td></tr>
+        <td>The argument is treated as a filename.
+            True if the file exists and is symlink</td></tr>
 <tr><td><code>-h</code></td>
-        <td>True if file exists and is symlink (same as <code>-L</code>)</td></tr>
+        <td>The argument is treated as a filename.
+            True if the file exists and is symlink
+            (same as <code>-L</code>)</td></tr>
+<tr class="odd"><td><code>-F</code></td>
+        <td>True if string is a valid file, accessible via all the server's
+            currently-configured access controls for that path. This uses an
+            internal subrequest to do the check, so use it with care - it can
+            impact your server's performance!</td></tr>
+<tr><td><code>-U</code></td>
+        <td>True if string is a valid URL, accessible via all the server's
+            currently-configured access controls for that path. This uses an
+            internal subrequest to do the check, so use it with care - it can
+            impact your server's performance!</td></tr>
 <tr class="odd"><td><code>-n</code></td>
         <td>True if string is not empty</td></tr>
 <tr><td><code>-z</code></td>
