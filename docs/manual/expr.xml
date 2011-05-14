@@ -347,6 +347,16 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
 
     <tr><th>Name</th><th>Description</th></tr>
+    <tr><td><code>-d</code></td>
+        <td>True if file exists and is a directory</td></tr>
+    <tr><td><code>-e</code></td>
+        <td>True if file (or dir or special) exists</td></tr>
+    <tr><td><code>-f</code></td>
+        <td>True if file exists and is regular file</td></tr>
+    <tr><td><code>-L</code></td>
+        <td>True if file exists and is symlink</td></tr>
+    <tr><td><code>-h</code></td>
+        <td>True if file exists and is symlink (same as <code>-L</code>)</td></tr>
     <tr><td><code>-n</code></td>
         <td>True if string is not empty</td></tr>
     <tr><td><code>-z</code></td>
@@ -396,6 +406,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
     <tr><td><code>file</code></td>
         <td>Read contents from a file</td></tr>
+    <tr><td><code>filesize</code></td>
+        <td>Return size of a file (or 0 if file does not exist or is not regular file)</td></tr>
+
     </table>
 
     <p>In addition to string-valued functions, there are also list-valued functions which

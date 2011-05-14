@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) core: Add various file existance test operators to ap_expr.
+     [Stefan Fritsch]
+
   *) mod_proxy_express: New mass reverse-proxy switch extension for
      mod_proxy. [Jim Jagielski]
 

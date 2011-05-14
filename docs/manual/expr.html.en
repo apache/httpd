@@ -324,15 +324,25 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     Modules may register additional unary operators.</p>
 
     <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
-<tr><td><code>-n</code></td>
+<tr><td><code>-d</code></td>
+        <td>True if file exists and is a directory</td></tr>
+<tr class="odd"><td><code>-e</code></td>
+        <td>True if file (or dir or special) exists</td></tr>
+<tr><td><code>-f</code></td>
+        <td>True if file exists and is regular file</td></tr>
+<tr class="odd"><td><code>-L</code></td>
+        <td>True if file exists and is symlink</td></tr>
+<tr><td><code>-h</code></td>
+        <td>True if file exists and is symlink (same as <code>-L</code>)</td></tr>
+<tr class="odd"><td><code>-n</code></td>
         <td>True if string is not empty</td></tr>
-<tr class="odd"><td><code>-z</code></td>
+<tr><td><code>-z</code></td>
         <td>True if string is empty</td></tr>
-<tr><td><code>-T</code></td>
+<tr class="odd"><td><code>-T</code></td>
         <td>False if string is empty, "<code>0</code>", "<code>off</code>",
             "<code>false</code>", or "<code>no</code>" (case insensitive).
             True otherwise.</td></tr>
-<tr class="odd"><td><code>-R</code></td>
+<tr><td><code>-R</code></td>
         <td>Same as "<code>%{REMOTE_ADDR} -ipmatch ...</code>", but more efficient
         </td></tr>
 </table>
@@ -370,6 +380,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
 <tr><td><code>file</code></td>
         <td>Read contents from a file</td></tr>
+<tr class="odd"><td><code>filesize</code></td>
+        <td>Return size of a file (or 0 if file does not exist or is not regular file)</td></tr>
 </table>
 
     <p>In addition to string-valued functions, there are also list-valued functions which
