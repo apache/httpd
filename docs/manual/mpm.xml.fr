@@ -33,7 +33,7 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
 
 <section id="introduction"><title>Introduction</title>
 
-    <p>Le serveur HTTP Apache a &eacute;t&eacute; con&ccedil;u comme un serveur web puissant et
+    <p>La conception du serveur HTTP Apache en fait un serveur web puissant et
     flexible pouvant fonctionner sur une tr&egrave;s grande vari&eacute;t&eacute; de
     plateformes et toute une gamme d'environnements diff&eacute;rents. Plateformes
     diff&eacute;rentes et environnements diff&eacute;rents signifient souvent fonctionnalit&eacute;s
@@ -45,7 +45,7 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
     dans le serveur en s&eacute;lectionnant les modules &agrave; charger soit &agrave; la
     compilation, soit &agrave; l'ex&eacute;cution.</p>
 
-    <p>Le serveur HTTP Apache 2.0 &eacute;tend cette conception modulaire aux
+    <p>Le serveur HTTP Apache 2.0 a &eacute;tendu cette conception modulaire aux
     fonctions les plus
     &eacute;l&eacute;mentaires d'un serveur web. Certains Modules Multi-Processus (MPMs)
     sont responsables de l'association aux ports r&eacute;seau de la machine,
@@ -75,16 +75,18 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
 
     <p>Du point de vue de l'utilisateur, les MPMs ne sont pas diff&eacute;rents des
     autres modules Apache httpd. La principale diff&eacute;rence r&eacute;side dans le fait qu'un
-    et un seul MPM &agrave; la fois doit &ecirc;tre charg&eacute; dans le serveur. La liste des
-    MPMs disponibles est fournie dans <a href="mod/">module index page</a>.</p>
+    et un seul MPM &agrave; la fois doit &ecirc;tre charg&eacute;
+    lorsque le serveur s'ex&eacute;cute. La liste des
+    MPMs disponibles est fournie dans <a href="mod/">l'indexe des
+    modules</a>.</p>
 
 </section>
 
 <section id="defaults"><title>MPM par d&eacute;faut</title>
 
 <p>La table suivante fournit la liste des MPMs par d&eacute;faut pour divers
-syst&egrave;mes d'exploitation.  Il s'agit du MPM s&eacute;lectionn&eacute; si vous ne pr&eacute;cisez
-pas un choix diff&eacute;rent &agrave; la compilation.</p>
+syst&egrave;mes d'exploitation.  Il s'agit du MPM qui sera utilis&eacute; si
+vous n'en sp&eacute;cifiez pas un autre &agrave; la compilation.</p>
 
 <table border="1" style="zebra">
 <columnspec><column width=".2"/><column width=".2"/></columnspec>
@@ -103,7 +105,7 @@ statique</title>
 statiques sur toutes les plates-formes. A la compilation d'Apache, un
 seul module MPM doit &ecirc;tre choisi pour &ecirc;tre compil&eacute; et li&eacute; avec le
 serveur. La recompilation du serveur sera donc n&eacute;cessaire si vous
-d&eacute;sirez changer de module MPM.</p>
+souhaitez changer de module MPM.</p>
 
     <p>Pour choisir un module MPM autre que le MPM par d&eacute;faut,
     utiliser l'argument
