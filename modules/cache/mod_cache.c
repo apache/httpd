@@ -967,10 +967,17 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason = apr_pstrcat(p, "Broken expires header: ", exps, NULL);
     }
     else if (!dconf->store_expired && exp != APR_DATE_BAD
-            && exp < r->request_time)
-    {
+            && exp < r->request_time) {
         /* if a Expires header is in the past, don't cache it */
         reason = "Expires header already expired; not cacheable";
+    }
+    else if (!dconf->store_expired && (control.must_revalidate
+            || control.proxy_revalidate) && (!control.s_maxage_value
+            || (!control.s_maxage && !control.max_age_value)) && lastmod
+            == NULL && etag == NULL) {
+        /* if we're already stale, but can never revalidate, don't cache it */
+        reason
+                = "s-maxage or max-age zero and no Last-Modified or Etag; not cacheable";
     }
     else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL
             && !control.max_age && !control.s_maxage) {
