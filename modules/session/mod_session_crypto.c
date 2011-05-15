@@ -189,8 +189,7 @@ static apr_status_t encrypt_string(request_rec * r,
     res = apr_crypto_block_encrypt_init(driver, r->pool, f, key, &iv, &block,
             &blockSize);
 #else
-    res = apr_crypto_block_encrypt_init(&block, &iv, key,
-            &blockSize, f, r->pool);
+    res = apr_crypto_block_encrypt_init(&block, &iv, key, &blockSize, r->pool);
 #endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
@@ -203,8 +202,8 @@ static apr_status_t encrypt_string(request_rec * r,
     res = apr_crypto_block_encrypt(driver, block, &encrypt,
             &encryptlen, (unsigned char *)in, strlen(in));
 #else
-    res = apr_crypto_block_encrypt(&encrypt,
-            &encryptlen, (unsigned char *)in, strlen(in), f, block);
+    res = apr_crypto_block_encrypt(&encrypt, &encryptlen, (unsigned char *)in,
+            strlen(in), block);
 #endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
@@ -215,8 +214,7 @@ static apr_status_t encrypt_string(request_rec * r,
     res = apr_crypto_block_encrypt_finish(driver, block, encrypt + encryptlen,
             &tlen);
 #else
-    res = apr_crypto_block_encrypt_finish(encrypt + encryptlen,
-            &tlen, f, block);
+    res = apr_crypto_block_encrypt_finish(encrypt + encryptlen, &tlen, block);
 #endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
@@ -290,7 +288,7 @@ static apr_status_t decrypt_string(request_rec * r,
             &blockSize);
 #else
     res = apr_crypto_block_decrypt_init(&block, &blockSize, (unsigned char *)decoded, key,
-            f, r->pool);
+            r->pool);
 #endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
@@ -307,8 +305,8 @@ static apr_status_t decrypt_string(request_rec * r,
     res = apr_crypto_block_decrypt(driver, block, &decrypted,
             &decryptedlen, (unsigned char *)decoded, decodedlen);
 #else
-    res = apr_crypto_block_decrypt(&decrypted,
-            &decryptedlen, (unsigned char *)decoded, decodedlen, f, block);
+    res = apr_crypto_block_decrypt(&decrypted, &decryptedlen,
+            (unsigned char *)decoded, decodedlen, block);
 #endif
     if (res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
@@ -321,8 +319,7 @@ static apr_status_t decrypt_string(request_rec * r,
     res = apr_crypto_block_decrypt_finish(driver, block, decrypted + decryptedlen,
             &tlen);
 #else
-    res = apr_crypto_block_decrypt_finish(decrypted + decryptedlen,
-            &tlen, f, block);
+    res = apr_crypto_block_decrypt_finish(decrypted + decryptedlen, &tlen, block);
 #endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
