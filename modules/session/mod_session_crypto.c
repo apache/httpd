@@ -100,7 +100,11 @@ static apr_status_t crypt_init(request_rec * r,
     }
 
     /* set up */
-    res = apr_crypto_make(driver, r->pool, dconf->params, f);
+#if CRYPTO_VERSION < 200
+        res = apr_crypto_make(driver, r->pool, dconf->params, f);
+#else
+        res = apr_crypto_make(f, driver, dconf->params, r->pool);
+#endif
     if (APR_ENOTIMPL == res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "generic symmetrical encryption is not supported by this "
@@ -110,12 +114,15 @@ static apr_status_t crypt_init(request_rec * r,
     if (APR_SUCCESS == res) {
 #if CRYPTO_VERSION < 200
         res = apr_crypto_passphrase(driver, r->pool, *f, dconf->passphrase,
-#else
-        res = apr_crypto_passphrase(r->pool, *f, dconf->passphrase,
-#endif
                 strlen(dconf->passphrase),
                 (unsigned char *) salt, salt ? sizeof(apr_uuid_t) : 0,
                 dconf->cipher, APR_MODE_CBC, 1, 4096, key, ivSize);
+#else
+        res = apr_crypto_passphrase(key, ivSize, dconf->passphrase,
+                strlen(dconf->passphrase),
+                (unsigned char *) salt, salt ? sizeof(apr_uuid_t) : 0,
+                dconf->cipher, APR_MODE_CBC, 1, 4096, *f, r->pool);
+#endif
     }
 
     if (APR_STATUS_IS_ENOKEY(res)) {
@@ -180,10 +187,11 @@ static apr_status_t encrypt_string(request_rec * r,
 
 #if CRYPTO_VERSION < 200
     res = apr_crypto_block_encrypt_init(driver, r->pool, f, key, &iv, &block,
-#else
-    res = apr_crypto_block_encrypt_init(r->pool, f, key, &iv, &block,
-#endif
             &blockSize);
+#else
+    res = apr_crypto_block_encrypt_init(&block, &iv, key,
+            &blockSize, f, r->pool);
+#endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "apr_crypto_block_encrypt_init failed");
@@ -193,10 +201,11 @@ static apr_status_t encrypt_string(request_rec * r,
     /* encrypt the given string */
 #if CRYPTO_VERSION < 200
     res = apr_crypto_block_encrypt(driver, block, &encrypt,
-#else
-    res = apr_crypto_block_encrypt(f, block, &encrypt,
-#endif
             &encryptlen, (unsigned char *)in, strlen(in));
+#else
+    res = apr_crypto_block_encrypt(&encrypt,
+            &encryptlen, (unsigned char *)in, strlen(in), f, block);
+#endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "apr_crypto_block_encrypt failed");
@@ -204,10 +213,11 @@ static apr_status_t encrypt_string(request_rec * r,
     }
 #if CRYPTO_VERSION < 200
     res = apr_crypto_block_encrypt_finish(driver, block, encrypt + encryptlen,
-#else
-    res = apr_crypto_block_encrypt_finish(f, block, encrypt + encryptlen,
-#endif
             &tlen);
+#else
+    res = apr_crypto_block_encrypt_finish(encrypt + encryptlen,
+            &tlen, f, block);
+#endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "apr_crypto_block_encrypt_finish failed");
@@ -277,10 +287,11 @@ static apr_status_t decrypt_string(request_rec * r,
 
 #if CRYPTO_VERSION < 200
     res = apr_crypto_block_decrypt_init(driver, r->pool, f, key, (unsigned char *)decoded, &block,
-#else
-    res = apr_crypto_block_decrypt_init(r->pool, f, key, (unsigned char *)decoded, &block,
-#endif
             &blockSize);
+#else
+    res = apr_crypto_block_decrypt_init(&block, &blockSize, (unsigned char *)decoded, key,
+            f, r->pool);
+#endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "apr_crypto_block_decrypt_init failed");
@@ -294,10 +305,11 @@ static apr_status_t decrypt_string(request_rec * r,
     /* decrypt the given string */
 #if CRYPTO_VERSION < 200
     res = apr_crypto_block_decrypt(driver, block, &decrypted,
-#else
-    res = apr_crypto_block_decrypt(f, block, &decrypted,
-#endif
             &decryptedlen, (unsigned char *)decoded, decodedlen);
+#else
+    res = apr_crypto_block_decrypt(&decrypted,
+            &decryptedlen, (unsigned char *)decoded, decodedlen, f, block);
+#endif
     if (res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "apr_crypto_block_decrypt failed");
@@ -307,10 +319,11 @@ static apr_status_t decrypt_string(request_rec * r,
 
 #if CRYPTO_VERSION < 200
     res = apr_crypto_block_decrypt_finish(driver, block, decrypted + decryptedlen,
-#else
-    res = apr_crypto_block_decrypt_finish(f, block, decrypted + decryptedlen,
-#endif
             &tlen);
+#else
+    res = apr_crypto_block_decrypt_finish(decrypted + decryptedlen,
+            &tlen, f, block);
+#endif
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "apr_crypto_block_decrypt_finish failed");
@@ -413,7 +426,11 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
             return rv;
         }
 
+#if CRYPTO_VERSION < 200
         rv = apr_crypto_get_driver(p, conf->library, &driver, conf->params, &err);
+#else
+        rv = apr_crypto_get_driver(&driver, conf->library, conf->params, &err, p);
+#endif
         if (APR_EREINIT == rv) {
             if (!conf->noinit) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, LOG_PREFIX
