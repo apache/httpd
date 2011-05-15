@@ -303,6 +303,7 @@ typedef struct deflate_ctx_t
     unsigned char *validation_buffer;
     apr_size_t validation_buffer_length;
     int inflate_init;
+    int filter_init;
 } deflate_ctx;
 
 /* Number of validation bytes (CRC and length) after the compressed data */
@@ -445,6 +446,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         char *token;
         const char *encoding;
 
+        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+
         /*
          * Only work on main request, not subrequests,
          * that are not a 204 response with no content
@@ -563,7 +566,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          */
 
         if (r->status != HTTP_NOT_MODIFIED) {
-            ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
             ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
             ctx->buffer = apr_palloc(r->pool, c->bufferSize);
             ctx->libz_end_func = deflateEnd;
@@ -592,6 +594,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
              */
             apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
                                       apr_pool_cleanup_null);
+
+            /* Set the filter init flag so subsequent invocations know we are
+             * active.
+             */
+            ctx->filter_init = 1;
         }
 
         /*
@@ -629,6 +636,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         /* initialize deflate output buffer */
         ctx->stream.next_out = ctx->buffer;
         ctx->stream.avail_out = c->bufferSize;
+    } else if (!ctx->filter_init) {
+        /* Hmm.  We've run through the filter init before as we have a ctx,
+         * but we never initialized.  We probably have a dangling ref.  Bail.
+         */
+        return ap_pass_brigade(f->next, bb);
     }
 
     while (!APR_BRIGADE_EMPTY(bb))
