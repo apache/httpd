@@ -1299,7 +1299,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
         case WM_TIMER_REFRESH:
         {
-            int nPrev = 0, nNew = 0;
             EnterCriticalSection(&g_stcSection);
             if (g_bRescanServices)
             {

@@ -561,7 +561,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     server_rec *s = r->server;
     SHMCBHeader *header = ctx->header;
     unsigned int loop, total = 0, cache_total = 0, non_empty_subcaches = 0;
-    apr_time_t idx_expiry, min_expiry = 0, max_expiry = 0, average_expiry = 0;
+    apr_time_t idx_expiry, min_expiry = 0, max_expiry = 0;
     apr_time_t now = apr_time_now();
     double expiry_total = 0;
     int index_pct, cache_pct;
@@ -599,7 +599,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     ap_rprintf(r, "subcaches: <b>%d</b>, indexes per subcache: <b>%d</b><br>",
                header->subcache_num, header->index_num);
     if (non_empty_subcaches) {
-        average_expiry = (apr_time_t)(expiry_total / (double)non_empty_subcaches);
+        apr_time_t average_expiry = (apr_time_t)(expiry_total / (double)non_empty_subcaches);
         ap_rprintf(r, "time left on oldest entries' objects: ");
         if (now < average_expiry)
             ap_rprintf(r, "avg: <b>%d</b> seconds, (range: %d...%d)<br>",

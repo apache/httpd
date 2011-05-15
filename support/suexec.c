@@ -239,7 +239,6 @@ int main(int argc, char *argv[])
     char *target_homedir;   /* target home directory     */
     char *actual_uname;     /* actual user name          */
     char *actual_gname;     /* actual group name         */
-    char *prog;             /* name of this program      */
     char *cmd;              /* command to be executed    */
     char cwd[AP_MAXPATH];   /* current working directory */
     char dwd[AP_MAXPATH];   /* docroot working directory */
@@ -253,7 +252,6 @@ int main(int argc, char *argv[])
      */
     clean_env();
 
-    prog = argv[0];
     /*
      * Check existence/validity of the UID of the user
      * running this program.  Error out if invalid.

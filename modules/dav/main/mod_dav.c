@@ -2342,7 +2342,7 @@ static int dav_method_proppatch(request_rec *r)
 
         /* Ignore children that are not set/remove */
         if (child->ns != APR_XML_NS_DAV_ID
-            || (!(is_remove = strcmp(child->name, "remove") == 0)
+            || (!(is_remove = (strcmp(child->name, "remove") == 0))
                 && strcmp(child->name, "set") != 0)) {
             continue;
         }

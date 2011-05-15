@@ -135,11 +135,11 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
     ap_filter_provider_t *provider;
     int match;
     const char *err = NULL;
-    unsigned int proto_flags;
     request_rec *r = f->r;
     harness_ctx *ctx = f->ctx;
     provider_ctx *pctx;
 #ifndef NO_PROTOCOL
+    unsigned int proto_flags;
     mod_filter_ctx *rctx = ap_get_module_config(r->request_config,
                                                 &filter_module);
 #endif
