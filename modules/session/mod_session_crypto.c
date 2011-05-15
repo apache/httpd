@@ -115,7 +115,7 @@ static apr_status_t crypt_init(request_rec * r,
 #endif
                 strlen(dconf->passphrase),
                 (unsigned char *) salt, salt ? sizeof(apr_uuid_t) : 0,
-                dconf->cipher, MODE_CBC, 1, 4096, key, ivSize);
+                dconf->cipher, APR_MODE_CBC, 1, 4096, key, ivSize);
     }
 
     if (APR_STATUS_IS_ENOKEY(res)) {
@@ -481,7 +481,7 @@ static void *create_session_crypto_dir_config(apr_pool_t * p, char *dummy)
     (session_crypto_dir_conf *) apr_pcalloc(p, sizeof(session_crypto_dir_conf));
 
     /* default cipher AES256-SHA */
-    new->cipher = KEY_AES_256;
+    new->cipher = APR_KEY_AES_256;
 
     return (void *) new;
 }
@@ -595,11 +595,11 @@ static const char *set_crypto_passphrase(cmd_parms * cmd, void *config, const ch
             }
             else if (!strcasecmp(word, "cipher")) {
                 if (!strcasecmp(val, "3des192")) {
-                    dconf->cipher = KEY_3DES_192;
+                    dconf->cipher = APR_KEY_3DES_192;
                     dconf->cipher_set = 1;
                 }
                 else if (!strcasecmp(val, "aes256")) {
-                    dconf->cipher = KEY_AES_256;
+                    dconf->cipher = APR_KEY_AES_256;
                     dconf->cipher_set = 1;
                 }
                 else {
