@@ -2,6 +2,12 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_cache: When content is served stale, and there is no means to
+     revalidate the content using ETag or Last-Modified, and we have
+     mandated no stale-on-error behaviour, stand down and don't cache.
+     Saves a cache write that will never be read.
+     [Graham Leggett]
+
   *) mod_reqtimeout: Fix a timed out connection going into the keep-alive
      state after a timeout when discarding a request body. PR 51103.
      [Stefan Fritsch]
