@@ -1260,10 +1260,8 @@ static void note_digest_auth_failure(request_rec *r,
                                      digest_header_rec *resp, int stale)
 {
     const char   *qop, *opaque, *opaque_param, *domain, *nonce;
-    int           cnt;
 
     /* Setup qop */
-
     if (conf->qop_list[0] == NULL) {
         qop = ", qop=\"auth\"";
     }
@@ -1271,6 +1269,7 @@ static void note_digest_auth_failure(request_rec *r,
         qop = "";
     }
     else {
+        int cnt;
         qop = apr_pstrcat(r->pool, ", qop=\"", conf->qop_list[0], NULL);
         for (cnt = 1; conf->qop_list[cnt] != NULL; cnt++) {
             qop = apr_pstrcat(r->pool, qop, ",", conf->qop_list[cnt], NULL);

@@ -1333,7 +1333,7 @@ static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
                       "rewritemap: error %s querying for %s", errmsg, key);
         return NULL;
     }
-    while (rv = apr_dbd_get_row(db->driver, r->pool, res, &row, -1), rv == 0) {
+    while ((rv = apr_dbd_get_row(db->driver, r->pool, res, &row, -1)) == 0) {
         ++n;
         if (ret == NULL) {
             ret = apr_dbd_get_entry(db->driver, row, 0);

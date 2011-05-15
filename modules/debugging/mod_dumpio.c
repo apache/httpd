@@ -69,14 +69,13 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
 #endif
         const char *buf;
         apr_size_t nbytes;
-        apr_size_t logbytes;
         apr_status_t rv = apr_bucket_read(b, &buf, &nbytes, APR_BLOCK_READ);
 
         if (rv == APR_SUCCESS)
         {
             while (nbytes)
             {
-                logbytes = nbytes;
+                apr_size_t logbytes = nbytes;
                 if (logbytes > dumpio_MAX_STRING_LEN)
                     logbytes = dumpio_MAX_STRING_LEN;
                 nbytes -= logbytes;
