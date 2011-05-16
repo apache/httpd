@@ -247,8 +247,12 @@ void ap_reclaim_child_processes(int terminate,
             extra_process_t *next = cur_extra->next;
 
             if (reclaim_one_pid(cur_extra->pid, action_table[cur_action].action)) {
-                AP_DEBUG_ASSERT(1 == ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen));
-                mpm_callback(-1, cur_extra->pid, old_gen);
+                if (ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen) == 1) {
+                    mpm_callback(-1, cur_extra->pid, old_gen);
+                }
+                else {
+                    AP_DEBUG_ASSERT(1 == 0);
+                }
             }
             else {
                 ++not_dead_yet;
@@ -291,8 +295,12 @@ void ap_relieve_child_processes(ap_reclaim_callback_fn_t *mpm_callback)
         extra_process_t *next = cur_extra->next;
 
         if (reclaim_one_pid(cur_extra->pid, DO_NOTHING)) {
-            AP_DEBUG_ASSERT(1 == ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen));
-            mpm_callback(-1, cur_extra->pid, old_gen);
+            if (ap_unregister_extra_mpm_process(cur_extra->pid, &old_gen) == 1) {
+                mpm_callback(-1, cur_extra->pid, old_gen);
+            }
+            else {
+                AP_DEBUG_ASSERT(1 == 0);
+            }
         }
         cur_extra = next;
     }
