@@ -48,7 +48,7 @@
 #endif 
 
 /*
- * The Windoes MPM uses a queue of completion contexts that it passes
+ * The Windows MPM uses a queue of completion contexts that it passes
  * between the accept threads and the worker threads. Declare the
  * functions to access the queue and the structures passed on the
  * queue in the header file to enable modules to access them
@@ -568,7 +568,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             if (context->accept_socket != INVALID_SOCKET)
                 closesocket(context->accept_socket);
 
-            /* This could be a persistant event per-listener rather than
+            /* This could be a persistent event per-listener rather than
              * per-accept.  However, the event needs to be removed from
              * the target socket if not removed from the listen socket
              * prior to accept(), or the event select is inherited.
@@ -1096,7 +1096,7 @@ void child_main(apr_pool_t *pconf)
         apr_socket_close(lr->sd);
     }
 
-    /* Shutdown listener threads and pending AcceptEx socksts
+    /* Shutdown listener threads and pending AcceptEx sockets
      * but allow the worker threads to continue consuming from
      * the queue of accepted connections.
      */
@@ -1142,7 +1142,7 @@ void child_main(apr_pool_t *pconf)
     }
     apr_thread_mutex_unlock(qlock);
 
-    /* Give busy threads a chance to service their connections,
+    /* Give busy threads a chance to service their connections
      * (no more than the global server timeout period which 
      * we track in msec remaining).
      */
