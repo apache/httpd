@@ -729,6 +729,8 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
  */
 static DWORD __stdcall worker_main(void *thread_num_val)
 {
+    apr_thread_t *thd;
+    apr_os_thread_t osthd;
     static int requests_this_child = 0;
     winnt_conn_ctx_t *context = NULL;
     int thread_num = (int)thread_num_val;
@@ -737,6 +739,9 @@ static DWORD __stdcall worker_main(void *thread_num_val)
     int rc;
     conn_rec *c;
     apr_int32_t disconnected;
+
+    osthd = apr_os_thread_current();
+    apr_os_thread_put(&thd, &osthd, pchild);
 
     while (1) {
 
@@ -773,6 +778,8 @@ static DWORD __stdcall worker_main(void *thread_num_val)
                 apr_bucket_free(e);
             continue;
         }
+
+        c->current_thread = thd;
 
         /* follow ap_process_connection(c, context->sock) logic
          * as it left us no chance to reinject our first data bucket.

@@ -342,6 +342,8 @@ ULONG APIENTRY thread_exception_handler(EXCEPTIONREPORTRECORD *pReportRec,
 
 static void worker_main(void *vpArg)
 {
+    apr_thread_t *thd = NULL;
+    apr_os_thread_t osthd;
     long conn_id;
     conn_rec *current_conn;
     apr_pool_t *pconn;
@@ -360,6 +362,9 @@ static void worker_main(void *vpArg)
 
     /* Trap exceptions in this thread so we don't take down the whole process */
     DosSetExceptionHandler( &reg_rec );
+
+    osthd = apr_os_thread_current();
+    apr_os_thread_put(&thd, &osthd, pchild);
 
     rc = DosOpenQueue(&owner, &workq,
                       apr_psprintf(pchild, "/queues/httpd/work.%d", getpid()));
@@ -387,6 +392,7 @@ static void worker_main(void *vpArg)
                                                 sbh, bucket_alloc);
 
         if (current_conn) {
+            current_conn->current_thread = thd;
             ap_process_connection(current_conn, worker_args->conn_sd);
             ap_lingering_close(current_conn);
         }
