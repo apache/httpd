@@ -973,7 +973,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
     else if (!dconf->store_expired && (control.must_revalidate
             || control.proxy_revalidate) && (!control.s_maxage_value
-            || (!control.s_maxage && !control.max_age_value)) && lastmod
+            || (!control.s_maxage && !control.max_age_value)) && lastmods
             == NULL && etag == NULL) {
         /* if we're already stale, but can never revalidate, don't cache it */
         reason
