@@ -342,6 +342,8 @@ void worker_main(void *arg)
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
     ap_sb_handle_t *sbh;
+    apr_thread_t *thd = NULL;
+    apr_os_thread_t osthd;
 
     int my_worker_num = (int)arg;
     apr_socket_t *csd = NULL;
@@ -353,6 +355,9 @@ void worker_main(void *arg)
     int srv;
     struct timeval tv;
     int wouldblock_retry;
+
+    osthd = apr_os_thread_current();
+    apr_os_thread_put(&thd, &osthd, pmain);
 
     tv.tv_sec = 1;
     tv.tv_usec = 0;
@@ -522,6 +527,7 @@ void worker_main(void *arg)
                                                 my_worker_num, sbh,
                                                 bucket_alloc);
         if (current_conn) {
+            current_conn->current_thread = thd;
             ap_process_connection(current_conn, csd);
             ap_lingering_close(current_conn);
         }
