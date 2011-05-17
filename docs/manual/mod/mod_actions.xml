@@ -146,7 +146,7 @@ method.</description>
     proceed normally.</p>
 
     <example><title>Examples</title>
-      # For &lt;ISINDEX&gt;-style searching<br />
+      # All GET requests go here<br />
       Script GET /cgi-bin/search<br />
       <br />
       # A CGI PUT handler<br />
