@@ -38,7 +38,11 @@
 #include <io.h>
 #include <fcntl.h>
 
+#ifdef _WIN64
+#define PLATFORM "Win64"
+#else
 #define PLATFORM "Win32"
+#endif
 
 /* Define command-line rewriting for this platform, handled by core.
  * For Windows, this is currently handled inside the WinNT MPM.
