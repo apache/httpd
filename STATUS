@@ -104,6 +104,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     trawick: any reason it shouldn't be completely aligned with default_handler's
              choice to return OK vs. 500?
 
+  * Correct Win64 Servername Identification
+    PR: 47418
+    Submitted by: [Jorge Schrauwen <jorge.schrauwen gmail.com>]
+    http://svn.apache.org/viewvc?view=revision&revision=1104624
+    +1: wrowe
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
