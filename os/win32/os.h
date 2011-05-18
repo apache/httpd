@@ -38,7 +38,11 @@
 #include <io.h>
 #include <fcntl.h>
 
+#ifdef _WIN64
+#define PLATFORM "Win64"
+#else
 #define PLATFORM "Win32"
+#endif
 
 /* going away shortly... */
 #define HAVE_DRIVE_LETTERS
