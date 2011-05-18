@@ -108,7 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 47418
     Submitted by: [Jorge Schrauwen <jorge.schrauwen gmail.com>]
     http://svn.apache.org/viewvc?view=revision&revision=1104624
-    +1: wrowe, trawick
+    +1: wrowe, trawick, fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
 
