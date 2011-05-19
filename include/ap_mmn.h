@@ -142,10 +142,10 @@
  * 20051115.25 (2.2.17) Add errstatuses member to proxy_balancer
  * 20051115.26 (2.2.18) Add ap_cache_check_allowed()
  * 20051115.27 (2.2.18) BROKEN ABI fixed in 2.2.19: 
-                        ap_unescape_url_keep2f() signature change
-                        Add core_dir_config.decode_encoded_slashes.
+ *                      ap_unescape_url_keep2f() signature change
+ *                      Add core_dir_config.decode_encoded_slashes.
  * 20051115.28 (2.2.19) Restore ap_unescape_url_keep2f(char *url) signature 
-                        altered in 2.2.18.
+ *                      altered in 2.2.18.  Add ap_unescape_url_keep2f_ex().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
