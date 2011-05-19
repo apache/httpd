@@ -204,7 +204,11 @@ static int scgi_canon(request_rec *r, char *url)
 
     r->filename = apr_pstrcat(r->pool, "proxy:" SCHEME "://", host, sport, "/",
                               path, NULL);
-    r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+
+    if (apr_table_get(r->subprocess_env, "proxy-scgi-pathinfo")) {
+        r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+    }
+
     return OK;
 }
 

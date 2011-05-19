@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_proxy_fcgi|scgi: Add support for "best guess" of PATH_INFO
+     for SCGI/FCGI. PR 50880, 50851. [Mark Montague <mark catseye.org>,
+     Jim Jagielski]
+
   *) mod_cache: When content is served stale, and there is no means to
      revalidate the content using ETag or Last-Modified, and we have
      mandated no stale-on-error behaviour, stand down and don't cache.
