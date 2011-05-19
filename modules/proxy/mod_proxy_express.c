@@ -187,7 +187,7 @@ static int xlate_name(request_rec *r)
                     "proxy_express: adding PPR entry");
         ralias = apr_array_push(dconf->raliases);
         ralias->fake = "/";
-        ralias->real = backend;
+        ralias->real = apr_pstrdup(dconf->raliases->pool, backend);
         ralias->flags = 0;
     }
     return OK;
