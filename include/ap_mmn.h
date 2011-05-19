@@ -141,7 +141,11 @@
  * 20051115.24 (2.2.15) Add forward member to proxy_conn_rec
  * 20051115.25 (2.2.17) Add errstatuses member to proxy_balancer
  * 20051115.26 (2.2.18) Add ap_cache_check_allowed()
- * 20051115.27 (2.2.18) Add core_dir_config.decode_encoded_slashes.
+ * 20051115.27 (2.2.18) BROKEN ABI fixed in 2.2.19: 
+                        ap_unescape_url_keep2f() signature change
+                        Add core_dir_config.decode_encoded_slashes.
+ * 20051115.28 (2.2.19) Restore ap_unescape_url_keep2f(char *url) signature 
+                        altered in 2.2.18.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -149,7 +153,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 27                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 28                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
