@@ -75,6 +75,22 @@
     </example>
 </section>
 
+<section id="env"><title>Environment Variables</title>
+    <p>In addition to the configuration directives that control the
+    behaviour of <module>mod_proxy</module>, there are a number of
+    <dfn>environment variables</dfn> that control the SCGI protocol
+    provider:</p>
+    <dl>
+        <dt>proxy-scgi-pathinfo</dt>
+        <dd>By default <module>mod_proxy_scgi</module> will neither create
+        nor export the <var>PATH_INFO</var> environment variable. This allows
+        the backend SCGI server to correctly determine <var>SCRIPT_NAME</var>
+        and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
+        If instead you need <module>mod_proxy_scgi</module> to generate
+        a "best guess" for <var>PATH_INFO</var>, set this env-var.</dd>
+    </dl>
+</section>
+
 <directivesynopsis>
 <name>ProxySCGISendfile</name>
 <description>Enable evaluation of <var>X-Sendfile</var> pseudo response
