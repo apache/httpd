@@ -52,6 +52,7 @@
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">Environment Variables</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
@@ -82,6 +83,22 @@
     </span>
     &lt;/Proxy&gt;
     </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="env" id="env">Environment Variables</a></h2>
+    <p>In addition to the configuration directives that control the
+    behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, there are a number of
+    <dfn>environment variables</dfn> that control the SCGI protocol
+    provider:</p>
+    <dl>
+        <dt>proxy-scgi-pathinfo</dt>
+        <dd>By default <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> will neither create
+        nor export the <var>PATH_INFO</var> environment variable. This allows
+        the backend SCGI server to correctly determine <var>SCRIPT_NAME</var>
+        and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
+        If instead you need <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> to generate
+        a "best guess" for <var>PATH_INFO</var>, set this env-var.</dd>
+    </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a> <a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a></h2>

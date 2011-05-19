@@ -42,7 +42,7 @@ DSO (Dynamic Shared Object)</a></li>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
 
-    <p>Le serveur HTTP Apache a été conçu comme un serveur web puissant et
+    <p>La conception du serveur HTTP Apache en fait un serveur web puissant et
     flexible pouvant fonctionner sur une très grande variété de
     plateformes et toute une gamme d'environnements différents. Plateformes
     différentes et environnements différents signifient souvent fonctionnalités
@@ -54,7 +54,7 @@ DSO (Dynamic Shared Object)</a></li>
     dans le serveur en sélectionnant les modules à charger soit à la
     compilation, soit à l'exécution.</p>
 
-    <p>Le serveur HTTP Apache 2.0 étend cette conception modulaire aux
+    <p>Le serveur HTTP Apache 2.0 a étendu cette conception modulaire aux
     fonctions les plus
     élémentaires d'un serveur web. Certains Modules Multi-Processus (MPMs)
     sont responsables de l'association aux ports réseau de la machine,
@@ -84,16 +84,18 @@ DSO (Dynamic Shared Object)</a></li>
 
     <p>Du point de vue de l'utilisateur, les MPMs ne sont pas différents des
     autres modules Apache httpd. La principale différence réside dans le fait qu'un
-    et un seul MPM à la fois doit être chargé dans le serveur. La liste des
-    MPMs disponibles est fournie dans <a href="mod/">module index page</a>.</p>
+    et un seul MPM à la fois doit être chargé
+    lorsque le serveur s'exécute. La liste des
+    MPMs disponibles est fournie dans <a href="mod/">l'indexe des
+    modules</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="defaults" id="defaults">MPM par défaut</a></h2>
 
 <p>La table suivante fournit la liste des MPMs par défaut pour divers
-systèmes d'exploitation.  Il s'agit du MPM sélectionné si vous ne précisez
-pas un choix différent à la compilation.</p>
+systèmes d'exploitation.  Il s'agit du MPM qui sera utilisé si
+vous n'en spécifiez pas un autre à la compilation.</p>
 
 <table class="bordered"><tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 <tr class="odd"><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
@@ -110,7 +112,7 @@ statique</a></h2>
 statiques sur toutes les plates-formes. A la compilation d'Apache, un
 seul module MPM doit être choisi pour être compilé et lié avec le
 serveur. La recompilation du serveur sera donc nécessaire si vous
-désirez changer de module MPM.</p>
+souhaitez changer de module MPM.</p>
 
     <p>Pour choisir un module MPM autre que le MPM par défaut,
     utiliser l'argument
