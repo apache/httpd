@@ -56,8 +56,8 @@
 
 	<p>mod_rewrite étant très puissant, il peut par
 	conséquent être très complexe. Ce document
-	complè la <a href="../mod/mod_rewrite.html">documentation de
-      référence</a>, et est sensé alléger un
+	complète la <a href="../mod/mod_rewrite.html">documentation de
+      référence du module mod_rewrite</a>, et est sensé alléger un
       peu cette complexité, et présenter des exemples largement
       commentés, ainsi que des situations courantes que vous
       pourrez traiter avec mod_rewrite. Mais nous voulons aussi vous
@@ -71,8 +71,6 @@
 référence de mod_rewrite</a></li>
 <li><a href="intro.html">Introduction aux expressions rationnelles et à
 mod_rewrite</a></li>
-<li><a href="rewrite_guide.html">Guide de la réécriture -
-exemples utiles</a></li>
 <li><a href="remapping.html">Utilisation de mod_rewrite pour la
 redirection et la remise en corespondance avec le système de
 fichiers des URLs</a></li>

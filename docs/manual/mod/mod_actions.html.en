@@ -148,7 +148,7 @@ method.</td></tr>
     proceed normally.</p>
 
     <div class="example"><h3>Examples</h3><p><code>
-      # For &lt;ISINDEX&gt;-style searching<br />
+      # All GET requests go here<br />
       Script GET /cgi-bin/search<br />
       <br />
       # A CGI PUT handler<br />

@@ -133,7 +133,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     requête HTTP correspondant. La <a href="#functions">fonction</a>
     <code>req</code> permet d'extraire les valeurs des autres en-têtes.</p>
 
-    <table class="bordered"><tr class="header"><th>Name</th></tr>
+    <table class="bordered"><tr class="header"><th>Nom</th></tr>
 <tr><td><code>HTTP_ACCEPT</code></td></tr>
 <tr class="odd"><td><code>HTTP_FORWARDED</code></td></tr>
 <tr><td><code>HTTP_HOST</code></td></tr>
@@ -329,15 +329,27 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     unaires supplémentaires.</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th></tr>
-<tr><td><code>-n</code></td>
+<tr><td><code>-d</code></td>
+        <td>Vrai si le fichier existe et correspond à un répertoire</td></tr>
+<tr class="odd"><td><code>-e</code></td>
+        <td>Vrai si le fichier (ou dir ou special) existe</td></tr>
+<tr><td><code>-f</code></td>
+        <td>Vrai si le fichier existe et correspond à un fichier
+	régulier</td></tr>
+<tr class="odd"><td><code>-L</code></td>
+        <td>Vrai si le fichier existe et correspond à un lien symbolique</td></tr>
+<tr><td><code>-h</code></td>
+        <td>Vrai si le fichier existe et correspond à un lien symbolique
+	(identique à <code>-L</code>)</td></tr>
+<tr class="odd"><td><code>-n</code></td>
         <td>Vrai si la chaîne n'est pas vide</td></tr>
-<tr class="odd"><td><code>-z</code></td>
+<tr><td><code>-z</code></td>
         <td>Vrai si la chaîne est vide</td></tr>
-<tr><td><code>-T</code></td>
+<tr class="odd"><td><code>-T</code></td>
         <td>Faux si la chaîne est vide, "<code>0</code>",
 	"<code>off</code>", "<code>false</code>", ou "<code>no</code>"
 	(insensibilité à la casse). Vrai dans le cas contraire.</td></tr>
-<tr class="odd"><td><code>-R</code></td>
+<tr><td><code>-R</code></td>
         <td>Idem "<code>%{REMOTE_ADDR} -ipmatch ...</code>", en plus
 	efficace
         </td></tr>
@@ -379,6 +391,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	le codage des caractères spéciaux aux URLs (XXX: describe better)</td></tr>
 <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td></tr>
+<tr class="odd"><td><code>filesize</code></td>
+        <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
+	pas ou ne correspond pas à un fichier régulier)</td></tr>
 </table>
 
     <p>En plus des fonctions dont la valeur est une chaîne, il existe
