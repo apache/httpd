@@ -321,6 +321,7 @@
  *                         change AP_DECLARE to AP_CORE_DECLARE: ap_register_log_hooks()
  * 20110329.2 (2.3.12-dev) Add child_status and end_generation hooks.
  * 20110329.3 (2.3.12-dev) Add format field to ap_errorlog_info.
+ * 20110329.4 (2.3.13-dev) bgrowth and max_balancers to proxy_server_conf.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -328,7 +329,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110329
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

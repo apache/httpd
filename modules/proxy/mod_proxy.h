@@ -138,6 +138,8 @@ typedef struct {
     const char *id;
     apr_pool_t *pool;       /* Pool used for allocating this struct */
     int req;                /* true if proxy requests are enabled */
+    int max_balancers;      /* maximum number of allowed balancers */
+    int bgrowth;            /* number of post-config balancers can added */
     enum {
       via_off,
       via_on,
@@ -172,6 +174,7 @@ typedef struct {
     unsigned int badopt_set:1;
     unsigned int proxy_status_set:1;
     unsigned int source_address_set:1;
+    unsigned int bgrowth_set:1;
 } proxy_server_conf;
 
 

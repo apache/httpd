@@ -637,30 +637,46 @@ expressions</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>BalancerMember</name>
-<description>Add a member to a load balancing group</description>
-<syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
-  >key=value [key=value ...]]</var></syntax>
-<contextlist><context>directory</context>
-</contextlist>
-<compatibility>BalancerMember is only available in Apache HTTP Server 2.2
+<name>BalancerGrowth</name>
+<description>Number of additional Balancers that can be added Post-configuration</description>
+    <syntax>BalancerGrowth <var>#</var></syntax>
+    <default>BalancerGrowth 5</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>BalancerGrowth is only available in Apache HTTP Server 2.3.13
   and later.</compatibility>
 <usage>
-    <p>This directive adds a member to a load balancing group. It could be used
-    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
-    directive, and can take any of the key value pair parameters available to
-    <directive module="mod_proxy">ProxyPass</directive> directives.</p>
-    <p>One additional parameter is available only to <directive
-    module="mod_proxy">BalancerMember</directive> directives:
-    <var>loadfactor</var>. This is the member load factor - a number between 1 
-    (default) and 100, which defines the weighted load to be applied to the 
-    member in question.</p>
-    <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
-    container directive. It corresponds to the url of a balancer defined in
-    <directive module="mod_proxy">ProxyPass</directive> directive.</p>
+    <p>This directive allows for growth potential in the number of
+    Balancers available for a virtualhost in addition to the
+    number pre-configured. It only take effect if there is at
+    least 1 pre-configured Balancer.</p>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+    <name>BalancerMember</name>
+    <description>Add a member to a load balancing group</description>
+    <syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
+        >key=value [key=value ...]]</var></syntax>
+    <contextlist><context>directory</context>
+    </contextlist>
+    <compatibility>BalancerMember is only available in Apache HTTP Server 2.2
+        and later.</compatibility>
+    <usage>
+        <p>This directive adds a member to a load balancing group. It could be used
+            within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
+            directive, and can take any of the key value pair parameters available to
+            <directive module="mod_proxy">ProxyPass</directive> directives.</p>
+        <p>One additional parameter is available only to <directive
+            module="mod_proxy">BalancerMember</directive> directives:
+            <var>loadfactor</var>. This is the member load factor - a number between 1 
+            (default) and 100, which defines the weighted load to be applied to the 
+            member in question.</p>
+        <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
+            container directive. It corresponds to the url of a balancer defined in
+            <directive module="mod_proxy">ProxyPass</directive> directive.</p>
+    </usage>
+</directivesynopsis>
+    
 <directivesynopsis>
 <name>ProxySet</name>
 <description>Set various Proxy balancer or member parameters</description>
