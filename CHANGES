@@ -1,7 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.19
 
-
+  *) Revert ABI breakage in 2.2.18 caused by the function signature change
+     of ap_unescape_url_keep2f().  This release restores the signature from
+     2.2.17 and prior, and introduces ap_unescape_url_keep2f_ex().
+     [Eric Covener] 
 
 Changes with Apache 2.2.18
 

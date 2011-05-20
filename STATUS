@@ -23,8 +23,9 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
-    2.2.19  : In maintenance
-    2.2.18  : Tagged May 8, 2011.
+    2.2.20  : In maintenance
+    2.2.19  : Tagged May 20, 2011. ABI restored.
+    2.2.18  : Released May 11, 2011. ABI broken.
     2.2.17  : Released October 19, 2010.
     2.2.16  : Released July 25, 2010.
     2.2.15  : Released March 6, 2010.
@@ -75,7 +76,8 @@ CURRENT RELEASE NOTES:
 
   * Forward binary compatibility is expected of Apache 2.2.x releases, such
     that no MMN major number changes will occur.  Such changes can only be
-    made in the trunk.
+    made in the trunk.  Note 2.2.18 contained an incompatible ABI change,
+    subsequently corrected, and should not be referenced.
 
   * All commits to branches/2.2.x must be reflected in SVN trunk,
     as well, if they apply.  Logical progression is commit to trunk,
