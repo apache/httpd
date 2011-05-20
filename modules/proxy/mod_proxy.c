@@ -1127,6 +1127,9 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
     ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
+    ps->max_balancers = 0;
+    ps->bgrowth = 5;
+    ps->bgrowth_set = 0;
     ps->req_set = 0;
     ps->recv_buffer_size = 0; /* this default was left unset for some reason */
     ps->recv_buffer_size_set = 0;
@@ -1167,6 +1170,9 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->viaopt_set = overrides->viaopt_set || base->viaopt_set;
     ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
     ps->req_set = overrides->req_set || base->req_set;
+    ps->bgrowth = (overrides->bgrowth_set == 0) ? base->bgrowth : overrides->bgrowth;
+    ps->bgrowth_set = overrides->bgrowth_set || base->bgrowth_set;
+    ps->max_balancers = overrides->max_balancers || base->max_balancers;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
     ps->recv_buffer_size_set = overrides->recv_buffer_size_set || base->recv_buffer_size_set;
     ps->io_buffer_size = (overrides->io_buffer_size_set == 0) ? base->io_buffer_size : overrides->io_buffer_size;
@@ -1824,6 +1830,21 @@ static const char*
     return NULL;
 }
 
+static const char *set_bgrowth(cmd_parms *parms, void *dummy, const char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    int growth = atoi(arg);
+    if (growth < 0 || growth > 1000) {
+        return "BalancerGrowth must be between 0 and 1000";
+    }
+    psf->bgrowth = growth;
+    psf->bgrowth_set = 1;
+
+    return NULL;
+}
+
 static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
@@ -2203,6 +2224,8 @@ static const command_rec proxy_cmds[] =
      "How to handle bad header line in response: IsError | Ignore | StartBody"),
     AP_INIT_RAW_ARGS("BalancerMember", add_member, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer name and scheme with list of params"),
+    AP_INIT_TAKE1("BalancerGrowth", set_bgrowth, NULL, RSRC_CONF,
+     "Number of additional Balancers that can be added post-config"),
     AP_INIT_TAKE1("ProxyStatus", set_status_opt, NULL, RSRC_CONF,
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
