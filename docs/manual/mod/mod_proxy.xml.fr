@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1060795 -->
+<!-- English Revision : 1125451 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -705,6 +705,23 @@ correspondant &agrave; une expression rationnelle</description>
     premier argument qui est une <glossary ref="regex">expression
     rationnelle</glossary> &agrave; mettre en correspondance avec l'URL de la
     requ&ecirc;te.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BalancerGrowth</name>
+<description>Nombre de membres suppl&eacute;mentaires pouvant &ecirc;tre ajout&eacute;s
+apr&egrave;s la configuration initiale</description>
+    <syntax>BalancerGrowth <var>#</var></syntax>
+    <default>BalancerGrowth 5</default>
+    <contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>BalancerGrowth est disponible depuis la version 2.3.13 du
+serveur HTTP Apache</compatibility>
+<usage>
+    <p>Cette directive permet de d&eacute;finir le nombre de membres pouvant
+    &ecirc;tre ajout&eacute;s au groupe de r&eacute;partition de charge pr&eacute;configur&eacute; d'un
+    serveur virtuel. Elle n'est active que si le groupe a &eacute;t&eacute;
+    pr&eacute;configur&eacute; avec un membre au minimum.</p>
 </usage>
 </directivesynopsis>
 
