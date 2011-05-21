@@ -847,8 +847,7 @@ static int cgid_server(void *data)
             key = &cgid_req.conn_id;
         }
         else {
-            key = apr_pcalloc(pcgi, sizeof(cgid_req.conn_id));
-            memcpy(key, &cgid_req.conn_id, sizeof(cgid_req.conn_id));
+            key = apr_pmemdup(pcgi, &cgid_req.conn_id, sizeof(cgid_req.conn_id));
         }
         apr_hash_set(script_hash, key, sizeof(cgid_req.conn_id),
                      (void *)((long)procnew->pid));
