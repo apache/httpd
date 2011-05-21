@@ -124,6 +124,22 @@ AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch, int eflags);
 
 /**
+ * Match a string with given length against a pre-compiled regex. The string
+ * does not need to be NUL-terminated.
+ * @param preg The pre-compiled regex
+ * @param buff The string to match
+ * @param len Length of the string to match
+ * @param nmatch Provide information regarding the location of any matches
+ * @param pmatch Provide information regarding the location of any matches
+ * @param eflags Bitwise OR of AP_REG_* flags (NOTBOL and NOTEOL supported,
+ *                                             other flags are ignored)
+ * @return 0 for successful match, AP_REG_NOMATCH otherwise
+ */
+AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
+                               apr_size_t len, apr_size_t nmatch,
+                               ap_regmatch_t *pmatch, int eflags);
+
+/**
  * Return the error code returned by regcomp or regexec into error messages
  * @param errcode the error code returned by regexec or regcomp
  * @param preg The precompiled regex
