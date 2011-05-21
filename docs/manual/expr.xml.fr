@@ -352,7 +352,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <section id="unnop">
     <title>Op&eacute;rateurs unaires</title>
 
-    <p>Les op&eacute;rateurs unaires sont de la forme "<code>-[a-zA-Z]</code>",
+    <p>Les op&eacute;rateurs unaires acceptent un seul argument et sont
+    de la forme "<code>-[a-zA-Z]</code>",
     autrement dit le signe moins et un caract&egrave;re. Le nom <em>est</em>
     sensible &agrave; la casse. Les modules peuvent fournir des op&eacute;rateurs
     unaires suppl&eacute;mentaires.</p>
@@ -362,17 +363,36 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
     <tr><th>Nom</th><th>Description</th></tr>
     <tr><td><code>-d</code></td>
-        <td>Vrai si le fichier existe et correspond &agrave; un r&eacute;pertoire</td></tr>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et correspond &agrave; un
+	r&eacute;pertoire</td></tr>
     <tr><td><code>-e</code></td>
-        <td>Vrai si le fichier (ou dir ou special) existe</td></tr>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier (ou dir ou special) existe</td></tr>
     <tr><td><code>-f</code></td>
-        <td>Vrai si le fichier existe et correspond &agrave; un fichier
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et correspond &agrave; un fichier
 	r&eacute;gulier</td></tr>
     <tr><td><code>-L</code></td>
-        <td>Vrai si le fichier existe et correspond &agrave; un lien symbolique</td></tr>
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et correspond &agrave; un lien
+	symbolique</td></tr>
     <tr><td><code>-h</code></td>
-        <td>Vrai si le fichier existe et correspond &agrave; un lien symbolique
+        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
+	fichier existe et correspond &agrave; un lien symbolique
 	(identique &agrave; <code>-L</code>)</td></tr>
+    <tr><td><code>-F</code></td>
+        <td>Vrai si la cha&icirc;ne correspond a un fichier valide, accessible
+	avec tous les contr&ocirc;les d'acc&egrave;s configur&eacute;s pour ce chemin. A
+	cette fin, une sous-requ&ecirc;te effectue la v&eacute;rification, et vous
+	devez utiliser ce drapeau avec soin car il peut impacter les
+	performances de votre serveur !</td></tr>
+    <tr><td><code>-U</code></td>
+        <td>Vrai si la cha&icirc;ne correspond a une URL valide, accessible
+	avec tous les contr&ocirc;les d'acc&egrave;s configur&eacute;s pour ce chemin. A
+	cette fin, une sous-requ&ecirc;te effectue la v&eacute;rification, et vous
+	devez utiliser ce drapeau avec soin car il peut impacter les
+	performances de votre serveur !</td></tr>
     <tr><td><code>-n</code></td>
         <td>Vrai si la cha&icirc;ne n'est pas vide</td></tr>
     <tr><td><code>-z</code></td>

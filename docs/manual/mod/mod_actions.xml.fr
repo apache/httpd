@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 926439 -->
+<!-- English Revision : 1103989 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -155,7 +155,7 @@ particuli&egrave;re.</description>
     normalement.</p>
 
     <example><title>Exemples</title>
-      # Pour une recherche du style &lt;ISINDEX&gt;<br />
+      # Toutes les requ&ecirc;tes GET aboutissent ici<br />
       Script GET /cgi-bin/search<br />
       <br />
       # Un gestionnaire CGI pour la m&eacute;thode PUT<br />
