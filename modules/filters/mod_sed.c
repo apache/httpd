@@ -138,8 +138,7 @@ static apr_status_t flush_output_buffer(sed_filter_ctxt *ctx)
     apr_status_t status = APR_SUCCESS;
     if ((ctx->outbuf == NULL) || (size <=0))
         return status;
-    out = apr_palloc(ctx->tpool, size);
-    memcpy(out, ctx->outbuf, size);
+    out = apr_pmemdup(ctx->tpool, ctx->outbuf, size);
     status = append_bucket(ctx, out, size);
     ctx->curoutbuf = ctx->outbuf;
     return status;
@@ -174,8 +173,7 @@ static apr_status_t sed_write_output(void *dummy, char *buf, int sz)
         /* if size is bigger than the allocated buffer directly add to output
          * brigade */
         if ((status == APR_SUCCESS) && (sz >= ctx->bufsize)) {
-            char* newbuf = apr_palloc(ctx->tpool, sz);
-            memcpy(newbuf, buf, sz);
+            char* newbuf = apr_pmemdup(ctx->tpool, buf, sz);
             status = append_bucket(ctx, newbuf, sz);
             /* pool might get clear after append_bucket */
             if (ctx->outbuf == NULL) {

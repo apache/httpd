@@ -2618,8 +2618,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                      proxy_function, backend_addr->family, worker->s->hostname);
 
         if (conf->source_address_set) {
-            local_addr = apr_pcalloc(conn->pool, sizeof(apr_sockaddr_t));
-            memcpy(local_addr, conf->source_address, sizeof(apr_sockaddr_t));
+            local_addr = apr_pmemdup(conn->pool, conf->source_address,
+                                     sizeof(apr_sockaddr_t));
             local_addr->pool = conn->pool;
             rv = apr_socket_bind(newsock, local_addr);
             if (rv != APR_SUCCESS) {
