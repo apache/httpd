@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) core: Add ap_regexec_len() function that works with non-null-terminated
+     strings. PR 51231. [Yehezkel Horowitz <horowity checkpoint com>]
+
   *) mod_authnz_ldap: If the LDAP server returns constraint violation,
      don't treat this as an error but as "auth denied". [Stefan Fritsch]
 

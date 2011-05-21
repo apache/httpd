@@ -152,10 +152,16 @@ the POSIX structures as was done in earlier releases when PCRE needed only 2
 ints. However, if the number of possible capturing brackets is small, use a
 block of store on the stack, to reduce the use of malloc/free. The threshold is
 in a macro that can be changed at configure time. */
-
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
-                           apr_size_t nmatch, ap_regmatch_t pmatch[],
+                           apr_size_t nmatch, ap_regmatch_t *pmatch,
                            int eflags)
+{
+return ap_regexec_len(preg, string, strlen(string), nmatch, pmatch, eflags);
+}
+
+AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
+                               apr_size_t len, apr_size_t nmatch,
+                               ap_regmatch_t *pmatch, int eflags)
 {
 int rc;
 int options = 0;
@@ -182,7 +188,7 @@ if (nmatch > 0)
     }
   }
 
-rc = pcre_exec((const pcre *)preg->re_pcre, NULL, string, (int)strlen(string),
+rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
   0, options, ovector, nmatch * 3);
 
 if (rc == 0) rc = nmatch;    /* All captured slots were filled in */
