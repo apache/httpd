@@ -70,8 +70,6 @@ typedef enum {
 #define XLATEIN_FILTER_NAME  "XLATEIN"
 
 typedef struct charset_dir_t {
-    /** debug level; -1 means uninitialized, 0 means no debug */
-    int debug;
     const char *charset_source; /* source encoding */
     const char *charset_default; /* how to ship on wire */
     /** module does ap_add_*_filter()? */
@@ -107,19 +105,12 @@ typedef struct charset_req_t {
     charset_filter_ctx_t *output_ctx, *input_ctx;
 } charset_req_t;
 
-/* debug level definitions */
-#define DBGLVL_GORY           9 /* gory details */
-#define DBGLVL_FLOW           4 /* enough messages to see what happens on
-                                 * each request */
-#define DBGLVL_PMC            2 /* messages about possible misconfiguration */
-
 module AP_MODULE_DECLARE_DATA charset_lite_module;
 
 static void *create_charset_dir_conf(apr_pool_t *p,char *dummy)
 {
     charset_dir_t *dc = (charset_dir_t *)apr_pcalloc(p,sizeof(charset_dir_t));
 
-    dc->debug = -1;
     return dc;
 }
 
@@ -133,8 +124,6 @@ static void *merge_charset_dir_conf(apr_pool_t *p, void *basev, void *overridesv
      * from the enclosing container.
      */
 
-    a->debug =
-        over->debug != -1 ? over->debug : base->debug;
     a->charset_default =
         over->charset_default ? over->charset_default : base->charset_default;
     a->charset_source =
@@ -187,9 +176,6 @@ static const char *add_charset_options(cmd_parms *cmd, void *in_dc,
     else if (!strcasecmp(flag, "NoTranslateAllMimeTypes")) {
         dc->force_xlate = FX_NOFORCE;
     }
-    else if (!strncasecmp(flag, "DebugLevel=", 11)) {
-        dc->debug = atoi(flag + 11);
-    }
     else {
         return apr_pstrcat(cmd->temp_pool,
                            "Invalid CharsetOptions option: ",
@@ -212,29 +198,25 @@ static int find_code_page(request_rec *r)
     charset_filter_ctx_t *input_ctx, *output_ctx;
     apr_status_t rv;
 
-    if (dc->debug >= DBGLVL_FLOW) {
-        ap_log_rerror(APLOG_MARK,APLOG_DEBUG, 0, r,
-                      "uri: %s file: %s method: %d "
-                      "imt: %s flags: %s%s%s %s->%s",
-                      r->uri,
-                      r->filename ? r->filename : "(none)",
-                      r->method_number,
-                      r->content_type ? r->content_type : "(unknown)",
-                      r->main     ? "S" : "",    /* S if subrequest */
-                      r->prev     ? "R" : "",    /* R if redirect */
-                      r->proxyreq ? "P" : "",    /* P if proxy */
-                      dc->charset_source, dc->charset_default);
-    }
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                  "uri: %s file: %s method: %d "
+                  "imt: %s flags: %s%s%s %s->%s",
+                  r->uri,
+                  r->filename ? r->filename : "(none)",
+                  r->method_number,
+                  r->content_type ? r->content_type : "(unknown)",
+                  r->main     ? "S" : "",    /* S if subrequest */
+                  r->prev     ? "R" : "",    /* R if redirect */
+                  r->proxyreq ? "P" : "",    /* P if proxy */
+                  dc->charset_source, dc->charset_default);
 
     /* If we don't have a full directory configuration, bail out.
      */
     if (!dc->charset_source || !dc->charset_default) {
-        if (dc->debug >= DBGLVL_PMC) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "incomplete configuration: src %s, dst %s",
-                          dc->charset_source ? dc->charset_source : "unspecified",
-                          dc->charset_default ? dc->charset_default : "unspecified");
-        }
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "incomplete configuration: src %s, dst %s",
+                      dc->charset_source ? dc->charset_source : "unspecified",
+                      dc->charset_default ? dc->charset_default : "unspecified");
         return DECLINED;
     }
 
@@ -338,11 +320,9 @@ static void xlate_insert_filter(request_rec *r)
                                              &charset_lite_module);
 
     if (dc && (dc->implicit_add == IA_NOIMPADD)) { 
-        if (dc->debug >= DBGLVL_GORY) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "xlate output filter not added implicitly because "
-                          "CharsetOptions included 'NoImplicitAdd'");
-        }
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, r,
+                      "xlate output filter not added implicitly because "
+                      "CharsetOptions included 'NoImplicitAdd'");
         return;
     }
 
@@ -351,25 +331,21 @@ static void xlate_insert_filter(request_rec *r)
             ap_add_output_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r,
                                  r->connection);
         }
-        else if (dc->debug >= DBGLVL_FLOW) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "xlate output filter not added implicitly because %s",
-                          !reqinfo->output_ctx ?
-                          "no output configuration available" :
-                          "another module added the filter");
-        }
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                      "xlate output filter not added implicitly because %s",
+                      !reqinfo->output_ctx ?
+                      "no output configuration available" :
+                      "another module added the filter");
 
         if (reqinfo->input_ctx && !configured_on_input(r, XLATEIN_FILTER_NAME)) {
             ap_add_input_filter(XLATEIN_FILTER_NAME, reqinfo->input_ctx, r,
                                 r->connection);
         }
-        else if (dc->debug >= DBGLVL_FLOW) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "xlate input filter not added implicitly because %s",
-                          !reqinfo->input_ctx ?
-                          "no input configuration available" :
-                          "another module added the filter");
-        }
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                      "xlate input filter not added implicitly because %s",
+                      !reqinfo->input_ctx ?
+                      "no input configuration available" :
+                      "another module added the filter");
     }
 }
 
@@ -569,7 +545,6 @@ static void chk_filter_chain(ap_filter_t *f)
     ap_filter_t *curf;
     charset_filter_ctx_t *curctx, *last_xlate_ctx = NULL,
         *ctx = f->ctx;
-    int debug = ctx->dc->debug;
     int output = !strcasecmp(f->frec->name, XLATEOUT_FILTER_NAME);
 
     if (ctx->noop) {
@@ -603,7 +578,7 @@ static void chk_filter_chain(ap_filter_t *f)
                      */
                     if (last_xlate_ctx == f->ctx) {
                         last_xlate_ctx->noop = 1;
-                        if (debug >= DBGLVL_PMC) {
+                        if (APLOGrtrace1(f->r)) {
                             const char *symbol = output ? "->" : "<-";
 
                             ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
@@ -849,21 +824,19 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
         else {
             ctx->noop = 1;
-            if (mime_type && dc->debug >= DBGLVL_GORY) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+            if (mime_type) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, f->r,
                               "mime type is %s; no translation selected",
                               mime_type);
             }
         }
     }
 
-    if (dc->debug >= DBGLVL_GORY) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
-                      "xlate_out_filter() - "
-                      "charset_source: %s charset_default: %s",
-                      dc && dc->charset_source ? dc->charset_source : "(none)",
-                      dc && dc->charset_default ? dc->charset_default : "(none)");
-    }
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, f->r,
+                  "xlate_out_filter() - "
+                  "charset_source: %s charset_default: %s",
+                  dc && dc->charset_source ? dc->charset_source : "(none)",
+                  dc && dc->charset_default ? dc->charset_default : "(none)");
 
     if (!ctx->ran) {  /* filter never ran before */
         chk_filter_chain(f);
@@ -1032,13 +1005,11 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
         }
     }
 
-    if (dc->debug >= DBGLVL_GORY) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
-                     "xlate_in_filter() - "
-                     "charset_source: %s charset_default: %s",
-                     dc && dc->charset_source ? dc->charset_source : "(none)",
-                     dc && dc->charset_default ? dc->charset_default : "(none)");
-    }
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, f->r,
+                 "xlate_in_filter() - "
+                 "charset_source: %s charset_default: %s",
+                 dc && dc->charset_source ? dc->charset_source : "(none)",
+                 dc && dc->charset_default ? dc->charset_default : "(none)");
 
     if (!ctx->ran) {  /* filter never ran before */
         chk_filter_chain(f);
@@ -1054,11 +1025,9 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
              * Processing of chunked request bodies is not impacted by this
              * filter since the the length was not declared anyway.
              */
-            if (dc->debug >= DBGLVL_PMC) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
-                              "Request body length may change, resulting in "
-                              "misprocessing by some modules or scripts");
-            }
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, f->r,
+                          "Request body length may change, resulting in "
+                          "misprocessing by some modules or scripts");
         }
     }
 
@@ -1143,7 +1112,7 @@ static const command_rec cmds[] =
                     NULL,
                     OR_FILEINFO,
                     "valid options: ImplicitAdd, NoImplicitAdd, TranslateAllMimeTypes, "
-                    "NoTranslateAllMimeTypes, DebugLevel=n"),
+                    "NoTranslateAllMimeTypes"),
     {NULL}
 };
 
