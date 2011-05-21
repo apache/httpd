@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_charset_lite: Remove DebugLevel option in favour of per-module
+     loglevel. [Stefan Fritsch]
+
   *) core: Add ap_regexec_len() function that works with non-null-terminated
      strings. PR 51231. [Yehezkel Horowitz <horowity checkpoint com>]
 
