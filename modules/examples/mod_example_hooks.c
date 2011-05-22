@@ -1113,10 +1113,7 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
  */
 static int x_pre_connection(conn_rec *c, void *csd)
 {
-    x_cfg *cfg;
     char *note; 
-
-    cfg = our_cconfig(c);
 
     /*
      * Log the call and exit.
@@ -1138,9 +1135,6 @@ static int x_pre_connection(conn_rec *c, void *csd)
  */
 static int x_process_connection(conn_rec *c)
 {
-    x_cfg *cfg;
-    cfg = our_cconfig(c);
-    
     trace_connection(c, "x_process_connection()");
     
     return DECLINED;

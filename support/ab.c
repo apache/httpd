@@ -2096,7 +2096,7 @@ int main(int argc, const char * const argv[])
             case 'p':
                 if (method != NO_METH)
                     err("Cannot mix POST with other methods\n");
-                if ((status = open_postfile(opt_arg)) != APR_SUCCESS) {
+                if (open_postfile(opt_arg) != APR_SUCCESS) {
                     exit(1);
                 }
                 method = POST;
@@ -2105,7 +2105,7 @@ int main(int argc, const char * const argv[])
             case 'u':
                 if (method != NO_METH)
                     err("Cannot mix PUT with other methods\n");
-                if ((status = open_postfile(opt_arg)) != APR_SUCCESS) {
+                if (open_postfile(opt_arg) != APR_SUCCESS) {
                     exit(1);
                 }
                 method = PUT;

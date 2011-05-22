@@ -1127,7 +1127,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
     request_rec *rr = NULL;
     const char *error = "Invalid expression \"%s\" in file %s";
     const char *parse = expr;
-    int was_unmatched = 0;
     unsigned regex = 0;
 
     *was_error = 0;
@@ -1144,14 +1143,18 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
          */
         CREATE_NODE(ctx, new);
 
-        was_unmatched = get_ptoken(ctx, &parse, &new->token,
-                         (current != NULL ? &current->token : NULL));
-        if (!parse) {
-            break;
-        }
+        {
+#ifdef DEBUG_INCLUDE
+            int was_unmatched =
+#endif
+            get_ptoken(ctx, &parse, &new->token,
+                       (current != NULL ? &current->token : NULL));
+            if (!parse)
+                break;
 
-        DEBUG_DUMP_UNMATCHED(ctx, was_unmatched);
-        DEBUG_DUMP_TOKEN(ctx, &new->token);
+            DEBUG_DUMP_UNMATCHED(ctx, was_unmatched);
+            DEBUG_DUMP_TOKEN(ctx, &new->token);
+        }
 
         if (!current) {
             switch (new->token.type) {
