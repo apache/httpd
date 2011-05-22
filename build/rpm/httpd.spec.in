@@ -14,11 +14,11 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
-BuildPrereq: /usr/bin/apr-1-config, /usr/bin/apu-1-config
+BuildRequires: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
+BuildRequires: /usr/bin/apr-1-config, /usr/bin/apu-1-config
 Requires: apr >= 1.4.2, apr-util >= 1.3.10, pcre-devel >= 5.0, gawk, /usr/bin/find, openldap
-Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
-Prereq: sh-utils, textutils, /usr/sbin/useradd
+Requires: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
+Requires: sh-utils, textutils, /usr/sbin/useradd
 Provides: webserver
 Provides: httpd-mmn = %{mmn}
 Conflicts: thttpd
@@ -57,8 +57,8 @@ also be found at http://httpd.apache.org/docs/.
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
-BuildPrereq: openssl-devel
-Prereq: openssl, dev, /bin/cat
+BuildRequires: openssl-devel
+Requires: openssl, dev, /bin/cat
 Requires: httpd, make, httpd-mmn = %{mmn}
 
 %description -n mod_ssl
