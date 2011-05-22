@@ -380,10 +380,6 @@ static apr_status_t setup_request(serf_request_t *request,
     serf_bucket_headers_setn(hdrs_bkt, "Accept-Encoding", "gzip");
 
     if (ctx->want_ssl) {
-        serf_bucket_alloc_t *req_alloc;
-
-        req_alloc = serf_request_get_alloc(request);
-
         if (ctx->ssl_ctx == NULL) {
             *req_bkt = serf_bucket_ssl_encrypt_create(*req_bkt, NULL,
                                            ctx->bkt_alloc);
@@ -442,7 +438,6 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
     /* XXXXX: make persistent/per-process or something.*/
     serf_context_t *serfme;
     serf_connection_t *conn;
-    serf_request_t *srequest;
     serf_server_config_t *ctx = 
         (serf_server_config_t *)ap_get_module_config(r->server->module_config,
                                                      &serf_module);
@@ -598,8 +593,8 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
                                   closed_connection, baton,
                                   pool);
 
-    srequest = serf_connection_request_create(conn, setup_request,
-                                              baton);
+    /* XXX: Is it correct that we don't use the returned serf_request_t? */
+    serf_connection_request_create(conn, setup_request, baton);
 
     if (mpm_supprts_serf) {
         return SUSPENDED;

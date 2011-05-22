@@ -39,6 +39,8 @@
 
 #include "mod_dav.h"
 #include "repos.h"
+#include "http_log.h"
+#include "http_main.h"      /* for ap_server_conf */
 
 
 struct dav_db {
@@ -487,7 +489,9 @@ static void dav_propdb_close(dav_db *db)
         memcpy(db->ns_table.buf, &m, sizeof(m));
 
         err = dav_dbm_store(db, key, value);
-        /* ### what to do with the error? */
+        if (err != NULL)
+            ap_log_error(APLOG_MARK, APLOG_WARNING, err->aprerr,
+                         ap_server_conf, "Error writing propdb: %s", err->desc);
     }
 
     dav_dbm_close(db);

@@ -1114,12 +1114,14 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         len += strl[i] = strlen(strs[i]);
     }
     if (!log_writer) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                 "log writer isn't correctly setup");
          return HTTP_INTERNAL_SERVER_ERROR;
     }
     rv = log_writer(r, cls->log_writer, strs, strl, format->nelts, len);
-    /* xxx: do we return an error on log_writer? */
+    if (rv != APR_SUCCESS)
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r, "Error writing to %s",
+                      cls->fname);
     return OK;
 }
 
