@@ -25,6 +25,8 @@
 <a href="./ko/server-wide.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/server-wide.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 
 <p>このドキュメントでは<code class="module"><a href="./mod/core.html">core</a></code>
 サーバのディレクティブの中で、

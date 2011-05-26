@@ -158,7 +158,7 @@ particulière.</td></tr>
     normalement.</p>
 
     <div class="example"><h3>Exemples</h3><p><code>
-      # Pour une recherche du style &lt;ISINDEX&gt;<br />
+      # Toutes les requêtes GET aboutissent ici<br />
       Script GET /cgi-bin/search<br />
       <br />
       # Un gestionnaire CGI pour la méthode PUT<br />

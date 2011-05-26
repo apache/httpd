@@ -25,6 +25,8 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
  <p><a href="configuring.html">設定ファイル</a>中のディレクティブは
 サーバ全体に適用されたり、特定のディレクトリやファイル、ホスト、URL にのみ
 適用されるように制限したりすることができます。この文書は設定用のセクションの

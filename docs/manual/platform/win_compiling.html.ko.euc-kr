@@ -21,6 +21,8 @@
 <p><span>가능한 언어: </span><a href="../en/platform/win_compiling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
 
     <p>아파치를 컴파일하기 전에 주의할 점이 많다. 미리 <a href="windows.html">Microsoft Windows에서 아파치 사용법</a>을

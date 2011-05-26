@@ -24,6 +24,8 @@
 <a href="./ko/urlmapping.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>이 문서는 요청의 URL을 가지고 아파치가 어떻게 서비스할 
     파일의 파일시스템상 위치를 찾는지 설명한다.</p>

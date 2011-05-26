@@ -25,6 +25,8 @@
 <a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p>本文書の内容は次の一言に尽きます。「Apache が設定ファイルを読み込むときに
     DNS を使用する必要がないようにして下さい」。Apache が設定ファイルを
