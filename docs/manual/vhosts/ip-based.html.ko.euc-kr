@@ -24,6 +24,8 @@
 <a href="../ko/vhosts/ip-based.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">시스템 요구사항</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">아파치 설정방법</a></li>

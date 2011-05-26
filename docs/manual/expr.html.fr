@@ -323,24 +323,44 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <h2><a name="unnop" id="unnop">Opérateurs unaires</a></h2>
     
 
-    <p>Les opérateurs unaires sont de la forme "<code>-[a-zA-Z]</code>",
+    <p>Les opérateurs unaires acceptent un seul argument et sont
+    de la forme "<code>-[a-zA-Z]</code>",
     autrement dit le signe moins et un caractère. Le nom <em>est</em>
     sensible à la casse. Les modules peuvent fournir des opérateurs
     unaires supplémentaires.</p>
 
     <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th></tr>
 <tr><td><code>-d</code></td>
-        <td>Vrai si le fichier existe et correspond à un répertoire</td></tr>
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et correspond à un
+	répertoire</td></tr>
 <tr class="odd"><td><code>-e</code></td>
-        <td>Vrai si le fichier (ou dir ou special) existe</td></tr>
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier (ou dir ou special) existe</td></tr>
 <tr><td><code>-f</code></td>
-        <td>Vrai si le fichier existe et correspond à un fichier
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et correspond à un fichier
 	régulier</td></tr>
 <tr class="odd"><td><code>-L</code></td>
-        <td>Vrai si le fichier existe et correspond à un lien symbolique</td></tr>
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et correspond à un lien
+	symbolique</td></tr>
 <tr><td><code>-h</code></td>
-        <td>Vrai si le fichier existe et correspond à un lien symbolique
+        <td>L'argument est traité comme un nom de fichier. Vrai si le
+	fichier existe et correspond à un lien symbolique
 	(identique à <code>-L</code>)</td></tr>
+<tr class="odd"><td><code>-F</code></td>
+        <td>Vrai si la chaîne correspond a un fichier valide, accessible
+	avec tous les contrôles d'accès configurés pour ce chemin. A
+	cette fin, une sous-requête effectue la vérification, et vous
+	devez utiliser ce drapeau avec soin car il peut impacter les
+	performances de votre serveur !</td></tr>
+<tr><td><code>-U</code></td>
+        <td>Vrai si la chaîne correspond a une URL valide, accessible
+	avec tous les contrôles d'accès configurés pour ce chemin. A
+	cette fin, une sous-requête effectue la vérification, et vous
+	devez utiliser ce drapeau avec soin car il peut impacter les
+	performances de votre serveur !</td></tr>
 <tr class="odd"><td><code>-n</code></td>
         <td>Vrai si la chaîne n'est pas vide</td></tr>
 <tr><td><code>-z</code></td>

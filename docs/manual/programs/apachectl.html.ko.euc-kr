@@ -22,6 +22,8 @@
 <a href="../ko/programs/apachectl.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
      <p><code>apachectl</code>은 아파치 하이퍼텍스트 전송
      프로토콜 (HTTP) 서버의 앞단이다. 이 프로그램은 관리자가

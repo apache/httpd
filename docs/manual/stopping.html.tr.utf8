@@ -26,6 +26,7 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge Apache HTTPd’nin Unix benzeri sistemlerde durdurulması ve
       yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP

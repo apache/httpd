@@ -82,6 +82,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#balancergrowth">BalancerGrowth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancermember">BalancerMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
@@ -463,6 +464,24 @@
 
    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of additional Balancers that can be added Post-configuration</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerGrowth <var>#</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>BalancerGrowth 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerGrowth is only available in Apache HTTP Server 2.3.13
+  and later.</td></tr>
+</table>
+    <p>This directive allows for growth potential in the number of
+    Balancers available for a virtualhost in addition to the
+    number pre-configured. It only take effect if there is at
+    least 1 pre-configured Balancer.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a member to a load balancing group</td></tr>
@@ -471,20 +490,20 @@
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerMember is only available in Apache HTTP Server 2.2
-  and later.</td></tr>
+        and later.</td></tr>
 </table>
-    <p>This directive adds a member to a load balancing group. It could be used
-    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
-    directive, and can take any of the key value pair parameters available to
-    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
-    <p>One additional parameter is available only to <code class="directive"><a href="#balancermember">BalancerMember</a></code> directives:
-    <var>loadfactor</var>. This is the member load factor - a number between 1 
-    (default) and 100, which defines the weighted load to be applied to the 
-    member in question.</p>
-    <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
-    container directive. It corresponds to the url of a balancer defined in
-    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
-
+        <p>This directive adds a member to a load balancing group. It could be used
+            within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
+            directive, and can take any of the key value pair parameters available to
+            <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
+        <p>One additional parameter is available only to <code class="directive"><a href="#balancermember">BalancerMember</a></code> directives:
+            <var>loadfactor</var>. This is the member load factor - a number between 1 
+            (default) and 100, which defines the weighted load to be applied to the 
+            member in question.</p>
+        <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
+            container directive. It corresponds to the url of a balancer defined in
+            <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
+    
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">Directive</a></h2>

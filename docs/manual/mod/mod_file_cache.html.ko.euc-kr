@@ -24,6 +24,8 @@
 <p><span>가능한 언어: </span><a href="../en/mod/mod_file_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/mod_file_cache.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>메모리에 정적 파일들을 캐쉬</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>file_cache_module</td></tr>
