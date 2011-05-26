@@ -112,7 +112,7 @@
     <code>syslog</code> or <a href="#piped">pipe them to a
     program</a>.</p>
 
-    <p>The format of the error log is relatively free-form and
+    <p>The default format of the error log is relatively free-form and
     descriptive. But there is certain information that is contained
     in most error log entries. For example, here is a typical
     message.</p>
@@ -140,14 +140,12 @@
     information written to <code>stderr</code> by a CGI script will
     be copied directly to the error log.</p>
 
-    <p>It is not possible to customize the error log by adding or
-    removing information. However, error log entries dealing with
-    particular requests have corresponding entries in the <a
-    href="#accesslog">access log</a>. For example, the above example
-    entry corresponds to an access log entry with status code 403.
-    Since it is possible to customize the access log, you can
-    obtain more information about error conditions using that log
-    file.</p>
+    <p>Using the <directive module="core">ErrorLogFormat</directive>
+    directive, you can customize the format of the error log, and what
+    values are logged. If you have <module>mod_unique_id</module>, you
+    can put a <code>%L</code> token in both the error log and the access
+    log, producing a log entry ID with which you can correlate the entry
+    in the error log with the entry in the access log.</p>
 
     <p>During testing, it is often useful to continuously monitor
     the error log for any problems. On Unix systems, you can
