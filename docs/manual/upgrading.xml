@@ -225,6 +225,11 @@
         module="filter">FilterProvider</directive> syntax has changed and
         now uses a boolean expression to determine if a filter is applied.
         </li>
+
+        <li><module>mod_include</module>: An SSI* config directive in directory
+        scope no longer causes all other per-directory SSI* directives to be
+        reset to their default values.
+        </li>
       </ul>
     </section>
   </section>
@@ -233,7 +238,7 @@
     <title>Misc Changes</title>
 
     <ul>
-      <li><module>mod_auto_index</module>: will now extract titles and
+      <li><module>mod_autoindex</module>: will now extract titles and
       display descriptions for .xhtml files, which were previously
       ignored.</li>
 

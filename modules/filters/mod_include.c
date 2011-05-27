@@ -107,7 +107,8 @@ typedef struct parse_node {
 typedef enum {
     XBITHACK_OFF,
     XBITHACK_ON,
-    XBITHACK_FULL
+    XBITHACK_FULL,
+    XBITHACK_UNSET
 } xbithack_t;
 
 typedef struct {
@@ -115,9 +116,9 @@ typedef struct {
     const char *default_time_fmt;
     const char *undefined_echo;
     xbithack_t  xbithack;
-    int accessenable;
-    int lastmodified;
-    int etag;
+    signed char accessenable;
+    signed char lastmodified;
+    signed char etag;
 } include_dir_config;
 
 typedef struct {
@@ -462,9 +463,8 @@ static const char lazy_eval_sentinel;
 #define DEFAULT_ERROR_MSG "[an error occurred while processing this directive]"
 #define DEFAULT_TIME_FORMAT "%A, %d-%b-%Y %H:%M:%S %Z"
 #define DEFAULT_UNDEFINED_ECHO "(none)"
-#define DEFAULT_ACCESSENABLE 0
-#define DEFAULT_LASTMODIFIED 0
-#define DEFAULT_ETAG 0
+
+#define UNSET -1
 
 #ifdef XBITHACK
 #define DEFAULT_XBITHACK XBITHACK_FULL
@@ -3686,7 +3686,7 @@ static int includes_setup(ap_filter_t *f)
      * We don't know if we are going to be including a file or executing
      * a program - in either case a strong ETag header will likely be invalid.
      */
-    if (!conf->etag) {
+    if (conf->etag <= 0) {
         apr_table_setn(f->r->notes, "no-etag", "");
     }
 
@@ -3730,20 +3730,23 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         if ((ap_allow_options(r) & OPT_INC_WITH_EXEC) == 0) {
             ctx->flags |= SSI_FLAG_NO_EXEC;
         }
-        intern->accessenable = conf->accessenable;
+        intern->accessenable = (conf->accessenable > 0);
 
         ctx->if_nesting_level = 0;
         intern->re = NULL;
 
-        ctx->error_str = conf->default_error_msg;
-        ctx->time_str = conf->default_time_fmt;
+        ctx->error_str = conf->default_error_msg ? conf->default_error_msg :
+                         DEFAULT_ERROR_MSG;
+        ctx->time_str = conf->default_time_fmt ? conf->default_time_fmt :
+                        DEFAULT_TIME_FORMAT;
         intern->start_seq  = sconf->default_start_tag;
         intern->start_seq_pat = bndm_compile(ctx->pool, intern->start_seq,
                                              strlen(intern->start_seq));
         intern->end_seq = sconf->default_end_tag;
         intern->end_seq_len = strlen(intern->end_seq);
-        intern->undefined_echo = conf->undefined_echo;
-        intern->undefined_echo_len = strlen(conf->undefined_echo);
+        intern->undefined_echo = conf->undefined_echo ? conf->undefined_echo :
+                                 DEFAULT_UNDEFINED_ECHO;
+        intern->undefined_echo_len = strlen(intern->undefined_echo);
     }
 
     if ((parent = ap_get_module_config(r->request_config, &include_module))) {
@@ -3787,7 +3790,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
      */
 
     /* Must we respect the last modified header? By default, no */
-    if (conf->lastmodified) {
+    if (conf->lastmodified > 0) {
 
         /* update the last modified if we have a valid time, and only if
          * we don't already have a valid last modified.
@@ -3801,7 +3804,9 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     }
 
     /* Assure the platform supports Group protections */
-    else if (((conf->xbithack == XBITHACK_FULL)
+    else if (((conf->xbithack == XBITHACK_FULL ||
+               (conf->xbithack == XBITHACK_UNSET &&
+                DEFAULT_XBITHACK == XBITHACK_FULL))
         && (r->finfo.valid & APR_FINFO_GPROT)
         && (r->finfo.protection & APR_GEXECUTE))) {
         ap_update_mtime(r, r->finfo.mtime);
@@ -3844,7 +3849,10 @@ static int include_fixup(request_rec *r)
         include_dir_config *conf = ap_get_module_config(r->per_dir_config,
                                                         &include_module);
 
-        if (conf->xbithack == XBITHACK_OFF) {
+        if (conf->xbithack == XBITHACK_OFF ||
+            (DEFAULT_XBITHACK == XBITHACK_OFF &&
+             conf->xbithack == XBITHACK_UNSET))
+        {
             return DECLINED;
         }
 
@@ -3876,17 +3884,30 @@ static int include_fixup(request_rec *r)
 
 static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
 {
-    include_dir_config *result = apr_palloc(p, sizeof(include_dir_config));
+    include_dir_config *result = apr_pcalloc(p, sizeof(include_dir_config));
 
-    result->default_error_msg = DEFAULT_ERROR_MSG;
-    result->default_time_fmt  = DEFAULT_TIME_FORMAT;
-    result->undefined_echo    = DEFAULT_UNDEFINED_ECHO;
-    result->xbithack          = DEFAULT_XBITHACK;
-    result->accessenable      = DEFAULT_ACCESSENABLE;
-    result->lastmodified      = DEFAULT_LASTMODIFIED;
-    result->etag              = DEFAULT_ETAG;
+    result->xbithack          = XBITHACK_UNSET;
+    result->accessenable      = UNSET;
+    result->lastmodified      = UNSET;
+    result->etag              = UNSET;
 
     return result;
+}
+
+#define MERGE(b,o,n,val,unset) n->val = o->val != unset  ? o->val : b->val
+static void *merge_includes_dir_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    include_dir_config *base = (include_dir_config *)basev,
+                       *over = (include_dir_config *)overridesv,
+                       *new  = apr_palloc(p, sizeof(include_dir_config));
+    MERGE(base, over, new, default_error_msg, NULL);
+    MERGE(base, over, new, default_time_fmt,  NULL);
+    MERGE(base, over, new, undefined_echo,    NULL);
+    MERGE(base, over, new, xbithack,          XBITHACK_UNSET);
+    MERGE(base, over, new, accessenable,      UNSET);
+    MERGE(base, over, new, lastmodified,      UNSET);
+    MERGE(base, over, new, etag,              UNSET);
+    return new;
 }
 
 static void *create_includes_server_config(apr_pool_t *p, server_rec *server)
@@ -4068,7 +4089,7 @@ AP_DECLARE_MODULE(include) =
 {
     STANDARD20_MODULE_STUFF,
     create_includes_dir_config,   /* dir config creater */
-    NULL,                         /* dir merger --- default is to override */
+    merge_includes_dir_config,    /* dir config merger */
     create_includes_server_config,/* server config */
     NULL,                         /* merge server config */
     includes_cmds,                /* command apr_table_t */
