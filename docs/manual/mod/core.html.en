@@ -2320,10 +2320,10 @@ hosting</td></tr>
     required directive if you want to configure <a href="../vhosts/">name-based virtual hosts</a>.</p>
 
     <p>Although <var>addr</var> can be hostname it is recommended
-    that you always use an IP address, e.g.</p>
+    that you always use an IP address and a port, e.g.</p>
 
     <div class="example"><p><code>
-      NameVirtualHost 111.22.33.44
+      NameVirtualHost 111.22.33.44:80
     </code></p></div>
 
     <p>With the <code class="directive">NameVirtualHost</code> directive you
@@ -2374,8 +2374,8 @@ hosting</td></tr>
       exactly match the argument to the <code class="directive">NameVirtualHost</code> directive.</p>
 
       <div class="example"><p><code>
-        NameVirtualHost 1.2.3.4<br />
-        &lt;VirtualHost 1.2.3.4&gt;<br />
+        NameVirtualHost 1.2.3.4:80<br />
+        &lt;VirtualHost 1.2.3.4:80&gt;<br />
         # ...<br />
         &lt;/VirtualHost&gt;<br />
       </code></p></div>
@@ -3531,7 +3531,7 @@ hostname or IP address</td></tr>
     </ul>
 
     <div class="example"><h3>Example</h3><p><code>
-      &lt;VirtualHost 10.1.2.3&gt;<br />
+      &lt;VirtualHost 10.1.2.3:80&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -3548,7 +3548,7 @@ hostname or IP address</td></tr>
     IPv6 example is shown below:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
