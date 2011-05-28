@@ -4055,14 +4055,14 @@ static const command_rec includes_cmds[] =
                   "SSI End String Tag"),
     AP_INIT_TAKE1("SSIUndefinedEcho", set_undefined_echo, NULL, OR_ALL,
                   "String to be displayed if an echoed variable is undefined"),
-    AP_INIT_FLAG("SSIAccessEnable", ap_set_flag_slot,
+    AP_INIT_FLAG("SSIAccessEnable", ap_set_flag_slot_char,
                   (void *)APR_OFFSETOF(include_dir_config, accessenable),
                   OR_LIMIT, "Whether testing access is enabled. Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("SSILastModified", ap_set_flag_slot,
+    AP_INIT_FLAG("SSILastModified", ap_set_flag_slot_char,
                   (void *)APR_OFFSETOF(include_dir_config, lastmodified),
                   OR_LIMIT, "Whether to set the last modified header or respect "
                   "an existing header. Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("SSIEtag", ap_set_flag_slot,
+    AP_INIT_FLAG("SSIEtag", ap_set_flag_slot_char,
                   (void *)APR_OFFSETOF(include_dir_config, etag),
                   OR_LIMIT, "Whether to allow the generation of ETags within the server. "
                   "Existing ETags will be preserved. Limited to 'on' or 'off'"),
