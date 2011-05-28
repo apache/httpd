@@ -384,7 +384,7 @@ static ap_expr_t *ap_expr_info_make(int type, const char *name,
     ap_expr_t *info = apr_palloc(ctx->pool, sizeof(ap_expr_t));
     ap_expr_lookup_parms parms;
     parms.type  = type;
-    parms.flags = 0;
+    parms.flags = ctx->flags;
     parms.pool  = ctx->pool;
     parms.ptemp = ctx->ptemp;
     parms.name  = name;
@@ -691,12 +691,47 @@ AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info,
     return ap_expr_exec_re(r, info, 0, NULL, NULL, err);
 }
 
+AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
+{
+    int rc;
+
+    AP_DEBUG_ASSERT(ctx->p != NULL);
+    /* XXX: allow r, c == NULL */
+    AP_DEBUG_ASSERT(ctx->r != NULL);
+    AP_DEBUG_ASSERT(ctx->c != NULL);
+    AP_DEBUG_ASSERT(ctx->s != NULL);
+    AP_DEBUG_ASSERT(ctx->err != NULL);
+    AP_DEBUG_ASSERT(ctx->info != NULL);
+    if (ctx->re_pmatch) {
+        AP_DEBUG_ASSERT(ctx->re_source != NULL);
+        AP_DEBUG_ASSERT(ctx->re_nmatch > 0);
+    }
+
+    *ctx->err = NULL;
+    rc = ap_expr_eval(ctx, ctx->info->root_node);
+    if (*ctx->err != NULL) {
+        ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
+                      "Evaluation of expression from %s:%d failed: %s",
+                      ctx->info->filename, ctx->info->line_number, *ctx->err);
+        return -1;
+    } else {
+        rc = rc ? 1 : 0;
+        ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
+                      "Evaluation of expression from %s:%d gave: %d",
+                      ctx->info->filename, ctx->info->line_number, rc);
+
+        if (ctx->vary_this)
+            apr_table_merge(ctx->r->headers_out, "Vary", *ctx->vary_this);
+
+        return rc;
+    }
+}
+
 AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
                                 apr_size_t nmatch, ap_regmatch_t *pmatch,
                                 const char **source, const char **err)
 {
     ap_expr_eval_ctx_t ctx;
-    int rc;
     int dont_vary = (info->flags & AP_EXPR_FLAGS_DONT_VARY);
     const char *tmp_source = NULL, *vary_this = NULL;
     ap_regmatch_t tmp_pmatch[10];
@@ -711,35 +746,15 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     ctx.re_pmatch = pmatch;
     ctx.re_source = source;
     ctx.vary_this = dont_vary ? NULL : &vary_this;
+    ctx.data = NULL;
 
     if (!pmatch) {
         ctx.re_nmatch = 10;
         ctx.re_pmatch = tmp_pmatch;
         ctx.re_source = &tmp_source;
     }
-    else {
-        AP_DEBUG_ASSERT(source != NULL);
-        AP_DEBUG_ASSERT(nmatch > 0);
-    }
 
-    *err = NULL;
-    rc = ap_expr_eval(&ctx, info->root_node);
-    if (*err != NULL) {
-        ap_log_rerror(LOG_MARK(info), APLOG_ERR, 0, r,
-                      "Evaluation of expression from %s:%d failed: %s",
-                      info->filename, info->line_number, *err);
-        return -1;
-    } else {
-        rc = rc ? 1 : 0;
-        ap_log_rerror(LOG_MARK(info), APLOG_TRACE4, 0, r,
-                      "Evaluation of expression from %s:%d gave: %d",
-                      info->filename, info->line_number, rc);
-
-        if (vary_this)
-            apr_table_merge(r->headers_out, "Vary", vary_this);
-
-        return rc;
-    }
+    return ap_expr_exec_ctx(&ctx);
 }
 
 static void add_vary(ap_expr_eval_ctx_t *ctx, const char *name)
@@ -911,12 +926,12 @@ static int op_file_min(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
     apr_finfo_t sb;
     const char *name = (const char *)data;
     if (apr_stat(&sb, arg, APR_FINFO_MIN, ctx->p) != APR_SUCCESS)
-        return 0;
+        return FALSE;
     switch (name[0]) {
     case 'd':
         return (sb.filetype == APR_DIR);
     case 'e':
-        return 1;
+        return TRUE;
     case 'f':
         return (sb.filetype == APR_REG);
     case 's':
@@ -924,7 +939,7 @@ static int op_file_min(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
     default:
         ap_assert(0);
     }
-    return 0;
+    return FALSE;
 }
 
 static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
@@ -933,10 +948,10 @@ static int op_file_link(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
 #if !defined(OS2)
     if (apr_stat(&sb, arg, APR_FINFO_MIN | APR_FINFO_LINK, ctx->p) == APR_SUCCESS
         && sb.filetype == APR_LNK) {
-        return 1;
+        return TRUE;
     }
 #endif
-    return 0;
+    return FALSE;
 }
 
 static int op_file_xbit(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
@@ -944,24 +959,24 @@ static int op_file_xbit(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
     apr_finfo_t sb;
     if (apr_stat(&sb, arg, APR_FINFO_PROT| APR_FINFO_LINK, ctx->p) == APR_SUCCESS
         && (sb.protection & (APR_UEXECUTE | APR_GEXECUTE | APR_WEXECUTE))) {
-        return 1;
+        return TRUE;
     }
-    return 0;
+    return FALSE;
 }
 
 static int op_url_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
 {
-    int rc = 0;
+    int rc = FALSE;
     request_rec  *rsub, *r = ctx->r;
     if (!r)
-        return 0;
+        return FALSE;
     /* avoid some infinite recursions */
     if (r->main && r->main->uri && r->uri && strcmp(r->main->uri, r->uri) == 0)
-        return 0;
+        return FALSE;
 
     rsub = ap_sub_req_lookup_uri(arg, r, NULL);
     if (rsub->status < 400) {
-            rc = 1;
+            rc = TRUE;
     }
     ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
                   "Subrequest for -U %s at %s:%d gave status: %d",
@@ -973,16 +988,16 @@ static int op_url_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
 
 static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
 {
-    int rc = 0;
+    int rc = FALSE;
     apr_finfo_t sb;
     request_rec *rsub, *r = ctx->r;
     if (!r)
-        return 0;
+        return FALSE;
     rsub = ap_sub_req_lookup_file(arg, r, NULL);
     if (rsub->status < 300 &&
         /* double-check that file exists since default result is 200 */
         apr_stat(&sb, rsub->filename, APR_FINFO_MIN, ctx->p) == APR_SUCCESS) {
-        rc = 1;
+        rc = TRUE;
     }
     ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
                   "Subrequest for -F %s at %s:%d gave status: %d",
@@ -1064,6 +1079,8 @@ static const char *request_var_names[] = {
     "REQUEST_LOG_ID",           /* 20 */
     "SCRIPT_USER",              /* 21 */
     "SCRIPT_GROUP",             /* 22 */
+    "DOCUMENT_URI",             /* 23 */
+    "LAST_MODIFIED",            /* 24 */
     NULL
 };
 
@@ -1131,6 +1148,17 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
             if (r->finfo.valid & APR_FINFO_USER)
                 apr_gid_name_get(&result, r->finfo.group, ctx->p);
             return result;
+        }
+    case 23:
+        return r->uri;
+    case 24:
+        {
+            apr_time_exp_t tm;
+            apr_time_exp_lt(&tm, r->mtime);
+            return apr_psprintf(ctx->p, "%02d%02d%02d%02d%02d%02d%02d",
+                                (tm.tm_year / 100) + 19, (tm.tm_year % 100),
+                                tm.tm_mon+1, tm.tm_mday, tm.tm_hour, tm.tm_min,
+                                tm.tm_sec);
         }
     default:
         ap_assert(0);
@@ -1326,6 +1354,7 @@ struct expr_provider_single {
     const void *func;
     const char *name;
     ap_expr_lookup_fn_t *arg_parsing_func;
+    int restricted;
 };
 
 struct expr_provider_multi {
@@ -1342,46 +1371,47 @@ static const struct expr_provider_multi var_providers[] = {
 };
 
 static const struct expr_provider_single string_func_providers[] = {
-    { osenv_func,           "osenv",          NULL },
-    { env_func,             "env",            NULL },
-    { req_table_func,       "resp",           NULL },
-    { req_table_func,       "req",            NULL },
+    { osenv_func,           "osenv",          NULL, 0 },
+    { env_func,             "env",            NULL, 0 },
+    { req_table_func,       "resp",           NULL, 0 },
+    { req_table_func,       "req",            NULL, 0 },
     /* 'http' as alias for 'req' for compatibility with ssl_expr */
-    { req_table_func,       "http",           NULL },
-    { req_table_func,       "note",           NULL },
-    { req_table_func,       "reqenv",         NULL },
-    { tolower_func,         "tolower",        NULL },
-    { toupper_func,         "toupper",        NULL },
-    { escape_func,          "escape",         NULL },
-    { unescape_func,        "unescape",       NULL },
-    { file_func,            "file",           NULL },
-    { filesize_func,        "filesize",       NULL },
+    { req_table_func,       "http",           NULL, 0 },
+    { req_table_func,       "note",           NULL, 0 },
+    { req_table_func,       "reqenv",         NULL, 0 },
+    { tolower_func,         "tolower",        NULL, 0 },
+    { toupper_func,         "toupper",        NULL, 0 },
+    { escape_func,          "escape",         NULL, 0 },
+    { unescape_func,        "unescape",       NULL, 0 },
+    { file_func,            "file",           NULL, 1 },
+    { filesize_func,        "filesize",       NULL, 1 },
     { NULL, NULL, NULL}
 };
 /* XXX: base64 encode/decode ? */
 
 static const struct expr_provider_single unary_op_providers[] = {
-    { op_nz,        "n", NULL },
-    { op_nz,        "z", NULL },
-    { op_R,         "R", subnet_parse_arg },
-    { op_T,         "T", NULL },
-    { op_file_min,  "d", NULL },
-    { op_file_min,  "e", NULL },
-    { op_file_min,  "f", NULL },
-    { op_file_min,  "s", NULL },
-    { op_file_link, "L", NULL },
-    { op_file_link, "h", NULL },
-    { op_file_xbit, "x", NULL },
-    { op_file_subr, "F", NULL },
-    { op_url_subr,  "U", NULL },
+    { op_nz,        "n", NULL,             0 },
+    { op_nz,        "z", NULL,             0 },
+    { op_R,         "R", subnet_parse_arg, 0 },
+    { op_T,         "T", NULL,             0 },
+    { op_file_min,  "d", NULL,             1 },
+    { op_file_min,  "e", NULL,             1 },
+    { op_file_min,  "f", NULL,             1 },
+    { op_file_min,  "s", NULL,             1 },
+    { op_file_link, "L", NULL,             1 },
+    { op_file_link, "h", NULL,             1 },
+    { op_file_xbit, "x", NULL,             1 },
+    { op_file_subr, "F", NULL,             0 },
+    { op_url_subr,  "U", NULL,             0 },
+    { op_url_subr,  "A", NULL,             0 },
     { NULL, NULL, NULL }
 };
 
 static const struct expr_provider_single binary_op_providers[] = {
-    { op_ipmatch,   "ipmatch",      subnet_parse_arg },
-    { op_fnmatch,   "fnmatch",      NULL },
-    { op_strmatch,  "strmatch",     NULL },
-    { op_strcmatch, "strcmatch",    NULL },
+    { op_ipmatch,   "ipmatch",      subnet_parse_arg, 0 },
+    { op_fnmatch,   "fnmatch",      NULL,             0 },
+    { op_strmatch,  "strmatch",     NULL,             0 },
+    { op_strcmatch, "strcmatch",    NULL,             0 },
     { NULL, NULL, NULL }
 };
 
@@ -1423,6 +1453,15 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
             }
             while (prov->func) {
                 if (strcasecmp(prov->name, parms->name) == 0) {
+                    if ((parms->flags & AP_EXPR_FLAGS_RESTRICTED)
+                        && prov->restricted) {
+                        *parms->err =
+                            apr_psprintf(parms->ptemp,
+                                         "%s%s not available in restricted context",
+                                         (parms->type == AP_EXPR_FUNC_STRING) ? "" : "-",
+                                         prov->name);
+                        return !OK;
+                    }
                     *parms->func = prov->func;
                     if (prov->arg_parsing_func) {
                         return prov->arg_parsing_func(parms);

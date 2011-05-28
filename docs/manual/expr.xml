@@ -158,6 +158,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>The scheme part of the request's URI</td></tr>
     <tr><td><code>REQUEST_URI</code></td>
         <td>The URI of the request</td></tr>
+    <tr><td><code>DOCUMENT_URI</code></td>
+        <td>Same as REQUEST_URI</td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
         <td>The full local filesystem path to the file or script matching the
             request, if this has already been determined by the server at the
@@ -166,6 +168,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
             <code>REQUEST_URI</code> </td></tr>
     <tr><td><code>SCRIPT_FILENAME</code></td>
         <td>Same as <code>REQUEST_FILENAME</code></td></tr>
+    <tr><td><code>LAST_MODIFIED</code></td>
+        <td>The date and time of last modification of the file in the format
+            <code>20101231235959</code>, if this has already been determined by
+            the server at the time <code>LAST_MODIFIED</code> is referenced.
+            </td></tr>
     <tr><td><code>SCRIPT_USER</code></td>
         <td>The user name of the owner of the script.</td></tr>
     <tr><td><code>SCRIPT_GROUP</code></td>
@@ -374,6 +381,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
             currently-configured access controls for that path. This uses an
             internal subrequest to do the check, so use it with care - it can
             impact your server's performance!</td></tr>
+    <tr><td><code>-A</code></td>
+        <td>Alias for <code>-U</code></td></tr>
     <tr><td><code>-n</code></td>
         <td>True if string is not empty</td></tr>
     <tr><td><code>-z</code></td>

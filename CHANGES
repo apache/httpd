@@ -2,6 +2,13 @@
 
 Changes with Apache 2.3.13
 
+  *) core: Add some features to ap_expr for use by mod_include: a restricted
+     mode that does not allow to bypass request access restrictions; new
+     variables DOCUMENT_URI (alias for REQUEST_URI), LAST_MODIFIED; -A as an
+     alias for -U; an additional data entry in ap_expr_eval_ctx_t for use by
+     the consumer; an extensible ap_expr_exec_ctx() API that allows to use that
+     data entry. [Stefan Fritsch]
+
   *) mod_include: Merge directory configs instead of one SSI* config directive
      causing all other per-directory SSI* config directives to be reset.
      [Stefan Fritsch]
