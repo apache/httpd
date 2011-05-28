@@ -354,48 +354,50 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
 
-    <tr><th>Name</th><th>Description</th></tr>
+    <tr><th>Name</th><th>Description</th><th>Restricted</th></tr>
     <tr><td><code>-d</code></td>
         <td>The argument is treated as a filename.
-            True if the file exists and is a directory</td></tr>
+            True if the file exists and is a directory</td><td>yes</td></tr>
     <tr><td><code>-e</code></td>
         <td>The argument is treated as a filename.
-            True if the file (or dir or special) exists</td></tr>
+            True if the file (or dir or special) exists</td><td>yes</td></tr>
     <tr><td><code>-f</code></td>
         <td>The argument is treated as a filename.
-            True if the file exists and is regular file</td></tr>
+            True if the file exists and is regular file</td><td>yes</td></tr>
     <tr><td><code>-L</code></td>
         <td>The argument is treated as a filename.
-            True if the file exists and is symlink</td></tr>
+            True if the file exists and is symlink</td><td>yes</td></tr>
     <tr><td><code>-h</code></td>
         <td>The argument is treated as a filename.
             True if the file exists and is symlink
-            (same as <code>-L</code>)</td></tr>
+            (same as <code>-L</code>)</td><td>yes</td></tr>
     <tr><td><code>-F</code></td>
         <td>True if string is a valid file, accessible via all the server's
             currently-configured access controls for that path. This uses an
             internal subrequest to do the check, so use it with care - it can
-            impact your server's performance!</td></tr>
+            impact your server's performance!</td><td></td></tr>
     <tr><td><code>-U</code></td>
         <td>True if string is a valid URL, accessible via all the server's
             currently-configured access controls for that path. This uses an
             internal subrequest to do the check, so use it with care - it can
-            impact your server's performance!</td></tr>
+            impact your server's performance!</td><td></td></tr>
     <tr><td><code>-A</code></td>
-        <td>Alias for <code>-U</code></td></tr>
+        <td>Alias for <code>-U</code></td><td></td></tr>
     <tr><td><code>-n</code></td>
-        <td>True if string is not empty</td></tr>
+        <td>True if string is not empty</td><td></td></tr>
     <tr><td><code>-z</code></td>
-        <td>True if string is empty</td></tr>
+        <td>True if string is empty</td><td></td></tr>
     <tr><td><code>-T</code></td>
         <td>False if string is empty, "<code>0</code>", "<code>off</code>",
             "<code>false</code>", or "<code>no</code>" (case insensitive).
-            True otherwise.</td></tr>
+            True otherwise.</td><td></td></tr>
     <tr><td><code>-R</code></td>
         <td>Same as "<code>%{REMOTE_ADDR} -ipmatch ...</code>", but more efficient
-        </td></tr>
+        </td><td></td></tr>
     </table>
 
+    <p>The operators marked as "restricted" are not available in some modules
+    like <module>mod_include</module>.</p>
 </section>
 
 <section id="functions">
@@ -408,34 +410,39 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
 
-    <tr><th>Name</th><th>Description</th></tr>
+    <tr><th>Name</th><th>Description</th><th>Restricted</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
-        <td>Get HTTP request header</td></tr>
+        <td>Get HTTP request header</td><td></td></tr>
     <tr><td><code>resp</code></td>
-        <td>Get HTTP response header</td></tr>
+        <td>Get HTTP response header</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
-        <td>Lookup request environment variable</td></tr>
+        <td>Lookup request environment variable</td><td></td></tr>
     <tr><td><code>osenv</code></td>
-        <td>Lookup operating system environment variable</td></tr>
+        <td>Lookup operating system environment variable</td><td></td></tr>
     <tr><td><code>note</code></td>
-        <td>Lookup request note</td></tr>
+        <td>Lookup request note</td><td></td></tr>
     <tr><td><code>env</code></td>
         <td>Return first match of <code>note</code>, <code>reqenv</code>,
-            <code>osenv</code></td></tr>
+            <code>osenv</code></td><td></td></tr>
     <tr><td><code>tolower</code></td>
-        <td>Convert string to lower case</td></tr>
+        <td>Convert string to lower case</td><td></td></tr>
     <tr><td><code>toupper</code></td>
-        <td>Convert string to uppser case</td></tr>
+        <td>Convert string to uppser case</td><td></td></tr>
     <tr><td><code>escape</code></td>
-        <td>Escape special characters in %hex encoding</td></tr>
+        <td>Escape special characters in %hex encoding</td><td></td></tr>
     <tr><td><code>unescape</code></td>
-        <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
+        <td>Unescape %hex encoded string, leaving URL-special characters
+            encoded (XXX: describe better)</td><td></td></tr>
     <tr><td><code>file</code></td>
-        <td>Read contents from a file</td></tr>
+        <td>Read contents from a file</td><td>yes</td></tr>
     <tr><td><code>filesize</code></td>
-        <td>Return size of a file (or 0 if file does not exist or is not regular file)</td></tr>
+        <td>Return size of a file (or 0 if file does not exist or is not
+            regular file)</td><td>yes</td></tr>
 
     </table>
+
+    <p>The functions marked as "restricted" are not available in some modules
+    like <module>mod_include</module>.</p>
 
     <p>In addition to string-valued functions, there are also list-valued functions which
     take one string as argument and return a wordlist, i.e. a list of strings. The wordlist
