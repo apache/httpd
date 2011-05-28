@@ -4009,7 +4009,7 @@ static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
     result->accessenable      = UNSET;
     result->lastmodified      = UNSET;
     result->etag              = UNSET;
-    result->accessenable      = UNSET;
+    result->legacy_expr       = UNSET;
 
     return result;
 }
