@@ -96,8 +96,6 @@ RELEASE SHOWSTOPPERS:
     jim sez: Why a blocker?, pgollucci +1 jim
     wrowe asks: what's the API change required?
 
-  * mod_includes aught to use ap_expr
-
   * Clarify/potentially change the meaning of MaxConnections for Event MPM 
     with respect to accepting new connections and keep alive requests for 
     the docs and example config.  This shouldn't change after users and 

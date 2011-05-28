@@ -39,6 +39,7 @@
 #include "util_script.h"
 #include "http_core.h"
 #include "mod_include.h"
+#include "ap_expr.h"
 
 /* helper for Latin1 <-> entity encoding */
 #if APR_CHARSET_EBCDIC
@@ -119,6 +120,7 @@ typedef struct {
     signed char accessenable;
     signed char lastmodified;
     signed char etag;
+    signed char legacy_expr;
 } include_dir_config;
 
 typedef struct {
@@ -195,8 +197,13 @@ struct ssi_internal_ctx {
     const char   *undefined_echo;
     apr_size_t    undefined_echo_len;
 
-    int         accessenable;    /* is using the access tests allowed? */
+    char         accessenable;    /* is using the access tests allowed? */
+    char         legacy_expr;     /* use ap_expr or legacy mod_include
+                                    expression parser? */
 
+    ap_expr_eval_ctx_t *expr_eval_ctx;  /* NULL if there wasn't an ap_expr yet */
+    const char         *expr_vary_this; /* for use by ap_expr_eval_ctx */
+    const char         *expr_err;       /* for use by ap_expr_eval_ctx */
 #ifdef DEBUG_INCLUDE
     struct {
         ap_filter_t *f;
@@ -454,7 +461,7 @@ static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
 /* Sentinel value to store in subprocess_env for items that
  * shouldn't be evaluated until/unless they're actually used
  */
-static const char lazy_eval_sentinel;
+static const char lazy_eval_sentinel = '\0';
 #define LAZY_VALUE (&lazy_eval_sentinel)
 
 /* default values */
@@ -688,6 +695,48 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
 
     return val;
 }
+
+static const char *include_expr_var_fn(ap_expr_eval_ctx_t *eval_ctx,
+                                       const void *data,
+                                       const char *arg)
+{
+    const char *res, *name = data;
+    include_ctx_t *ctx = eval_ctx->data;
+    if (name[0] == 'e') {
+        /* keep legacy "env" semantics */
+        if ((res = apr_table_get(ctx->r->notes, arg)) != NULL)
+            return res;
+        else if ((res = get_include_var(arg, ctx)) != NULL)
+            return res;
+        else
+            return getenv(arg);
+    }
+    else {
+        return get_include_var(arg, ctx);
+    }
+}
+
+static int include_expr_lookup(ap_expr_lookup_parms *parms)
+{
+    switch (parms->type) {
+    case AP_EXPR_FUNC_STRING:
+        if (strcasecmp(parms->name, "v") == 0 ||
+            strcasecmp(parms->name, "reqenv") == 0 ||
+            strcasecmp(parms->name, "env") == 0) {
+            *parms->func = include_expr_var_fn;
+            *parms->data = parms->name;
+            return OK;
+        }
+        break;
+    /*
+     * We could also make the SSI vars available as %{...} style variables
+     * (AP_EXPR_FUNC_VAR), but this would create problems if we ever want
+     * to cache parsed expressions for performance reasons.
+     */
+    }
+    return ap_run_expr_lookup(parms);
+}
+
 
 /*
  * Do variable substitution on strings
@@ -1536,6 +1585,69 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
     return (root ? root->value : 0);
 }
 
+/* same as above, but use common ap_expr syntax / API */
+static int parse_ap_expr(include_ctx_t *ctx, const char *expr, int *was_error)
+{
+    ap_expr_info_t expr_info;
+    const char *err;
+    int ret;
+    backref_t *re = ctx->intern->re;
+    ap_expr_eval_ctx_t *eval_ctx = ctx->intern->expr_eval_ctx;
+
+    expr_info.filename = ctx->r->filename;
+    expr_info.line_number = 0;
+    expr_info.module_index = APLOG_MODULE_INDEX;
+    expr_info.flags = AP_EXPR_FLAGS_RESTRICTED;
+    err = ap_expr_parse(ctx->r->pool, ctx->r->pool, &expr_info, expr,
+                        include_expr_lookup);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r,
+                      "Could not parse expr \"%s\" in %s: %s", expr,
+                      ctx->r->filename, err);
+        *was_error = 1;
+        return 0;
+    }
+
+    if (!re) {
+        ctx->intern->re = re = apr_pcalloc(ctx->pool, sizeof(*re));
+    }
+    else {
+        /* ap_expr_exec_ctx() does not care about re->have_match but only about
+         * re->source
+         */
+        if (!re->have_match)
+            re->source = NULL;
+    }
+
+    if (!eval_ctx) {
+        eval_ctx = apr_pcalloc(ctx->pool, sizeof(*eval_ctx));
+        ctx->intern->expr_eval_ctx = eval_ctx;
+        eval_ctx->r         = ctx->r;
+        eval_ctx->c         = ctx->r->connection;
+        eval_ctx->s         = ctx->r->server;
+        eval_ctx->p         = ctx->r->pool;
+        eval_ctx->data      = ctx;
+        eval_ctx->err       = &ctx->intern->expr_err;
+        eval_ctx->vary_this = &ctx->intern->expr_vary_this;
+        eval_ctx->re_nmatch = AP_MAX_REG_MATCH;
+        eval_ctx->re_pmatch = re->match;
+        eval_ctx->re_source = &re->source;
+    }
+
+    eval_ctx->info = &expr_info;
+    ret = ap_expr_exec_ctx(eval_ctx);
+    if (ret < 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->r,
+                      "Could not evaluate expr \"%s\" in %s: %s", expr,
+                      ctx->r->filename, ctx->intern->expr_err);
+        *was_error = 1;
+        return 0;
+    }
+    *was_error = 0;
+    if (re->source)
+        re->have_match = 1;
+    return ret;
+}
 
 /*
  * +-------------------------------------------------------+
@@ -2211,7 +2323,10 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
 
     DEBUG_PRINTF((ctx, "****    if expr=\"%s\"\n", expr));
 
-    expr_ret = parse_expr(ctx, expr, &was_error);
+    if (ctx->intern->legacy_expr)
+        expr_ret = parse_expr(ctx, expr, &was_error);
+    else
+        expr_ret = parse_ap_expr(ctx, expr, &was_error);
 
     if (was_error) {
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
@@ -3731,6 +3846,10 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
             ctx->flags |= SSI_FLAG_NO_EXEC;
         }
         intern->accessenable = (conf->accessenable > 0);
+        intern->legacy_expr = (conf->legacy_expr > 0);
+        intern->expr_eval_ctx = NULL;
+        intern->expr_err = NULL;
+        intern->expr_vary_this = NULL;
 
         ctx->if_nesting_level = 0;
         intern->re = NULL;
@@ -3890,6 +4009,7 @@ static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
     result->accessenable      = UNSET;
     result->lastmodified      = UNSET;
     result->etag              = UNSET;
+    result->accessenable      = UNSET;
 
     return result;
 }
@@ -3907,6 +4027,7 @@ static void *merge_includes_dir_config(apr_pool_t *p, void *basev, void *overrid
     MERGE(base, over, new, accessenable,      UNSET);
     MERGE(base, over, new, lastmodified,      UNSET);
     MERGE(base, over, new, etag,              UNSET);
+    MERGE(base, over, new, legacy_expr,       UNSET);
     return new;
 }
 
@@ -4058,6 +4179,11 @@ static const command_rec includes_cmds[] =
     AP_INIT_FLAG("SSIAccessEnable", ap_set_flag_slot_char,
                   (void *)APR_OFFSETOF(include_dir_config, accessenable),
                   OR_LIMIT, "Whether testing access is enabled. Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("SSILegacyExprParser", ap_set_flag_slot_char,
+                  (void *)APR_OFFSETOF(include_dir_config, legacy_expr),
+                  OR_LIMIT,
+                  "Whether to use the legacy expression parser compatible "
+                  "with <= 2.2.x. Limited to 'on' or 'off'"),
     AP_INIT_FLAG("SSILastModified", ap_set_flag_slot_char,
                   (void *)APR_OFFSETOF(include_dir_config, lastmodified),
                   OR_LIMIT, "Whether to set the last modified header or respect "

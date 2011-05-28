@@ -504,12 +504,14 @@
     directive. This includes the <code>config</code>,
     <code>exec</code>, <code>flastmod</code>, <code>fsize</code>,
     <code>include</code>, <code>echo</code>, and <code>set</code>
-    directives, as well as the arguments to conditional operators.
+    directives. If <directive module="mod_include"
+    >SSILegacyExprParser</directive> is set to <code>on</code>,
+    substitution also occures in the arguments to conditional operators.
     You can insert a literal dollar sign into the string using backslash
     quoting:</p>
 
     <example>
-      &lt;!--#if expr="$a = \$test" --&gt;
+      &lt;!--#set var="cur" value="\$test" --&gt;
     </example>
 
     <p>If a variable reference needs to be substituted in the
@@ -526,26 +528,6 @@
     to "<code>X_Y</code>" if <code>REMOTE_HOST</code> is
     "<code>X</code>" and <code>REQUEST_METHOD</code> is
     "<code>Y</code>".</p>
-
-    <p>The below example will print "in foo" if the
-    <code>DOCUMENT_URI</code> is <code>/foo/file.html</code>, "in bar"
-    if it is <code>/bar/file.html</code> and "in neither" otherwise:</p>
-
-    <example>
-      &lt;!--#if expr='"$DOCUMENT_URI" = "/foo/file.html"' --&gt;<br />
-      <indent>
-        in foo<br />
-      </indent>
-      &lt;!--#elif expr='"$DOCUMENT_URI" = "/bar/file.html"' --&gt;<br />
-      <indent>
-        in bar<br />
-      </indent>
-      &lt;!--#else --&gt;<br />
-      <indent>
-        in neither<br />
-      </indent>
-      &lt;!--#endif --&gt;
-    </example>
 </section>
 
 <section id="flowctrl">
@@ -573,7 +555,55 @@
     <p>The <code>endif</code> element ends the <code>if</code> element
     and is required.</p>
 
-    <p><var>test_condition</var> is one of the following:</p>
+    <p><var>test_condition</var> is a boolean expression tha follows the
+    <a href="../expr.html">ap_expr</a> syntax. The syntax can be changed
+    to be compatible with Apache HTTPD 2.2.x using <directive
+    module="mod_include">SSILegacyExprParser</directive>.</p>
+
+    <p>The SSI variables set with the <code>var</code> element are exported
+    into the request environment and can be accessed with the
+    <code>reqenv</code> function. As a short-cut, the function name
+    <code>v</code> is also available inside <module>mod_include</module>.</p>
+
+    <p>The below example will print "from local net" if client IP address
+    belongs to the 10.0.0.0/8 subnet.</p>
+
+    <example>
+      &lt;!--#if expr='-R "10.0.0.0/8"' --&gt;<br />
+      <indent>
+        from local net<br />
+      </indent>
+      &lt;!--#else --&gt;<br />
+      <indent>
+        from somewhere else<br />
+      </indent>
+      &lt;!--#endif --&gt;
+    </example>
+
+    <p>The below example will print "foo is bar" if the variable
+    <code>foo</code> is set to the value "bar".</p>
+
+    <example>
+      &lt;!--#if expr='v("foo") = "bar"' --&gt;<br />
+      <indent>
+        foo is bar<br />
+      </indent>
+      &lt;!--#endif --&gt;
+    </example>
+
+    <note><title>Reference Documentation</title>
+    <p>See also: <a href="../expr.html">Expressions in Apache HTTP Server</a>,
+    for a complete reference and examples. The <em>restricted</em> functions
+    are not available inside <module>mod_include</module></p>
+    </note>
+</section>
+
+<section id="legacyexpr">
+    <title>Legacy expression syntax</title>
+
+    <p>This section describes the syntax of the <code>#if expr</code>
+    element if <directive module="mod_include">SSILegacyExprParser</directive>
+    is set to <code>on</code>.</p>
 
     <dl>
       <dt><code><var>string</var></code></dt>
@@ -713,12 +743,6 @@
      be escaped.  This is regardless of their meaning to the regex engine.</p>
     </note>
 
-    <!-- mod_include does not use ap_expr, yet
-    <note><title>Reference Documentation</title>
-    <p>See also: <a href="../expr.html">Expressions in Apache HTTP Server</a>,
-    for a complete reference and examples.</p>
-    </note>
-    -->
 </section>
 
 <directivesynopsis>
@@ -856,14 +880,20 @@ displayed</description>
 
 <directivesynopsis>
 <name>SSIAccessEnable</name>
-<description>Enable the -A flag during conditional flow control processing.</description>
+<description>Enable the -A flag in legacy conditional expressions.</description>
 <syntax>SSIAccessEnable on|off</syntax>
 <default>SSIAccessEnable off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
+    <note><directive>SSIAccessEnable</directive> has no effect unless
+    <directive module="mod_include">SSILegacyExprParser</directive> is set to
+    <code>on</code>.
+    </note>
+
     <p>The <directive>SSIAccessEnable</directive> directive controls whether
-    the -A test is enabled during conditional flow control processing.
+    the -A test is enabled during conditional flow control processing when
+    using the 2.2.x compatible expression parser.
     <directive>SSIAccessEnable</directive> can take on the following values:</p>
 
     <dl>
@@ -961,7 +991,25 @@ server.</description>
       
 </usage>
 </directivesynopsis>
-  
+
+<directivesynopsis>
+<name>SSILegacyExprParser</name>
+<description>Enable compatibility mode for conditional expressions.</description>
+<syntax>SSILegacyExprParser on|off</syntax>
+<default>SSILegacyExprParser off</default>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>Available in version 2.3.13 and later.</compatibility>
+
+<usage>
+    <p>As of version 2.3.13, <module>mod_include</module> has switched to the
+    new <a href="../expr.html">ap_expr</a> syntax for conditional expressions
+    in <code>#if</code> flow control elements.  This directive allows to
+    switch to the <a href="#legacyexpr">old syntax</a> which is compatible
+    with Apache HTTPD version 2.2.x and earlier. 
+    </p>
+</usage>
+</directivesynopsis>
+
 <directivesynopsis>
 <name>XBitHack</name>
 <description>Parse SSI directives in files with the execute bit

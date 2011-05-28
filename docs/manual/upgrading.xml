@@ -226,9 +226,17 @@
         now uses a boolean expression to determine if a filter is applied.
         </li>
 
-        <li><module>mod_include</module>: An SSI* config directive in directory
-        scope no longer causes all other per-directory SSI* directives to be
-        reset to their default values.
+        <li><module>mod_include</module>:
+            <ul>
+            <li>The <code>#if expr</code> element now uses the new <a
+            href="expr.html">expression parser</a>. The old syntax can be
+            restored with the new directive <directive module="include"
+            >SSILegacyExprParser</directive>.
+            </li>
+            <li>An SSI* config directive in directory scope no longer causes
+            all other per-directory SSI* directives to be reset to their
+            default values.</li>
+            </ul>
         </li>
       </ul>
     </section>
