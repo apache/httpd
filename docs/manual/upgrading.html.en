@@ -180,8 +180,8 @@
         matches whole cookie names.  Previously any substring would
         match.</li>
 
-        <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: The format of the <code class="directive"><a href="./mod/dav_fs.html#davlockdb">DavLockDB</a></code> file has changed for
-        systems with inodes.  The old <code class="directive"><a href="./mod/dav_fs.html#davlockdb">DavLockDB</a></code> file must be deleted on
+        <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: The format of the <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> file has changed for
+        systems with inodes.  The old <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> file must be deleted on
         upgrade.
         </li>
 
@@ -197,7 +197,7 @@
         directives in your 2.2 configuration to determine if they can
         just be deleted or will need to be replaced using <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.</li>
 
-        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: <code class="directive"><a href="./mod/cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
+        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: <code class="directive"><a href="./mod/mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
         now does an exact match against the query string instead of a
         partial match.  If your configuration was using partial
         strings, e.g. using <code>sessionid</code> to match
@@ -206,24 +206,32 @@
         <code>jsessionid</code>.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: <code class="directive"><a href="./mod/ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> is now
+        <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: <code class="directive"><a href="./mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> is now
         consistently a per-directory setting only.  If you use this
         directive, review your configuration to make sure it is
         present in all the necessary directory contexts.</li>
 
-        <li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>: <code class="directive"><a href="./mod/filter.html#filterprovider">FilterProvider</a></code> syntax has changed and
+        <li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>: <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code> syntax has changed and
         now uses a boolean expression to determine if a filter is applied.
         </li>
 
         <li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>:
             <ul>
             <li>The <code>#if expr</code> element now uses the new <a href="expr.html">expression parser</a>. The old syntax can be
-            restored with the new directive <code class="directive"><a href="./mod/include.html#ssilegacyexprparser">SSILegacyExprParser</a></code>.
+            restored with the new directive <code class="directive"><a href="./mod/mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></code>.
             </li>
             <li>An SSI* config directive in directory scope no longer causes
             all other per-directory SSI* directives to be reset to their
             default values.</li>
             </ul>
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>: The <code>DebugLevel</code>
+        option has been removed in favour of per-module <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> configuration.
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_ext-filter.html">mod_ext-filter</a></code>: The <code>DebugLevel</code>
+        option has been removed in favour of per-module <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> configuration.
         </li>
       </ul>
     

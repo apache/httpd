@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_ext_filter: Remove DebugLevel option in favor of per-module loglevel.
+     [Stefan Fritsch]
+
   *) mod_include: Make the "#if expr" element use the new "ap_expr" expression
      parser. The old parser can still be used by setting the new directive
      SSILegacyExprParser. [Stefan Fritsch]
