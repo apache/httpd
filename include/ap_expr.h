@@ -59,6 +59,11 @@ typedef struct {
 #define AP_EXPR_FLAGS_SSL_EXPR_COMPAT       1
 /** Don't add siginificant request headers to the Vary response header */
 #define AP_EXPR_FLAGS_DONT_VARY             2
+/** Don't allow functions/vars that bypass the current request's access
+ *  restrictions or would otherwise leak confidential information.
+ *  Used by e.g. mod_include.
+ */
+#define AP_EXPR_FLAGS_RESTRICTED            4
 
 
 /**
@@ -119,8 +124,20 @@ typedef struct {
      * interested in this information.
      */
     const char **vary_this;
+    /** Arbitrary context data provided by the caller for custom functions */
+    void *data;
 } ap_expr_eval_ctx_t;
 
+/**
+ * Evaluate a parse tree, full featured version
+ * @param ctx The evaluation context with all data filled in
+ * @return > 0 if expression evaluates to true, == 0 if false, < 0 on error
+ * @note *ctx->err will be set to NULL on success, or to an error message on
+ *       error
+ * @note request headers used during evaluation will be added to the Vary:
+ *       response header if ctx->vary_this is set.
+ */
+AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx);
 
 /**
  * The parser can be extended with variable lookup, functions, and
