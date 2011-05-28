@@ -186,9 +186,9 @@
         match.</li>
 
         <li><module>mod_dav_fs</module>: The format of the <directive
-        module="dav_fs">DavLockDB</directive> file has changed for
+        module="mod_dav_fs">DavLockDB</directive> file has changed for
         systems with inodes.  The old <directive
-        module="dav_fs">DavLockDB</directive> file must be deleted on
+        module="mod_dav_fs">DavLockDB</directive> file must be deleted on
         upgrade.
         </li>
 
@@ -206,7 +206,7 @@
         module="core">Mutex</directive>.</li>
 
         <li><module>mod_cache</module>: <directive
-        module="cache">CacheIgnoreURLSessionIdentifiers</directive>
+        module="mod_cache">CacheIgnoreURLSessionIdentifiers</directive>
         now does an exact match against the query string instead of a
         partial match.  If your configuration was using partial
         strings, e.g. using <code>sessionid</code> to match
@@ -216,13 +216,13 @@
         </li>
 
         <li><module>mod_ldap</module>: <directive
-        module="ldap">LDAPTrustedClientCert</directive> is now
+        module="mod_ldap">LDAPTrustedClientCert</directive> is now
         consistently a per-directory setting only.  If you use this
         directive, review your configuration to make sure it is
         present in all the necessary directory contexts.</li>
 
         <li><module>mod_filter</module>: <directive
-        module="filter">FilterProvider</directive> syntax has changed and
+        module="mod_filter">FilterProvider</directive> syntax has changed and
         now uses a boolean expression to determine if a filter is applied.
         </li>
 
@@ -230,13 +230,23 @@
             <ul>
             <li>The <code>#if expr</code> element now uses the new <a
             href="expr.html">expression parser</a>. The old syntax can be
-            restored with the new directive <directive module="include"
+            restored with the new directive <directive module="mod_include"
             >SSILegacyExprParser</directive>.
             </li>
             <li>An SSI* config directive in directory scope no longer causes
             all other per-directory SSI* directives to be reset to their
             default values.</li>
             </ul>
+        </li>
+
+        <li><module>mod_charset_lite</module>: The <code>DebugLevel</code>
+        option has been removed in favour of per-module <directive
+        module="core">LogLevel</directive> configuration.
+        </li>
+
+        <li><module>mod_ext-filter</module>: The <code>DebugLevel</code>
+        option has been removed in favour of per-module <directive
+        module="core">LogLevel</directive> configuration.
         </li>
       </ul>
     </section>

@@ -56,7 +56,6 @@ typedef struct ef_filter_t {
 } ef_filter_t;
 
 typedef struct ef_dir_t {
-    int debug;
     int log_stderr;
     int onfail;
 } ef_dir_t;
@@ -81,16 +80,12 @@ static apr_status_t ef_input_filter(ap_filter_t *, apr_bucket_brigade *,
                                     ap_input_mode_t, apr_read_type_e,
                                     apr_off_t);
 
-#define DBGLVL_SHOWOPTIONS         1
-#define DBGLVL_GORY                9
-
 #define ERRFN_USERDATA_KEY         "EXTFILTCHILDERRFN"
 
 static void *create_ef_dir_conf(apr_pool_t *p, char *dummy)
 {
     ef_dir_t *dc = (ef_dir_t *)apr_pcalloc(p, sizeof(ef_dir_t));
 
-    dc->debug = -1;
     dc->log_stderr = -1;
     dc->onfail = -1;
 
@@ -111,13 +106,6 @@ static void *merge_ef_dir_conf(apr_pool_t *p, void *basev, void *overridesv)
 {
     ef_dir_t *a = (ef_dir_t *)apr_pcalloc (p, sizeof(ef_dir_t));
     ef_dir_t *base = (ef_dir_t *)basev, *over = (ef_dir_t *)overridesv;
-
-    if (over->debug != -1) {        /* if admin coded something... */
-        a->debug = over->debug;
-    }
-    else {
-        a->debug = base->debug;
-    }
 
     if (over->log_stderr != -1) {   /* if admin coded something... */
         a->log_stderr = over->log_stderr;
@@ -141,10 +129,7 @@ static const char *add_options(cmd_parms *cmd, void *in_dc,
 {
     ef_dir_t *dc = in_dc;
 
-    if (!strncasecmp(arg, "DebugLevel=", 11)) {
-        dc->debug = atoi(arg + 11);
-    }
-    else if (!strcasecmp(arg, "LogStderr")) {
+    if (!strcasecmp(arg, "LogStderr")) {
         dc->log_stderr = 1;
     }
     else if (!strcasecmp(arg, "NoLogStderr")) {
@@ -354,7 +339,7 @@ static const command_rec cmds[] =
                     add_options,
                     NULL,
                     ACCESS_CONF, /* same as SetInputFilter/SetOutputFilter */
-                    "valid options: DebugLevel=n, LogStderr, NoLogStderr"),
+                    "valid options: LogStderr, NoLogStderr"),
     AP_INIT_RAW_ARGS("ExtFilterDefine",
                      define_filter,
                      NULL,
@@ -537,8 +522,6 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
 
 static const char *get_cfg_string(ef_dir_t *dc, ef_filter_t *filter, apr_pool_t *p)
 {
-    const char *debug_str = dc->debug == -1 ?
-        "DebugLevel=0" : apr_psprintf(p, "DebugLevel=%d", dc->debug);
     const char *log_stderr_str = dc->log_stderr < 1 ?
         "NoLogStderr" : "LogStderr";
     const char *preserve_content_length_str = filter->preserves_content_length ?
@@ -549,9 +532,9 @@ static const char *get_cfg_string(ef_dir_t *dc, ef_filter_t *filter, apr_pool_t 
         "(unchanged)" : filter->outtype;
 
     return apr_psprintf(p,
-                        "ExtFilterOptions %s %s %s ExtFilterInType %s "
+                        "ExtFilterOptions %s %s ExtFilterInType %s "
                         "ExtFilterOuttype %s",
-                        debug_str, log_stderr_str, preserve_content_length_str,
+                        log_stderr_str, preserve_content_length_str,
                         intype_str, outtype_str);
 }
 
@@ -638,8 +621,8 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
         }
     }
 
-    if (dc->debug >= DBGLVL_SHOWOPTIONS) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+    if (APLOGrtrace1(f->r)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, f->r,
                       "%sfiltering `%s' of type `%s' through `%s', cfg %s",
                       ctx->noop ? "NOT " : "",
                       f->r->uri ? f->r->uri : f->r->filename,
@@ -662,23 +645,20 @@ static apr_status_t drain_available_output(ap_filter_t *f,
     request_rec *r = f->r;
     conn_rec *c = r->connection;
     ef_ctx_t *ctx = f->ctx;
-    ef_dir_t *dc = ctx->dc;
     apr_size_t len;
     char buf[4096];
     apr_status_t rv;
     apr_bucket *b;
 
     while (1) {
+        int lvl = APLOG_TRACE5;
         len = sizeof(buf);
-        rv = apr_file_read(ctx->proc->out,
-                      buf,
-                      &len);
-        if ((rv && !APR_STATUS_IS_EAGAIN(rv)) ||
-            dc->debug >= DBGLVL_GORY) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                          "apr_file_read(child output), len %" APR_SIZE_T_FMT,
-                          !rv ? len : -1);
-        }
+        rv = apr_file_read(ctx->proc->out, buf, &len);
+        if (rv && !APR_STATUS_IS_EAGAIN(rv))
+           lvl = APLOG_DEBUG;
+        ap_log_rerror(APLOG_MARK, lvl, rv, r,
+                      "apr_file_read(child output), len %" APR_SIZE_T_FMT,
+                      !rv ? len : -1);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -696,7 +676,6 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
                                         apr_size_t len, apr_bucket_brigade *bb)
 {
     ef_ctx_t *ctx = f->ctx;
-    ef_dir_t *dc = ctx->dc;
     apr_status_t rv;
     apr_size_t bytes_written = 0;
     apr_size_t tmplen;
@@ -726,23 +705,20 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
 
                 rv = apr_pollset_poll(ctx->pollset, f->r->server->timeout,
                                       &num_events, &pdesc);
-                if (rv || dc->debug >= DBGLVL_GORY) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
-                                  rv, f->r, "apr_pollset_poll()");
-                }
                 if (rv != APR_SUCCESS && !APR_STATUS_IS_EINTR(rv)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, f->r,
+                                  "apr_pollset_poll()");
                     /* some error such as APR_TIMEUP */
                     return rv;
                 }
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE6, rv, f->r,
+                              "apr_pollset_poll()");
 #else /* APR_FILES_AS_SOCKETS */
                 /* Yuck... I'd really like to wait until I can read
                  * or write, but instead I have to sleep and try again
                  */
                 apr_sleep(100000); /* 100 milliseconds */
-                if (dc->debug >= DBGLVL_GORY) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
-                                  0, f->r, "apr_sleep()");
-                }
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, f->r, "apr_sleep()");
 #endif /* APR_FILES_AS_SOCKETS */
             }
             else if (rv != APR_SUCCESS) {
@@ -765,7 +741,6 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     conn_rec *c = r->connection;
     ef_ctx_t *ctx = f->ctx;
     apr_bucket *b;
-    ef_dir_t *dc;
     apr_size_t len;
     const char *data;
     apr_status_t rv;
@@ -773,7 +748,6 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_bucket *eos = NULL;
     apr_bucket_brigade *bb_tmp;
 
-    dc = ctx->dc;
     bb_tmp = apr_brigade_create(r->pool, c->bucket_alloc);
 
     for (b = APR_BRIGADE_FIRST(bb);
@@ -825,16 +799,14 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     do {
+        int lvl = APLOG_TRACE6;
         len = sizeof(buf);
-        rv = apr_file_read(ctx->proc->out,
-                      buf,
-                      &len);
-        if ((rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv)) ||
-            dc->debug >= DBGLVL_GORY) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                          "apr_file_read(child output), len %" APR_SIZE_T_FMT,
-                          !rv ? len : -1);
-        }
+        rv = apr_file_read(ctx->proc->out, buf, &len);
+        if (rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv))
+            lvl = APLOG_ERR;
+        ap_log_rerror(APLOG_MARK, lvl, rv, r,
+                      "apr_file_read(child output), len %" APR_SIZE_T_FMT,
+                      !rv ? len : -1);
         if (APR_STATUS_IS_EAGAIN(rv)) {
             if (eos) {
                 /* should not occur, because we have an APR timeout in place */
@@ -907,7 +879,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
                       "ap_pass_brigade() failed");
     }
     return rv;
