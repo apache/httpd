@@ -214,6 +214,17 @@
         <li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>: <code class="directive"><a href="./mod/filter.html#filterprovider">FilterProvider</a></code> syntax has changed and
         now uses a boolean expression to determine if a filter is applied.
         </li>
+
+        <li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>:
+            <ul>
+            <li>The <code>#if expr</code> element now uses the new <a href="expr.html">expression parser</a>. The old syntax can be
+            restored with the new directive <code class="directive"><a href="./mod/include.html#ssilegacyexprparser">SSILegacyExprParser</a></code>.
+            </li>
+            <li>An SSI* config directive in directory scope no longer causes
+            all other per-directory SSI* directives to be reset to their
+            default values.</li>
+            </ul>
+        </li>
       </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -222,7 +233,7 @@
     
 
     <ul>
-      <li><code class="module"><a href="./mod/mod_auto_index.html">mod_auto_index</a></code>: will now extract titles and
+      <li><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code>: will now extract titles and
       display descriptions for .xhtml files, which were previously
       ignored.</li>
 

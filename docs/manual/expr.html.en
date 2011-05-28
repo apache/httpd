@@ -148,14 +148,21 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>The scheme part of the request's URI</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
         <td>The URI of the request</td></tr>
-<tr class="odd"><td><code>REQUEST_FILENAME</code></td>
+<tr class="odd"><td><code>DOCUMENT_URI</code></td>
+        <td>Same as REQUEST_URI</td></tr>
+<tr><td><code>REQUEST_FILENAME</code></td>
         <td>The full local filesystem path to the file or script matching the
             request, if this has already been determined by the server at the
             time <code>REQUEST_FILENAME</code> is referenced. Otherwise, such
             as when used in virtual host context, the same value as
             <code>REQUEST_URI</code> </td></tr>
-<tr><td><code>SCRIPT_FILENAME</code></td>
+<tr class="odd"><td><code>SCRIPT_FILENAME</code></td>
         <td>Same as <code>REQUEST_FILENAME</code></td></tr>
+<tr><td><code>LAST_MODIFIED</code></td>
+        <td>The date and time of last modification of the file in the format
+            <code>20101231235959</code>, if this has already been determined by
+            the server at the time <code>LAST_MODIFIED</code> is referenced.
+            </td></tr>
 <tr class="odd"><td><code>SCRIPT_USER</code></td>
         <td>The user name of the owner of the script.</td></tr>
 <tr><td><code>SCRIPT_GROUP</code></td>
@@ -324,46 +331,50 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     The name <em>is</em> case sensitive.
     Modules may register additional unary operators.</p>
 
-    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
+    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th><th>Restricted</th></tr>
 <tr><td><code>-d</code></td>
         <td>The argument is treated as a filename.
-            True if the file exists and is a directory</td></tr>
+            True if the file exists and is a directory</td><td>yes</td></tr>
 <tr class="odd"><td><code>-e</code></td>
         <td>The argument is treated as a filename.
-            True if the file (or dir or special) exists</td></tr>
+            True if the file (or dir or special) exists</td><td>yes</td></tr>
 <tr><td><code>-f</code></td>
         <td>The argument is treated as a filename.
-            True if the file exists and is regular file</td></tr>
+            True if the file exists and is regular file</td><td>yes</td></tr>
 <tr class="odd"><td><code>-L</code></td>
         <td>The argument is treated as a filename.
-            True if the file exists and is symlink</td></tr>
+            True if the file exists and is symlink</td><td>yes</td></tr>
 <tr><td><code>-h</code></td>
         <td>The argument is treated as a filename.
             True if the file exists and is symlink
-            (same as <code>-L</code>)</td></tr>
+            (same as <code>-L</code>)</td><td>yes</td></tr>
 <tr class="odd"><td><code>-F</code></td>
         <td>True if string is a valid file, accessible via all the server's
             currently-configured access controls for that path. This uses an
             internal subrequest to do the check, so use it with care - it can
-            impact your server's performance!</td></tr>
+            impact your server's performance!</td><td /></tr>
 <tr><td><code>-U</code></td>
         <td>True if string is a valid URL, accessible via all the server's
             currently-configured access controls for that path. This uses an
             internal subrequest to do the check, so use it with care - it can
-            impact your server's performance!</td></tr>
-<tr class="odd"><td><code>-n</code></td>
-        <td>True if string is not empty</td></tr>
-<tr><td><code>-z</code></td>
-        <td>True if string is empty</td></tr>
-<tr class="odd"><td><code>-T</code></td>
+            impact your server's performance!</td><td /></tr>
+<tr class="odd"><td><code>-A</code></td>
+        <td>Alias for <code>-U</code></td><td /></tr>
+<tr><td><code>-n</code></td>
+        <td>True if string is not empty</td><td /></tr>
+<tr class="odd"><td><code>-z</code></td>
+        <td>True if string is empty</td><td /></tr>
+<tr><td><code>-T</code></td>
         <td>False if string is empty, "<code>0</code>", "<code>off</code>",
             "<code>false</code>", or "<code>no</code>" (case insensitive).
-            True otherwise.</td></tr>
-<tr><td><code>-R</code></td>
+            True otherwise.</td><td /></tr>
+<tr class="odd"><td><code>-R</code></td>
         <td>Same as "<code>%{REMOTE_ADDR} -ipmatch ...</code>", but more efficient
-        </td></tr>
+        </td><td /></tr>
 </table>
 
+    <p>The operators marked as "restricted" are not available in some modules
+    like <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="functions" id="functions">Functions</a></h2>
@@ -373,33 +384,38 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     a string. Functions names are not case sensitive.
     Modules may register additional functions.</p>
 
-    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th></tr>
+    <table class="bordered"><tr class="header"><th>Name</th><th>Description</th><th>Restricted</th></tr>
 <tr><td><code>req</code>, <code>http</code></td>
-        <td>Get HTTP request header</td></tr>
+        <td>Get HTTP request header</td><td /></tr>
 <tr class="odd"><td><code>resp</code></td>
-        <td>Get HTTP response header</td></tr>
+        <td>Get HTTP response header</td><td /></tr>
 <tr><td><code>reqenv</code></td>
-        <td>Lookup request environment variable</td></tr>
+        <td>Lookup request environment variable</td><td /></tr>
 <tr class="odd"><td><code>osenv</code></td>
-        <td>Lookup operating system environment variable</td></tr>
+        <td>Lookup operating system environment variable</td><td /></tr>
 <tr><td><code>note</code></td>
-        <td>Lookup request note</td></tr>
+        <td>Lookup request note</td><td /></tr>
 <tr class="odd"><td><code>env</code></td>
         <td>Return first match of <code>note</code>, <code>reqenv</code>,
-            <code>osenv</code></td></tr>
+            <code>osenv</code></td><td /></tr>
 <tr><td><code>tolower</code></td>
-        <td>Convert string to lower case</td></tr>
+        <td>Convert string to lower case</td><td /></tr>
 <tr class="odd"><td><code>toupper</code></td>
-        <td>Convert string to uppser case</td></tr>
+        <td>Convert string to uppser case</td><td /></tr>
 <tr><td><code>escape</code></td>
-        <td>Escape special characters in %hex encoding</td></tr>
+        <td>Escape special characters in %hex encoding</td><td /></tr>
 <tr class="odd"><td><code>unescape</code></td>
-        <td>Unescape %hex encoded string, leaving URL-special characters encoded (XXX: describe better)</td></tr>
+        <td>Unescape %hex encoded string, leaving URL-special characters
+            encoded (XXX: describe better)</td><td /></tr>
 <tr><td><code>file</code></td>
-        <td>Read contents from a file</td></tr>
+        <td>Read contents from a file</td><td>yes</td></tr>
 <tr class="odd"><td><code>filesize</code></td>
-        <td>Return size of a file (or 0 if file does not exist or is not regular file)</td></tr>
+        <td>Return size of a file (or 0 if file does not exist or is not
+            regular file)</td><td>yes</td></tr>
 </table>
+
+    <p>The functions marked as "restricted" are not available in some modules
+    like <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
 
     <p>In addition to string-valued functions, there are also list-valued functions which
     take one string as argument and return a wordlist, i.e. a list of strings. The wordlist

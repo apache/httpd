@@ -440,7 +440,8 @@ modified?</a></h3>
     <p>Then, in your SSI-enabled document, you might do the
     following:</p>
 <div class="example"><p><code>
-        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br />
+        &lt;!--#if expr="-T reqenv('Mac') &amp;&amp;
+                         -T reqenv('InternetExplorer')" --&gt;<br />
         Apologetic text goes here<br />
         &lt;!--#else --&gt;<br />
         Cool JavaScript code goes here<br />
