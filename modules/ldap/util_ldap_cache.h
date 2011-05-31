@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef APU_LDAP_CACHE_H
-#define APU_LDAP_CACHE_H
+#ifndef AP_LDAP_CACHE_H
+#define AP_LDAP_CACHE_H
 
 /**
  * @file  util_ldap_cache.h
@@ -23,7 +23,7 @@
  */
 
 /* this whole thing disappears if LDAP is not enabled */
-#if APR_HAS_LDAP
+#if AP_HAS_LDAP
 
 
 /*
@@ -200,5 +200,5 @@ void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload);
 void util_ald_cache_remove(util_ald_cache_t *cache, void *payload);
 char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char *name, char *id);
 
-#endif /* APR_HAS_LDAP */
-#endif /* APU_LDAP_CACHE_H */
+#endif /* AP_HAS_LDAP */
+#endif /* AP_LDAP_CACHE_H */
