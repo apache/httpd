@@ -29,7 +29,7 @@
 
 APLOG_USE_MODULE(ldap);
 
-#if APR_HAS_LDAP
+#if AP_HAS_LDAP
 
 /* only here until strdup is gone */
 #include <string.h>
@@ -877,4 +877,4 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
     return buf;
 }
 
-#endif /* APR_HAS_LDAP */
+#endif /* AP_HAS_LDAP */

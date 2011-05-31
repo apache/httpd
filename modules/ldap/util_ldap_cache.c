@@ -27,7 +27,7 @@
 #include "util_ldap_cache.h"
 #include <apr_strings.h>
 
-#if APR_HAS_LDAP
+#if AP_HAS_LDAP
 
 /* ------------------------------------------------------------------ */
 
@@ -461,4 +461,4 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
 }
 
 
-#endif /* APR_HAS_LDAP */
+#endif /* AP_HAS_LDAP */

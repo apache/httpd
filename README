@@ -76,6 +76,11 @@
     OpenSSL or the operating system's platform-specific SSL facilities.
     Apache httpd currently does not use that apr-util interface.
 
+    modules/ldap/ provides an abstract interface for SSL encrypted LDAP
+    (ldaps and STARTTLS style) connections, implemented with OpenLDAP, 
+    Netscape LDAP SDK, Mozilla LDAP SDK, or other platform specific ldap
+    interfaces.
+
     Some object code distributions of Apache httpd, indicated with the
     word "crypto" in the package name, may include object code for the
     OpenSSL encryption library as distributed in open source form from

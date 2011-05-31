@@ -28,10 +28,10 @@
 #include "apr_thread_rwlock.h"
 #include "apr_tables.h"
 #include "apr_time.h"
-#include "apr_ldap.h"
-#include "apr_ldap_rebind.h"
+#include "ap_ldap.h"
+#include "ap_ldap_rebind.h"
 
-#if APR_HAS_MICROSOFT_LDAPSDK
+#if AP_HAS_MICROSOFT_LDAPSDK
 #define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
                 ||(s) == LDAP_UNAVAILABLE)
 #else
@@ -44,7 +44,7 @@
 #endif
 
 /* this whole thing disappears if LDAP is not enabled */
-#if APR_HAS_LDAP
+#if AP_HAS_LDAP
 
 /* Apache header files */
 #include "ap_config.h"
@@ -194,7 +194,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_connection_open,(request_rec *r,
  *            that was connected.
  * @tip This function unbinds from the LDAP server, and clears ldc->ldap.
  *      It is possible to rebind to this server again using the same ldc
- *      structure, using apr_ldap_open_connection().
+ *      structure, using ap_ldap_open_connection().
  * @fn util_ldap_close_connection(util_ldap_connection_t *ldc)
  */
 APR_DECLARE_OPTIONAL_FN(void,uldap_connection_close,(util_ldap_connection_t *ldc));
@@ -222,7 +222,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
  * @tip Once a connection is found and returned, a lock will be acquired to
  *      lock that particular connection, so that another thread does not try and
  *      use this connection while it is busy. Once you are finished with a connection,
- *      apr_ldap_connection_close() must be called to release this connection.
+ *      ap_ldap_connection_close() must be called to release this connection.
  * @fn util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *host, int port,
  *                                                           const char *binddn, const char *bindpw, deref_options deref,
  *                                                           int netscapessl, int starttls)
@@ -351,7 +351,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_getuserdn,(request_rec *r, util_ldap_con
  */
 APR_DECLARE_OPTIONAL_FN(int,uldap_ssl_supported,(request_rec *r));
 
-/* from apr_ldap_cache.c */
+/* from ap_ldap_cache.c */
 
 /**
  * Init the LDAP cache
@@ -366,7 +366,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_ssl_supported,(request_rec *r));
  */
 apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st);
 
-/* from apr_ldap_cache_mgr.c */
+/* from ap_ldap_cache_mgr.c */
 
 /**
  * Display formatted stats for cache
@@ -379,5 +379,5 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st);
 #ifdef __cplusplus
 }
 #endif
-#endif /* APR_HAS_LDAP */
+#endif /* AP_HAS_LDAP */
 #endif /* UTIL_LDAP_H */

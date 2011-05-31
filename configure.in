@@ -16,6 +16,7 @@ dnl #
 sinclude(build/apr_common.m4)
 sinclude(build/find_apr.m4)
 sinclude(build/find_apu.m4)
+sinclude(build/find_ldap.m4)
 sinclude(acinclude.m4)
 
 dnl Later versions of autoconf (>= 2.62) by default cause the produced
