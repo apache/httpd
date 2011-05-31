@@ -100,27 +100,27 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # Name "mod_ldap - Win32 Release"
 # Name "mod_ldap - Win32 Debug"
 # Begin Source File
-SOURCE=.\include\ap_ldap.hw
+SOURCE=..\..\include\ap_ldap.hw
 
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
+!IF  "$(CFG)" == "mod_ldap - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating include/ap_ldap.h
-InputPath=.\include\ap_ldap.hw
+InputPath=..\..\include\ap_ldap.hw
 
-".\include\ap_ldap.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\include\ap_ldap.hw > .\include\ap_ldap.h
+"..\..\include\ap_ldap.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type ..\..\include\ap_ldap.hw > ..\..\include\ap_ldap.h
 
 # End Custom Build
 
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+!ELSEIF  "$(CFG)" == "mod_ldap - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating include/ap_ldap.h
-InputPath=.\include\ap_ldap.hw
+InputPath=..\..\include\ap_ldap.hw
 
-".\include\ap_ldap.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\include\ap_ldap.hw > .\include\ap_ldap.h
+"..\..\include\ap_ldap.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	type ..\..\include\ap_ldap.hw > ..\..\include\ap_ldap.h
 
 # End Custom Build
 
