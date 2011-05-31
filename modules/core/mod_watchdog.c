@@ -17,6 +17,14 @@
 /* Watchdog module.
  */
 
+#include "apr.h"
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>         /* for getpid() */
+#endif
+#if APR_HAVE_PROCESS_H
+#include <process.h>        /* for getpid() on Win32 */
+#endif
+
 #include "mod_watchdog.h"
 #include "ap_provider.h"
 #include "ap_mpm.h"
