@@ -16,6 +16,8 @@
 
 #ifdef WIN32
 
+#include "apr.h"
+#include <process.h>
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
@@ -40,8 +42,6 @@
 #include "apr_atomic.h"
 #include "apr_buckets.h"
 #include "scoreboard.h"
-
-#include <process.h>
 
 #ifdef __MINGW32__
 #include <mswsock.h>
