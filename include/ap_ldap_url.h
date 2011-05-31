@@ -16,7 +16,7 @@
 
 /**
  * @file ap_ldap_url.h
- * @brief MODLDAP ldap_init() functions
+ * @brief LDAP ldap_init() functions
  */
 #ifndef AP_LDAP_URL_H
 #define AP_LDAP_URL_H
@@ -71,19 +71,19 @@ typedef struct ap_ldap_url_desc_t {
  * Is this URL an ldap url? ldap://
  * @param url The url to test
  */
-MODLDAP_DECLARE(int) ap_ldap_is_ldap_url(const char *url);
+LDAP_DECLARE(int) ap_ldap_is_ldap_url(const char *url);
 
 /**
  * Is this URL an SSL ldap url? ldaps://
  * @param url The url to test
  */
-MODLDAP_DECLARE(int) ap_ldap_is_ldaps_url(const char *url);
+LDAP_DECLARE(int) ap_ldap_is_ldaps_url(const char *url);
 
 /**
  * Is this URL an ldap socket url? ldapi://
  * @param url The url to test
  */
-MODLDAP_DECLARE(int) ap_ldap_is_ldapi_url(const char *url);
+LDAP_DECLARE(int) ap_ldap_is_ldapi_url(const char *url);
 
 /**
  * Parse an LDAP URL.
@@ -92,7 +92,7 @@ MODLDAP_DECLARE(int) ap_ldap_is_ldapi_url(const char *url);
  * @param ludpp The structure to return the exploded URL
  * @param result_err The result structure of the operation
  */
-MODLDAP_DECLARE(int) ap_ldap_url_parse_ext(apr_pool_t *pool,
+LDAP_DECLARE(int) ap_ldap_url_parse_ext(apr_pool_t *pool,
                                            const char *url_in,
                                            ap_ldap_url_desc_t **ludpp,
                                            ap_ldap_err_t **result_err);
@@ -104,7 +104,7 @@ MODLDAP_DECLARE(int) ap_ldap_url_parse_ext(apr_pool_t *pool,
  * @param ludpp The structure to return the exploded URL
  * @param result_err The result structure of the operation
  */
-MODLDAP_DECLARE(int) ap_ldap_url_parse(apr_pool_t *pool,
+LDAP_DECLARE(int) ap_ldap_url_parse(apr_pool_t *pool,
                                        const char *url_in,
                                        ap_ldap_url_desc_t **ludpp,
                                        ap_ldap_err_t **result_err);

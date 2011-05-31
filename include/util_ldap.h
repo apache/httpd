@@ -56,27 +56,6 @@
 #include "http_request.h"
 #include "apr_optional.h"
 
-/* Create a set of LDAP_DECLARE macros with appropriate export 
- * and import tags for the platform
- */
-#if !defined(WIN32)
-#define LDAP_DECLARE(type)            type
-#define LDAP_DECLARE_NONSTD(type)     type
-#define LDAP_DECLARE_DATA
-#elif defined(LDAP_DECLARE_STATIC)
-#define LDAP_DECLARE(type)            type __stdcall
-#define LDAP_DECLARE_NONSTD(type)     type
-#define LDAP_DECLARE_DATA
-#elif defined(LDAP_DECLARE_EXPORT)
-#define LDAP_DECLARE(type)            __declspec(dllexport) type __stdcall
-#define LDAP_DECLARE_NONSTD(type)     __declspec(dllexport) type
-#define LDAP_DECLARE_DATA             __declspec(dllexport)
-#else
-#define LDAP_DECLARE(type)            __declspec(dllimport) type __stdcall
-#define LDAP_DECLARE_NONSTD(type)     __declspec(dllimport) type
-#define LDAP_DECLARE_DATA             __declspec(dllimport)
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif

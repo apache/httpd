@@ -64,7 +64,7 @@ extern "C" {
 
 
 /**
- * MODLDAP SSL Initialise function
+ * LDAP SSL Initialise function
  *
  * This function initialises SSL on the underlying LDAP toolkit
  * if this is necessary.
@@ -86,13 +86,13 @@ extern "C" {
  * ap_ldap_set_option() AP_LDAP_OPT_TLS_CERT option for details.
  * @param result_err The returned result
  */
-MODLDAP_DECLARE(int) ap_ldap_ssl_init(apr_pool_t *pool,
+LDAP_DECLARE(int) ap_ldap_ssl_init(apr_pool_t *pool,
                                       const char *cert_auth_file,
                                       int cert_file_type,
                                       ap_ldap_err_t **result_err);
 
 /**
- * MODLDAP SSL De-Initialise function
+ * LDAP SSL De-Initialise function
  *
  * This function tears down any SSL certificate setup previously
  * set using ap_ldap_ssl_init(). It should be called to clean
@@ -100,10 +100,10 @@ MODLDAP_DECLARE(int) ap_ldap_ssl_init(apr_pool_t *pool,
  * @todo currently we do not check whether ap_ldap_ssl_init()
  * has been called first - we probably should.
  */
-MODLDAP_DECLARE(int) ap_ldap_ssl_deinit(void);
+LDAP_DECLARE(int) ap_ldap_ssl_deinit(void);
 
 /**
- * MODLDAP initialise function
+ * LDAP initialise function
  *
  * This function is responsible for initialising an LDAP
  * connection in a toolkit independant way. It does the
@@ -136,7 +136,7 @@ MODLDAP_DECLARE(int) ap_ldap_ssl_deinit(void);
  * @param secure The security mode to set
  * @param result_err The returned result
  */
-MODLDAP_DECLARE(int) ap_ldap_init(apr_pool_t *pool,
+LDAP_DECLARE(int) ap_ldap_init(apr_pool_t *pool,
                                   LDAP **ldap,
                                   const char *hostname,
                                   int portno,
@@ -144,14 +144,14 @@ MODLDAP_DECLARE(int) ap_ldap_init(apr_pool_t *pool,
                                   ap_ldap_err_t **result_err);
 
 /**
- * MODLDAP info function
+ * LDAP info function
  *
  * This function returns a string describing the LDAP toolkit
  * currently in use. The string is placed inside result_err->reason.
  * @param pool The pool to use
  * @param result_err The returned result
  */
-MODLDAP_DECLARE(int) ap_ldap_info(apr_pool_t *pool,
+LDAP_DECLARE(int) ap_ldap_info(apr_pool_t *pool,
                                   ap_ldap_err_t **result_err);
 
 #ifdef __cplusplus
