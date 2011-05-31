@@ -114,7 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     The patch fixes the test suite failure for t/modules/filter.t.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090234
     2.2.x patch: http://people.apache.org/~rjung/patches/mod_filter-cgi-err_headers_out.patch
-    +1: rjung
+    +1: rjung, jorton, 
 
 
 PATCHES/ISSUES THAT ARE STALLED
