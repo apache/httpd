@@ -168,6 +168,9 @@ Package=<4>
     Project_Dep_Name mod_buffer
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_cache_disk
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_cern_meta
     End Project Dependency
     Begin Project Dependency
@@ -184,9 +187,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_dir
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_cache_disk
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_dumpio
