@@ -67,7 +67,7 @@ static apr_status_t ap_ldap_pool_cleanup_set_null(void *data_)
 
 
 /* AP utility routine used to create the xref_lock. */
-MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool)
+LDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool)
 {
     apr_status_t retcode = APR_SUCCESS;
 
@@ -89,7 +89,7 @@ MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool)
 }
 
 
-MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_add(apr_pool_t *pool,
+LDAP_DECLARE(apr_status_t) ap_ldap_rebind_add(apr_pool_t *pool,
                                                    LDAP *ld, 
                                                    const char *bindDN, 
                                                    const char *bindPW)
@@ -147,7 +147,7 @@ MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_add(apr_pool_t *pool,
 }
 
 
-MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_remove(LDAP *ld)
+LDAP_DECLARE(apr_status_t) ap_ldap_rebind_remove(LDAP *ld)
 {
     ap_ldap_rebind_entry_t *tmp_xref, *prev = NULL;
     apr_status_t retcode = 0;

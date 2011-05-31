@@ -38,12 +38,12 @@ static void option_set_tls(apr_pool_t *pool, LDAP *ldap, const void *invalue,
                            ap_ldap_err_t *result);
 
 /**
- * MODLDAP get option function
+ * LDAP get option function
  *
  * This function gets option values from a given LDAP session if
  * one was specified.
  */
-MODLDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
+LDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
                                         LDAP *ldap,
                                         int option,
                                         void *outvalue,
@@ -72,7 +72,7 @@ MODLDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
 } 
 
 /**
- * MODLDAP set option function
+ * LDAP set option function
  *
  * This function sets option values to a given LDAP session if
  * one was specified.
@@ -81,7 +81,7 @@ MODLDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
  * will try and apply legacy functions to achieve the same effect,
  * depending on the platform.
  */
-MODLDAP_DECLARE(int) ap_ldap_set_option(apr_pool_t *pool,
+LDAP_DECLARE(int) ap_ldap_set_option(apr_pool_t *pool,
                                         LDAP *ldap,
                                         int option,
                                         const void *invalue,
