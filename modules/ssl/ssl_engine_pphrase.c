@@ -206,7 +206,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         algoKey  = SSL_ALGO_UNKNOWN;
 
         /* Iterate through configured certificate files for this
-         * cert. */
+         * server. */
         for (i = 0, j = 0; i < SSL_AIDX_MAX
                  && (sc->server->pks->cert_files[i] != NULL
                      || sc->server->pkcs7); i++) {
