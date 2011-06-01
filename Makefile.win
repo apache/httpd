@@ -63,12 +63,26 @@ default: _buildr
 CTARGET=/build
 !ENDIF
 
-!IF !EXIST("srclib\apr") || (!(EXIST("srclib\apr\include\apu.hw") || !EXIST("srclib\apr-util")) && !EXIST("srclib\apr-iconv"))
+!IF EXIST("srclib\apr\include\apu.h")
+TLP=Apache-apr2
+UTILDIR=apr
+!ELSEIF !EXIST("srclib\apr") || !EXIST("srclib\apr-util") || !EXIST("srclib\apr-iconv")
 !MESSAGE Please check out or download and unpack the Apache Portability Runtime
 !MESSAGE sources (apr, apr-iconv and apr-util) into your srclib dir.
 !MESSAGE Apache cannot build without these libraries!
 !MESSAGE 
 !ERROR Need srclib\  apr, apr-iconv and apr-util
+!ELSE
+TLP=Apache
+UTILDIR=apr-util
+!ENDIF
+
+!IF !EXIST("srclib\expat") && !EXIST("srclib\apr-util\xml\expat)
+!MESSAGE Please check out or download and unpack the current expat library source
+!MESSAGE under your srclib dir for apr 2.x, or srclib\apr-util\xml\expat for apr 1.x
+!MESSAGE Apache cannot build without this library!
+!MESSAGE 
+!ERROR Need srclib\expat or srclib\apr-util\xml\expat
 !ENDIF
 
 !IF !EXIST("srclib\pcre")
@@ -101,10 +115,10 @@ _tryssl:
 	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 !ELSEIF $(USESLN) == 1
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project abs
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_ssl
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project abs
 !ELSE
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_ssl - Win32 $(LONG)" \
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
@@ -130,9 +144,9 @@ _tryserf:
 	$(MAKE) $(MAKEOPT) -f mod_serf.mak CFG="mod_serf - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !ELSEIF $(USESLN) == 1
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_serf
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_serf
 !ELSE
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_serf - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
@@ -156,9 +170,9 @@ _tryzlib:
 	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !ELSEIF $(USESLN) == 1
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_deflate
 !ELSE
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
@@ -182,9 +196,9 @@ _trylua:
 	$(MAKE) $(MAKEOPT) -f mod_lua.mak CFG="mod_lua - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !ELSEIF $(USESLN) == 1
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_lua
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_lua
 !ELSE
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_lua - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
@@ -201,7 +215,7 @@ _trylua:
 
 _trydb:
 !IF $(USEMAK) == 1
-	cd srclib\apr-util\dbd
+	cd srclib\$(UTILDIR)\dbd
 	for %d in (odbc $(DBD_LIST)) do \
 	  $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\dbm
@@ -210,15 +224,15 @@ _trydb:
 	cd ..\..\..
 !ELSEIF $(USESLN) == 1
 	for %d in (odbc $(DBD_LIST)) do \
-	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbd_%d
+	  devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project apr_dbd_%d
 	for %d in ($(DBM_LIST) x) do if not %d == x \
-	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbm_%d
+	  devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project apr_dbm_%d
 !ELSE
 	@for %d in (odbc $(DBD_LIST)) do \
-	  msdev Apache.dsw /USEENV /MAKE \
+	  msdev $(TLP).dsw /USEENV /MAKE \
 		"apr_dbd_%d - Win32 $(LONG)" /NORECURSE $(CTARGET)
 	@for %d in ($(DBM_LIST) x) do if not %d == x \
-	  msdev Apache.dsw /USEENV /MAKE \
+	  msdev $(TLP).dsw /USEENV /MAKE \
 		"apr_dbm_%d - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
@@ -304,10 +318,16 @@ _cleand:
 
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
+!IF !EXIST("srclib\apr-util")
+	cd srclib\expat\lib
+	 $(MAKE) $(MAKEOPT) -f expat.mak             CFG="expat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
+!ENDIF
 	cd srclib\apr
 	 $(MAKE) $(MAKEOPT) -f apr.mak             CFG="apr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapr.mak          CFG="libapr - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+!IF EXIST("srclib\apr-util")
 	cd srclib\apr-iconv
 	 $(MAKE) $(MAKEOPT) -f apriconv.mak  CFG="apriconv - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapriconv.mak  CFG="libapriconv - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -332,6 +352,10 @@ _build:
 	cd ldap
 	 $(MAKE) $(MAKEOPT) -f apr_ldap.mak        CFG="apr_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
+!ELSE
+	# DBD, DBM components live now in apr
+	cd srclib\apr
+!ENDIF
 	cd dbd
 	  for %d in (odbc $(DBD_LIST)) do \
 	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak   CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -550,19 +574,19 @@ _cleand:
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 !IFDEF ALL
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project BuildAll
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project BuildAll
 !ELSE
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project BuildBin
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project BuildBin
 !ENDIF
 !IF EXIST("srclib\openssl")
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project abs
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_ssl
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project abs
 !ENDIF
 !IF EXIST("srclib\zlib")
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_deflate
 !ENDIF
 !IF EXIST("srclib\lua")
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_lua
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_lua
 !ENDIF
 
 !ELSE
@@ -576,29 +600,31 @@ _cleand:
 _build:
 	@echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 !IFDEF ALL
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"BuildAll - Win32 $(LONG)" $(CTARGET)
 !ELSE
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"BuildBin - Win32 $(LONG)" $(CTARGET)
 !ENDIF
 !IF "$(CTARGET)" == "/CLEAN"
+!IF EXIST("srclib\apr-iconv")
 	@cd srclib\apr-iconv
 	@$(MAKE) $(MAKEOPT) -f build\modules.mk.win clean \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=.
 	@cd ..\..
 !ENDIF
+!ENDIF
 !IF EXIST("srclib\openssl")
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_ssl - Win32 $(LONG)" \
 		"abs - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 !IF EXIST("srclib\zlib")
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 !IF EXIST("srclib\lua")
-	@msdev Apache.dsw /USEENV /MAKE \
+	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_lua - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
@@ -609,18 +635,20 @@ _copybin:
 	copy $(LONG)\httpd.$(src_exe) 				"$(inst_exe)" <.y
 	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
 	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
+!IF EXIST("srclib\apr-util")
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy srclib\apr-util\ldap\$(LONG)\apr_ldap-1.$(src_dll) "$(inst_dll)" <.y
+!ENDIF
+	for %d in (odbc $(DBD_LIST)) do ( \
+	  copy srclib\$(UTILDIR)\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
+	)
+	for %d in ($(DBM_LIST) x) do if not %d == x ( \
+	  copy srclib\$(UTILDIR)\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
+	)
 !IF EXIST("srclib\serf")
 	copy srclib\serf\$(LONG)\libserf.$(src_dll) 		"$(inst_dll)" <.y
 !ENDIF
-	for %d in (odbc $(DBD_LIST)) do ( \
-	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
-	)
-	for %d in ($(DBM_LIST) x) do if not %d == x ( \
-	  copy srclib\apr-util\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
-	)
 	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
@@ -775,7 +803,9 @@ _install:
 	echo A >.A
 	-mkdir "$(INSTDIR)"
 	-mkdir "$(INSTDIR)\bin"
+!IF EXIST("srclib\apr-util")
 	-mkdir "$(INSTDIR)\bin\iconv"
+!ENDIF
 	-mkdir "$(INSTDIR)\cgi-bin"
 	-mkdir "$(INSTDIR)\conf"
 	-mkdir "$(INSTDIR)\conf\extra"
@@ -943,11 +973,13 @@ BEGIN {
 		inst_exe="$(INSTDIR)\bin"                              \
 		inst_dll="$(INSTDIR)\bin"                              \
 		inst_so="$(INSTDIR)\modules"
-	cd srclib\apr-iconv
+!IF EXIST("srclib\apr-util")
+ 	cd srclib\apr-iconv
 	$(MAKE) $(MAKEOPT) -f build\modules.mk.win install \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=. \
 		INSTALL_DIR="$(INSTDIR)\bin\iconv"
 	cd ..\..
+!ENDIF
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
 	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
     BEGIN { 
@@ -967,6 +999,7 @@ BEGIN {
 	xcopy docs\icons 	"$(INSTDIR)\icons" /s /d < .a
 	xcopy docs\manual 	"$(INSTDIR)\manual" /s /d < .a
 	for %f in ( \
+		srclib\expat\lib\expat.h \
 		srclib\apr-util\xml\expat\lib\expat.h \
 		srclib\apr\include\*.h \
 		srclib\apr-util\include\*.h \
@@ -992,16 +1025,24 @@ BEGIN {
 	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y
+	copy srclib\apr\$(LONG)\libapr-1.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr\$(LONG)\libapr-1.exp 		"$(INSTDIR)\lib" <.y
+!IF EXIST("srclib\apr-util")
 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.pdb	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.pdb "$(INSTDIR)\lib" <.y
-	copy srclib\apr\$(LONG)\libapr-1.lib 		"$(INSTDIR)\lib" <.y
-	copy srclib\apr\$(LONG)\libapr-1.exp 		"$(INSTDIR)\lib" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv-1.lib	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-iconv\$(LONG)\libapriconv-1.exp "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.lib 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.exp 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv-1.lib	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-iconv\$(LONG)\libapriconv-1.exp "$(INSTDIR)\lib" <.y
+!ELSE
+	copy srclib\expat\win32\$(LONG)\libexpatMT.lib  "$(INSTDIR)\lib" <.y
+	copy srclib\expat\win32\$(LONG)\libexpatMT.exp  "$(INSTDIR)\lib" <.y
+	copy srclib\expat\win32\$(LONG)\libexpat.lib    "$(INSTDIR)\lib" <.y
+	copy srclib\expat\win32\$(LONG)\libexpat.exp    "$(INSTDIR)\lib" <.y
+	copy srclib\expat\win32\$(LONG)\libexpat.dll    "$(INSTDIR)\bin" <.y
+!ENDIF
 !IF EXIST("srclib\serf")
 	copy srclib\serf\$(LONG)\libserf.lib 		"$(INSTDIR)\lib" <.y
 	copy srclib\serf\$(LONG)\libserf.exp 		"$(INSTDIR)\lib" <.y
