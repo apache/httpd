@@ -75,11 +75,11 @@ LDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool)
     get_apd
 #endif
 
+#if APR_HAS_THREADS
     /* run after apr_thread_mutex_create cleanup */
     apr_pool_cleanup_register(pool, &ap_ldap_xref_lock, ap_ldap_pool_cleanup_set_null, 
                               apr_pool_cleanup_null);
 
-#if APR_HAS_THREADS
     if (ap_ldap_xref_lock == NULL) {
         retcode = apr_thread_mutex_create(&ap_ldap_xref_lock, APR_THREAD_MUTEX_DEFAULT, pool);
     }
