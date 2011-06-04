@@ -39,12 +39,11 @@ APACHE_MODULE(authz_core, core authorization provider vector module, , , yes)
 
 dnl LDAP authentication module. This module has both the authn and authz
 dnl modules in one, so as to share the LDAP server config directives.
-dnl XXX FIXME
 APACHE_MODULE(authnz_ldap, LDAP based authentication, , , no, [
-  if test -z "$apu_config" ; then
-      MOD_AUTHNZ_LDAP_LDADD="$LDADD_ldap"
+  if test "$ap_has_ldap" = "1" ; then
+    MOD_AUTHNZ_LDAP_LDADD="$LDADD_ldap"
   else
-      MOD_AUTHNZ_LDAP_LDADD="$LDADD_ldap"
+    enable_authnz_ldap=no
   fi
   AC_SUBST(MOD_AUTHNZ_LDAP_LDADD)
 ])

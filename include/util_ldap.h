@@ -28,9 +28,6 @@
 #include "apr_thread_rwlock.h"
 #include "apr_tables.h"
 #include "apr_time.h"
-#include "ap_ldap.h"
-#include "ap_ldap_rebind.h"
-
 #if AP_HAS_MICROSOFT_LDAPSDK
 #define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
                 ||(s) == LDAP_UNAVAILABLE)
@@ -43,9 +40,6 @@
 #include "apr_shm.h"
 #endif
 
-/* this whole thing disappears if LDAP is not enabled */
-#if AP_HAS_LDAP
-
 /* Apache header files */
 #include "ap_config.h"
 #include "httpd.h"
@@ -55,6 +49,12 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "apr_optional.h"
+
+/* this whole thing disappears if LDAP is not enabled */
+#if AP_HAS_LDAP
+
+#include "ap_ldap.h"
+#include "ap_ldap_rebind.h"
 
 #ifdef __cplusplus
 extern "C" {

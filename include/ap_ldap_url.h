@@ -26,14 +26,14 @@
  * @{
  */
 
-#if defined(DOXYGEN)
-#include "ap_ldap.h"
-#endif
-
 #if AP_HAS_LDAP
 
 #include "apu.h"
 #include "apr_pools.h"
+
+#if defined(DOXYGEN)
+#include "ap_ldap.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
