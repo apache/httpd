@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1082630 -->
+<!-- English Revision : 1128161 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2521,10 +2521,11 @@ nom</description>
     href="../vhosts/">serveurs virtuels par nom</a>.</p>
 
     <p>Bien que <var>adresse</var> puisse &ecirc;tre un nom d'h&ocirc;te, il est
-    recommand&eacute; d'utiliser plut&ocirc;t une adresse IP, comme</p>
+    recommand&eacute; d'utiliser plut&ocirc;t une adresse IP et un port,
+    dans le style</p>
 
     <example>
-      NameVirtualHost 111.22.33.44
+      NameVirtualHost 111.22.33.44:80
     </example>
 
     <p>La directive <directive>NameVirtualHost</directive> vous permet
@@ -2580,8 +2581,8 @@ nom</description>
       >NameVirtualHost</directive>.</p>
 
       <example>
-        NameVirtualHost 1.2.3.4<br />
-        &lt;VirtualHost 1.2.3.4&gt;<br />
+        NameVirtualHost 1.2.3.4:80<br />
+        &lt;VirtualHost 1.2.3.4:80&gt;<br />
         # ...<br />
         &lt;/VirtualHost&gt;<br />
       </example>
@@ -3803,7 +3804,7 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     </ul>
 
     <example><title>Exemple</title>
-      &lt;VirtualHost 10.1.2.3&gt;<br />
+      &lt;VirtualHost 10.1.2.3:80&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -3821,7 +3822,7 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     :</p>
 
     <example>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
