@@ -528,20 +528,21 @@ typedef struct {
 #define ENABLE_SENDFILE_ON     (1)
 #define ENABLE_SENDFILE_UNSET  (2)
     unsigned int enable_sendfile : 2;  /* files in this dir can be sendfile'ed */
-    unsigned int allow_encoded_slashes : 1; /* URLs may contain %2f w/o being
-                                             * pitched indiscriminately */
 
 #define USE_CANONICAL_PHYS_PORT_OFF   (0)
 #define USE_CANONICAL_PHYS_PORT_ON    (1)
 #define USE_CANONICAL_PHYS_PORT_UNSET (2)
-    unsigned use_canonical_phys_port : 2;
+    unsigned int use_canonical_phys_port : 2;
+
+    unsigned int allow_encoded_slashes : 1; /* URLs may contain %2f w/o being
+                                             * pitched indiscriminately */
+    unsigned int decode_encoded_slashes : 1; /* whether to decode encoded slashes in URLs */
 
     ap_expr_info_t *condition;   /* Conditionally merge <If> sections */
 
     /** per-dir log config */
     struct ap_logconf *log;
 
-    unsigned int decode_encoded_slashes : 1; /* whether to decode encoded slashes in URLs */
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
