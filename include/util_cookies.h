@@ -65,8 +65,10 @@ typedef struct {
  * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
  *            to which the cookies should be added.
  */
-AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, const char *val,
-                                         const char *attrs, long maxage, ...);
+AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name,
+                                         const char *val, const char *attrs,
+                                         long maxage, ...)
+                         __attribute__((sentinel));
 
 /**
  * Write an RFC2965 compliant cookie.
@@ -80,8 +82,10 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
  * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
  *            to which the cookies should be added.
  */
-AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, const char *val,
-                                          const char *attrs2, long maxage, ...);
+AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2,
+                                          const char *val, const char *attrs2,
+                                          long maxage, ...)
+                         __attribute__((sentinel));
 
 /**
  * Remove an RFC2109 compliant cookie.
@@ -93,7 +97,9 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
  * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
  *            to which the cookies should be added.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, const char *attrs, ...);
+AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name,
+                                          const char *attrs, ...)
+                         __attribute__((sentinel));
 
 /**
  * Remove an RFC2965 compliant cookie.
@@ -105,7 +111,9 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, con
  * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
  *            to which the cookies should be added.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, const char *attrs2, ...);
+AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2,
+                                           const char *attrs2, ...)
+                         __attribute__((sentinel));
 
 /**
  * Read a cookie called name, placing its value in val.

@@ -122,7 +122,8 @@ AP_DECLARE(int) ap_scan_script_header_err_brigade(request_rec *r,
 AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
                                                       char *buffer, 
                                                       const char **termch,
-                                                      int *termarg, ...);
+                                                      int *termarg, ...)
+                       __attribute__((sentinel));
 
 /**
  * Read headers output from a script, ensuring that the output is valid.  If
