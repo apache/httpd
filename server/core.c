@@ -75,6 +75,10 @@
 /* valid in core-conf, but not in runtime r->used_path_info */
 #define AP_ACCEPT_PATHINFO_UNSET 3 
 
+#define AP_CONTENT_MD5_OFF   0 
+#define AP_CONTENT_MD5_ON    1 
+#define AP_CONTENT_MD5_UNSET 2 
+
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
 )
@@ -126,7 +130,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->override = OR_UNSET|OR_NONE;
     conf->override_opts = OPT_UNSET | OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
 
-    conf->content_md5 = 2;
+    conf->content_md5 = AP_CONTENT_MD5_UNSET;
     conf->accept_path_info = AP_ACCEPT_PATHINFO_UNSET;
 
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
@@ -251,11 +255,11 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->hostname_lookups = new->hostname_lookups;
     }
 
-    if ((new->content_md5 & 2) == 0) {
+    if (new->content_md5 == AP_CONTENT_MD5_UNSET) {
         conf->content_md5 = new->content_md5;
     }
 
-    if (new->accept_path_info != 3) {
+    if (new->accept_path_info != AP_ACCEPT_PATHINFO_UNSET) {
         conf->accept_path_info = new->accept_path_info;
     }
 
@@ -2696,7 +2700,7 @@ static const char *set_content_md5(cmd_parms *cmd, void *d_, int arg)
 {
     core_dir_config *d = d_;
 
-    d->content_md5 = arg != 0;
+    d->content_md5 = arg ? AP_CONTENT_MD5_ON : AP_CONTENT_MD5_OFF;
     return NULL;
 }
 
@@ -3985,7 +3989,7 @@ static int default_handler(request_rec *r)
 
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
-    bld_content_md5 = (d->content_md5 & 1)
+    bld_content_md5 = (d->content_md5 == AP_CONTENT_MD5_ON)
                       && r->output_filters->frec->ftype != AP_FTYPE_RESOURCE;
 
     ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
