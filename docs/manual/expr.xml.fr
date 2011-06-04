@@ -165,6 +165,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Le protocole associ&eacute; &agrave; l'URI de la requ&ecirc;te</td></tr>
     <tr><td><code>REQUEST_URI</code></td>
         <td>L'URI de la requ&ecirc;te</td></tr>
+    <tr><td><code>DOCUMENT_URI</code></td>
+        <td>Idem REQUEST_URI</td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
         <td>Le chemin complet dans le syst&egrave;me de fichiers local du
 	fichier ou du script correspondant &agrave; la requ&ecirc;te, si le serveur
@@ -173,6 +175,11 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	contexte de serveur virtuel, m&ecirc;me valeur que <code>REQUEST_URI</code> </td></tr>	
     <tr><td><code>SCRIPT_FILENAME</code></td>
         <td>Identique &agrave; <code>REQUEST_FILENAME</code></td></tr>
+    <tr><td><code>LAST_MODIFIED</code></td>
+        <td>La date et heure de derni&egrave;re modification du fichier au
+	format <code>20101231235959</code>, si elle est d&eacute;j&agrave; connue du
+	serveur au moment o&ugrave; <code>LAST_MODIFIED</code> est r&eacute;f&eacute;renc&eacute;.
+        </td></tr>
     <tr><td><code>SCRIPT_USER</code></td>
         <td>Le nom d'utilisateur du propri&eacute;taire du script.</td></tr>
     <tr><td><code>SCRIPT_GROUP</code></td>
@@ -361,51 +368,56 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".2"/><column width=".6"/></columnspec>
 
-    <tr><th>Nom</th><th>Description</th></tr>
+    <tr><th>Nom</th><th>Description</th><th>Restreint</th></tr>
     <tr><td><code>-d</code></td>
-        <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
-	fichier existe et correspond &agrave; un
-	r&eacute;pertoire</td></tr>
+        <td>L'argument est trait&eacute; comme un nom de fichier. 
+	Vrai si le fichier existe et correspond &agrave; un
+	r&eacute;pertoire</td><td>oui</td></tr>
     <tr><td><code>-e</code></td>
         <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
-	fichier (ou dir ou special) existe</td></tr>
+	fichier (ou dir ou special) existe</td><td>oui</td></tr>
     <tr><td><code>-f</code></td>
         <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
 	fichier existe et correspond &agrave; un fichier
-	r&eacute;gulier</td></tr>
+	r&eacute;gulier</td><td>oui</td></tr>
     <tr><td><code>-L</code></td>
         <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
 	fichier existe et correspond &agrave; un lien
-	symbolique</td></tr>
+	symbolique</td><td>oui</td></tr>
     <tr><td><code>-h</code></td>
         <td>L'argument est trait&eacute; comme un nom de fichier. Vrai si le
 	fichier existe et correspond &agrave; un lien symbolique
-	(identique &agrave; <code>-L</code>)</td></tr>
+	(identique &agrave; <code>-L</code>)</td><td>oui</td></tr>
     <tr><td><code>-F</code></td>
         <td>Vrai si la cha&icirc;ne correspond a un fichier valide, accessible
 	avec tous les contr&ocirc;les d'acc&egrave;s configur&eacute;s pour ce chemin. A
 	cette fin, une sous-requ&ecirc;te effectue la v&eacute;rification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
-	performances de votre serveur !</td></tr>
+	performances de votre serveur !</td><td></td></tr>
     <tr><td><code>-U</code></td>
         <td>Vrai si la cha&icirc;ne correspond a une URL valide, accessible
 	avec tous les contr&ocirc;les d'acc&egrave;s configur&eacute;s pour ce chemin. A
 	cette fin, une sous-requ&ecirc;te effectue la v&eacute;rification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
-	performances de votre serveur !</td></tr>
+	performances de votre serveur !</td><td></td></tr>
+    <tr><td><code>-A</code></td>
+        <td>Alias pour <code>-U</code></td><td></td></tr>
     <tr><td><code>-n</code></td>
-        <td>Vrai si la cha&icirc;ne n'est pas vide</td></tr>
+        <td>Vrai si la cha&icirc;ne n'est pas vide</td><td></td></tr>
     <tr><td><code>-z</code></td>
-        <td>Vrai si la cha&icirc;ne est vide</td></tr>
+        <td>Vrai si la cha&icirc;ne est vide</td><td></td></tr>
     <tr><td><code>-T</code></td>
         <td>Faux si la cha&icirc;ne est vide, "<code>0</code>",
 	"<code>off</code>", "<code>false</code>", ou "<code>no</code>"
-	(insensibilit&eacute; &agrave; la casse). Vrai dans le cas contraire.</td></tr>
+	(insensibilit&eacute; &agrave; la casse). Vrai dans le cas contraire.</td><td></td></tr>
     <tr><td><code>-R</code></td>
         <td>Idem "<code>%{REMOTE_ADDR} -ipmatch ...</code>", en plus
 	efficace
-        </td></tr>
+        </td><td></td></tr>
     </table>
+
+    <p>Les op&eacute;rateurs marqu&eacute;s comme "restreints" ne sont pas disponibles
+    avec certains modules comme <module>mod_include</module>.</p>
 
 </section>
 
@@ -420,37 +432,40 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
 
-    <tr><th>Nom</th><th>Description</th></tr>
+    <tr><th>Nom</th><th>Description</th><th>Restreint</th></tr>
     <tr><td><code>req</code>, <code>http</code></td>
-        <td>Lit l'en-t&ecirc;te de requ&ecirc;te HTTP</td></tr>
+        <td>Lit l'en-t&ecirc;te de requ&ecirc;te HTTP</td><td></td></tr>
     <tr><td><code>resp</code></td>
-        <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td></tr>
+        <td>Lit l'en-t&ecirc;te de r&eacute;ponse HTTP</td><td></td></tr>
     <tr><td><code>reqenv</code></td>
-        <td>Recherche une variable d'environnement de requ&ecirc;te</td></tr>
+        <td>Recherche une variable d'environnement de requ&ecirc;te</td><td></td></tr>
     <tr><td><code>osenv</code></td>
         <td>Recherche une variable d'environnement du syst&egrave;me
-	d'exploitation</td></tr>
+	d'exploitation</td><td></td></tr>
     <tr><td><code>note</code></td>
-        <td>Recherche une note de requ&ecirc;te</td></tr>
+        <td>Recherche une note de requ&ecirc;te</td><td></td></tr>
     <tr><td><code>env</code></td>
         <td>Renvoie le premier r&eacute;sultat positif de <code>note</code>,
-	<code>reqenv</code>, <code>osenv</code></td></tr>
+	<code>reqenv</code>, <code>osenv</code></td><td></td></tr>
     <tr><td><code>tolower</code></td>
-        <td>Convertit une cha&icirc;ne en minuscules</td></tr>
+        <td>Convertit une cha&icirc;ne en minuscules</td><td></td></tr>
     <tr><td><code>toupper</code></td>
-        <td>Convertit une cha&icirc;ne en majuscules</td></tr>
+        <td>Convertit une cha&icirc;ne en majuscules</td><td></td></tr>
     <tr><td><code>escape</code></td>
-        <td>Echappe les caract&egrave;res sp&eacute;ciaux en codage hexad&eacute;cimal</td></tr>
+        <td>Echappe les caract&egrave;res sp&eacute;ciaux en codage hexad&eacute;cimal</td><td></td></tr>
     <tr><td><code>unescape</code></td>
         <td>"D&eacute;s&eacute;chappe" les cha&icirc;nes cod&eacute;es en hexad&eacute;cimal en conservant
-	le codage des caract&egrave;res sp&eacute;ciaux aux URLs (XXX: describe better)</td></tr>
+	le codage des caract&egrave;res sp&eacute;ciaux aux URLs (XXX: describe better)</td><td></td></tr>
     <tr><td><code>file</code></td>
-        <td>Lit le contenu d'un fichier</td></tr>
+        <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
     <tr><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
-	pas ou ne correspond pas &agrave; un fichier r&eacute;gulier)</td></tr>
+	pas ou ne correspond pas &agrave; un fichier r&eacute;gulier)</td><td>oui</td></tr>
 
     </table>
+
+    <p>Les fonctions marqu&eacute;es comme "restreints" ne sont pas disponibles
+    avec certains modules comme <module>mod_include</module>.</p>
 
     <p>En plus des fonctions dont la valeur est une cha&icirc;ne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une

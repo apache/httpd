@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1041023 -->
+<!-- English Revision : 1128614 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -458,7 +458,8 @@ HTML pr&eacute;existants.</p>
     <p>Puis, dans votre document o&ugrave; les SSI sont activ&eacute;es, vous ajoutez
     ceci :</p>
 <example>
-        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br />
+        &lt;!--#if expr="-T reqenv('Mac') &amp;&amp;
+                         -T reqenv('InternetExplorer')" --&gt;<br />
         Un texte d'excuses est ins&eacute;r&eacute; ici<br />
         &lt;!--#else --&gt;<br />
         Ici se trouve du code JavaScipt sympa<br />
