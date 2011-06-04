@@ -325,14 +325,15 @@
  * 20110329.5 (2.3.13-dev) Add ap_regexec_len()
  * 20110329.6 (2.3.13-dev) Add AP_EXPR_FLAGS_RESTRICTED, ap_expr_eval_ctx_t->data,
  *                         ap_expr_exec_ctx()
+ * 20110604.0 (2.3.13-dev) Make ap_rputs() inline
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20110329
+#define MODULE_MAGIC_NUMBER_MAJOR 20110604
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 6                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

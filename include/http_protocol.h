@@ -319,14 +319,6 @@ AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct);
 AP_DECLARE(int) ap_rputc(int c, request_rec *r);
 
 /**
- * Output a string for the current request
- * @param str The string to output
- * @param r The current request
- * @return The number of bytes sent
- */
-AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
-
-/**
  * Write a buffer for the current request
  * @param buf The buffer to write
  * @param nbyte The number of bytes to send from the buffer
@@ -334,6 +326,18 @@ AP_DECLARE(int) ap_rputs(const char *str, request_rec *r);
  * @return The number of bytes sent
  */
 AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
+
+/**
+ * Output a string for the current request
+ * @param str The string to output
+ * @param r The current request
+ * @return The number of bytes sent
+ * @note ap_rputs may be implemented as macro or inline function
+ */
+static inline int ap_rputs(const char *str, request_rec *r)
+{
+    return ap_rwrite(str, strlen(str), r);
+}
 
 /**
  * Write an unspecified number of strings to the request
