@@ -54,16 +54,13 @@ delete-exports:
 	fi
 
 export_files:
-	tmp=export_files_unsorted.txt; \
-	rm -f $$tmp && touch $$tmp; \
-	for dir in $(EXPORT_DIRS); do \
-	    ls $$dir/*.h >> $$tmp; \
-	done; \
-	for dir in $(EXPORT_DIRS_APR); do \
-	    (ls $$dir/ap[ru].h $$dir/ap[ru]_*.h >> $$tmp 2>/dev/null); \
-	done; \
-	sort -u $$tmp > $@; \
-	rm -f $$tmp
+	( for dir in $(EXPORT_DIRS); do \
+	      ls $$dir/*.h ; \
+	  done; \
+	  for dir in $(EXPORT_DIRS_APR); do \
+	      ls $$dir/ap[ru].h $$dir/ap[ru]_*.h 2>/dev/null; \
+	  done; \
+	) | sort -u > $@
 
 exports.c: export_files
 	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $?` > $@
