@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1054323:1128614 (outdated) -->
+<!-- English Revision: 1128732 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -197,9 +197,9 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
 	toute sous-cha&icirc;ne pouvait correspondre.</li>
 
         <li><module>mod_dav_fs</module>: le format du fichier <directive
-	module="dav_fs">DavLockDB</directive> a chang&eacute; pour les syst&egrave;mes
+	module="mod_dav_fs">DavLockDB</directive> a chang&eacute; pour les syst&egrave;mes
 	avec inodes. L'ancien fichier <directive
-	module="dav_fs">DavLockDB</directive> doit &ecirc;tre supprim&eacute; dans le
+	module="mod_dav_fs">DavLockDB</directive> doit &ecirc;tre supprim&eacute; dans le
 	cadre de la mise &agrave; jour.
         </li>
 
@@ -218,7 +218,7 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
 	module="core">Mutex</directive>.</li>
 
         <li><module>mod_cache</module>: la directive <directive
-	module="cache">CacheIgnoreURLSessionIdentifiers</directive>
+	module="mod_cache">CacheIgnoreURLSessionIdentifiers</directive>
 	effectue maintenant une correspondance exacte dans la cha&icirc;ne de
 	param&egrave;tres au lieu d'une correspondance partielle. Si votre
 	configuration mettait en jeu des sous-cha&icirc;nes comme
@@ -229,16 +229,43 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
         </li>
 
         <li><module>mod_ldap</module>: la directive <directive
-	module="ldap">LDAPTrustedClientCert</directive> s'utilise
+	module="mod_ldap">LDAPTrustedClientCert</directive> s'utilise
 	maintenant exclusivement au sein d'une configuration de niveau
 	r&eacute;pertoire. Si vous utilisez cette directive, passez en revue
 	votre configuration pour vous assurer qu'elle est bien pr&eacute;sente
 	dans tous les contextes de r&eacute;pertoire n&eacute;cessaires.</li>
 
 	<li><module>mod_filter</module>: la syntaxe de la directive
-	<directive module="filter">FilterProvider</directive> utilise
+	<directive module="mod_filter">FilterProvider</directive> utilise
 	maintenant une expression bool&eacute;enne pour d&eacute;terminer si un filtre
 	s'applique.
+        </li>
+
+	<li><module>mod_include</module>:
+            <ul>
+            <li>L'&eacute;l&eacute;ment <code>#if expr</code> utilise maintenant le
+	    nouvel <a href="expr.html">interpr&eacute;teur d'expressions</a>.
+	    L'ancienne syntaxe peut &ecirc;tre r&eacute;activ&eacute;e via la directive
+	    <directive
+	    module="mod_include">SSILegacyExprParser</directive>.
+            </li>
+            <li>Dans la port&eacute;e du r&eacute;pertoire, une directive de
+	    configuration SSI* ne provoque plus la r&eacute;initialisation &agrave;
+	    leur valeur par d&eacute;faut de toutes les directives SSI* de
+	    niveau r&eacute;pertoire.</li>
+            </ul>
+        </li>
+
+        <li><module>mod_charset_lite</module> : l'option
+	<code>DebugLevel</code> a &eacute;t&eacute; supprim&eacute;e en faveur d'une
+	configuration de la directive <directive
+	module="core">LogLevel</directive> au niveau r&eacute;pertoire.
+        </li>
+
+        <li><module>mod_ext-filter</module> : l'option
+	<code>DebugLevel</code> a &eacute;t&eacute; supprim&eacute;e en faveur d'une
+	configuration de la directive <directive
+	module="core">LogLevel</directive> au niveau r&eacute;pertoire.
         </li>
     
     </ul>

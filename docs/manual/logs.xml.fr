@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1031155:1127905 (outdated) -->
+<!-- English Revision: 1127905 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -118,7 +118,7 @@
     <a href="#piped">rediriger vers un programme</a> par l'interm&eacute;diaire d'un
     tube de communication (pipe).</p>
 
-    <p>Le format du journal des erreurs est descriptif et de forme
+    <p>Le format par d&eacute;faut du journal des erreurs est descriptif et de forme
     relativement libre. Certaines informations apparaissent cependant dans la
     plupart des entr&eacute;es du journal. Voici un message typique
     &agrave; titre d'exemple : </p>
@@ -147,14 +147,15 @@
     &eacute;crit sur la sortie d'erreurs standard <code>stderr</code> sera recopi&eacute;e
     telle quelle dans le journal des erreurs.</p>
 
-    <p>Il n'est pas possible de personnaliser le journal des erreurs en ajoutant ou en
-    supprimant des informations. Cependant, les entr&eacute;es du journal des erreurs
-    qui concernent certaines requ&ecirc;tes poss&egrave;dent des entr&eacute;es correspondantes
-    dans le <a href="#accesslog">journal des acc&egrave;s</a>. Ainsi, l'entr&eacute;e de
-    l'exemple ci-dessus correspond &agrave; une entr&eacute;e du journal des acc&egrave;s avec un
-    code de statut 403. Etant donn&eacute; qu'il est possible de personnaliser le
-    journal des acc&egrave;s, vous pouvez obtenir d'avantage d'informations sur les
-    circonstances d'une erreur en consultant ce journal.</p>
+    <p>La directive <directive module="core">ErrorLogFormat</directive>
+    vous permet de personnaliser le format du journal des erreurs, et de
+    d&eacute;finir les informations &agrave; journaliser. Si
+    <module>mod_unique_id</module> est pr&eacute;sent, vous pouvez utiliser le
+    drapeau <code>%L</code> &agrave; la fois dans le journal des erreurs et
+    dans le
+    journal des acc&egrave;s, ce qui aura pour effet de g&eacute;n&eacute;rer un identifiant
+    d'entr&eacute;e qui vous permettra de corr&eacute;ler les entr&eacute;es du journal des
+    erreurs avec celles du journal des acc&egrave;s.</p>
 
     <p>Pendant la phase de test, il est souvent utile de visualiser en continu
     le journal des erreurs afin de d&eacute;tecter tout probl&egrave;me &eacute;ventuel. Sur les
