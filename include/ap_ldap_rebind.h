@@ -25,22 +25,22 @@
  * @brief Apache LDAP library
  */
 
-#ifndef APU_LDAP_REBIND_H
-#define APU_LDAP_REBIND_H
+#ifndef AP_LDAP_REBIND_H
+#define AP_LDAP_REBIND_H
 
 /**
  * @addtogroup AP_Util_LDAP
  * @{
  **/
 
-#if defined(DOXYGEN)
-#include "ap_ldap.h"
-#endif
-
 /*
  * Handle the case when LDAP is enabled
  */
 #if AP_HAS_LDAP
+
+#if defined(DOXYGEN)
+#include "ap_ldap.h"
+#endif
 
 /**
  * LDAP initialize rebind lock
@@ -94,5 +94,5 @@ LDAP_DECLARE(apr_status_t) ap_ldap_rebind_remove(LDAP *ld);
 
 /** @} */
 
-#endif /* APU_LDAP_REBIND_H */
+#endif /* AP_LDAP_REBIND_H */
 

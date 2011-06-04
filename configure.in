@@ -446,6 +446,9 @@ fopen64
 dnl confirm that a void pointer is large enough to store a long integer
 APACHE_CHECK_VOID_PTR_LEN
 
+dnl check for LDAP support, needed by modules/aaa and modules/ldap
+AP_FIND_LDAP
+
 dnl ## Check for the tm_gmtoff field in struct tm to get the timezone diffs
 AC_CACHE_CHECK([for tm_gmtoff in struct tm], ac_cv_struct_tm_gmtoff,
 [AC_TRY_COMPILE([#include <sys/types.h>

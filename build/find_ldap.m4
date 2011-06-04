@@ -39,6 +39,7 @@ AC_DEFUN([AP_FIND_LDAPLIB], [
         AC_CHECK_LIB(${ldaplib}, ldapssl_init, ap_has_ldapssl_init="1", , ${extralib})
         AC_CHECK_LIB(${ldaplib}, ldapssl_install_routines, ap_has_ldapssl_install_routines="1", , ${extralib})
         ap_has_ldap="1";
+        AC_DEFINE(AP_HAS_LDAP, 1, [Defined if httpd is compiled with ldap support])
       ], , ${extralib})
   fi
 ])

@@ -51,9 +51,6 @@
 #define LDAP_DECLARE_DATA             __declspec(dllimport)
 #endif
 
-/* this will be defined if LDAP support was compiled into apr-util */
-#define AP_HAS_LDAP		  @ap_has_ldap@
-
 /* identify the LDAP toolkit used */
 #define AP_HAS_NETSCAPE_LDAPSDK  @ap_has_ldap_netscape@
 #define AP_HAS_SOLARIS_LDAPSDK   @ap_has_ldap_solaris@
