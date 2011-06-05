@@ -535,16 +535,35 @@ AP_CORE_DECLARE(void) ap_add_file_conf(apr_pool_t *p, core_dir_config *conf,
     *new_space = url_config;
 }
 
-AP_CORE_DECLARE(void) ap_add_if_conf(apr_pool_t *p, core_dir_config *conf,
-                                     void *url_config)
+AP_CORE_DECLARE(const char *) ap_add_if_conf(apr_pool_t *p,
+                                             core_dir_config *conf,
+                                             void *if_config)
 {
     void **new_space;
+    core_dir_config *new = ap_get_module_config(if_config, &core_module);
 
-    if (!conf->sec_if)
+    if (!conf->sec_if) {
         conf->sec_if = apr_array_make(p, 2, sizeof(ap_conf_vector_t *));
+    }
+    if (new->condition_ifelse & AP_CONDITION_ELSE) {
+        int have_if = 0;
+        if (conf->sec_if->nelts > 0) {
+            core_dir_config *last;
+            ap_conf_vector_t *lastelt = APR_ARRAY_IDX(conf->sec_if,
+                                                      conf->sec_if->nelts - 1,
+                                                      ap_conf_vector_t *);
+            last = ap_get_module_config(lastelt, &core_module);
+            if (last->condition_ifelse & AP_CONDITION_IF)
+                have_if = 1;
+        }
+        if (!have_if)
+            return "<Else> or <ElseIf> section without previous <If> or "
+                   "<ElseIf> section in same scope";
+    }
 
     new_space = (void **)apr_array_push(conf->sec_if);
-    *new_space = url_config;
+    *new_space = if_config;
+    return NULL;
 }
 
 
@@ -2182,6 +2201,11 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     return NULL;
 }
+
+#define COND_IF      ((void *)1)
+#define COND_ELSE    ((void *)2)
+#define COND_ELSEIF  ((void *)3)
+
 static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     const char *errmsg;
@@ -2190,7 +2214,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     char *old_path = cmd->path;
     core_dir_config *conf;
     const command_rec *thiscmd = cmd->cmd;
-    ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
+    ap_conf_vector_t *new_if_conf = ap_create_per_dir_config(cmd->pool);
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     const char *condition;
     const char *expr_err;
@@ -2205,27 +2229,41 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     arg = apr_pstrndup(cmd->temp_pool, arg, endp - arg);
 
-    if (!arg[0]) {
-        return missing_container_arg(cmd);
-    }
 
-    condition = ap_getword_conf(cmd->pool, &arg);
     /* Only if not an .htaccess file */
     if (!old_path) {
         cmd->override = OR_ALL|ACCESS_CONF;
     }
 
     /* initialize our config and fetch it */
-    conf = ap_set_config_vectors(cmd->server, new_file_conf, cmd->path,
+    conf = ap_set_config_vectors(cmd->server, new_if_conf, cmd->path,
                                  &core_module, cmd->pool);
 
-    conf->condition = ap_expr_parse_cmd(cmd, condition, &expr_err, NULL);
-    if (expr_err) {
-        return apr_psprintf(cmd->pool, "Cannot parse condition clause: %s", expr_err);
-    }
-    conf->condition->module_index = APLOG_MODULE_INDEX;
+    if (cmd->cmd->cmd_data == COND_IF)
+        conf->condition_ifelse = AP_CONDITION_IF;
+    else if (cmd->cmd->cmd_data == COND_ELSEIF)
+        conf->condition_ifelse = AP_CONDITION_ELSEIF;
+    else if (cmd->cmd->cmd_data == COND_ELSE)
+        conf->condition_ifelse = AP_CONDITION_ELSE;
+    else
+        ap_assert(0);
 
-    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_file_conf);
+    if (conf->condition_ifelse == AP_CONDITION_ELSE) {
+        if (arg[0])
+            return "<Else> does not take an argument";
+    }
+    else {
+        if (!arg[0])
+            return missing_container_arg(cmd);
+        condition = ap_getword_conf(cmd->pool, &arg);
+        conf->condition = ap_expr_parse_cmd(cmd, condition, &expr_err, NULL);
+        if (expr_err)
+            return apr_psprintf(cmd->pool, "Cannot parse condition clause: %s",
+                                expr_err);
+        conf->condition->module_index = APLOG_MODULE_INDEX;
+    }
+
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_if_conf);
     if (errmsg != NULL)
         return errmsg;
 
@@ -2233,7 +2271,9 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     conf->d_is_fnmatch = 0;
     conf->r = NULL;
 
-    ap_add_if_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);
+    errmsg = ap_add_if_conf(cmd->pool, (core_dir_config *)mconfig, new_if_conf);
+    if (errmsg != NULL)
+        return errmsg;
 
     if (*arg != '\0') {
         return apr_pstrcat(cmd->pool, "Multiple ", thiscmd->name,
@@ -3659,7 +3699,11 @@ AP_INIT_TAKE1("UnDefine", unset_define, NULL, EXEC_ON_READ|ACCESS_CONF|RSRC_CONF
               "Undefine the existence of a variable. Undo a Define."),
 AP_INIT_RAW_ARGS("Error", generate_error, NULL, OR_ALL,
                  "Generate error message from within configuration"),
-AP_INIT_RAW_ARGS("<If", ifsection, NULL, OR_ALL,
+AP_INIT_RAW_ARGS("<If", ifsection, COND_IF, OR_ALL,
+  "Container for directives to be conditionally applied"),
+AP_INIT_RAW_ARGS("<ElseIf", ifsection, COND_ELSEIF, OR_ALL,
+  "Container for directives to be conditionally applied"),
+AP_INIT_RAW_ARGS("<Else", ifsection, COND_ELSE, OR_ALL,
   "Container for directives to be conditionally applied"),
 
 /* Old resource config file commands */

@@ -1628,6 +1628,7 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
     int sec_idx;
     int matches;
     int cached_matches;
+    int prev_result = -1;
     walk_walked_t *last_walk;
 
     if (dconf->sec_if) {
@@ -1659,13 +1660,27 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
         int rc;
         entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
-        rc = ap_expr_exec(r, entry_core->condition, &err);
-        if (rc <= 0) {
-            if (rc < 0)
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Failed to evaluate <If > condition: %s",
-                              err);
-            continue;
+        AP_DEBUG_ASSERT(entry_core->condition_ifelse != 0);
+        if (entry_core->condition_ifelse & AP_CONDITION_ELSE) {
+            AP_DEBUG_ASSERT(prev_result != -1);
+            if (prev_result == 1)
+                continue;
+        }
+
+        if (entry_core->condition_ifelse & AP_CONDITION_IF) {
+            rc = ap_expr_exec(r, entry_core->condition, &err);
+            if (rc <= 0) {
+                if (rc < 0)
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "Failed to evaluate <If > condition: %s",
+                                  err);
+                prev_result = 0;
+                continue;
+            }
+            prev_result = 1;
+        }
+        else {
+            prev_result = -1;
         }
 
         /* If we merged this same section last time, reuse it

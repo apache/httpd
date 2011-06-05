@@ -801,6 +801,102 @@ from the web</description>
 Locations</a></seealso>
 </directivesynopsis>
 
+<directivesynopsis type="section">
+<name>Else</name>
+<description>Contains directives that apply only if the condition of a
+previous <directive type="section" module="core">If</directive> or
+<directive type="section" module="core">ElseIf</directive> section is not
+satisfied by a request at runtime</description>
+<syntax>&lt;Else&gt; ... &lt;/Else&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>The <directive type="section">Else</directive> applies the enclosed
+    directives if and only if the most recent
+    <directive type="section">If</directive> or
+    <directive type="section">ElseIf</directive> section
+    in the same scope has not been applied.
+    For example: In </p>
+
+    <example>
+        &lt;If "-z req('Host')"&gt;<br/>
+        ...<br/>
+        &lt;/If&gt;<br/>
+        &lt;Else&gt;<br/>
+        ...<br/>
+        &lt;/Else&gt;<br/>
+    </example>
+
+    <p> The <directive type="section">If</directive> would match HTTP/1.0
+        requests without a <var>Host:</var> header and the
+        <directive type="section">Else</directive> would match requests
+        with a <var>Host:</var> header.</p>
+
+</usage>
+<seealso><directive type="section" module="core">If</directive></seealso>
+<seealso><directive type="section" module="core">ElseIf</directive></seealso>
+<seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <directive type="section">If</directive>,
+    <directive type="section">ElseIf</directive>, and
+    <directive type="section">Else</directive> are applied last.</seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>ElseIf</name>
+<description>Contains directives that apply only if a condition is satisfied
+by a request at runtime while the condition of a previous
+<directive type="section" module="core">If</directive> or
+<directive type="section">ElseIf</directive> section is not
+satisfied</description>
+<syntax>&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>The <directive type="section">ElseIf</directive> applies the enclosed
+    directives if and only if both the given condition evaluates to true and
+    the most recent <directive type="section">If</directive> or
+    <directive type="section">ElseIf</directive> section in the same scope has
+    not been applied.  For example: In </p>
+
+    <example>
+        &lt;If "-R '10.1.0.0/16'"&gt;<br/>
+        ...<br/>
+        &lt;/If&gt;<br/>
+        &lt;ElseIf "-R '10.0.0.0/8'"&gt;<br/>
+        ...<br/>
+        &lt;/ElseIf&gt;<br/>
+        &lt;Else&gt;<br/>
+        ...<br/>
+        &lt;/Else&gt;<br/>
+    </example>
+
+    <p>The <directive type="section">ElseIf</directive> would match if
+    the remote address of a request belongs to the subnet 10.0.0.0/8 but
+    not to the subnet 10.1.0.0/16.</p>
+
+</usage>
+<seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and more examples.</seealso>
+<seealso><directive type="section" module="core">If</directive></seealso>
+<seealso><directive type="section" module="core">Else</directive></seealso>
+<seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <directive type="section">If</directive>,
+    <directive type="section">ElseIf</directive>, and
+    <directive type="section">Else</directive> are applied last.</seealso>
+</directivesynopsis>
+
+
+
 <directivesynopsis>
 <name>EnableMMAP</name>
 <description>Use memory-mapping to read files during delivery</description>
@@ -1603,31 +1699,38 @@ satisfied by a request at runtime</description>
     For example:</p>
 
     <example>
-        &lt;If "$req{Host} = ''"&gt;
+        &lt;If "-z req('Host')"&gt;
     </example>
 
-    <p>would match HTTP/1.0 requests without a <var>Host:</var> header.</p>
-
-    <p>You may compare the value of any variable in the request headers
-    ($req), response headers ($resp) or environment ($env) in your
-    expression.</p>
-
-    <p>Apart from <code>=</code>, <code>If</code> can use the <code>IN</code>
-    operator to compare if the expression is in a given range:</p>
+    <p>would match HTTP/1.0 requests without a <var>Host:</var> header.
+    Expressions may contain various shell-like operators for string
+    comparison (<code>=</code>, <code>!=</code>, <code>&lt;</code>, ...),
+    integer comparison (<code>-eq</code>, <code>-ne</code>, ...),
+    and others (<code>-n</code>, <code>-z</code>, <code>-f</code>, ...).
+    It is also possible to use regular expressions, </p>
 
     <example>
-        &lt;If %{REQUEST_METHOD} IN GET,HEAD,OPTIONS&gt;
+        &lt;If "%{QUERY_STRING =~ /(delete|commit)=.*?elem/"&gt;
     </example>
+
+    <p>shell-like pattern matches and many other operations. These operations
+    can be done on request headers (<code>req</code>), environment variables
+    (<code>env</code>), and a large number of other properties. The full
+    documentation is available in <a href="../expr.html">Expressions in
+    Apache HTTP Server</a>.</p>
 
 </usage>
 
 <seealso><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</seealso>
+<seealso><directive type="section" module="core">ElseIf</directive></seealso>
+<seealso><directive type="section" module="core">Else</directive></seealso>
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
     &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received.
-    <directive type="section">If</directive> has the same precedence
-    and usage as <directive type="section">Files</directive></seealso>
+    <directive type="section">If</directive>,
+    <directive type="section">ElseIf</directive>, and
+    <directive type="section">Else</directive> are applied last.</seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">

@@ -38,7 +38,9 @@
     </p>
   </summary>
 
-<seealso><directive module="core">If</directive></seealso>
+<seealso><directive module="core" type="section">If</directive></seealso>
+<seealso><directive module="core" type="section">ElseIf</directive></seealso>
+<seealso><directive module="core" type="section">Else</directive></seealso>
 <seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
 <seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>

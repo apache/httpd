@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) core: Add <ElseIf> and <Else> to complement <If> sections.
+     [Stefan Fritsch]
+
   *) mod_ext_filter: Remove DebugLevel option in favor of per-module loglevel.
      [Stefan Fritsch]
 

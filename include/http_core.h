@@ -538,6 +538,11 @@ typedef struct {
                                              * pitched indiscriminately */
     unsigned int decode_encoded_slashes : 1; /* whether to decode encoded slashes in URLs */
 
+#define AP_CONDITION_IF        1
+#define AP_CONDITION_ELSE      2
+#define AP_CONDITION_ELSEIF    (AP_CONDITION_ELSE|AP_CONDITION_IF)
+    unsigned int condition_ifelse : 2; /* is this an <If>, <ElseIf>, or <Else> */
+
     ap_expr_info_t *condition;   /* Conditionally merge <If> sections */
 
     /** per-dir log config */
@@ -602,7 +607,7 @@ void ap_core_reorder_directories(apr_pool_t *, server_rec *);
 AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config);
 AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config);
 AP_CORE_DECLARE(void) ap_add_file_conf(apr_pool_t *p, core_dir_config *conf, void *url_config);
-AP_CORE_DECLARE(void) ap_add_if_conf(apr_pool_t *p, core_dir_config *conf, void *url_config);
+AP_CORE_DECLARE(const char *) ap_add_if_conf(apr_pool_t *p, core_dir_config *conf, void *url_config);
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy, const char *arg);
 
 /* Core filters; not exported. */
