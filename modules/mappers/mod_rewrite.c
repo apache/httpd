@@ -2088,6 +2088,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
             if (*var == 'H' && !strcmp(var, "HTTP_FORWARDED")) {
                 result = lookup_header("Forwarded", ctx);
             }
+            else if (*var == 'C' && !strcmp(var, "CONTEXT_PREFIX")) {
+                result = ap_context_prefix(r);
+            }
             else if (var[8] == 'M' && !strcmp(var, "REQUEST_METHOD")) {
                 result = r->method;
             }
@@ -2133,6 +2136,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
         case 21:
             if (!strcmp(var, "HTTP_PROXY_CONNECTION")) {
                 result = lookup_header("Proxy-Connection", ctx);
+            }
+            else if (!strcmp(var, "CONTEXT_DOCUMENT_ROOT")) {
+                result = ap_context_document_root(r);
             }
             break;
         }

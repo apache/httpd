@@ -722,12 +722,51 @@ AP_DECLARE(int) ap_satisfies(request_rec *r)
 
 AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
 {
-    core_server_config *conf;
+    core_server_config *sconf;
+    core_request_config *rconf = ap_get_module_config(r->request_config,
+                                                     &core_module);
+    if (rconf->document_root)
+        return rconf->document_root;
+    sconf = ap_get_module_config(r->server->module_config, &core_module);
+    return sconf->ap_document_root;
+}
 
-    conf = (core_server_config *)ap_get_module_config(r->server->module_config,
-                                                      &core_module);
+AP_DECLARE(const char *) ap_context_prefix(request_rec *r)
+{
+    core_request_config *conf = ap_get_module_config(r->request_config,
+                                                     &core_module);
+    if (conf->context_prefix)
+        return conf->context_prefix;
+    else
+        return "";
+}
 
-    return conf->ap_document_root;
+AP_DECLARE(const char *) ap_context_document_root(request_rec *r)
+{
+    core_request_config *conf = ap_get_module_config(r->request_config,
+                                                     &core_module);
+    if (conf->context_document_root)
+        return conf->context_document_root;
+    else
+        return ap_document_root(r);
+}
+
+AP_DECLARE(void) ap_set_document_root(request_rec *r, const char *document_root)
+{
+    core_request_config *conf = ap_get_module_config(r->request_config,
+                                                     &core_module);
+    conf->document_root = document_root;
+}
+
+AP_DECLARE(void) ap_set_context_info(request_rec *r, const char *context_prefix,
+                                     const char *context_document_root)
+{
+    core_request_config *conf = ap_get_module_config(r->request_config,
+                                                     &core_module);
+    if (context_prefix)
+        conf->context_prefix = context_prefix;
+    if (context_document_root)
+        conf->context_document_root = context_document_root;
 }
 
 /* Should probably just get rid of this... the only code that cares is

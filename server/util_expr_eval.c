@@ -1081,6 +1081,8 @@ static const char *request_var_names[] = {
     "SCRIPT_GROUP",             /* 22 */
     "DOCUMENT_URI",             /* 23 */
     "LAST_MODIFIED",            /* 24 */
+    "CONTEXT_PREFIX",           /* 25 */
+    "CONTEXT_DOCUMENT_ROOT",    /* 26 */
     NULL
 };
 
@@ -1160,6 +1162,10 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
                                 tm.tm_mon+1, tm.tm_mday, tm.tm_hour, tm.tm_min,
                                 tm.tm_sec);
         }
+    case 25:
+        return ap_context_prefix(r);
+    case 26:
+        return ap_context_document_root(r);
     default:
         ap_assert(0);
         return NULL;

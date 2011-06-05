@@ -259,7 +259,8 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     int ndots;
 
     char buf[HUGE_STRING_LEN];
-    char *dest, last;
+    char *dest;
+    const char *docroot;
 
     int N, M, Np, Mp, Nd, Md;
     const char *start, *end;
@@ -278,18 +279,15 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     r->filename = NULL;
 
     dest = buf;
-    last = '\0';
     while (*map) {
         if (*map != '%') {
             /* normal characters */
             vhost_alias_checkspace(r, buf, &dest, 1);
-            last = *dest++ = *map++;
+            *dest++ = *map++;
             continue;
         }
         /* we are in a format specifier */
         ++map;
-        /* can't be a slash */
-        last = '\0';
         /* %% -> % */
         if (*map == '%') {
             ++map;
@@ -366,18 +364,19 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
             *dest++ = apr_tolower(*p);
         }
     }
-    *dest = '\0';
     /* no double slashes */
-    if (last == '/') {
-        ++uri;
+    if (dest - buf > 0 && dest[-1] == '/') {
+        --dest;
     }
+    *dest = '\0';
 
-    if (r->filename) {
-        r->filename = apr_pstrcat(r->pool, r->filename, buf, uri, NULL);
-    }
-    else {
-        r->filename = apr_pstrcat(r->pool, buf, uri, NULL);
-    }
+    if (r->filename)
+        docroot = apr_pstrcat(r->pool, r->filename, buf, NULL);
+    else
+        docroot = apr_pstrdup(r->pool, buf);
+    r->filename = apr_pstrcat(r->pool, docroot, uri, NULL);
+    ap_set_context_info(r, NULL, docroot);
+    ap_set_document_root(r, docroot);
 }
 
 static int mva_translate(request_rec *r)
@@ -432,6 +431,7 @@ static int mva_translate(request_rec *r)
         /* see is_scriptaliased() in mod_cgi */
         r->handler = "cgi-script";
         apr_table_setn(r->notes, "alias-forced-type", r->handler);
+        ap_set_context_info(r, "/cgi-bin", NULL);
     }
 
     return OK;

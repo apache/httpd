@@ -340,6 +340,24 @@ typedef struct {
                                    * ErrorDocument
                                    */
 
+    /** per-request document root of the server. This allows mass vhosting
+     * modules better compatibility with some scripts. Normally the
+     * context_* info should be used instead */
+    const char *document_root;
+
+    /*
+     * more fine-grained context information which is set by modules like
+     * mod_alias and mod_userdir
+     */
+    /** the context root directory on disk for the current resource,
+     *  without trailing slash
+     */
+    const char *context_document_root;
+    /** the URI prefix that corresponds to the context_document_root directory,
+     *  without trailing slash
+     */
+    const char *context_prefix;
+
     /** There is a script processor installed on the output filter chain,
      * so it needs the default_handler to deliver a (script) file into
      * the chain so it can process it. Normally, default_handler only

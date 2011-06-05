@@ -323,6 +323,9 @@ static int translate_userdir(request_rec *r)
                                          r->pool)) == APR_SUCCESS
                                              || rv == APR_INCOMPLETE))) {
             r->filename = apr_pstrcat(r->pool, filename, dname, NULL);
+            ap_set_context_info(r, apr_pstrmemdup(r->pool, r->uri,
+                                                  dname - r->uri),
+                                filename);
             /* XXX: Does this walk us around FollowSymLink rules?
              * When statbuf contains info on r->filename we can save a syscall
              * by copying it to r->finfo

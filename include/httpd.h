@@ -1296,6 +1296,42 @@ typedef struct core_net_rec {
 } core_net_rec;
 
 /**
+ * Get the context_document_root for a request. This is a generalization of
+ * the document root, which is too limited in the presence of mappers like
+ * mod_userdir and mod_alias. The context_document_root is the directory
+ * on disk that maps to the context_prefix URI prefix.
+ * @param r The request
+ * @note For resources that do not map to the file system or for very complex
+ * mappings, this information may still be wrong.
+ */
+AP_DECLARE(const char *) ap_context_document_root(request_rec *r);
+
+/**
+ * Get the context_prefix for a request. The context_prefix URI prefix
+ * maps to the context_document_root on disk.
+ * @param r The request
+ */
+AP_DECLARE(const char *) ap_context_prefix(request_rec *r);
+
+/** Set context_prefix and context_document_root for a request.
+ * @param r The request
+ * @param prefix the URI prefix, without trailing slash
+ * @param document_root the corresponding directory on disk, without trailing
+ * slash
+ * @note If one of prefix of document_root is NULL, the corrsponding
+ * property will not be changed.
+ */
+AP_DECLARE(void) ap_set_context_info(request_rec *r, const char *prefix,
+                                     const char *document_root);
+
+/** Set per-request document root. This is for mass virtual hosting modules
+ * that want to provide the correct DOCUMENT_ROOT value to scripts.
+ * @param r The request
+ * @param document_root the document root for the request.
+ */
+AP_DECLARE(void) ap_set_document_root(request_rec *r, const char *document_root);
+
+/**
  * Examine a field value (such as a media-/content-type) string and return
  * it sans any parameters; e.g., strip off any ';charset=foo' and the like.
  * @param p Pool to allocate memory from

@@ -2,6 +2,15 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_userdir/mod_alias/mod_vhost_alias: Correctly set DOCUMENT_ROOT,
+     CONTEXT_DOCUMENT_ROOT, CONTEXT_PREFIX. PR 26052. PR 46198.
+     [Stefan Fritsch]
+
+  *) core: Allow to override document_root on a per-request basis. Introduce
+     new context_document_root and context_prefix which provide information
+     about non-global URI-to-directory mappings (from e.g. mod_userdir or
+     mod_alias) to scripts. PR 49705. [Stefan Fritsch]
+
   *) core: Add <ElseIf> and <Else> to complement <If> sections.
      [Stefan Fritsch]
 
