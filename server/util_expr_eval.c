@@ -720,7 +720,7 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
                       "Evaluation of expression from %s:%d gave: %d",
                       ctx->info->filename, ctx->info->line_number, rc);
 
-        if (ctx->vary_this)
+        if (*ctx->vary_this)
             apr_table_merge(ctx->r->headers_out, "Vary", *ctx->vary_this);
 
         return rc;
