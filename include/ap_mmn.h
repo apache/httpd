@@ -327,7 +327,10 @@
  *                         ap_expr_exec_ctx()
  * 20110604.0 (2.3.13-dev) Make ap_rputs() inline
  * 20110605.0 (2.3.13-dev) add core_dir_config->condition_ifelse, change return
- *                         type of ap_add_if_conf()
+ *                         type of ap_add_if_conf().
+ *                         Add members of core_request_config: document_root,
+ *                         context_document_root, context_prefix.
+ *                         Add ap_context_*(), ap_set_context_info(), ap_set_document_root()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

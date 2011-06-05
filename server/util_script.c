@@ -238,6 +238,9 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
                     ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST, NULL));
     apr_table_addn(e, "REMOTE_ADDR", c->remote_ip);
     apr_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));    /* Apache */
+    apr_table_setn(e, "REQUEST_SCHEME", ap_http_scheme(r));
+    apr_table_addn(e, "CONTEXT_PREFIX", ap_context_prefix(r));
+    apr_table_addn(e, "CONTEXT_DOCUMENT_ROOT", ap_context_document_root(r));
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin); /* Apache */
     apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
 
@@ -337,7 +340,6 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
     apr_table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
     apr_table_setn(e, "SERVER_PROTOCOL", r->protocol);
     apr_table_setn(e, "REQUEST_METHOD", r->method);
-    apr_table_setn(e, "REQUEST_SCHEME", ap_http_scheme(r));
     apr_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
     apr_table_setn(e, "REQUEST_URI", original_uri(r));
 

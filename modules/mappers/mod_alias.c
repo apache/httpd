@@ -334,7 +334,7 @@ static int alias_matches(const char *uri, const char *alias_fakename)
 }
 
 static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
-                            int doesc, int *status)
+                            int is_redir, int *status)
 {
     alias_entry *entries = (alias_entry *) aliases->elts;
     ap_regmatch_t regm[AP_MAX_REG_MATCH];
@@ -350,21 +350,34 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                 if (alias->real) {
                     found = ap_pregsub(r->pool, alias->real, r->uri,
                                        AP_MAX_REG_MATCH, regm);
-                    if (found && doesc) {
-                        apr_uri_t uri;
-                        apr_uri_parse(r->pool, found, &uri);
-                        /* Do not escape the query string or fragment. */
-                        found = apr_uri_unparse(r->pool, &uri,
-                                                APR_URI_UNP_OMITQUERY);
-                        found = ap_escape_uri(r->pool, found);
-                        if (uri.query) {
-                            found = apr_pstrcat(r->pool, found, "?",
-                                                uri.query, NULL);
-                        }
-                        if (uri.fragment) {
-                            found = apr_pstrcat(r->pool, found, "#",
-                                                uri.fragment, NULL);
-                        }
+                    if (found) {
+                       if (is_redir) {
+                            apr_uri_t uri;
+                            apr_uri_parse(r->pool, found, &uri);
+                            /* Do not escape the query string or fragment. */
+                            found = apr_uri_unparse(r->pool, &uri,
+                                                    APR_URI_UNP_OMITQUERY);
+                            found = ap_escape_uri(r->pool, found);
+                            if (uri.query) {
+                                found = apr_pstrcat(r->pool, found, "?",
+                                                    uri.query, NULL);
+                            }
+                            if (uri.fragment) {
+                                found = apr_pstrcat(r->pool, found, "#",
+                                                    uri.fragment, NULL);
+                            }
+                       }
+                       else {
+                           int pathlen = strlen(found) -
+                                         (strlen(r->uri + regm[0].rm_eo));
+                           AP_DEBUG_ASSERT(pathlen >= 0);
+                           AP_DEBUG_ASSERT(pathlen <= strlen(found));
+                           ap_set_context_info(r,
+                                               apr_pstrmemdup(r->pool, r->uri,
+                                                              regm[0].rm_eo),
+                                               apr_pstrmemdup(r->pool, found,
+                                                              pathlen));
+                       }
                     }
                 }
                 else {
@@ -377,7 +390,8 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
             l = alias_matches(r->uri, alias->fake);
 
             if (l > 0) {
-                if (doesc) {
+                ap_set_context_info(r, alias->fake, alias->real);
+                if (is_redir) {
                     char *escurl;
                     escurl = ap_os_escape_path(r->pool, r->uri + l, 1);
 
@@ -398,7 +412,7 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
              * canonicalized.  After I finish eliminating os canonical.
              * Better fail test for ap_server_root_relative needed here.
              */
-            if (!doesc) {
+            if (!is_redir) {
                 found = ap_server_root_relative(r->pool, found);
             }
             if (found) {
