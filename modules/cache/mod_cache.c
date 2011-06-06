@@ -843,6 +843,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
             r->headers_out = cache->stale_handle->resp_hdrs;
 
+            ap_set_content_type(r, apr_table_get(
+                    cache->stale_handle->resp_hdrs, "Content-Type"));
+
             /* add a revalidation warning */
             warn_head = apr_table_get(r->err_headers_out, "Warning");
             if ((warn_head == NULL) || ((warn_head != NULL)
