@@ -3885,7 +3885,7 @@ certain events before failing a request</description>
 <description>Determines the behaviour on <code>TRACE</code> requests</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Available in Apache HTTP Server 1.3.34, 2.0.55 and later</compatibility>
 
 <usage>
