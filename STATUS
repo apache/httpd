@@ -77,10 +77,6 @@ RELEASE SHOWSTOPPERS:
     - MPM simple
     - mod_serf (which is optimal for async httpd anyways)
 
-  * Review the example configuration. It should be based on current best
-    practices and not use deprecated features.
-      wrowe sez: be specific or this isn't a SHOWSTOPPER
-
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
     and any anomolies fixed.
