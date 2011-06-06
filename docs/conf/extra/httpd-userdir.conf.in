@@ -16,11 +16,6 @@ UserDir public_html
 <Directory "/home/*/public_html">
     AllowOverride FileInfo AuthConfig Limit Indexes
     Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
-    <Limit GET POST OPTIONS>
-        Require all granted
-    </Limit>
-    <LimitExcept GET POST OPTIONS>
-        Require all denied
-    </LimitExcept>
+    Require method GET POST OPTIONS
 </Directory>
 

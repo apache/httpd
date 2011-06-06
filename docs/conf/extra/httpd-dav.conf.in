@@ -28,9 +28,10 @@ Alias /uploads "@@ServerRoot@@/uploads"
 
     # Allow universal read-access, but writes are restricted
     # to the admin user.
-    <LimitExcept GET POST OPTIONS>
-        require user admin
-    </LimitExcept>
+    <RequireAny>
+        Require method GET POST OPTIONS
+        Require user admin
+    </RequireAny>
 </Directory>
 
 #
