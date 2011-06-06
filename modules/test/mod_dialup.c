@@ -155,8 +155,7 @@ dialup_handler(request_rec *r)
         return DECLINED;
     }
 
-    ccfg = ap_get_module_config(r->per_dir_config,
-                                &core_module);
+    ccfg = ap_get_core_module_config(r->per_dir_config);
 
 
     rv = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY

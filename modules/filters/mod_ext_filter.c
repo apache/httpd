@@ -365,8 +365,7 @@ static apr_status_t set_resource_limits(request_rec *r,
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
     core_dir_config *conf =
-        (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
+        (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     apr_status_t rv;
 
 #ifdef RLIMIT_CPU

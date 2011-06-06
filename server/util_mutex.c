@@ -32,6 +32,7 @@
 #include "httpd.h"
 #include "http_main.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "util_mutex.h"
 #if AP_NEED_SET_MUTEX_PERMS
@@ -41,7 +42,9 @@
 #include <unistd.h> /* getpid() */
 #endif
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
                                         apr_lockmech_e *mutexmech,

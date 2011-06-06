@@ -209,7 +209,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     apr_status_t err, rv;
     apr_size_t nbytes;
     char buffer[HUGE_STRING_LEN];
-    apr_socket_t *client_socket = ap_get_module_config(c->conn_config, &core_module);
+    apr_socket_t *client_socket = ap_get_core_module_config(c->conn_config);
     int failed, rc;
     int client_error = 0;
     apr_pollset_t *pollset;

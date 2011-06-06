@@ -195,7 +195,6 @@ typedef struct {
     pid_t ppid;            /* sanity check for config problems leading to
                             * wrong cgid socket use
                             */
-    int core_module_index;
     int env_count;
     ap_unix_identity_t ugid;
     apr_size_t filename_len;
@@ -424,7 +423,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     rconf = (void **)ap_create_request_config(r->pool);
 
     temp_core = (core_request_config *)apr_palloc(r->pool, sizeof(core_module));
-    rconf[req->core_module_index] = (void *)temp_core;
+    rconf[AP_CORE_MODULE_INDEX] = (void *)temp_core;
     r->request_config = (ap_conf_vector_t *)rconf;
     ap_set_module_config(r->request_config, &cgid_module, (void *)&req->ugid);
 
@@ -475,8 +474,7 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     cgid_req_t req = {0};
     apr_status_t stat;
     ap_unix_identity_t * ugid = ap_run_get_suexec_identity(r);
-    core_dir_config *core_conf = ap_get_module_config(r->per_dir_config,
-                                                      &core_module);
+    core_dir_config *core_conf = ap_get_core_module_config(r->per_dir_config);
 
 
     if (ugid == NULL) {
@@ -488,7 +486,6 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     req.req_type = req_type;
     req.ppid = parent_pid;
     req.conn_id = r->connection->id;
-    req.core_module_index = core_module.module_index;
     for (req.env_count = 0; env[req.env_count]; req.env_count++) {
         continue;
     }

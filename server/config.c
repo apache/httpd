@@ -52,7 +52,9 @@
 #include "mpm_common.h"
 
 #define APLOG_UNSET   (APLOG_NO_MODULE - 1)
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
 AP_DECLARE_DATA const char *ap_server_root = NULL;
@@ -2178,8 +2180,8 @@ AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old_conf,
 AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
 {
     server_rec *virt;
-    core_dir_config *dconf = ap_get_module_config(main_server->lookup_defaults,
-                                                  &core_module);
+    core_dir_config *dconf =
+        ap_get_core_module_config(main_server->lookup_defaults);
     dconf->log = &main_server->log;
 
     for (virt = main_server->next; virt; virt = virt->next) {
@@ -2207,7 +2209,7 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
 
         ap_merge_log_config(&main_server->log, &virt->log);
 
-        dconf = ap_get_module_config(virt->lookup_defaults, &core_module);
+        dconf = ap_get_core_module_config(virt->lookup_defaults);
         dconf->log = &virt->log;
 
         /* XXX: this is really something that should be dealt with by a

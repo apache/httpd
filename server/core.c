@@ -98,6 +98,10 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
  * the http_conf_globals.
  */
 
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
+
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
@@ -507,8 +511,7 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
 
 AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config)
 {
-    core_server_config *sconf = ap_get_module_config(s->module_config,
-                                                     &core_module);
+    core_server_config *sconf = ap_get_core_module_config(s->module_config);
     void **new_space = (void **)apr_array_push(sconf->sec_dir);
 
     *new_space = dir_config;
@@ -516,8 +519,7 @@ AP_CORE_DECLARE(void) ap_add_per_dir_conf(server_rec *s, void *dir_config)
 
 AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config)
 {
-    core_server_config *sconf = ap_get_module_config(s->module_config,
-                                                     &core_module);
+    core_server_config *sconf = ap_get_core_module_config(s->module_config);
     void **new_space = (void **)apr_array_push(sconf->sec_url);
 
     *new_space = url_config;
@@ -584,8 +586,8 @@ static int reorder_sorter(const void *va, const void *vb)
     core_dir_config *core_a;
     core_dir_config *core_b;
 
-    core_a = ap_get_module_config(a->elt, &core_module);
-    core_b = ap_get_module_config(b->elt, &core_module);
+    core_a = ap_get_core_module_config(a->elt);
+    core_b = ap_get_core_module_config(b->elt);
 
     /* a regex always sorts after a non-regex
      */
@@ -621,7 +623,7 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
     int i;
     apr_pool_t *tmp;
 
-    sconf = ap_get_module_config(s->module_config, &core_module);
+    sconf = ap_get_core_module_config(s->module_config);
     sec_dir = sconf->sec_dir;
     nelts = sec_dir->nelts;
     elts = (ap_conf_vector_t **)sec_dir->elts;
@@ -664,7 +666,7 @@ void ap_core_reorder_directories(apr_pool_t *p, server_rec *s)
 AP_DECLARE(int) ap_allow_options(request_rec *r)
 {
     core_dir_config *conf =
-      (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+      (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
 
     return conf->opts;
 }
@@ -672,8 +674,7 @@ AP_DECLARE(int) ap_allow_options(request_rec *r)
 AP_DECLARE(int) ap_allow_overrides(request_rec *r)
 {
     core_dir_config *conf;
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
+    conf = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
 
     return conf->override;
 }
@@ -723,18 +724,16 @@ AP_DECLARE(int) ap_satisfies(request_rec *r)
 AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
 {
     core_server_config *sconf;
-    core_request_config *rconf = ap_get_module_config(r->request_config,
-                                                     &core_module);
+    core_request_config *rconf = ap_get_core_module_config(r->request_config);
     if (rconf->document_root)
         return rconf->document_root;
-    sconf = ap_get_module_config(r->server->module_config, &core_module);
+    sconf = ap_get_core_module_config(r->server->module_config);
     return sconf->ap_document_root;
 }
 
 AP_DECLARE(const char *) ap_context_prefix(request_rec *r)
 {
-    core_request_config *conf = ap_get_module_config(r->request_config,
-                                                     &core_module);
+    core_request_config *conf = ap_get_core_module_config(r->request_config);
     if (conf->context_prefix)
         return conf->context_prefix;
     else
@@ -743,8 +742,7 @@ AP_DECLARE(const char *) ap_context_prefix(request_rec *r)
 
 AP_DECLARE(const char *) ap_context_document_root(request_rec *r)
 {
-    core_request_config *conf = ap_get_module_config(r->request_config,
-                                                     &core_module);
+    core_request_config *conf = ap_get_core_module_config(r->request_config);
     if (conf->context_document_root)
         return conf->context_document_root;
     else
@@ -753,16 +751,14 @@ AP_DECLARE(const char *) ap_context_document_root(request_rec *r)
 
 AP_DECLARE(void) ap_set_document_root(request_rec *r, const char *document_root)
 {
-    core_request_config *conf = ap_get_module_config(r->request_config,
-                                                     &core_module);
+    core_request_config *conf = ap_get_core_module_config(r->request_config);
     conf->document_root = document_root;
 }
 
 AP_DECLARE(void) ap_set_context_info(request_rec *r, const char *context_prefix,
                                      const char *context_document_root)
 {
-    core_request_config *conf = ap_get_module_config(r->request_config,
-                                                     &core_module);
+    core_request_config *conf = ap_get_core_module_config(r->request_config);
     if (context_prefix)
         conf->context_prefix = context_prefix;
     if (context_document_root)
@@ -777,19 +773,16 @@ AP_DECLARE(void) ap_set_context_info(request_rec *r, const char *context_prefix,
 char *ap_response_code_string(request_rec *r, int error_index)
 {
     core_dir_config *dirconf;
-    core_request_config *reqconf;
+    core_request_config *reqconf = ap_get_core_module_config(r->request_config);
 
     /* check for string registered via ap_custom_response() first */
-    reqconf = (core_request_config *)ap_get_module_config(r->request_config,
-                                                          &core_module);
     if (reqconf->response_code_strings != NULL &&
         reqconf->response_code_strings[error_index] != NULL) {
         return reqconf->response_code_strings[error_index];
     }
 
     /* check for string specified via ErrorDocument */
-    dirconf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                      &core_module);
+    dirconf = ap_get_core_module_config(r->per_dir_config);
 
     if (dirconf->response_code_strings == NULL) {
         return NULL;
@@ -848,9 +841,8 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 
     /* If we haven't checked the host name, and we want to */
     if (dir_config) {
-        hostname_lookups =
-            ((core_dir_config *)ap_get_module_config(dir_config, &core_module))
-            ->hostname_lookups;
+        hostname_lookups = ((core_dir_config *)ap_get_core_module_config(dir_config))
+                           ->hostname_lookups;
 
         if (hostname_lookups == HOSTNAME_LOOKUP_UNSET) {
             hostname_lookups = HOSTNAME_LOOKUP_OFF;
@@ -945,8 +937,7 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
     core_dir_config *d;
     const char *retval;
 
-    d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
+    d = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
 
     switch (d->use_canonical_name) {
         case USE_CANONICAL_NAME_ON:
@@ -998,7 +989,7 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
 {
     apr_port_t port;
     core_dir_config *d =
-      (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+      (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
 
     switch (d->use_canonical_name) {
         case USE_CANONICAL_NAME_OFF:
@@ -1057,7 +1048,7 @@ AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri,
 AP_DECLARE(apr_off_t) ap_get_limit_req_body(const request_rec *r)
 {
     core_dir_config *d =
-      (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
+      (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
 
     if (d->limit_req_body == AP_LIMIT_REQ_BODY_UNSET) {
         return AP_DEFAULT_LIMIT_REQ_BODY;
@@ -1144,7 +1135,7 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
                                    const char *arg)
 {
     void *sconf = cmd->server->module_config;
-    core_server_config *conf = ap_get_module_config(sconf, &core_module);
+    core_server_config *conf = ap_get_core_module_config(sconf);
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
@@ -1340,7 +1331,7 @@ static const char *generate_error(cmd_parms *cmd, void *dummy,
 static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
 {
     void *sconf = cmd->server->module_config;
-    core_server_config *conf = ap_get_module_config(sconf, &core_module);
+    core_server_config *conf = ap_get_core_module_config(sconf);
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
@@ -1376,7 +1367,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
                                      const char *arg)
 {
     void *sconf = cmd->server->module_config;
-    core_server_config *conf = ap_get_module_config(sconf, &core_module);
+    core_server_config *conf = ap_get_core_module_config(sconf);
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
@@ -1416,8 +1407,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
 AP_DECLARE(void) ap_custom_response(request_rec *r, int status,
                                     const char *string)
 {
-    core_request_config *conf =
-        ap_get_module_config(r->request_config, &core_module);
+    core_request_config *conf = ap_get_core_module_config(r->request_config);
     int idx;
 
     if (conf->response_code_strings == NULL) {
@@ -2545,8 +2535,8 @@ static const char *set_accf_map(cmd_parms *cmd, void *dummy,
                                 const char *iproto, const char* iaccf)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
-                                                    &core_module);
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
     char* proto;
     char* accf;
     if (err != NULL) {
@@ -2564,15 +2554,13 @@ static const char *set_accf_map(cmd_parms *cmd, void *dummy,
 
 AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s)
 {
-    core_server_config *conf = ap_get_module_config(s->module_config,
-                                                    &core_module);
+    core_server_config *conf = ap_get_core_module_config(s->module_config);
     return conf->protocol;
 }
 
 AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto)
 {
-    core_server_config *conf = ap_get_module_config(s->module_config,
-                                                    &core_module);
+    core_server_config *conf = ap_get_core_module_config(s->module_config);
     conf->protocol = proto;
 }
 
@@ -2580,8 +2568,8 @@ static const char *set_protocol(cmd_parms *cmd, void *dummy,
                                 const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
-    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
-                                                    &core_module);
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
     char* proto;
 
     if (err != NULL) {
@@ -2970,8 +2958,7 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
     char sport[20];
     core_dir_config *conf;
 
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
+    conf = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     if ((conf->server_signature == srv_sig_off)
             || (conf->server_signature == srv_sig_unset)) {
         return "";
@@ -3231,7 +3218,7 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
 {
     core_dir_config *conf;
 
-    conf = ap_get_module_config(r->per_dir_config, &core_module);
+    conf = ap_get_core_module_config(r->per_dir_config);
     if (conf->limit_xml_body == AP_LIMIT_UNSET)
         return AP_DEFAULT_LIMIT_XML_BODY;
 
@@ -3292,8 +3279,8 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
                                        const char *arg1, const char *arg2)
 {
-    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
-                                                    &core_module);
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
     int limit = atoi(arg1);
 
     if (limit <= 0) {
@@ -3354,8 +3341,8 @@ static void log_backtrace(const request_rec *r)
  */
 AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
 {
-    core_server_config *conf = ap_get_module_config(r->server->module_config,
-                                                    &core_module);
+    core_server_config *conf =
+        ap_get_core_module_config(r->server->module_config);
     const request_rec *top = r;
     int redirects = 0, subreqs = 0;
     int rlimit = conf->redirect_limit
@@ -3415,8 +3402,8 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
 static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
                                     const char *arg1)
 {
-    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
-                                                    &core_module);
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
 
     if (strcasecmp(arg1, "on") == 0) {
         conf->trace_enable = AP_TRACE_ENABLE;
@@ -3636,8 +3623,8 @@ static const char *set_errorlog_format(cmd_parms *cmd, void *dummy,
                                        const char *arg1, const char *arg2)
 {
     const char *err_string = NULL;
-    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
-                                                    &core_module);
+    core_server_config *conf =
+        ap_get_core_module_config(cmd->server->module_config);
 
     if (!arg2) {
         conf->error_log_format = parse_errorlog_string(cmd->pool, arg1,
@@ -3930,7 +3917,7 @@ AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
 AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 {
     void *sconf = r->server->module_config;
-    core_server_config *conf = ap_get_module_config(sconf, &core_module);
+    core_server_config *conf = ap_get_core_module_config(sconf);
     apr_status_t rv;
 
     /* XXX this seems too specific, this should probably become
@@ -4021,8 +4008,7 @@ static int do_nothing(request_rec *r) { return OK; }
 static int core_override_type(request_rec *r)
 {
     core_dir_config *conf =
-        (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
+        (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
 
     /* Check for overrides with ForceType / SetHandler
      */
@@ -4070,8 +4056,7 @@ static int default_handler(request_rec *r)
      */
     int bld_content_md5;
 
-    d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
+    d = (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     bld_content_md5 = (d->content_md5 == AP_CONTENT_MD5_ON)
                       && r->output_filters->frec->ftype != AP_FTYPE_RESOURCE;
 
@@ -4123,7 +4108,7 @@ static int default_handler(request_rec *r)
         if (r->method_number != M_GET) {
             core_request_config *req_cfg;
 
-            req_cfg = ap_get_module_config(r->request_config, &core_module);
+            req_cfg = ap_get_core_module_config(r->request_config);
             if (!req_cfg->deliver_script) {
                 /* The flag hasn't been set for this request. Punt. */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -4267,8 +4252,7 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
 static void core_insert_filter(request_rec *r)
 {
     core_dir_config *conf = (core_dir_config *)
-                            ap_get_module_config(r->per_dir_config,
-                                                 &core_module);
+                            ap_get_core_module_config(r->per_dir_config);
     const char *filter, *filters = conf->output_filters;
 
     if (filters) {
@@ -4309,7 +4293,7 @@ AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num)
     }
 
     req_cfg = (core_request_config *)
-        ap_get_module_config(r->request_config, &core_module);
+        ap_get_core_module_config(r->request_config);
 
     if (!req_cfg) {
         return NULL;
@@ -4334,14 +4318,14 @@ static int core_create_req(request_rec *r)
 
     if (r->main) {
         core_request_config *main_req_cfg = (core_request_config *)
-            ap_get_module_config(r->main->request_config, &core_module);
+            ap_get_core_module_config(r->main->request_config);
         req_cfg->bb = main_req_cfg->bb;
     }
     else {
         req_cfg->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     }
 
-    ap_set_module_config(r->request_config, &core_module, req_cfg);
+    ap_set_core_module_config(r->request_config, req_cfg);
 
     return OK;
 }
@@ -4442,7 +4426,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
     net->out_ctx = NULL;
     net->client_socket = csd;
 
-    ap_set_module_config(net->c->conn_config, &core_module, csd);
+    ap_set_core_module_config(net->c->conn_config, csd);
     ap_add_input_filter_handle(ap_core_input_filter_handle, net, NULL, net->c);
     ap_add_output_filter_handle(ap_core_output_filter_handle, net, NULL, net->c);
     return DONE;

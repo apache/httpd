@@ -45,7 +45,7 @@ extern module nwssl_module;
 extern module netware_module;
 
 module *ap_prelinked_modules[] = {
-  &core_module,
+  &core_module, /* core must come first */
   &mpm_netware_module,
   &http_module,
   &so_module,

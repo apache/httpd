@@ -19,6 +19,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 
 /* Possibly get rid of the macros we defined in httpd.h */
 #if defined(strchr)
@@ -105,6 +106,17 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
 {
     return ((void **)cv)[m->module_index];
 }
+
+#if defined(ap_get_core_module_config)
+#undef ap_get_core_module_config
+AP_DECLARE(void *) ap_get_core_module_config(const ap_conf_vector_t *cv);
+#endif
+
+AP_DECLARE(void *) ap_get_core_module_config(const ap_conf_vector_t *cv)
+{
+    return ((void **)cv)[AP_CORE_MODULE_INDEX];
+}
+
 
 #if defined(ap_get_server_module_loglevel)
 #undef ap_get_server_module_loglevel
@@ -199,4 +211,15 @@ AP_DECLARE(void) ap_set_module_config(ap_conf_vector_t *cv, const module *m,
                                       void *val)
 {
     ((void **)cv)[m->module_index] = val;
+}
+
+
+#if defined(ap_set_core_module_config)
+#undef ap_set_core_module_config
+AP_DECLARE(void) ap_set_core_module_config(ap_conf_vector_t *cv, void *val);
+#endif
+
+AP_DECLARE(void) ap_set_core_module_config(ap_conf_vector_t *cv, void *val)
+{
+    ((void **)cv)[AP_CORE_MODULE_INDEX] = val;
 }

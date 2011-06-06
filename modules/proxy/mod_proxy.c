@@ -886,7 +886,7 @@ static int proxy_handler(request_rec *r)
 
     if (r->method_number == M_TRACE) {
         core_server_config *coreconf = (core_server_config *)
-                            ap_get_module_config(sconf, &core_module);
+                                       ap_get_core_module_config(sconf);
 
         if (coreconf->trace_enable == AP_TRACE_DISABLE)
         {

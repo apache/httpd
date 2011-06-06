@@ -22,6 +22,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "util_filter.h"
 
@@ -45,7 +46,9 @@
  * filter names to filters
  */
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 typedef struct filter_trie_node filter_trie_node;
 

@@ -157,7 +157,7 @@ static int my_child_num;
 static void chdir_for_gprof(void)
 {
     core_server_config *sconf =
-        ap_get_module_config(ap_server_conf->module_config, &core_module);
+        ap_get_core_module_config(ap_server_conf->module_config);
     char *dir = sconf->gprof_dir;
     const char *use_dir;
 

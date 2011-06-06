@@ -56,8 +56,9 @@
 #include <unistd.h>
 #endif
 
-
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(pre_read_request)
@@ -107,8 +108,7 @@ AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
 {
     const apr_strmatch_pattern **pcset;
     core_dir_config *conf =
-        (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
+        (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     core_request_config *request_conf;
     apr_size_t type_len;
 
@@ -120,8 +120,7 @@ AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
         return type;
     }
 
-    request_conf =
-        ap_get_module_config(r->request_config, &core_module);
+    request_conf = ap_get_core_module_config(r->request_config);
     if (request_conf->suppress_charset) {
         return type;
     }
@@ -954,7 +953,7 @@ request_rec *ap_read_request(conn_rec *conn)
      * to the normal timeout mode as we fetch the header lines,
      * as necessary.
      */
-    csd = ap_get_module_config(conn->conn_config, &core_module);
+    csd = ap_get_core_module_config(conn->conn_config);
     apr_socket_timeout_get(csd, &cur_timeout);
     if (cur_timeout != conn->base_server->timeout) {
         apr_socket_timeout_set(csd, conn->base_server->timeout);

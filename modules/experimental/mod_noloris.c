@@ -35,6 +35,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_connection.h"
 #include "http_log.h"
 #include "mpm_common.h"
@@ -43,7 +44,6 @@
 #include "scoreboard.h"
 
 module AP_MODULE_DECLARE_DATA noloris_module;
-module AP_MODULE_DECLARE_DATA core_module;
 
 #define ADDR_MAX_SIZE 48
 
@@ -68,7 +68,7 @@ static int noloris_conn(conn_rec *conn)
     shm_rec = apr_shm_baseaddr_get(shm);
     while (shm_rec[0] != '\0') {
         if (!strcmp(shm_rec, conn->remote_ip)) {
-            apr_socket_t *csd = ap_get_module_config(conn->conn_config, &core_module);
+            apr_socket_t *csd = ap_get_core_module_config(conn->conn_config);
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn,
                           "Dropping connection from banned IP %s",
                           conn->remote_ip);

@@ -409,8 +409,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &cache_disk_module);
 #ifdef APR_SENDFILE_ENABLED
-    core_dir_config *coreconf = ap_get_module_config(r->per_dir_config,
-                                                     &core_module);
+    core_dir_config *coreconf = ap_get_core_module_config(r->per_dir_config);
 #endif
     apr_finfo_t finfo;
     cache_object_t *obj;

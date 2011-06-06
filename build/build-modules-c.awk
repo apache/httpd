@@ -14,6 +14,7 @@
 # limitations under the License.
 BEGIN {
     RS = " "
+    # the core module must come first
     modules[n++] = "core"
     pmodules[pn++] = "core"
 } 

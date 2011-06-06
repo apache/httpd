@@ -29,7 +29,9 @@
 #define READ_BLOCKSIZE 2048
 
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
 {

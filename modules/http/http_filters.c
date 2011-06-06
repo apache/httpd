@@ -1033,8 +1033,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     while (r->prev) {
         r = r->prev;
     }
-    conf = (core_server_config *)ap_get_module_config(r->server->module_config,
-                                                      &core_module);
+    conf = ap_get_core_module_config(r->server->module_config);
 
     if (conf->trace_enable == AP_TRACE_DISABLE) {
         apr_table_setn(r->notes, "error-notes",
@@ -1520,8 +1519,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     {
         /* Make sure ap_getline() didn't leave any droppings. */
         core_request_config *req_cfg =
-            (core_request_config *)ap_get_module_config(r->request_config,
-                                                        &core_module);
+            (core_request_config *)ap_get_core_module_config(r->request_config);
         AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(req_cfg->bb));
     }
 #endif
