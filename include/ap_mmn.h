@@ -331,6 +331,7 @@
  *                         Add members of core_request_config: document_root,
  *                         context_document_root, context_prefix.
  *                         Add ap_context_*(), ap_set_context_info(), ap_set_document_root()
+ * 20110605.1 (2.3.13-dev) add ap_(get|set)_core_module_config()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -338,7 +339,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110605
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -29,7 +29,9 @@
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(expr_lookup)

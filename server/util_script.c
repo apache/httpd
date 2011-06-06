@@ -52,7 +52,9 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 static char *http2env(request_rec *r, const char *w)
 {

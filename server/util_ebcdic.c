@@ -24,7 +24,9 @@
 #include "http_core.h"
 #include "util_ebcdic.h"
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 apr_status_t ap_init_ebcdic(apr_pool_t *pool)
 {

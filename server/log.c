@@ -54,7 +54,9 @@
 #include "util_time.h"
 #include "ap_mpm.h"
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 typedef struct {
     const char *t_name;
@@ -1133,7 +1135,7 @@ static void log_error_core(const char *file, int line, int module_index,
 
         /* the faked server_rec from mod_cgid does not have s->module_config */
         if (s->module_config) {
-            sconf = ap_get_module_config(s->module_config, &core_module);
+            sconf = ap_get_core_module_config(s->module_config);
             if (c && !c->log_id) {
                 add_log_id(c, NULL);
                 if (sconf->error_log_conn && sconf->error_log_conn->nelts > 0)

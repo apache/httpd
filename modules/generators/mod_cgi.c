@@ -385,8 +385,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
 
-    core_dir_config *conf = ap_get_module_config(r->per_dir_config,
-                                                 &core_module);
+    core_dir_config *conf = ap_get_core_module_config(r->per_dir_config);
 #endif
 
 #ifdef DEBUG_CGI

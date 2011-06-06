@@ -54,7 +54,9 @@
 #include <stdarg.h>
 #endif
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(translate_name)
@@ -122,7 +124,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     /* Ignore embedded %2F's in path for proxy requests */
     if (!r->proxyreq && r->parsed_uri.path) {
-        d = ap_get_module_config(r->per_dir_config, &core_module);
+        d = ap_get_core_module_config(r->per_dir_config);
         if (d->allow_encoded_slashes) {
             access_status = ap_unescape_url_keep2f(r->parsed_uri.path, d->decode_encoded_slashes);
         }
@@ -156,7 +158,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             return access_status;
         }
 
-        d = ap_get_module_config(r->per_dir_config, &core_module);
+        d = ap_get_core_module_config(r->per_dir_config);
         if (d->log) {
             r->log = d->log;
         }
@@ -184,7 +186,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         return access_status;
     }
 
-    d = ap_get_module_config(r->per_dir_config, &core_module);
+    d = ap_get_core_module_config(r->per_dir_config);
     if (d->log) {
         r->log = d->log;
     }
@@ -488,7 +490,7 @@ typedef struct core_opts_t {
 
 static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
 {
-    core_dir_config *this_dir = ap_get_module_config(sec, &core_module);
+    core_dir_config *this_dir = ap_get_core_module_config(sec);
 
     if (!this_dir) {
         return;
@@ -532,8 +534,8 @@ static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
 AP_DECLARE(int) ap_directory_walk(request_rec *r)
 {
     ap_conf_vector_t *now_merged = NULL;
-    core_server_config *sconf = ap_get_module_config(r->server->module_config,
-                                                     &core_module);
+    core_server_config *sconf =
+        ap_get_core_module_config(r->server->module_config);
     ap_conf_vector_t **sec_ent = (ap_conf_vector_t **) sconf->sec_dir->elts;
     int num_sec = sconf->sec_dir->nelts;
     walk_cache_t *cache;
@@ -649,7 +651,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             allow_options_t opts;
             core_dir_config *this_dir;
 
-            this_dir = ap_get_module_config(r->per_dir_config, &core_module);
+            this_dir = ap_get_core_module_config(r->per_dir_config);
             opts = this_dir->opts;
             /*
              * If Symlinks are allowed in general we do not need the following
@@ -732,7 +734,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * We didn't start the merge from r->per_dir_config, so we
          * accumulate opts and override as we merge, from the globals.
          */
-        this_dir = ap_get_module_config(r->per_dir_config, &core_module);
+        this_dir = ap_get_core_module_config(r->per_dir_config);
         opts.opts = this_dir->opts;
         opts.add = this_dir->opts_add;
         opts.remove = this_dir->opts_remove;
@@ -873,7 +875,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
                 ap_conf_vector_t *entry_config = sec_ent[sec_idx];
                 core_dir_config *entry_core;
-                entry_core = ap_get_module_config(entry_config, &core_module);
+                entry_core = ap_get_core_module_config(entry_config);
 
                 /* No more possible matches for this many segments?
                  * We are done when we find relative/regex/longer components.
@@ -1169,7 +1171,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         for (; sec_idx < num_sec; ++sec_idx) {
 
             core_dir_config *entry_core;
-            entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
+            entry_core = ap_get_core_module_config(sec_ent[sec_idx]);
 
             if (!entry_core->r) {
                 continue;
@@ -1292,8 +1294,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 AP_DECLARE(int) ap_location_walk(request_rec *r)
 {
     ap_conf_vector_t *now_merged = NULL;
-    core_server_config *sconf = ap_get_module_config(r->server->module_config,
-                                                     &core_module);
+    core_server_config *sconf =
+        ap_get_core_module_config(r->server->module_config);
     ap_conf_vector_t **sec_ent = (ap_conf_vector_t **)sconf->sec_url->elts;
     int num_sec = sconf->sec_url->nelts;
     walk_cache_t *cache;
@@ -1365,7 +1367,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
 
             core_dir_config *entry_core;
-            entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
+            entry_core = ap_get_core_module_config(sec_ent[sec_idx]);
 
             /* ### const strlen can be optimized in location config parsing */
             len = strlen(entry_core->d);
@@ -1457,8 +1459,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
 AP_DECLARE(int) ap_file_walk(request_rec *r)
 {
     ap_conf_vector_t *now_merged = NULL;
-    core_dir_config *dconf = ap_get_module_config(r->per_dir_config,
-                                                  &core_module);
+    core_dir_config *dconf = ap_get_core_module_config(r->per_dir_config);
     ap_conf_vector_t **sec_ent = NULL;
     int num_sec = 0;
     walk_cache_t *cache;
@@ -1539,7 +1540,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
          */
         for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
             core_dir_config *entry_core;
-            entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
+            entry_core = ap_get_core_module_config(sec_ent[sec_idx]);
 
             if (entry_core->r
                 ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
@@ -1619,8 +1620,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
 AP_DECLARE(int) ap_if_walk(request_rec *r)
 {
     ap_conf_vector_t *now_merged = NULL;
-    core_dir_config *dconf = ap_get_module_config(r->per_dir_config,
-                                                  &core_module);
+    core_dir_config *dconf = ap_get_core_module_config(r->per_dir_config);
     ap_conf_vector_t **sec_ent = NULL;
     int num_sec = 0;
     walk_cache_t *cache;
@@ -1658,7 +1658,7 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
         const char *err = NULL;
         core_dir_config *entry_core;
         int rc;
-        entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
+        entry_core = ap_get_core_module_config(sec_ent[sec_idx]);
 
         AP_DEBUG_ASSERT(entry_core->condition_ifelse != 0);
         if (entry_core->condition_ifelse & AP_CONDITION_ELSE) {

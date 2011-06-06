@@ -28,7 +28,9 @@
 #include "http_log.h"
 #include "mpm_common.h"
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
 
@@ -178,8 +180,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 static const char* find_accf_name(server_rec *s, const char *proto)
 {
     const char* accf;
-    core_server_config *conf = ap_get_module_config(s->module_config,
-                                                    &core_module);
+    core_server_config *conf = ap_get_core_module_config(s->module_config);
     if (!proto) {
         return NULL;
     }

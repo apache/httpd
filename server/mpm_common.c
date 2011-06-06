@@ -37,6 +37,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "http_main.h"
 #include "mpm_common.h"
@@ -56,7 +57,9 @@
 #include <unistd.h>
 #endif
 
-APLOG_USE_MODULE(core);
+/* we know core's module_index is 0 */
+#undef APLOG_MODULE_INDEX
+#define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
 #if AP_ENABLE_EXCEPTION_HOOK
 APR_HOOK_STRUCT(

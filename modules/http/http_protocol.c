@@ -781,7 +781,7 @@ static char *make_allow(request_rec *r)
     apr_hash_index_t *hi = apr_hash_first(r->pool, methods_registry);
     /* For TRACE below */
     core_server_config *conf =
-        ap_get_module_config(r->server->module_config, &core_module);
+        ap_get_core_module_config(r->server->module_config);
 
     mask = r->allowed_methods->method_mask;
 
@@ -1186,7 +1186,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         if (apr_table_get(r->subprocess_env,
                           "suppress-error-charset") != NULL) {
             core_request_config *request_conf =
-                        ap_get_module_config(r->request_config, &core_module);
+                        ap_get_core_module_config(r->request_config);
             request_conf->suppress_charset = 1; /* avoid adding default
                                                  * charset later
                                                  */

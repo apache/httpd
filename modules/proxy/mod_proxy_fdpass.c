@@ -223,7 +223,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
 
     /* XXXXX: THIS IS AN EVIL HACK */
     /* There should really be a (documented) public API for this ! */
-    clientsock = ap_get_module_config(r->connection->conn_config, &core_module);
+    clientsock = ap_get_core_module_config(r->connection->conn_config);
 
     rv = send_socket(r->pool, sock, clientsock);
     if (rv != APR_SUCCESS) {
@@ -245,7 +245,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
                           "proxy: FD: failed to create dummy socket");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        ap_set_module_config(r->connection->conn_config, &core_module, dummy);
+        ap_set_core_module_config(r->connection->conn_config, dummy);
     }
     
     

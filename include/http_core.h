@@ -319,6 +319,34 @@ AP_DECLARE(int) ap_satisfies(request_rec *r);
 AP_DECLARE_DATA extern module core_module;
 
 /**
+ * Accessor for core_module's specific data. Equivalent to
+ * ap_get_module_config(cv, &core_module) but more efficient.
+ * @param cv The vector in which the modules configuration is stored.
+ *        usually r->per_dir_config or s->module_config
+ * @return The module-specific data
+ */
+AP_DECLARE(void *) ap_get_core_module_config(const ap_conf_vector_t *cv);
+
+/**
+ * Accessor to set core_module's specific data. Equivalent to
+ * ap_set_module_config(cv, &core_module, val) but more efficient.
+ * @param cv The vector in which the modules configuration is stored.
+ *        usually r->per_dir_config or s->module_config
+ * @param val The module-specific data to set
+ */
+AP_DECLARE(void) ap_set_core_module_config(ap_conf_vector_t *cv, void *val);
+
+#ifndef AP_DEBUG
+#define AP_CORE_MODULE_INDEX  0
+#define ap_get_core_module_config(v) \
+    (((void **)(v))[AP_CORE_MODULE_INDEX])
+#define ap_set_core_module_config(v, val) \
+    ((((void **)(v))[AP_CORE_MODULE_INDEX]) = (val))
+#else
+#define AP_CORE_MODULE_INDEX  (AP_DEBUG_ASSERT(core_module.module_index == 0), 0)
+#endif
+
+/**
  * @brief  Per-request configuration 
 */
 typedef struct {
