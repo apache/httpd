@@ -47,6 +47,8 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#else">&lt;Else&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#elseif">&lt;ElseIf&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
@@ -857,6 +859,104 @@ Locations</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply only if the condition of a
+previous <code class="directive"><a href="#if">&lt;If&gt;</a></code> or
+<code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code> section is not
+satisfied by a request at runtime</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Else&gt; ... &lt;/Else&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>The <code class="directive">&lt;Else&gt;</code> applies the enclosed
+    directives if and only if the most recent
+    <code class="directive">&lt;If&gt;</code> or
+    <code class="directive">&lt;ElseIf&gt;</code> section
+    in the same scope has not been applied.
+    For example: In </p>
+
+    <div class="example"><p><code>
+        &lt;If "-z req('Host')"&gt;<br />
+        ...<br />
+        &lt;/If&gt;<br />
+        &lt;Else&gt;<br />
+        ...<br />
+        &lt;/Else&gt;<br />
+    </code></p></div>
+
+    <p> The <code class="directive">&lt;If&gt;</code> would match HTTP/1.0
+        requests without a <var>Host:</var> header and the
+        <code class="directive">&lt;Else&gt;</code> would match requests
+        with a <var>Host:</var> header.</p>
+
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#if">&lt;If&gt;</a></code></li>
+<li><code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code></li>
+<li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <code class="directive">&lt;If&gt;</code>,
+    <code class="directive">&lt;ElseIf&gt;</code>, and
+    <code class="directive">&lt;Else&gt;</code> are applied last.</li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply only if a condition is satisfied
+by a request at runtime while the condition of a previous
+<code class="directive"><a href="#if">&lt;If&gt;</a></code> or
+<code class="directive">&lt;ElseIf&gt;</code> section is not
+satisfied</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>The <code class="directive">&lt;ElseIf&gt;</code> applies the enclosed
+    directives if and only if both the given condition evaluates to true and
+    the most recent <code class="directive">&lt;If&gt;</code> or
+    <code class="directive">&lt;ElseIf&gt;</code> section in the same scope has
+    not been applied.  For example: In </p>
+
+    <div class="example"><p><code>
+        &lt;If "-R '10.1.0.0/16'"&gt;<br />
+        ...<br />
+        &lt;/If&gt;<br />
+        &lt;ElseIf "-R '10.0.0.0/8'"&gt;<br />
+        ...<br />
+        &lt;/ElseIf&gt;<br />
+        &lt;Else&gt;<br />
+        ...<br />
+        &lt;/Else&gt;<br />
+    </code></p></div>
+
+    <p>The <code class="directive">&lt;ElseIf&gt;</code> would match if
+    the remote address of a request belongs to the subnet 10.0.0.0/8 but
+    not to the subnet 10.1.0.0/16.</p>
+
+
+<h3>See also</h3>
+<ul>
+<li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and more examples.</li>
+<li><code class="directive"><a href="#if">&lt;If&gt;</a></code></li>
+<li><code class="directive"><a href="#else">&lt;Else&gt;</a></code></li>
+<li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <code class="directive">&lt;If&gt;</code>,
+    <code class="directive">&lt;ElseIf&gt;</code>, and
+    <code class="directive">&lt;Else&gt;</code> are applied last.</li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use memory-mapping to read files during delivery</td></tr>
@@ -1627,32 +1727,39 @@ satisfied by a request at runtime</td></tr>
     For example:</p>
 
     <div class="example"><p><code>
-        &lt;If "$req{Host} = ''"&gt;
+        &lt;If "-z req('Host')"&gt;
     </code></p></div>
 
-    <p>would match HTTP/1.0 requests without a <var>Host:</var> header.</p>
-
-    <p>You may compare the value of any variable in the request headers
-    ($req), response headers ($resp) or environment ($env) in your
-    expression.</p>
-
-    <p>Apart from <code>=</code>, <code>If</code> can use the <code>IN</code>
-    operator to compare if the expression is in a given range:</p>
+    <p>would match HTTP/1.0 requests without a <var>Host:</var> header.
+    Expressions may contain various shell-like operators for string
+    comparison (<code>=</code>, <code>!=</code>, <code>&lt;</code>, ...),
+    integer comparison (<code>-eq</code>, <code>-ne</code>, ...),
+    and others (<code>-n</code>, <code>-z</code>, <code>-f</code>, ...).
+    It is also possible to use regular expressions, </p>
 
     <div class="example"><p><code>
-        &lt;If %{REQUEST_METHOD} IN GET,HEAD,OPTIONS&gt;
+        &lt;If "%{QUERY_STRING =~ /(delete|commit)=.*?elem/"&gt;
     </code></p></div>
+
+    <p>shell-like pattern matches and many other operations. These operations
+    can be done on request headers (<code>req</code>), environment variables
+    (<code>env</code>), and a large number of other properties. The full
+    documentation is available in <a href="../expr.html">Expressions in
+    Apache HTTP Server</a>.</p>
 
 
 <h3>See also</h3>
 <ul>
 <li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
 for a complete reference and more examples.</li>
+<li><code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code></li>
+<li><code class="directive"><a href="#else">&lt;Else&gt;</a></code></li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
     &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received.
-    <code class="directive">&lt;If&gt;</code> has the same precedence
-    and usage as <code class="directive">&lt;Files&gt;</code></li>
+    <code class="directive">&lt;If&gt;</code>,
+    <code class="directive">&lt;ElseIf&gt;</code>, and
+    <code class="directive">&lt;Else&gt;</code> are applied last.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3809,7 +3916,7 @@ certain events before failing a request</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines the behaviour on <code>TRACE</code> requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>TraceEnable on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 1.3.34, 2.0.55 and later</td></tr>

@@ -24,8 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -114,7 +112,7 @@
     <a href="#piped">rediriger vers un programme</a> par l'intermédiaire d'un
     tube de communication (pipe).</p>
 
-    <p>Le format du journal des erreurs est descriptif et de forme
+    <p>Le format par défaut du journal des erreurs est descriptif et de forme
     relativement libre. Certaines informations apparaissent cependant dans la
     plupart des entrées du journal. Voici un message typique
     à titre d'exemple : </p>
@@ -143,14 +141,15 @@
     écrit sur la sortie d'erreurs standard <code>stderr</code> sera recopiée
     telle quelle dans le journal des erreurs.</p>
 
-    <p>Il n'est pas possible de personnaliser le journal des erreurs en ajoutant ou en
-    supprimant des informations. Cependant, les entrées du journal des erreurs
-    qui concernent certaines requêtes possèdent des entrées correspondantes
-    dans le <a href="#accesslog">journal des accès</a>. Ainsi, l'entrée de
-    l'exemple ci-dessus correspond à une entrée du journal des accès avec un
-    code de statut 403. Etant donné qu'il est possible de personnaliser le
-    journal des accès, vous pouvez obtenir d'avantage d'informations sur les
-    circonstances d'une erreur en consultant ce journal.</p>
+    <p>La directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>
+    vous permet de personnaliser le format du journal des erreurs, et de
+    définir les informations à journaliser. Si
+    <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> est présent, vous pouvez utiliser le
+    drapeau <code>%L</code> à la fois dans le journal des erreurs et
+    dans le
+    journal des accès, ce qui aura pour effet de générer un identifiant
+    d'entrée qui vous permettra de corréler les entrées du journal des
+    erreurs avec celles du journal des accès.</p>
 
     <p>Pendant la phase de test, il est souvent utile de visualiser en continu
     le journal des erreurs afin de détecter tout problème éventuel. Sur les

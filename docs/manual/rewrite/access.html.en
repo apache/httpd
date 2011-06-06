@@ -274,7 +274,7 @@ RewriteRule ^ %{HTTP_REFERER} [R,L]<br />
 <br />
 RewriteCond %{HTTP_REFERER} !=""<br />
 RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND<br />
-RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
+RewriteRule ^ ${deflector:%{HTTP_REFERER}} [R,L]
 </code></p></div>
 
       <p>The map file lists redirection targets for each referer, or, if

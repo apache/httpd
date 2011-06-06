@@ -177,7 +177,7 @@ the beginning of a query string).</p>
 <dt>A full filesystem path to a resource</dt>
 <dd>
 <div class="example"><p><code>
-RewriteRule ^/games.* /usr/local/games/web
+RewriteRule ^/games /usr/local/games/web
 </code></p></div>
 <p>This maps a request to an arbitrary location on your filesystem, much
 like the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive.</p>
@@ -270,7 +270,7 @@ the word "go", you could use:</p>
 <div class="example"><p><code>
 RewriteCond %{QUERY_STRING} hack<br />
 RewriteCond %{HTTP_COOKIE} !go<br />
-RewriteRule .* - [F]
+RewriteRule . - [F]
 </code></p></div>
 <p>Notice that the exclamation mark specifies a negative match, so the rule is only applied if the cookie does not contain "go".</p>
 

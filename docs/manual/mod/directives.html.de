@@ -224,7 +224,9 @@
 <li><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges</a></li>
 <li><a href="mod_dumpio.html#dumpioinput">DumpIOInput</a></li>
 <li><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput</a></li>
-<li><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook</a></li>
+<li><a href="core.html#else" id="E" name="E">&lt;Else&gt;</a></li>
+<li><a href="core.html#elseif">&lt;ElseIf&gt;</a></li>
+<li><a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
 <li><a href="core.html#enablemmap">EnableMMAP</a></li>
 <li><a href="core.html#enablesendfile">EnableSendfile</a></li>
 <li><a href="core.html#error">Error</a></li>
