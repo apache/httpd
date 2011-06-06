@@ -324,7 +324,7 @@ by many requests.
 
     <example><title>Redirect a URI to an all-lowercase version of itself</title>
     RewriteMap lc int:tolower<br />
-    RewriteRule (.*[A-Z]+.*) ${lc:$1} [R]
+    RewriteRule (.*?[A-Z]+.*) ${lc:$1} [R]
     </example>
 
     <note>
