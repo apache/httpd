@@ -3323,7 +3323,7 @@ certain events before failing a request</description>
 requests</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Available in Apache 1.3.34, 2.0.55 and later</compatibility>
 
 <usage>
