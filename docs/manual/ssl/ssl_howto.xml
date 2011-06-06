@@ -260,7 +260,7 @@ SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
 RewriteEngine        on
 RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
 RewriteCond          %{HTTPS} !=on
-RewriteRule          .* - [F]
+RewriteRule          . - [F]
 
 #   Allow Network Access and/or Basic Auth
 Satisfy              any

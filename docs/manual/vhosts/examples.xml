@@ -562,7 +562,7 @@
         # primary vhost<br />
         DocumentRoot /www/subdomain<br />
         RewriteEngine On<br />
-        RewriteRule ^/.* /www/subdomain/index.html<br />
+        RewriteRule . /www/subdomain/index.html<br />
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />

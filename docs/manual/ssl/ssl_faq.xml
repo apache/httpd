@@ -676,7 +676,8 @@ Does this mean the username/password is being sent unencrypted?</title>
 </section>
 
 <section id="msie"><title>Why do I get I/O errors when connecting via 
-HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer (MSIE)?</title>
+HTTPS to an Apache+mod_ssl server with older versions of Microsoft Internet
+Explorer (MSIE)?</title>
 <p>The first reason is that the SSL implementation in some MSIE versions has
     some subtle bugs related to the HTTP keep-alive facility and the SSL close
     notify alerts on socket connection close. Additionally the interaction
@@ -686,7 +687,7 @@ HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer (MSIE)?</titl
     This can be done by using the following directive in your SSL-aware 
     virtual host section:</p>
     <example>
-    SetEnvIf User-Agent ".*MSIE.*" \<br />
+    SetEnvIf User-Agent "MSIE [2-5]" \<br />
              nokeepalive ssl-unclean-shutdown \<br />
              downgrade-1.0 force-response-1.0
     </example>
