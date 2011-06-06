@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -189,8 +187,8 @@ nécessiter une mise à jour des fichiers de configuration de la version
         correspond au nom du cookie dans son ensemble, alors qu'avant,
 	toute sous-chaîne pouvait correspondre.</li>
 
-        <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: le format du fichier <code class="directive"><a href="./mod/dav_fs.html#davlockdb">DavLockDB</a></code> a changé pour les systèmes
-	avec inodes. L'ancien fichier <code class="directive"><a href="./mod/dav_fs.html#davlockdb">DavLockDB</a></code> doit être supprimé dans le
+        <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: le format du fichier <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> a changé pour les systèmes
+	avec inodes. L'ancien fichier <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> doit être supprimé dans le
 	cadre de la mise à jour.
         </li>
 
@@ -207,7 +205,7 @@ nécessiter une mise à jour des fichiers de configuration de la version
 	peuvent être simplement supprimées, ou si elles doivent être
 	remplacées par la directive <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.</li>
 
-        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: la directive <code class="directive"><a href="./mod/cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
+        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: la directive <code class="directive"><a href="./mod/mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
 	effectue maintenant une correspondance exacte dans la chaîne de
 	paramètres au lieu d'une correspondance partielle. Si votre
 	configuration mettait en jeu des sous-chaînes comme
@@ -217,16 +215,40 @@ nécessiter une mise à jour des fichiers de configuration de la version
 	complète <code>jsessionid</code>.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: la directive <code class="directive"><a href="./mod/ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> s'utilise
+        <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: la directive <code class="directive"><a href="./mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> s'utilise
 	maintenant exclusivement au sein d'une configuration de niveau
 	répertoire. Si vous utilisez cette directive, passez en revue
 	votre configuration pour vous assurer qu'elle est bien présente
 	dans tous les contextes de répertoire nécessaires.</li>
 
 	<li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>: la syntaxe de la directive
-	<code class="directive"><a href="./mod/filter.html#filterprovider">FilterProvider</a></code> utilise
+	<code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code> utilise
 	maintenant une expression booléenne pour déterminer si un filtre
 	s'applique.
+        </li>
+
+	<li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>:
+            <ul>
+            <li>L'élément <code>#if expr</code> utilise maintenant le
+	    nouvel <a href="expr.html">interpréteur d'expressions</a>.
+	    L'ancienne syntaxe peut être réactivée via la directive
+	    <code class="directive"><a href="./mod/mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></code>.
+            </li>
+            <li>Dans la portée du répertoire, une directive de
+	    configuration SSI* ne provoque plus la réinitialisation à
+	    leur valeur par défaut de toutes les directives SSI* de
+	    niveau répertoire.</li>
+            </ul>
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code> : l'option
+	<code>DebugLevel</code> a été supprimée en faveur d'une
+	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau répertoire.
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_ext-filter.html">mod_ext-filter</a></code> : l'option
+	<code>DebugLevel</code> a été supprimée en faveur d'une
+	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau répertoire.
         </li>
     
     </ul>

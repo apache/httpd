@@ -46,6 +46,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#else">&lt;Else&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#elseif">&lt;ElseIf&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
@@ -820,6 +822,61 @@ from the web</td></tr>
 <ul>
 <li><a href="../urlmapping.html#documentroot">Mapping URLs to Filesystem
 Locations</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">Directiva</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply only if the condition of a
+previous <code class="directive"><a href="#if">&lt;If&gt;</a></code> or
+<code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code> section is not
+satisfied by a request at runtime</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;Else&gt; ... &lt;/Else&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
+<ul>
+<li><code class="directive"><a href="#if">&lt;If&gt;</a></code></li>
+<li><code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code></li>
+<li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <code class="directive">&lt;If&gt;</code>,
+    <code class="directive">&lt;ElseIf&gt;</code>, and
+    <code class="directive">&lt;Else&gt;</code> are applied last.</li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">Directiva</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Contains directives that apply only if a condition is satisfied
+by a request at runtime while the condition of a previous
+<code class="directive"><a href="#if">&lt;If&gt;</a></code> or
+<code class="directive">&lt;ElseIf&gt;</code> section is not
+satisfied</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Prevalece sobre:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
+<ul>
+<li><a href="../expr.html">Expressions in Apache HTTP Server</a>,
+for a complete reference and more examples.</li>
+<li><code class="directive"><a href="#if">&lt;If&gt;</a></code></li>
+<li><code class="directive"><a href="#else">&lt;Else&gt;</a></code></li>
+<li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <code class="directive">&lt;If&gt;</code>,
+    <code class="directive">&lt;ElseIf&gt;</code>, and
+    <code class="directive">&lt;Else&gt;</code> are applied last.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

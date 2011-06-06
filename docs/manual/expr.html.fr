@@ -152,14 +152,21 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>Le protocole associé à l'URI de la requête</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
         <td>L'URI de la requête</td></tr>
-<tr class="odd"><td><code>REQUEST_FILENAME</code></td>
+<tr class="odd"><td><code>DOCUMENT_URI</code></td>
+        <td>Idem REQUEST_URI</td></tr>
+<tr><td><code>REQUEST_FILENAME</code></td>
         <td>Le chemin complet dans le système de fichiers local du
 	fichier ou du script correspondant à la requête, si le serveur
 	l'a dèjà déterminé à l'instant où <code>REQUEST_FILENAME</code>
 	est référencée. Dans le cas contraire, comme dans un
 	contexte de serveur virtuel, même valeur que <code>REQUEST_URI</code> </td></tr>
-<tr><td><code>SCRIPT_FILENAME</code></td>
+<tr class="odd"><td><code>SCRIPT_FILENAME</code></td>
         <td>Identique à <code>REQUEST_FILENAME</code></td></tr>
+<tr><td><code>LAST_MODIFIED</code></td>
+        <td>La date et heure de dernière modification du fichier au
+	format <code>20101231235959</code>, si elle est déjà connue du
+	serveur au moment où <code>LAST_MODIFIED</code> est référencé.
+        </td></tr>
 <tr class="odd"><td><code>SCRIPT_USER</code></td>
         <td>Le nom d'utilisateur du propriétaire du script.</td></tr>
 <tr><td><code>SCRIPT_GROUP</code></td>
@@ -329,51 +336,56 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     sensible à la casse. Les modules peuvent fournir des opérateurs
     unaires supplémentaires.</p>
 
-    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th></tr>
+    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Restreint</th></tr>
 <tr><td><code>-d</code></td>
-        <td>L'argument est traité comme un nom de fichier. Vrai si le
-	fichier existe et correspond à un
-	répertoire</td></tr>
+        <td>L'argument est traité comme un nom de fichier. 
+	Vrai si le fichier existe et correspond à un
+	répertoire</td><td>oui</td></tr>
 <tr class="odd"><td><code>-e</code></td>
         <td>L'argument est traité comme un nom de fichier. Vrai si le
-	fichier (ou dir ou special) existe</td></tr>
+	fichier (ou dir ou special) existe</td><td>oui</td></tr>
 <tr><td><code>-f</code></td>
         <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier existe et correspond à un fichier
-	régulier</td></tr>
+	régulier</td><td>oui</td></tr>
 <tr class="odd"><td><code>-L</code></td>
         <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier existe et correspond à un lien
-	symbolique</td></tr>
+	symbolique</td><td>oui</td></tr>
 <tr><td><code>-h</code></td>
         <td>L'argument est traité comme un nom de fichier. Vrai si le
 	fichier existe et correspond à un lien symbolique
-	(identique à <code>-L</code>)</td></tr>
+	(identique à <code>-L</code>)</td><td>oui</td></tr>
 <tr class="odd"><td><code>-F</code></td>
         <td>Vrai si la chaîne correspond a un fichier valide, accessible
 	avec tous les contrôles d'accès configurés pour ce chemin. A
 	cette fin, une sous-requête effectue la vérification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
-	performances de votre serveur !</td></tr>
+	performances de votre serveur !</td><td /></tr>
 <tr><td><code>-U</code></td>
         <td>Vrai si la chaîne correspond a une URL valide, accessible
 	avec tous les contrôles d'accès configurés pour ce chemin. A
 	cette fin, une sous-requête effectue la vérification, et vous
 	devez utiliser ce drapeau avec soin car il peut impacter les
-	performances de votre serveur !</td></tr>
-<tr class="odd"><td><code>-n</code></td>
-        <td>Vrai si la chaîne n'est pas vide</td></tr>
-<tr><td><code>-z</code></td>
-        <td>Vrai si la chaîne est vide</td></tr>
-<tr class="odd"><td><code>-T</code></td>
+	performances de votre serveur !</td><td /></tr>
+<tr class="odd"><td><code>-A</code></td>
+        <td>Alias pour <code>-U</code></td><td /></tr>
+<tr><td><code>-n</code></td>
+        <td>Vrai si la chaîne n'est pas vide</td><td /></tr>
+<tr class="odd"><td><code>-z</code></td>
+        <td>Vrai si la chaîne est vide</td><td /></tr>
+<tr><td><code>-T</code></td>
         <td>Faux si la chaîne est vide, "<code>0</code>",
 	"<code>off</code>", "<code>false</code>", ou "<code>no</code>"
-	(insensibilité à la casse). Vrai dans le cas contraire.</td></tr>
-<tr><td><code>-R</code></td>
+	(insensibilité à la casse). Vrai dans le cas contraire.</td><td /></tr>
+<tr class="odd"><td><code>-R</code></td>
         <td>Idem "<code>%{REMOTE_ADDR} -ipmatch ...</code>", en plus
 	efficace
-        </td></tr>
+        </td><td /></tr>
 </table>
+
+    <p>Les opérateurs marqués comme "restreints" ne sont pas disponibles
+    avec certains modules comme <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -385,36 +397,39 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     insensibles à la casse. Les modules peuvent fournir des fonctions
     supplémentaires.</p>
 
-    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th></tr>
+    <table class="bordered"><tr class="header"><th>Nom</th><th>Description</th><th>Restreint</th></tr>
 <tr><td><code>req</code>, <code>http</code></td>
-        <td>Lit l'en-tête de requête HTTP</td></tr>
+        <td>Lit l'en-tête de requête HTTP</td><td /></tr>
 <tr class="odd"><td><code>resp</code></td>
-        <td>Lit l'en-tête de réponse HTTP</td></tr>
+        <td>Lit l'en-tête de réponse HTTP</td><td /></tr>
 <tr><td><code>reqenv</code></td>
-        <td>Recherche une variable d'environnement de requête</td></tr>
+        <td>Recherche une variable d'environnement de requête</td><td /></tr>
 <tr class="odd"><td><code>osenv</code></td>
         <td>Recherche une variable d'environnement du système
-	d'exploitation</td></tr>
+	d'exploitation</td><td /></tr>
 <tr><td><code>note</code></td>
-        <td>Recherche une note de requête</td></tr>
+        <td>Recherche une note de requête</td><td /></tr>
 <tr class="odd"><td><code>env</code></td>
         <td>Renvoie le premier résultat positif de <code>note</code>,
-	<code>reqenv</code>, <code>osenv</code></td></tr>
+	<code>reqenv</code>, <code>osenv</code></td><td /></tr>
 <tr><td><code>tolower</code></td>
-        <td>Convertit une chaîne en minuscules</td></tr>
+        <td>Convertit une chaîne en minuscules</td><td /></tr>
 <tr class="odd"><td><code>toupper</code></td>
-        <td>Convertit une chaîne en majuscules</td></tr>
+        <td>Convertit une chaîne en majuscules</td><td /></tr>
 <tr><td><code>escape</code></td>
-        <td>Echappe les caractères spéciaux en codage hexadécimal</td></tr>
+        <td>Echappe les caractères spéciaux en codage hexadécimal</td><td /></tr>
 <tr class="odd"><td><code>unescape</code></td>
         <td>"Déséchappe" les chaînes codées en hexadécimal en conservant
-	le codage des caractères spéciaux aux URLs (XXX: describe better)</td></tr>
+	le codage des caractères spéciaux aux URLs (XXX: describe better)</td><td /></tr>
 <tr><td><code>file</code></td>
-        <td>Lit le contenu d'un fichier</td></tr>
+        <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
 <tr class="odd"><td><code>filesize</code></td>
         <td>Renvoie la taille d'un fichier (ou 0 si le fichier n'existe
-	pas ou ne correspond pas à un fichier régulier)</td></tr>
+	pas ou ne correspond pas à un fichier régulier)</td><td>oui</td></tr>
 </table>
+
+    <p>Les fonctions marquées comme "restreints" ne sont pas disponibles
+    avec certains modules comme <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</p>
 
     <p>En plus des fonctions dont la valeur est une chaîne, il existe
     aussi des fonctions dont la valeur est une liste, qui acceptent une

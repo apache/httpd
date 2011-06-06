@@ -449,7 +449,8 @@ HTML préexistants.</p>
     <p>Puis, dans votre document où les SSI sont activées, vous ajoutez
     ceci :</p>
 <div class="example"><p><code>
-        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br />
+        &lt;!--#if expr="-T reqenv('Mac') &amp;&amp;
+                         -T reqenv('InternetExplorer')" --&gt;<br />
         Un texte d'excuses est inséré ici<br />
         &lt;!--#else --&gt;<br />
         Ici se trouve du code JavaScipt sympa<br />
