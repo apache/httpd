@@ -95,6 +95,9 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
     if (db == NULL) {
         errcode = 1;
         errstr = "Could not open property database.";
+        if (APR_STATUS_IS_EDSOOPEN(status))
+            ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf,
+            "The DBM driver could not be loaded");
     }
     else {
         (void) apr_dbm_geterror(db->file, &errcode, errbuf, sizeof(errbuf));
