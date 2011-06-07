@@ -42,6 +42,7 @@
 #include "http_log.h"
 #include "http_main.h"      /* for ap_server_conf */
 
+APLOG_USE_MODULE(dav_fs);
 
 struct dav_db {
     apr_pool_t *pool;
