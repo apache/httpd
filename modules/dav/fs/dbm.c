@@ -124,7 +124,7 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
                                 dav_db **pdb)
 {
     apr_status_t status;
-    apr_dbm_t *file;
+    apr_dbm_t *file = NULL;
 
     *pdb = NULL;
 
