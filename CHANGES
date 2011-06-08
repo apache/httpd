@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_data: Introduce a filter to support RFC2397 data URLs. [Graham
+     Leggett]
+
   *) mod_userdir/mod_alias/mod_vhost_alias: Correctly set DOCUMENT_ROOT,
      CONTEXT_DOCUMENT_ROOT, CONTEXT_PREFIX. PR 26052. PR 46198.
      [Stefan Fritsch]

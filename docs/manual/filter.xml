@@ -38,6 +38,13 @@
         <module>mod_include</module>
         <module>mod_charset_lite</module>
         <module>mod_reflector</module>
+        <module>mod_buffer</module>
+        <module>mod_data</module>
+        <module>mod_ratelimit</module>
+        <module>mod_reqtimeout</module>
+        <module>mod_request</module>
+        <module>mod_sed</module>
+        <module>mod_substitute</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>
