@@ -72,7 +72,7 @@ static apr_status_t data_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     /* first time in? create a context */
     if (!ctx) {
         char *type;
-        char *charset;
+        char *charset = NULL;
         char *end;
         const char *content_length;
 
