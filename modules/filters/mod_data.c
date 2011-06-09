@@ -64,7 +64,7 @@ typedef struct data_ctx
  */
 static apr_status_t data_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
-    apr_bucket *e;
+    apr_bucket *e, *ee;
     request_rec *r = f->r;
     data_ctx *ctx = f->ctx;
     apr_status_t rv = APR_SUCCESS;
@@ -134,9 +134,6 @@ static apr_status_t data_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         char buffer[APR_BUCKET_BUFF_SIZE + 1];
         char encoded[((sizeof(ctx->overflow)) / 3) * 4 + 1];
 
-        /* make sure we don't read more than 6000 bytes at a time */
-        apr_brigade_partition(bb, (APR_BUCKET_BUFF_SIZE / 4 * 3), &e);
-
         e = APR_BRIGADE_FIRST(bb);
 
         /* EOS means we are done. */
@@ -157,6 +154,23 @@ static apr_status_t data_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             /* pass what we have down the chain */
             ap_remove_output_filter(f);
             rv = ap_pass_brigade(f->next, ctx->bb);
+
+            /* pass any stray buckets after the EOS down the stack */
+            if ((APR_SUCCESS == rv) && (!APR_BRIGADE_EMPTY(bb))) {
+               rv = ap_pass_brigade(f->next, bb);
+            }
+            continue;
+        }
+
+        /* flush what we can, we can't flush the tail until EOS */
+        if (APR_BUCKET_IS_FLUSH(e)) {
+
+            /* pass the flush bucket across */
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
+
+            /* pass what we have down the chain */
+            rv = ap_pass_brigade(f->next, ctx->bb);
             continue;
         }
 
@@ -170,6 +184,9 @@ static apr_status_t data_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             continue;
         }
+
+        /* make sure we don't read more than 6000 bytes at a time */
+        apr_brigade_partition(bb, (APR_BUCKET_BUFF_SIZE / 4 * 3), &ee);
 
         /* size will never be more than 6000 bytes */
         if (APR_SUCCESS == (rv = apr_bucket_read(e, &data, &size,
