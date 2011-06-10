@@ -205,6 +205,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_cgi.html">Apache-Modul mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache-Modul mod_cgid</a></li>
 <li><a href="mod/mod_charset_lite.html">Apache-Modul mod_charset_lite</a></li>
+<li><a href="mod/mod_data.html">Apache-Modul mod_data</a></li>
 <li><a href="mod/mod_dav.html">Apache-Modul mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache-Modul mod_dav_fs</a></li>
 <li><a href="mod/mod_dav_lock.html">Apache-Modul mod_dav_lock</a></li>

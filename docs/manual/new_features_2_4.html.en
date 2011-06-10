@@ -77,6 +77,9 @@
       <dt><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></dt>
       <dd>Provides for buffering the input and output filter stacks</dd>
 
+      <dt><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></dt>
+      <dd>Convert response body into an RFC2397 data URL</dd>
+
       <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
       <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd, 
       for configuration and small business logic functions.</dd>

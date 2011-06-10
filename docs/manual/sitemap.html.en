@@ -200,6 +200,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_cgi.html">Apache Module mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache Module mod_cgid</a></li>
 <li><a href="mod/mod_charset_lite.html">Apache Module mod_charset_lite</a></li>
+<li><a href="mod/mod_data.html">Apache Module mod_data</a></li>
 <li><a href="mod/mod_dav.html">Apache Module mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache Module mod_dav_fs</a></li>
 <li><a href="mod/mod_dav_lock.html">Apache Module mod_dav_lock</a></li>
