@@ -106,7 +106,8 @@ address)</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI スクリプトの実行</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>外部 CGI デーモンを使った CGI スクリプトの実行</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>Specify character set translation or recoding</dd>
-<dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>分散オーサリングとバージョン管理
+<dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
+<dt><a href="mod_dav.html">mod_dav</a></dt><dd>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> のためのファイルシステムプロバイダ</dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> 用の汎用ロックモジュール</dd>

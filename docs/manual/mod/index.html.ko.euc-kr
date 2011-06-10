@@ -102,7 +102,8 @@ address)</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>CGI 스크립트 실행</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>외부 CGI 데몬을 사용하여 CGI 스크립트를 실행</dd>
 <dt><a href="mod_charset_lite.html">mod_charset_lite</a></dt><dd>문자집합 변환을 지정</dd>
-<dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>Distributed Authoring and Versioning
+<dt><a href="mod_data.html" id="D" name="D">mod_data</a></dt><dd>Convert response body into an RFC2397 data URL</dd>
+<dt><a href="mod_dav.html">mod_dav</a></dt><dd>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) 기능</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>을 위한 파일시스템 제공자</dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>

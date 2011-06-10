@@ -194,6 +194,7 @@
 <li><a href="mod/mod_cgi.html">Apache モジュール mod_cgi</a></li>
 <li><a href="mod/mod_cgid.html">Apache モジュール mod_cgid</a></li>
 <li><a href="mod/mod_charset_lite.html">Apache モジュール mod_charset_lite</a></li>
+<li><a href="mod/mod_data.html">Apache モジュール mod_data</a></li>
 <li><a href="mod/mod_dav.html">Apache モジュール mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache モジュール mod_dav_fs</a></li>
 <li><a href="mod/mod_dav_lock.html">Apache モジュール mod_dav_lock</a></li>

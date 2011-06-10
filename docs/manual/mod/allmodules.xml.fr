@@ -33,6 +33,7 @@
   <modulefile>mod_cgi.xml</modulefile>
   <modulefile>mod_cgid.xml</modulefile>
   <modulefile>mod_charset_lite.xml</modulefile>
+  <modulefile>mod_data.xml</modulefile>
   <modulefile>mod_dav.xml</modulefile>
   <modulefile>mod_dav_fs.xml</modulefile>
   <modulefile>mod_dav_lock.xml</modulefile>
