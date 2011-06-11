@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1043126 -->
+<!-- English Revision : 1132802 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -242,7 +242,7 @@ peuvent se pr&eacute;senter sous les formes suivantes :</p>
         :<br />
    SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" commentaire-netscape=$1<br />
         :<br />
-   SetEnvIf ^TS*  ^[a-z].*  HAVE_TS<br />
+   SetEnvIf ^TS  ^[a-z]  HAVE_TS<br />
 </example>
 
     <p>Les trois premi&egrave;res lignes d&eacute;finissent la variable

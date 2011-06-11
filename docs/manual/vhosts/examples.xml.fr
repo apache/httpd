@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1053231:1132802 (outdated) -->
+<!-- English Revision: 1132802 -->
 <!-- French translation by Vincent Deffontaines, Alain B., review by  -->
 <!-- updated by Lucien Gentis -->
 
@@ -61,8 +61,7 @@
     # Apache doit écouter sur le port 80<br />
     Listen 80<br />
     <br />
-    # Toutes les adresses IP doivent répondre aux requêtes sur les <br />
-    # serveurs virtuels<br />
+    <br />
     &lt;VirtualHost *:80&gt;<br />
     <indent>
       DocumentRoot /www/example.com<br />
@@ -582,7 +581,7 @@
         # Serveur virtuel primaire<br />
         DocumentRoot /www/subdomain<br />
         RewriteEngine On<br />
-        RewriteRule ^/.* /www/subdomain/index.html<br />
+        RewriteRule . /www/subdomain/index.html<br />
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />

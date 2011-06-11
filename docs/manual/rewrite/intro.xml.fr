@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1031038 -->
+<!-- English Revision : 1132802 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -218,7 +218,7 @@ trois types :</p>
 <dt>Un chemin complet du syst&egrave;me de fichiers vers une ressource</dt>
 <dd>
 <example>
-RewriteRule ^/jeux.* /usr/local/jeux/web
+RewriteRule ^/jeux /usr/local/jeux/web
 </example>
 <p>Ceci peut faire correspondre une requ&ecirc;te &agrave; toute localisation voulue de
 votre syst&egrave;me de fichiers, un peu comme la directive <directive
@@ -319,7 +319,7 @@ de requ&ecirc;te, sauf si elles contiennent aussi un cookie contenant le mot
 <example>
 RewriteCond %{QUERY_STRING} hack<br />
 RewriteCond %{HTTP_COOKIE} !go<br />
-RewriteRule .* - [F]
+RewriteRule . - [F]
 </example>
 <p>Notez que le point d'exclamation indique une correspondance n&eacute;gative
 ; ainsi, la r&egrave;gle n'est appliqu&eacute;e que si le cookie ne contient pas "go"</p>
