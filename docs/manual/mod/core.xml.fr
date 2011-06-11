@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1128161 -->
+<!-- English Revision : 1132677 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3621,7 +3621,7 @@ appropri&eacute;s, Off dans le cas contraire</default>
 <code>TRACE</code></description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Disponible dans les versions 1.3.34, 2.0.55 et
 sup&eacute;rieures d'Apache</compatibility>
 
