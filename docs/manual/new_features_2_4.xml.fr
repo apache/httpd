@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1088588 -->
+<!-- English Revision : 1133582 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -84,6 +84,9 @@ serveur HTTP Apache</title>
       <dt><module>mod_buffer</module></dt>
       <dd>Fournit un tampon pour les piles des filtres en entr&eacute;e et en
       sortie.</dd>
+
+      <dt><module>mod_data</module></dt>
+      <dd>Convertit un corps de r&eacute;ponse en URL de type donn&eacute;es RFC2397.</dd>
 
       <dt><module>mod_lua</module></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans

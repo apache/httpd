@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1082196 -->
+<!-- English Revision : 1132676 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -874,6 +874,104 @@ host</context>
 </usage>
 <seealso><a href="../urlmapping.html#documentroot">Mise en
 correspondance des URLs avec le syst&egrave;me de fichiers</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>Else</name>
+<description>Contient des directives qui ne s'appliquent que si la
+condition correspondant &agrave; la section <directive type="section"
+module="core">If</directive> ou <directive type="section"
+module="core">ElseIf</directive> pr&eacute;c&eacute;dente n'est pas satisfaite par la
+requ&ecirc;te &agrave; l'ex&eacute;cution</description>
+<syntax>&lt;Else&gt; ... &lt;/Else&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>La section <directive type="section">Else</directive> applique
+    les directives qu'elle contient si et seulement si les conditions
+    correspondant &agrave; la section <directive type="section">If</directive>
+    ou <directive type="section">ElseIf</directive> imm&eacute;diatement
+    sup&eacute;rieure et dans la m&ecirc;me port&eacute;e n'ont pas &eacute;t&eacute; satisfaites. Par
+    exemple, dans :</p>
+
+    <example>
+        &lt;If "-z req('Host')"&gt;<br/>
+        ...<br/>
+        &lt;/If&gt;<br/>
+        &lt;Else&gt;<br/>
+        ...<br/>
+        &lt;/Else&gt;<br/>
+    </example>
+
+    <p>La condition de la section <directive
+    type="section">If</directive> serait satisfaite pour les requ&ecirc;tes
+    HTTP/1.0 sans en-t&ecirc;te <var>Host:</var>, alors que celle de la section
+    <directive type="section">Else</directive> le serait pour les
+    requ&ecirc;tes comportant un en-t&ecirc;te <var>Host:</var>.</p>
+
+</usage>
+<seealso><directive type="section" module="core">If</directive></seealso>
+<seealso><directive type="section" module="core">ElseIf</directive></seealso>
+<seealso><a href="../sections.html">Fonctionnement des sections &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt;</a> pour une explication de la mani&egrave;re dont ces
+    diff&eacute;rentes section se combinent entre elles lorsqu'une requ&ecirc;te est
+    re&ccedil;ue. Les directives <directive type="section">If</directive>,
+    <directive type="section">ElseIf</directive>, et <directive
+    type="section">Else</directive> s'appliquent en dernier.</seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>ElseIf</name>
+<description>Contient des directives qui ne s'appliquent que si la
+condition correspondante est satisfaite par une requ&ecirc;te &agrave; l'ex&eacute;cution,
+alors que la condition correspondant &agrave; la section <directive
+type="section" module="core">If</directive> ou <directive
+type="section">ElseIf</directive> pr&eacute;c&eacute;dente ne l'&eacute;tait pas.</description>
+<syntax>&lt;ElseIf <var>expression</var>&gt; ... &lt;/ElseIf&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>La section <directive type="section">ElseIf</directive> applique
+    les directives qu'elle contient si et seulement si d'une part la
+    condition correspondante est satisfaite, et d'autre part la condition
+    correspondant &agrave; la section <directive type="section">If</directive>
+    ou <directive type="section">ElseIf</directive> de la m&ecirc;me port&eacute;e ne
+    l'est pas. Par exemple, dans :</p>
+
+    <example>
+        &lt;If "-R '10.1.0.0/16'"&gt;<br/>
+        ...<br/>
+        &lt;/If&gt;<br/>
+        &lt;ElseIf "-R '10.0.0.0/8'"&gt;<br/>
+        ...<br/>
+        &lt;/ElseIf&gt;<br/>
+        &lt;Else&gt;<br/>
+        ...<br/>
+        &lt;/Else&gt;<br/>
+    </example>
+
+    <p>La condition correspondant &agrave; la section <directive
+    type="section">ElseIf</directive> est satisfaite si l'adresse
+    distante de la requ&ecirc;te appartient au sous-r&eacute;seau 10.0.0.0/8, mais
+    pas si elle appartient au sous-r&eacute;seau 10.1.0.0/16.</p>
+
+</usage>
+<seealso><a href="../expr.html">Les expressions dans le serveur HTTP
+Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemples.</seealso>
+<seealso><directive type="section" module="core">If</directive></seealso>
+<seealso><directive type="section" module="core">Else</directive></seealso>
+<seealso><a href="../sections.html">Fonctionnement des sections &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt;</a> pour une explication de la mani&egrave;re dont ces
+    diff&eacute;rentes section se combinent entre elles lorsqu'une requ&ecirc;te est
+    re&ccedil;ue. Les directives <directive type="section">If</directive>,
+    <directive type="section">ElseIf</directive>, et <directive
+    type="section">Else</directive> s'appliquent en dernier.</seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1778,35 +1876,41 @@ host</context>
     exemple :</p>
 
     <example>
-        &lt;If "$req{Host} = ''"&gt;
+        &lt;If "-z req('Host')"&gt;
     </example>
 
-    <p>sera satisfaite dans le cas des requ&ecirc;tes HTTP/1.0 sans en-t&ecirc;te
-    <var>Host:</var>.</p>
-
-    <p>Vous pouvez tester la valeur de tout en-t&ecirc;te de requ&ecirc;te ($req),
-    de tout en-t&ecirc;te de r&eacute;ponse ($resp) ou de toute variable
-    d'environnement ($env) dans votre expression.</p>
-
-    <p>En plus de <code>=</code>, <code>If</code> peut utiliser
-    l'op&eacute;rateur <code>IN</code> pour d&eacute;terminer si la valeur de
-    l'expression fait partie d'une liste donn&eacute;e :</p>
+    <p>serait satisfaite pour les requ&ecirc;tes HTTP/1.0 sans en-t&ecirc;te
+    <var>Host:</var>. Les expressions peuvent contenir diff&eacute;rents
+    op&eacute;rateurs de type shell pour la comparaison de cha&icirc;nes
+    (<code>=</code>, <code>!=</code>, <code>&lt;</code>, ...), la
+    comparaison d'entiers (<code>-eq</code>, <code>-ne</code>, ...), ou
+    &agrave; usages divers (<code>-n</code>, <code>-z</code>, <code>-f</code>,
+    ...). Les expressions rationnelles sont aussi support&eacute;es,</p>
 
     <example>
-        &lt;If %{REQUEST_METHOD} IN GET,HEAD,OPTIONS&gt;
+        &lt;If "%{QUERY_STRING =~ /(delete|commit)=.*?elem/"&gt;
     </example>
+
+    <p>ainsi que les comparaison de mod&egrave;les de type shell et de
+    nombreuses autres op&eacute;rations. Ces op&eacute;rations peuvent &ecirc;tre effectu&eacute;es
+    sur les en-t&ecirc;tes de requ&ecirc;tes (<code>req</code>), les variables
+    d'environnement (<code>env</code>), et un grand nombre d'autres
+    propri&eacute;t&eacute;s. La documentation compl&egrave;te est disponible dans <a
+    href="../expr.html">Les expressions dans le serveur HTTP Apache</a>.</p>
 
 </usage>
 
 <seealso><a href="../expr.html">Les expressions dans le serveur HTTP
 Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemples.</seealso>
+<seealso><directive type="section" module="core">ElseIf</directive></seealso>
+<seealso><directive type="section" module="core">Else</directive></seealso>
 <seealso><a href="../sections.html">Comment fonctionnent les sections
 &lt;Directory&gt;, &lt;Location&gt; et &lt;Files&gt;</a> pour une
 explication de la mani&egrave;re dont ces diff&eacute;rentes sections se combinent
-entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te. La directive <directive
-type="section">If</directive> poss&egrave;de la m&ecirc;me priorit&eacute; et s'utilise de
-la m&ecirc;me fa&ccedil;on que la directive <directive
-type="section">Files</directive></seealso>
+entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te. Les
+directives <directive type="section">If</directive>, <directive
+type="section">ElseIf</directive>, et <directive
+type="section">Else</directive> s'appliquent en dernier.</seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -4157,7 +4261,7 @@ host</context></contextlist>
 <code>TRACE</code></description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Disponible dans les versions 1.3.34, 2.0.55 et
 sup&eacute;rieures du serveur HTTP Apache</compatibility>
 

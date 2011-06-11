@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1070919 -->
+<!-- English revision : 1132802 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -290,7 +290,7 @@ SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
 RewriteEngine        on
 RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
 RewriteCond          %{HTTPS} !=on
-RewriteRule          .* - [F]
+RewriteRule          . - [F]
 
 #   On permet l'acc&egrave;s soit sur les crit&egrave;res r&eacute;seaux, soit par authentification Basique
 Satisfy              any
