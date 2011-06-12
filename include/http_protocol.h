@@ -346,7 +346,7 @@ static inline int ap_rputs(const char *str, request_rec *r)
  * @return The number of bytes sent
  */
 AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r,...)
-                       __attribute__((sentinel));
+                       ap_func_attr_sentinel;
 
 /**
  * Output data to the client in a printf format
