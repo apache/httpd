@@ -27,6 +27,7 @@
 #define APACHE_UTIL_SCRIPT_H
 
 #include "apr_buckets.h"
+#include "ap_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -123,7 +124,7 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
                                                       char *buffer, 
                                                       const char **termch,
                                                       int *termarg, ...)
-                       __attribute__((sentinel));
+                       ap_func_attr_sentinel;
 
 /**
  * Read headers output from a script, ensuring that the output is valid.  If

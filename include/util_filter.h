@@ -547,10 +547,7 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
 AP_DECLARE_NONSTD(apr_status_t) ap_fputstrs(ap_filter_t *f,
                                             apr_bucket_brigade *bb,
                                             ...)
-#if defined(__GNUC__) && __GNUC__ >= 4
-    __attribute__((sentinel))
-#endif
-;
+                                ap_func_attr_sentinel;
 
 /**
  * Output data to the filter in printf format

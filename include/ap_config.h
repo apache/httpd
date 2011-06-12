@@ -173,4 +173,13 @@
 #define AP_HAVE_DESIGNATED_INITIALIZER
 #endif
 
+#ifndef __has_attribute         /* check for supported attributes on clang */
+#define __has_attribute(x) 0
+#endif
+#if (defined(__GNUC__) && __GNUC__ >= 4) || __has_attribute(sentinel)
+#define ap_func_attr_sentinel __attribute__((sentinel))
+#else
+#define ap_func_attr_sentinel
+#endif
+
 #endif /* AP_CONFIG_H */

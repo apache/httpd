@@ -285,7 +285,7 @@ AP_DECLARE(void) ap_update_mtime(request_rec *r, apr_time_t dependency_mtime);
  * @return  None.
  */
 AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...)
-                 __attribute__((sentinel));
+                 ap_func_attr_sentinel;
 
 /**
  * Add one or more methods to the list permitted to access the resource.
