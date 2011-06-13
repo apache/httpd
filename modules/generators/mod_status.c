@@ -373,9 +373,10 @@ static int status_handler(request_rec *r)
 
     if (!short_report) {
         ap_rputs(DOCTYPE_HTML_3_2
-                 "<html><head>\n<title>Apache Status</title>\n</head><body>\n",
-                 r);
-        ap_rputs("<h1>Apache Server Status for ", r);
+                 "<html><head>\n"
+                 "<title>Apache Status</title>\n"
+                 "</head><body>\n"
+                 "<h1>Apache Server Status for ", r);
         ap_rvputs(r, ap_get_server_name(r), " (via ", r->connection->local_ip,
                   ")</h1>\n\n", NULL);
         ap_rvputs(r, "<dl><dt>Server Version: ",
@@ -487,25 +488,25 @@ static int status_handler(request_rec *r)
     if (short_report)
         ap_rputs("\n", r);
     else {
-        ap_rputs("</pre>\n", r);
-        ap_rputs("<p>Scoreboard Key:<br />\n", r);
-        ap_rputs("\"<b><code>_</code></b>\" Waiting for Connection, \n", r);
-        ap_rputs("\"<b><code>S</code></b>\" Starting up, \n", r);
-        ap_rputs("\"<b><code>R</code></b>\" Reading Request,<br />\n", r);
-        ap_rputs("\"<b><code>W</code></b>\" Sending Reply, \n", r);
-        ap_rputs("\"<b><code>K</code></b>\" Keepalive (read), \n", r);
-        ap_rputs("\"<b><code>D</code></b>\" DNS Lookup,<br />\n", r);
-        ap_rputs("\"<b><code>C</code></b>\" Closing connection, \n", r);
-        ap_rputs("\"<b><code>L</code></b>\" Logging, \n", r);
-        ap_rputs("\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n", r);
-        ap_rputs("\"<b><code>I</code></b>\" Idle cleanup of worker, \n", r);
-        ap_rputs("\"<b><code>.</code></b>\" Open slot with no current process,<br />\n", r);
-        ap_rputs("<p />\n", r);
+        ap_rputs("</pre>\n"
+                 "<p>Scoreboard Key:<br />\n"
+                 "\"<b><code>_</code></b>\" Waiting for Connection, \n"
+                 "\"<b><code>S</code></b>\" Starting up, \n"
+                 "\"<b><code>R</code></b>\" Reading Request,<br />\n"
+                 "\"<b><code>W</code></b>\" Sending Reply, \n"
+                 "\"<b><code>K</code></b>\" Keepalive (read), \n"
+                 "\"<b><code>D</code></b>\" DNS Lookup,<br />\n"
+                 "\"<b><code>C</code></b>\" Closing connection, \n"
+                 "\"<b><code>L</code></b>\" Logging, \n"
+                 "\"<b><code>G</code></b>\" Gracefully finishing,<br /> \n"
+                 "\"<b><code>I</code></b>\" Idle cleanup of worker, \n"
+                 "\"<b><code>.</code></b>\" Open slot with no current process,<br />\n"
+                 "<p />\n", r);
         if (!ap_extended_status) {
             int j;
             int k = 0;
-            ap_rputs("PID Key: <br />\n", r);
-            ap_rputs("<pre>\n", r);
+            ap_rputs("PID Key: <br />\n"
+                     "<pre>\n", r);
             for (i = 0; i < server_limit; ++i) {
                 for (j = 0; j < thread_limit; ++j) {
                     int indx = (i * thread_limit) + j;
@@ -524,8 +525,8 @@ static int status_handler(request_rec *r)
                 }
             }
 
-            ap_rputs("\n", r);
-            ap_rputs("</pre>\n", r);
+            ap_rputs("\n"
+                     "</pre>\n", r);
         }
     }
 
