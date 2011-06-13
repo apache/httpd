@@ -67,7 +67,7 @@ only?</title>
     <p>The following enables only the strongest ciphers:</p>
     <example><title>httpd.conf</title>
       SSLProtocol all -SSLv2<br />
-      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
     </example>
 
     <p>While with the following configuration you enable two ciphers
@@ -75,7 +75,7 @@ only?</title>
 
     <example><title>httpd.conf</title>
       SSLProtocol all -SSLv2<br />
-      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!EXP:!MD5:!NULL<br />
       SSLHonorCipherOrder on
     </example>
 
@@ -96,12 +96,12 @@ URL?</title>
     This can be done as follows:</p>
     <example>
       # be liberal in general<br />
-      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # but https://hostname/strong/area/ and below<br />
       # requires strong ciphers<br />
-      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
       &lt;/Location&gt;
     </example>
 </section>
