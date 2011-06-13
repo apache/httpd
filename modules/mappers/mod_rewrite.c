@@ -4482,8 +4482,8 @@ static int hook_uri2file(request_rec *r)
          *  now apply the rules ...
          */
         rulestatus = apply_rewrite_list(r, conf->rewriterules, NULL);
-        apr_table_set(r->notes,"mod_rewrite_rewritten",
-                      apr_psprintf(r->pool,"%d",rulestatus));
+        apr_table_setn(r->notes, "mod_rewrite_rewritten",
+                       apr_psprintf(r->pool,"%d",rulestatus));
     }
     else {
         rewritelog((r, 2, NULL, "uri already rewritten. Status %s, Uri %s, "

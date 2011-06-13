@@ -1165,8 +1165,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 break;
         if (*secs_str != '\0') {
             secs = atol(secs_str);
-            apr_table_add(r->headers_out, "Retry-After",
-                          apr_psprintf(p, "%lu", (unsigned long)(60 * secs)));
+            apr_table_addn(r->headers_out, "Retry-After",
+                           apr_psprintf(p, "%lu", (unsigned long)(60 * secs)));
         }
         return ftp_proxyerror(r, backend, HTTP_SERVICE_UNAVAILABLE, ftpmessage);
     }
