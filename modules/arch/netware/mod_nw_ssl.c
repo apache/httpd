@@ -895,7 +895,7 @@ static int nwssl_hook_Fixup(request_rec *r)
     if (!isSecure(r) && !isSecureUpgraded(r))
         return DECLINED;
 
-    apr_table_set(r->subprocess_env, "HTTPS", "on");
+    apr_table_setn(r->subprocess_env, "HTTPS", "on");
 
     return DECLINED;
 }
@@ -918,7 +918,7 @@ static apr_port_t nwssl_hook_default_port(const request_rec *r)
 
 int ssl_proxy_enable(conn_rec *c)
 {
-    apr_table_set(c->notes, "nwconv-ssl", "Y");
+    apr_table_setn(c->notes, "nwconv-ssl", "Y");
 
     return 1;
 }

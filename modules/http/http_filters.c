@@ -1211,7 +1211,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     if (apr_table_get(r->subprocess_env, "force-no-vary") != NULL) {
         apr_table_unset(r->headers_out, "Vary");
         r->proto_num = HTTP_VERSION(1,0);
-        apr_table_set(r->subprocess_env, "force-response-1.0", "1");
+        apr_table_setn(r->subprocess_env, "force-response-1.0", "1");
     }
     else {
         fixup_vary(r);

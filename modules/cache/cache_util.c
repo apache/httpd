@@ -644,8 +644,8 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
             /* make sure we don't stomp on a previous warning */
             if ((warn_head == NULL) ||
                 ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
-                apr_table_merge(h->resp_hdrs, "Warning",
-                                "110 Response is stale");
+                apr_table_mergen(h->resp_hdrs, "Warning",
+                                 "110 Response is stale");
             }
         }
 
@@ -663,8 +663,8 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
              */
             if ((warn_head == NULL) ||
                 ((warn_head != NULL) && (ap_strstr_c(warn_head, "113") == NULL))) {
-                apr_table_merge(h->resp_hdrs, "Warning",
-                                "113 Heuristic expiration");
+                apr_table_mergen(h->resp_hdrs, "Warning",
+                                 "113 Heuristic expiration");
             }
         }
         return 1;    /* Cache object is fresh (enough) */
@@ -720,8 +720,8 @@ int cache_check_freshness(cache_handle_t *h, cache_request_rec *cache,
         warn_head = apr_table_get(h->resp_hdrs, "Warning");
         if ((warn_head == NULL) ||
             ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
-            apr_table_merge(h->resp_hdrs, "Warning",
-                        "110 Response is stale");
+            apr_table_mergen(h->resp_hdrs, "Warning",
+                             "110 Response is stale");
         }
 
         return 1;
