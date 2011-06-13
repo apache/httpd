@@ -48,7 +48,7 @@ Listen @@SSLPort@@
 #   SSL Cipher Suite:
 #   List the ciphers that the client is permitted to negotiate.
 #   See the mod_ssl documentation for a complete list.
-SSLCipherSuite RC4-SHA:AES128-SHA:ALL:!ADH:!EXP:!LOW:!MD5:!SSLV2:!NULL
+SSLCipherSuite RC4-SHA:AES128-SHA:ALL:!aNULL:!EXP:!LOW:!MD5:!SSLV2:!NULL
 
 #   SSL Cipher Honor Order:
 #   On a busy HTTPS server you may want to enable this directive
