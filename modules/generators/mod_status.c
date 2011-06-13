@@ -333,7 +333,7 @@ static int status_handler(request_rec *r)
                         proc_tu += tmp_tu;
                         proc_ts += tmp_ts;
                         proc_tcu += tmp_tcu;
-                        proc_tcs += proc_tcs;
+                        proc_tcs += tmp_tcs;
                     }
                     else {
                         if (tmp_tu > proc_tu ||
@@ -343,7 +343,7 @@ static int status_handler(request_rec *r)
                             proc_tu = tmp_tu;
                             proc_ts = tmp_ts;
                             proc_tcu = tmp_tcu;
-                            proc_tcs = proc_tcs;
+                            proc_tcs = tmp_tcs;
                         }
                     }
 #endif /* HAVE_TIMES */
