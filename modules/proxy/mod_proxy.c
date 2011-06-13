@@ -880,8 +880,8 @@ static int proxy_handler(request_rec *r)
         maxfwd = conf->maxfwd;
     }
     if (maxfwd >= 0) {
-        apr_table_set(r->headers_in, "Max-Forwards",
-                      apr_psprintf(r->pool, "%ld", maxfwd));
+        apr_table_setn(r->headers_in, "Max-Forwards",
+                       apr_psprintf(r->pool, "%ld", maxfwd));
     }
 
     if (r->method_number == M_TRACE) {

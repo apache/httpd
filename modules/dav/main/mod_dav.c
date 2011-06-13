@@ -2667,8 +2667,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
         if (lookup.rnew->status == HTTP_UNAUTHORIZED && auth != NULL) {
             /* propagate the WWW-Authorization header up from the
              * subreq so the client sees it. */
-            apr_table_set(r->err_headers_out, "WWW-Authenticate",
-                          apr_pstrdup(r->pool, auth));
+            apr_table_setn(r->err_headers_out, "WWW-Authenticate",
+                           apr_pstrdup(r->pool, auth));
         }
 
         /* ### how best to report this... */
@@ -3148,7 +3148,7 @@ static int dav_method_lock(request_rec *r)
                                         lock->locktoken),
                                     ">", NULL);
 
-        apr_table_set(r->headers_out, "Lock-Token", locktoken_txt);
+        apr_table_setn(r->headers_out, "Lock-Token", locktoken_txt);
     }
 
     (*locks_hooks->close_lockdb)(lockdb);
