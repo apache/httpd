@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_ssl: Disable AECDH ciphers in example config. PR 51363.
+     [Rob Stradling <rob comodo com>]
+
   *) core: Introduce new function ap_get_conn_socket() to access the socket of
      a connection. [Stefan Fritsch]
 
