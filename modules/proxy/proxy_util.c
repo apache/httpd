@@ -2008,7 +2008,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                  * ensure that mod_proxy_http does the correct thing
                  * regarding the Connection header in the request.
                  */
-                apr_table_set(r->subprocess_env, "proxy-nokeepalive", "1");
+                apr_table_setn(r->subprocess_env, "proxy-nokeepalive", "1");
             }
         }
         else if (r->proxyreq == PROXYREQ_REVERSE) {
@@ -2024,7 +2024,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
                  * ensure that mod_proxy_http does the correct thing
                  * regarding the Connection header in the request.
                  */
-                apr_table_set(r->subprocess_env, "proxy-nokeepalive", "1");
+                apr_table_setn(r->subprocess_env, "proxy-nokeepalive", "1");
             }
         }
     }
