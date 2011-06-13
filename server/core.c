@@ -4302,6 +4302,11 @@ AP_DECLARE(void **) ap_get_request_note(request_rec *r, apr_size_t note_num)
     return &(req_cfg->notes[note_num]);
 }
 
+AP_DECLARE(apr_socket_t *) ap_get_conn_socket(conn_rec *c)
+{
+    return ap_get_core_module_config(c->conn_config);
+}
+
 static int core_create_req(request_rec *r)
 {
     /* Alloc the config struct and the array of request notes in

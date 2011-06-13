@@ -953,7 +953,7 @@ request_rec *ap_read_request(conn_rec *conn)
      * to the normal timeout mode as we fetch the header lines,
      * as necessary.
      */
-    csd = ap_get_core_module_config(conn->conn_config);
+    csd = ap_get_conn_socket(conn);
     apr_socket_timeout_get(csd, &cur_timeout);
     if (cur_timeout != conn->base_server->timeout) {
         apr_socket_timeout_set(csd, conn->base_server->timeout);

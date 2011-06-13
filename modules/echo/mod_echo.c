@@ -168,7 +168,7 @@ static int process_echo_connection(conn_rec *c)
         }
 
         if (!csd) {
-            csd = ap_get_core_module_config(c->conn_config);
+            csd = ap_get_conn_socket(c);
             apr_socket_timeout_set(csd, c->base_server->keep_alive_timeout);
         }
 
