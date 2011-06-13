@@ -3227,13 +3227,7 @@ static apr_size_t find_argument(include_ctx_t *ctx, const char *data,
                                          ctx->r->filename);
         }
         else {
-            char *sp = intern->current_arg->name;
-
-            /* normalize the name */
-            while (*sp) {
-                *sp = apr_tolower(*sp);
-                ++sp;
-            }
+            ap_str_tolower(intern->current_arg->name);
         }
 
         intern->state = PARSE_ARG_EQ;
