@@ -186,7 +186,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     }
 
     if (!ccfg->socket) {
-        ccfg->socket = ap_get_core_module_config(f->c->conn_config);
+        ccfg->socket = ap_get_conn_socket(f->c);
     }
 
     rv = check_time_left(ccfg, &time_left);

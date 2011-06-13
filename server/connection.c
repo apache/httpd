@@ -98,7 +98,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     char dummybuf[512];
     apr_size_t nbytes;
     apr_time_t timeup = 0;
-    apr_socket_t *csd = ap_get_core_module_config(c->conn_config);
+    apr_socket_t *csd = ap_get_conn_socket(c);
 
     if (!csd) {
         return;

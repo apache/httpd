@@ -221,9 +221,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
         }
     }
 
-    /* XXXXX: THIS IS AN EVIL HACK */
-    /* There should really be a (documented) public API for this ! */
-    clientsock = ap_get_core_module_config(r->connection->conn_config);
+    clientsock = ap_get_conn_socket(r->connection);
 
     rv = send_socket(r->pool, sock, clientsock);
     if (rv != APR_SUCCESS) {

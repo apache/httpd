@@ -336,6 +336,13 @@ AP_DECLARE(void *) ap_get_core_module_config(const ap_conf_vector_t *cv);
  */
 AP_DECLARE(void) ap_set_core_module_config(ap_conf_vector_t *cv, void *val);
 
+/** Get the socket from the core network filter. This should be used instead of
+ * accessing the core connection config directly.
+ * @param c The connection record
+ * @return The socket
+ */
+AP_DECLARE(apr_socket_t *) ap_get_conn_socket(conn_rec *c);
+
 #ifndef AP_DEBUG
 #define AP_CORE_MODULE_INDEX  0
 #define ap_get_core_module_config(v) \

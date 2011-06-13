@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) core: Introduce new function ap_get_conn_socket() to access the socket of
+     a connection. [Stefan Fritsch]
+
   *) mod_data: Introduce a filter to support RFC2397 data URLs. [Graham
      Leggett]
 
