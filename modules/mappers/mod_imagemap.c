@@ -101,7 +101,7 @@ static void *create_imap_dir_config(apr_pool_t *p, char *dummy)
 
 static void *merge_imap_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    imap_conf_rec *new = (imap_conf_rec *) apr_pcalloc(p, sizeof(imap_conf_rec));
+    imap_conf_rec *new = (imap_conf_rec *) apr_palloc(p, sizeof(imap_conf_rec));
     imap_conf_rec *base = (imap_conf_rec *) basev;
     imap_conf_rec *add = (imap_conf_rec *) addv;
 
@@ -495,10 +495,10 @@ static void menu_blank(request_rec *r, char *menu)
     if (!strcasecmp(menu, "formatted")) {
         ap_rputs("\n", r);
     }
-    if (!strcasecmp(menu, "semiformatted")) {
+    else if (!strcasecmp(menu, "semiformatted")) {
         ap_rputs("<br />\n", r);
     }
-    if (!strcasecmp(menu, "unformatted")) {
+    else if (!strcasecmp(menu, "unformatted")) {
         ap_rputs("\n", r);
     }
     return;
@@ -509,10 +509,10 @@ static void menu_comment(request_rec *r, char *menu, char *comment)
     if (!strcasecmp(menu, "formatted")) {
         ap_rputs("\n", r);         /* print just a newline if 'formatted' */
     }
-    if (!strcasecmp(menu, "semiformatted") && *comment) {
+    else if (!strcasecmp(menu, "semiformatted") && *comment) {
         ap_rvputs(r, comment, "\n", NULL);
     }
-    if (!strcasecmp(menu, "unformatted") && *comment) {
+    else if (!strcasecmp(menu, "unformatted") && *comment) {
         ap_rvputs(r, comment, "\n", NULL);
     }
     return;                     /* comments are ignored in the
@@ -529,11 +529,11 @@ static void menu_default(request_rec *r, char *menu, char *href, char *text)
         ap_rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
-    if (!strcasecmp(menu, "semiformatted")) {
+    else if (!strcasecmp(menu, "semiformatted")) {
         ap_rvputs(r, "<pre>(Default) <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
-    if (!strcasecmp(menu, "unformatted")) {
+    else if (!strcasecmp(menu, "unformatted")) {
         ap_rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
     }
     return;
@@ -549,11 +549,11 @@ static void menu_directive(request_rec *r, char *menu, char *href, char *text)
         ap_rvputs(r, "<pre>          <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
-    if (!strcasecmp(menu, "semiformatted")) {
+    else if (!strcasecmp(menu, "semiformatted")) {
         ap_rvputs(r, "<pre>          <a href=\"", href, "\">", text,
                "</a></pre>\n", NULL);
     }
-    if (!strcasecmp(menu, "unformatted")) {
+    else if (!strcasecmp(menu, "unformatted")) {
         ap_rvputs(r, "<a href=\"", href, "\">", text, "</a>", NULL);
     }
     return;
