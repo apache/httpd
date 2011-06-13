@@ -43,7 +43,8 @@ Alias /uploads "@@ServerRoot@@/uploads"
 BrowserMatch "Microsoft Data Access Internet Publishing Provider" redirect-carefully
 BrowserMatch "MS FrontPage" redirect-carefully
 BrowserMatch "^WebDrive" redirect-carefully
-BrowserMatch "^WebDAVFS/1.[0123]" redirect-carefully
+BrowserMatch "^WebDAVFS/1.[01234]" redirect-carefully
 BrowserMatch "^gnome-vfs/1.0" redirect-carefully
 BrowserMatch "^XML Spy" redirect-carefully
 BrowserMatch "^Dreamweaver-WebDAV-SCM1" redirect-carefully
+BrowserMatch " Konqueror/4" redirect-carefully
