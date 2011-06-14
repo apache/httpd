@@ -116,6 +116,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~rjung/patches/mod_filter-cgi-err_headers_out.patch
     +1: rjung, jorton, 
 
+  * Sort hooks before running pre-config hook.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1032002&view=rev
+      (Omit trunk's config*m4 change which adjusted the order of statically
+      linked modules.)
+    2.2.x patch: http://people.apache.org/~trawick/1032002-2.2.x.txt
+    +1: trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
