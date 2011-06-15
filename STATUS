@@ -120,8 +120,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1032002&view=rev
       (Omit trunk's config*m4 change which adjusted the order of statically
       linked modules.)
+    PR: 45076
     2.2.x patch: http://people.apache.org/~trawick/1032002-2.2.x.txt
-    +1: trawick
+    +1: trawick, sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
