@@ -247,7 +247,7 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
     return APR_SUCCESS;
 }
 
-/* If detach is non-zero, this is a seperate child process,
+/* If detach is non-zero, this is a separate child process,
  * if zero, it is a forked child.
  */
 apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached)
