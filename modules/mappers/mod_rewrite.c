@@ -3317,7 +3317,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     newcond->pskip = a2 - newcond->pattern;
     newcond->pattern += newcond->pskip;
 
-    if (newcond->ptype == CONDPAT_REGEX) {
+    if (!newcond->ptype) {
         regexp = ap_pregcomp(cmd->pool, a2,
                              AP_REG_EXTENDED | ((newcond->flags & CONDFLAG_NOCASE)
                                              ? AP_REG_ICASE : 0));
