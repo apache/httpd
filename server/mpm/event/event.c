@@ -166,6 +166,7 @@ static int start_thread_may_exit = 0;
 static int listener_may_exit = 0;
 static int requests_this_child;
 static int num_listensocks = 0;
+static apr_uint32_t connection_count = 0;
 static int resource_shortage = 0;
 static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
@@ -322,7 +323,7 @@ static void wakeup_listener(void)
     }
 
     /* unblock the listener if it's waiting for a worker */
-    ap_queue_info_term(worker_queue_info); 
+    ap_queue_info_term(worker_queue_info);
 
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
@@ -504,9 +505,8 @@ static int child_fatal;
 static int volatile shutdown_pending;
 static int volatile restart_pending;
 ap_generation_t volatile ap_my_generation = 0;
-static apr_uint32_t connection_count = 0;
 
-static apr_status_t decrement_connection_count(void *dummy){
+static apr_status_t decrement_connection_count(void *dummy) {
     apr_atomic_dec32(&connection_count);
     return APR_SUCCESS;
 }
@@ -843,7 +843,7 @@ static void check_infinite_requests(void)
 }
 
 static void close_listeners(int process_slot, int *closed) {
-    if (!*closed){
+    if (!*closed) {
         ap_listen_rec *lr;
         int i;
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
@@ -856,7 +856,7 @@ static void close_listeners(int process_slot, int *closed) {
         *closed = 1;
         dying = 1;
         ap_scoreboard_image->parent[process_slot].quiescing = 1;
-        for (i = 0; i < threads_per_child; ++i){
+        for (i = 0; i < threads_per_child; ++i) {
             ap_update_child_status_from_indexes(process_slot, i,
                                                 SERVER_DEAD, NULL);
         }
@@ -1038,7 +1038,7 @@ static int get_worker(int *have_idle_worker_p)
     }
 }
 
-/* XXXXXX: Convert to skiplist or other better data structure 
+/* XXXXXX: Convert to skiplist or other better data structure
  * (yes, this is VERY VERY VERY VERY BAD)
  */
 
@@ -1086,7 +1086,7 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
             break;
         }
     }
-    
+
     if (!inserted) {
         APR_RING_INSERT_TAIL(&timer_ring, te, timer_event_t, link);
     }
@@ -1111,9 +1111,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     conn_state_t *cs;
     const apr_pollfd_t *out_pfd;
     apr_int32_t num = 0;
-    apr_time_t time_now = 0;
     apr_interval_time_t timeout_interval;
-    apr_time_t timeout_time;
+    apr_time_t timeout_time, now;
     listener_poll_type *pt;
     int closed = 0;
 
@@ -1143,7 +1142,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
 
     for (;;) {
-        if (listener_may_exit){
+        if (listener_may_exit) {
             close_listeners(process_slot, &closed);
             if (terminate_mode == ST_UNGRACEFUL
                 || apr_atomic_read32(&connection_count) == 0)
@@ -1155,34 +1154,29 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 
 
-        {
-            apr_time_t now = apr_time_now();
-            apr_thread_mutex_lock(g_timer_ring_mtx);
-
-            if (!APR_RING_EMPTY(&timer_ring, timer_event_t, link)) {
-                te = APR_RING_FIRST(&timer_ring);
-                if (te->when > now) {
-                    timeout_interval = te->when - now;
-                }
-                else {
-                    timeout_interval = 1;
-                }
+        now = apr_time_now();
+        apr_thread_mutex_lock(g_timer_ring_mtx);
+        if (!APR_RING_EMPTY(&timer_ring, timer_event_t, link)) {
+            te = APR_RING_FIRST(&timer_ring);
+            if (te->when > now) {
+                timeout_interval = te->when - now;
             }
             else {
-                timeout_interval = apr_time_from_msec(100);
+                timeout_interval = 1;
             }
-            apr_thread_mutex_unlock(g_timer_ring_mtx);
         }
+        else {
+            timeout_interval = apr_time_from_msec(100);
+        }
+        apr_thread_mutex_unlock(g_timer_ring_mtx);
 
 #if HAVE_SERF
         rc = serf_context_prerun(g_serf);
         if (rc != APR_SUCCESS) {
             /* TOOD: what should do here? ugh. */
         }
-        
 #endif
-        rc = apr_pollset_poll(event_pollset, timeout_interval, &num,
-                              &out_pfd);
+        rc = apr_pollset_poll(event_pollset, timeout_interval, &num, &out_pfd);
 
         if (rc != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rc)) {
@@ -1196,32 +1190,29 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
         }
 
-        if (listener_may_exit){
+        if (listener_may_exit) {
             close_listeners(process_slot, &closed);
-            if (terminate_mode == ST_UNGRACEFUL ||
-                apr_atomic_read32(&connection_count) == 0) {
+            if (terminate_mode == ST_UNGRACEFUL
+                || apr_atomic_read32(&connection_count) == 0)
+                break;
+        }
+
+        now = apr_time_now();
+        apr_thread_mutex_lock(g_timer_ring_mtx);
+        for (ep = APR_RING_FIRST(&timer_ring);
+             ep != APR_RING_SENTINEL(&timer_ring,
+                                     timer_event_t, link);
+             ep = APR_RING_FIRST(&timer_ring))
+        {
+            if (ep->when < now + EVENT_FUDGE_FACTOR) {
+                APR_RING_REMOVE(ep, link);
+                push_timer2worker(ep);
+            }
+            else {
                 break;
             }
         }
-
-        {
-            apr_time_t now = apr_time_now();
-            apr_thread_mutex_lock(g_timer_ring_mtx);
-            for (ep = APR_RING_FIRST(&timer_ring);
-                 ep != APR_RING_SENTINEL(&timer_ring,
-                                         timer_event_t, link);
-                 ep = APR_RING_FIRST(&timer_ring))
-            {
-                if (ep->when < now + EVENT_FUDGE_FACTOR) {
-                    APR_RING_REMOVE(ep, link);
-                    push_timer2worker(ep);
-                }
-                else {
-                    break;
-                }
-            }
-            apr_thread_mutex_unlock(g_timer_ring_mtx);
-        }
+        apr_thread_mutex_unlock(g_timer_ring_mtx);
 
         while (num && get_worker(&have_idle_worker)) {
             pt = (listener_poll_type *) out_pfd->client_data;
@@ -1331,14 +1322,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         /* XXX possible optimization: stash the current time for use as
          * r->request_time for new requests
          */
-        time_now = apr_time_now();
+        now = apr_time_now();
 
         /* handle timed out sockets */
         apr_thread_mutex_lock(timeout_mutex);
 
         /* Step 1: keepalive timeouts */
         cs = APR_RING_FIRST(&keepalive_timeout_head);
-        timeout_time = time_now + TIMEOUT_FUDGE_FACTOR;
+        timeout_time = now + TIMEOUT_FUDGE_FACTOR;
         while (!APR_RING_EMPTY(&keepalive_timeout_head, conn_state_t, timeout_list)
                && cs->expiration_time < timeout_time) {
 
@@ -1423,7 +1414,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     apr_status_t rv;
     int is_idle = 0;
     timer_event_t *te = NULL;
-    
+
     free(ti);
 
     ap_scoreboard_image->servers[process_slot][thread_slot].pid = ap_my_pid;
@@ -1453,7 +1444,6 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         }
 
         te = NULL;
-        
         rv = ap_queue_pop_something(worker_queue, &csd, &cs, &ptrans, &te);
 
         if (rv != APR_SUCCESS) {
@@ -1485,7 +1475,6 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             continue;
         }
         if (te != NULL) {
-            
             te->cbfunc(te->baton);
 
             {
@@ -1506,7 +1495,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                        (dying) ? SERVER_DEAD :
+                                        dying ? SERVER_DEAD :
                                         SERVER_GRACEFUL,
                                         (request_rec *) NULL);
 
@@ -1775,7 +1764,6 @@ static void child_main(int child_num_arg)
     apr_thread_mutex_create(&g_timer_ring_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
     APR_RING_INIT(&timer_free_ring, timer_event_t, link);
     APR_RING_INIT(&timer_ring, timer_event_t, link);
-    
     ap_run_child_init(pchild, ap_server_conf);
 
     /* done with init critical section */
@@ -2028,7 +2016,7 @@ static void perform_idle_server_maintenance(void)
             /* short cut if all active processes have been examined and
              * enough empty scoreboard slots have been found
              */
-        
+
             break;
         ps = &ap_scoreboard_image->parent[i];
         for (j = 0; j < threads_per_child; j++) {
