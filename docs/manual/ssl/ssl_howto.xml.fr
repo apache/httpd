@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1132802 -->
+<!-- English revision : 1135241 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -75,7 +75,7 @@ que le chiffrement fort ?</title>
     chiffrements de plus haut niveau :</p>
     <example><title>httpd.conf</title>
       SSLProtocol all -SSLv2<br />
-      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
     </example>
 </section>
 
@@ -84,7 +84,7 @@ que le chiffrement fort ?</title>
 
     <example><title>httpd.conf</title>
       SSLProtocol all -SSLv2<br />
-      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!EXP:!MD5:!NULL<br />
       SSLHonorCipherOrder on
       <br />
     </example>
@@ -107,12 +107,12 @@ acc&eacute;der &agrave; une URL particuli&egrave;re ?</title>
     Cette configuration peut se pr&eacute;senter comme suit :</p>
     <example>
       # soyons tr&egrave;s tol&eacute;rant a priori<br />
-      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-r&eacute;pertoires<br />
       # qui exigent des chiffrements forts<br />
-      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
       &lt;/Location&gt;
     </example>
 </section>
