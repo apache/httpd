@@ -54,6 +54,7 @@
 #include "apr_poll.h"
 #include "apr_ring.h"
 #include "apr_queue.h"
+#include "apr_atomic.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 #include "apr_version.h"
@@ -502,6 +503,13 @@ static int child_fatal;
 /* volatile because they're updated from a signal handler */
 static int volatile shutdown_pending;
 static int volatile restart_pending;
+ap_generation_t volatile ap_my_generation = 0;
+static apr_uint32_t connection_count = 0;
+
+static apr_status_t decrement_connection_count(void *dummy){
+    apr_atomic_dec32(&connection_count);
+    return APR_SUCCESS;
+}
 
 /*
  * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
@@ -671,6 +679,8 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
         cs->bucket_alloc = apr_bucket_alloc_create(p);
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, sbh, cs->bucket_alloc);
+        apr_atomic_inc32(&connection_count);
+        apr_pool_cleanup_register(c->pool, NULL, decrement_connection_count, apr_pool_cleanup_null);
         c->current_thread = thd;
         cs->c = c;
         c->cs = cs;
@@ -829,6 +839,29 @@ static void check_infinite_requests(void)
     }
     else {
         requests_this_child = INT_MAX;  /* keep going */
+    }
+}
+
+static void close_listeners(int process_slot, int *closed) {
+    if (!*closed){
+        ap_listen_rec *lr;
+        int i;
+        for (lr = ap_listeners; lr != NULL; lr = lr->next) {
+            apr_pollfd_t *pfd = apr_pcalloc(pchild, sizeof(*pfd));
+            pfd->desc_type = APR_POLL_SOCKET;
+            pfd->desc.s = lr->sd;
+            apr_pollset_remove(event_pollset, pfd);
+        }
+        ap_close_listeners();
+        *closed = 1;
+        dying = 1;
+        ap_scoreboard_image->parent[process_slot].quiescing = 1;
+        for (i = 0; i < threads_per_child; ++i){
+            ap_update_child_status_from_indexes(process_slot, i,
+                                                SERVER_DEAD, NULL);
+        }
+        /* wake up the main thread */
+        kill(ap_my_pid, SIGTERM);
     }
 }
 
@@ -1082,6 +1115,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_interval_time_t timeout_interval;
     apr_time_t timeout_time;
     listener_poll_type *pt;
+    int closed = 0;
 
     free(ti);
 
@@ -1108,7 +1142,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     unblock_signal(LISTENER_SIGNAL);
     apr_signal(LISTENER_SIGNAL, dummy_signal_handler);
 
-    while (!listener_may_exit) {
+    for (;;) {
+        if (listener_may_exit){
+            close_listeners(process_slot, &closed);
+            if (terminate_mode == ST_UNGRACEFUL
+                || apr_atomic_read32(&connection_count) == 0)
+                break;
+        }
 
         if (requests_this_child <= 0) {
             check_infinite_requests();
@@ -1156,8 +1196,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             }
         }
 
-        if (listener_may_exit)
-            break;
+        if (listener_may_exit){
+            close_listeners(process_slot, &closed);
+            if (terminate_mode == ST_UNGRACEFUL ||
+                apr_atomic_read32(&connection_count) == 0) {
+                break;
+            }
+        }
 
         {
             apr_time_t now = apr_time_now();
@@ -1353,13 +1398,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
     }     /* listener main loop */
 
-    ap_close_listeners();
+    close_listeners(process_slot, &closed);
     ap_queue_term(worker_queue);
-    dying = 1;
-    ap_scoreboard_image->parent[process_slot].quiescing = 1;
-
-    /* wake up the main thread */
-    kill(ap_my_pid, SIGTERM);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
@@ -1406,7 +1446,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         }
 
         ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                            SERVER_READY, NULL);
+                                            dying ? SERVER_DEAD : SERVER_READY, NULL);
       worker_pop:
         if (workers_may_exit) {
             break;
@@ -1664,21 +1704,15 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
          */
 
         iter = 0;
-        while (iter < 10 &&
-#ifdef HAVE_PTHREAD_KILL
-               pthread_kill(*listener_os_thread, 0)
-#else
-               kill(ap_my_pid, 0)
-#endif
-               == 0) {
-            /* listener not dead yet */
+        while (iter < 10 && !dying) {
+            /* listener has not stopped accepting yet */
             apr_sleep(apr_time_make(0, 500000));
             wakeup_listener();
             ++iter;
         }
         if (iter >= 10) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                         "the listener thread didn't exit");
+                         "the listener thread didn't stop accepting");
         }
         else {
             rv = apr_thread_join(&thread_rv, listener);
