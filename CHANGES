@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mpm_event: If MaxMemFree is set, limit the number of pools that is kept
+     around. [Stefan Fritsch]
+
   *) mpm_event: Fix graceful restart aborting connections. PR 43359.
      [Takashi Sato <takashi lans-tv com>]
 

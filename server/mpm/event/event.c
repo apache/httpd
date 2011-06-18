@@ -1558,6 +1558,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     int listener_started = 0;
     int loops;
     int prev_threads_created;
+    int max_recycled_pools = -1;
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
@@ -1569,8 +1570,15 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
+    if (ap_max_mem_free != APR_ALLOCATOR_MAX_FREE_UNLIMITED) {
+        /* If we want to conserve memory, let's not keep an unlimited number of
+         * pools & allocators.
+         * XXX: This should probably be a separate config directive
+         */
+        max_recycled_pools = threads_per_child * 3 / 4 ;
+    }
     rv = ap_queue_info_create(&worker_queue_info, pchild,
-                              threads_per_child);
+                              threads_per_child, max_recycled_pools);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "ap_queue_info_create() failed");

@@ -42,7 +42,8 @@
 typedef struct fd_queue_info_t fd_queue_info_t;
 
 apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
-                                  apr_pool_t * pool, int max_idlers);
+                                  apr_pool_t * pool, int max_idlers,
+                                  int max_recycled_pools);
 apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
                                     apr_pool_t * pool_to_recycle);
 apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info);
