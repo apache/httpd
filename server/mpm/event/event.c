@@ -698,8 +698,8 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
 
         rc = ap_run_pre_connection(c, sock);
         if (rc != OK && rc != DONE) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                         "process_socket: connection aborted");
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                          "process_socket: connection aborted");
             c->aborted = 1;
         }
 
@@ -760,8 +760,8 @@ read_request:
         }
         rv = output_filter->frec->filter_func.out_func(output_filter, NULL);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
-                     "network write failure in core output filter");
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, c,
+                          "network write failure in core output filter");
             cs->state = CONN_STATE_LINGER;
         }
         else if (c->data_in_output_filters) {
@@ -985,6 +985,8 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
      * and we still want to keep going
      */
     if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
+                     "pollset remove failed");
         cs->state = CONN_STATE_LINGER;
     }
 
@@ -1183,7 +1185,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 continue;
             }
             if (!APR_STATUS_IS_TIMEUP(rc)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf,
                              "apr_pollset_poll failed.  Attempting to "
                              "shutdown process gracefully");
                 signal_threads(ST_GRACEFUL);
@@ -1226,7 +1228,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 case CONN_STATE_WRITE_COMPLETION:
                     break;
                 default:
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rc,
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                                  ap_server_conf,
                                  "event_loop: unexpected state %d",
                                  cs->state);
