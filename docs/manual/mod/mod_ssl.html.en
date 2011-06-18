@@ -546,7 +546,7 @@ SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL 
 handshake</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCipherSuite <em>cipher-spec</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCipherSuite DEFAULT (depends on OpenSSL version)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -641,9 +641,10 @@ prefixes are:</p>
 <p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
 -v</code>'' command which provides a nice way to successively create the
 correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string
-is ``<code>ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>'' which
+depends on the version of the OpenSSL libraries used. Let's suppose it is
+``<code>ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>'' which
 means the following: first, remove from consideration any ciphers that do not
-authenticate, i.e. for SSL only the Anonymous Diffie-Hellman ciphers. Next,
+authenticate, i.e. for SSL the Anonymous Diffie-Hellman ciphers. Next,
 use ciphers using RC4 and RSA. Next include the high, medium and then the low
 security ciphers. Finally <em>pull</em> all SSLv2 and export ciphers to the
 end of the list.</p>

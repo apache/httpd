@@ -247,7 +247,7 @@ peuvent se présenter sous les formes suivantes :</p>
         :<br />
    SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" commentaire-netscape=$1<br />
         :<br />
-   SetEnvIf ^TS*  ^[a-z].*  HAVE_TS<br />
+   SetEnvIf ^TS  ^[a-z]  HAVE_TS<br />
 </code></p></div>
 
     <p>Les trois premières lignes définissent la variable
