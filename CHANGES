@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mpm_event: Fix graceful restart aborting connections. PR 43359.
+     [Takashi Sato <takashi lans-tv com>]
+
   *) mod_ssl: Disable AECDH ciphers in example config. PR 51363.
      [Rob Stradling <rob comodo com>]
 
