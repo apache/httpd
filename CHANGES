@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_ssl: Don't do OCSP checks for valid self-issued certs. [Kaspar Brand]
+
   *) mod_ssl: Avoid unnecessary renegotiations with SSLVerifyDepth 0.
      PR 48215. [Kaspar Brand]
 
