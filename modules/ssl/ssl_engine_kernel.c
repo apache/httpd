@@ -499,7 +499,7 @@ int ssl_hook_Access(request_rec *r)
      * currently active/remembered verify depth (because this means more
      * restriction on the certificate chain).
      */
-    n = sslconn->verify_depth ?
+    n = (sslconn->verify_depth != UNSET) ?
         sslconn->verify_depth :
         (mySrvConfig(handshakeserver))->server->auth.verify_depth;
     /* determine the new depth */

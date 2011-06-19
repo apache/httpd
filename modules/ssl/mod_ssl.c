@@ -339,6 +339,7 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
     sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
 
     sslconn->server = c->base_server;
+    sslconn->verify_depth = UNSET;
 
     myConnConfigSet(c, sslconn);
 
