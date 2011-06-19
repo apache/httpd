@@ -321,8 +321,8 @@ static int session_identity_encode(request_rec * r, session_rec * z)
     char *buffer = NULL;
     int length = 0;
     if (z->expiry) {
-        char *expiry = apr_psprintf(r->pool, "%" APR_INT64_T_FMT, z->expiry);
-        apr_table_set(z->entries, SESSION_EXPIRY, expiry);
+        char *expiry = apr_psprintf(z->pool, "%" APR_INT64_T_FMT, z->expiry);
+        apr_table_setn(z->entries, SESSION_EXPIRY, expiry);
     }
     apr_table_do((int (*) (void *, const char *, const char *))
                  identity_count, &length, z->entries, NULL);;
