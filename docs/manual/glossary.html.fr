@@ -50,10 +50,6 @@
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
-    <dt><a name="apr" id="apr">APR</a></dt>
-    <dd>Voir "Bibliothèques pour la portabilité d'Apache"
-    </dd>
-
     <dt><a name="tarball" id="tarball">Archive Tar (Tarball)</a></dt>
   <dd>Un paquetage de fichiers rassemblés dans une archive
   à l'aide de l'utilitaire <code>tar</code>.
