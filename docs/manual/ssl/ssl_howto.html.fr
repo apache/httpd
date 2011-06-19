@@ -79,7 +79,7 @@ que le chiffrement fort ?</a></h3>
     chiffrements de plus haut niveau :</p>
     <div class="example"><h3>httpd.conf</h3><p><code>
       SSLProtocol all -SSLv2<br />
-      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
     </code></p></div>
 
 
@@ -88,7 +88,7 @@ que le chiffrement fort ?</a></h3>
 
     <div class="example"><h3>httpd.conf</h3><p><code>
       SSLProtocol all -SSLv2<br />
-      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!EXP:!MD5:!NULL<br />
       SSLHonorCipherOrder on
       <br />
     </code></p></div>
@@ -110,12 +110,12 @@ accéder à une URL particulière ?</a></h2>
     Cette configuration peut se présenter comme suit :</p>
     <div class="example"><p><code>
       # soyons très tolérant a priori<br />
-      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      SSLCipherSuite ALL:!aNULL:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
       <br />
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-répertoires<br />
       # qui exigent des chiffrements forts<br />
-      SSLCipherSuite HIGH:!ADH:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
       &lt;/Location&gt;
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -288,7 +288,7 @@ SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
 RewriteEngine        on
 RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
 RewriteCond          %{HTTPS} !=on
-RewriteRule          .* - [F]
+RewriteRule          . - [F]
 
 #   On permet l'accès soit sur les critères réseaux, soit par authentification Basique
 Satisfy              any

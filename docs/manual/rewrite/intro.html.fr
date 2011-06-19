@@ -198,7 +198,7 @@ trois types :</p>
 <dt>Un chemin complet du système de fichiers vers une ressource</dt>
 <dd>
 <div class="example"><p><code>
-RewriteRule ^/jeux.* /usr/local/jeux/web
+RewriteRule ^/jeux /usr/local/jeux/web
 </code></p></div>
 <p>Ceci peut faire correspondre une requête à toute localisation voulue de
 votre système de fichiers, un peu comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>.</p>
@@ -291,7 +291,7 @@ de requête, sauf si elles contiennent aussi un cookie contenant le mot
 <div class="example"><p><code>
 RewriteCond %{QUERY_STRING} hack<br />
 RewriteCond %{HTTP_COOKIE} !go<br />
-RewriteRule .* - [F]
+RewriteRule . - [F]
 </code></p></div>
 <p>Notez que le point d'exclamation indique une correspondance négative
 ; ainsi, la règle n'est appliquée que si le cookie ne contient pas "go"</p>

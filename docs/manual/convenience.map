@@ -104,6 +104,7 @@ authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzprovideralias	mod/mod_authz_core.html#authzprovideralias
 authzsendforbiddenonfailure	mod/mod_authz_core.html#authzsendforbiddenonfailure
+balancergrowth	mod/mod_proxy.html#balancergrowth
 balancermember	mod/mod_proxy.html#balancermember
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
@@ -187,6 +188,8 @@ documentroot	mod/core.html#documentroot
 dtraceprivileges	mod/mod_privileges.html#dtraceprivileges
 dumpioinput	mod/mod_dumpio.html#dumpioinput
 dumpiooutput	mod/mod_dumpio.html#dumpiooutput
+else	mod/core.html#else
+elseif	mod/core.html#elseif
 enableexceptionhook	mod/mpm_common.html#enableexceptionhook
 enablemmap	mod/core.html#enablemmap
 enablesendfile	mod/core.html#enablesendfile
@@ -446,6 +449,7 @@ ssiendtag	mod/mod_include.html#ssiendtag
 ssierrormsg	mod/mod_include.html#ssierrormsg
 ssietag	mod/mod_include.html#ssietag
 ssilastmodified	mod/mod_include.html#ssilastmodified
+ssilegacyexprparser	mod/mod_include.html#ssilegacyexprparser
 ssistarttag	mod/mod_include.html#ssistarttag
 ssitimeformat	mod/mod_include.html#ssitimeformat
 ssiundefinedecho	mod/mod_include.html#ssiundefinedecho
