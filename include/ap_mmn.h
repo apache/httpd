@@ -333,14 +333,17 @@
  *                         Add ap_context_*(), ap_set_context_info(), ap_set_document_root()
  * 20110605.1 (2.3.13-dev) add ap_(get|set)_core_module_config()
  * 20110605.2 (2.3.13-dev) add ap_get_conn_socket()
+ * 20110619.0 (2.3.13-dev) add async connection infos to process_score in scoreboard,
+ *                         add ap_start_lingering_close(),
+ *                         add conn_state_e:CONN_STATE_LINGER_NORMAL and CONN_STATE_LINGER_SHORT
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20110605
+#define MODULE_MAGIC_NUMBER_MAJOR 20110619
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

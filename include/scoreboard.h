@@ -132,9 +132,17 @@ typedef struct process_score process_score;
 struct process_score {
     pid_t pid;
     ap_generation_t generation;	/* generation of this child */
-    int quiescing;          /* the process whose pid is stored above is
+    char quiescing;         /* the process whose pid is stored above is
                              * going down gracefully
                              */
+    char not_accepting;     /* the process is busy and is not accepting more
+                             * connections (for async MPMs)
+                             */
+    apr_uint32_t connections;       /* total connections (for async MPMs) */
+    apr_uint32_t write_completion;  /* async connections doing write completion */
+    apr_uint32_t lingering_close;   /* async connections in lingering close */
+    apr_uint32_t keep_alive;        /* async connections in keep alive */
+    apr_uint32_t suspended;         /* connections suspended by some module */
 };
 
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,

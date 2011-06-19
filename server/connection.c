@@ -93,15 +93,13 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c)
  * all the response data has been sent to the client.
  */
 #define SECONDS_TO_LINGER  2
-AP_DECLARE(void) ap_lingering_close(conn_rec *c)
+
+AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
 {
-    char dummybuf[512];
-    apr_size_t nbytes;
-    apr_time_t timeup = 0;
     apr_socket_t *csd = ap_get_conn_socket(c);
 
     if (!csd) {
-        return;
+        return 1;
     }
 
     ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
@@ -109,7 +107,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 #ifdef NO_LINGCLOSE
     ap_flush_conn(c); /* just close it */
     apr_socket_close(csd);
-    return;
+    return 1;
 #endif
 
     /* Close the connection, being careful to send out whatever is still
@@ -122,7 +120,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 
     if (c->aborted) {
         apr_socket_close(csd);
-        return;
+        return 1;
     }
 
     /* Shut down the socket for write, which will send a FIN
@@ -131,6 +129,20 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     if (apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS
         || c->aborted) {
         apr_socket_close(csd);
+        return 1;
+    }
+
+    return 0;
+}
+
+AP_DECLARE(void) ap_lingering_close(conn_rec *c)
+{
+    char dummybuf[512];
+    apr_size_t nbytes;
+    apr_time_t timeup = 0;
+    apr_socket_t *csd = ap_get_conn_socket(c);
+
+    if (ap_start_lingering_close(c)) {
         return;
     }
 
