@@ -70,7 +70,9 @@ AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
  */
 AP_DECLARE(void) ap_lingering_close(conn_rec *c);
 
-  /* Hooks */
+AP_DECLARE(int) ap_start_lingering_close(conn_rec *c);
+
+/* Hooks */
 /**
  * create_connection is a RUN_FIRST hook which allows modules to create 
  * connections. In general, you should not install filters with the 

@@ -127,7 +127,19 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
     return APR_SUCCESS;
 }
 
-apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info)
+apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info)
+{
+    int prev_idlers;
+    prev_idlers = apr_atomic_dec32((apr_uint32_t *)&(queue_info->idlers));
+    if (prev_idlers <= 0) {
+        apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers));    /* back out dec */
+        return APR_EAGAIN;
+    }
+    return APR_SUCCESS;
+}
+
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
+                                          int *had_to_block)
 {
     apr_status_t rv;
     int prev_idlers;
@@ -165,6 +177,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info)
          *     threads are waiting on an idle worker.
          */
         if (queue_info->idlers < 0) {
+            *had_to_block = 1;
             rv = apr_thread_cond_wait(queue_info->wait_for_idler,
                                       queue_info->idlers_mutex);
             if (rv != APR_SUCCESS) {
@@ -191,6 +204,14 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info)
     }
 }
 
+apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info)
+{
+    apr_int32_t val;
+    val = (apr_int32_t)apr_atomic_read32((apr_uint32_t *)&queue_info->idlers);
+    if (val < 0)
+        return 0;
+    return val;
+}
 
 void ap_push_pool(fd_queue_info_t * queue_info,
                                     apr_pool_t * pool_to_recycle)

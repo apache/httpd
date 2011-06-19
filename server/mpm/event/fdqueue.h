@@ -46,8 +46,11 @@ apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
                                   int max_recycled_pools);
 apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
                                     apr_pool_t * pool_to_recycle);
-apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info);
+apr_status_t ap_queue_info_try_get_idler(fd_queue_info_t * queue_info);
+apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info,
+                                          int *had_to_block);
 apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info);
+apr_uint32_t ap_queue_info_get_idlers(fd_queue_info_t * queue_info);
 
 struct fd_queue_elem_t
 {
