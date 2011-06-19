@@ -251,7 +251,15 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
     X509 *cert = X509_STORE_CTX_get_current_cert(ctx);
     apr_pool_t *vpool;
     int rv;
-    
+
+    /* don't do OCSP checking for valid self-issued certs */
+    if (cert->valid && X509_check_issued(cert,cert) == X509_V_OK) {
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
+                      "Skipping OCSP check for valid self-issued cert");
+        X509_STORE_CTX_set_error(ctx, X509_V_OK);
+        return 1;
+    }
+
     /* Create a temporary pool to constrain memory use (the passed-in
      * pool may be e.g. a connection pool). */
     apr_pool_create(&vpool, pool);
