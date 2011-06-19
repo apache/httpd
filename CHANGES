@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_ssl: Avoid unnecessary renegotiations with SSLVerifyDepth 0.
+     PR 48215. [Kaspar Brand]
+
   *) mod_status: Display information about asynchronous connections in the
      server-status. PR 44377. [Stefan Fritsch]
 
