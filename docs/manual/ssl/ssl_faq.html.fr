@@ -728,7 +728,8 @@ et mot de passe sont envoyés en clair ?</a></h3>
 
 
 <h3><a name="msie" id="msie">Pourquoi des erreurs d'entrée/sortie apparaissent-elles
-lorsqu'on se connecte à un serveur Apache+mod_ssl avec
+lorsqu'on se connecte via HTTPS à un serveur Apache+mod_ssl avec des
+versions anciennes de
 Microsoft Internet Explorer (MSIE) ?</a></h3>
 <p>La première raison en est la présence dans l'implémentation SSL de
 certaines versions de MSIE de bogues subtils en rapport avec le
@@ -742,7 +743,7 @@ ou l'envoi de messages de notification de fermeture de session SSL aux
 clients MSIE. Pour cela, vous pouvez utiliser la directive suivante
 dans votre section d'hôte virtuel avec support SSL :</p>
     <div class="example"><p><code>
-    SetEnvIf User-Agent ".*MSIE.*" \<br />
+    SetEnvIf User-Agent "MSIE [2-5]" \<br />
              nokeepalive ssl-unclean-shutdown \<br />
              downgrade-1.0 force-response-1.0
     </code></p></div>

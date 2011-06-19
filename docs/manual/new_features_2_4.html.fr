@@ -87,6 +87,9 @@ serveur HTTP Apache</h1>
       <dd>Fournit un tampon pour les piles des filtres en entrée et en
       sortie.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></dt>
+      <dd>Convertit un corps de réponse en URL de type données RFC2397.</dd>
+
       <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
       httpd pour la configuration et les fonctions logiques courantes.</dd>
