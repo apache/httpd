@@ -2504,10 +2504,11 @@ nom</td></tr>
     obligatoire si vous envisagez de configurer des <a href="../vhosts/">serveurs virtuels par nom</a>.</p>
 
     <p>Bien que <var>adresse</var> puisse être un nom d'hôte, il est
-    recommandé d'utiliser plutôt une adresse IP, comme</p>
+    recommandé d'utiliser plutôt une adresse IP et un port,
+    dans le style</p>
 
     <div class="example"><p><code>
-      NameVirtualHost 111.22.33.44
+      NameVirtualHost 111.22.33.44:80
     </code></p></div>
 
     <p>La directive <code class="directive">NameVirtualHost</code> vous permet
@@ -2560,8 +2561,8 @@ nom</td></tr>
        l'argument de la directive <code class="directive">NameVirtualHost</code>.</p>
 
       <div class="example"><p><code>
-        NameVirtualHost 1.2.3.4<br />
-        &lt;VirtualHost 1.2.3.4&gt;<br />
+        NameVirtualHost 1.2.3.4:80<br />
+        &lt;VirtualHost 1.2.3.4:80&gt;<br />
         # ...<br />
         &lt;/VirtualHost&gt;<br />
       </code></p></div>
@@ -3609,7 +3610,7 @@ appropriés, Off dans le cas contraire</code></td></tr>
 <code>TRACE</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>TraceEnable on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans les versions 1.3.34, 2.0.55 et
@@ -3798,7 +3799,7 @@ d'hôte spécifique ou à une adresse IP</td></tr>
     </ul>
 
     <div class="example"><h3>Exemple</h3><p><code>
-      &lt;VirtualHost 10.1.2.3&gt;<br />
+      &lt;VirtualHost 10.1.2.3:80&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -3816,7 +3817,7 @@ d'hôte spécifique ou à une adresse IP</td></tr>
     :</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
       <span class="indent">
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
