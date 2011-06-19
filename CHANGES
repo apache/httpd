@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) mod_status: Display information about asynchronous connections in the
+     server-status. PR 44377. [Stefan Fritsch]
+
   *) mpm_event: If the number of connections of a process is very high, or if
      all workers are busy, don't accept new connections in that process.
      [Stefan Fritsch]

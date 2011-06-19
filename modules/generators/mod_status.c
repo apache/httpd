@@ -86,7 +86,8 @@
 
 module AP_MODULE_DECLARE_DATA status_module;
 
-static int server_limit, thread_limit, threads_per_child, max_servers;
+static int server_limit, thread_limit, threads_per_child, max_servers,
+           is_async;
 
 /* Implement 'ap_run_status_hook'. */
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap, STATUS, int, status_hook,
@@ -197,6 +198,8 @@ static int status_handler(request_rec *r)
     process_score *ps_record;
     char *stat_buffer;
     pid_t *pid_buffer, worker_pid;
+    int *thread_idle_buffer = NULL;
+    int *thread_busy_buffer = NULL;
     clock_t tu, ts, tcu, tcs;
     ap_generation_t mpm_generation, worker_generation;
 #ifdef HAVE_TIMES
@@ -233,6 +236,10 @@ static int status_handler(request_rec *r)
 
     pid_buffer = apr_palloc(r->pool, server_limit * sizeof(pid_t));
     stat_buffer = apr_palloc(r->pool, server_limit * thread_limit * sizeof(char));
+    if (is_async) {
+        thread_idle_buffer = apr_palloc(r->pool, server_limit * sizeof(int));
+        thread_busy_buffer = apr_palloc(r->pool, server_limit * sizeof(int));
+    }
 
     nowtime = apr_time_now();
     tu = ts = tcu = tcs = 0;
@@ -292,6 +299,10 @@ static int status_handler(request_rec *r)
 #endif
 
         ps_record = ap_get_scoreboard_process(i);
+        if (is_async) {
+            thread_idle_buffer[i] = 0;
+            thread_busy_buffer[i] = 0;
+        }
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
 
@@ -306,13 +317,23 @@ static int status_handler(request_rec *r)
 
             if (!ps_record->quiescing
                 && ps_record->pid) {
-                if (res == SERVER_READY
-                    && ps_record->generation == mpm_generation)
-                    ready++;
+                if (res == SERVER_READY) {
+                    if (ps_record->generation == mpm_generation)
+                        ready++;
+                    if (is_async)
+                        thread_idle_buffer[i]++;
+                }
                 else if (res != SERVER_DEAD &&
                          res != SERVER_STARTING &&
-                         res != SERVER_IDLE_KILL)
+                         res != SERVER_IDLE_KILL) {
                     busy++;
+                    if (is_async) {
+                        if (res == SERVER_GRACEFUL)
+                            thread_idle_buffer[i]++;
+                        else
+                            thread_busy_buffer[i]++;
+                    }
+                }
             }
 
             /* XXX what about the counters for quiescing/seg faulted
@@ -465,9 +486,69 @@ static int status_handler(request_rec *r)
     else
         ap_rprintf(r, "BusyWorkers: %d\nIdleWorkers: %d\n", busy, ready);
 
+    if (!short_report)
+        ap_rputs("</dl>", r);
+
+    if (is_async) {
+        int write_completion = 0, lingering_close = 0, keep_alive = 0,
+            connections = 0;
+        /*
+         * These differ from 'busy' and 'ready' in how gracefully finishing
+         * threads are counted. XXX: How to make this clear in the html?
+         */
+        int busy_workers = 0, idle_workers = 0;
+        if (!short_report)
+            ap_rputs("\n\n<table rules=\"all\" cellpadding=\"1%\">\n"
+                     "<tr><th rowspan=\"2\">PID</th>"
+                         "<th colspan=\"2\">Connections</th>\n"
+                         "<th colspan=\"2\">Threads</th>"
+                         "<th colspan=\"4\">Async connections</th></tr>\n"
+                     "<tr><th>total</th><th>accepting</th>"
+                         "<th>busy</th><th>idle</th><th>writing</th>"
+                         "<th>keep-alive</th><th>closing</th></tr>\n", r);
+        for (i = 0; i < server_limit; ++i) {
+            ps_record = ap_get_scoreboard_process(i);
+            if (ps_record->pid) {
+                connections      += ps_record->connections;
+                write_completion += ps_record->write_completion;
+                keep_alive       += ps_record->keep_alive;
+                lingering_close  += ps_record->lingering_close;
+                busy_workers     += thread_busy_buffer[i];
+                idle_workers     += thread_idle_buffer[i];
+                if (!short_report)
+                    ap_rprintf(r, "<tr><td>%" APR_PID_T_FMT "</td><td>%u</td>"
+                                      "<td>%s</td><td>%u</td><td>%u</td>"
+                                      "<td>%u</td><td>%u</td><td>%u</td>"
+                                      "</tr>\n",
+                               ps_record->pid, ps_record->connections,
+                               ps_record->not_accepting ? "no" : "yes",
+                               thread_busy_buffer[i], thread_idle_buffer[i],
+                               ps_record->write_completion,
+                               ps_record->keep_alive,
+                               ps_record->lingering_close);
+            }
+        }
+        if (!short_report) {
+            ap_rprintf(r, "<tr><td>Sum</td><td>%d</td><td>&nbsp;</td><td>%d</td>"
+                          "<td>%d</td><td>%d</td><td>%d</td><td>%d</td>"
+                          "</tr>\n</table>\n",
+                          connections, busy_workers, idle_workers,
+                          write_completion, keep_alive, lingering_close);
+
+        }
+        else {
+            ap_rprintf(r, "ConnsTotal: %d\n"
+                          "ConnsAsyncWriting: %d\n"
+                          "ConnsAsyncKeepAlive: %d\n"
+                          "ConnsAsyncClosing: %d\n",
+                       connections, write_completion, keep_alive,
+                       lingering_close);
+        }
+    }
+
     /* send the scoreboard 'table' out */
     if (!short_report)
-        ap_rputs("</dl><pre>", r);
+        ap_rputs("<pre>", r);
     else
         ap_rputs("Scoreboard: ", r);
 
@@ -484,6 +565,7 @@ static int status_handler(request_rec *r)
             }
         }
     }
+
 
     if (short_report)
         ap_rputs("\n", r);
@@ -834,6 +916,7 @@ static int status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     if (threads_per_child == 0)
         threads_per_child = 1;
     ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_servers);
+    ap_mpm_query(AP_MPMQ_IS_ASYNC, &is_async);
     return OK;
 }
 
