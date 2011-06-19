@@ -124,6 +124,30 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~trawick/1032002-2.2.x.txt
     +1: trawick, sf
 
+  * Adjust inflated log severity.
+    PR: 44020
+    Trunk patch: Was never in trunk.
+    2.2.x patch: http://people.apache.org/~sf/PR44020.diff
+    +1: sf
+
+  * mod_deflate: Stop compressing HEAD requests if there is not Content-Length
+    header
+    Trunk patch: http://svn.apache.org/viewvc?rev=958253&view=rev
+    2.2.x patch: trunk patch works with offset
+    +1: sf
+
+  * mod_reqtimeout: Disable keep-alive after read timeout
+    Trunk patch: http://svn.apache.org/viewvc?rev=1103213&view=rev
+    2.2.x patch: trunk patch works except for CHANGES
+    +1: sf
+
+  * mod_authnz_ldap: Treat 'constraint violation' as auth denied, not as
+    internal server error.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1125646&view=rev
+    2.2.x patch: trunk patch works except for CHANGES
+    +1: sf
+    
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
