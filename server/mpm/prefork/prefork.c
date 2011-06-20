@@ -90,7 +90,7 @@ static apr_proc_mutex_t *accept_mutex;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
-static int ap_daemons_limit=0;      /* MaxClients */
+static int ap_daemons_limit=0;      /* MaxRequestWorkers */
 static int server_limit = 0;
 static int mpm_state = AP_MPMQ_STARTING;
 static ap_pod_t *pod;
@@ -107,7 +107,7 @@ typedef struct prefork_retained_data {
     int maxclients_reported;
     /*
      * The max child slot ever assigned, preserved across restarts.  Necessary
-     * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We
+     * to deal with MaxRequestWorkers changes across AP_SIG_GRACEFUL restarts.  We
      * use this value to optimize routines that have to scan the entire scoreboard.
      */
     int max_daemons_limit;
@@ -876,8 +876,8 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             /* only report this condition once */
             if (!retained->maxclients_reported) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                            "server reached MaxClients setting, consider"
-                            " raising the MaxClients setting");
+                            "server reached MaxRequestWorkers setting, consider"
+                            " raising the MaxRequestWorkers setting");
                 retained->maxclients_reported = 1;
             }
             retained->idle_spawn_rate = 1;
@@ -1355,17 +1355,17 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
     if (ap_daemons_limit > server_limit) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         "WARNING: MaxClients of %d exceeds ServerLimit "
+                         "WARNING: MaxRequestWorkers of %d exceeds ServerLimit "
                          "value of", ap_daemons_limit);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         " %d servers, decreasing MaxClients to %d.",
+                         " %d servers, decreasing MaxRequestWorkers to %d.",
                          server_limit, server_limit);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " To increase, please see the ServerLimit "
                          "directive.");
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "MaxClients of %d exceeds ServerLimit value "
+                         "MaxRequestWorkers of %d exceeds ServerLimit value "
                          "of %d, decreasing to match",
                          ap_daemons_limit, server_limit);
         }
@@ -1374,11 +1374,11 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
     else if (ap_daemons_limit < 1) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         "WARNING: MaxClients of %d not allowed, "
+                         "WARNING: MaxRequestWorkers of %d not allowed, "
                          "increasing to 1.", ap_daemons_limit);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "MaxClients of %d not allowed, increasing to 1",
+                         "MaxRequestWorkers of %d not allowed, increasing to 1",
                          ap_daemons_limit);
         }
         ap_daemons_limit = 1;
@@ -1478,7 +1478,11 @@ static const char *set_max_clients (cmd_parms *cmd, void *dummy, const char *arg
     if (err != NULL) {
         return err;
     }
-
+    if (!strcasecmp(cmd->cmd->name, "MaxRequestWorkers")) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+                     "MaxClients is deprecated, use MaxRequestWorkers "
+                     "instead.");
+    }
     ap_daemons_limit = atoi(arg);
     return NULL;
 }
@@ -1503,9 +1507,11 @@ AP_INIT_TAKE1("MinSpareServers", set_min_free_servers, NULL, RSRC_CONF,
 AP_INIT_TAKE1("MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF,
               "Maximum number of idle children"),
 AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
+              "Deprecated name of MaxRequestWorkers"),
+AP_INIT_TAKE1("MaxRequestWorkers", set_max_clients, NULL, RSRC_CONF,
               "Maximum number of children alive at the same time"),
 AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
-              "Maximum value of MaxClients for this run of Apache"),
+              "Maximum value of MaxRequestWorkers for this run of Apache"),
 AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };

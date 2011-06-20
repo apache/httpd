@@ -168,7 +168,15 @@
       <ul>
         <li><directive>MaxRequestsPerChild</directive> has been renamed to
         <directive module="mpm_common">MaxConnectionsPerChild</directive>,
-        which describes more accurately what it does.</li>
+        describes more accurately what it does. The old name is still
+        supported.</li>
+
+        <li><directive>MaxClients</directive> has been renamed to
+        <directive module="mpm_common">MaxRequestWorkers</directive>,
+        which describes more accurately what it does. For async MPMs, like
+        <module>event</module>, the maximum number of clients is not
+        equivalent than the number of worker threads. The old name is still
+        supported.</li>
 
         <li>The <directive module="core">DefaultType</directive>
         directive no longer has any effect, other than to emit a

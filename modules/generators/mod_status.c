@@ -173,7 +173,7 @@ static const struct stat_opt status_options[] = /* see #defines above */
     {STAT_OPT_END, NULL, NULL}
 };
 
-/* add another state for slots above the MaxClients setting */
+/* add another state for slots above the MaxRequestWorkers setting */
 #define SERVER_DISABLED SERVER_NUM_STATUS
 #define MOD_STATUS_NUM_STATUS (SERVER_NUM_STATUS+1)
 

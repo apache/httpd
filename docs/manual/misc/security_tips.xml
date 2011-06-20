@@ -105,7 +105,7 @@
       require reconfiguration of your kernel.</li>
 
       <li>Tune the <directive
-      module="mpm_common">MaxClients</directive> directive to allow
+      module="mpm_common">MaxRequestWorkers</directive> directive to allow
       the server to handle the maximum number of simultaneous
       connections without running out of resources.  See also the <a
       href="perf-tuning.html">performance tuning

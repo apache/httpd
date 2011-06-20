@@ -280,10 +280,10 @@ including other causes.</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>MaxClients</name>
+<name>MaxRequestWorkers</name>
 <description>Maximum number of connections that will be processed
 simultaneously</description>
-<syntax>MaxClients <var>number</var></syntax>
+<syntax>MaxRequestWorkers <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>prefork</module>
@@ -291,30 +291,34 @@ simultaneously</description>
 </modulelist>
 
 <usage>
-    <p>The <directive>MaxClients</directive> directive sets the limit
+    <p>The <directive>MaxRequestWorkers</directive> directive sets the limit
     on the number of simultaneous requests that will be served.  Any
-    connection attempts over the <directive>MaxClients</directive>
+    connection attempts over the <directive>MaxRequestWorkers</directive>
     limit will normally be queued, up to a number based on the
     <directive module="mpm_common">ListenBacklog</directive>
     directive. Once a child process is freed at the end of a different
     request, the connection will then be serviced.</p>
 
     <p>For non-threaded servers (<em>i.e.</em>, <module>prefork</module>),
-    <directive>MaxClients</directive> translates into the maximum
+    <directive>MaxRequestWorkers</directive> translates into the maximum
     number of child processes that will be launched to serve requests.
     The default value is <code>256</code>; to increase it, you must also raise
     <directive module="mpm_common">ServerLimit</directive>.</p>
 
     <p>For threaded and hybrid servers (<em>e.g.</em> <module>event</module>
-    or <module>worker</module>) <directive>MaxClients</directive> restricts
+    or <module>worker</module>) <directive>MaxRequestWorkers</directive> restricts
     the total number of threads that will be available to serve clients.
     For hybrid MPMs the default value is <code>16</code> (<directive
     module="mpm_common">ServerLimit</directive>) multiplied by the value of
     <code>25</code> (<directive module="mpm_common"
     >ThreadsPerChild</directive>). Therefore, to increase <directive
-    >MaxClients</directive> to a value that requires more than 16 processes,
+    >MaxRequestWorkers</directive> to a value that requires more than 16 processes,
     you must also raise <directive module="mpm_common"
     >ServerLimit</directive>.</p>
+
+    <p><directive>MaxRequestWorkers</directive> was called
+    <directive>MaxClients</directive> before version 2.3.13. The old name ist still
+    supported.</p>
 </usage>
 </directivesynopsis>
 
@@ -540,39 +544,39 @@ Apache HTTP Server</a></seealso>
 <usage>
     <p>For the <module>prefork</module> MPM, this directive sets the
     maximum configured value for <directive
-    module="mpm_common">MaxClients</directive> for the lifetime of the
+    module="mpm_common">MaxRequestWorkers</directive> for the lifetime of the
     Apache httpd process.  For the <module>worker</module> MPM, this directive
     in combination with <directive
     module="mpm_common">ThreadLimit</directive> sets
     the maximum configured value for <directive
-    module="mpm_common">MaxClients</directive> for the lifetime of the
+    module="mpm_common">MaxRequestWorkers</directive> for the lifetime of the
     Apache httpd process.  Any attempts to change this directive during a
     restart will be ignored, but <directive
-    module="mpm_common">MaxClients</directive> can be modified during
+    module="mpm_common">MaxRequestWorkers</directive> can be modified during
     a restart.</p>
 
     <p>Special care must be taken when using this directive.  If
     <directive>ServerLimit</directive> is set to a value much higher
     than necessary, extra, unused shared memory will be allocated.  If
     both <directive>ServerLimit</directive> and <directive
-    module="mpm_common">MaxClients</directive> are set to values
+    module="mpm_common">MaxRequestWorkers</directive> are set to values
     higher than the system can handle, Apache httpd may not start or the
     system may become unstable.</p>
 
     <p>With the <module>prefork</module> MPM, use this directive only
     if you need to set <directive
-    module="mpm_common">MaxClients</directive> higher than 256 (default).
+    module="mpm_common">MaxRequestWorkers</directive> higher than 256 (default).
     Do not set the value of this directive any higher than what you
     might want to set <directive
-    module="mpm_common">MaxClients</directive> to.</p>
+    module="mpm_common">MaxRequestWorkers</directive> to.</p>
 
     <p>With <module>worker</module>, use this directive only
-    if your <directive module="mpm_common">MaxClients</directive> and
+    if your <directive module="mpm_common">MaxRequestWorkers</directive> and
     <directive module="mpm_common">ThreadsPerChild</directive>
     settings require more than 16 server processes (default). Do not set
     the value of this directive any higher than the number of server
     processes required by what you may want for <directive
-    module="mpm_common">MaxClients </directive> and <directive
+    module="mpm_common">MaxRequestWorkers </directive> and <directive
     module="mpm_common">ThreadsPerChild</directive>.</p>
 
     <note><title>Note</title>

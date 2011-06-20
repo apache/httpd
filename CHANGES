@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) prefork, worker, event: Rename MaxClients to MaxRequestWorkers which
+     describes more accurately what it does. [Stefan Fritsch]
+
   *) rotatelogs: Add -p argument to specify custom program to invoke
      after a log rotation.  PR 51285. [<sveniu ifi.uio.no>, Joe Orton]
 

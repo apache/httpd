@@ -39,8 +39,8 @@
 
     <p>This MPM is very self-regulating, so it is rarely necessary to
     adjust its configuration directives.  Most important is that
-    <directive module="mpm_common">MaxClients</directive> be big enough to 
-    handle as many simultaneous requests as you expect to receive, but
+    <directive module="mpm_common">MaxRequestWorkers</directive> be big enough
+    to handle as many simultaneous requests as you expect to receive, but
     small enough to assure that there is enough physical RAM for all
     processes.</p>
 </summary>
@@ -59,14 +59,14 @@ uses</a></seealso>
     <p>The <directive module="mpm_common">StartServers</directive>,
     <directive module="prefork">MinSpareServers</directive>,
     <directive module="prefork">MaxSpareServers</directive>, and
-    <directive module="mpm_common">MaxClients</directive> regulate how
+    <directive module="mpm_common">MaxRequestWorkers</directive> regulate how
     the parent process creates children to serve requests. In general,
     Apache httpd is very self-regulating, so most sites do not need to
     adjust these directives from their default values. Sites which
     need to serve more than 256 simultaneous requests may need to
-    increase <directive module="mpm_common">MaxClients</directive>,
+    increase <directive module="mpm_common">MaxRequestWorkers</directive>,
     while sites with limited memory may need to decrease <directive
-    module="mpm_common">MaxClients</directive> to keep the server from
+    module="mpm_common">MaxRequestWorkers</directive> to keep the server from
     thrashing (swapping memory to disk and back). More information
     about tuning process creation is provided in the <a
     href="../misc/perf-tuning.html">performance hints</a>
@@ -104,7 +104,7 @@ uses</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>MaxClients</name>
+<directivesynopsis location="mpm_common"><name>MaxRequestWorkers</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>

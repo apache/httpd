@@ -56,7 +56,7 @@
     that users consider "fast enough". This causes users to hit
     stop and reload, further increasing the load. You can, and
     should, control the <directive module="mpm_common"
-    >MaxClients</directive> setting so that your server
+    >MaxRequestWorkers</directive> setting so that your server
     does not spawn so many children it starts swapping. This procedure
     for doing this is simple: determine the size of your average Apache
     process, by looking at your process list via a tool such as
