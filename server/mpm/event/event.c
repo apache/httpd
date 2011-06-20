@@ -157,6 +157,12 @@
  * Actual definitions of config globals
  */
 
+#ifndef DEFAULT_WORKER_FACTOR
+#define DEFAULT_WORKER_FACTOR 2
+#endif
+#define WORKER_FACTOR_SCALE   16  /* scale factor to allow fractional values */
+static unsigned int worker_factor = DEFAULT_WORKER_FACTOR * WORKER_FACTOR_SCALE;
+
 static int threads_per_child = 0;   /* Worker threads per child */
 static int ap_daemons_to_start = 0;
 static int min_spare_threads = 0;
@@ -1316,9 +1322,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 #define TIMEOUT_FUDGE_FACTOR 100000
 #define EVENT_FUDGE_FACTOR 10000
 
-/* XXX: this should be a config options */
-#define WORKER_OVERCOMMIT 2
-
     rc = init_pollset(tpool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, ap_server_conf,
@@ -1482,7 +1485,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                  "in this process");
                 }
                 else if (apr_atomic_read32(&connection_count) > threads_per_child
-                         + ap_queue_info_get_idlers(worker_queue_info) * WORKER_OVERCOMMIT)
+                         + ap_queue_info_get_idlers(worker_queue_info) * 
+                           worker_factor / WORKER_FACTOR_SCALE)
                 {
                     if (!listeners_disabled)
                         disable_listensocks(process_slot);
@@ -1617,8 +1621,8 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
         if (listeners_disabled && !workers_were_busy &&
             (int)apr_atomic_read32(&connection_count) <
-            ((int)ap_queue_info_get_idlers(worker_queue_info) - 1) * WORKER_OVERCOMMIT +
-            threads_per_child)
+            ((int)ap_queue_info_get_idlers(worker_queue_info) - 1) *
+            worker_factor / WORKER_FACTOR_SCALE + threads_per_child)
         {
             listeners_disabled = 0;
             enable_listensocks(process_slot);
@@ -3123,6 +3127,27 @@ static const char *set_thread_limit(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
+                                     const char *arg)
+{
+    double val;
+    char *endptr;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    val = strtod(arg, &endptr);
+    if (*endptr)
+        return "error parsing value";
+
+    worker_factor = val * WORKER_FACTOR_SCALE;
+    if (worker_factor == 0)
+        worker_factor = 1;
+    return NULL;
+}
+
+
 static const command_rec event_cmds[] = {
     LISTEN_COMMANDS,
     AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
@@ -3142,6 +3167,9 @@ static const command_rec event_cmds[] = {
     AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
                   "Maximum number of worker threads per child process for this "
                   "run of Apache - Upper limit for ThreadsPerChild"),
+    AP_INIT_TAKE1("AsyncRequestWorkerFactor", set_worker_factor, NULL, RSRC_CONF,
+                  "How many additional connects will be accepted per idle "
+                  "worker thread"),
     AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
     {NULL}
 };

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) event: New AsyncRequestWorkerFactor directive to influence how many
+     connections will be accepted per process. [Stefan Fritsch]
+
   *) prefork, worker, event: Rename MaxClients to MaxRequestWorkers which
      describes more accurately what it does. [Stefan Fritsch]
 
