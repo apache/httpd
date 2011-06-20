@@ -308,7 +308,7 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
     }
 
     if (!strcasecmp(cmd->cmd->name, "MaxRequestsPerChild")) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
                      "MaxRequestsPerChild is deprecated, use "
                      "MaxConnectionsPerChild instead.");
     }

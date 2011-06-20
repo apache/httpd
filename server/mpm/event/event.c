@@ -3085,7 +3085,7 @@ static const char *set_max_workers(cmd_parms * cmd, void *dummy,
         return err;
     }
     if (!strcasecmp(cmd->cmd->name, "MaxClients")) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
                      "MaxClients is deprecated, use MaxRequestWorkers "
                      "instead.");
     }
