@@ -48,6 +48,7 @@
 #include "apr_general.h"
 #include "apr_time.h"
 #include "apr_getopt.h"
+#include "apr_thread_proc.h"
 
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
@@ -91,6 +92,7 @@ struct rotate_config {
     const char *szLogRoot;
     int truncate;
     const char *linkfile;
+    const char *postrotate_prog;
 };
 
 typedef struct rotate_status rotate_status_t;
@@ -102,6 +104,7 @@ struct rotate_status {
     apr_file_t *nLogFD;
     apr_file_t *nLogFDprev;
     char filename[MAX_PATH];
+    char filenameprev[MAX_PATH];
     char errbuf[ERRMSGSZ];
     int rotateReason;
     int tLogEnd;
@@ -117,7 +120,7 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
-            "Usage: %s [-v] [-l] [-L linkname] [-f] [-t] [-e] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] <logfile> "
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -133,18 +136,30 @@ static void usage(const char *argv0, const char *reason)
             "or \n\nTransferLog \"|%s /some/where 5M\"\n\n", argv0);
 #endif
     fprintf(stderr,
-            "to httpd.conf. The generated name will be /some/where.nnnn "
-            "where nnnn is the\nsystem time at which the log nominally "
-            "starts (N.B. if using a rotation time,\nthe time will always "
-            "be a multiple of the rotation time, so you can synchronize\n"
-            "cron scripts with it). At the end of each rotation time or "
-            "when the file size\nis reached a new log is started. If the "
-            "-t option is specified, the specified\nfile will be truncated "
-            "instead of rotated, and is useful where tail is used to\n"
-            "process logs in real time.  If the -L option is specified, "
-            "a hard link will be\nmade from the current log file to the "
-            "specified filename. In the case of the -e option, the log "
-            "will be echoed through to stdout for further processing.\n");
+            "to httpd.conf. By default, the generated name will be\n"
+            "<logfile>.nnnn where nnnn is the system time at which the log\n"
+            "nominally starts (N.B. if using a rotation time, the time will\n"
+            "always be a multiple of the rotation time, so you can synchronize\n"
+            "cron scripts with it). If <logfile> contains strftime conversion\n"
+            "specifications, those will be used instead. At the end of each\n"
+            "rotation time or when the file size is reached a new log is\n"
+            "started.\n"
+            "\n"
+            "Options:\n"
+            "  -v       Verbose operation. Messages are written to stderr.\n"
+            "  -l       Base rotation on local time instead of UTC.\n"
+            "  -L path  Create hard link from current log to specified path.\n"
+            "  -p prog  Run specified program on log rotation. See below.\n"
+            "  -f       Force opening of log on program start.\n"
+            "  -t       Truncate logfile instead of rotating, tail friendly.\n"
+            "  -e       Echo log to stdout for further processing.\n"
+            "\n"
+            "The post-rotation program must be an executable program or script.\n"
+            "Scripts are supported as long as the shebang line uses a working\n"
+            "interpreter. The program is invoked as \"[prog] <curfile> <prevfile>\"\n"
+            "where <curfile> is the filename of the currently used logfile, and\n"
+            "<prevfile> is the filename of the previously used logfile.\n"
+            "\n");
     exit(1);
 }
 
@@ -206,6 +221,7 @@ static void dumpConfig (rotate_config_t *config)
     fprintf(stderr, "Rotation file forced open:   %12s\n", config->force_open ? "yes" : "no");
     fprintf(stderr, "Rotation verbose:            %12s\n", config->verbose ? "yes" : "no");
     fprintf(stderr, "Rotation file name: %21s\n", config->szLogRoot);
+    fprintf(stderr, "Post-rotation prog: %21s\n", config->postrotate_prog);
 }
 
 /*
@@ -261,6 +277,58 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
 }
 
 /*
+ * Spawn a post-rotate process.
+ */
+static void post_rotate(apr_pool_t *pool, rotate_config_t *config, rotate_status_t *status)
+{
+    apr_status_t rv;
+    char error[120];
+    apr_procattr_t *pattr;
+    const char *argv[4];
+    apr_proc_t proc;
+
+    /* Collect any zombies from a previous run, but don't wait. */
+    while (apr_proc_wait_all_procs(&proc, NULL, NULL, APR_NOWAIT, pool) == APR_CHILD_DONE)
+        /* noop */;
+
+    if ((rv = apr_procattr_create(&pattr, pool)) != APR_SUCCESS) {
+        fprintf(stderr,
+                "post_rotate: apr_procattr_create failed for '%s': %s\n",
+                config->postrotate_prog,
+                apr_strerror(rv, error, sizeof(error)));
+        return;
+    }
+
+    rv = apr_procattr_error_check_set(pattr, 1);
+    if (rv == APR_SUCCESS)
+        rv = apr_procattr_cmdtype_set(pattr, APR_PROGRAM_ENV);
+
+    if (rv != APR_SUCCESS) {
+        fprintf(stderr,
+                "post_rotate: could not set up process attributes for '%s': %s\n",
+                config->postrotate_prog,
+                apr_strerror(rv, error, sizeof(error)));
+        return;
+    }
+
+    argv[0] = config->postrotate_prog;
+    argv[1] = status->filename;
+    argv[2] = status->filenameprev;
+    argv[3] = NULL;
+
+    if (config->verbose)
+        fprintf(stderr, "Calling post-rotate program: %s\n", argv[0]);
+
+    rv = apr_proc_create(&proc, argv[0], argv, NULL, pattr, pool);
+    if (rv != APR_SUCCESS) {
+        fprintf(stderr, "Could not spawn post-rotate process '%s': %s\n",
+                config->postrotate_prog,
+                apr_strerror(rv, error, sizeof(error)));
+        return;
+    }
+}
+
+/*
  * Open a new log file, and if successful
  * also close the old one.
  *
@@ -300,6 +368,8 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     else {
         tLogStart = now;
     }
+
+    apr_cpystrn(status->filenameprev, status->filename, MAX_PATH);
 
     if (config->use_strftime) {
         apr_time_t tNow = apr_time_from_sec(tLogStart);
@@ -356,6 +426,12 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         }
     }
     else {
+        /* If postrotate configured, and this is a real rotate rather
+         * than an initial open, run the post-rotate program: */
+        if (config->postrotate_prog && status->pfile_prev) {
+            post_rotate(status->pfile, config, status);
+        }
+
         closeFile(config, status->pfile_prev, status->nLogFDprev);
         status->nLogFDprev = NULL;
         status->pfile_prev = NULL;
@@ -466,13 +542,16 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
-    while ((rv = apr_getopt(opt, "lL:ftve", &c, &opt_arg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:p:ftve", &c, &opt_arg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             config.use_localtime = 1;
             break;
         case 'L':
             config.linkfile = opt_arg;
+            break;
+        case 'p':
+            config.postrotate_prog = opt_arg;
             break;
         case 'f':
             config.force_open = 1;

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) rotatelogs: Add -p argument to specify custom program to invoke
+     after a log rotation.  PR 51285. [<sveniu ifi.uio.no>, Joe Orton]
+
   *) mod_ssl: Don't do OCSP checks for valid self-issued certs. [Kaspar Brand]
 
   *) mod_ssl: Avoid unnecessary renegotiations with SSLVerifyDepth 0.
