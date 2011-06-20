@@ -787,7 +787,6 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
                           int my_thread_num)
 {
     conn_rec *c;
-    listener_poll_type *pt;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int rc;
     ap_sb_handle_t *sbh;
@@ -795,11 +794,8 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
     ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
 
     if (cs == NULL) {           /* This is a new connection */
-
+        listener_poll_type *pt = apr_pcalloc(p, sizeof(*pt));
         cs = apr_pcalloc(p, sizeof(conn_state_t));
-
-        pt = apr_pcalloc(p, sizeof(*pt));
-
         cs->bucket_alloc = apr_bucket_alloc_create(p);
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, sbh, cs->bucket_alloc);
@@ -845,7 +841,6 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
     else {
         c = cs->c;
         c->sbh = sbh;
-        pt = cs->pfd.client_data;
         c->current_thread = thd;
     }
 
