@@ -162,7 +162,7 @@ static int ap_daemons_to_start = 0;
 static int min_spare_threads = 0;
 static int max_spare_threads = 0;
 static int ap_daemons_limit = 0;
-static int max_clients = 0;
+static int max_workers = 0;
 static int server_limit = 0;
 static int thread_limit = 0;
 static int dying = 0;
@@ -271,8 +271,8 @@ typedef struct event_retained_data {
     int maxclients_reported;
     /*
      * The max child slot ever assigned, preserved across restarts.  Necessary
-     * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We
-     * use this value to optimize routines that have to scan the entire
+     * to deal with MaxRequestWorkers changes across AP_SIG_GRACEFUL restarts.
+     * We use this value to optimize routines that have to scan the entire
      * scoreboard.
      */
     int max_daemons_limit;
@@ -2370,17 +2370,16 @@ static void perform_idle_server_maintenance(void)
             if (active_thread_count >= ap_daemons_limit * threads_per_child) {
                 if (!retained->maxclients_reported) {
                     /* only report this condition once */
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                                 ap_server_conf,
-                                 "server reached MaxClients setting, consider"
-                                 " raising the MaxClients setting");
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
+                                 "server reached MaxRequestWorkers setting, "
+                                 "consider raising the MaxRequestWorkers "
+                                 "setting");
                     retained->maxclients_reported = 1;
                 }
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                             ap_server_conf,
-                             "scoreboard is full, not at MaxClients");
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
+                             "scoreboard is full, not at MaxRequestWorkers");
             }
             retained->idle_spawn_rate = 1;
         }
@@ -2389,8 +2388,7 @@ static void perform_idle_server_maintenance(void)
                 free_length = retained->idle_spawn_rate;
             }
             if (retained->idle_spawn_rate >= 8) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0,
-                             ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                              "server seems busy, (you may need "
                              "to increase StartServers, ThreadsPerChild "
                              "or Min/MaxSpareThreads), "
@@ -2781,7 +2779,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     thread_limit = DEFAULT_THREAD_LIMIT;
     ap_daemons_limit = server_limit;
     threads_per_child = DEFAULT_THREADS_PER_CHILD;
-    max_clients = ap_daemons_limit * threads_per_child;
+    max_workers = ap_daemons_limit * threads_per_child;
     ap_extended_status = 0;
 
     return OK;
@@ -2917,57 +2915,57 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
         threads_per_child = 1;
     }
 
-    if (max_clients < threads_per_child) {
+    if (max_workers < threads_per_child) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         "WARNING: MaxClients of %d is less than "
-                         "ThreadsPerChild of", max_clients);
+                         "WARNING: MaxRequestWorkers of %d is less than "
+                         "ThreadsPerChild of", max_workers);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         " %d, increasing to %d.  MaxClients must be at "
+                         " %d, increasing to %d.  MaxRequestWorkers must be at "
                          "least as large",
                          threads_per_child, threads_per_child);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " as the number of threads in a single server.");
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "MaxClients of %d is less than ThreadsPerChild "
+                         "MaxRequestWorkers of %d is less than ThreadsPerChild "
                          "of %d, increasing to match",
-                         max_clients, threads_per_child);
+                         max_workers, threads_per_child);
         }
-        max_clients = threads_per_child;
+        max_workers = threads_per_child;
     }
 
-    ap_daemons_limit = max_clients / threads_per_child;
+    ap_daemons_limit = max_workers / threads_per_child;
 
-    if (max_clients % threads_per_child) {
-        int tmp_max_clients = ap_daemons_limit * threads_per_child;
+    if (max_workers % threads_per_child) {
+        int tmp_max_workers = ap_daemons_limit * threads_per_child;
 
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         "WARNING: MaxClients of %d is not an integer "
-                         "multiple of", max_clients);
+                         "WARNING: MaxRequestWorkers of %d is not an integer "
+                         "multiple of", max_workers);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " ThreadsPerChild of %d, decreasing to nearest "
                          "multiple %d,", threads_per_child,
-                         tmp_max_clients);
+                         tmp_max_workers);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " for a maximum of %d servers.",
                          ap_daemons_limit);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "MaxClients of %d is not an integer multiple of "
-                         "ThreadsPerChild of %d, decreasing to nearest "
-                         "multiple %d", max_clients, threads_per_child,
-                         tmp_max_clients);
+                         "MaxRequestWorkers of %d is not an integer multiple "
+                         "of ThreadsPerChild of %d, decreasing to nearest "
+                         "multiple %d", max_workers, threads_per_child,
+                         tmp_max_workers);
         }
-        max_clients = tmp_max_clients;
+        max_workers = tmp_max_workers;
     }
 
     if (ap_daemons_limit > server_limit) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         "WARNING: MaxClients of %d would require %d "
-                         "servers and ", max_clients, ap_daemons_limit);
+                         "WARNING: MaxRequestWorkers of %d would require %d "
+                         "servers and ", max_workers, ap_daemons_limit);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " would exceed ServerLimit of %d, decreasing to %d.",
                          server_limit, server_limit * threads_per_child);
@@ -2976,9 +2974,9 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
                          "directive.");
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "MaxClients of %d would require %d servers and "
+                         "MaxRequestWorkers of %d would require %d servers and "
                          "exceed ServerLimit of %d, decreasing to %d",
-                         max_clients, ap_daemons_limit, server_limit,
+                         max_workers, ap_daemons_limit, server_limit,
                          server_limit * threads_per_child);
         }
         ap_daemons_limit = server_limit;
@@ -3080,15 +3078,19 @@ static const char *set_max_spare_threads(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_max_clients(cmd_parms * cmd, void *dummy,
+static const char *set_max_workers(cmd_parms * cmd, void *dummy,
                                    const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
-
-    max_clients = atoi(arg);
+    if (!strcasecmp(cmd->cmd->name, "MaxRequestWorkers")) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+                     "MaxClients is deprecated, use MaxRequestWorkers "
+                     "instead.");
+    }
+    max_workers = atoi(arg);
     return NULL;
 }
 
@@ -3136,7 +3138,9 @@ static const command_rec event_cmds[] = {
                   "Minimum number of idle threads, to handle request spikes"),
     AP_INIT_TAKE1("MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
                   "Maximum number of idle threads"),
-    AP_INIT_TAKE1("MaxClients", set_max_clients, NULL, RSRC_CONF,
+    AP_INIT_TAKE1("MaxClients", set_max_workers, NULL, RSRC_CONF,
+                  "Deprecated name of MaxRequestWorkers"),
+    AP_INIT_TAKE1("MaxRequestWorkers", set_max_workers, NULL, RSRC_CONF,
                   "Maximum number of threads alive at the same time"),
     AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
                   "Number of threads each child creates"),

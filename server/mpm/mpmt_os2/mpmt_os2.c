@@ -34,7 +34,7 @@
 
 /*
  Todo list
- - Enforce MaxClients somehow
+ - Enforce MaxRequestWorkers somehow
 */
 #define INCL_NOPMAPI
 #define INCL_DOS

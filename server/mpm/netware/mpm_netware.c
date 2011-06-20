@@ -121,7 +121,7 @@ static int mpm_state = AP_MPMQ_STARTING;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
- * to deal with MaxClients changes across SIGWINCH restarts.  We use this
+ * to deal with MaxRequestWorkers changes across SIGWINCH restarts.  We use this
  * value to optimize routines that have to scan the entire scoreboard.
  */
 static int ap_max_workers_limit = -1;
@@ -681,8 +681,8 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
 
             if (!reported) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                    "server reached MaxClients setting, consider"
-                    " raising the MaxClients setting");
+                    "server reached MaxRequestWorkers setting, consider"
+                    " raising the MaxRequestWorkers setting");
                 reported = 1;
             }
             idle_spawn_rate = 1;

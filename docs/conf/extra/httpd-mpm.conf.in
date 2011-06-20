@@ -30,48 +30,48 @@
 # StartServers: number of server processes to start
 # MinSpareServers: minimum number of server processes which are kept spare
 # MaxSpareServers: maximum number of server processes which are kept spare
-# MaxClients: maximum number of server processes allowed to start
+# MaxRequestWorkers: maximum number of server processes allowed to start
 # MaxConnectionsPerChild: maximum number of connections a server process serves
 #                         before terminating
 <IfModule mpm_prefork_module>
     StartServers             5
     MinSpareServers          5
     MaxSpareServers         10
-    MaxClients             150
+    MaxRequestWorkers      150
     MaxConnectionsPerChild   0
 </IfModule>
 
 # worker MPM
 # StartServers: initial number of server processes to start
-# MaxClients: maximum number of simultaneous client connections
 # MinSpareThreads: minimum number of worker threads which are kept spare
 # MaxSpareThreads: maximum number of worker threads which are kept spare
 # ThreadsPerChild: constant number of worker threads in each server process
+# MaxRequestWorkers: maximum number of worker threads
 # MaxConnectionsPerChild: maximum number of connections a server process serves
 #                         before terminating
 <IfModule mpm_worker_module>
     StartServers             2
-    MaxClients             150
     MinSpareThreads         25
     MaxSpareThreads         75 
     ThreadsPerChild         25
+    MaxRequestWorkers      150
     MaxConnectionsPerChild   0
 </IfModule>
 
 # event MPM
 # StartServers: initial number of server processes to start
-# MaxClients: maximum number of simultaneous client connections
 # MinSpareThreads: minimum number of worker threads which are kept spare
 # MaxSpareThreads: maximum number of worker threads which are kept spare
 # ThreadsPerChild: constant number of worker threads in each server process
+# MaxRequestWorkers: maximum number of worker threads
 # MaxConnectionsPerChild: maximum number of connections a server process serves
 #                         before terminating
 <IfModule mpm_event_module>
     StartServers             2
-    MaxClients             150
     MinSpareThreads         25
     MaxSpareThreads         75
     ThreadsPerChild         25
+    MaxRequestWorkers      150
     MaxConnectionsPerChild   0
 </IfModule>
 

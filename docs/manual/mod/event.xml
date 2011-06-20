@@ -106,7 +106,7 @@ of consuming threads only for connections with active processing</description>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>MaxClients</name>
+<directivesynopsis location="mpm_common"><name>MaxRequestWorkers</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>

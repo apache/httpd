@@ -39,7 +39,7 @@
     <p>The most important directives used to control this MPM are
     <directive module="mpm_common">ThreadsPerChild</directive>, which
     controls the number of threads deployed by each child process and
-    <directive module="mpm_common">MaxClients</directive>, which
+    <directive module="mpm_common">MaxRequestWorkers</directive>, which
     controls the maximum total number of threads that may be
     launched.</p>
 </summary>
@@ -68,9 +68,9 @@
     these directives from their default values. The maximum number of
     clients that may be served simultaneously (i.e., the maximum total
     number of threads in all processes) is determined by the
-    <directive module="mpm_common">MaxClients</directive> directive.
+    <directive module="mpm_common">MaxRequestWorkers</directive> directive.
     The maximum number of active child processes is determined by
-    the <directive module="mpm_common">MaxClients</directive>
+    the <directive module="mpm_common">MaxRequestWorkers</directive>
     directive divided by the <directive module="mpm_common">
     ThreadsPerChild</directive> directive.</p>
 
@@ -80,7 +80,7 @@
     starting it again.  <directive module="mpm_common">ServerLimit
     </directive> is a hard limit on the number of active child 
     processes, and must be greater than or equal to the 
-    <directive module="mpm_common">MaxClients</directive>
+    <directive module="mpm_common">MaxRequestWorkers</directive>
     directive divided by the <directive module="mpm_common">
     ThreadsPerChild</directive> directive.  
     <directive module="mpm_common">ThreadLimit</directive> is a hard
@@ -92,7 +92,7 @@
     be additional child processes which are terminating, but where at
     least one server thread is still handling an existing client
     connection.  Up to <directive 
-    module="mpm_common">MaxClients</directive> terminating processes 
+    module="mpm_common">MaxRequestWorkers</directive> terminating processes 
     may be present, though the actual number can be expected to be 
     much smaller.  This behavior can be avoided by disabling the 
     termination of individual child processes, which is achieved using
@@ -104,7 +104,7 @@
 
       <li>set the value of <directive module="mpm_common">
       MaxSpareThreads</directive> to the same value as
-      <directive module="mpm_common">MaxClients</directive></li>
+      <directive module="mpm_common">MaxRequestWorkers</directive></li>
     </ul>
 
     <p>A typical configuration of the process-thread controls in
@@ -113,7 +113,7 @@
     <example>
       ServerLimit         16<br />
       StartServers         2<br />
-      MaxClients         150<br />
+      MaxRequestWorkers         150<br />
       MinSpareThreads     25<br />
       MaxSpareThreads     75<br />
       ThreadsPerChild     25
@@ -156,7 +156,7 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>MaxClients</name>
+<directivesynopsis location="mpm_common"><name>MaxRequestWorkers</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>
