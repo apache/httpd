@@ -160,8 +160,8 @@ static void *dav_create_dir_config(apr_pool_t *p, char *dir)
         char *d;
         apr_size_t l;
 
-        d = apr_pstrdup(p, dir);
-        l = strlen(d);
+        l = strlen(dir);
+        d = apr_pstrmemdup(p, dir, l);
         if (l > 1 && d[l - 1] == '/')
             d[l - 1] = '\0';
         conf->dir = d;

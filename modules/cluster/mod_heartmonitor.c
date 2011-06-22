@@ -770,7 +770,7 @@ static int hm_handler(request_rec *r)
 
     ap_set_content_type(r, "text/plain");
     ap_set_content_length(r, 2);
-    ap_rprintf(r, "OK");
+    ap_rputs("OK", r);
     ap_rflush(r);
 
     return OK;

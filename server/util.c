@@ -670,8 +670,9 @@ AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *atrans, const char **line,
     char *res;
 
     if (!pos) {
-        res = apr_pstrdup(atrans, *line);
-        *line += strlen(*line);
+        size_t len = strlen(*line);
+        res = apr_pstrmemdup(atrans, *line, len);
+        *line += len;
         return res;
     }
 

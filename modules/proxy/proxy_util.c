@@ -1682,8 +1682,8 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
         return NULL;
     }
 
-    url_copy = apr_pstrdup(p, url);
     url_length = strlen(url);
+    url_copy = apr_pstrmemdup(p, url, url_length);
 
     /*
      * We need to find the start of the path and
