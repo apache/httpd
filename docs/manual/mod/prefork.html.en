@@ -42,8 +42,8 @@
 
     <p>This MPM is very self-regulating, so it is rarely necessary to
     adjust its configuration directives.  Most important is that
-    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> be big enough to 
-    handle as many simultaneous requests as you expect to receive, but
+    <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> be big enough
+    to handle as many simultaneous requests as you expect to receive, but
     small enough to assure that there is enough physical RAM for all
     processes.</p>
 </div>
@@ -54,9 +54,9 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxspareservers">MaxSpareServers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minspareservers">MinSpareServers</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
@@ -89,13 +89,13 @@ uses</a></li>
     <p>The <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>,
     <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>,
     <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code>, and
-    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> regulate how
+    <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> regulate how
     the parent process creates children to serve requests. In general,
     Apache httpd is very self-regulating, so most sites do not need to
     adjust these directives from their default values. Sites which
     need to serve more than 256 simultaneous requests may need to
-    increase <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>,
-    while sites with limited memory may need to decrease <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> to keep the server from
+    increase <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>,
+    while sites with limited memory may need to decrease <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> to keep the server from
     thrashing (swapping memory to disk and back). More information
     about tuning process creation is provided in the <a href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>

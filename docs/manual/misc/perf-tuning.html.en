@@ -59,7 +59,7 @@
     as swapping increases the latency of each request beyond a point
     that users consider "fast enough". This causes users to hit
     stop and reload, further increasing the load. You can, and
-    should, control the <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> setting so that your server
+    should, control the <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> setting so that your server
     does not spawn so many children it starts swapping. This procedure
     for doing this is simple: determine the size of your average Apache
     process, by looking at your process list via a tool such as

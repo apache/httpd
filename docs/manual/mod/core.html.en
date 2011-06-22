@@ -1358,23 +1358,26 @@ in case of an error</td></tr>
         <td>Process ID of current process</td></tr>
 <tr><td><code>%...T</code></td>
         <td>Thread ID of current thread</td></tr>
-<tr class="odd"><td><code>%...t</code></td>
+<tr class="odd"><td><code>%...{g}T</code></td>
+        <td>System unique thread ID of current thread (the same ID as
+            displayed by e.g. <code>top</code>; currently Linux only)</td></tr>
+<tr><td><code>%...t</code></td>
         <td>The current time</td></tr>
-<tr><td><code>%...{u}t</code></td>
+<tr class="odd"><td><code>%...{u}t</code></td>
         <td>The current time including micro-seconds</td></tr>
-<tr class="odd"><td><code>%...{cu}t</code></td>
+<tr><td><code>%...{cu}t</code></td>
         <td>The current time in compact ISO 8601 format, including
             micro-seconds</td></tr>
-<tr><td><code>%...v</code></td>
+<tr class="odd"><td><code>%...v</code></td>
         <td>The canonical <code class="directive"><a href="#servername">ServerName</a></code>
             of the current server.</td></tr>
-<tr class="odd"><td><code>%...V</code></td>
+<tr><td><code>%...V</code></td>
         <td>The server name of the server serving the request according to the
             <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>
             setting.</td></tr>
-<tr><td><code>\&nbsp;</code> (backslash space)</td>
+<tr class="odd"><td><code>\&nbsp;</code> (backslash space)</td>
         <td>Non-field delimiting space</td></tr>
-<tr class="odd"><td><code>%&nbsp;</code> (percent space)</td>
+<tr><td><code>%&nbsp;</code> (percent space)</td>
         <td>Field delimiter (no output)</td></tr>
 </table>
 

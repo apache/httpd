@@ -115,7 +115,7 @@
       system.  This is active by default in Apache httpd, but may
       require reconfiguration of your kernel.</li>
 
-      <li>Tune the <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> directive to allow
+      <li>Tune the <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> directive to allow
       the server to handle the maximum number of simultaneous
       connections without running out of resources.  See also the <a href="perf-tuning.html">performance tuning
       documentation</a>.</li>
