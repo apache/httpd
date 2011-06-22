@@ -300,10 +300,10 @@ luapackagepath	mod/mod_lua.html#luapackagepath
 luaquickhandler	mod/mod_lua.html#luaquickhandler
 luaroot	mod/mod_lua.html#luaroot
 luascope	mod/mod_lua.html#luascope
-maxclients	mod/mpm_common.html#maxclients
 maxconnectionsperchild	mod/mpm_common.html#maxconnectionsperchild
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
+maxrequestworkers	mod/mpm_common.html#maxrequestworkers
 maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads

@@ -37,9 +37,9 @@ more than one multi-processing module (MPM)</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxrequestworkers">MaxRequestWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li>
@@ -254,39 +254,6 @@ including other causes.</a></li>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of connections that will be processed
-simultaneously</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxClients <var>number</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p>The <code class="directive">MaxClients</code> directive sets the limit
-    on the number of simultaneous requests that will be served.  Any
-    connection attempts over the <code class="directive">MaxClients</code>
-    limit will normally be queued, up to a number based on the
-    <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code>
-    directive. Once a child process is freed at the end of a different
-    request, the connection will then be serviced.</p>
-
-    <p>For non-threaded servers (<em>i.e.</em>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>),
-    <code class="directive">MaxClients</code> translates into the maximum
-    number of child processes that will be launched to serve requests.
-    The default value is <code>256</code>; to increase it, you must also raise
-    <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
-
-    <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/event.html">event</a></code>
-    or <code class="module"><a href="../mod/worker.html">worker</a></code>) <code class="directive">MaxClients</code> restricts
-    the total number of threads that will be available to serve clients.
-    For hybrid MPMs the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
-    <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Therefore, to increase <code class="directive">MaxClients</code> to a value that requires more than 16 processes,
-    you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limit on the number of connections that an individual child server
@@ -326,6 +293,43 @@ to hold without calling <code>free()</code></td></tr>
     maximum number of free Kbytes that the main allocator is allowed
     to hold without calling <code>free()</code>. When not set, or when set
     to zero, the threshold will be set to unlimited.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a> <a name="maxrequestworkers" id="maxrequestworkers">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of connections that will be processed
+simultaneously</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxRequestWorkers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
+    <p>The <code class="directive">MaxRequestWorkers</code> directive sets the limit
+    on the number of simultaneous requests that will be served.  Any
+    connection attempts over the <code class="directive">MaxRequestWorkers</code>
+    limit will normally be queued, up to a number based on the
+    <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code>
+    directive. Once a child process is freed at the end of a different
+    request, the connection will then be serviced.</p>
+
+    <p>For non-threaded servers (<em>i.e.</em>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>),
+    <code class="directive">MaxRequestWorkers</code> translates into the maximum
+    number of child processes that will be launched to serve requests.
+    The default value is <code>256</code>; to increase it, you must also raise
+    <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
+
+    <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/event.html">event</a></code>
+    or <code class="module"><a href="../mod/worker.html">worker</a></code>) <code class="directive">MaxRequestWorkers</code> restricts
+    the total number of threads that will be available to serve clients.
+    For hybrid MPMs the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
+    <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Therefore, to increase <code class="directive">MaxRequestWorkers</code> to a value that requires more than 16 processes,
+    you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
+
+    <p><code class="directive">MaxRequestWorkers</code> was called
+    <code class="directive">MaxClients</code> before version 2.3.13. The old name ist still
+    supported.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -540,32 +544,32 @@ Apache HTTP Server</a></li>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>For the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, this directive sets the
-    maximum configured value for <code class="directive"><a href="#maxclients">MaxClients</a></code> for the lifetime of the
+    maximum configured value for <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> for the lifetime of the
     Apache httpd process.  For the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM, this directive
     in combination with <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> sets
-    the maximum configured value for <code class="directive"><a href="#maxclients">MaxClients</a></code> for the lifetime of the
+    the maximum configured value for <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> for the lifetime of the
     Apache httpd process.  Any attempts to change this directive during a
-    restart will be ignored, but <code class="directive"><a href="#maxclients">MaxClients</a></code> can be modified during
+    restart will be ignored, but <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> can be modified during
     a restart.</p>
 
     <p>Special care must be taken when using this directive.  If
     <code class="directive">ServerLimit</code> is set to a value much higher
     than necessary, extra, unused shared memory will be allocated.  If
-    both <code class="directive">ServerLimit</code> and <code class="directive"><a href="#maxclients">MaxClients</a></code> are set to values
+    both <code class="directive">ServerLimit</code> and <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> are set to values
     higher than the system can handle, Apache httpd may not start or the
     system may become unstable.</p>
 
     <p>With the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, use this directive only
-    if you need to set <code class="directive"><a href="#maxclients">MaxClients</a></code> higher than 256 (default).
+    if you need to set <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> higher than 256 (default).
     Do not set the value of this directive any higher than what you
-    might want to set <code class="directive"><a href="#maxclients">MaxClients</a></code> to.</p>
+    might want to set <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> to.</p>
 
     <p>With <code class="module"><a href="../mod/worker.html">worker</a></code>, use this directive only
-    if your <code class="directive"><a href="#maxclients">MaxClients</a></code> and
+    if your <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> and
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     settings require more than 16 server processes (default). Do not set
     the value of this directive any higher than the number of server
-    processes required by what you may want for <code class="directive"><a href="#maxclients ">MaxClients </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
+    processes required by what you may want for <code class="directive"><a href="#maxrequestworkers ">MaxRequestWorkers </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
 
     <div class="note"><h3>Note</h3>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
