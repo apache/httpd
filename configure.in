@@ -446,6 +446,18 @@ fopen64
 dnl confirm that a void pointer is large enough to store a long integer
 APACHE_CHECK_VOID_PTR_LEN
 
+AC_CACHE_CHECK([for gettid()], ac_cv_gettid,
+[AC_TRY_RUN(#define _GNU_SOURCE
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+int main(int argc, char **argv) {
+pid_t t = syscall(SYS_gettid); return t == -1 ? 1 : 0; },
+[ac_cv_gettid=yes], [ac_cv_gettid=no], [ac_cv_gettid=no])])
+if test "$ac_cv_gettid" = "yes"; then
+    AC_DEFINE(HAVE_GETTID, 1, [Define if you have gettid()])
+fi
+
 dnl check for LDAP support, needed by modules/aaa and modules/ldap
 AP_FIND_LDAP
 

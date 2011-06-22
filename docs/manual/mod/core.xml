@@ -1322,6 +1322,10 @@ in case of an error</description>
     <tr><td><code>%...T</code></td>
         <td>Thread ID of current thread</td></tr>
 
+    <tr><td><code>%...{g}T</code></td>
+        <td>System unique thread ID of current thread (the same ID as
+            displayed by e.g. <code>top</code>; currently Linux only)</td></tr>
+
     <tr><td><code>%...t</code></td>
         <td>The current time</td></tr>
 
