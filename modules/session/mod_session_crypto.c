@@ -369,7 +369,7 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
         const apu_err_t *err = NULL;
         apr_status_t rv;
 
-        rv = apr_crypto_init(p, NULL);
+        rv = apr_crypto_init(p);
         if (APR_SUCCESS != rv) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, LOG_PREFIX
                     "APR crypto could not be initialised");
