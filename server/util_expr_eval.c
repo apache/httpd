@@ -831,13 +831,8 @@ static const char *tolower_func(ap_expr_eval_ctx_t *ctx, const void *data,
 static const char *toupper_func(ap_expr_eval_ctx_t *ctx, const void *data,
                                 const char *arg)
 {
-    char *p;
     char *result = apr_pstrdup(ctx->p, arg);
-
-    for (p = result; *p; ++p) {
-         *p = apr_toupper(*p);
-    }
-
+    ap_str_toupper(result);
     return result;
 }
 

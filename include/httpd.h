@@ -1799,6 +1799,12 @@ AP_DECLARE(void) ap_content_type_tolower(char *s);
 AP_DECLARE(void) ap_str_tolower(char *s);
 
 /**
+ * convert a string to all uppercase
+ * @param s The string to convert to uppercase 
+ */
+AP_DECLARE(void) ap_str_toupper(char *s);
+
+/**
  * Search a string from left to right for the first occurrence of a 
  * specific character
  * @param str The string to search

@@ -42,15 +42,6 @@ typedef enum
 
 static bs2_ForkType forktype = bs2_unknown;
 
-
-static void ap_str_toupper(char *str)
-{
-    while (*str) {
-        *str = apr_toupper(*str);
-        ++str;
-    }
-}
-
 /* Determine the method for forking off a child in such a way as to
  * set both the POSIX and BS2000 user id's to the unprivileged user.
  */
