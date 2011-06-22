@@ -1378,8 +1378,8 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
              * Get rid of the surrounding parens; later on when generating the
              * filter, they'll be put back.
              */
-            sec->filter = apr_pstrdup(cmd->pool, urld->lud_filter+1);
-            sec->filter[strlen(sec->filter)-1] = '\0';
+            sec->filter = apr_pstrmemdup(cmd->pool, urld->lud_filter+1,
+                                                    strlen(urld->lud_filter)-2);
         }
         else {
             sec->filter = apr_pstrdup(cmd->pool, urld->lud_filter);

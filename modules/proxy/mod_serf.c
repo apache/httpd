@@ -634,8 +634,7 @@ static int serf_handler(request_rec *r)
 
 static int is_true(const char *w)
 {
-    if (strcasecmp(w, "on") == 0 || 
-        strcasecmp(w, "1") == 0 ||
+    if (strcasecmp(w, "on") == 0 || strcmp(w, "1") == 0 ||
         strcasecmp(w, "true") == 0)
     {
         return 1;
@@ -678,8 +677,7 @@ static const char *add_pass(cmd_parms *cmd, void *vconf,
         const char *x = ap_strchr_c(p, '=');
         
         if (x) {
-            char *key = apr_pstrndup(cmd->pool, p, x-p);
-            if (strcmp(key, "preservehost") == 0) {
+            if (strncmp(p, "preservehost", x-p) == 0) {
                 conf->preservehost = is_true(x+1);
             }
         }

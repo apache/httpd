@@ -1759,7 +1759,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
     /* fast exit */
     if (varlen < 4) {
-        return apr_pstrdup(r->pool, "");
+        return "";
     }
 
     result = NULL;
@@ -2211,7 +2211,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
 
     /* fast exit */
     if (inputlen == span) {
-        return apr_pstrdup(pool, input);
+        return apr_pstrmemdup(pool, input, inputlen);
     }
 
     /* well, actually something to do */

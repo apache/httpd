@@ -158,9 +158,9 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     if (*w_ == '\0')
         return NULL;
 
-    w = apr_pstrdup(p, w_);
+    wlen = strlen(w_);                   /* wlen must be > 0 at this point */
+    w = apr_pstrmemdup(p, w_, wlen);
     /* apr_parse_addr_port() doesn't understand ":*" so handle that first. */
-    wlen = strlen(w);                    /* wlen must be > 0 at this point */
     wild_port = 0;
     if (w[wlen - 1] == '*') {
         if (wlen < 2) {

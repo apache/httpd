@@ -719,8 +719,7 @@ static dav_error * dav_fs_get_resource(
     /* make sure the URI does not have a trailing "/" */
     len = strlen(r->uri);
     if (len > 1 && r->uri[len - 1] == '/') {
-        s = apr_pstrdup(r->pool, r->uri);
-        s[len - 1] = '\0';
+        s = apr_pstrmemdup(r->pool, r->uri, len-1);
         resource->uri = s;
     }
     else {
