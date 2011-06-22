@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) core: Add support to ErrorLogFormat for logging the system unique
+     thread id under Linux. [Stefan Fritsch]
+
   *) event: New AsyncRequestWorkerFactor directive to influence how many
      connections will be accepted per process. [Stefan Fritsch]
 
