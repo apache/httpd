@@ -38,9 +38,9 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxrequestworkers">MaxRequestWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li>
@@ -256,39 +256,6 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Aynı anda işleme sokulacak azami bağlantı sayısı</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxClients <var>sayı</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Ayrıntılar için aşağıdaki açıklamaya bakınız.</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p><code class="directive">MaxClients</code> yönergesi aynı anda işleme sokulacak
-      bağlantı sayısını sınırlamak için kullanılır. <code class="directive">MaxClients</code> bağlantı isteğinden fazlası geldiği takdirde bu
-      istekler normal olarak kuyruğa alınıp bekletilir. Kuyrukta bekletilecek
-      isteklerin azami sayısı ise <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code> yönergesi ile belirlenir. İstek sunmakta olan
-      çocuk süreçlerden biri serbest kaldığında bekletilen bağlantılardan
-      birine hizmet sunulmaya başlanır.</p>
-
-    <p>Evreli olmayan sunucularda (<code class="module"><a href="../mod/prefork.html">prefork</a></code> gibi)
-      <code class="directive">MaxClients</code> yönergesi istekleri sunmak için
-      başlatılacak çocuk süreçlerin azami sayısını belirler. Öntanımlı değer
-      256 olup bu değeri arttırmak isterseniz <code class="directive"><a href="#serverlimit">ServerLimit</a></code> değerini de
-      arttırmalısınız.</p>
-
-    <p>Çok evreli ve melez sunucularda (<code class="module"><a href="../mod/event.html">event</a></code> veya
-      <code class="module"><a href="../mod/worker.html">worker</a></code> gibi) <code class="directive">MaxClients</code>
-      yönergesi istemcilere hizmet verecek evre sayısını sınırlar. Öntanımlı
-      değer melez MPM’ler için 16'dır
-      (<code class="directive"><a href="#serverlimit">ServerLimit</a></code> ile <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> çarpılır: <code>16 x
-      25</code>). Bu bakımdan <code class="directive">MaxClients</code> değerini 16
-      süreçten fazlasına ayarlamak için <code class="directive"><a href="#serverlimit">ServerLimit</a></code> değerini de
-      arttırmalısınız.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a name="maxconnectionsperchild" id="maxconnectionsperchild">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Limit on the number of connections that an individual child server
@@ -320,6 +287,18 @@ will handle during its life</td></tr>
       olacaktır.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a> <a name="maxrequestworkers" id="maxrequestworkers">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Maximum number of connections that will be processed
+simultaneously</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRequestWorkers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>See usage for details</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
+            Lütfen İngilizce sürümüne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads" id="maxsparethreads">Yönergesi</a></h2>
 <table class="directive">

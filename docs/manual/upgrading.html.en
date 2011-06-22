@@ -164,7 +164,15 @@
       <ul>
         <li><code class="directive">MaxRequestsPerChild</code> has been renamed to
         <code class="directive"><a href="./mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>,
-        which describes more accurately what it does.</li>
+        describes more accurately what it does. The old name is still
+        supported.</li>
+
+        <li><code class="directive">MaxClients</code> has been renamed to
+        <code class="directive"><a href="./mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>,
+        which describes more accurately what it does. For async MPMs, like
+        <code class="module"><a href="./mod/event.html">event</a></code>, the maximum number of clients is not
+        equivalent than the number of worker threads. The old name is still
+        supported.</li>
 
         <li>The <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
         directive no longer has any effect, other than to emit a

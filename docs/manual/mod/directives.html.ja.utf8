@@ -335,10 +335,10 @@
 <li><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></li>
 <li><a href="mod_lua.html#luaroot">LuaRoot</a></li>
 <li><a href="mod_lua.html#luascope">LuaScope</a></li>
-<li><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients</a></li>
-<li><a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
+<li><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></li>
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>

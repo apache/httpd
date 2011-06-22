@@ -40,9 +40,9 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxrequestworkers">MaxRequestWorkers</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li>
@@ -218,42 +218,6 @@ will exit.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a>-<a name="maxclients" id="maxclients">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximale Anzahl der Kindprozesse, die zur Bedienung von Anfragen
-  gestartet wird</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxClients <var>Anzahl</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>Für Details siehe Beschreibung</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p>Die Direktive <code class="directive">MaxClients</code> setzt die Grenze
-    für die Anzahl gleichzeitig bedienter Anfragen. Jeder
-    Verbindungsversuch oberhalb der <code class="directive">MaxClients</code>-Begrenzung wird üblicherweise in eine
-    Warteschlange gestellt, bis zu einer Anzahl basierend auf der
-    <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code>-Anweisung.
-    Sobald ein Kindprozess am Ende einer anderen Anfrage freigegeben wird,
-    wird die Verbindung bedient.</p>
-
-    <p>Für Server ohne Thread-Unterstützung (<em>z.B.</em>
-    <code class="module"><a href="../mod/prefork.html">prefork</a></code>) wird <code class="directive">MaxClients</code> als
-    maximale Anzahl der Kindprozesse verstanden, die zur Bedienung von
-    Anfragen gestartet werden. Die Voreinstellung ist <code>256</code>. Um
-    diesen Wert zu erhöhen, muss auch <code class="directive"><a href="#serverlimit">ServerLimit</a></code> angehoben werden.</p>
-
-    <p>Bei Servern mit Thread-Unterstützung und bei Hybrid-Servern
-    (<em>z.B.</em> <code class="module"><a href="../mod/beos.html">beos</a></code> oder <code class="module"><a href="../mod/worker.html">worker</a></code>)
-    begrenzt <code class="directive">MaxClients</code> die Gesamtzahl der Threads,
-    die für die Bedienung von Anfragen verfügbar sind.
-    Die Voreinstellung für <code class="module"><a href="../mod/beos.html">beos</a></code> ist <code>50</code>.
-    Bei Hybrid-MPMs ist die Voreinstellung <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multipliziert mit
-    dem Wert <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Um <code class="directive">MaxClients</code>
-    auf einen Wert zu erhöhen, der mehr als 16 Prozesse erfordert,
-    müssen Sie daher auch <code class="directive"><a href="#serverlimit">ServerLimit</a></code> anheben.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a>-<a name="maxconnectionsperchild" id="maxconnectionsperchild">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Limit on the number of connections that an individual child server
@@ -286,6 +250,19 @@ will handle during its life</td></tr>
     oder Null angegeben ist, wird dieser Wert nicht eingeschränkt.</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a>-<a name="maxrequestworkers" id="maxrequestworkers">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Maximum number of connections that will be processed
+simultaneously</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxRequestWorkers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>See usage for details</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table><p>Die Dokumentation zu dieser Direktive wurde
+            noch nicht übersetzt. Bitte schauen Sie in die englische
+            Version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a>-<a name="maxsparethreads" id="maxsparethreads">Direktive</a></h2>
 <table class="directive">
