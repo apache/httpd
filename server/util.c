@@ -1889,6 +1889,14 @@ AP_DECLARE(void) ap_str_tolower(char *str)
     }
 }
 
+AP_DECLARE(void) ap_str_toupper(char *str)
+{
+    while (*str) {
+        *str = apr_toupper(*str);
+        ++str;
+    }
+}
+
 /*
  * We must return a FQDN
  */

@@ -1051,11 +1051,7 @@ static int init_cache(apr_pool_t *p)
 
 static char *rewrite_mapfunc_toupper(request_rec *r, char *key)
 {
-    char *p;
-
-    for (p = key; *p; ++p) {
-        *p = apr_toupper(*p);
-    }
+    ap_str_toupper(key);
 
     return key;
 }
@@ -1849,13 +1845,10 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
     /* well, do it the hard way */
     else {
-        char *p;
         apr_time_exp_t tm;
 
         /* can't do this above, because of the getenv call */
-        for (p = var; *p; ++p) {
-            *p = apr_toupper(*p);
-        }
+        ap_str_toupper(var);
 
         switch (varlen) {
         case  4:
