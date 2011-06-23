@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1082630:1132677 (outdated) -->
+<!-- English Revision: 1132677 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -2281,10 +2281,10 @@ uygulanır.</description>
     </p>
 
     <p><var>adres</var> olarak bir konak ismi de belirtebilirsiniz ama daima
-      bir IP adresi kullanmanızı öneririz. Örnek:</p>
+      bir IP adresi ve bir port kullanmanızı öneririz. Örnek:</p>
 
     <example>
-      NameVirtualHost 111.22.33.44
+      NameVirtualHost 111.22.33.44:80
     </example>
 
     <p><directive>NameVirtualHost</directive> yönergesi ile sunucunun isme
@@ -2335,8 +2335,8 @@ uygulanır.</description>
       olarak eşleşmesi gerektiğine dikkat ediniz.</p>
 
       <example>
-        NameVirtualHost 1.2.3.4<br />
-        &lt;VirtualHost 1.2.3.4&gt;<br />
+        NameVirtualHost 1.2.3.4:80<br />
+        &lt;VirtualHost 1.2.3.4:80&gt;<br />
         # ...<br />
         &lt;/VirtualHost&gt;<br />
       </example>
@@ -3252,7 +3252,8 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 </description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 <compatibility>Apache 1.3.34, 2.0.55 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
@@ -3411,7 +3412,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
     </ul>
 
     <example><title>Örnek</title>
-      &lt;VirtualHost 10.1.2.3&gt;<br />
+      &lt;VirtualHost 10.1.2.3:80&gt;<br />
       <indent>
         ServerAdmin webmaster@konak.mesela.dom<br />
         DocumentRoot /www/docs/konak.mesela.dom<br />
@@ -3427,7 +3428,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       adresleri köşeli ayraç içine alınır. IPv6 adresi kullanılan bir örnek:</p>
 
     <example>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]:80&gt;<br />
       <indent>
         ServerAdmin webmaster@konak.mesela.dom<br />
         DocumentRoot /www/docs/konak.mesela.dom<br />
