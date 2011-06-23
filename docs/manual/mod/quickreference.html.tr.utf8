@@ -778,7 +778,7 @@ Certificate verification</td></tr>
   yığıtın bayt cinsinden uzunluğunu belirler.</td></tr>
 <tr class="odd"><td><a href="core.html#timeout">TimeOut <var>saniye</var></a></td><td> 300 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir istek için başarısız olmadan önce belirli olayların
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
-<tr><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>TRACE</code> isteklerinde davranış şeklini belirler
+<tr><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>TRACE</code> isteklerinde davranış şeklini belirler
 </td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>dosya</var>|<var>borulu-süreç</var>
 [<var>takma-ad</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir günlük dosyasının yerini belirtir.</td></tr>
