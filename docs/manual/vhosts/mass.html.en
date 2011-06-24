@@ -27,7 +27,7 @@
 
     <p>This document describes how to efficiently serve an
     arbitrary number of virtual hosts with the Apache HTTP Server. A
-    <a href="../rewrite/mass.html">separate document</a> discusses using
+    <a href="../rewrite/vhosts.html">separate document</a> discusses using
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to create dynamic mass virtual hosts.
     </p>
 
