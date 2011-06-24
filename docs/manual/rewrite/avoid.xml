@@ -221,7 +221,7 @@ module="core" type="section">If</directive> direct, as shown here:</p>
 
 <example>
 &lt;If "$req{Host} = 'example.com'"&gt;<br />
-RedirectMatch (.*) http://www.example.com$1
+RedirectMatch (.*) http://www.example.com$1<br />
 &lt;/If&gt;
 </example>
 
