@@ -2453,10 +2453,10 @@ static const char *util_ldap_set_debug_level(cmd_parms *cmd,
 
 #ifndef AP_LDAP_OPT_DEBUG
     return "This directive is not supported with the currently linked LDAP library";
-#endif
-
+#else
     st->debug_level = atoi(arg);
     return NULL;
+#endif
 } 
 
 static const char *util_ldap_set_referral_hop_limit(cmd_parms *cmd,

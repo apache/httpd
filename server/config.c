@@ -1969,10 +1969,7 @@ AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
         /* walk the filepath */
         return process_resource_config_fnmatch(s, rootpath, filepath, conftree, p, ptemp,
                                                0, optional);
-
     }
-
-    return NULL;
 }
 
 AP_DECLARE(int) ap_process_config_tree(server_rec *s,
