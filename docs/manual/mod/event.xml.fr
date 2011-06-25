@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1021924 -->
+<!-- English Revision : 1137744 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -117,7 +117,7 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>MaxClients</name>
+<directivesynopsis location="mpm_common"><name>MaxRequestWorkers</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>

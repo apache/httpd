@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1041011 -->
+<!-- English revision : 1137744 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -117,7 +117,7 @@
       d'Apache, mais peut n&eacute;cessiter une reconfiguration de votre noyau.</li>
 
       <li>Optimisez la directive <directive
-      module="mpm_common">MaxClients</directive> de fa&ccedil;on &agrave; d&eacute;finir le nombre
+      module="mpm_common">MaxRequestWorkers</directive> de fa&ccedil;on &agrave; d&eacute;finir le nombre
       maximum de connexions simultan&eacute;es au dessus duquel les ressources
       s'&eacute;puisent. Voir aussi la <a
       href="perf-tuning.html">documentation sur l'optimisation des
