@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.13
 
+  *) ab: Support specifying the local address to use. PR 48930.
+     [Peter Schuller <scode spotify com>]
+
   *) core: Add support to ErrorLogFormat for logging the system unique
      thread id under Linux. [Stefan Fritsch]
 
