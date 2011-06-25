@@ -306,6 +306,7 @@ apr_port_t port;        /* port number */
 char proxyhost[1024];   /* proxy host name */
 int proxyport = 0;      /* proxy port */
 const char *connecthost;
+const char *myhost;
 apr_port_t connectport;
 const char *gnuplot;          /* GNUplot file */
 const char *csvperc;          /* CSV Percentile file */
@@ -370,6 +371,7 @@ apr_pool_t *cntxt;
 
 apr_pollset_t *readbits;
 
+apr_sockaddr_t *mysa;
 apr_sockaddr_t *destsa;
 
 #ifdef NOT_ASCII
@@ -1201,6 +1203,10 @@ static void start_connect(struct connection * c)
     apr_err("socket", rv);
     }
 
+    if ((rv = apr_socket_bind(c->aprsock, mysa)) != APR_SUCCESS) {
+        apr_err("bind", rv);
+    }
+
     c->pollfd.desc_type = APR_POLL_SOCKET;
     c->pollfd.desc.s = c->aprsock;
     c->pollfd.reqevents = 0;
@@ -1699,6 +1705,14 @@ static void test(void)
 #endif              /* NOT_ASCII */
 
     /* This only needs to be done once */
+    if ((rv = apr_sockaddr_info_get(&mysa, myhost, APR_UNSPEC, 0, 0, cntxt)) != APR_SUCCESS) {
+        char buf[120];
+        apr_snprintf(buf, sizeof(buf),
+                 "apr_sockaddr_info_get() for %s", myhost);
+        apr_err(buf, rv);
+    }
+
+    /* This too */
     if ((rv = apr_sockaddr_info_get(&destsa, connecthost, APR_UNSPEC, connectport, 0, cntxt))
        != APR_SUCCESS) {
         char buf[120];
@@ -1857,6 +1871,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -c concurrency  Number of multiple requests to make\n");
     fprintf(stderr, "    -t timelimit    Seconds to max. wait for responses\n");
     fprintf(stderr, "    -b windowsize   Size of TCP send/receive buffer, in bytes\n");
+    fprintf(stderr, "    -B address      Address to bind to when making outgoing connections\n");
     fprintf(stderr, "    -p postfile     File containing data to POST. Remember also to set -T\n");
     fprintf(stderr, "    -u putfile      File containing data to PUT. Remember also to set -T\n");
     fprintf(stderr, "    -T content-type Content-type header for POSTing, eg.\n");
@@ -2051,8 +2066,10 @@ int main(int argc, const char * const argv[])
     }
 #endif
 
+    myhost = NULL; /* 0.0.0.0 or :: */
+
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:b:T:p:u:v:rkVhwix:y:z:C:H:P:A:g:X:de:Sq"
+    while ((status = apr_getopt(opt, "n:c:t:b:T:p:u:v:rkVhwix:y:z:C:H:P:A:g:X:de:SqB:"
 #ifdef USE_SSL
             "Z:f:"
 #endif
@@ -2212,6 +2229,9 @@ int main(int argc, const char * const argv[])
             case 'V':
                 copyright();
                 return 0;
+            case 'B':
+                myhost = apr_pstrdup(cntxt, opt_arg);
+                break;
 #ifdef USE_SSL
             case 'Z':
                 ssl_cipher = strdup(opt_arg);
