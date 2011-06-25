@@ -803,6 +803,7 @@ AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp);
  * string.
  * @param p The pool to allocate the string from
  * @param cfp The config file
+ * @param rc The return value to convert
  * @return The error string, NULL if rc == APR_SUCCESS
  */
 AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
