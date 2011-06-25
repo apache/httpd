@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1132676 -->
+<!-- English Revision : 1138616 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1452,6 +1452,11 @@ host</context>
 
     <tr><td><code>%...T</code></td>
         <td>Identifiant du thread courant</td></tr>
+
+    <tr><td><code>%...{g}T</code></td>
+        <td>Identifiant unique de thread syst&egrave;me du thread courant
+	(l'identifiant affich&eacute; par la commande <code>top</code> par
+	exemple ; seulement sous Linux pour l'instant)</td></tr>
 
     <tr><td><code>%...t</code></td>
         <td>L'heure courante</td></tr>

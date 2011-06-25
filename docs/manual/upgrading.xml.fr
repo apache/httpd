@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1128732:1137744 (outdated) -->
+<!-- English Revision: 1137744 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -179,7 +179,16 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
       <ul>
         <li><directive>MaxRequestsPerChild</directive> a &eacute;t&eacute; renomm&eacute;e en
 	<directive module="mpm_common">MaxConnectionsPerChild</directive>;
-	ce nouveau nom refl&egrave;te mieux l'usage de cette directive.</li>
+	ce nouveau nom refl&egrave;te mieux l'usage de cette directive.
+	L'ancien nom est encore support&eacute;.</li>
+
+	<li>La directive <directive>MaxClients</directive> a
+	&eacute;t&eacute; renomm&eacute;e en <directive
+	module="mpm_common">MaxRequestWorkers</directive>; ce nouveau
+	nom refl&egrave;te mieux l'usage de cette directive. Pour les
+	modules multiprocessus asynchrones, comme <module>event</module>, le nombre
+	maximal de clients n'est pas &eacute;quivalent au nombre de threads du
+	worker. L'ancien nom est encore support&eacute;.</li>
 
         <li>La directive <directive
 	module="core">DefaultType</directive> ne produit plus aucun
