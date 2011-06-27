@@ -111,6 +111,7 @@ static APR_OPTIONAL_FN_TYPE(uldap_cache_check_subgroups) *util_ldap_cache_check_
 static APR_OPTIONAL_FN_TYPE(uldap_cache_checkuserid) *util_ldap_cache_checkuserid;
 static APR_OPTIONAL_FN_TYPE(uldap_cache_getuserdn) *util_ldap_cache_getuserdn;
 static APR_OPTIONAL_FN_TYPE(uldap_ssl_supported) *util_ldap_ssl_supported;
+static APR_OPTIONAL_FN_TYPE(ap_ldap_url_parse) *util_ldap_url_parse;
 
 static apr_hash_t *charset_conversions = NULL;
 static char *to_charset = NULL;           /* UTF-8 identifier derived from the charset.conv file */
@@ -1338,7 +1339,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 
     authn_ldap_config_t *sec = config;
 
-    rc = ap_ldap_url_parse(cmd->pool, url, &(urld), &(result));
+    rc = util_ldap_url_parse(cmd->pool, url, &(urld), &(result));
     if (rc != APR_SUCCESS) {
         return result->reason;
     }
@@ -1780,6 +1781,7 @@ static void ImportULDAPOptFn(void)
     util_ldap_cache_getuserdn   = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_getuserdn);
     util_ldap_ssl_supported     = APR_RETRIEVE_OPTIONAL_FN(uldap_ssl_supported);
     util_ldap_cache_check_subgroups = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_check_subgroups);
+    util_ldap_url_parse = APR_RETRIEVE_OPTIONAL_FN(ap_ldap_url_parse);
 }
 
 static void register_hooks(apr_pool_t *p)
