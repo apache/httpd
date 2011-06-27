@@ -334,7 +334,7 @@ AP_DECLARE(int) ap_rwrite(const void *buf, int nbyte, request_rec *r);
  * @return The number of bytes sent
  * @note ap_rputs may be implemented as macro or inline function
  */
-static inline int ap_rputs(const char *str, request_rec *r)
+static APR_INLINE int ap_rputs(const char *str, request_rec *r)
 {
     return ap_rwrite(str, strlen(str), r);
 }
