@@ -149,16 +149,14 @@ static void usage(const char *argv0, const char *reason)
             "  -v       Verbose operation. Messages are written to stderr.\n"
             "  -l       Base rotation on local time instead of UTC.\n"
             "  -L path  Create hard link from current log to specified path.\n"
-            "  -p prog  Run specified program on log rotation. See below.\n"
+            "  -p prog  Run specified program after opening a new log file. See below.\n"
             "  -f       Force opening of log on program start.\n"
             "  -t       Truncate logfile instead of rotating, tail friendly.\n"
             "  -e       Echo log to stdout for further processing.\n"
             "\n"
-            "The post-rotation program must be an executable program or script.\n"
-            "Scripts are supported as long as the shebang line uses a working\n"
-            "interpreter. The program is invoked as \"[prog] <curfile> <prevfile>\"\n"
-            "where <curfile> is the filename of the currently used logfile, and\n"
-            "<prevfile> is the filename of the previously used logfile.\n"
+            "The program is invoked as \"[prog] <curfile> [<prevfile>]\"\n"
+            "where <curfile> is the filename of the newly opened logfile, and\n"
+            "<prevfile>, if given, is the filename of the previously used logfile.\n"
             "\n");
     exit(1);
 }
@@ -313,8 +311,13 @@ static void post_rotate(apr_pool_t *pool, rotate_config_t *config, rotate_status
 
     argv[0] = config->postrotate_prog;
     argv[1] = status->filename;
-    argv[2] = status->filenameprev;
-    argv[3] = NULL;
+    if (status->filenameprev[0]) {
+        argv[2] = status->filenameprev;
+        argv[3] = NULL;
+    }
+    else {
+        argv[2] = NULL;
+    }
 
     if (config->verbose)
         fprintf(stderr, "Calling post-rotate program: %s\n", argv[0]);
@@ -426,9 +429,8 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         }
     }
     else {
-        /* If postrotate configured, and this is a real rotate rather
-         * than an initial open, run the post-rotate program: */
-        if (config->postrotate_prog && status->pfile_prev) {
+        /* If postrotate configured, run the post-rotate program: */
+        if (config->postrotate_prog) {
             post_rotate(status->pfile, config, status);
         }
 
