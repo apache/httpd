@@ -607,7 +607,10 @@ int main (int argc, const char * const argv[])
     for (;;) {
         nRead = sizeof(buf);
         rv = apr_file_read(f_stdin, buf, &nRead);
-        if (rv != APR_SUCCESS) {
+        if (APR_STATUS_IS_EOF(rv)) {
+            break;
+        }
+        else if (rv != APR_SUCCESS) {
             exit(3);
         }
         checkRotate(&config, &status);
@@ -659,6 +662,6 @@ int main (int argc, const char * const argv[])
             }
         }
     }
-    /* Of course we never, but prevent compiler warnings */
-    return 0;
+
+    return 0; /* reached only at stdin EOF. */
 }
