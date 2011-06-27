@@ -61,13 +61,16 @@ the log continuously across rotations using a command like
 <code>tail -F linkname</code>.</dd>
 
 <dt><code>-p</code> <var>program</var></dt>
-<dd>Causes the specified program to be executed after each rotation.
-Two arguments are supplied upon execution: the newly opened file and
-the previous file, respectively.  <code>rotatelogs</code> does not
-wait for the specified program to terminate before continuing to
-operate, and will not log any error code returned on termination.  The
-spawned program uses the same stdin, stdout, and stderr as rotatelogs
-itself, and also inherits the environment.</dd>
+
+<dd>If given, <code>rotatelogs</code> will execute the specified
+program every time a new log file is opened.  The filename of the
+newly opened file is passed as the first argument to the program.  If
+executing after a rotation, the old log file is passed as the second
+argument.  <code>rotatelogs</code> does not wait for the specified
+program to terminate before continuing to operate, and will not log
+any error code returned on termination.  The spawned program uses the
+same stdin, stdout, and stderr as rotatelogs itself, and also inherits
+the environment.</dd>
 
 <dt><code>-f</code></dt>
 <dd>Causes the logfile to be opened immediately, as soon as
