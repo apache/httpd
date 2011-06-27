@@ -97,14 +97,17 @@ struct rotate_config {
 
 typedef struct rotate_status rotate_status_t;
 
-struct rotate_status {
+/* Structure to contain relevant logfile state: fd, pool and
+ * filename. */
+struct logfile {
     apr_pool_t *pool;
-    apr_pool_t *pfile;
-    apr_pool_t *pfile_prev;
-    apr_file_t *nLogFD;
-    apr_file_t *nLogFDprev;
-    char filename[MAX_PATH];
-    char filenameprev[MAX_PATH];
+    apr_file_t *fd;
+    char name[MAX_PATH];
+};
+
+struct rotate_status {
+    struct logfile current; /* current logfile. */
+    apr_pool_t *pool; /* top-level pool */
     char errbuf[ERRMSGSZ];
     int rotateReason;
     int tLogEnd;
@@ -184,26 +187,13 @@ static int get_now(rotate_config_t *config)
 /*
  * Close a file and destroy the associated pool.
  */
-static void closeFile(rotate_config_t *config, apr_pool_t *pool, apr_file_t *file)
+static void close_logfile(rotate_config_t *config, struct logfile *logfile)
 {
-    if (file != NULL) {
-        if (config->verbose) {
-            apr_finfo_t finfo;
-            apr_int32_t wanted = APR_FINFO_NAME;
-            apr_status_t rv = apr_file_info_get(&finfo, wanted, file);
-            if ((rv == APR_SUCCESS) || (rv == APR_INCOMPLETE)) {
-                if (finfo.valid & APR_FINFO_NAME) {
-                    fprintf(stderr, "Closing file %s (%s)\n", finfo.name, finfo.fname);
-                } else {
-                    fprintf(stderr, "Closing file %s\n", finfo.fname);
-                }
-            }
-        }
-        apr_file_close(file);
-        if (pool) {
-            apr_pool_destroy(pool);
-        }
+    if (config->verbose) {
+        fprintf(stderr, "Closing file %s\n", logfile->name);
     }
+    apr_file_close(logfile->fd);
+    apr_pool_destroy(logfile->pool);
 }
 
 /*
@@ -236,15 +226,14 @@ static void dumpConfig (rotate_config_t *config)
  */
 static void checkRotate(rotate_config_t *config, rotate_status_t *status)
 {
-
-    if (status->nLogFD == NULL) {
+    if (status->current.fd == NULL) {
         status->rotateReason = ROTATE_NEW;
     }
     else if (config->sRotation) {
         apr_finfo_t finfo;
         apr_off_t current_size = -1;
 
-        if (apr_file_info_get(&finfo, APR_FINFO_SIZE, status->nLogFD) == APR_SUCCESS) {
+        if (apr_file_info_get(&finfo, APR_FINFO_SIZE, status->current.fd) == APR_SUCCESS) {
             current_size = finfo.size;
         }
 
@@ -270,20 +259,40 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
     if (status->rotateReason != ROTATE_NONE && config->verbose) {
         fprintf(stderr, "File rotation needed, reason: %s\n", ROTATE_REASONS[status->rotateReason]);
     }
-
-    return;
 }
 
 /*
- * Spawn a post-rotate process.
+ * Handle post-rotate processing.
  */
-static void post_rotate(apr_pool_t *pool, rotate_config_t *config, rotate_status_t *status)
+static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
+                        rotate_config_t *config, rotate_status_t *status)
 {
     apr_status_t rv;
     char error[120];
     apr_procattr_t *pattr;
     const char *argv[4];
     apr_proc_t proc;
+
+    /* Handle link file, if configured. */
+    if (config->linkfile) {
+        apr_file_remove(config->linkfile, newlog->pool);
+        if (config->verbose) {
+            fprintf(stderr,"Linking %s to %s\n", newlog->name, config->linkfile);
+        }
+        rv = apr_file_link(newlog->name, config->linkfile);
+        if (rv != APR_SUCCESS) {
+            char error[120];
+            apr_strerror(rv, error, sizeof error);
+            fprintf(stderr, "Error linking file %s to %s (%s)\n",
+                    newlog->name, config->linkfile, error);
+            exit(2);
+        }
+    }
+    
+    if (!config->postrotate_prog) {
+        /* Nothing more to do. */
+        return;
+    }
 
     /* Collect any zombies from a previous run, but don't wait. */
     while (apr_proc_wait_all_procs(&proc, NULL, NULL, APR_NOWAIT, pool) == APR_CHILD_DONE)
@@ -310,9 +319,9 @@ static void post_rotate(apr_pool_t *pool, rotate_config_t *config, rotate_status
     }
 
     argv[0] = config->postrotate_prog;
-    argv[1] = status->filename;
-    if (status->filenameprev[0]) {
-        argv[2] = status->filenameprev;
+    argv[1] = newlog->name;
+    if (status->current.name) {
+        argv[2] = status->current.name;
         argv[3] = NULL;
     }
     else {
@@ -348,11 +357,9 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     int now = get_now(config);
     int tLogStart;
     apr_status_t rv;
-
+    struct logfile newlog;
+ 
     status->rotateReason = ROTATE_NONE;
-    status->nLogFDprev = status->nLogFD;
-    status->nLogFD = NULL;
-    status->pfile_prev = status->pfile;
 
     if (config->tRotation) {
         int tLogEnd;
@@ -372,87 +379,77 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         tLogStart = now;
     }
 
-    apr_cpystrn(status->filenameprev, status->filename, MAX_PATH);
-
     if (config->use_strftime) {
         apr_time_t tNow = apr_time_from_sec(tLogStart);
         apr_time_exp_t e;
         apr_size_t rs;
 
         apr_time_exp_gmt(&e, tNow);
-        apr_strftime(status->filename, &rs, sizeof(status->filename), config->szLogRoot, &e);
+        apr_strftime(newlog.name, &rs, sizeof(newlog.name), config->szLogRoot, &e);
     }
     else {
         if (config->truncate) {
-            apr_snprintf(status->filename, sizeof(status->filename), "%s", config->szLogRoot);
+            apr_snprintf(newlog.name, sizeof(newlog.name), "%s", config->szLogRoot);
         }
         else {
-            apr_snprintf(status->filename, sizeof(status->filename), "%s.%010d", config->szLogRoot,
-                    tLogStart);
+            apr_snprintf(newlog.name, sizeof(newlog.name), "%s.%010d", config->szLogRoot,
+                         tLogStart);
         }
     }
-    apr_pool_create(&status->pfile, status->pool);
+    apr_pool_create(&newlog.pool, status->pool);
     if (config->verbose) {
-        fprintf(stderr, "Opening file %s\n", status->filename);
+        fprintf(stderr, "Opening file %s\n", newlog.name);
     }
-    rv = apr_file_open(&status->nLogFD, status->filename, APR_WRITE | APR_CREATE | APR_APPEND
-                       | (config->truncate ? APR_TRUNCATE : 0), APR_OS_DEFAULT, status->pfile);
-    if (rv != APR_SUCCESS) {
+    rv = apr_file_open(&newlog.fd, newlog.name, APR_WRITE | APR_CREATE | APR_APPEND
+                       | (config->truncate ? APR_TRUNCATE : 0), APR_OS_DEFAULT, newlog.pool);
+    if (rv == APR_SUCCESS) {
+        /* Handle post-rotate processing. */
+        post_rotate(newlog.pool, &newlog, config, status);
+
+        /* Close out old (previously 'current') logfile, if any. */
+        if (status->current.fd) {
+            close_logfile(config, &status->current);
+        }
+
+        /* New log file is now 'current'. */
+        status->current = newlog;
+    }
+    else {
         char error[120];
+        apr_size_t nWrite;
 
         apr_strerror(rv, error, sizeof error);
 
         /* Uh-oh. Failed to open the new log file. Try to clear
          * the previous log file, note the lost log entries,
          * and keep on truckin'. */
-        if (status->nLogFDprev == NULL) {
-            fprintf(stderr, "Could not open log file '%s' (%s)\n", status->filename, error);
+        if (status->current.fd == NULL) {
+            fprintf(stderr, "Could not open log file '%s' (%s)\n", newlog.name, error);
             exit(2);
         }
-        else {
-            apr_size_t nWrite;
-            status->nLogFD = status->nLogFDprev;
-            apr_pool_destroy(status->pfile);
-            status->pfile = status->pfile_prev;
-            /* Try to keep this error message constant length
-             * in case it occurs several times. */
-            apr_snprintf(status->errbuf, sizeof status->errbuf,
-                         "Resetting log file due to error opening "
-                         "new log file, %10d messages lost: %-25.25s\n",
-                         status->nMessCount, error);
-            nWrite = strlen(status->errbuf);
-            apr_file_trunc(status->nLogFD, 0);
-            if (apr_file_write(status->nLogFD, status->errbuf, &nWrite) != APR_SUCCESS) {
-                fprintf(stderr, "Error writing to the file %s\n", status->filename);
-                exit(2);
-            }
+        
+        /* Throw away new state; it isn't going to be used. */
+        apr_pool_destroy(newlog.pool);
+        
+        /* Try to keep this error message constant length
+         * in case it occurs several times. */
+        apr_snprintf(status->errbuf, sizeof status->errbuf,
+                     "Resetting log file due to error opening "
+                     "new log file, %10d messages lost: %-25.25s\n",
+                     status->nMessCount, error);
+        nWrite = strlen(status->errbuf);
+        
+        if (apr_file_trunc(status->current.fd, 0) != APR_SUCCESS) {
+            fprintf(stderr, "Error truncating the file %s\n", status->current.name);
+            exit(2);
+        }        
+        if (apr_file_write(status->current.fd, status->errbuf, &nWrite) != APR_SUCCESS) {
+            fprintf(stderr, "Error writing to the file %s\n", status->current.name);
+            exit(2);
         }
     }
-    else {
-        /* If postrotate configured, run the post-rotate program: */
-        if (config->postrotate_prog) {
-            post_rotate(status->pfile, config, status);
-        }
-
-        closeFile(config, status->pfile_prev, status->nLogFDprev);
-        status->nLogFDprev = NULL;
-        status->pfile_prev = NULL;
-    }
+    
     status->nMessCount = 0;
-    if (config->linkfile) {
-        apr_file_remove(config->linkfile, status->pfile);
-        if (config->verbose) {
-            fprintf(stderr,"Linking %s to %s\n", status->filename, config->linkfile);
-        }
-        rv = apr_file_link(status->filename, config->linkfile);
-        if (rv != APR_SUCCESS) {
-            char error[120];
-            apr_strerror(rv, error, sizeof error);
-            fprintf(stderr, "Error linking file %s to %s (%s)\n",
-                    status->filename, config->linkfile, error);
-            exit(2);
-        }
-    }
 }
 
 /*
@@ -525,22 +522,9 @@ int main (int argc, const char * const argv[])
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
 
-    config.sRotation = 0;
-    config.tRotation = 0;
-    config.utc_offset = 0;
-    config.use_localtime = 0;
-    config.use_strftime = 0;
-    config.force_open = 0;
-    config.verbose = 0;
-    config.echo = 0;
-    status.pool = NULL;
-    status.pfile = NULL;
-    status.pfile_prev = NULL;
-    status.nLogFD = NULL;
-    status.nLogFDprev = NULL;
-    status.tLogEnd = 0;
+    memset(&config, 0, sizeof config);
+    memset(&status, 0, sizeof status);
     status.rotateReason = ROTATE_NONE;
-    status.nMessCount = 0;
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
@@ -632,7 +616,7 @@ int main (int argc, const char * const argv[])
         }
 
         nWrite = nRead;
-        rv = apr_file_write(status.nLogFD, buf, &nWrite);
+        rv = apr_file_write(status.current.fd, buf, &nWrite);
         if (rv == APR_SUCCESS && nWrite != nRead) {
             /* buffer partially written, which for rotatelogs means we encountered
              * an error such as out of space or quota or some other limit reached;
@@ -642,14 +626,14 @@ int main (int argc, const char * const argv[])
 
             nRead  = nRead - nWritten;
             nWrite = nRead;
-            rv = apr_file_write(status.nLogFD, buf + nWritten, &nWrite);
+            rv = apr_file_write(status.current.fd, buf + nWritten, &nWrite);
         }
         if (nWrite != nRead) {
             char strerrbuf[120];
             apr_off_t cur_offset;
 
             cur_offset = 0;
-            if (apr_file_seek(status.nLogFD, APR_CUR, &cur_offset) != APR_SUCCESS) {
+            if (apr_file_seek(status.current.fd, APR_CUR, &cur_offset) != APR_SUCCESS) {
                 cur_offset = -1;
             }
             apr_strerror(rv, strerrbuf, sizeof strerrbuf);
@@ -659,9 +643,9 @@ int main (int argc, const char * const argv[])
                          "%10d messages lost (%s)\n",
                          rv, cur_offset, status.nMessCount, strerrbuf);
             nWrite = strlen(status.errbuf);
-            apr_file_trunc(status.nLogFD, 0);
-            if (apr_file_write(status.nLogFD, status.errbuf, &nWrite) != APR_SUCCESS) {
-                fprintf(stderr, "Error writing to the file %s\n", status.filename);
+            apr_file_trunc(status.current.fd, 0);
+            if (apr_file_write(status.current.fd, status.errbuf, &nWrite) != APR_SUCCESS) {
+                fprintf(stderr, "Error writing to the file %s\n", status.current.name);
                 exit(2);
             }
         }
