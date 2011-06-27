@@ -214,11 +214,11 @@ struct ap_ldap_opt_tls_cert_t {
  * @param result_err The ap_ldap_err_t structure contained detailed results
  *        of the operation.
  */
-LDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
-                                        LDAP *ldap,
-                                        int option,
-                                        void *outvalue,
-                                        ap_ldap_err_t **result_err);
+APR_DECLARE_OPTIONAL_FN(int, ap_ldap_get_option, (apr_pool_t *pool,
+                                                  LDAP *ldap,
+                                                  int option,
+                                                  void *outvalue,
+                                                  ap_ldap_err_t **result_err));
 
 /**
  * LDAP set option function
@@ -236,11 +236,11 @@ LDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
  * @param result_err The ap_ldap_err_t structure contained detailed results
  *        of the operation.
  */
-LDAP_DECLARE(int) ap_ldap_set_option(apr_pool_t *pool,
-                                        LDAP *ldap,
-                                        int option,
-                                        const void *invalue,
-                                        ap_ldap_err_t **result_err);
+APR_DECLARE_OPTIONAL_FN(int, ap_ldap_set_option, (apr_pool_t *pool,
+                                                  LDAP *ldap,
+                                                  int option,
+                                                  const void *invalue,
+                                                  ap_ldap_err_t **result_err));
 
 #ifdef __cplusplus
 }

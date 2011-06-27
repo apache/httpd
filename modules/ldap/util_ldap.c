@@ -42,6 +42,8 @@
 #error mod_ldap requires httpd to detect LDAP support
 #endif
 
+#include "ldap_private.h"
+
 #ifdef LDAP_OPT_DEBUG_LEVEL
 #define AP_LDAP_OPT_DEBUG LDAP_OPT_DEBUG_LEVEL
 #else
@@ -2942,6 +2944,21 @@ static void util_ldap_register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(uldap_cache_getuserdn);
     APR_REGISTER_OPTIONAL_FN(uldap_ssl_supported);
     APR_REGISTER_OPTIONAL_FN(uldap_cache_check_subgroups);
+
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_get_option);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_info);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_init);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_is_ldap_url);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_is_ldapi_url);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_is_ldaps_url);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_rebind_add);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_rebind_init);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_rebind_remove);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_set_option);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_ssl_deinit);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_ssl_init);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_url_parse);
+    APR_REGISTER_OPTIONAL_FN(ap_ldap_url_parse_ext);
 
     ap_hook_pre_config(util_ldap_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(util_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
