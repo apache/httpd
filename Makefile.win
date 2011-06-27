@@ -77,7 +77,7 @@ TLP=Apache
 UTILDIR=apr-util
 !ENDIF
 
-!IF !EXIST("srclib\expat") && !EXIST("srclib\apr-util\xml\expat)
+!IF !EXIST("srclib\expat") && !EXIST("srclib\apr-util\xml\expat")
 !MESSAGE Please check out or download and unpack the current expat library source
 !MESSAGE under your srclib dir for apr 2.x, or srclib\apr-util\xml\expat for apr 1.x
 !MESSAGE Apache cannot build without this library!
