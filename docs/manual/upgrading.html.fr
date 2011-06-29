@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -175,7 +173,15 @@ nécessiter une mise à jour des fichiers de configuration de la version
       <ul>
         <li><code class="directive">MaxRequestsPerChild</code> a été renommée en
 	<code class="directive"><a href="./mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>;
-	ce nouveau nom reflète mieux l'usage de cette directive.</li>
+	ce nouveau nom reflète mieux l'usage de cette directive.
+	L'ancien nom est encore supporté.</li>
+
+	<li>La directive <code class="directive">MaxClients</code> a
+	été renommée en <code class="directive"><a href="./mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>; ce nouveau
+	nom reflète mieux l'usage de cette directive. Pour les
+	modules multiprocessus asynchrones, comme <code class="module"><a href="./mod/event.html">event</a></code>, le nombre
+	maximal de clients n'est pas équivalent au nombre de threads du
+	worker. L'ancien nom est encore supporté.</li>
 
         <li>La directive <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code> ne produit plus aucun
 	effet, si ce n'est d'émettre un avertissement si elle est

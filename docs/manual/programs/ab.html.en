@@ -39,6 +39,7 @@
     <p><code><strong>ab</strong>
     [ -<strong>A</strong> <var>auth-username</var>:<var>password</var> ]
     [ -<strong>b</strong> <var>windowsize</var> ]
+    [ -<strong>B</strong> <var>local-address</var> ]
     [ -<strong>c</strong> <var>concurrency</var> ]
     [ -<strong>C</strong> <var>cookie-name</var>=<var>value</var> ]
     [ -<strong>d</strong> ]
@@ -80,6 +81,9 @@
 
     <dt><code>-b <var>windowsize</var></code></dt>
     <dd>Size of TCP send/receive buffer, in bytes.</dd>
+
+    <dt><code>-B <var>local-address</var></code></dt>
+    <dd>Address to bind to when making outgoing connections.</dd>
 
     <dt><code>-c <var>concurrency</var></code></dt>
     <dd>Number of multiple requests to perform at a time. Default is one

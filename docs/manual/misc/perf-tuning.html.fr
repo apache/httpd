@@ -62,7 +62,7 @@
     "trop lent". Ceci incite les utilisateurs à cliquer sur "Stop", puis
     "Charger à nouveau", ce qui a pour effet d'augmenter encore la charge
     du serveur. Vous pouvez, et même devez définir la valeur de la directive
-    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> de façon à ce que
+    <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> de façon à ce que
     votre serveur ne lance pas un nombre de processus enfants tel qu'il
     commence à faire du swapping. La méthode pour y parvenir est
     simple : déterminez la taille de votre processus Apache standard en
