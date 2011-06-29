@@ -635,7 +635,7 @@ string argument to index.php, you can replace that RewriteRule with:</p>
   RewriteRule (.*) index.php?$1 [PT,QSA]
 </example>
 
-<p>Note that these rulesets can be uses in a <code>.htaccess</code>
+<p>Note that these rulesets can be used in a <code>.htaccess</code>
 file, as well as in a &lt;Directory&gt; block.</p>
 
 </dd>
