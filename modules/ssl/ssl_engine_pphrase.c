@@ -178,11 +178,14 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
      */
     for (pServ = s; pServ != NULL; pServ = pServ->next) {
         sc = mySrvConfig(pServ);
-
-        if (!sc->enabled)
-            continue;
-
         cpVHostID = ssl_util_vhostid(p, pServ);
+        if (!sc->enabled) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, pServ,
+                         "SSL not enabled on vhost %s, skipping SSL setup",
+                         cpVHostID);
+            continue;
+        }
+
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, pServ,
                      "Loading certificate & private key of SSL-aware server '%s'",
                      cpVHostID);
@@ -235,6 +238,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     ssl_die();
                 }
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                             "Init: Read server certificate from '%s'",
+                             szPath);
             }
             /*
              * check algorithm type of certificate and make
@@ -452,8 +458,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     }
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0,
-                                 pServ, "Init: Pass phrase incorrect");
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, pServ,
+                                 "Init: Pass phrase incorrect for key of %s",
+                                 cpVHostID);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, pServ);
 
                     if (writetty) {
