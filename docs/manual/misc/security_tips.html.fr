@@ -125,7 +125,7 @@
       système d'exploitation. Elle est activée par défaut dans le démon httpd
       d'Apache, mais peut nécessiter une reconfiguration de votre noyau.</li>
 
-      <li>Optimisez la directive <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> de façon à définir le nombre
+      <li>Optimisez la directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> de façon à définir le nombre
       maximum de connexions simultanées au dessus duquel les ressources
       s'épuisent. Voir aussi la <a href="perf-tuning.html">documentation sur l'optimisation des
       performances</a>.</li>

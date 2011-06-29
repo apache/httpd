@@ -1439,21 +1439,25 @@ personnalisation des réponses</a></li>
         <td>Identifiant du processus courant</td></tr>
 <tr><td><code>%...T</code></td>
         <td>Identifiant du thread courant</td></tr>
-<tr class="odd"><td><code>%...t</code></td>
+<tr class="odd"><td><code>%...{g}T</code></td>
+        <td>Identifiant unique de thread système du thread courant
+	(l'identifiant affiché par la commande <code>top</code> par
+	exemple ; seulement sous Linux pour l'instant)</td></tr>
+<tr><td><code>%...t</code></td>
         <td>L'heure courante</td></tr>
-<tr><td><code>%...{u}t</code></td>
+<tr class="odd"><td><code>%...{u}t</code></td>
         <td>L'heure courante avec les microsecondes</td></tr>
-<tr class="odd"><td><code>%...{cu}t</code></td>
+<tr><td><code>%...{cu}t</code></td>
         <td>L'heure courante au format compact ISO 8601, avec les
 	microsecondes</td></tr>
-<tr><td><code>%...v</code></td>
+<tr class="odd"><td><code>%...v</code></td>
         <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur courant.</td></tr>
-<tr class="odd"><td><code>%...V</code></td>
+<tr><td><code>%...V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
 	avec la définition de la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
-<tr><td><code>\&nbsp;</code> (anti-slash espace)</td>
+<tr class="odd"><td><code>\&nbsp;</code> (anti-slash espace)</td>
         <td>Espace non délimiteur</td></tr>
-<tr class="odd"><td><code>%&nbsp;</code> (pourcentage espace)</td>
+<tr><td><code>%&nbsp;</code> (pourcentage espace)</td>
         <td>Délimiteur de champ (aucune sortie)</td></tr>
 </table>
 
