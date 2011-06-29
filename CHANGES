@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.14
 
+  *) mod_ssl: Add some debug logging when loading server certificates.
+     PR 37912. [Nick Burch <nick burch alfresco com>]
 
 Changes with Apache 2.3.13
 
