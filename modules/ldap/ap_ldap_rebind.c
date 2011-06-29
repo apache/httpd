@@ -26,6 +26,7 @@
 #include "ap_ldap.h"
 
 #if AP_HAS_LDAP
+#include "ldap_private.h"
 
 #include "apr_errno.h"
 #include "apr_strings.h"

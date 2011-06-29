@@ -32,6 +32,7 @@
 #include "apr_strings.h"
 
 #if AP_HAS_LDAP
+#include "ldap_private.h"
 
 /**
  * APR LDAP SSL Initialise function
