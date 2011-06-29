@@ -31,6 +31,7 @@
 #include "apr_tables.h"
 
 #if AP_HAS_LDAP
+#include "ldap_private.h"
 
 static void option_set_cert(apr_pool_t *pool, LDAP *ldap, const void *invalue,
                             ap_ldap_err_t *result);

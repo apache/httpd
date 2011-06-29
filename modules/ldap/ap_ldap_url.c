@@ -78,6 +78,7 @@
 #include "ap_ldap.h"
 
 #if AP_HAS_LDAP
+#include "ldap_private.h"
 
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
