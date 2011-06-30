@@ -146,7 +146,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1125646&view=rev
     2.2.x patch: trunk patch works except for CHANGES
     +1: sf
-    
+
+   * mod_filter: fix parsing of regexps containing slashes
+     PR 51434 (and 51435, which includes the fix)
+     Trunk patch: N/A
+     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
+     +1: niq
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
