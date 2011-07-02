@@ -1160,7 +1160,7 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
     ssl_require_t *require;
     const char *errstring;
 
-    info->flags = AP_EXPR_FLAGS_SSL_EXPR_COMPAT;
+    info->flags = AP_EXPR_FLAG_SSL_EXPR_COMPAT;
     info->filename = cmd->directive->filename;
     info->line_number = cmd->directive->line_num;
     info->module_index = APLOG_MODULE_INDEX;

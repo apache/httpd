@@ -427,20 +427,17 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
     if (!provider_frec) {
         return apr_psprintf(cmd->pool, "Unknown filter provider %s", pname);
     }
-    node = ap_expr_parse_cmd(cmd, expr, &err, NULL);
+    node = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
     if (err) {
         return apr_pstrcat(cmd->pool,
                            "Error parsing FilterProvider expression:", err,
                            NULL);
     }
-    node->module_index = APLOG_MODULE_INDEX;
-
     provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t));
     provider->expr = node;
     provider->frec = provider_frec;
     provider->next = frec->providers;
     frec->providers = provider;
-
     return NULL;
 }
 static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)

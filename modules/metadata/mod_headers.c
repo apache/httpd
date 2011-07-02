@@ -492,13 +492,12 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
         }
         else {
             const char *err = NULL;
-            expr = ap_expr_parse_cmd(cmd, envclause, &err, NULL);
+            expr = ap_expr_parse_cmd(cmd, envclause, 0, &err, NULL);
             if (err) {
                 return apr_pstrcat(cmd->pool,
                                    "Can't parse envclause/expression: ", err,
                                    NULL);
             }
-            expr->module_index = APLOG_MODULE_INDEX;
         }
     }
 

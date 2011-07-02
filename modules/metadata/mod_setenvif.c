@@ -477,11 +477,10 @@ static const char *add_setenvifexpr(cmd_parms *cmd, void *mconfig,
     new->regex = NULL;
     new->pattern = NULL;
     new->preg = NULL;
-    new->expr = ap_expr_parse_cmd(cmd, expr, &err, NULL);
+    new->expr = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
     if (err)
         return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
                             expr, err);
-    new->expr->module_index = setenvif_module.module_index;
 
     return add_envvars(cmd, args, new);
 }

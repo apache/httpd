@@ -41,6 +41,9 @@
 %token  T_TRUE
 %token  T_FALSE
 
+%token  T_EXPR_BOOL
+%token  T_EXPR_STRING
+
 %token  <cpVal> T_ERROR
 
 %token  <cpVal> T_DIGIT
@@ -106,7 +109,8 @@ int ap_expr_yylex(YYSTYPE *lvalp, void *scanner);
 
 %%
 
-root      : expr                         { ctx->expr = $1; }
+root      : T_EXPR_BOOL   expr           { ctx->expr = $2; }
+          | T_EXPR_STRING string         { ctx->expr = $2; }
           | T_ERROR                      { YYABORT; }
           ;
 

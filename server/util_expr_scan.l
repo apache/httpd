@@ -75,6 +75,22 @@
   char *regex_ptr = NULL;
   char  regex_del = '\0';
 
+%{
+ /*
+  * Set initial state for string expressions
+  */
+  if (yyextra->at_start) {
+    yyextra->at_start = 0;
+    if (yyextra->flags & AP_EXPR_FLAG_STRING_RESULT) {
+        BEGIN(str);
+        return T_EXPR_STRING;
+    }
+    else {
+        return T_EXPR_BOOL;
+    }
+  }
+%}
+
  /*
   * Whitespaces
   */
@@ -116,9 +132,22 @@
 <str,var,vararg>\n {
     PERROR("Unterminated string or variable");
 }
-<str,var,vararg><<EOF>> {
+<var,vararg><<EOF>> {
     PERROR("Unterminated string or variable");
 }
+<str><<EOF>> {
+    if (!(yyextra->flags & AP_EXPR_FLAG_STRING_RESULT)) {
+        PERROR("Unterminated string or variable");
+    }
+    else {
+        *str_ptr = '\0';
+        yylval->cpVal = apr_pstrdup(yyextra->pool, str_buf);
+        str_ptr = str_buf;
+        BEGIN(INITIAL);
+        return T_STRING;
+    }
+}
+
 <str,vararg>\\[0-7]{1,3} {
     int result;
 

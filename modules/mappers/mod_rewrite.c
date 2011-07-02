@@ -3322,13 +3322,12 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         newcond->regexp  = regexp;
     }
     else if (newcond->ptype == CONDPAT_AP_EXPR) {
-        newcond->expr = ap_expr_parse_cmd(cmd, a2, &err, NULL);
+        unsigned int flags = newcond->flags & CONDFLAG_NOVARY ?
+                             AP_EXPR_FLAG_DONT_VARY : 0;
+        newcond->expr = ap_expr_parse_cmd(cmd, a2, flags, &err, NULL);
         if (err)
             return apr_psprintf(cmd->pool, "RewriteCond: cannot compile "
                                 "expression \"%s\": %s", a2, err);
-        newcond->expr->module_index = rewrite_module.module_index;
-        if (newcond->flags & CONDFLAG_NOVARY)
-            newcond->expr->flags |= AP_EXPR_FLAGS_DONT_VARY;
     }
 
     return NULL;
