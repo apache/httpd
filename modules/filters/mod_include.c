@@ -1597,7 +1597,7 @@ static int parse_ap_expr(include_ctx_t *ctx, const char *expr, int *was_error)
     expr_info.filename = ctx->r->filename;
     expr_info.line_number = 0;
     expr_info.module_index = APLOG_MODULE_INDEX;
-    expr_info.flags = AP_EXPR_FLAGS_RESTRICTED;
+    expr_info.flags = AP_EXPR_FLAG_RESTRICTED;
     err = ap_expr_parse(ctx->r->pool, ctx->r->pool, &expr_info, expr,
                         include_expr_lookup);
     if (err) {

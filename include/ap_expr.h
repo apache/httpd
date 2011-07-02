@@ -47,23 +47,25 @@ typedef struct {
     const char *filename;
     /** The line number where the expression has been defined (for logging). */
     unsigned int line_number;
-    /** Flags relevant for the expression, see AP_EXPR_FLAGS_* */
+    /** Flags relevant for the expression, see AP_EXPR_FLAG_* */
     unsigned int flags;
-    /** The module that is used for loglevel configuration (XXX put into eval_ctx?) */
+    /** The module that is used for loglevel configuration */
     int module_index;
 } ap_expr_info_t;
 
 /** Use ssl_expr compatibility mode (changes the meaning of the comparison
  * operators)
  */
-#define AP_EXPR_FLAGS_SSL_EXPR_COMPAT       1
+#define AP_EXPR_FLAG_SSL_EXPR_COMPAT       1
 /** Don't add siginificant request headers to the Vary response header */
-#define AP_EXPR_FLAGS_DONT_VARY             2
+#define AP_EXPR_FLAG_DONT_VARY             2
 /** Don't allow functions/vars that bypass the current request's access
  *  restrictions or would otherwise leak confidential information.
  *  Used by e.g. mod_include.
  */
-#define AP_EXPR_FLAGS_RESTRICTED            4
+#define AP_EXPR_FLAG_RESTRICTED            4
+/** Expression evaluates to a string, not to a bool */
+#define AP_EXPR_FLAG_STRING_RESULT         8
 
 
 /**
@@ -74,7 +76,7 @@ typedef struct {
  * @return > 0 if expression evaluates to true, == 0 if false, < 0 on error
  * @note err will be set to NULL on success, or to an error message on error
  * @note request headers used during evaluation will be added to the Vary:
- *       response header, unless ::AP_EXPR_FLAGS_DONT_VARY is set.
+ *       response header, unless ::AP_EXPR_FLAG_DONT_VARY is set.
  */
 AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
                              const char **err);
@@ -93,7 +95,7 @@ AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *expr,
  *       available to ap_expr_exec_re and to use ap_expr_exec_re's matches
  *       later on.
  * @note request headers used during evaluation will be added to the Vary:
- *       response header, unless ::AP_EXPR_FLAGS_DONT_VARY is set.
+ *       response header, unless ::AP_EXPR_FLAG_DONT_VARY is set.
  */
 AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *expr,
                                 apr_size_t nmatch, ap_regmatch_t *pmatch,
@@ -124,6 +126,8 @@ typedef struct {
      * interested in this information.
      */
     const char **vary_this;
+    /** where to store the result string */
+    const char **result_string;
     /** Arbitrary context data provided by the caller for custom functions */
     void *data;
 } ap_expr_eval_ctx_t;
@@ -138,6 +142,44 @@ typedef struct {
  *       response header if ctx->vary_this is set.
  */
 AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx);
+
+/**
+ * Evaluate a parse tree of a string valued expression
+ * @param r The current request
+ * @param expr The expression to be evaluated
+ * @param err Where an error message should be stored
+ * @return The result string, NULL on error
+ * @note err will be set to NULL on success, or to an error message on error
+ * @note request headers used during evaluation will be added to the Vary:
+ *       response header, unless ::AP_EXPR_FLAG_DONT_VARY is set.
+ */
+AP_DECLARE(const char *) ap_expr_str_exec(request_rec *r,
+                                          const ap_expr_info_t *expr,
+                                          const char **err);
+
+/**
+ * Evaluate a parse tree of a string valued expression
+ * @param r The current request
+ * @param expr The expression to be evaluated
+ * @param nmatch size of the regex match vector pmatch
+ * @param pmatch information about regex matches
+ * @param source the string that pmatch applies to
+ * @param err Where an error message should be stored
+ * @return The result string, NULL on error
+ * @note err will be set to NULL on success, or to an error message on error
+ * @note nmatch/pmatch/source can be used both to make previous matches
+ *       available to ap_expr_exec_re and to use ap_expr_exec_re's matches
+ *       later on.
+ * @note request headers used during evaluation will be added to the Vary:
+ *       response header, unless ::AP_EXPR_FLAG_DONT_VARY is set.
+ */
+AP_DECLARE(const char *) ap_expr_str_exec_re(request_rec *r,
+                                             const ap_expr_info_t *expr,
+                                             apr_size_t nmatch,
+                                             ap_regmatch_t *pmatch,
+                                             const char **source,
+                                             const char **err);
+
 
 /**
  * The parser can be extended with variable lookup, functions, and
@@ -274,16 +316,27 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
  * uses info from cmd_parms to fill in most of it.
  * @param cmd The cmd_parms struct
  * @param expr The expression string to parse
+ * @param flags The flags to use, see AP_EXPR_FLAG_*
  * @param err Set to NULL on success, error message on error
  * @param lookup_fn The lookup function used to lookup vars, functions, and
  *        operators
+ * @param module_index The module_index to set for the expression
  * @return The parsed expression
+ * @note Usually ap_expr_parse_cmd() should be used
  */
-AP_DECLARE(ap_expr_info_t *) ap_expr_parse_cmd(const cmd_parms *cmd,
-                                               const char *expr,
-                                               const char **err,
-                                               ap_expr_lookup_fn_t *lookup_fn);
+AP_DECLARE(ap_expr_info_t *) ap_expr_parse_cmd_mi(const cmd_parms *cmd,
+                                                  const char *expr,
+                                                  unsigned int flags,
+                                                  const char **err,
+                                                  ap_expr_lookup_fn_t *lookup_fn,
+                                                  int module_index);
 
+/**
+ * Convenience wrapper for ap_expr_parse_cmd_mi() that sets
+ * module_index = APLOG_MODULE_INDEX
+ */
+#define ap_expr_parse_cmd(cmd, expr, flags, err, lookup_fn) \
+        ap_expr_parse_cmd_mi(cmd, expr, flags, err, lookup_fn, APLOG_MODULE_INDEX)
 
  /**
   * Internal initialisation of ap_expr (for httpd internal use)

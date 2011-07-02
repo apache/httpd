@@ -337,14 +337,17 @@
  *                         add ap_start_lingering_close(),
  *                         add conn_state_e:CONN_STATE_LINGER_NORMAL and CONN_STATE_LINGER_SHORT
  * 20110619.1 (2.3.13-dev) add ap_str_toupper()
+ * 20110702.0 (2.3.13-dev) make ap_expr_parse_cmd() macro wrapper for new
+ *                         ap_expr_parse_cmd_mi() function, add ap_expr_str_*() functions,
+ *                         rename AP_EXPR_FLAGS_* -> AP_EXPR_FLAG_*
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20110619
+#define MODULE_MAGIC_NUMBER_MAJOR 20110702
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

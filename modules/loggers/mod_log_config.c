@@ -1254,12 +1254,11 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
             const char *err;
             if ((envclause[5] == '\0'))
                 return "missing condition";
-            cls->condition_expr = ap_expr_parse_cmd(cmd, &envclause[5], &err,
-                                                    NULL);
+            cls->condition_expr = ap_expr_parse_cmd(cmd, &envclause[5],
+                                                    AP_EXPR_FLAG_DONT_VARY,
+                                                    &err, NULL);
             if (err)
                 return err;
-            cls->condition_expr->module_index = APLOG_MODULE_INDEX;
-            cls->condition_expr->flags |= AP_EXPR_FLAGS_DONT_VARY;
         }
         else {
             return "error in condition clause";

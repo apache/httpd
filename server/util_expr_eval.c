@@ -316,6 +316,7 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
     ctx.scan_buf[0] = '\0';
     ctx.scan_ptr    = ctx.scan_buf;
     ctx.lookup_fn   = lookup_fn ? lookup_fn : ap_expr_lookup_default;
+    ctx.at_start    = 1;
 
 
     /*
@@ -353,14 +354,18 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
     return NULL;
 }
 
-AP_DECLARE(ap_expr_info_t*) ap_expr_parse_cmd(const cmd_parms *cmd,
-                                              const char *expr,
-                                              const char **err,
-                                              ap_expr_lookup_fn_t *lookup_fn)
+AP_DECLARE(ap_expr_info_t*) ap_expr_parse_cmd_mi(const cmd_parms *cmd,
+                                                 const char *expr,
+                                                 unsigned int flags,
+                                                 const char **err,
+                                                 ap_expr_lookup_fn_t *lookup_fn,
+                                                 int module_index)
 {
     ap_expr_info_t *info = apr_pcalloc(cmd->pool, sizeof(ap_expr_info_t));
     info->filename = cmd->directive->filename;
     info->line_number = cmd->directive->line_num;
+    info->flags = flags;
+    info->module_index = module_index;
     *err = ap_expr_parse(cmd->pool, cmd->temp_pool, info, expr, lookup_fn);
 
     if (*err)
@@ -677,7 +682,7 @@ static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
     case op_BinaryOpCall:
         return ap_expr_eval_binary_op(ctx, e1, e2);
     case op_Comp:
-        if (ctx->info->flags & AP_EXPR_FLAGS_SSL_EXPR_COMPAT)
+        if (ctx->info->flags & AP_EXPR_FLAG_SSL_EXPR_COMPAT)
             return ssl_expr_eval_comp(ctx, e1);
         else
             return ap_expr_eval_comp(ctx, e1);
@@ -710,22 +715,39 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
     }
 
     *ctx->err = NULL;
-    rc = ap_expr_eval(ctx, ctx->info->root_node);
-    if (*ctx->err != NULL) {
-        ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
-                      "Evaluation of expression from %s:%d failed: %s",
-                      ctx->info->filename, ctx->info->line_number, *ctx->err);
-        return -1;
-    } else {
-        rc = rc ? 1 : 0;
-        ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
-                      "Evaluation of expression from %s:%d gave: %d",
-                      ctx->info->filename, ctx->info->line_number, rc);
+    if (ctx->info->flags & AP_EXPR_FLAG_STRING_RESULT) {
+        *ctx->result_string = ap_expr_eval_word(ctx, ctx->info->root_node);
+        if (*ctx->err != NULL) {
+            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
+                          "Evaluation of expression from %s:%d failed: %s",
+                          ctx->info->filename, ctx->info->line_number, *ctx->err);
+            return -1;
+        } else {
+            ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
+                          "Evaluation of string expression from %s:%d gave: %s",
+                          ctx->info->filename, ctx->info->line_number,
+                          *ctx->result_string);
+            return 1;
+	}
+    }
+    else {
+        rc = ap_expr_eval(ctx, ctx->info->root_node);
+        if (*ctx->err != NULL) {
+            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
+                          "Evaluation of expression from %s:%d failed: %s",
+                          ctx->info->filename, ctx->info->line_number, *ctx->err);
+            return -1;
+        } else {
+            rc = rc ? 1 : 0;
+            ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE4, 0, ctx->r,
+                          "Evaluation of expression from %s:%d gave: %d",
+                          ctx->info->filename, ctx->info->line_number, rc);
 
-        if (*ctx->vary_this)
-            apr_table_merge(ctx->r->headers_out, "Vary", *ctx->vary_this);
+            if (ctx->vary_this && *ctx->vary_this)
+                apr_table_merge(ctx->r->headers_out, "Vary", *ctx->vary_this);
 
-        return rc;
+            return rc;
+        }
     }
 }
 
@@ -734,9 +756,11 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
                                 const char **source, const char **err)
 {
     ap_expr_eval_ctx_t ctx;
-    int dont_vary = (info->flags & AP_EXPR_FLAGS_DONT_VARY);
+    int dont_vary = (info->flags & AP_EXPR_FLAG_DONT_VARY);
     const char *tmp_source = NULL, *vary_this = NULL;
     ap_regmatch_t tmp_pmatch[10];
+
+    AP_DEBUG_ASSERT((info->flags & AP_EXPR_FLAG_STRING_RESULT) == 0);
 
     ctx.r = r;
     ctx.c = r->connection;
@@ -758,6 +782,65 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
 
     return ap_expr_exec_ctx(&ctx);
 }
+
+AP_DECLARE(const char *) ap_expr_str_exec_re(request_rec *r,
+                                             const ap_expr_info_t *info,
+                                             apr_size_t nmatch,
+                                             ap_regmatch_t *pmatch,
+                                             const char **source,
+                                             const char **err)
+{
+    ap_expr_eval_ctx_t ctx;
+    int dont_vary, rc;
+    const char *tmp_source = NULL, *vary_this = NULL;
+    ap_regmatch_t tmp_pmatch[10];
+    const char *result;
+
+    AP_DEBUG_ASSERT(info->flags & AP_EXPR_FLAG_STRING_RESULT);
+
+    if (info->root_node->node_op == op_String) {
+        /* short-cut for constant strings */
+        *err = NULL;
+        return (const char *)info->root_node->node_arg1;
+    }
+
+    dont_vary = (info->flags & AP_EXPR_FLAG_DONT_VARY);
+
+    ctx.r = r;
+    ctx.c = r->connection;
+    ctx.s = r->server;
+    ctx.p = r->pool;
+    ctx.err  = err;
+    ctx.info = info;
+    ctx.re_nmatch = nmatch;
+    ctx.re_pmatch = pmatch;
+    ctx.re_source = source;
+    ctx.vary_this = dont_vary ? NULL : &vary_this;
+    ctx.data = NULL;
+    ctx.result_string = &result;
+
+    if (!pmatch) {
+        ctx.re_nmatch = 10;
+        ctx.re_pmatch = tmp_pmatch;
+        ctx.re_source = &tmp_source;
+    }
+
+    rc = ap_expr_exec_ctx(&ctx);
+    if (rc > 0)
+        return result;
+    else if (rc < 0)
+        return NULL;
+    else
+        ap_assert(0);
+}
+
+AP_DECLARE(const char *) ap_expr_str_exec(request_rec *r,
+                                          const ap_expr_info_t *info,
+                                          const char **err)
+{
+    return ap_expr_str_exec_re(r, info, 0, NULL, NULL, err);
+}
+
 
 static void add_vary(ap_expr_eval_ctx_t *ctx, const char *name)
 {
@@ -1459,7 +1542,7 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
             }
             while (prov->func) {
                 if (strcasecmp(prov->name, parms->name) == 0) {
-                    if ((parms->flags & AP_EXPR_FLAGS_RESTRICTED)
+                    if ((parms->flags & AP_EXPR_FLAG_RESTRICTED)
                         && prov->restricted) {
                         *parms->err =
                             apr_psprintf(parms->ptemp,

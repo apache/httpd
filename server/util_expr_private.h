@@ -89,6 +89,7 @@ typedef struct {
     char              *scan_ptr;
     char               scan_buf[MAX_STRING_LEN];
     char               scan_del;
+    int                at_start;
 
     /* pools for result and temporary usage */
     apr_pool_t        *pool;
