@@ -107,6 +107,10 @@
       <dt><module>mod_slotmem_shm</module></dt>
       <dd>Provides a Slot-based shared memory provider (ala the scoreboard).</dd>
 
+      <dt><module>mod_log_debug</module></dt>
+      <dd>Allows to add customizable debug logging at different phases of the
+      request processing.</dd>
+
     </dl>
   </section>
 

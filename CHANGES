@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.14
 
+  *) mod_log_debug: New module that allows to log custom messages at various
+     phases in the request processing. [Stefan Fritsch]
+
   *) mod_ssl: Add some debug logging when loading server certificates.
      PR 37912. [Nick Burch <nick burch alfresco com>]
 
