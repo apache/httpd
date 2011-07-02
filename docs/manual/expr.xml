@@ -46,6 +46,7 @@
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
 <seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
 <seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><directive module="mod_log_debug">LogMessage</directive></seealso>
 <seealso><module>mod_include</module></seealso>
 
   <section id="grammar">
@@ -227,7 +228,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         <td>"<code>on</code>" if the connection uses IPv6,
             "<code>off</code>" otherwise</td></tr>
     <tr><td><code>REQUEST_STATUS</code></td>
-        <td>The HTTP error status of the request<td></tr>
+        <td>The HTTP error status of the request</td></tr>
     <tr><td><code>REQUEST_LOG_ID</code></td>
         <td>The error log id of the request (see
             <directive module="core">ErrorLogFormat</directive>)</td></tr>
