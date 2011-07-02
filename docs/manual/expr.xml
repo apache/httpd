@@ -226,6 +226,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>IPV6</code></td>
         <td>"<code>on</code>" if the connection uses IPv6,
             "<code>off</code>" otherwise</td></tr>
+    <tr><td><code>REQUEST_STATUS</code></td>
+        <td>The HTTP error status of the request<td></tr>
     <tr><td><code>REQUEST_LOG_ID</code></td>
         <td>The error log id of the request (see
             <directive module="core">ErrorLogFormat</directive>)</td></tr>
