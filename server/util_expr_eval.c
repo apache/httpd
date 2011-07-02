@@ -1080,6 +1080,7 @@ static const char *request_var_names[] = {
     "LAST_MODIFIED",            /* 24 */
     "CONTEXT_PREFIX",           /* 25 */
     "CONTEXT_DOCUMENT_ROOT",    /* 26 */
+    "REQUEST_STATUS",           /* 27 */
     NULL
 };
 
@@ -1163,6 +1164,8 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return ap_context_prefix(r);
     case 26:
         return ap_context_document_root(r);
+    case 27:
+        return r->status ? apr_psprintf(ctx->p, "%d", r->status) : "";
     default:
         ap_assert(0);
         return NULL;
