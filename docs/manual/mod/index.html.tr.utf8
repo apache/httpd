@@ -145,6 +145,7 @@ configuration</dd>
 by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </dd>
+<dt><a href="mod_log_debug.html">mod_log_debug</a></dt><dd>Additional configurable debug logging</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Sunucuya yapılan isteklerin adli günlük kayıtlarının tutulması</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
 </dd>

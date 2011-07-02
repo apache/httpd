@@ -63,6 +63,7 @@
   <modulefile>mod_lbmethod_heartbeat.xml</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
+  <modulefile>mod_log_debug.xml</modulefile>
   <modulefile>mod_log_forensic.xml</modulefile>
   <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_lua.xml</modulefile>
