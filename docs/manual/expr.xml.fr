@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1137340 -->
+<!-- English Revision : 1142170 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,6 +52,7 @@
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
 <seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
 <seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
+<seealso><directive module="mod_log_debug">LogMessage</directive></seealso>
 <seealso><module>mod_include</module></seealso>
 
   <section id="grammar">
@@ -236,6 +237,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>IPV6</code></td>
         <td>"<code>on</code>" si la connexion utilise IPv6,
 	"<code>off</code>" dans le cas contraire</td></tr>
+    <tr><td><code>REQUEST_STATUS</code></td>
+        <td>Le code d'erreur HTTP de la requ&ecirc;te</td></tr>
     <tr><td><code>REQUEST_LOG_ID</code></td>
         <td>L'identifiant du message d'erreur associ&eacute; &agrave; la requ&ecirc;te (voir
 	la directive <directive
