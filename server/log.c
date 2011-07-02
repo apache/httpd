@@ -654,8 +654,8 @@ static int log_log_id(const ap_errorlog_info *info, const char *arg,
             return cpystrn(buf, info->c->log_id, buflen);
         }
     }
-    else if (info->r) {
-        return cpystrn(buf, info->r->log_id, buflen);
+    else if (info->rmain) {
+        return cpystrn(buf, info->rmain->log_id, buflen);
     }
     return 0;
 }
