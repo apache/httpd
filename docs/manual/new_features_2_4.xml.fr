@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1133582 -->
+<!-- English Revision : 1142170 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -125,6 +125,10 @@ serveur HTTP Apache</title>
       <dt><module>mod_slotmem_shm</module></dt>
       <dd>Met &agrave; disposition un fournisseur de m&eacute;moire partag&eacute;e &agrave; base de
       slots (du style tableau de bord).</dd>
+
+      <dt><module>mod_log_debug</module></dt>
+      <dd>Permet d'introduire une journalisation personnalis&eacute;e &agrave;
+      diff&eacute;rentes phases du traitement de la requ&ecirc;te.</dd>
 
     </dl>
   </section>
