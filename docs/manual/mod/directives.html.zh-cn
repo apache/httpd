@@ -317,6 +317,7 @@
 <li><a href="core.html#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><a href="mod_log_config.html#logformat">LogFormat</a></li>
 <li><a href="core.html#loglevel">LogLevel</a></li>
+<li><a href="mod_log_debug.html#logmessage">LogMessage</a></li>
 <li><a href="mod_lua.html#luacodecache">LuaCodeCache</a></li>
 <li><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></li>
 <li><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></li>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_log_debug - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_log_debug</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_log_debug.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Additional configurable debug logging</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>log_debug_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_log_debug.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.14 and later</td></tr></table>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#logmessage">LogMessage</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+
+    <ol>
+      <li>
+        Log message after request to /foo/* is processed:
+
+        <div class="example"><p><code>
+            &lt;Location /foo&gt;<br />
+            &nbsp;&nbsp;LogMessage "/foo has been requested"<br />
+            &lt;/Location&gt;<br />
+        </code></p></div>
+      </li>
+
+      <li>
+        Log message if request to /foo/* is processed in a sub-request:
+        <div class="example"><p><code>
+            &lt;Location /foo&gt;<br />
+            &nbsp;&nbsp;LogMessage "subrequest to /foo" hook=type_checker if=%{IS_SUBREQ}<br />
+            &lt;/Location&gt;<br />
+        </code></p></div>
+
+        The default log_transaction hook is not executed for sub-requests,
+        therefore we have to use a different hook.
+      </li>
+
+
+      <li>
+        Log message if an IPv6 client causes a request timeout:
+        <div class="example"><p><code>
+            LogMessage "IPv6 timeout from %{REMOTE_ADDR}"
+              "if=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
+        </code></p></div>
+        Note the placing of the dobule quotes for the <code>if=</code> argument.
+      </li>
+
+      <li>
+        Log the value of the "X-Foo" request environment variable in each
+        stage of the request:
+        <div class="example"><p><code>
+            &lt;Location /&gt;<br />
+            &nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all<br />
+            &lt;/Location&gt;<br />
+        </code></p></div>
+        Together with the microsecond time stamps in the error log, this
+        allows to determine the times spent in the different parts of the
+        request processing.
+      </li>
+
+    </ol>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LogMessage" id="LogMessage">LogMessage</a> <a name="logmessage" id="logmessage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log userdefined message to error log
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogMessage <var>message</var>
+[hook=<var>hook</var>] [if=<var>expression</var>]
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_debug</td></tr>
+</table>
+    <p>This directive causes a user defined message to be logged to the
+    error log. The message can use variables and functions from the
+    <a href="../expr.html">ap_expr syntax</a>. The messages are logged at
+    loglevel info.</p>
+
+    <p>The hook specifies before which phase of request procesing the message
+    will be logged. The following hooks are supported:</p>
+
+    <table class="bordered"><tr class="header"><th>Name</th></tr>
+<tr><td><code>translate_name</code></td></tr>
+<tr class="odd"><td><code>type_checker</code></td></tr>
+<tr><td><code>quick_handler</code></td></tr>
+<tr class="odd"><td><code>map_to_storage</code></td></tr>
+<tr><td><code>check_access</code></td></tr>
+<tr class="odd"><td><code>check_access_ex</code></td></tr>
+<tr><td><code>insert_filter</code></td></tr>
+<tr class="odd"><td><code>check_authn</code></td></tr>
+<tr><td><code>check_authz</code></td></tr>
+<tr class="odd"><td><code>fixups</code></td></tr>
+<tr><td><code>handler</code></td></tr>
+<tr class="odd"><td><code>log_transaction</code></td></tr>
+</table>
+
+    <p>The default is <code>log_transaction</code>. The special value
+    <code>all</code> is also supported, causing a message to be logged at each
+    phase. Not all hooks are executed for every request.</p>
+
+    <p>The optional expression allows to restrict the message if a
+    condition is met. The details of the expression syntax are described in
+    the <a href="../expr.html">ap_expr documentation</a>.</p>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_log_debug.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

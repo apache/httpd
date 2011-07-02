@@ -226,6 +226,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_lbmethod_heartbeat.html">Módulo Apache mod_lbmethod_heartbeat</a></li>
 <li><a href="mod/mod_ldap.html">Módulo Apache mod_ldap</a></li>
 <li><a href="mod/mod_log_config.html">Módulo Apache mod_log_config</a></li>
+<li><a href="mod/mod_log_debug.html">Módulo Apache mod_log_debug</a></li>
 <li><a href="mod/mod_log_forensic.html">Módulo Apache mod_log_forensic</a></li>
 <li><a href="mod/mod_logio.html">Módulo Apache mod_logio</a></li>
 <li><a href="mod/mod_lua.html">Módulo Apache mod_lua</a></li>

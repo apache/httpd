@@ -285,6 +285,7 @@ location	mod/core.html#location
 locationmatch	mod/core.html#locationmatch
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
+logmessage	mod/mod_log_debug.html#logmessage
 luacodecache	mod/mod_lua.html#luacodecache
 luahookaccesschecker	mod/mod_lua.html#luahookaccesschecker
 luahookauthchecker	mod/mod_lua.html#luahookauthchecker
