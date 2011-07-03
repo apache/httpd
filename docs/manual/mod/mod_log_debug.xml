@@ -61,7 +61,7 @@
             LogMessage "IPv6 timeout from %{REMOTE_ADDR}"
               "if=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
         </example>
-        Note the placing of the dobule quotes for the <code>if=</code> argument.
+        Note the placing of the double quotes for the <code>if=</code> argument.
       </li>
 
       <li>
