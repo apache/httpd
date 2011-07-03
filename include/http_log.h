@@ -31,11 +31,10 @@ extern "C" {
 #endif
 
 #include "apr_thread_proc.h"
+#include "http_config.h"
 
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
-
-#include "http_config.h"
 
 #ifndef LOG_PRIMASK
 #define LOG_PRIMASK 7
