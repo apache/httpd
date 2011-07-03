@@ -54,8 +54,16 @@ of consuming threads only for connections with active processing</description>
     Apache HTTP Server traditionally keeps an entire child process/thread waiting
     for data from the client, which brings its own disadvantages. To
     solve this problem, this MPM uses a dedicated thread to handle both
-    the Listening sockets, and all sockets that are in a Keep Alive
-    state.</p>
+    the Listening sockets, all sockets that are in a Keep Alive state,
+    and sockets where the handler and protocol filters have done their work
+    and the only remaining thing to do is send the data to the client. The
+    status page of <module>mod_status</module> shows how many connections are
+    in the mentioned states.</p>
+
+    <p>The improved connection handling does not yet work for certain
+    connection filters, in particular SSL. For SSL connections, this MPM will
+    fall back to the behaviour of the <module>worker</module> MPM and
+    reserve one worker thread per connection.</p>
 
     <p>The MPM assumes that the underlying <code>apr_pollset</code>
     implementation is reasonably threadsafe. This enables the MPM to
@@ -131,6 +139,57 @@ of consuming threads only for connections with active processing</description>
 <directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>User</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AsyncRequestWorkerFactor</name>
+<description>Limit concurrent connections per process</description>
+<syntax>AsyncRequestWorkerFactor <var>factor</var></syntax>
+<default>2</default>
+<contextlist><context>server config</context> </contextlist>
+<compatibility>Available in version 2.3.13 and later</compatibility>
+
+<usage>
+    <p>The event MPM handles some connections in an asynchronous way, where
+    request worker threads are only allocated for short periods of time as
+    needed, and other (mostly SSL) connections with one request worker thread
+    reserved per connection. This can lead to situations where all workers are
+    tied up and no worker thread is available to handle new work on established
+    async connetions.</p>
+
+    <p>To mitigate this problem, the event MPM does two things: Firstly, it
+    limits the number of connections accepted per process, depending on the
+    number of idle request workers. Secondly, if all workers are busy, it will
+    close connections in keep-alive state even if the keep-alive timeout has
+    not expired. This allows the respective clients to reconnect to a
+    different process which may still have worker threads available.</p>
+
+    <p>This directive can be used to fine-tune the per-process connection
+    limit. A process will only accept new connections if the current number of
+    connections is lower than:</p>
+
+    <p class="indent"><strong>
+        <directive module="mpm_common">ThreadsPerChild</directive> +
+        (<directive>AsyncRequestWorkerFactor</directive> *
+        <var>number of idle workers</var>)
+    </strong></p>
+
+    <p>This means the absolute maximum numbers of concurrent connections is:</p>
+
+    <p class="indent"><strong>
+        (<directive>AsyncRequestWorkerFactor</directive> + 1) *
+        <directive module="mpm_common">MaxRequestWorkers</directive>
+    </strong></p>
+
+    <p><directive module="mpm_common">MaxRequestWorkers</directive> was called
+    <directive>MaxClients</directive> prior to version 2.3.13. The above value
+    shows that the old name did not accurately describe its meaning for the event MPM.</p>
+
+    <p><directive>AsyncRequestWorkerFactor</directive> can take non-integer
+    arguments, e.g "1.5".</p>
+
+</usage>
+
 </directivesynopsis>
 
 </modulesynopsis>
