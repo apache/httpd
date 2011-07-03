@@ -46,8 +46,8 @@
         Log message after request to /foo/* is processed:
 
         <div class="example"><p><code>
-            &lt;Location /foo&gt;<br />
-            &nbsp;&nbsp;LogMessage "/foo has been requested"<br />
+            &lt;Location /foo/&gt;<br />
+            &nbsp;&nbsp;LogMessage "/foo/ has been requested"<br />
             &lt;/Location&gt;<br />
         </code></p></div>
       </li>
@@ -55,8 +55,8 @@
       <li>
         Log message if request to /foo/* is processed in a sub-request:
         <div class="example"><p><code>
-            &lt;Location /foo&gt;<br />
-            &nbsp;&nbsp;LogMessage "subrequest to /foo" hook=type_checker if=%{IS_SUBREQ}<br />
+            &lt;Location /foo/&gt;<br />
+            &nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker if=%{IS_SUBREQ}<br />
             &lt;/Location&gt;<br />
         </code></p></div>
 
@@ -82,9 +82,9 @@
             &nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all<br />
             &lt;/Location&gt;<br />
         </code></p></div>
-        Together with the microsecond time stamps in the error log, this
-        allows to determine the times spent in the different parts of the
-        request processing.
+        Together with microsecond time stamps in the error log,
+        <code>hook=all</code> also allows to determine the times spent
+        in the different parts of the request processing.
       </li>
 
     </ol>
