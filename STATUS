@@ -93,12 +93,6 @@ RELEASE SHOWSTOPPERS:
     jim sez: Why a blocker?, pgollucci +1 jim
     wrowe asks: what's the API change required?
 
-  * Clarify/potentially change the meaning of MaxConnections for Event MPM 
-    with respect to accepting new connections and keep alive requests for 
-    the docs and example config.  This shouldn't change after users and 
-    vendors have set up their stock config for event.  This will end up
-    as a per-process thing for efficiency.
-
   * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
     a painless event mpm experience.
 
