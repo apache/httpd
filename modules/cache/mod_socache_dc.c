@@ -92,7 +92,7 @@ static void socache_dc_destroy(ap_socache_instance_t *ctx, server_rec *s)
 
 static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s, 
                                      const unsigned char *id, unsigned int idlen,
-                                     time_t expiry,
+                                     apr_time_t expiry,
                                      unsigned char *der, unsigned int der_len,
                                      apr_pool_t *p)
 {
