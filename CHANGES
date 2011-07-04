@@ -17,6 +17,9 @@ Changes with Apache 2.3.14
   *) mod_socache_dc: use correct build variable MOD_SOCACHE_DC_LDADD
      instead of MOD_SOCACHE_LDADD in build macro. [Rainer Jung]
 
+  *) mod_lua, mod_deflate: respect platform specific runpath linker
+     flag. [Rainer Jung]
+
 Changes with Apache 2.3.13
 
   *) ab: Support specifying the local address to use. PR 48930.
