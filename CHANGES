@@ -8,6 +8,9 @@ Changes with Apache 2.3.14
   *) mod_ssl: Add some debug logging when loading server certificates.
      PR 37912. [Nick Burch <nick burch alfresco com>]
 
+  *) configure: Support reallyall option also for --enable-mods-static.
+     [Rainer Jung]
+
 Changes with Apache 2.3.13
 
   *) ab: Support specifying the local address to use. PR 48930.

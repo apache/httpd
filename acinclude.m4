@@ -374,7 +374,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
 
 
   AC_ARG_ENABLE(modules,
-  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most" | "few" | "none"| "reallyall"),[
+  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most" | "few" | "none" | "reallyall"),[
     if test "$enableval" = "none"; then
        module_default=no
        module_selection=none
@@ -392,7 +392,7 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   ])
   
   AC_ARG_ENABLE(mods-shared,
-  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable | "all" | "most" | "few"| "reallyall"),[
+  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable | "all" | "most" | "few" | "reallyall"),[
     for i in $enableval; do
       if test "$i" = "all" -o "$i" = "most" -o "$i" = "few" -o "$i" = "reallyall"
       then
@@ -406,9 +406,9 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   ])
   
   AC_ARG_ENABLE(mods-static,
-  APACHE_HELP_STRING(--enable-mods-static=MODULE-LIST,Space-separated list of static modules to enable | "all" | "most" | "few"),[
+  APACHE_HELP_STRING(--enable-mods-static=MODULE-LIST,Space-separated list of static modules to enable | "all" | "most" | "few" | "reallyall"),[
     for i in $enableval; do
-      if test "$i" = "all" -o "$i" = "most" -o "$i" = "few"; then
+      if test "$i" = "all" -o "$i" = "most" -o "$i" = "few" -o "$i" = "reallyall"; then
         module_selection=$i
         module_default=static
       else
