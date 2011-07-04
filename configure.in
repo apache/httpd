@@ -207,7 +207,8 @@ else
   AC_MSG_ERROR([pcre-config for libpcre not found. PCRE is required and available from http://pcre.org/])
 fi
 APACHE_SUBST(PCRE_LIBS)
-APR_ADDTO(AP_LIBS, [\$(PCRE_LIBS)])
+APR_ADDTO(HTTPD_LDFLAGS, [\$(PCRE_LIBS)])
+APACHE_SUBST(HTTPD_LDFLAGS)
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
 

@@ -20,6 +20,9 @@ Changes with Apache 2.3.14
   *) mod_lua, mod_deflate: respect platform specific runpath linker
      flag. [Rainer Jung]
 
+  *) configure: Only link the httpd binary against PCRE. No other support
+     binary needs PCRE. [Rainer Jung]
+
 Changes with Apache 2.3.13
 
   *) ab: Support specifying the local address to use. PR 48930.
