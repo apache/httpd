@@ -208,7 +208,6 @@ else
 fi
 APACHE_SUBST(PCRE_LIBS)
 APR_ADDTO(HTTPD_LDFLAGS, [\$(PCRE_LIBS)])
-APACHE_SUBST(HTTPD_LDFLAGS)
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
 
