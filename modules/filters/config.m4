@@ -75,10 +75,10 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
      APR_SETVAR(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
     [AC_MSG_RESULT(not found)
      enable_deflate=no
-     INCLUDES=$ap_save_includes
-     LDFLAGS=$ap_save_ldflags])
-    APR_REMOVEFROM(LIBS, [-lz])
+     INCLUDES=$ap_save_includes])
+    LDFLAGS=$ap_save_ldflags
     CPPFLAGS=$ap_save_cppflags
+    APR_REMOVEFROM(LIBS, [-lz])
   fi
 ])
 
