@@ -57,6 +57,9 @@ for x in $test_paths ; do
         LDFLAGS="-L$x/lib $LDFLAGS $lib_m"
         AC_CHECK_LIB(lua5.1, luaL_newstate, [
             LUA_LIBS="-L$x/lib -llua5.1 $lib_m"
+            if test "x$ap_platform_runtime_link_flag" != "x"; then
+               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib])
+            fi
             LUA_CFLAGS="-I$x/include/lua5.1"
             ])
         CFLAGS=$save_CFLAGS
@@ -74,6 +77,9 @@ for x in $test_paths ; do
         LDFLAGS="-L$x/lib/lua51 $LDFLAGS $lib_m"
         AC_CHECK_LIB(lua, luaL_newstate, [
             LUA_LIBS="-L$x/lib/lua51 -llua $lib_m"
+            if test "x$ap_platform_runtime_link_flag" != "x"; then
+               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib/lua51])
+            fi
             LUA_CFLAGS="-I$x/include/lua51"
             ])
         CFLAGS=$save_CFLAGS
@@ -91,6 +97,9 @@ for x in $test_paths ; do
         LDFLAGS="-L$x/lib $LDFLAGS $lib_m"
         AC_CHECK_LIB(lua, luaL_newstate, [
             LUA_LIBS="-L$x/lib -llua $lib_m"
+            if test "x$ap_platform_runtime_link_flag" != "x"; then
+               APR_ADDTO(LUA_LIBS, [$ap_platform_runtime_link_flag$x/lib])
+            fi
             LUA_CFLAGS="-I$x/include"
             ])
         CFLAGS=$save_CFLAGS

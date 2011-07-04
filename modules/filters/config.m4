@@ -56,20 +56,23 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
     ap_save_includes=$INCLUDES
     ap_save_ldflags=$LDFLAGS
     ap_save_cppflags=$CPPFLAGS
+    ap_zlib_ldflags=""
     if test "$ap_zlib_base" != "/usr"; then
       APR_ADDTO(INCLUDES, [-I${ap_zlib_base}/include])
       dnl put in CPPFLAGS temporarily so that AC_TRY_LINK below will work
       CPPFLAGS="$CPPFLAGS $INCLUDES"
       APR_ADDTO(LDFLAGS, [-L${ap_zlib_base}/lib])
+      APR_ADDTO(ap_zlib_ldflags, [-L${ap_zlib_base}/lib])
       if test "x$ap_platform_runtime_link_flag" != "x"; then
          APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag${ap_zlib_base}/lib])
+         APR_ADDTO(ap_zlib_ldflags, [$ap_platform_runtime_link_flag${ap_zlib_base}/lib])
       fi
     fi
     APR_ADDTO(LIBS, [-lz])
     AC_MSG_CHECKING([for zlib library])
     AC_TRY_LINK([#include <zlib.h>], [int i = Z_OK;], 
     [AC_MSG_RESULT(found) 
-     APR_SETVAR(MOD_DEFLATE_LDADD, [-lz])],
+     APR_SETVAR(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
     [AC_MSG_RESULT(not found)
      enable_deflate=no
      INCLUDES=$ap_save_includes
