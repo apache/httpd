@@ -2444,9 +2444,11 @@ static const char *util_ldap_set_chase_referrals(cmd_parms *cmd,
 static const char *util_ldap_set_debug_level(cmd_parms *cmd,
                                              void *config,
                                              const char *arg) { 
+#ifdef AP_LDAP_OPT_DEBUG
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+#endif
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
