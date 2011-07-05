@@ -996,7 +996,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
 
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
 {
-    const char *protocol;
+    const char *protocol = NULL;
 
     basic_http_header_check(r, &protocol);
     basic_http_header(r, bb, protocol);
@@ -1138,7 +1138,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     request_rec *r = f->r;
     conn_rec *c = r->connection;
     const char *clheader;
-    const char *protocol;
+    const char *protocol = NULL;
     apr_bucket *e;
     apr_bucket_brigade *b2;
     header_struct h;
