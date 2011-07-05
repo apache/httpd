@@ -28,12 +28,6 @@
 #include "apr_thread_rwlock.h"
 #include "apr_tables.h"
 #include "apr_time.h"
-#if AP_HAS_MICROSOFT_LDAPSDK
-#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
-                ||(s) == LDAP_UNAVAILABLE)
-#else
-#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN)
-#endif
 
 #if APR_HAS_SHARED_MEMORY
 #include "apr_rmm.h"
