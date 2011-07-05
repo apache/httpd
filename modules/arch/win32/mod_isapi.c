@@ -593,7 +593,7 @@ static int APR_THREAD_FUNC regfnReadClient(isapi_cid    *cid,
 {
     request_rec *r = cid->r;
     apr_uint32_t read = 0;
-    int res;
+    int res = 0;
 
     if (r->remaining < *buf_size) {
         *buf_size = (apr_size_t)r->remaining;
@@ -1184,7 +1184,7 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
     case HSE_REQ_ASYNC_READ_CLIENT:
     {
         apr_uint32_t read = 0;
-        int res;
+        int res = 0;
         if (!cid->dconf.fake_async) {
             if (cid->dconf.log_unsupported)
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
