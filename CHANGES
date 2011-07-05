@@ -26,6 +26,9 @@ Changes with Apache 2.3.14
   *) configure: tolerate dependency checking failures for modules if
      they have been enabled implicitely. [Rainer Jung]
 
+  *) configure: Allow to specify module specific custom linker flags via
+     the MOD_XXX_LDADD variables. [Rainer Jung]
+
 Changes with Apache 2.3.13
 
   *) ab: Support specifying the local address to use. PR 48930.

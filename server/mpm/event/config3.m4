@@ -2,7 +2,7 @@ dnl ## XXX - Need a more thorough check of the proper flags to use
 
 APACHE_CHECK_SERF
 if test "$ac_cv_serf" = yes ; then
-    APR_SETVAR(MOD_MPM_EVENT_LDADD,[\$(SERF_LIBS)])
+    APR_ADDTO(MOD_MPM_EVENT_LDADD,[\$(SERF_LIBS)])
 fi
 APACHE_SUBST(MOD_MPM_EVENT_LDADD)
 

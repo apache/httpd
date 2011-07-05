@@ -137,8 +137,8 @@ lua_objects="lua_apr.lo lua_config.lo mod_lua.lo lua_request.lo lua_vmprep.lo"
 
 APACHE_MODULE(lua, Apache Lua Framework, $lua_objects, , no, [
   CHECK_LUA()
-  APR_ADDTO(INCLUDES, ["$LUA_CFLAGS"])
-  MOD_LUA_LDADD="$LUA_LIBS"
+  APR_ADDTO(INCLUDES, [$LUA_CFLAGS])
+  APR_ADDTO(MOD_LUA_LDADD, [$LUA_LIBS])
 ])
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
