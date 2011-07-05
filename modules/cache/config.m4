@@ -38,6 +38,7 @@ if test "x$ap_distcache_configured" = "x"; then
   ap_distcache_base=""
   ap_distcache_libs=""
   ap_distcache_ldflags=""
+  ap_distcache_with=""
 
   dnl Determine the distcache base directory, if any
   AC_MSG_CHECKING([for user-provided distcache base])
@@ -45,6 +46,7 @@ if test "x$ap_distcache_configured" = "x"; then
     dnl If --with-distcache specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       dnl This ensures $withval is actually a directory and that it is absolute
+      ap_distcache_with="yes"
       ap_distcache_base="`cd $withval ; pwd`"
     fi
   ])
@@ -78,12 +80,16 @@ if test "x$ap_distcache_configured" = "x"; then
 #if DISTCACHE_CLIENT_API != 0x0001
 #error "distcache API version is unrecognised"
 #endif],
-    [],
-    [ap_distcache_found="no"])
-  AC_MSG_RESULT($ap_distcache_found)
+      [],
+      [ap_distcache_found="no"])
+    AC_MSG_RESULT($ap_distcache_found)
   fi
   if test "$ap_distcache_found" != "yes"; then
-    AC_MSG_ERROR([...No distcache detected])
+    if test "x$ap_distcache_with" = "x"; then
+      AC_MSG_WARN([...No distcache detected])
+    else
+      AC_MSG_ERROR([...No distcache detected])
+    fi
   else
     dnl Run library and function checks
     AC_MSG_CHECKING(for distcache libraries)
@@ -97,7 +103,11 @@ if test "x$ap_distcache_configured" = "x"; then
       [ap_distcache_found="no"])
     AC_MSG_RESULT($ap_distcache_found)
     if test "$ap_distcache_found" != "yes"; then
-      AC_MSG_ERROR([... Error, distcache libraries were missing or unusable])
+      if test "x$ap_distcache_base" = "x"; then
+        AC_MSG_WARN([... Error, distcache libraries were missing or unusable])
+      else
+        AC_MSG_ERROR([... Error, distcache libraries were missing or unusable])
+      fi
     fi
   fi
 
