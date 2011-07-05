@@ -23,6 +23,9 @@ Changes with Apache 2.3.14
   *) configure: Only link the httpd binary against PCRE. No other support
      binary needs PCRE. [Rainer Jung]
 
+  *) configure: tolerate dependency checking failures for modules if
+     they have been enabled implicitely. [Rainer Jung]
+
 Changes with Apache 2.3.13
 
   *) ab: Support specifying the local address to use. PR 48930.

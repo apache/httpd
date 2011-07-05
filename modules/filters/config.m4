@@ -32,6 +32,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
   [
     if test "x$withval" != "xyes" && test "x$withval" != "x"; then
       ap_zlib_base="$withval"
+      ap_zlib_with="yes"
     fi
   ])
   if test "x$ap_zlib_base" = "x"; then
@@ -71,11 +72,17 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
     APR_ADDTO(LIBS, [-lz])
     AC_MSG_CHECKING([for zlib library])
     AC_TRY_LINK([#include <zlib.h>], [int i = Z_OK;], 
-    [AC_MSG_RESULT(found) 
-     APR_SETVAR(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
-    [AC_MSG_RESULT(not found)
-     enable_deflate=no
-     INCLUDES=$ap_save_includes])
+      [AC_MSG_RESULT(found) 
+       APR_SETVAR(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
+      [AC_MSG_RESULT(not found)
+       enable_deflate=no
+       INCLUDES=$ap_save_includes
+       if test "x$ap_zlib_with" = "x"; then
+         AC_MSG_WARN([... Error, zlib was missing or unusable])
+       else
+         AC_MSG_ERROR([... Error, zlib was missing or unusable])
+       fi
+      ])
     LDFLAGS=$ap_save_ldflags
     CPPFLAGS=$ap_save_cppflags
     APR_REMOVEFROM(LIBS, [-lz])

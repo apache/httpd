@@ -115,8 +115,15 @@ AC_SUBST(LUA_LIBS)
 AC_SUBST(LUA_CFLAGS)
 
 if test -z "${LUA_LIBS}"; then
-  AC_MSG_NOTICE([*** Lua 5.1 library not found.])
-  ifelse([$2], , AC_MSG_ERROR([Lua 5.1 library is required]), $2)
+  AC_MSG_WARN([*** Lua 5.1 library not found.])
+  ifelse([$2], ,
+    enable_lua="no"
+    if test -z "${lua_path}"; then
+        AC_MSG_WARN([Lua 5.1 library is required])
+    else
+        AC_MSG_ERROR([Lua 5.1 library is required])
+    fi,
+    $2)
 else
   AC_MSG_NOTICE([using '${LUA_LIBS}' for Lua Library])
   AC_ARG_ENABLE(luajit,
