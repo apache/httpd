@@ -63,7 +63,7 @@ APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is ena
 APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     APACHE_CHECK_SERF
     if test "$ac_cv_serf" = "yes" ; then
-      APR_SETVAR(MOD_SERF_LDADD, [\$(SERF_LIBS)])
+      APR_ADDTO(MOD_SERF_LDADD, [\$(SERF_LIBS)])
     else
       enable_serf=no
     fi

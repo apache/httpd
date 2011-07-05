@@ -73,7 +73,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
     AC_MSG_CHECKING([for zlib library])
     AC_TRY_LINK([#include <zlib.h>], [int i = Z_OK;], 
       [AC_MSG_RESULT(found) 
-       APR_SETVAR(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
+       APR_ADDTO(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
       [AC_MSG_RESULT(not found)
        enable_deflate=no
        INCLUDES=$ap_save_includes
