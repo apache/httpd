@@ -18,6 +18,7 @@ include $(AP_WORK)/build/NWGNUhead.inc
 
 FILES_prebuild_headers = \
 	$(SRC)/include/ap_config_layout.h \
+	$(SRC)/include/ap_ldap.h \
 	$(NWOS)/test_char.h \
 	$(PCRE)/config.h \
 	$(PCRE)/pcre.h \
@@ -56,6 +57,10 @@ cc.opt : NWGNUmakefile $(APBUILD)/NWGNUenvironment.inc $(APBUILD)/NWGNUtail.inc 
 	@echo $(DL)-ir $(NOVELLLIBC)$(DL)>> $@
 
 $(SRC)/include/ap_config_layout.h: $(NWOS)/netware_config_layout.h
+	@echo Creating $@
+	$(call COPY,$<,$@)
+
+$(SRC)/include/ap_ldap.h: $(SRC)/include/ap_ldap.hnw
 	@echo Creating $@
 	$(call COPY,$<,$@)
 
@@ -112,6 +117,7 @@ install :: nlms FORCE
 
 clean ::
 	$(call DEL,$(SRC)/include/ap_config_layout.h)
+	$(call DEL,$(SRC)/include/ap_ldap.h)
 	$(call DEL,$(PCRE)/config.h)
 	$(call DEL,$(PCRE)/pcre.h)
 	$(call DEL,$(DAV)/main/dav.imp)
