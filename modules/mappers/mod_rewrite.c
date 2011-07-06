@@ -3298,7 +3298,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         }
     }
 
-    if ((newcond->ptype < CONDPAT_STR_LT || newcond->ptype > CONDPAT_STR_GE) &&
+    if ((newcond->ptype != CONDPAT_REGEX) &&
+        (newcond->ptype < CONDPAT_STR_LT || newcond->ptype > CONDPAT_STR_GE) &&
         (newcond->flags & CONDFLAG_NOCASE)) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                      "RewriteCond: NoCase option for non-regex pattern '%s' "
