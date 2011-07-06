@@ -23,7 +23,7 @@
 #include "http_request.h"
 #include "ap_expr.h"
 
-extern module log_debug_module;
+extern module AP_MODULE_DECLARE_DATA log_debug_module;
 
 typedef struct {
     ap_expr_info_t *msg_expr;
