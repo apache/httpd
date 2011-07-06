@@ -188,7 +188,9 @@ static const char *cmd_log_message(cmd_parms *cmd, void *dconf_, const char *arg
     log_debug_dirconf *dconf = dconf_;
     int i, j;
     const char *err;
-    const char *args[2] = { arg2, arg3 };
+    const char *args[2];
+    args[0] = arg2;
+    args[1] = arg3;
 
     entry->msg_expr = ap_expr_parse_cmd(cmd, arg1, AP_EXPR_FLAG_STRING_RESULT|
                                                    AP_EXPR_FLAG_DONT_VARY,
