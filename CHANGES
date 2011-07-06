@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.14
 
+  *) mod_rewrite: Fix regexp RewriteCond with NoCase. [Stefan Fritsch]
+
   *) mod_log_debug: New module that allows to log custom messages at various
      phases in the request processing. [Stefan Fritsch]
 
