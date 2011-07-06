@@ -133,7 +133,7 @@ typedef struct mpm_gen_info_t {
 } mpm_gen_info_t;
 
 APR_RING_HEAD(mpm_gen_info_head_t, mpm_gen_info_t);
-static struct mpm_gen_info_head_t geninfo, unused_geninfo;
+static struct mpm_gen_info_head_t *geninfo, *unused_geninfo;
 static int gen_head_init; /* yuck */
 
 /* variables representing config directives implemented here */
@@ -419,12 +419,14 @@ void ap_core_child_status(server_rec *s, pid_t pid,
 
     if (!gen_head_init) { /* where to run this? */
         gen_head_init = 1;
-        APR_RING_INIT(&geninfo, mpm_gen_info_t, link);
-        APR_RING_INIT(&unused_geninfo, mpm_gen_info_t, link);
+        geninfo = apr_pcalloc(s->process->pool, sizeof *geninfo);
+        unused_geninfo = apr_pcalloc(s->process->pool, sizeof *unused_geninfo);
+        APR_RING_INIT(geninfo, mpm_gen_info_t, link);
+        APR_RING_INIT(unused_geninfo, mpm_gen_info_t, link);
     }
 
-    cur = APR_RING_FIRST(&geninfo);
-    while (cur != APR_RING_SENTINEL(&geninfo, mpm_gen_info_t, link) &&
+    cur = APR_RING_FIRST(geninfo);
+    while (cur != APR_RING_SENTINEL(geninfo, mpm_gen_info_t, link) &&
            cur->gen != gen) {
         cur = APR_RING_NEXT(cur, link);
     }
@@ -432,10 +434,10 @@ void ap_core_child_status(server_rec *s, pid_t pid,
     switch(status) {
     case MPM_CHILD_STARTED:
         status_msg = "started";
-        if (cur == APR_RING_SENTINEL(&geninfo, mpm_gen_info_t, link)) {
+        if (cur == APR_RING_SENTINEL(geninfo, mpm_gen_info_t, link)) {
             /* first child for this generation */
-            if (!APR_RING_EMPTY(&unused_geninfo, mpm_gen_info_t, link)) {
-                cur = APR_RING_FIRST(&unused_geninfo);
+            if (!APR_RING_EMPTY(unused_geninfo, mpm_gen_info_t, link)) {
+                cur = APR_RING_FIRST(unused_geninfo);
                 APR_RING_REMOVE(cur, link);
             }
             else {
@@ -443,13 +445,13 @@ void ap_core_child_status(server_rec *s, pid_t pid,
             }
             cur->gen = gen;
             APR_RING_ELEM_INIT(cur, link);
-            APR_RING_INSERT_HEAD(&geninfo, cur, mpm_gen_info_t, link);
+            APR_RING_INSERT_HEAD(geninfo, cur, mpm_gen_info_t, link);
         }
         ++cur->active;
         break;
     case MPM_CHILD_EXITED:
         status_msg = "exited";
-        if (cur == APR_RING_SENTINEL(&geninfo, mpm_gen_info_t, link)) {
+        if (cur == APR_RING_SENTINEL(geninfo, mpm_gen_info_t, link)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "no record of generation %d of exiting child %" APR_PID_T_FMT,
                          gen, pid);
@@ -461,7 +463,7 @@ void ap_core_child_status(server_rec *s, pid_t pid,
                              "end of generation %d", gen);
                 ap_run_end_generation(ap_server_conf, gen);
                 APR_RING_REMOVE(cur, link);
-                APR_RING_INSERT_HEAD(&unused_geninfo, cur, mpm_gen_info_t, link);
+                APR_RING_INSERT_HEAD(unused_geninfo, cur, mpm_gen_info_t, link);
             }
         }
         break;
