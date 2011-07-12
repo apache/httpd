@@ -147,11 +147,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works except for CHANGES
     +1: sf
 
-   * mod_filter: fix parsing of regexps containing slashes
-     PR 51434 (and 51435, which includes the fix)
-     Trunk patch: N/A
-     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
-     +1: niq
+  * mod_filter: fix parsing of regexps containing slashes
+    PR 51434 (and 51435, which includes the fix)
+    Trunk patch: N/A
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
+    +1: niq
+
+  * mod_win32: fix some more env vars which make problems.
+    This fix is based on PR 13029 / 34985, and includes
+    now the SSL_ and GEOIP_ vars; otherwise its impossible
+    to run CGIs when mod_ssl and/or mod_geoip are loaded
+    and those mods return UTF-8 chars in any var during a
+    request.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1145647&view=rev
+    2.2.x patch: trunk patch works with offset.
+    +1: fuankg
 
 
 PATCHES/ISSUES THAT ARE STALLED
