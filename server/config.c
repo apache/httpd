@@ -2255,7 +2255,7 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
 
     /* NOT virtual host; don't match any real network interface */
     rv = apr_sockaddr_info_get(&s->addrs->host_addr,
-                               NULL, APR_INET, 0, 0, p);
+                               NULL, APR_UNSPEC, 0, 0, p);
     if (rv != APR_SUCCESS) {
         /* should we test here for rv being an EAIERR? */
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, rv, NULL,

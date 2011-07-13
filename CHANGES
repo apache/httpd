@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.14
 
+  *) core: Fix startup on IP6-only systems. PR 50592. [Joe Orton,
+     <root linkage white-void net>]
+
   *) suexec: Add environment variables CONTEXT_DOCUMENT_ROOT, CONTEXT_PREFIX,
      REDIRECT_ERROR_NOTES, REDIRECT_SCRIPT_FILENAME, REQUEST_SCHEME to the
      whitelist in suexec. PR 51499. [Graham Laverty <graham reg ca>,
