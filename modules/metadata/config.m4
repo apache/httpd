@@ -6,10 +6,10 @@ APACHE_MODPATH_INIT(metadata)
 
 APACHE_MODULE(env, clearing/setting of ENV vars, , , yes)
 APACHE_MODULE(mime_magic, automagically determining MIME type)
-APACHE_MODULE(cern_meta, CERN-type meta files)
+APACHE_MODULE(cern_meta, CERN-type meta files, , , no)
 APACHE_MODULE(expires, Expires header control, , , most)
 APACHE_MODULE(headers, HTTP header control, , , most)
-APACHE_MODULE(ident, RFC 1413 identity check, , , most)
+APACHE_MODULE(ident, RFC 1413 identity check, , , no)
 
 APACHE_MODULE(usertrack, user-session tracking, , , , [
   AC_CHECK_HEADERS(sys/times.h)

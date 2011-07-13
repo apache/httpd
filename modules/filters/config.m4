@@ -5,25 +5,25 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 APACHE_MODPATH_INIT(filters)
 
 APACHE_MODULE(buffer, Filter Buffering, , , yes)
-APACHE_MODULE(data, RFC2397 data encoder, , , yes)
+APACHE_MODULE(data, RFC2397 data encoder, , , )
 APACHE_MODULE(ratelimit, Output Bandwidth Limiting, , , yes)
 APACHE_MODULE(reqtimeout, Limit time waiting for request from client, , , yes)
 APACHE_MODULE(ext_filter, external filter module, , , most)
 APACHE_MODULE(request, Request Body Filtering, , , yes)
 APACHE_MODULE(include, Server Side Includes, , , yes)
 APACHE_MODULE(filter, Smart Filtering, , , yes)
-APACHE_MODULE(reflector, Reflect request through the output filter stack, , , yes)
+APACHE_MODULE(reflector, Reflect request through the output filter stack, , , )
 APACHE_MODULE(substitute, response content rewrite-like filtering, , , most)
 
 sed_obj="mod_sed.lo sed0.lo sed1.lo regexp.lo"
-APACHE_MODULE(sed, filter request and/or response bodies through sed, $sed_obj)
+APACHE_MODULE(sed, filter request and/or response bodies through sed, $sed_obj, , most)
 
 if test "$ac_cv_ebcdic" = "yes"; then
 # mod_charset_lite can be very useful on an ebcdic system,
 #   so include it by default
     APACHE_MODULE(charset_lite, character set translation.  Enabled by default only on EBCDIC systems., , , yes)
 else
-    APACHE_MODULE(charset_lite, character set translation.  Enabled by default only on EBCDIC systems., , , no)
+    APACHE_MODULE(charset_lite, character set translation.  Enabled by default only on EBCDIC systems., , , )
 fi
 
 
