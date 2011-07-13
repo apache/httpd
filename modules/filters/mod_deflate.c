@@ -426,6 +426,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
+    apr_size_t len;
+    const char *data;
     deflate_filter_config *c;
 
     /* Do nothing if asked to filter nothing. */
@@ -445,6 +447,28 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     if (!ctx) {
         char *token;
         const char *encoding;
+
+        /* Delay initialization until we have seen some data */
+        e = APR_BRIGADE_FIRST(bb);
+        while (1) {
+            apr_status_t rc;
+            if (e == APR_BRIGADE_SENTINEL(bb))
+                return ap_pass_brigade(f->next, bb);
+            if (APR_BUCKET_IS_EOS(e)) {
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, bb);
+            }
+            if (APR_BUCKET_IS_METADATA(e))
+                continue;
+
+            rc = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
+            if (rc != APR_SUCCESS)
+                return rc;
+            if (len > 0)
+                break;
+
+            e = APR_BUCKET_NEXT(e);
+        }
 
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
 
@@ -645,9 +669,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
     while (!APR_BRIGADE_EMPTY(bb))
     {
-        const char *data;
         apr_bucket *b;
-        apr_size_t len;
 
         /*
          * Optimization: If we are a HEAD request and bytes_sent is not zero
