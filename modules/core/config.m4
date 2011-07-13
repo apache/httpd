@@ -51,7 +51,7 @@ if test -z "$enable_watchdog"; then
     if test $ac_cv_define_APR_HAS_THREADS = "no"; then
         enable_watchdog="no"
     else
-        enable_watchdog="most"
+        enable_watchdog=""
     fi
 fi
 

@@ -12,6 +12,6 @@ case "$host" in
     ;;
 esac
 
-APACHE_MODULE(dav_lock, DAV provider for generic locking - requires --enable-dav, $dav_lock_objects, , no)
+APACHE_MODULE(dav_lock, DAV provider for generic locking - requires --enable-dav, $dav_lock_objects, , )
 
 APACHE_MODPATH_FINISH
