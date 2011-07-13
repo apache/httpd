@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.14
 
+  *) suexec: Add environment variables CONTEXT_DOCUMENT_ROOT, CONTEXT_PREFIX,
+     REDIRECT_ERROR_NOTES, REDIRECT_SCRIPT_FILENAME, REQUEST_SCHEME to the
+     whitelist in suexec. PR 51499. [Graham Laverty <graham reg ca>,
+     Stefan Fritsch]
+
   *) mod_rewrite: Fix regexp RewriteCond with NoCase. [Stefan Fritsch]
 
   *) mod_log_debug: New module that allows to log custom messages at various
