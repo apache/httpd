@@ -49,7 +49,7 @@ extern "C" {
 #endif
 
 #define AP_SLOTMEM_PROVIDER_GROUP "slotmem"
-#define AP_SLOTMEM_PROVIDER_VERSION 0
+#define AP_SLOTMEM_PROVIDER_VERSION "0"
 
 typedef unsigned int ap_slotmem_type_t;
 

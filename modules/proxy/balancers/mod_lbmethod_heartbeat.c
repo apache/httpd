@@ -396,7 +396,8 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
 
-    storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
+    storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared",
+                                 AP_SLOTMEM_PROVIDER_VERSION);
     if (!storage) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "ap_lookup_provider %s failed", AP_SLOTMEM_PROVIDER_GROUP);
         return OK;
