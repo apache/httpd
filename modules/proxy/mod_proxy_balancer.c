@@ -703,7 +703,8 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Get slotmem setups
      */
-    storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
+    storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared",
+                                 AP_SLOTMEM_PROVIDER_VERSION);
     if (!storage) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s,
                      "ap_lookup_provider %s failed: is mod_slotmem_shm loaded??",
