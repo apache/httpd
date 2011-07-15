@@ -153,14 +153,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
     +1: niq
 
-  * mod_win32: fix some more env vars which make problems.
-    This fix is based on PR 13029 / 34985, and includes
-    now the SSL_ and GEOIP_ vars; otherwise its impossible
-    to run CGIs when mod_ssl and/or mod_geoip are loaded
-    and those mods return UTF-8 chars in any var during a
-    request.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1145647&view=rev
-    2.2.x patch: trunk patch works with offset.
+  * mod_win32: Invert logic for env var UTF-8 fixing.
+    Now we exclude a list of vars which we know for sure they
+    dont hold UTF-8 chars; all other vars will be fixed. This
+    has the benefit that now also all vars from 3rd-party modules
+    will be fixed. This fix is based on PR 13029 / 34985, and 
+    includes now the SSL_ and GEOIP_ vars; otherwise its impossible
+    to run CGIs when mod_ssl and/or mod_geoip are loaded and those 
+    mods return UTF-8 chars in any var during a request.
+    Trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/arch/win32/mod_win32.c?r1=1054347&r2=1146932
+    2.2.x patch: http://people.apache.org/~fuankg/diffs/2.2.x-mod_win32.c.diff
     +1: fuankg
 
 
