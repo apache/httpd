@@ -59,6 +59,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryindexredirect">DirectoryIndexRedirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
@@ -92,8 +93,8 @@ a directory</td></tr>
       DirectoryIndex index.html
     </code></p></div>
 
-    <p>then a request for <code>http://myserver/docs/</code> would
-    return <code>http://myserver/docs/index.html</code> if it
+    <p>then a request for <code>http://example.com/docs/</code> would
+    return <code>http://example.com/docs/index.html</code> if it
     exists, or would list the directory if it did not.</p>
 
     <p>Note that the documents do not need to be relative to the
@@ -111,6 +112,34 @@ a directory</td></tr>
     searching for an index.  An argument of "disabled" will be interpeted
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a> <a name="directoryindexredirect" id="directoryindexredirect">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures an external redirect for directory indexes.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<var>3xx-code</var>
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+</table>
+    <p>By default, the <code class="directive">DirectoryIndex</code> is selected
+    and returned transparently to the client.  <code class="directive">DirectoryIndexRedirect</code> causes an external redirect
+    to instead be issued.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      DirectoryIndexRedirect on
+    </code></p></div>
+
+    <p>A request for <code>http://example.com/docs/</code> would
+    return a temporary redirect to <code>http://example.com/docs/index.html</code> 
+    if it exists.</p>
 
 
 </div>
