@@ -19,6 +19,7 @@
  */
 
 #include "apr_strings.h"
+#include "apr_lib.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -37,9 +38,13 @@ typedef enum {
     SLASH_UNSET
 } slash_cfg;
 
+#define REDIRECT_OFF   0
+#define REDIRECT_UNSET 1
+
 typedef struct dir_config_struct {
     apr_array_header_t *index_names;
     slash_cfg do_slash;
+    int redirect_index;
     const char *dflt;
 } dir_config_rec;
 
@@ -80,7 +85,34 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
     d->do_slash = arg ? SLASH_ON : SLASH_OFF;
     return NULL;
 }
+static const char *configure_redirect(cmd_parms *cmd, void *d_, const char *arg1)
+{
+    dir_config_rec *d = d_;
+    int status;
 
+    if (!strcasecmp(arg1, "ON")) 
+        status = HTTP_MOVED_TEMPORARILY;
+    else if (!strcasecmp(arg1, "OFF")) 
+        status = REDIRECT_OFF;
+    else if (!strcasecmp(arg1, "permanent"))
+        status = HTTP_MOVED_PERMANENTLY;
+    else if (!strcasecmp(arg1, "temp"))
+        status = HTTP_MOVED_TEMPORARILY;
+    else if (!strcasecmp(arg1, "seeother"))
+        status = HTTP_SEE_OTHER;
+    else if (apr_isdigit(*arg1)) { 
+        status = atoi(arg1);
+        if (!ap_is_HTTP_REDIRECT(status)) { 
+            return "DirectoryIndexRedirect only accepts values between 300 and 399";
+        }
+    }
+    else { 
+        return "DirectoryIndexRedirect ON|OFF|permanent|temp|seeother|3xx";
+    }
+
+    d->redirect_index = status;
+    return NULL;
+}
 static const command_rec dir_cmds[] =
 {
     AP_INIT_TAKE1("FallbackResource", ap_set_string_slot,
@@ -90,6 +122,9 @@ static const command_rec dir_cmds[] =
                     "a list of file names"),
     AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
                  "On or Off"),
+    AP_INIT_TAKE1("DirectoryIndexRedirect", configure_redirect, 
+                   NULL, DIR_CMD_PERMS, "On, Off, or a 3xx status code."),
+
     {NULL}
 };
 
@@ -99,6 +134,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 
     new->index_names = NULL;
     new->do_slash = SLASH_UNSET;
+    new->redirect_index = REDIRECT_UNSET;
     return (void *) new;
 }
 
@@ -111,6 +147,8 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     new->index_names = add->index_names ? add->index_names : base->index_names;
     new->do_slash =
         (add->do_slash == SLASH_UNSET) ? base->do_slash : add->do_slash;
+    new->redirect_index=
+        (add->redirect_index == REDIRECT_UNSET) ? base->redirect_index : add->redirect_index;
     new->dflt = add->dflt ? add->dflt : base->dflt;
     return new;
 }
@@ -261,6 +299,12 @@ static int fixup_dir(request_rec *r)
         if (rr->status == HTTP_OK
             && (   (rr->handler && !strcmp(rr->handler, "proxy-server"))
                 || rr->finfo.filetype == APR_REG)) {
+  
+            if (ap_is_HTTP_REDIRECT(d->redirect_index)) { 
+                apr_table_setn(r->headers_out, "Location", ap_construct_url(r->pool, rr->uri, r));
+                return d->redirect_index;
+            }
+
             ap_internal_fast_redirect(rr, r);
             return OK;
         }
