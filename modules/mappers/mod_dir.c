@@ -346,6 +346,12 @@ static int fixup_dir(request_rec *r)
         return error_notfound;
     }
 
+    /* record what we tried, mostly for the benefit of mod_autoindex */
+    apr_table_set(r->notes, "dir-index-names", 
+                  d->index_names ? 
+                  apr_array_pstrcat(r->pool, d->index_names, ','): 
+                  AP_DEFAULT_INDEX);
+
     /* nothing for us to do, pass on through */
     return DECLINED;
 }

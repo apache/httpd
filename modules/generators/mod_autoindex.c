@@ -2308,9 +2308,14 @@ static int handle_autoindex(request_rec *r)
         return index_directory(r, d);
     }
     else {
+        const char *index_names = apr_table_get(r->notes, "dir-index-names");
+
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Directory index forbidden by "
-                      "Options directive: %s", r->filename);
+                      "Cannot serve directory %s: No matching DirectoryIndex (%s) found, and "
+                      "server-generated directory index forbidden by "
+                      "Options directive", 
+                       r->filename,
+                       index_names ? index_names : "none");
         return HTTP_FORBIDDEN;
     }
 }
