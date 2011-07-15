@@ -104,6 +104,38 @@ a directory</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>DirectoryIndexRedirect</name>
+<description>Configures an external redirect for directory indexes.
+</description>
+<syntax>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<var>3xx-code</var>
+</syntax>
+<default>DirectoryIndexRedirect off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatability>Available in version 2.3.14 and later</compatability>
+
+<usage>
+    <p>By default, the <directive>DirectoryIndex</directive> is selected
+    and returned transparently to the client.  <directive
+    >DirectoryIndexRedirect</directive> causes an external redirect
+    to instead be issued.</p>
+
+    <example><title>Example</title>
+      DirectoryIndexRedirect on
+    </example>
+
+    <p>A request for <code>http://example.com/docs/</code> would
+    return a temporary redirect to <code
+    >http://example.com/docs/index.html</code> 
+    if it exists.</p>
+
+</usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
 <name>DirectorySlash</name>
 <description>Toggle trailing slash redirects on or off</description>
 <syntax>DirectorySlash On|Off</syntax>
