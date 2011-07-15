@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.14
 
+  *) mod_dir: Add DirectoryIndexRedirect to send an external redirect to
+     the proper index.  [Eric Covener]
+
   *) mod_deflate: Don't try to compress requests with a zero sized body.
      PR 51350. [Stefan Fritsch]
 
