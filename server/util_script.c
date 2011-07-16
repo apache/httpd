@@ -49,9 +49,6 @@
  * where there don't have to be).
  */
 
-#define MALFORMED_MESSAGE "malformed header from script. Bad header="
-#define MALFORMED_HEADER_LENGTH_TO_SHOW 30
-
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
@@ -531,12 +528,6 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
         }
 #endif /*APR_CHARSET_EBCDIC*/
         if (!(l = strchr(w, ':'))) {
-            char malformed[(sizeof MALFORMED_MESSAGE) + 1
-                           + MALFORMED_HEADER_LENGTH_TO_SHOW];
-
-            strcpy(malformed, MALFORMED_MESSAGE);
-            strncat(malformed, w, MALFORMED_HEADER_LENGTH_TO_SHOW);
-
             if (!buffer) {
                 /* Soak up all the script output - may save an outright kill */
                 while ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data)) {
@@ -545,8 +536,8 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
             }
 
             ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
-                          "%s: %s", malformed,
-                          apr_filepath_name_get(r->filename));
+                          "malformed header from script: %s; Bad header: %.30s",
+                          apr_filepath_name_get(r->filename), w);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
