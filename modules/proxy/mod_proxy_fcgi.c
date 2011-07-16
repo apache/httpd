@@ -741,8 +741,8 @@ recv_again:
                             int status;
                             seen_end_of_headers = 1;
 
-                            status = ap_scan_script_header_err_brigade(r, ob,
-                                NULL);
+                            status = ap_scan_script_header_err_brigade_ex(r, ob,
+                                NULL, APLOG_MODULE_INDEX);
                             /* suck in all the rest */
                             if (status != OK) {
                                 apr_bucket *tmp_b;
