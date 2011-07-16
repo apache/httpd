@@ -940,7 +940,9 @@ static int cgi_handler(request_rec *r)
         char sbuf[MAX_STRING_LEN];
         int ret;
 
-        if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
+        if ((ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
+					                APLOG_MODULE_INDEX)))
+	{
             ret = log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
 
             /*

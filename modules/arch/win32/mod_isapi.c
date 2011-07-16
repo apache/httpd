@@ -714,12 +714,12 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     old_status = cid->r->status;
 
     if (stat) {
-        res = ap_scan_script_header_err_strs(cid->r, NULL, &termch, &termarg,
-                stat, head, NULL);
+        res = ap_scan_script_header_err_strs_ex(cid->r, NULL,
+                APLOG_MODULE_INDEX, &termch, &termarg, stat, head, NULL);
     }
     else {
-        res = ap_scan_script_header_err_strs(cid->r, NULL, &termch, &termarg,
-                head, NULL);
+        res = ap_scan_script_header_err_strs_ex(cid->r, NULL,
+                APLOG_MODULE_INDEX, &termch, &termarg, head, NULL);
     }
 
     /* Set our status. */

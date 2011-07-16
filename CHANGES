@@ -2,6 +2,13 @@
 
 Changes with Apache 2.3.14
 
+  *) core: Add more logging to ap_scan_script_header_err* functions. Add
+     ap_scan_script_header_err*_ex functions that take a module index for
+     logging.
+     mod_cgi, mod_cgid, mod_proxy_fcgi, mod_proxy_scgi, mod_isapi: Use the
+     new functions in order to make logging configurable per-module.
+     [Stefan Fritsch]
+
   *) mod_dir: Add DirectoryIndexRedirect to send an external redirect to
      the proper index.  [Eric Covener]
 

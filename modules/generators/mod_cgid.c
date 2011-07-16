@@ -1543,7 +1543,9 @@ static int cgid_handler(request_rec *r)
         b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
 
-        if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
+        if ((ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
+                                                        APLOG_MODULE_INDEX)))
+        {
             ret = log_script(r, conf, ret, dbuf, sbuf, bb, NULL);
 
             /*

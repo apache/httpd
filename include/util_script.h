@@ -95,6 +95,21 @@ AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *b
  * the output is valid, then the headers are added to the headers out of the
  * current request
  * @param r The current request
+ * @param f The file to read from
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here.
+ * @param module_index The module index to be used for logging
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ */
+AP_DECLARE(int) ap_scan_script_header_err_ex(request_rec *r, apr_file_t *f,
+                                             char *buffer, int module_index);
+
+
+/**
+ * Read headers output from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
  * @param bb The brigade from which to read
  * @param buffer Empty when calling the function.  On output, if there was an
  *               error, the string that cause the error is stored here. 
@@ -104,6 +119,22 @@ AP_DECLARE(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *b
 AP_DECLARE(int) ap_scan_script_header_err_brigade(request_rec *r,
                                                   apr_bucket_brigade *bb,
                                                   char *buffer);
+
+/**
+ * Read headers output from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param bb The brigade from which to read
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here.
+ * @param module_index The module index to be used for logging
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ */
+AP_DECLARE(int) ap_scan_script_header_err_brigade_ex(request_rec *r,
+                                                     apr_bucket_brigade *bb,
+                                                     char *buffer,
+                                                     int module_index);
 
 /**
  * Read headers strings from a script, ensuring that the output is valid.  If
@@ -127,6 +158,30 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
                        ap_func_attr_sentinel;
 
 /**
+ * Read headers strings from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here.
+ * @param module_index The module index to be used for logging
+ * @param termch Pointer to the last character parsed.
+ * @param termarg Pointer to an int to capture the last argument parsed.
+ *
+ * The varargs are string arguments to parse consecutively for headers,
+ * with a NULL argument to terminate the list.
+ *
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ */
+AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs_ex(request_rec *r,
+                                                         char *buffer,
+                                                         int module_index,
+                                                         const char **termch,
+                                                         int *termarg, ...)
+                       ap_func_attr_sentinel;
+
+
+/**
  * Read headers output from a script, ensuring that the output is valid.  If
  * the output is valid, then the headers are added to the headers out of the
  * current request
@@ -141,6 +196,24 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
+
+/**
+ * Read headers output from a script, ensuring that the output is valid.  If
+ * the output is valid, then the headers are added to the headers out of the
+ * current request
+ * @param r The current request
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here.
+ * @param getsfunc Function to read the headers from.  This function should
+                   act like gets()
+ * @param getsfunc_data The place to read from
+ * @param module_index The module index to be used for logging
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
+ */
+AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
+                                        int (*getsfunc) (char *, int, void *),
+                                        void *getsfunc_data, int module_index);
+
 
 /**
  * Parse query args for the request and store in a new table allocated

@@ -56,7 +56,7 @@ static int asis_handler(request_rec *r)
         return HTTP_FORBIDDEN;
     }
 
-    ap_scan_script_header_err(r, f, NULL);
+    ap_scan_script_header_err_ex(r, f, NULL, APLOG_MODULE_INDEX);
     location = apr_table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' &&
