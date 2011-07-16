@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1088616 -->
+<!-- English Revision : 1147341 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -125,11 +125,11 @@ de fichiers</description>
       Alias /image /ftp/pub/image
     </example>
 
-    <p>Une requ&ecirc;te pour <code>http://myserver/image/foo.gif</code> fera
+    <p>Une requ&ecirc;te pour <code>http://example.com/image/foo.gif</code> fera
     renvoyer par le serveur le fichier
     <code>/ftp/pub/image/foo.gif</code>. Seuls les &eacute;l&eacute;ments de chemin
     complets sont test&eacute;s ; ainsi l'alias pr&eacute;c&eacute;dent ne conviendra pas
-    pour une requ&ecirc;te du style <code>http://myserver/imagefoo.gif</code>.
+    pour une requ&ecirc;te du style <code>http://example.com/imagefoo.gif</code>.
     Pour des mises en correspondance plus complexes faisant intervenir
     les expressions rationnelles, veuillez vous reporter &agrave; la directive
     <directive module="mod_alias">AliasMatch</directive>.</p>
@@ -469,7 +469,7 @@ et d&eacute;signe la cible comme script CGI</description>
       ScriptAlias /cgi-bin/ /web/cgi-bin/
     </example>
 
-    <p>Une requ&ecirc;te pour <code>http://mon-serveur/cgi-bin/foo</code>
+    <p>Une requ&ecirc;te pour <code>http://example.com/cgi-bin/foo</code>
     ferait ex&eacute;cuter par le serveur le script
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
     &eacute;quivalente &agrave; :</p>

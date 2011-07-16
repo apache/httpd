@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1081659 -->
+<!-- English Revision : 1147329 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -85,8 +85,8 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     </example>
 
     <p>Avec cette configuration, une requ&ecirc;te pour l'URL
-    <code>http://mon-serveur/docs/</code> renverrait au client la
-    ressource <code>http://mon-serveur/docs/index.html</code> si elle
+    <code>http://example.com/docs/</code> renverrait au client la
+    ressource <code>http://example.com/docs/index.html</code> si elle
     existe, ou provoquerait la g&eacute;n&eacute;ration du listing du r&eacute;pertoire si la
     ressource n'existe pas.</p>
 
@@ -107,6 +107,39 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
     "disabled" sera interpr&eacute;t&eacute; de mani&egrave;re litt&eacute;rale si d'autres
     arguments sont pr&eacute;sents avant ou apr&egrave;s lui, m&ecirc;me s'ils sont
     eux-m&ecirc;mes des arguments "disabled".</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectoryIndexRedirect</name>
+<description>D&eacute;finit une redirection externe pour les index de
+r&eacute;pertoires.
+</description>
+<syntax>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<var>3xx-code</var>
+</syntax>
+<default>DirectoryIndexRedirect off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>Disponible depuis la version 2.3.14</compatibility>
+
+<usage>
+    <p>Par d&eacute;faut, c'est la page d&eacute;finie par la directive
+    <directive>DirectoryIndex</directive> qui est s&eacute;lectionn&eacute;e et
+    renvoy&eacute;e de mani&egrave;re transparente au client. La directive
+    <directive>DirectoryIndexRedirect</directive> permet de rediriger le
+    client vers une ressource externe.</p>
+
+    <example><title>Exemple</title>
+      DirectoryIndexRedirect on
+    </example>
+
+    <p>Une requ&ecirc;te pour <code>http://example.com/docs/</code> se
+    solderait par une redirection temporaire vers
+    <code>http://example.com/docs/index.html</code> si cette ressource
+    existe.</p>
 
 </usage>
 </directivesynopsis>
