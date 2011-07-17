@@ -996,12 +996,13 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
                 char *errp;
                 apr_off_t number;
 
-                if (apr_strtoff(&number, body, &errp, 10)
+                body1 = ap_get_token(neg->pool, &body, 0);
+                if (apr_strtoff(&number, body1, &errp, 10) != APR_SUCCESS
                     || *errp || number < 0) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Parse error in type map, Content-Length: "
                                   "'%s' in %s is invalid.",
-                                  body, r->filename);
+                                  body1, r->filename);
                     break;
                 }
                 mime_info.bytes = number;
