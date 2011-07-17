@@ -1963,7 +1963,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
             switch (var[8]) {
             case 'A':
                 if (!strcmp(var, "SERVER_NAME")) {
-                    result = ap_get_server_name(r);
+                    result = ap_get_server_name_for_url(r);
                 }
                 break;
 

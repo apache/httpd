@@ -1016,7 +1016,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             if (strcEQ(var, "SERVER_ADMIN"))
                 result = r->server->server_admin;
             else if (strcEQ(var, "SERVER_NAME"))
-                result = ap_get_server_name(r);
+                result = ap_get_server_name_for_url(r);
             else if (strcEQ(var, "SERVER_PORT"))
                 result = apr_psprintf(p, "%u", ap_get_server_port(r));
             else if (strcEQ(var, "SERVER_PROTOCOL"))

@@ -1193,7 +1193,7 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     case 7:
         return r->server->server_admin;
     case 8:
-        return ap_get_server_name(r);
+        return ap_get_server_name_for_url(r);
     case 9:
         return apr_psprintf(ctx->p, "%u", ap_get_server_port(r));
     case 10:

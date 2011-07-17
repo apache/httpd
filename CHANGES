@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.14
 
+  *) core, mod_rewrite, mod_ssl, mod_nw_ssl: Make the SERVER_NAME variable
+     include [ ] for literal IPv6 addresses, as mandated by RFC 3875.
+     PR 26005. [Stefan Fritsch]
+
   *) mod_negotiation: Fix parsing of Content-Length in type maps. PR 42203.
      [Nagae Hidetake <nagae eagan jp>]
 
