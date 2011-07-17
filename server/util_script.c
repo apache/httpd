@@ -229,7 +229,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_SIGNATURE", ap_psignature("", r));
     apr_table_addn(e, "SERVER_SOFTWARE", ap_get_server_banner());
     apr_table_addn(e, "SERVER_NAME",
-                   ap_escape_html(r->pool, ap_get_server_name(r)));
+                   ap_escape_html(r->pool, ap_get_server_name_for_url(r)));
     apr_table_addn(e, "SERVER_ADDR", r->connection->local_ip);  /* Apache */
     apr_table_addn(e, "SERVER_PORT",
                   apr_psprintf(r->pool, "%u", ap_get_server_port(r)));
