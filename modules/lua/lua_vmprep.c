@@ -246,7 +246,6 @@ static void munge_path(lua_State *L,
     const char *pattern;
     const char *modified;
     char *part;
-    int i;
 
     lua_getglobal(L, "package");
     lua_getfield(L, -1, field);
@@ -259,11 +258,8 @@ static void munge_path(lua_State *L,
     modified = lua_tostring(L, -1);
     lua_pop(L, 2);
 
-    part = apr_pstrdup(pool, modified);
-    for (i = 0; i < paths->nelts; i++) {
-        const char *new_path = ((const char **) paths->elts)[i];
-        part = apr_pstrcat(pool, part, ";", new_path, NULL);
-    }
+    part = apr_pstrcat(pool, modified, apr_array_pstrcat(pool, paths, ';'),
+                       NULL);
     lua_pushstring(L, part);
     lua_setfield(L, -2, field);
     lua_pop(L, 1);              /* pop "package" off the stack     */
