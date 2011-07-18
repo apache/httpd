@@ -189,9 +189,9 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     }
 
     if (strcmp(host, "*") == 0 || strcasecmp(host, "_default_") == 0) {
-        rv = apr_sockaddr_info_get(&my_addr, "0.0.0.0", APR_INET, port, 0, p);
+        rv = apr_sockaddr_info_get(&my_addr, NULL, APR_UNSPEC, port, 0, p);
         if (rv) {
-            return "Could not resolve address '0.0.0.0' -- "
+            return "Could not determine a wildcard address ('0.0.0.0') -- "
                 "check resolver configuration.";
         }
     }
@@ -422,6 +422,13 @@ static ipaddr_chain *find_default_server(apr_port_t port)
     return wild_match;
 }
 
+#if APR_HAVE_IPV6
+#define IS_IN6_ANYADDR(ad) ((ad)->family == APR_INET6                   \
+                            && IN6_IS_ADDR_UNSPECIFIED(&(ad)->sa.sin6.sin6_addr))
+#else
+#define IS_IN6_ANYADDR(ad) (0)
+#endif
+
 static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
 {
     name_chain *nc;
@@ -429,8 +436,8 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
     char buf[MAX_STRING_LEN];
     apr_sockaddr_t *ha = ic->sar->host_addr;
 
-    if (ha->family == APR_INET &&
-             ha->sa.sin.sin_addr.s_addr == INADDR_ANY) {
+    if ((ha->family == APR_INET && ha->sa.sin.sin_addr.s_addr == INADDR_ANY)
+        || IS_IN6_ANYADDR(ha)) {
         len = apr_snprintf(buf, sizeof(buf), "*:%u",
                            ic->sar->host_port);
     }
