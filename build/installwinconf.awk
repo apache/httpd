@@ -102,6 +102,7 @@ BEGIN {
 	  print "#LoadModule authn_dbd_module modules/mod_authn_dbd.so" > dstfl;
 	  print "#LoadModule authn_dbm_module modules/mod_authn_dbm.so" > dstfl;
 	  print "LoadModule authn_file_module modules/mod_authn_file.so" > dstfl;
+	  print "#LoadModule authn_socache_module modules/mod_authn_socache.so" > dstfl;
 	  print "#LoadModule authnz_ldap_module modules/mod_authnz_ldap.so" > dstfl;
 	  print "LoadModule authz_core_module modules/mod_authz_core.so" > dstfl;
 	  print "#LoadModule authz_dbd_module modules/mod_authz_dbd.so" > dstfl;
@@ -137,6 +138,7 @@ BEGIN {
 	  print "#LoadModule ldap_module modules/mod_ldap.so" > dstfl;
 	  print "#LoadModule logio_module modules/mod_logio.so" > dstfl;
 	  print "LoadModule log_config_module modules/mod_log_config.so" > dstfl;
+	  print "#LoadModule log_debug_module modules/mod_log_debug.so" > dstfl;
 	  print "#LoadModule log_forensic_module modules/mod_log_forensic.so" > dstfl;
 	  print "LoadModule mime_module modules/mod_mime.so" > dstfl;
 	  print "#LoadModule mime_magic_module modules/mod_mime_magic.so" > dstfl;
@@ -145,6 +147,7 @@ BEGIN {
 	  print "#LoadModule proxy_ajp_module modules/mod_proxy_ajp.so" > dstfl;
 	  print "#LoadModule proxy_balancer_module modules/mod_proxy_balancer.so" > dstfl;
 	  print "#LoadModule proxy_connect_module modules/mod_proxy_connect.so" > dstfl;
+	  print "#LoadModule proxy_express_module modules/mod_proxy_express.so" > dstfl;
 	  print "#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so" > dstfl;
 	  print "#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so" > dstfl;
 	  print "#LoadModule proxy_http_module modules/mod_proxy_http.so" > dstfl;

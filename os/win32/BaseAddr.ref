@@ -112,3 +112,6 @@ mod_reqtimeout.so           0x6F7A0000    0x00010000
 mod_reflector.so            0x6F790000    0x00010000
 mod_slotmem_plain.so        0x6F780000    0x00010000
 mod_slotmem_shm.so          0x6F770000    0x00010000
+mod_authn_socache.so        0x6F760000    0x00010000
+mod_proxy_express.so        0x6F750000    0x00010000
+mod_log_debug.so            0x6F740000    0x00010000
