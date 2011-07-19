@@ -92,6 +92,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_filter: FilterProvider conditions of type "resp=" (response headers)
+    do not work for CGI, because headers_out are not populated. We need to use
+    err_headers_out instead in this case. In trunk this is handled by ap_expr().
+    Joe recently added fall back to err_headers_out to ap_expr and the proposed
+    mod_filter patch is analogous to Joe's fix.
+    The patch fixes the test suite failure for t/modules/filter.t.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090234
+    2.2.x patch: http://people.apache.org/~rjung/patches/mod_filter-cgi-err_headers_out.patch
+    +1: rjung, jorton, sf
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -105,16 +114,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     trawick: any reason it shouldn't be completely aligned with default_handler's
              choice to return OK vs. 500?
-
-  * mod_filter: FilterProvider conditions of type "resp=" (response headers)
-    do not work for CGI, because headers_out are not populated. We need to use
-    err_headers_out instead in this case. In trunk this is handled by ap_expr().
-    Joe recently added fall back to err_headers_out to ap_expr and the proposed
-    mod_filter patch is analogous to Joe's fix.
-    The patch fixes the test suite failure for t/modules/filter.t.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1090234
-    2.2.x patch: http://people.apache.org/~rjung/patches/mod_filter-cgi-err_headers_out.patch
-    +1: rjung, jorton, 
 
   * Sort hooks before running pre-config hook.
     Trunk patch: http://svn.apache.org/viewvc?rev=1032002&view=rev
