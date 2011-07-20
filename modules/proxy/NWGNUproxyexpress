@@ -1,29 +1,26 @@
 #
-# Declare the sub-directories to be built here
-#
-
-SUBDIRS = \
-	$(EOLIST)
-
-#
-# Get the 'head' of the build environment.  This includes default targets and
-# paths to tools
-#
-
-include $(AP_WORK)/build/NWGNUhead.inc
-
-#
-# build this level's files
-
-#
 # Make sure all needed macro's are defined
 #
+
+#
+# Get the 'head' of the build environment if necessary.  This includes default
+# targets and paths to tools
+#
+
+ifndef EnvironmentDefined
+include $(AP_WORK)/build/NWGNUhead.inc
+endif
 
 #
 # These directories will be at the beginning of the include list, followed by
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(AP_WORK)/include \
+			$(AP_WORK)/modules/http \
+			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -95,19 +92,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	=
+NLM_NAME	= proxyexpress
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy Express Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= Prxy Xpress Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -118,7 +115,7 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
+NLM_STACK_SIZE	= 8192
 
 
 #
@@ -151,44 +148,19 @@ XDCDATA		=
 #
 # If there is an NLM target, put it here
 #
-TARGET_nlm = \
-	$(OBJDIR)/proxy.nlm \
-	$(OBJDIR)/proxycon.nlm \
-	$(OBJDIR)/proxyftp.nlm \
-	$(OBJDIR)/proxyhtp.nlm \
-	$(OBJDIR)/proxybalancer.nlm \
-	$(OBJDIR)/proxyajp.nlm \
-	$(OBJDIR)/proxyfcgi.nlm \
-	$(OBJDIR)/proxyscgi.nlm \
-	$(OBJDIR)/proxyexpress.nlm \
-	$(OBJDIR)/proxylbm_busy.nlm \
-	$(OBJDIR)/proxylbm_hb.nlm \
-	$(OBJDIR)/proxylbm_req.nlm \
-	$(OBJDIR)/proxylbm_traf.nlm \
-	$(EOLIST)
-
-# If WITH_MOD_SERF and SERFSRC have been defined then build the mod_serf module
-ifdef WITH_MOD_SERF
-ifneq "$(SERFSRC)" ""
-ifneq "$(ZLIBSDK)" ""
-TARGET_nlm += \
-	$(OBJDIR)/serf.nlm \
-	$(EOLIST)
-endif
-endif
-endif
+TARGET_nlm = $(OBJDIR)/$(NLM_NAME).nlm
 
 #
 # If there is an LIB target, put it here
 #
-TARGET_lib = \
-	$(EOLIST)
+TARGET_lib =
 
 #
 # These are the OBJ files needed to create the NLM target above.
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_proxy_express.o \
 	$(EOLIST)
 
 #
@@ -196,6 +168,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
@@ -203,6 +176,9 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	libc \
+	aprlib \
+	proxy \
 	$(EOLIST)
 
 #
@@ -224,12 +200,23 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@libc.imp \
+	@aprlib.imp \
+	@httpd.imp \
+	@$(OBJDIR)/mod_proxy.imp \
 	$(EOLIST)
+
+# Don't link with Winsock if standard sockets are being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
 
 #
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	proxy_express_module \
 	$(EOLIST)
 
 #
@@ -252,11 +239,12 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALLBASE)/modules/)
 
 #
 # Any specialized rules here
 #
+
+vpath %.c ../arch/netware
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
