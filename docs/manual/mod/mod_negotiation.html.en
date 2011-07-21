@@ -135,7 +135,7 @@ Negotiation</a></li>
       <dd>uri of the file containing the variant (of the given
       media type, encoded with the given content encoding). These
       are interpreted as URLs relative to the map file; they must
-      be on the same server (!), and they must refer to files to
+      be on the same server, and they must refer to files to
       which the client would be granted access if they were to be
       requested directly.</dd>
 
