@@ -128,7 +128,7 @@
     which they are describing, followed by the extension
     <code>.var</code>. In the examples shown below, the resource is
     named <code>foo</code>, so the type map file is named
-    <code>foo.var<code>.</p>
+    <code>foo.var</code>.</p>
     
     <p>This file should have an entry for each available
     variant; these entries consist of contiguous HTTP-format header

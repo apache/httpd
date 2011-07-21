@@ -135,15 +135,24 @@ Negotiation</a></li>
     <p>in the server configuration file.</p>
 
     <p>Type map files should have the same name as the resource
-    which they are describing, and have an entry for each available
+    which they are describing, followed by the extension
+    <code>.var</code>. In the examples shown below, the resource is
+    named <code>foo</code>, so the type map file is named
+    <code>foo.var</code>.</p>
+    
+    <p>This file should have an entry for each available
     variant; these entries consist of contiguous HTTP-format header
     lines. Entries for different variants are separated by blank
     lines. Blank lines are illegal within an entry. It is
     conventional to begin a map file with an entry for the combined
     entity as a whole (although this is not required, and if
-    present will be ignored). An example map file is shown below.
-    This file would be named <code>foo.var</code>, as it describes
-    a resource named <code>foo</code>.</p>
+    present will be ignored). An example map file is shown below.</p>
+
+    <p>URIs in this file are relative to the location of the type map
+    file. Usually, these files will be located in the same directory as
+    the type map file, but this is not required. You may provide
+    absolute or relative URIs for any file located on the same server as
+    the map file.</p>
 
 <div class="example"><p><code>
   URI: foo<br />
@@ -156,6 +165,7 @@ Negotiation</a></li>
   Content-type: text/html;charset=iso-8859-2<br />
   Content-language: fr, de<br />
 </code></p></div>
+
     <p>Note also that a typemap file will take precedence over the
     filename's extension, even when Multiviews is on. If the
     variants have different source qualities, that may be indicated
