@@ -215,6 +215,7 @@
 <li><a href="mod_access_compat.html#deny">Deny</a></li>
 <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
 <li><a href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
+<li><a href="mod_dir.html#directoryindexredirect">DirectoryIndexRedirect</a></li>
 <li><a href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><a href="mod_dir.html#directoryslash">DirectorySlash</a></li>
 <li><a href="core.html#documentroot">DocumentRoot</a></li>

@@ -128,6 +128,10 @@ serveur HTTP Apache</h1>
       <dd>Met à disposition un fournisseur de mémoire partagée à base de
       slots (du style tableau de bord).</dd>
 
+      <dt><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></dt>
+      <dd>Permet d'introduire une journalisation personnalisée à
+      différentes phases du traitement de la requête.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

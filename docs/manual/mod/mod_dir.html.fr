@@ -60,6 +60,7 @@ de répertoire</td></tr>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryindexredirect">DirectoryIndexRedirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
@@ -96,8 +97,8 @@ client envoie une requête pour un répertoire</td></tr>
     </code></p></div>
 
     <p>Avec cette configuration, une requête pour l'URL
-    <code>http://mon-serveur/docs/</code> renverrait au client la
-    ressource <code>http://mon-serveur/docs/index.html</code> si elle
+    <code>http://example.com/docs/</code> renverrait au client la
+    ressource <code>http://example.com/docs/index.html</code> si elle
     existe, ou provoquerait la génération du listing du répertoire si la
     ressource n'existe pas.</p>
 
@@ -118,6 +119,39 @@ client envoie une requête pour un répertoire</td></tr>
     "disabled" sera interprété de manière littérale si d'autres
     arguments sont présents avant ou après lui, même s'ils sont
     eux-mêmes des arguments "disabled".</p>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a> <a name="directoryindexredirect" id="directoryindexredirect">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une redirection externe pour les index de
+répertoires.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<var>3xx-code</var>
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.14</td></tr>
+</table>
+    <p>Par défaut, c'est la page définie par la directive
+    <code class="directive">DirectoryIndex</code> qui est sélectionnée et
+    renvoyée de manière transparente au client. La directive
+    <code class="directive">DirectoryIndexRedirect</code> permet de rediriger le
+    client vers une ressource externe.</p>
+
+    <div class="example"><h3>Exemple</h3><p><code>
+      DirectoryIndexRedirect on
+    </code></p></div>
+
+    <p>Une requête pour <code>http://example.com/docs/</code> se
+    solderait par une redirection temporaire vers
+    <code>http://example.com/docs/index.html</code> si cette ressource
+    existe.</p>
 
 
 </div>
