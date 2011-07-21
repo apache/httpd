@@ -128,6 +128,7 @@ a directory</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.14 and later</td></tr>
 </table>
     <p>By default, the <code class="directive">DirectoryIndex</code> is selected
     and returned transparently to the client.  <code class="directive">DirectoryIndexRedirect</code> causes an external redirect

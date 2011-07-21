@@ -137,11 +137,11 @@ de fichiers</td></tr>
       Alias /image /ftp/pub/image
     </code></p></div>
 
-    <p>Une requête pour <code>http://myserver/image/foo.gif</code> fera
+    <p>Une requête pour <code>http://example.com/image/foo.gif</code> fera
     renvoyer par le serveur le fichier
     <code>/ftp/pub/image/foo.gif</code>. Seuls les éléments de chemin
     complets sont testés ; ainsi l'alias précédent ne conviendra pas
-    pour une requête du style <code>http://myserver/imagefoo.gif</code>.
+    pour une requête du style <code>http://example.com/imagefoo.gif</code>.
     Pour des mises en correspondance plus complexes faisant intervenir
     les expressions rationnelles, veuillez vous reporter à la directive
     <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>.</p>
@@ -463,7 +463,7 @@ et désigne la cible comme script CGI</td></tr>
       ScriptAlias /cgi-bin/ /web/cgi-bin/
     </code></p></div>
 
-    <p>Une requête pour <code>http://mon-serveur/cgi-bin/foo</code>
+    <p>Une requête pour <code>http://example.com/cgi-bin/foo</code>
     ferait exécuter par le serveur le script
     <code>/web/cgi-bin/foo</code>. Cette configuration est sensiblement
     équivalente à :</p>

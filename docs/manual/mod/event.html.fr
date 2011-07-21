@@ -90,8 +90,18 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
     mobilise en principe à cet effet un processus/thread enfant en
     attente des données du client, ce qui amène son propre lot
     d'inconvénients. Pour résoudre ce problème, <code class="module"><a href="../mod/event.html">event</a></code>
-    utilise un thread dédié qui gère non seulement les sockets en
-    écoute, mais aussi tous les sockets en état Keep Alive.</p>
+    utilise un thread dédié qui gère les sockets en
+    écoute, tous les sockets en état Keep Alive, et les
+    sockets où les filtres gestionnaires et de protocole ont
+    fait leur travail et pour lesquels la seule chose restant à faire
+    consiste à envoyer les données au client. La page d'état de
+    <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> montre les connexions qui se trouvent
+    dans les situations mentionnées.</p>
+
+    <p>Le gestionnaire de connexion amélioré ne fonctionne pas encore
+    pour certains filtres de connexion, et en particulier SSL. Pour les
+    connexions SSL, ce MPM réadopte le comportement du MPM
+    <code class="module"><a href="../mod/worker.html">worker</a></code> et réserve un thread par connexion.</p>
 
     <p>Le MPM présuppose que l'implémentation <code>apr_pollset</code>
     sous-jacente est raisonnablement sûre du point de vue des threads.
@@ -138,16 +148,60 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a> <a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limit concurrent connections per process</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncRequestWorkerFactor <var>factor</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de connexions simultanées par thread</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncRequestWorkerFactor <var>facteur</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>event</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in version 2.3.13 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.13</td></tr>
+</table>
+    <p>Le MPM event gère certaines connexions de manière asynchrone ;
+    dans ce cas, les threads traitant la requête sont alloués selon les
+    besoins et pour de courtes périodes. Dans les autres cas (la plupart
+    du temps pour les connexions SSL), un thread est réservé par
+    connexion. Ceci peut conduire à des situations où tous les threads
+    sont saturés et où aucun thread n'est capable d'effectuer de
+    nouvelles tâches pour les connexions asynchrones établies.</p>
+
+    <p>Pour minimiser les effets de ce problème, le MPM event utilise
+    deux méthodes : tout d'abord, il limite le nombre de connexions
+    simultanées par thread en fonction du nombre de processus
+    inactifs. Ensuite, si tous les processus sont occupés, il ferme des
+    connexions permanentes, même si la limite de durée de la connexion
+    n'a pas été atteinte. Ceci autorise les clients concernés à se
+    reconnecter à un autre processus possèdant encore des threads
+    disponibles.</p>
+
+    <p>Cette directive permet de personnaliser finement la limite du
+    nombre de connexions par thread. Un processus n'acceptera de
+    nouvelles connexions que si le nombre actuel de connexions est
+    inférieur à :</p>
+
+    <p class="indent"><strong>
+        <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> +
+        (<code class="directive">AsyncRequestWorkerFactor</code> *
+        <var>nombre de threads inactifs</var>)
+    </strong></p>
+
+    <p>En d'autres termes, le nombre maximum de connexions simultanées
+    sera :</p>
+
+    <p class="indent"><strong>
+        (<code class="directive">AsyncRequestWorkerFactor</code> + 1) *
+        <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>
+    </strong></p>
+
+    <p>La directive <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> se nommait
+    <code class="directive">MaxClients</code> avant la version 2.3.13. La valeur
+    ci-dessus montre que cet ancien nom ne correspondait pas à sa
+    signification exacte pour le MPM event.</p>
+
+    <p>La directive <code class="directive">AsyncRequestWorkerFactor</code>
+    accepte des valeurs d'argument de type non entier, comme "1.5".</p>
+
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
