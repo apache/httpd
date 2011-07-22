@@ -7,6 +7,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <link rel="canonical" href="http://httpd.apache.org/docs/current/mod/mod_rewrite.html"/> 
 
     <title>Apache module mod_rewrite</title>
   </head>
