@@ -34,8 +34,8 @@
 
 #include <ctype.h>
 
-#if !AP_HAS_LDAP
-#error mod_authnz_ldap requires LDAP support. To fix add --with-ldap to ./configure.
+#if !APR_HAS_LDAP
+#error mod_authnz_ldap requires APR-util to have LDAP support built in. To fix add --with-ldap to ./configure.
 #endif
 
 static char *default_attributes[3] = { "member", "uniqueMember", NULL };
@@ -111,7 +111,6 @@ static APR_OPTIONAL_FN_TYPE(uldap_cache_check_subgroups) *util_ldap_cache_check_
 static APR_OPTIONAL_FN_TYPE(uldap_cache_checkuserid) *util_ldap_cache_checkuserid;
 static APR_OPTIONAL_FN_TYPE(uldap_cache_getuserdn) *util_ldap_cache_getuserdn;
 static APR_OPTIONAL_FN_TYPE(uldap_ssl_supported) *util_ldap_ssl_supported;
-static APR_OPTIONAL_FN_TYPE(ap_ldap_url_parse) *util_ldap_url_parse;
 
 static apr_hash_t *charset_conversions = NULL;
 static char *to_charset = NULL;           /* UTF-8 identifier derived from the charset.conv file */
@@ -257,7 +256,7 @@ static void authn_ldap_build_filter(char *filtbuf,
      * LDAP filter metachars are escaped.
      */
     filtbuf_end = filtbuf + FILTER_LENGTH - 1;
-#if AP_HAS_MICROSOFT_LDAPSDK
+#if APR_HAS_MICROSOFT_LDAPSDK
     for (p = user, q=filtbuf + strlen(filtbuf);
          *p && q < filtbuf_end; ) {
         if (strchr("*()\\", *p) != NULL) {
@@ -1334,12 +1333,12 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
                                     const char *mode)
 {
     int rc;
-    ap_ldap_url_desc_t *urld;
-    ap_ldap_err_t *result;
+    apr_ldap_url_desc_t *urld;
+    apr_ldap_err_t *result;
 
     authn_ldap_config_t *sec = config;
 
-    rc = util_ldap_url_parse(cmd->pool, url, &(urld), &(result));
+    rc = apr_ldap_url_parse(cmd->pool, url, &(urld), &(result));
     if (rc != APR_SUCCESS) {
         return result->reason;
     }
@@ -1392,13 +1391,13 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 
     if (mode) {
         if (0 == strcasecmp("NONE", mode)) {
-            sec->secure = AP_LDAP_NONE;
+            sec->secure = APR_LDAP_NONE;
         }
         else if (0 == strcasecmp("SSL", mode)) {
-            sec->secure = AP_LDAP_SSL;
+            sec->secure = APR_LDAP_SSL;
         }
         else if (0 == strcasecmp("TLS", mode) || 0 == strcasecmp("STARTTLS", mode)) {
-            sec->secure = AP_LDAP_STARTTLS;
+            sec->secure = APR_LDAP_STARTTLS;
         }
         else {
             return "Invalid LDAP connection mode setting: must be one of NONE, "
@@ -1410,7 +1409,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
       */
     if (strncasecmp(url, "ldaps", 5) == 0)
     {
-        sec->secure = AP_LDAP_SSL;
+        sec->secure = APR_LDAP_SSL;
         sec->port = urld->lud_port? urld->lud_port : LDAPS_PORT;
     }
     else
@@ -1432,7 +1431,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
                   urld->lud_scope == LDAP_SCOPE_BASE? "base" :
                   urld->lud_scope == LDAP_SCOPE_ONELEVEL? "onelevel" : "unknown"),
                  urld->lud_filter,
-                 sec->secure == AP_LDAP_SSL  ? "using SSL": "not using SSL"
+                 sec->secure == APR_LDAP_SSL  ? "using SSL": "not using SSL"
                  );
 
     return NULL;
@@ -1781,7 +1780,6 @@ static void ImportULDAPOptFn(void)
     util_ldap_cache_getuserdn   = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_getuserdn);
     util_ldap_ssl_supported     = APR_RETRIEVE_OPTIONAL_FN(uldap_ssl_supported);
     util_ldap_cache_check_subgroups = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_check_subgroups);
-    util_ldap_url_parse = APR_RETRIEVE_OPTIONAL_FN(ap_ldap_url_parse);
 }
 
 static void register_hooks(apr_pool_t *p)
