@@ -47,7 +47,8 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
 
     <p>Le serveur HTTP Apache 2.0 a &eacute;tendu cette conception modulaire aux
     fonctions les plus
-    &eacute;l&eacute;mentaires d'un serveur web. Certains Modules Multi-Processus (MPMs)
+    &eacute;l&eacute;mentaires d'un serveur web. Le serveur est fourni avec une vari&eacute;t&eacute; de
+    Modules Multi-Processus (MPMs) qui
     sont responsables de l'association aux ports r&eacute;seau de la machine,
     acceptent les requ&ecirc;tes, et se chargent de r&eacute;partir ces derni&egrave;res
     entre les diff&eacute;rents processus enfants.</p>
