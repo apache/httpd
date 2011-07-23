@@ -86,12 +86,10 @@ extern "C" {
  * ap_ldap_set_option() AP_LDAP_OPT_TLS_CERT option for details.
  * @param result_err The returned result
  */
-APR_DECLARE_OPTIONAL_FN(int, ap_ldap_ssl_init, 
-                        (apr_pool_t *pool,
-                         const char *cert_auth_file,
-                         int cert_file_type,
-                         ap_ldap_err_t **result_err));
-
+LDAP_DECLARE(int) ap_ldap_ssl_init(apr_pool_t *pool,
+                                      const char *cert_auth_file,
+                                      int cert_file_type,
+                                      ap_ldap_err_t **result_err);
 
 /**
  * LDAP SSL De-Initialise function
@@ -102,7 +100,7 @@ APR_DECLARE_OPTIONAL_FN(int, ap_ldap_ssl_init,
  * @todo currently we do not check whether ap_ldap_ssl_init()
  * has been called first - we probably should.
  */
-APR_DECLARE_OPTIONAL_FN(int, ap_ldap_ssl_deinit, (void));
+LDAP_DECLARE(int) ap_ldap_ssl_deinit(void);
 
 /**
  * LDAP initialise function
@@ -138,12 +136,12 @@ APR_DECLARE_OPTIONAL_FN(int, ap_ldap_ssl_deinit, (void));
  * @param secure The security mode to set
  * @param result_err The returned result
  */
-APR_DECLARE_OPTIONAL_FN(int, ap_ldap_init, (apr_pool_t *pool, 
-                                            LDAP **ldap,
-                                            const char *hostname,
-                                            int portno,
-                                            int secure,
-                                            ap_ldap_err_t **result_err));
+LDAP_DECLARE(int) ap_ldap_init(apr_pool_t *pool,
+                                  LDAP **ldap,
+                                  const char *hostname,
+                                  int portno,
+                                  int secure,
+                                  ap_ldap_err_t **result_err);
 
 /**
  * LDAP info function
@@ -153,8 +151,8 @@ APR_DECLARE_OPTIONAL_FN(int, ap_ldap_init, (apr_pool_t *pool,
  * @param pool The pool to use
  * @param result_err The returned result
  */
-APR_DECLARE_OPTIONAL_FN(int, ap_ldap_info, (apr_pool_t *pool,
-                                            ap_ldap_err_t **result_err));
+LDAP_DECLARE(int) ap_ldap_info(apr_pool_t *pool,
+                                  ap_ldap_err_t **result_err);
 
 #ifdef __cplusplus
 }

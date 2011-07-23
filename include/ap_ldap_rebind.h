@@ -48,7 +48,7 @@
  * This function creates the lock for controlling access to the xref list..
  * @param pool Pool to use when creating the xref_lock.
  */
-APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_ldap_rebind_init, (apr_pool_t *pool));
+LDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool);
 
 
 /**
@@ -72,10 +72,10 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_ldap_rebind_init, (apr_pool_t *pool));
  * @param bindPW The bind Password to be used for any binds while 
  *               chasing referrals on this ldap connection.
  */
-APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_ldap_rebind_add, (apr_pool_t *pool,
-                                                           LDAP *ld,
-                                                           const char *bindDN,
-                                                           const char *bindPW));
+LDAP_DECLARE(apr_status_t) ap_ldap_rebind_add(apr_pool_t *pool,
+                                                 LDAP *ld,
+                                                 const char *bindDN,
+                                                 const char *bindPW);
 
 /**
  * LDAP rebind_remove function
@@ -88,7 +88,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_ldap_rebind_add, (apr_pool_t *pool,
  *
  * @param ld The LDAP connectionhandle
  */
-APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_ldap_rebind_remove, (LDAP *ld));
+LDAP_DECLARE(apr_status_t) ap_ldap_rebind_remove(LDAP *ld);
 
 #endif /* AP_HAS_LDAP */
 
