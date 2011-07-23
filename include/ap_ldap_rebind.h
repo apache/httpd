@@ -15,7 +15,7 @@
  */
 
 /**
- * The LDAP rebind functions provide an implementation of
+ * The MODLDAP rebind functions provide an implementation of
  * a rebind procedure that can be used to allow clients to chase referrals,
  * using the same credentials used to log in originally.
  *
@@ -43,16 +43,16 @@
 #if AP_HAS_LDAP
 
 /**
- * LDAP initialize rebind lock
+ * MODLDAP initialize rebind lock
  *
  * This function creates the lock for controlling access to the xref list..
  * @param pool Pool to use when creating the xref_lock.
  */
-LDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool);
+MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool);
 
 
 /**
- * LDAP rebind_add function
+ * MODLDAP rebind_add function
  *
  * This function creates a cross reference entry for the specified ldap
  * connection. The rebind callback function will look up this ldap 
@@ -72,13 +72,13 @@ LDAP_DECLARE(apr_status_t) ap_ldap_rebind_init(apr_pool_t *pool);
  * @param bindPW The bind Password to be used for any binds while 
  *               chasing referrals on this ldap connection.
  */
-LDAP_DECLARE(apr_status_t) ap_ldap_rebind_add(apr_pool_t *pool,
+MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_add(apr_pool_t *pool,
                                                  LDAP *ld,
                                                  const char *bindDN,
                                                  const char *bindPW);
 
 /**
- * LDAP rebind_remove function
+ * MODLDAP rebind_remove function
  *
  * This function removes the rebind cross reference entry for the
  * specified ldap connection.
@@ -88,7 +88,7 @@ LDAP_DECLARE(apr_status_t) ap_ldap_rebind_add(apr_pool_t *pool,
  *
  * @param ld The LDAP connectionhandle
  */
-LDAP_DECLARE(apr_status_t) ap_ldap_rebind_remove(LDAP *ld);
+MODLDAP_DECLARE(apr_status_t) ap_ldap_rebind_remove(LDAP *ld);
 
 #endif /* AP_HAS_LDAP */
 

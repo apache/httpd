@@ -51,7 +51,7 @@
  * will return APR_EGENERAL. Further LDAP specific error information
  * can be found in result_err.
  */
-LDAP_DECLARE(int) ap_ldap_ssl_init(apr_pool_t *pool,
+MODLDAP_DECLARE(int) ap_ldap_ssl_init(apr_pool_t *pool,
                                       const char *cert_auth_file,
                                       int cert_file_type,
                                       ap_ldap_err_t **result_err)
@@ -108,7 +108,7 @@ LDAP_DECLARE(int) ap_ldap_ssl_init(apr_pool_t *pool,
  * @todo currently we do not check whether ap_ldap_ssl_init()
  * has been called first - should we?
  */
-LDAP_DECLARE(int) ap_ldap_ssl_deinit(void)
+MODLDAP_DECLARE(int) ap_ldap_ssl_deinit(void)
 {
 
 #if AP_HAS_LDAP_SSL && AP_HAS_LDAPSSL_CLIENT_DEINIT
@@ -139,7 +139,7 @@ LDAP_DECLARE(int) ap_ldap_ssl_deinit(void)
  * AP_LDAP_SSL: SSL encryption (ldaps://)
  * AP_LDAP_STARTTLS: Force STARTTLS on ldap://
  */
-LDAP_DECLARE(int) ap_ldap_init(apr_pool_t *pool,
+MODLDAP_DECLARE(int) ap_ldap_init(apr_pool_t *pool,
                                   LDAP **ldap,
                                   const char *hostname,
                                   int portno,
@@ -179,7 +179,7 @@ LDAP_DECLARE(int) ap_ldap_init(apr_pool_t *pool,
  * This function returns a string describing the LDAP toolkit
  * currently in use. The string is placed inside result_err->reason.
  */
-LDAP_DECLARE(int) ap_ldap_info(apr_pool_t *pool,
+MODLDAP_DECLARE(int) ap_ldap_info(apr_pool_t *pool,
                                   ap_ldap_err_t **result_err)
 {
     ap_ldap_err_t *result = (ap_ldap_err_t *)apr_pcalloc(pool, sizeof(ap_ldap_err_t));

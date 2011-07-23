@@ -16,7 +16,7 @@
 
 /**
  * @file ap_ldap_option.h
- * @brief LDAP ldap_*_option() functions
+ * @brief MODLDAP ldap_*_option() functions
  */
 #ifndef AP_LDAP_OPTION_H
 #define AP_LDAP_OPTION_H
@@ -203,7 +203,7 @@ struct ap_ldap_opt_tls_cert_t {
 #define AP_LDAP_STOPTLS 3
 
 /**
- * LDAP get option function
+ * MODLDAP get option function
  *
  * This function gets option values from a given LDAP session if
  * one was specified. It maps to the native ldap_get_option() function.
@@ -214,14 +214,14 @@ struct ap_ldap_opt_tls_cert_t {
  * @param result_err The ap_ldap_err_t structure contained detailed results
  *        of the operation.
  */
-LDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
+MODLDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
                                         LDAP *ldap,
                                         int option,
                                         void *outvalue,
                                         ap_ldap_err_t **result_err);
 
 /**
- * LDAP set option function
+ * MODLDAP set option function
  * 
  * This function sets option values to a given LDAP session if
  * one was specified. It maps to the native ldap_set_option() function.
@@ -236,7 +236,7 @@ LDAP_DECLARE(int) ap_ldap_get_option(apr_pool_t *pool,
  * @param result_err The ap_ldap_err_t structure contained detailed results
  *        of the operation.
  */
-LDAP_DECLARE(int) ap_ldap_set_option(apr_pool_t *pool,
+MODLDAP_DECLARE(int) ap_ldap_set_option(apr_pool_t *pool,
                                         LDAP *ldap,
                                         int option,
                                         const void *invalue,
