@@ -341,14 +341,15 @@
  *                         ap_expr_parse_cmd_mi() function, add ap_expr_str_*() functions,
  *                         rename AP_EXPR_FLAGS_* -> AP_EXPR_FLAG_*
  * 20110702.1 (2.3.14-dev) Add ap_scan_script_header_err*_ex functions
+ * 20110723.0 (2.3.14-dev) Revert addition of ap_ldap*
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20110702
+#define MODULE_MAGIC_NUMBER_MAJOR 20110723
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

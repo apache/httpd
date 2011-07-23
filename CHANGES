@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.14
 
+  *) mod_ldap: Revert the integration of apr-ldap as ap_ldap which was done
+     in 2.3.13. [Stefan Fritsch]
+
   *) core: For '*' or '_default_' vhosts, use a wildcard address of any 
      address family, rather than IPv4 only.  [Joe Orton]
 

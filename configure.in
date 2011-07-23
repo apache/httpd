@@ -16,7 +16,6 @@ dnl #
 sinclude(build/apr_common.m4)
 sinclude(build/find_apr.m4)
 sinclude(build/find_apu.m4)
-sinclude(build/find_ldap.m4)
 sinclude(acinclude.m4)
 
 dnl Later versions of autoconf (>= 2.62) by default cause the produced
@@ -456,9 +455,6 @@ pid_t t = syscall(SYS_gettid); return t == -1 ? 1 : 0; },
 if test "$ac_cv_gettid" = "yes"; then
     AC_DEFINE(HAVE_GETTID, 1, [Define if you have gettid()])
 fi
-
-dnl check for LDAP support, needed by modules/aaa and modules/ldap
-AP_FIND_LDAP
 
 dnl ## Check for the tm_gmtoff field in struct tm to get the timezone diffs
 AC_CACHE_CHECK([for tm_gmtoff in struct tm], ac_cv_struct_tm_gmtoff,
