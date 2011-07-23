@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1089719 -->
+<!-- English Revision : 1149182 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -130,7 +130,7 @@ contenu</a></seealso>
       <dd>l'URI du fichier contenant la variante (du type de m&eacute;dium
       donn&eacute;, cod&eacute; selon le codage de contenu donn&eacute;). Cet URI est
       consid&eacute;r&eacute; comme relatif au fichier de correspondances ; il doit
-      &ecirc;tre situ&eacute; sur le m&ecirc;me serveur (!), et doit faire r&eacute;f&eacute;rence au
+      &ecirc;tre situ&eacute; sur le m&ecirc;me serveur, et doit faire r&eacute;f&eacute;rence au
       fichier auquel le client se verrait accorder l'acc&egrave;s s'il &eacute;tait
       requis directement.</dd>
 
