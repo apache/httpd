@@ -14,10 +14,11 @@ ap_ldap_url.lo dnl
 "
 
 APACHE_MODULE(ldap, LDAP caching and connection pooling services, $ldap_objects, , no, [
-  if test "$ap_has_ldap" = "1" ; then
-    APR_ADDTO(MOD_LDAP_LDADD, [$LDADD_ldap])
+  AP_FIND_LDAP
+  if test -z "$apu_config" ; then
+      APR_ADDTO(MOD_LDAP_LDADD, [$LDADD_ldap])
   else
-    enable_ldap=no
+      APR_ADDTO(MOD_LDAP_LDADD, [$LDADD_ldap])
   fi
   AC_SUBST(MOD_LDAP_LDADD)
 ])

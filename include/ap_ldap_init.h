@@ -26,9 +26,9 @@
  * @{
  */
 
-#if AP_HAS_LDAP
-
 #include "ap_ldap.h"
+
+#if AP_HAS_LDAP
 
 #ifdef __cplusplus
 extern "C" {
