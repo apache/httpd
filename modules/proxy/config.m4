@@ -7,11 +7,11 @@ if test "$enable_proxy" = "shared"; then
 elif test "$enable_proxy" = "yes"; then
   proxy_mods_enable=yes
 else
-  proxy_mods_enable=no
+  proxy_mods_enable=most
 fi
 
 AC_CHECK_DECL(CMSG_DATA, [
-  proxy_mods_fdpass_enable="$proxy_mods_enable"
+  proxy_mods_fdpass_enable=""
 ], [
   proxy_mods_fdpass_enable="no"
 ], [
@@ -69,7 +69,7 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     fi
 ])
 
-APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , most)
+APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
