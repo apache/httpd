@@ -31,7 +31,7 @@ esac
 
 APACHE_MODULE(session, session module, , , most)
 APACHE_MODULE(session_cookie, session cookie module, $session_cookie_objects, , $session_mods_enable)
-APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , no, [
+APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , $session_mods_enable, [
   saved_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES"
   AC_TRY_COMPILE([#include <apr_crypto.h>],[
