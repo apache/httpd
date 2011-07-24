@@ -43,14 +43,18 @@ ssl_engine_ocsp.lo dnl
 ssl_util_ocsp.lo dnl
 "
 dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
-APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
+APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , most, [
     APACHE_CHECK_SSL_TOOLKIT
-    APR_ADDTO(MOD_SSL_LDADD, [\$(SSL_LIBS)])
-    CHECK_OCSP
-    if test "x$enable_ssl" = "xshared"; then
-       # The only symbol which needs to be exported is the module
-       # structure, so ask libtool to hide everything else:
-       APR_ADDTO(MOD_SSL_LDADD, [-export-symbols-regex ssl_module])
+    if test "$ac_cv_ssltk" = "yes" ; then
+        APR_ADDTO(MOD_SSL_LDADD, [\$(SSL_LIBS)])
+        CHECK_OCSP
+        if test "x$enable_ssl" = "xshared"; then
+           # The only symbol which needs to be exported is the module
+           # structure, so ask libtool to hide everything else:
+           APR_ADDTO(MOD_SSL_LDADD, [-export-symbols-regex ssl_module])
+        fi
+    else
+        enable_ssl=no
     fi
 ])
 

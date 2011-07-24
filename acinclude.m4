@@ -440,81 +440,82 @@ dnl Configure for the detected openssl/ssl-c toolkit installation, giving
 dnl preference to "--with-ssl=<path>" if it was specified.
 dnl
 AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
-if test "x$ap_ssltk_configured" = "x"; then
-  dnl initialise the variables we use
-  ap_ssltk_found=""
-  ap_ssltk_base=""
-  ap_ssltk_libs=""
-  ap_ssltk_type=""
+  AC_CACHE_CHECK([for SSL/TLS toolkit], [ac_cv_ssltk], [
+    dnl initialise the variables we use
+    ac_cv_ssltk=yes
+    ap_ssltk_found=""
+    ap_ssltk_base=""
+    ap_ssltk_libs=""
+    ap_ssltk_type=""
 
-  dnl Determine the SSL/TLS toolkit's base directory, if any
-  AC_MSG_CHECKING([for user-provided SSL/TLS toolkit base])
-  AC_ARG_WITH(sslc, APACHE_HELP_STRING(--with-sslc=DIR,RSA SSL-C SSL/TLS toolkit), [
-    dnl If --with-sslc specifies a directory, we use that directory or fail
-    if test "x$withval" != "xyes" -a "x$withval" != "x"; then
-      dnl This ensures $withval is actually a directory and that it is absolute
-      ap_ssltk_base="`cd $withval ; pwd`"
+    dnl Determine the SSL/TLS toolkit's base directory, if any
+    AC_MSG_CHECKING([for user-provided SSL/TLS toolkit base])
+    AC_ARG_WITH(sslc, APACHE_HELP_STRING(--with-sslc=DIR,RSA SSL-C SSL/TLS toolkit), [
+      dnl If --with-sslc specifies a directory, we use that directory or fail
+      if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+        dnl This ensures $withval is actually a directory and that it is absolute
+        ap_ssltk_base="`cd $withval ; pwd`"
+      fi
+      ap_ssltk_type="sslc"
+    ])
+    AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,OpenSSL SSL/TLS toolkit), [
+      dnl If --with-ssl specifies a directory, we use that directory or fail
+      if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+        dnl This ensures $withval is actually a directory and that it is absolute
+        ap_ssltk_base="`cd $withval ; pwd`"
+      fi
+    ])
+    if test "x$ap_ssltk_base" = "x"; then
+      AC_MSG_RESULT(none)
+    else
+      AC_MSG_RESULT($ap_ssltk_base)
     fi
-    ap_ssltk_type="sslc"
-  ])
-  AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,OpenSSL SSL/TLS toolkit), [
-    dnl If --with-ssl specifies a directory, we use that directory or fail
-    if test "x$withval" != "xyes" -a "x$withval" != "x"; then
-      dnl This ensures $withval is actually a directory and that it is absolute
-      ap_ssltk_base="`cd $withval ; pwd`"
-    fi
-  ])
-  if test "x$ap_ssltk_base" = "x"; then
-    AC_MSG_RESULT(none)
-  else
-    AC_MSG_RESULT($ap_ssltk_base)
-  fi
 
-  dnl Run header and version checks
-  saved_CPPFLAGS="$CPPFLAGS"
-  saved_LIBS="$LIBS"
-  saved_LDFLAGS="$LDFLAGS"
-  SSL_LIBS=""
+    dnl Run header and version checks
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_LIBS="$LIBS"
+    saved_LDFLAGS="$LDFLAGS"
+    SSL_LIBS=""
 
-  dnl Before doing anything else, load in pkg-config variables (if not sslc).
-  if test "x$ap_ssltk_type" = "x" -a -n "$PKGCONFIG"; then
-    saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
-    if test "x$ap_ssltk_base" != "x" -a \
-            -f "${ap_ssltk_base}/lib/pkgconfig/openssl.pc"; then
-      dnl Ensure that the given path is used by pkg-config too, otherwise
-      dnl the system openssl.pc might be picked up instead.
-      PKG_CONFIG_PATH="${ap_ssltk_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-      export PKG_CONFIG_PATH
+    dnl Before doing anything else, load in pkg-config variables (if not sslc).
+    if test "x$ap_ssltk_type" = "x" -a -n "$PKGCONFIG"; then
+      saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+      if test "x$ap_ssltk_base" != "x" -a \
+              -f "${ap_ssltk_base}/lib/pkgconfig/openssl.pc"; then
+        dnl Ensure that the given path is used by pkg-config too, otherwise
+        dnl the system openssl.pc might be picked up instead.
+        PKG_CONFIG_PATH="${ap_ssltk_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+        export PKG_CONFIG_PATH
+      fi
+      ap_ssltk_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
+      if test $? -eq 0; then
+        ap_ssltk_found="yes"
+        pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
+        APR_ADDTO(CPPFLAGS, [$pkglookup])
+        APR_ADDTO(INCLUDES, [$pkglookup])
+        pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(SSL_LIBS, [$pkglookup])
+      fi
+      PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
     fi
-    ap_ssltk_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
-    if test $? -eq 0; then
-      ap_ssltk_found="yes"
-      pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
-      APR_ADDTO(CPPFLAGS, [$pkglookup])
-      APR_ADDTO(INCLUDES, [$pkglookup])
-      pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
-      APR_ADDTO(LDFLAGS, [$pkglookup])
-      APR_ADDTO(SSL_LIBS, [$pkglookup])
+    if test "x$ap_ssltk_base" != "x" -a "x$ap_ssltk_found" = "x"; then
+      APR_ADDTO(CPPFLAGS, [-I$ap_ssltk_base/include])
+      APR_ADDTO(INCLUDES, [-I$ap_ssltk_base/include])
+      APR_ADDTO(LDFLAGS, [-L$ap_ssltk_base/lib])
+      APR_ADDTO(SSL_LIBS, [-L$ap_ssltk_base/lib])
+      if test "x$ap_platform_runtime_link_flag" != "x"; then
+        APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_ssltk_base/lib])
+        APR_ADDTO(SSL_LIBS, [$ap_platform_runtime_link_flag$ap_ssltk_base/lib])
+      fi
     fi
-    PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
-  fi
-  if test "x$ap_ssltk_base" != "x" -a "x$ap_ssltk_found" = "x"; then
-    APR_ADDTO(CPPFLAGS, [-I$ap_ssltk_base/include])
-    APR_ADDTO(INCLUDES, [-I$ap_ssltk_base/include])
-    APR_ADDTO(LDFLAGS, [-L$ap_ssltk_base/lib])
-    APR_ADDTO(SSL_LIBS, [-L$ap_ssltk_base/lib])
-    if test "x$ap_platform_runtime_link_flag" != "x"; then
-      APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_ssltk_base/lib])
-      APR_ADDTO(SSL_LIBS, [$ap_platform_runtime_link_flag$ap_ssltk_base/lib])
-    fi
-  fi
-  if test "x$ap_ssltk_type" = "x"; then
-    dnl First check for manditory headers
-    AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
-    if test "$ap_ssltk_type" = "openssl"; then
-      dnl so it's OpenSSL - test for a good version
-      AC_MSG_CHECKING([for OpenSSL version])
-      AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
+    if test "x$ap_ssltk_type" = "x"; then
+      dnl First check for manditory headers
+      AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
+      if test "$ap_ssltk_type" = "openssl"; then
+        dnl so it's OpenSSL - test for a good version
+        AC_MSG_CHECKING([for OpenSSL version])
+        AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing openssl version"
 #endif
@@ -522,23 +523,23 @@ if test "x$ap_ssltk_configured" = "x"; then
  || ((OPENSSL_VERSION_NUMBER > 0x00907000) && (OPENSSL_VERSION_NUMBER < 0x0090702f))
 #error "Insecure openssl version " OPENSSL_VERSION_TEXT
 #endif],
-      [AC_MSG_RESULT(OK)],
-      [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
-       AC_MSG_RESULT([not encouraging])
-       AC_MSG_WARN([OpenSSL version may contain security vulnerabilities!]
-                   [ Ensure the latest security patches have been applied!])
-      ])
-    else
-      AC_MSG_RESULT([no OpenSSL headers found])
+        [AC_MSG_RESULT(OK)],
+        [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
+         AC_MSG_RESULT([not encouraging])
+         AC_MSG_WARN([OpenSSL version may contain security vulnerabilities!]
+                     [ Ensure the latest security patches have been applied!])
+        ])
+      else
+        AC_MSG_RESULT([no OpenSSL headers found])
+      fi
     fi
-  fi
-  if test "$ap_ssltk_type" != "openssl"; then
-    dnl Might be SSL-C - report, then test anything relevant
-    AC_CHECK_HEADERS([sslc.h], [ap_ssltk_type="sslc"], [ap_ssltk_type=""])
-    if test "$ap_ssltk_type" = "sslc"; then
-      ap_ssltk_libs="-lsslc"
-      AC_MSG_CHECKING([for SSL-C version])
-      AC_TRY_COMPILE([#include <sslc.h>],[
+    if test "$ap_ssltk_type" != "openssl"; then
+      dnl Might be SSL-C - report, then test anything relevant
+      AC_CHECK_HEADERS([sslc.h], [ap_ssltk_type="sslc"], [ap_ssltk_type=""])
+      if test "$ap_ssltk_type" = "sslc"; then
+        ap_ssltk_libs="-lsslc"
+        AC_MSG_CHECKING([for SSL-C version])
+        AC_TRY_COMPILE([#include <sslc.h>],[
 #if !defined(SSLC_VERSION_NUMBER)
 #error "Missing SSL-C version"
 #endif
@@ -546,54 +547,58 @@ if test "x$ap_ssltk_configured" = "x"; then
 #define stringize_ver(x) #x
 #error "Insecure SSL-C version " stringize_ver(SSLC_VERSION_NUMBER)
 #endif],
-      [AC_MSG_RESULT(OK)],
-      [dnl Replace this with SSLC_VERSION_NUMBER?
-       AC_MSG_RESULT([not encouraging])
-       echo "WARNING: SSL-C version may contain security vulnerabilities!"
-       echo "         Ensure the latest security patches have been applied!"
-      ])
+        [AC_MSG_RESULT(OK)],
+        [dnl Replace this with SSLC_VERSION_NUMBER?
+         AC_MSG_RESULT([not encouraging])
+         echo "WARNING: SSL-C version may contain security vulnerabilities!"
+         echo "         Ensure the latest security patches have been applied!"
+        ])
+      else
+        AC_MSG_RESULT([no SSL-C headers found])
+      fi
+    fi
+    if test "x$ap_ssltk_type" = "x"; then
+      ac_cv_ssltk="no"
+      AC_MSG_WARN([...No recognized SSL/TLS toolkit detected])
     else
-      AC_MSG_RESULT([no SSL-C headers found])
+      if test "$ap_ssltk_type" = "openssl" -a "x$ap_ssltk_found" = "x"; then
+        ap_ssltk_found="yes"
+        ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
+      fi
+      APR_ADDTO(SSL_LIBS, [$ap_ssltk_libs])
+      APR_ADDTO(LIBS, [$ap_ssltk_libs])
+      APACHE_SUBST(SSL_LIBS)
+
+      dnl Run library and function checks
+      liberrors=""
+      if test "$ap_ssltk_type" = "openssl"; then
+        AC_CHECK_HEADERS([openssl/engine.h])
+        AC_CHECK_FUNCS([SSLeay_version SSL_CTX_new], [], [liberrors="yes"])
+        AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines])
+      else
+        AC_CHECK_FUNCS([SSLC_library_version SSL_CTX_new], [], [liberrors="yes"])
+        AC_CHECK_FUNCS(SSL_set_state)
+      fi
+      dnl restore
+      CPPFLAGS="$saved_CPPFLAGS"
+      LIBS="$saved_LIBS"
+      LDFLAGS="$saved_LDFLAGS"
+      if test "x$liberrors" != "x"; then
+        ac_cv_ssltk=no
+        AC_MSG_WARN([... Error, SSL/TLS libraries were missing or unusable])
+      fi
+    fi
+  ])
+
+  if test "x$ac_cv_ssltk" = "xyes" ; then
+    dnl Adjust apache's configuration based on what we found above.
+    dnl (a) define preprocessor symbols
+    if test "$ap_ssltk_type" = "openssl"; then
+      AC_DEFINE(HAVE_OPENSSL, 1, [Define if SSL is supported using OpenSSL])
+    else
+      AC_DEFINE(HAVE_SSLC, 1, [Define if SSL is supported using SSL-C])
     fi
   fi
-  if test "x$ap_ssltk_type" = "x"; then
-    AC_MSG_ERROR([...No recognized SSL/TLS toolkit detected])
-  fi
-
-  if test "$ap_ssltk_type" = "openssl" -a "x$ap_ssltk_found" = "x"; then
-    ap_ssltk_found="yes"
-    ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
-  fi
-  APR_ADDTO(SSL_LIBS, [$ap_ssltk_libs])
-  APR_ADDTO(LIBS, [$ap_ssltk_libs])
-  APACHE_SUBST(SSL_LIBS)
-
-  dnl Run library and function checks
-  liberrors=""
-  if test "$ap_ssltk_type" = "openssl"; then
-    AC_CHECK_HEADERS([openssl/engine.h])
-    AC_CHECK_FUNCS([SSLeay_version SSL_CTX_new], [], [liberrors="yes"])
-    AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines])
-  else
-    AC_CHECK_FUNCS([SSLC_library_version SSL_CTX_new], [], [liberrors="yes"])
-    AC_CHECK_FUNCS(SSL_set_state)
-  fi
-  dnl restore
-  CPPFLAGS="$saved_CPPFLAGS"
-  LIBS="$saved_LIBS"
-  LDFLAGS="$saved_LDFLAGS"
-  if test "x$liberrors" != "x"; then
-    AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
-  fi
-
-  dnl Adjust apache's configuration based on what we found above.
-  dnl (a) define preprocessor symbols
-  if test "$ap_ssltk_type" = "openssl"; then
-    AC_DEFINE(HAVE_OPENSSL, 1, [Define if SSL is supported using OpenSSL])
-  else
-    AC_DEFINE(HAVE_SSLC, 1, [Define if SSL is supported using SSL-C])
-  fi
-fi
 ])
 
 dnl
