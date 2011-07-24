@@ -286,14 +286,20 @@ AC_DEFUN(APACHE_MODULE,[
   dnl module was not explicitly requested, allow a module to disable itself if
   dnl its pre-reqs fail.
   dnl XXX: Todo: Allow to disable specific modules even with "reallyall".
-  if test "$module_selection" = "most" -a "$enable_$1" = "most" ||
-     test "$module_selection" = "reallyall" -a "$enable_$1" != "yes" -a \
-          "$enable_$1" != "static"
-  then
-    _apmod_error_fatal="no"
-  else
-    _apmod_error_fatal="yes"
-  fi
+  case "$enable_$1" in
+    yes|static|shared)
+      _apmod_error_fatal="yes"
+      ;;
+    *)
+      case "$module_selection" in
+      reallyall|all|most)
+        _apmod_error_fatal="no"
+        ;;
+      *)
+        _apmod_error_fatal="yes"
+        ;;
+      esac
+  esac
   if test "$enable_$1" = "static"; then
     enable_$1=static
   elif test "$enable_$1" = "yes"; then
