@@ -2,6 +2,14 @@
 
 Changes with Apache 2.3.14
 
+  *) configure: Update selection of modules for 'all' and 'most'. 'all' will
+     now enable all modules except for example and test modules. Make the
+     selection for 'most' more useful (including ssl and proxy). Both 'all'
+     and 'most' will now disable modules if dependencies are missing instead
+     of aborting. If a specific module is requested with --enable-XXX=yes,
+     missing dependencies will still cause configure to exit with an error.
+     [Stefan Fritsch]
+
   *) mod_ldap: Revert the integration of apr-ldap as ap_ldap which was done
      in 2.3.13. [Stefan Fritsch]
 
