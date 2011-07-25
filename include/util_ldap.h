@@ -28,14 +28,13 @@
 #include "apr_thread_rwlock.h"
 #include "apr_tables.h"
 #include "apr_time.h"
+#include "apr_version.h"
+#if APR_MAJOR_VERSION < 2
+/* The LDAP API is currently only present in APR 1.x */
 #include "apr_ldap.h"
 #include "apr_ldap_rebind.h"
-
-#if APR_HAS_MICROSOFT_LDAPSDK
-#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
-                ||(s) == LDAP_UNAVAILABLE)
 #else
-#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN)
+#define APR_HAS_LDAP 0
 #endif
 
 #if APR_HAS_SHARED_MEMORY
@@ -45,6 +44,13 @@
 
 /* this whole thing disappears if LDAP is not enabled */
 #if APR_HAS_LDAP
+
+#if APR_HAS_MICROSOFT_LDAPSDK
+#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
+                ||(s) == LDAP_UNAVAILABLE)
+#else
+#define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN)
+#endif
 
 /* Apache header files */
 #include "ap_config.h"
