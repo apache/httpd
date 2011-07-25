@@ -1714,7 +1714,7 @@ satisfied by a request at runtime</description>
     It is also possible to use regular expressions, </p>
 
     <example>
-        &lt;If "%{QUERY_STRING =~ /(delete|commit)=.*?elem/"&gt;
+        &lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
     </example>
 
     <p>shell-like pattern matches and many other operations. These operations
