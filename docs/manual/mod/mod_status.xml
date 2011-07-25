@@ -114,7 +114,7 @@ performance</description>
 
     <note>
       <strong>It should be noted that if <module>mod_status</module> is
-      compiled into the server, its handler capability is available
+      loaded into the server, its handler capability is available
       in <em>all</em> configuration files, including
       <em>per</em>-directory files (<em>e.g.</em>,
       <code>.htaccess</code>). This may have security-related
