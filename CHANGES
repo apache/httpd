@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.14
 
+  *) mod_allowmethods: Correct Merging of "reset" and do not allow an
+     empty parameter list for the AllowMethods directive. [Rainer Jung]
+
   *) configure: Update selection of modules for 'all' and 'most'. 'all' will
      now enable all modules except for example and test modules. Make the
      selection for 'most' more useful (including ssl and proxy). Both 'all'

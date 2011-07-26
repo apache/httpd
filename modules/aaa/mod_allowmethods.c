@@ -44,6 +44,7 @@
  */
 
 typedef struct am_conf_t {
+  int allowed_set;
   apr_int64_t allowed;
 } am_conf_t;
 
@@ -80,6 +81,7 @@ static void *am_create_conf(apr_pool_t * p, char *dummy)
   am_conf_t *conf = apr_pcalloc(p, sizeof(am_conf_t));
   
   conf->allowed = 0;
+  conf->allowed_set = 0;
   return conf;
 }
 
@@ -88,7 +90,13 @@ static void* am_merge_conf(apr_pool_t* pool, void* a, void* b) {
   am_conf_t* add = (am_conf_t*) b;
   am_conf_t* conf = apr_palloc(pool, sizeof(am_conf_t));
   
-  conf->allowed = add->allowed ? add->allowed : base->allowed;
+  if (add->allowed_set) {
+      conf->allowed = add->allowed;
+      conf->allowed_set = add->allowed_set;
+  } else {
+      conf->allowed = base->allowed;
+      conf->allowed_set = base->allowed_set;
+  }
 
   return conf;
 }
@@ -97,9 +105,13 @@ static const char *am_allowmethods(cmd_parms *cmd, void *d, int argc, char *cons
 {
   int i;
   am_conf_t* conf = (am_conf_t*) d;
+  if (argc == 0) {
+      return "AllowMethods: No method or 'reset' keyword given";
+  }
   if (argc == 1) {
     if (strcasecmp("reset", argv[0]) == 0) {
       conf->allowed = 0;
+      conf->allowed_set = 1;
       return NULL;
     }
   }
@@ -113,6 +125,7 @@ static const char *am_allowmethods(cmd_parms *cmd, void *d, int argc, char *cons
 
     conf->allowed |= (AP_METHOD_BIT << m);
   }
+  conf->allowed_set = 1;
   return NULL;
 }
 
@@ -128,7 +141,7 @@ static const command_rec am_cmds[] = {
   {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA allowmethods_module = {
+AP_DECLARE_MODULE(allowmethods) = {
   STANDARD20_MODULE_STUFF,
   am_create_conf,
   am_merge_conf,
