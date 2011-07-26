@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.14
 
+  *) prefork, worker, event: Reduce period during startup/restart where a
+     successive signal may be lost. PR 43696. [Arun Bhalla <arun shme net>]
+
   *) mod_allowmethods: Correct Merging of "reset" and do not allow an
      empty parameter list for the AllowMethods directive. [Rainer Jung]
 
