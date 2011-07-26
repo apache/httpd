@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.14
 
+  *) prefork, worker, event: Make sure crashes are logged to the error log if
+     httpd has already detached from the console. [Stefan Fritsch]
+
   *) prefork, worker, event: Reduce period during startup/restart where a
      successive signal may be lost. PR 43696. [Arun Bhalla <arun shme net>]
 
