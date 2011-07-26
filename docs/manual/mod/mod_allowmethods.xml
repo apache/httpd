@@ -43,11 +43,11 @@ in order for it to rebuild correctly.
 used on an server. The most common configuration would be:</p>
 
 <example><title>Example</title>
-&lt;Directory /&gt;<br />
+&lt;Location /&gt;<br />
 <indent>
-   AllowMethods GET HEAD OPTIONS<br />
+   AllowMethods GET POST OPTIONS<br />
 </indent>
-&lt;/Directory&gt;
+&lt;/Location&gt;
 </example>
 
 </summary>
@@ -64,7 +64,8 @@ used on an server. The most common configuration would be:</p>
 <usage>
 
 <p>The HTTP-methods are case sensitive, and are generally as per
-RFC given in upper case. The <code>reset</code> keyword can be used
+RFC given in upper case. The GET and HEAD methods are treated as
+equivalent. The <code>reset</code> keyword can be used
 turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
 
 <example><title>Example</title>
