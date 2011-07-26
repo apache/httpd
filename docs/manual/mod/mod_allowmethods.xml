@@ -75,6 +75,11 @@ turn off <module>mod_allowmethods</module> in a deeper nested context:</p>
 &lt;/Location&gt;
 </example>
 
+<note><title>Caution</title>
+  <p>The TRACE method can not be denied by this module,
+  use <directive module="core">TraceEnable</directive> instead.</p>
+</note>
+
 <p><module>mod_allowmethods</module> was written to replace the rather
 kludgy implementation of <directive module="core">Limit</directive> and
 <directive module="core">LimitExcept</directive>.</p>
