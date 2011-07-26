@@ -1169,10 +1169,13 @@ AP_CORE_DECLARE(const command_rec *) ap_find_command(const char *name,
                                                      const command_rec *cmds);
 
 /**
- * Find a given directive in a list module
+ * Find a given directive in a list of modules.
  * @param cmd_name The directive to search for
- * @param mod The module list to search
- * @return The directive definition of the specified directive
+ * @param mod Pointer to the first module in the linked list; will be set to
+ *            the module providing cmd_name
+ * @return The directive definition of the specified directive.
+ *         *mod will be changed to point to the module containing the
+ *         directive.
  */
 AP_CORE_DECLARE(const command_rec *) ap_find_command_in_modules(const char *cmd_name,
                                                                 module **mod);
