@@ -54,7 +54,7 @@ used on an server. The most common configuration would be:</p>
 
 <directivesynopsis>
 <name>AllowMethods</name>
-<description>Changes absolutely nothing</description>
+<description>Restrict access to the listed HTTP methods</description>
 <syntax>AllowMethods reset|<em>HTTP-method</em> 
 [<em>HTTP-method</em>]...</syntax>
 <default>AllowMethods reset</default>
