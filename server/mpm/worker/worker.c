@@ -1761,6 +1761,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_scoreboard_image->global->running_generation = retained->my_generation;
     }
 
+    restart_pending = shutdown_pending = 0;
     set_signals();
     /* Don't thrash... */
     if (max_spare_threads < min_spare_threads + threads_per_child)
@@ -1799,7 +1800,6 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 "Accept mutex: %s (default: %s)",
                 apr_proc_mutex_name(accept_mutex),
                 apr_proc_mutex_defname());
-    restart_pending = shutdown_pending = 0;
     mpm_state = AP_MPMQ_RUNNING;
 
     server_main_loop(remaining_children_to_start);

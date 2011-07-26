@@ -2524,6 +2524,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         ap_scoreboard_image->global->running_generation = retained->my_generation;
     }
 
+    restart_pending = shutdown_pending = 0;
     set_signals();
     /* Don't thrash... */
     if (max_spare_threads < min_spare_threads + threads_per_child)
@@ -2559,7 +2560,6 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                  "Server built: %s", ap_get_server_built());
     ap_log_command_line(plog, s);
 
-    restart_pending = shutdown_pending = 0;
     mpm_state = AP_MPMQ_RUNNING;
 
     server_main_loop(remaining_children_to_start);
