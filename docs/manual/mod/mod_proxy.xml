@@ -1735,8 +1735,22 @@ header for proxied requests</description>
     <note><title>Effectiveness</title>
      <p>This option is of use only for HTTP proxying, as handled by <module>mod_proxy_http</module>.</p>
     </note>
-
-
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>ProxySourceAddress</name>
+<description>Set local IP address for outgoing proxy connections</description>
+<syntax>ProxySourceAddress <var>address</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in version 2.3.9 and later</compatibility>
+
+<usage>
+    <p>This directive allows to set a specific local address to bind to when connecting
+    to a backend server.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
