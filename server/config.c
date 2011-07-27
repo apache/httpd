@@ -838,10 +838,16 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name)
 static const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms,
                               void *mconfig, const char *args)
 {
+    int override_list_ok = 0;
     char *w, *w2, *w3;
     const char *errmsg = NULL;
 
-    if ((parms->override & cmd->req_override) == 0)
+    /** Have we been provided a list of acceptable directives? */
+    if(parms->override_list != NULL)
+         if(apr_table_get(parms->override_list, cmd->name) != NULL)
+              override_list_ok = 1;
+
+    if ((parms->override & cmd->req_override) == 0 && !override_list_ok)
         return apr_pstrcat(parms->pool, cmd->name, " not allowed here", NULL);
 
     parms->info = cmd->cmd_data;
@@ -1506,7 +1512,7 @@ AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *pool, struct ap_logconf *l,
  */
 
 static cmd_parms default_parms =
-{NULL, 0, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+{NULL, 0, 0, NULL, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
 AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *file)
 {
@@ -2005,7 +2011,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
 
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
                                        request_rec *r, int override,
-                                       int override_opts,
+                                       int override_opts, apr_table_t *override_list,
                                        const char *d, const char *access_name)
 {
     ap_configfile_t *f = NULL;
@@ -2027,6 +2033,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
     parms = default_parms;
     parms.override = override;
     parms.override_opts = override_opts;
+    parms.override_list = override_list;
     parms.pool = r->pool;
     parms.temp_pool = r->pool;
     parms.server = r->server;

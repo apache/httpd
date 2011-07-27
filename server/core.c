@@ -236,6 +236,10 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->override_opts = new->override_opts;
     }
 
+    if (conf->override_list == NULL) {
+        conf->override_list = new->override_list;
+    }
+
     if (conf->response_code_strings == NULL) {
         conf->response_code_strings = new->response_code_strings;
     }
@@ -1603,6 +1607,40 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
         }
 
         d->override &= ~OR_UNSET;
+    }
+
+    return NULL;
+}
+
+static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *const argv[])
+{
+    core_dir_config *d = d_;
+    int i;
+
+    /* Throw a warning if we're in <Location> or <Files> */
+    if (ap_check_cmd_context(cmd, NOT_IN_LOCATION | NOT_IN_FILES)) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                     "Useless use of AllowOverrideList in line %d of %s.",
+                     cmd->directive->line_num, cmd->directive->filename);
+    }
+
+    d->override_list = apr_table_make(cmd->pool, 1);
+
+    for (i=0;i<argc;i++){
+        if (!strcasecmp(argv[i], "None")) {
+            return NULL;
+        }
+        else {
+            const command_rec *result = NULL;
+            module *mod = ap_top_module;
+            result = ap_find_command_in_modules(argv[i], &mod);
+            if (result)
+                apr_table_set(d->override_list, argv[i], "1");
+            else
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                             "Discarding unrecognized directive `%s' in AllowOverrideList.",
+                             argv[i]);
+        }
     }
 
     return NULL;
@@ -3741,6 +3779,9 @@ AP_INIT_TAKE2("ErrorDocument", set_error_document, NULL, OR_FILEINFO,
   "Change responses for HTTP errors"),
 AP_INIT_RAW_ARGS("AllowOverride", set_override, NULL, ACCESS_CONF,
   "Controls what groups of directives can be configured by per-directory "
+  "config files"),
+AP_INIT_TAKE_ARGV("AllowOverrideList", set_override_list, NULL, ACCESS_CONF,
+  "Controls what individual directives can be configured by per-directory "
   "config files"),
 AP_INIT_RAW_ARGS("Options", set_options, NULL, OR_OPTIONS,
   "Set a number of attributes for a given directory"),

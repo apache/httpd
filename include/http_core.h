@@ -31,6 +31,7 @@
 #include "apr_optional.h"
 #include "util_filter.h"
 #include "ap_expr.h"
+#include "apr_tables.h"
 
 #include "http_config.h"
 
@@ -600,6 +601,9 @@ typedef struct {
 
     /** per-dir log config */
     struct ap_logconf *log;
+
+    /** Table of directives allowed per AllowOverrideList */
+    apr_table_t *override_list;
 
 } core_dir_config;
 

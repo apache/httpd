@@ -486,6 +486,7 @@ typedef struct core_opts_t {
         allow_options_t remove;
         overrides_t override;
         overrides_t override_opts;
+        apr_table_t *override_list;
 } core_opts_t;
 
 static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
@@ -513,6 +514,11 @@ static void core_opts_merge(const ap_conf_vector_t *sec, core_opts_t *opts)
         opts->override = this_dir->override;
         opts->override_opts = this_dir->override_opts;
     }
+
+   if (this_dir->override_list != NULL) {
+        opts->override_list = this_dir->override_list;
+   }
+
 }
 
 
@@ -740,6 +746,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         opts.remove = this_dir->opts_remove;
         opts.override = this_dir->override;
         opts.override_opts = this_dir->override_opts;
+        opts.override_list = this_dir->override_list;
 
         /* Set aside path_info to merge back onto path_info later.
          * If r->filename is a directory, we must remerge the path_info,
@@ -946,12 +953,13 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 /* No htaccess in an incomplete root path,
                  * nor if it's disabled
                  */
-                if (seg < startseg || !opts.override) {
+                if (seg < startseg || (!opts.override && opts.override_list == NULL)) {
                     break;
                 }
 
+
                 res = ap_parse_htaccess(&htaccess_conf, r, opts.override,
-                                        opts.override_opts,
+                                        opts.override_opts, opts.override_list,
                                         apr_pstrdup(r->pool, r->filename),
                                         sconf->access_name);
                 if (res) {

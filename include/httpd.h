@@ -706,6 +706,8 @@ struct htaccess_result {
     int override;
     /** the override options allowed for the .htaccess file */
     int override_opts;
+    /** Table of allowed directives for override */
+    apr_table_t *override_list;
     /** the configuration directives */
     struct ap_conf_vector_t *htaccess;
     /** the next one, or NULL if no more; N.B. never change this */
