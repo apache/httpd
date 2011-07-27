@@ -92,6 +92,13 @@
     <p>common structures for heartbeat modules (should this be public API?)</p>
   </section>
 
+  <section id="ap_parse_htaccess">
+    <title>ap_parse_htaccess (changed)</title>
+    <p>The function signature for <code>ap_parse_htaccess</code> has been
+    changed. A <code>apr_table_t</code> of individual directives allowed
+    for override must now be passed (override remains).</p>
+  </section>
+
   <section id="http_config">
     <title>http_config (changed)</title>
     <ul>

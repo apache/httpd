@@ -28,6 +28,7 @@
 
 #include "util_cfgtree.h"
 #include "ap_config.h"
+#include "apr_tables.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -282,6 +283,8 @@ struct cmd_parms_struct {
     int override;
     /** Which allow-override-opts bits are set */
     int override_opts;
+    /** Table of directives allowed per AllowOverrideList */
+    apr_table_t *override_list;
     /** Which methods are &lt;Limit&gt;ed */
     apr_int64_t limited;
     /** methods which are limited */
@@ -1065,6 +1068,7 @@ AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_conn_config(apr_pool_t *p);
  * @param r The request currently being served
  * @param override Which overrides are active
  * @param override_opts Which allow-override-opts bits are set
+ * @param override_list Table of directives allowed for override
  * @param path The path to the htaccess file
  * @param access_name The list of possible names for .htaccess files
  * int The status of the current request
@@ -1073,6 +1077,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
                                        request_rec *r,
                                        int override,
                                        int override_opts,
+                                       apr_table_t *override_list,
                                        const char *path,
                                        const char *access_name);
 

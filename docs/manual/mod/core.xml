@@ -327,10 +327,11 @@ NoDecode option available in 2.3.12 and later.</compatibility>
     <directive type="section" module="core">Files</directive> sections.
     </note>
 
-    <p>When this directive is set to <code>None</code>, then
-    <a href="#accessfilename">.htaccess</a> files are completely ignored.
-    In this case, the server will not even attempt to read
-    <code>.htaccess</code> files in the filesystem.</p>
+    <p>When this directive is set to <code>None</code> and <directive
+    module="core">AllowOverrideList</directive> is set to
+    <code>None</code> <a href="#accessfilename">.htaccess</a> files are
+    completely ignored. In this case, the server will not even attempt
+    to read <code>.htaccess</code> files in the filesystem.</p>
 
     <p>When this directive is set to <code>All</code>, then any
     directive which has the .htaccess <a
@@ -442,7 +443,63 @@ NoDecode option available in 2.3.12 and later.</compatibility>
     </note>
 </usage>
 
+<directivesynopsis>
+<name>AllowOverrideList</name>
+<description>Individual directives that are allowed in
+<code>.htaccess</code> files</description>
+<syntax>AllowOverrideList None|<var>directive</var>
+[<var>directive-type</var>] ...</syntax>
+<default>AllowOverrideList None</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>When the server finds an <code>.htaccess</code> file (as
+    specified by <directive module="core">AccessFileName</directive>)
+    it needs to know which directives declared in that file can override
+    earlier configuration directives.</p>
+
+    <note><title>Only available in &lt;Directory&gt; sections</title>
+    <directive>AllowOverrideList</directive> is valid only in
+    <directive type="section" module="core">Directory</directive>
+    sections specified without regular expressions, not in <directive
+    type="section" module="core">Location</directive>, <directive
+    module="core" type="section">DirectoryMatch</directive> or
+    <directive type="section" module="core">Files</directive> sections.
+    </note>
+
+    <p>When this directive is set to <code>None</code> and <directive
+    module="core">AllowOverride</directive> is set to <code>None</code>,
+    then <a href="#accessfilename">.htaccess</a> files are completely
+    ignored.  In this case, the server will not even attempt to read
+    <code>.htaccess</code> files in the filesystem.</p>
+
+    <p>Example:</p>
+
+    <example>
+      AllowOverride None
+      AllowOverrideList Redirect RedirectMatch
+    </example>
+
+    <p>In the example above only the <code>Redirect</code> and
+    <code>RedirectMatch</code> directives are allowed. All others will
+    cause an internal server error.</p>
+
+    <p>Example:</p>
+
+    <example>
+      AllowOverride AuthConfig
+      AllowOverrideList CookieTracking CookieName
+    </example>
+
+    <p>In the example above <directive module="core">AllowOverride
+    </directive> grants permission to the <code>AuthConfig</code>
+    directive grouping and <directive>AllowOverrideList</directive> grants
+    permission to only two directves from the <code>FileInfo</code> directive
+    grouping. All others will cause an internal server error.</p>
+</usage>
+
 <seealso><directive module="core">AccessFileName</directive></seealso>
+<seealso><directive module="core">AllowOverride</directive></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
 <seealso><a href="../howto/htaccess.html">.htaccess Files</a></seealso>
 </directivesynopsis>
