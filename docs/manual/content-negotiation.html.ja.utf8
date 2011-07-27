@@ -20,6 +20,7 @@
             2.3</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
 <div class="toplang">
 <p><span>言語: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
@@ -714,6 +715,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 </div></div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
