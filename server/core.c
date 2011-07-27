@@ -3915,8 +3915,6 @@ AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
 
 AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
 {
-    void *sconf = r->server->module_config;
-    core_server_config *conf = ap_get_core_module_config(sconf);
     apr_status_t rv;
 
     /* XXX this seems too specific, this should probably become
@@ -3944,7 +3942,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         while (*path == '/') {
             ++path;
         }
-        if ((rv = apr_filepath_merge(&r->filename, conf->ap_document_root, path,
+        if ((rv = apr_filepath_merge(&r->filename, ap_document_root(r), path,
                                      APR_FILEPATH_TRUENAME
                                    | APR_FILEPATH_SECUREROOT, r->pool))
                     != APR_SUCCESS) {
@@ -3967,7 +3965,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         while (*path == '/') {
             ++path;
         }
-        if ((rv = apr_filepath_merge(&r->filename, conf->ap_document_root, path,
+        if ((rv = apr_filepath_merge(&r->filename, ap_document_root(r), path,
                                      APR_FILEPATH_TRUENAME
                                    | APR_FILEPATH_SECUREROOT, r->pool))
                     != APR_SUCCESS) {
