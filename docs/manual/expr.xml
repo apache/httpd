@@ -436,8 +436,8 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>escape</code></td>
         <td>Escape special characters in %hex encoding</td><td></td></tr>
     <tr><td><code>unescape</code></td>
-        <td>Unescape %hex encoded string, leaving URL-special characters
-            encoded (XXX: describe better)</td><td></td></tr>
+        <td>Unescape %hex encoded string, leaving encoded slashes alone;
+            return empty string if %00 is found</td><td></td></tr>
     <tr><td><code>file</code></td>
         <td>Read contents from a file</td><td>yes</td></tr>
     <tr><td><code>filesize</code></td>
