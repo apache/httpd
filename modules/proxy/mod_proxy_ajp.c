@@ -174,6 +174,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     char *buff;
     char *send_body_chunk_buff;
     apr_uint16_t size;
+    apr_byte_t conn_reuse = 0;
     const char *tenc;
     int havebody = 1;
     int output_failed = 0;
@@ -527,6 +528,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                  * the client, especially as the brigade already contains headers.
                  * So do nothing here, and it will be cleaned up below.
                  */
+                status = ajp_parse_reuse(r, conn->data, &conn_reuse);
+                if (status != APR_SUCCESS) {
+                    backend_failed = 1;
+                }
                 if (!conf->error_override || !ap_is_HTTP_ERROR(r->status)) {
                     e = apr_bucket_eos_create(r->connection->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(output_brigade, e);
@@ -607,6 +612,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         if (data_sent) {
             rv = DONE;
         }
+    }
+    else if (!conn_reuse) {
+        /* Our backend signalled connection close */
+        conn->close++;
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
