@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.14
 
+  *) mod_proxy: enable absolute URLs to be rewritten with ProxyPassReverse,
+     e.g. to reverse proxy "Location: https://other-internal-server/login"
+     [Nick Kew]
+
   *) prefork, worker, event: Make sure crashes are logged to the error log if
      httpd has already detached from the console. [Stefan Fritsch]
 

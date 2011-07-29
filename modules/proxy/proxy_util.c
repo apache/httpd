@@ -1144,12 +1144,12 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                             && strncmp(urlpart, url + l2, l3) == 0) {
                         u = apr_pstrcat(r->pool, ent[i].fake, &url[l2 + l3],
                                         NULL);
-                        return ap_construct_url(r->pool, u, r);
+                        return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
                     }
                 }
                 else if (l1 >= l2 && strncasecmp((*worker)->s->name, url, l2) == 0) {
                     u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
-                    return ap_construct_url(r->pool, u, r);
+                    return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
                 }
                 worker++;
             }
@@ -1174,7 +1174,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
             }
             if (l1 >= l2 && strncasecmp(real, part, l2) == 0) {
                 u = apr_pstrcat(r->pool, ent[i].fake, &part[l2], NULL);
-                return ap_construct_url(r->pool, u, r);
+                return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
             }
         }
     }
