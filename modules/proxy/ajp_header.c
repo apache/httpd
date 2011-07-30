@@ -638,6 +638,7 @@ apr_status_t ajp_send_header(apr_socket_t *sock,
     }
 
     rc = ajp_ilink_send(sock, msg);
+    ajp_msg_log(r, msg, "ajp_send_header: ajp_ilink_send packet dump");
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_send_header: ajp_ilink_send failed");
@@ -681,6 +682,7 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
                "ajp_read_header: ajp_ilink_receive failed");
         return rc;
     }
+    ajp_msg_log(r, *msg, "ajp_read_header: ajp_ilink_receive packet dump");
     rc = ajp_msg_peek_uint8(*msg, &result);
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
                "ajp_read_header: ajp_ilink_received %s (0x%02x)",

@@ -289,6 +289,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: got %" APR_SIZE_T_FMT " bytes of data", bufsiz);
         if (bufsiz > 0) {
             status = ajp_send_data_msg(conn->sock, msg, bufsiz);
+            ajp_msg_log(r, msg, "First ajp_send_data_msg: ajp_ilink_send packet dump");
             if (status != APR_SUCCESS) {
                 /* We had a failure: Close connection to backend */
                 conn->close++;
@@ -410,6 +411,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     ajp_msg_reset(msg);
                     /* will go in ajp_send_data_msg */
                     status = ajp_send_data_msg(conn->sock, msg, bufsiz);
+                    ajp_msg_log(r, msg, "ajp_send_data_msg after CMD_AJP13_GET_BODY_CHUNK: ajp_ilink_send packet dump");
                     if (status != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
                                      "ajp_send_data_msg failed");
