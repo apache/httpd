@@ -223,7 +223,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
     const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, r->server,
                          "Into ajp_marshal_into_msgb");
 
     if ((method = sc_for_req_method_by_id(r)) == UNKNOWN_METHOD) {
@@ -289,7 +289,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
                    "Error appending the header value");
             return AJP_EOVERFLOW;
         }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, r->server,
                    "ajp_marshal_into_msgb: Header[%d] [%s] = [%s]",
                    i, elts[i].key, elts[i].val);
     }
@@ -449,7 +449,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         return AJP_EOVERFLOW;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, r->server,
             "ajp_marshal_into_msgb: Done");
     return APR_SUCCESS;
 }
@@ -515,7 +515,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         r->status_line = NULL;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, r->server,
            "ajp_unmarshal_response: status = %d", status);
 
     rc = ajp_msg_get_uint16(msg, &num_headers);
@@ -536,7 +536,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         num_headers = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, r->server,
            "ajp_unmarshal_response: Number of headers is = %d",
            num_headers);
 
@@ -594,7 +594,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         }
 
         ap_xlate_proto_from_ascii(value, strlen(value));
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, r->server,
                "ajp_unmarshal_response: Header[%d] [%s] = [%s]",
                        i, stringname, value);
 
@@ -604,8 +604,8 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         if (strcasecmp(stringname, "Content-Type") == 0) {
              /* add corresponding filter */
             ap_set_content_type(r, apr_pstrdup(r->pool, value));
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-               "ajp_unmarshal_response: ap_set_content_type done");
+            ap_log_error(APLOG_MARK, APLOG_TRACE5, 0, r->server,
+               "ajp_unmarshal_response: ap_set_content_type to '%s'", value);
         }
     }
 
@@ -682,8 +682,8 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
         return rc;
     }
     rc = ajp_msg_peek_uint8(*msg, &result);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-               "ajp_read_header: ajp_ilink_received %02x", result);
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
+               "ajp_read_header: ajp_ilink_received 0x%02x", result);
     return APR_SUCCESS;
 }
 
@@ -692,8 +692,8 @@ int ajp_parse_type(request_rec  *r, ajp_msg_t *msg)
 {
     apr_byte_t result;
     ajp_msg_peek_uint8(msg, &result);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-               "ajp_parse_type: got %02x", result);
+    ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, r->server,
+               "ajp_parse_type: got 0x%02x", result);
     return (int) result;
 }
 
