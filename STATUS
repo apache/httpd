@@ -164,6 +164,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~fuankg/diffs/2.2.x-mod_win32.c.diff
     +1: fuankg
 
+  * mod_proxy_ajp: Respect "reuse" flag in END_RESPONSE
+    Trunk patch: http://svn.apache.org/viewvc?rev=1152379&view=rev
+    2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_reuse_flag.patch
+    +1: rjung
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
