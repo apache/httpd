@@ -372,9 +372,22 @@ apr_status_t ajp_msg_serialize_cping(ajp_msg_t *msg);
  * @param pool      pool to allocate from
  * @param msg       AJP Message to dump
  * @param err       error string to display
- * @return          dump message
+ * @param count     the number of bytes to dump
+ * @param buf       buffer pointer for dump message
+ * @return          APR_SUCCESS or error
  */
-char * ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err);
+apr_status_t ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err,
+                          apr_size_t count, char **buf);
+
+/**
+ * Log an AJP message
+ *
+ * @param request   The current request
+ * @param msg       AJP Message to dump
+ * @param err       error string to display
+ * @return          APR_SUCCESS or error
+ */
+apr_status_t ajp_msg_log(request_rec *r, ajp_msg_t *msg, char *err);
 
 /** 
  * Send an AJP message to backend
