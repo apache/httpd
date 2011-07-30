@@ -683,7 +683,8 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
     }
     rc = ajp_msg_peek_uint8(*msg, &result);
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
-               "ajp_read_header: ajp_ilink_received 0x%02x", result);
+               "ajp_read_header: ajp_ilink_received %s (0x%02x)",
+               ajp_type_str(result), result);
     return APR_SUCCESS;
 }
 
@@ -693,7 +694,8 @@ int ajp_parse_type(request_rec  *r, ajp_msg_t *msg)
     apr_byte_t result;
     ajp_msg_peek_uint8(msg, &result);
     ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, r->server,
-               "ajp_parse_type: got 0x%02x", result);
+               "ajp_parse_type: got %s (0x%02x)",
+               ajp_type_str(result), result);
     return (int) result;
 }
 
@@ -712,8 +714,9 @@ apr_status_t ajp_parse_header(request_rec  *r, proxy_dir_conf *conf,
     }
     if (result != CMD_AJP13_SEND_HEADERS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "ajp_parse_headers: wrong type 0x%02x expecting 0x%02x",
-               result, CMD_AJP13_SEND_HEADERS);
+               "ajp_parse_headers: wrong type %s (0x%02x) expecting %s (0x%02x)",
+               ajp_type_str(result), result,
+               ajp_type_str(CMD_AJP13_SEND_HEADERS), CMD_AJP13_SEND_HEADERS);
         return AJP_EBAD_HEADER;
     }
     return ajp_unmarshal_response(msg, r, conf);
@@ -735,8 +738,9 @@ apr_status_t  ajp_parse_data(request_rec  *r, ajp_msg_t *msg,
     }
     if (result != CMD_AJP13_SEND_BODY_CHUNK) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "ajp_parse_data: wrong type 0x%02x expecting 0x%02x",
-               result, CMD_AJP13_SEND_BODY_CHUNK);
+               "ajp_parse_data: wrong type %s (0x%02x) expecting %s (0x%02x)",
+               ajp_type_str(result), result,
+               ajp_type_str(CMD_AJP13_SEND_BODY_CHUNK), CMD_AJP13_SEND_BODY_CHUNK);
         return AJP_EBAD_HEADER;
     }
     rc = ajp_msg_get_uint16(msg, len);
@@ -779,8 +783,9 @@ apr_status_t ajp_parse_reuse(request_rec *r, ajp_msg_t *msg,
     }
     if (result != CMD_AJP13_END_RESPONSE) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "ajp_parse_reuse: wrong type 0x%02x expecting 0x%02x",
-               result, CMD_AJP13_END_RESPONSE);
+               "ajp_parse_reuse: wrong type %s (0x%02x) expecting %s (0x%02x)",
+               ajp_type_str(result), result,
+               ajp_type_str(CMD_AJP13_END_RESPONSE), CMD_AJP13_END_RESPONSE);
         return AJP_EBAD_HEADER;
     }
     return ajp_msg_get_uint8(msg, reuse);

@@ -491,6 +491,15 @@ apr_status_t ajp_parse_reuse(request_rec *r, ajp_msg_t *msg,
 apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
                                     request_rec *r,
                                     apr_interval_time_t timeout);
+
+
+/**
+ * Convert numeric message type into string
+ * @param type      AJP message type
+ * @return          AJP message type as a string
+ */
+const char *ajp_type_str(int type);
+
 /** @} */
 
 #endif /* AJP_H */
