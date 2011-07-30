@@ -48,6 +48,7 @@ apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
     }
 
     rc = ajp_ilink_send(sock, msg);
+    ajp_msg_log(r, msg, "ajp_handle_cping_cpong: ajp_ilink_send packet dump");
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_handle_cping_cpong: ajp_ilink_send failed");
@@ -78,6 +79,7 @@ apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
         goto cleanup;
     }
 
+    ajp_msg_log(r, msg, "ajp_handle_cping_cpong: ajp_ilink_receive packet dump");
     rv = ajp_msg_get_uint8(msg, &result);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
