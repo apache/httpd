@@ -1,8 +1,5 @@
                                                          -*- coding: utf-8 -*-
 
-Changes with Apache 2.3.15
-
-
 Changes with Apache 2.3.14
 
   *) mod_proxy_ajp: Improve trace logging.  [Rainer Jung]
