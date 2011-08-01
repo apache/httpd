@@ -458,8 +458,10 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 ap_remove_output_filter(f);
                 return ap_pass_brigade(f->next, bb);
             }
-            if (APR_BUCKET_IS_METADATA(e))
+            if (APR_BUCKET_IS_METADATA(e)) {
+                e = APR_BUCKET_NEXT(e);
                 continue;
+            }
 
             rc = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
             if (rc != APR_SUCCESS)
