@@ -500,6 +500,13 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     <code>.htaccess</code> file.</p>
     </div>
 
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
+<li><code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code></li>
+<li><a href="../configuring.html">Configuration Files</a></li>
+<li><a href="../howto/htaccess.html">.htaccess Files</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Directive</a></h2>
