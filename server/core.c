@@ -1104,6 +1104,11 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                            "section", NULL);
     }
 
+    if ((forbidden & NOT_IN_HTACCESS) && (cmd->pool == cmd->temp_pool)) {
+         return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
+                            " cannot occur within htaccess files", NULL);
+    }
+
     if ((forbidden & NOT_IN_DIR_LOC_FILE) == NOT_IN_DIR_LOC_FILE) {
         if (cmd->path != NULL) {
             return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
@@ -1268,6 +1273,9 @@ static void init_config_defines(apr_pool_t *pconf)
 static const char *set_define(cmd_parms *cmd, void *dummy,
                               const char *name, const char *value)
 {
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    if (err)
+        return err;
     if (ap_strchr_c(name, ':') != NULL)
         return "Variable name must not contain ':'";
 
@@ -1291,6 +1299,9 @@ static const char *unset_define(cmd_parms *cmd, void *dummy,
 {
     int i;
     char **defines;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    if (err)
+        return err;
     if (ap_strchr_c(name, ':') != NULL)
         return "Variable name must not contain ':'";
 
