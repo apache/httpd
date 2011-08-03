@@ -39,6 +39,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -488,6 +489,27 @@ be passed through</td></tr>
 <h3>Consulte también</h3>
 <ul>
 <li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
+<li><a href="../configuring.html">Configuration Files</a></li>
+<li><a href="../howto/htaccess.html">.htaccess Files</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Directiva</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripción:</a></th><td>Individual directives that are allowed in
+<code>.htaccess</code> files</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AllowOverrideList None|<var>directive</var>
+[<var>directive-type</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>AllowOverrideList None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Módulo:</a></th><td>core</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p><h3>Consulte también</h3>
+<ul>
+<li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
+<li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li>
 <li><a href="../configuring.html">Configuration Files</a></li>
 <li><a href="../howto/htaccess.html">.htaccess Files</a></li>
 </ul>

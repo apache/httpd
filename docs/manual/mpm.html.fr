@@ -56,7 +56,8 @@ DSO (Dynamic Shared Object)</a></li>
 
     <p>Le serveur HTTP Apache 2.0 a étendu cette conception modulaire aux
     fonctions les plus
-    élémentaires d'un serveur web. Certains Modules Multi-Processus (MPMs)
+    élémentaires d'un serveur web. Le serveur est fourni avec une variété de
+    Modules Multi-Processus (MPMs) qui
     sont responsables de l'association aux ports réseau de la machine,
     acceptent les requêtes, et se chargent de répartir ces dernières
     entre les différents processus enfants.</p>

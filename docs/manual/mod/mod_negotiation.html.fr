@@ -140,7 +140,7 @@ contenu</a></li>
       <dd>l'URI du fichier contenant la variante (du type de médium
       donné, codé selon le codage de contenu donné). Cet URI est
       considéré comme relatif au fichier de correspondances ; il doit
-      être situé sur le même serveur (!), et doit faire référence au
+      être situé sur le même serveur, et doit faire référence au
       fichier auquel le client se verrait accorder l'accès s'il était
       requis directement.</dd>
 

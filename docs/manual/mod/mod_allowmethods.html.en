@@ -33,11 +33,11 @@
 used on an server. The most common configuration would be:</p>
 
 <div class="example"><h3>Example</h3><p><code>
-&lt;Directory /&gt;<br />
+&lt;Location /&gt;<br />
 <span class="indent">
-   AllowMethods GET HEAD OPTIONS<br />
+   AllowMethods GET POST OPTIONS<br />
 </span>
-&lt;/Directory&gt;
+&lt;/Location&gt;
 </code></p></div>
 
 </div>
@@ -50,7 +50,7 @@ used on an server. The most common configuration would be:</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowMethods" id="AllowMethods">AllowMethods</a> <a name="allowmethods" id="allowmethods">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Changes absolutely nothing</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict access to the listed HTTP methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowMethods reset|<em>HTTP-method</em> 
 [<em>HTTP-method</em>]...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowMethods reset</code></td></tr>
@@ -60,7 +60,8 @@ used on an server. The most common configuration would be:</p>
 </table>
 
 <p>The HTTP-methods are case sensitive, and are generally as per
-RFC given in upper case. The <code>reset</code> keyword can be used
+RFC given in upper case. The GET and HEAD methods are treated as
+equivalent. The <code>reset</code> keyword can be used
 turn off <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> in a deeper nested context:</p>
 
 <div class="example"><h3>Example</h3><p><code>
@@ -70,6 +71,11 @@ turn off <code class="module"><a href="../mod/mod_allowmethods.html">mod_allowme
 </span>
 &lt;/Location&gt;
 </code></p></div>
+
+<div class="note"><h3>Caution</h3>
+  <p>The TRACE method can not be denied by this module,
+  use <code class="directive"><a href="../mod/core.html#traceenable">TraceEnable</a></code> instead.</p>
+</div>
 
 <p><code class="module"><a href="../mod/mod_allowmethods.html">mod_allowmethods</a></code> was written to replace the rather
 kludgy implementation of <code class="directive"><a href="../mod/core.html#limit">Limit</a></code> and
