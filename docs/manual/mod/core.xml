@@ -442,6 +442,10 @@ NoDecode option available in 2.3.12 and later.</compatibility>
     <code>.htaccess</code> file.</p>
     </note>
 </usage>
+<seealso><directive module="core">AccessFileName</directive></seealso>
+<seealso><directive module="core">AllowOverrideList</directive></seealso>
+<seealso><a href="../configuring.html">Configuration Files</a></seealso>
+<seealso><a href="../howto/htaccess.html">.htaccess Files</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
