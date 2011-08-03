@@ -111,6 +111,11 @@
       <li>New ap_process_fnmatch_configs() to process wildcards</li>
       <li>Change ap_configfile_t, ap_cfg_getline(), ap_cfg_getc() to return error
           code, new ap_pcfg_strerror().</li>
+      <li>Any config directive permitted in ACCESS_CONF context must now
+          correctly handle being called from an .htaccess file via the new
+          <directive module="core">AllowOverrideList</directive> directive.
+          ap_check_cmd_context() accepts a new flag NOT_IN_HTACCESS to detect
+          this case.</li>
     </ul>
   </section>
 
