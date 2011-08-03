@@ -1860,7 +1860,10 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     const apr_table_entry_t *elts;
     int reuse = 0;
     int i;
-    const char *err;
+    /* XXX: Should this be NOT_IN_DIRECTORY|NOT_IN_FILES? */
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    if (err)
+        return err;
 
     if (cmd->path)
         path = apr_pstrdup(cmd->pool, cmd->path);
@@ -1949,8 +1952,11 @@ static const char *
     char *word, *val;
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
-    const char *err;
     int in_proxy_section = 0;
+    /* XXX: Should this be NOT_IN_DIRECTORY|NOT_IN_FILES? */
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    if (err)
+        return err;
 
     if (cmd->directive->parent &&
         strncasecmp(cmd->directive->parent->directive,
