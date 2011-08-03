@@ -78,6 +78,9 @@ static const char *authz_dbd_prepare(cmd_parms *cmd, void *cfg,
 {
     static unsigned int label_num = 0;
     char *label;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    if (err)
+        return err;
 
     if (dbd_prepare == NULL) {
         dbd_prepare = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);

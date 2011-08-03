@@ -1570,6 +1570,7 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
     core_dir_config *d = d_;
     char *w;
     char *k, *v;
+    const char *err;
 
     /* Throw a warning if we're in <Location> or <Files> */
     if (ap_check_cmd_context(cmd, NOT_IN_LOCATION | NOT_IN_FILES)) {
@@ -1577,6 +1578,8 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
                      "Useless use of AllowOverride in line %d of %s.",
                      cmd->directive->line_num, cmd->directive->filename);
     }
+    if ((err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS)) != NULL)
+        return err;
 
     d->override = OR_NONE;
     while (l[0]) {
@@ -1627,6 +1630,7 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
 {
     core_dir_config *d = d_;
     int i;
+    const char *err;
 
     /* Throw a warning if we're in <Location> or <Files> */
     if (ap_check_cmd_context(cmd, NOT_IN_LOCATION | NOT_IN_FILES)) {
@@ -1634,6 +1638,8 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
                      "Useless use of AllowOverrideList in line %d of %s.",
                      cmd->directive->line_num, cmd->directive->filename);
     }
+    if ((err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS)) != NULL)
+        return err;
 
     d->override_list = apr_table_make(cmd->pool, 1);
 

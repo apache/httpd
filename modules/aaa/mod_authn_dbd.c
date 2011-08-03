@@ -64,6 +64,9 @@ static const char *authn_dbd_prepare(cmd_parms *cmd, void *cfg, const char *quer
 {
     static unsigned int label_num = 0;
     char *label;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
+    if (err)
+        return err;
 
     if (authn_dbd_prepare_fn == NULL) {
         authn_dbd_prepare_fn = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);
