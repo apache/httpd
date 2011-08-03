@@ -125,7 +125,7 @@ apr_status_t ajp_msg_log(request_rec *r, ajp_msg_t *msg, char *err)
         }
         rc = ajp_msg_dump(r->pool, msg, err, count, &buf);
         if (rc == APR_SUCCESS) {
-            while ((next = ap_strchr_c(buf, '\n'))) {
+            while ((next = ap_strchr(buf, '\n'))) {
                 *next = '\0';
                 ap_log_rerror(APLOG_MARK, level, 0, r, "%s", buf);
                 buf = next + 1;
