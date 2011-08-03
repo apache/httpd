@@ -1380,7 +1380,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r,
 
     bb = apr_brigade_create(r->pool, c->bucket_alloc);
     
-    apr_brigade_insert_file(bb, fd, 0, len, r->pool);
+    apr_brigade_insert_file(bb, fd, offset, len, r->pool);
 
     rv = ap_pass_brigade(r->output_filters, bb);
     if (rv != APR_SUCCESS) {
