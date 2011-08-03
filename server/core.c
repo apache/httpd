@@ -2927,14 +2927,6 @@ static const char *set_loglevel(cmd_parms *cmd, void *config_, const char *arg_)
     struct ap_logconf *log;
     const char *err;
 
-    /* XXX: what check is necessary here? */
-#if 0
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
-    if (err != NULL) {
-        return err;
-    }
-#endif
-
     if (cmd->path) {
         core_dir_config *dconf = config_;
         if (!dconf->log) {

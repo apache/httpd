@@ -2423,10 +2423,10 @@ static void show_overrides(const command_rec *pc, module *pm)
         printf("anywhere");
     }
     else if (pc->req_override & RSRC_CONF) {
-        printf("only outside <Directory>, <Files> or <Location>");
+        printf("only outside <Directory>, <Files>, <Location>, or <If>");
     }
     else {
-        printf("only inside <Directory>, <Files> or <Location>");
+        printf("only inside <Directory>, <Files>, <Location>, or <If>");
     }
 
     /* Warn if the directive is allowed inside <Directory> or .htaccess
