@@ -1239,7 +1239,7 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
 {
     const command_rec *cmd;
     ap_mod_list *ml;
-    char *dir = apr_pstrdup(parms->pool, current->directive);
+    char *dir = apr_pstrdup(parms->temp_pool, current->directive);
 
     ap_str_tolower(dir);
 
