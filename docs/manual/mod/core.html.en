@@ -40,6 +40,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
@@ -416,10 +417,10 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
     </div>
 
-    <p>When this directive is set to <code>None</code>, then
-    <a href="#accessfilename">.htaccess</a> files are completely ignored.
-    In this case, the server will not even attempt to read
-    <code>.htaccess</code> files in the filesystem.</p>
+    <p>When this directive is set to <code>None</code> and <code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code> is set to
+    <code>None</code> <a href="#accessfilename">.htaccess</a> files are
+    completely ignored. In this case, the server will not even attempt
+    to read <code>.htaccess</code> files in the filesystem.</p>
 
     <p>When this directive is set to <code>All</code>, then any
     directive which has the .htaccess <a href="directive-dict.html#Context">Context</a> is allowed in
@@ -499,9 +500,64 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     <code>.htaccess</code> file.</p>
     </div>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Individual directives that are allowed in
+<code>.htaccess</code> files</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverrideList None|<var>directive</var>
+[<var>directive-type</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowOverrideList None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>When the server finds an <code>.htaccess</code> file (as
+    specified by <code class="directive"><a href="#accessfilename">AccessFileName</a></code>)
+    it needs to know which directives declared in that file can override
+    earlier configuration directives.</p>
+
+    <div class="note"><h3>Only available in &lt;Directory&gt; sections</h3>
+    <code class="directive">AllowOverrideList</code> is valid only in
+    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
+    sections specified without regular expressions, not in <code class="directive"><a href="#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></code> or
+    <code class="directive"><a href="#files">&lt;Files&gt;</a></code> sections.
+    </div>
+
+    <p>When this directive is set to <code>None</code> and <code class="directive"><a href="#allowoverride">AllowOverride</a></code> is set to <code>None</code>,
+    then <a href="#accessfilename">.htaccess</a> files are completely
+    ignored.  In this case, the server will not even attempt to read
+    <code>.htaccess</code> files in the filesystem.</p>
+
+    <p>Example:</p>
+
+    <div class="example"><p><code>
+      AllowOverride None
+      AllowOverrideList Redirect RedirectMatch
+    </code></p></div>
+
+    <p>In the example above only the <code>Redirect</code> and
+    <code>RedirectMatch</code> directives are allowed. All others will
+    cause an internal server error.</p>
+
+    <p>Example:</p>
+
+    <div class="example"><p><code>
+      AllowOverride AuthConfig
+      AllowOverrideList CookieTracking CookieName
+    </code></p></div>
+
+    <p>In the example above <code class="directive"><a href="#allowoverride&#10;    ">AllowOverride
+    </a></code> grants permission to the <code>AuthConfig</code>
+    directive grouping and <code class="directive">AllowOverrideList</code> grants
+    permission to only two directves from the <code>FileInfo</code> directive
+    grouping. All others will cause an internal server error.</p>
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
+<li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li>
 <li><a href="../configuring.html">Configuration Files</a></li>
 <li><a href="../howto/htaccess.html">.htaccess Files</a></li>
 </ul>
