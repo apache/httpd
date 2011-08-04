@@ -175,12 +175,14 @@ close(FP);
 $dhinfo =~ s|^|** |mg;
 $dhinfo = "\n\/\*\n$dhinfo\*\/\n\n";
 
+my $indent_args = "-i4 -npsl -di0 -br -nce -d0 -cli0 -npcs -nfc1";
+
 #   generate C source from DH params
 my $dhsource = '';
-open(FP, "openssl dh -noout -C -in dh512.pem | indent | expand |") || die;
+open(FP, "openssl dh -noout -C -in dh512.pem | indent $indent_args | expand |") || die;
 $dhsource .= $_ while (<FP>);
 close(FP);
-open(FP, "openssl dh -noout -C -in dh1024.pem | indent | expand |") || die;
+open(FP, "openssl dh -noout -C -in dh1024.pem | indent $indent_args | expand |") || die;
 $dhsource .= $_ while (<FP>);
 close(FP);
 $dhsource =~ s|(DH\s+\*get_dh)(\d+)[^}]*\n}|static $1$2(void)
