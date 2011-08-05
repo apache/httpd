@@ -31,9 +31,15 @@ request processing</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-<p>Someone needs to write this.
-Include a link to <a href="http://www.lua.org/">the Lua website</a>.
-</p>
+<p>This module allows the server to be extended with scripts written in the 
+Lua programming language.  The extension points (hooks) available with
+<code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> include many of the hooks available to
+natively compiled Apache HTTP Server modules, such as mapping requests to
+files, generating dynamic responses, access control, authentication, and 
+authorization</p>
+
+<p>More information on the Lua programming language can be found at the 
+<a href="http://www.lua.org/">the Lua website</a>.</p>
 
 <div class="note"><code>mod_lua</code> is still in experimental state.
 Until it is declared stable, usage and behavior may change
@@ -97,8 +103,12 @@ ending in <code>.lua</code> by invoking that file's
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="writinghandlers" id="writinghandlers">Writing Handlers</a></h2>
+<p> In the Apache HTTP Server API, the handler is a specific kind of hook
+responsible for generating the response.  Examples of modules that include a 
+handler are <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, 
+and <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
 
-<p><code>mod_lua</code> always looks to invoke a function for the handler, rather than
+<p><code>mod_lua</code> always looks to invoke a Lua function for the handler, rather than
 just evaluating a script body CGI style. A handler function looks
 something like this:</p>
 
@@ -107,7 +117,12 @@ something like this:</p>
 
 require "string"
 
-function handle_something(r)
+--[[ 
+     This is the default method name for Lua handlers, see the optional 
+     function-name in the LuaMapHandler directive to choose a different 
+     entry point.
+--]]
+function handle(r)
     r.content_type = "text/plain"
     r:puts("Hello Lua World!\n")
 
@@ -139,6 +154,12 @@ handlers (or hooks, or filters) in the same script.
 <div class="section">
 <h2><a name="writinghooks" id="writinghooks">Writing Hooks</a></h2>
 
+<p>Hook functions are how modules (and Lua scripts) participate in the
+processing of requests. Each type of hook exposed by the server exists for 
+a specific purposes such as mapping requests to the filesystem, 
+performing access control, or setting mimetypes.  General purpose hooks
+that simply run at handy times in the request lifecycle exist as well.</p>
+
 <p>Hook functions are passed the request object as their only argument.
 They can return any value, depending on the hook, but most commonly
 they'll return OK, DONE, or DECLINED, which you can write in lua as
@@ -146,7 +167,29 @@ they'll return OK, DONE, or DECLINED, which you can write in lua as
 <code>apache2.DECLINED</code>, or else an HTTP status code.</p>
 
 <div class="example"><h3>translate_name.lua</h3><pre>
--- example hook
+-- example hook that rewrites the URI to a filesystem path.
+
+require 'apache2'
+
+function translate_name(r)
+    if r.uri == "/translate-name" then
+        r.filename = r.document_root .. "/find_me.txt"
+        return apache2.OK
+    end
+    -- we don't care about this URL, give another module a chance
+    return apache2.DECLINED
+end
+</pre></div>
+
+<div class="example"><h3>translate_name2.lua</h3><pre>
+--[[ example hook that rewrites one URI to another URI. It returns a
+     apache2.DECLINED to give other URL mappers a chance to work on the
+     substitution, including the core translate_name hook which maps based
+     on the DocumentRoot.  
+
+     Note: It is currently undefined as to whether this runs before or after
+     mod_alias.
+--]]
 
 require 'apache2'
 
