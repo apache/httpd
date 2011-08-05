@@ -270,6 +270,9 @@ dnl   no     -- disabled under default, most, all. user must explicitly enable.
 dnl   most   -- disabled by default. enabled explicitly or with most or all.
 dnl   static -- enabled as static by default, must be explicitly changed.
 dnl   ""     -- disabled under default, most. enabled explicitly or with all.
+dnl             XXX: The arg must really be empty here. Passing an empty shell
+dnl             XXX: variable doesn't work for some reason. This should be
+dnl             XXX: fixed.
 dnl
 dnl basically: yes/no is a hard setting. "most" means follow the "most"
 dnl            setting. otherwise, fall under the "all" setting.
