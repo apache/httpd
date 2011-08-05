@@ -740,3 +740,24 @@ if test "$ap_cv_void_ptr_lt_long" = "yes"; then
     AC_MSG_ERROR([Size of "void *" is less than size of "long"])
 fi
 ])
+
+dnl
+dnl APACHE_CHECK_APR_HAS_LDAP
+dnl
+dnl Check if APR_HAS_LDAP is 1
+dnl Unfortunately, we can't use APR_CHECK_APR_DEFINE (because it only includes apr.h)
+dnl or APR_CHECK_DEFINE (because it only checks for defined'ness and not for 0/1).
+dnl
+AC_DEFUN([APACHE_CHECK_APR_HAS_LDAP], [
+  AC_CACHE_CHECK([for ldap support in apr/apr-util],ac_cv_APR_HAS_LDAP,[
+    apache_old_cppflags="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS $INCLUDES"
+    AC_EGREP_CPP(YES_IS_DEFINED, [
+#include <apr_ldap.h>
+#if APR_HAS_LDAP
+YES_IS_DEFINED
+#endif
+    ], ac_cv_APR_HAS_LDAP=yes, ac_cv_APR_HAS_LDAP=no)
+    CPPFLAGS="$apache_old_cppflags"
+  ])
+])

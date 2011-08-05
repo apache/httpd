@@ -39,14 +39,20 @@ APACHE_MODULE(authz_core, core authorization provider vector module, , , yes)
 
 dnl LDAP authentication module. This module has both the authn and authz
 dnl modules in one, so as to share the LDAP server config directives.
-APACHE_MODULE(authnz_ldap, LDAP based authentication, , , no, [
-  if test -z "$apu_config" ; then
+APACHE_MODULE(authnz_ldap, LDAP based authentication, , , most, [
+  APACHE_CHECK_APR_HAS_LDAP
+  if test "$ac_cv_APR_HAS_LDAP" = "yes" ; then
+    if test -z "$apu_config" ; then
       LDAP_LIBS="`$apr_config --ldap-libs`"
-  else
+    else
       LDAP_LIBS="`$apu_config --ldap-libs`"
+    fi
+    APR_ADDTO(MOD_AUTHNZ_LDAP_LDADD, [$LDAP_LIBS])
+    AC_SUBST(MOD_AUTHNZ_LDAP_LDADD)
+  else
+    AC_MSG_WARN([apr/apr-util is compiled without ldap support])
+    enable_authnz_ldap=no
   fi
-  APR_ADDTO(MOD_AUTHNZ_LDAP_LDADD, [$LDAP_LIBS])
-  AC_SUBST(MOD_AUTHNZ_LDAP_LDADD)
 ])
 
 dnl - host access control compatibility modules. Implements Order, Allow,

@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.15
 
+  *) configure: Enable ldap modules in 'all' and 'most' selections if ldap
+     is compiled into apr-util. [Stefan Fritsch]
+
   *) core: Add ap_check_cmd_context()-check if a command is executed in
      .htaccess file. [Stefan Fritsch]
 
