@@ -161,7 +161,7 @@ end
      on the DocumentRoot.  
 
      Note: It is currently undefined as to whether this runs before or after
-     mod_alias or any other module implementing the same hook.
+     mod_alias.
 --]]
 
 require 'apache2'
