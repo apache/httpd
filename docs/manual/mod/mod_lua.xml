@@ -90,7 +90,12 @@ something like this:</p>
 
 require "string"
 
-function handle_something(r)
+--[[ 
+     This is the default method name for Lua handlers, see the optional 
+     function-name in the LuaMapHandler directive to choose a different 
+     entry point.
+--]]
+function handle(r)
     r.content_type = "text/plain"
     r:puts("Hello Lua World!\n")
 
