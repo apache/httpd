@@ -376,7 +376,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                   "proxy: CONNECT: connection complete to %pI (%s)",
                   connect_addr, connectname);
-
+    apr_table_setn(r->notes, "proxy-source-port", apr_psprintf(r->pool, "%hu",
+                   backconn->local_addr->port));
 
     /* If we are connecting through a remote proxy, we need to pass
      * the CONNECT request on to it.
