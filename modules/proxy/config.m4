@@ -10,15 +10,6 @@ else
   proxy_mods_enable=most
 fi
 
-AC_CHECK_DECL(CMSG_DATA, [
-  proxy_mods_fdpass_enable=""
-], [
-  proxy_mods_fdpass_enable="no"
-], [
-  #include <sys/types.h>
-  #include <sys/socket.h>
-])
-
 proxy_objs="mod_proxy.lo proxy_util.lo"
 APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , $proxy_mods_enable)
 
@@ -51,7 +42,11 @@ APACHE_MODULE(proxy_ftp, Apache proxy FTP module.  Requires and is enabled by --
 APACHE_MODULE(proxy_http, Apache proxy HTTP module.  Requires and is enabled by --enable-proxy., $proxy_http_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy., $proxy_fcgi_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires and is enabled by --enable-proxy., $proxy_scgi_objs, , $proxy_mods_enable)
-APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires --enable-proxy., $proxy_fdpass_objs, , $proxy_mods_fdpass_enable, [
+APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires --enable-proxy., $proxy_fdpass_objs, , , [
+  AC_CHECK_DECL(CMSG_DATA, [ ], [ ], [
+    #include <sys/types.h>
+    #include <sys/socket.h>
+  ])
   if test $ac_cv_have_decl_CMSG_DATA = "no"; then
     AC_MSG_WARN([Your system does not support CMSG_DATA.])
     enable_proxy_fdpass=no
