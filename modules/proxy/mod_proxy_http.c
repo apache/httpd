@@ -1455,6 +1455,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      * response.
      */
     backend->r->proxyreq = PROXYREQ_RESPONSE;
+    apr_table_setn(r->notes, "proxy-source-port", apr_psprintf(r->pool, "%hu",
+                   origin->local_addr->port));
     tmp_bb = apr_brigade_create(p, c->bucket_alloc);
     do {
         apr_status_t rc;
@@ -1561,6 +1563,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             keepchar = buffer[12];
             buffer[12] = '\0';
             proxy_status = atoi(&buffer[9]);
+            apr_table_setn(r->notes, "proxy-status",
+                           apr_pstrdup(r->pool, &buffer[9]));
 
             if (keepchar != '\0') {
                 buffer[12] = keepchar;

@@ -53,6 +53,18 @@
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
+<section id="notes"><title>Request notes</title>
+    <p><module>mod_proxy_connect</module> creates the following request notes for
+        logging using the <code>%{VARNAME}n</code> format in
+        <directive module="mod_log_config">LogFormat</directive> or
+        <directive module="core">ErrorLogFormat</directive>:
+    </p>
+    <dl>
+        <dt>proxy-source-port</dt>
+        <dd>The local port used for the connection to the backend server.</dd>
+    </dl>
+</section>
+
 <directivesynopsis>
 <name>AllowCONNECT</name>
 <description>Ports that are allowed to <code>CONNECT</code> through the

@@ -114,4 +114,18 @@
     </dl>
 </section>
 
+<section id="notes"><title>Request notes</title>
+    <p><module>mod_proxy_http</module> creates the following request notes for
+        logging using the <code>%{VARNAME}n</code> format in
+        <directive module="mod_log_config">LogFormat</directive> or
+        <directive module="core">ErrorLogFormat</directive>:
+    </p>
+    <dl>
+        <dt>proxy-source-port</dt>
+        <dd>The local port used for the connection to the backend server.</dd>
+        <dt>proxy-status</dt>
+        <dd>The HTTP status received from the backend server.</dd>
+    </dl>
+</section>
+
 </modulesynopsis>
