@@ -341,6 +341,7 @@ end
 
 <example>
         -- examples of logging messages<br />
+        r:trace1("This is a trace log message") -- trace1 through trace8 can be used <br />
         r:debug("This is a debug log message")<br />
         r:info("This is an info log message")<br />
         r:notice("This is an notice log message")<br />
