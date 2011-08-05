@@ -32,9 +32,15 @@ request processing</description>
 <compatibility>2.3 and later</compatibility>
 
 <summary>
-<p>Someone needs to write this.
-Include a link to <a href="http://www.lua.org/">the Lua website</a>.
-</p>
+<p>This module allows the server to be extended with scripts written in the 
+Lua programming language.  The extension points (hooks) available with
+<module>mod_lua</module> include many of the hooks available to
+natively compiled Apache HTTP Server modules, such as mapping requests to
+files, generating dynamic responses, access control, authentication, and 
+authorization</p>
+
+<p>More information on the Lua programming language can be found at the 
+<a href="http://www.lua.org/">the Lua website</a>.</p>
 
 <note><code>mod_lua</code> is still in experimental state.
 Until it is declared stable, usage and behavior may change
@@ -70,8 +76,12 @@ ending in <code>.lua</code> by invoking that file's
 </section>
 
 <section id="writinghandlers"><title>Writing Handlers</title>
+<p> In the Apache HTTP Server API, the handler is a specific kind of hook
+responsible for generating the response.  Examples of modules that include a 
+handler are <module>mod_proxy</module>, <module>mod_cgi</module>, 
+and <module>mod_status</module>.</p>
 
-<p><code>mod_lua</code> always looks to invoke a function for the handler, rather than
+<p><code>mod_lua</code> always looks to invoke a Lua function for the handler, rather than
 just evaluating a script body CGI style. A handler function looks
 something like this:</p>
 
@@ -111,6 +121,12 @@ handlers (or hooks, or filters) in the same script.
 </section>
 
 <section id="writinghooks"><title>Writing Hooks</title>
+
+<p>Hook functions are how modules (and Lua scripts) participate in the
+processing of requests. Each type of hook exposed by the server exists for 
+a specific purposes such as mapping requests to the filesystem, 
+performing access control, or setting mimetypes.  General purpose hooks
+that simply run at handy times in the request lifecycle exist as well.</p>
 
 <p>Hook functions are passed the request object as their only argument.
 They can return any value, depending on the hook, but most commonly
