@@ -146,7 +146,7 @@ static void make_cookie(request_rec *r)
                                  NULL);
     }
 
-    apr_table_addn(r->headers_out,
+    apr_table_addn(r->err_headers_out,
                    (dcfg->style == CT_COOKIE2 ? "Set-Cookie2" : "Set-Cookie"),
                    new_cookie);
     apr_table_setn(r->notes, "cookie", apr_pstrdup(r->pool, cookiebuf));   /* log first time */
@@ -439,7 +439,7 @@ static const command_rec cookie_log_cmds[] = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(spot_cookie,NULL,NULL,APR_HOOK_FIRST);
+    ap_hook_fixups(spot_cookie,NULL,NULL,APR_HOOK_REALLY_FIRST);
 }
 
 AP_DECLARE_MODULE(usertrack) = {
