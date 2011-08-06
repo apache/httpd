@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
-
 Changes with Apache 2.3.15
+
+  *) mod_usertrack: Run mod_usertrack earlier in the fixups hook to ensure the 
+     cookie is set when modules such as mod_rewrite trigger a redirect. Also
+     use r->err_headers_out for the cookie, for the same reason.  PR29755.
+     [Sami J. Mäkinen <sjm almamedia fi>, Eric Covener]
 
   *) mod_proxy_http, mod_proxy_connect: Add 'proxy-status' and
      'proxy-source-port' request notes for logging. PR 30195. [Stefan Fritsch]
