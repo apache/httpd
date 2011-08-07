@@ -35,30 +35,13 @@
 #define __SSL_UTIL_SSL_H__
 
 /**
- * Determine SSL library version number
+ * SSL library version number
  */
-#define SSL_NIBBLE(x,n) ((x >> (n * 4)) & 0xF)
 
-#ifdef OPENSSL_VERSION_NUMBER
 #define SSL_LIBRARY_VERSION OPENSSL_VERSION_NUMBER
 #define SSL_LIBRARY_NAME    "OpenSSL"
 #define SSL_LIBRARY_TEXT    OPENSSL_VERSION_TEXT
 #define SSL_LIBRARY_DYNTEXT SSLeay_version(SSLEAY_VERSION)
-#elif defined(SSLC_VERSION_NUMBER)
-#define SSL_LIBRARY_VERSION SSLC_VERSION_NUMBER
-#define SSL_LIBRARY_NAME    "SSL-C"
-#define SSL_LIBRARY_TEXT    { 'S', 'S', 'L', '-', 'C', ' ', \
-                              '0' + SSL_NIBBLE(SSLC_VERSION_NUMBER,3), '.', \
-                              '0' + SSL_NIBBLE(SSLC_VERSION_NUMBER,2), '.', \
-                              '0' + SSL_NIBBLE(SSLC_VERSION_NUMBER,1), '.', \
-                              '0' + SSL_NIBBLE(SSLC_VERSION_NUMBER,0), 0 }
-#define SSL_LIBRARY_DYNTEXT SSLC_library_info(SSLC_INFO_VERSION)
-#elif !defined(SSL_LIBRARY_VERSION)
-#define SSL_LIBRARY_VERSION 0x0000
-#define SSL_LIBRARY_NAME    "OtherSSL"
-#define SSL_LIBRARY_TEXT    "OtherSSL 0.0.0 00 XXX 0000"
-#define SSL_LIBRARY_DYNTEXT "OtherSSL 0.0.0 00 XXX 0000"
-#endif
 
 /**
  *  Maximum length of a DER encoded session.
@@ -92,7 +75,6 @@ BOOL        SSL_X509_INFO_load_path(apr_pool_t *, STACK_OF(X509_INFO) *, const c
 int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, modssl_read_bio_cb_fn *);
 char       *SSL_SESSION_id2sz(unsigned char *, int, char *, int);
 
-/** util functions for OpenSSL+sslc compat */
 int modssl_session_get_time(SSL_SESSION *session);
 
 DH *modssl_dh_configure(unsigned char *p, int plen,

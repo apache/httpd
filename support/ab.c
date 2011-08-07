@@ -156,25 +156,8 @@
 #include "ap_config_auto.h"
 #endif
 
-#if defined(HAVE_SSLC)
+#if defined(HAVE_OPENSSL)
 
-/* Libraries for RSA SSL-C */
-#include <rsa.h>
-#include <x509.h>
-#include <pem.h>
-#include <err.h>
-#include <ssl.h>
-#include <r_rand.h>
-#include <sslc.h>
-#define USE_SSL
-#define RSAREF
-#define SK_NUM(x) sk_num(x)
-#define SK_VALUE(x,y) sk_value(x,y)
-typedef STACK X509_STACK_TYPE;
-
-#elif defined(HAVE_OPENSSL)
-
-/* Libraries on most systems.. */
 #include <openssl/rsa.h>
 #include <openssl/crypto.h>
 #include <openssl/x509.h>

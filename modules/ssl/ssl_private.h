@@ -194,7 +194,7 @@ typedef int ssl_algo_t;
 #define SSL_ALGO_ALL     (SSL_ALGO_RSA|SSL_ALGO_DSA|SSL_ALGO_ECC)
 #else
 #define SSL_ALGO_ALL     (SSL_ALGO_RSA|SSL_ALGO_DSA)
-#endif /* SSL_LIBRARY_VERSION */
+#endif
 
 #define SSL_AIDX_RSA     (0)
 #define SSL_AIDX_DSA     (1)
@@ -203,7 +203,7 @@ typedef int ssl_algo_t;
 #define SSL_AIDX_MAX     (3)
 #else
 #define SSL_AIDX_MAX     (2)
-#endif /* SSL_LIBRARY_VERSION */
+#endif
 
 
 /**
@@ -671,7 +671,7 @@ RSA         *ssl_callback_TmpRSA(SSL *, int, int);
 DH          *ssl_callback_TmpDH(SSL *, int, int);
 #ifndef OPENSSL_NO_EC
 EC_KEY      *ssl_callback_TmpECDH(SSL *, int, int);
-#endif /* SSL_LIBRARY_VERSION */
+#endif
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
 int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey);

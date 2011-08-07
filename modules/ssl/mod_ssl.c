@@ -250,14 +250,12 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     /*
      * Try to kill the internals of the SSL library.
      */
-#ifdef HAVE_OPENSSL
 #if OPENSSL_VERSION_NUMBER >= 0x00907001
     /* Corresponds to OPENSSL_load_builtin_modules():
      * XXX: borrowed from apps.h, but why not CONF_modules_free()
      * which also invokes CONF_modules_finish()?
      */
     CONF_modules_unload(1);
-#endif
 #endif
     /* Corresponds to SSL_library_init: */
     EVP_cleanup();
@@ -292,19 +290,15 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
      * code can successfully test the SSL environment.
      */
     CRYPTO_malloc_init();
-#ifdef HAVE_OPENSSL
     ERR_load_crypto_strings();
-#endif
     SSL_load_error_strings();
     SSL_library_init();
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_load_builtin_engines();
 #endif
-#ifdef HAVE_OPENSSL
     OpenSSL_add_all_algorithms();
 #if OPENSSL_VERSION_NUMBER >= 0x00907001
     OPENSSL_load_builtin_modules();
-#endif
 #endif
 
     /*

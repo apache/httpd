@@ -44,8 +44,8 @@ ssl_util_ocsp.lo dnl
 "
 dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
 APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , most, [
-    APACHE_CHECK_SSL_TOOLKIT
-    if test "$ac_cv_ssltk" = "yes" ; then
+    APACHE_CHECK_OPENSSL
+    if test "$ac_cv_openssl" = "yes" ; then
         APR_ADDTO(MOD_SSL_LDADD, [\$(SSL_LIBS)])
         CHECK_OCSP
         if test "x$enable_ssl" = "xshared"; then

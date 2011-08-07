@@ -159,11 +159,8 @@ ssl_algo_t ssl_util_algotypeof(X509 *pCert, EVP_PKEY *pKey)
                 break;
         }
     }
-#ifdef OPENSSL_VERSION_NUMBER
-    /* Only refcounted in OpenSSL */
     if (pFreeKey != NULL)
         EVP_PKEY_free(pFreeKey);
-#endif
     return t;
 }
 
@@ -338,18 +335,8 @@ STACK_OF(X509) *ssl_read_pkcs7(server_rec *s, const char *pkcs7)
 static apr_thread_mutex_t **lock_cs;
 static int                  lock_num_locks;
 
-#ifdef HAVE_SSLC
-#if SSLC_VERSION_NUMBER >= 0x2000
-static int ssl_util_thr_lock(int mode, int type,
-                             char *file, int line)
-#else
-static void ssl_util_thr_lock(int mode, int type,
-                              char *file, int line)
-#endif
-#else
 static void ssl_util_thr_lock(int mode, int type,
                               const char *file, int line)
-#endif
 {
     if (type < lock_num_locks) {
         if (mode & CRYPTO_LOCK) {
@@ -358,14 +345,6 @@ static void ssl_util_thr_lock(int mode, int type,
         else {
             apr_thread_mutex_unlock(lock_cs[type]);
         }
-#ifdef HAVE_SSLC
-#if SSLC_VERSION_NUMBER >= 0x2000
-        return 1;
-    }
-    else {
-        return -1;
-#endif
-#endif
     }
 }
 

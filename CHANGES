@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_ssl, configure, ab: drop support for RSA BSAFE SSL-C toolkit.
+     [Kaspar Brand]
+
   *) mod_usertrack: Run mod_usertrack earlier in the fixups hook to ensure the 
      cookie is set when modules such as mod_rewrite trigger a redirect. Also
      use r->err_headers_out for the cookie, for the same reason.  PR29755.
