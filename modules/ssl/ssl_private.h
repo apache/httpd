@@ -54,8 +54,17 @@
 #include "ap_socache.h"
 #include "mod_auth.h"
 
+/* The #ifdef macros are only defined AFTER including the above
+ * therefore we cannot include these system files at the top  :-(
+ */
 #ifdef APR_HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#if APR_HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#if APR_HAVE_UNISTD_H
+#include <unistd.h> /* needed for STDIN_FILENO et.al., at least on FreeBSD */
 #endif
 
 #ifndef FALSE
@@ -70,32 +79,105 @@
 #define BOOL unsigned int
 #endif
 
-/* mod_ssl headers */
-#include "ssl_toolkit_compat.h"
 #include "ap_expr.h"
-#include "ssl_util_ssl.h"
 
-/* The #ifdef macros are only defined AFTER including the above
- * therefore we cannot include these system files at the top  :-(
+/* OpenSSL headers */
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+#include <openssl/crypto.h>
+#include <openssl/evp.h>
+#include <openssl/rand.h>
+#include <openssl/x509v3.h>
+
+/* hack for non-configure platforms (NetWare, Win32) */
+#if !defined(HAVE_OCSP) && (OPENSSL_VERSION_NUMBER >= 0x00907000)
+#define HAVE_OCSP
+#endif
+#ifdef HAVE_OCSP
+#include <openssl/x509_vfy.h>
+#include <openssl/ocsp.h>
+#endif
+
+/* Avoid tripping over an engine build installed globally and detected
+ * when the user points at an explicit non-engine flavor of OpenSSL
  */
-#if APR_HAVE_SYS_TIME_H
-#include <sys/time.h>
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
+#include <openssl/engine.h>
 #endif
-#if APR_HAVE_UNISTD_H
-#include <unistd.h> /* needed for STDIN_FILENO et.al., at least on FreeBSD */
+
+/* ...shifting sands of OpenSSL... */
+#if (OPENSSL_VERSION_NUMBER < 0x00907000)
+# define MODSSL_INFO_CB_ARG_TYPE SSL*
+#else
+# define MODSSL_INFO_CB_ARG_TYPE const SSL*
 #endif
+
+#if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
+#define MODSSL_D2I_SSL_SESSION_CONST const
+#else
+#define MODSSL_D2I_SSL_SESSION_CONST
+#endif
+
+#if (OPENSSL_VERSION_NUMBER >= 0x00908000)
+#define HAVE_GENERATE_EX
+#define MODSSL_D2I_ASN1_type_bytes_CONST const
+#define MODSSL_D2I_PrivateKey_CONST const
+#define MODSSL_D2I_X509_CONST const
+#else
+#define MODSSL_D2I_ASN1_type_bytes_CONST
+#define MODSSL_D2I_PrivateKey_CONST
+#define MODSSL_D2I_X509_CONST
+#endif
+
+#if OPENSSL_VERSION_NUMBER >= 0x00908080 && !defined(OPENSSL_NO_OCSP) \
+    && !defined(OPENSSL_NO_TLSEXT)
+#define HAVE_OCSP_STAPLING
+#if (OPENSSL_VERSION_NUMBER < 0x10000000)
+#define sk_OPENSSL_STRING_pop sk_pop
+#endif
+#endif
+
+#if (OPENSSL_VERSION_NUMBER >= 0x009080a0) && defined(OPENSSL_FIPS)
+#define HAVE_FIPS
+#endif
+
+#if (OPENSSL_VERSION_NUMBER >= 0x10000000)
+#define MODSSL_SSL_CIPHER_CONST const
+#define MODSSL_SSL_METHOD_CONST const
+#else
+#define MODSSL_SSL_CIPHER_CONST
+#define MODSSL_SSL_METHOD_CONST
+/* ECC support came along in OpenSSL 1.0.0 */
+#define OPENSSL_NO_EC
+#endif
+
+#ifndef PEM_F_DEF_CALLBACK
+#ifdef PEM_F_PEM_DEF_CALLBACK
+/** In OpenSSL 0.9.8 PEM_F_DEF_CALLBACK was renamed */
+#define PEM_F_DEF_CALLBACK PEM_F_PEM_DEF_CALLBACK 
+#endif
+#endif
+
+#ifndef OPENSSL_NO_TLSEXT
+#ifndef SSL_CTRL_SET_TLSEXT_HOSTNAME
+#define OPENSSL_NO_TLSEXT
+#endif
+#endif
+
+#ifndef sk_STRING_pop
+#define sk_STRING_pop sk_pop
+#endif
+
+/* mod_ssl headers */
+#include "ssl_util_ssl.h"
 
 APLOG_USE_MODULE(ssl);
 
 /*
  * Provide reasonable default for some defines
  */
-#ifndef FALSE
-#define FALSE (0)
-#endif
-#ifndef TRUE
-#define TRUE (!FALSE)
-#endif
 #ifndef PFALSE
 #define PFALSE ((void *)FALSE)
 #endif
@@ -116,9 +198,6 @@ APLOG_USE_MODULE(ssl);
 /**
  * Provide reasonable defines for some types
  */
-#ifndef BOOL
-#define BOOL unsigned int
-#endif
 #ifndef UCHAR
 #define UCHAR unsigned char
 #endif
@@ -674,7 +753,7 @@ EC_KEY      *ssl_callback_TmpECDH(SSL *, int, int);
 #endif
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
-int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey);
+int          ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey);
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
@@ -717,7 +796,7 @@ int          ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x);
 /**  I/O  */
 void         ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
-long         ssl_io_data_cb(BIO *, int, MODSSL_BIO_CB_ARG_TYPE *, int, long, long);
+long         ssl_io_data_cb(BIO *, int, const char *, int, long, long);
 
 /* ssl_io_buffer_fill fills the setaside buffering of the HTTP request
  * to allow an SSL renegotiation to take place. */

@@ -336,8 +336,8 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         SSL_SESSION *pSession = SSL_get_session(ssl);
         if (pSession) {
             result = apr_pstrdup(p, SSL_SESSION_id2sz(
-                                     SSL_SESSION_get_session_id(pSession),
-                                     SSL_SESSION_get_session_id_length(pSession),
+                                     pSession->session_id,
+                                     pSession->session_id_length,
                                      buf, sizeof(buf)));
         }
     }
@@ -404,7 +404,7 @@ static char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
     if (legacy_format) {
         char *cp = X509_NAME_oneline(xsname, NULL, 0);
         result = apr_pstrdup(p, cp);
-        modssl_free(cp);
+        OPENSSL_free(cp);
     }
     else {
         BIO* bio;
@@ -471,13 +471,13 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs,
         resdup = FALSE;
     }
     else if (strcEQ(var, "A_SIG")) {
-        nid = OBJ_obj2nid((ASN1_OBJECT *)X509_get_signature_algorithm(xs));
+        nid = OBJ_obj2nid((ASN1_OBJECT *)(xs->cert_info->signature->algorithm));
         result = apr_pstrdup(p,
                              (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
         resdup = FALSE;
     }
     else if (strcEQ(var, "A_KEY")) {
-        nid = OBJ_obj2nid((ASN1_OBJECT *)X509_get_key_algorithm(xs));
+        nid = OBJ_obj2nid((ASN1_OBJECT *)(xs->cert_info->key->algor->algorithm));
         result = apr_pstrdup(p,
                              (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
         resdup = FALSE;
@@ -540,10 +540,10 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
         if (strEQn(var, ssl_var_lookup_ssl_cert_dn_rec[i].name, varlen)
             && strlen(ssl_var_lookup_ssl_cert_dn_rec[i].name) == varlen) {
             for (j = 0; j < sk_X509_NAME_ENTRY_num((STACK_OF(X509_NAME_ENTRY) *)
-                                                 X509_NAME_get_entries(xsname));
+                                                   xsname->entries);
                  j++) {
                 xsne = sk_X509_NAME_ENTRY_value((STACK_OF(X509_NAME_ENTRY) *)
-                                             X509_NAME_get_entries(xsname), j);
+                                                xsname->entries, j);
 
                 n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
 
@@ -764,7 +764,7 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
 static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx, 
                        X509_NAME *xn, apr_pool_t *p)
 {
-    STACK_OF(X509_NAME_ENTRY) *ents = X509_NAME_get_entries(xn);
+    STACK_OF(X509_NAME_ENTRY) *ents = xn->entries;
     X509_NAME_ENTRY *xsne;
     apr_hash_t *count;
     int i, nid;

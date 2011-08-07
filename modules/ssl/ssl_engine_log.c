@@ -139,15 +139,15 @@ void ssl_log_cxerror(const char *file, int line, int level,
                   serial ? serial : "-unknown-");
 
     if (sname) {
-        modssl_free(sname);
+        OPENSSL_free(sname);
     }
     
     if (iname) {
-        modssl_free(iname);
+        OPENSSL_free(iname);
     }
     
     if (serial) {
-        modssl_free(serial);
+        OPENSSL_free(serial);
     }
 
     if (bn) {
