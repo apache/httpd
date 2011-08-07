@@ -97,8 +97,6 @@ RELEASE SHOWSTOPPERS:
   * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
     a painless event mpm experience.
 
-  * Decouple from apr_ldap to ease the transition to apr-2.0
-
   FOR BETA:
 
 
@@ -136,9 +134,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
   * Maybe remove Limit/LimitExcept or at least make it log warnings when
     mis-used.
-
-  * Sort out modules selections for most/all/reallyall. Maybe rename
-    all -> most, reallyall -> all, and remove the old 'most'.
 
   * Patches submitted to the bug database:
     http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
