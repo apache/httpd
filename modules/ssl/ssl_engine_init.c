@@ -895,7 +895,7 @@ static int ssl_server_import_key(server_rec *s,
     if (idx == SSL_AIDX_ECC)
       pkey_type = EVP_PKEY_EC;
     else
-#endif /* SSL_LIBRARY_VERSION */
+#endif
     pkey_type = (idx == SSL_AIDX_RSA) ? EVP_PKEY_RSA : EVP_PKEY_DSA;
 
     if (!(asn1 = ssl_asn1_table_get(mc->tPrivateKey, id))) {
@@ -1265,18 +1265,11 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     }
 }
 
-#ifdef SSLC_VERSION_NUMBER
-static int ssl_init_FindCAList_X509NameCmp(char **a, char **b)
-{
-    return(X509_NAME_cmp((void*)*a, (void*)*b));
-}
-#else
 static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a, 
                                            const X509_NAME * const *b)
 {
     return(X509_NAME_cmp(*a, *b));
 }
-#endif
 
 static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
                                 server_rec *s, const char *file)

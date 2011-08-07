@@ -944,7 +944,6 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
 {
     char *result = "NULL";
-#ifdef OPENSSL_VERSION_NUMBER
 #if (OPENSSL_VERSION_NUMBER >= 0x00908000)
     SSL_SESSION *pSession = SSL_get_session(ssl);
 
@@ -969,7 +968,6 @@ static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl)
             break;
         }
     }
-#endif
 #endif
     return result;
 }

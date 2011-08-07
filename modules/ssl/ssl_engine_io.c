@@ -277,9 +277,7 @@ static BIO_METHOD bio_filter_out_method = {
     bio_filter_out_ctrl,
     bio_filter_create,
     bio_filter_destroy,
-#ifdef OPENSSL_VERSION_NUMBER
-    NULL /* sslc does not have the callback_ctrl field */
-#endif
+    NULL
 };
 
 typedef struct {
@@ -531,9 +529,7 @@ static BIO_METHOD bio_filter_in_method = {
     NULL,                       /* ctrl is never called */
     bio_filter_create,
     bio_filter_destroy,
-#ifdef OPENSSL_VERSION_NUMBER
-    NULL /* sslc does not have the callback_ctrl field */
-#endif
+    NULL
 };
 
 

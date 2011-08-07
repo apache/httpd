@@ -98,7 +98,6 @@ MAJOR CHANGES
      the original SSLProxy* directives
  o per-directory SSLCACertificate{File,Path} is now thread-safe but
    requires SSL_set_cert_store patch to OpenSSL
- o RSA sslc is supported via ssl_toolkit_compat.h
  o the ssl_engine_{ds,ext}.c source files are obsolete and no longer
    exist
 

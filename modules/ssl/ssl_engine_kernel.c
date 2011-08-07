@@ -1671,11 +1671,8 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
          */
         pubkey = X509_get_pubkey(cert);
         rc = X509_CRL_verify(crl, pubkey);
-#ifdef OPENSSL_VERSION_NUMBER
-        /* Only refcounted in OpenSSL */
         if (pubkey)
             EVP_PKEY_free(pubkey);
-#endif
         if (rc <= 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                          "Invalid signature on CRL");
