@@ -158,11 +158,7 @@ static authz_status ip_check_authorization(request_rec *r,
         ip++;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "access to %s failed, reason: ip address list does not meet "
-                  "'require'ments for user '%s' to be allowed access",
-                  r->uri, r->user);
-
+    /* authz_core will log the require line and the result at DEBUG */
     return AUTHZ_DENIED;
 }
 
@@ -181,8 +177,8 @@ static authz_status host_check_authorization(request_rec *r,
 
     if ((remotehost == NULL) || remotehost_is_ip) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "access to %s failed, reason: unable to get the "
-                      "remote host name", r->uri);
+                      "access check of '%s' to %s failed, reason: unable to get the "
+                      "remote host name", require_line, r->uri);
     }
     else {
         /* The 'host' provider will allow the configuration to specify a list of
@@ -194,13 +190,9 @@ static authz_status host_check_authorization(request_rec *r,
                 return AUTHZ_GRANTED;
             }
         }
-
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "access to %s failed, reason: host name list does not meet "
-                      "'require'ments for user '%s' to be allowed access",
-                      r->uri, r->user);
     }
 
+    /* authz_core will log the require line and the result at DEBUG */
     return AUTHZ_DENIED;
 }
 
