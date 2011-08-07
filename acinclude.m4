@@ -445,7 +445,7 @@ dnl
 AC_DEFUN(APACHE_CHECK_OPENSSL,[
   AC_CACHE_CHECK([for OpenSSL], [ac_cv_openssl], [
     dnl initialise the variables we use
-    ac_cv_openssl=yes
+    ac_cv_openssl=no
     ap_openssl_found=""
     ap_openssl_base=""
     ap_openssl_libs=""
@@ -506,21 +506,17 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
       fi
     fi
 
-    AC_MSG_CHECKING([for OpenSSL version])
+    AC_MSG_CHECKING([for OpenSSL version >= 0.9.7])
     AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing OpenSSL version"
 #endif
-#if  (OPENSSL_VERSION_NUMBER < 0x009060af) \
- || ((OPENSSL_VERSION_NUMBER > 0x00907000) && (OPENSSL_VERSION_NUMBER < 0x0090702f))
-#error "Insecure openssl version " OPENSSL_VERSION_TEXT
+#if OPENSSL_VERSION_NUMBER < 0x0090700f
+#error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
 #endif],
-      [AC_MSG_RESULT(OK)],
-      [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
-       AC_MSG_RESULT([not encouraging])
-       AC_MSG_WARN([OpenSSL version may contain security vulnerabilities!]
-                   [ Ensure the latest security patches have been applied!])
-    ])
+      [AC_MSG_RESULT(OK)
+       ac_cv_openssl=yes],
+      [AC_MSG_RESULT(FAILED)])
 
     if test "x$ac_cv_openssl" = "xyes"; then
       ap_openssl_libs="-lssl -lcrypto `$apr_config --libs`"
@@ -534,9 +530,10 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
       AC_CHECK_FUNCS([SSLeay_version SSL_CTX_new], [], [liberrors="yes"])
       AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines])
       if test "x$liberrors" != "x"; then
-        ac_cv_openssl=no
         AC_MSG_WARN([OpenSSL libraries are unusable])
       fi
+    else
+      AC_MSG_WARN([OpenSSL version is too old])
     fi
 
     dnl restore

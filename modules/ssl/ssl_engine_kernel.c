@@ -1471,7 +1471,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
             errnum = X509_STORE_CTX_get_error(ctx);
         }
         
-#ifdef HAVE_OCSP
+#ifndef OPENSSL_NO_OCSP
         /* If there was an optional verification error, it's not
          * possible to perform OCSP validation since the issuer may be
          * missing/untrusted.  Fail in that case. */
@@ -2005,7 +2005,7 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
 }
 
 /* Dump debugginfo trace to the log file. */
-static void log_tracing_state(MODSSL_INFO_CB_ARG_TYPE ssl, conn_rec *c, 
+static void log_tracing_state(const SSL *ssl, conn_rec *c, 
                               server_rec *s, int where, int rc)
 {
     /*
@@ -2078,7 +2078,7 @@ static void log_tracing_state(MODSSL_INFO_CB_ARG_TYPE ssl, conn_rec *c,
  * client-initiated renegotiations, and for dumping everything to the
  * log.
  */
-void ssl_callback_Info(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc)
+void ssl_callback_Info(const SSL *ssl, int where, int rc)
 {
     conn_rec *c;
     server_rec *s;

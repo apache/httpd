@@ -16,7 +16,7 @@
 
 #include "ssl_private.h"
 
-#ifdef HAVE_OCSP
+#ifndef OPENSSL_NO_OCSP
 #include "apr_base64.h"
 
 /* Return the responder URI specified in the given certificate, or

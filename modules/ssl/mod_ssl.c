@@ -250,13 +250,11 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     /*
      * Try to kill the internals of the SSL library.
      */
-#if OPENSSL_VERSION_NUMBER >= 0x00907001
     /* Corresponds to OPENSSL_load_builtin_modules():
      * XXX: borrowed from apps.h, but why not CONF_modules_free()
      * which also invokes CONF_modules_finish()?
      */
     CONF_modules_unload(1);
-#endif
     /* Corresponds to SSL_library_init: */
     EVP_cleanup();
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
@@ -297,9 +295,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     ENGINE_load_builtin_engines();
 #endif
     OpenSSL_add_all_algorithms();
-#if OPENSSL_VERSION_NUMBER >= 0x00907001
     OPENSSL_load_builtin_modules();
-#endif
 
     /*
      * Let us cleanup the ssl library when the module is unloaded

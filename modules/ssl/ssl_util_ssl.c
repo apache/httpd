@@ -115,16 +115,6 @@ X509 *SSL_read_X509(char* filename, X509 **x509, pem_password_cb *cb)
     return rc;
 }
 
-#if SSL_LIBRARY_VERSION <= 0x00904100
-static EVP_PKEY *d2i_PrivateKey_bio(BIO *bio, EVP_PKEY **key)
-{
-     return ((EVP_PKEY *)ASN1_d2i_bio(
-             (char *(*)())EVP_PKEY_new,
-             (char *(*)())d2i_PrivateKey,
-             (bio), (unsigned char **)(key)));
-}
-#endif
-
 EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, pem_password_cb *cb, void *s)
 {
     EVP_PKEY *rc;
@@ -291,7 +281,6 @@ char *SSL_make_ciphersuite(apr_pool_t *p, SSL *ssl)
 /* check whether cert contains extended key usage with a SGC tag */
 BOOL SSL_X509_isSGC(X509 *cert)
 {
-#ifdef HAVE_SSL_X509V3_EXT_d2i
     int ext_nid;
     EXTENDED_KEY_USAGE *sk;
     BOOL is_sgc;
@@ -310,15 +299,11 @@ BOOL SSL_X509_isSGC(X509 *cert)
     EXTENDED_KEY_USAGE_free(sk);
     }
     return is_sgc;
-#else
-    return FALSE;
-#endif
 }
 
 /* retrieve basic constraints ingredients */
 BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
 {
-#ifdef HAVE_SSL_X509V3_EXT_d2i
     BASIC_CONSTRAINTS *bc;
     BIGNUM *bn = NULL;
     char *cp;
@@ -339,9 +324,6 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
     }
     BASIC_CONSTRAINTS_free(bc);
     return TRUE;
-#else
-    return FALSE;
-#endif
 }
 
 /* convert a NAME_ENTRY to UTF8 string */

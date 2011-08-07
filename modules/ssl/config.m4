@@ -13,12 +13,6 @@ dnl WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 dnl See the License for the specific language governing permissions and
 dnl limitations under the License.
 
-AC_DEFUN([CHECK_OCSP], [
-AC_CHECK_HEADERS(openssl/ocsp.h, 
-  [AC_DEFINE([HAVE_OCSP], 1, [Define if OCSP is supported by OpenSSL])]
-)
-])
-
 dnl #  start of module specific part
 APACHE_MODPATH_INIT(ssl)
 
@@ -47,7 +41,6 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , most, [
     APACHE_CHECK_OPENSSL
     if test "$ac_cv_openssl" = "yes" ; then
         APR_ADDTO(MOD_SSL_LDADD, [\$(SSL_LIBS)])
-        CHECK_OCSP
         if test "x$enable_ssl" = "xshared"; then
            # The only symbol which needs to be exported is the module
            # structure, so ask libtool to hide everything else:
