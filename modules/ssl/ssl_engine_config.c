@@ -517,12 +517,8 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
         seed->cpPath = ap_server_root_relative(mc->pPool, arg2+5);
     }
     else if ((arg2len > 4) && strEQn(arg2, "egd:", 4)) {
-#ifdef HAVE_SSL_RAND_EGD
         seed->nSrc   = SSL_RSSRC_EGD;
         seed->cpPath = ap_server_root_relative(mc->pPool, arg2+4);
-#else
-    return "egd not supported with this SSL toolkit";
-#endif
     }
     else if (strcEQ(arg2, "builtin")) {
         seed->nSrc   = SSL_RSSRC_BUILTIN;
@@ -1428,9 +1424,9 @@ const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag)
 
     sc->server->ocsp_enabled = flag ? TRUE : FALSE;
 
-#ifndef HAVE_OCSP
+#ifdef OPENSSL_NO_OCSP
     if (flag) {
-        return "OCSP support not detected in SSL library; cannot enable "
+        return "OCSP support disabled in SSL library; cannot enable "
             "OCSP validation";
     }
 #endif    

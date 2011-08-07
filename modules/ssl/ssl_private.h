@@ -90,15 +90,8 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
-
-/* hack for non-configure platforms (NetWare, Win32) */
-#if !defined(HAVE_OCSP) && (OPENSSL_VERSION_NUMBER >= 0x00907000)
-#define HAVE_OCSP
-#endif
-#ifdef HAVE_OCSP
 #include <openssl/x509_vfy.h>
 #include <openssl/ocsp.h>
-#endif
 
 /* Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
@@ -108,12 +101,6 @@
 #endif
 
 /* ...shifting sands of OpenSSL... */
-#if (OPENSSL_VERSION_NUMBER < 0x00907000)
-# define MODSSL_INFO_CB_ARG_TYPE SSL*
-#else
-# define MODSSL_INFO_CB_ARG_TYPE const SSL*
-#endif
-
 #if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
 #define MODSSL_D2I_SSL_SESSION_CONST const
 #else
@@ -757,7 +744,7 @@ int          ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey);
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
-void         ssl_callback_Info(MODSSL_INFO_CB_ARG_TYPE, int, int);
+void         ssl_callback_Info(const SSL *, int, int);
 #ifndef OPENSSL_NO_TLSEXT
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 #endif
@@ -883,7 +870,7 @@ void         ssl_var_log_config_register(apr_pool_t *p);
  * allocating from 'p': */
 void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p);
 
-#ifdef HAVE_OCSP
+#ifndef OPENSSL_NO_OCSP
 /* Perform OCSP validation of the current cert in the given context.
  * Returns non-zero on success or zero on failure.  On failure, the
  * context error code is set. */

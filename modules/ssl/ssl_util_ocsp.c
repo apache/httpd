@@ -20,7 +20,7 @@
 
 #include "ssl_private.h"
 
-#ifdef HAVE_OCSP
+#ifndef OPENSSL_NO_OCSP
 
 #include "apr_buckets.h"
 #include "apr_uri.h"

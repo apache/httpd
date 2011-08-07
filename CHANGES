@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_ssl, configure: require OpenSSL 0.9.7 or later. [Kaspar Brand]
+
   *) mod_ssl: remove ssl_toolkit_compat layer. [Kaspar Brand]
 
   *) mod_ssl, configure, ab: drop support for RSA BSAFE SSL-C toolkit.
