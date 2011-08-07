@@ -69,8 +69,20 @@ static unsigned char dh512_g[] = {
 
 static DH *get_dh512(void)
 {
-    return modssl_dh_configure(dh512_p, sizeof(dh512_p),
-                               dh512_g, sizeof(dh512_g));
+    DH *dh;
+
+    if (!(dh = DH_new())) {
+        return NULL;
+    }
+
+    dh->p = BN_bin2bn(dh512_p, sizeof(dh512_p), NULL);
+    dh->g = BN_bin2bn(dh512_g, sizeof(dh512_g), NULL);
+    if (!(dh->p && dh->g)) {
+        DH_free(dh);
+        return NULL;
+    }
+
+    return dh;
 }
 
 static unsigned char dh1024_p[] = {
@@ -92,8 +104,20 @@ static unsigned char dh1024_g[] = {
 
 static DH *get_dh1024(void)
 {
-    return modssl_dh_configure(dh1024_p, sizeof(dh1024_p),
-                               dh1024_g, sizeof(dh1024_g));
+    DH *dh;
+
+    if (!(dh = DH_new())) {
+        return NULL;
+    }
+
+    dh->p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
+    dh->g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
+    if (!(dh->p && dh->g)) {
+        DH_free(dh);
+        return NULL;
+    }
+
+    return dh;
 }
 
 /* ----END GENERATED SECTION---------- */
@@ -187,8 +211,20 @@ $dhsource .= $_ while (<FP>);
 close(FP);
 $dhsource =~ s|(DH\s+\*get_dh)(\d+)[^}]*\n}|static $1$2(void)
 {
-    return modssl_dh_configure(dh$2_p, sizeof(dh$2_p),
-                               dh$2_g, sizeof(dh$2_g));
+    DH *dh;
+
+    if (!(dh = DH_new())) {
+        return NULL;
+    }
+
+    dh->p = BN_bin2bn(dh$2_p, sizeof(dh$2_p), NULL);
+    dh->g = BN_bin2bn(dh$2_g, sizeof(dh$2_g), NULL);
+    if (!(dh->p && dh->g)) {
+        DH_free(dh);
+        return NULL;
+    }
+
+    return dh;
 }
 |sg;
 

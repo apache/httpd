@@ -642,8 +642,8 @@ static void ssl_init_ctx_verify(server_rec *s,
                      "Configuring client authentication");
 
         if (!SSL_CTX_load_verify_locations(ctx,
-                         MODSSL_PCHAR_CAST mctx->auth.ca_cert_file,
-                         MODSSL_PCHAR_CAST mctx->auth.ca_cert_path))
+                                           mctx->auth.ca_cert_file,
+                                           mctx->auth.ca_cert_path))
         {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                     "Unable to configure verify locations "
@@ -705,7 +705,7 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
                  "Configuring permitted SSL ciphers [%s]",
                  suite);
 
-    if (!SSL_CTX_set_cipher_list(ctx, MODSSL_PCHAR_CAST suite)) {
+    if (!SSL_CTX_set_cipher_list(ctx, suite)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                 "Unable to configure permitted SSL ciphers");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
@@ -1278,7 +1278,7 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
     STACK_OF(X509_NAME) *sk;
 
     sk = (STACK_OF(X509_NAME) *)
-             SSL_load_client_CA_file(MODSSL_PCHAR_CAST file);
+             SSL_load_client_CA_file(file);
 
     if (!sk) {
         return;

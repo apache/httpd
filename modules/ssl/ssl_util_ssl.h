@@ -60,8 +60,8 @@
 void        SSL_init_app_data2_idx(void);
 void       *SSL_get_app_data2(SSL *);
 void        SSL_set_app_data2(SSL *, void *);
-X509       *SSL_read_X509(char *, X509 **, modssl_read_bio_cb_fn *);
-EVP_PKEY   *SSL_read_PrivateKey(char *, EVP_PKEY **, modssl_read_bio_cb_fn *, void *);
+X509       *SSL_read_X509(char *, X509 **, pem_password_cb *);
+EVP_PKEY   *SSL_read_PrivateKey(char *, EVP_PKEY **, pem_password_cb *, void *);
 int         SSL_smart_shutdown(SSL *ssl);
 X509_STORE *SSL_X509_STORE_create(char *, char *);
 int         SSL_X509_STORE_lookup(X509_STORE *, int, X509_NAME *, X509_OBJECT *);
@@ -72,13 +72,8 @@ char       *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne);
 BOOL        SSL_X509_getCN(apr_pool_t *, X509 *, char **);
 BOOL        SSL_X509_INFO_load_file(apr_pool_t *, STACK_OF(X509_INFO) *, const char *);
 BOOL        SSL_X509_INFO_load_path(apr_pool_t *, STACK_OF(X509_INFO) *, const char *);
-int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, modssl_read_bio_cb_fn *);
+int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, pem_password_cb *);
 char       *SSL_SESSION_id2sz(unsigned char *, int, char *, int);
-
-int modssl_session_get_time(SSL_SESSION *session);
-
-DH *modssl_dh_configure(unsigned char *p, int plen,
-                        unsigned char *g, int glen);
 
 #endif /* __SSL_UTIL_SSL_H__ */
 /** @} */

@@ -407,9 +407,9 @@ int ssl_hook_Access(request_rec *r)
 
         /* configure new state */
         if ((dc->szCipherSuite || sc->server->auth.cipher_suite) &&
-            !modssl_set_cipher_list(ssl, dc->szCipherSuite ?
-                                         dc->szCipherSuite :
-                                         sc->server->auth.cipher_suite)) {
+            !SSL_set_cipher_list(ssl, dc->szCipherSuite ?
+                                      dc->szCipherSuite :
+                                      sc->server->auth.cipher_suite)) {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "Unable to reconfigure (per-directory) "
                           "permitted SSL ciphers");
@@ -546,7 +546,7 @@ int ssl_hook_Access(request_rec *r)
             verify |= SSL_VERIFY_PEER;
         }
 
-        modssl_set_verify(ssl, verify, ssl_callback_SSLVerify);
+        SSL_set_verify(ssl, verify, ssl_callback_SSLVerify);
         SSL_set_verify_result(ssl, X509_V_OK);
 
         /* determine whether we've to force a renegotiation */
@@ -606,7 +606,7 @@ int ssl_hook_Access(request_rec *r)
                          "'require' and VirtualHost-specific CA certificate "
                          "list is only available to clients with TLS server "
                          "name indication (SNI) support");
-                    modssl_set_verify(ssl, verify_old, NULL);
+                    SSL_set_verify(ssl, verify_old, NULL);
                     return HTTP_FORBIDDEN;
                 } else
                     /* let it pass, possibly with an "incorrect" peer cert,
@@ -695,7 +695,7 @@ int ssl_hook_Access(request_rec *r)
                  * we put it back here for the purpose of quick_renegotiation.
                  */
                 cert_stack = sk_X509_new_null();
-                sk_X509_push(cert_stack, MODSSL_PCHAR_CAST cert);
+                sk_X509_push(cert_stack, cert);
             }
 
             if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
@@ -729,7 +729,7 @@ int ssl_hook_Access(request_rec *r)
                                        SSL_get_ex_data_X509_STORE_CTX_idx(),
                                        (char *)ssl);
 
-            if (!modssl_X509_verify_cert(&cert_store_ctx)) {
+            if (!X509_verify_cert(&cert_store_ctx)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Re-negotiation verification step failed");
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
@@ -798,11 +798,11 @@ int ssl_hook_Access(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "Awaiting re-negotiation handshake");
 
-            /* XXX: Should replace SSL_set_state with SSL_renegotiate(ssl);
+            /* XXX: Should replace setting ssl->state with SSL_renegotiate(ssl);
              * However, this causes failures in perl-framework currently,
              * perhaps pre-test if we have already negotiated?
              */
-            SSL_set_state(ssl, SSL_ST_ACCEPT);
+            ssl->state = SSL_ST_ACCEPT;
             SSL_do_handshake(ssl);
 
             sslconn->reneg_state = RENEG_REJECT;
@@ -1021,7 +1021,7 @@ int ssl_hook_UserCheck(request_rec *r)
         X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
         char *cp = X509_NAME_oneline(name, NULL, 0);
         sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
-        modssl_free(cp);
+        OPENSSL_free(cp);
     }
 
     clientdn = (char *)sslconn->client_dn;
@@ -1731,7 +1731,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
             X509_REVOKED *revoked =
                 sk_X509_REVOKED_value(X509_CRL_get_REVOKED(crl), i);
 
-            ASN1_INTEGER *sn = X509_REVOKED_get_serialNumber(revoked);
+            ASN1_INTEGER *sn = revoked->serialNumber;
 
             if (!ASN1_INTEGER_cmp(sn, X509_get_serialNumber(cert))) {
                 if (APLOGdebug(s)) {
@@ -1742,7 +1742,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
                                  "Certificate with serial %ld (0x%lX) "
                                  "revoked per CRL from issuer %s",
                                  serial, serial, cp);
-                    modssl_free(cp);
+                    OPENSSL_free(cp);
                 }
 
                 X509_STORE_CTX_set_error(ctx, X509_V_ERR_CERT_REVOKED);
@@ -1789,11 +1789,11 @@ static void modssl_proxy_info_log(server_rec *s,
  */
 #define modssl_set_cert_info(info, cert, pkey) \
     *cert = info->x509; \
-    X509_reference_inc(*cert); \
+    CRYPTO_add(&(*cert)->references, +1, CRYPTO_LOCK_X509); \
     *pkey = info->x_pkey->dec_pkey; \
-    EVP_PKEY_reference_inc(*pkey)
+    CRYPTO_add(&(*pkey)->references, +1, CRYPTO_LOCK_X509_PKEY)
 
-int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey)
+int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s = mySrvFromConn(c);
@@ -1911,11 +1911,11 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
      * Store the SSL_SESSION in the inter-process cache with the
      * same expire time, so it expires automatically there, too.
      */
-    id = SSL_SESSION_get_session_id(session);
-    idlen = SSL_SESSION_get_session_id_length(session);
+    id = session->session_id;
+    idlen = session->session_id_length;
 
     rc = ssl_scache_store(s, id, idlen,
-                          apr_time_from_sec(modssl_session_get_time(session)
+                          apr_time_from_sec(SSL_SESSION_get_time(session)
                                           + timeout),
                           session, conn->pool);
 
@@ -1992,8 +1992,8 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     /*
      * Remove the SSL_SESSION from the inter-process cache
      */
-    id = SSL_SESSION_get_session_id(session);
-    idlen = SSL_SESSION_get_session_id_length(session);
+    id = session->session_id;
+    idlen = session->session_id_length;
 
     /* TODO: Do we need a temp pool here, or are we always shutting down? */
     ssl_scache_remove(s, id, idlen, sc->mc->pPool);

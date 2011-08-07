@@ -74,7 +74,7 @@ void SSL_set_app_data2(SSL *ssl, void *arg)
 **  _________________________________________________________________
 */
 
-X509 *SSL_read_X509(char* filename, X509 **x509, modssl_read_bio_cb_fn *cb)
+X509 *SSL_read_X509(char* filename, X509 **x509, pem_password_cb *cb)
 {
     X509 *rc;
     BIO *bioS;
@@ -83,7 +83,7 @@ X509 *SSL_read_X509(char* filename, X509 **x509, modssl_read_bio_cb_fn *cb)
     /* 1. try PEM (= DER+Base64+headers) */
     if ((bioS=BIO_new_file(filename, "r")) == NULL)
         return NULL;
-    rc = modssl_PEM_read_bio_X509 (bioS, x509, cb, NULL);
+    rc = PEM_read_bio_X509 (bioS, x509, cb, NULL);
     BIO_free(bioS);
 
     if (rc == NULL) {
@@ -125,7 +125,7 @@ static EVP_PKEY *d2i_PrivateKey_bio(BIO *bio, EVP_PKEY **key)
 }
 #endif
 
-EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, modssl_read_bio_cb_fn *cb, void *s)
+EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, pem_password_cb *cb, void *s)
 {
     EVP_PKEY *rc;
     BIO *bioS;
@@ -134,7 +134,7 @@ EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, modssl_read_bio_cb
     /* 1. try PEM (= DER+Base64+headers) */
     if ((bioS=BIO_new_file(filename, "r")) == NULL)
         return NULL;
-    rc = modssl_PEM_read_bio_PrivateKey(bioS, key, cb, s);
+    rc = PEM_read_bio_PrivateKey(bioS, key, cb, s);
     BIO_free(bioS);
 
     if (rc == NULL) {
@@ -275,7 +275,7 @@ char *SSL_make_ciphersuite(apr_pool_t *p, SSL *ssl)
         memcpy(cp, SSL_CIPHER_get_name(c), l);
         cp += l;
         *cp++ = '/';
-        *cp++ = (SSL_CIPHER_get_valid(c) == 1 ? '1' : '0');
+        *cp++ = (c->valid == 1 ? '1' : '0');
         *cp++ = ':';
     }
     *(cp-1) = NUL;
@@ -373,9 +373,9 @@ BOOL SSL_X509_getCN(apr_pool_t *p, X509 *xs, char **cppCN)
 
     xsn = X509_get_subject_name(xs);
     for (i = 0; i < sk_X509_NAME_ENTRY_num((STACK_OF(X509_NAME_ENTRY) *)
-                                           X509_NAME_get_entries(xsn)); i++) {
+                                           xsn->entries); i++) {
         xsne = sk_X509_NAME_ENTRY_value((STACK_OF(X509_NAME_ENTRY) *)
-                                         X509_NAME_get_entries(xsn), i);
+                                        xsn->entries, i);
         nid = OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
         if (nid == NID_commonName) {
             *cppCN = SSL_X509_NAME_ENTRY_to_string(p, xsne);
@@ -401,14 +401,14 @@ BOOL SSL_X509_INFO_load_file(apr_pool_t *ptemp,
         return FALSE;
     }
 
-    if (BIO_read_filename(in, MODSSL_PCHAR_CAST filename) <= 0) {
+    if (BIO_read_filename(in, filename) <= 0) {
         BIO_free(in);
         return FALSE;
     }
 
     ERR_clear_error();
 
-    modssl_PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
+    PEM_X509_INFO_read_bio(in, sk, NULL, NULL);
 
     BIO_free(in);
 
@@ -464,7 +464,7 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
  * should be sent to the peer in the SSL Certificate message.
  */
 int SSL_CTX_use_certificate_chain(
-    SSL_CTX *ctx, char *file, int skipfirst, modssl_read_bio_cb_fn *cb)
+    SSL_CTX *ctx, char *file, int skipfirst, pem_password_cb *cb)
 {
     BIO *bio;
     X509 *x509;
@@ -480,21 +480,21 @@ int SSL_CTX_use_certificate_chain(
     }
     /* optionally skip a leading server certificate */
     if (skipfirst) {
-        if ((x509 = modssl_PEM_read_bio_X509(bio, NULL, cb, NULL)) == NULL) {
+        if ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) == NULL) {
             BIO_free(bio);
             return -1;
         }
         X509_free(x509);
     }
     /* free a perhaps already configured extra chain */
-    extra_certs=SSL_CTX_get_extra_certs(ctx);
+    extra_certs = ctx->extra_certs;
     if (extra_certs != NULL) {
         sk_X509_pop_free((STACK_OF(X509) *)extra_certs, X509_free);
-        SSL_CTX_set_extra_certs(ctx,NULL);
+        ctx->extra_certs = NULL;
     }
     /* create new extra chain by loading the certs */
     n = 0;
-    while ((x509 = modssl_PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
+    while ((x509 = PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
         if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) {
             X509_free(x509);
             BIO_free(bio);
@@ -534,27 +534,4 @@ char *SSL_SESSION_id2sz(unsigned char *id, int idlen,
     }
     *cp = NUL;
     return str;
-}
-int modssl_session_get_time(SSL_SESSION *session)
-{
-    return SSL_SESSION_get_time(session);
-}
-
-DH *modssl_dh_configure(unsigned char *p, int plen,
-                        unsigned char *g, int glen)
-{
-    DH *dh;
-
-    if (!(dh = DH_new())) {
-        return NULL;
-    }
-
-    dh->p = BN_bin2bn(p, plen, NULL);
-    dh->g = BN_bin2bn(g, glen, NULL);
-    if (!(dh->p && dh->g)) {
-        DH_free(dh);
-        return NULL;
-    }
-
-    return dh;
 }
