@@ -282,13 +282,12 @@ dnl
 AC_DEFUN(APACHE_MODULE,[
   AC_MSG_CHECKING(whether to enable mod_$1)
   define([optname],[--]ifelse($5,yes,disable,enable)[-]translit($1,_,-))dnl
-  AC_ARG_ENABLE(translit($1,_,-),APACHE_HELP_STRING(optname(),$2),,enable_$1=ifelse($5,,maybe-all,$5))
+  AC_ARG_ENABLE(translit($1,_,-),APACHE_HELP_STRING(optname(),$2),force_$1=$enableval,enable_$1=ifelse($5,,maybe-all,$5))
   undefine([optname])dnl
   _apmod_extra_msg=""
   dnl When --enable-modules=most or --enable-modules=(really)all is set and the
   dnl module was not explicitly requested, allow a module to disable itself if
   dnl its pre-reqs fail.
-  dnl XXX: Todo: Allow to disable specific modules even with "reallyall".
   case "$enable_$1" in
     yes|static|shared)
       _apmod_error_fatal="yes"
@@ -324,7 +323,8 @@ AC_DEFUN(APACHE_MODULE,[
     else
       enable_$1=no
     fi
-  elif test "$enable_$1" = "no" -a "$module_selection" = "reallyall"; then
+  elif test "$enable_$1" = "no" -a "$module_selection" = "reallyall" -a \
+            "$force_$1" != "no" ; then
       enable_$1=$module_default
       _apmod_extra_msg=" ($module_selection)"
   fi

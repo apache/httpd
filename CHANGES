@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) configure: Allow to explicitly disable modules even with module selection
+     'reallyall'. [Stefan Fritsch]
+
   *) mod_rewrite: Check validity of each internal (int:) RewriteMap even if the
      RewriteEngine is disabled in server context, avoiding a crash while
      referencing the invalid int: map at runtime. PR 50994.
