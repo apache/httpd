@@ -91,8 +91,8 @@ a directory</td></tr>
       DirectoryIndex index.html
     </code></p></div>
 
-    <p>then a request for <code>http://myserver/docs/</code> would
-    return <code>http://myserver/docs/index.html</code> if it
+    <p>then a request for <code>http://example.com/docs/</code> would
+    return <code>http://example.com/docs/index.html</code> if it
     exists, or would list the directory if it did not.</p>
 
     <p>Note that the documents do not need to be relative to the

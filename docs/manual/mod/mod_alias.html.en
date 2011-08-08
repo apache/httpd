@@ -127,10 +127,10 @@
       Alias /image /ftp/pub/image
     </code></p></div>
 
-    <p>A request for <code>http://myserver/image/foo.gif</code> would cause
+    <p>A request for <code>http://example.com/image/foo.gif</code> would cause
     the server to return the file <code>/ftp/pub/image/foo.gif</code>.  Only
     complete path segments are matched, so the above alias would not match a
-    request for <code>http://myserver/imagefoo.gif</code>.  For more complex
+    request for <code>http://example.com/imagefoo.gif</code>.  For more complex
     matching using regular expressions, see the <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> directive.</p>
 
     <p>Note that if you include a trailing / on the
@@ -421,7 +421,7 @@ target as a CGI script</td></tr>
       ScriptAlias /cgi-bin/ /web/cgi-bin/
     </code></p></div>
 
-    <p>A request for <code>http://myserver/cgi-bin/foo</code> would cause the
+    <p>A request for <code>http://example.com/cgi-bin/foo</code> would cause the
     server to run the script <code>/web/cgi-bin/foo</code>.  This configuration
     is essentially equivalent to:</p>
     <div class="example"><p><code>
