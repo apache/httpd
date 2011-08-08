@@ -421,7 +421,17 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       <directive module="mod_include">XBitHack</directive>).
       An equal sign may be given followed by a comma (but no spaces)
       separated lists of options that may be set using the <directive
-      module="core">Options</directive> command.</dd>
+      module="core">Options</directive> command.
+
+      <note><title>Implicit disabling of Options</title>
+      <p>Even though the list of options that may be used in .htaccess files 
+         can be limited with this directive, as long as any <directive 
+         module="core">Options</directive> directive is allowed any
+         other inherited option can be disabled by using the non-relative
+         syntax.  In other words, this mechanism cannot force a specific option
+         to remain <em>set</em> while allowing any others to be set.
+      </p></note>
+      </dd>
     </dl>
 
     <p>Example:</p>
