@@ -102,6 +102,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~rjung/patches/mod_filter-cgi-err_headers_out.patch
     +1: rjung, jorton, sf
 
+  * Sort hooks before running pre-config hook.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1032002&view=rev
+      (Omit trunk's config*m4 change which adjusted the order of statically
+      linked modules.)
+    PR: 45076
+    2.2.x patch: http://people.apache.org/~trawick/1032002-2.2.x.txt
+    +1: trawick, sf, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -114,14 +121,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     trawick: any reason it shouldn't be completely aligned with default_handler's
              choice to return OK vs. 500?
-
-  * Sort hooks before running pre-config hook.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1032002&view=rev
-      (Omit trunk's config*m4 change which adjusted the order of statically
-      linked modules.)
-    PR: 45076
-    2.2.x patch: http://people.apache.org/~trawick/1032002-2.2.x.txt
-    +1: trawick, sf, covener
 
   * Adjust inflated log severity.
     PR: 44020
