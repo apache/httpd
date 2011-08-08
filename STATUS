@@ -171,6 +171,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_reuse_flag.patch
     +1: rjung
 
+  * mod_rewrite: validate RewriteMap int:foo even if RewriteEngine is "off" to avoid crash.
+    Trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_rewrite.c?view=diff&r1=1154807&r2=1154808&pathrev=1154808
+    2.2.x patch: trunk works
+    +1 covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
