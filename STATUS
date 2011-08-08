@@ -121,30 +121,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       linked modules.)
     PR: 45076
     2.2.x patch: http://people.apache.org/~trawick/1032002-2.2.x.txt
-    +1: trawick, sf
+    +1: trawick, sf, covener
 
   * Adjust inflated log severity.
     PR: 44020
     Trunk patch: Was never in trunk.
     2.2.x patch: http://people.apache.org/~sf/PR44020.diff
     +1: sf
+    +0: covener did you see Jim's initial concern on introducing the 
+        ap_construct_url() in maintenance?  This dissuaded me from 
+        proposing the same.
 
   * mod_deflate: Stop compressing HEAD requests if there is not Content-Length
     header
     Trunk patch: http://svn.apache.org/viewvc?rev=958253&view=rev
     2.2.x patch: trunk patch works with offset
-    +1: sf
+    +1: sf, covener
 
   * mod_reqtimeout: Disable keep-alive after read timeout
     Trunk patch: http://svn.apache.org/viewvc?rev=1103213&view=rev
     2.2.x patch: trunk patch works except for CHANGES
-    +1: sf
+    +1: sf, covener
 
   * mod_authnz_ldap: Treat 'constraint violation' as auth denied, not as
     internal server error.
     Trunk patch: http://svn.apache.org/viewvc?rev=1125646&view=rev
     2.2.x patch: trunk patch works except for CHANGES
-    +1: sf
+    +1: sf, covener
 
   * mod_filter: fix parsing of regexps containing slashes
     PR 51434 (and 51435, which includes the fix)
