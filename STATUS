@@ -97,6 +97,11 @@ RELEASE SHOWSTOPPERS:
   * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
     a painless event mpm experience.
 
+  * Investigate Windows AcceptFilter issues. Thread starts at
+    http://mail-archives.apache.org/mod_mbox/httpd-dev/201107.mbox/%3C84552AF751934DA6AD70C93AAEA2B553@mother%3E
+
+  * Get a recent beta (2.3.14?) installed on apache.org machines for testing.
+
   FOR BETA:
 
 
