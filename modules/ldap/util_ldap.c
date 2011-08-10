@@ -459,7 +459,14 @@ static int uldap_simple_bind(util_ldap_connection_t *ldc, char *binddn,
     int rc;
     int msgid = ldap_simple_bind(ldc->ldap, binddn, bindpw);
     if (msgid == -1) {
+        int ldaprc;
         ldc->reason = "LDAP: ldap_simple_bind() failed";
+#ifdef LDAP_OPT_ERROR_NUMBER
+        if (LDAP_SUCCESS == ldap_get_option(ldc->ldap, LDAP_OPT_ERROR_NUMBER, &ldaprc)) return ldaprc;
+#endif
+#ifdef LDAP_OPT_RESULT_CODE
+        if (LDAP_SUCCESS == ldap_get_option(ldc->ldap, LDAP_OPT_RESULT_CODE, &ldaprc)) return ldaprc;
+#endif
         /* -1 is LDAP_SERVER_DOWN in openldap, use something else */
         return LDAP_OTHER;
     }
