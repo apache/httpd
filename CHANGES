@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_authnz_ldap: Don't retry during authentication, because this just 
+     multiplies the ample retries already being done by mod_ldap. [Eric Covener]
+
   *) configure: Allow to explicitly disable modules even with module selection
      'reallyall'. [Stefan Fritsch]
 
