@@ -172,6 +172,8 @@ typedef struct util_ldap_state_t {
 
     int debug_level;                    /* SDK debug level */
     apr_interval_time_t connection_pool_ttl;
+    int retries;                        /* number of retries for failed bind/search/compare */
+    apr_interval_time_t retry_delay;    /* delay between retries of failed bind/search/compare */
 } util_ldap_state_t;
 
 /* Used to store arrays of attribute labels/values. */

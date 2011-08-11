@@ -346,6 +346,7 @@
  *                         Add member override_list to cmd_parms_struct,
  *                         core_dir_config and htaccess_result
  * 20110724.1 (2.3.15-dev) add NOT_IN_HTACCESS
+ * 20110724.2 (2.3.15-dev) retries and retry_delay in util_ldap_state_t
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -353,7 +354,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110724
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
