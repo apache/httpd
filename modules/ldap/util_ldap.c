@@ -529,10 +529,9 @@ static int uldap_connection_open(request_rec *r,
     st = (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
                                                    &ldap_module);
 
-    /* loop trying to bind up to 10 times if LDAP_SERVER_DOWN error is
-     * returned. If LDAP_TIMEOUT is returned on the first try, maybe the
-     * connection was idle for a long time and has been dropped by a firewall.
-     * In this case close the connection immediately and try again.
+    /* loop trying to bind up to st->retries times if LDAP_SERVER_DOWN or LDAP_TIMEOUT
+     * are returned.  Close the connection before the first retry, and then on every
+     * other retry.
      *
      * On Success or any other error, break out of the loop.
      *
@@ -541,34 +540,44 @@ static int uldap_connection_open(request_rec *r,
      * However, the original code looped and it only happens on
      * the error condition.
      */
-    for (failures=0; failures<10; failures++)
-    {
+
+    while (failures <= st->retries) {
+        if (failures > 0 && st->retry_delay > 0) { 
+            apr_sleep(st->retry_delay);
+        }
         rc = uldap_simple_bind(ldc, (char *)ldc->binddn, (char *)ldc->bindpw,
                                st->opTimeout);
-        if ((AP_LDAP_IS_SERVER_DOWN(rc) && failures == 5) ||
-            (rc == LDAP_TIMEOUT && failures == 0))
-        {
-            if (rc == LDAP_TIMEOUT && !new_connection) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                              "ldap_simple_bind() timed out on reused "
-                              "connection, dropped by firewall?");
-            }
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+
+        if (rc == LDAP_SUCCESS) break;
+
+        failures++;
+
+        if (AP_LDAP_IS_SERVER_DOWN(rc)) { 
+             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "ldap_simple_bind() failed with server down "
+                          "(try %d)", failures);
+        }
+        else if (rc == LDAP_TIMEOUT) {
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                          "ldap_simple_bind() timed out on %s "
+                          "connection, dropped by firewall?", 
+                          new_connection ? "new" : "reused");
+        }
+        else { 
+            /* Other errors not retryable */
+            break;
+        }
+
+        if (!(failures % 2)) {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, 
                           "attempt to re-init the connection");
-            uldap_connection_unbind( ldc );
-            rc = uldap_connection_init( r, ldc );
-            if (LDAP_SUCCESS != rc)
-            {
+            uldap_connection_unbind(ldc);
+            if (LDAP_SUCCESS != uldap_connection_init(r, ldc)) { 
+                /* leave rc as the initial bind return code */
                 break;
             }
         }
-        else if (!AP_LDAP_IS_SERVER_DOWN(rc)) {
-            break;
-        }
-        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                      "ldap_simple_bind() failed with server down "
-                      "(try %d)", failures + 1);
-    }
+    } 
 
     /* free the handle if there was an error
     */
@@ -878,9 +887,12 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
     }
 
 start_over:
-    if (failures++ > 10) {
-        /* too many failures */
+    if (failures > st->retries) {
         return result;
+    }
+
+    if (failures > 0 && st->retry_delay > 0) {
+        apr_sleep(st->retry_delay);
     }
 
     /* make a server connection */
@@ -898,6 +910,7 @@ start_over:
         ldc->reason = "DN Comparison ldap_search_ext_s() "
                       "failed with server down";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
     if (result == LDAP_TIMEOUT && failures == 0) {
@@ -908,6 +921,7 @@ start_over:
         ldc->reason = "DN Comparison ldap_search_ext_s() "
                       "failed with timeout";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
     if (result != LDAP_SUCCESS) {
@@ -1030,9 +1044,12 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
     }
 
 start_over:
-    if (failures++ > 10) {
-        /* too many failures */
+    if (failures > st->retries) {
         return result;
+    }
+
+    if (failures > 0 && st->retry_delay > 0) {
+        apr_sleep(st->retry_delay);
     }
 
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
@@ -1048,6 +1065,7 @@ start_over:
         /* connection failed - try again */
         ldc->reason = "ldap_compare_s() failed with server down";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
     if (result == LDAP_TIMEOUT && failures == 0) {
@@ -1057,6 +1075,7 @@ start_over:
          */
         ldc->reason = "ldap_compare_s() failed with timeout";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
 
@@ -1127,6 +1146,9 @@ static util_compare_subgroup_t* uldap_get_subgroups(request_rec *r,
     LDAPMessage *sga_res, *entry;
     struct mod_auth_ldap_groupattr_entry_t *sgc_ents;
     apr_array_header_t *subgroups = apr_array_make(r->pool, 20, sizeof(char *));
+    util_ldap_state_t *st = (util_ldap_state_t *)
+                            ap_get_module_config(r->server->module_config,
+                                                 &ldap_module);
 
     sgc_ents = (struct mod_auth_ldap_groupattr_entry_t *) subgroupclasses->elts;
 
@@ -1138,10 +1160,14 @@ start_over:
     /*
      * 3.B. The cache didn't have any subgrouplist yet. Go check for subgroups.
      */
-    if (failures++ > 10) {
-        /* too many failures */
+    if (failures > st->retries) {
         return res;
     }
+
+    if (failures > 0 && st->retry_delay > 0) {
+        apr_sleep(st->retry_delay);
+    }
+
 
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
         /* connect failed */
@@ -1156,6 +1182,7 @@ start_over:
         ldc->reason = "ldap_search_ext_s() for subgroups failed with server"
                       " down";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
     if (result == LDAP_TIMEOUT && failures == 0) {
@@ -1165,6 +1192,7 @@ start_over:
          */
         ldc->reason = "ldap_search_ext_s() for subgroups failed with timeout";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
 
@@ -1611,9 +1639,14 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
      * If LDAP operation fails due to LDAP_SERVER_DOWN, control returns here.
      */
 start_over:
-    if (failures++ > 10) {
+    if (failures > st->retries) {
         return result;
     }
+
+    if (failures > 0 && st->retry_delay > 0) {
+        apr_sleep(st->retry_delay);
+    }
+
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
         return result;
     }
@@ -1627,6 +1660,7 @@ start_over:
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
 
@@ -1689,6 +1723,7 @@ start_over:
                           "timed out";
         ldap_msgfree(res);
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
 
@@ -1862,9 +1897,14 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
      * If LDAP operation fails due to LDAP_SERVER_DOWN, control returns here.
      */
 start_over:
-    if (failures++ > 10) {
+    if (failures > st->retries) {
         return result;
     }
+
+    if (failures > 0 && st->retry_delay > 0) {
+        apr_sleep(st->retry_delay);
+    }
+
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
         return result;
     }
@@ -1878,6 +1918,7 @@ start_over:
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
         uldap_connection_unbind(ldc);
+        failures++;
         goto start_over;
     }
 
@@ -2599,8 +2640,52 @@ static const char *util_ldap_set_conn_ttl(cmd_parms *cmd,
     st->connection_pool_ttl = timeout;
     return NULL;
 }
+static const char *util_ldap_set_retry_delay(cmd_parms *cmd,
+                                            void *dummy,
+                                            const char *val)
+{
+    apr_interval_time_t timeout;
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                                  &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
-     
+    if (err != NULL) {
+        return err;
+    }
+
+    if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) { 
+        return "LDAPRetryDelay has wrong format";
+    }
+
+    if (timeout < 0) { 
+        return "LDAPRetryDelay must be >= 0";
+    }
+
+    st->retry_delay = timeout;
+    return NULL;
+}
+
+static const char *util_ldap_set_retries(cmd_parms *cmd,
+                                            void *dummy,
+                                            const char *val)
+{
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                                  &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    st->retries = atoi(val);
+    if (val < 0) { 
+        return  "LDAPRetries must be >= 0";
+    }
+
+    return NULL; 
+}
 
 static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 {
@@ -2631,6 +2716,8 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->opTimeout->tv_sec = 60;
     st->verify_svr_cert = 1;
     st->connection_pool_ttl = AP_LDAP_CONNPOOL_DEFAULT; /* no limit */
+    st->retries = 3;
+    st->retry_delay = 0; /* no delay */
 
     return st;
 }
@@ -2684,6 +2771,9 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
 
     st->connection_pool_ttl = (overrides->connection_pool_ttl == AP_LDAP_CONNPOOL_DEFAULT) ? 
                                 base->connection_pool_ttl : overrides->connection_pool_ttl;
+
+    st->retries = base->retries;
+    st->retry_delay = base->retry_delay;
 
     return st;
 }
@@ -2967,6 +3057,15 @@ static const command_rec util_ldap_cmds[] = {
                   "Specify the maximum amount of time a bound connection can sit "
                   "idle and still be considered valid for reuse"
                   "(0 = no pool, -1 = no limit, n = time in seconds). Default: -1"),
+    AP_INIT_TAKE1("LDAPRetries", util_ldap_set_retries,
+                  NULL, RSRC_CONF,
+                  "Specify the number of times a failed LDAP operation should be retried "
+                  "(0 = no retries). Default: 3"),
+    AP_INIT_TAKE1("LDAPRetryDelay", util_ldap_set_retry_delay,
+                  NULL, RSRC_CONF,
+                  "Specify the delay between retries of a failed LDAP operation "
+                  "(0 = no delay). Default: 0"),
+
 
     {NULL}
 };
