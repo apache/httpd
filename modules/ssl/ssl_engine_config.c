@@ -461,12 +461,11 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
               "'builtin' (none)";
         e = ENGINE_get_first();
         while (e) {
-            ENGINE *en;
             err = apr_pstrcat(cmd->pool, err, ", '", ENGINE_get_id(e),
                                          "' (", ENGINE_get_name(e), ")", NULL);
-            en = ENGINE_get_next(e);
-            ENGINE_free(e);
-            e = en;
+            /* Iterate; this call implicitly decrements the refcount
+             * on the 'old' e, per the docs in engine.h. */
+            e = ENGINE_get_next(e);
         }
         return err;
     }
