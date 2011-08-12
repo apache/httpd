@@ -66,6 +66,10 @@
 #define AP_LDAP_CONNPOOL_DEFAULT -1
 #define AP_LDAP_CONNPOOL_INFINITE -2
 
+#if !defined(LDAP_OPT_NETWORK_TIMEOUT) && defined(LDAP_OPT_CONNECT_TIMEOUT)
+#define LDAP_OPT_NETWORK_TIMEOUT LDAP_OPT_CONNECT_TIMEOUT
+#endif
+
 module AP_MODULE_DECLARE_DATA ldap_module;
 static const char *ldap_cache_mutex_type = "ldap-cache";
 static apr_status_t uldap_connection_unbind(void *param);

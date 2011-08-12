@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_ldap: Enable LDAPConnectionTimeout for LDAP toolkits that have
+     LDAP_OPT_CONNECT_TIMEOUT instead of LDAP_OPT_NETWORK_TIMEOUT, such
+     as Tivoli Directory Server 6.3 and later. [Eric Covener]
+
   *) mod_ldap: Change default number of retries from 10 to 3, and add 
      an LDAPRetries and LDAPRetryDelay directives. [Eric Covener]
 
