@@ -43,7 +43,7 @@ APACHE_MODULE(proxy_http, Apache proxy HTTP module.  Requires and is enabled by 
 APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module.  Requires and is enabled by --enable-proxy., $proxy_fcgi_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_scgi, Apache proxy SCGI module.  Requires and is enabled by --enable-proxy., $proxy_scgi_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires --enable-proxy., $proxy_fdpass_objs, , , [
-  AC_CHECK_DECL(CMSG_DATA, [ ], [ ], [
+  AC_CHECK_DECL(CMSG_DATA,,, [
     #include <sys/types.h>
     #include <sys/socket.h>
   ])
