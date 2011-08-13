@@ -2684,7 +2684,7 @@ static const char *util_ldap_set_retries(cmd_parms *cmd,
     }
 
     st->retries = atoi(val);
-    if (val < 0) { 
+    if (st->retries < 0) { 
         return  "LDAPRetries must be >= 0";
     }
 

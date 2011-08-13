@@ -451,7 +451,6 @@ static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum aut
 static authn_status authn_ldap_check_password(request_rec *r, const char *user,
                                               const char *password)
 {
-    int failures = 0;
     char filtbuf[FILTER_LENGTH];
     authn_ldap_config_t *sec =
         (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
@@ -478,8 +477,6 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     if (!sec->have_ldap_url) {
         return AUTH_GENERAL_ERROR;
     }
-
-start_over:
 
     /* There is a good AuthLDAPURL, right? */
     if (sec->host) {
