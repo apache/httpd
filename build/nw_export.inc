@@ -56,6 +56,7 @@
 #include "util_mutex.h"
 #include "util_script.h"
 #include "util_time.h"
+#include "util_varbuf.h"
 #include "util_xml.h"
 
 #include "mod_core.h"
