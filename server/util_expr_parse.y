@@ -152,6 +152,7 @@ words     : word                         { $$ = ap_expr_make(op_ListElement, $1,
 
 string    : string strpart               { $$ = ap_expr_make(op_Concat, $1, $2, ctx); }
           | strpart                      { $$ = $1; }
+          | T_ERROR                      { YYABORT; }
           ;
 
 strpart   : T_STRING                     { $$ = ap_expr_make(op_String, $1, NULL, ctx); }
