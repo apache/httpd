@@ -49,6 +49,7 @@
 #include "http_main.h"
 #include "http_vhost.h"
 #include "util_cfgtree.h"
+#include "util_varbuf.h"
 #include "mpm_common.h"
 
 #define APLOG_UNSET   (APLOG_NO_MODULE - 1)
@@ -1186,6 +1187,9 @@ static const char *ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
     return retval;
 }
 
+#define VARBUF_INIT_LEN 200
+#define VARBUF_MAX_LEN  (16*1024*1024)
+
 AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
                                               apr_pool_t *temp_pool,
                                               cmd_parms *parms,
@@ -1193,27 +1197,23 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
                                               ap_directive_t **curr_parent,
                                               char *orig_directive)
 {
-    char *l;
     char *bracket;
     const char *retval;
     ap_directive_t *sub_tree = NULL;
     apr_status_t rc;
-
-    /* Since this function can be called recursively, allocate
-     * the temporary 8k string buffer from the temp_pool rather
-     * than the stack to avoid over-running a fixed length stack.
-     */
-    l = apr_palloc(temp_pool, MAX_STRING_LEN);
+    struct ap_varbuf vb;
 
     bracket = apr_pstrcat(temp_pool, orig_directive + 1, ">", NULL);
-    while ((rc = ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))
+    ap_varbuf_init(temp_pool, &vb, VARBUF_INIT_LEN);
+
+    while ((rc = ap_varbuf_cfg_getline(&vb, parms->config_file, VARBUF_MAX_LEN))
            == APR_SUCCESS) {
-        if (!memcmp(l, "</", 2)
-            && (strcasecmp(l + 2, bracket) == 0)
+        if (!memcmp(vb.buf, "</", 2)
+            && (strcasecmp(vb.buf + 2, bracket) == 0)
             && (*curr_parent == NULL)) {
             break;
         }
-        retval = ap_build_config_sub(p, temp_pool, l, parms, current,
+        retval = ap_build_config_sub(p, temp_pool, vb.buf, parms, current,
                                      curr_parent, &sub_tree);
         if (retval != NULL)
             return retval;
@@ -1226,6 +1226,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
             sub_tree = *current;
         }
     }
+    ap_varbuf_free(&vb);
     if (rc != APR_EOF && rc != APR_SUCCESS)
         return ap_pcfg_strerror(temp_pool, parms->config_file, rc);
 
@@ -1319,10 +1320,12 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
 {
     ap_directive_t *current = *conftree;
     ap_directive_t *curr_parent = NULL;
-    char *l = apr_palloc (temp_pool, MAX_STRING_LEN);
     const char *errmsg;
     ap_directive_t **last_ptr = NULL;
     apr_status_t rc;
+    struct ap_varbuf vb;
+
+    ap_varbuf_init(temp_pool, &vb, VARBUF_INIT_LEN);
 
     if (current != NULL) {
         /* If we have to traverse the whole tree again for every included
@@ -1346,9 +1349,9 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
         }
     }
 
-    while ((rc = ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))
+    while ((rc = ap_varbuf_cfg_getline(&vb, parms->config_file, VARBUF_MAX_LEN))
            == APR_SUCCESS) {
-        errmsg = ap_build_config_sub(p, temp_pool, l, parms,
+        errmsg = ap_build_config_sub(p, temp_pool, vb.buf, parms,
                                      &current, &curr_parent, conftree);
         if (errmsg != NULL)
             return errmsg;
@@ -1361,6 +1364,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
             *conftree = current;
         }
     }
+    ap_varbuf_free(&vb);
     if (rc != APR_EOF && rc != APR_SUCCESS)
         return ap_pcfg_strerror(temp_pool, parms->config_file, rc);
 
@@ -1532,17 +1536,19 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *file)
 
 AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
 {
-    char l[MAX_STRING_LEN];
+    struct ap_varbuf vb;
     const char *args;
     char *cmd_name;
     apr_status_t rc;
 
-    while((rc = ap_cfg_getline(l, MAX_STRING_LEN, cmd->config_file))
+    ap_varbuf_init(cmd->temp_pool, &vb, VARBUF_INIT_LEN);
+
+    while((rc = ap_varbuf_cfg_getline(&vb, cmd->config_file, VARBUF_MAX_LEN))
           == APR_SUCCESS) {
 #if RESOLVE_ENV_PER_TOKEN
-        args = l;
+        args = vb.buf;
 #else
-        args = ap_resolve_env(cmd->temp_pool, l);
+        args = ap_resolve_env(cmd->temp_pool, vb.buf);
 #endif
 
         cmd_name = ap_getword_conf(cmd->temp_pool, &args);
@@ -1556,6 +1562,7 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive)
                                        cmd_name, ">", NULL);
                 }
 
+                ap_varbuf_free(&vb);
                 return NULL; /* found end of container */
             }
             else {

@@ -54,6 +54,7 @@
 #include "http_config.h"
 #include "http_core.h"
 #include "util_ebcdic.h"
+#include "util_varbuf.h"
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>
@@ -907,10 +908,10 @@ AP_DECLARE(const char *) ap_pcfg_strerror(apr_pool_t *p, ap_configfile_t *cfp,
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
-AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
+static apr_status_t ap_cfg_getline_core(char *buf, size_t bufsize,
+                                        ap_configfile_t *cfp)
 {
     apr_status_t rc;
-    char *src, *dst;
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {
         char *cp;
@@ -922,12 +923,12 @@ AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile
             rc = cfp->getstr(cbuf, cbufsize, cfp->param);
             if (rc == APR_EOF) {
                 if (cbuf != buf) {
-		    *cbuf = '\0';
+                    *cbuf = '\0';
                     break;
-		}
+                }
                 else {
                     return APR_EOF;
-		}
+                }
             }
             if (rc != APR_SUCCESS) {
                 return rc;
@@ -997,27 +998,69 @@ AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile
             buf[i] = c;
             ++i;
         }
-	buf[i] = '\0';
+        buf[i] = '\0';
     }
+    return APR_SUCCESS;
+}
 
+static int cfg_trim_line(char *buf)
+{
+    char *start, *end;
     /*
      * Leading and trailing white space is eliminated completely
      */
-    src = buf;
-    while (apr_isspace(*src))
-        ++src;
+    start = buf;
+    while (apr_isspace(*start))
+        ++start;
     /* blast trailing whitespace */
-    dst = &src[strlen(src)];
-    while (--dst >= src && apr_isspace(*dst))
-        *dst = '\0';
+    end = &start[strlen(start)];
+    while (--end >= start && apr_isspace(*end))
+        *end = '\0';
     /* Zap leading whitespace by shifting */
-    if (src != buf)
-        memmove(buf, src, dst - src + 2);
-
+    if (start != buf)
+        memmove(buf, start, end - start + 2);
 #ifdef DEBUG_CFG_LINES
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL, "Read config: '%s'", buf);
 #endif
-    return APR_SUCCESS;
+    return end - start + 1;
+}
+
+/* Read one line from open ap_configfile_t, strip LF, increase line number */
+/* If custom handler does not define a getstr() function, read char by char */
+AP_DECLARE(apr_status_t) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
+{
+    apr_status_t rc = ap_cfg_getline_core(buf, bufsize, cfp);
+    if (rc == APR_SUCCESS)
+        cfg_trim_line(buf);
+    return rc;
+}
+
+AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
+                                               ap_configfile_t *cfp,
+                                               apr_size_t max_len)
+{
+    apr_status_t rc;
+    vb->strlen = 0;
+    *vb->buf = '\0';
+
+    for (;;) {
+        apr_size_t new_len;
+        rc = ap_cfg_getline_core(vb->buf + vb->strlen, vb->avail - vb->strlen, cfp);
+        if (rc == APR_ENOSPC || rc == APR_SUCCESS)
+            vb->strlen += strlen(vb->buf + vb->strlen);
+        if (rc != APR_ENOSPC)
+            break;
+        if (vb->avail >= max_len)
+            return APR_ENOSPC;
+        new_len = vb->avail * 2;
+        if (new_len > max_len)
+            new_len = max_len;
+        ap_varbuf_grow(vb, new_len);
+        --cfp->line_number;
+    }
+    if (rc == APR_SUCCESS)
+        vb->strlen = cfg_trim_line(vb->buf);
+    return rc;
 }
 
 /* Size an HTTP header field list item, as separated by a comma.
@@ -2399,4 +2442,143 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
 
     return OK;
 
+}
+
+#define VARBUF_SMALL_SIZE 2048
+#define VARBUF_MAX_SIZE   (APR_SIZE_MAX - 1 -                                \
+                           APR_ALIGN_DEFAULT(sizeof(struct ap_varbuf_info)))
+
+struct ap_varbuf_info {
+    struct apr_memnode_t *node;
+    apr_allocator_t *allocator;
+};
+
+static apr_status_t varbuf_cleanup(void *info_)
+{
+    struct ap_varbuf_info *info = info_;
+    info->node->next = NULL;
+    apr_allocator_free(info->allocator, info->node);
+    return APR_SUCCESS;
+}
+
+AP_DECLARE(void) ap_varbuf_init(apr_pool_t *p, struct ap_varbuf *vb,
+                                apr_size_t init_size)
+{
+    vb->buf = NULL;
+    vb->avail = 0;
+    vb->strlen = AP_VARBUF_UNKNOWN;
+    vb->pool = p;
+    vb->info = NULL;
+
+    ap_varbuf_grow(vb, init_size);
+}
+
+AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
+{
+    apr_memnode_t *new_node = NULL;
+    apr_allocator_t *allocator;
+    struct ap_varbuf_info *new_info;
+    char *new;
+
+    if (new_len <= vb->avail)
+        return;
+
+    if (new_len < 2 * vb->avail && vb->avail < VARBUF_MAX_SIZE/2) {
+        /* at least double the size, to avoid repeated reallocations */
+        new_len = 2 * vb->avail;
+    }
+    else if (new_len > VARBUF_MAX_SIZE) {
+        apr_abortfunc_t abort_fn = apr_pool_abort_get(vb->pool);
+        ap_assert(abort_fn != NULL);
+        abort_fn(APR_ENOMEM);
+        return;
+    }
+
+    new_len++;  /* add space for trailing \0 */
+    if (new_len <= VARBUF_SMALL_SIZE) {
+        new_len = APR_ALIGN_DEFAULT(new_len);
+        new = apr_palloc(vb->pool, new_len);
+        if (vb->buf && vb->strlen > 0) {
+            AP_DEBUG_ASSERT(vb->avail > 0);
+            if (new == vb->buf + vb->avail + 1) {
+                /* We are lucky: the new memory lies directly after our old
+                 * buffer, we can now use both.
+                 */
+                vb->avail += new_len;
+                return;
+            }
+            else {
+                /* copy up to vb->strlen + 1 bytes */
+                memcpy(new, vb->buf, vb->strlen > vb->avail ?
+                                     vb->avail + 1 : vb->strlen + 1);
+            }
+        }
+        else {
+            *new = '\0';
+        }
+        vb->avail = new_len - 1;
+        vb->buf = new;
+        return;
+    }
+
+    /* The required block is rather larger. Use allocator directly so that
+     * the memory can be freed independently from the pool. */
+    allocator = apr_pool_allocator_get(vb->pool);
+    if (new_len <= VARBUF_MAX_SIZE)
+        new_node = apr_allocator_alloc(allocator,
+                                       new_len + APR_ALIGN_DEFAULT(sizeof(*new_info)));
+    if (!new_node) {
+        apr_abortfunc_t abort_fn = apr_pool_abort_get(vb->pool);
+        ap_assert(abort_fn != NULL);
+        abort_fn(APR_ENOMEM);
+        return;
+    }
+    new_info = (struct ap_varbuf_info *)new_node->first_avail;
+    new_node->first_avail += APR_ALIGN_DEFAULT(sizeof(*new_info));
+    new_info->node = new_node;
+    new_info->allocator = allocator;
+    new = new_node->first_avail;
+    AP_DEBUG_ASSERT(new_node->endp - new_node->first_avail >= new_len);
+    new_len = new_node->endp - new_node->first_avail;
+
+    if (vb->buf && vb->strlen > 0)
+        memcpy(new, vb->buf, vb->strlen > vb->avail ?
+                             vb->avail + 1: vb->strlen + 1);
+    else
+        *new = '\0';
+    if (vb->info)
+        apr_pool_cleanup_run(vb->pool, vb->info, varbuf_cleanup);
+    apr_pool_cleanup_register(vb->pool, new_info, varbuf_cleanup,
+                              apr_pool_cleanup_null);
+    vb->info = new_info;
+    vb->buf = new;
+    vb->avail = new_len - 1;
+}
+
+AP_DECLARE(void) ap_varbuf_strmemcat(struct ap_varbuf *vb, const char *str,
+                                     int len)
+{
+    AP_DEBUG_ASSERT(len == strlen(str));
+    if (!vb->avail) {
+        ap_varbuf_grow(vb, len);
+        memcpy(vb->buf, str, len + 1);
+        return;
+    }
+    if (vb->strlen > vb->avail) {
+        AP_DEBUG_ASSERT(vb->strlen == AP_VARBUF_UNKNOWN);
+        vb->strlen = strlen(vb->buf);
+    }
+    ap_varbuf_grow(vb, vb->strlen + len);
+    memcpy(vb->buf + vb->strlen, str, len);
+    vb->strlen += len;
+    vb->buf[vb->strlen] = '\0';
+}
+
+AP_DECLARE(void) ap_varbuf_free(struct ap_varbuf *vb)
+{
+    if (vb->info) {
+        apr_pool_cleanup_run(vb->pool, vb->info, varbuf_cleanup);
+        vb->info = NULL;
+    }
+    vb->buf = NULL;
 }

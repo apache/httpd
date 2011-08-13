@@ -52,6 +52,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "util_varbuf.h"
 
 #include "mod_auth.h"
 
@@ -90,13 +91,15 @@ static const command_rec authz_groupfile_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authz_groupfile_module;
 
+#define VARBUF_INIT_LEN 512
+#define VARBUF_MAX_LEN  (16*1024*1024)
 static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
                                     apr_table_t ** out)
 {
     ap_configfile_t *f;
     apr_table_t *grps = apr_table_make(p, 15);
     apr_pool_t *sp;
-    char l[MAX_STRING_LEN];
+    struct ap_varbuf vb;
     const char *group_name, *ll, *w;
     apr_status_t status;
     apr_size_t group_len;
@@ -106,12 +109,13 @@ static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
     }
 
     apr_pool_create(&sp, p);
+    ap_varbuf_init(p, &vb, VARBUF_INIT_LEN);
 
-    while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
-        if ((l[0] == '#') || (!l[0])) {
+    while (!(ap_varbuf_cfg_getline(&vb, f, VARBUF_MAX_LEN))) {
+        if ((vb.buf[0] == '#') || (!vb.buf[0])) {
             continue;
         }
-        ll = l;
+        ll = vb.buf;
         apr_pool_clear(sp);
 
         group_name = ap_getword(sp, &ll, ':');
@@ -132,6 +136,7 @@ static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
     }
     ap_cfg_closefile(f);
     apr_pool_destroy(sp);
+    ap_varbuf_free(&vb);
 
     *out = grps;
     return APR_SUCCESS;

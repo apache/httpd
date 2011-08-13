@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_authz_groupfile: Increase length limit of lines in the group file to
+     16MB. PR 43084. [Stefan Fritsch]
+
+  *) core: Increase length limit of lines in the configuration file to 16MB.
+     PR 45888. PR 50824. [Stefan Fritsch]
+
+  *) core: Add API for resizable buffers. [Stefan Fritsch]
+
   *) mod_ldap: Enable LDAPConnectionTimeout for LDAP toolkits that have
      LDAP_OPT_CONNECT_TIMEOUT instead of LDAP_OPT_NETWORK_TIMEOUT, such
      as Tivoli Directory Server 6.3 and later. [Eric Covener]
