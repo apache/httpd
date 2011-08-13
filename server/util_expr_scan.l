@@ -60,11 +60,17 @@
 
 #define YY_EXTRA_TYPE ap_expr_parse_ctx_t*
 
-#define PERROR(msg) yyextra->error2 = msg ; return T_ERROR;
+#define PERROR(msg) do { yyextra->error2 = msg ; return T_ERROR; } while (0)
 
 #define str_ptr     (yyextra->scan_ptr)
 #define str_buf     (yyextra->scan_buf)
 #define str_del     (yyextra->scan_del)
+
+#define STR_APPEND(c) do {                          \
+        *str_ptr++ = (c);                           \
+        if (str_ptr >= str_buf + sizeof(str_buf))   \
+            PERROR("String too long");              \
+    } while (0)
 
 %}
 
@@ -126,7 +132,7 @@
         }
     }
     else {
-        *str_ptr++ = yytext[0];
+        STR_APPEND(yytext[0]);
     }
 }
 <str,var,vararg>\n {
@@ -156,20 +162,18 @@
         PERROR("Escape sequence out of bound");
     }
     else {
-        *str_ptr++ = result;
+        STR_APPEND(result);
     }
 }
 <str,vararg>\\[0-9]+ {
     PERROR("Bad escape sequence");
 }
-<str,vararg>\\n { *str_ptr++ = '\n'; }
-<str,vararg>\\r { *str_ptr++ = '\r'; }
-<str,vararg>\\t { *str_ptr++ = '\t'; }
-<str,vararg>\\b { *str_ptr++ = '\b'; }
-<str,vararg>\\f { *str_ptr++ = '\f'; }
-<str,vararg>\\(.|\n) {
-    *str_ptr++ = yytext[1];
-}
+<str,vararg>\\n      { STR_APPEND('\n'); }
+<str,vararg>\\r      { STR_APPEND('\r'); }
+<str,vararg>\\t      { STR_APPEND('\t'); }
+<str,vararg>\\b      { STR_APPEND('\b'); }
+<str,vararg>\\f      { STR_APPEND('\f'); }
+<str,vararg>\\(.|\n) { STR_APPEND(yytext[1]); }
 
  /* regexp backref inside string/arg */
 <str,vararg>[$][0-9] {
@@ -189,8 +193,10 @@
 
 <str,vararg>[^\\\n"'%}$]+ {
     char *cp = yytext;
-    while (*cp != '\0')
-        *str_ptr++ = *cp++;
+    while (*cp != '\0') {
+        STR_APPEND(*cp);
+        cp++;
+    }
 }
 
  /* variable inside string/arg */
@@ -210,11 +216,11 @@
 }
 
 <vararg>[%$] {
-     *str_ptr++ = yytext[0];
+     STR_APPEND(yytext[0]);
 }
 
 <str>[%}$] {
-     *str_ptr++ = yytext[0];
+     STR_APPEND(yytext[0]);
 }
 
 %\{ {
@@ -286,6 +292,8 @@
     }
     else {
         *regex_ptr++ = yytext[0];
+        if (regex_ptr >= regex_buf + sizeof(regex_buf))
+            PERROR("Regexp too long");
     }
 }
 <regex_flags>i {

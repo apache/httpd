@@ -318,15 +318,6 @@ AP_DECLARE(const char *) ap_expr_parse(apr_pool_t *pool, apr_pool_t *ptemp,
     ctx.lookup_fn   = lookup_fn ? lookup_fn : ap_expr_lookup_default;
     ctx.at_start    = 1;
 
-
-    /*
-     * Be sure to avoid overflows in the scanner. In practice the input length
-     * will be limited by the config file parser, anyway.
-     * XXX: The scanner really should do proper buffer overflow checks
-     */
-    if (ctx.inputlen >= MAX_STRING_LEN)
-        return "Expression too long";
-
     ap_expr_yylex_init(&ctx.scanner);
     ap_expr_yyset_extra(&ctx, ctx.scanner);
     rc = ap_expr_yyparse(&ctx);
