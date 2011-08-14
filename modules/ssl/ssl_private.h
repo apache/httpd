@@ -100,6 +100,10 @@
 #include <openssl/engine.h>
 #endif
 
+#if (OPENSSL_VERSION_NUMBER < 0x0090700f)
+#error mod_ssl requires OpenSSL 0.9.7 or later
+#endif
+
 /* ...shifting sands of OpenSSL... */
 #if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
 #define MODSSL_D2I_SSL_SESSION_CONST const
@@ -151,10 +155,6 @@
 #ifndef SSL_CTRL_SET_TLSEXT_HOSTNAME
 #define OPENSSL_NO_TLSEXT
 #endif
-#endif
-
-#ifndef sk_STRING_pop
-#define sk_STRING_pop sk_pop
 #endif
 
 /* mod_ssl headers */
@@ -242,11 +242,6 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #endif
 
 /**
- * Support for MM library
- */
-#define SSL_MM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
-
-/**
  * Define the certificate algorithm types
  */
 
@@ -322,10 +317,6 @@ typedef enum {
 
 #define SSL_VERIFY_PEER_STRICT \
      (SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT)
-
-#ifndef X509_V_ERR_CERT_UNTRUSTED
-#define X509_V_ERR_CERT_UNTRUSTED 27
-#endif
 
 #define ssl_verify_error_is_optional(errnum) \
    ((errnum == X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT) \
