@@ -449,6 +449,17 @@ static int uldap_connection_init(request_rec *r,
     return(rc);
 }
 
+static int lderrno(util_ldap_connection_t *ldc) 
+{ 
+    int ldaprc;
+#ifdef LDAP_OPT_ERROR_NUMBER
+    if (LDAP_SUCCESS == ldap_get_option(ldc->ldap, LDAP_OPT_ERROR_NUMBER, &ldaprc)) return ldaprc;
+#endif
+#ifdef LDAP_OPT_RESULT_CODE
+    if (LDAP_SUCCESS == ldap_get_option(ldc->ldap, LDAP_OPT_RESULT_CODE, &ldaprc)) return ldaprc;
+#endif
+    return LDAP_OTHER;
+}
 /*
  * Replacement function for ldap_simple_bind_s() with a timeout.
  * To do this in a portable way, we have to use ldap_simple_bind() and 
@@ -463,22 +474,14 @@ static int uldap_simple_bind(util_ldap_connection_t *ldc, char *binddn,
     int rc;
     int msgid = ldap_simple_bind(ldc->ldap, binddn, bindpw);
     if (msgid == -1) {
-        int ldaprc;
         ldc->reason = "LDAP: ldap_simple_bind() failed";
-#ifdef LDAP_OPT_ERROR_NUMBER
-        if (LDAP_SUCCESS == ldap_get_option(ldc->ldap, LDAP_OPT_ERROR_NUMBER, &ldaprc)) return ldaprc;
-#endif
-#ifdef LDAP_OPT_RESULT_CODE
-        if (LDAP_SUCCESS == ldap_get_option(ldc->ldap, LDAP_OPT_RESULT_CODE, &ldaprc)) return ldaprc;
-#endif
-        /* -1 is LDAP_SERVER_DOWN in openldap, use something else */
-        return LDAP_OTHER;
+        return lderrno(ldc);
     }
     rc = ldap_result(ldc->ldap, msgid, 0, timeout, &result);
     if (rc == -1) {
         ldc->reason = "LDAP: ldap_simple_bind() result retrieval failed";
         /* -1 is LDAP_SERVER_DOWN in openldap, use something else */
-        rc = LDAP_OTHER;
+        return lderrno(ldc);
     }
     else if (rc == 0) {
         ldc->reason = "LDAP: ldap_simple_bind() timed out";
@@ -486,6 +489,7 @@ static int uldap_simple_bind(util_ldap_connection_t *ldc, char *binddn,
     } else if (ldap_parse_result(ldc->ldap, result, &rc, NULL, NULL, NULL,
                                  NULL, 1) == -1) {
         ldc->reason = "LDAP: ldap_simple_bind() parse result failed";
+        return lderrno(ldc);
     }
     return rc;
 }
