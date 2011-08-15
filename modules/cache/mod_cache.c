@@ -2095,27 +2095,23 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
         return err;
     }
 
-    if (parms->path && !strcmp(url, "on")) {
-        url = parms->path;
-    }
-    if (url[0] != '/' && !ap_strchr_c(url, ':')) {
-        return "CacheDisable must specify a path or an URL, or when in a Location, "
-            "the word 'on'.";
-    }
-
-    if (parms->path && strncmp(parms->path, url, strlen(parms->path))) {
-        return "When in a Location, CacheDisable must specify a path or an URL below "
-        "that location.";
-    }
-
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
 
     if (parms->path) {
-        dconf->disable = 1;
-        dconf->disable_set = 1;
-        return NULL;
+        if (!strcmp(url, "on")) {
+            dconf->disable = 1;
+            dconf->disable_set = 1;
+            return NULL;
+        }
+        else {
+            return "CacheDisable must be followed by the word 'on' when in a Location.";
+        }
+    }
+
+    if (!url || (url[0] != '/' && !ap_strchr_c(url, ':'))) {
+        return "CacheDisable must specify a path or an URL.";
     }
 
     new = apr_array_push(conf->cachedisable);
