@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_cache: Ensure that CacheDisable can correctly appear within
+     a LocationMatch. [Graham Leggett]
+
   *) mod_cache: Fix the moving of the CACHE filter, which erroneously
      stood down if the original filter was not added by configuration.
      [Graham Leggett]
