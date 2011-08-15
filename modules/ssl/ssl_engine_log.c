@@ -114,43 +114,61 @@ void ssl_log_cxerror(const char *file, int line, int level,
 {
     va_list ap;
     char buf[HUGE_STRING_LEN];
-    char *sname, *iname, *serial;
-    BIGNUM *bn;
     
-    if (APLOG_IS_LEVEL(mySrvFromConn(c),level)) {
+    if (!APLOG_IS_LEVEL(mySrvFromConn(c),level)) {
         /* Bail early since the rest of this function is expensive. */
         return;
     }
 
-    sname = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
-    iname = X509_NAME_oneline(X509_get_issuer_name(cert),  NULL, 0);
-    bn = ASN1_INTEGER_to_BN(X509_get_serialNumber(cert), NULL);
-    serial = bn && !BN_is_zero(bn) ? BN_bn2hex(bn) : NULL;
-    
     va_start(ap, format);
     apr_vsnprintf(buf, sizeof buf, format, ap);
     va_end(ap);
 
+    if (cert) {
+        BIO *bio = BIO_new(BIO_s_mem());
+
+        if (bio) {
+            int n, msglen;
+
+            BIO_puts(bio, " [subject: ");
+            n = X509_NAME_print_ex(bio, X509_get_subject_name(cert), 0,
+                                   XN_FLAG_RFC2253 & ~XN_FLAG_DN_REV);
+            if (n == 0) {
+                BIO_puts(bio, "-empty-");
+            } else if (n < 0) {
+                BIO_puts(bio, "(ERROR)");
+            }
+
+            BIO_puts(bio, " / issuer: ");
+            n = X509_NAME_print_ex(bio, X509_get_issuer_name(cert), 0,
+                                   XN_FLAG_RFC2253 & ~XN_FLAG_DN_REV);
+            if (n == 0) {
+                BIO_puts(bio, "-empty-");
+            } else if (n < 0) {
+                BIO_puts(bio, "(ERROR)");
+            }
+
+            BIO_puts(bio, " / serial: ");
+            if (i2a_ASN1_INTEGER(bio, X509_get_serialNumber(cert)) == -1)
+                BIO_puts(bio, "(ERROR)");
+
+            BIO_puts(bio, " / notbefore: ");
+            ASN1_UTCTIME_print(bio, X509_get_notBefore(cert));
+
+            BIO_puts(bio, " / notafter: ");
+            ASN1_UTCTIME_print(bio, X509_get_notAfter(cert));
+
+            BIO_puts(bio, "]");
+
+            msglen = strlen(buf);
+            n = BIO_read(bio, buf + msglen, sizeof buf - msglen - 1);
+            if (n > 0)
+               buf[msglen + n] = '\0';
+
+            BIO_free(bio);
+        }
+    }
+
     ap_log_cerror(file, line, APLOG_MODULE_INDEX, level, rv, c,
-                  "%s [subject: %s, issuer: %s, serial: %s]",
-                  buf,
-                  sname ? sname : "-unknown-",
-                  iname ? iname : "-unknown-",
-                  serial ? serial : "-unknown-");
-
-    if (sname) {
-        OPENSSL_free(sname);
-    }
-    
-    if (iname) {
-        OPENSSL_free(iname);
-    }
-    
-    if (serial) {
-        OPENSSL_free(serial);
-    }
-
-    if (bn) {
-        BN_free(bn);
-    }
+                  "%s%s", buf, cert ? "" : " [certificate: -not available-]");
 }
