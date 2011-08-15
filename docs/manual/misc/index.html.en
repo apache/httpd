@@ -53,7 +53,7 @@
         site secure.</p>
       </dd>
 
-      <dt><a href="rewriteguide.html">URL Rewriting Guide</a></dt>
+      <dt><a href="../rewrite/">URL Rewriting Guide</a></dt>
 
       <dd>
         <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
