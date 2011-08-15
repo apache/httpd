@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_ssl: improve certificate error logging. PR 47408. [Kaspar Brand]
+
   *) mod_authz_groupfile: Increase length limit of lines in the group file to
      16MB. PR 43084. [Stefan Fritsch]
 
