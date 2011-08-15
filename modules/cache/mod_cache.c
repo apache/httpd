@@ -320,10 +320,10 @@ static int cache_replace_filter(ap_filter_t *next, ap_filter_rec_t *from,
         ap_filter_rec_t *to, ap_filter_rec_t *stop) {
     ap_filter_t *ffrom = NULL, *fto = NULL;
     while (next && next->frec != stop) {
-        if (next->frec == from && !next->ctx) {
+        if (next->frec == from) {
             ffrom = next;
         }
-        if (next->frec == to && !next->ctx) {
+        if (next->frec == to) {
             fto = next;
         }
         next = next->next;

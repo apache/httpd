@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_cache: Fix the moving of the CACHE filter, which erroneously
+     stood down if the original filter was not added by configuration.
+     [Graham Leggett]
+
   *) mod_ssl: improve certificate error logging. PR 47408. [Kaspar Brand]
 
   *) mod_authz_groupfile: Increase length limit of lines in the group file to
