@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1089085 -->
+<!-- English Revision : 1150943 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -119,7 +119,7 @@ du serveur</description>
 
     <note>
       <strong>Veuillez noter que si <module>mod_status</module> a &eacute;t&eacute;
-      compil&eacute; dans le serveur, son gestionnaire sera disponible dans
+      charg&eacute; dans le serveur, son gestionnaire sera disponible dans
       <em>tous</em> les fichiers de configuration, y compris les
       fichiers de configuration de <em>niveau r&eacute;pertoire</em> (par
       exemple <code>.htaccess</code>), ce qui peut avoir des

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1138616 -->
+<!-- English Revision : 1154940 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -367,7 +367,8 @@ All pour les versions ant&eacute;rieures</default>
     <directive type="section" module="core">Files</directive>.
     </note>
 
-    <p>Lorsque cette directive est d&eacute;finie &agrave; <code>None</code>, les
+    <p>Lorsque cette directive et la directive <directive
+    module="core">AllowOverrideList</directive> sont d&eacute;finies &agrave; <code>None</code>, les
     fichiers <a href="#accessfilename">.htaccess</a> sont totalement
     ignor&eacute;s. Dans ce cas, le serveur n'essaiera m&ecirc;me pas de lire les
     fichiers <code>.htaccess</code> du syst&egrave;me de fichiers.</p>
@@ -464,7 +465,20 @@ All pour les versions ant&eacute;rieures</default>
       suivi d'un signe "&eacute;gal", puis d'une liste d'options s&eacute;par&eacute;es par des
       virgules (pas d'espaces) ; ces options doivent &ecirc;tre d&eacute;finies &agrave;
       l'aide de la commande <directive
-      module="core">Options</directive>.</dd>
+      module="core">Options</directive>.
+
+      <note><title>Désactivation implicite des options</title>
+      <p>Bien que la liste des options disponibles dans les fichiers
+      .htaccess puisse être limitée par cette directive, tant qu'un
+      directive <directive module="core">Options</directive> est
+      autorisée, toute autre option héritée peut être désactivée en
+      utilisant la syntaxe non-relative. En d'autres termes, ce
+      mécanisme ne peut pas forcer une option spécifique à rester
+      <em>activée</em> tout en permettant à toute autre option d'être
+      activée.
+      </p></note>
+      
+      </dd>
     </dl>
 
     <p>Exemple :</p>
@@ -486,10 +500,71 @@ All pour les versions ant&eacute;rieures</default>
     fichier <code>.htaccess</code>.</p>
     </note>
 </usage>
+<seealso><directive module="core">AccessFileName</directive></seealso>
+<seealso><directive module="core">AllowOverrideList</directive></seealso>
+<seealso><a href="../configuring.html">Fichiers de configuration</a></seealso>
+<seealso><a href="../howto/htaccess.html">Fichiers .htaccess</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AllowOverrideList</name>
+<description>Directives autorisées dans les fichiers <code>.htaccess</code></description>
+<syntax>AllowOverrideList None|<var>directive</var>
+[<var>directive-type</var>] ...</syntax>
+<default>AllowOverrideList None</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>Lorsque le serveur trouve un fichier <code>.htaccess</code>
+    (comme spécifié par la directive <directive
+    module="core">AccessFileName</directive>), il doit savoir lesquelles
+    des directives déclarées dans ce fichier peuvent remplacer des
+    directives des fichiers de configuration du serveur.</p>
+
+    <note><title>Seulement disponible dans les sections &lt;Directory&gt;</title>
+    La directive <directive>AllowOverrideList</directive> n'est
+    disponible que dans les sections <directive type="section"
+    module="core">Directory</directive> spécifiées sans expressions
+    rationnelles.
+    </note>
+
+    <p>Lorsque cette directive et la directive <directive
+    module="core">AllowOverride</directive> sont définies à
+    <code>None</code>, les fichiers <a
+    href="#accessfilename">.htaccess</a> sont totalement ignorés. Dans
+    ce cas, le serveur ne cherchera même pas à lire des fichiers
+    <code>.htaccess</code> dans le système de fichiers.</p>
+
+    <p>Example:</p>
+
+    <example>
+      AllowOverride None
+      AllowOverrideList Redirect RedirectMatch
+    </example>
+
+    <p>Dans l'exemple ci-dessus, seules les directives
+    <code>Redirect</code> et <code>RedirectMatch</code> sont autorisées.
+    Toutes les autres provoqueront une erreur interne du serveur.</p>
+
+    <p>Example:</p>
+
+    <example>
+      AllowOverride AuthConfig
+      AllowOverrideList CookieTracking CookieName
+    </example>
+
+    <p>Dans l'exemple ci-dessus, la directive <directive
+    module="core">AllowOverride</directive> autorise les directives du
+    groupement <code>AuthConfig</code>, et
+    <directive>AllowOverrideList</directive> n'autorise que deux
+    directives du groupement <code>FileInfo</code>. Toutes les autres
+    provoqueront une erreur interne du serveur.</p>
+</usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
-<seealso><a href="../configuring.html">Configuration Files</a></seealso>
-<seealso><a href="../howto/htaccess.html">.htaccess Files</a></seealso>
+<seealso><directive module="core">AllowOverride</directive></seealso>
+<seealso><a href="../configuring.html">Fichiers de configuration</a></seealso>
+<seealso><a href="../howto/htaccess.html">Fichiers .htaccess</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1893,7 +1968,7 @@ host</context>
     ...). Les expressions rationnelles sont aussi support&eacute;es,</p>
 
     <example>
-        &lt;If "%{QUERY_STRING =~ /(delete|commit)=.*?elem/"&gt;
+        &lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
     </example>
 
     <p>ainsi que les comparaison de mod&egrave;les de type shell et de

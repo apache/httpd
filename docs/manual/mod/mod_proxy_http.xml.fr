@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1066408 -->
+<!-- English Revision : 1154342 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -129,6 +129,22 @@
 	d&eacute;grade les performances, particuli&egrave;rement avec les clients
 	HTTP/1.0.
         </dd>
+    </dl>
+</section>
+
+<section id="notes"><title>Informations sur les requ&ecirc;tes</title>
+    <p><module>mod_proxy_http</module> enregistre les informations
+    suivantes pour journalisation via le format <code>%{NOMVAR}n</code>
+    dans les directives <directive
+    module="mod_log_config">LogFormat</directive> ou <directive
+    module="core">ErrorLogFormat</directive> :
+    </p>
+    <dl>
+        <dt>proxy-source-port</dt>
+        <dd>Le port local utilis&eacute; pour la connexion vers le serveur
+	d'arri&egrave;re-plan.</dd>
+        <dt>proxy-status</dt>
+        <dd>Le code d'&eacute;tat HTTP re&ccedil;u du serveur d'arri&egrave;re-plan.</dd>
     </dl>
 </section>
 

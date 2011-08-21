@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1096577 -->
+<!-- English Revision : 1157111 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -513,68 +513,6 @@ valides.</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>LDAPConnectionPoolTTL</name>
-<description>D&eacute;sactive les connexions d'arri&egrave;re-plan qui sont rest&eacute;es
-inactives trop longtemps au sein du jeu de connexions.</description>
-<syntax>LDAPConnectionPoolTTL <var>n</var></syntax>
-<default>LDAPConnectionPoolTTL -1</default>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
-<compatibility>Disponible &agrave; partir de la version 2.3.12 du serveur HTTP
-Apache</compatibility>
-
-<usage>
-    <p>Cette directive permet de sp&eacute;cifier la dur&eacute;e maximale, en
-    secondes, pendant laquelle une connexion LDAP du jeu de connexions
-    peut demeurer inactive, mais rester quand-m&ecirc;me disponible pour une
-    utilisation &eacute;ventuelle. Le jeu de connexions est nettoy&eacute; au fur et &agrave;
-    mesure des besoins, de mani&egrave;re non asynchrone.</p>
-
-    <p>Si cette directive est d&eacute;finie &agrave; 0, les connexions ne sont jamais
-    sauvegard&eacute;es dans le jeu de connexions d'arri&egrave;re-plan. Avec la
-    valeur par d&eacute;faut -1, ou toute autre valeur n&eacute;gative, les connexions
-    peuvent &ecirc;tre r&eacute;utilis&eacute;es sans limite de dur&eacute;e.</p>
-
-    <note><p>Cette dur&eacute;e de vie s'exprime par d&eacute;faut en secondes, mais
-    il est possible d'utiliser d'autres unit&eacute;s en ajoutant un suffixe :
-    millisecondes (ms), minutes (min), ou heures (h).
-    </p></note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>LDAPLibraryDebug</name>
-<description>Active le d&eacute;bogage dans le SDK LDAP</description>
-<syntax>LDAPLibraryDebug <var>7</var></syntax>
-<default>disabled</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>Active les options de d&eacute;bogage LDAP sp&eacute;cifiques au SDK, qui
-    entra&icirc;nent en g&eacute;n&eacute;ral une journalisation d'informations verbeuses du
-    SDK LDAP dans le journal principal des erreurs d'Apache. Les
-    messages de traces en provenance du SDK LDAP fournissent des
-    informations tr&egrave;s d&eacute;taill&eacute;es qui peuvent s'av&eacute;rer utiles lors du
-    d&eacute;bogage des probl&egrave;mes de connexion avec des serveurs LDAP
-    d'arri&egrave;re-plan.</p>
-
-    <p>Cette option n'est configurable que lorsque le serveur HTTP
-    Apache est li&eacute; avec un SDK LDAP qui impl&eacute;mente
-    <code>LDAP_OPT_DEBUG</code> ou <code>LDAP_OPT_DEBUG_LEVEL</code>,
-    comme OpenLDAP (une valeur de 7 est verbeuse) ou Tivoli Directory
-    Server (une valeur de 65535 est verbeuse).</p>
-
-    <note type="warning">
-    <p>Les informations journalis&eacute;es peuvent contenir des donn&eacute;es
-    d'authentification en clair utilis&eacute;es ou valid&eacute;es lors de
-    l'authentification LDAP ; vous devez donc prendre soin de prot&eacute;ger
-    et de purger le journal des erreurs lorsque cette directive est
-    utilis&eacute;e.</p>
-    </note>
-    
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>LDAPOpCacheEntries</name>
 <description>Nombre d'entr&eacute;es utilis&eacute;es pour mettre en cache les
 op&eacute;rations de comparaison LDAP</description>
@@ -612,7 +550,7 @@ restent valides</description>
 alternatifs (referrals) avant l'abandon de la requ&ecirc;te
 LDAP.</description>
 <syntax>LDAPReferralHopLimit <var>nombre</var></syntax>
-<default>LDAPReferralHopLimit 5</default>
+<default>D&eacute;pend du SDK, en g&eacute;n&eacute;ral entre 5 et 10</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 
@@ -621,6 +559,10 @@ LDAP.</description>
     cette directive permet de d&eacute;finir le nombre maximum de sauts vers
     des serveurs alternatifs (referrals) avant l'abandon de la requ&ecirc;te
     LDAP.</p>
+
+<note type="warning">
+<p>L'ajustement de ce param&egrave;tre n'est pas commun &agrave; tous les SDKs LDAP.</p>
+</note>    
 </usage>
 </directivesynopsis>
 
@@ -696,34 +638,6 @@ clients globaux</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>LDAPTimeout</name>
-<description>Sp&eacute;cifie le d&eacute;lai d'attente pour les op&eacute;rations de
-recherche et d'identification LDAP en secondes</description>
-<syntax>LDAPTimeout <var>secondes</var></syntax>
-<default>LDAPTimeout 60</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>Cette directive permet de sp&eacute;cifier le d&eacute;lai d'attente pour les
-    op&eacute;rations de recherche et d'identification, ainsi que l'option
-    LDAP_OPT_TIMEOUT dans la biblioth&egrave;que LDAP client sous-jacente,
-    lorsqu'elle est disponible.</p>
-
-    <p>Lorsque le d&eacute;lai est atteint, httpd va refaire un essai dans le
-    cas o&ugrave; une connexion existante a &eacute;t&eacute; silencieusement ferm&eacute;e par un
-    pare-feu. Les performances seront cependant bien meilleures si le
-    pare-feu est configur&eacute; pour envoyer des paquets TCP RST au lieu de
-    rejeter silencieusement les paquets.</p>
-
-    <note>
-    <p>Les d&eacute;lais pour les op&eacute;rations de comparaison LDAP n&eacute;cessitent un
-    SDK avec LDAP_OPT_TIMEOUT, comme OpenLDAP &gt;= 2.4.4.</p>
-    </note>
-
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>LDAPTrustedClientCert</name>
 <description>D&eacute;finit le nom de fichier contenant un certificat client ou
 un alias renvoyant vers un certificat client sp&eacute;cifique &agrave; une connexion.
@@ -749,6 +663,8 @@ host</context><context>directory</context><context>.htaccess</context></contextl
     cours de d&eacute;finition, en fonction du SDK LDAP utilis&eacute;. Les types
     support&eacute;s sont :</p>
     <ul>
+      <li>CA_DER - certificat de CA cod&eacute; en binaire DER</li>
+      <li>CA_BASE64 - certificat de CA cod&eacute; en PEM</li>
       <li>CERT_DER - certificat client cod&eacute; en binaire DER</li>
       <li>CERT_BASE64 - certificat client cod&eacute; en PEM</li>
       <li>CERT_NICKNAME - certificat client "nickname" (SDK Netscape)</li>
@@ -792,13 +708,56 @@ connexion</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de sp&eacute;cifier le d&eacute;lai d'attente (en
-    secondes) pendant lequel le
-    module tentera de se connecter au serveur LDAP. Si une tentative de
-    connexion n'a pas abouti au bout de ce d&eacute;lai, soit une erreur sera
-    renvoy&eacute;e, soit le module tentera de se connecter &agrave; un serveur LDAP
-    secondaire s'il en a &eacute;t&eacute; sp&eacute;cifi&eacute; un. La valeur par d&eacute;faut est de 10
-    secondes.</p>
+    <p>Cette directive configure l'option LDAP_OPT_NETWORK_TIMEOUT (ou
+    LDAP_OPT_CONNECT_TIMEOUT) dans la biblioth&egrave;que client LDAP
+    sous-jacente, si elle est disponible. Cette valeur repr&eacute;sente la
+    dur&eacute;e pendant laquelle la biblioth&egrave;que client LDAP va attendre que
+    le processus de connexion TCP au serveur LDAP soit achev&eacute;.</p>
+
+    <p>Si la connexion n'a pas r&eacute;ussi avant ce d&eacute;lai, une erreur sera
+    renvoy&eacute;e, ou la biblioth&egrave;que client LDAP tentera de se connecter &agrave;
+    un second serveur LDAP, s'il en a &eacute;t&eacute; d&eacute;fini un (via une liste de
+    noms d'h&ocirc;tes s&eacute;par&eacute;s par des espaces dans la directive <directive
+    module="mod_ldap">AuthLDAPURL</directive>).</p>
+
+    <p>La valeur par d&eacute;faut est 10 secondes, si la biblioth&egrave;que client
+    LDAP li&eacute;e avec le serveur supporte l'option
+    LDAP_OPT_NETWORK_TIMEOUT.</p>
+
+    <note>LDAPConnectionTimeout n'est disponible que si la biblioth&egrave;que client
+    LDAP li&eacute;e avec le serveur supporte l'option
+    LDAP_OPT_NETWORK_TIMEOUT (ou LDAP_OPT_CONNECT_TIMEOUT), et le
+    comportement final est enti&egrave;rement dict&eacute; par la biblioth&egrave;que client
+    LDAP.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPTimeout</name>
+<description>Sp&eacute;cifie le d&eacute;lai d'attente pour les op&eacute;rations de
+recherche et d'identification LDAP en secondes</description>
+<syntax>LDAPTimeout <var>secondes</var></syntax>
+<default>LDAPTimeout 60</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier le d&eacute;lai d'attente pour les
+    op&eacute;rations de recherche et d'identification, ainsi que l'option
+    LDAP_OPT_TIMEOUT dans la biblioth&egrave;que LDAP client sous-jacente,
+    lorsqu'elle est disponible.</p>
+
+    <p>Lorsque le d&eacute;lai est atteint, httpd va refaire un essai dans le
+    cas o&ugrave; une connexion existante a &eacute;t&eacute; silencieusement ferm&eacute;e par un
+    pare-feu. Les performances seront cependant bien meilleures si le
+    pare-feu est configur&eacute; pour envoyer des paquets TCP RST au lieu de
+    rejeter silencieusement les paquets.</p>
+
+    <note>
+    <p>Les d&eacute;lais pour les op&eacute;rations de comparaison LDAP n&eacute;cessitent un
+    SDK avec LDAP_OPT_TIMEOUT, comme OpenLDAP &gt;= 2.4.4.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -814,6 +773,68 @@ serveur</description>
     <p>Cette directive permet de sp&eacute;cifier s'il faut forcer la
     v&eacute;rification d'un certificat de serveur lors de l'&eacute;tablissement
     d'une connexion SSL avec un serveur LDAP.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPConnectionPoolTTL</name>
+<description>D&eacute;sactive les connexions d'arri&egrave;re-plan qui sont rest&eacute;es
+inactives trop longtemps au sein du jeu de connexions.</description>
+<syntax>LDAPConnectionPoolTTL <var>n</var></syntax>
+<default>LDAPConnectionPoolTTL -1</default>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.3.12 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier la dur&eacute;e maximale, en
+    secondes, pendant laquelle une connexion LDAP du jeu de connexions
+    peut demeurer inactive, mais rester quand-m&ecirc;me disponible pour une
+    utilisation &eacute;ventuelle. Le jeu de connexions est nettoy&eacute; au fur et &agrave;
+    mesure des besoins, de mani&egrave;re non asynchrone.</p>
+
+    <p>Si cette directive est d&eacute;finie &agrave; 0, les connexions ne sont jamais
+    sauvegard&eacute;es dans le jeu de connexions d'arri&egrave;re-plan. Avec la
+    valeur par d&eacute;faut -1, ou toute autre valeur n&eacute;gative, les connexions
+    peuvent &ecirc;tre r&eacute;utilis&eacute;es sans limite de dur&eacute;e.</p>
+
+    <note><p>Cette dur&eacute;e de vie s'exprime par d&eacute;faut en secondes, mais
+    il est possible d'utiliser d'autres unit&eacute;s en ajoutant un suffixe :
+    millisecondes (ms), minutes (min), ou heures (h).
+    </p></note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPLibraryDebug</name>
+<description>Active le d&eacute;bogage dans le SDK LDAP</description>
+<syntax>LDAPLibraryDebug <var>7</var></syntax>
+<default>disabled</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Active les options de d&eacute;bogage LDAP sp&eacute;cifiques au SDK, qui
+    entra&icirc;nent en g&eacute;n&eacute;ral une journalisation d'informations verbeuses du
+    SDK LDAP dans le journal principal des erreurs d'Apache. Les
+    messages de traces en provenance du SDK LDAP fournissent des
+    informations tr&egrave;s d&eacute;taill&eacute;es qui peuvent s'av&eacute;rer utiles lors du
+    d&eacute;bogage des probl&egrave;mes de connexion avec des serveurs LDAP
+    d'arri&egrave;re-plan.</p>
+
+    <p>Cette option n'est configurable que lorsque le serveur HTTP
+    Apache est li&eacute; avec un SDK LDAP qui impl&eacute;mente
+    <code>LDAP_OPT_DEBUG</code> ou <code>LDAP_OPT_DEBUG_LEVEL</code>,
+    comme OpenLDAP (une valeur de 7 est verbeuse) ou Tivoli Directory
+    Server (une valeur de 65535 est verbeuse).</p>
+
+    <note type="warning">
+    <p>Les informations journalis&eacute;es peuvent contenir des donn&eacute;es
+    d'authentification en clair utilis&eacute;es ou valid&eacute;es lors de
+    l'authentification LDAP ; vous devez donc prendre soin de prot&eacute;ger
+    et de purger le journal des erreurs lorsque cette directive est
+    utilis&eacute;e.</p>
+    </note>
+    
 </usage>
 </directivesynopsis>
 

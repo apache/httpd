@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1142170 -->
+<!-- English Revision : 1151373 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -460,8 +460,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>escape</code></td>
         <td>Echappe les caract&egrave;res sp&eacute;ciaux en codage hexad&eacute;cimal</td><td></td></tr>
     <tr><td><code>unescape</code></td>
-        <td>"D&eacute;s&eacute;chappe" les cha&icirc;nes cod&eacute;es en hexad&eacute;cimal en conservant
-	le codage des caract&egrave;res sp&eacute;ciaux aux URLs (XXX: describe better)</td><td></td></tr>
+        <td>"D&eacute;s&eacute;chappe" les cha&icirc;nes cod&eacute;es
+	en hexad&eacute;cimal, en ne gardant encod&eacute;s que les slashes; renvoie la cha&icirc;ne vide
+	si la s&eacute;quence %00 est rencontr&eacute;e</td><td></td></tr>
     <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
     <tr><td><code>filesize</code></td>

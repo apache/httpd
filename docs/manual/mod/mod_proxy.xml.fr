@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1125451 -->
+<!-- English Revision : 1151484 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1958,8 +1958,25 @@ en-t&ecirc;tes X-Forwarded-*</description>
      <p>Cette option n'est utile que dans le cas du mandat HTTP trait&eacute;
      par <module>mod_proxy_http</module>.</p>
     </note>
+</usage>
+</directivesynopsis>
 
+<directivesynopsis>
+<name>ProxySourceAddress</name>
+<description>D&eacute;finit l'adresse IP locale pour les connexions mandat&eacute;es
+sortantes</description>
+<syntax>ProxySourceAddress <var>adresse</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.9</compatibility>
+ 
+<usage>
+    <p>Cette directive permet de d&eacute;finir une adresse IP locale
+    sp&eacute;cifique &agrave; laquelle faire r&eacute;f&eacute;rence lors d'une connexion &agrave; un
+    serveur d'arri&egrave;re-plan.</p>
 
 </usage>
 </directivesynopsis>
+
 </modulesynopsis>
