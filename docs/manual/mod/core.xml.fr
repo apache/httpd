@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1132677 -->
+<!-- English Revision : 1154942 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -505,7 +505,19 @@ ult&eacute;rieures. L'option NoDecode est disponible depuis la version
       suivi d'un signe "&eacute;gal", puis d'une liste d'options s&eacute;par&eacute;es par des
       virgules (pas d'espaces) ; ces options doivent &ecirc;tre d&eacute;finies &agrave;
       l'aide de la commande <directive
-      module="core">Options</directive>.</dd>
+      module="core">Options</directive>.
+      
+      <note><title>D&eacute;sactivation implicite des options</title>
+      <p>Bien que la liste des options disponibles dans les fichiers
+      .htaccess puisse &ecirc;tre limit&eacute;e par cette directive, tant qu'un
+      directive <directive module="core">Options</directive> est
+      autoris&eacute;e, toute autre option h&eacute;rit&eacute;e peut &ecirc;tre d&eacute;sactiv&eacute;e en
+      utilisant la syntaxe non-relative. En d'autres termes, ce
+      m&eacute;canisme ne peut pas forcer une option sp&eacute;cifique &agrave; rester
+      <em>activ&eacute;e</em> tout en permettant &agrave; toute autre option d'&ecirc;tre
+      activ&eacute;e.
+      </p></note>
+      </dd>
     </dl>
 
     <p>Exemple :</p>
