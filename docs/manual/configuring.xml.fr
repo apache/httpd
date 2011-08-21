@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1086771 -->
+<!-- English Revision : 1157354 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -109,11 +109,6 @@ le Serveur HTTP Apache.</p>
     module="mod_env">SetEnv</directive>, prennent effet trop tard pour
     pouvoir &ecirc;tre utilis&eacute;es dans les extensions au sein du fichier de
     configuration.</p>
-
-    <p>La longueur maximale d'une ligne du fichier de configuration,
-    apr&egrave;s substitution des variables, reconstitution des
-    lignes fragment&eacute;es et suppression des espaces de d&eacute;but et de fin,
-    est de 8192 caract&egrave;res.</p>
 
     <p>Vous pouvez v&eacute;rifier l'absence d'erreurs de syntaxe dans vos fichiers
     de configuration sans d&eacute;marrer le serveur &agrave; l'aide de la commande
