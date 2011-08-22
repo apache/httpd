@@ -89,14 +89,22 @@ Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
 
 <div class="example"><p><code>
-RewriteRule ^(/.*)$ /index.php?show=$1
+RewriteRule ^search/(.*)$ /search.php?term=$1
 </code></p></div>
 
-<p>This will map <code>/C++</code> to
-<code>/index.php?show=/C++</code>. But it will also map
-<code>/C%2b%2b</code> to <code>/index.php?show=/C++</code>, because
-the <code>%2b</code> has been unescaped.  With the B flag, it will
-instead map to <code>/index.php?show=/C%2b%2b</code>.</p>
+<p>Given a search term of 'x &amp; y/z', a browser will encode it as
+'x%20%26%20y%2Fz', making the request 'search/x%20%26%20y%2Fz'. Without the B
+flag, this rewrite rule will map to 'search.php?term=x &amp; y/z', which
+isn't a valid URL, and so would be encoded as
+<code>search.php?term=x%20&amp;y%2Fz=</code>, which is not what was intended.</p>
+
+<p>With the B flag set on this same rule, the parameters are re-encoded
+before being passed on to the output URL, resulting in a correct mapping to
+<code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
+
+<p>Note that you may also need to set <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> to <code>On</code> to get this
+particular example to work, as httpd does not allow encoded slashes in URLs, and
+returns a 404 if it sees one.</p>
 
 <p>This escaping is particularly necessary in a proxy situation,
 when the backend may break if presented with an unescaped URL.</p>
