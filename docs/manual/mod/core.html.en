@@ -3717,6 +3717,12 @@ is accessed by an incompatible browser</td></tr>
       ServerRoot /home/httpd
     </code></p></div>
 
+    <p>The default location of <code class="directive">ServerRoot</code> may be
+    modified by using the <code>--prefix</code> argument to
+    <a href="../programs/configure.html"><code>configure</code></a>, and
+    most third-party distributions of the server have a different
+    default location from the one listed above.</p>
+
 
 <h3>See also</h3>
 <ul>
