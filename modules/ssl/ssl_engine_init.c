@@ -1086,6 +1086,7 @@ static void ssl_init_proxy_certs(server_rec *s,
     int n, ncerts = 0;
     STACK_OF(X509_INFO) *sk;
     modssl_pk_proxy_t *pkp = mctx->pkp;
+    STACK_OF(X509_INFO) *chain;
 
     SSL_CTX_set_client_cert_cb(mctx->ssl_ctx,
                                ssl_callback_proxy_cert);
@@ -1130,6 +1131,30 @@ static void ssl_init_proxy_certs(server_rec *s,
                  "loaded %d client certs for SSL proxy",
                  ncerts);
     pkp->certs = sk;
+
+    if (!pkp->ca_cert_file) {
+        return;
+    }
+
+    /* Load all of the CA certs and construct a chain */
+    sk = sk_X509_INFO_new_null();
+
+    SSL_X509_INFO_load_file(ptemp, sk, pkp->ca_cert_file);
+    pkp->ca_certs = (STACK_OF(X509_INFO) **) apr_pcalloc(p, ncerts * sizeof(sk));
+
+    for (n = 0; n < ncerts; n++) {
+        int len;
+        X509_INFO *inf = sk_X509_INFO_value(pkp->certs, n);
+        chain = sk_X509_INFO_new_null();
+        len = SSL_X509_INFO_create_chain(inf->x509, sk, chain);
+        pkp->ca_certs[n] = chain;
+
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                     "client certificate %i has loaded %i "
+                     "intermediary signers ", n, len);
+    }
+
+    sk_X509_INFO_free(sk);
 }
 
 static void ssl_init_proxy_ctx(server_rec *s,

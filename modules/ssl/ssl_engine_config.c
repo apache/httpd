@@ -160,7 +160,9 @@ static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
 
     mctx->pkp->cert_file = NULL;
     mctx->pkp->cert_path = NULL;
+    mctx->pkp->ca_cert_file = NULL
     mctx->pkp->certs     = NULL;
+    mctx->pkp->ca_certs  = NULL;
 }
 
 static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
@@ -270,6 +272,7 @@ static void modssl_ctx_cfg_merge_proxy(modssl_ctx_t *base,
 
     cfgMergeString(pkp->cert_file);
     cfgMergeString(pkp->cert_path);
+    cfgMergeString(pkp->ca_cert_file);
 }
 
 static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
@@ -1408,6 +1411,21 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *cmd,
     return NULL;
 }
 
+const char *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *cmd,
+                                                   void *dcfg,
+                                                   const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
+    }
+
+    sc->proxy->pkp->ca_cert_file = arg;
+
+    return NULL;
+}
 
 const char *ssl_cmd_SSLUserName(cmd_parms *cmd, void *dcfg,
                                 const char *arg)

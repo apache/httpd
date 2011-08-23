@@ -169,6 +169,10 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(ProxyMachineCertificatePath, TAKE1,
                "SSL Proxy: directory containing client certificates "
                "('/path/to/dir' - contains PEM encoded certificates)")
+    SSL_CMD_SRV(ProxyMachineCertificateChainFile, TAKE1,
+               "SSL Proxy: file containing issuing certificates "
+               "of the client certificate "
+               "(`/path/to/file' - PEM encoded certificates)")
     SSL_CMD_SRV(ProxyCheckPeerExpire, FLAG,
                 "SSL Proxy: check the peers certificate expiration date")
     SSL_CMD_SRV(ProxyCheckPeerCN, FLAG,
