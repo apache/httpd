@@ -145,6 +145,10 @@ AuthDBDUserPWQuery \
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
+     <p>The encrypted password format depends on which authentication
+    frontend (e.g. <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>) is being used.  See <a href="../misc/password_encryptions.html">Password Formats</a> for
+     more information.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -175,6 +179,10 @@ AuthDBDUserRealmQuery \
     the query statement will be stored as environment variables with
     names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
+     <p>The encrypted password format depends on which authentication
+    frontend (e.g. <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> or
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>) is being used.  See <a href="../misc/password_encryptions.html">Password Formats</a> for
+     more information.</p>
 
 </div>
 </div>

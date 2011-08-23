@@ -57,7 +57,7 @@
       <dt><a href="rewriteguide.html">URL Yeniden Yazma Rehberi</a></dt>
 
       <dd>
-        <p>Bu belge <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün <a href="../mod/mod_rewrite.html">başvuru belgesi</a> yerine geçer.
+        <p>Bu belge <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün <a href="../rewrite/">başvuru belgesi</a> yerine geçer.
           Site yöneticilerinin sıkça karşılaştıkları belli başlı URL temelli
           sorunları çözümlemek için Apache’nin <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
           modülünün nasıl kullanılacağını açıklar.</p>

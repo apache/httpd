@@ -538,7 +538,18 @@ kullanımı önerilmemektedir.</td></tr>
         <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> yönergelerinin
         kullanımına izin verilir. <code class="directive"><a href="#options">Options</a></code> komutunda belirtilecek seçenekler
         bir eşit işaretinden sonra aralarına sadece virgül konarak
-        (boşluksuz)  belirtilebilir.</dd>
+        (boşluksuz)  belirtilebilir.
+
+      <div class="note"><h3>Seçeneklerin örtük iptali</h3>
+      <p>.htaccess dosyalarında kullanılabilecek seçenekler bu yönergeyle
+				sınırlanabileceği gibi miras alınmış bir seçenek olarak, bağıntısız
+				sözdizimi kullanılarak iptal edilebilen herhangi bir seçenek de
+				<code class="directive"><a href="#options">Options</a></code> yönergesi ile dolaylı
+				olarak iptal edilmiş olacaktır. Başka bir deyişle, bu mekanizma
+				evvelce etkisiz kılınmış bir seçeneğin etkin kılınmasını
+				sağlamayacaktır.
+      </p></div>
+      </dd>
     </dl>
 
     <p>Örnek:</p>
