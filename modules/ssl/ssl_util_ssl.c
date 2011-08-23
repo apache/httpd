@@ -434,6 +434,45 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
     return ok;
 }
 
+/*
+ * Construct a stack of X509_INFO containing only certificates
+ * that have signed the provided certificate or are an intermediary
+ * signer of the certificate
+*/
+int SSL_X509_INFO_create_chain(const X509 *x509,
+                             STACK_OF(X509_INFO) *ca_certs,
+                             STACK_OF(X509_INFO) *chain)
+{
+    int can_proceed=1;
+    int len=0;
+    int i;
+    X509 *certificate = (X509 *)x509;
+    X509_INFO *info;
+    X509_NAME *cert_issuer_name, *ca_name, *ca_issuer_name;
+
+    while (can_proceed) {
+        can_proceed = 0;
+        cert_issuer_name = X509_get_issuer_name(certificate);
+
+        for (i = 0; i < sk_X509_INFO_num(ca_certs); i++) {
+            info = sk_X509_INFO_value(ca_certs, i);
+            ca_name = X509_get_subject_name(info->x509);
+            ca_issuer_name = X509_get_issuer_name(info->x509);
+
+            if (X509_NAME_cmp(cert_issuer_name, ca_name) == 0) {
+                /* Check for a self-signed cert (no issuer) */
+                can_proceed=X509_NAME_cmp(ca_name, ca_issuer_name) == 0 ? 0 : 1;
+                len++;
+                certificate = info->x509;
+                sk_X509_INFO_unshift(chain, info);
+                break;
+            }
+        }
+    }
+
+    return len;
+}
+
 /*  _________________________________________________________________
 **
 **  Extra Server Certificate Chain Support

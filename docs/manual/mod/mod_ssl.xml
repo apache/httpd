@@ -1494,6 +1494,31 @@ SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/proxy.pem
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLProxyMachineCertificateChainFile</name>
+<description>File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</description>
+<syntax>SSLProxyMachineCertificateChainFile <em>filename</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<override>Not applicable</override>
+
+<usage>
+<p>
+This directive sets the all-in-one file where you keep the certificate chain
+for all of the client certs in use. This directive will be needed if the
+remote server presents a list of CA certificates that are not direct signers
+of one of the configured client certificates.
+</p>
+<p>
+This referenced file is simply the concatenation of the various PEM-encoded
+certificate files. Upon startup, each client certificate configured will
+be examined and a chain of trust will be constructed.
+</p>
+<example><title>Example</title>
+SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLProxyVerify</name>
 <description>Type of remote server Certificate verification</description>
 <syntax>SSLProxyVerify <em>level</em></syntax>

@@ -1798,11 +1798,12 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
-    X509_NAME *ca_name, *issuer;
-    X509_INFO *info;
+    X509_NAME *ca_name, *issuer, *ca_issuer;
+    X509_INFO *info, *ca_info;
     STACK_OF(X509_NAME) *ca_list;
     STACK_OF(X509_INFO) *certs = sc->proxy->pkp->certs;
-    int i, j;
+    STACK_OF(X509_INFO) *ca_certs;
+    int i, j, k;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  SSLPROXY_CERT_CB_LOG_FMT "entered",
@@ -1839,6 +1840,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
             info = sk_X509_INFO_value(certs, j);
             issuer = X509_get_issuer_name(info->x509);
 
+            /* Search certs (by issuer name) one by one*/
             if (X509_NAME_cmp(issuer, ca_name) == 0) {
                 modssl_proxy_info_log(s, info, "found acceptable cert");
 
@@ -1846,7 +1848,22 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 
                 return TRUE;
             }
-        }
+
+            /* Failed to find direct issuer - search intermediaries (by issuer name) */
+            ca_certs = sc->proxy->pkp->ca_certs[j];
+            for (k = 0; k < sk_X509_INFO_num(ca_certs); k++) {
+                ca_info = sk_X509_INFO_value(ca_certs, k);
+                ca_issuer = X509_get_issuer_name(ca_info->x509);
+
+                if(X509_NAME_cmp(ca_issuer, ca_name) == 0 ) {
+                    modssl_proxy_info_log(s, info, "found acceptable cert by intermediary");
+
+                    modssl_set_cert_info(info, x509, pkey);
+
+                    return TRUE;
+                }
+            } /* end loop through chained certs */
+        } /* end loop through available certs */
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
