@@ -181,6 +181,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~rpluem/patches/51608.diff
     +1: rpluem
 
+  * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
+    Adds a new function in ssl_util_ssl.c SSL_X509_INFO_create_chain that will
+    construct a chain of trusted certificates. When a remote server requests
+    a client certificate that is NOT the direct issuer of any available client
+    certificate, the chain for that certificate will be used to trace it to a
+    known CA and that client certificate will be used.
+    druggeri note: 2.2 documentation patch needed
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1160863
+    2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.19-SSLProxyMachineCertificateChainFile.patch
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
