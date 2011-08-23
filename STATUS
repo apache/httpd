@@ -191,6 +191,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1160863
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.19-SSLProxyMachineCertificateChainFile.patch
 
+  * core: Add AllowOverrideList directive
+    Discussed on mailing list http://marc.info/?l=apache-httpd-dev&m=131111915903270&w=2
+    druggeri note: 2.2 documentation patch needed from trunk patch
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1151654
+    2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.19.AllowOverrideList.patch
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
