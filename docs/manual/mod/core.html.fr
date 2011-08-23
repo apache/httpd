@@ -532,7 +532,19 @@ ultérieures. L'option NoDecode est disponible depuis la version
       spécifiques d'un répertoire (<code class="directive"><a href="#options">Options</a></code> et <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>). "Options" doit être
       suivi d'un signe "égal", puis d'une liste d'options séparées par des
       virgules (pas d'espaces) ; ces options doivent être définies à
-      l'aide de la commande <code class="directive"><a href="#options">Options</a></code>.</dd>
+      l'aide de la commande <code class="directive"><a href="#options">Options</a></code>.
+      
+      <div class="note"><h3>Désactivation implicite des options</h3>
+      <p>Bien que la liste des options disponibles dans les fichiers
+      .htaccess puisse être limitée par cette directive, tant qu'un
+      directive <code class="directive"><a href="#options">Options</a></code> est
+      autorisée, toute autre option héritée peut être désactivée en
+      utilisant la syntaxe non-relative. En d'autres termes, ce
+      mécanisme ne peut pas forcer une option spécifique à rester
+      <em>activée</em> tout en permettant à toute autre option d'être
+      activée.
+      </p></div>
+      </dd>
     </dl>
 
     <p>Exemple :</p>

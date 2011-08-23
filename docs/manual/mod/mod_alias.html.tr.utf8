@@ -126,11 +126,11 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
       Alias /image /ftp/pub/image
     </code></p></div>
 
-    <p><code>http://sunucum/image/foo.gif</code> şeklinde bir istek, sunucunun
+    <p><code>http://mesela.dom/image/foo.gif</code> şeklinde bir istek, sunucunun
       <code>/ftp/pub/image/foo.gif</code> dosyasıyla yanıt vermesine sebep
       olurdu. Sadece tam yol parçaları eşleştirilir; bu bakımdan yukarıdaki
       <code class="directive">Alias</code> yapılandırması
-      <code>http://sunucum/imagefoo.gif</code> ile eşleşmez. Düzenli
+      <code>http://mesela.dom/imagefoo.gif</code> ile eşleşmez. Düzenli
       ifadelerin kullanıldığı daha karmaşık eşleşmeler için <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
 
     <p><code><em>URL-yolu</em></code>’nu bir <code>/</code> ile
@@ -408,7 +408,7 @@ URL’ye yönlendirir.</td></tr>
       ScriptAlias /cgi-bin/ /siteler/cgi-bin/
     </code></p></div>
 
-    <p><code>http://sunucum/cgi-bin/foo</code> şeklindeki bir istek sunucunun
+    <p><code>http://mesela.dom/cgi-bin/foo</code> şeklindeki bir istek sunucunun
       <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep olur. Bu
       yapılandırma aslında şuna eşdeğerdir:</p>
 

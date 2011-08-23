@@ -88,8 +88,8 @@
     </code></p></div>
 
     <p>Bu yapılandırmadan sonra yapılan bir
-      <code>http://sunucum/belgeler/</code> isteğine karşılık, sunucu,
-      mevcutsa <code>http://sunucum/belgeler/index.html</code> dosyasını
+      <code>http://mesela.dom/belgeler/</code> isteğine karşılık, sunucu,
+      mevcutsa <code>http://mesela.dom/belgeler/index.html</code> dosyasını
       döndürecek, değilse ürettiği dizin içerik listesini gönderecektir.</p>
 
     <p>Belgelerin dizine göreli olmasının gerekmediğine dikkat ediniz.</p>
