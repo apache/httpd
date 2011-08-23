@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1081769 -->
+<!-- English Revision: 1147330 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -81,8 +81,8 @@
     </example>
 
     <p>Bu yapılandırmadan sonra yapılan bir
-      <code>http://sunucum/belgeler/</code> isteğine karşılık, sunucu,
-      mevcutsa <code>http://sunucum/belgeler/index.html</code> dosyasını
+      <code>http://mesela.dom/belgeler/</code> isteğine karşılık, sunucu,
+      mevcutsa <code>http://mesela.dom/belgeler/index.html</code> dosyasını
       döndürecek, değilse ürettiği dizin içerik listesini gönderecektir.</p>
 
     <p>Belgelerin dizine göreli olmasının gerekmediğine dikkat ediniz.</p>

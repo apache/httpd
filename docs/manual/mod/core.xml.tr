@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1132677 -->
+<!-- English Revision: 1154942 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -475,7 +475,18 @@ kullanımı önerilmemektedir.</compatibility>
         kullanımına izin verilir. <directive
         module="core">Options</directive> komutunda belirtilecek seçenekler
         bir eşit işaretinden sonra aralarına sadece virgül konarak
-        (boşluksuz)  belirtilebilir.</dd>
+        (boşluksuz)  belirtilebilir.
+
+      <note><title>Seçeneklerin örtük iptali</title>
+      <p>.htaccess dosyalarında kullanılabilecek seçenekler bu yönergeyle
+				sınırlanabileceği gibi miras alınmış bir seçenek olarak, bağıntısız
+				sözdizimi kullanılarak iptal edilebilen herhangi bir seçenek de
+				<directive module="core">Options</directive> yönergesi ile dolaylı
+				olarak iptal edilmiş olacaktır. Başka bir deyişle, bu mekanizma
+				evvelce etkisiz kılınmış bir seçeneğin etkin kılınmasını
+				sağlamayacaktır.
+      </p></note>
+      </dd>
     </dl>
 
     <p>Örnek:</p>
