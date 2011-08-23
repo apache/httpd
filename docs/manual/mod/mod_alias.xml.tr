@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1055614 -->
+<!-- English Revision: 1147342 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -121,11 +121,11 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       Alias /image /ftp/pub/image
     </example>
 
-    <p><code>http://sunucum/image/foo.gif</code> şeklinde bir istek, sunucunun
+    <p><code>http://mesela.dom/image/foo.gif</code> şeklinde bir istek, sunucunun
       <code>/ftp/pub/image/foo.gif</code> dosyasıyla yanıt vermesine sebep
       olurdu. Sadece tam yol parçaları eşleştirilir; bu bakımdan yukarıdaki
       <directive>Alias</directive> yapılandırması
-      <code>http://sunucum/imagefoo.gif</code> ile eşleşmez. Düzenli
+      <code>http://mesela.dom/imagefoo.gif</code> ile eşleşmez. Düzenli
       ifadelerin kullanıldığı daha karmaşık eşleşmeler için <directive
       module="mod_alias" >AliasMatch</directive> yönergesine bakınız.</p>
 
@@ -409,7 +409,7 @@ URL’ye yönlendirir.</description>
       ScriptAlias /cgi-bin/ /siteler/cgi-bin/
     </example>
 
-    <p><code>http://sunucum/cgi-bin/foo</code> şeklindeki bir istek sunucunun
+    <p><code>http://mesela.dom/cgi-bin/foo</code> şeklindeki bir istek sunucunun
       <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep olur. Bu
       yapılandırma aslında şuna eşdeğerdir:</p>
 

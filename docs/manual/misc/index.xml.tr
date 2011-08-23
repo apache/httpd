@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 574089 -->
+<!-- English Revision: 1157854 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -64,7 +64,7 @@
 
       <dd>
         <p>Bu belge <module>mod_rewrite</module> modülünün <a
-          href="../mod/mod_rewrite.html">başvuru belgesi</a> yerine geçer.
+          href="../rewrite/">başvuru belgesi</a> yerine geçer.
           Site yöneticilerinin sıkça karşılaştıkları belli başlı URL temelli
           sorunları çözümlemek için Apache’nin <module>mod_rewrite</module>
           modülünün nasıl kullanılacağını açıklar.</p>
