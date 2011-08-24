@@ -160,7 +160,7 @@ static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
 
     mctx->pkp->cert_file = NULL;
     mctx->pkp->cert_path = NULL;
-    mctx->pkp->ca_cert_file = NULL
+    mctx->pkp->ca_cert_file = NULL;
     mctx->pkp->certs     = NULL;
     mctx->pkp->ca_certs  = NULL;
 }
