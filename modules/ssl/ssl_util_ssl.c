@@ -443,8 +443,8 @@ int SSL_X509_INFO_create_chain(const X509 *x509,
                              STACK_OF(X509_INFO) *ca_certs,
                              STACK_OF(X509_INFO) *chain)
 {
-    int can_proceed=1;
-    int len=0;
+    int can_proceed = 1;
+    int len = 0;
     int i;
     X509 *certificate = (X509 *)x509;
     X509_INFO *info;
@@ -461,7 +461,8 @@ int SSL_X509_INFO_create_chain(const X509 *x509,
 
             if (X509_NAME_cmp(cert_issuer_name, ca_name) == 0) {
                 /* Check for a self-signed cert (no issuer) */
-                can_proceed=X509_NAME_cmp(ca_name, ca_issuer_name) == 0 ? 0 : 1;
+                can_proceed = X509_NAME_cmp(ca_name, ca_issuer_name) == 0
+                              ? 0 : 1;
                 len++;
                 certificate = info->x509;
                 sk_X509_INFO_unshift(chain, info);
