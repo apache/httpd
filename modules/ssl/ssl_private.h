@@ -690,6 +690,7 @@ const char  *ssl_cmd_SSLProxyCARevocationPath(cmd_parms *, void *, const char *)
 const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
 
