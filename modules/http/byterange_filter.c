@@ -464,14 +464,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
 static int ap_set_byterange(request_rec *r)
 {
-    const char *range, *or;
+    const char *range;
     const char *if_range;
     const char *match;
     const char *ct;
-    char *merged, *cur;
-    int num_ranges = 0;
-    apr_off_t ostart, oend;
-    int in_merge = 0;
+    int num_ranges;
 
     if (r->assbackwards) {
         return 0;
@@ -524,84 +521,17 @@ static int ap_set_byterange(request_rec *r)
         }
     }
 
-    range += 6;
-    or = apr_pstrdup(r->pool, range);
-    merged = apr_pstrdup(r->pool, "");
-    while ((cur = ap_getword(r->pool, &range, ','))) {
-        char *dash;
-        char *errp;
-        apr_off_t number, start, end;
-        
-        if (!(dash = strchr(cur, '-'))) {
-            break;
-        }
-        
-        if (dash == cur) {
-            /* In the form "-5"... leave as is */
-            merged = apr_pstrcat(r->pool, merged, (num_ranges++ ? "," : ""), cur, NULL);
-            continue;
-        }
-        *dash++ = '\0';
-        if (!*dash) {
-            /* form "5-" */
-            merged = apr_pstrcat(r->pool, merged, (num_ranges++ ? "," : ""), cur, "-", NULL);
-            continue;
-        }
-        /*
-         * we have #-#, so we need to grab them... we don't bother
-         * doing this for the #- or -# cases for speed reasons.
-         * After all, those will be fixed when the filter parses
-         * the merged range
-         */
-        if (apr_strtoff(&number, cur, &errp, 10) || *errp || number < 0) {
-            break;
-        }
-        start = number;
-        if (apr_strtoff(&number, dash, &errp, 10) || *errp || number < 0) {
-            break;
-        }
-        end = number;
-        if (start > end) {
-            break;
-        }
-        if (!in_merge) {
-            ostart = start;
-            oend = end;
-        }
-        in_merge = 0;
-        if (start <= ostart) {
-            ostart = start;
-            in_merge = 1;
-        }
-        else if (start < oend) {
-            in_merge = 1;
-        }
-        if ((end-1) >= oend) {
-            oend = end;
-            in_merge = 1;
-        }
-        else if (end > ostart && end < oend) {
-            in_merge = 1;
-        }
-        if (in_merge) {
-            continue;
-        } else {
-            char *nr = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
-                                    ostart, oend);
-            merged = apr_pstrcat(r->pool, merged, (num_ranges++ ? "," : ""), nr, NULL);
-        }
+    if (!ap_strchr_c(range, ',')) {
+        /* a single range */
+        num_ranges = 1;
+    }
+    else {
+        /* a multiple range */
+        num_ranges = 2;
     }
 
-    if (in_merge) {
-        char *nr = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
-                                ostart, oend);
-        merged = apr_pstrcat(r->pool, merged, (num_ranges++ ? "," : ""), nr, NULL);
-    }
-        
     r->status = HTTP_PARTIAL_CONTENT;
-    r->range = merged;
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "Range: %s | %s", or, merged);
+    r->range = range + 6;
 
     return num_ranges;
 }
