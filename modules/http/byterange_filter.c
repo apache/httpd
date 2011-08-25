@@ -176,7 +176,7 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             first = e;
             off_first = pos;
         }
-        if (!last && (elen64 + pos >= end64)) {
+        if (!last && (elen64 + pos > end64)) {
             last = e;
             off_last = pos;
             break;
