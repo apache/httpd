@@ -578,14 +578,14 @@ static int ap_set_byterange(request_rec *r)
             ostart = start;
             in_merge = 1;
         }
-        if (start < oend) {
+        else if (start < oend) {
             in_merge = 1;
         }
         if ((end-1) >= oend) {
             oend = end;
             in_merge = 1;
         }
-        if (end > ostart && end < oend) {
+        else if (end > ostart && end < oend) {
             in_merge = 1;
         }
         if (in_merge) {
