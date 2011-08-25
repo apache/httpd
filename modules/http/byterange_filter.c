@@ -151,7 +151,7 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     const char *s;
     apr_size_t len;
     apr_uint64_t start64, end64;
-    apr_off_t poff;
+    apr_off_t pofft;
 
     /*
      * ala apr_brigade_partition(), reduce casting hell...
@@ -253,8 +253,8 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
         e = APR_BUCKET_NEXT(e);
     }
 
-    AP_DEBUG_ASSERT(APR_SUCCESS == apr_brigade_length(bbout, 1, &poff));
-    pos = (apr_uint64_t)poff;
+    AP_DEBUG_ASSERT(APR_SUCCESS == apr_brigade_length(bbout, 1, &pofft));
+    pos = (apr_uint64_t)pofft;
     AP_DEBUG_ASSERT(pos == end64 - start64 + 1);
     return APR_SUCCESS;
 }
