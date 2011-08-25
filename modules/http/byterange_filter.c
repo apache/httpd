@@ -195,8 +195,8 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             return rv;
         }
 
+        APR_BRIGADE_INSERT_TAIL(bbout, copy);
         if (e == first) {
-            APR_BRIGADE_INSERT_TAIL(bbout, copy);
             if (off_first != start64) {
                 rv = apr_bucket_split(copy, (apr_size_t)(start64 - off_first));
                 if (rv == APR_ENOTIMPL) {
@@ -251,9 +251,6 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             if (e == first) {
                 off_last += start64 - off_first;
                 copy = out_first;
-            }
-            else {
-                APR_BRIGADE_INSERT_TAIL(bbout, copy);
             }
             if (end64 - off_last != (apr_uint64_t)e->length) {
                 rv = apr_bucket_split(copy, (apr_size_t)(end64 + 1 - off_last));
