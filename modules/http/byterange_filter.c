@@ -146,7 +146,8 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                                        apr_off_t end)
 {
     apr_bucket *first = NULL, *last = NULL, *out_first = NULL, *e;
-    apr_off_t pos = 0, off_first = 0, off_last = 0;
+    apr_uint64_t pos = 0, off_first = 0, off_last = 0;
+    apr_uint64_t start64, end64;
     apr_status_t rv;
     const char *s;
     apr_size_t len;
@@ -154,22 +155,31 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     if (start < 0 || start > end)
         return APR_EINVAL;
 
+    /*
+     * We know that start and end are >= 0. See the comments in
+     * apr_brigade_partition why we should convert everything
+     * to apr_uint64_t. In short apr_off_t (for values >= 0)and apr_size_t
+     * fit into apr_uint64_t.
+     */
+    start64 = (apr_uint64_t)start;
+    end64 = (apr_uint64_t)end;
+
     for (e = APR_BRIGADE_FIRST(bb);
          e != APR_BRIGADE_SENTINEL(bb);
          e = APR_BUCKET_NEXT(e))
     {
         /* we know that no bucket has undefined length (-1) */
         AP_DEBUG_ASSERT(e->length != (apr_size_t)(-1));
-        if (!first && (e->length > start || e->length + pos > start)) {
+        if (!first && ((apr_uint64_t)e->length > start64 || (apr_uint64_t)e->length + pos > start64)) {
             first = e;
             off_first = pos;
         }
-        if (!last && (e->length >= end || e->length + pos >= end)) {
+        if (!last && ((apr_uint64_t)e->length >= end64 || (apr_uint64_t)e->length + pos >= end64)) {
             last = e;
             off_last = pos;
             break;
         }
-        pos += e->length;
+        pos += (apr_uint64_t)e->length;
     }
     if (!first || !last)
         return APR_EINVAL;
@@ -187,15 +197,15 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
 
         APR_BRIGADE_INSERT_TAIL(bbout, copy);
         if (e == first) {
-            if (off_first != start) {
-                rv = apr_bucket_split(copy, start - off_first);
+            if (off_first != start64) {
+                rv = apr_bucket_split(copy, start64 - off_first);
                 if (rv == APR_ENOTIMPL) {
                     rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
                     if (rv != APR_SUCCESS) {
                         apr_brigade_cleanup(bbout);
                         return rv;
                     }
-                    rv = apr_bucket_split(copy, start - off_first);
+                    rv = apr_bucket_split(copy, start64 - off_first);
                     if (rv != APR_SUCCESS) {
                         apr_brigade_cleanup(bbout);
                         return rv;
@@ -211,14 +221,14 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
         }
         if (e == last) {
             if (e == first) {
-                off_last += start - off_first;
+                off_last += start64 - off_first;
                 copy = out_first;
             }
             else {
                 APR_BRIGADE_INSERT_TAIL(bbout, copy);
             }
-            if (end - off_last != e->length) {
-                rv = apr_bucket_split(copy, end + 1 - off_last);
+            if (end64 - off_last != (apr_uint64_t)e->length) {
+                rv = apr_bucket_split(copy, end64 + 1 - off_last);
                 if (rv != APR_SUCCESS) {
                     apr_brigade_cleanup(bbout);
                     return rv;
@@ -233,7 +243,7 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     }
 
     AP_DEBUG_ASSERT(APR_SUCCESS == apr_brigade_length(bbout, 1, &pos));
-    AP_DEBUG_ASSERT(pos == end - start + 1);
+    AP_DEBUG_ASSERT(pos == end64 - start64 + 1);
     return APR_SUCCESS;
 }
 
