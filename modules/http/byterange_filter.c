@@ -172,11 +172,11 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
         /* we know that no bucket has undefined length (-1) */
         AP_DEBUG_ASSERT(e->length != (apr_size_t)(-1));
         elen64 = (apr_uint64_t)e->length;
-        if (!first && (elen64 > start64 || elen64 + pos > start64)) {
+        if (!first && (elen64 + pos > start64)) {
             first = e;
             off_first = pos;
         }
-        if (!last && (elen64 >= end64 || elen64 + pos >= end64)) {
+        if (!last && (elen64 + pos >= end64)) {
             last = e;
             off_last = pos;
             break;
