@@ -154,15 +154,14 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     apr_off_t pofft;
 
     /*
-     * We know that start and end are >= 0. See the comments in
-     * apr_brigade_partition why we should convert everything
-     * to apr_uint64_t. In short apr_off_t (for values >= 0)and apr_size_t
-     * fit into apr_uint64_t.
+     * Once we know that start and end are >= 0 convert everything to apr_uint64_t.
+     * See the comments in apr_brigade_partition why.
+     * In short apr_off_t (for values >= 0)and apr_size_t fit into apr_uint64_t.
      */
     start64 = (apr_uint64_t)start;
     end64 = (apr_uint64_t)end;
 
-    if (start < 0 || start64 > end64)
+    if (start < 0 || end < 0 || start64 > end64)
         return APR_EINVAL;
 
     for (e = APR_BRIGADE_FIRST(bb);
