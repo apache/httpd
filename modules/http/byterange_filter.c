@@ -468,7 +468,7 @@ static int ap_set_byterange(request_rec *r)
     const char *if_range;
     const char *match;
     const char *ct;
-    int num_ranges;
+    int num_ranges = 1;
 
     if (r->assbackwards) {
         return 0;
@@ -521,17 +521,14 @@ static int ap_set_byterange(request_rec *r)
         }
     }
 
-    if (!ap_strchr_c(range, ',')) {
-        /* a single range */
-        num_ranges = 1;
-    }
-    else {
-        /* a multiple range */
-        num_ranges = 2;
-    }
-
+    range += 6;
     r->status = HTTP_PARTIAL_CONTENT;
-    r->range = range + 6;
+    r->range = range;
+    while (*range) {
+        if (*range == ',')
+            num_ranges++;
+        range++;
+    }
 
     return num_ranges;
 }
