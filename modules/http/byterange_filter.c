@@ -154,17 +154,6 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     apr_off_t pofft;
 
     /*
-     * ala apr_brigade_partition(), reduce casting hell...
-     * we know that apr_off_t and apr_size_t will fit into
-     * apr_uint64_t.
-     */
-    start64 = (apr_uint64_t)start;
-    end64 = (apr_uint64_t)end;
-
-    if (start < 0 || start64 > end64)
-        return APR_EINVAL;
-
-    /*
      * We know that start and end are >= 0. See the comments in
      * apr_brigade_partition why we should convert everything
      * to apr_uint64_t. In short apr_off_t (for values >= 0)and apr_size_t
@@ -172,6 +161,9 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
      */
     start64 = (apr_uint64_t)start;
     end64 = (apr_uint64_t)end;
+
+    if (start < 0 || start64 > end64)
+        return APR_EINVAL;
 
     for (e = APR_BRIGADE_FIRST(bb);
          e != APR_BRIGADE_SENTINEL(bb);
