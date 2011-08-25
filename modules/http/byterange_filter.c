@@ -560,7 +560,7 @@ static int ap_set_byterange(request_rec *r)
             break;
         }
         start = number;
-        if (apr_strtoff(&number, dash, &errp, 10) || *errp || number <= 0) {
+        if (apr_strtoff(&number, dash, &errp, 10) || *errp || number < 0) {
             break;
         }
         end = number;
