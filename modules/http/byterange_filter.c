@@ -137,8 +137,6 @@ static int use_range_x(request_rec *r)
 }
 
 #define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
-#define PARTITION_ERR_FMT "apr_brigade_partition() failed " \
-                          "[%" APR_OFF_T_FMT ",%" APR_OFF_T_FMT "]"
 
 static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                                        apr_bucket_brigade *bbout,
