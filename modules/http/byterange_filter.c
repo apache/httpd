@@ -175,13 +175,15 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
         return APR_EINVAL;
 
     e = first;
-    for (; ; )
+    while (1)
     {
         apr_bucket *copy;
         AP_DEBUG_ASSERT(e != APR_BRIGADE_SENTINEL(bb));
         rv = apr_bucket_copy(e, &copy);
-        if (rv != APR_SUCCESS)
-            goto err; /* XXX try apr_bucket_read */
+        if (rv != APR_SUCCESS) {
+            apr_brigade_cleanup(bbout);
+            return rv;
+        }
 
         APR_BRIGADE_INSERT_TAIL(bbout, copy);
         if (e == first) {
@@ -189,11 +191,15 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                 rv = apr_bucket_split(copy, start - off_first);
                 if (rv == APR_ENOTIMPL) {
                     rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                    if (rv != APR_SUCCESS)
-                        goto err;
+                    if (rv != APR_SUCCESS) {
+                        apr_brigade_cleanup(bbout);
+                        return rv;
+                    }
                     rv = apr_bucket_split(copy, start - off_first);
-                    if (rv != APR_SUCCESS)
-                        goto err;
+                    if (rv != APR_SUCCESS) {
+                        apr_brigade_cleanup(bbout);
+                        return rv;
+                    }
                 }
                 out_first = APR_BUCKET_NEXT(copy);
                 APR_BUCKET_REMOVE(copy);
@@ -213,8 +219,10 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             }
             if (end - off_last != e->length) {
                 rv = apr_bucket_split(copy, end + 1 - off_last);
-                if (rv != APR_SUCCESS)
-                    goto err;
+                if (rv != APR_SUCCESS) {
+                    apr_brigade_cleanup(bbout);
+                    return rv;
+                }
                 copy = APR_BUCKET_NEXT(copy);
                 APR_BUCKET_REMOVE(copy);
                 apr_bucket_destroy(copy);
@@ -227,9 +235,6 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     AP_DEBUG_ASSERT(APR_SUCCESS == apr_brigade_length(bbout, 1, &pos));
     AP_DEBUG_ASSERT(pos == end - start + 1);
     return APR_SUCCESS;
-err:
-    apr_brigade_cleanup(bbout);
-    return rv;
 }
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
