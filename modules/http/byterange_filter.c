@@ -140,6 +140,98 @@ static int use_range_x(request_rec *r)
 #define PARTITION_ERR_FMT "apr_brigade_partition() failed " \
                           "[%" APR_OFF_T_FMT ",%" APR_OFF_T_FMT "]"
 
+static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
+                                       apr_bucket_brigade *bbout,
+                                       apr_off_t start,
+                                       apr_off_t end)
+{
+    apr_bucket *first = NULL, *last = NULL, *out_first = NULL, *e;
+    apr_off_t pos = 0, off_first = 0, off_last = 0;
+    apr_status_t rv;
+    const char *s;
+    apr_size_t len;
+
+    if (start < 0 || start > end)
+        return APR_EINVAL;
+
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
+        /* we know that no bucket has undefined length (-1) */
+        AP_DEBUG_ASSERT(e->length != (apr_size_t)(-1));
+        if (!first && (e->length > start || e->length + pos > start)) {
+            first = e;
+            off_first = pos;
+        }
+        if (!last && (e->length >= end || e->length + pos >= end)) {
+            last = e;
+            off_last = pos;
+            break;
+        }
+        pos += e->length;
+    }
+    if (!first || !last)
+        return APR_EINVAL;
+
+    e = first;
+    for (; ; )
+    {
+        apr_bucket *copy;
+        AP_DEBUG_ASSERT(e != APR_BRIGADE_SENTINEL(bb));
+        rv = apr_bucket_copy(e, &copy);
+        if (rv != APR_SUCCESS)
+            goto err; /* XXX try apr_bucket_read */
+
+        APR_BRIGADE_INSERT_TAIL(bbout, copy);
+        if (e == first) {
+            if (off_first != start) {
+                rv = apr_bucket_split(copy, start - off_first);
+                if (rv == APR_ENOTIMPL) {
+                    rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
+                    if (rv != APR_SUCCESS)
+                        goto err;
+                    rv = apr_bucket_split(copy, start - off_first);
+                    if (rv != APR_SUCCESS)
+                        goto err;
+                }
+                out_first = APR_BUCKET_NEXT(copy);
+                APR_BUCKET_REMOVE(copy);
+                apr_bucket_destroy(copy);
+            }
+            else {
+                out_first = copy;
+            }
+        }
+        if (e == last) {
+            if (e == first) {
+                off_last += start - off_first;
+                copy = out_first;
+            }
+            else {
+                APR_BRIGADE_INSERT_TAIL(bbout, copy);
+            }
+            if (end - off_last != e->length) {
+                rv = apr_bucket_split(copy, end + 1 - off_last);
+                if (rv != APR_SUCCESS)
+                    goto err;
+                copy = APR_BUCKET_NEXT(copy);
+                APR_BUCKET_REMOVE(copy);
+                apr_bucket_destroy(copy);
+            }
+            break;
+        }
+        e = APR_BUCKET_NEXT(e);
+    }
+
+    AP_DEBUG_ASSERT(APR_SUCCESS == apr_brigade_length(bbout, 1, &pos));
+    AP_DEBUG_ASSERT(pos == end - start + 1);
+    return APR_SUCCESS;
+err:
+    apr_brigade_cleanup(bbout);
+    return rv;
+}
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                                          apr_bucket_brigade *bb)
 {
@@ -149,6 +241,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     byterange_ctx *ctx;
     apr_bucket *e;
     apr_bucket_brigade *bsend;
+    apr_bucket_brigade *tmpbb;
     apr_off_t range_start;
     apr_off_t range_end;
     char *current;
@@ -219,31 +312,24 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
     /* this brigade holds what we will be sending */
     bsend = apr_brigade_create(r->pool, c->bucket_alloc);
+    tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
 
     while ((current = ap_getword(r->pool, &r->range, ','))
            && (rv = parse_byterange(current, clength, &range_start,
                                     &range_end))) {
-        apr_bucket *e2;
-        apr_bucket *ec;
-
         if (rv == -1) {
             continue;
         }
 
-        /* These calls to apr_brigage_partition should only fail in
-         * pathological cases, e.g. a file being truncated whilst
-         * being served. */
-        if ((rv = apr_brigade_partition(bb, range_start, &ec)) != APR_SUCCESS) {
+        rv = copy_brigade_range(bb, tmpbb, range_start, range_end);
+        if (rv != APR_SUCCESS ) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          PARTITION_ERR_FMT, range_start, clength);
+                          "brigade_copy_range() failed " "[%" APR_OFF_T_FMT 
+                          "-%" APR_OFF_T_FMT ",%" 
+                          APR_OFF_T_FMT "]",
+                          range_start, range_end, clength);
             continue;
         }
-        if ((rv = apr_brigade_partition(bb, range_end+1, &e2)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          PARTITION_ERR_FMT, range_end+1, clength);
-            continue;
-        }
-
         found = 1;
 
         /* For single range requests, we must produce Content-Range header.
@@ -269,23 +355,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
             APR_BRIGADE_INSERT_TAIL(bsend, e);
         }
 
-        do {
-            apr_bucket *foo;
-            const char *str;
-            apr_size_t len;
-
-            if (apr_bucket_copy(ec, &foo) != APR_SUCCESS) {
-                /* As above; this should not fail since the bucket has
-                 * a known length, but just to be sure, this takes
-                 * care of uncopyable buckets that do somehow manage
-                 * to slip through.  */
-                /* XXX: check for failure? */
-                apr_bucket_read(ec, &str, &len, APR_BLOCK_READ);
-                apr_bucket_copy(ec, &foo);
-            }
-            APR_BRIGADE_INSERT_TAIL(bsend, foo);
-            ec = APR_BUCKET_NEXT(ec);
-        } while (ec != e2);
+        APR_BRIGADE_CONCAT(bsend, tmpbb);
     }
 
     if (found == 0) {
@@ -315,6 +385,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
     /* we're done with the original content - all of our data is in bsend. */
     apr_brigade_cleanup(bb);
+    apr_brigade_destroy(tmpbb);
 
     /* send our multipart output */
     return ap_pass_brigade(f->next, bsend);
