@@ -303,6 +303,10 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     return APR_SUCCESS;
 }
 
+struct range_spec {
+    apr_off_t start, end;
+};
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                                          apr_bucket_brigade *bb)
 {
@@ -313,13 +317,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     apr_bucket *e;
     apr_bucket_brigade *bsend;
     apr_bucket_brigade *tmpbb;
-    apr_off_t range_start;
-    apr_off_t range_end;
     char *current;
     apr_off_t clength = 0;
     apr_status_t rv;
     int found = 0;
-    int num_ranges;
+    int num_ranges, i = 0;
+    struct range_spec *ranges;
 
     /* Iterate through the brigade until reaching EOS or a bucket with
      * unknown length. */
@@ -348,11 +351,40 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     }
 
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-    ctx->num_ranges = num_ranges;
     /* create a brigade in case we never call ap_save_brigade() */
     ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    if (ctx->num_ranges > 1) {
+
+    /* this brigade holds what we will be sending */
+    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
+    tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
+    ranges = apr_palloc(r->pool, sizeof(*ranges) * num_ranges);
+
+    while ((current = ap_getword(r->pool, &r->range, ','))
+           && (rv = parse_byterange(current, clength, &ranges[i].start,
+                                    &ranges[i].end))) {
+        if (rv == -1) {
+            continue;
+        }
+        else if (rv == 0)
+            break;
+
+        if (i > 0) {
+            if (!(ranges[i].start > ranges[i-1].end   + 1 &&
+                  ranges[i].end   < ranges[i-1].start - 1))
+            {
+                if (ranges[i].start < ranges[i-1].start)
+                    ranges[i-1].start = ranges[i].start;
+                if (ranges[i].end > ranges[i-1].end)
+                    ranges[i-1].end = ranges[i].end;
+                continue;
+            }
+        }
+        i++;
+    }
+    num_ranges = i;
+
+    if (num_ranges > 1) {
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
         ctx->boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
@@ -381,24 +413,14 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         ap_xlate_proto_to_ascii(ctx->bound_head, strlen(ctx->bound_head));
     }
 
-    /* this brigade holds what we will be sending */
-    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
-    tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
-
-    while ((current = ap_getword(r->pool, &r->range, ','))
-           && (rv = parse_byterange(current, clength, &range_start,
-                                    &range_end))) {
-        if (rv == -1) {
-            continue;
-        }
-
-        rv = copy_brigade_range(bb, tmpbb, range_start, range_end);
+    for (i = 0; i < num_ranges; i++) {
+        rv = copy_brigade_range(bb, tmpbb, ranges[i].start, ranges[i].end);
         if (rv != APR_SUCCESS ) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "brigade_copy_range() failed " "[%" APR_OFF_T_FMT
                           "-%" APR_OFF_T_FMT ",%"
                           APR_OFF_T_FMT "]",
-                          range_start, range_end, clength);
+                          ranges[i].start, ranges[i].end, clength);
             continue;
         }
         found = 1;
@@ -406,10 +428,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* For single range requests, we must produce Content-Range header.
          * Otherwise, we need to produce the multipart boundaries.
          */
-        if (ctx->num_ranges == 1) {
+        if (num_ranges == 1) {
             apr_table_setn(r->headers_out, "Content-Range",
                            apr_psprintf(r->pool, "bytes " BYTERANGE_FMT,
-                                        range_start, range_end, clength));
+                                        ranges[i].start, ranges[i].end, clength));
         }
         else {
             char *ts;
@@ -419,7 +441,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
             APR_BRIGADE_INSERT_TAIL(bsend, e);
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
-                              range_start, range_end, clength);
+                              ranges[i].start, ranges[i].end, clength);
             ap_xlate_proto_to_ascii(ts, strlen(ts));
             e = apr_bucket_pool_create(ts, strlen(ts), r->pool,
                                        c->bucket_alloc);
@@ -441,7 +463,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bsend);
     }
 
-    if (ctx->num_ranges > 1) {
+    if (num_ranges > 1) {
         char *end;
 
         /* add the final boundary */
