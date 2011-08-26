@@ -205,9 +205,6 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                 off_last += start64 - off_first;
                 copy = out_first;
             }
-            else {
-                APR_BRIGADE_INSERT_TAIL(bbout, copy);
-            }
             if (end64 - off_last != (apr_uint64_t)e->length) {
                 rv = apr_bucket_split(copy, (apr_size_t)(end64 + 1 - off_last));
                 if (rv == APR_ENOTIMPL) {
