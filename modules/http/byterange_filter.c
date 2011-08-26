@@ -64,13 +64,6 @@ APLOG_USE_MODULE(http);
 static int ap_set_byterange(request_rec *r, apr_off_t clength,
                             apr_array_header_t *indexes);
 
-typedef struct byterange_ctx {
-    apr_bucket_brigade *bb;
-    int num_ranges;
-    char *boundary;
-    char *bound_head;
-} byterange_ctx;
-
 /*
  * Here we try to be compatible with clients that want multipart/x-byteranges
  * instead of multipart/byteranges (also see above), as per HTTP/1.1. We
@@ -267,7 +260,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 #define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    byterange_ctx *ctx;
     apr_bucket *e;
     apr_bucket_brigade *bsend;
     apr_bucket_brigade *tmpbb;
@@ -277,6 +269,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     apr_status_t rv;
     int found = 0;
     int num_ranges;
+    char *boundary = NULL;
+    char *bound_head = NULL;
     apr_array_header_t *indexes;
     indexes_t *idx;
     int i;
@@ -309,38 +303,33 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
-    ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-    ctx->num_ranges = num_ranges;
-    /* create a brigade in case we never call ap_save_brigade() */
-    ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
-
-    if (ctx->num_ranges > 1) {
+    if (num_ranges > 1) {
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
-        ctx->boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
-                                     (apr_uint64_t)r->request_time, (long) getpid());
+        boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
+                                (apr_uint64_t)r->request_time, (long) getpid());
 
         ap_set_content_type(r, apr_pstrcat(r->pool, "multipart",
                                            use_range_x(r) ? "/x-" : "/",
                                            "byteranges; boundary=",
-                                           ctx->boundary, NULL));
+                                           boundary, NULL));
 
         if (orig_ct) {
-            ctx->bound_head = apr_pstrcat(r->pool,
-                                          CRLF "--", ctx->boundary,
-                                          CRLF "Content-type: ",
-                                          orig_ct,
-                                          CRLF "Content-range: bytes ",
-                                          NULL);
+            bound_head = apr_pstrcat(r->pool,
+                                     CRLF "--", boundary,
+                                     CRLF "Content-type: ",
+                                     orig_ct,
+                                     CRLF "Content-range: bytes ",
+                                     NULL);
         }
         else {
             /* if we have no type for the content, do our best */
-            ctx->bound_head = apr_pstrcat(r->pool,
-                                          CRLF "--", ctx->boundary,
-                                          CRLF "Content-range: bytes ",
-                                          NULL);
+            bound_head = apr_pstrcat(r->pool,
+                                     CRLF "--", boundary,
+                                     CRLF "Content-range: bytes ",
+                                     NULL);
         }
-        ap_xlate_proto_to_ascii(ctx->bound_head, strlen(ctx->bound_head));
+        ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
     }
 
     /* this brigade holds what we will be sending */
@@ -366,7 +355,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* For single range requests, we must produce Content-Range header.
          * Otherwise, we need to produce the multipart boundaries.
          */
-        if (ctx->num_ranges == 1) {
+        if (num_ranges == 1) {
             apr_table_setn(r->headers_out, "Content-Range",
                            apr_psprintf(r->pool, "bytes " BYTERANGE_FMT,
                                         range_start, range_end, clength));
@@ -374,7 +363,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         else {
             char *ts;
 
-            e = apr_bucket_pool_create(ctx->bound_head, strlen(ctx->bound_head),
+            e = apr_bucket_pool_create(bound_head, strlen(bound_head),
                                        r->pool, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
 
@@ -401,11 +390,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bsend);
     }
 
-    if (ctx->num_ranges > 1) {
+    if (num_ranges > 1) {
         char *end;
 
         /* add the final boundary */
-        end = apr_pstrcat(r->pool, CRLF "--", ctx->boundary, "--" CRLF, NULL);
+        end = apr_pstrcat(r->pool, CRLF "--", boundary, "--" CRLF, NULL);
         ap_xlate_proto_to_ascii(end, strlen(end));
         e = apr_bucket_pool_create(end, strlen(end), r->pool, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bsend, e);
@@ -432,7 +421,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     char *cur, **new;
     apr_array_header_t *merged;
     int num_ranges = 0;
-    apr_off_t ostart, oend;
+    apr_off_t ostart = 0, oend = 0;
     int in_merge = 0;
     indexes_t *idx;
     int overlaps = 0, reversals = 0;
