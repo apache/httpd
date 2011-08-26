@@ -1803,6 +1803,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     STACK_OF(X509_NAME) *ca_list;
     STACK_OF(X509_INFO) *certs = sc->proxy->pkp->certs;
     STACK_OF(X509_INFO) *ca_certs;
+    STACK_OF(X509_INFO) **ca_cert_chains;
     int i, j, k;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
@@ -1833,6 +1834,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
         return TRUE;
     }
 
+    ca_cert_chains = sc->proxy->pkp->ca_certs;
     for (i = 0; i < sk_X509_NAME_num(ca_list); i++) {
         ca_name = sk_X509_NAME_value(ca_list, i);
 
@@ -1849,20 +1851,25 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
                 return TRUE;
             }
 
-            /* Failed to find direct issuer - search intermediaries (by issuer name) */
-            ca_certs = sc->proxy->pkp->ca_certs[j];
-            for (k = 0; k < sk_X509_INFO_num(ca_certs); k++) {
-                ca_info = sk_X509_INFO_value(ca_certs, k);
-                ca_issuer = X509_get_issuer_name(ca_info->x509);
+            if (ca_cert_chains) {
+                /*
+                 * Failed to find direct issuer - search intermediaries
+                 * (by issuer name), if provided.
+                 */
+                ca_certs = ca_cert_chains[j];
+                for (k = 0; k < sk_X509_INFO_num(ca_certs); k++) {
+                    ca_info = sk_X509_INFO_value(ca_certs, k);
+                    ca_issuer = X509_get_issuer_name(ca_info->x509);
 
-                if(X509_NAME_cmp(ca_issuer, ca_name) == 0 ) {
-                    modssl_proxy_info_log(s, info, "found acceptable cert by intermediary");
+                    if(X509_NAME_cmp(ca_issuer, ca_name) == 0 ) {
+                        modssl_proxy_info_log(s, info, "found acceptable cert by intermediary");
 
-                    modssl_set_cert_info(info, x509, pkey);
-
-                    return TRUE;
-                }
-            } /* end loop through chained certs */
+                        modssl_set_cert_info(info, x509, pkey);
+ 
+                        return TRUE;
+                    }
+                } /* end loop through chained certs */
+            }
         } /* end loop through available certs */
     }
 
