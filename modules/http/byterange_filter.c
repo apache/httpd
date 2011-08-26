@@ -61,58 +61,8 @@
 
 APLOG_USE_MODULE(http);
 
-static int parse_byterange(char *range, apr_off_t clength,
-                           apr_off_t *start, apr_off_t *end)
-{
-    char *dash = strchr(range, '-');
-    char *errp;
-    apr_off_t number;
-
-    if (!dash) {
-        return 0;
-    }
-
-    if (dash == range) {
-        /* In the form "-5" */
-        if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
-            return 0;
-        }
-        *start = clength - number;
-        *end = clength - 1;
-    }
-    else {
-        *dash++ = '\0';
-        if (apr_strtoff(&number, range, &errp, 10) || *errp) {
-            return 0;
-        }
-        *start = number;
-        if (*dash) {
-            if (apr_strtoff(&number, dash, &errp, 10) || *errp) {
-                return 0;
-            }
-            *end = number;
-        }
-        else {                  /* "5-" */
-            *end = clength - 1;
-        }
-    }
-
-    if (*start < 0) {
-        *start = 0;
-    }
-
-    if (*end >= clength) {
-        *end = clength - 1;
-    }
-
-    if (*start > *end) {
-        return -1;
-    }
-
-    return (*start > 0 || *end < clength);
-}
-
-static int ap_set_byterange(request_rec *r);
+static int ap_set_byterange(request_rec *r, apr_off_t clength,
+                            apr_array_header_t *indexes);
 
 typedef struct byterange_ctx {
     apr_bucket_brigade *bb;
@@ -212,6 +162,9 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                      */
                     while (start64 - off_first > (apr_uint64_t)copy->length) {
                         apr_bucket *tmp;
+                        int i = 0;
+                        if (i++ >= 99999)
+                            return APR_EINVAL;
 
                         tmp = APR_BUCKET_NEXT(copy);
                         off_first += (apr_uint64_t)copy->length;
@@ -251,6 +204,9 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             if (e == first) {
                 off_last += start64 - off_first;
                 copy = out_first;
+            }
+            else {
+                APR_BRIGADE_INSERT_TAIL(bbout, copy);
             }
             if (end64 - off_last != (apr_uint64_t)e->length) {
                 rv = apr_bucket_split(copy, (apr_size_t)(end64 + 1 - off_last));
@@ -303,9 +259,10 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     return APR_SUCCESS;
 }
 
-struct range_spec {
-    apr_off_t start, end;
-};
+typedef struct indexes_t {
+    apr_off_t start;
+    apr_off_t end;
+} indexes_t;
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                                          apr_bucket_brigade *bb)
@@ -317,13 +274,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     apr_bucket *e;
     apr_bucket_brigade *bsend;
     apr_bucket_brigade *tmpbb;
-    char *current;
+    apr_off_t range_start;
+    apr_off_t range_end;
     apr_off_t clength = 0;
     apr_status_t rv;
     int found = 0;
-    int num_ranges, i = 0;
-    struct range_spec *ranges;
+    int num_ranges;
+    apr_array_header_t *indexes;
+    indexes_t *idx;
+    int i;
 
+    indexes = apr_array_make(r->pool, 10, sizeof(indexes_t));
+    
     /* Iterate through the brigade until reaching EOS or a bucket with
      * unknown length. */
     for (e = APR_BRIGADE_FIRST(bb);
@@ -342,7 +304,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
-    num_ranges = ap_set_byterange(r);
+    num_ranges = ap_set_byterange(r, clength, indexes);
 
     /* We have nothing to do, get out of the way. */
     if (num_ranges == 0) {
@@ -351,40 +313,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     }
 
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+    ctx->num_ranges = num_ranges;
     /* create a brigade in case we never call ap_save_brigade() */
     ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-
-    /* this brigade holds what we will be sending */
-    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
-    tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
-    ranges = apr_palloc(r->pool, sizeof(*ranges) * num_ranges);
-
-    while ((current = ap_getword(r->pool, &r->range, ','))
-           && (rv = parse_byterange(current, clength, &ranges[i].start,
-                                    &ranges[i].end))) {
-        if (rv == -1) {
-            continue;
-        }
-        else if (rv == 0)
-            break;
-
-        if (i > 0) {
-            if (!(ranges[i].start > ranges[i-1].end   + 1 &&
-                  ranges[i].end   < ranges[i-1].start - 1))
-            {
-                if (ranges[i].start < ranges[i-1].start)
-                    ranges[i-1].start = ranges[i].start;
-                if (ranges[i].end > ranges[i-1].end)
-                    ranges[i-1].end = ranges[i].end;
-                continue;
-            }
-        }
-        i++;
-    }
-    num_ranges = i;
-
-    if (num_ranges > 1) {
+    if (ctx->num_ranges > 1) {
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
         ctx->boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
@@ -413,14 +346,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         ap_xlate_proto_to_ascii(ctx->bound_head, strlen(ctx->bound_head));
     }
 
-    for (i = 0; i < num_ranges; i++) {
-        rv = copy_brigade_range(bb, tmpbb, ranges[i].start, ranges[i].end);
+    /* this brigade holds what we will be sending */
+    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
+    tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
+
+    idx = (indexes_t *)indexes->elts;
+    for (i = 0; i < indexes->nelts; i++, idx++) {
+        range_start = idx->start;
+        range_end = idx->end;
+
+        rv = copy_brigade_range(bb, tmpbb, range_start, range_end);
         if (rv != APR_SUCCESS ) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "brigade_copy_range() failed " "[%" APR_OFF_T_FMT
                           "-%" APR_OFF_T_FMT ",%"
                           APR_OFF_T_FMT "]",
-                          ranges[i].start, ranges[i].end, clength);
+                          range_start, range_end, clength);
             continue;
         }
         found = 1;
@@ -428,10 +369,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* For single range requests, we must produce Content-Range header.
          * Otherwise, we need to produce the multipart boundaries.
          */
-        if (num_ranges == 1) {
+        if (ctx->num_ranges == 1) {
             apr_table_setn(r->headers_out, "Content-Range",
                            apr_psprintf(r->pool, "bytes " BYTERANGE_FMT,
-                                        ranges[i].start, ranges[i].end, clength));
+                                        range_start, range_end, clength));
         }
         else {
             char *ts;
@@ -441,7 +382,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
             APR_BRIGADE_INSERT_TAIL(bsend, e);
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
-                              ranges[i].start, ranges[i].end, clength);
+                              range_start, range_end, clength);
             ap_xlate_proto_to_ascii(ts, strlen(ts));
             e = apr_bucket_pool_create(ts, strlen(ts), r->pool,
                                        c->bucket_alloc);
@@ -463,7 +404,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bsend);
     }
 
-    if (num_ranges > 1) {
+    if (ctx->num_ranges > 1) {
         char *end;
 
         /* add the final boundary */
@@ -484,13 +425,20 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     return ap_pass_brigade(f->next, bsend);
 }
 
-static int ap_set_byterange(request_rec *r)
+static int ap_set_byterange(request_rec *r, apr_off_t clength,
+                            apr_array_header_t *indexes)
 {
-    const char *range;
+    const char *range, *or;
     const char *if_range;
     const char *match;
     const char *ct;
-    int num_ranges = 1;
+    char *cur, **new;
+    apr_array_header_t *merged;
+    int num_ranges = 0;
+    apr_off_t ostart, oend;
+    int in_merge = 0;
+    indexes_t *idx;
+    int overlaps = 0, reversals = 0;
 
     if (r->assbackwards) {
         return 0;
@@ -544,13 +492,107 @@ static int ap_set_byterange(request_rec *r)
     }
 
     range += 6;
-    r->status = HTTP_PARTIAL_CONTENT;
-    r->range = range;
-    while (*range) {
-        if (*range == ',')
+    or = apr_pstrdup(r->pool, range);
+    merged = apr_array_make(r->pool, 10, sizeof(char *));;
+    while ((cur = ap_getword(r->pool, &range, ','))) {
+        char *dash;
+        char *errp;
+        apr_off_t number, start, end;
+        
+        if (!(dash = strchr(cur, '-'))) {
+            break;
+        }
+
+        if (dash == range) {
+            /* In the form "-5" */
+            if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
+                break;
+            }
+            start = clength - number;
+            end = clength - 1;
+        }
+        else {
+            *dash++ = '\0';
+            if (apr_strtoff(&number, cur, &errp, 10) || *errp) {
+                break;
+            }
+            start = number;
+            if (*dash) {
+                if (apr_strtoff(&number, dash, &errp, 10) || *errp) {
+                    break;
+                }
+                end = number;
+            }
+            else {                  /* "5-" */
+                end = clength - 1;
+            }
+        }
+        
+        if (start < 0) {
+            start = 0;
+        }
+        if (end >= clength) {
+            end = clength - 1;
+        }
+
+        if (start > end) {
+            /* ignore? count? */
+            break;
+        }
+        if (!in_merge) {
+            /* new set */
+            ostart = start;
+            oend = end;
+            in_merge = 1;
+            continue;
+        }
+        in_merge = 0;
+        
+        if (start < ostart) {
+            ostart = start;
+            reversals++;
+            in_merge = 1;
+        }
+        else if (start < oend || start == ostart) {
+            in_merge = 1;
+        }
+        if (end >= oend && (start-1) <= oend) {
+            oend = end;
+            in_merge = 1;
+        }
+        else if (end > ostart && end <= oend) {
+            in_merge = 1;
+        }
+
+        if (in_merge) {
+            overlaps++;
+            continue;
+        } else {
+            new = (char **)apr_array_push(merged);
+            *new = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
+                                    ostart, oend);
+            idx = (indexes_t *)apr_array_push(indexes);
+            idx->start = ostart;
+            idx->end = oend;
             num_ranges++;
-        range++;
+        }
     }
+
+    if (in_merge) {
+        new = (char **)apr_array_push(merged);
+        *new = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
+                            ostart, oend);
+        idx = (indexes_t *)apr_array_push(indexes);
+        idx->start = ostart;
+        idx->end = oend;
+        num_ranges++;
+    }
+        
+    r->status = HTTP_PARTIAL_CONTENT;
+    r->range = apr_array_pstrcat(r->pool, merged, ',');
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                  "Range: %s | %s (%d : %d : %"APR_OFF_T_FMT")",
+                  or, r->range, overlaps, reversals, clength);
 
     return num_ranges;
 }
