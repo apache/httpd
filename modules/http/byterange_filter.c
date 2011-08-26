@@ -545,7 +545,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         }
         in_merge = 0;
         
-        if !(iend-1 < ostart || start-1 > oend) {
+        if !(iend < ostart || start-1 > oend) {
             if (start < ostart) {
                 ostart = start;
                 reversals++;
