@@ -548,22 +548,23 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         }
         in_merge = 0;
         
-        if (start < ostart) {
-            ostart = start;
-            reversals++;
-            in_merge = 1;
+        if !(iend-1 < ostart || start-1 > oend) {
+            if (start < ostart) {
+                ostart = start;
+                reversals++;
+                in_merge = 1;
+            }
+            else if (start < oend || start == ostart) {
+                in_merge = 1;
+            }
+            if (end >= oend && (start-1) <= oend) {
+                oend = end;
+                in_merge = 1;
+            }
+            else if (end > ostart && end <= oend) {
+                in_merge = 1;
+            }
         }
-        else if (start < oend || start == ostart) {
-            in_merge = 1;
-        }
-        if (end >= oend && (start-1) <= oend) {
-            oend = end;
-            in_merge = 1;
-        }
-        else if (end > ostart && end <= oend) {
-            in_merge = 1;
-        }
-
         if (in_merge) {
             overlaps++;
             continue;
@@ -574,6 +575,10 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             idx = (indexes_t *)apr_array_push(indexes);
             idx->start = ostart;
             idx->end = oend;
+            /* new set again */
+            in_merge = 1;
+            ostart = start;
+            oend = end;
             num_ranges++;
         }
     }
