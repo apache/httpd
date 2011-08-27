@@ -532,9 +532,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         }
         in_merge = 0;
 
-        AP_DEBUG_ASSERT((start <= end) && (ostart <= oend));
-        
-        if (start-1 < oend) {
+        if (!(end <= ostart || start-1 >= oend)) {
             if (start < ostart) {
                 ostart = start;
                 reversals++;
