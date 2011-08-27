@@ -257,7 +257,6 @@ typedef struct indexes_t {
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                                          apr_bucket_brigade *bb)
 {
-#define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
     request_rec *r = f->r;
     conn_rec *c = r->connection;
     apr_bucket *e;
