@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1092798 -->
+<!-- English Revision : 1160345 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -87,15 +87,26 @@ non-alphanum&eacute;riques des r&eacute;f&eacute;rences arri&egrave;res seront &
 par exemple cette r&egrave;gle :</p>
 
 <example>
-RewriteRule ^(/.*)$ /index.php?show=$1
+RewriteRule ^search/(.*)$ /search.php?term=$1
 </example>
 
-<p>Avec cet exemple, <code>/C++</code> sera r&eacute;&eacute;crit en
-<code>/index.php?show=/C++</code>. Mais <code>/C%2b%2b</code> sera lui
-aussi r&eacute;&eacute;crit en <code>/index.php?show=/C++</code>, car le caract&egrave;re
-<code>%2b</code> aura &eacute;t&eacute; "d&eacute;s&eacute;chapp&eacute;". Avec le drapeau B par contre,
-<code>/C%2b%2b</code> sera r&eacute;&eacute;crit en
-<code>/index.php?show=/C%2b%2b</code>.</p>
+<p>Soit le terme de recherche 'x &amp; y/z' ; un navigateur va le coder
+en 'x%20%26%20y%2Fz', transformant la requ&ecirc;te en
+'search/x%20%26%20y%2Fz'. Sans le drapeau B, cette r&egrave;gle de r&eacute;&eacute;criture
+va r&eacute;&eacute;crire la requ&ecirc;te en 'search.php?term=x &amp; y/z', ce qui ne
+correspond pas &agrave; une URL valide et cette derni&egrave;re sera encod&eacute;e en
+<code>search.php?term=x%20&amp;y%2Fz=</code>, ce qui ne correspond pas &agrave;
+ce que l'on souhaitait.</p>
+
+<p>Avec le drapeau B, les param&egrave;tres sont r&eacute;encod&eacute;s avant d'&ecirc;tre pass&eacute;s
+&agrave; l'URL r&eacute;sultante, ce qui fournit une r&eacute;&eacute;criture correcte en
+<code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
+
+<p>Notez que vous devrez peut-&ecirc;tre aussi d&eacute;finir la directive <directive
+module="core">AllowEncodedSlashes</directive> &agrave; <code>On</code> pour
+que cet exemple particulier fonctionne, car httpd ne permet pas les
+slashes encod&eacute;s dans les URLs, et renvoie une erreur 404 s'il en
+rencontre un.</p>
 
 <p>Ce processus d'&eacute;chappement est en particulier n&eacute;cessaire dans le
 contexte d'un mandataire, o&ugrave; l'acc&egrave;s au serveur d'arri&egrave;re-plan &eacute;chouera
