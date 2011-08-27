@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1154940 -->
+<!-- English Revision : 1160342 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -467,15 +467,15 @@ All pour les versions ant&eacute;rieures</default>
       l'aide de la commande <directive
       module="core">Options</directive>.
 
-      <note><title>Désactivation implicite des options</title>
+      <note><title>D&eacute;sactivation implicite des options</title>
       <p>Bien que la liste des options disponibles dans les fichiers
-      .htaccess puisse être limitée par cette directive, tant qu'un
+      .htaccess puisse &ecirc;tre limit&eacute;e par cette directive, tant qu'un
       directive <directive module="core">Options</directive> est
-      autorisée, toute autre option héritée peut être désactivée en
+      autoris&eacute;e, toute autre option h&eacute;rit&eacute;e peut &ecirc;tre d&eacute;sactiv&eacute;e en
       utilisant la syntaxe non-relative. En d'autres termes, ce
-      mécanisme ne peut pas forcer une option spécifique à rester
-      <em>activée</em> tout en permettant à toute autre option d'être
-      activée.
+      m&eacute;canisme ne peut pas forcer une option sp&eacute;cifique &agrave; rester
+      <em>activ&eacute;e</em> tout en permettant &agrave; toute autre option d'&ecirc;tre
+      activ&eacute;e.
       </p></note>
       
       </dd>
@@ -508,7 +508,7 @@ All pour les versions ant&eacute;rieures</default>
 
 <directivesynopsis>
 <name>AllowOverrideList</name>
-<description>Directives autorisées dans les fichiers <code>.htaccess</code></description>
+<description>Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></description>
 <syntax>AllowOverrideList None|<var>directive</var>
 [<var>directive-type</var>] ...</syntax>
 <default>AllowOverrideList None</default>
@@ -516,24 +516,24 @@ All pour les versions ant&eacute;rieures</default>
 
 <usage>
     <p>Lorsque le serveur trouve un fichier <code>.htaccess</code>
-    (comme spécifié par la directive <directive
+    (comme sp&eacute;cifi&eacute; par la directive <directive
     module="core">AccessFileName</directive>), il doit savoir lesquelles
-    des directives déclarées dans ce fichier peuvent remplacer des
+    des directives d&eacute;clar&eacute;es dans ce fichier peuvent remplacer des
     directives des fichiers de configuration du serveur.</p>
 
     <note><title>Seulement disponible dans les sections &lt;Directory&gt;</title>
     La directive <directive>AllowOverrideList</directive> n'est
     disponible que dans les sections <directive type="section"
-    module="core">Directory</directive> spécifiées sans expressions
+    module="core">Directory</directive> sp&eacute;cifi&eacute;es sans expressions
     rationnelles.
     </note>
 
     <p>Lorsque cette directive et la directive <directive
-    module="core">AllowOverride</directive> sont définies à
+    module="core">AllowOverride</directive> sont d&eacute;finies &agrave;
     <code>None</code>, les fichiers <a
-    href="#accessfilename">.htaccess</a> sont totalement ignorés. Dans
-    ce cas, le serveur ne cherchera même pas à lire des fichiers
-    <code>.htaccess</code> dans le système de fichiers.</p>
+    href="#accessfilename">.htaccess</a> sont totalement ignor&eacute;s. Dans
+    ce cas, le serveur ne cherchera m&ecirc;me pas &agrave; lire des fichiers
+    <code>.htaccess</code> dans le syst&egrave;me de fichiers.</p>
 
     <p>Example:</p>
 
@@ -543,7 +543,7 @@ All pour les versions ant&eacute;rieures</default>
     </example>
 
     <p>Dans l'exemple ci-dessus, seules les directives
-    <code>Redirect</code> et <code>RedirectMatch</code> sont autorisées.
+    <code>Redirect</code> et <code>RedirectMatch</code> sont autoris&eacute;es.
     Toutes les autres provoqueront une erreur interne du serveur.</p>
 
     <p>Example:</p>
@@ -4051,6 +4051,12 @@ serveur</description>
     <example><title>Example</title>
       ServerRoot /home/httpd
     </example>
+
+    <p>La valeur par d&eacute;faut de <directive>ServerRoot</directive> peut
+    &ecirc;tre modifi&eacute;e via l'argument <code>--prefix</code> de la commande <a
+    href="../programs/configure.html"><code>configure</code></a>, et de
+    nombreuses distributions tierces du serveur proposent une valeur
+    diff&eacute;rente de celles list&eacute;es ci-dessus.</p>
 
 </usage>
 <seealso><a href="../invoking.html">the <code>-d</code>
