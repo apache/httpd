@@ -531,24 +531,21 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             continue;
         }
         in_merge = 0;
+      
+        if (start >= ostart && end <= oend) { 
+            in_merge = 1;
+        } 
 
-        if (!(end <= ostart || start-1 >= oend)) {
-            if (start < ostart) {
-                ostart = start;
-                reversals++;
-                in_merge = 1;
-            }
-            else if (start < oend || start == ostart) {
-                in_merge = 1;
-            }
-            if (end >= oend && (start-1) <= oend) {
-                oend = end;
-                in_merge = 1;
-            }
-            else if (end > ostart && end <= oend) {
-                in_merge = 1;
-            }
+        if (start < ostart && end >= ostart-1) {
+            ostart = start;
+            reversals++;
+            in_merge = 1;
         }
+        if (end >= oend && start <= oend+1 ) {
+            oend = end;
+            in_merge = 1;
+        }
+
         if (in_merge) {
             overlaps++;
             continue;
