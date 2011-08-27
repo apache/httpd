@@ -420,7 +420,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     char *cur, **new;
     apr_array_header_t *merged;
     int num_ranges = 0;
-    apr_off_t ostart = 0, oend = 0;
+    apr_off_t ostart = 0, oend = 0, sum_lenghts = 0;
     int in_merge = 0;
     indexes_t *idx;
     int overlaps = 0, reversals = 0;
@@ -560,6 +560,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             idx = (indexes_t *)apr_array_push(indexes);
             idx->start = ostart;
             idx->end = oend;
+            sum_lenghts += oend - ostart + 1;
             /* new set again */
             in_merge = 1;
             ostart = start;
@@ -575,7 +576,13 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         idx = (indexes_t *)apr_array_push(indexes);
         idx->start = ostart;
         idx->end = oend;
+        sum_lenghts += oend - ostart + 1;
         num_ranges++;
+    }
+    if (sum_lenghts >= clength) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                      "Sum of ranges not smaller than file, ignoring.");
+        return 0;
     }
         
     r->status = HTTP_PARTIAL_CONTENT;
