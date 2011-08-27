@@ -344,9 +344,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         rv = copy_brigade_range(bb, tmpbb, range_start, range_end);
         if (rv != APR_SUCCESS ) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "brigade_copy_range() failed " "[%" APR_OFF_T_FMT
-                          "-%" APR_OFF_T_FMT ",%"
-                          APR_OFF_T_FMT "]",
+                          "copy_brigade_range() failed [%" APR_OFF_T_FMT
+                          "-%" APR_OFF_T_FMT ",%" APR_OFF_T_FMT "]",
                           range_start, range_end, clength);
             continue;
         }
