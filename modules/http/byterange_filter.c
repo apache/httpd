@@ -433,7 +433,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     int in_merge = 0;
     indexes_t *idx;
     int overlaps = 0, reversals = 0;
-    int i, ranges = 1;
+    int ranges = 1;
     const char *it;
 
     if (r->assbackwards) {
@@ -492,8 +492,8 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     range += 6;
     or = apr_pstrdup(r->pool, range);
     it = range;
-    for (i = 0; i < strlen(it); i++) {
-        if (*it == ',') {
+    while (*it) {
+        if (*it++ == ',') {
             ranges++;
         }
     }
