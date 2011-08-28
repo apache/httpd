@@ -275,9 +275,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     int i;
 
     indexes = apr_array_make(r->pool, 10, sizeof(indexes_t));
-    
-    /* Iterate through the brigade until reaching EOS or a bucket with
-     * unknown length. */
+
+    /*
+     * Iterate through the brigade until reaching EOS or a bucket with
+     * unknown length.
+     */
     for (e = APR_BRIGADE_FIRST(bb);
          (e != APR_BRIGADE_SENTINEL(bb) && !APR_BUCKET_IS_EOS(e)
           && e->length != (apr_size_t)-1);
@@ -285,10 +287,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         clength += e->length;
     }
 
-    /* Don't attempt to do byte range work if this brigade doesn't
+    /*
+     * Don't attempt to do byte range work if this brigade doesn't
      * contain an EOS, or if any of the buckets has an unknown length;
      * this avoids the cases where it is expensive to perform
-     * byteranging (i.e. may require arbitrary amounts of memory). */
+     * byteranging (i.e. may require arbitrary amounts of memory).
+     */
     if (!APR_BUCKET_IS_EOS(e) || clength <= 0) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);
@@ -350,7 +354,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         }
         found = 1;
 
-        /* For single range requests, we must produce Content-Range header.
+        /*
+         * For single range requests, we must produce Content-Range header.
          * Otherwise, we need to produce the multipart boundaries.
          */
         if (num_ranges == 1) {
@@ -482,7 +487,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         char *dash;
         char *errp;
         apr_off_t number, start, end;
-        
+
         if (!(dash = strchr(cur, '-'))) {
             break;
         }
@@ -511,7 +516,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
                 end = clength - 1;
             }
         }
-        
+
         if (start < 0) {
             start = 0;
         }
@@ -531,7 +536,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             continue;
         }
         in_merge = 0;
-      
+
         if (start >= ostart && end <= oend) { 
             in_merge = 1;
         } 
@@ -580,7 +585,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
                       "Sum of ranges not smaller than file, ignoring.");
         return 0;
     }
-        
+
     r->status = HTTP_PARTIAL_CONTENT;
     r->range = apr_array_pstrcat(r->pool, merged, ',');
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
