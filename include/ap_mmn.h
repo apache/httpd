@@ -348,6 +348,7 @@
  * 20110724.1 (2.3.15-dev) add NOT_IN_HTACCESS
  * 20110724.2 (2.3.15-dev) retries and retry_delay in util_ldap_state_t
  * 20110724.3 (2.3.15-dev) add util_varbuf.h / ap_varbuf API
+ * 20110724.4 (2.3.15-dev) add max_ranges to core_dir_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -355,7 +356,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110724
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) core: Add MaxRanges directive to control the number of ranges permitted
+     before returning the entire resource, with a default limit of 200. 
+     [Eric Covener]
+
   *) mod_cache: Ensure that CacheDisable can correctly appear within
      a LocationMatch. [Graham Leggett]
 
