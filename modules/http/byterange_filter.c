@@ -378,6 +378,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         }
 
         APR_BRIGADE_CONCAT(bsend, tmpbb);
+        if (i && i % 32 == 0) {
+            /* Every now and then, pass what we have down the filter chain */
+            if ((rv = ap_pass_brigade(f->next, bsend)) != APR_SUCCESS)
+                return rv;
+            apr_brigade_cleanup(bsend);
+        }
     }
 
     if (found == 0) {
