@@ -130,6 +130,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +0: covener did you see Jim's initial concern on introducing the 
         ap_construct_url() in maintenance?  This dissuaded me from 
         proposing the same.
+    sf replies: I think that was mainly refering to the fact that in the 
+                !ap_is_url(ret) case, the trunk version returns internal
+                server error while the 2.2 version just does nothing.
+                In that case, there is a log message with level error, but
+                that is not the one I want to change.
 
   * mod_deflate: Stop compressing HEAD requests if there is not Content-Length
     header
