@@ -142,7 +142,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     request = create_request(ctx, cert, &certID, s, pool);
     if (request) {
         apr_interval_time_t to = sc->server->ocsp_responder_timeout == UNSET ?
-                                 DEFAULT_OCSP_TIMEOUT :
+                                 apr_time_from_sec(DEFAULT_OCSP_TIMEOUT) :
                                  sc->server->ocsp_responder_timeout;
         response = modssl_dispatch_ocsp_request(ruri, to, request, c, pool);
     }
