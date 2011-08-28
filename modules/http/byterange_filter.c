@@ -539,9 +539,9 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         }
         in_merge = 0;
 
-        if (start >= ostart && end <= oend) { 
+        if (start >= ostart && end <= oend) {
             in_merge = 1;
-        } 
+        }
 
         if (start < ostart && end >= ostart-1) {
             ostart = start;
