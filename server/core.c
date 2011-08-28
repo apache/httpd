@@ -178,6 +178,8 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->enable_sendfile = ENABLE_SENDFILE_UNSET;
     conf->allow_encoded_slashes = 0;
     conf->decode_encoded_slashes = 0;
+ 
+    conf->max_ranges = -1;
 
     return (void *)conf;
 }
@@ -396,6 +398,8 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
             ap_merge_log_config(base->log, conf->log);
         }
     }
+
+    conf->max_ranges = new->max_ranges != -1 ? new->max_ranges : base->max_ranges;
 
     return (void*)conf;
 }
@@ -3260,6 +3264,16 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
     return NULL;
 }
 
+static const char *set_max_ranges(cmd_parms *cmd, void *conf_, const char *arg)
+{
+    core_dir_config *conf = conf_;
+
+    conf->max_ranges = atoi(arg);
+    if (conf->max_ranges < 0)
+        return "MaxRanges requires a non-negative integer (0 = unlimited)";
+
+    return NULL;
+}
 AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
 {
     core_dir_config *conf;
@@ -3876,6 +3890,9 @@ AP_INIT_TAKE1("LimitXMLRequestBody", set_limit_xml_req_body, NULL, OR_ALL,
 AP_INIT_RAW_ARGS("Mutex", ap_set_mutex, NULL, RSRC_CONF,
                  "mutex (or \"default\") and mechanism"),
 
+AP_INIT_TAKE1("MaxRanges", set_max_ranges, NULL, RSRC_CONF|ACCESS_CONF,
+              "Maximum number of Ranges in a request before returning the entire "
+              "resource, or 0 for unlimited"),
 /* System Resource Controls */
 #ifdef RLIMIT_CPU
 AP_INIT_TAKE12("RLimitCPU", set_limit_cpu,

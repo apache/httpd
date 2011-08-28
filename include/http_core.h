@@ -605,6 +605,9 @@ typedef struct {
     /** Table of directives allowed per AllowOverrideList */
     apr_table_t *override_list;
 
+    /** Number of Ranges before returning HTTP_OK, 0/unlimited -1/unset. **/
+    int max_ranges;
+
 } core_dir_config;
 
 /* macro to implement off by default behaviour */
