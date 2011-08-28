@@ -92,7 +92,7 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     const char *s;
     apr_size_t len;
     apr_uint64_t start64, end64;
-    apr_off_t pofft;
+    apr_off_t pofft = 0;
 
     /*
      * Once we know that start and end are >= 0 convert everything to apr_uint64_t.
