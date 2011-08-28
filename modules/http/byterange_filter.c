@@ -62,7 +62,7 @@
 APLOG_USE_MODULE(http);
 
 static int ap_set_byterange(request_rec *r, apr_off_t clength,
-                            apr_array_header_t *indexes);
+                            apr_array_header_t **indexes);
 
 /*
  * Here we try to be compatible with clients that want multipart/x-byteranges
@@ -80,6 +80,7 @@ static int use_range_x(request_rec *r)
 }
 
 #define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
+#define MAX_PREALLOC_RANGES 100
 
 static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                                        apr_bucket_brigade *bbout,
@@ -274,8 +275,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     indexes_t *idx;
     int i;
 
-    indexes = apr_array_make(r->pool, 10, sizeof(indexes_t));
-
     /*
      * Iterate through the brigade until reaching EOS or a bucket with
      * unknown length.
@@ -298,7 +297,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
-    num_ranges = ap_set_byterange(r, clength, indexes);
+    num_ranges = ap_set_byterange(r, clength, &indexes);
 
     /* We have nothing to do, get out of the way. */
     if (num_ranges == 0) {
@@ -415,7 +414,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 }
 
 static int ap_set_byterange(request_rec *r, apr_off_t clength,
-                            apr_array_header_t *indexes)
+                            apr_array_header_t **indexes)
 {
     const char *range, *or;
     const char *if_range;
@@ -428,6 +427,8 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     int in_merge = 0;
     indexes_t *idx;
     int overlaps = 0, reversals = 0;
+    int i, ranges = 1;
+    const char *it;
 
     if (r->assbackwards) {
         return 0;
@@ -484,7 +485,17 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
     range += 6;
     or = apr_pstrdup(r->pool, range);
-    merged = apr_array_make(r->pool, 10, sizeof(char *));
+    it = range;
+    for (i = 0; i < strlen(it); i++) {
+        if (*it == ',') {
+            ranges++;
+        }
+    }
+    if (ranges > MAX_PREALLOC_RANGES) {
+        ranges = MAX_PREALLOC_RANGES;
+    }
+    *indexes = apr_array_make(r->pool, ranges, sizeof(indexes_t));
+    merged = apr_array_make(r->pool, ranges, sizeof(char *));
     while ((cur = ap_getword(r->pool, &range, ','))) {
         char *dash;
         char *errp;
@@ -560,7 +571,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             new = (char **)apr_array_push(merged);
             *new = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
                                     ostart, oend);
-            idx = (indexes_t *)apr_array_push(indexes);
+            idx = (indexes_t *)apr_array_push(*indexes);
             idx->start = ostart;
             idx->end = oend;
             sum_lengths += oend - ostart + 1;
@@ -576,7 +587,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         new = (char **)apr_array_push(merged);
         *new = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
                             ostart, oend);
-        idx = (indexes_t *)apr_array_push(indexes);
+        idx = (indexes_t *)apr_array_push(*indexes);
         idx->start = ostart;
         idx->end = oend;
         sum_lengths += oend - ostart + 1;
