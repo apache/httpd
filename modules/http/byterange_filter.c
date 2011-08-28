@@ -433,7 +433,8 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         return 0;
     }
 
-    /* Check for Range request-header (HTTP/1.1) or Request-Range for
+    /*
+     * Check for Range request-header (HTTP/1.1) or Request-Range for
      * backwards-compatibility with second-draft Luotonen/Franks
      * byte-ranges (e.g. Netscape Navigator 2-3).
      *
@@ -463,7 +464,8 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
        return 0;
     }
 
-    /* Check the If-Range header for Etag or Date.
+    /*
+     * Check the If-Range header for Etag or Date.
      * Note that this check will return false (as required) if either
      * of the two etags are weak.
      */
@@ -482,7 +484,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
     range += 6;
     or = apr_pstrdup(r->pool, range);
-    merged = apr_array_make(r->pool, 10, sizeof(char *));;
+    merged = apr_array_make(r->pool, 10, sizeof(char *));
     while ((cur = ap_getword(r->pool, &range, ','))) {
         char *dash;
         char *errp;
