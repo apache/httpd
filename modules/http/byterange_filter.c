@@ -441,7 +441,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 static int ap_set_byterange(request_rec *r, apr_off_t clength,
                             apr_array_header_t **indexes)
 {
-    const char *range, *or;
+    const char *range;
     const char *if_range;
     const char *match;
     const char *ct;
@@ -509,13 +509,13 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     }
 
     range += 6;
-    or = apr_pstrdup(r->pool, range);
     it = range;
     while (*it) {
         if (*it++ == ',') {
             ranges++;
         }
     }
+    it = range;
     if (ranges > MAX_PREALLOC_RANGES) {
         ranges = MAX_PREALLOC_RANGES;
     }
@@ -628,7 +628,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     r->range = apr_array_pstrcat(r->pool, merged, ',');
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "Range: %s | %s (%d : %d : %"APR_OFF_T_FMT")",
-                  or, r->range, overlaps, reversals, clength);
+                  it, r->range, overlaps, reversals, clength);
 
     return num_ranges;
 }
