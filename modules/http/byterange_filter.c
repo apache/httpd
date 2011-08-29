@@ -159,12 +159,7 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                      * the correct bucket for splitting.
                      */
                     while (start64 - off_first > (apr_uint64_t)copy->length) {
-                        apr_bucket *tmp;
-                        int i = 0;
-                        if (i++ >= 99999)
-                            return APR_EINVAL;
-
-                        tmp = APR_BUCKET_NEXT(copy);
+                        apr_bucket *tmp = APR_BUCKET_NEXT(copy);
                         off_first += (apr_uint64_t)copy->length;
                         APR_BUCKET_REMOVE(copy);
                         apr_bucket_destroy(copy);
