@@ -92,11 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_reqtimeout: Disable keep-alive after read timeout
-    Trunk patch: http://svn.apache.org/viewvc?rev=1103213&view=rev
-    2.2.x patch: trunk patch works except for CHANGES
-    +1: sf, covener, jim
-
   * mod_authnz_ldap: Treat 'constraint violation' as auth denied, not as
     internal server error.
     Trunk patch: http://svn.apache.org/viewvc?rev=1125646&view=rev
