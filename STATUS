@@ -92,6 +92,23 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_deflate: Stop compressing HEAD requests if there is not Content-Length
+    header
+    Trunk patch: http://svn.apache.org/viewvc?rev=958253&view=rev
+    2.2.x patch: trunk patch works with offset
+    +1: sf, covener, jim
+
+  * mod_reqtimeout: Disable keep-alive after read timeout
+    Trunk patch: http://svn.apache.org/viewvc?rev=1103213&view=rev
+    2.2.x patch: trunk patch works except for CHANGES
+    +1: sf, covener, jim
+
+  * mod_authnz_ldap: Treat 'constraint violation' as auth denied, not as
+    internal server error.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1125646&view=rev
+    2.2.x patch: trunk patch works except for CHANGES
+    +1: sf, covener, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -117,23 +134,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 server error while the 2.2 version just does nothing.
                 In that case, there is a log message with level error, but
                 that is not the one I want to change.
-
-  * mod_deflate: Stop compressing HEAD requests if there is not Content-Length
-    header
-    Trunk patch: http://svn.apache.org/viewvc?rev=958253&view=rev
-    2.2.x patch: trunk patch works with offset
-    +1: sf, covener, jim
-
-  * mod_reqtimeout: Disable keep-alive after read timeout
-    Trunk patch: http://svn.apache.org/viewvc?rev=1103213&view=rev
-    2.2.x patch: trunk patch works except for CHANGES
-    +1: sf, covener, jim
-
-  * mod_authnz_ldap: Treat 'constraint violation' as auth denied, not as
-    internal server error.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1125646&view=rev
-    2.2.x patch: trunk patch works except for CHANGES
-    +1: sf, covener, jim
 
   * mod_filter: fix parsing of regexps containing slashes
     PR 51434 (and 51435, which includes the fix)
