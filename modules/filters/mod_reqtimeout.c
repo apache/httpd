@@ -307,6 +307,13 @@ out:
          * 2s (SECONDS_TO_LINGER).
          */
         apr_table_setn(f->c->notes, "short-lingering-close", "1");
+
+        /*
+         * Also, we must not allow keep-alive requests, as
+         * ap_finalize_protocol() may ignore our error status (if the timeout
+         * happened on a request body that is discarded).
+         */
+        f->c->keepalive = AP_CONN_CLOSE;
     }
     return rv;
 }
