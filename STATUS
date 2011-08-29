@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: All changes to modules/http/byterange_filter.c from r1161534 to
                  r1162687.
     2.2.x patch: http://people.apache.org/~sf/CVE-2011-3192_2.2.diff
-    +1: sf, jim (with r1162669 and r1162687 added)
+    +1: sf, jim (with r1162669 and r1162687 added), rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
