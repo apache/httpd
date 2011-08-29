@@ -137,6 +137,7 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             if (off_first != start64) {
                 rv = apr_bucket_split(copy, (apr_size_t)(start64 - off_first));
                 if (rv == APR_ENOTIMPL) {
+                    int i;
                     rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
                     if (rv != APR_SUCCESS) {
                         apr_brigade_cleanup(bbout);
@@ -147,9 +148,10 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                      * of shorter length. So read and delete until we reached
                      * the correct bucket for splitting.
                      */
+                    i = 0;
                     while (start64 - off_first > (apr_uint64_t)copy->length) {
                         apr_bucket *tmp;
-                        int i = 0;
+                        /* don't allow inf. spin */
                         if (i++ >= 99999)
                             return APR_EINVAL;
 
