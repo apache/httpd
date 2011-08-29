@@ -582,6 +582,19 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         apr_bucket *b;
         apr_size_t len;
 
+        /*
+         * Optimization: If we are a HEAD request and bytes_sent is not zero
+         * it means that we have passed the content-length filter once and
+         * have more data to sent. This means that the content-length filter
+         * could not determine our content-length for the response to the
+         * HEAD request anyway (the associated GET request would deliver the
+         * body in chunked encoding) and we can stop compressing.
+         */
+        if (r->header_only && r->bytes_sent) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
+        }
+
         e = APR_BRIGADE_FIRST(bb);
 
         if (APR_BUCKET_IS_EOS(e)) {
