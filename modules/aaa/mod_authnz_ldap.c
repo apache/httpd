@@ -465,6 +465,12 @@ start_over:
                  : (LDAP_INSUFFICIENT_RIGHTS == result) ? AUTH_DENIED
 #endif
 #endif
+#ifdef LDAP_CONSTRAINT_VIOLATION
+    /* At least Sun Directory Server sends this if a user is
+     * locked. This is not covered by LDAP_SECURITY_ERROR.
+     */
+                 : (LDAP_CONSTRAINT_VIOLATION == result) ? AUTH_DENIED
+#endif
                  : AUTH_GENERAL_ERROR;
     }
 
