@@ -184,7 +184,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy_ajp: Ignore flushing if headers have not been sent.
     Trunk patch: http://svn.apache.org/viewvc?rev=1153531&view=rev
     2.2.x patch: http://people.apache.org/~rpluem/patches/51608.diff
-    +1: rpluem
+    +1: rpluem, jim
 
   * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
     Adds a new function in ssl_util_ssl.c SSL_X509_INFO_create_chain that will
@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: All changes to modules/http/byterange_filter.c from r1161534 to
                  r1162687.
     2.2.x patch: http://people.apache.org/~sf/CVE-2011-3192_2.2.diff
-    +1: sf
+    +1: sf, jim (with r1162669 and r1162687 added)
 
 PATCHES/ISSUES THAT ARE STALLED
 
