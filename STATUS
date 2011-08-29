@@ -202,6 +202,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1151654
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.19.AllowOverrideList.patch
 
+  * core: Fix CVE-2011-3192
+    Trunk patch: All changes to modules/http/byterange_filter.c from r1161534 to
+                 r1162687.
+    2.2.x patch: http://people.apache.org/~sf/CVE-2011-3192_2.2.diff
+    +1: sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
