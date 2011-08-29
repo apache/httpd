@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.20
 
+  *) SECURITY: CVE-2011-3192 (cve.mitre.org)
+     core: Fix handling of byte-range requests to use less memory, to avoid
+     denial of service. If the sum of all ranges in a request is larger than
+     the original file, ignore the ranges and send the complete file.
+     PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener]
+
   *) mod_authnz_ldap: If the LDAP server returns constraint violation,
      don't treat this as an error but as "auth denied". [Stefan Fritsch]
 
