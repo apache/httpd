@@ -391,7 +391,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         }
 
         APR_BRIGADE_CONCAT(bsend, tmpbb);
-        if (i && i % 32 == 0) {
+        if (i && !(i & 0x1F)) {
             /*
              * Every now and then, pass what we have down the filter chain.
              * In this case, the content-length filter cannot calculate and
