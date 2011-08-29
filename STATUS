@@ -92,12 +92,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_deflate: Stop compressing HEAD requests if there is not Content-Length
-    header
-    Trunk patch: http://svn.apache.org/viewvc?rev=958253&view=rev
-    2.2.x patch: trunk patch works with offset
-    +1: sf, covener, jim
-
   * mod_reqtimeout: Disable keep-alive after read timeout
     Trunk patch: http://svn.apache.org/viewvc?rev=1103213&view=rev
     2.2.x patch: trunk patch works except for CHANGES
