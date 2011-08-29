@@ -184,7 +184,12 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
             str = apr_table_get(r->headers_in, provider->value);
             break;
         case RESPONSE_HEADERS:
+            /* Try r->headers_out first, fall back on err_headers_out. */
             str = apr_table_get(r->headers_out, provider->value);
+            if (str) {
+                break;
+            }
+            str = apr_table_get(r->err_headers_out, provider->value);
             break;
         case SUBPROCESS_ENV:
             str = apr_table_get(r->subprocess_env, provider->value);
