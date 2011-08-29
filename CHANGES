@@ -4,6 +4,9 @@ Changes with Apache 2.2.20
   *) mod_authnz_ldap: If the LDAP server returns constraint violation,
      don't treat this as an error but as "auth denied". [Stefan Fritsch]
 
+  *) mod_filter: Fix FilterProvider conditions of type "resp=" (response
+     headers) for CGI. [Joe Orton, Rainer Jung]
+
   *) mod_reqtimeout: Fix a timed out connection going into the keep-alive
      state after a timeout when discarding a request body. PR 51103.
      [Stefan Fritsch]
