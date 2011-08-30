@@ -221,7 +221,7 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                         }
                     }
                     if (end64 < off_last + (apr_uint64_t)copy->length - 1) {
-                        rv = apr_bucket_split(copy, end64 + 1 - off_last);
+                        rv = apr_bucket_split(copy, (apr_size_t)(end64 + 1 - off_last));
                         if (rv != APR_SUCCESS) {
                             apr_brigade_cleanup(bbout);
                             return rv;
