@@ -259,6 +259,20 @@ static int get_max_ranges(request_rec *r) {
     return core_conf->max_ranges == -1 ? DEFAULT_MAX_RANGES : core_conf->max_ranges;
 }
 
+static apr_status_t send_416(ap_filter_t *f, apr_bucket_brigade *tmpbb)
+{
+    apr_bucket *e;
+    conn_rec *c = f->r->connection;
+    ap_remove_output_filter(f);
+    f->r->status = HTTP_OK;
+    e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL,
+                               f->r->pool, c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(tmpbb, e);
+    e = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(tmpbb, e);
+    return ap_pass_brigade(f->next, tmpbb);
+}
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                                          apr_bucket_brigade *bb)
 {
@@ -313,6 +327,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
+    /* this brigade holds what we will be sending */
+    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
+
+    if (num_ranges < 0)
+        return send_416(f, bsend);
+
     if (num_ranges > 1) {
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
@@ -342,8 +362,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
     }
 
-    /* this brigade holds what we will be sending */
-    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
     tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
 
     idx = (indexes_t *)indexes->elts;
@@ -401,15 +419,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     }
 
     if (found == 0) {
-        ap_remove_output_filter(f);
-        r->status = HTTP_OK;
         /* bsend is assumed to be empty if we get here. */
-        e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL,
-                                   r->pool, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bsend, e);
-        e = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bsend, e);
-        return ap_pass_brigade(f->next, bsend);
+        return send_416(f, bsend);
     }
 
     if (num_ranges > 1) {
@@ -442,7 +453,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     const char *ct;
     char *cur, **new;
     apr_array_header_t *merged;
-    int num_ranges = 0;
+    int num_ranges = 0, unsatisfiable = 0;
     apr_off_t ostart = 0, oend = 0, sum_lengths = 0;
     int in_merge = 0;
     indexes_t *idx;
@@ -521,14 +532,22 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         char *errp;
         apr_off_t number, start, end;
 
+	if (!*cur)
+	    break;
+
+        /*
+         * Per RFC 2616 14.35.1: If there is at least one syntactically invalid
+         * byte-range-spec, we must ignore the whole header.
+         */
+
         if (!(dash = strchr(cur, '-'))) {
-            break;
+            return 0;
         }
 
         if (dash == range) {
             /* In the form "-5" */
             if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
-                break;
+                return 0;
             }
             start = clength - number;
             end = clength - 1;
@@ -536,14 +555,17 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         else {
             *dash++ = '\0';
             if (apr_strtoff(&number, cur, &errp, 10) || *errp) {
-                break;
+                return 0;
             }
             start = number;
             if (*dash) {
                 if (apr_strtoff(&number, dash, &errp, 10) || *errp) {
-                    break;
+                    return 0;
                 }
                 end = number;
+                if (start > end) {
+                    return 0;
+                }
             }
             else {                  /* "5-" */
                 end = clength - 1;
@@ -553,14 +575,14 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         if (start < 0) {
             start = 0;
         }
+        if (start >= clength) {
+            unsatisfiable = 1;
+            continue;
+        }
         if (end >= clength) {
             end = clength - 1;
         }
 
-        if (start > end) {
-            /* ignore? count? */
-            break;
-        }
         if (!in_merge) {
             /* new set */
             ostart = start;
@@ -612,6 +634,11 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         idx->end = oend;
         sum_lengths += oend - ostart + 1;
         num_ranges++;
+    }
+    else if (num_ranges == 0 && unsatisfiable) {
+        /* If all ranges are unsatisfiable, we should return 416 */
+        	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "0U");
+        return -1;
     }
     if (sum_lengths > clength) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
