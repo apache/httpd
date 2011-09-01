@@ -544,7 +544,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             return 0;
         }
 
-        if (dash == range) {
+        if (dash == cur) {
             /* In the form "-5" */
             if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
                 return 0;
