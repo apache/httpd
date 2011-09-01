@@ -549,6 +549,9 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
                 return 0;
             }
+            if (number < 1) {
+                return 0;
+            }
             start = clength - number;
             end = clength - 1;
         }
