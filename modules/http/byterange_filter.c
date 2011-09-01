@@ -532,8 +532,8 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         char *errp;
         apr_off_t number, start, end;
 
-	if (!*cur)
-	    break;
+        if (!*cur)
+            break;
 
         /*
          * Per RFC 2616 14.35.1: If there is at least one syntactically invalid
