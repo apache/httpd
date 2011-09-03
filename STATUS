@@ -93,12 +93,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Fix CVE-2011-3192
-    Trunk patch: All changes to modules/http/byterange_filter.c from r1161534 to
-                 r1162687.
-    2.2.x patch: http://people.apache.org/~sf/CVE-2011-3192_2.2.diff
-    +1: sf, jim (with r1162669 and r1162687 added), rpluem
-
+  * core: add MaxRanges directive and limit maximum # of ranges to 200 by default
+    Trunk patch: http://svn.apache.org/viewvc?rev=1162584&view=rev
+    2.2.x patch: http://people.apache.org/~covener/patches/http-2.2.x-maxranges.diff
+    +1 covener, fuankg (we should also add r1164861),
+       sf (also add docs r1162587)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -178,12 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     -0 covener: feels like a 2.4 feature && needs druggeri's vote?
     sf agrees with covener. This can cause segfaults with some directives,
        see r1153676, r1153687.
-
-  * core: add MaxRanges directive and limit maximum # of ranges to 200 by default
-    Trunk patch: http://svn.apache.org/viewvc?rev=1162584&view=rev
-    2.2.x patch: http://people.apache.org/~covener/patches/http-2.2.x-maxranges.diff
-    +1 covener, fuankg (we should also add r1164861),
-       sf (also add docs r1162587)
 
   * mod_dav_fs: Fix segfault and log proper error message if apr DBM driver
     cannot be loaded. PR 51751
