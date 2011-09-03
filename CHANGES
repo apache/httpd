@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
 
+ *) mod_rewrite: Check validity of each internal (int:) RewriteMap even if the
+    RewriteEngine is disabled in server context, avoiding a crash while
+    referencing the invalid int: map at runtime. PR 50994.
+    [Ben Noordhuis <info noordhuis nl>]
+
   *) core: Add MaxRanges directive to control the number of ranges permitted
      before returning the entire resource, with a default limit of 200.
      [Eric Covener]
