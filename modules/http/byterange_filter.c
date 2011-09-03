@@ -94,8 +94,6 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     apr_bucket *first = NULL, *last = NULL, *out_first = NULL, *e;
     apr_uint64_t pos = 0, off_first = 0, off_last = 0;
     apr_status_t rv;
-    const char *s;
-    apr_size_t len;
     apr_uint64_t start64, end64;
     apr_off_t pofft = 0;
 
@@ -147,43 +145,9 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
         if (e == first) {
             if (off_first != start64) {
                 rv = apr_bucket_split(copy, (apr_size_t)(start64 - off_first));
-                if (rv == APR_ENOTIMPL) {
-                    rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                    if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
-                    }
-                    /*
-                     * The read above might have morphed copy in a bucket
-                     * of shorter length. So read and delete until we reached
-                     * the correct bucket for splitting.
-                     */
-                    while (start64 - off_first > (apr_uint64_t)copy->length) {
-                        apr_bucket *tmp = APR_BUCKET_NEXT(copy);
-                        off_first += (apr_uint64_t)copy->length;
-                        APR_BUCKET_REMOVE(copy);
-                        apr_bucket_destroy(copy);
-                        copy = tmp;
-                        rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                    if (start64 > off_first) {
-                        rv = apr_bucket_split(copy, (apr_size_t)(start64 - off_first));
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                    else {
-                        copy = APR_BUCKET_PREV(copy);
-                    }
-                }
-                else if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
+                if (rv != APR_SUCCESS) {
+                    apr_brigade_cleanup(bbout);
+                    return rv;
                 }
                 out_first = APR_BUCKET_NEXT(copy);
                 APR_BUCKET_REMOVE(copy);
@@ -200,37 +164,9 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             }
             if (end64 - off_last != (apr_uint64_t)e->length) {
                 rv = apr_bucket_split(copy, (apr_size_t)(end64 + 1 - off_last));
-                if (rv == APR_ENOTIMPL) {
-                    rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                    if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
-                    }
-                    /*
-                     * The read above might have morphed copy in a bucket
-                     * of shorter length. So read until we reached
-                     * the correct bucket for splitting.
-                     */
-                    while (end64 + 1 - off_last > (apr_uint64_t)copy->length) {
-                        off_last += (apr_uint64_t)copy->length;
-                        copy = APR_BUCKET_NEXT(copy);
-                        rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                    if (end64 < off_last + (apr_uint64_t)copy->length - 1) {
-                        rv = apr_bucket_split(copy, (apr_size_t)(end64 + 1 - off_last));
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                }
-                else if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
+                if (rv != APR_SUCCESS) {
+                    apr_brigade_cleanup(bbout);
+                    return rv;
                 }
                 copy = APR_BUCKET_NEXT(copy);
                 if (copy != APR_BRIGADE_SENTINEL(bbout)) {
