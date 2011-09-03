@@ -93,14 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: add MaxRanges directive and limit maximum # of ranges to 200 by default
-    Trunk patch: http://svn.apache.org/viewvc?rev=1162584&view=rev
-    2.2.x patch: http://people.apache.org/~covener/patches/http-2.2.x-maxranges.diff
-    2.2.x patch (with suggestions): 
-                 http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-2.diff
-    +1 covener, fuankg (we should also add r1164861),
-       sf (also add docs r1162587)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
