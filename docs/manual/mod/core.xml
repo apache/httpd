@@ -2307,7 +2307,7 @@ resource </description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in Apache HTTP Server 2.3.15 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.2.21 and later</compatibility>
 
 <usage>
     <p>The <directive>MaxRanges</directive> directive
