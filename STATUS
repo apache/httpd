@@ -168,12 +168,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     druggeri note: 2.2 documentation patch needed
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1160863
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.19-SSLProxyMachineCertificateChainFile.patch
+    +0 covener: needs r1162103 && needs druggeri's vote?
 
   * core: Add AllowOverrideList directive
     Discussed on mailing list http://marc.info/?l=apache-httpd-dev&m=131111915903270&w=2
     druggeri note: 2.2 documentation patch needed from trunk patch
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1151654
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2.19.AllowOverrideList.patch
+    -0 covener: feels like a 2.4 feature && needs druggeri's vote?
+
+  * core: add MaxRanges directive and limit maximum # of ranges to 200 by default
+    Trunk patch: http://svn.apache.org/viewvc?rev=1162584&view=rev
+    2.2.x patch: http://people.apache.org/~covener/patches/http-2.2.x-maxranges.diff
+    +1 covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
