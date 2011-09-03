@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
 
+  *) core: Add MaxRanges directive to control the number of ranges permitted
+     before returning the entire resource, with a default limit of 200.
+     [Eric Covener]
 
 Changes with Apache 2.2.20
 

@@ -570,6 +570,10 @@ typedef struct {
 
 
     unsigned int decode_encoded_slashes : 1; /* whether to decode encoded slashes in URLs */
+
+    /** Number of Ranges before returning HTTP_OK, 0/unlimited -1/unset. **/
+    int max_ranges;
+
 } core_dir_config;
 
 /* Per-server core configuration */

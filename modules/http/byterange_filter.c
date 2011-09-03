@@ -55,6 +55,10 @@
 #include <unistd.h>
 #endif
 
+#ifndef DEFAULT_MAX_RANGES
+#define DEFAULT_MAX_RANGES 200
+#endif
+
 static int ap_set_byterange(request_rec *r, apr_off_t clength,
                             apr_array_header_t **indexes);
 
@@ -243,6 +247,12 @@ typedef struct indexes_t {
     apr_off_t end;
 } indexes_t;
 
+static int get_max_ranges(request_rec *r) { 
+    core_dir_config *core_conf = ap_get_module_config(r->per_dir_config, 
+                                                      &core_module);
+    return core_conf->max_ranges == -1 ? DEFAULT_MAX_RANGES : core_conf->max_ranges;
+}
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                                          apr_bucket_brigade *bb)
 {
@@ -263,6 +273,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     indexes_t *idx;
     int original_status;
     int i;
+    int max_ranges = get_max_ranges(r);
 
     /*
      * Iterate through the brigade until reaching EOS or a bucket with
@@ -290,7 +301,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     num_ranges = ap_set_byterange(r, clength, &indexes);
 
     /* We have nothing to do, get out of the way. */
-    if (num_ranges == 0) {
+    if (num_ranges == 0 || (max_ranges > 0 && num_ranges > max_ranges)) {
         r->status = original_status;
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);
