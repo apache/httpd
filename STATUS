@@ -116,8 +116,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 44020
     Trunk patch: Was never in trunk.
     2.2.x patch: http://people.apache.org/~sf/PR44020.diff
-    +1: sf
-    +0: covener did you see Jim's initial concern on introducing the
+    +1: sf, covener
+    covener did you see Jim's initial concern on introducing the
         ap_construct_url() in maintenance?  This dissuaded me from
         proposing the same.
     sf replies: I think that was mainly refering to the fact that in the
