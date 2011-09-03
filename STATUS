@@ -182,6 +182,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~covener/patches/http-2.2.x-maxranges.diff
     +1 covener, fuankg (we should also add r1164861)
 
+  * mod_dav_fs: Fix segfault and log proper error message if apr DBM driver
+    cannot be loaded. PR 51751
+    Trunk patch: http://svn.apache.org/viewvc?rev=1133152&view=rev
+                 http://svn.apache.org/viewvc?rev=1133158&view=rev
+    2.2.x patch: http://people.apache.org/~sf/PR51751.diff
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
