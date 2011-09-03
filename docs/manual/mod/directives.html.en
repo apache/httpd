@@ -272,6 +272,7 @@
 <li><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><a href="core.html#maxranges">MaxRanges</a></li>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
 <li><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread</a></li>
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
