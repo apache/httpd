@@ -93,7 +93,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  * mod_rewrite: validate RewriteMap int:foo even if RewriteEngine is "off" to avoid crash.
+    Trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_rewrite.c?view=diff&r1=1154807&r2=1154808&pathrev=1154808
+    2.2.x patch: trunk works
+    +1 covener, sf, trawick
+
+  * mod_filter: fix parsing of regexps containing slashes
+    PR 51434 (and 51435, which includes the fix)
+    Trunk patch: N/A
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
+    +1: niq, sf, trawick
+
+ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
@@ -119,12 +130,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 In that case, there is a log message with level error, but
                 that is not the one I want to change.
 
-  * mod_filter: fix parsing of regexps containing slashes
-    PR 51434 (and 51435, which includes the fix)
-    Trunk patch: N/A
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
-    +1: niq, sf
-
   * mod_win32: Invert logic for env var UTF-8 fixing.
     Now we exclude a list of vars which we know for sure they
     dont hold UTF-8 chars; all other vars will be fixed. This
@@ -141,11 +146,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1152379&view=rev
     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_reuse_flag.patch
     +1: rjung
-
-  * mod_rewrite: validate RewriteMap int:foo even if RewriteEngine is "off" to avoid crash.
-    Trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_rewrite.c?view=diff&r1=1154807&r2=1154808&pathrev=1154808
-    2.2.x patch: trunk works
-    +1 covener, sf
 
   * mod_proxy_ajp: Ignore flushing if headers have not been sent.
     Trunk patch: http://svn.apache.org/viewvc?rev=1153531&view=rev
@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=1133152&view=rev
                  http://svn.apache.org/viewvc?rev=1133158&view=rev
     2.2.x patch: http://people.apache.org/~sf/PR51751.diff
-    +1: sf
+    +1: sf, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
