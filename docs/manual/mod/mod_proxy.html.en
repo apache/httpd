@@ -1095,7 +1095,7 @@ through</td></tr>
 
     </table>
 
-    <p>If the Proxy directive scheme starts with the
+    <p>If the <code class="directive">ProxyPass</code> directive scheme starts with the
     <code>balancer://</code> (eg: <code>balancer://cluster/</code>, 
     any path information is ignored)  then a virtual worker that does not really
     communicate with the backend server will be created. Instead it is responsible
@@ -1152,6 +1152,7 @@ through</td></tr>
         <td>A single or comma-separated list of HTTP status codes. If set this will
         force the worker into error state when the backend returns any status code
         in the list. Worker recovery behaves the same as other worker errors.
+        Available with Apache HTTP Server 2.2.17 and later.
     </td></tr>
     
     </table>
