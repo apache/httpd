@@ -93,11 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_rewrite: validate RewriteMap int:foo even if RewriteEngine is "off" to avoid crash.
-    Trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_rewrite.c?view=diff&r1=1154807&r2=1154808&pathrev=1154808
-    2.2.x patch: trunk works
-    +1 covener, sf, trawick
-
   * mod_filter: fix parsing of regexps containing slashes
     PR 51434 (and 51435, which includes the fix)
     Trunk patch: N/A
