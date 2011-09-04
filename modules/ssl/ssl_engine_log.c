@@ -153,10 +153,10 @@ void ssl_log_cxerror(const char *file, int line, int level,
                 BIO_puts(bio, "(ERROR)");
 
             BIO_puts(bio, " / notbefore: ");
-            ASN1_UTCTIME_print(bio, X509_get_notBefore(cert));
+            ASN1_TIME_print(bio, X509_get_notBefore(cert));
 
             BIO_puts(bio, " / notafter: ");
-            ASN1_UTCTIME_print(bio, X509_get_notAfter(cert));
+            ASN1_TIME_print(bio, X509_get_notAfter(cert));
 
             BIO_puts(bio, "]");
 
