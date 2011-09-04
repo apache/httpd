@@ -99,18 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
     +1: niq, sf, trawick
 
- PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  * mod_cache: Realign the cache_quick_handler() to behave identically
-    to the default_handler() when reacting to errors when writing to the
-    filter stack. Stops APR errors appearing in access_log as result codes.
-    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
-    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
-    +1: minfrin
-    trawick: any reason it shouldn't be completely aligned with default_handler's
-             choice to return OK vs. 500?
-
   * Adjust inflated log severity.
     PR: 44020
     Trunk patch: Was never in trunk.
@@ -124,6 +112,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                 server error while the 2.2 version just does nothing.
                 In that case, there is a log message with level error, but
                 that is not the one I want to change.
+
+
+ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  * mod_cache: Realign the cache_quick_handler() to behave identically
+    to the default_handler() when reacting to errors when writing to the
+    filter stack. Stops APR errors appearing in access_log as result codes.
+    Trunk patches: http://svn.apache.org/viewvc?view=revision&revision=1003913
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-mod_cache-errorfix-22.patch
+    +1: minfrin
+    trawick: any reason it shouldn't be completely aligned with default_handler's
+             choice to return OK vs. 500?
 
   * mod_win32: Invert logic for env var UTF-8 fixing.
     Now we exclude a list of vars which we know for sure they
