@@ -93,12 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_filter: fix parsing of regexps containing slashes
-    PR 51434 (and 51435, which includes the fix)
-    Trunk patch: N/A
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27229
-    +1: niq, sf, trawick
-
   * Adjust inflated log severity.
     PR: 44020
     Trunk patch: Was never in trunk.
