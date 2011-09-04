@@ -63,8 +63,6 @@ void        SSL_set_app_data2(SSL *, void *);
 X509       *SSL_read_X509(char *, X509 **, pem_password_cb *);
 EVP_PKEY   *SSL_read_PrivateKey(char *, EVP_PKEY **, pem_password_cb *, void *);
 int         SSL_smart_shutdown(SSL *ssl);
-X509_STORE *SSL_X509_STORE_create(char *, char *);
-int         SSL_X509_STORE_lookup(X509_STORE *, int, X509_NAME *, X509_OBJECT *);
 char       *SSL_make_ciphersuite(apr_pool_t *, SSL *);
 BOOL        SSL_X509_isSGC(X509 *);
 BOOL        SSL_X509_getBC(X509 *, int *, int *);
