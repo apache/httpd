@@ -115,7 +115,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     PR: 44020
     Trunk patch: Was never in trunk.
     2.2.x patch: http://people.apache.org/~sf/PR44020.diff
-    +1: sf, covener
+    +1: sf, covener, jim
     covener did you see Jim's initial concern on introducing the
         ap_construct_url() in maintenance?  This dissuaded me from
         proposing the same.
@@ -140,7 +140,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   * mod_proxy_ajp: Respect "reuse" flag in END_RESPONSE
     Trunk patch: http://svn.apache.org/viewvc?rev=1152379&view=rev
     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_reuse_flag.patch
-    +1: rjung
+    +1: rjung, jim
 
   * mod_proxy_ajp: Ignore flushing if headers have not been sent.
     Trunk patch: http://svn.apache.org/viewvc?rev=1153531&view=rev
