@@ -490,9 +490,10 @@ RewriteRule ^index\.html$  newsite.html
 
                   <dt><code>REQUEST_URI</code></dt>
 
-                  <dd>The resource requested in the HTTP request
-                  line. (In the example above, this would be
-                  "/index.html".)</dd>
+                  <dd>The path component of the requested URI,
+                  such as "/index.html".  This notably excludes the
+                  query string which is available as as its own variable
+                  named <code>QUERY_STRING</code>.</dd>
 
                   <dt><code>REQUEST_FILENAME</code></dt>
 
