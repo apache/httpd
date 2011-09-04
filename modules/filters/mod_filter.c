@@ -581,7 +581,7 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
         break;
     case '/':
         provider->match_type = REGEX_MATCH;
-        rxend = ap_strchr_c(match, '/');
+        rxend = ap_strrchr_c(match, '/');
         if (!rxend) {
               return "Bad regexp syntax";
         }
