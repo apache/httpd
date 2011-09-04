@@ -119,7 +119,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
 
     mctx->crl_path            = NULL;
     mctx->crl_file            = NULL;
-    mctx->crl                 = NULL; /* set during module init */
+    mctx->crl_check_mode      = SSL_CRLCHECK_UNSET;
 
     mctx->auth.ca_cert_path   = NULL;
     mctx->auth.ca_cert_file   = NULL;
@@ -238,6 +238,7 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
 
     cfgMerge(crl_path, NULL);
     cfgMerge(crl_file, NULL);
+    cfgMerge(crl_check_mode, SSL_CRLCHECK_UNSET);
 
     cfgMergeString(auth.ca_cert_path);
     cfgMergeString(auth.ca_cert_file);
@@ -902,6 +903,39 @@ const char *ssl_cmd_SSLCARevocationFile(cmd_parms *cmd,
     return NULL;
 }
 
+static const char *ssl_cmd_crlcheck_parse(cmd_parms *parms,
+                                          const char *arg,
+                                          ssl_crlcheck_t *mode)
+{
+    if (strcEQ(arg, "none")) {
+        *mode = SSL_CRLCHECK_NONE;
+    }
+    else if (strcEQ(arg, "leaf")) {
+        *mode = SSL_CRLCHECK_LEAF;
+    }
+    else if (strcEQ(arg, "chain")) {
+        *mode = SSL_CRLCHECK_CHAIN;
+    }
+    else {
+        return apr_pstrcat(parms->temp_pool, parms->cmd->name,
+                           ": Invalid argument '", arg, "'",
+                           NULL);
+    }
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLCARevocationCheck(cmd_parms *cmd,
+                                         void *dcfg,
+                                         const char *arg)
+{   
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    const char *err;
+
+    return ssl_cmd_crlcheck_parse(cmd, arg, &sc->server->crl_check_mode);
+}
+        
 static const char *ssl_cmd_verify_parse(cmd_parms *parms,
                                         const char *arg,
                                         ssl_verify_t *id)
@@ -1379,6 +1413,15 @@ const char *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *cmd,
     return NULL;
 }
 
+const char *ssl_cmd_SSLProxyCARevocationCheck(cmd_parms *cmd,
+                                              void *dcfg,
+                                              const char *arg)
+{   
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    return ssl_cmd_crlcheck_parse(cmd, arg, &sc->proxy->crl_check_mode);
+}
+        
 const char *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *cmd,
                                                    void *dcfg,
                                                    const char *arg)

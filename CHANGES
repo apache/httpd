@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
+  *) mod_ssl: revamp CRL-based revocation checking when validating
+     certificates of clients or proxied servers. Completely delegate
+     CRL processing to OpenSSL, and add a new [Proxy]CARevocationCheck
+     directive for controlling the revocation checking mode. [Kaspar Brand]
+
   *) Fix a regression in the CVE-2011-3192 byterange fix.
      PR 51748. [low_priority <lowprio20 gmail.com>]
 

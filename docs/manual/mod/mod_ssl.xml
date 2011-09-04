@@ -1034,6 +1034,43 @@ SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLCARevocationCheck</name>
+<description>Enable CRL-based revocation checking</description>
+<syntax>SSLCARevocationCheck chain|leaf|none</syntax>
+<default>SSLCARevocationCheck none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+Enables certificate revocation list (CRL) checking. At least one of
+<directive module="mod_ssl">SSLCARevocationFile</directive>
+or <directive module="mod_ssl">SSLCARevocationPath</directive> must be
+configured. When set to <code>chain</code> (recommended setting),
+CRL checks are applied to all certificates in the chain, while setting it to
+<code>leaf</code> limits the checks to the end-entity cert.
+</p>
+<note>
+<title>When set to <code>chain</code> or <code>leaf</code>,
+CRLs <em>must</em> be available for successful validation</title>
+<p>
+Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
+no CRL(s) were found in any of the locations configured with
+<directive module="mod_ssl">SSLCARevocationFile</directive>
+or <directive module="mod_ssl">SSLCARevocationPath</directive>.
+With the introduction of this directive, the behavior has been changed:
+when checking is enabled, CRLs <em>must</em> be present for the validation
+to succeed - otherwise it will fail with an
+<code>"unable to get certificate CRL"</code> error.
+</p>
+</note>
+<example><title>Example</title>
+SSLCARevocationCheck chain
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLVerifyClient</name>
 <description>Type of Client Certificate verification</description>
 <syntax>SSLVerifyClient <em>level</em></syntax>
@@ -1780,6 +1817,44 @@ used alternatively and/or additionally to <directive
 module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
 <example><title>Example</title>
 SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyCARevocationCheck</name>
+<description>Enable CRL-based revocation checking for Remote Server Auth</description>
+<syntax>SSLProxyCARevocationCheck chain|leaf|none</syntax>
+<default>SSLProxyCARevocationCheck none</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+Enables certificate revocation list (CRL) checking for the
+<em>remote servers</em> you deal with. At least one of
+<directive module="mod_ssl">SSLProxyCARevocationFile</directive>
+or <directive module="mod_ssl">SSLProxyCARevocationPath</directive> must be
+configured. When set to <code>chain</code> (recommended setting),
+CRL checks are applied to all certificates in the chain, while setting it to
+<code>leaf</code> limits the checks to the end-entity cert.
+</p>
+<note>
+<title>When set to <code>chain</code> or <code>leaf</code>,
+CRLs <em>must</em> be available for successful validation</title>
+<p>
+Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
+no CRL(s) were found in any of the locations configured with
+<directive module="mod_ssl">SSLProxyCARevocationFile</directive>
+or <directive module="mod_ssl">SSLProxyCARevocationPath</directive>.
+With the introduction of this directive, the behavior has been changed:
+when checking is enabled, CRLs <em>must</em> be present for the validation
+to succeed - otherwise it will fail with an
+<code>"unable to get certificate CRL"</code> error.
+</p>
+</note>
+<example><title>Example</title>
+SSLProxyCARevocationCheck chain
 </example>
 </usage>
 </directivesynopsis>

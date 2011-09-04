@@ -326,6 +326,16 @@ typedef enum {
     || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE))
 
 /**
+  * CRL checking modes
+  */
+typedef enum {
+    SSL_CRLCHECK_UNSET = UNSET,
+    SSL_CRLCHECK_NONE  = 0,
+    SSL_CRLCHECK_LEAF  = 1,
+    SSL_CRLCHECK_CHAIN = 2
+} ssl_crlcheck_t;
+
+/**
  * Define the SSL pass phrase dialog types
  */
 typedef enum {
@@ -565,9 +575,9 @@ typedef struct {
     const char  *pkcs7;
 
     /** certificate revocation list */
-    const char  *crl_path;
-    const char  *crl_file;
-    X509_STORE  *crl;
+    const char    *crl_path;
+    const char    *crl_file;
+    ssl_crlcheck_t crl_check_mode;
 
 #ifdef HAVE_OCSP_STAPLING
     /** OCSP stapling options */
@@ -665,6 +675,7 @@ const char  *ssl_cmd_SSLCADNRequestPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCADNRequestFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLCARevocationCheck(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
@@ -688,6 +699,7 @@ const char  *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *, void *, const char *
 const char  *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCARevocationCheck(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *, void *, const char *);
