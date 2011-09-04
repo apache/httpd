@@ -93,20 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Adjust inflated log severity.
-    PR: 44020
-    Trunk patch: Was never in trunk.
-    2.2.x patch: http://people.apache.org/~sf/PR44020.diff
-    +1: sf, covener, jim
-    covener did you see Jim's initial concern on introducing the
-        ap_construct_url() in maintenance?  This dissuaded me from
-        proposing the same.
-    sf replies: I think that was mainly refering to the fact that in the
-                !ap_is_url(ret) case, the trunk version returns internal
-                server error while the 2.2 version just does nothing.
-                In that case, there is a log message with level error, but
-                that is not the one I want to change.
-
 
  PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
