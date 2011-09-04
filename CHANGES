@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
 
+  *) mod_alias: Adjust log severity of "incomplete redirection target"
+     message. PR 44020.
+
  *) mod_rewrite: Check validity of each internal (int:) RewriteMap even if the
     RewriteEngine is disabled in server context, avoiding a crash while
     referencing the invalid int: map at runtime. PR 50994.
