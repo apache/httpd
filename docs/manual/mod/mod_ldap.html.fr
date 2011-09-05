@@ -538,13 +538,27 @@ connexion</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Cette directive permet de spécifier le délai d'attente (en
-    secondes) pendant lequel le
-    module tentera de se connecter au serveur LDAP. Si une tentative de
-    connexion n'a pas abouti au bout de ce délai, soit une erreur sera
-    renvoyée, soit le module tentera de se connecter à un serveur LDAP
-    secondaire s'il en a été spécifié un. La valeur par défaut est de 10
-    secondes.</p>
+    <p>Cette directive configure l'option LDAP_OPT_NETWORK_TIMEOUT (ou
+    LDAP_OPT_CONNECT_TIMEOUT) dans la bibliothèque client LDAP
+    sous-jacente, si elle est disponible. Cette valeur représente la
+    durée pendant laquelle la bibliothèque client LDAP va attendre que
+    le processus de connexion TCP au serveur LDAP soit achevé.</p>
+
+    <p>Si la connexion n'a pas réussi avant ce délai, une erreur sera
+    renvoyée, ou la bibliothèque client LDAP tentera de se connecter à
+    un second serveur LDAP, s'il en a été défini un (via une liste de
+    noms d'hôtes séparés par des espaces dans la directive <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>).</p>
+
+    <p>La valeur par défaut est 10 secondes, si la bibliothèque client
+    LDAP liée avec le serveur supporte l'option
+    LDAP_OPT_NETWORK_TIMEOUT.</p>
+
+    <div class="note">LDAPConnectionTimeout n'est disponible que si la bibliothèque client
+    LDAP liée avec le serveur supporte l'option
+    LDAP_OPT_NETWORK_TIMEOUT (ou LDAP_OPT_CONNECT_TIMEOUT), et le
+    comportement final est entièrement dicté par la bibliothèque client
+    LDAP.
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -622,7 +636,7 @@ restent valides</td></tr>
 alternatifs (referrals) avant l'abandon de la requête
 LDAP.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferralHopLimit <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPReferralHopLimit 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Dépend du SDK, en général entre 5 et 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -632,6 +646,10 @@ LDAP.</td></tr>
     cette directive permet de définir le nombre maximum de sauts vers
     des serveurs alternatifs (referrals) avant l'abandon de la requête
     LDAP.</p>
+
+<div class="warning">
+<p>L'ajustement de ce paramètre n'est pas commun à tous les SDKs LDAP.</p>
+</div>    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -749,6 +767,8 @@ connexion.</td></tr>
     cours de définition, en fonction du SDK LDAP utilisé. Les types
     supportés sont :</p>
     <ul>
+      <li>CA_DER - certificat de CA codé en binaire DER</li>
+      <li>CA_BASE64 - certificat de CA codé en PEM</li>
       <li>CERT_DER - certificat client codé en binaire DER</li>
       <li>CERT_BASE64 - certificat client codé en PEM</li>
       <li>CERT_NICKNAME - certificat client "nickname" (SDK Netscape)</li>

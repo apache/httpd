@@ -131,7 +131,7 @@ du serveur</td></tr>
 
     <div class="note">
       <strong>Veuillez noter que si <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> a été
-      compilé dans le serveur, son gestionnaire sera disponible dans
+      chargé dans le serveur, son gestionnaire sera disponible dans
       <em>tous</em> les fichiers de configuration, y compris les
       fichiers de configuration de <em>niveau répertoire</em> (par
       exemple <code>.htaccess</code>), ce qui peut avoir des

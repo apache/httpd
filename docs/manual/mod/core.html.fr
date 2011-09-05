@@ -81,6 +81,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxranges">MaxRanges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
@@ -438,7 +439,7 @@ All pour les versions antérieures</code></td></tr>
     <code class="directive"><a href="#files">&lt;Files&gt;</a></code>.
     </div>
 
-    <p>Lorsque cette directive est définie à <code>None</code>, les
+    <p>Lorsque cette directive et la directive <code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code> sont définies à <code>None</code>, les
     fichiers <a href="#accessfilename">.htaccess</a> sont totalement
     ignorés. Dans ce cas, le serveur n'essaiera même pas de lire les
     fichiers <code>.htaccess</code> du système de fichiers.</p>
@@ -497,7 +498,20 @@ All pour les versions antérieures</code></td></tr>
       spécifiques d'un répertoire (<code class="directive"><a href="#options">Options</a></code> et <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>). "Options" doit être
       suivi d'un signe "égal", puis d'une liste d'options séparées par des
       virgules (pas d'espaces) ; ces options doivent être définies à
-      l'aide de la commande <code class="directive"><a href="#options">Options</a></code>.</dd>
+      l'aide de la commande <code class="directive"><a href="#options">Options</a></code>.
+
+      <div class="note"><h3>Désactivation implicite des options</h3>
+      <p>Bien que la liste des options disponibles dans les fichiers
+      .htaccess puisse être limitée par cette directive, tant qu'un
+      directive <code class="directive"><a href="#options">Options</a></code> est
+      autorisée, toute autre option héritée peut être désactivée en
+      utilisant la syntaxe non-relative. En d'autres termes, ce
+      mécanisme ne peut pas forcer une option spécifique à rester
+      <em>activée</em> tout en permettant à toute autre option d'être
+      activée.
+      </p></div>
+      
+      </dd>
     </dl>
 
     <p>Exemple :</p>
@@ -522,29 +536,68 @@ All pour les versions antérieures</code></td></tr>
 <h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
-<li><a href="../configuring.html">Configuration Files</a></li>
-<li><a href="../howto/htaccess.html">.htaccess Files</a></li>
+<li><code class="directive"><a href="#allowoverridelist">AllowOverrideList</a></code></li>
+<li><a href="../configuring.html">Fichiers de configuration</a></li>
+<li><a href="../howto/htaccess.html">Fichiers .htaccess</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Individual directives that are allowed in
-<code>.htaccess</code> files</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directives autorisées dans les fichiers <code>.htaccess</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowOverrideList None|<var>directive</var>
 [<var>directive-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowOverrideList None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+</table>
+    <p>Lorsque le serveur trouve un fichier <code>.htaccess</code>
+    (comme spécifié par la directive <code class="directive"><a href="#accessfilename">AccessFileName</a></code>), il doit savoir lesquelles
+    des directives déclarées dans ce fichier peuvent remplacer des
+    directives des fichiers de configuration du serveur.</p>
+
+    <div class="note"><h3>Seulement disponible dans les sections &lt;Directory&gt;</h3>
+    La directive <code class="directive">AllowOverrideList</code> n'est
+    disponible que dans les sections <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> spécifiées sans expressions
+    rationnelles.
+    </div>
+
+    <p>Lorsque cette directive et la directive <code class="directive"><a href="#allowoverride">AllowOverride</a></code> sont définies à
+    <code>None</code>, les fichiers <a href="#accessfilename">.htaccess</a> sont totalement ignorés. Dans
+    ce cas, le serveur ne cherchera même pas à lire des fichiers
+    <code>.htaccess</code> dans le système de fichiers.</p>
+
+    <p>Example:</p>
+
+    <div class="example"><p><code>
+      AllowOverride None
+      AllowOverrideList Redirect RedirectMatch
+    </code></p></div>
+
+    <p>Dans l'exemple ci-dessus, seules les directives
+    <code>Redirect</code> et <code>RedirectMatch</code> sont autorisées.
+    Toutes les autres provoqueront une erreur interne du serveur.</p>
+
+    <p>Example:</p>
+
+    <div class="example"><p><code>
+      AllowOverride AuthConfig
+      AllowOverrideList CookieTracking CookieName
+    </code></p></div>
+
+    <p>Dans l'exemple ci-dessus, la directive <code class="directive"><a href="#allowoverride">AllowOverride</a></code> autorise les directives du
+    groupement <code>AuthConfig</code>, et
+    <code class="directive">AllowOverrideList</code> n'autorise que deux
+    directives du groupement <code>FileInfo</code>. Toutes les autres
+    provoqueront une erreur interne du serveur.</p>
+
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li>
 <li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li>
-<li><a href="../configuring.html">Configuration Files</a></li>
-<li><a href="../howto/htaccess.html">.htaccess Files</a></li>
+<li><a href="../configuring.html">Fichiers de configuration</a></li>
+<li><a href="../howto/htaccess.html">Fichiers .htaccess</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1878,7 +1931,7 @@ requête</td></tr>
     ...). Les expressions rationnelles sont aussi supportées,</p>
 
     <div class="example"><p><code>
-        &lt;If "%{QUERY_STRING =~ /(delete|commit)=.*?elem/"&gt;
+        &lt;If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/"&gt;
     </code></p></div>
 
     <p>ainsi que les comparaison de modèles de type shell et de
@@ -3007,6 +3060,20 @@ persistante</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of ranges allowed before returning the complete
+resource </td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxRanges <var>number</var> (0 = no limit)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxRanges 200</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTP Server 2.3.15 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les mécanismes de mutex et le repertoire du fichier
@@ -3919,6 +3986,11 @@ serveur</td></tr>
     <div class="example"><h3>Example</h3><p><code>
       ServerRoot /home/httpd
     </code></p></div>
+
+    <p>La valeur par défaut de <code class="directive">ServerRoot</code> peut
+    être modifiée via l'argument <code>--prefix</code> de la commande <a href="../programs/configure.html"><code>configure</code></a>, et de
+    nombreuses distributions tierces du serveur proposent une valeur
+    différente de celles listées ci-dessus.</p>
 
 
 <h3>Voir aussi</h3>

@@ -93,15 +93,25 @@ non-alphanumériques des références arrières seront échappés. Considérons
 par exemple cette règle :</p>
 
 <div class="example"><p><code>
-RewriteRule ^(/.*)$ /index.php?show=$1
+RewriteRule ^search/(.*)$ /search.php?term=$1
 </code></p></div>
 
-<p>Avec cet exemple, <code>/C++</code> sera réécrit en
-<code>/index.php?show=/C++</code>. Mais <code>/C%2b%2b</code> sera lui
-aussi réécrit en <code>/index.php?show=/C++</code>, car le caractère
-<code>%2b</code> aura été "déséchappé". Avec le drapeau B par contre,
-<code>/C%2b%2b</code> sera réécrit en
-<code>/index.php?show=/C%2b%2b</code>.</p>
+<p>Soit le terme de recherche 'x &amp; y/z' ; un navigateur va le coder
+en 'x%20%26%20y%2Fz', transformant la requête en
+'search/x%20%26%20y%2Fz'. Sans le drapeau B, cette règle de réécriture
+va réécrire la requête en 'search.php?term=x &amp; y/z', ce qui ne
+correspond pas à une URL valide et cette dernière sera encodée en
+<code>search.php?term=x%20&amp;y%2Fz=</code>, ce qui ne correspond pas à
+ce que l'on souhaitait.</p>
+
+<p>Avec le drapeau B, les paramètres sont réencodés avant d'être passés
+à l'URL résultante, ce qui fournit une réécriture correcte en
+<code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
+
+<p>Notez que vous devrez peut-être aussi définir la directive <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> à <code>On</code> pour
+que cet exemple particulier fonctionne, car httpd ne permet pas les
+slashes encodés dans les URLs, et renvoie une erreur 404 s'il en
+rencontre un.</p>
 
 <p>Ce processus d'échappement est en particulier nécessaire dans le
 contexte d'un mandataire, où l'accès au serveur d'arrière-plan échouera

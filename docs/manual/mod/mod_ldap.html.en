@@ -503,10 +503,10 @@ by other LDAP modules</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>This directive configures the LDAP_OPT_NETWORK_TIMEOUT option in the
-    underlying LDAP client library, when available.  This value typically 
-    controls how long the LDAP client library will wait for the TCP connection
-    to the LDAP server to complete.</p>
+    <p>This directive configures the LDAP_OPT_NETWORK_TIMEOUT (or LDAP_OPT_CONNECT_TIMEOUT)
+    option in the underlying LDAP client library, when available.  This value
+    typically controls how long the LDAP client library will wait for the TCP
+    connection to the LDAP server to complete.</p>
 
     <p> If a connection is not successful with the timeout period, either an error will be 
     returned or the LDAP client library will attempt to connect to a secondary LDAP 
@@ -517,8 +517,9 @@ by other LDAP modules</td></tr>
     server supports the LDAP_OPT_NETWORK_TIMEOUT option.</p>
 
     <div class="note">LDAPConnectionTimeout is only available when the LDAP client library linked
-    with the server supports the LDAP_OPT_NETWORK_TIMEOUT option, and the
-    ultimate behavior is dictated entirely by the LDAP client library.
+    with the server supports the LDAP_OPT_NETWORK_TIMEOUT 
+    (or LDAP_OPT_CONNECT_TIMEOUT) option, and the ultimate behavior is 
+    dictated entirely by the LDAP client library.
     </div>
 
 </div>

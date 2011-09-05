@@ -342,6 +342,7 @@
 <li><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><a href="core.html#maxranges">MaxRanges</a></li>
 <li><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></li>
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
@@ -497,6 +498,7 @@
 <li><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></li>
 <li><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile</a></li>
 <li><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath</a></li>
+<li><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a></li>
 <li><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile</a></li>
 <li><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath</a></li>
 <li><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></li>
@@ -519,12 +521,14 @@
 <li><a href="mod_ssl.html#sslprotocol">SSLProtocol</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
+<li><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></li>
 <li><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
 <li><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
 <li><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
 <li><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
 <li><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine</a></li>
+<li><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
 <li><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></li>

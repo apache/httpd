@@ -147,7 +147,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr class="odd"><td><code>REQUEST_SCHEME</code></td>
         <td>The scheme part of the request's URI</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
-        <td>The URI of the request</td></tr>
+        <td>The path part of the request's URI</td></tr>
 <tr class="odd"><td><code>DOCUMENT_URI</code></td>
         <td>Same as REQUEST_URI</td></tr>
 <tr><td><code>REQUEST_FILENAME</code></td>

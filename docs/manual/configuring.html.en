@@ -91,10 +91,6 @@ Server.</p>
     configuration file itself, for example with <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code>, take effect too late to be used for
     expansions in the configuration file.</p>
 
-    <p>The maximum length of a line in the configuration file, after
-    variable substitution, joining any continued lines and removing leading
-    and trailing white space, is 8192 characters.</p>
-
     <p>You can check your configuration files for syntax errors
     without starting the server by using <code>apachectl
     configtest</code> or the <code>-t</code> command line

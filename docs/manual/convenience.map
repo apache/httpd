@@ -34,11 +34,13 @@ allowconnect	mod/mod_proxy_connect.html#allowconnect
 allowencodedslashes	mod/core.html#allowencodedslashes
 allowmethods	mod/mod_allowmethods.html#allowmethods
 allowoverride	mod/core.html#allowoverride
+allowoverridelist	mod/core.html#allowoverridelist
 anonymous	mod/mod_authn_anon.html#anonymous
 anonymous_logemail	mod/mod_authn_anon.html#anonymous_logemail
 anonymous_mustgiveemail	mod/mod_authn_anon.html#anonymous_mustgiveemail
 anonymous_nouserid	mod/mod_authn_anon.html#anonymous_nouserid
 anonymous_verifyemail	mod/mod_authn_anon.html#anonymous_verifyemail
+asyncrequestworkerfactor	mod/event.html#asyncrequestworkerfactor
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
 authbasicprovider	mod/mod_auth_basic.html#authbasicprovider
 authdbduserpwquery	mod/mod_authn_dbd.html#authdbduserpwquery
@@ -182,6 +184,7 @@ deflatewindowsize	mod/mod_deflate.html#deflatewindowsize
 deny	mod/mod_access_compat.html#deny
 directory	mod/core.html#directory
 directoryindex	mod/mod_dir.html#directoryindex
+directoryindexredirect	mod/mod_dir.html#directoryindexredirect
 directorymatch	mod/core.html#directorymatch
 directoryslash	mod/mod_dir.html#directoryslash
 documentroot	mod/core.html#documentroot
@@ -304,6 +307,7 @@ luascope	mod/mod_lua.html#luascope
 maxconnectionsperchild	mod/mpm_common.html#maxconnectionsperchild
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
+maxranges	mod/core.html#maxranges
 maxrequestworkers	mod/mpm_common.html#maxrequestworkers
 maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
@@ -360,6 +364,7 @@ proxyrequests	mod/mod_proxy.html#proxyrequests
 proxyscgiinternalredirect	mod/mod_proxy_scgi.html#proxyscgiinternalredirect
 proxyscgisendfile	mod/mod_proxy_scgi.html#proxyscgisendfile
 proxyset	mod/mod_proxy.html#proxyset
+proxysourceaddress	mod/mod_proxy.html#proxysourceaddress
 proxystatus	mod/mod_proxy.html#proxystatus
 proxytimeout	mod/mod_proxy.html#proxytimeout
 proxyvia	mod/mod_proxy.html#proxyvia
@@ -458,6 +463,7 @@ sslcacertificatefile	mod/mod_ssl.html#sslcacertificatefile
 sslcacertificatepath	mod/mod_ssl.html#sslcacertificatepath
 sslcadnrequestfile	mod/mod_ssl.html#sslcadnrequestfile
 sslcadnrequestpath	mod/mod_ssl.html#sslcadnrequestpath
+sslcarevocationcheck	mod/mod_ssl.html#sslcarevocationcheck
 sslcarevocationfile	mod/mod_ssl.html#sslcarevocationfile
 sslcarevocationpath	mod/mod_ssl.html#sslcarevocationpath
 sslcertificatechainfile	mod/mod_ssl.html#sslcertificatechainfile
@@ -480,12 +486,14 @@ sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
 sslprotocol	mod/mod_ssl.html#sslprotocol
 sslproxycacertificatefile	mod/mod_ssl.html#sslproxycacertificatefile
 sslproxycacertificatepath	mod/mod_ssl.html#sslproxycacertificatepath
+sslproxycarevocationcheck	mod/mod_ssl.html#sslproxycarevocationcheck
 sslproxycarevocationfile	mod/mod_ssl.html#sslproxycarevocationfile
 sslproxycarevocationpath	mod/mod_ssl.html#sslproxycarevocationpath
 sslproxycheckpeercn	mod/mod_ssl.html#sslproxycheckpeercn
 sslproxycheckpeerexpire	mod/mod_ssl.html#sslproxycheckpeerexpire
 sslproxyciphersuite	mod/mod_ssl.html#sslproxyciphersuite
 sslproxyengine	mod/mod_ssl.html#sslproxyengine
+sslproxymachinecertificatechainfile	mod/mod_ssl.html#sslproxymachinecertificatechainfile
 sslproxymachinecertificatefile	mod/mod_ssl.html#sslproxymachinecertificatefile
 sslproxymachinecertificatepath	mod/mod_ssl.html#sslproxymachinecertificatepath
 sslproxyprotocol	mod/mod_ssl.html#sslproxyprotocol
