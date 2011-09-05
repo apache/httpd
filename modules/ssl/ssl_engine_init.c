@@ -765,6 +765,8 @@ static void ssl_init_ctx_crl(server_rec *s,
        case SSL_CRLCHECK_CHAIN:
            crlflags = X509_V_FLAG_CRL_CHECK|X509_V_FLAG_CRL_CHECK_ALL;
            break;
+       default:
+           crlflags = 0;
     }
 
     if (crlflags) {
