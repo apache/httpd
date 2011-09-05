@@ -928,14 +928,12 @@ static const char *ssl_cmd_crlcheck_parse(cmd_parms *parms,
 const char *ssl_cmd_SSLCARevocationCheck(cmd_parms *cmd,
                                          void *dcfg,
                                          const char *arg)
-{   
+{
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-
-    const char *err;
 
     return ssl_cmd_crlcheck_parse(cmd, arg, &sc->server->crl_check_mode);
 }
-        
+
 static const char *ssl_cmd_verify_parse(cmd_parms *parms,
                                         const char *arg,
                                         ssl_verify_t *id)
