@@ -93,13 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_dav_fs: Fix segfault and log proper error message if apr DBM driver
-    cannot be loaded. PR 51751
-    Trunk patch: http://svn.apache.org/viewvc?rev=1133152&view=rev
-                 http://svn.apache.org/viewvc?rev=1133158&view=rev
-    2.2.x patch: http://people.apache.org/~sf/PR51751.diff
-    +1: sf, trawick, rpluem
-
  PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
