@@ -273,7 +273,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
         boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
-                                (apr_uint64_t)r->request_time, (long) getpid());
+                                (apr_uint64_t)r->request_time, c->id);
 
         ap_set_content_type(r, apr_pstrcat(r->pool, "multipart",
                                            use_range_x(r) ? "/x-" : "/",
