@@ -102,11 +102,6 @@ le Serveur HTTP Apache.</p>
     pouvoir être utilisées dans les extensions au sein du fichier de
     configuration.</p>
 
-    <p>La longueur maximale d'une ligne du fichier de configuration,
-    après substitution des variables, reconstitution des
-    lignes fragmentées et suppression des espaces de début et de fin,
-    est de 8192 caractères.</p>
-
     <p>Vous pouvez vérifier l'absence d'erreurs de syntaxe dans vos fichiers
     de configuration sans démarrer le serveur à l'aide de la commande
     <code>apachectl configtest</code> ou de l'option de ligne de commande

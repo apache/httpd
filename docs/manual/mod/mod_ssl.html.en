@@ -46,6 +46,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcadnrequestpath">SSLCADNRequestPath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslcarevocationcheck">SSLCARevocationCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcarevocationfile">SSLCARevocationFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcarevocationpath">SSLCARevocationPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li>
@@ -68,12 +69,14 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslprotocol">SSLProtocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyengine">SSLProxyEngine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyprotocol">SSLProxyProtocol</a></li>
@@ -404,6 +407,43 @@ this directory contains the appropriate symbolic links. Use the
 task.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLCARevocationCheck" id="SSLCARevocationCheck">SSLCARevocationCheck</a> <a name="sslcarevocationcheck" id="sslcarevocationcheck">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable CRL-based revocation checking</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationCheck chain|leaf|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCARevocationCheck none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+Enables certificate revocation list (CRL) checking. At least one of
+<code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code>
+or <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code> must be
+configured. When set to <code>chain</code> (recommended setting),
+CRL checks are applied to all certificates in the chain, while setting it to
+<code>leaf</code> limits the checks to the end-entity cert.
+</p>
+<div class="note">
+<h3>When set to <code>chain</code> or <code>leaf</code>,
+CRLs <em>must</em> be available for successful validation</h3>
+<p>
+Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
+no CRL(s) were found in any of the locations configured with
+<code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code>
+or <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.
+With the introduction of this directive, the behavior has been changed:
+when checking is enabled, CRLs <em>must</em> be present for the validation
+to succeed - otherwise it will fail with an
+<code>"unable to get certificate CRL"</code> error.
+</p>
+</div>
+<div class="example"><h3>Example</h3><p><code>
+SSLCARevocationCheck chain
 </code></p></div>
 
 </div>
@@ -1228,6 +1268,44 @@ SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLProxyCARevocationCheck" id="SSLProxyCARevocationCheck">SSLProxyCARevocationCheck</a> <a name="sslproxycarevocationcheck" id="sslproxycarevocationcheck">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable CRL-based revocation checking for Remote Server Auth</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCARevocationCheck chain|leaf|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCARevocationCheck none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+Enables certificate revocation list (CRL) checking for the
+<em>remote servers</em> you deal with. At least one of
+<code class="directive"><a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></code>
+or <code class="directive"><a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></code> must be
+configured. When set to <code>chain</code> (recommended setting),
+CRL checks are applied to all certificates in the chain, while setting it to
+<code>leaf</code> limits the checks to the end-entity cert.
+</p>
+<div class="note">
+<h3>When set to <code>chain</code> or <code>leaf</code>,
+CRLs <em>must</em> be available for successful validation</h3>
+<p>
+Prior to version 2.3.15, CRL checking in mod_ssl also succeeded when
+no CRL(s) were found in any of the locations configured with
+<code class="directive"><a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></code>
+or <code class="directive"><a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></code>.
+With the introduction of this directive, the behavior has been changed:
+when checking is enabled, CRLs <em>must</em> be present for the validation
+to succeed - otherwise it will fail with an
+<code>"unable to get certificate CRL"</code> error.
+</p>
+</div>
+<div class="example"><h3>Example</h3><p><code>
+SSLProxyCARevocationCheck chain
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyCARevocationFile" id="SSLProxyCARevocationFile">SSLProxyCARevocationFile</a> <a name="sslproxycarevocationfile" id="sslproxycarevocationfile">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA CRLs for 
@@ -1354,6 +1432,32 @@ disabled for proxy image both for the main server and all configured virtual hos
 SSLProxyEngine on<br />
 ...<br />
 &lt;/VirtualHost&gt;
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLProxyMachineCertificateChainFile" id="SSLProxyMachineCertificateChainFile">SSLProxyMachineCertificateChainFile</a> <a name="sslproxymachinecertificatechainfile" id="sslproxymachinecertificatechainfile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificateChainFile <em>filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Not applicable</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive sets the all-in-one file where you keep the certificate chain
+for all of the client certs in use. This directive will be needed if the
+remote server presents a list of CA certificates that are not direct signers
+of one of the configured client certificates.
+</p>
+<p>
+This referenced file is simply the concatenation of the various PEM-encoded
+certificate files. Upon startup, each client certificate configured will
+be examined and a chain of trust will be constructed.
+</p>
+<div class="example"><h3>Example</h3><p><code>
+SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
 </code></p></div>
 
 </div>

@@ -73,6 +73,8 @@ configuration.</div>
     initiate from a page on our site. For the purpose of this example,
     we assume that our site is <code>www.example.com</code>.</p>
 
+
+
 <div class="example"><p><code>
 RewriteCond %{HTTP_REFERER} <strong>!^$</strong><br />
 RewriteCond %{HTTP_REFERER} !www.example.com [NC]<br />

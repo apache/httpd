@@ -421,8 +421,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr><td><code>escape</code></td>
         <td>Echappe les caractères spéciaux en codage hexadécimal</td><td /></tr>
 <tr class="odd"><td><code>unescape</code></td>
-        <td>"Déséchappe" les chaînes codées en hexadécimal en conservant
-	le codage des caractères spéciaux aux URLs (XXX: describe better)</td><td /></tr>
+        <td>"Déséchappe" les chaînes codées
+	en hexadécimal, en ne gardant encodés que les slashes; renvoie la chaîne vide
+	si la séquence %00 est rencontrée</td><td /></tr>
 <tr><td><code>file</code></td>
         <td>Lit le contenu d'un fichier</td><td>oui</td></tr>
 <tr class="odd"><td><code>filesize</code></td>
