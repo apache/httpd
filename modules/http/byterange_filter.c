@@ -87,8 +87,6 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     apr_bucket *first = NULL, *last = NULL, *out_first = NULL, *e;
     apr_uint64_t pos = 0, off_first = 0, off_last = 0;
     apr_status_t rv;
-    const char *s;
-    apr_size_t len;
     apr_uint64_t start64, end64;
     apr_off_t pofft = 0;
 
@@ -140,43 +138,9 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
         if (e == first) {
             if (off_first != start64) {
                 rv = apr_bucket_split(copy, (apr_size_t)(start64 - off_first));
-                if (rv == APR_ENOTIMPL) {
-                    rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                    if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
-                    }
-                    /*
-                     * The read above might have morphed copy in a bucket
-                     * of shorter length. So read and delete until we reached
-                     * the correct bucket for splitting.
-                     */
-                    while (start64 - off_first > (apr_uint64_t)copy->length) {
-                        apr_bucket *tmp = APR_BUCKET_NEXT(copy);
-                        off_first += (apr_uint64_t)copy->length;
-                        APR_BUCKET_REMOVE(copy);
-                        apr_bucket_destroy(copy);
-                        copy = tmp;
-                        rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                    if (start64 > off_first) {
-                        rv = apr_bucket_split(copy, (apr_size_t)(start64 - off_first));
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                    else {
-                        copy = APR_BUCKET_PREV(copy);
-                    }
-                }
-                else if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
+                if (rv != APR_SUCCESS) {
+                    apr_brigade_cleanup(bbout);
+                    return rv;
                 }
                 out_first = APR_BUCKET_NEXT(copy);
                 APR_BUCKET_REMOVE(copy);
@@ -193,37 +157,9 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
             }
             if (end64 - off_last != (apr_uint64_t)e->length) {
                 rv = apr_bucket_split(copy, (apr_size_t)(end64 + 1 - off_last));
-                if (rv == APR_ENOTIMPL) {
-                    rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                    if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
-                    }
-                    /*
-                     * The read above might have morphed copy in a bucket
-                     * of shorter length. So read until we reached
-                     * the correct bucket for splitting.
-                     */
-                    while (end64 + 1 - off_last > (apr_uint64_t)copy->length) {
-                        off_last += (apr_uint64_t)copy->length;
-                        copy = APR_BUCKET_NEXT(copy);
-                        rv = apr_bucket_read(copy, &s, &len, APR_BLOCK_READ);
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                    if (end64 < off_last + (apr_uint64_t)copy->length - 1) {
-                        rv = apr_bucket_split(copy, end64 + 1 - off_last);
-                        if (rv != APR_SUCCESS) {
-                            apr_brigade_cleanup(bbout);
-                            return rv;
-                        }
-                    }
-                }
-                else if (rv != APR_SUCCESS) {
-                        apr_brigade_cleanup(bbout);
-                        return rv;
+                if (rv != APR_SUCCESS) {
+                    apr_brigade_cleanup(bbout);
+                    return rv;
                 }
                 copy = APR_BUCKET_NEXT(copy);
                 if (copy != APR_BRIGADE_SENTINEL(bbout)) {
@@ -253,6 +189,20 @@ static int get_max_ranges(request_rec *r) {
     return core_conf->max_ranges == -1 ? DEFAULT_MAX_RANGES : core_conf->max_ranges;
 }
 
+static apr_status_t send_416(ap_filter_t *f, apr_bucket_brigade *tmpbb)
+{
+    apr_bucket *e;
+    conn_rec *c = f->r->connection;
+    ap_remove_output_filter(f);
+    f->r->status = HTTP_OK;
+    e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL,
+                               f->r->pool, c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(tmpbb, e);
+    e = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(tmpbb, e);
+    return ap_pass_brigade(f->next, tmpbb);
+}
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                                          apr_bucket_brigade *bb)
 {
@@ -271,8 +221,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     char *bound_head = NULL;
     apr_array_header_t *indexes;
     indexes_t *idx;
-    int original_status;
     int i;
+    int original_status;
     int max_ranges = get_max_ranges(r);
 
     /*
@@ -307,11 +257,17 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         return ap_pass_brigade(f->next, bb);
     }
 
+    /* this brigade holds what we will be sending */
+    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
+
+    if (num_ranges < 0)
+        return send_416(f, bsend);
+
     if (num_ranges > 1) {
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
         boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
-                                (apr_uint64_t)r->request_time, (long) getpid());
+                                (apr_uint64_t)r->request_time, c->id);
 
         ap_set_content_type(r, apr_pstrcat(r->pool, "multipart",
                                            use_range_x(r) ? "/x-" : "/",
@@ -336,8 +292,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
     }
 
-    /* this brigade holds what we will be sending */
-    bsend = apr_brigade_create(r->pool, c->bucket_alloc);
     tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
 
     idx = (indexes_t *)indexes->elts;
@@ -395,15 +349,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     }
 
     if (found == 0) {
-        ap_remove_output_filter(f);
-        r->status = HTTP_OK;
         /* bsend is assumed to be empty if we get here. */
-        e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL,
-                                   r->pool, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bsend, e);
-        e = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bsend, e);
-        return ap_pass_brigade(f->next, bsend);
+        return send_416(f, bsend);
     }
 
     if (num_ranges > 1) {
@@ -435,7 +382,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     const char *match;
     const char *ct;
     char *cur;
-    int num_ranges = 0;
+    int num_ranges = 0, unsatisfiable = 0;
     apr_off_t sum_lengths = 0;
     indexes_t *idx;
     int ranges = 1;
@@ -508,14 +455,25 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         char *errp;
         apr_off_t number, start, end;
 
-        if (!(dash = strchr(cur, '-'))) {
+        if (!*cur)
             break;
+
+        /*
+         * Per RFC 2616 14.35.1: If there is at least one syntactically invalid
+         * byte-range-spec, we must ignore the whole header.
+         */
+
+        if (!(dash = strchr(cur, '-'))) {
+            return 0;
         }
 
-        if (dash == range) {
+        if (dash == cur) {
             /* In the form "-5" */
             if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
-                break;
+                return 0;
+            }
+            if (number < 1) {
+                return 0;
             }
             start = clength - number;
             end = clength - 1;
@@ -523,14 +481,17 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         else {
             *dash++ = '\0';
             if (apr_strtoff(&number, cur, &errp, 10) || *errp) {
-                break;
+                return 0;
             }
             start = number;
             if (*dash) {
                 if (apr_strtoff(&number, dash, &errp, 10) || *errp) {
-                    break;
+                    return 0;
                 }
                 end = number;
+                if (start > end) {
+                    return 0;
+                }
             }
             else {                  /* "5-" */
                 end = clength - 1;
@@ -540,13 +501,12 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         if (start < 0) {
             start = 0;
         }
+        if (start >= clength) {
+            unsatisfiable = 1;
+            continue;
+        }
         if (end >= clength) {
             end = clength - 1;
-        }
-
-        if (start > end) {
-            /* ignore? count? */
-            break;
         }
 
         idx = (indexes_t *)apr_array_push(*indexes);
@@ -557,6 +517,10 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         num_ranges++;
     }
 
+    if (num_ranges == 0 && unsatisfiable) {
+        /* If all ranges are unsatisfiable, we should return 416 */
+        return -1;
+    }
     if (sum_lengths >= clength) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "Sum of ranges not smaller than file, ignoring.");

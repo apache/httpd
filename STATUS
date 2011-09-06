@@ -93,16 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: All the latest Range fixes through 1165268
-    Trunk patch: Revisions 1163819-1165268 of byterange_filter.c
-      (see http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/byterange_filter.c?view=log)
-    CHANGES entry for the critical issue in the patch:
-        *) Fix a regression in the CVE-2011-3192 byterange fix.
-           PR 51748. [low_priority <lowprio20 gmail.com>]
-    2.2.x patch: http://people.apache.org/~trawick/byterange_filter-1163819-through-1165268.txt
-    Diff between trunk r1165268 and 2.2.x with this patch:
-                 http://people.apache.org/~trawick/byterange_filter-1165268-2.2.x-vs-trunk.txt
-    +1: trawick, rpluem, jim
 
  PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
