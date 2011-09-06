@@ -156,7 +156,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~trawick/byterange_filter-1163819-through-1165268.txt
     Diff between trunk r1165268 and 2.2.x with this patch:
                  http://people.apache.org/~trawick/byterange_filter-1165268-2.2.x-vs-trunk.txt
-    +1: trawick, rpluem
+    +1: trawick, rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
