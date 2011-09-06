@@ -148,6 +148,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     sf agrees with covener. This can cause segfaults with some directives,
        see r1153676, r1153687.
 
+  * mod_cache: * Do not cache 206 responses in any case since we currently do not provide any
+    backends that are capable to cache partial responses. PR 49113.
+    Fixes regression of r724093.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=933919&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
