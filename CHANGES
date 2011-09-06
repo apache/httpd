@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
 
+  *) Fix a regression in the CVE-2011-3192 byterange fix.
+     PR 51748. [low_priority <lowprio20 gmail.com>]
+
   *) mod_dav_fs: Fix segfault if apr DBM driver cannot be loaded. PR 51751.
      [Stefan Fritsch]
 
