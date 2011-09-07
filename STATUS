@@ -157,6 +157,23 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, wrowe
 
+  * core: MaxRanges syntax change to allow unlimited|none|n>0 and prefix
+          compile-time macro with AP_.
+      Trunk version of patch: 
+          http://svn.apache.org/viewvc?rev=1166282&view=rev (minus Accept-Range change)
+      2.2.x verson of patch:
+          http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-followon.diff 
+               (Accept-Range: changeset in separate proposal below)
+    +1: covener 
+
+  * core: Send Accept-Ranges: none when MaxRanges none is configured
+      Trunk version of patch: 
+          http://svn.apache.org/viewvc?rev=1166282&view=rev (Just the Accept-Range change)
+      2.2.x version of patch:
+          http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-norange.diff
+              
+    +1: covener 
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
