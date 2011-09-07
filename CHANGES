@@ -7,6 +7,10 @@ Changes with Apache 2.3.15
      the original file, ignore the ranges and send the complete file.
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener]
 
+  *) core: Allow MaxRanges none|unlimited|default and set 'Accept-Ranges: none'
+     in the case Ranges are being ignored with MaxRanges none.
+     [Eric Covener]
+
   *) mod_ssl: revamp CRL-based revocation checking when validating
      certificates of clients or proxied servers. Completely delegate
      CRL processing to OpenSSL, and add a new [Proxy]CARevocationCheck
