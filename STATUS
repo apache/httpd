@@ -156,6 +156,9 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem, wrowe
+      minfrin: The r933919 patch is obsolete, as this trunk code no longer
+               exists. The fix you're after is r951221, backported to both
+               mod_disk_cache.c and mod_mem_cache.c.
 
   * core: MaxRanges syntax change to allow unlimited|none|n>0 and prefix
           compile-time macro with AP_.
