@@ -59,8 +59,8 @@
 #include <unistd.h>
 #endif
 
-#ifndef DEFAULT_MAX_RANGES
-#define DEFAULT_MAX_RANGES 200
+#ifndef AP_DEFAULT_MAX_RANGES
+#define AP_DEFAULT_MAX_RANGES 200
 #endif
 
 APLOG_USE_MODULE(http);
@@ -197,7 +197,7 @@ static int get_max_ranges(request_rec *r) {
     }
 
     /* Any other negative val means the default */
-    return DEFAULT_MAX_RANGES;
+    return AP_DEFAULT_MAX_RANGES;
 }
 
 static apr_status_t send_416(ap_filter_t *f, apr_bucket_brigade *tmpbb)
