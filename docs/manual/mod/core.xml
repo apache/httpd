@@ -2869,7 +2869,7 @@ connection</description>
 <name>MaxRanges</name>
 <description>Number of ranges allowed before returning the complete
 resource </description>
-<syntax>MaxRanges <var>number</var> (0 = no limit)</syntax>
+<syntax>MaxRanges default | unlimited | none | <var>number-of-ranges</var></syntax>
 <default>MaxRanges 200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
@@ -2881,6 +2881,22 @@ resource </description>
     limits the number of HTTP ranges the server is willing to 
     return to the client.  If more ranges then permitted are requested, 
     the complete resource is returned instead.</p>
+
+    <dl>  
+      <dt><strong>default</strong></dt>
+      <dd>Limits the number of ranges to a compile-time default of 200.</dd>
+   
+      <dt><strong>none</strong></dt>
+      <dd>Range headers are ignored.</dd>
+          
+      <dt><strong>unlimited</strong></dt>
+      <dd>The server does not limit the number of ranges it is
+          willing to satisfy.</dd>
+
+      <dt><var>number-of-ranges</var></dt>
+      <dd>A positive number representing the maximum number of ranges the
+      server is willing to satisfy.</dd>
+    </dl>
 </usage>
 </directivesynopsis>
 
