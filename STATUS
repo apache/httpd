@@ -102,11 +102,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                (Accept-Range: changeset in separate proposal below)
     +1: covener, wrowe, rpluem
 
-  * mod_proxy_ajp: Ignore flushing if headers have not been sent.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1153531&view=rev
-    2.2.x patch: http://people.apache.org/~rpluem/patches/51608.diff
-    +1: rpluem, jim, jfclere
-
  PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
