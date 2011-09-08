@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy_ajp: return HTTP_BAD_REQUEST when AJP_EBAD_METHOD
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1166551 &
                  http://svn.apache.org/viewvc?view=revision&revision=1166557
-    +1: jfclere
+    +1: jfclere, jorton
 
   * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
     Improved version of: http://svn.apache.org/viewvc?view=revision&revision=1092076
