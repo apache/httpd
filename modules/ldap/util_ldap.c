@@ -2946,6 +2946,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                                         &ldap_module);
 
         st_vhost->ssl_supported = st->ssl_supported;
+        s_vhost = s_vhost->next;
     }
 
     /* Initialize the rebind callback's cross reference list. */
