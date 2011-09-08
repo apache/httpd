@@ -93,6 +93,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * core: MaxRanges syntax change to allow unlimited|none|n>0 and prefix
+          compile-time macro with AP_.
+      Trunk version of patch: 
+          http://svn.apache.org/viewvc?rev=1166282&view=rev (minus Accept-Range change)
+      2.2.x verson of patch:
+          http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-followon.diff 
+               (Accept-Range: changeset in separate proposal below)
+    +1: covener, wrowe, rpluem
 
  PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -160,15 +168,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                exists. The fix you're after is r951221, backported to both
                mod_disk_cache.c and mod_mem_cache.c.
 
-  * core: MaxRanges syntax change to allow unlimited|none|n>0 and prefix
-          compile-time macro with AP_.
-      Trunk version of patch: 
-          http://svn.apache.org/viewvc?rev=1166282&view=rev (minus Accept-Range change)
-      2.2.x verson of patch:
-          http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-followon.diff 
-               (Accept-Range: changeset in separate proposal below)
-    +1: covener, wrowe
-
   * core: Send Accept-Ranges: none when MaxRanges none is configured
       Trunk version of patch: 
           http://svn.apache.org/viewvc?rev=1166282&view=rev (Just the Accept-Range change)
@@ -176,6 +175,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-norange.diff
               
     +1: covener, wrowe
+    -1: rpluem: This should be fixed in trunk completely first. Currently mod_dav sents
+                Accept-Ranges bytes as well (modules/dav/fs/repos.c line 951), mod_negotiation
+                (modules/mappers/mod_negotiation.c 3012) and
+                mod_filter just unsets the Accept-Ranges header if ranges are not supported
+                (modules/filters/mod_filter.c line 324).
+                On trunk the modules mod_dialup and mod_reflector also fiddle with Accept-Ranges
+                But once we have a complete solution in place I am very likely to be +1.
 
   * mod_proxy_ajp: return HTTP_BAD_REQUEST when AJP_EBAD_METHOD
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1166551
