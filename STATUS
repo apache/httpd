@@ -166,12 +166,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 (modules/filters/mod_filter.c line 324).
                 On trunk the modules mod_dialup and mod_reflector also fiddle with Accept-Ranges
                 But once we have a complete solution in place I am very likely to be +1.
-    +1: covener (rpluem please see additions)
+    +1: covener, wrowe (rpluem please see additions)
 
-  * mod_proxy_ajp: return HTTP_BAD_REQUEST when AJP_EBAD_METHOD
+  * mod_proxy_ajp: return HTTP_NOT_IMPLEMENTED when AJP_EBAD_METHOD
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1166551 &
-                 http://svn.apache.org/viewvc?view=revision&revision=1166557
-    +1: jfclere, jorton
+                 http://svn.apache.org/viewvc?view=revision&revision=1166657
+    +1: jfclere, jorton, wrowe
 
   * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
     Improved version of: http://svn.apache.org/viewvc?view=revision&revision=1092076
