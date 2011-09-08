@@ -121,12 +121,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   * mod_proxy_ajp: Respect "reuse" flag in END_RESPONSE
     Trunk patch: http://svn.apache.org/viewvc?rev=1152379&view=rev
     2.2.x patch: http://people.apache.org/~rjung/patches/mod_proxy_ajp_reuse_flag.patch
-    +1: rjung, jim
+    +1: rjung, jim, jfclere
 
   * mod_proxy_ajp: Ignore flushing if headers have not been sent.
     Trunk patch: http://svn.apache.org/viewvc?rev=1153531&view=rev
     2.2.x patch: http://people.apache.org/~rpluem/patches/51608.diff
-    +1: rpluem, jim
+    +1: rpluem, jim, jfclere
 
   * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
     Adds a new function in ssl_util_ssl.c SSL_X509_INFO_create_chain that will
