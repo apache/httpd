@@ -191,6 +191,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Improved version of: http://svn.apache.org/viewvc?view=revision&revision=1092076
     http://people.apache.org/~jfclere/patches/ajp_timeout.patch
     +1: jfclere
+    rpluem says: Can you please update your proposal with the trunk revision numbers
+    that fix the check for the timeout status?
 
 PATCHES/ISSUES THAT ARE STALLED
 
