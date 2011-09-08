@@ -848,6 +848,13 @@ AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
     }
 }
 
+AP_DECLARE(void) ap_set_accept_ranges(request_rec *r)
+{
+    core_dir_config *d = ap_get_module_config(r->per_dir_config, &core_module);
+    apr_table_setn(r->headers_out, "Accept-Ranges",
+                  (d->max_ranges == AP_MAXRANGES_NORANGES) ? "none"
+                                                           : "bytes");
+}
 static const char *add_optional_notes(request_rec *r,
                                       const char *prefix,
                                       const char *key,

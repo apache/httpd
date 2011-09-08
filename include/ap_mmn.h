@@ -147,6 +147,7 @@
  * 20051115.28 (2.2.19) Restore ap_unescape_url_keep2f(char *url) signature 
  *                      altered in 2.2.18.  Add ap_unescape_url_keep2f_ex().
  * 20051115.29 (2.2.21) add max_ranges to core_dir_config
+ * 20051115.30 (2.2.21) add ap_set_accept_ranges()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -154,7 +155,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 29                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 30                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

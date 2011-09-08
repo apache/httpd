@@ -93,17 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Send Accept-Ranges: none when MaxRanges none is configured
-      Trunk version of patch: 
-          http://svn.apache.org/viewvc?rev=1166282&view=rev (Just the Accept-Range change)
-          revised 9/8: add http://svn.apache.org/viewvc?rev=1166663&view=rev
-                       add http://svn.apache.org/viewvc?rev=1166667&view=rev
-           
-      2.2.x version of patch:
-          http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-norange.diff
-          w/ 9/8 additions: http://people.apache.org/~covener/patches/httpd-2.2.x-accept_ranges_none.diff
-    +1: covener, wrowe, rpluem
-
   * mod_proxy_ajp: return HTTP_NOT_IMPLEMENTED when AJP_EBAD_METHOD
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1166551 &
                  http://svn.apache.org/viewvc?view=revision&revision=1166657
