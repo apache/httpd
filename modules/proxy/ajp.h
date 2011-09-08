@@ -482,6 +482,17 @@ apr_status_t  ajp_parse_data(request_rec  *r, ajp_msg_t *msg,
                              apr_uint16_t *len, char **ptr);
 
 
+/**
+ * Check the reuse flag in CMD_AJP13_END_RESPONSE
+ * @param r         current request
+ * @param msg       AJP message
+ * @param reuse     returned reuse flag
+ * @return          APR_SUCCESS or error
+ */
+apr_status_t ajp_parse_reuse(request_rec *r, ajp_msg_t *msg,
+                             apr_byte_t *reuse);
+
+
 /** 
  * Handle the CPING/CPONG messages
  * @param sock      backend socket
