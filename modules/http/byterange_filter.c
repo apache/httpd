@@ -55,8 +55,8 @@
 #include <unistd.h>
 #endif
 
-#ifndef DEFAULT_MAX_RANGES
-#define DEFAULT_MAX_RANGES 200
+#ifndef AP_DEFAULT_MAX_RANGES
+#define AP_DEFAULT_MAX_RANGES 200
 #endif
 
 static int ap_set_byterange(request_rec *r, apr_off_t clength,
@@ -186,7 +186,12 @@ typedef struct indexes_t {
 static int get_max_ranges(request_rec *r) { 
     core_dir_config *core_conf = ap_get_module_config(r->per_dir_config, 
                                                       &core_module);
-    return core_conf->max_ranges == -1 ? DEFAULT_MAX_RANGES : core_conf->max_ranges;
+    if (core_conf->max_ranges >= 0 || core_conf->max_ranges == AP_MAXRANGES_UNLIMITED) { 
+        return core_conf->max_ranges;
+    }
+
+    /* Any other negative val means the default */
+    return AP_DEFAULT_MAX_RANGES;
 }
 
 static apr_status_t send_416(ap_filter_t *f, apr_bucket_brigade *tmpbb)
@@ -251,7 +256,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     num_ranges = ap_set_byterange(r, clength, &indexes);
 
     /* We have nothing to do, get out of the way. */
-    if (num_ranges == 0 || (max_ranges > 0 && num_ranges > max_ranges)) {
+    if (num_ranges == 0 || (max_ranges >= 0 && num_ranges > max_ranges)) {
         r->status = original_status;
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);

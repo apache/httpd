@@ -93,16 +93,8 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: MaxRanges syntax change to allow unlimited|none|n>0 and prefix
-          compile-time macro with AP_.
-      Trunk version of patch: 
-          http://svn.apache.org/viewvc?rev=1166282&view=rev (minus Accept-Range change)
-      2.2.x verson of patch:
-          http://people.apache.org/~covener/patches/httpd-2.2.x-maxranges-followon.diff 
-               (Accept-Range: changeset in separate proposal below)
-    +1: covener, wrowe, rpluem
 
- PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
   * mod_cache: Realign the cache_quick_handler() to behave identically
