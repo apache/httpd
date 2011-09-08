@@ -4211,9 +4211,7 @@ static int default_handler(request_rec *r)
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
         ap_set_etag(r);
-        apr_table_setn(r->headers_out, "Accept-Ranges", 
-                       (d->max_ranges == AP_MAXRANGES_NORANGES) ? "none" 
-                                                                : "bytes");
+        ap_set_accept_ranges(r);
         ap_set_content_length(r, r->finfo.size);
         if (bld_content_md5) {
             apr_table_setn(r->headers_out, "Content-MD5",

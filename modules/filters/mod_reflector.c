@@ -87,7 +87,7 @@ static int reflector_handler(request_rec * r)
             ap_update_mtime(r, apr_time_now());
             ap_set_last_modified(r);
         }
-        apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
+        ap_set_accept_ranges(r);
 
         /* reflect the content length, if present */
         if ((content_length = apr_table_get(r->headers_in, "Content-Length"))) {
