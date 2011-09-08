@@ -307,7 +307,7 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
 AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct);
 
 /**
- * Set the Accept-Ranges header for this respons
+ * Set the Accept-Ranges header for this response
  * @param r The current request
  */
 AP_DECLARE(void) ap_set_accept_ranges(request_rec *r);
