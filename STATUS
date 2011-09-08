@@ -177,6 +177,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
               
     +1: covener, wrowe
 
+  * mod_proxy_ajp: return HTTP_BAD_REQUEST when AJP_EBAD_METHOD
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1166551
+    +1: jfclere
+
+  * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
+    Improved version of: http://svn.apache.org/viewvc?view=revision&revision=1092076
+    http://people.apache.org/~jfclere/patches/ajp_timeout.patch
+    +1: jfclere
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
@@ -330,6 +339,3 @@ PATCHES/ISSUES THAT ARE STALLED
               isn't attempted twice.
      rpluem says: Mind to update the 2.2.x version of the patch with r1052224,
                   r1052314, r1055246 and r1055570 (Comment fix by Jim)?
-
-  * mod_proxy_ajp: return HTTP_BAD_REQUEST when AJP_EBAD_METHOD
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1166551
