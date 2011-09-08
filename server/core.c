@@ -166,7 +166,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->allow_encoded_slashes = 0;
     conf->decode_encoded_slashes = 0;
  
-    conf->max_ranges = -1;
+    conf->max_ranges = AP_MAXRANGES_UNSET;
 
     return (void *)conf;
 }
@@ -455,7 +455,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     conf->allow_encoded_slashes = new->allow_encoded_slashes;
     conf->decode_encoded_slashes = new->decode_encoded_slashes;
 
-    conf->max_ranges = new->max_ranges != -1 ? new->max_ranges : base->max_ranges;
+    conf->max_ranges = new->max_ranges != AP_MAXRANGES_UNSET ? new->max_ranges : base->max_ranges;
 
     return (void*)conf;
 }
@@ -2985,11 +2985,26 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
 static const char *set_max_ranges(cmd_parms *cmd, void *conf_, const char *arg)
 {
     core_dir_config *conf = conf_;
+    int val = 0;
 
-    conf->max_ranges = atoi(arg);
-    if (conf->max_ranges < 0)
-        return "MaxRanges requires a non-negative integer (0 = unlimited)";
+    if (!strcasecmp(arg, "none")) { 
+        val = AP_MAXRANGES_NORANGES;
+    }
+    else if (!strcasecmp(arg, "default")) { 
+        val = AP_MAXRANGES_DEFAULT;
+    }
+    else if (!strcasecmp(arg, "unlimited")) { 
+        val = AP_MAXRANGES_UNLIMITED;
+    }
+    else { 
+        val = atoi(arg);
+        if (val <= 0)
+            return "MaxRanges requires 'none', 'default', 'unlimited' or " 
+                   "a positive integer";
+    }
 
+    conf->max_ranges = val;
+    
     return NULL;
 }
 AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
