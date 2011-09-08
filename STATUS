@@ -330,3 +330,6 @@ PATCHES/ISSUES THAT ARE STALLED
               isn't attempted twice.
      rpluem says: Mind to update the 2.2.x version of the patch with r1052224,
                   r1052314, r1055246 and r1055570 (Comment fix by Jim)?
+
+  * mod_proxy_ajp: return HTTP_BAD_REQUEST when AJP_EBAD_METHOD
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1166551
