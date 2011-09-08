@@ -257,7 +257,7 @@ static int uldap_connection_init(request_rec *r,
     int version  = LDAP_VERSION3;
     apr_ldap_err_t *result = NULL;
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
-    struct timeval connectionTimeout = {10,0};    /* 10 second connection timeout */
+    struct timeval connectionTimeout = {0}; 
 #endif
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
@@ -417,7 +417,7 @@ static int uldap_connection_init(request_rec *r,
         connectionTimeout.tv_sec = st->connectionTimeout;
     }
 
-    if (st->connectionTimeout >= 0) {
+    if (connectionTimeout.tv_sec > 0) {
         rc = apr_ldap_set_option(r->pool, ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT,
                                  (void *)&connectionTimeout, &(result));
         if (APR_SUCCESS != rc) {
