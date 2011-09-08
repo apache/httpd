@@ -948,7 +948,7 @@ static dav_error * dav_fs_set_headers(request_rec *r,
     ap_set_etag(r);
 
     /* we accept byte-ranges */
-    apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
+    ap_set_accept_ranges(r);
 
     /* set up the Content-Length header */
     ap_set_content_length(r, resource->info->finfo.size);

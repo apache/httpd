@@ -3009,7 +3009,7 @@ static int handle_map_file(request_rec *r)
          * ap_set_last_modified(r);
          * ap_set_etag(r);
          */
-        apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
+        ap_set_accept_ranges(r);
         ap_set_content_length(r, best->bytes);
 
         /* set MIME type and charset as negotiated */

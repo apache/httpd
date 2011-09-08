@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
 
+  *) mod_filter: Instead of dropping the Accept-Ranges header when a filter
+     registered with AP_FILTER_PROTO_NO_BYTERANGE is present,
+     set the header value to "none". [Eric Covener, Ruediger Pluem]
+
   *) mod_proxy_ajp: Ignore flushing if headers have not been sent.
      PR 51608 [Ruediger Pluem]
 
@@ -18,8 +22,8 @@ Changes with Apache 2.2.21
      referencing the invalid int: map at runtime. PR 50994.
      [Ben Noordhuis <info noordhuis nl>]
 
-  *) core: Add MaxRanges directive to control the number of ranges permitted
-     before returning the entire resource, with a default limit of 200.
+  *) core: Allow MaxRanges none|unlimited|default and set 'Accept-Ranges: none'
+     in the case Ranges are being ignored with MaxRanges none.
      [Eric Covener]
 
   *) mod_proxy_ajp: Respect "reuse" flag in END_REPONSE packets.
