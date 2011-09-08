@@ -7,6 +7,10 @@ Changes with Apache 2.3.15
      the original file, ignore the ranges and send the complete file.
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener]
 
+  *) mod_ldap: Optional function uldap_ssl_supported(r) always returned false
+     if called from a virtual host with mod_ldap directives in it.  Did not
+     affect mod_authnz_ldap's usage of mod_ldap.  [Eric Covener]
+
   *) mod_filter: Instead of dropping the Accept-Ranges header when a filter
      registered with AP_FILTER_PROTO_NO_BYTERANGE is present,
      set the header value to "none". [Eric Covener, Ruediger Pluem]
