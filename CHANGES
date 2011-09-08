@@ -19,6 +19,9 @@ Changes with Apache 2.2.21
      before returning the entire resource, with a default limit of 200.
      [Eric Covener]
 
+  *) mod_proxy_ajp: Respect "reuse" flag in END_REPONSE packets.
+     [Rainer Jung]
+
 Changes with Apache 2.2.20
 
   *) SECURITY: CVE-2011-3192 (cve.mitre.org)
