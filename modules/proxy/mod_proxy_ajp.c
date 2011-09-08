@@ -214,7 +214,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: AJP: request failed to %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->s->hostname);
-        if (status == AJP_EOVERFLOW)
+        if (status == AJP_EOVERFLOW || status == AJP_EBAD_METHOD)
             return HTTP_BAD_REQUEST;
         else {
             /*
