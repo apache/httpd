@@ -2757,7 +2757,7 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->util_ldap_cache_lock = base->util_ldap_cache_lock; 
 
     st->connections = NULL;
-    st->ssl_supported = 0;
+    st->ssl_supported = 0; /* not known until post-config and re-merged */
     st->global_certs = apr_array_append(p, base->global_certs,
                                            overrides->global_certs);
     st->secure = (overrides->secure_set == 0) ? base->secure
@@ -2936,6 +2936,16 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "LDAP: SSL support unavailable%s%s",
                      result_err ? ": " : "",
                      result_err ? result_err->reason : "");
+    }
+
+    /* ssl_supported is really a global setting */
+    s_vhost = s->next;
+    while (s_vhost) {
+        st_vhost = (util_ldap_state_t *)
+                   ap_get_module_config(s_vhost->module_config,
+                                        &ldap_module);
+
+        st_vhost->ssl_supported = st->ssl_supported;
     }
 
     /* Initialize the rebind callback's cross reference list. */
