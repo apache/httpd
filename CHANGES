@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
 
+  *) mod_proxy_ajp: Ignore flushing if headers have not been sent.
+     PR 51608 [Ruediger Pluem]
+
   *) Fix a regression in the CVE-2011-3192 byterange fix.
      PR 51748. [low_priority <lowprio20 gmail.com>]
 
