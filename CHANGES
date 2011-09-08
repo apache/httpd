@@ -7,6 +7,10 @@ Changes with Apache 2.3.15
      the original file, ignore the ranges and send the complete file.
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener]
 
+  *) mod_filter: Instead of dropping the Accept-Ranges header when a filter
+     registered with AP_FILTER_PROTO_NO_BYTERANGE is present,
+     set the header value to "none". [Eric Covener, Ruediger Pluem]
+
   *) core: Allow MaxRanges none|unlimited|default and set 'Accept-Ranges: none'
      in the case Ranges are being ignored with MaxRanges none.
      [Eric Covener]

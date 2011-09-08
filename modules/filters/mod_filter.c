@@ -212,7 +212,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
             }
 
             if (proto_flags & AP_FILTER_PROTO_NO_BYTERANGE) {
-                apr_table_unset(r->headers_out, "Accept-Ranges");
+                apr_table_setn(r->headers_out, "Accept-Ranges", "none");
             }
             else if (rctx && rctx->range) {
                 /* restore range header we saved earlier */
