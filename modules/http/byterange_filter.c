@@ -79,13 +79,14 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     const char *if_range;
     const char *match;
     const char *ct;
-    char *cur, **new;
+    char *cur;
     apr_array_header_t *merged;
     int num_ranges = 0, unsatisfiable = 0;
     apr_off_t ostart = 0, oend = 0, sum_lengths = 0;
     int in_merge = 0;
     indexes_t *idx;
     int ranges = 1;
+    int i;
     const char *it;
 
     *overlaps = 0;
@@ -156,7 +157,6 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         ranges = MAX_PREALLOC_RANGES;
     }
     *indexes = apr_array_make(r->pool, ranges, sizeof(indexes_t));
-    merged = apr_array_make(r->pool, ranges, sizeof(char *));
     while ((cur = ap_getword(r->pool, &range, ','))) {
         char *dash;
         char *errp;
@@ -243,9 +243,6 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             ++*overlaps;
             continue;
         } else {
-            new = (char **)apr_array_push(merged);
-            *new = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
-                                ostart, oend);
             idx = (indexes_t *)apr_array_push(*indexes);
             idx->start = ostart;
             idx->end = oend;
@@ -259,9 +256,6 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     }
     
     if (in_merge) {
-        new = (char **)apr_array_push(merged);
-        *new = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
-                            ostart, oend);
         idx = (indexes_t *)apr_array_push(*indexes);
         idx->start = ostart;
         idx->end = oend;
@@ -277,7 +271,18 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
                       "Sum of ranges not smaller than file, ignoring.");
         return 0;
     }
-    
+
+    /*
+     * create the merged table now, now that we know we need it
+     */
+    merged = apr_array_make(r->pool, num_ranges, sizeof(char *));
+    idx = (indexes_t *)(*indexes)->elts;
+    for (i = 0; i < (*indexes)->nelts; i++, idx++) {
+        char **new = (char **)apr_array_push(merged);
+        *new = apr_psprintf(r->pool, "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT,
+                            idx->start, idx->end);
+    }
+
     r->status = HTTP_PARTIAL_CONTENT;
     r->range = apr_array_pstrcat(r->pool, merged, ',');
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
