@@ -116,7 +116,7 @@ RELEASE SHOWSTOPPERS:
 
   * CVE-2011-3192
     http://people.apache.org/~trawick/draft3-2.0.64-byterange-fixes.txt
-    +1: trawick
+    +1: trawick, wrowe
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
