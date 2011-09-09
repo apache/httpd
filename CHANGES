@@ -6,7 +6,7 @@ Changes with Apache 2.0.65
      denial of service. If the sum of all ranges in a request is larger than
      the original file, ignore the ranges and send the complete file.
      PR 51714. [Jeff Trawick, Stefan Fritsch, Jim Jagielski, Ruediger Pluem,
-     Eric Covener]
+     Eric Covener, <lowprio20 gmail.com>]
 
 
 Changes with Apache 2.0.64
