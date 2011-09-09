@@ -1,5 +1,9 @@
-﻿                                                         -*- coding: utf-8 -*-
+                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
+
+  *) SECURITY: CVE-2011-3348 (cve.mitre.org)
+     mod_proxy_ajp: Respond with HTTP_NOT_IMPLEMENTED when the method is not
+     recognized.  [Jean-Frederic Clere]
 
   *) SECURITY: CVE-2011-3192 (cve.mitre.org)
      core: Fix handling of byte-range requests to use less memory, to avoid
