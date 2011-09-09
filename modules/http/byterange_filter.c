@@ -20,10 +20,6 @@
 
 #include "apr.h"
 
-#if APR_HAVE_PROCESS_H
-#include <process.h>            /* for getpid() on Win32 */
-#endif
-
 #include "apr_strings.h"
 #include "apr_buckets.h"
 #include "apr_lib.h"
