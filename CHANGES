@@ -1,6 +1,10 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
 
+  *) SECURITY: CVE-2011-3348 (cve.mitre.org)
+     mod_proxy_ajp: Respond with HTTP_NOT_IMPLEMENTED when the method is not
+     recognized.  [Jean-Frederic Clere]
+
   *) Fix a regression introduced by the CVE-2011-3192 byterange fix in 2.2.20.
      PR 51748. [<lowprio20 gmail.com>]
 
