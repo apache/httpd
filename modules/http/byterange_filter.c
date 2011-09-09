@@ -59,6 +59,8 @@
 #define AP_DEFAULT_MAX_RANGES 200
 #endif
 
+#define MAX_PREALLOC_RANGES 100
+
 APLOG_USE_MODULE(http);
 
 typedef struct indexes_t {
@@ -298,7 +300,6 @@ static int use_range_x(request_rec *r)
 }
 
 #define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
-#define MAX_PREALLOC_RANGES 100
 
 static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
                                        apr_bucket_brigade *bbout,
@@ -399,16 +400,6 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     return APR_SUCCESS;
 }
 
-static int get_max_ranges(request_rec *r) { 
-    core_dir_config *core_conf = ap_get_core_module_config(r->per_dir_config);
-    if (core_conf->max_ranges >= 0 || core_conf->max_ranges == AP_MAXRANGES_UNLIMITED) { 
-        return core_conf->max_ranges;
-    }
-
-    /* Any other negative val means the default */
-    return AP_DEFAULT_MAX_RANGES;
-}
-
 static apr_status_t send_416(ap_filter_t *f, apr_bucket_brigade *tmpbb)
 {
     apr_bucket *e;
@@ -443,8 +434,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     indexes_t *idx;
     int i;
     int original_status;
-    int max_ranges = get_max_ranges(r);
+    int max_ranges;
+    core_dir_config *core_conf = ap_get_core_module_config(r->per_dir_config);
 
+    max_ranges = ( (core_conf->max_ranges >= 0 || core_conf->max_ranges == AP_MAXRANGES_UNLIMITED)
+                   ? core_conf->max_ranges
+                   : AP_DEFAULT_MAX_RANGES );
     /*
      * Iterate through the brigade until reaching EOS or a bucket with
      * unknown length.
