@@ -30,7 +30,7 @@ Release history:
     2.0.61  : Released September 7, 2007.
     2.0.60  : Tagged August 10, 2007, not released.
     2.0.59  : released July 28, 2006 as GA.
-    2.0.58  : released May 1, 2006 as GA. 
+    2.0.58  : released May 1, 2006 as GA.
     2.0.57  : tagged April 19, 2006, not released.
     2.0.56  : tagged April 16, 2006, not released.
     2.0.55  : released October 16, 2005 as GA.
@@ -109,14 +109,14 @@ CURRENT RELEASE NOTES:
 
   * All commits to branches/2.0.x must be reflected in SVN trunk,
     as well, if they apply.  Logical progression is commit to trunk,
-    get feedback and votes on list or in STATUS, then merge into 
+    get feedback and votes on list or in STATUS, then merge into
     branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
 
 RELEASE SHOWSTOPPERS:
 
   * CVE-2011-3192
     http://people.apache.org/~trawick/draft3-2.0.64-byterange-fixes.txt
-    +1: trawick, wrowe
+    +1: trawick, wrowe, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -127,12 +127,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     proposals to the end of this list. ]
 
   * Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
-    proxied requests.  Basic tests by jorton and [rpluem] show that this works, 
-    nobody can actually remember why this limitation was introduced at all 
+    proxied requests.  Basic tests by jorton and [rpluem] show that this works,
+    nobody can actually remember why this limitation was introduced at all
     (r94028) and the mailing list archives also gave no hint.
       http://svn.apache.org/viewvc?view=rev&revision=327179
     +0: covener, wrowe
-          do we need to make people opt-in for this behavior to 
+          do we need to make people opt-in for this behavior to
           backport it to 2.0.x? What mechanism?
 
   * pcre: update config.guess and config.sub for better platform support.
@@ -169,7 +169,7 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
        jorton: I have no idea, let an EBCDIC-er complain if it breaks?
        trawick: seems that '\r' and '\n' are the better chars to check
                 for; this is not raw data read from the network (or directly
-                from SSL) but instead it is either protocol data that has 
+                from SSL) but instead it is either protocol data that has
                 already been converted to the native charset or it is other
                 data which was created inside the server in the native charset
          (2) I'd put out (null) only if val is NULL, not if it's empty.
@@ -190,7 +190,7 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
           modules/ssl/ssl_engine_kernel.c: r1.83, r1.105, r1.108
           modules/ssl/ssl_util.c: r1.36
           modules/ssl/ssl_private.h: r1.2
-       +1: bnicholes, wrowe                             
+       +1: bnicholes, wrowe
        -0: jerenkrantz (should wait for 2.2)
        -0: pquerna (2.2)
        -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
@@ -204,8 +204,8 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
                 when the right atomic operations are available/
                 implemented?  (Due to under-the-covers mutex
                 operations when the dummy atomics are used?)
-       pquerna: Has anyone tested the performance differences 
-                for different platforms? At this point I would 
+       pquerna: Has anyone tested the performance differences
+                for different platforms? At this point I would
                 favour waiting for 2.2.
        -0: stoddard (at least until the performance implications are clarified)
 
@@ -265,15 +265,15 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
        PREREQ: Blow away of SSL_EXPERIMENTAL_ENGINE (see above)
        +1: jwoolley, trawick, jim, jerenkrantz
 
-    *) When UseCanonicalName is set to OFF, allow ap_get_server_port to 
-       check r->connection->local_addr->port before defaulting to 
+    *) When UseCanonicalName is set to OFF, allow ap_get_server_port to
+       check r->connection->local_addr->port before defaulting to
        server->port or ap_default_port()
          server/core.c r1.247
        +1: bnicholes, jim, wrowe
        0: nd, jerenkrantz
           nd: can the local_addr->port ever be 0?
           bnicholes response: I couldn't tell you for sure if local_addr->port
-            could be 0.  But it makes sense that if it were then Apache 
+            could be 0.  But it makes sense that if it were then Apache
             wouldn't be listening on any port so it wouldn't matter anyway.
           nd replies: But if it can't be 0 the alternatives thereafter make no
             sense anymore, right?
@@ -284,7 +284,7 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
     *) ThreadStackSize for Win32 and threaded MPMs
        trawick will eventually put together a patch for httpd 2.0.next
        +1 concept: trawick, nd, stoddard, wrowe
-      
+
     *) don't propagate input headers describing a body to a GET subrequest
        with no body
        http://svn.apache.org/viewcvs?view=rev&rev=158798
@@ -339,7 +339,7 @@ CURRENT VOTES:
 
     *) If the parent process dies, should the remaining child processes
        "gracefully" self-terminate. Or maybe we should make it a runtime
-       option, or have a concept of 2 parent processes (one being a 
+       option, or have a concept of 2 parent processes (one being a
        "hot spare").
        See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
@@ -364,9 +364,9 @@ CURRENT VOTES:
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * There is a bug in how we sort some hooks, at least the pre-config
-      hook.  The first time we call the hooks, they are in the correct 
+      hook.  The first time we call the hooks, they are in the correct
       order, but the second time, we don't sort them correctly.  Currently,
-      the modules/http/config.m4 file has been renamed to 
+      the modules/http/config.m4 file has been renamed to
       modules/http/config2.m4 to work around this problem, it should moved
       back when this is fixed.
 
@@ -417,12 +417,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       httpd-std.conf points to conf.)
 
     * If any request gets through ap_process_request_internal() and is
-      scheduled to be served by the core handler, without a flag that this 
-      r->filename was tested by dir/file_walk, we need to 500 at the very 
+      scheduled to be served by the core handler, without a flag that this
+      r->filename was tested by dir/file_walk, we need to 500 at the very
       end of the ap_process_request_internal() processing so sub_req-esters
-      know this request cannot be run.  This provides authors of older 
-      modules better compatibility, while still improving the security and 
-      robustness of 2.0. 
+      know this request cannot be run.  This provides authors of older
+      modules better compatibility, while still improving the security and
+      robustness of 2.0.
 
         Status: still need to decide where this goes, OtherBill comments...
         Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
@@ -470,7 +470,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * The Add...Filter and Set...Filter directives do not allow the
       administrator to order filters, beyond the order of filename (mime)
-      extensions.  It isn't clear if Set...Filter(s) should be inserted 
+      extensions.  It isn't clear if Set...Filter(s) should be inserted
       before or after the Add...Filter(s) which are ordered by sequence of
       filename extensions.  At minimum, some sort of +-[0-10] syntax seems
       like a nice solution.  See ROADMAP.
@@ -519,7 +519,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Reasons include sole-function servers that need to die if
       an external dependency (e.g., a database) fails, et cetera.
       Perhaps something in the (ever more abused) scoreboard?
-        
+
              On the other hand, we already have a pipe that goes between parent
              and child for graceful shutdown events, along with an API that
              can be used to send a message down that pipe.  In threaded MPMs,
@@ -529,10 +529,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
              figure out how to do graceless on non-threaded MPMs.
 
     * Win32: Rotatelogs sometimes is not terminated when Apache
-      goes down hard.  FirstBill was looking at possibly tracking the 
+      goes down hard.  FirstBill was looking at possibly tracking the
       child's-child processes in the parent process.
-        stoddard: Shared scoreboard might offer a good way for the parent 
-        to keep track of 'other child' processes and whack them if the child 
+        stoddard: Shared scoreboard might offer a good way for the parent
+        to keep track of 'other child' processes and whack them if the child
         goes down.
         Other thoughts on walking the process chain using the NT kernel
         have also been proposed on APR.
@@ -548,10 +548,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Mass vhosting version of suEXEC.
 
-    * All DBMs suffer from confusion in support/dbmmanage (perl script) since 
+    * All DBMs suffer from confusion in support/dbmmanage (perl script) since
       the dbmmanage employs the first-matched dbm format.  This is not
       necessarily the library that Apache was built with.  Aught to
-      rewrite dbmmanage upon installation to bin/ with the proper library 
+      rewrite dbmmanage upon installation to bin/ with the proper library
       for predictable mod_auth_dbm administration.
         Questions; htdbm exists, time to kill dbmmanage, or does it remain
                    useful as a perl dbm management example?  If we keep it,
@@ -568,8 +568,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         - is it possible to remove the DAV: namespace stuff from util_xml?
 
     * ap_core_translate() and its use by mod_mmap_static and mod_file_cache
-      are a bit wonky.  The function should probably be exposed as a utility 
-      function (such as ap_translate_url2fs() or ap_validate_fs_url() or 
+      are a bit wonky.  The function should probably be exposed as a utility
+      function (such as ap_translate_url2fs() or ap_validate_fs_url() or
       something).  Another approach would be a new hook phase after
       "translate" which would allow the module to munge what the
       translation has decided to do.
@@ -607,7 +607,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       of ap_os_killpg, regardless of how they should die.
 
     * Scoreboard structures could be changed in the future such that
-      proper alignment is not maintained, leading to segfaults on 
+      proper alignment is not maintained, leading to segfaults on
       some systems.  Cliff posted a patch to deal with this issue but
       later recanted. See this message to dev@apr.apache.org:
       Message-ID: <Pine.LNX.4.44.0203011354090.16457-200000@deepthought
@@ -625,6 +625,6 @@ EXPERIMENTAL MODULES:
 
     mod_auth_ldap/util_ldap:
     * General stabilization and testing
-    
+
     * Fix the shared memory cache
 
