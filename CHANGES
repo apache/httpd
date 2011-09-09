@@ -1,11 +1,12 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.15
 
   *) SECURITY: CVE-2011-3192 (cve.mitre.org)
      core: Fix handling of byte-range requests to use less memory, to avoid
      denial of service. If the sum of all ranges in a request is larger than
      the original file, ignore the ranges and send the complete file.
-     PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener]
+     PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
+     <lowprio20 gmail.com>]
 
   *) mod_ldap: Optional function uldap_ssl_supported(r) always returned false
      if called from a virtual host with mod_ldap directives in it.  Did not
@@ -23,9 +24,6 @@ Changes with Apache 2.3.15
      certificates of clients or proxied servers. Completely delegate
      CRL processing to OpenSSL, and add a new [Proxy]CARevocationCheck
      directive for controlling the revocation checking mode. [Kaspar Brand]
-
-  *) Fix a regression in the CVE-2011-3192 byterange fix.
-     PR 51748. [low_priority <lowprio20 gmail.com>]
 
   *) core: Add MaxRanges directive to control the number of ranges permitted
      before returning the entire resource, with a default limit of 200. 
