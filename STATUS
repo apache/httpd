@@ -152,11 +152,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                mod_disk_cache.c and mod_mem_cache.c.
 
   * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
-    Improved version of: http://svn.apache.org/viewvc?view=revision&revision=1092076
+    Trunk version of patch:
+                         http://svn.apache.org/viewvc?view=revision&revision=r1092076
+                         http://svn.apache.org/viewvc?view=revision&revision=r1100513
     http://people.apache.org/~jfclere/patches/ajp_timeout.patch
     +1: jfclere
     rpluem says: Can you please update your proposal with the trunk revision numbers
     that fix the check for the timeout status?
+    jfclere: Ooops see above.
 
 PATCHES/ISSUES THAT ARE STALLED
 
