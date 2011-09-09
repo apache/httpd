@@ -23,7 +23,7 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
-    2.2.21  : In development
+    2.2.21  : In development. Jim proposes to RM next week (9/12-16)
     2.2.20  : Released August 30, 2011.
     2.2.19  : Tagged May 20, 2011. ABI restored.
     2.2.18  : Released May 11, 2011. ABI broken.
