@@ -24,7 +24,6 @@
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belgede, bir istekte belirtilen URL’nin sunulacak dosyanın dosya
       sistemindeki yerini bulmak için Apache tarafından nasıl kullanıldığı

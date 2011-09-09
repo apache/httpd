@@ -25,8 +25,6 @@
 <a href="./ko/custom-error.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>웹마스터는 오류나 문제가 발생했을때 아파치의 응답을
     설정할 수 있다.</p>

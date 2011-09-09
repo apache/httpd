@@ -22,8 +22,6 @@
 <p><span>言語: </span><a href="../en/developer/modules.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/developer/modules.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p>この文書は <code>mod_mmap_static</code> モジュールを Apache 2.0 用に移植した時に
     学んだ経験をもとに書いた、最初の手引き書です。まだまだ完全じゃないし、
