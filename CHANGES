@@ -1,5 +1,8 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.21
+
+  *) Fix a regression introduced by the CVE-2011-3192 byterange fix in 2.2.20.
+     PR 51748. [<lowprio20 gmail.com>]
 
   *) mod_filter: Instead of dropping the Accept-Ranges header when a filter
      registered with AP_FILTER_PROTO_NO_BYTERANGE is present,
@@ -7,9 +10,6 @@ Changes with Apache 2.2.21
 
   *) mod_proxy_ajp: Ignore flushing if headers have not been sent.
      PR 51608 [Ruediger Pluem]
-
-  *) Fix a regression in the CVE-2011-3192 byterange fix.
-     PR 51748. [low_priority <lowprio20 gmail.com>]
 
   *) mod_dav_fs: Fix segfault if apr DBM driver cannot be loaded. PR 51751.
      [Stefan Fritsch]
