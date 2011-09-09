@@ -24,10 +24,6 @@
 <a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Esta página contiene toda la documentación sobre los programas
     ejecutables incluidos en el servidor Apache.</p>

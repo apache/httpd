@@ -29,8 +29,6 @@
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -2289,7 +2287,7 @@ request</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Number of ranges allowed before returning the complete
 resource </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxRanges <var>number</var> (0 = no limit)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxRanges default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxRanges 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>

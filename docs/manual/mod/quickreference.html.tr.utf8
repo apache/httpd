@@ -572,7 +572,7 @@ will handle during its life</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>sayı</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
 <tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
   ayırmasına izin verilen azami bellek miktarını belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#maxranges">MaxRanges <var>number</var> (0 = no limit)</a></td><td> 200 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Number of ranges allowed before returning the complete
+<tr class="odd"><td><a href="core.html#maxranges">MaxRanges default | unlimited | none | <var>number-of-ranges</var></a></td><td> 200 </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Number of ranges allowed before returning the complete
 resource </td></tr>
 <tr><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of connections that will be processed
 simultaneously</td></tr>

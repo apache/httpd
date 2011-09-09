@@ -24,8 +24,6 @@
 <a href="./pt-br/new_features_2_2.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta tradução pode estar desatualizada. 
-        Confira a versão em Inglês para mudanças recentes.</div>
 
   <p>Esse documento descreve algumas das principais mudanças
      entre as versões 2.0 e 2.2 do Servidor HTTP Apache.

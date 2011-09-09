@@ -24,8 +24,6 @@
 <a href="../ko/programs/rotatelogs.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
      <p><code>rotatelogs</code>는 아파치의 파이프 로그파일 기능을
      위한 간단한 프로그램이다. 예를 들어:</p>

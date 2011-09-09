@@ -2879,7 +2879,7 @@ connection</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of ranges allowed before returning the complete
 resource </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxRanges <var>number</var> (0 = no limit)</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxRanges default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxRanges 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -2890,6 +2890,22 @@ resource </td></tr>
     limits the number of HTTP ranges the server is willing to 
     return to the client.  If more ranges then permitted are requested, 
     the complete resource is returned instead.</p>
+
+    <dl>  
+      <dt><strong>default</strong></dt>
+      <dd>Limits the number of ranges to a compile-time default of 200.</dd>
+   
+      <dt><strong>none</strong></dt>
+      <dd>Range headers are ignored.</dd>
+          
+      <dt><strong>unlimited</strong></dt>
+      <dd>The server does not limit the number of ranges it is
+          willing to satisfy.</dd>
+
+      <dt><var>number-of-ranges</var></dt>
+      <dd>A positive number representing the maximum number of ranges the
+      server is willing to satisfy.</dd>
+    </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

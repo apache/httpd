@@ -28,10 +28,6 @@
 <a href="../tr/mod/quickreference.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/quickreference.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>La Guía Rápida de Referencia de Directivas muestra el uso, las
     opciones por defecto, el estado y el contexto de cada directiva de
@@ -577,7 +573,7 @@ will handle during its life</td></tr>
 connection</td></tr>
 <tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KBytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum amount of memory that the main allocator is allowed
 to hold without calling <code>free()</code></td></tr>
-<tr class="odd"><td><a href="core.html#maxranges">MaxRanges <var>number</var> (0 = no limit)</a></td><td> 200 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Number of ranges allowed before returning the complete
+<tr class="odd"><td><a href="core.html#maxranges">MaxRanges default | unlimited | none | <var>number-of-ranges</var></a></td><td> 200 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Number of ranges allowed before returning the complete
 resource </td></tr>
 <tr><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of connections that will be processed
 simultaneously</td></tr>
