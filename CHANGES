@@ -1,6 +1,12 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.0.65
 
+  *) SECURITY: CVE-2011-3192 (cve.mitre.org)
+     core: Fix handling of byte-range requests to use less memory, to avoid
+     denial of service. If the sum of all ranges in a request is larger than
+     the original file, ignore the ranges and send the complete file.
+     PR 51714. [Jeff Trawick, Stefan Fritsch, Jim Jagielski, Ruediger Pluem,
+     Eric Covener]
 
 
 Changes with Apache 2.0.64
@@ -10,8 +16,8 @@ Changes with Apache 2.0.64
      PR: 49246 [Mark Drayton, Jeff Trawick]
 
   *) SECURITY: CVE-2009-1891 (cve.mitre.org)
-     Fix a potential Denial-of-Service attack against mod_deflate or other 
-     modules, by forcing the server to consume CPU time in compressing a 
+     Fix a potential Denial-of-Service attack against mod_deflate or other
+     modules, by forcing the server to consume CPU time in compressing a
      large file after a client disconnects.  PR 39605.
      [Joe Orton, Ruediger Pluem]
 
@@ -38,7 +44,7 @@ Changes with Apache 2.0.64
      is any buffered data readable. Any configuration which requires
      renegotiation for per-directory/location access control is still
      vulnerable, unless using openssl 0.9.8l or later.
-     [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>, 
+     [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>,
       Rainer Jung]
 
   *) SECURITY: CVE-2010-0434 (cve.mitre.org)
@@ -66,7 +72,7 @@ Changes with Apache 2.0.64
 
   *) mod_ssl: Do not do overlapping memcpy. PR 45444 [Joe Orton]
 
-  *) Add Set-Cookie and Set-Cookie2 to the list of headers allowed to pass 
+  *) Add Set-Cookie and Set-Cookie2 to the list of headers allowed to pass
      through on a 304 response.  [Nick Kew]
 
   *) apxs: Fix -A and -a options to ignore whitespace in httpd.conf
@@ -86,7 +92,7 @@ Changes with Apache 2.0.62 (not released)
 
   *) SECURITY: CVE-2007-6388 (cve.mitre.org)
      mod_status: Ensure refresh parameter is numeric to prevent
-     a possible XSS attack caused by redirecting to other URLs. 
+     a possible XSS attack caused by redirecting to other URLs.
      Reported by SecurityReason.  [Mark Cox, Joe Orton]
 
   *) SECURITY: CVE-2007-5000 (cve.mitre.org)
@@ -100,7 +106,7 @@ Changes with Apache 2.0.62 (not released)
   *) log.c: Ensure Win32 resurrects its lost robust logger processes.
      [William Rowe]
 
-  *) mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
+  *) mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean
      shutdown of the server when the MaxClients is higher then 257,
      in a more responsive manner [Mladen Turk, William Rowe]
 
@@ -135,7 +141,7 @@ Changes with Apache 2.0.61
 
   *) SECURITY: CVE-2007-3304 (cve.mitre.org)
      prefork, worker MPMs: Ensure that the parent process cannot
-     be forced to kill processes outside its process group. 
+     be forced to kill processes outside its process group.
      [Joe Orton, Jim Jagielski]
 
   *) mod_proxy_http: accept proxy-sendchunked/proxy-sendchunks as synonymous.
@@ -153,7 +159,7 @@ Changes with Apache 2.0.61
      number reporting.)  [William Rowe]
 
   *) mod_autoindex: Add in Type and Charset options to IndexOptions
-     directive. This allows the admin to explicitly set the 
+     directive. This allows the admin to explicitly set the
      content-type and charset of the generated page and is therefore
      a viable workaround for buggy browsers affected by CVE-2007-4465
      (cve.mitre.org). [Jim Jagielski]
@@ -162,13 +168,13 @@ Changes with Apache 2.0.61
      or apr_pool_create() (when apr-based error reporting is not ready).
      [William Rowe, Jeff Trawick]
 
-  *) log core: Fix issue which could cause piped loggers to be orphaned 
-     and never terminate after a graceful restart. PR 40651. [Joe Orton, 
+  *) log core: Fix issue which could cause piped loggers to be orphaned
+     and never terminate after a graceful restart. PR 40651. [Joe Orton,
      Ruediger Pluem]
 
-  *) log core: fix the new piped logger case where we couldn't connect 
-     the replacement stderr logger's stderr to the NULL stdout stream.  
-     Continue in this case, since the previous alternative of no error 
+  *) log core: fix the new piped logger case where we couldn't connect
+     the replacement stderr logger's stderr to the NULL stdout stream.
+     Continue in this case, since the previous alternative of no error
      logging at all (/dev/null) is far worse. [William Rowe]
 
   *) mpm_winnt: Prevent the parent-child pipe from leaking into other
@@ -183,10 +189,10 @@ Changes with Apache 2.0.61
      version of apache?'.  [William Rowe]
 
   *) mod_ssl: initialize thread locks before initializing the hardware
-     acceleration library, so the latter can make use of the former. 
+     acceleration library, so the latter can make use of the former.
      PR 20951. [<adunn ncipher.com>]
 
-  *) mod_ssl: Support limited buffering of request bodies to allow 
+  *) mod_ssl: Support limited buffering of request bodies to allow
      per-location renegotiation to proceed.  PR 12355.  [Joe Orton]
 
   *) mod_cgi, mod_cgid: Don't return apr_status_t error value
@@ -241,7 +247,7 @@ Changes with Apache 2.0.58
 Changes with Apache 2.0.57
 
   *) mod_cgid: run the get_suexec_identity hook within the request-handler
-     instead of within cgid. PR 36410. [Colm MacCarthaigh] 
+     instead of within cgid. PR 36410. [Colm MacCarthaigh]
 
   *) core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
      [Davi Arnaut <davi haxent.com.br>]
@@ -276,25 +282,25 @@ Changes with Apache 2.0.56
      output of 'httpd -V'. [William Rowe]
 
   *) Ensure that the proper status line is written to the client, fixing
-     incorrect status lines caused by filters which modify r->status without 
+     incorrect status lines caused by filters which modify r->status without
      resetting r->status_line, such as the built-in byterange filter.
      [Jeff Trawick]
 
   *) Default handler: Don't return output filter apr_status_t values.
      PR 31759.  [Jeff Trawick, Ruediger Pluem, Joe Orton]
 
-  *) mod_speling: Stop crashing with certain non-file requests.  
+  *) mod_speling: Stop crashing with certain non-file requests.
      [Jeff Trawick]
 
   *) keep the Content-Length header for a HEAD with no response body.
      PR 18757 [Greg Ames]
- 
+
   *) Modify apr[util] .h detection to avoid breakage on VPATH builds
      using Solaris make (amoung others) and avoid breakage in ./buildconf
      when srclib/apr[-util] are symlinks rather than directories proper.
      [William Rowe]
 
-  *) Avoid server-driven negotiation when a CGI script has emitted an 
+  *) Avoid server-driven negotiation when a CGI script has emitted an
      explicit "Status:" header. PR 38070.  [Nick Kew]
 
   *) mod_log_config now logs all Set-Cookie headers if the %{Set-Cookie}o
@@ -303,27 +309,27 @@ Changes with Apache 2.0.56
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
      [Justin Erenkrantz]
 
-  *) mod_cache: Correctly handle responses with a 301 status. PR 37347. 
+  *) mod_cache: Correctly handle responses with a 301 status. PR 37347.
      [Paul Querna]
 
   *) mod_proxy_http: Prevent data corruption of POST request bodies when
      client accesses proxied resources with SSL. PR 37145.
-     [Ruediger Pluem, William Rowe]    
+     [Ruediger Pluem, William Rowe]
 
   *) Eliminated the NET_TIME filter, restructuring the timeout logic.
      This provides a working mod_echo on all platforms, and ensures any
      custom protocol module is at least given an initial timeout value
      based on the <VirtualHost > context's Timeout directive.
-     [William Rowe]  
+     [William Rowe]
 
-  *) mod_ssl: Correct issue where mod_ssl does not pick up the 
+  *) mod_ssl: Correct issue where mod_ssl does not pick up the
      ssl-unclean-shutdown setting when configured. PR 34452. [Joe Orton]
 
   *) Document the ReceiveBufferSize change done in r157583.
      [Murray Nesbitt <murray cpan.org>]
 
   *) mod_deflate: Merge the Vary header, instead of Setting it. Fixes
-     applications that send the Vary Header themselves. PR 37559. 
+     applications that send the Vary Header themselves. PR 37559.
      [Paul Querna]
 
   *) mod_dav: Fix a null pointer dereference in an error code path during the
@@ -379,19 +385,19 @@ Changes with Apache 2.0.55
      connection in some limited circumstances.  [Greg Ames]
 
   *) mod_ldap: Fix PR 36563. Keep track of the number of attributes
-     retrieved from LDAP so that all of the values can be properly 
-     cached even if the value is NULL. 
+     retrieved from LDAP so that all of the values can be properly
+     cached even if the value is NULL.
      [Brad Nicholes, Ondrej Sury <ondrej sury.org>]
-       
-  *) SECURITY: CVE-2005-2491 (cve.mitre.org): 
+
+  *) SECURITY: CVE-2005-2491 (cve.mitre.org):
      Fix integer overflows in PCRE in quantifier parsing which could
-     be triggered by a local user through use of a carefully-crafted 
+     be triggered by a local user through use of a carefully-crafted
      regex in an .htaccess file.  [Philip Hazel]
 
   *) SECURITY: CVE-2005-2088 (cve.mitre.org)
      proxy: Correctly handle the Transfer-Encoding and Content-Length
      headers.  Discard the request Content-Length whenever T-E: chunked
-     is used, always passing one of either C-L or T-E: chunked whenever 
+     is used, always passing one of either C-L or T-E: chunked whenever
      the request includes a request body.  Resolves an entire class of
      proxy HTTP Request Splitting/Spoofing attacks.  [William Rowe]
 
@@ -408,7 +414,7 @@ Changes with Apache 2.0.55
      invoked cgi application, to conform to the behavior of mod_cgi.
      [Pradeep Kumar S <pradeep.smani gmail.com>]
 
-  *) mod_include: Fix possible environment variable corruption when 
+  *) mod_include: Fix possible environment variable corruption when
      using nested includes.  PR 12655.  [Joe Orton]
 
   *) Support the suppress-error-charset setting, as with Apache 1.3.x.
@@ -436,7 +442,7 @@ Changes with Apache 2.0.55
   *) mod_ldap: Fix various shared memory cache handling bugs.
      PR 34209.  [Joe Orton]
 
-  *) Fix a file descriptor leak when starting piped loggers.  PR 33748. 
+  *) Fix a file descriptor leak when starting piped loggers.  PR 33748.
      [Joe Orton]
 
   *) mod_ldap: Avoid segfaults when opening connections if using a version
@@ -446,10 +452,10 @@ Changes with Apache 2.0.55
 
   *) SECURITY: CVE-2005-2088 (cve.mitre.org)
      core: If a request contains both Transfer-Encoding and Content-Length
-     headers, remove the Content-Length, mitigating some HTTP Request 
+     headers, remove the Content-Length, mitigating some HTTP Request
      Splitting/Spoofing attacks.  [Paul Querna, Joe Orton]
 
-  *) proxy HTTP: If a response contains both Transfer-Encoding and a 
+  *) proxy HTTP: If a response contains both Transfer-Encoding and a
      Content-Length, remove the Content-Length and don't reuse the
      connection, mitigating some HTTP Response Splitting attacks.
      [Jeff Trawick]
@@ -459,7 +465,7 @@ Changes with Apache 2.0.55
 
   *) SECURITY: CVE-2005-1268 (cve.mitre.org)
      mod_ssl: Fix off-by-one overflow whilst printing CRL information
-     at "LogLevel debug" which could be triggered if configured 
+     at "LogLevel debug" which could be triggered if configured
      to use a "malicious" CRL.  PR 35081.  [Marc Stern <mstern csc.com>]
 
   *) mod_userdir: Fix possible memory corruption issue.  PR 34588.
@@ -467,7 +473,7 @@ Changes with Apache 2.0.55
 
   *) worker mpm: don't take down the whole server for a transient
      thread creation failure. PR 34514 [Greg Ames]
-  
+
   *) mod_rewrite: use buffered I/O to improve performance with large
      RewriteMap txt: files.  [Greg Ames]
 
@@ -482,7 +488,7 @@ Changes with Apache 2.0.54
      [Rüdiger Plüm <r.pluem t-online.de>]
 
   *) mod_ldap: Added the directive LDAPConnectionTimeout to configure
-     the ldap socket connection timeout value.  
+     the ldap socket connection timeout value.
      [Brad Nicholes]
 
   *) Correctly export all mod_dav public functions.
@@ -506,10 +512,10 @@ Changes with Apache 2.0.54
   *) htdigest: Fix permissions of created files.  PR 33765.  [Joe Orton]
 
   *) core_input_filter: Move buckets to a persistent brigade instead of
-     creating a new brigade. This stop a memory leak when proxying a 
+     creating a new brigade. This stop a memory leak when proxying a
      Streaming Media Server. PR 33382. [Paul Querna]
 
-  *) mod_win32: Ignore both PATH_INFO as well as PATH_TRANSLATED to avoid 
+  *) mod_win32: Ignore both PATH_INFO as well as PATH_TRANSLATED to avoid
      hiccups from additional path information passed in non-utf-8 format.
      [Richard Donkin <rd9 donkin.org]
 
@@ -576,9 +582,9 @@ Changes with Apache 2.0.53
      files are in ./modules/foo, but makes it easier to statically
      build/log "external" modules.  [Jim Jagielski]
 
-  *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that 
-     ldap authorization only modules have access to the util_ldap 
-     user cache without having to require ldap authentication as well.  
+  *) Util_ldap: Implemented the util_ldap_cache_getuserdn() API so that
+     ldap authorization only modules have access to the util_ldap
+     user cache without having to require ldap authentication as well.
      PR 31898.  [Jari Ahonen jah progress.com, Brad Nicholes]
 
   *) mod_auth_ldap: Added the directive "Requires ldap-attribute" that
@@ -592,7 +598,7 @@ Changes with Apache 2.0.53
 
   *) SECURITY: CVE-2004-0885 (cve.mitre.org)
      mod_ssl: Fix a bug which allowed an SSLCipherSuite setting to be
-     bypassed during an SSL renegotiation.  PR 31505.  
+     bypassed during an SSL renegotiation.  PR 31505.
      [Hartmut Keil <Hartmut.Keil adnovum.ch>, Joe Orton]
 
   *) mod_ssl: Fail at startup rather than segfault at runtime if a
@@ -604,7 +610,7 @@ Changes with Apache 2.0.53
 
   *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
      [Jeff Trawick]
- 
+
   *) mod_cache: CacheDisable will only disable the URLs it was meant to
      disable, not all caching. PR 31128.
      [Edward Rudd <eddie omegaware.com>, Paul Querna]
@@ -637,7 +643,7 @@ Changes with Apache 2.0.53
 
   *) Fix the re-linking issue when purging elements from the LDAP cache
      PR 24801.  [Jess Holle <jessh ptc.com>]
-      
+
   *) mod_disk_cache: Fix races in saving responses.  [Justin Erenkrantz]
 
   *) Fix Expires handling in mod_cache.  [Justin Erenkrantz]
@@ -667,7 +673,7 @@ Changes with Apache 2.0.52
   *) mod_mem_cache: Fixed race condition causing segfault because of memory being
      freed twice, or reused after being freed.
      [J. Clar, W. Stoddard, G. Ames]
-    
+
   *) Add -l option to rotatelogs to let it use local time rather than
      UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
@@ -709,7 +715,7 @@ Changes with Apache 2.0.51
 
   *) SECURITY: CVE-2004-0751 (cve.mitre.org)
      mod_ssl: Fix a segfault in the SSL input filter which could be
-     triggered if using "speculative" mode, for instance by a 
+     triggered if using "speculative" mode, for instance by a
      proxy request to an SSL server.  PR 30134.  [Joe Orton]
 
   *) mod_rewrite: Add %{SSL:...} and %{HTTPS} variable lookups.
@@ -749,7 +755,7 @@ Changes with Apache 2.0.51
   *) Prevent Win32 pool corruption at startup [Allan Edwards]
 
   *) mod_ssl: Add "SSLUserName" directive to set r->user based on a
-     chosen SSL environment variable.  PR 20957. 
+     chosen SSL environment variable.  PR 20957.
      [Martin v. Loewis <martin v.loewis.de>]
 
   *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
@@ -767,7 +773,7 @@ Changes with Apache 2.0.51
      PR 18989.  [Joe Orton]
 
   *) mod_userdir: Ensure that the userdir identity is used for
-     suexec userdir access in a virtual host which has suexec configured.  
+     suexec userdir access in a virtual host which has suexec configured.
      PR 18156.  [Joshua Slive]
 
   *) mod_rewrite no longer confuses the RewriteMap caches if
@@ -783,7 +789,7 @@ Changes with Apache 2.0.51
      introduced ("always" and "onsuccess", defaulting to the latter).
      PR 28657.  [André Malo]
 
-  *) Use the higher performing 'httpready' Accept Filter on all platforms 
+  *) Use the higher performing 'httpready' Accept Filter on all platforms
      except FreeBSD < 4.1.1. [Paul Querna]
 
   *) mod_usertrack: Escape the cookie name before pasting into the
@@ -803,18 +809,18 @@ Changes with Apache 2.0.51
   *) Allow proxying of resources that are invoked via DirectoryIndex.
      PR 14648, 15112, 29961.  [André Malo]
 
-  *) util_ldap: Switched the lock types on the shared memory cache 
-     from thread reader/writer locks to global mutexes in order to 
+  *) util_ldap: Switched the lock types on the shared memory cache
+     from thread reader/writer locks to global mutexes in order to
      provide cross process cache protection. [Brad Nicholes]
-     
-  *) util_ldap: Reworked the cache locking scheme to eliminate duplicate 
+
+  *) util_ldap: Reworked the cache locking scheme to eliminate duplicate
      cache entries in the credentials cache due to race conditions.
      [Brad Nicholes]
-     
-  *) util_ldap: Enhanced the util_ldap cache-info display to show more 
-     detail about the contents and current state of the cache. 
+
+  *) util_ldap: Enhanced the util_ldap cache-info display to show more
+     detail about the contents and current state of the cache.
      [Brad Nicholes]
-     
+
   *) Enable the option to support anonymous shared memory in mod_ldap.
      This makes the cache work on Linux again. [Graham Leggett]
 
@@ -841,11 +847,11 @@ Changes with Apache 2.0.51
 
   *) Add the NOTICE file to the rpm spec file in compliance with the
      Apache v2.0 license. [Graham Leggett]
- 
+
   *) RPM spec file changes: changed default dependancy to link to db4
      instead of db3. Fixed complaints about unpackaged files.
      [Graham Leggett]
- 
+
 Changes with Apache 2.0.50
 
   *) SECURITY: CVE-2004-0493 (cve.mitre.org)
@@ -877,13 +883,13 @@ Changes with Apache 2.0.50
 
   *) util_ldap: allow relative paths for LDAPTrustedCA to be resolved
      against ServerRoot PR#26602 [Brad Nicholes]
-       
+
   *) SECURITY: CVE-2004-0488 (cve.mitre.org)
      mod_ssl: Fix a buffer overflow in the FakeBasicAuth code for a
      (trusted) client certificate subject DN which exceeds 6K in length.
      [Joe Orton]
 
-  *) mod_dav_fs: Fix MKCOL response for missing parent collections, which 
+  *) mod_dav_fs: Fix MKCOL response for missing parent collections, which
      caused issues for the Eclipse WebDAV extension.
      PR 29034.  [Joe Orton]
 
@@ -925,7 +931,7 @@ Changes with Apache 2.0.50
 
   *) Fix handling of IPv6 numeric strings in mod_proxy.  [Jeff Trawick]
 
-  *) mod_isapi: send_response_header() failed to copy status string's 
+  *) mod_isapi: send_response_header() failed to copy status string's
      last character.  PR 20619.  [Jesse Pelton <jsp pkc.com>]
 
   *) Fix a segfault when requests for shared memory fails and returns
@@ -953,30 +959,30 @@ Changes with Apache 2.0.50
      functions leave the connections in a sane state after errors have
      occurred. PR 27748, 17274, 17599, 18661, 21787, 24595, 24683, 27134,
      27271 [Graham Leggett]
-                                                                                
+
   *) mod_ldap calls ldap_simple_bind_s() to validate the user
      credentials.  If the bind fails, the connection is left
      in an unbound state.  Make sure that the ldap connection
      record is updated to show that the connection is no longer
      bound. [Brad Nicholes]
 
-  *) Ensure that lines in the request which are too long are 
+  *) Ensure that lines in the request which are too long are
      properly terminated before logging.
      [Tsurutani Naoki <turutani scphys.kyoto-u.ac.jp>]
 
-  *) Update the bind credentials for the cached LDAP connection to 
-     reflect the last bind.  This prevents util_ldap from creating 
+  *) Update the bind credentials for the cached LDAP connection to
+     reflect the last bind.  This prevents util_ldap from creating
      unnecessary connections rather than reusing cached connections.
      [Brad Nicholes]
-     
-  *) mod_isapi: GetServerVariable returned improperly terminated header 
+
+  *) mod_isapi: GetServerVariable returned improperly terminated header
      fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
      [Jesse Pelton <jsp pkc.com>]
 
   *) mod_isapi: GetServerVariable("ALL_RAW") returned the wrong buffer
      size.  PR 20617.  [Jesse Pelton <jsp pkc.com>]
 
-  *) mod_dav: Fix a problem that could cause crashes when manipulating 
+  *) mod_dav: Fix a problem that could cause crashes when manipulating
      locks on some platforms.  [Jeff Trawick]
 
   *) mod_headers no longer crashes if an empty header value should
@@ -1000,11 +1006,11 @@ Changes with Apache 2.0.50
   *) logresolve: Allow size of log line buffer to be overridden at
      build time (MAXLINE).  PR 27793.  [Jeff Trawick]
 
-  *) Fix the comment delimiter in htdbm so that it correctly parses the 
-     username comment.  Also add a terminate function to allow NetWare 
+  *) Fix the comment delimiter in htdbm so that it correctly parses the
+     username comment.  Also add a terminate function to allow NetWare
      to pause the output before the screen is destroyed.
-     [Guenter Knauf <eflash gmx.net>, Brad Nicholes] 
-  
+     [Guenter Knauf <eflash gmx.net>, Brad Nicholes]
+
   *) Fix crash when Apache was started with no Listen directives.
      [Michael Corcoran <mcorcoran warpsolutions.com>]
 
@@ -1030,7 +1036,7 @@ Changes with Apache 2.0.49
      connection on a rarely-accessed listening socket will cause a
      child to hold the accept mutex and block out new connections until
      another connection arrives on that rarely-accessed listening socket.
-     With Apache 2.x there is no performance concern about enabling the 
+     With Apache 2.x there is no performance concern about enabling the
      logic for platforms which don't need it, so it is enabled everywhere
      except for Win32.  [Jeff Trawick]
 
@@ -1072,8 +1078,8 @@ Changes with Apache 2.0.49
      even if they start with an escaped token.  [André Malo]
 
   *) Add fatal exception hook for use by diagnostic modules.  The hook
-     is only available if the --enable-exception-hook configure parm 
-     is used and the EnableExceptionHook directive has been set to 
+     is only available if the --enable-exception-hook configure parm
+     is used and the EnableExceptionHook directive has been set to
      "on".  [Jeff Trawick]
 
   *) Allow mod_auth_digest to work with sub-requests with different
@@ -1153,9 +1159,9 @@ Changes with Apache 2.0.49
      process to crash.  [Jeff Trawick]
 
   *) Win32: Add Win32DisableAcceptEx directive. This Windows
-     NT/2000/CP directive is useful to work around bugs in some 
-     third party layered service providers like virus scanners, 
-     VPN and firewall products, that do not properly handle 
+     NT/2000/CP directive is useful to work around bugs in some
+     third party layered service providers like virus scanners,
+     VPN and firewall products, that do not properly handle
      WinSock 2 APIs.  Use this directive if your server is issuing
      AcceptEx failed messages.
      [Allan Edwards, Bill Rowe, Bill Stoddard, Jeff Trawick]
@@ -1237,7 +1243,7 @@ Changes with Apache 2.0.49
 
   *) mod_autoindex / core: Don't fail to show filenames containing
      special characters like '%'. PR 13598.  [André Malo]
- 
+
   *) mod_status: Report total CPU time accurately when using a threaded
      MPM.  PR 23795.  [Jeff Trawick]
 
@@ -1260,9 +1266,9 @@ Changes with Apache 2.0.49
      silently get skipped. next remove itself, so the warning will be
      logged only once [Stas Bekman, Jeff Trawick, Bill Rowe]
 
-  *) mod_info: HTML escape configuration information so it displays 
+  *) mod_info: HTML escape configuration information so it displays
      correctly. PR 24232. [Thom May]
-     
+
   *) Restore the ability to add a description for directories that
      don't contain an index file.  (Broken in 2.0.48) [André Malo]
 
@@ -1272,7 +1278,7 @@ Changes with Apache 2.0.49
   *) mod_log_config: Log the minutes component of the timezone correctly.
      PR 23642.  [Hong-Gunn Chew <hgbug gunnet.org>]
 
-  *) mod_proxy: Fix cases where an invalid status-line could be sent 
+  *) mod_proxy: Fix cases where an invalid status-line could be sent
      to the client.  PR 23998.  [Joe Orton]
 
   *) mod_ssl: Fix segfaults at startup if other modules which use OpenSSL
@@ -1296,14 +1302,14 @@ Changes with Apache 2.0.49
      since 2.0.44). [Martin Kraemer]
 
   *) Fix the inability to log errors like exec failure in
-     mod_ext_filter/mod_cgi script children.  This was broken after 
-     such children stopped inheriting the error log handle.  
+     mod_ext_filter/mod_cgi script children.  This was broken after
+     such children stopped inheriting the error log handle.
      [Jeff Trawick]
 
   *) Fix mod_info to use the real config file name, not the default
      config file name.  [Aryeh Katz <aryeh secured-services.com>]
 
-  *) Set the scoreboard state to indicate logging prior to running 
+  *) Set the scoreboard state to indicate logging prior to running
      logging hooks so that server-status will show 'L' for hung loggers
      instead of 'W'.  [Jeff Trawick]
 
@@ -1386,14 +1392,14 @@ Changes with Apache 2.0.48
   *) mod_ssl: Fix a problem setting variables that represent the
      client certificate chain.  PR 21371  [Jeff Trawick]
 
-  *) Unix: Handle permissions settings for flock-based mutexes in 
+  *) Unix: Handle permissions settings for flock-based mutexes in
      unixd_set_global|proc_mutex_perms().  Allow the functions to be
      called for any type of mutex.  PR 20312  [Jeff Trawick]
 
   *) ab: Work over non-loopback on Unix again. PR 21495. [Jeff Trawick]
 
-  *) Fix a misleading message from the some of the threaded MPMs when 
-     MaxClients has to be lowered due to the setting of ServerLimit.  
+  *) Fix a misleading message from the some of the threaded MPMs when
+     MaxClients has to be lowered due to the setting of ServerLimit.
      [Jeff Trawick]
 
   *) Lower the severity of the "listener thread didn't exit" message
@@ -1472,7 +1478,7 @@ Changes with Apache 2.0.47
      Fixed a bug whereby certain sequences of per-directory
      renegotiations and the SSLCipherSuite directive being used to
      upgrade from a weak ciphersuite to a strong one could result in
-     the weak ciphersuite being used in place of the strong one.  
+     the weak ciphersuite being used in place of the strong one.
      [Ben Laurie]
 
   *) SECURITY: CVE-2003-0253 (cve.mitre.org)
@@ -1556,18 +1562,18 @@ Changes with Apache 2.0.46
   *) Add another check for already compressed content in mod_deflate.
      PR 19913. [Tsuyoshi SASAMOTO <nazonazo super.win.ne.jp>]
 
-  *) Fixes for VPATH builds; copying special.mk and any future .mk files 
+  *) Fixes for VPATH builds; copying special.mk and any future .mk files
      from the source tree as well as the build tree (now creates a usable
      configuration for apxs), and eliminated redundant -I'nclude paths.
      [William Rowe]
 
   *) Code fixes, constness corrections and ssl_toolkit_compat.h updates
      for SSLC and OpenSSL toolkit compatibility.  Still work remains to
-     be done to cripple features based on the limitations of RSA's binary 
+     be done to cripple features based on the limitations of RSA's binary
      distribution of their SSL-C toolkit.
      [William Rowe, Madhusudan Mathihalli, Jeff Trawick]
 
-  *) Linux 2.4+: If Apache is started as root and you code 
+  *) Linux 2.4+: If Apache is started as root and you code
      CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
      [Greg Ames]
 
@@ -1577,7 +1583,7 @@ Changes with Apache 2.0.46
 
   *) Fix --enable-mods-shared=most and other variants.  [Aaron Bannert]
 
-  *) mod_log_config: Add the ability to log the id of the thread 
+  *) mod_log_config: Add the ability to log the id of the thread
      processing the request via new %P formats.  [Jeff Trawick]
 
   *) Use appropriate language codes for Czech (cs) and Traditional Chinese
@@ -1596,7 +1602,7 @@ Changes with Apache 2.0.46
      with error code 7. [Kris Verbeeck <Kris.Verbeeck ubizen.com>, Thom May]
 
   *) Fix a problem that caused httpd to be linked with incorrect flags
-     on some platforms when mod_so was enabled by default, breaking 
+     on some platforms when mod_so was enabled by default, breaking
      DSOs on AIX.  PR 19012  [Jeff Trawick]
 
   *) By default, use the same CC and CPP with which APR was built.
@@ -1627,13 +1633,13 @@ Changes with Apache 2.0.46
      delimiters (;). Thus column headers no longer contain unescaped
      ampersands. PR 10880  [André Malo]
 
-  *) Enable ap_sock_disable_nagle for Windows. This along with the 
-     addition of APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
+  *) Enable ap_sock_disable_nagle for Windows. This along with the
+     addition of APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle
      to be disabled for Windows. [Allan Edwards]
 
   *) Correct a mis-correlation between mpm_common.c and mpm_common.h;
-     This patch reverts us to pre-2.0.46 behavior, using the 
-     ap_sock_disable_nagle noop macro, because ap_sock_disable_nagle 
+     This patch reverts us to pre-2.0.46 behavior, using the
+     ap_sock_disable_nagle noop macro, because ap_sock_disable_nagle
      was never compiled on Win32. [Allan Edwards, William Rowe]
 
   *) Fix a build problem with passing unsupported --enable-layout
@@ -1689,8 +1695,8 @@ Changes with Apache 2.0.45
   *) Simpler, faster code path for request header scanning  [Brian Pane]
 
   *) SECURITY:  Eliminated leaks of several file descriptors to child
-     processes, such as CGI scripts.  This fix depends on the APR library 
-     release 0.9.2 or later (0.9.3 was distributed with the httpd 
+     processes, such as CGI scripts.  This fix depends on the APR library
+     release 0.9.2 or later (0.9.3 was distributed with the httpd
      source tarball for Apache 2.0.45.)  PR 17206
      [Christian Kratzer <ck cksoft.de>, Bjoern A. Zeeb <bz zabbadoz.net>]
 
@@ -1704,14 +1710,14 @@ Changes with Apache 2.0.45
      directive. PR 17462.  [André Malo]
 
   *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
-     all worker threads are busy. 
+     all worker threads are busy.
      [Igor Nazarenko <igor_nazarenko hotmail.com>]
 
-  *) Keep the subrequest filter in place when a subrequest is 
+  *) Keep the subrequest filter in place when a subrequest is
      redirected.  PR 15423.  [Jeff Trawick]
 
-  *) you can now specify the compression level for mod_deflate. 
-     [Ian Holsman, Stephen Pierzchala <stephen pierzchala.com>, 
+  *) you can now specify the compression level for mod_deflate.
+     [Ian Holsman, Stephen Pierzchala <stephen pierzchala.com>,
      Michael Schroepl <Michael.Schroepl telekurs.de>]
 
   *) mod_deflate: Extend the DeflateFilterNote directive to
@@ -1741,22 +1747,22 @@ Changes with Apache 2.0.45
      default configuration. PR 12877.  [André Malo]
 
   *) Updated mod_ldap and mod_auth_ldap to support the Novell LDAP SDK SSL
-     and standardized the LDAP SSL support across the various LDAP SDKs.  
-     Isolated the SSL functionality to mod_ldap rather than speading it 
+     and standardized the LDAP SSL support across the various LDAP SDKs.
+     Isolated the SSL functionality to mod_ldap rather than speading it
      across mod_auth_ldap and mod_ldap.  Also added LDAPTrustedCA
-     and LDAPTrustedCAType directives to mod_ldap to allow for a more 
+     and LDAPTrustedCAType directives to mod_ldap to allow for a more
      common method of specifying the SSL certificate.
      [Dave Ward, Brad Nicholes]
 
-  *) Fixed mod_ssl's SSLCertificateChain initialization to no longer 
-     skip the first cert of the chain by default.  This misbehavior 
+  *) Fixed mod_ssl's SSLCertificateChain initialization to no longer
+     skip the first cert of the chain by default.  This misbehavior
      was introduced in 2.0.34.  PR 14560  [Madhusudan Mathihalli]
 
   *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
      be started on Unix because of such problems as bad permissions,
      bad shebang line, etc.  [Jeff Trawick]
 
-  *) Fix 64-bit problem in mod_ssl input logic.  
+  *) Fix 64-bit problem in mod_ssl input logic.
      [Madhusudan Mathihalli <madhusudan_mathihalli hp.com>]
 
   *) Fix potential memory leaks in mod_deflate on malformed data.  PR 16046.
@@ -1783,7 +1789,7 @@ Changes with Apache 2.0.45
      attempt to use the cache if it didn't exist. Also fixed some memory
      leaks which were due to not releasing LDAP resources on error
      conditions.  [Brad Nicholes]
-     
+
   *) Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
      mod_rewrite proxied URLs will not be escaped accidentally by
      mod_proxy's fixup. PR 16368  [André Malo]
@@ -1824,11 +1830,11 @@ Changes with Apache 2.0.45
      metafile searched for does not exist.  PR 12353
      [Owen Rees <owen_rees hp.com>]
 
-  *) Introduce debugging symbols for Win32 release builds, both .pdb 
-     and .dbg files (older debuggers and Dr. Watson-type utilities 
+  *) Introduce debugging symbols for Win32 release builds, both .pdb
+     and .dbg files (older debuggers and Dr. Watson-type utilities
      on WinNT or Win9x don't support the newer .pdb flavor.)
      [Allen Edwards, William Rowe]
- 
+
   *) Fix bug where 'Satisfy Any' without an AuthType lost all MIME
      information (and more). Related to PR 9076.  [André Malo]
 
@@ -1845,7 +1851,7 @@ Changes with Apache 2.0.45
   *) Enable the -n name parameter on NetWare to allow the
      administrator to rename the Apache console screen
      [Brad Nicholes]
-     
+
   *) Fixed piped access logs on Win32 by disabling OTHER_CHILD
      support by default in APR.  More development is required
      to deploy OTHER_CHILD on Win32.  [William Rowe]
@@ -1860,8 +1866,8 @@ Changes with Apache 2.0.45
      This resolves problems on AIX when building a DSO with apxs+gcc.
      [Jeff Trawick]
 
-  *) Added character set support to mod_auth_LDAP to allow it to 
-     convert extended characters used in the user ID to UTF-8 
+  *) Added character set support to mod_auth_LDAP to allow it to
+     convert extended characters used in the user ID to UTF-8
      before authenticating against the LDAP directory. The new
      directive AuthLDAPCharsetConfig is used to specify the config
      file that contains the character set conversion table.
@@ -1883,7 +1889,7 @@ Changes with Apache 2.0.45
   *) Change the ulimit command used by apachectl on AIX so that it
      works in all locales.  [Jeff Trawick]
 
-  *) mod_ext_filter: Fix a problem building argument lists which 
+  *) mod_ext_filter: Fix a problem building argument lists which
      occasionally caused exec to fail.  PR 15491.  [Jeff Trawick]
 
 Changes with Apache 2.0.44
@@ -1894,7 +1900,7 @@ Changes with Apache 2.0.44
 
   *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
      [Brian Pane]
- 
+
   *) Reorder the definitions for mod_ldap and mod_auth_ldap within
      config.m4 to make sure the parent mod_ldap is defined first.
      This ensures that mod_ldap comes before mod_auth_ldap in the
@@ -1908,7 +1914,7 @@ Changes with Apache 2.0.44
   *) Rename CacheMaxStreamingBuffer to MCacheMaxStreamingBuffer. Move
      implementation of MCacheMaxStreamingBuffer from mod_cache to
      mod_mem_cache. MCacheMaxStreamingBuffer now defaults to the
-     lesser of 100,000 bytes or MCacheMaxCacheObjectSize. This should 
+     lesser of 100,000 bytes or MCacheMaxCacheObjectSize. This should
      eliminate the need for explicitly coding MCacheMaxStreamingBuffer
      in most configurations. [Bill Stoddard]
 
@@ -1930,7 +1936,7 @@ Changes with Apache 2.0.44
      patterns [André Malo <nd perlig.de>]
 
   *) Add version string to provider API.  [Justin Erenkrantz]
- 
+
   *) build: './configure && make' now works without an in-tree
      apr and apr-util. [Wilfredo Sanchez]
 
@@ -1975,7 +1981,7 @@ Changes with Apache 2.0.44
 
   *) Add --[enable|disable]-v4-mapped configure option to control
      whether or not Apache expects to handle IPv4 connections
-     on IPv6 listening sockets.  Either setting will work on 
+     on IPv6 listening sockets.  Either setting will work on
      systems with the IPV6_V6ONLY socket option.  --enable-v4-mapped
      must be used on systems that always allow IPv4 connections on
      IPv6 listening sockets.  PR 14037 (Bugzilla), PR 7492 (Gnats)
@@ -1994,11 +2000,11 @@ Changes with Apache 2.0.44
      envariable setting according to the server IP address
      which received the request.  [Ken Coar]
 
-  *) mod_cgid: Terminate CGI scripts when the client connection 
+  *) mod_cgid: Terminate CGI scripts when the client connection
      drops.  PR 8388  [Jeff Trawick]
 
-  *) Rearrange OpenSSL engine initialization to support RAND 
-     redirection on crypto accelerator. 
+  *) Rearrange OpenSSL engine initialization to support RAND
+     redirection on crypto accelerator.
      [Frederic DONNAT <frederic.donnat zencod.com>]
 
   *) Always emit Vary header if mod_deflate is involved in the
@@ -2010,8 +2016,8 @@ Changes with Apache 2.0.44
      [Detlev Vendt <detlev.vendt brillit.de>]
 
   *) mod_isapi: Fix an issue where the HSE_REQ_DONE_WITH_SESSION
-     notification is received before the HttpExtensionProc() returns 
-     HSE_STATUS_PENDING.  This only affected isapi .dll's configured 
+     notification is received before the HttpExtensionProc() returns
+     HSE_STATUS_PENDING.  This only affected isapi .dll's configured
      with the ISAPIFakeAsync on directive.  PR 11918
      [John DeSetto <jdesetto radiantsystems.com>, William Rowe]
 
@@ -2026,7 +2032,7 @@ Changes with Apache 2.0.44
      once per worker, indicating that the CacheRoot needs to be set.
      [Paul J. Reder]
 
-  *) Fix a bug where we keep files open until the end of a 
+  *) Fix a bug where we keep files open until the end of a
      keepalive connection, which can result in:
      (24)Too many open files: file permissions deny server access
      especially on threaded servers.  [Greg Ames, Jeff Trawick]
@@ -2076,7 +2082,7 @@ Changes with Apache 2.0.44
      the client terminates the connection before the response
      is completely sent  [Bojan Smojver <bojan rexursive.com>]
 
-  *) Fix some problems in the perchild MPM.  
+  *) Fix some problems in the perchild MPM.
      [Jonas Eriksson <jonas webkonsulterna.com>]
 
   *) Change the CacheRoot processing to check for a required
@@ -2087,13 +2093,13 @@ Changes with Apache 2.0.44
      cache file name cannot be opened. This also updates the
      docs accordingly.  [Paul J. Reder]
 
-  *) Introduce the EnableSendfile directive, allowing users of NFS 
+  *) Introduce the EnableSendfile directive, allowing users of NFS
      shares to disable sendfile mechanics when they either fail
-     outright or provide intermitantly corrupted data.  PR 
+     outright or provide intermitantly corrupted data.  PR
      [William Rowe]
 
-  *) Resolve the error "An operation was attempted on something 
-     that is not a socket.  : winnt_accept: AcceptEx failed. 
+  *) Resolve the error "An operation was attempted on something
+     that is not a socket.  : winnt_accept: AcceptEx failed.
      Attempting to recover." for users of various firewall and
      anti-virus software on Windows.  PR 8325  [William Rowe]
 
@@ -2145,11 +2151,11 @@ Changes with Apache 2.0.43
      well as some other dynamically-generated content.  [Jeff Trawick]
 
   *) Fix a mutex problem in mod_ssl session cache support which
-     could lead to an infinite loop.  PR 12705  
+     could lead to an infinite loop.  PR 12705
      [Amund Elstad <amund.elstad ergo.no>, Jeff Trawick]
 
   *) SECURITY: CVE-2002-1156 (cve.mitre.org)
-     Fix the exposure of CGI source when a POST request is sent to 
+     Fix the exposure of CGI source when a POST request is sent to
      a location where both DAV and CGI are enabled. [Ryan Bloom]
 
   *) Allow the UserDir directive to accept a list of directories.
@@ -2160,7 +2166,7 @@ Changes with Apache 2.0.43
      received. [Bojan Smojver <bojan rexursive.com>]
 
   *) SuExec needs to use the same default directory as the rest of
-     server, namely /usr/local/apache2.  
+     server, namely /usr/local/apache2.
      [SangBeom han <sbhan os.korea.ac.kr>]
 
   *) Get mod_auth_ldap to retry connections on LDAP_SERVER_DOWN.
@@ -2258,8 +2264,8 @@ Changes with Apache 2.0.41
      anything to the client.  [Brian Pane]
 
   *) Win32: Lower the default stack size from 1MB to 256K. This will
-     allow around 8000 threads to be started per child process. 
-     'EDITBIN /STACK:size apache.exe' can be used to change this 
+     allow around 8000 threads to be started per child process.
+     'EDITBIN /STACK:size apache.exe' can be used to change this
      value directly in the apache.exe executable.
      [Bill Stoddard]
 
@@ -2301,11 +2307,11 @@ Changes with Apache 2.0.41
   *) mod-proxy: handle proxied responses with no status lines
      [JD Silvester <jsilves uwo.ca>, Brett Huttley <brett huttley.net>]
 
-  *) Fix bug where environment or command line arguments containing 
+  *) Fix bug where environment or command line arguments containing
      non-ASCII-7 characters would cause the Win32 child process creation
      to fail.  PR 11854  [William Rowe]
 
-  *) Bug #11213.. make module loading error messages more informative 
+  *) Bug #11213.. make module loading error messages more informative
      [Ian Darwin <Ian779 darwinsys.com>]
 
   *) thread safety & proxy-ftp [Alexey Panchenko <alexey liwest.ru>, Ian Holsman]
@@ -2327,12 +2333,12 @@ Changes with Apache 2.0.41
 
 Changes with Apache 2.0.40
 
-  *) SECURITY: CVE-2002-0661 (cve.mitre.org) 
-     Close a very significant security hole that 
-     applies only to the Win32, OS2 and Netware platforms.  Unix was not 
+  *) SECURITY: CVE-2002-0661 (cve.mitre.org)
+     Close a very significant security hole that
+     applies only to the Win32, OS2 and Netware platforms.  Unix was not
      affected, Cygwin may be affected.  Certain URIs will bypass security
-     and allow users to invoke or access any file depending on the system 
-     configuration.  Without upgrading, a single .conf change will close 
+     and allow users to invoke or access any file depending on the system
+     configuration.  Without upgrading, a single .conf change will close
      the vulnerability.  Add the following directive in the global server
      httpd.conf context before any other Alias or Redirect directives;
          RedirectMatch 400 "\\\.\."
@@ -2348,8 +2354,8 @@ Changes with Apache 2.0.40
      [William Rowe]
 
   *) SECURITY: CVE-2002-0654 (cve.mitre.org)
-     Close a path-revealing exposure in cgi/cgid when we 
-     fail to invoke a script.  The modules would report "couldn't create 
+     Close a path-revealing exposure in cgi/cgid when we
+     fail to invoke a script.  The modules would report "couldn't create
      child process /path-to-script/script.pl" revealing the full path
      of the script.  Reported by Jim Race <jrace qualys.com>.
      [Bill Stoddard]
@@ -2366,7 +2372,7 @@ Changes with Apache 2.0.40
   *) mod-deflate now checks to make sure that 'gzip-only-text/html' is
      set to 1, so we can exclude things from the general case with
      browsermatch. [Ian Holsman, Andre Schild <A.Schild aarboard.ch>]
-  
+
   *) Accept multiple leading /'s for requests within the DocumentRoot.
      PR 10946  [William Rowe, David Shane Holden <dpejesh yahoo.com>]
 
@@ -2383,7 +2389,7 @@ Changes with Apache 2.0.40
   *) Restore the ability to specify host names on Listen directives.
      PR 11030.  [Jeff Trawick, David Shane Holden <dpejesh yahoo.com>]
 
-  *) When deciding on the default address family for listening sockets, 
+  *) When deciding on the default address family for listening sockets,
      make sure we can actually bind to an AF_INET6 socket before
      deciding that we should default to AF_INET6.  This fixes a startup
      problem on certain levels of OpenUNIX.  PR 10235.  [Jeff Trawick]
@@ -2416,9 +2422,9 @@ Changes with Apache 2.0.40
      Comment them out in the default config file to make the default
      install as simple as possible; Correct the english 500 error to
      be more understandable; Add a Swedish translation.
-     [Thomas Sjogren <thomas northernsecurity.net>, 
+     [Thomas Sjogren <thomas northernsecurity.net>,
       Erik Abele <erik codefaktor.de>, Rich Bowen, Joshua Slive]
-     
+
   *) Increase the limit on file descriptors per process in apachectl.
      [Brian Pane]
 
@@ -2465,7 +2471,7 @@ Changes with Apache 2.0.40
      when running in a vhost if the filter definition is not found in
      the vhost.  PR 10147  [Jeff Trawick]
 
-  *) Support WinNT CGI invocation through ScriptInterpreterSource 
+  *) Support WinNT CGI invocation through ScriptInterpreterSource
      'registry' for script interpreter paths and names with non-ascii
      characters in the executable filepath.  [William Rowe]
 
@@ -2516,7 +2522,7 @@ Changes with Apache 2.0.38
      tmpnam being unsafe.   [Ryan Bloom]
 
   *) We must set the MIME-type for .shtml files to text/html if we want them
-     to be parsed for SSI tags.  Add the config for that to the default 
+     to be parsed for SSI tags.  Add the config for that to the default
      config file so that it is easier to enable .shtml parsing.
      [Dave Dyer <ddyer real-me.net>]
 
@@ -2532,10 +2538,10 @@ Changes with Apache 2.0.38
      PR 9866  [Brian Pane]
 
   *) Allow 'make install DESTDIR=/path'.  This allows packagers to install
-     into a directory different from the one that was configured.  This 
+     into a directory different from the one that was configured.  This
      also mirrors the root= feature from 1.3.  We cannot use prefix=,
-     because both APR and APR-util resolve their installation paths at 
-     configuration time.  This means that there is no variable prefix 
+     because both APR and APR-util resolve their installation paths at
+     configuration time.  This means that there is no variable prefix
      to replace.  [Andreas Hasenack <andreas netbank.com.br>]
 
   *) AIX 4.3.2 and above: Define SINGLE_LISTEN_UNSERIALIZED_ACCEPT.
@@ -2549,7 +2555,7 @@ Changes with Apache 2.0.38
 
   *) Fix install-bindist.sh so that it finds any perl instead of just
      early perl 5.x versions.  This is consistent with a build/install
-     from source, and it allows the perl scripts installed by a bindist 
+     from source, and it allows the perl scripts installed by a bindist
      to work on systems with perl 5.6.  [Jeff Trawick]
 
   *) Fix apxs so that the makefile created by "apxs -g" works on AIX and
@@ -2584,7 +2590,7 @@ Changes with Apache 2.0.37
      file.  PR 9729  [Matthew Brecknell <mbrecknell orchestream.com>]
 
   *) Fix the working directory *for WinNT/2K/XP services only* to
-     change to the Apache directory (one level above the location 
+     change to the Apache directory (one level above the location
      of Apache.exe, in the case that Apache.exe resides in bin/.)
      Solves the case of ServerRoot /foo paths where /foo was not
      on the same drive as /winnt/system32.  [William Rowe]
@@ -2596,7 +2602,7 @@ Changes with Apache 2.0.37
      [Ian Holsman]
 
   *) Fix apxs to allow "apxs -q installbuilddir" and to allow
-     querying certain other variables from config_vars.mk.  PR 9316  
+     querying certain other variables from config_vars.mk.  PR 9316
      [Jeff Trawick]
 
   *) Added the "detached" attribute to the cgi_exec_info_t internals
@@ -2604,7 +2610,7 @@ Changes with Apache 2.0.37
      for each CGI invoked.  PR 8387
      [Brad Nicholes, William Rowe]
 
-  *) Consolidated the command line parameters and attributes that are 
+  *) Consolidated the command line parameters and attributes that are
      manipulated by the optional function ap_cgi_build_command() in
      mod_cgi into a single structure.
      [Brad Nicholes]
@@ -2613,13 +2619,13 @@ Changes with Apache 2.0.37
      variables.  [Stas Bekman <stas stason.org>]
 
   *) Fix apxs to allow it to work when the build directory is somewhere
-     besides server-root/build.  PR 8453  
+     besides server-root/build.  PR 8453
      [Jeff Trawick and a host of others]
 
   *) Allow ap_discard_request_body to be called multiple times in the
      same request.  Essentially, ap_http_filter keeps track of whether
      it has sent an EOS bucket up the stack, if so, it will only ever
-     send an EOS bucket for this request.  
+     send an EOS bucket for this request.
      [Ryan Bloom, Justin Erenkrantz, Greg Stein]
 
   *) Remove all special mod_ssl URIs.  This also fixes the bug where
@@ -2650,9 +2656,9 @@ Changes with Apache 2.0.37
 
   *) Allow ap_http_filter (HTTP_IN) to return EOS when there is no request
      body.  [Justin Erenkrantz]
-    
-  *) NetWare: Piping log entries through RotateLogs using the 
-     CustomLogs directive is finally supported now that we have 
+
+  *) NetWare: Piping log entries through RotateLogs using the
+     CustomLogs directive is finally supported now that we have
      the pipes and spawning functionality working.
      [Brad Nicholes]
 
@@ -2707,8 +2713,8 @@ Changes with Apache 2.0.37
   *) Fix a file permissions problem which prevented mod_disk_cache
      from working on Unix.  [Jeff Trawick]
 
-  *) Add "-k start|restart|graceful|stop" support to httpd for the Unix 
-     MPMs.  These have semantics very similar to the old apachectl 
+  *) Add "-k start|restart|graceful|stop" support to httpd for the Unix
+     MPMs.  These have semantics very similar to the old apachectl
      commands of the same name.  [Justin Erenkrantz, Jeff Trawick]
 
   *) Make sure that the runtime dir is created by make install.
@@ -2763,7 +2769,7 @@ Changes with Apache 2.0.37
   *) Make apxs look in the correct directory for envvars.  It was
      broken when sbindir != bindir.  PR 8869
      [Andreas Sundström <sunkan zappa.cx>]
-  
+
   *) Fix mod_deflate corruption when using multiple buckets.  PR 9014.
      [Asada Kazuhisa <kaz asada.sytes.net>]
 
@@ -2812,7 +2818,7 @@ Changes with Apache 2.0.37
      PR 8170.  [Thom May <thom planetarytramp.net>]
 
   *) Win32: During a graceful restart, threads in the new process
-     were accessing scoreboard slots still in use by active threads in 
+     were accessing scoreboard slots still in use by active threads in
      the old process. [Bill Stoddard]
 
 Changes with Apache 2.0.36
@@ -2833,7 +2839,7 @@ Changes with Apache 2.0.36
      because it caused very long vhost id's to be unusable with mod_ssl.
      PR 8572.  [Cliff Woolley]
 
-  *) Fix the link to the description of the CoredumpDirectory 
+  *) Fix the link to the description of the CoredumpDirectory
      directive in the server-wide document.  PR 8643.  [Jeff Trawick]
 
   *) Fixed SHMCB session caching.  [Aaron Bannert, Cliff Woolley]
@@ -2913,9 +2919,9 @@ Changes with Apache 2.0.36
 
   *) SECURITY: CVE-2002-1592 (cve.mitre.org) [CERT VU#165803]
      Added the APLOG_TOCLIENT flag to ap_log_rerror() to
-     explicitly tell the server that warning messages should be sent 
-     to the client in addition to being recorded in the error log. 
-     Prior to this change, ap_log_rerror() always sent warning 
+     explicitly tell the server that warning messages should be sent
+     to the client in addition to being recorded in the error log.
+     Prior to this change, ap_log_rerror() always sent warning
      messages to the client. In one case, a faulty CGI script caused
      the server to send a warning message to the client that contained
      the full path to the CGI script. This could be considered a
@@ -2955,11 +2961,11 @@ Changes with Apache 2.0.36
      cache entry.  [Bill Stoddard]
 
   *) Introduced -E startup_logfile_name option to httpd to allow admins
-     to begin logging errors immediately.  This provides Win32 users 
+     to begin logging errors immediately.  This provides Win32 users
      an alternative to sending startup errors to the event viewer, and
      allows other daemon tool authors an alternative to logging to stderr.
-     [William Rowe] 
-     
+     [William Rowe]
+
   *) Fix subreqs with non-defined Content-Types being served improperly.
      [Justin Erenkrantz]
 
@@ -2986,12 +2992,12 @@ Changes with Apache 2.0.36
      PR 8004  [William Rowe]
 
   *) worker MPM: Fix a situation where a child exited without releasing
-     the accept mutex.  Depending on the OS and mutex mechanism this 
+     the accept mutex.  Depending on the OS and mutex mechanism this
      could result in a hang.  [Jeff Trawick]
 
   *) Update the instructions for how to get started with mod_example.
      [Stas Bekman]
-  
+
   *) Fix PidFile to default to rel_runtimedir instead of
      rel_logfiledir.  PR 7841.  [Andreas Hasenack <andreas netbank.com.br>]
 
@@ -3008,7 +3014,7 @@ Changes with Apache 2.0.36
      expected a status. PR 10010 [Graham Leggett]
 
   *) Deprecated the apr_lock.h API. Please see the following files
-     for the improved thread and process locking and signaling: 
+     for the improved thread and process locking and signaling:
      apr_proc_mutex.h, apr_thread_mutex.h, apr_thread_rwlock.h,
      apr_thread_cond.h, and apr_global_mutex.h.  [Aaron Bannert]
 
@@ -3017,7 +3023,7 @@ Changes with Apache 2.0.36
      [Ryan Morgan <rmorgan covalent.net>]
 
   *) Fix parsing of some AP_DECLARE_DATA declarations so that the filter
-     handle declarations are recognized.  This fixes problems loading 
+     handle declarations are recognized.  This fixes problems loading
      mod_autoindex on some platforms.  [Brian Havard]
 
   *) add optional fixup hook to proxy [Daniel Lopez <daniel covalent.net>]
@@ -3046,9 +3052,9 @@ Changes with Apache 2.0.35
      "<!--#" occurs at the very end of a bucket
      [Paul Reder, Brian Pane]
 
-  *) worker, prefork, perchild, beos MPMs: Add -DFOREGROUND switch to 
+  *) worker, prefork, perchild, beos MPMs: Add -DFOREGROUND switch to
      cause the Apache parent process to run in the foreground (similar to
-     -DNO_DETACH except that it doesn't switch session ids).  
+     -DNO_DETACH except that it doesn't switch session ids).
      [Jeff Trawick]
 
   *) Added support for Posix semaphore mutex locking (AcceptMutex posixsem)
@@ -3109,13 +3115,13 @@ Changes with Apache 2.0.34
   *) Fix some mod_include segfaults [Cliff Woolley, Brian Pane, Brad Nicholes]
 
   *) Update the "RedHat" Layout to match Red Hat Linux version 7. PR BZ-7422
-     [Joe Orton] 
+     [Joe Orton]
 
   *) add compat layer to support RSA SSLC 1.x and 2.x in mod_ssl
      [Jon Travis, John Barbee, William Rowe, Ryan Bloom, Doug MacEachern]
 
   *) Add a new parameter to the quick_handler hook to instruct
-     quick handlers to optionally do a lookup rather than actually 
+     quick handlers to optionally do a lookup rather than actually
      serve content. This is the first of several changes required fix
      several problems with how quick handlers work with subrequests.
      [Bill Stoddard]
@@ -3123,7 +3129,7 @@ Changes with Apache 2.0.34
   *) worker MPM: Get MaxRequestsPerChild to work again.  [Jeff Trawick]
 
   *) [APR-related] The ordering of the default accept mutex method has
-     been changed to better match what's done in Apache 1.3. The ordering 
+     been changed to better match what's done in Apache 1.3. The ordering
      is now (highest to lowest): pthread -> sysvsem -> fcntl -> flock.
      [Jim Jagielski]
 
@@ -3166,7 +3172,7 @@ Changes with Apache 2.0.34
 
   *) Add accessor function to set r->content_type. From now on,
      ap_rset_content_type() should be used to set r->content_type.
-     This change is required to properly implement the 
+     This change is required to properly implement the
      AddOutputFilterByType configuration directive.
      [Bill Stoddard, Sander Striker, Ryan Bloom]
 
@@ -3192,7 +3198,7 @@ Changes with Apache 2.0.34
 
   *) Performance improvement for the error logger [Brian Pane]
 
-  *) Change configure so that Solaris 8 and above have 
+  *) Change configure so that Solaris 8 and above have
      SINGLE_LISTEN_UNSERIALIZED_ACCEPT defined by default.
      according to sun people solaris 8+ doesn't have a thundering
      herd problem [Ian Holsman]
@@ -3437,8 +3443,8 @@ Changes with Apache 2.0.32
      behavior without changes to the httpd.conf.  [William Rowe]
 
   *) Win32: solve the win32 service problems in 2.0.31-alpha, by fixing
-     the service, mpm and logging code, and bugs in apr_file_open_stderr 
-     and apr_file_dup2 functions.  Win2K/XP services have no handles 
+     the service, mpm and logging code, and bugs in apr_file_open_stderr
+     and apr_file_dup2 functions.  Win2K/XP services have no handles
      associated for stdin/out/err, which caused unpredictable behavior
      in the prior release.  [William Rowe, Bill Stoddard]
 
@@ -3472,10 +3478,10 @@ Changes with Apache 2.0.32
 
   *) Be a bit more sane with regard to CanonicalNames.  If the user has
      specified they want to use the CanonicalName, but they have not
-     configured a port with the ServerName, then use the same port that 
+     configured a port with the ServerName, then use the same port that
      the original request used. [Ryan Bloom and Ken Coar]
 
-  *) In core_input_filter, check for an empty brigade after 
+  *) In core_input_filter, check for an empty brigade after
      APR_BRIGADE_NORMALIZE().  Otherwise, we can get segfaults if a
      client says it will post some data but we get FIN before any
      data arrives.  [Jeff Trawick]
@@ -3487,7 +3493,7 @@ Changes with Apache 2.0.32
 
   *) suexec: Allow HTTPS and SSL_* environment variables to be passed
      through to CGI scripts. PR 9163
-     [Brian Reid <breid customlogic.com>, 
+     [Brian Reid <breid customlogic.com>,
       Zvi Har'El <rl math.technion.ac.il>]
 
   *) binbuild.sh: Make sure that we use the expat from our source
@@ -3495,7 +3501,7 @@ Changes with Apache 2.0.32
      [Jeff Trawick]
 
   *) mod_cgid: Add retry logic for when the daemon can't fork fast
-     enough to keep up with new requests.  Start using 
+     enough to keep up with new requests.  Start using
      HTTP_SERVER_UNAVAILABLE instead of HTTP_INTERNAL_SERVER_ERROR
      when we can't talk to the daemon.  [Jeff Trawick]
 
@@ -3516,7 +3522,7 @@ Changes with Apache 2.0.31
      so it survives graceful restarts. This fixes a SEGV during
      graceful restarts.  [Aaron Bannert]
 
-  *) Add a timeout option to the proxy code 'ProxyTimeout' 
+  *) Add a timeout option to the proxy code 'ProxyTimeout'
      [Ian Holsman]
 
   *) FTP directory listings are now always retrieved in ASCII mode.
@@ -3542,7 +3548,7 @@ Changes with Apache 2.0.31
   *) Don't let the default handler try to serve a raw directory.  At
      best you get gibberish.  Much worse things can happen depending
      on the OS.  [Jeff Trawick]
-     
+
   *) Change the pre_config hook to return a value. Modules can now emit
      an error message and then cause the server to quit gracefully during
      startup. This required a bump to the MMN.  [Aaron Bannert]
@@ -3552,11 +3558,11 @@ Changes with Apache 2.0.31
      silly "close(-1)" in the handler too.  [Jeff Trawick]
 
   *) Change the pre_mpm hook to return a value, so that scoreboard
-     init errors percolate up to code that knows how to exit 
+     init errors percolate up to code that knows how to exit
      cleanly.  This required a bump to the MMN.  [Jeff Trawick]
 
   *) Add the socket back to the conn_rec and remove the create_connection
-     hook. The create_connection hook had a design flaw that did not 
+     hook. The create_connection hook had a design flaw that did not
      allow creating connections based on vhost info. [Bill Stoddard]
 
   *) Fixed PATH_INFO and QUERY_STRING from mod_negotiation results.
@@ -3569,7 +3575,7 @@ Changes with Apache 2.0.31
 
   *) caching should now work on subrequests (still very experimental)
      [Ian Holsman]
-  
+
   *) The Win32 mpm_winnt now has a shared scoreboard.  [William Rowe]
 
   *) Change ap_get_brigade prototype to use apr_off_t instead of apr_off_t*.
@@ -3602,7 +3608,7 @@ Changes with Apache 2.0.31
      Apache to the main server error log, until the child can
      open its own error logs.  [William Rowe]
 
-  *) HPUX 11.*: Do not kill the child process when accept() 
+  *) HPUX 11.*: Do not kill the child process when accept()
      returns ENOBUFS on HPUX 11.*. (ported from th 1.3 patch)
      [Madhusudan Mathihalli <madhusudan_mathihalli hp.com>, Bill Stoddard]
 
@@ -3641,7 +3647,7 @@ Changes with Apache 2.0.31
   *) Fixed a segfault that happened during graceful shutdown (or when
      the httpd ran out of file descriptors) with the worker MPM [Brian Pane]
 
-  *) Split all Win32 modules [excluding the core components mod_core, 
+  *) Split all Win32 modules [excluding the core components mod_core,
      mod_so, mod_win32 and the winnt mpm] into individual loadable
      modules, so the administrator may individually disable the former
      compiled-in modules by simply commenting out their LoadModule
@@ -3678,8 +3684,8 @@ Changes with Apache 2.0.30
   *) Fix a couple of mod_proxy problems forwarding HTTP connections
      and handling CONNECT:
      (1) PR #9190  Proxy failed to connect to IPv6 hosts.
-     (2) Proxy failed to connect when the first IP address returned by 
-         the resolver was unreachable but a secondary IP address was.  
+     (2) Proxy failed to connect when the first IP address returned by
+         the resolver was unreachable but a secondary IP address was.
      [Jeff Trawick]
 
   *) Fix the module identifer as shown in the docs for various core
@@ -3690,7 +3696,7 @@ Changes with Apache 2.0.30
   *) Fix LimitRequestBody directive by placing it in the HTTP
      filter.  [Justin Erenkrantz]
 
-  *) Fix mod_proxy seg fault when the proxied server returns 
+  *) Fix mod_proxy seg fault when the proxied server returns
      an HTTP/0.9 response or a bogus status line.
      [Adam Sussman]
 
@@ -3749,7 +3755,7 @@ Changes with Apache 2.0.30
      to fail. [Bill Stoddard]
 
   *) Change core code to allow an MPM to set hard thread/server
-     limits at startup.  prefork, worker, and perchild MPMs now have 
+     limits at startup.  prefork, worker, and perchild MPMs now have
      directives to set these limits.  [Jeff Trawick]
 
   *) Win32: The async AcceptEx() event should be autoreset upon
@@ -3758,13 +3764,13 @@ Changes with Apache 2.0.30
      setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed." messages.
      [Bill Stoddard]
 
-  *) Move any load library path environment variables out of 
+  *) Move any load library path environment variables out of
      apachectl and into a separate environment variable file which
      can be more easily tailored by the admin.  The environment
      variable file as built by Apache may have additional system-
      specific settings.  For example, on OS/390 we tailor the heap
      settings to allow lots of threads.  [Jeff Trawick]
-    
+
   *) Use the new APR pool code to reduce pool-related lock
      contention in the worker MPM.  [Sander Striker]
 
@@ -3785,9 +3791,9 @@ Changes with Apache 2.0.30
   *) Fix bug that could potentially prevent the perchild MPM from
      working with more than one vhost/uid.  [Aaron Bannert]
 
-  *) Change make install and apxs -i processing of DSO modules to 
-     perform special handling on platforms where libtool doesn't install 
-     mod_foo.so.  This fixes some wonkiness on HP-UX, Tru64, and AIX 
+  *) Change make install and apxs -i processing of DSO modules to
+     perform special handling on platforms where libtool doesn't install
+     mod_foo.so.  This fixes some wonkiness on HP-UX, Tru64, and AIX
      which prevented standard LoadModule statements from working.
      [Jeff Trawick]
 
@@ -3801,10 +3807,10 @@ Changes with Apache 2.0.30
   *) Allow apxs to be used to build DSOs on AIX without requiring the
      user to hard-code the list of import files.  (This should help
      on OS/390 and BeOS as well.)  [Jeff Trawick]
-     
+
   *) Resolved segfault in mod_isapi when configuring with ISAPICacheFile.
      PR 8563, 8919  [William Rowe]
-  
+
   *) Get binary builds working when libapr and libaprutil are built
      shared [Greg Ames]
 
@@ -3833,7 +3839,7 @@ Changes with Apache 2.0.29
      lists of small buckets don't cause small packet writes.
      [Brian Pane, Ryan Bloom]
 
-  *) Fix the installation target to make sure that the manual is 
+  *) Fix the installation target to make sure that the manual is
      installed in the correct location.
      [Yoshifumi Hiramatsu <hiramatu boreas.dti.ne.jp> and
       Gomez Henri <hgomez slib.fr>]
@@ -3860,7 +3866,7 @@ Changes with Apache 2.0.29
   *) Fix segv in worker MPM following accept on pipe-of-death
      [Brian Pane]
 
-  *) Add mod_deflate to experimental.  
+  *) Add mod_deflate to experimental.
      [Ian Holsman, Justin Erenkrantz]
 
   *) Bail out at configure time if an invalid MPM was specified.
@@ -3919,7 +3925,7 @@ Changes with Apache 2.0.29
      [Ryan Bloom and Cliff Woolley]
 
   *) Add 'redirect-carefully' environment option to disable sending
-     redirects under special circumstances.  This is helpful for 
+     redirects under special circumstances.  This is helpful for
      Microsoft's WebFolders when accessing a directory resource via
      DAV methods.  [Justin Erenkrantz]
 
@@ -3932,8 +3938,8 @@ Changes with Apache 2.0.29
      [Ryan Bloom]
 
   *) Really reset the MaxClients value in worker and threaded
-     when the configured value is not a multiple of the number 
-     of threads per child.  We said we did previously but we 
+     when the configured value is not a multiple of the number
+     of threads per child.  We said we did previously but we
      forgot to. [Jeff Trawick]
 
   *) Add Debian layout.  [Daniel Stone <daniel sfarc.net>]
@@ -3949,7 +3955,7 @@ Changes with Apache 2.0.29
 
 Changes with Apache 2.0.28
 
-  *) Fix infinite loop in mod_cgid.c.  
+  *) Fix infinite loop in mod_cgid.c.
      [Dale Ghent <daleg elemental.org>, Brian Pane <bpane pacbell.net>]
 
   *) When no port is given in a "ServerName host" directive, the
@@ -3977,7 +3983,7 @@ Changes with Apache 2.0.28
 
 Changes with Apache 2.0.27
 
-  *) Introduce an Apache mod_ssl initial configuration template 
+  *) Introduce an Apache mod_ssl initial configuration template
      (ssl.conf, generated from ssl-std.conf).  [Ralf S. Engelschall]
 
   *) Fixed a memory leak in the getline parsing code that could
@@ -3985,7 +3991,7 @@ Changes with Apache 2.0.27
      from the core input filter for single lines are now limited
      to HUGE_STRING_LEN (8192 bytes).  [Aaron Bannert]
 
-  *) Fix a truncation bug in how we print the port on the Via: header. 
+  *) Fix a truncation bug in how we print the port on the Via: header.
      The routine that prints the Via: header now takes a length for
      the port string.  [Zvi Har'El <rl math.technion.ac.il>]
 
@@ -4006,13 +4012,13 @@ Changes with Apache 2.0.27
      gets disconnected unexpectedly.  [Cliff Woolley]
 
   *) Fix the reporting for child processes that die.  This removes
-     all of the non-portable W* macros from Apache. 
+     all of the non-portable W* macros from Apache.
      [Jeff Trawick and Ryan Bloom]
 
   *) Win32: Track and display "Parent Server Generation:" in
      mod_status output. The generation will be bumped at
      server graceful restart, when the child process exits
-     by hitting MaxRequestsPerChild or if the child 
+     by hitting MaxRequestsPerChild or if the child
      process exits abnormally. [Bill Stoddard]
 
   *) Win32: Fix problem where MaxRequestsPerChild directive was
@@ -4021,18 +4027,18 @@ Changes with Apache 2.0.27
      the old child starting shutdown.
      [Bill Stoddard]
 
-  *) Fix some bungling of the remote port in rfc1413.c so that 
+  *) Fix some bungling of the remote port in rfc1413.c so that
      IdentityCheck retrieves the proper user id instead of failing
-     and thus always returning "nobody."  
+     and thus always returning "nobody."
      [Dick Streefland <Dick.Streefland xs4all.nl>]
 
   *) Introduced thread saftey for mod_rewrite's internal cache.
      [Brian Pane <bpane pacbell.net>]
 
   *) Simplified mod_env's directives to behave as most directives are
-     expected, in that UnsetEnv will not unset a SetEnv and PassEnv 
+     expected, in that UnsetEnv will not unset a SetEnv and PassEnv
      directive following that UnsetEnv within the same container.
-     Also provides a runtime startup warning if a PassEnv configured 
+     Also provides a runtime startup warning if a PassEnv configured
      environment value is undefined.  [William Rowe]
 
   *) The worker MPM is now completely ported to APR's new lock API. It
@@ -4069,7 +4075,7 @@ Changes with Apache 2.0.26
   *) Introduce the MultiviewsMatch directive, to allow the operator
      to be flexible in recognizing Handlers and Filters filename
      extensions as part of the Multiviews matching logic, strict with
-     MultiviewsMatch NegotiatedOnly to accept only filename extentions 
+     MultiviewsMatch NegotiatedOnly to accept only filename extentions
      that designate negotiated parameters, (content type, charset, etc.)
      or MultiviewsAll for the 1.3 behavior of matching any files, even
      if they have unregistered extensions.  [William Rowe]
@@ -4089,12 +4095,12 @@ Changes with Apache 2.0.26
 
   *) Introduce ap_directory_walk rewrite (with further optimizations
      required) to adapt to the ap_process_request_internal() changes.
-     Optimized so subrequests and redirects now reuse previous section 
+     Optimized so subrequests and redirects now reuse previous section
      merges, until we mismatch with the original directory_walk, and
      precomputed r->finfo results will cause directory_walk to skip
      the most expensive phases of the function.  [William Rowe]
 
-  *) Allow ApacheMonitor to connect to and control Apache on other 
+  *) Allow ApacheMonitor to connect to and control Apache on other
      WinNT/2K machines.   [Mladen Turk <mturk mappingsoft.com>]
 
   *) Remove the Port directive.  In it's place, the Listen directive
@@ -4116,7 +4122,7 @@ Changes with Apache 2.0.26
      [Aaron Bannert <aaron clove.org>]
 
   *) Update the mime.types file to map video/vnd.mpegurl to mxu
-     and add commonly used audio/x-mpegurl for m3u extensions.        
+     and add commonly used audio/x-mpegurl for m3u extensions.
      [Heiko Recktenwald <uzs106 uni-bonn.de>, Lars Eilebrecht]
 
   *) Eliminate the depreciated r->content_language, in favor of the array
@@ -4141,7 +4147,7 @@ Changes with Apache 2.0.26
      config merge behaviour. [Graham Leggett]
 
   *) Allow support programs to be compiled against a static version
-     of libapr.  This allows the smaller support programs to be 
+     of libapr.  This allows the smaller support programs to be
      relocated.  [Aaron Bannert <aaron clove.org>]
 
   *) Update the mime.types file to the registered media types as
@@ -4152,7 +4158,7 @@ Changes with Apache 2.0.26
      specifying the maximum number of child processes.
      [Aaron Bannert <aaron clove.org>]
 
-  *) Switch proc_pthread AcceptMutex configuration directive to pthread to 
+  *) Switch proc_pthread AcceptMutex configuration directive to pthread to
      be consistent with 1.3.  [Justin Erenkrantz]
 
   *) Cache apr_explode_localtime() value for 15 seconds.
@@ -4163,8 +4169,8 @@ Changes with Apache 2.0.26
 
   *) Fix worker MPM's scoreboard logic.  [Aaron Bannert <aaron clove.org>]
 
-  *) Eliminate the wasteful run-time conversion of method names from strings 
-     to numbers in places where the methods are known at compile time.  
+  *) Eliminate the wasteful run-time conversion of method names from strings
+     to numbers in places where the methods are known at compile time.
      [Brian Pane <bpane pacbell.net>]
 
   *) Turn the worker MPM's queue into a LIFO.  This may
@@ -4202,7 +4208,7 @@ Changes with Apache 2.0.26
 
   *) Optimized location_walk, so subrequests, redirects and second passes
      now reuse previous section merges on a <Location > by <Location >
-     basis, until we mismatch with the original location_walk. 
+     basis, until we mismatch with the original location_walk.
      [William Rowe]
 
   *) Back out the 1.45 change to util_script.c.  This change made
@@ -4217,7 +4223,7 @@ Changes with Apache 2.0.26
      log either - or 0, before this patch, they were both logging
      the file size.  [Taketo Kabe <kabe sra-tohoku.co.jp>]
 
-  *) Make mod_include check for BYTE_CHECK_THRESHOLD per bucket rather 
+  *) Make mod_include check for BYTE_CHECK_THRESHOLD per bucket rather
      than per character.  [Brian Pane <bpane pacbell.net>]
 
   *) Normalize the primary request, redirects and sub-requests to
@@ -4243,16 +4249,16 @@ Changes with Apache 2.0.26
      will override any SetInputFilter directive in <Directory /web>.)
      This new syntax is more consistent with Add{Input|Output}Filter
      directives defined in mod_mime.  Also cures a bug in prior releases
-     where the Set{Input|Output}Filter directive would corrupt the 
+     where the Set{Input|Output}Filter directive would corrupt the
      global configuration if the multiple directives were nested.
      [William Rowe]
 
   *) Cured what's ailed mime for quite some time.  If an AddSomething
      was given in the configuration (Language, Charset, Handler or
-     Encoding) Apache would set the content type as given by AddType, 
-     but refused to check the mime.types file if AddType wasn't given 
-     for that specific extension.  Setting the AddHandler for .html 
-     without setting the AddType text/html html would cause Apache to 
+     Encoding) Apache would set the content type as given by AddType,
+     but refused to check the mime.types file if AddType wasn't given
+     for that specific extension.  Setting the AddHandler for .html
+     without setting the AddType text/html html would cause Apache to
      use the default content type.  [William Rowe]
 
   *) Added some bulletproofing to memory allocation in the LDAP cache
@@ -4276,7 +4282,7 @@ Changes with Apache 2.0.25
      [Aaron Bannert <aaron clove.org>]
 
   *) Modfied mod_mime to prevent mod_negotation from serving a multiview
-     of a 'handler' or 'filter', so that any filename extension that does 
+     of a 'handler' or 'filter', so that any filename extension that does
      not contribute to the negotiated metadata can't be served without
      an explicit request.  E.g., if the .Z extension is associated with
      an unzip filter, the user request somefile.Z.html, mod_negotiation
@@ -4286,11 +4292,11 @@ Changes with Apache 2.0.25
      [William Rowe]
 
   *) Introduce the AddInputFilter filter[;filter...] ext [ext...]
-     and corresponding AddOutputFilter syntax, to insert one or more 
+     and corresponding AddOutputFilter syntax, to insert one or more
      filters by mod_mime filename extension processing.
      [William Rowe]
 
-  *) Fix a growing connection pool in core_output_filter() for 
+  *) Fix a growing connection pool in core_output_filter() for
      keepalive requests.  [Jeff Trawick]
 
   *) Moved split_and_pass_pretag_buckets back to being a
@@ -4375,8 +4381,8 @@ Changes with Apache 2.0.25
      status of the closed connection, as it conflicts with the far more
      common, historical ssl logging directive %...{var}c.  [William Rowe]
 
-  *) Added the common error/ tree to the build/install targets 
-     (similar to the common icons/ tree) for the multi-language error 
+  *) Added the common error/ tree to the build/install targets
+     (similar to the common icons/ tree) for the multi-language error
      messages that Lars committed earlier.  [William Rowe]
 
   *) Added a multi process, multi threaded OS/2 MPM mpmt_os2.  [Brian Havard]
@@ -4420,7 +4426,7 @@ Changes with Apache 2.0.24
   *) Fix a couple of issues in mod_include when the tag appeared at
      offsets near 8192 in the file being parsed.  [Jeff Trawick]
 
-  *) Fix an assertion failure in mod_ssl when the keepalive timeout is  
+  *) Fix an assertion failure in mod_ssl when the keepalive timeout is
      reached.  [Jeff Trawick]
 
   *) Numerous improvements to the Win32 build system.  Introduced command line
@@ -4429,11 +4435,11 @@ Changes with Apache 2.0.24
      [William Rowe]
 
   *) Assorted corrections and improvements to the winnt_mpm startup code.  Better
-     reporting of uninstalled services and other error conditions, and changed the 
+     reporting of uninstalled services and other error conditions, and changed the
      default service name to Apache2.  [William Rowe]
 
-  *) Numerous improvements to the Win32 ApacheMonitor utility, including winnt_mpm 
-     compatibility with existing Apache 1.3 Win32 Apache management utilites.  
+  *) Numerous improvements to the Win32 ApacheMonitor utility, including winnt_mpm
+     compatibility with existing Apache 1.3 Win32 Apache management utilites.
      [Mladen Turk <mturk mappingsoft.com>, William Rowe]
 
   *) Fixed the segfaults in mod_mime introduced by hash tables in 2.0.20.
@@ -4442,10 +4448,10 @@ Changes with Apache 2.0.24
   *) Rounded out the mod_mime Add/Remove pairs by adding RemoveLanguage
      and RemoveCharset directives.  [William Rowe]
 
-  *) The Unix MPMs other than perchild now allow child server 
-     processes to use the accept mutex when starting as root and 
-     using SysV sems for the accept mutex.  Previously, this 
-     combination would lead to fatal errors in the child server 
+  *) The Unix MPMs other than perchild now allow child server
+     processes to use the accept mutex when starting as root and
+     using SysV sems for the accept mutex.  Previously, this
+     combination would lead to fatal errors in the child server
      processes.  perchild can't use SysV sems because of security
      issues.  [Jeff Trawick, Greg Ames]
 
@@ -4504,42 +4510,42 @@ Changes with Apache 2.0.23
   *) Added a systray icon monitor application for Win32.
      [Mladen Turk <mturk mappingsoft.com>]
 
-  *) mod_rewrite: Fix the line ending on some non-Unix systems for 
-     messages written to the rewrite log.  
+  *) mod_rewrite: Fix the line ending on some non-Unix systems for
+     messages written to the rewrite log.
      [Richard Labennett <rlabenn us.ibm.com>]
 
-  *) All mod_autoindex query parsing is now quietly quashed with the 
-     IndexOption IgnoreClient.  The IndexOption SuppressColumnSorting 
-     still drops the column sort <a href>'s for the column headers, but 
-     IgnoreClient is required to ignore these Query options entirely.  
+  *) All mod_autoindex query parsing is now quietly quashed with the
+     IndexOption IgnoreClient.  The IndexOption SuppressColumnSorting
+     still drops the column sort <a href>'s for the column headers, but
+     IgnoreClient is required to ignore these Query options entirely.
      [William Rowe]
 
   *) Introduced new mod_autoindex query argument parsing for F=[0|1|2]
      to allow the client to select plain, FancyIndexing or HTMLTable
-     formatting, V=[0|1] to inhibit or enable version sorting, and 
+     formatting, V=[0|1] to inhibit or enable version sorting, and
      P=pattern to return only specific files.  The old Query Arguments
      were reorganized as C=f for sorting column 'f' (same N, D, S, or M
-     as before), and O=A|D for ordering ascending or descending.  
+     as before), and O=A|D for ordering ascending or descending.
      [William Rowe]
 
   *) Fixed an error in mod_include's directive parsing routines which
      caused #if, #elif, and #else expressions containing backslashes
      to be improperly evaluated.  [Cliff Woolley]
 
-  *) Introduced new mod_autoindex IndexOptions flags: SuppressIcon to 
-     drop the icon column, SuppressRules to drop the <hr> elements, 
-     and HTMLTable to create rudimentary HTML table listings (implies 
+  *) Introduced new mod_autoindex IndexOptions flags: SuppressIcon to
+     drop the icon column, SuppressRules to drop the <hr> elements,
+     and HTMLTable to create rudimentary HTML table listings (implies
      FancyIndexing).  [William Rowe]
 
   *) Re-introduced the mod_autoindex IndexOptions flag TrackModified
      from Apache 1.3.15.  This is needed for two reasons, first, given
-     multiple machines within a server farm, ETags and Last-Modified 
-     stamps won't correspond from machine to machine, and second, many 
-     Unixes don't capture changes to the date or time stamp of existing 
+     multiple machines within a server farm, ETags and Last-Modified
+     stamps won't correspond from machine to machine, and second, many
+     Unixes don't capture changes to the date or time stamp of existing
      files, since these don't modify the dirent itself.  [William Rowe]
 
-  *) Re-introduced the mod_autoindex IndexOptions flag FoldersFirst 
-     and DirectoryWidth options from Apache 1.3.10. 
+  *) Re-introduced the mod_autoindex IndexOptions flag FoldersFirst
+     and DirectoryWidth options from Apache 1.3.10.
      [William Rowe, Ken Coar]
 
   *) Eliminated FancyIndexing directive, deprecated early in Apache
@@ -4553,14 +4559,14 @@ Changes with Apache 2.0.23
   *) Refactored mod_negotiation and mod_mime to help mod_dir accept
      negotiated index pages, and prevent the server from defaulting
      to an autoindex of the directory.  mod_negotiation will now die
-     with a 500 Internal Error if it could match some filenames 
+     with a 500 Internal Error if it could match some filenames
      (e.g. for mod_dir) but none can be served.  mod_negotation now
      refuses to serve any file with an extention that mod_mime doesn't
      recognize, and wasn't part of the request.  [William Rowe]
 
   *) Eliminate mod_cgi's handling of .exe files without the .exe file
      extension.  This is already handled by multiviews, if the admin
-     wishes to AddHandler .exe or define a content type handler and 
+     wishes to AddHandler .exe or define a content type handler and
      associate .exe files with that content type.  Multiviews must be
      enabled to allow these to be served.  [William Rowe]
 
@@ -4580,30 +4586,30 @@ Changes with Apache 2.0.23
      [Ryan Bloom]
 
   *) Add the ability to extend the methods that Apache understands
-     and have those methods <limit>able in the httpd.conf. It uses 
-     the same bit mask/shifted offset as the original HTTP methods 
-     such as M_GET or M_POST, but expands the total bits from an int to 
-     an ap_int64_t to handle more bits for new request methods than 
+     and have those methods <limit>able in the httpd.conf. It uses
+     the same bit mask/shifted offset as the original HTTP methods
+     such as M_GET or M_POST, but expands the total bits from an int to
+     an ap_int64_t to handle more bits for new request methods than
      an int provides.  [Cody Sherr <csherr covalent.net>]
 
   *) Fix broken mod_mime behavior in merging its arguments.  Possible
      cause of unexplicable crashes introduced in 2.0.20.  [William Rowe]
 
-  *) Solve many mod_ssl porting issues (too many to detail) with 
-     help from the whole team, but most notably [Ralf S. Engelschall, 
-     Madhusudan Mathihalli <madhusudan_mathihalli hp.com>, 
+  *) Solve many mod_ssl porting issues (too many to detail) with
+     help from the whole team, but most notably [Ralf S. Engelschall,
+     Madhusudan Mathihalli <madhusudan_mathihalli hp.com>,
      Doug MacEachern, William Rowe, Cliff Woolley]
 
   *) More stall fixes for the threaded & worker mpm's.
      Make mod_status output more accurate.  Don't
      count workers in processes which aren't actively
      serving requests. [Greg Ames]
-     
+
   *) Win32: Get SSI exec cgi tag working. [Bill Stoddard]
 
   *) Add a single listener/multiple worker MPM.  This MPM is
      definately not fully correct, but it allows us to solve many
-     of the problems that exist in the threaded MPM.  This is a 
+     of the problems that exist in the threaded MPM.  This is a
      modified version of the threaded MPM.  [Ryan Bloom]
 
   *) Improve content generation throughout Apache, providing closer
@@ -4611,7 +4617,7 @@ Changes with Apache 2.0.23
      Transitional specifications.  [William Rowe]
 
 Changes with Apache 2.0.22
-  
+
   *) Fix a problem where the threaded MPM stalls after restarts or
      segfaults.  Also prevent multiple active processes from using
      the same scoreboard slot.  [Greg Ames]
@@ -4621,18 +4627,18 @@ Changes with Apache 2.0.22
      [William Rowe]
 
   *) Improved support for the Win32 build, to recover gracefully from
-     missing apr or apr-util directories or the awk interpreter, 
-     create the proper cgi-bin examples, including a test-cgi.bat, and 
-     fix the perl shebang line for printenv.pl, when installing from 
+     missing apr or apr-util directories or the awk interpreter,
+     create the proper cgi-bin examples, including a test-cgi.bat, and
+     fix the perl shebang line for printenv.pl, when installing from
      the build environment.  [William Rowe]
 
   *) Fix a segfault in threaded.c caused by passing uninitialized
      apr_thread_t * to apr_thread_join().  [Jeff Trawick]
 
-  *) Use new APR number conversion functions to reduce CPU consumption 
+  *) Use new APR number conversion functions to reduce CPU consumption
      when setting the content length, and in mod_log_config.
      [Brian Pane]
-     
+
   *) Fix problem reported by Taketo Kabe <kabe sra-tohoku.co.jp>
      where HEAD response headers were being repeated twice for
      files greater than 32K bytes (4*AP_MIN_BYTES_TO_WRITE). This
@@ -4667,7 +4673,7 @@ Changes with Apache 2.0.21
 
   *) Make scoreboard creation a hook.  This allows management
      modules to have access to the scoreboard at the time that it is
-     created, and at every restart request.  
+     created, and at every restart request.
      [Cody Sherr <csherr covalent.net>]
 
   *) Changed AP_MPMQ_MAX_DAEMONS to refer to MaxClients and
@@ -4677,11 +4683,11 @@ Changes with Apache 2.0.21
 
   *) Win32: Prevent listening sockets from being inherited by
      the Apache child process, CGI scripts, rotatelog process
-     etc.  If the Apache child process segfaults, any processes 
+     etc.  If the Apache child process segfaults, any processes
      that the child started are not reaped. Prior to this fix,
      these processes inherited the listening sockets which sometimes
      prevented the restarted Apache child process from accepting
-     connections (ie, the server would hang). 
+     connections (ie, the server would hang).
      [Bill Stoddard]
 
   *) Provide vhost and request strings when ExtendedStatus is on.
@@ -4695,8 +4701,8 @@ Changes with Apache 2.0.21
      time if there aren't server processes around to do accept().
      [Jeff Trawick, Greg Ames]
 
-  *) Performance improvement to mod_mime.c. find_ct() in mod_mime, 
-     spends a lot of time in apr_table_get calls.  Using the default 
+  *) Performance improvement to mod_mime.c. find_ct() in mod_mime,
+     spends a lot of time in apr_table_get calls.  Using the default
      httpd.conf, the tables for languages and charsets are somewhat
      large, so the time spent scanning them on each request is
      significant. Replacing the tables with hash tables provides
@@ -4714,7 +4720,7 @@ Changes with Apache 2.0.20
      down the filter stack to the network. This problem would cause
      significant memory consumption if the CGIs generated
      lots of bytes. [Bill Stoddard]
-  
+
   *) Get non-blocking CGI pipe reads working with the bucket brigades.
      [Bill Stoddard]
 
@@ -4748,7 +4754,7 @@ Changes with Apache 2.0.19
      slightly more efficiently.  [Cliff Woolley]
 
   *) Fix problem handling FLUSH bucket in the chunked encoding filter.
-     Module was calling ap_rwrite() followed by ap_rflush() but the 
+     Module was calling ap_rwrite() followed by ap_rflush() but the
      served content was not being displayed in the browser. Inspection
      of the output stream revealed that the first data chunk was
      missing the trailing CRLF required by the RFC.  [Bill Stoddard]
@@ -4770,13 +4776,13 @@ Changes with Apache 2.0.19
 
   *) Fix seg faults and/or missing output from mod_include.  The
      default_handler was using the subrequest pool for files and
-     MMAPs, even though the associated APR structures typically 
+     MMAPs, even though the associated APR structures typically
      live longer than the subrequest. [Greg Ames]
-  
+
   *) Extend mod_setenvif to support specifying regular expressions
      on the SetEnvIf (and SetEnvIfNoCase) directive attribute field.
-     Example:  SetEnvIf ^TS*  [a-z].* HAVE_TS 
-     will cause HAVE_TS to be set if any of the request headers begins 
+     Example:  SetEnvIf ^TS*  [a-z].* HAVE_TS
+     will cause HAVE_TS to be set if any of the request headers begins
      with "TS" and has a value that begins with any character in the
      set [a-z]. [Bill Stoddard]
 
@@ -4784,7 +4790,7 @@ Changes with Apache 2.0.19
      multiprocessor systems on AIX via bindprocessor() in 2.0.
      [Victor J. Orlikowski]
 
-  *) Fix htdigest. It would go into a loop in getline when adding 
+  *) Fix htdigest. It would go into a loop in getline when adding
      a second user. [Bill Stoddard]
 
   *) Win32 platforms now fully support mod_userdir options.  [Will Rowe]
@@ -4802,7 +4808,7 @@ Changes with Apache 2.0.19
   *) Modify mod_echo to make it use filters for input and output.
      [Ryan Morgan <rmorgan covalent.net>]
 
-  *) Extend mod_headers to support conditional driven Header 
+  *) Extend mod_headers to support conditional driven Header
      add, append and set. Use SetEnvIf to set an envar and conditionally
      add/append/set headers based on this envar thusly:
 
@@ -4819,14 +4825,14 @@ Changes with Apache 2.0.19
      %t - reports, in UTC microseconds since the epoch, when the
           request was received.
 
-     %D - reports the time, in microseconds, between when the request was 
-          received and the response sent. 
+     %D - reports the time, in microseconds, between when the request was
+          received and the response sent.
 
      Examples:
      Header add MyHeader "This request served in %D microseconds. %t"
 
      results in a header being added to the response that looks like this:
-     
+
      MyHeader: This request served in D=5438 microseconds. t=991424704447256
 
      [Bill Stoddard]
@@ -4868,19 +4874,19 @@ Changes with Apache 2.0.18
 
   *) Change the make targets and rules to be consistent in all of the
      Apache-owned source trees.  [Roy Fielding]
-     
+
   *) Fix processing of the TRACE method.  Previously we passed bogus
      parms to form_header_field() and it overlaid some vhost structures,
-     resulting in a segfault in check_hostalias(). 
+     resulting in a segfault in check_hostalias().
      [Greg Ames, Jeff Trawick]
 
   *) Win32: Add support for reliable piped logs. If the logging process
-     goes down, Apache will automatically restart it. This function has 
+     goes down, Apache will automatically restart it. This function has
      been part of Apache on Unix/Linux/BSD since the early v1.3 releases.
      [Bill Stoddard]
 
-  *) Do not start piped log processes during the config file 
-     preflight.  This change also circumvents a problem on 
+  *) Do not start piped log processes during the config file
+     preflight.  This change also circumvents a problem on
      Windows where the rotatelog processes created during preflight
      was not getting cleaned up properly.
      [Bill Stoddard]
@@ -4904,11 +4910,11 @@ Changes with Apache 2.0.18
      and moving hints.m4 inline.  [Roy Fielding]
 
   *) Add the AP_DECLARE()/AP_CORE_DECLARE macros on the return types
-     of functions used by mod_proxy for export in the DLL 
+     of functions used by mod_proxy for export in the DLL
      [Ian Holsman <IanH cnet.com>]
 
   *) Prevent a hang when a cgi handled by mod_cgid tries to read a
-     request body from its stdin but no reqest body is being written to 
+     request body from its stdin but no reqest body is being written to
      the cgi.  [Jeff Trawick]
 
   *) mod_log_config: %c connection status incorrectly logged
@@ -4944,7 +4950,7 @@ Changes with Apache 2.0.18
 
   *) Fix shutdown/restart hangs in the threaded MPM.
      [Jeff Trawick, Greg Ames, Ryan Bloom]
-  
+
   *) Removed the keptalive boolean from conn_rec because it is now only
      used by a single routine and can be replaced by a local variable.
      [Greg Stein, Ryan Bloom, Roy Fielding]
@@ -4954,7 +4960,7 @@ Changes with Apache 2.0.18
      deadlock race condition, but broke the user directed signal handling.
      This fixes it to work the way it did before my previous prefork patch
      (primarily, SIGTERM is now working).
- 
+
   *) Change how input filters decide how much data is returned to the
      higher filter.  We used to use a field in the conn_rec, with this
      change, we use an argument to ap_get_brigade to determine how much
@@ -5033,7 +5039,7 @@ Changes with Apache 2.0.17
   *) Allow module authors to add a module to their Apache build using
      --with-module, without re-running buildconf.  The syntax is:
          --with-module=module_type:/path/to/module.c
-     The configure script will copy the module.c file to 
+     The configure script will copy the module.c file to
      modules/module_type, and it will be added to the relevant Makefiles.
      currently, this only works for static modules.  [Ryan Bloom]
 
@@ -5050,7 +5056,7 @@ Changes with Apache 2.0.16
   *) Change the default installation directory to /usr/local/apache2,
      as now defined by the "Apache" layout in config.layout. [Marc Slemko]
 
-  *) OS/2: Added support for building loadable modules as OS/2 DLLs. 
+  *) OS/2: Added support for building loadable modules as OS/2 DLLs.
      [Brian Havard]
 
   *) Get MaxRequestsPerChild working with the Windows MPM.
@@ -5072,7 +5078,7 @@ Changes with Apache 2.0.16
      csv/gnuplot format, rudimentary ssl support and various other tweaks
      to make results more true to what is measured. The upshot of this it
      turns out that 'ab' has often underreported the true performance of
-     apache. Often by a order of magnitude :-) See talk/paper of Sander 
+     apache. Often by a order of magnitude :-) See talk/paper of Sander
      Temme at April ApacheCon 2001 for details.
      [Dirk-Willem van Gulik]
 
@@ -5088,7 +5094,7 @@ Changes with Apache 2.0.16
 
   *) top_module global variable renamed to ap_top_module [Perl]
 
-  *) Move ap_set_last_modified to the core.  This is a potentially 
+  *) Move ap_set_last_modified to the core.  This is a potentially
      controversial change, because this is kind of HTTP specific.  However
      many protocols should be able to take advantage of this kind of
      information.  I expect that headers will need one more layer of
@@ -5099,7 +5105,7 @@ Changes with Apache 2.0.16
      [Ed Korthof]
 
   *) Add a ScriptSock directive to the default config file.  This is
-     only enabled when mod_cgid is used.  
+     only enabled when mod_cgid is used.
      [Taketo Kabe <kabe sra-tohoku.co.jp>]
 
 Changes with Apache 2.0.15
@@ -5113,12 +5119,12 @@ Changes with Apache 2.0.15
      [Bill Stoddard]
 
   *) Fix bug in the Unix threaded.c MPM that allowed child processes
-     to fork() new child processes. 
+     to fork() new child processes.
      [Bill Stoddard]
 
-  *) SECURITY: Fix a major security problem with double-reverse lookup 
-     checking.  Previously, a client connecting over IPv4 would not be 
-     matched properly when the server had an IPv6 listening socket.  
+  *) SECURITY: Fix a major security problem with double-reverse lookup
+     checking.  Previously, a client connecting over IPv4 would not be
+     matched properly when the server had an IPv6 listening socket.
      PR #7407   [Taketo Kabe <kiabe sra-tohoku.co.jp>]
 
   *) Change the way the beos MPM handles polling to allow it to stop and
@@ -5146,7 +5152,7 @@ Changes with Apache 2.0.15
 
   *) Cleanup the build process a bit more.  The Apache configure
      script no longer creates its own helper scripts, it just
-     uses APR's.  
+     uses APR's.
      [jean-frederic clere <jfrederic.clere fujitsu-siemens.com>]
 
   *) Stop the forced downgrade of the connection to HTTP/1.0 for
@@ -5157,21 +5163,21 @@ Changes with Apache 2.0.15
      Mike Abbot's Accelerating Apache patch number 6.
      [Mike Abbot <mja trudge.engr.sgi.com>, Bill Stoddard]
 
-  *) SECURITY: Fix a security exposure in mod_access.  Previously when 
-     IPv6 listening sockets were used, allow/deny-from-IPv4-address rules 
-     were not evaluated properly (PR #7407).  Also, add the ability to 
-     specify IPv6 address strings with optional prefix length on Allow 
+  *) SECURITY: Fix a security exposure in mod_access.  Previously when
+     IPv6 listening sockets were used, allow/deny-from-IPv4-address rules
+     were not evaluated properly (PR #7407).  Also, add the ability to
+     specify IPv6 address strings with optional prefix length on Allow
      and Deny.  [Jeff Trawick]
 
   *) Enhance rotatelogs so that a UTC offset can be specified, and
      the logfile name can be formatted using strftime(3).  (Brought
      forward from 1.3.)  [Ken Coar]
 
-  *) Reimplement the Windows MPM (mpm_winnt.c) to eliminate calling 
+  *) Reimplement the Windows MPM (mpm_winnt.c) to eliminate calling
      DuplicateHandle on an IOCompletionPort (a practice which
      MS "discourages"). The new model does not rely on associating
      the completion port with the listening sockets, thus the
-     completion port can be completely managed within the child 
+     completion port can be completely managed within the child
      process.  A dedicated thread accepts connections off the network,
      then calls PostQueuedCompletionStatus() to wake up worker
      threads blocked on the completion port.
@@ -5216,10 +5222,10 @@ Changes with Apache 2.0.14
      module, although there is still more to do.  [Ryan Bloom]
 
   *) Fix a number of SGI compile warnings throughout the server.  Fix some
-     bad parameters to apr_bucket_read().  Fix a bad statement in 
-     ap_method_in_list().  For the mod_rewrite cache use apr_time_t 
-     consistently; we were mixing apr_time_t and time_t in invalid ways 
-     before.  In load_file(), call apr_dso_error() instead of 
+     bad parameters to apr_bucket_read().  Fix a bad statement in
+     ap_method_in_list().  For the mod_rewrite cache use apr_time_t
+     consistently; we were mixing apr_time_t and time_t in invalid ways
+     before.  In load_file(), call apr_dso_error() instead of
      apr_strerror() so that we get a more specific string on some platforms.
      PR #6980  [Jeff Trawick]
 
@@ -5249,7 +5255,7 @@ Changes with Apache 2.0.14
 
 Changes with Apache 2.0.13
 
-  *) Don't assume that there will always be multiple calls to the byterange 
+  *) Don't assume that there will always be multiple calls to the byterange
      filter.  It is possible that we will need to do byteranges with only
      one call to the filter.  [Ryan Morgan <rmorgan covalent.net>]
 
@@ -5259,8 +5265,8 @@ Changes with Apache 2.0.13
 
 Changes with Apache 2.0.12
 
-  *) Modify mod_file_cache to save pre-formatted strings for 
-     content-length and last-modified headers for performance. 
+  *) Modify mod_file_cache to save pre-formatted strings for
+     content-length and last-modified headers for performance.
      [Mike Abbot <mja trudge.engr.sgi.com>]
 
   *) Namespace protect IOBUFSIZ since it is exposed in the API.
@@ -5271,7 +5277,7 @@ Changes with Apache 2.0.12
 
   *) Fix a seg fault in mod_userdir.c.  We used to use the pw structure
      without ever filling it out.  This fixes PR 7271.
-     [Taketo Kabe <kabe sra-tohoku.co.jp> and 
+     [Taketo Kabe <kabe sra-tohoku.co.jp> and
       Cliff Woolley <cliffwoolley yahoo.com>]
 
   *) Add a couple of GCC attribute tags to printf style functions.
@@ -5280,7 +5286,7 @@ Changes with Apache 2.0.12
   *) Add the correct language tag for interoperation with the Taiwanese
      versions of MSIE and Netscape. [Clive Lin <clive CirX.ORG>] PR#7142
 
-  *) Migrate the perchild MPM to use the new apr signal child, and 
+  *) Migrate the perchild MPM to use the new apr signal child, and
      APR thread functions.  [Ryan Bloom]
 
   *) Close one copy of the CGI's stdout before creating the new process.
@@ -5346,7 +5352,7 @@ Changes with Apache 2.0.11
      [Gomez Henri <new-httpd slib.fr>]
 
   *) Cleanup the mod_tls configure process.  This should remove any need
-     to hand-edit any files.  We require OpenSSL 0.9.6 or later, but 
+     to hand-edit any files.  We require OpenSSL 0.9.6 or later, but
      configure doesn't check that yet.  [Ryan Bloom]
 
   *) Add a very early prototype of SSL support (in mod_tls.c). It is
@@ -5356,12 +5362,12 @@ Changes with Apache 2.0.11
   *) Fix a potential seg fault on all platforms.  David Reid fixed this
      on BEOS, but the problem could happen anywhere, so we don't want
      to #ifdef it. [Cliff Woolley <cliffwoolley yahoo.com>]
- 
+
   *) Add new LogFormat directive, %D, to log time it takes to serve a
      request in microseconds. [Bill Stoddard]
 
   *) Change AddInputFilter and AddOutputFilter to SetInputFilter and
-     SetOutputFilter.  This corresponds nicely with the other Set 
+     SetOutputFilter.  This corresponds nicely with the other Set
      directives, which operate on containers while the Add* directives
      tend to work directly on extensions.  [Ryan Bloom]
 
@@ -5371,7 +5377,7 @@ Changes with Apache 2.0.11
      buffer.  [Ryan Bloom]
 
   *) Allow filters to buffer data using the ap_f* functions.  These have
-     become macros that resolve directly to apr_brigade_*.  
+     become macros that resolve directly to apr_brigade_*.
      [Ryan Bloom]
 
   *) Get the Unix MPM's to do a graceful restart again.  If we are going
@@ -5407,7 +5413,7 @@ Changes with Apache 2.0.11
      [Paul J. Reder <rederpj raleigh.ibm.com>]
 
   *) ap_new_connection() closes the socket and returns NULL if a socket
-     call fails.  Usually this is due to a connection which has been 
+     call fails.  Usually this is due to a connection which has been
      reset.  [Jeff Trawick]
 
   *) Move the Apache version information out of httpd.h and into release.h.
@@ -5422,7 +5428,7 @@ Changes with Apache 2.0.11
      mpmt_pthread, and dexter.  [Ryan Bloom]
 
   *) Correct a typo in httpd.conf.
-     [Kunihiro Tanaka <tanaka apache.or.jp>] PR#7154 
+     [Kunihiro Tanaka <tanaka apache.or.jp>] PR#7154
 
   *) Really fix mod_rewrite map lookups this time. [Tony Finch]
 
@@ -5451,7 +5457,7 @@ Changes with Apache 2.0.11
      [Roy Fielding]
 
   *) Fix some byterange handling.  If we get a byte range that looks like
-     "-999999" where that is past the end of the file, we should return 
+     "-999999" where that is past the end of the file, we should return
      a PARTIAL CONTENT status code, and return the whole file as one big
      byterange.  This matches the 1.3 handling now.  [Ryan Bloom]
 
@@ -5485,7 +5491,7 @@ Changes with Apache 2.0.11
      This bucket is a simple bucket that stores an HTTP error and
      a string.  Currently the string is not used, but it may be needed
      to output an error log.  The http_header_filter will find this
-     bucket, and output the error text, and then return 
+     bucket, and output the error text, and then return
      AP_FILTER_ERROR, which informs the server that the error web page
      has already been sent.  [Ryan Bloom]
 
@@ -5534,7 +5540,7 @@ Changes with Apache 2.0.11
      [Ryan Bloom]
 
    *) Update highperformance.conf to work with either prefork or
-      pthreads mpms.  [Greg Ames] 
+      pthreads mpms.  [Greg Ames]
 
   *) Stop checking to see if this is a pipelined request if we know
      for a fact that it isn't.  Basically, if r->connection->keepalive == 0.
@@ -5552,8 +5558,8 @@ Changes with Apache 2.0.11
      and the server dropped the connection unexpectedly.
      [Jeff Trawick]
 
-  *) Fix a segfault while handling request bodies in ap_http_filter().  
-     This problem has been seen with mod_dav usage as well as with 
+  *) Fix a segfault while handling request bodies in ap_http_filter().
+     This problem has been seen with mod_dav usage as well as with
      requests where the body was just being discarded.  [Jeff Trawick]
 
   *) Some adjustment on the handling and automatic setting (via
@@ -5564,7 +5570,7 @@ Changes with Apache 2.0.11
      flags like "-Werror". [Jim Jagielski]
 
   *) Stop using environment variables to force debug mode or
-     no detach.  We now use the -D command line argument to 
+     no detach.  We now use the -D command line argument to
      specify the correct mode.  -DONE_PROCESS and -DNO_DETACH.
      [Greg Stein, Ryan Bloom]
 
@@ -5585,16 +5591,16 @@ Changes with Apache 2.0.11
 
   *) Use a real pool to dup the error log descriptor.  [Ryan Bloom]
 
-  *) Fix a segfault caused by mod_ext_filter when the external filter 
+  *) Fix a segfault caused by mod_ext_filter when the external filter
      program does not exist. [Jeff Trawick]
 
   *) Fix an output truncation error when on an HTTP >= 1.0 request an
-     object of size between DEFAULT_BUCKET_SIZE and AP_MIN_BYTES_TO_WRITE 
+     object of size between DEFAULT_BUCKET_SIZE and AP_MIN_BYTES_TO_WRITE
      was served through mod_charset_lite (or anything else that would
      create a transient bucket in this size range).  ap_bucket_make_heap()
      silently failed (fixed), transient_setaside() discovered it, but
      ap_save_brigade() ignored it (fixed). [Jeff Trawick]
-     
+
   *) Ignore \r\n or \n when using PEEK mode for input filters.  The problem
      is that some browsers send extra lines at the end of POST requests, and
      we don't want to delay sending data back to the user just because the
@@ -5629,7 +5635,7 @@ Changes with Apache 2.0.11
   *) Get the support programs building cleanly again.
      [Cliff Woolley <cliffwoolley yahoo.com>]
 
-  *) The Apache/Win32 Apache.exe and dll's now live in bin.  The 
+  *) The Apache/Win32 Apache.exe and dll's now live in bin.  The
      current directory logic now backs up over bin/ to determine the
      server root from the Apache.exe path.
 
@@ -5651,7 +5657,7 @@ Changes with Apache 2.0.11
   *) Install all header files in the same directory on Unix. [Ryan Bloom]
 
   *) Get the functions in server/linked into the server, regardless of
-     which modules linked into the server.  This uses the same hack 
+     which modules linked into the server.  This uses the same hack
      for Apache that we use for APR and apr-util to ensure all of the
      necessary functions are linked.  As a part of thise, the CHARSET_EBCDIC
      was renamed to AP_CHARSET_EBCDIC for namespace protection, and to make
@@ -5663,7 +5669,7 @@ Changes with Apache 2.0.11
 
   *) Get all of the auth modules to the point that they will install and
      be loadable into the server.  Our new build/install mechanism expects
-     that all modules will have a common name format.  The auth modules 
+     that all modules will have a common name format.  The auth modules
      didn't use that format, so we didn't install them properly.
      [Ryan Bloom]
 
@@ -5686,7 +5692,7 @@ Changes with Apache 2.0.11
 
   *) Get mod_cgid and mod_rewrite to work as DSOs by changing the way
      they keep track of whether or not their  post config hook has been
-     called before.  Instead of a static variable (which is replaced when 
+     called before.  Instead of a static variable (which is replaced when
      the DSO is loaded a second time), use userdata in the process pool.
      [Jeff Trawick]
 
@@ -5708,7 +5714,7 @@ Changes with Apache 2.0a9
      to mod_include for further processing.
      [Paul J. Reder <rederpj raleigh.ibm.com>]
 
-  *) Get rid of ap_new_apr_connection().  ap_new_connection() now has 
+  *) Get rid of ap_new_apr_connection().  ap_new_connection() now has
      fewer parameters: the local and remote socket addresses were removed
      from the parameter list because all required information is available
      via the APR socket.  [Jeff Trawick]
@@ -5759,7 +5765,7 @@ Changes with Apache 2.0a9
   *) Update ab to accept URLs with IPv6 literal address strings (in the
      format described in RFC 2732), and to build Host header fields in
      the same format.  This allows IPv6 literal address strings to be
-     used with ab.  This support has been tested against Apache 1.3 with 
+     used with ab.  This support has been tested against Apache 1.3 with
      the KAME patch, but Apache 2.0 does not yet work with this format
      of the Host header field.  [Jeff Trawick]
 
@@ -5768,7 +5774,7 @@ Changes with Apache 2.0a9
      condition.  [Victor J. Orlikowski]
 
   *) Add support for partial writes with apr_sendfile() to core_output_filter.
-     [Greg Ames] 
+     [Greg Ames]
 
 Changes with Apache 2.0a8
 
@@ -5824,7 +5830,7 @@ Changes with Apache 2.0a8
      we try to send the data.  If we can get the C-L correctly, then we
      should send it in the HEAD response.
      [Ryan Bloom]
-     
+
   *) The Header filter can now determine if a body should be sent based
      on r->header_only.  The general idea of this is that if we delay
      deciding to send the body, then we might be able to compute the
@@ -5855,7 +5861,7 @@ Changes with Apache 2.0a8
      and writev() returned an error (or EAGAIN).  [Jeff Trawick]
 
   *) Get SINGLE_LISTEN_UNSERIALIZED_ACCEPT working again.  This uses the
-     hints file to determine which platforms define 
+     hints file to determine which platforms define
      SINGLE_LISTEN_UNSERIALIZED_ACCEPT.
      [Ryan Bloom]
 
@@ -5871,7 +5877,7 @@ Changes with Apache 2.0a8
      [Branko Čibej <brane xbc.nu>]
 
   *) Destroy the pthread mutex in lock_intra_cleanup() for PR#6824.
-     [Shuichi Kitaguchi <ki hh.iij4u.or.jp>] 
+     [Shuichi Kitaguchi <ki hh.iij4u.or.jp>]
 
   *) Relax the syntax checking of Host: headers in order to support
      iDNS. PR#6635 [Tony Finch]
@@ -5915,7 +5921,7 @@ Changes with Apache 2.0a8
      [Ryan Bloom]
 
   *) Allow the core_output_filter to save some data past the end of a
-     request.  If we get an EOS bucket, we only send the data if it 
+     request.  If we get an EOS bucket, we only send the data if it
      makes sense to send it.  This allows us to pipeline request
      responses.  As a part of this, we also need to allocate mmap
      buckets out of the connection pool, not the request pool.  This
@@ -5928,18 +5934,18 @@ Changes with Apache 2.0a8
      ALWAYS be able to return something immediately.
      [Ryan Bloom]
 
-  *) In the Apache/Win32 console window, accept Ctrl+C to stop the 
-     server, but use Ctrl+Break to initiate a graceful restart 
+  *) In the Apache/Win32 console window, accept Ctrl+C to stop the
+     server, but use Ctrl+Break to initiate a graceful restart
      instead of duplicating behavior. [John Sterling]
 
   *) Patch mod_autoindex to set the Last-Modified header based on
      the directory's mtime, and add the ETag header.  [William Rowe]
 
-  *) Merge the 1.3 patch to add support for logging query string in 
+  *) Merge the 1.3 patch to add support for logging query string in
      such a way that "%m %U%q %H" is the same as "%r".
      [Bill Stoddard]
 
-  *) Port three log methods from mod_log_config 1.3 to 2.0: 
+  *) Port three log methods from mod_log_config 1.3 to 2.0:
      CLF compliant '-' byte count, method and protocol.
      [Bill Stoddard]
 
@@ -5951,19 +5957,19 @@ Changes with Apache 2.0a8
      [Bill Stoddard]
 
   *) Expand APR for WinNT to fully accept and return utf-8 encoded
-     Unicode file names and paths for Win32, and tag the Content-Type 
+     Unicode file names and paths for Win32, and tag the Content-Type
      from mod_autoindex to reflect that charset if the feature
      macro APR_HAS_UNICODE_FS is true.  [William Rowe]
 
   *) Compute the content length (and add appropriate header field) for
-     the response when no content length is available and we can't use 
+     the response when no content length is available and we can't use
      chunked encoding.  [Jeff Trawick]
 
   *) Changed ap_discard_request_body() to use REQUEST_CHUNKED_DECHUNK,
      so that content input filters get dechunked data when using
      the default handler. Also removed REQUEST_CHUNKED_PASS.
      [Sascha Schumann]
-     
+
   *) Add mod_ext_filter as an experimental module.  This module allows
      the administrator to use external programs as filters.  Currently,
      only filtering of output is supported.  [Jeff Trawick]
@@ -5996,12 +6002,12 @@ Changes with Apache 2.0a8
 
   *) Charset translation: mod_charset_lite handles translation of
      request bodies.  Get rid of the xlate version of ap_md5_digest()
-     since we don't compute digests of filtered (e.g., translated) 
+     since we don't compute digests of filtered (e.g., translated)
      response bodies this way anymore.  (Note that we don't do it at
      all at the present; somebody needs to write a filter to do so.)
      [Jeff Trawick]
 
-  *) Input filters and ap_get_brigade() now have a input mode parameter 
+  *) Input filters and ap_get_brigade() now have a input mode parameter
      (blocking, non-blocking, peek) instead of a length parameter.
      [hackathon]
 
@@ -6028,13 +6034,13 @@ Changes with Apache 2.0a8
   *) apr_psprintf doesn't understand %lld as a format.  Make it %ld.
      [Tomas Ögren <stric ing.umu.se>]
 
-  *) APR pipes on Unix and Win32 are now cleaned up automatically when the 
+  *) APR pipes on Unix and Win32 are now cleaned up automatically when the
      associated pool goes away.  (APR pipes on OS/2 were already had this
-     logic.)  This resolvs a fatal file descriptor leak with CGIs.  
+     logic.)  This resolvs a fatal file descriptor leak with CGIs.
      [Jeff Trawick]
 
   *) The final line of the config file was not being read if there was
-     no \n at the end of it.  This was caused by apr_fgets returning 
+     no \n at the end of it.  This was caused by apr_fgets returning
      APR_EOF even though we had read valid data.  This is solved by
      making cfg_getline check the buff that was returned from apr_fgets.
      If apr_fgets return APR_EOF, but there was data in the buf, then we
@@ -6089,7 +6095,7 @@ Changes with Apache 2.0a8
      All _VAR_ flavors changes to _DATA to be absolutely clear.
      [William Rowe]
 
-  *) Add support for /, //, //servername and //server/sharename 
+  *) Add support for /, //, //servername and //server/sharename
      parsing of <Directory> blocks under Win32 and OS2.
      [Tim Costello, William Rowe, Brian Harvard]
 
@@ -6098,10 +6104,10 @@ Changes with Apache 2.0a8
      types and use then use those buckets.
      [Ryan Bloom]
 
-  *) mod_cgid: In the handler, shut down the Unix socket (only for write) 
-     once we finish writing the request body to the cgi child process; 
-     otherwise, the client doesn't hit EOF on stdin.  Small request bodies 
-     worked without this change (for reasons I don't understand), but large 
+  *) mod_cgid: In the handler, shut down the Unix socket (only for write)
+     once we finish writing the request body to the cgi child process;
+     otherwise, the client doesn't hit EOF on stdin.  Small request bodies
+     worked without this change (for reasons I don't understand), but large
      ones didn't.  [Jeff Trawick]
 
   *) Remove file bucket specific information from the ap_bucket type.
@@ -6118,8 +6124,8 @@ Changes with Apache 2.0a8
      Currently, only 0 and a positive number are implemented.  This allows
      us to remove the remaining field from the conn_rec structure, which
      has also been done.
-     [Ryan Bloom] 
-    
+     [Ryan Bloom]
+
   *) Big cleanup of the input filtering.  The goal is that http_filter
      understands two conditions, headers and body.  It knows where it is
      based on c->remaining.  If c->remaining is 0, then we are in headers,
@@ -6163,9 +6169,9 @@ Changes with Apache 2.0a7
      thresholds are hit or the EOS bucket is received.
      [Bill Stoddard]
 
-  *) Create experimental filter (buffer_filter) that coalesces bytes 
+  *) Create experimental filter (buffer_filter) that coalesces bytes
      into one large buffer before invoking the next filter in the
-     chain. This filter is particularly useful with the current 
+     chain. This filter is particularly useful with the current
      implementation of mod_autoindex when it inserted above the
      chunk_filter. mod_autoindex generates a lot of brigades that
      containing buckets holding just a few bytes each. The
@@ -6213,7 +6219,7 @@ Changes with Apache 2.0a7
   *) Added APR_IS_STATUS_condition test macros to eliminate canonical error
      conversions.  [William Rowe]
 
-  *) Now that we have ap_add_input_filter(), rename ap_add_filter() to 
+  *) Now that we have ap_add_input_filter(), rename ap_add_filter() to
      ap_add_output_filter().  [Jeff Trawick]
 
   *) Multiple build and configuration fixes
@@ -6224,9 +6230,9 @@ Changes with Apache 2.0a7
       -fix logfilename misspelling
       -fix evaluation of installation dir variables and
       -replace $foobar by $(foobar) to be usefull in the makefile
-    
+
     Cross compile:
-    
+
       -add rules for cross-compiling in rules.mk. Okay, rule to check for
        $CC_FOR_BUILD is still missing
       -use CHECK_TOOL instead of CHECK_PROG for ranlib
@@ -6241,8 +6247,8 @@ Changes with Apache 2.0a7
      [Rüdiger Kuhlmann <Tadu gmx.de>]
 
   *) Fix a bug where a client which only sends \n to delimit header
-     lines (netcat) gets a strange looking HTTP_NOT_IMPLEMENTED 
-     message.  Start working on ebcdic co-existance with input 
+     lines (netcat) gets a strange looking HTTP_NOT_IMPLEMENTED
+     message.  Start working on ebcdic co-existance with input
      filtering.
      [William Rowe, Greg Ames]
 
@@ -6251,7 +6257,7 @@ Changes with Apache 2.0a7
      requirement for APXS to work correctly.
      [Ryan Bloom]
 
-  *) Connection oriented output filters are now stored in the 
+  *) Connection oriented output filters are now stored in the
      conn_rec instead of the request_rec.  This allows us to add the
      output filter in the pre-connection phase instead of the
      post_read_request phase, which keeps us from trying to write an
@@ -6271,7 +6277,7 @@ Changes with Apache 2.0a7
      Includes a number of newer ServerSupportFunction calls, support
      for ReadClient (in order to retrieve POSTs greater than 48KB),
      and general bug fixes to more reliably load ISAPI .dll's and
-     prevent leaking handle resources.  Note: There are still 
+     prevent leaking handle resources.  Note: There are still
      discrepancies between IIS's and Apache's ServerVariables, and
      async calls are still not supported.  Additional warnings are
      logged to facilitate debugging of unsupported ISAPI calls.
@@ -6297,10 +6303,10 @@ Changes with Apache 2.0a7
      SHA1 and plaintext password encodings.  Make feature tests a
      bit more flexible.  [William Rowe]
 
-  *) Charset translation: mod_charset_lite handles output content 
-     translation in a filter.  mod_charset_lite no longer ignores 
+  *) Charset translation: mod_charset_lite handles output content
+     translation in a filter.  mod_charset_lite no longer ignores
      subrequests.  A bunch of cruft related to BUFF's support for
-     translating request and response bodies was removed.  
+     translating request and response bodies was removed.
      [Jeff Trawick]
 
   *) Move the addition of the CORE filter to the post_read_request
@@ -6319,13 +6325,13 @@ Changes with Apache 2.0a7
      don't produce visible HTTP error messages at the browser, because
      the core_filter wasn't present.  [Greg Ames]
 
-  *) Provide apr_socklen_t as a portability aid. 
+  *) Provide apr_socklen_t as a portability aid.
      [Victor  J. Orlikowski]
 
   *) Overhaul of dbmmanage to allow a groups arg (as in Apache 1.2)
      as well as a comment arg to the add, adduser and update cmds.
      update allows the user to clear or preserve pw/groups/comment.
-     Fixed a bug in dbmmanage that prevented the check option from 
+     Fixed a bug in dbmmanage that prevented the check option from
      parsing a password followed by :group... text.  Corrected the
      seed calcualation for Win32 systems, and added -lsdbm support.
      [William Rowe]
@@ -6333,7 +6339,7 @@ Changes with Apache 2.0a7
   *) Configured mod_auth_dbm to compile with sdbmlib under Win32.
      [William Rowe]
 
-  *) Avoid a segfault when parsing .htaccess files.  An 
+  *) Avoid a segfault when parsing .htaccess files.  An
      uninitialized tree pointer was passed to ap_build_config().
      [Jeff Trawick]
 
@@ -6344,8 +6350,8 @@ Changes with Apache 2.0a7
 
   *) Fix a bug in apr_create_process() for Unix.  The NULL signifying
      the end of the parameters to execve() was stored in the wrong
-     location, overlaying the storage beyond the newargs[] array and 
-     also passing uninitialized storage to execve(), which would 
+     location, overlaying the storage beyond the newargs[] array and
+     also passing uninitialized storage to execve(), which would
      sometimes fail with EFAULT.  [Jeff Trawick]
 
   *) Fix a bug parsing configuration file containers.  With a sequence
@@ -6360,10 +6366,10 @@ Changes with Apache 2.0a7
        </IfModule>
 
      the second container would be terminated at the blank line due to
-     sediment in the buffer from reading the prior </IfModule> and an 
+     sediment in the buffer from reading the prior </IfModule> and an
      error message would be generated for the real </IfModule> for the
-     second container.  Also due to this problem, any two characters 
-     could be used for "</" in the close of a container.  
+     second container.  Also due to this problem, any two characters
+     could be used for "</" in the close of a container.
      [Jeff Trawick]
 
   *) ap_add_filter prototype changed to remove the ctx pointer.  The
@@ -6443,7 +6449,7 @@ Changes with Apache 2.0a7
   *) Add tables with non-string/binary values to APR.
      [Ken Coar]
 
-  *) Fix some bad calls to ap_log_rerror() in mod_rewrite. 
+  *) Fix some bad calls to ap_log_rerror() in mod_rewrite.
      [Jeff Trawick]
 
   *) Update PCRE to version 3.2.  [Ryan Bloom]
@@ -6496,9 +6502,9 @@ Changes with Apache 2.0a6
   *) Get xlate builds working again.  The apr renaming in 2.0a5 broke
      APACHE_XLATE builds.  [Jeff Trawick]
 
-  *) A configuration file parsing problem was fixed.  When the 
-     configuration file started with an IfModule/IfDefine container, 
-     only the last statement in the container would be retained.  
+  *) A configuration file parsing problem was fixed.  When the
+     configuration file started with an IfModule/IfDefine container,
+     only the last statement in the container would be retained.
      [Jeff Trawick]
 
 Changes with Apache 2.0a5
@@ -6523,7 +6529,7 @@ Changes with Apache 2.0a5
      return the right information on the local socket address.
      [Gregory Nicholls <gnicholls level8.com>]
 
-  *) ap_recv() on Win32: Set bytes-read to 0 on error.  
+  *) ap_recv() on Win32: Set bytes-read to 0 on error.
      [Gregory Nicholls <gnicholls level8.com>]
 
   *) Add an option to not detach from the controlling terminal without
@@ -6563,7 +6569,7 @@ Changes with Apache 2.0a5
 
   *) Fix POOL_DEBUG (at least for prefork mpm). [Dean Gaudet]
 
-  *) Added the APR_EOL_STR macro for platform dependent differences in 
+  *) Added the APR_EOL_STR macro for platform dependent differences in
      logfiles and other raw text (such as all APR files).  Fixes logfiles
      not terminated with cr/lf sequences in Win32.  [William Rowe]
 
@@ -6573,7 +6579,7 @@ Changes with Apache 2.0a5
   *) APR lock fixes: when using SysV sems, flock(), or fcntl(), be sure
      to repeat the syscall until we stop getting EINTR.  I noticed a
      related problem at termination (SIGTERM) on FreeBSD when using
-     fcntl().  Apache 1.3 had these new loops too.  Also, make the flock() 
+     fcntl().  Apache 1.3 had these new loops too.  Also, make the flock()
      implementation work properly with child init.  Previously, ap_lock()
      was essentially a no-op because all children were using different
      locks and thus nobody ever blocked.  [Jeff Trawick]
@@ -6606,7 +6612,7 @@ Changes with Apache 2.0a5
      ab keepalives.  [Victor J. Orlikowski]
 
   *) WinNT: Implement non-blocking pipes with timeouts to communicate
-     with CGIs. Apache 2.0a4 had non-blocking pipes but without 
+     with CGIs. Apache 2.0a4 had non-blocking pipes but without
      timeouts (i.e, if a timeout was specified, the pipe reverted to
      a full blocking pipe). Now the behaviour is more in line with
      Unix non-blocking pipes.
@@ -6631,7 +6637,7 @@ Changes with Apache 2.0a5
      configuration process automatically:
          inherits information about how to build from APR.  Allowing
          APR to inform Apache that it should or should not use -ldl
-        
+
          Detects which mod_cgi should be used mod_cgi or mod_cgid,
          based on the threading model
 
@@ -6639,7 +6645,7 @@ Changes with Apache 2.0a5
          configuration processing, allowing for more information flow
          between the two.
      [Ryan Bloom]
-         
+
 
   *) Change Unix and Win32 ap_setsockopt() so that APR_SO_NONBLOCK
      with non-zero argument makes the socket non-blocking.  BeOS and
@@ -6653,7 +6659,7 @@ Changes with Apache 2.0a5
      compiled-in limits (e.g., ThreadsPerChild, MaxClients, StartTreads).
      [Greg Ames]
 
-  *) ap_create_pipe() now leaves pipes in blocking state.  (This helps 
+  *) ap_create_pipe() now leaves pipes in blocking state.  (This helps
      reduce the number of syscalls on Unix.)  ap_set_pipe_timeout() is
      now the way that the blocking state of a pipe is manipulated.
      ap_block_pipe() is gone.  [Jeff Trawick]
@@ -6673,8 +6679,8 @@ Changes with Apache 2.0a5
   *) Add ap_sendfile implementation for AIX
      [Victor J. Orlikowski]
 
-  *) Repair C++ compatibility in ap_config.h, apr_file_io.h, 
-     apr_network_io.h, and apr_thread_proc.h.  
+  *) Repair C++ compatibility in ap_config.h, apr_file_io.h,
+     apr_network_io.h, and apr_thread_proc.h.
      [Tyler J. Brooks <tylerjbrooks home.com>, Jeff Trawick]
 
   *) Bring the allocation and pool debugging code back into a working
@@ -6699,7 +6705,7 @@ Changes with Apache 2.0a5
      [Jeff Trawick]
 
   *) SECURITY: CVE-2000-1204 (cve.mitre.org)
-     Prevent the source code for CGIs from being revealed when 
+     Prevent the source code for CGIs from being revealed when
      using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
      as reported in <news:960999105.344321 ernani.logica.co.uk>
@@ -6720,13 +6726,13 @@ Changes with Apache 2.0a5
      up an mmap; and don't fcntl() more than once per socket.
      [Dean Gaudet]
 
-  *) When mod_cgid is started as root, the cgi daemon now switches 
-     to the configured User/Group (like other httpd processes) 
+  *) When mod_cgid is started as root, the cgi daemon now switches
+     to the configured User/Group (like other httpd processes)
      instead of continuing as root.  [Jeff Trawick]
 
   *) The prefork MPM now uses an APR lock for the accept() mutex.
-     It has not been getting a lock at all recently.  httpd -V now 
-     displays APR's selection of the lock mechanism instead of the 
+     It has not been getting a lock at all recently.  httpd -V now
+     displays APR's selection of the lock mechanism instead of the
      symbols previously respected by prefork.  [Jeff Trawick]
 
   *) Change the mmap() feature test to check only for existence.
@@ -6734,7 +6740,7 @@ Changes with Apache 2.0a5
      [Greg Ames]
 
   *) Fix a couple of bugs in mod_cgid:  The cgi arguments were
-     sometimes mangled.  The len parm to accept() was not 
+     sometimes mangled.  The len parm to accept() was not
      initialized, leading sometimes to an endless loop of failed
      accept() calls on OS/390 and anywhere else that failed the call
      if the len was negative.  Use <sys/un.h> for struct sockaddr_un
@@ -6748,15 +6754,15 @@ Changes with Apache 2.0a5
   *) Port mod_mmap_static to 2.0.  Make it go faster.  [Greg Ames]
 
   *) Fix storage overlay when loading dsos.  Symptom: Apache dies at
-     initialization if ALLOC_DEBUG is defined; no known symptom 
+     initialization if ALLOC_DEBUG is defined; no known symptom
      otherwise.  [Jeff Trawick]
 
   *) Fix typo in configure script when checking for mod_so.  bash
      doesn't seem to have a problem but /bin/sh on Solaris does.
      Symptom: "./configure: test: unknown operator =="
      [Jeff Trawick]
-   
-  *) Rebind the Win32 NT and 9x services control into the MPM.  
+
+  *) Rebind the Win32 NT and 9x services control into the MPM.
      All console, WinNT SCM and Win9x pseudo-service control code is
      now wrapped within the WinNT MPM.
      [William Rowe]
@@ -6778,16 +6784,16 @@ Changes with Apache 2.0a4
   *) Move pre_config hook call to between configuration read and config
      tree walk.  This allows all modules to implement pre_config hooks
      and know that they will be called at an appropriate time.
-     [Ryan Bloom] 
+     [Ryan Bloom]
 
-  *) mod_cgi, mod_cgid: Make ScriptLog directive work again.  
+  *) mod_cgi, mod_cgid: Make ScriptLog directive work again.
      [Jeff Trawick]
 
   *) Add pre-config hooks back to all modules.
      [Ryan Bloom]
 
   *) Fix a SIGSEGV in ap_md5digest(), which is used when you have
-     ContentDigest enabled and we can't/don't mmap the file. 
+     ContentDigest enabled and we can't/don't mmap the file.
      [Jeff Trawick]
 
   *) We now report the correct line number for syntax errors in config
@@ -6798,13 +6804,13 @@ Changes with Apache 2.0a4
      is currently disabled, however, because of problems with graceful
      restarts. [Ronald Tschalär]
 
-  *) Fix corruption of IFS variable in --with-module= handling.  
-     Depending on the user's shell or customization thereof, there 
+  *) Fix corruption of IFS variable in --with-module= handling.
+     Depending on the user's shell or customization thereof, there
      would be errors generating ap_config_auto.h later in the configure
      procedure.  [Jeff Trawick]
 
-  *) mod_cgi: Restore logging of stderr from child process when ScriptLog 
-     isn't used (as in 1.3), except that on Unix it is now logged via 
+  *) mod_cgi: Restore logging of stderr from child process when ScriptLog
+     isn't used (as in 1.3), except that on Unix it is now logged via
      ap_log_rerror() instead of by the child having STDERR_FILENO refer
      to the error log.  [Greg Ames, Jeff Trawick]
 
@@ -6832,7 +6838,7 @@ Changes with Apache 2.0a4
   *) Fix saferead.  Basically, we flush the output buffer if a read on the
      input will block.
      [Ryan Bloom]
- 
+
   *) APR: Add ap_xlate_get_sb() so that an app can find out whether or not
      a conversion is single-byte only. [Jeff Trawick]
 
@@ -6847,8 +6853,8 @@ Changes with Apache 2.0a4
      structure rather than the pid within the structure.
      [Jeff Trawick, Roy Fielding]
 
-  *) ab: Fix a command-line processing bug; track bad headers in 
-     err_response; support reading headers up to 2K. 
+  *) ab: Fix a command-line processing bug; track bad headers in
+     err_response; support reading headers up to 2K.
      [Ask Bjoern Hansen <ask valueclick.com>]
 
   *) Fix ap_resolve_env() so that it handles new function added in a prior
@@ -6862,7 +6868,7 @@ Changes with Apache 2.0a4
      APR to perform translation, instead of accessing the hard-coded tables
      in 1.3's ebcdic.c. [Jeff Trawick]
 
-  *) Fix some bugs (mostly lost 1.3 code) in ab's command-line processing. 
+  *) Fix some bugs (mostly lost 1.3 code) in ab's command-line processing.
      [Jeff Trawick]
 
   *) Add the ability to hook into the config file reading phase.  Basically
@@ -6886,7 +6892,7 @@ Changes with Apache 2.0a4
 
   *) Fix a couple of problems in RFC1413 support (controlled by the
      IdentityCheck directive).  Apache did not build the request string
-     properly and more importantly Apache would loop forever if the 
+     properly and more importantly Apache would loop forever if the
      would-be ident server dropped the connection before sending a
      properly terminated response. [Jeff Trawick]
 
@@ -6928,16 +6934,16 @@ Changes with Apache 2.0a4
      [Sascha Schumann]
 
   *) Fix mm configuration on Solaris 8 x86 and OS/390.  Don't require
-     /sbin in PATH on FreeBSD (all submitted to rse previously) 
+     /sbin in PATH on FreeBSD (all submitted to rse previously)
      [Jeff Trawick]
 
   *) Fix building Pthread-based MPMs on OpenBSD
      [Sascha Schumann] PR#26
 
   *) Fix ap_readdir() problem on systems where d_name[] field in
-     struct dirent is declared with only one byte.  (This problem only 
+     struct dirent is declared with only one byte.  (This problem only
      affected multithreaded builds.)  This caused a segfault during
-     pool cleanup with mod_autoindex on Solaris (Solaris 8 x86, at 
+     pool cleanup with mod_autoindex on Solaris (Solaris 8 x86, at
      least). [Jeff Trawick]
 
   *) Fix some make-portability problems on at least Tru64, Irix
@@ -6946,7 +6952,7 @@ Changes with Apache 2.0a4
 
   *) Add ap_sigwait() to support old-style sigwait() on systems
      like OS/390 and UnixWare.
-     [Sascha Schumann] 
+     [Sascha Schumann]
 
   *) Add POSIX-thread flags for more platforms.
      [Sascha Schumann]
@@ -6968,7 +6974,7 @@ Changes with Apache 2.0a3
   *) Win32: Eliminate redundant calls to initialize winsock.
      [Tim Costello <timcostello ozemail.com.au>]
 
-  *) Fix bugs initializing ungetchar for pipes. 
+  *) Fix bugs initializing ungetchar for pipes.
      [Chia-liang Kao <clkao CirX.ORG>]
 
   *) The ab program in the src/support directory is now portable using
@@ -6989,13 +6995,13 @@ Changes with Apache 2.0a3
   *) ap_open(..,APR_OS_DEFAULT,..) uses perms 0666 instead of 0777 on
      Unix; access_log and error_log now created with these perms; non-
      Unix is unaffected [Jeff Trawick]
-     
+
   *) Finished move of ap_md5 routines to apr_md5.  Removed ap_md5.h.
      Replaced more magic numbers with MD5_DIGESTSIZE.
      [William Rowe, Roy Fielding]
 
   *) Win32: Get mod_auth_digest compiling and added to the Windows
-     build environment. Not tested and I'd be suprised if it 
+     build environment. Not tested and I'd be suprised if it
      actually works. [Bill Stoddard]
 
   *) Revamp the Win32 make environment. Makefiles have been removed and
@@ -7007,8 +7013,8 @@ Changes with Apache 2.0a3
   *) [EBCDIC] Port Paul Gilmartin's CRLF patch from 1.3.  This replaces most
      of the \015, \012, and \015\012 constants with macros.
      [Greg Ames]
-     
-  *) Add ap_xlate_open() et al for translation of text between different 
+
+  *) Add ap_xlate_open() et al for translation of text between different
      character sets.  The initial implementation requires iconv().
      [Jeff Trawick]
 
@@ -7021,7 +7027,7 @@ Changes with Apache 2.0a3
   *) Fix the problem with dieing quietly.  dupfile now takes a pool which
      is used by the new apr file.  There is no reason to create a new file
      with the same lifetime as the original file.
-     [Ryan Bloom] 
+     [Ryan Bloom]
 
   *) Win32: Attempt to eliminate dll relocation at start-up by specifying
      module base addresses. This will help shooting seg faults
@@ -7031,7 +7037,7 @@ Changes with Apache 2.0a3
      describing how to compile Apache on Windows.
      [William Rowe <wrowe lnd.com>]
 
-  *) ap_set_pipe_timeout(), ap_poll(), and APR_SO_TIMEOUT now take 
+  *) ap_set_pipe_timeout(), ap_poll(), and APR_SO_TIMEOUT now take
      microseconds instead of seconds.  Some storage leaks and other
      minor bugs in related code were fixed.  [Jeff Trawick]
 
@@ -7057,7 +7063,7 @@ Changes with Apache 2.0a3
      not exist on all levels of Windows where Apache runs. This
      is needed to allow Apache to start-up on Win95/98. All calls
      to non portable functions should be protected with
-     ap_oslevel checks to prevent runtime segfaults. 
+     ap_oslevel checks to prevent runtime segfaults.
      [William Rowe <wrowe lnd.com>]
 
   *) Fix fallback default values for SHM_R and SHM_W [Martin Kraemer]
@@ -7067,27 +7073,27 @@ Changes with Apache 2.0a3
   *) Win32: Get non-blocking CGI pipe reads working under Windows NT.
      This addresses PR 1623. Still need to address timing out runaway
      CGI scripts. [Bill Stoddard]
- 
+
   *) Win32: Make ap_stat Windows 95/98 friendly
-     [William Rowe <wrowe lnd.com>]                                            
+     [William Rowe <wrowe lnd.com>]
 
-  *) Win32: Fix a bug in ap_get_oslevel which causes GetVersionEx() to 
-     always fail. Need to initialise the dwOSVersionInfoSize member of the 
-     OSVERSIONINFO struct before calling GetVersionEx, so GetVersionEx 
-     always fails. 
+  *) Win32: Fix a bug in ap_get_oslevel which causes GetVersionEx() to
+     always fail. Need to initialise the dwOSVersionInfoSize member of the
+     OSVERSIONINFO struct before calling GetVersionEx, so GetVersionEx
+     always fails.
 
-     The patch also enhances ap_get_oslevel (and the associated enum) to 
-     handle selected service packs for NT4, and adds recognition for 
-     Windows 2000. This is useful, eg. if we can recognise NT4 SP2 then 
-     we can use ReadFileScatter and WriteFileGather in readwrite.c. 
+     The patch also enhances ap_get_oslevel (and the associated enum) to
+     handle selected service packs for NT4, and adds recognition for
+     Windows 2000. This is useful, eg. if we can recognise NT4 SP2 then
+     we can use ReadFileScatter and WriteFileGather in readwrite.c.
      [Tim Costello <Tim.Costello BTFinancialgroup.com>]
 
   *) Get mod_rewrite building and running, and mod_status building for Win NT
      [Allan Edwards <ake raleigh.ibm.com>]
 
-  *) Patch to port mod_auth_db to the 2.0 api and also to support 
-     Berlekey DB 3.0. It works for me with both Berkeley DB 3.0.55 and 
-     2.7.7.  It should work with version 1 as well but I haven't tested it.  
+  *) Patch to port mod_auth_db to the 2.0 api and also to support
+     Berlekey DB 3.0. It works for me with both Berkeley DB 3.0.55 and
+     2.7.7.  It should work with version 1 as well but I haven't tested it.
      [Brian Martin <bmartin penguincomputing.com>]
 
   *) Get APR DSO code working under Windows. Includes cross platform
@@ -7112,13 +7118,13 @@ Changes with Apache 2.0a3
   *) Added error checking for file I/O APR routines.
      [Jon Travis <jtravis covalent.net>]
 
-  *) APR: Don't use the values of resolver error codes for the 
-     corresponding APR error codes.  On Unix and Win32, return the 
+  *) APR: Don't use the values of resolver error codes for the
+     corresponding APR error codes.  On Unix and Win32, return the
      proper APR error code after a resolver error. [Jeff Trawick]
 
 Changes with Apache 2.0a2
 
-  *) Renamed the executable back to httpd on all platforms other 
+  *) Renamed the executable back to httpd on all platforms other
      than Win32
      [Ryan Bloom]
 
@@ -7163,11 +7169,11 @@ Changes with Apache 2.0a2
      [David Reid]
 
   *) Create one makefile for all Win32 distributions (NT/2000/95/98).
-     Makefile.win includes the same user interface as the old 
-     Makefile.nt 
+     Makefile.win includes the same user interface as the old
+     Makefile.nt
      [William Rowe <wrowe lnd.com>, Jeff Trawick <trawick us.ibm.com>]
 
-  *) Win32 exec now uses COMSPEC environment string for command 
+  *) Win32 exec now uses COMSPEC environment string for command
      shell path resolution.
      [William Rowe <wrowe lnd.com>] PR#3715
 
@@ -7184,7 +7190,7 @@ Changes with Apache 2.0a2
      which where donated by Lee Kuk Hyun and Lorant Czaran. 'Fixed'
      confusing ee/et name and made all extensions language/dialect
      rather than country reflecting. Changed example files to
-     explicit reflect the ISO charset and added a few common 
+     explicit reflect the ISO charset and added a few common
      ones to the example config [dirkx]
 
   *) Extend external module capability.  To use this, you call
@@ -7240,9 +7246,9 @@ Changes with Apache 2.0a2
 Changes with Apache 2.0a1
 
   *) Fix FreeBSD 3.3 core dump.
-     Basically, ap_initialize() needs to get called before 
+     Basically, ap_initialize() needs to get called before
      create_process(), since create_process() passes op_on structure
-     to semop() to get a lock, but op_on isn't initialized until 
+     to semop() to get a lock, but op_on isn't initialized until
      ap_initialize() calls setup_lock().  Here is a slight
      rearrangement to main() which calls ap_initialize() earlier...
      [Jeff Trawick <trawick us.ibm.com>]
@@ -7260,8 +7266,8 @@ Changes with Apache 2.0a1
      passed in and number of bytes written.
      [Bill Stoddard]
 
-  *) Adapt file iol to use APR functions. Replaced ap_open_file() 
-     with ap_create_file_iol(). ap_create_file_iol() requires that 
+  *) Adapt file iol to use APR functions. Replaced ap_open_file()
+     with ap_create_file_iol(). ap_create_file_iol() requires that
      the file be opened prior to the call using ap_open().
      [Bill Stoddard]
 
@@ -7280,11 +7286,11 @@ Changes with Apache 2.0a1
 
   *) port mod_rewrite to 2.0. [Paul J. Reder <rederpj raleigh.ibm.com>]
 
-  *) SECURITY: More rigorous checking of Host: headers to fix security 
+  *) SECURITY: More rigorous checking of Host: headers to fix security
      problems with mass name-based virtual hosting (whether using mod_rewrite
      or mod_vhost_alias).
      [Ben Hyde, Tony Finch]
-  
+
   *) Add back support for UseCanonicalName in <Directory> containers.
      [Manoj Kasichainula]
 
@@ -7292,12 +7298,12 @@ Changes with Apache 2.0a1
      message without any of the date and time information.  As a part
      of this change, I also removed all of the calls to fprintf(stderr
      and replaced them with calls to ap_log_error using APLOG_STARTUP
-     writing to stderr is no longer portable, because we don't direct 
+     writing to stderr is no longer portable, because we don't direct
      stderr to the error log on all platforms.
-     [Ryan Bloom] 
- 
+     [Ryan Bloom]
+
   *) Convert error logging functions to take errno as an argument.
-     This makes our error logs more portable, because some Windows API's 
+     This makes our error logs more portable, because some Windows API's
      don't set errno.  This change allows us to still output a valid
      message on all of our platforms.
      [Ryan Bloom]
@@ -7320,7 +7326,7 @@ Changes with Apache 2.0a1
   *) Updated MM in APR source tree from version 1.0.8 to 1.0.11
      [Ralf S. Engelschall]
 
-  *) Cleaned APR build environment integration and bootstrap APR 
+  *) Cleaned APR build environment integration and bootstrap APR
      automatically for developers from src/Configure.
      [Ralf S. Engelschall]
 
@@ -7350,13 +7356,13 @@ Changes with Apache 2.0a1
 Changes with Apache MPM
 
   *) Use asynchronous AcceptEx() and a completion port to accept and
-     dispatch connections to threads in Windows NT/2000. 
+     dispatch connections to threads in Windows NT/2000.
      [Bill Stoddard]
 
   *) Implement WINNT Win32 MPM from original Win32 code in http_main.c
-     [Bill Stoddard]  
+     [Bill Stoddard]
 
-  *) Implement the APACI --with-option facility 
+  *) Implement the APACI --with-option facility
      (per default used the config.option file).
      [Ralf S. Engelschall]
 
@@ -7406,14 +7412,14 @@ Changes with Apache pthreads
      [Dean Gaudet, Ryan Bloom, Manoj Kasichainula]
 
   *) Created http_accept abstraction. Added 4 new functions (not exported):
-     init_accept(), begin_accepting_requests(), get_request(), 
+     init_accept(), begin_accepting_requests(), get_request(),
      stop_accepting_requests() [Bill Stoddard]
 
   *) Fix to ap_rprintf call that allows mod_info to work properly.
      [James Morris <jmorris intercode.com.au>]
 
-  *) user and ap_auth_type fields were moved from connection_rec to 
-     request_rec. [Ryan Bloom] 
+  *) user and ap_auth_type fields were moved from connection_rec to
+     request_rec. [Ryan Bloom]
 
   *) Removed the ap_block_alarms and ap_unblock_alarm calls.  These aren't
      needed in a threaded server.

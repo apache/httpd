@@ -23,7 +23,7 @@ Consult the trunk/ for all new development and documentation efforts:
 
 Release history:
 
-    2.0.65  : In maintainance
+    2.0.65  : In maintainance. Jim proposes T&R 9/12-15 and offers to RM.
     2.0.64  : Released October 19, 2010.
     2.0.63  : Released January 19, 2008.
     2.0.62  : Tagged January 4, 2008. Not released.
@@ -114,9 +114,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  * CVE-2011-3192
-    http://people.apache.org/~trawick/draft3-2.0.64-byterange-fixes.txt
-    +1: trawick, wrowe, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
