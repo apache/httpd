@@ -72,7 +72,8 @@ typedef struct indexes_t {
  * Returns: number of ranges (merged) or -1 for no-good
  */
 static int ap_set_byterange(request_rec *r, apr_off_t clength,
-                            apr_array_header_t **indexes)
+                            apr_array_header_t **indexes,
+                            int *overlaps, int *reversals)
 {
     const char *range;
     const char *if_range;
@@ -84,10 +85,12 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     apr_off_t ostart = 0, oend = 0, sum_lengths = 0;
     int in_merge = 0;
     indexes_t *idx;
-    int overlaps = 0, reversals = 0;
     int ranges = 1;
     const char *it;
-    
+
+    *overlaps = 0;
+    *reversals = 0;
+
     if (r->assbackwards) {
         return 0;
     }
@@ -228,7 +231,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         
         if (start < ostart && end >= ostart-1) {
             ostart = start;
-            reversals++;
+            ++*reversals;
             in_merge = 1;
         }
         if (end >= oend && start <= oend+1 ) {
@@ -237,7 +240,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         }
         
         if (in_merge) {
-            overlaps++;
+            ++*overlaps;
             continue;
         } else {
             new = (char **)apr_array_push(merged);
@@ -279,7 +282,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     r->range = apr_array_pstrcat(r->pool, merged, ',');
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "Range: %s | %s (%d : %d : %"APR_OFF_T_FMT")",
-                  it, r->range, overlaps, reversals, clength);
+                  it, r->range, *overlaps, *reversals, clength);
     
     return num_ranges;
 }
@@ -435,6 +438,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     int i;
     int original_status;
     int max_ranges;
+    int overlaps = 0, reversals = 0;
     core_dir_config *core_conf = ap_get_core_module_config(r->per_dir_config);
 
     max_ranges = ( (core_conf->max_ranges >= 0 || core_conf->max_ranges == AP_MAXRANGES_UNLIMITED)
@@ -463,7 +467,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     }
 
     original_status = r->status;
-    num_ranges = ap_set_byterange(r, clength, &indexes);
+    num_ranges = ap_set_byterange(r, clength, &indexes, &overlaps, &reversals);
 
     /* We have nothing to do, get out of the way. */
     if (num_ranges == 0 || (max_ranges >= 0 && num_ranges > max_ranges)) {
