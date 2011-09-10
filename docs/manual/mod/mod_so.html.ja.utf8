@@ -28,6 +28,8 @@
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>起動時や再起動時に実行コードとモジュールをサーバにロードする
 </td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>

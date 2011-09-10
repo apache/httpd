@@ -24,6 +24,7 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
  <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki 
 yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler, 
 dosyalar, konaklar veya URL’lere uygulanmakla sınırlanabilir. Bu belgede, 

@@ -24,6 +24,7 @@
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
      <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu günlük
      dosyaları özelliği ile birlikte kullanmak için tasarlanmış basit bir

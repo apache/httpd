@@ -26,6 +26,9 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Diese Übersetzung ist möglicherweise
+            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
+            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfaßt nur die Kompilierung und Installation des
     Apache auf Unix und Unix-ähnlichen Systemen. Für die

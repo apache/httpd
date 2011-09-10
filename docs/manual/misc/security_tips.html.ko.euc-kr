@@ -23,6 +23,8 @@
 <a href="../ko/misc/security_tips.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>웹서버를 운영할때 도움이 될 보안 관련 힌트와 팁이다.
     어떤 것은 일반적이고, 어떤 것은 아파치에만 해당하는 것이다.</p>

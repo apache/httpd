@@ -27,6 +27,10 @@
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 
     <p>
       Abajo se muestra una lista con todos los módulos que forman

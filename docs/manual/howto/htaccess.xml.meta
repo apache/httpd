@@ -9,8 +9,8 @@
   <variants>
     <variant>en</variant>
     <variant>fr</variant>
-    <variant>ja</variant>
-    <variant>ko</variant>
-    <variant>pt-br</variant>
+    <variant outdated="yes">ja</variant>
+    <variant outdated="yes">ko</variant>
+    <variant outdated="yes">pt-br</variant>
   </variants>
 </metafile>

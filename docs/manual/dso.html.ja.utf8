@@ -25,6 +25,8 @@
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/dso.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p>Apache HTTP サーバはモジュール化されたプログラムで、
     管理者がモジュールを選択することでサーバに組み込む機能を選ぶことができます。
