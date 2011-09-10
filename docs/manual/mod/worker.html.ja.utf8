@@ -27,6 +27,8 @@
 <a href="../ja/mod/worker.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/worker.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>マルチスレッドとマルチプロセスのハイブリッド型
 ウェブサーバを実装したマルチプロセッシングモジュール</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>

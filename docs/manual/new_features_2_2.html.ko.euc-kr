@@ -24,6 +24,8 @@
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
   <p>이 문서는 아파치 웹서버 2.0 버전과 2.2 버전간의 주된 차이점을
      설명한다. 1.3 버전 이후의 새로운 기능은 <a href="new_features_2_0.html">2.0 새로운 기능</a> 문서를

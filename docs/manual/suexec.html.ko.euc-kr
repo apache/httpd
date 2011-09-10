@@ -24,6 +24,8 @@
 <a href="./ko/suexec.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p><strong>suEXEC</strong> 기능은 아파치가 <strong>CGI</strong>와
     <strong>SSI</strong> 프로그램을 웹서버를 실행한 사용자 ID가
