@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1151373 -->
+<!-- English Revision : 1162192 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -168,7 +168,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>REQUEST_SCHEME</code></td>
         <td>Le protocole associ&eacute; &agrave; l'URI de la requ&ecirc;te</td></tr>
     <tr><td><code>REQUEST_URI</code></td>
-        <td>L'URI de la requ&ecirc;te</td></tr>
+        <td>La partie chemin de l'URI de la requ&ecirc;te</td></tr>
     <tr><td><code>DOCUMENT_URI</code></td>
         <td>Idem REQUEST_URI</td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>

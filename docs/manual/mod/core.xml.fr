@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1160342 -->
+<!-- English Revision : 1166282 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3133,6 +3133,42 @@ host</context>
     <example>
       MaxKeepAliveRequests 500
     </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MaxRanges</name>
+<description>Nombre de segments de donn&eacute;es autoris&eacute; avant le renvoi de
+l'int&eacute;gralit&eacute; de la ressource</description>
+<syntax>MaxRanges default | unlimited | none | <var>nombre de segments</var></syntax>
+<default>MaxRanges 200</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible depuis la version 2.3.15 du serveur HTTP
+Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>MaxRanges</directive> permet de limiter
+    le nombre de segments de donn&eacute;es que le serveur va renvoyer au
+    client. Si un nombre de segments plus important est demand&eacute;, la
+    ressource sera renvoy&eacute;e dans son int&eacute;gralit&eacute;.</p>
+
+    <dl>  
+      <dt><strong>default</strong></dt>
+      <dd>Limite le nombre de segments de donn&eacute;es &agrave; 200 (valeur par
+      d&eacute;faut d&eacute;finie &agrave; la compilation).</dd>
+   
+      <dt><strong>none</strong></dt>
+      <dd>Les en-t&ecirc;tes Range sont ignor&eacute;s.</dd>
+          
+      <dt><strong>unlimited</strong></dt>
+      <dd>Le nombre de segments de donn&eacute;es est illimit&eacute;.</dd>
+
+      <dt><var>nombre de segments</var></dt>
+      <dd>Un nombre positif repr&eacute;sentera la nombre de segments de
+      donn&eacute;es maximal que le serveur renverra au client.</dd>
+    </dl>
 </usage>
 </directivesynopsis>
 

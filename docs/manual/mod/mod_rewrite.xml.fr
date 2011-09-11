@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1092797 -->
+<!-- English Revision : 1165114 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -538,8 +538,10 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
                   <dt><code>REQUEST_URI</code></dt>
 
-                  <dd>La ressource demand&eacute;e dans la ligne de requ&ecirc;te
-		  HTTP ("/index.html" dans l'exemple ci-dessus).</dd>
+                  <dd>La partie chemin de l'URI de la requ&ecirc;te, comme
+		  "/index.html". En particulier, ceci exclut la cha&icirc;ne
+		  de param&egrave;tres qui est quant &agrave; elle disponible via sa
+		  propre variable <code>QUERY_STRING</code>.</dd>
 
                   <dt><code>REQUEST_FILENAME</code></dt>
 
