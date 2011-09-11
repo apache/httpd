@@ -538,7 +538,7 @@
     <p>Comme la journalisation conditionnelle, la journalisation redirig&eacute;e est
     un outil tr&egrave;s puissant, mais si elle existe, il est pr&eacute;f&eacute;rable d'utiliser
     une solution plus simple comme le traitement a posteriori hors ligne.</p>
-  </section>
+  
 
   <p>Par d&eacute;faut, le processus de redirection du journal est
   lanc&eacute; en invoquant un shell(en g&eacute;n&eacute;ral avec
@@ -557,7 +557,7 @@
       CustomLog "||/usr/local/apache/bin/rotatelogs
       /var/log/access_log 86400" common
     </example>
-
+   </section>
   <section id="virtualhost">
     <title>H&ocirc;tes virtuels</title>
 
