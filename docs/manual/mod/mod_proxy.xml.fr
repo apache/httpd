@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1070650 -->
+<!-- English Revision : 1164897 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1050,7 +1050,7 @@ l'espace d'URLs du serveur local</description>
 
     </table>
 
-    <p>Si l'URL de la directive Proxy d&eacute;bute par
+    <p>Si l'URL de la directive <directive>ProxyPass</directive> d&eacute;bute par
     <code>balancer://</code> (par exemple:
     <code>balancer://cluster/</code>, toute information relative au
     chemin est ignor&eacute;e), alors un serveur cible virtuel ne communiquant pas
@@ -1123,6 +1123,7 @@ l'espace d'URLs du serveur local</description>
 	un &eacute;tat d'erreur lorsque le serveur d'arri&egrave;re-plan retounera un
 	code d'&eacute;tat sp&eacute;cifi&eacute; dans la liste. Le r&eacute;tablissement du worker
 	est le m&ecirc;me qu'avec les autres erreurs de worker.
+	Disponible &agrave; partir de la version 2.2.17 du serveur HTTP Apache.
     </td></tr>
     </table>
     <p>Exemple de configuration d'un r&eacute;partiteur</p>
