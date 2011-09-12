@@ -29,7 +29,7 @@
 
 <p>This document supplements the <module>mod_rewrite</module> 
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It provides 
-a few advanced techniques and tricks using mod_rewrite.</p>
+a few advanced techniques using mod_rewrite.</p>
 
 <note type="warning">Note that many of these examples won't work unchanged in your
 particular server configuration, so it's important that you understand
@@ -44,7 +44,7 @@ configuration.</note>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
 <seealso><a href="proxy.html">Proxying</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
-<!--<seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>-->
+<!--<seealso><a href="advanced.html">Advanced techniques</a></seealso>-->
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
 <section id="sharding">
@@ -102,6 +102,9 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
     </dd>
   </dl>
 
+  <p>See the <directive module="mod_rewrite">RewriteMap</directive>
+  documentation for more discussion of the syntax of this directive.</p>
+
 </section>
 
 <section id="on-the-fly-content">
@@ -126,20 +129,22 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
 
 <example>
 # This example is valid in per-directory context only<br />
-RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong><br />
-RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
+RewriteCond %{REQUEST_URI}   <strong>!-U</strong><br />
+RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
 </example>
 
-      <p>Here a request for <code>page.html</code> leads to an
-      internal run of a corresponding <code>page.cgi</code> if
-      <code>page.html</code> is missing or has filesize
-      null. The trick here is that <code>page.cgi</code> is a
-      CGI script which (additionally to its <code>STDOUT</code>)
-      writes its output to the file <code>page.html</code>.
-      Once it has completed, the server sends out
-      <code>page.html</code>. When the webmaster wants to force
-      a refresh of the contents, he just removes
-      <code>page.html</code> (typically from <code>cron</code>).</p>
+    <p>The <code>-U</code> operator determines whether the test string
+    (in this case, <code>REQUEST_URI</code>) is a valid URL. It does
+    this via a subrequest. In the event that this subrequest fails -
+    that is, the requested resource doesn't exist - this rule invokes
+    the CGI program <code>/regenerate_page.cgi</code>, which generates
+    the requested resource and saves it into the document directory, so
+    that the next time it is requested, a static copy can be served.</p>
+    
+    <p>In this way, documents that are infrequently updated can be served in
+    static form. if documents need to be refreshed, they can be deleted
+    from the document directory, and they will then be regenerated the
+    next time they are requested.</p>
     </dd>
   </dl>
 
@@ -197,6 +202,13 @@ featureful than anything you can cobble together using mod_rewrite.</p>
 <section id="autorefresh">
 
   <title>Document With Autorefresh</title>
+
+<!--
+I'm trying to decide whether this example is worthwhile to keep, and, if
+so, whether it needs to be updated/rewritten. Certainly the description
+needs to be rewritten. I'm not sure we really need to be recommending
+nph-refresh techniques.
+-->
 
   <dl>
     <dt>Description:</dt>
@@ -484,6 +496,10 @@ RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
 <example>
 RewriteCond %{ENV:rewritten} =1
 </example>
+
+    <p>Note that environment variables do not survive an external
+    redirect. You might consider using the [CO] flag to set a
+    cookie.</p>
 
     </dd>
   </dl>
