@@ -337,8 +337,10 @@ la réécriture soit effectuée
 
                   <dt><code>REQUEST_URI</code></dt>
 
-                  <dd>La ressource demandée dans la ligne de requête
-		  HTTP ("/index.html" dans l'exemple ci-dessus).</dd>
+                  <dd>La partie chemin de l'URI de la requête, comme
+		  "/index.html". En particulier, ceci exclut la chaîne
+		  de paramètres qui est quant à elle disponible via sa
+		  propre variable <code>QUERY_STRING</code>.</dd>
 
                   <dt><code>REQUEST_FILENAME</code></dt>
 

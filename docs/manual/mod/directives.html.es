@@ -346,6 +346,8 @@
 <li><a href="mpm_common.html#maxconnectionsperchild" id="M" name="M">MaxConnectionsPerChild</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><a href="core.html#maxrangeoverlaps">MaxRangeOverlaps</a></li>
+<li><a href="core.html#maxrangereversals">MaxRangeReversals</a></li>
 <li><a href="core.html#maxranges">MaxRanges</a></li>
 <li><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></li>
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>

@@ -579,6 +579,10 @@ zulässig sind</td></tr>
 <tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KBytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximale Menge des Arbeitsspeichers, den die
   Haupt-Zuteilungsroutine verwalten darf, ohne <code>free()</code>
   aufzurufen</td></tr>
+<tr class="odd"><td><a href="core.html#maxrangeoverlaps">MaxRangeOverlaps default | unlimited | none | <var>number-of-ranges</var></a></td><td> 20 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Number of overlapping ranges (eg: <code>100-200,150-300</code>) allowed before returning the complete
+        resource </td></tr>
+<tr><td><a href="core.html#maxrangereversals">MaxRangeReversals default | unlimited | none | <var>number-of-ranges</var></a></td><td> 20 </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Number of range reversals (eg: <code>100-200,50-70</code>) allowed before returning the complete
+        resource </td></tr>
 <tr class="odd"><td><a href="core.html#maxranges">MaxRanges default | unlimited | none | <var>number-of-ranges</var></a></td><td> 200 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Number of ranges allowed before returning the complete
 resource </td></tr>
 <tr><td><a href="mpm_common.html#maxrequestworkers">MaxRequestWorkers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of connections that will be processed

@@ -151,7 +151,7 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 <tr class="odd"><td><code>REQUEST_SCHEME</code></td>
         <td>Le protocole associé à l'URI de la requête</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
-        <td>L'URI de la requête</td></tr>
+        <td>La partie chemin de l'URI de la requête</td></tr>
 <tr class="odd"><td><code>DOCUMENT_URI</code></td>
         <td>Idem REQUEST_URI</td></tr>
 <tr><td><code>REQUEST_FILENAME</code></td>
