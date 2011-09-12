@@ -58,6 +58,12 @@
 #ifndef AP_DEFAULT_MAX_RANGES
 #define AP_DEFAULT_MAX_RANGES 200
 #endif
+#ifndef AP_DEFAULT_MAX_OVERLAPS
+#define AP_DEFAULT_MAX_OVERLAPS 20
+#endif
+#ifndef AP_DEFAULT_MAX_REVERSALS
+#define AP_DEFAULT_MAX_REVERSALS 20
+#endif
 
 #define MAX_PREALLOC_RANGES 100
 
@@ -442,13 +448,19 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     indexes_t *idx;
     int i;
     int original_status;
-    int max_ranges;
+    int max_ranges, max_overlaps, max_reversals;
     int overlaps = 0, reversals = 0;
     core_dir_config *core_conf = ap_get_core_module_config(r->per_dir_config);
 
     max_ranges = ( (core_conf->max_ranges >= 0 || core_conf->max_ranges == AP_MAXRANGES_UNLIMITED)
                    ? core_conf->max_ranges
                    : AP_DEFAULT_MAX_RANGES );
+    max_overlaps = ( (core_conf->max_overlaps >= 0 || core_conf->max_overlaps == AP_MAXRANGES_UNLIMITED)
+                  ? core_conf->max_overlaps
+                  : AP_DEFAULT_MAX_OVERLAPS );
+    max_reversals = ( (core_conf->max_reversals >= 0 || core_conf->max_reversals == AP_MAXRANGES_UNLIMITED)
+                  ? core_conf->max_reversals
+                  : AP_DEFAULT_MAX_REVERSALS );
     /*
      * Iterate through the brigade until reaching EOS or a bucket with
      * unknown length.
@@ -474,8 +486,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     original_status = r->status;
     num_ranges = ap_set_byterange(r, clength, &indexes, &overlaps, &reversals);
 
-    /* We have nothing to do, get out of the way. */
-    if (num_ranges == 0 || (max_ranges >= 0 && num_ranges > max_ranges)) {
+    /* No Ranges or we hit a limit? We have nothing to do, get out of the way. */
+    if (num_ranges == 0 ||
+        (max_ranges >= 0 && num_ranges > max_ranges) ||
+        (max_overlaps >= 0 && overlaps > max_overlaps) ||
+        (max_reversals >= 0 && reversals > max_reversals)) {
         r->status = original_status;
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);

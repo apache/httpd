@@ -611,6 +611,10 @@ typedef struct {
 #define AP_MAXRANGES_NORANGES   0
     /** Number of Ranges before returning HTTP_OK. **/
     int max_ranges;
+    /** Max number of Range overlaps (merges) allowed **/
+    int max_overlaps;
+    /** Max number of Range reversals (eg: 200-300, 100-125) allowed **/
+    int max_reversals;
 
 } core_dir_config;
 

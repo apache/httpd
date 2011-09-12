@@ -73,11 +73,11 @@
 #endif
 
 /* valid in core-conf, but not in runtime r->used_path_info */
-#define AP_ACCEPT_PATHINFO_UNSET 3 
+#define AP_ACCEPT_PATHINFO_UNSET 3
 
-#define AP_CONTENT_MD5_OFF   0 
-#define AP_CONTENT_MD5_ON    1 
-#define AP_CONTENT_MD5_UNSET 2 
+#define AP_CONTENT_MD5_OFF   0
+#define AP_CONTENT_MD5_ON    1
+#define AP_CONTENT_MD5_UNSET 2
 
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(get_mgmt_items)
@@ -178,8 +178,10 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->enable_sendfile = ENABLE_SENDFILE_UNSET;
     conf->allow_encoded_slashes = 0;
     conf->decode_encoded_slashes = 0;
- 
+
     conf->max_ranges = AP_MAXRANGES_UNSET;
+    conf->max_overlaps = AP_MAXRANGES_UNSET;
+    conf->max_reversals = AP_MAXRANGES_UNSET;
 
     return (void *)conf;
 }
@@ -400,6 +402,8 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
 
     conf->max_ranges = new->max_ranges != AP_MAXRANGES_UNSET ? new->max_ranges : base->max_ranges;
+    conf->max_overlaps = new->max_overlaps != AP_MAXRANGES_UNSET ? new->max_overlaps : base->max_overlaps;
+    conf->max_reversals = new->max_reversals != AP_MAXRANGES_UNSET ? new->max_reversals : base->max_reversals;
 
     return (void*)conf;
 }
@@ -2921,8 +2925,8 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
                            name, NULL);
     }
 
-    error = ap_process_fnmatch_configs(cmd->server, conffile, &conftree, 
-                                       cmd->pool, cmd->temp_pool, 
+    error = ap_process_fnmatch_configs(cmd->server, conffile, &conftree,
+                                       cmd->pool, cmd->temp_pool,
                                        optional);
     if (error) {
         *recursion = 0;
@@ -3269,26 +3273,79 @@ static const char *set_max_ranges(cmd_parms *cmd, void *conf_, const char *arg)
     core_dir_config *conf = conf_;
     int val = 0;
 
-    if (!strcasecmp(arg, "none")) { 
+    if (!strcasecmp(arg, "none")) {
         val = AP_MAXRANGES_NORANGES;
     }
-    else if (!strcasecmp(arg, "default")) { 
+    else if (!strcasecmp(arg, "default")) {
         val = AP_MAXRANGES_DEFAULT;
     }
-    else if (!strcasecmp(arg, "unlimited")) { 
+    else if (!strcasecmp(arg, "unlimited")) {
         val = AP_MAXRANGES_UNLIMITED;
     }
-    else { 
+    else {
         val = atoi(arg);
         if (val <= 0)
-            return "MaxRanges requires 'none', 'default', 'unlimited' or " 
+            return "MaxRanges requires 'none', 'default', 'unlimited' or "
                    "a positive integer";
     }
 
     conf->max_ranges = val;
-    
+
     return NULL;
 }
+
+static const char *set_max_overlaps(cmd_parms *cmd, void *conf_, const char *arg)
+{
+    core_dir_config *conf = conf_;
+    int val = 0;
+
+    if (!strcasecmp(arg, "none")) {
+        val = AP_MAXRANGES_NORANGES;
+    }
+    else if (!strcasecmp(arg, "default")) {
+        val = AP_MAXRANGES_DEFAULT;
+    }
+    else if (!strcasecmp(arg, "unlimited")) {
+        val = AP_MAXRANGES_UNLIMITED;
+    }
+    else {
+        val = atoi(arg);
+        if (val <= 0)
+            return "MaxRangeOverlaps requires 'none', 'default', 'unlimited' or "
+            "a positive integer";
+    }
+
+    conf->max_overlaps = val;
+
+    return NULL;
+}
+
+static const char *set_max_reversals(cmd_parms *cmd, void *conf_, const char *arg)
+{
+    core_dir_config *conf = conf_;
+    int val = 0;
+
+    if (!strcasecmp(arg, "none")) {
+        val = AP_MAXRANGES_NORANGES;
+    }
+    else if (!strcasecmp(arg, "default")) {
+        val = AP_MAXRANGES_DEFAULT;
+    }
+    else if (!strcasecmp(arg, "unlimited")) {
+        val = AP_MAXRANGES_UNLIMITED;
+    }
+    else {
+        val = atoi(arg);
+        if (val <= 0)
+            return "MaxRangeReversals requires 'none', 'default', 'unlimited' or "
+            "a positive integer";
+    }
+
+    conf->max_reversals = val;
+
+    return NULL;
+}
+
 AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
 {
     core_dir_config *conf;
@@ -3908,6 +3965,12 @@ AP_INIT_RAW_ARGS("Mutex", ap_set_mutex, NULL, RSRC_CONF,
 AP_INIT_TAKE1("MaxRanges", set_max_ranges, NULL, RSRC_CONF|ACCESS_CONF,
               "Maximum number of Ranges in a request before returning the entire "
               "resource, or 0 for unlimited"),
+AP_INIT_TAKE1("MaxRangeOverlaps", set_max_overlaps, NULL, RSRC_CONF|ACCESS_CONF,
+              "Maximum number of overlaps in Ranges in a request before returning the entire "
+              "resource, or 0 for unlimited"),
+AP_INIT_TAKE1("MaxRangeReversals", set_max_reversals, NULL, RSRC_CONF|ACCESS_CONF,
+              "Maximum number of reversals in Ranges in a request before returning the entire "
+              "resource, or 0 for unlimited"),
 /* System Resource Controls */
 #ifdef RLIMIT_CPU
 AP_INIT_TAKE12("RLimitCPU", set_limit_cpu,
@@ -4103,9 +4166,9 @@ static int core_override_type(request_rec *r)
      * beginning of the fixup phase (here!), so modules should override the user's
      * discretion in their own module fixup phase.  It is tristate, if
      * the user doesn't specify, the result is AP_REQ_DEFAULT_PATH_INFO.
-     * (which the module may interpret to its own customary behavior.)  
+     * (which the module may interpret to its own customary behavior.)
      * It won't be touched if the value is no longer AP_ACCEPT_PATHINFO_UNSET,
-     * so any module changing the value prior to the fixup phase 
+     * so any module changing the value prior to the fixup phase
      * OVERRIDES the user's choice.
      */
     if ((r->used_path_info == AP_REQ_DEFAULT_PATH_INFO)
@@ -4258,7 +4321,7 @@ static int default_handler(request_rec *r)
              * always allocated at least MIN_LINE_ALLOC (80) bytes.
              */
             if (r->the_request
-                && r->the_request[0] == 0x16                                
+                && r->the_request[0] == 0x16
                 && (r->the_request[1] == 0x2 || r->the_request[1] == 0x3)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Invalid method in request %s - possible attempt to establish SSL connection on non-SSL port", r->the_request);
@@ -4539,7 +4602,7 @@ static void register_hooks(apr_pool_t *p)
 
     /* create_connection and pre_connection should always be hooked
      * APR_HOOK_REALLY_LAST by core to give other modules the opportunity
-     * to install alternate network transports and stop other functions 
+     * to install alternate network transports and stop other functions
      * from being run.
      */
     ap_hook_create_connection(core_create_conn, NULL, NULL,
