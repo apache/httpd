@@ -12,6 +12,11 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) core: Add MaxRangeOverlaps and MaxRangeReversals directives to control
+     the number of overlapping and reversing ranges (respectively) permitted
+     before returning the entire resource, with a default limit of 20.
+     [Jim Jagielski]
+
   *) mod_ldap: Optional function uldap_ssl_supported(r) always returned false
      if called from a virtual host with mod_ldap directives in it.  Did not
      affect mod_authnz_ldap's usage of mod_ldap.  [Eric Covener]
@@ -30,7 +35,7 @@ Changes with Apache 2.3.15
      directive for controlling the revocation checking mode. [Kaspar Brand]
 
   *) core: Add MaxRanges directive to control the number of ranges permitted
-     before returning the entire resource, with a default limit of 200. 
+     before returning the entire resource, with a default limit of 200.
      [Eric Covener]
 
   *) mod_cache: Ensure that CacheDisable can correctly appear within
@@ -54,10 +59,10 @@ Changes with Apache 2.3.15
      LDAP_OPT_CONNECT_TIMEOUT instead of LDAP_OPT_NETWORK_TIMEOUT, such
      as Tivoli Directory Server 6.3 and later. [Eric Covener]
 
-  *) mod_ldap: Change default number of retries from 10 to 3, and add 
+  *) mod_ldap: Change default number of retries from 10 to 3, and add
      an LDAPRetries and LDAPRetryDelay directives. [Eric Covener]
 
-  *) mod_authnz_ldap: Don't retry during authentication, because this just 
+  *) mod_authnz_ldap: Don't retry during authentication, because this just
      multiplies the ample retries already being done by mod_ldap. [Eric Covener]
 
   *) configure: Allow to explicitly disable modules even with module selection
@@ -67,7 +72,7 @@ Changes with Apache 2.3.15
      RewriteEngine is disabled in server context, avoiding a crash while
      referencing the invalid int: map at runtime. PR 50994.
      [Ben Noordhuis <info noordhuis nl>]
-     
+
   *) mod_ssl, configure: require OpenSSL 0.9.7 or later. [Kaspar Brand]
 
   *) mod_ssl: remove ssl_toolkit_compat layer. [Kaspar Brand]
@@ -75,7 +80,7 @@ Changes with Apache 2.3.15
   *) mod_ssl, configure, ab: drop support for RSA BSAFE SSL-C toolkit.
      [Kaspar Brand]
 
-  *) mod_usertrack: Run mod_usertrack earlier in the fixups hook to ensure the 
+  *) mod_usertrack: Run mod_usertrack earlier in the fixups hook to ensure the
      cookie is set when modules such as mod_rewrite trigger a redirect. Also
      use r->err_headers_out for the cookie, for the same reason.  PR29755.
      [Sami J. Mäkinen <sjm almamedia fi>, Eric Covener]
@@ -123,7 +128,7 @@ Changes with Apache 2.3.14
   *) mod_ldap: Revert the integration of apr-ldap as ap_ldap which was done
      in 2.3.13. [Stefan Fritsch]
 
-  *) core: For '*' or '_default_' vhosts, use a wildcard address of any 
+  *) core: For '*' or '_default_' vhosts, use a wildcard address of any
      address family, rather than IPv4 only.  [Joe Orton]
 
   *) core, mod_rewrite, mod_ssl, mod_nw_ssl: Make the SERVER_NAME variable
@@ -198,7 +203,7 @@ Changes with Apache 2.3.13
      describes more accurately what it does. [Stefan Fritsch]
 
   *) rotatelogs: Add -p argument to specify custom program to invoke
-     after a log rotation.  PR 51285. [Sven Ulland <sveniu ifi.uio.no>, 
+     after a log rotation.  PR 51285. [Sven Ulland <sveniu ifi.uio.no>,
      Joe Orton]
 
   *) mod_ssl: Don't do OCSP checks for valid self-issued certs. [Kaspar Brand]
@@ -324,7 +329,7 @@ Changes with Apache 2.3.12
 
   *) WinNT MPM: Improve robustness under heavy load.  [Jeff Trawick]
 
-  *) MinGW build improvements.  PR 49535.  [John Vandenberg 
+  *) MinGW build improvements.  PR 49535.  [John Vandenberg
      <jayvdb gmail.com>, Jeff Trawick]
 
   *) core: Support module names with colons in loglevel configuration.
@@ -348,7 +353,7 @@ Changes with Apache 2.3.12
   *) mod_info: Dump config to stdout during startup if -DDUMP_CONFIG is
      specified. PR 31956. [Stefan Fritsch]
 
-  *) Restore visibility of DEFAULT_PIDLOG to core and modules.  MPM 
+  *) Restore visibility of DEFAULT_PIDLOG to core and modules.  MPM
      helper function ap_remove_pid() added.  [Jeff Trawick]
 
   *) Enable DEFAULT_REL_RUNTIMEDIR on Windows and NetWare.  [various]
@@ -369,7 +374,7 @@ Changes with Apache 2.3.12
 
   *) mod_ldap: Add LDAPConnectionPoolTTL to give control over lifetime
      of bound backend LDAP connections.  PR47634 [Eric Covener]
-   
+
   *) mod_cache: Make CacheEnable and CacheDisable configurable per
      directory in addition to per server, making them work from within
      a LocationMatch. [Graham Leggett]
@@ -449,12 +454,12 @@ Changes with Apache 2.3.11
      [Rainer Jung]
 
   *) mod_ssl: Add config options for OCSP: SSLOCSPResponderTimeout,
-     SSLOCSPResponseMaxAge, SSLOCSPResponseTimeSkew.  
+     SSLOCSPResponseMaxAge, SSLOCSPResponseTimeSkew.
      [Kaspar Brand <httpd-dev.2011 velox.ch>]
 
   *) mod_ssl: Revamp output buffering to reduce network overhead for
      output fragmented into many buckets, such as chunked HTTP responses.
-     [Joe Orton] 
+     [Joe Orton]
 
   *) core: Apply <If> sections to all requests, not only to file base requests.
      Allow to use <If> inside <Directory>, <Location>, and <Files> sections.
@@ -491,7 +496,7 @@ Changes with Apache 2.3.11
      to make other threads spin. [Graham Leggett]
 
   *) mod_ssl: Change the format of the SSL_{CLIENT,SERVER}_{I,S}_DN variables
-     to be RFC 2253 compatible, convert non-ASCII characters to UTF8, and 
+     to be RFC 2253 compatible, convert non-ASCII characters to UTF8, and
      escape other special characters with backslashes. The old format can
      still be used with the LegacyDNStringFormat argument to SSLOptions.
 
@@ -504,7 +509,7 @@ Changes with Apache 2.3.11
   *) mod_rewrite: Allow to unset environment variables using E=!VAR.
      PR 49512. [Mark Drayton <mark markdrayton info>, Stefan Fritsch]
 
-  *) mod_headers: Restore the 2.3.8 and earlier default for the first 
+  *) mod_headers: Restore the 2.3.8 and earlier default for the first
      argument of the Header directive ("onsuccess").  [Eric Covener]
 
   *) core: Disallow the mixing of relative and absolute Options PR 33708.
@@ -518,9 +523,9 @@ Changes with Apache 2.3.11
      the port over a wildcard (or omitted) port instead of favoring the one
      that came first in the configuration file. [Eric Covener]
 
-  *) core: Overlapping virtual host address/port combinations  now implicitly 
+  *) core: Overlapping virtual host address/port combinations  now implicitly
      enable name-based virtual hosting for that address.  The NameVirtualHost
-     directive has no effect, and _default_ is interpreted the same as "*". 
+     directive has no effect, and _default_ is interpreted the same as "*".
      [Eric Covener]
 
   *) core: In the absence of any Options directives, the default is now
@@ -545,7 +550,7 @@ Changes with Apache 2.3.10
      such as per-directory mod_rewrite substitutions.  PR 50349.
      [Eric Covener]
 
-  *) mod_rewrite: Add 'RewriteOptions InheritBefore' to put the base 
+  *) mod_rewrite: Add 'RewriteOptions InheritBefore' to put the base
      rules/conditions before the overridden rules/conditions.  PR 39313.
      [Jérôme Grandjanny <jerome.grandjanny cea.fr>]
 
@@ -557,17 +562,17 @@ Changes with Apache 2.3.10
      [Eric Covener]
 
   *) core: Fail startup when the argument to ServerName looks like a glob
-     or a regular expression instead of a hostname (*?[]).  PR 39863 
+     or a regular expression instead of a hostname (*?[]).  PR 39863
      [Rahul Nair <rahul.g.nair gmail.com>]
 
-  *) mod_userdir: Add merging of enable, disable, and filename arguments 
-     to UserDir directive, leaving enable/disable of userlists unmerged. 
+  *) mod_userdir: Add merging of enable, disable, and filename arguments
+     to UserDir directive, leaving enable/disable of userlists unmerged.
      PR 44076 [Eric Covener]
 
   *) httpd: When no -k option is provided on the httpd command line, the server
-     was starting without checking for an existing pidfile.  PR 50350 
-     [Eric Covener] 
- 
+     was starting without checking for an existing pidfile.  PR 50350
+     [Eric Covener]
+
   *) mod_proxy: Put the worker in error state if the SSL handshake with the
      backend fails. PR 50332.
      [Daniel Ruggeri <DRuggeri primary.net>, Ruediger Pluem]
@@ -599,7 +604,7 @@ Changes with Apache 2.3.9
 
   *) suEXEC: Add Suexec directive to disable suEXEC without renaming the
      binary (Suexec Off), or force startup failure if suEXEC is required
-     but not supported (Suexec On).  Change SuexecUserGroup to fail 
+     but not supported (Suexec On).  Change SuexecUserGroup to fail
      startup instead of just printing a warning if suEXEC is disabled.
      [Jeff Trawick]
 
@@ -617,7 +622,7 @@ Changes with Apache 2.3.9
      and functions. [Stefan Fritsch]
 
   *) core: Do the hook sorting earlier so that the hooks are properly sorted
-     for the pre_config hook and during parsing the config. [Stefan Fritsch] 
+     for the pre_config hook and during parsing the config. [Stefan Fritsch]
 
   *) core: In the absence of any AllowOverride directives, the default is now
      "None" instead of "All".  PR49823 [Eric Covener]
@@ -626,13 +631,13 @@ Changes with Apache 2.3.9
      <Directory> or <Files>. PR47765 [Eric Covener]
 
   *) prefork/worker/event MPMS: default value (when no directive is present)
-     of MaxConnectionsPerChild/MaxRequestsPerChild is changed to 0 from 10000 
+     of MaxConnectionsPerChild/MaxRequestsPerChild is changed to 0 from 10000
      to match default configuration and manual. PR47782 [Eric Covener]
 
   *) proxy_connect: Don't give up in the middle of a CONNECT tunnel
      when the child process is starting to exit.  PR50220. [Eric Covener]
 
-  *) mod_autoindex: Fix inheritance of mod_autoindex directives into 
+  *) mod_autoindex: Fix inheritance of mod_autoindex directives into
      contexts that don't have any mod_autoindex directives. PR47766.
      [Eric Covener]
 
@@ -747,7 +752,7 @@ Changes with Apache 2.3.9
 
   *) core: For process invocation (cgi, fcgid, piped loggers and so forth)
      pass the system library path (LD_LIBRARY_PATH or platform-specific
-     variables) along with the system PATH, by default.  Both should be 
+     variables) along with the system PATH, by default.  Both should be
      overridden together as desired using PassEnv etc; see mod_env.
      [William Rowe]
 
@@ -858,7 +863,7 @@ Changes with Apache 2.3.8
 Changes with Apache 2.3.7
 
   *) SECURITY: CVE-2010-1452 (cve.mitre.org)
-     mod_dav, mod_cache, mod_session: Fix Handling of requests without a path 
+     mod_dav, mod_cache, mod_session: Fix Handling of requests without a path
      segment. PR: 49246 [Mark Drayton, Jeff Trawick]
 
   *) mod_ldap: Properly check the result returned by apr_ldap_init. PR 46076.
@@ -874,7 +879,7 @@ Changes with Apache 2.3.7
   *) core/mod_authz_core: Introduce new access_checker_ex hook that enables
      mod_authz_core to bypass authentication if access should be allowed by
      IP address/env var/... [Stefan Fritsch]
- 
+
   *) core: Introduce note_auth_failure hook to allow modules to add support
      for additional auth types. This makes ap_note_auth_failure() work with
      mod_auth_digest again. PR 48807. [Stefan Fritsch]
@@ -987,8 +992,8 @@ Changes with Apache 2.3.6
      mod_dumpio:  Replace DumpIOLogLevel with trace log levels.
      [Stefan Fritsch]
 
-  *) mod_ldap: LDAP caching was suppressed (and ldap-status handler returns 
-     title page only) when any mod_ldap directives were used in VirtualHost 
+  *) mod_ldap: LDAP caching was suppressed (and ldap-status handler returns
+     title page only) when any mod_ldap directives were used in VirtualHost
      context.  [Eric Covener]
 
   *) mod_disk_cache: Decline the opportunity to cache if the response is
@@ -999,7 +1004,7 @@ Changes with Apache 2.3.6
   *) mod_deflate: avoid the risk of forwarding data before headers are set.
      PR 49369 [Matthew Steele <mdsteele google.com>]
 
-  *) mod_authnz_ldap: Ensure nested groups are checked when the 
+  *) mod_authnz_ldap: Ensure nested groups are checked when the
      top-level group doesn't have any direct non-group members
      of attributes in AuthLDAPGroupAttribute. [Eric Covener]
 
@@ -1010,7 +1015,7 @@ Changes with Apache 2.3.6
 
   *) mod_authnz_ldap: Allow the initial DN search during authentication
      to use the HTTP username/pass instead of an anonymous or hard-coded
-     LDAP id (AuthLDAPInitialBindAsUser, AuthLDAPInitialBindPattern).  
+     LDAP id (AuthLDAPInitialBindAsUser, AuthLDAPInitialBindPattern).
      [Eric Covener]
 
   *) mod_authnz_ldap: Publish requested LDAP data with an AUTHORIZE_ prefix
@@ -1027,8 +1032,8 @@ Changes with Apache 2.3.6
      [Bryn Dole <dole blekko.com>]
 
   *) Log an error for failures to read a chunk-size, and return 408 instead of
-     413 when this is due to a read timeout.  This change also fixes some cases 
-     of two error documents being sent in the response for the same scenario. 
+     413 when this is due to a read timeout.  This change also fixes some cases
+     of two error documents being sent in the response for the same scenario.
      [Eric Covener] PR49167
 
   *) mod_proxy_balancer: Add new directive BalancerNonce to allow admin
@@ -1058,7 +1063,7 @@ Changes with Apache 2.3.6
      [Dr Stephen Henson <steve openssl.org>, William Rowe]
 
   *) mod_proxy_http: Log the port of the remote server in various messages.
-     PR 48812. [Igor Galić <i galic brainsware org>] 
+     PR 48812. [Igor Galić <i galic brainsware org>]
 
   *) mod_reqtimeout: Do not wrongly enforce timeouts for mod_proxy's backend
      connections and other protocol handlers (like mod_ftp). [Stefan Fritsch]
@@ -1081,10 +1086,10 @@ Changes with Apache 2.3.6
      log file.  PR 48761 [<lyndon orthanc.ca>, Dan Poirier]
 
   *) mod_ldap: Update LDAPTrustedClientCert to consistently be a per-directory
-     setting only, matching most of the documentation and examples. 
-     PR 46541 [Paul Reder, Eric Covener] 
+     setting only, matching most of the documentation and examples.
+     PR 46541 [Paul Reder, Eric Covener]
 
-  *) mod_ldap: LDAPTrustedClientCert now accepts CA_DER/CA_BASE64 argument 
+  *) mod_ldap: LDAPTrustedClientCert now accepts CA_DER/CA_BASE64 argument
      types previously allowed only in LDAPTrustedGlobalCert. [Eric Covener]
 
   *) mod_negotiation: Preserve query string over multiviews negotiation.
@@ -1095,7 +1100,7 @@ Changes with Apache 2.3.6
   *) mod_ldap: Eliminate a potential crash with multiple LDAPTrustedClientCert
      when some are not password-protected. [Eric Covener]
 
-  *) Fix startup segfault when the Mutex directive is used but no loaded 
+  *) Fix startup segfault when the Mutex directive is used but no loaded
      modules use httpd mutexes.  PR 48787.  [Jeff Trawick]
 
   *) Proxy: get the headers right in a HEAD request with
@@ -1129,7 +1134,7 @@ Changes with Apache 2.3.6
      the path specified by the Include directive. [Graham Leggett]
 
   *) mod_proxy, mod_proxy_http: Support remote https proxies
-     by using HTTP CONNECT.  PR 19188.  
+     by using HTTP CONNECT.  PR 19188.
      [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
 
   *) apxs: Fix -A and -a options to ignore whitespace in httpd.conf
@@ -1167,7 +1172,7 @@ Changes with Apache 2.3.6
      [Stefan Fritsch]
 
   *) mod_authnz_ldap: Failures to map a username to a DN, or to check a user
-     password now result in an informational level log entry instead of 
+     password now result in an informational level log entry instead of
      warning level.  [Eric Covener]
 
 Changes with Apache 2.3.5
@@ -1175,7 +1180,7 @@ Changes with Apache 2.3.5
   *) SECURITY: CVE-2010-0434 (cve.mitre.org)
      Ensure each subrequest has a shallow copy of headers_in so that the
      parent request headers are not corrupted.  Eliminates a problematic
-     optimization in the case of no request body.  PR 48359 
+     optimization in the case of no request body.  PR 48359
      [Jake Scott, William Rowe, Ruediger Pluem]
 
   *) Turn static function get_server_name_for_url() into public
@@ -1233,7 +1238,7 @@ Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,
      and WatchdogMutexPath with a single Mutex directive.  Add APIs to
-     simplify setup and user customization of APR proc and global mutexes.  
+     simplify setup and user customization of APR proc and global mutexes.
      (See util_mutex.h.)  Build-time setting DEFAULT_LOCKFILE is no longer
      respected; set DEFAULT_REL_RUNTIMEDIR instead.  [Jeff Trawick]
 
@@ -1299,7 +1304,7 @@ Changes with Apache 2.3.3
   *) mod_charset_lite: Honor 'CharsetOptions NoImplicitAdd'.
      [Eric Covener]
 
-  *) mod_ssl: Add support for OCSP Stapling.  PR 43822.  
+  *) mod_ssl: Add support for OCSP Stapling.  PR 43822.
      [Dr Stephen Henson <shenson oss-institute.org>]
 
   *) mod_socache_shmcb: Allow parens in file name if cache size is given.
@@ -1319,7 +1324,7 @@ Changes with Apache 2.3.3
   *) Allow ProxyPreserveHost to work in <Proxy> sections. PR 34901.
      [Stefan Fritsch]
 
-  *) configure: Fix THREADED_MPMS so that mod_cgid is enabled again 
+  *) configure: Fix THREADED_MPMS so that mod_cgid is enabled again
      for worker MPM. [Takashi Sato]
 
   *) mod_dav: Provide a mechanism to obtain the request_rec and pathname
@@ -1373,7 +1378,7 @@ Changes with Apache 2.3.3
 
   *) core: Treat timeout reading request as 408 error, not 400.
      Log 408 errors in access log as was done in Apache 1.3.x.
-     PR 39785 [Nobutaka Mantani <nobutaka nobutaka.org>, 
+     PR 39785 [Nobutaka Mantani <nobutaka nobutaka.org>,
      Stefan Fritsch <sf fritsch.de>, Dan Poirier]
 
   *) mod_ssl: Reintroduce SSL_CLIENT_S_DN, SSL_CLIENT_I_DN, SSL_SERVER_S_DN,
@@ -1456,7 +1461,7 @@ Changes with Apache 2.3.3
   *) ab: Fix broken error messages after resolver or connect() failures.
      [Jeff Trawick]
 
-  *) SECURITY: CVE-2009-1890 (cve.mitre.org) 
+  *) SECURITY: CVE-2009-1890 (cve.mitre.org)
      Fix a potential Denial-of-Service attack against mod_proxy in a
      reverse proxy configuration, where a remote attacker can force a
      proxy process to consume CPU time indefinitely.  [Nick Kew, Joe Orton]
@@ -1521,7 +1526,7 @@ Changes with Apache 2.3.3
      be run when a connection is opened.  PR 46827
      [Marko Kevac <mkevac gmail.com>]
 
-  *) mod_cgid: Improve handling of long AF_UNIX socket names (ScriptSock).  
+  *) mod_cgid: Improve handling of long AF_UNIX socket names (ScriptSock).
      PR 47037.  [Jeff Trawick]
 
   *) mod_proxy_ajp: Check more strictly that the backend follows the AJP
@@ -1532,7 +1537,7 @@ Changes with Apache 2.3.3
 
   *) Allow MPMs to be loaded dynamically, as with most other modules.  Use
      --enable-mpms-shared={list|"all"} to enable.  This required changes to
-     the MPM interfaces.  Removed: mpm.h, mpm_default.h (as an installed 
+     the MPM interfaces.  Removed: mpm.h, mpm_default.h (as an installed
      header), APACHE_MPM_DIR, MPM_NAME, ap_threads_per_child,
      ap_max_daemons_limit, ap_my_generation, etc.  ap_mpm_query() can't be
      called until after the register-hooks phase.  [Jeff Trawick]
@@ -1549,7 +1554,7 @@ Changes with Apache 2.3.3
      as A/UX, Next, and Tandem.  [Jeff Trawick]
 
   *) mod_proxy_ftp: Add ProxyFtpListOnWildcard directive to allow files with
-     globbing characters to be retrieved instead of converted into a 
+     globbing characters to be retrieved instead of converted into a
      directory listing.  PR 46789 [Dan Poirier <poirier pobox.com>]
 
   *) Provide ap_retained_data_create()/ap_retained_data_get() for preservation
@@ -1569,7 +1574,7 @@ Changes with Apache 2.3.2
   *) mod_ssl: add support for type-safe STACK constructs in OpenSSL
      development HEAD.  PR 45521.  [Kaspar Brand, Sander Temme]
 
-  *) ab: Fix maintenance of the pollset to resolve EALREADY errors 
+  *) ab: Fix maintenance of the pollset to resolve EALREADY errors
      with kqueue (BSD/OS X) and excessive CPU with event ports (Solaris).
      PR 44584.  Use APR_POLLSET_NOCOPY for better performance with some
      pollset implementations.  [Jeff Trawick]
@@ -1660,7 +1665,7 @@ Changes with Apache 2.3.1
 
   *) mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
      way that per-directory rewrites append the previous notion of PATH_INFO
-     to each substitution before evaluating subsequent rules. 
+     to each substitution before evaluating subsequent rules.
      PR 38642 [Eric Covener]
 
   *) mod_cgid: Do not add an empty argument when calling the CGI script.
@@ -1688,7 +1693,7 @@ Changes with Apache 2.3.0
 
   *) mod_ratelimit: New module to do bandwidth rate limiting. [Paul Querna]
 
-  *) Remove X-Pad header which was added as a work around to a bug in 
+  *) Remove X-Pad header which was added as a work around to a bug in
      Netscape 2.x to 4.0b2. [Takashi Sato <takashi lans-tv.com>]
 
   *) Add DTrace Statically Defined Tracing (SDT) probes.
@@ -1716,7 +1721,7 @@ Changes with Apache 2.3.0
   *) mod_heartmonitor: New module to collect heartbeats, and write out a file
      so that other modules can load balance traffic as needed. [Paul Querna]
 
-  *) mod_heartbeat: New module to generate multicast heartbeats to know if a 
+  *) mod_heartbeat: New module to generate multicast heartbeats to know if a
      server is online. [Paul Querna]
 
   *) mod_buffer: Honour the flush bucket and flush the buffer in the
@@ -1759,7 +1764,7 @@ Changes with Apache 2.3.0
   *) unixd: turn existing code into a module, and turn the set user/group
      and chroot into a child_init function. [Nick Kew]
 
-  *) mod_dir: Support "DirectoryIndex disabled" 
+  *) mod_dir: Support "DirectoryIndex disabled"
      Suggested By André Warnier <aw ice-sa.com> [Eric Covener]
 
   *) mod_ssl: Send Content-Type application/ocsp-request for POST requests to
@@ -1900,7 +1905,7 @@ Changes with Apache 2.3.0
      [Chris Darroch]
 
   *) mod_ldap: Correctly return all requested attribute values
-     when some attributes have a null value. 
+     when some attributes have a null value.
      PR 44560 [Anders Kaseorg <anders kaseorg.com>]
 
   *) core: check symlink ownership if both FollowSymlinks and
@@ -1910,7 +1915,7 @@ Changes with Apache 2.3.0
      PR 36783 [Robert L Mathews <rob-apache.org.bugs tigertech.net>]
 
   *) Activate mod_cache, mod_file_cache and mod_disk_cache as part of the
-     'most' set for '--enable-modules' and '--enable-shared-mods'. Include 
+     'most' set for '--enable-modules' and '--enable-shared-mods'. Include
      mod_mem_cache in 'all' as well. [Dirk-Willem van Gulik]
 
   *) Also install mod_so.h, mod_rewrite.h and mod_cache.h; as these
@@ -1920,7 +1925,7 @@ Changes with Apache 2.3.0
   *) mod_dir, mod_negotiation: pass the output filter information
      to newly created sub requests; as these are later on used
      as true requests with an internal redirect. This allows for
-     mod_cache et.al. to trap the results of the redirect. 
+     mod_cache et.al. to trap the results of the redirect.
      [Dirk-Willem van Gulik, Ruediger Pluem]
 
   *) mod_ldap: Add support (taking advantage of the new APR capability)
@@ -1969,7 +1974,7 @@ Changes with Apache 2.3.0
   *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
 
   *) apxs: Enhance -q flag to print all known variables and their values
-     when invoked without variable name(s). 
+     when invoked without variable name(s).
      [William Rowe, Sander Temme]
 
   *) apxs: Eliminate run-time check for mod_so.  PR 40653.
@@ -2002,14 +2007,14 @@ Changes with Apache 2.3.0
 
   *) mod_proxy_fcgi: Added win32 build. [Mladen Turk]
 
-  *) sendfile_nonblocking() takes the _brigade_ as an argument, gets 
+  *) sendfile_nonblocking() takes the _brigade_ as an argument, gets
      the first bucket from the brigade, finds it not to be a FILE
      bucket and barfs. The fix is to pass a bucket rather than a brigade.
      [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) mod_rewrite: support rewritemap by SQL query [Nick Kew]
 
-  *) ap_get_server_version() has been removed.  Third-party modules must 
+  *) ap_get_server_version() has been removed.  Third-party modules must
      now use ap_get_server_banner() or ap_get_server_description().
      [Jeff Trawick]
 
@@ -2026,7 +2031,7 @@ Changes with Apache 2.3.0
 
   *) New SSLLogLevelDebugDump [ None (default) | IO (not bytes) | Bytes ]
      configures the I/O Dump of SSL traffic, when LogLevel is set to Debug.
-     The default is none as this is far greater debugging resolution than 
+     The default is none as this is far greater debugging resolution than
      the typical administrator is prepared to untangle.  [William Rowe]
 
   *) mod_disk_cache: If possible, check if the size of an object to cache is
@@ -2053,37 +2058,37 @@ Changes with Apache 2.3.0
   *) Event MPM: Fill in the scoreboard's tid field. PR 38736.
      [Chris Darroch <chrisd pearsoncmg.com>]
 
-  *) mod_charset_lite: Remove Content-Length when output filter can 
+  *) mod_charset_lite: Remove Content-Length when output filter can
      invalidate it.  Warn when input filter can invalidate it.
      [Jeff Trawick]
 
   *) Authz: Add the new module mod_authn_core that will provide common
      authn directives such as 'AuthType', 'AuthName'.  Move the directives
-     'AuthType' and 'AuthName' out of the core module and merge mod_authz_alias 
+     'AuthType' and 'AuthName' out of the core module and merge mod_authz_alias
      into mod_authn_core. [Brad Nicholes]
 
-  *) Authz: Move the directives 'Order', 'Allow', 'Deny' and 'Satisfy' 
-     into the new module mod_access_compat which can be loaded to provide 
+  *) Authz: Move the directives 'Order', 'Allow', 'Deny' and 'Satisfy'
+     into the new module mod_access_compat which can be loaded to provide
      support for these directives.
      [Brad Nicholes]
 
-  *) Authz: Move the 'Require' directive from the core module as well as 
-     add the directives '<SatisfyAll>', '<SatisfyOne>', '<RequireAlias>' 
-     and 'Reject' to mod_authz_core. The new directives introduce 'AND/OR' 
+  *) Authz: Move the 'Require' directive from the core module as well as
+     add the directives '<SatisfyAll>', '<SatisfyOne>', '<RequireAlias>'
+     and 'Reject' to mod_authz_core. The new directives introduce 'AND/OR'
      logic into the authorization processing. [Brad Nicholes]
 
-  *) Authz: Add the new module mod_authz_core which acts as the 
-     authorization provider vector and contains common authz 
+  *) Authz: Add the new module mod_authz_core which acts as the
+     authorization provider vector and contains common authz
      directives. [Brad Nicholes]
 
-  *) Authz: Renamed mod_authz_dbm authz providers from 'group' and 
+  *) Authz: Renamed mod_authz_dbm authz providers from 'group' and
      'file-group' to 'dbm-group' and 'dbm-file-group'. [Brad Nicholes]
 
   *) Authz: Added the new authz providers 'env', 'ip', 'host', 'all' to handle
-     host-based access control provided by mod_authz_host and invoked 
+     host-based access control provided by mod_authz_host and invoked
      through the 'Require' directive. [Brad Nicholes]
 
-  *) Authz: Convert all of the authz modules from hook based to 
+  *) Authz: Convert all of the authz modules from hook based to
      provider based. [Brad Nicholes]
 
   *) mod_cache: Add CacheMinExpire directive to set the minimum time in

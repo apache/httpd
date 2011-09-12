@@ -302,12 +302,12 @@
  * 20110203.1 (2.3.11-dev) Add ap_state_query()
  * 20110203.2 (2.3.11-dev) Add ap_run_pre_read_request() hook and
  *                         ap_parse_form_data() util
- * 20110312.0 (2.3.12-dev) remove uldap_connection_cleanup and add 
+ * 20110312.0 (2.3.12-dev) remove uldap_connection_cleanup and add
                            util_ldap_state_t.connectionPoolTTL,
                            util_ldap_connection_t.freed, and
-                           util_ldap_connection_t.rebind_pool. 
+                           util_ldap_connection_t.rebind_pool.
  * 20110312.1 (2.3.12-dev) Add core_dir_config.decode_encoded_slashes.
- * 20110328.0 (2.3.12-dev) change type and name of connectionPoolTTL in util_ldap_state_t 
+ * 20110328.0 (2.3.12-dev) change type and name of connectionPoolTTL in util_ldap_state_t
                            connectionPoolTTL (connection_pool_ttl, int->apr_interval_t)
  * 20110329.0 (2.3.12-dev) Change single-bit signed fields to unsigned in
  *                         proxy and cache interfaces.
@@ -350,6 +350,7 @@
  * 20110724.3 (2.3.15-dev) add util_varbuf.h / ap_varbuf API
  * 20110724.4 (2.3.15-dev) add max_ranges to core_dir_config
  * 20110724.5 (2.3.15-dev) add ap_set_accept_ranges()
+ * 20110724.6 (2.3.15-dev) add max_overlaps and max_reversals to core_dir_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -357,7 +358,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110724
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

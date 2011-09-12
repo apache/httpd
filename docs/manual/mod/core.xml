@@ -424,8 +424,8 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       module="core">Options</directive> command.
 
       <note><title>Implicit disabling of Options</title>
-      <p>Even though the list of options that may be used in .htaccess files 
-         can be limited with this directive, as long as any <directive 
+      <p>Even though the list of options that may be used in .htaccess files
+         can be limited with this directive, as long as any <directive
          module="core">Options</directive> directive is allowed any
          other inherited option can be disabled by using the non-relative
          syntax.  In other words, this mechanism cannot force a specific option
@@ -2389,7 +2389,7 @@ client</description>
 
     <note type="warning"><title>Warning</title>
     <p> When name-based virtual hosting is used, the value for this
-    directive is taken from the default (first-listed) virtual host best 
+    directive is taken from the default (first-listed) virtual host best
     matching the current IP address and port combination.</p>
     </note>
 </usage>
@@ -2432,7 +2432,7 @@ from the client</description>
 
     <note type="warning"><title>Warning</title>
     <p> When name-based virtual hosting is used, the value for this
-    directive is taken from the default (first-listed) virtual host best 
+    directive is taken from the default (first-listed) virtual host best
     matching the current IP address and port combination.</p>
     </note>
 
@@ -2865,6 +2865,7 @@ connection</description>
     </example>
 </usage>
 </directivesynopsis>
+
 <directivesynopsis>
 <name>MaxRanges</name>
 <description>Number of ranges allowed before returning the complete
@@ -2878,17 +2879,17 @@ resource </description>
 
 <usage>
     <p>The <directive>MaxRanges</directive> directive
-    limits the number of HTTP ranges the server is willing to 
-    return to the client.  If more ranges then permitted are requested, 
+    limits the number of HTTP ranges the server is willing to
+    return to the client.  If more ranges then permitted are requested,
     the complete resource is returned instead.</p>
 
-    <dl>  
+    <dl>
       <dt><strong>default</strong></dt>
       <dd>Limits the number of ranges to a compile-time default of 200.</dd>
-   
+
       <dt><strong>none</strong></dt>
       <dd>Range headers are ignored.</dd>
-          
+
       <dt><strong>unlimited</strong></dt>
       <dd>The server does not limit the number of ranges it is
           willing to satisfy.</dd>
@@ -2898,6 +2899,76 @@ resource </description>
       server is willing to satisfy.</dd>
     </dl>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+    <name>MaxRangeOverlaps</name>
+    <description>Number of overlapping ranges (eg: <code>100-200,150-300</code>) allowed before returning the complete
+        resource </description>
+    <syntax>MaxRangeOverlaps default | unlimited | none | <var>number-of-ranges</var></syntax>
+    <default>MaxRangeOverlaps 20</default>
+    <contextlist><context>server config</context><context>virtual host</context>
+        <context>directory</context>
+    </contextlist>
+    <compatibility>Available in Apache HTTP Server 2.3.15 and later</compatibility>
+
+    <usage>
+        <p>The <directive>MaxRangeOverlaps</directive> directive
+            limits the number of overlapping HTTP ranges the server is willing to
+            return to the client.  If more overlapping ranges then permitted are requested,
+            the complete resource is returned instead.</p>
+
+        <dl>
+            <dt><strong>default</strong></dt>
+            <dd>Limits the number of overlapping ranges to a compile-time default of 20.</dd>
+
+            <dt><strong>none</strong></dt>
+            <dd>No overlapping Range headers are allowed.</dd>
+
+            <dt><strong>unlimited</strong></dt>
+            <dd>The server does not limit the number of overlapping ranges it is
+                willing to satisfy.</dd>
+
+            <dt><var>number-of-ranges</var></dt>
+            <dd>A positive number representing the maximum number of overlapping ranges the
+                server is willing to satisfy.</dd>
+        </dl>
+    </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+    <name>MaxRangeReversals</name>
+    <description>Number of range reversals (eg: <code>100-200,50-70</code>) allowed before returning the complete
+        resource </description>
+    <syntax>MaxRangeReversals default | unlimited | none | <var>number-of-ranges</var></syntax>
+    <default>MaxRangeReversals 20</default>
+    <contextlist><context>server config</context><context>virtual host</context>
+        <context>directory</context>
+    </contextlist>
+    <compatibility>Available in Apache HTTP Server 2.3.15 and later</compatibility>
+
+    <usage>
+        <p>The <directive>MaxRangeReversals</directive> directive
+            limits the number of HTTP Range reversals the server is willing to
+            return to the client.  If more ranges reversals then permitted are requested,
+            the complete resource is returned instead.</p>
+
+        <dl>
+            <dt><strong>default</strong></dt>
+            <dd>Limits the number of range reversals to a compile-time default of 20.</dd>
+
+            <dt><strong>none</strong></dt>
+            <dd>No Range reversals headers are allowed.</dd>
+
+            <dt><strong>unlimited</strong></dt>
+            <dd>The server does not limit the number of range reversals it is
+                willing to satisfy.</dd>
+
+            <dt><var>number-of-ranges</var></dt>
+            <dd>A positive number representing the maximum number of range reversals the
+                server is willing to satisfy.</dd>
+        </dl>
+    </usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -4179,9 +4250,9 @@ hostname or IP address</description>
       <li>A fully qualified domain name for the IP address of the
       virtual host (not recommended);</li>
 
-      <li>The character <code>*</code>, which acts as a wildcard and matches 
+      <li>The character <code>*</code>, which acts as a wildcard and matches
       any IP address.</li>
-  
+
       <li>The string <code>_default_</code>, which is an alias for <code>*</code></li>
 
     </ul>
@@ -4236,18 +4307,18 @@ hostname or IP address</description>
     <directive module="core">ServerName</directive> from the "main"
     server configuration will be inherited.</p>
 
-    <p>When a request is received, the server first maps it to the best matching 
-    <directive type="section">VirtualHost</directive> based on the local 
-    IP address and port combination only.  Non-wildcards have a higher 
-    precedence. If no match based on IP and port occurs at all, the 
+    <p>When a request is received, the server first maps it to the best matching
+    <directive type="section">VirtualHost</directive> based on the local
+    IP address and port combination only.  Non-wildcards have a higher
+    precedence. If no match based on IP and port occurs at all, the
     "main" server configuration is used.</p>
-    
+
     <p>If multiple virtual hosts contain the best matching IP address and port,
-    the server selects from these virtual hosts the best match based on the 
-    requested hostname.  If no matching name-based virtual host is found, 
-    then the first listed virtual host that matched the IP address will be 
+    the server selects from these virtual hosts the best match based on the
+    requested hostname.  If no matching name-based virtual host is found,
+    then the first listed virtual host that matched the IP address will be
     used.  As a consequence, the first listed virtual host for a given IP address
-    and port combination is default virtual host for that IP and port 
+    and port combination is default virtual host for that IP and port
     combination.</p>
 
     <note type="warning"><title>Security</title>
