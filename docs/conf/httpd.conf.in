@@ -334,9 +334,9 @@ LogLevel warn
 
 #
 # MaxRanges: Maximum number of Ranges in a request before
-# returning the entire resource, or 0 for unlimited
+# returning the entire resource, 'none' or 'unlimited'
 # Default setting is to accept 200 Ranges
-#MaxRanges 0
+#MaxRanges unlimited
 
 #
 # EnableMMAP and EnableSendfile: On systems that support it, 
