@@ -24,7 +24,7 @@
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It provides 
-a few advanced techniques and tricks using mod_rewrite.</p>
+a few advanced techniques using mod_rewrite.</p>
 
 <div class="warning">Note that many of these examples won't work unchanged in your
 particular server configuration, so it's important that you understand
@@ -98,6 +98,9 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
     </dd>
   </dl>
 
+  <p>See the <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+  documentation for more discussion of the syntax of this directive.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="on-the-fly-content" id="on-the-fly-content">On-the-fly Content-Regeneration</a></h2>
@@ -122,20 +125,22 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
 
 <div class="example"><p><code>
 # This example is valid in per-directory context only<br />
-RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong><br />
-RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
+RewriteCond %{REQUEST_URI}   <strong>!-U</strong><br />
+RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
 </code></p></div>
 
-      <p>Here a request for <code>page.html</code> leads to an
-      internal run of a corresponding <code>page.cgi</code> if
-      <code>page.html</code> is missing or has filesize
-      null. The trick here is that <code>page.cgi</code> is a
-      CGI script which (additionally to its <code>STDOUT</code>)
-      writes its output to the file <code>page.html</code>.
-      Once it has completed, the server sends out
-      <code>page.html</code>. When the webmaster wants to force
-      a refresh of the contents, he just removes
-      <code>page.html</code> (typically from <code>cron</code>).</p>
+    <p>The <code>-U</code> operator determines whether the test string
+    (in this case, <code>REQUEST_URI</code>) is a valid URL. It does
+    this via a subrequest. In the event that this subrequest fails -
+    that is, the requested resource doesn't exist - this rule invokes
+    the CGI program <code>/regenerate_page.cgi</code>, which generates
+    the requested resource and saves it into the document directory, so
+    that the next time it is requested, a static copy can be served.</p>
+    
+    <p>In this way, documents that are infrequently updated can be served in
+    static form. if documents need to be refreshed, they can be deleted
+    from the document directory, and they will then be regenerated the
+    next time they are requested.</p>
     </dd>
   </dl>
 
@@ -192,6 +197,8 @@ featureful than anything you can cobble together using mod_rewrite.</p>
 <h2><a name="autorefresh" id="autorefresh">Document With Autorefresh</a></h2>
 
   
+
+
 
   <dl>
     <dt>Description:</dt>
@@ -479,6 +486,10 @@ RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
 <div class="example"><p><code>
 RewriteCond %{ENV:rewritten} =1
 </code></p></div>
+
+    <p>Note that environment variables do not survive an external
+    redirect. You might consider using the [CO] flag to set a
+    cookie.</p>
 
     </dd>
   </dl>
