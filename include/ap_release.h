@@ -48,7 +48,7 @@
 #define AP_SERVER_PATCHLEVEL_NUMBER   15
 #define AP_SERVER_DEVBUILD_BOOLEAN    1
 
-/* Synchronize the above with docs\manual\style\version.ent */ 
+/* Synchronize the above with docs/manual/style/version.ent */ 
 
 #if AP_SERVER_DEVBUILD_BOOLEAN
 #define AP_SERVER_ADD_STRING          "-dev"
