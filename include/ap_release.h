@@ -42,6 +42,8 @@
 #define AP_SERVER_PATCHLEVEL_NUMBER   65
 #define AP_SERVER_ADD_STRING          "-dev"
 
+/* Synchronize the above with docs/manual/style/version.ent */ 
+
 /* keep old macros as well */
 #define AP_SERVER_MAJORVERSION APR_STRINGIFY(AP_SERVER_MAJORVERSION_NUMBER)
 #define AP_SERVER_MINORVERSION APR_STRINGIFY(AP_SERVER_MINORVERSION_NUMBER)
