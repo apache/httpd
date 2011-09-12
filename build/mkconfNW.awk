@@ -15,8 +15,9 @@
 
 BEGIN {
     
-    A["ServerRoot"] = "SYS:/APACHE2"
-    A["Port"] = "80"
+    A["ServerRoot"] = "SYS:/"BDIR
+    A["Port"] = PORT
+    A["SSLPort"] = SSLPORT
     A["cgidir"] = "cgi-bin"
     A["logfiledir"] = "logs"
     A["htdocsdir"] = "htdocs"
@@ -33,6 +34,9 @@ BEGIN {
     B["errordir"] = A["ServerRoot"]"/"A["errordir"]
     B["proxycachedir"] = A["ServerRoot"]"/"A["proxycachedir"]
     B["cgidir"] = A["ServerRoot"]"/"A["cgidir"]
+    B["logfiledir"] = A["logfiledir"]
+    B["sysconfdir"] = A["sysconfdir"]
+    B["runtimedir"] = A["runtimedir"]
     B["listen_stmt_1"] = "Listen "A["Port"]
     B["listen_stmt_2"] = ""
 }
@@ -63,8 +67,23 @@ BEGIN {
     print "#LoadModule usertrack_module modules/usertrk.nlm"
     print "#LoadModule version_module modules/modversion.nlm"
     print "#LoadModule vhost_alias_module modules/vhost.nlm"
+    if (MODSSL) {
+       print "#LoadModule ssl_module modules/mod_ssl.nlm"
+    }
     print ""
     next
+}
+
+match ($0,/^#SSLSessionCache +"dbm:/) {
+    sub(/^#/, "")
+}
+
+match ($0,/^SSLSessionCache +"shmcb:/) {
+    sub(/^SSLSessionCache/, "#SSLSessionCache")
+}
+
+match ($0,/^SSLMutex +file:@exp_runtimedir@\/ssl_mutex/) {
+    sub(/file:@exp_runtimedir@\/ssl_mutex/, "default")
 }
 
 match ($0,/@@.*@@/) {
@@ -93,13 +112,16 @@ match ($0,/@nonssl_.*@/) {
 
 
 END {
-    print
-    print "#"
-    print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
-    print "# and/or ports."
-    print "#"
-    print "# Change this to SecureListen on specific IP addresses as shown below to "
-    print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
-    print "#"
-    print "#SecureListen 443 \"SSL CertificateDNS\""
+    if ((ARGV[1] ~ /httpd-std.conf.in/) && !BSDSKT) { 
+       print ""
+       print "#"
+       print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
+       print "# and/or ports."
+       print "#"
+       print "# Change this to SecureListen on specific IP addresses as shown below to "
+       print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
+       print "#"
+       print "#SecureListen "SSLPORT" \"SSL CertificateDNS\""
+       print ""
+    }
 }

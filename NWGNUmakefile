@@ -62,12 +62,12 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/modules/filters/ \
-			$(AP_WORK)/modules/generators/ \
-			$(AP_WORK)/modules/http/ \
-			$(AP_WORK)/modules/loggers/ \
-			$(AP_WORK)/modules/mappers/ \
-			$(AP_WORK)/modules/proxy/ \
+			$(AP_WORK)/modules/filters \
+			$(AP_WORK)/modules/generators \
+			$(AP_WORK)/modules/http \
+			$(AP_WORK)/modules/loggers \
+			$(AP_WORK)/modules/mappers \
+			$(AP_WORK)/modules/proxy \
 			$(AP_WORK)/server/mpm/NetWare \
 			$(PCRE) \
 			$(NWOS) \
@@ -106,7 +106,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -142,13 +142,13 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= Apache2
+NLM_NAME	= Apache2
 
 #
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION		= Apache Web Server $(VERSION_STR)
+NLM_DESCRIPTION	= Apache Web Server $(VERSION_STR)
 
 #
 # This is used by the '-threadname' directive.  If left blank,
@@ -166,7 +166,7 @@ NLM_SCREEN_NAME = Apache $(VERSION_STR) for NetWare
 # If this is specified, it will override VERSION value in 
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
@@ -192,14 +192,14 @@ NLM_CHECK_SYM	= _LibCCheckUnload
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=  PSEUDOPREEMPTION
+NLM_FLAGS	= PSEUDOPREEMPTION
 
 #
 # If this is specified it will be linked in with the XDCData option in the def 
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         = 
+XDCDATA		= 
 
 #
 # If there is an NLM target, put it here
@@ -278,7 +278,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -322,13 +322,13 @@ FILES_nlm_Ximports = \
 FILES_nlm_exports = \
 	@$(NWOS)/httpd.imp \
 	$(EOLIST)
-	
+
 #   
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
@@ -343,39 +343,41 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	-copy $(OBJDIR)\Apache2.nlm     $(INSTALL)\Apache2\*.*
-	-copy ABOUT_APACHE              $(INSTALL)\Apache2\*.*
-	-copy README                    $(INSTALL)\Apache2\*.*
-	-copy STATUS                    $(INSTALL)\Apache2\*.*
-	-copy LICENSE                   $(INSTALL)\Apache2\*.*
-	-copy CHANGES                   $(INSTALL)\Apache2\*.*
-	-copy support\dbmmanage.in      $(INSTALL)\Apache2\bin\dbmmanage.pl
-	-copy support\logresolve.pl.in  $(INSTALL)\Apache2\bin\logresolve.pl
-	-copy support\check_forensic    $(INSTALL)\Apache2\bin\check_forensic
-	-awk  -f build\mkconfnw.awk docs\conf\httpd-std.conf.in >$(INSTALL)\Apache2\conf\httpd.conf
-	-copy docs\conf\magic           $(INSTALL)\Apache2\conf\magic
-	-copy docs\conf\mime.types      $(INSTALL)\Apache2\conf\mime.types
-	-copy docs\cgi-examples\printenv $(INSTALL)\Apache2\cgi-bin\printenv.pl
-	@echo rem copying the docs directories > xc.bat
-	@echo xcopy docs\error $(INSTALL)\Apache2\error $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\docroot $(INSTALL)\Apache2\htdocs $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\icons $(INSTALL)\Apache2\icons $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\man $(INSTALL)\Apache2\man $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\manual $(INSTALL)\Apache2\manual $(XCOPYSW) >> xc.bat
-	$(CMD) xc.bat
-	$(DEL) xc.bat
+	-copy $(OBJDIR)\$(NLM_NAME).nlm  $(INSTALL)\$(BASEDIR)\*.*
+	-copy ABOUT_APACHE               $(INSTALL)\$(BASEDIR)\*.*
+	-copy CHANGES                    $(INSTALL)\$(BASEDIR)\*.*
+	-copy LICENSE                    $(INSTALL)\$(BASEDIR)\*.*
+	-copy README                     $(INSTALL)\$(BASEDIR)\*.*
+	-copy VERSIONING                 $(INSTALL)\$(BASEDIR)\*.*
+#	$(CHK) STATUS copy STATUS        $(INSTALL)\$(BASEDIR)\*.*
+	-copy STATUS                     $(INSTALL)\$(BASEDIR)\*.*
+	-copy support\dbmmanage.in       $(INSTALL)\$(BASEDIR)\bin\dbmmanage.pl
+	-copy support\logresolve.pl.in   $(INSTALL)\$(BASEDIR)\bin\logresolve.pl
+	-copy support\split-logfile.in   $(INSTALL)\$(BASEDIR)\bin\split-logfile.pl
+	-copy support\check_forensic     $(INSTALL)\$(BASEDIR)\bin\check_forensic.sh
+	-copy docs\conf\magic            $(INSTALL)\$(BASEDIR)\conf\magic
+	-copy docs\conf\mime.types       $(INSTALL)\$(BASEDIR)\conf\mime.types
+	-copy docs\conf\charset.conv     $(INSTALL)\$(BASEDIR)\conf\charset.conv
+	-copy docs\cgi-examples\printenv $(INSTALL)\$(BASEDIR)\cgi-bin\printenv.pl
+	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -v SSLPORT=$(SSLPORT) -v MODSSL=$(WITH_MOD_SSL) -f build\mkconfnw.awk docs\conf\httpd-std.conf.in >$(INSTALL)\$(BASEDIR)\conf\httpd.conf
+ifeq "$(WITH_MOD_SSL)" "1"
+	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -v SSLPORT=$(SSLPORT) -v MODSSL=$(WITH_MOD_SSL) -f build\mkconfnw.awk docs\conf\ssl-std.conf.in >$(INSTALL)\$(BASEDIR)\conf\ssl.conf
+endif
+	@xcopy $(XCOPYSW) docs\error     $(INSTALL)\$(BASEDIR)\error
+	@xcopy $(XCOPYSW) docs\docroot   $(INSTALL)\$(BASEDIR)\htdocs
+	@xcopy $(XCOPYSW) docs\icons     $(INSTALL)\$(BASEDIR)\icons
+	@xcopy $(XCOPYSW) docs\man       $(INSTALL)\$(BASEDIR)\man
+	@xcopy $(XCOPYSW) docs\manual    $(INSTALL)\$(BASEDIR)\manual
 
-
-    
 installdev :: FORCE
-	-copy $(subst /,\,$(AP_WORK))\include\*.h           $(INSTALL)\Apache2\include\*.*
-	-copy $(subst /,\,$(AP_WORK))\os\netware\*.h        $(INSTALL)\Apache2\include\*.*
-	-copy $(subst /,\,$(NWOS))\*.imp                    $(INSTALL)\Apache2\lib\*.*
-	-copy $(subst /,\,$(APR))\include\*.h               $(INSTALL)\Apache2\include\*.*
-	-copy $(subst /,\,$(APRUTIL))\include\*.h           $(INSTALL)\Apache2\include\*.*
-	-copy $(subst /,\,$(APR))\*.imp                     $(INSTALL)\Apache2\lib\*.*
-	-copy $(subst /,\,$(NWOS))\*.xdc                    $(INSTALL)\Apache2\lib\*.*
-    
+	-copy $(subst /,\,$(AP_WORK))\include\*.h  $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(NWOS))\*.h             $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(APR))\include\*.h      $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(APRUTIL))\include\*.h  $(INSTALL)\$(BASEDIR)\include\*.*
+	-copy $(subst /,\,$(APR))\*.imp            $(INSTALL)\$(BASEDIR)\lib\*.*
+	-copy $(subst /,\,$(NWOS))\*.imp           $(INSTALL)\$(BASEDIR)\lib\*.*
+	-copy $(subst /,\,$(NWOS))\*.xdc           $(INSTALL)\$(BASEDIR)\lib\*.*
+
 #
 # Any specialized rules here
 #

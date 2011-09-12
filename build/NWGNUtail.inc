@@ -25,7 +25,7 @@ NLM_SCREEN_NAME = DEFAULT
 endif
 
 ifndef NLM_COPYRIGHT
-NLM_COPYRIGHT = Copyright 2006 The Apache Software Foundation. Licensed under the Apache License Version 2.0.
+NLM_COPYRIGHT = Licensed under the Apache License Version 2.0.
 endif
 
 #
@@ -58,7 +58,7 @@ $(NLM_NAME)_LINKOPT_DEPENDS	= \
 				$(EOLIST)
 
 ifeq "$(words $(strip $(TARGET_lib)))" "1"
-LIB_NAME					= $(basename $(notdir $(TARGET_lib)))
+LIB_NAME			= $(basename $(notdir $(TARGET_lib)))
 $(LIB_NAME)_LIBLST_DEPENDS	= \
 				$(FILES_lib_objs) \
 				$(AP_WORK)\build\NWGNUenvironment.inc \
@@ -226,6 +226,7 @@ endif
 	@echo -l $(NWOS) >> $@
 	@echo -l $(AP)/$(OBJDIR) >> $@
 	@echo -l $(APR)/$(OBJDIR) >> $@
+	@echo -l $(APR) >> $@
 	@echo -l $(APRUTIL)/$(OBJDIR) >> $@
 	@echo -l $(PCRE)/$(OBJDIR) >> $@
 	@echo -l $(HTTPD)/$(OBJDIR) >> $@
