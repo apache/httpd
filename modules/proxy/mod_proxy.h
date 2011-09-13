@@ -292,6 +292,8 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_WORKER_IS_USABLE(f)   ( ( !( (f)->s->status & PROXY_WORKER_NOT_USABLE_BITMAP) ) && \
   PROXY_WORKER_IS_INITIALIZED(f) )
 
+#define PROXY_WORKER_IS_DRAINING(f)   ( (f)->s->status &  PROXY_WORKER_DRAIN )
+
 /* default worker retry timeout in seconds */
 #define PROXY_WORKER_DEFAULT_RETRY    60
 

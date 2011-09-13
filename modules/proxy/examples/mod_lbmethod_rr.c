@@ -75,8 +75,12 @@ static proxy_worker *find_best_roundrobin(proxy_balancer *balancer,
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
             if (i < ctx->index)
                 continue;
-            if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) )
+            if (
+                (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) ||
+                (PROXY_WORKER_IS_DRAINING(*worker))
+                ) {
                 continue;
+            }
             if (!PROXY_WORKER_IS_USABLE(*worker))
                 ap_proxy_retry_worker("BALANCER", *worker, r->server);
             if (PROXY_WORKER_IS_USABLE(*worker)) {
