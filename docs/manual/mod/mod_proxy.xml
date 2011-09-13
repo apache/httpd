@@ -53,7 +53,7 @@
       capabilities</li>
 
       <li><module>mod_proxy_balancer</module> and one or more
-      balancer modules, if load balancing is required.  (See 
+      balancer modules, if load balancing is required.  (See
       <module>mod_proxy_balancer</module> for more information.)</li>
 
       <li>one or more proxy scheme, or protocol, modules:
@@ -63,11 +63,11 @@
         <tr><td>AJP13 (Apache JServe Protocol version
           1.3)</td><td><module>mod_proxy_ajp</module></td></tr>
         <tr><td>CONNECT (for
-          SSL)</td><td><module>mod_proxy_connect</module></td></tr> 
+          SSL)</td><td><module>mod_proxy_connect</module></td></tr>
         <tr><td>FastCGI</td><td><module>mod_proxy_fcgi</module></td></tr>
         <tr><td>ftp</td><td><module>mod_proxy_ftp</module></td></tr>
         <tr><td>HTTP/0.9, HTTP/1.0, and
-          HTTP/1.1</td><td><module>mod_proxy_http</module></td></tr> 
+          HTTP/1.1</td><td><module>mod_proxy_http</module></td></tr>
         <tr><td>SCGI</td><td><module>mod_proxy_scgi</module></td></tr>
         </table>
       </li>
@@ -90,7 +90,7 @@
 <seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
-    <section id="forwardreverse"><title>Forward Proxies and Reverse 
+    <section id="forwardreverse"><title>Forward Proxies and Reverse
        Proxies/Gateways</title>
       <p>Apache HTTP Server can be configured in both a <dfn>forward</dfn> and
       <dfn>reverse</dfn> proxy (also known as <dfn>gateway</dfn>) mode.</p>
@@ -389,7 +389,7 @@
     chunked encoding.</p>
 
     <p>Under some circumstances, the server must spool request bodies
-    to disk to satisfy the requested handling of request bodies.  For 
+    to disk to satisfy the requested handling of request bodies.  For
     example, this spooling will occur if the original body was sent with
     chunked encoding (and is large), but the administrator has
     asked for backend requests to be sent with Content-Length or as HTTP/1.0.
@@ -414,7 +414,7 @@
       <dt><code>X-Forwarded-For</code></dt>
       <dd>The IP address of the client.</dd>
       <dt><code>X-Forwarded-Host</code></dt>
-      <dd>The original host requested by the client in the <code>Host</code> 
+      <dd>The original host requested by the client in the <code>Host</code>
        HTTP request header.</dd>
       <dt><code>X-Forwarded-Server</code></dt>
       <dd>The hostname of the proxy server.</dd>
@@ -489,7 +489,7 @@ response</description>
 <usage>
     <p>The <directive>ProxyBadHeader</directive> directive determines the
     behaviour of <module>mod_proxy</module> if it receives syntactically invalid
-    response header lines (<em>i.e.</em> containing no colon) from the origin 
+    response header lines (<em>i.e.</em> containing no colon) from the origin
     server. The following arguments are possible:</p>
 
     <dl>
@@ -510,7 +510,7 @@ response</description>
 
 <directivesynopsis type="section">
 <name>ProxyMatch</name>
-<description>Container for directives applied to regular-expression-matched 
+<description>Container for directives applied to regular-expression-matched
 proxied resources</description>
 <syntax>&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -542,7 +542,7 @@ context in 2.3.3 and later.</compatibility>
     request to the proxied host, instead of the hostname specified in the
     <directive>ProxyPass</directive> line.</p>
 
-    <p>This option should normally be turned <code>Off</code>. It is mostly 
+    <p>This option should normally be turned <code>Off</code>. It is mostly
     useful in special configurations like proxied mass name-based virtual
     hosting, where the original Host header needs to be evaluated by the
     backend server.</p>
@@ -668,15 +668,15 @@ expressions</description>
             <directive module="mod_proxy">ProxyPass</directive> directives.</p>
         <p>One additional parameter is available only to <directive
             module="mod_proxy">BalancerMember</directive> directives:
-            <var>loadfactor</var>. This is the member load factor - a number between 1 
-            (default) and 100, which defines the weighted load to be applied to the 
+            <var>loadfactor</var>. This is the member load factor - a number between 1
+            (default) and 100, which defines the weighted load to be applied to the
             member in question.</p>
         <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
             container directive. It corresponds to the url of a balancer defined in
             <directive module="mod_proxy">ProxyPass</directive> directive.</p>
     </usage>
 </directivesynopsis>
-    
+
 <directivesynopsis>
 <name>ProxySet</name>
 <description>Set various Proxy balancer or member parameters</description>
@@ -775,7 +775,7 @@ expressions</description>
     <example>
         ProxyPass /mirror/foo/ http://backend.example.com/
     </example>
-    
+
     <note type="warning">
     <p>If the first argument ends with a trailing <strong>/</strong>, the second
        argument should also end with a trailing <strong>/</strong> and vice
@@ -845,7 +845,7 @@ expressions</description>
     backend server's keep-alive timeout.</p>
 
     <p>The pool of connections is maintained per web server child
-    process, and <code>max</code> and other settings are not coordinated 
+    process, and <code>max</code> and other settings are not coordinated
     among all child processes, except when only one child process is allowed
     by configuration or MPM design.</p>
 
@@ -905,7 +905,7 @@ expressions</description>
     the backend server (regardless of protocol) tends to silently
     drop connections or when backends themselves may be under round-
     robin DNS. To disable connection pooling reuse,
-    set this property value to <code>On</code>. 
+    set this property value to <code>On</code>.
     </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
@@ -934,9 +934,9 @@ expressions</description>
     This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
     messages on inactive connections  and thus prevent the firewall to drop the connection.
     To enable keepalive set this property value to <code>On</code>. </p>
-    <p>The frequency of initial and subsequent TCP keepalive probes 
+    <p>The frequency of initial and subsequent TCP keepalive probes
     depends on global OS settings, and may be as high as 2 hours. To be useful,
-    the frequency configured in the OS must be smaller than the threshold used 
+    the frequency configured in the OS must be smaller than the threshold used
     by the firewall.</p>
     </td></tr>
     <tr><td>lbset</td>
@@ -996,9 +996,18 @@ expressions</description>
     <tr><td>status</td>
         <td>-</td>
         <td>Single letter value defining the initial status of
-        this worker: 'D' is disabled, 'S' is stopped, 'I' is ignore-errors,
-        'H' is hot-standby and 'E' is in an error state. Status 
-        can be set (which is the default) by prepending with '+' or 
+        this worker.
+        <table>
+         <tr><td>D: Worker is disabled and will not accept any requests.</td></tr>
+         <tr><td>S: Worker is administratively stopped.</td></tr>
+         <tr><td>I: Worker is in ignore-errors mode, and will always be considered available.</td></tr>
+         <tr><td>H: Worker is in hot-standby mode and will only be used if no other
+                    viable workers are available.</td></tr>
+         <tr><td>E: Worker is in an error state.</td></tr>
+         <tr><td>N: Worker is in drain mode, and will only accept existing sticky sessions
+                    destined for itself and ignore all other requests.</td></tr>
+        </table>Status
+        can be set (which is the default) by prepending with '+' or
         cleared by prepending with '-'.
         Thus, a setting of 'S-E' sets this worker to Stopped and
         clears the in-error flag.
@@ -1019,7 +1028,7 @@ expressions</description>
     </table>
 
     <p>If the Proxy directive scheme starts with the
-    <code>balancer://</code> (eg: <code>balancer://cluster/</code>, 
+    <code>balancer://</code> (eg: <code>balancer://cluster/</code>,
     any path information is ignored)  then a virtual worker that does not really
     communicate with the backend server will be created. Instead it is responsible
     for the management of several "real" workers. In that case the special set of
@@ -1036,12 +1045,12 @@ expressions</description>
         <td>Balancer load-balance method. Select the load-balancing scheduler
         method to use. Either <code>byrequests</code>, to perform weighted
         request counting, <code>bytraffic</code>, to perform weighted
-        traffic byte count balancing, or <code>bybusyness</code>, to perform 
+        traffic byte count balancing, or <code>bybusyness</code>, to perform
         pending request balancing. Default is <code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
         <td>One less than the number of workers, or 1 with a single worker.</td>
-        <td>Maximum number of failover attempts before giving up. 
+        <td>Maximum number of failover attempts before giving up.
     </td></tr>
     <tr><td>nofailover</td>
         <td>Off</td>
@@ -1068,7 +1077,7 @@ expressions</description>
     <tr><td>timeout</td>
         <td>0</td>
         <td>Balancer timeout in seconds. If set this will be the maximum time
-        to wait for a free worker. Default is not to wait. 
+        to wait for a free worker. Default is not to wait.
     </td></tr>
     <tr><td>failonstatus</td>
         <td>-</td>
@@ -1091,9 +1100,9 @@ expressions</description>
     <tr><td>growth</td>
         <td>0</td>
         <td>Number of additional BalancerMembers to allow to be added
-        to this balancer in addition to those defined at configuration. 
+        to this balancer in addition to those defined at configuration.
     </td></tr>
-    
+
     </table>
     <p>A sample balancer setup</p>
     <example>
@@ -1148,7 +1157,7 @@ expressions</description>
     <directive type="section" module="core">LocationMatch</directive> section,
     however ProxyPass does not interpret the regexp as such, so it is necessary
     to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
-  
+
     <p>This directive is not supported in <directive type="section" module="core"
     >Directory</directive> or <directive type="section" module="core"
     >Files</directive> sections.</p>
@@ -1402,14 +1411,14 @@ connections</description>
 
     <p>In almost every case there's no reason to change that value.</p>
     <p>If used with AJP this directive sets the maximum AJP packet size in
-    bytes. If you change it from the default, you must also change the 
+    bytes. If you change it from the default, you must also change the
     <code>packetSize</code> attribute of your AJP connector on the
     Tomcat side! The attribute <code>packetSize</code> is only available
     in Tomcat <code>5.5.20+</code> and <code>6.0.2+</code></p>
     <p>Normally it is not necessary to change the maximum packet size.
     Problems with the default value have been reported when sending
     certificates or certificate chains.</p>
-    
+
 </usage>
 </directivesynopsis>
 
@@ -1485,7 +1494,7 @@ directly</description>
     >Hostname</a></var>s (both syntactically and semantically; a DNS domain can
     have a DNS A record, too!), <var>Domain</var>s are always written with a
     leading period.</p>
-    
+
     <note><title>Note</title>
       <p>Domain name comparisons are done without regard to the case, and
       <var>Domain</var>s are always assumed to be anchored in the root of the
@@ -1530,7 +1539,7 @@ directly</description>
     <example><title>Example</title>
       192.168.123.7
     </example>
-    
+
     <note><title>Note</title>
       <p>An <var>IPAddr</var> does not need to be resolved by the DNS system, so
       it can result in more effective apache performance.</p>
@@ -1654,8 +1663,8 @@ header for proxied requests</description>
 <compatibility>Available in version 2.0 and later</compatibility>
 
 <usage>
-    <p>This directive is useful for reverse-proxy setups, where you want to 
-    have a common look and feel on the error pages seen by the end user. 
+    <p>This directive is useful for reverse-proxy setups, where you want to
+    have a common look and feel on the error pages seen by the end user.
     This also allows for included files (via
     <module>mod_include</module>'s SSI) to get
     the error code and act accordingly (default behavior would display
