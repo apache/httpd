@@ -66,10 +66,14 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
                     if ((*worker)->s->lbset > max_lbset)
                         max_lbset = (*worker)->s->lbset;
                 }
-                if ((*worker)->s->lbset != cur_lbset)
+                if (
+                    ((*worker)->s->lbset != cur_lbset) ||
+                    (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) ||
+                    (PROXY_WORKER_IS_DRAINING(*worker))
+                    ) {
                     continue;
-                if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) )
-                    continue;
+                }
+
                 /* If the worker is in error state run
                  * retry on that worker. It will be marked as
                  * operational if the retry timeout is elapsed.
