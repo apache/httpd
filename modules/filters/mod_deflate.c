@@ -426,7 +426,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
-    apr_size_t len;
+    apr_size_t len = 0, blen;
     const char *data;
     deflate_filter_config *c;
 
@@ -448,28 +448,41 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         char *token;
         const char *encoding;
 
-        /* Delay initialization until we have seen some data */
-        e = APR_BRIGADE_FIRST(bb);
-        while (1) {
-            apr_status_t rc;
-            if (e == APR_BRIGADE_SENTINEL(bb))
-                return ap_pass_brigade(f->next, bb);
-            if (APR_BUCKET_IS_EOS(e)) {
-                ap_remove_output_filter(f);
-                return ap_pass_brigade(f->next, bb);
-            }
-            if (APR_BUCKET_IS_METADATA(e)) {
+        e = APR_BRIGADE_LAST(bb);
+        if (APR_BUCKET_IS_EOS(e)) {
+            /*
+             * If we already know the size of the response, we can skip
+             * compression on responses smaller than the compression overhead.
+             * However, if we compress, we must initialize deflate_out before
+             * calling ap_pass_brigade() for the first time.  Otherwise the
+             * headers will be sent to the client without
+             * "Content-Encoding: gzip".
+             */
+            e = APR_BRIGADE_FIRST(bb);
+            while (1) {
+                apr_status_t rc;
+                if (APR_BUCKET_IS_EOS(e)) {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                                  "Not compressing very small response of %"
+                                  APR_SIZE_T_FMT " bytes", len);
+                    ap_remove_output_filter(f);
+                    return ap_pass_brigade(f->next, bb);
+                }
+                if (APR_BUCKET_IS_METADATA(e)) {
+                    e = APR_BUCKET_NEXT(e);
+                    continue;
+                }
+
+                rc = apr_bucket_read(e, &data, &blen, APR_BLOCK_READ);
+                if (rc != APR_SUCCESS)
+                    return rc;
+                len += blen;
+                /* 50 is for Content-Encoding and Vary headers and ETag suffix */
+                if (len > sizeof(gzip_header) + VALIDATION_SIZE + 50)
+                    break;
+
                 e = APR_BUCKET_NEXT(e);
-                continue;
             }
-
-            rc = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
-            if (rc != APR_SUCCESS)
-                return rc;
-            if (len > 0)
-                break;
-
-            e = APR_BUCKET_NEXT(e);
         }
 
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
