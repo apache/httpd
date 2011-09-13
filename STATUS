@@ -117,7 +117,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     mods return UTF-8 chars in any var during a request.
     Trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/arch/win32/mod_win32.c?r1=1054347&r2=1146932
     2.2.x patch: http://people.apache.org/~fuankg/diffs/2.2.x-mod_win32.c.diff
-    +1: fuankg
+    +1: fuankg, gsmith
 
   * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
     Adds a new function in ssl_util_ssl.c SSL_X509_INFO_create_chain that will
