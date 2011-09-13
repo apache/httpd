@@ -3202,7 +3202,7 @@ or specified mutexes</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Designates an IP address for name-virtual
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DEPRECATED: Designates an IP address for name-virtual
 hosting</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>NameVirtualHost <var>addr</var>[:<var>port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
