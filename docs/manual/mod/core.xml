@@ -3194,7 +3194,7 @@ or specified mutexes</description>
 
 <directivesynopsis>
 <name>NameVirtualHost</name>
-<description>Designates an IP address for name-virtual
+<description>DEPRECATED: Designates an IP address for name-virtual
 hosting</description>
 <syntax>NameVirtualHost <var>addr</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context></contextlist>

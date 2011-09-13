@@ -35,7 +35,6 @@
     <title>Core Enhancements</title>
     <dl>
       <dt>KeepAliveTimeout in milliseconds</dt>
-
       <dd>It is now possible to specify <directive module="core"
       >KeepAliveTimeout</directive> in milliseconds.
       </dd>
@@ -51,7 +50,7 @@
       level.</dd>
 
       <dt>Event MPM</dt>
-      <dd>The Event MPM is no longer experimental but is rather fully supported.</dd>
+      <dd>The Event MPM is no longer experimental but is now fully supported.</dd>
  
       <dt>Asynchronous support</dt>
       <dd>Better support for asynchronous read/write for supporting MPMs and
@@ -60,7 +59,10 @@
       <dt>Per-request configuration sections</dt>
       <dd>&lt;<directive module="core">If</directive>&gt; sections can be used to 
       set the configuration based on per-request criteria</dd>
- 
+
+      <dt>NameVirtualHost directive</dt>
+      <dd>No longer needed and is now deprecated.</dd>
+
     </dl>
   </section>
 
@@ -80,6 +82,9 @@
       <dt><module>mod_lua</module></dt>
       <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd, 
       for configuration and small business logic functions.</dd>
+
+      <dt><module>mod_proxy_express</module></dt>
+      <dd>Provides dynamically configured mass reverse proxies for <module>mod_proxy</module></dd>
 
       <dt><module>mod_proxy_fcgi</module></dt>
       <dd>FastCGI Protocol backend for <module>mod_proxy</module></dd>
@@ -148,6 +153,11 @@
       <dd>Additional BalancerMembers can be added at runtime via balancer-manager</dd>
 
       <dd>Runtime configuration of a subset of Balancer parameters</dd>
+
+      <dd>BalancerMembers can be set to 'Drain' so that they only respond to existing sticky
+      sessions, allowing them to be taken gracefully offline.</dd>
+
+      <dd>Balancer settings can be persistant after restarts.</dd>
 
       <dt><module>mod_cache</module></dt>
 
