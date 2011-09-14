@@ -42,8 +42,8 @@
 static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r, char *var);
 static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, char *var);
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var);
-static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_UTCTIME *tm);
-static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm);
+static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
+static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
 static char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, char *var);
 static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
@@ -560,7 +560,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
     return result;
 }
 
-static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_UTCTIME *tm)
+static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
 {
     char *result;
     BIO* bio;
@@ -568,7 +568,7 @@ static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_UTCTIME *tm)
 
     if ((bio = BIO_new(BIO_s_mem())) == NULL)
         return NULL;
-    ASN1_UTCTIME_print(bio, tm);
+    ASN1_TIME_print(bio, tm);
     n = BIO_pending(bio);
     result = apr_pcalloc(p, n+1);
     n = BIO_read(bio, result, n);
@@ -581,27 +581,36 @@ static char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_UTCTIME *tm)
 
 /* Return a string giving the number of days remaining until 'tm', or
  * "0" if this can't be determined. */
-static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm)
+static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
 {
     apr_time_t then, now = apr_time_now();
     apr_time_exp_t exp = {0};
     long diff;
+    unsigned char *dp;
 
-    /* Fail if the time isn't a valid ASN.1 UTCTIME; RFC3280 mandates
+    /* Fail if the time isn't a valid ASN.1 TIME; RFC3280 mandates
      * that the seconds digits are present even though ASN.1
      * doesn't. */
-    if (tm->length < 11 || !ASN1_UTCTIME_check(tm)) {
+    if ((tm->type == V_ASN1_UTCTIME && tm->length < 11) ||
+        (tm->type == V_ASN1_GENERALIZEDTIME && tm->length < 13) ||
+        !ASN1_TIME_check(tm)) {
         return apr_pstrdup(p, "0");
     }
 
-    exp.tm_year = DIGIT2NUM(tm->data);
-    exp.tm_mon = DIGIT2NUM(tm->data + 2) - 1;
-    exp.tm_mday = DIGIT2NUM(tm->data + 4) + 1;
-    exp.tm_hour = DIGIT2NUM(tm->data + 6);
-    exp.tm_min = DIGIT2NUM(tm->data + 8);
-    exp.tm_sec = DIGIT2NUM(tm->data + 10);
+    if (tm->type == V_ASN1_UTCTIME) {
+        exp.tm_year = DIGIT2NUM(tm->data);
+        if (exp.tm_year <= 50) exp.tm_year += 100;
+        dp = tm->data + 2;
+    } else {
+        exp.tm_year = DIGIT2NUM(tm->data) * 100 + DIGIT2NUM(tm->data + 2) - 1900;
+        dp = tm->data + 4;
+    }
 
-    if (exp.tm_year <= 50) exp.tm_year += 100;
+    exp.tm_mon = DIGIT2NUM(dp) - 1;
+    exp.tm_mday = DIGIT2NUM(dp + 2) + 1;
+    exp.tm_hour = DIGIT2NUM(dp + 4);
+    exp.tm_min = DIGIT2NUM(dp + 6);
+    exp.tm_sec = DIGIT2NUM(dp + 8);
 
     if (apr_time_exp_gmt_get(&then, &exp) != APR_SUCCESS) {
         return apr_pstrdup(p, "0");
