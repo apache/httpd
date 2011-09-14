@@ -1562,25 +1562,13 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
 #define SSLPROXY_CERT_CB_LOG_FMT \
    "Proxy client certificate callback: (%s) "
 
-static void modssl_proxy_info_log(server_rec *s,
+static void modssl_proxy_info_log(conn_rec *c,
                                   X509_INFO *info,
                                   const char *msg)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(s);
-    char name_buf[256];
-    X509_NAME *name;
-    char *dn;
-
-    if (!APLOGdebug(s)) {
-        return;
-    }
-
-    name = X509_get_subject_name(info->x509);
-    dn = X509_NAME_oneline(name, name_buf, sizeof(name_buf));
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 SSLPROXY_CERT_CB_LOG_FMT "%s, sending %s",
-                 sc->vhost_id, msg, dn ? dn : "-uknown-");
+    ssl_log_cxerror(SSLLOG_MARK, APLOG_DEBUG, 0, c, info->x509,
+                    SSLPROXY_CERT_CB_LOG_FMT "%s, sending",
+                    (mySrvConfigFromConn(c))->vhost_id, msg);
 }
 
 /*
@@ -1628,7 +1616,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
          */
         info = sk_X509_INFO_value(certs, 0);
 
-        modssl_proxy_info_log(s, info, "no acceptable CA list");
+        modssl_proxy_info_log(c, info, "no acceptable CA list");
 
         modssl_set_cert_info(info, x509, pkey);
 
@@ -1645,7 +1633,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
 
             /* Search certs (by issuer name) one by one*/
             if (X509_NAME_cmp(issuer, ca_name) == 0) {
-                modssl_proxy_info_log(s, info, "found acceptable cert");
+                modssl_proxy_info_log(c, info, "found acceptable cert");
 
                 modssl_set_cert_info(info, x509, pkey);
 
@@ -1663,7 +1651,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
                     ca_issuer = X509_get_issuer_name(ca_info->x509);
 
                     if(X509_NAME_cmp(ca_issuer, ca_name) == 0 ) {
-                        modssl_proxy_info_log(s, info, "found acceptable cert by intermediary");
+                        modssl_proxy_info_log(c, info, "found acceptable cert by intermediary");
 
                         modssl_set_cert_info(info, x509, pkey);
  
