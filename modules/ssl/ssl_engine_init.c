@@ -1115,7 +1115,9 @@ static void ssl_init_proxy_certs(server_rec *s,
     int n, ncerts = 0;
     STACK_OF(X509_INFO) *sk;
     modssl_pk_proxy_t *pkp = mctx->pkp;
-    STACK_OF(X509_INFO) *chain;
+    STACK_OF(X509) *chain;
+    X509_STORE_CTX *sctx;
+    X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
 
     SSL_CTX_set_client_cert_cb(mctx->ssl_ctx,
                                ssl_callback_proxy_cert);
@@ -1161,29 +1163,42 @@ static void ssl_init_proxy_certs(server_rec *s,
                  ncerts);
     pkp->certs = sk;
 
-    if (!pkp->ca_cert_file) {
+
+    if (!pkp->ca_cert_file || !store) {
         return;
     }
 
     /* Load all of the CA certs and construct a chain */
-    sk = sk_X509_INFO_new_null();
+    pkp->ca_certs = (STACK_OF(X509) **) apr_pcalloc(p, ncerts * sizeof(sk));
+    sctx = X509_STORE_CTX_new();
 
-    SSL_X509_INFO_load_file(ptemp, sk, pkp->ca_cert_file);
-    pkp->ca_certs = (STACK_OF(X509_INFO) **) apr_pcalloc(p, ncerts * sizeof(sk));
+    if (!sctx) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                     "SSL proxy client cert initialization failed");
+        ssl_die();
+    }
+
+    X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
-        int len;
+        int i;
         X509_INFO *inf = sk_X509_INFO_value(pkp->certs, n);
-        chain = sk_X509_INFO_new_null();
-        len = SSL_X509_INFO_create_chain(inf->x509, sk, chain);
+        X509_STORE_CTX_init(sctx, store, inf->x509, NULL);
+        X509_verify_cert(sctx);
+        ERR_clear_error();
+
+        chain = X509_STORE_CTX_get1_chain(sctx);
+        sk_X509_shift(chain);
+        i=sk_X509_num(chain);
         pkp->ca_certs[n] = chain;
+        X509_STORE_CTX_cleanup(sctx);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "client certificate %i has loaded %i "
-                     "intermediary signers ", n, len);
+                     "intermediate CA%s", n, i, i == 1 ? "" : "s");
     }
 
-    sk_X509_INFO_free(sk);
+    X509_STORE_CTX_free(sctx);
 }
 
 static void ssl_init_proxy_ctx(server_rec *s,

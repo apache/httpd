@@ -539,7 +539,7 @@ typedef struct {
     const char  *cert_path;
     const char  *ca_cert_file;
     STACK_OF(X509_INFO) *certs;
-    STACK_OF(X509_INFO) **ca_certs; /* ptr to array of ptrs */
+    STACK_OF(X509) **ca_certs; /* ptr to array of ptrs */
 } modssl_pk_proxy_t;
 
 /** stuff related to authentication that can also be per-dir */
