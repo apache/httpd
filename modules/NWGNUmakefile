@@ -1,8 +1,8 @@
 #
 # Declare the sub-directories to be built here
 #
-# To build with exerimental modules set the environment 
-#  variable EXPERIMENTAL=1
+# To build with exerimental modules set the environment
+#  variable WITH_EXPERIMENTAL=1
 # To build with the mod_ssl module set the environment
 #  variable WITH_MOD_SSL=1
 
@@ -27,15 +27,21 @@ SUBDIRS += ssl \
 endif
 endif
 
-#If the mod_edir directory exists then build the mod_edir module
-ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
-SUBDIRS += mod_edir \
+# Allow the experimental modules to be built if WITH_EXPERIMENTAL is defined
+ifeq "$(WITH_EXPERIMENTAL)" "1"
+SUBDIRS += experimental \
 	$(EOLIST)
 endif
 
-# Allow the experimental modules to be built if EXPERIMENTAL is defined
-ifeq "$(EXPERIMENTAL)" "1"
-SUBDIRS += experimental \
+# Allow the test modules to be built if WITH_TEST is defined
+ifeq "$(WITH_TEST)" "1"
+SUBDIRS += test \
+	$(EOLIST)
+endif
+
+#If the mod_edir directory exists then build the mod_edir module
+ifeq "$(wildcard $(STDMOD)/mod_edir)" "$(STDMOD)/mod_edir"
+SUBDIRS += mod_edir \
 	$(EOLIST)
 endif
 

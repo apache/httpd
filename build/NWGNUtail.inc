@@ -7,7 +7,6 @@
 # If we are going to create an nlm, make sure we have assigned variables to
 # use during the link.
 #
-#echo NLM_NAME=$(NLM_NAME)
 ifndef NLM_NAME
 NLM_NAME = $(TARGET_nlm)
 endif
@@ -26,6 +25,26 @@ endif
 
 ifndef NLM_COPYRIGHT
 NLM_COPYRIGHT = Licensed under the Apache License Version 2.0.
+endif
+
+ifeq "$(NLM_FLAGS)" ""
+NLM_FLAGS = AUTOUNLOAD, PSEUDOPREEMPTION
+endif
+
+ifeq "$(NLM_STACK_SIZE)" ""
+NLM_STACK_SIZE = 65536
+endif
+
+ifeq "$(NLM_ENTRY_SYM)" ""
+NLM_ENTRY_SYM = _LibCPrelude
+endif
+
+ifeq "$(NLM_EXIT_SYM)" ""
+NLM_EXIT_SYM = _LibCPostlude
+endif
+
+ifeq "$(NLM_VERSION)" ""
+NLM_VERSION = $(VERSION)
 endif
 
 #
@@ -224,7 +243,6 @@ else
 	@echo -nlmversion=$(VERSION) >> $@
 endif
 	@echo -l $(NWOS) >> $@
-	@echo -l $(AP)/$(OBJDIR) >> $@
 	@echo -l $(APR)/$(OBJDIR) >> $@
 	@echo -l $(APR) >> $@
 	@echo -l $(APRUTIL)/$(OBJDIR) >> $@
@@ -245,7 +263,6 @@ endif
 	@echo -l $(XML)/$(OBJDIR) >> $@
 	@echo -nodefaults >> $@
 	@echo -map $(OBJDIR)\$(NLM_NAME).map>> $@
-	@echo -threadname "$(NLM_THREAD_NAME)" >> $@
 ifneq "$(NLM_STACK_SIZE)" ""
 	@echo -stacksize $(subst K,000,$(subst k,K,$(strip $(NLM_STACK_SIZE)))) >> $@
 else
@@ -279,6 +296,7 @@ endif
 ifneq "$(FILE_nlm_hlp)" ""
 	@echo Help $(FILE_nlm_hlp) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif
+	@echo threadname "$(NLM_THREAD_NAME)" >> $(OBJDIR)\$(NLM_NAME)_link.def
 ifneq "$(FILES_nlm_modules)" ""
 	@echo module $(foreach module,$(subst $(SPACE),$(COMMA),$(strip $(FILES_nlm_modules))),$(subst /,\,$(module))) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif

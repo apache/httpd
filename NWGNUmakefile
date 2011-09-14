@@ -349,7 +349,6 @@ install :: nlms FORCE
 	-copy LICENSE                    $(INSTALL)\$(BASEDIR)\*.*
 	-copy README                     $(INSTALL)\$(BASEDIR)\*.*
 	-copy VERSIONING                 $(INSTALL)\$(BASEDIR)\*.*
-#	$(CHK) STATUS copy STATUS        $(INSTALL)\$(BASEDIR)\*.*
 	-copy STATUS                     $(INSTALL)\$(BASEDIR)\*.*
 	-copy support\dbmmanage.in       $(INSTALL)\$(BASEDIR)\bin\dbmmanage.pl
 	-copy support\logresolve.pl.in   $(INSTALL)\$(BASEDIR)\bin\logresolve.pl
@@ -377,6 +376,7 @@ installdev :: FORCE
 	-copy $(subst /,\,$(APR))\*.imp            $(INSTALL)\$(BASEDIR)\lib\*.*
 	-copy $(subst /,\,$(NWOS))\*.imp           $(INSTALL)\$(BASEDIR)\lib\*.*
 	-copy $(subst /,\,$(NWOS))\*.xdc           $(INSTALL)\$(BASEDIR)\lib\*.*
+	-copy $(subst /,\,$(APBUILD))\NWGNU*.inc   $(INSTALL)\$(BASEDIR)\build\*.*
 
 #
 # Any specialized rules here

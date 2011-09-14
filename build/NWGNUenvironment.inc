@@ -38,11 +38,26 @@ endif
 ifndef NOVELLLIBC
 NOVELLLIBC = C:/novell/ndk/libc
 endif
+ifneq "$(wildcard $(NOVELLLIBC)/include/ndkvers.h)" "$(NOVELLLIBC)/include/ndkvers.h"
+$(error NOVELLLIBC does not point to a valid Novell LIBC SDK) 
+endif
 
 # This is a placeholder
 # ifndef LDAPSDK
-# LDAPSDK = C:/novell/ndk/cldapsdk
+# LDAPSDK = C:/novell/ndk/cldapsdk/NetWare/libc
 # endif
+ifdef LDAPSDK
+ifneq "$(wildcard $(LDAPSDK)/inc/ldap.h)" "$(LDAPSDK)/inc/ldap.h"
+$(error LDAPSDK does not point to a valid Novell CLDAP SDK) 
+endif
+endif
+
+ifndef PCRESRC
+PCRESRC = $(AP_WORK)/srclib/pcre
+endif
+ifneq "$(wildcard $(PCRESRC)/pcre-config.in)" "$(PCRESRC)/pcre-config.in"
+$(error PCRESRC does not point to a valid PCRE source tree) 
+endif
 
 # This is a placeholder
 # ifndef ZLIBSDK
@@ -50,7 +65,7 @@ endif
 # endif
 
 ifndef METROWERKS
-METROWERKS = C:\Program Files\Metrowerks\CodeWarrior
+METROWERKS = $(ProgramFiles)\Metrowerks\CodeWarrior
 endif
 
 # If LM_LICENSE_FILE isn't defined, define a variable that can be used to
@@ -62,8 +77,8 @@ endif
 #
 # Set the Release type that you want to build, possible values are:
 #
-#  debug		- full debug switches are set
-#  noopt		- normal switches are set (default)
+#  debug	- full debug switches are set
+#  noopt	- normal switches are set (default)
 #  optimized	- optimization switches are set
 
 ifdef reltype
@@ -120,25 +135,71 @@ WIN_CC	= mwcc
 # Setup build tools
 AWK	= awk
 
-NOVI	= $(NOVELLLIBC)\imports
+# Setup distribution tools
+ZIP	= zip -qr9
+7ZA	= 7za >NUL a
 
-INCDIRS	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
+#
+# Declare Command and tool macros here
+#
+
+# Os2LibPath is an extra check to see if we are on NT
+ifdef Os2LibPath
+OS = Windows_NT
+endif
+
+ifeq "$(OS)" "Windows_NT"
+CMD = cmd /C
+DEL = del /F
+DELTREE = rd /s/q
+WINNT = 1
+XCOPYSW = /E
+else
+CMD = command /C
+DEL = del
+DELTREE = deltree /y
+XCOPYSW = /E /Y
+endif
+
+CHK = $(CMD) if exist
+CHKNOT = $(CMD) if not exist
+
+
+NOVI	= $(NOVELLLIBC)/imports
+PRELUDE	= $(NOVI)/libcpre.o
+
+INCDIRS	= $(NOVELLLIBC)/include;
+ifndef USE_STDSOCKETS
+INCDIRS	+= $(NOVELLLIBC)/include/winsock;
+endif
 ifneq "$(LDAPSDK)" ""
-INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
+INCDIRS += $(LDAPSDK)/inc;
 endif
 ifneq "$(ZLIBSDK)" ""
-INCDIRS := $(INCDIRS);$(ZLIBSDK)
+INCDIRS += $(ZLIBSDK);
+endif
+ifneq "$(PCRESRC)" ""
+INCDIRS += $(PCRESRC);
 endif
 
-DEFINES	= -DNETWARE
+DEFINES	= -DNETWARE 
+ifndef USE_STDSOCKETS
+DEFINES	+= -DUSE_WINSOCK
+endif
 ifndef DEBUG
-DEFINES += -DNDEBUG
+DEFINES	+= -DNDEBUG
+endif
+
+ifdef USE_STDSOCKETS
+VERSION_SKT = (BSDSOCK)
+else
+VERSION_SKT = (WINSOCK)
 endif
 
 # MetroWerks static Libraries
-CLIB3S	= $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\Runtime\mwcrtl.lib
+CLIB3S	= $(METROWERKS)/Novell Support/Metrowerks Support/Libraries/Runtime/mwcrtl.lib
 MATH3S	=
-PLIB3S	= $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\MSL C++\MWCPP.lib
+PLIB3S	= $(METROWERKS)/Novell Support/Metrowerks Support/Libraries/MSL C++/MWCPP.lib
 
 # MetroWerks Win32 build flags to create build tool
 MWCW_MSL   = "$(METROWERKS)/MSL"
@@ -163,9 +224,12 @@ WIN_CFLAGS += -lMSL_All_x86.lib -lkernel32.lib -luser32.lib
 
 CFLAGS = -c -nosyspath -Cpp_exceptions off -RTTI off -align 4 -w nocmdline -proc PII
 
+ifeq "$(REQUIRE_PROTOTYPES)" "1"
+CFLAGS += -r
+endif
+
 # -g                    generate debugging information
 # -O0                   level 0 optimizations
-
 ifeq "$(RELEASE)" "debug"
 CFLAGS += -g -O0
 endif
@@ -176,7 +240,6 @@ CFLAGS += -O4,p
 endif
 
 # -prefix pre_nw.h      #include pre_nw.h for all files
-
 CFLAGS += -prefix pre_nw.h
 
 
@@ -205,9 +268,14 @@ INSTALL = $(AP_WORK)\Dist
 INSTDIRS = $(AP_WORK)\Dist
 endif
 
+ifeq ($(MAKECMDGOALS),installdev)
 ifndef BASEDIR
-BASEDIR = Apache2
-export BASEDIR
+export BASEDIR = apache_$(VERSION_STR)-sdk
+endif
+else
+ifndef BASEDIR
+export BASEDIR = Apache2
+endif
 endif
 
 ifndef PORT
@@ -221,7 +289,7 @@ endif
 # Add support for building IPV6 alongside
 ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
-INCDIRS := $(NOVELLLIBC)\include\winsock\IPV6;$(INCDIRS)
+# INCDIRS := $(NOVELLLIBC)/include/winsock/IPV6;$(INCDIRS)
 
 ifneq "$(findstring IPV6,$(OBJDIR))" "IPV6"
 OBJDIR := $(OBJDIR)_IPV6
@@ -239,8 +307,10 @@ endif
 
 INSTDEVDIRS := \
 	$(INSTDIRS) \
+	$(INSTALL)\$(BASEDIR)\build \
 	$(INSTALL)\$(BASEDIR)\include \
 	$(INSTALL)\$(BASEDIR)\lib \
+	$(EOLIST) 
 
 INSTDIRS += \
 	$(INSTALL)\$(BASEDIR) \
@@ -254,52 +324,26 @@ INSTDIRS += \
 	$(INSTALL)\$(BASEDIR)\man \
 	$(INSTALL)\$(BASEDIR)\manual \
 	$(INSTALL)\$(BASEDIR)\modules \
-
-#
-# Declare Command and tool macros here
-#
-
-# Os2LibPath is an extra check to see if we are on NT
-ifdef Os2LibPath
-OS = Windows_NT
-endif
-
-ifeq "$(OS)" "Windows_NT"
-CMD = cmd /C
-DEL = del /F
-DELTREE = rd /s/q
-WINNT = 1
-XCOPYSW = /E
-else
-CMD = command /C
-DEL = del
-DELTREE = deltree /y
-XCOPYSW = /E /Y
-endif
-
-CHK = $(CMD) if exist
-CHKNOT = $(CMD) if not exist
-
-
-#
-# Setup base C compiler flags
-#
+	$(EOLIST) 
 
 #
 # Common directories
 #
 
-STDMOD		= $(AP_WORK)/modules
-NWOS		= $(AP_WORK)/os/netware
-SERVER		= $(AP_WORK)/server
-SRC		= $(AP_WORK)
-APR		= $(APR_WORK)
-APRUTIL		= $(APU_WORK)
-SUPMOD		= $(AP_WORK)/support
-PCRE		= $(AP_WORK)/srclib/pcre
-APRTEST		= $(APR_WORK)/test
-HTTPD		= $(AP_WORK)/modules/http
-XML		= $(APU_WORK)/xml
+SRC		= $(subst \,/,$(AP_WORK))
+APR		= $(subst \,/,$(APR_WORK))
+APRUTIL		= $(subst \,/,$(APU_WORK))
+APBUILD		= $(SRC)/build
+STDMOD		= $(SRC)/modules
+HTTPD		= $(SRC)/modules/http
+DAV		= $(SRC)/modules/dav
+NWOS		= $(SRC)/os/netware
+SERVER		= $(SRC)/server
+SUPMOD		= $(SRC)/support
+APULDAP		= $(APRUTIL)/ldap
+XML		= $(APRUTIL)/xml
+APRTEST		= $(APR)/test
+PCRE		= $(PCRESRC)
 
 #
 # Internal Libraries
@@ -307,8 +351,9 @@ XML		= $(APU_WORK)/xml
 
 APRLIB		= $(APR)/$(OBJDIR)/aprlib.lib
 APRUTLIB	= $(APRUTIL)/$(OBJDIR)/aprutil.lib
+APULDAPLIB	= $(APULDAP)/$(OBJDIR)/apuldap.lib
 STMODLIB	= $(STDMOD)/$(OBJDIR)/stdmod.lib
-PCRELIB		= $(PCRE/$(OBJDIR)/pcre.lib
+PCRELIB		= $(SRC)/$(OBJDIR)/pcre.lib
 NWOSLIB		= $(NWOS)/$(OBJDIR)/netware.lib
 SERVLIB		= $(SERVER)/$(OBJDIR)/server.lib
 HTTPDLIB	= $(HTTPD)/$(OBJDIR)/httpd.lib

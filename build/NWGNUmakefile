@@ -24,17 +24,25 @@ FILES_prebuild_headers = \
 	$(PCRE)/pcre.h \
 	$(EOLIST) 
     
-nlms :: $(NWOS)/httpd.imp $(NWOS)/chartables.c
+nlms :: libs $(NWOS)/httpd.imp $(DAV)/main/dav.imp
+
+libs :: $(NWOS)/chartables.c
+
+#libs :: chkapr $(NWOS)/chartables.c
+
+$(DAV)/main/dav.imp : make_nw_export.awk $(DAV)/main/mod_dav.h
+	@echo $(DL)Creating  $@$(DL)
+	$(AWK) -v EXPPREFIX=APACHE2 -f $^ >$@
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
-	@echo Generating $(subst /,\,$@)
-	awk -f make_nw_export.awk nw_export.i | sort >$(NWOS)/httpd.imp
+	@echo $(DL)Creating  $@$(DL)
+	$(AWK) -v EXPPREFIX=APACHE2 -f $^ >$@
     
-nw_export.i : nw_export.inc $(FILES_prebuild_headers) $(NLM_NAME)_cc.opt
-	@echo Generating $(subst /,\,$@)
-	$(CC) $< @$(NLM_NAME)_cc.opt
-	
-$(NLM_NAME)_cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NWGNUtail.inc $(AP_WORK)\build\NWGNUhead.inc
+nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
+	@echo $(DL)Creating  $@$(DL)
+	$(CC) $< @cc.opt
+
+cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NWGNUtail.inc $(AP_WORK)\build\NWGNUhead.inc
 	$(CHK) $@ $(DEL) $@
 	@echo -P >> $@
 	@echo -EP >> $@
@@ -52,11 +60,11 @@ $(NLM_NAME)_cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WO
 	@echo -ir $(NOVELLLIBC) >> $@
 
 $(APR)/include/%.h: $(subst /,\,$(APR))\include\%.hnw
-	@echo Creating $(subst /,\,$@)
+	@echo $(DL)Creating  $@$(DL)
 	copy $< $(subst /,\,$(APR))\include\$(@F)
 
 $(APRUTIL)/include/%.h: $(subst /,\,$(APRUTIL))\include\%.hnw
-	@echo Creating $(subst /,\,$@)
+	@echo $(DL)Creating  $@$(DL)
 	copy $< $(subst /,\,$(APRUTIL))\include\$(@F)
 
 $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
@@ -65,11 +73,11 @@ $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
 
 ifneq "$(BUILDTOOL_AS_NLM)" "1"
 
-$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c $(FILES_prebuild_headers)
+$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c
 	@echo Creating $(subst /,\,$@)
 	@$< > $@
 
-%.exe: $(PCRE)/%.c
+%.exe: $(PCRE)/%.c $(PCRE)/config.h $(PCRE)/pcre.h
 	@echo Creating Build Helper $@
 	@$(WIN_CC) $(WIN_CFLAGS) $< -o $@
 
@@ -94,6 +102,13 @@ endif
 endif
 
 #
+# Check for minimum APR version
+#
+chkapr: $(APR)/build/nw_ver.awk $(APR)/include/apr_version.h
+	@echo $(DL)Checking for APR version...$(DL)
+	$(AWK) -v WANTED=$(APR_WANTED) -f $^
+
+#
 # You can use this target if all that is needed is to copy files to the
 # installation area
 #
@@ -102,13 +117,14 @@ install :: nlms FORCE
 
 clean ::
 	$(CHK) nw_export.i                                  $(DEL) nw_export.i
-	$(CHK) $(NLM_NAME)_cc.opt                           $(DEL) $(NLM_NAME)_cc.opt
+	$(CHK) cc.opt                                       $(DEL) cc.opt
 	$(CHK) NWGNUversion.inc                             $(DEL) NWGNUversion.inc
 	$(CHK) $(subst /,\,$(APR))\include\apr.h            $(DEL) $(subst /,\,$(APR))\include\apr.h
 	$(CHK) $(subst /,\,$(APRUTIL))\include\apu.h        $(DEL) $(subst /,\,$(APRUTIL))\include\apu.h
 	$(CHK) $(subst /,\,$(APRUTIL))\include\apr_ldap.h   $(DEL) $(subst /,\,$(APRUTIL))\include\apr_ldap.h
 	$(CHK) $(subst /,\,$(PCRE))\config.h                $(DEL) $(subst /,\,$(PCRE))\config.h
 	$(CHK) $(subst /,\,$(PCRE))\pcre.h                  $(DEL) $(subst /,\,$(PCRE))\pcre.h
+	$(CHK) $(subst /,\,$(DAV))\main\dav.imp             $(DEL) $(subst /,\,$(DAV))\main\dav.imp
 	$(CHK) $(subst /,\,$(NWOS))\httpd.imp               $(DEL) $(subst /,\,$(NWOS))\httpd.imp
 ifneq "$(BUILDTOOL_AS_NLM)" "1"
 	$(CHK) $(subst /,\,$(NWOS))\chartables.c            $(DEL) $(subst /,\,$(NWOS))\chartables.c
