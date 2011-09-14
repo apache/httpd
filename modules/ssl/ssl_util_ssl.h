@@ -72,7 +72,6 @@ BOOL        SSL_X509_INFO_load_file(apr_pool_t *, STACK_OF(X509_INFO) *, const c
 BOOL        SSL_X509_INFO_load_path(apr_pool_t *, STACK_OF(X509_INFO) *, const char *);
 int         SSL_CTX_use_certificate_chain(SSL_CTX *, char *, int, pem_password_cb *);
 char       *SSL_SESSION_id2sz(unsigned char *, int, char *, int);
-int         SSL_X509_INFO_create_chain(const X509 *, STACK_OF(X509_INFO) *, STACK_OF(X509_INFO) *);
 
 #endif /* __SSL_UTIL_SSL_H__ */
 /** @} */
