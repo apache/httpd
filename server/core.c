@@ -20,6 +20,7 @@
 #include "apr_fnmatch.h"
 #include "apr_hash.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
+#include "apr_random.h"
 
 #define APR_WANT_IOVEC
 #define APR_WANT_STRFUNC
@@ -4593,12 +4594,93 @@ AP_DECLARE(int) ap_state_query(int query)
     }
 }
 
+static apr_random_t *rng = NULL;
+#if APR_HAS_THREADS
+static apr_thread_mutex_t *rng_mutex = NULL;
+
+static void create_rng_mutex(apr_pool_t *pchild, server_rec *s)
+{
+    int threaded_mpm;
+    if (ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm) != APR_SUCCESS)
+        return;
+    if (threaded_mpm)
+        apr_thread_mutex_create(&rng_mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
+}
+#endif
+
+static void rng_init(apr_pool_t *p)
+{
+    unsigned char seed[8];
+    apr_status_t rv;
+    rng = apr_random_standard_new(p);
+    do {
+        rv = apr_generate_random_bytes(seed, sizeof(seed));
+        if (rv != APR_SUCCESS)
+            goto error;
+        apr_random_add_entropy(rng, seed, sizeof(seed));
+        rv = apr_random_insecure_ready(rng);
+    } while (rv == APR_ENOTENOUGHENTROPY);
+    if (rv == APR_SUCCESS)
+        return;
+error:
+    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                 "Could not initialize random number generator");
+    exit(1);
+}
+
+APR_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size)
+{
+#if APR_HAS_THREADS
+    if (rng_mutex)
+        apr_thread_mutex_lock(rng_mutex);
+#endif
+    /* apr_random_insecure_bytes can only fail with APR_ENOTENOUGHENTROPY,
+     * and we have ruled that out during initialization. Therefore we don't
+     * need to check the return code.
+     */
+    apr_random_insecure_bytes(rng, buf, size);
+#if APR_HAS_THREADS
+    if (rng_mutex)
+        apr_thread_mutex_unlock(rng_mutex);
+#endif
+}
+
+/*
+ * Finding a random number in a range.
+ *      n' = a + n(b-a+1)/(M+1)
+ * where:
+ *      n' = random number in range
+ *      a  = low end of range
+ *      b  = high end of range
+ *      n  = random number of 0..M
+ *      M  = maxint
+ * Algorithm 'borrowed' from PHP's rand() function.
+ */
+#define RAND_RANGE(__n, __min, __max, __tmax) \
+(__n) = (__min) + (long) ((double) ((__max) - (__min) + 1.0) * ((__n) / ((__tmax) + 1.0)))
+APR_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max)
+{
+    apr_uint32_t number;
+    if (max < 16384) {
+        apr_uint16_t num16;
+        ap_random_insecure_bytes(&num16, sizeof(num16));
+        RAND_RANGE(num16, min, max, APR_UINT16_MAX);
+        number = num16;
+    }
+    else {
+        ap_random_insecure_bytes(&number, sizeof(number));
+        RAND_RANGE(number, min, max, APR_UINT32_MAX);
+    }
+    return number;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
     ap_register_log_hooks(p);
     ap_register_config_hooks(p);
     ap_expr_init(p);
+    rng_init(p);
 
     /* create_connection and pre_connection should always be hooked
      * APR_HOOK_REALLY_LAST by core to give other modules the opportunity
@@ -4615,6 +4697,9 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(ap_open_logs,NULL,NULL,APR_HOOK_REALLY_FIRST);
+#if APR_HAS_THREADS
+    ap_hook_child_init(create_rng_mutex,NULL,NULL,APR_HOOK_REALLY_FIRST);
+#endif
     ap_hook_child_init(ap_logs_child_init,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
