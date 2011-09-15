@@ -251,7 +251,7 @@
       <dd>We now have a general-purpose expression parser, whose API is
           exposed in <var>ap_expr.h</var>.  This is adapted from the
           expression parser previously implemented in
-          <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</dd>
+          <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
 
       <dt>Authorization Logic Containers</dt>
       
