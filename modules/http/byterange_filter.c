@@ -442,7 +442,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     apr_status_t rv;
     int found = 0;
     int num_ranges;
-    char *boundary = NULL;
     char *bound_head = NULL;
     apr_array_header_t *indexes;
     indexes_t *idx;
@@ -505,17 +504,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     if (num_ranges > 1) {
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
-        boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
-                                (apr_uint64_t)r->request_time, c->id);
 
         ap_set_content_type(r, apr_pstrcat(r->pool, "multipart",
                                            use_range_x(r) ? "/x-" : "/",
                                            "byteranges; boundary=",
-                                           boundary, NULL));
+                                           ap_multipart_boundary, NULL));
 
         if (orig_ct) {
             bound_head = apr_pstrcat(r->pool,
-                                     CRLF "--", boundary,
+                                     CRLF "--", ap_multipart_boundary,
                                      CRLF "Content-type: ",
                                      orig_ct,
                                      CRLF "Content-range: bytes ",
@@ -524,7 +521,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         else {
             /* if we have no type for the content, do our best */
             bound_head = apr_pstrcat(r->pool,
-                                     CRLF "--", boundary,
+                                     CRLF "--", ap_multipart_boundary,
                                      CRLF "Content-range: bytes ",
                                      NULL);
         }
@@ -596,7 +593,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         char *end;
 
         /* add the final boundary */
-        end = apr_pstrcat(r->pool, CRLF "--", boundary, "--" CRLF, NULL);
+        end = apr_pstrcat(r->pool, CRLF "--", ap_multipart_boundary, "--" CRLF,
+                          NULL);
         ap_xlate_proto_to_ascii(end, strlen(end));
         e = apr_bucket_pool_create(end, strlen(end), r->pool, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bsend, e);
