@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_unique_id: Use random number generator to initialize counter.
+     PR 45110. [Stefan Fritsch]
+
   *) core: Add convenience API for apr_random. [Stefan Fritsch]
 
   *) core: Add MaxRangeOverlaps and MaxRangeReversals directives to control

@@ -221,7 +221,6 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
 static void unique_id_child_init(apr_pool_t *p, server_rec *s)
 {
     pid_t pid;
-    apr_time_t tv;
 
     /*
      * Note that we use the pid because it's possible that on the same
@@ -253,11 +252,8 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * against restart problems, and a little less protection against a clock
      * going backwards in time.
      */
-    tv = apr_time_now();
-    /* Some systems have very low variance on the low end of their system
-     * counter, defend against that.
-     */
-    cur_unique_id.counter = (unsigned short)(apr_time_usec(tv) / 10);
+    ap_random_insecure_bytes(&cur_unique_id.counter,
+                             sizeof(cur_unique_id.counter));
 
     /*
      * We must always use network ordering for these bytes, so that
@@ -265,7 +261,6 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * orderings.  Note in_addr is already in network order.
      */
     cur_unique_id.pid = htonl(cur_unique_id.pid);
-    cur_unique_id.counter = htons(cur_unique_id.counter);
 }
 
 /* NOTE: This is *NOT* the same encoding used by base64encode ... the last two
