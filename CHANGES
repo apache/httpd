@@ -12,6 +12,8 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) core: Add convenience API for apr_random. [Stefan Fritsch]
+
   *) core: Add MaxRangeOverlaps and MaxRangeReversals directives to control
      the number of overlapping and reversing ranges (respectively) permitted
      before returning the entire resource, with a default limit of 20.

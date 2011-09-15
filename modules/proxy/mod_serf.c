@@ -399,35 +399,6 @@ static apr_status_t setup_request(serf_request_t *request,
     return APR_SUCCESS;
 }
 
-/*
- * Finding a random number in a range. 
- *      n' = a + n(b-a+1)/(M+1)
- * where:
- *      n' = random number in range
- *      a  = low end of range
- *      b  = high end of range
- *      n  = random number of 0..M
- *      M  = maxint
- * Algorithm 'borrowed' from PHP's rand() function. (See mod_lbmethod_heartbeat.c).
- */
-#define RAND_RANGE(__n, __min, __max, __tmax) \
-(__n) = (__min) + (long) ((double) ((__max) - (__min) + 1.0) * ((__n) / ((__tmax) + 1.0)))
-
-static apr_status_t random_pick(apr_uint32_t *number,
-                                apr_uint32_t min,
-                                apr_uint32_t max)
-{
-    apr_status_t rv = 
-        apr_generate_random_bytes((void*)number, sizeof(apr_uint32_t));
-
-    if (rv) {
-        return rv;
-    }
-
-    RAND_RANGE(*number, min, max, APR_UINT32_MAX);
-
-    return APR_SUCCESS;
-}
 /* TOOD: rewrite drive_serf to make it async */
 static int drive_serf(request_rec *r, serf_config_t *conf)
 {
@@ -499,8 +470,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         }
 
         /* TOOD: restructure try all servers in the array !! */
-        if (random_pick(&pick, 0, servers->nelts-1) != APR_SUCCESS)
-            pick = 0;
+        pick = ap_random_pick(0, servers->nelts-1);
         choice = APR_ARRAY_IDX(servers, pick, ap_serf_server_t *);
 
         rv = apr_sockaddr_info_get(&address, choice->ip,

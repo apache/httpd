@@ -253,36 +253,6 @@ static apr_status_t read_heartbeats(const char *path, apr_hash_t *servers,
     return rv;
 }
 
-/*
- * Finding a random number in a range. 
- *      n' = a + n(b-a+1)/(M+1)
- * where:
- *      n' = random number in range
- *      a  = low end of range
- *      b  = high end of range
- *      n  = random number of 0..M
- *      M  = maxint
- * Algorithm 'borrowed' from PHP's rand() function.
- */
-#define RAND_RANGE(__n, __min, __max, __tmax) \
-(__n) = (__min) + (long) ((double) ((__max) - (__min) + 1.0) * ((__n) / ((__tmax) + 1.0)))
-
-static apr_status_t random_pick(apr_uint32_t *number,
-                                apr_uint32_t min,
-                                apr_uint32_t max)
-{
-    apr_status_t rv = 
-        apr_generate_random_bytes((void*)number, sizeof(apr_uint32_t));
-
-    if (rv) {
-        return rv;
-    }
-
-    RAND_RANGE(*number, min, max, APR_UINT32_MAX);
-
-    return APR_SUCCESS;
-}
-
 static proxy_worker *find_best_hb(proxy_balancer *balancer,
                                   request_rec *r)
 {
@@ -343,14 +313,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         apr_uint32_t c = 0;
         apr_uint32_t pick = 0;
 
-        rv = random_pick(&pick, 0, openslots);
-
-        if (rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "lb_heartbeat: failed picking a random number. how random.");
-            apr_pool_destroy(tpool);
-            return NULL;
-        }
+        pick = ap_random_pick(0, openslots);
 
         for (i = 0; i < up_servers->nelts; i++) {
             server = APR_ARRAY_IDX(up_servers, i, hb_server_t *);
