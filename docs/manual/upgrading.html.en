@@ -265,8 +265,12 @@
       warning.  Any address/port combination appearing in multiple
       virtual hosts is implicitly treated as a name-based virtual host.
       </li>
+
+      <li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> will now skip compression if it knows
+      that the size overhead added by the compression is larger than the data
+      to be compressed.
+      </li>
     </ul>
-    
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

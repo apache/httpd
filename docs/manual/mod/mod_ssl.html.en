@@ -1456,6 +1456,11 @@ This referenced file is simply the concatenation of the various PEM-encoded
 certificate files. Upon startup, each client certificate configured will
 be examined and a chain of trust will be constructed.
 </p>
+<div class="warning"><h3>Security warning</h3>
+<p>If this directive is enabled, all of the certificates in the file will be
+trusted as if they were also in <code class="directive"><a href="#&#10;sslproxycacertificatefile">
+SSLProxyCACertificateFile</a></code>.</p>
+</div>
 <div class="example"><h3>Example</h3><p><code>
 SSLProxyMachineCertificateChainFile /usr/local/apache2/conf/ssl.crt/proxyCA.pem
 </code></p></div>
