@@ -37,6 +37,7 @@ module AP_MODULE_DECLARE_DATA filter_module;
  */
 struct ap_filter_provider_t {
     ap_expr_info_t *expr;
+    const char **types;
 
     /** The filter that implements this provider */
     ap_filter_rec_t *frec;
@@ -133,7 +134,7 @@ static int filter_init(ap_filter_t *f)
 static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 {
     ap_filter_provider_t *provider;
-    int match;
+    int match = 0;
     const char *err = NULL;
     request_rec *r = f->r;
     harness_ctx *ctx = f->ctx;
@@ -146,12 +147,25 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 
     /* Check registered providers in order */
     for (provider = filter->providers; provider; provider = provider->next) {
-        match = ap_expr_exec(r, provider->expr, &err);
-        if (err) {
-            /* log error but accept match value ? */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "Error evaluating filter dispatch condition: %s",
-                          err);
+        if (provider->expr) {
+            match = ap_expr_exec(r, provider->expr, &err);
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Error evaluating filter dispatch condition: %s",
+                              err);
+                match = 0;
+            }
+        }
+        else if (r->content_type) {
+            const char **type = provider->types;
+            AP_DEBUG_ASSERT(type != NULL);
+            while (*type) {
+                if (strcmp(*type, r->content_type) == 0) {
+                    match = 1;
+                    break;
+                }
+                type++;
+            }
         }
 
         if (match) {
@@ -394,9 +408,9 @@ static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
     return NULL;
 }
 
-static const char *filter_provider(cmd_parms *cmd, void *CFG,
-                                   const char *fname, const char *pname,
-                                   const char *expr)
+static const char *add_filter(cmd_parms *cmd, void *CFG,
+                              const char *fname, const char *pname,
+                              const char *expr, const char **types)
 {
     mod_filter_cfg *cfg = CFG;
     ap_filter_provider_t *provider;
@@ -427,19 +441,32 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
     if (!provider_frec) {
         return apr_psprintf(cmd->pool, "Unknown filter provider %s", pname);
     }
-    node = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
-    if (err) {
-        return apr_pstrcat(cmd->pool,
-                           "Error parsing FilterProvider expression:", err,
-                           NULL);
-    }
     provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t));
-    provider->expr = node;
+    if (expr) {
+        node = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
+        if (err) {
+            return apr_pstrcat(cmd->pool,
+                               "Error parsing FilterProvider expression:", err,
+                               NULL);
+        }
+        provider->expr = node;
+    }
+    else {
+        provider->types = types;
+    }
     provider->frec = provider_frec;
     provider->next = frec->providers;
     frec->providers = provider;
     return NULL;
 }
+
+static const char *filter_provider(cmd_parms *cmd, void *CFG,
+                                   const char *fname, const char *pname,
+                                   const char *expr)
+{
+    return add_filter(cmd, CFG, fname, pname, expr, NULL);
+}
+
 static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)
 {
     mod_filter_chain *p;
@@ -514,14 +541,12 @@ static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)
 
     return NULL;
 }
+
 static const char *filter_bytype1(cmd_parms *cmd, void *CFG,
-                                  const char *pname, const char *type)
+                                  const char *pname, const char **types)
 {
-    char *etype;
-    char *p;
     const char *rv;
     const char *fname;
-    const char *expr;
     int seen_name = 0;
     mod_filter_cfg *cfg = CFG;
 
@@ -535,20 +560,7 @@ static const char *filter_bytype1(cmd_parms *cmd, void *CFG,
         seen_name = 1;
     }
 
-    /* build expression: "$content-type = /^type/"
-     * Need to escape slashes in content-type
-     */
-    p = etype = apr_palloc(cmd->temp_pool, 2*strlen(type)+1);
-    do {
-        if (*type == '/') {
-            *p++ = '\\';
-        }
-        *p++ = *type++;
-    } while (*type);
-    *p = 0;
-    expr = apr_psprintf(cmd->temp_pool, "%%{CONTENT_TYPE} =~ m!^%s!", etype);
-
-    rv = filter_provider(cmd, CFG, fname, pname, expr);
+    rv = add_filter(cmd, CFG, fname, pname, NULL, types);
 
     /* If it's the first time through, add to filterchain */
     if (rv == NULL && !seen_name) {
@@ -556,18 +568,26 @@ static const char *filter_bytype1(cmd_parms *cmd, void *CFG,
     }
     return rv;
 }
+
 static const char *filter_bytype(cmd_parms *cmd, void *CFG,
-                                 const char *names, const char *type)
+                                 int argc, char *const argv[])
 {
-    /* back compatibility, need to parse multiple components in pname */
+    /* back compatibility, need to parse multiple components in filter name */
     char *pname;
     char *strtok_state = NULL;
-    char *name = apr_pstrdup(cmd->temp_pool, names);
+    char *name;
+    const char **types;
     const char *rv = NULL;
+    if (argc < 2)
+        return "AddOutputFilterByType requires at least two arguments";
+    name = apr_pstrdup(cmd->temp_pool, argv[0]);
+    types = apr_palloc(cmd->pool, argc * sizeof(char *));
+    memcpy(types, &argv[1], (argc - 1) * sizeof(char *));
+    types[argc] = NULL;
     for (pname = apr_strtok(name, ";", &strtok_state);
          pname != NULL && rv == NULL;
          pname = apr_strtok(NULL, ";", &strtok_state)) {
-        rv = filter_bytype1(cmd, CFG, pname, type);
+        rv = filter_bytype1(cmd, CFG, pname, types);
     }
     return rv;
 }
@@ -695,14 +715,13 @@ static void *filter_merge(apr_pool_t *pool, void *BASE, void *ADD)
 static const command_rec filter_cmds[] = {
     AP_INIT_TAKE12("FilterDeclare", filter_declare, NULL, OR_OPTIONS,
         "filter-name [filter-type]"),
-    /** we don't have a TAKE4, so we have to use RAW_ARGS */
     AP_INIT_TAKE3("FilterProvider", filter_provider, NULL, OR_OPTIONS,
         "filter-name provider-name match-expression"),
     AP_INIT_ITERATE("FilterChain", filter_chain, NULL, OR_OPTIONS,
         "list of filter names with optional [+-=!@]"),
     AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, RSRC_CONF | ACCESS_CONF,
         "filter-name debug-level"),
-    AP_INIT_ITERATE2("AddOutputFilterByType", filter_bytype, NULL, OR_FILEINFO,
+    AP_INIT_TAKE_ARGV("AddOutputFilterByType", filter_bytype, NULL, OR_FILEINFO,
         "DEPRECATED: output filter name followed by one or more content-types"),
 #ifndef NO_PROTOCOL
     AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_OPTIONS,
