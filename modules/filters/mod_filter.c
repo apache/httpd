@@ -722,7 +722,7 @@ static const command_rec filter_cmds[] = {
     AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, RSRC_CONF | ACCESS_CONF,
         "filter-name debug-level"),
     AP_INIT_TAKE_ARGV("AddOutputFilterByType", filter_bytype, NULL, OR_FILEINFO,
-        "DEPRECATED: output filter name followed by one or more content-types"),
+        "output filter name followed by one or more content-types"),
 #ifndef NO_PROTOCOL
     AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_OPTIONS,
         "filter-name [provider-name] protocol-args"),

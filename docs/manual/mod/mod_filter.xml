@@ -52,13 +52,9 @@
 
     <p><module>mod_filter</module> by contrast gives server administrators a
     great deal of flexibility in configuring the filter chain.  In fact,
-    filters can be inserted based on any Request Header, Response Header
-    or Environment Variable.  This generalises the limited flexibility offered
-    by <directive>AddOutputFilterByType</directive>, and fixes
-    it to work correctly with dynamic content, regardless of the
-    content generator.  The ability to dispatch based on Environment
-    Variables offers the full flexibility of configuration with
-    <module>mod_rewrite</module> to anyone who needs it.</p>
+    filters can be inserted based on complex boolean
+    <a href="../expr.html">expressions</a> This generalises the limited
+    flexibility offered by <directive>AddOutputFilterByType</directive>.</p>
 </section>
 
 <section id="terms"><title>Filter Declarations, Providers and Chains</title>
@@ -259,14 +255,13 @@
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available in Apache httpd 2.0.33 and later; deprecated in Apache httpd 2.1 and later</compatibility>
+<compatibility>Version 2.0.33 and later; had severe limitations before
+being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
 
 <usage>
     <p>This directive activates a particular output <a
     href="../filter.html">filter</a> for a request depending on the
-    response <glossary>media-type</glossary>.  Because of certain
-    problems discussed below, this directive is deprecated.  The same
-    functionality is available using <module>mod_filter</module>.</p>
+    response <glossary>media-type</glossary>.</p>
 
     <p>The following example uses the <code>DEFLATE</code> filter, which
     is provided by <module>mod_deflate</module>. It will compress all
@@ -297,17 +292,6 @@
     &lt;/Location&gt;
     </example>
 
-    <note type="warning"><title>Note</title>
-      <p>Enabling filters with <directive>AddOutputFilterByType</directive>
-      may fail partially or completely in some cases. For example, no
-      filters are applied if the <glossary>media-type</glossary> could not
-      be determined.  If you want to make sure that the filters will be
-      applied, assign the content type to a resource explicitly; for
-      example, with <directive module="mod_mime">AddType</directive> or
-      <directive module="core">ForceType</directive>. Setting the
-      content type within a (non-nph) CGI script is also safe.</p>
-
-    </note>
 </usage>
 
 <seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
