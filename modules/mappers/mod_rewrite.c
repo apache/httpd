@@ -398,9 +398,6 @@ static cache *cachep;
 /* whether proxy module is available or not */
 static int proxy_available;
 
-/* whether random seed can be reaped */
-static int rewrite_rand_init_done = 0;
-
 /* Locks/Mutexes */
 static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 const char *rewritemap_mutex_type = "rewrite-map";
@@ -1087,18 +1084,7 @@ static char *select_random_value_part(request_rec *r, char *value)
     }
 
     if (n > 1) {
-        /* initialize random generator
-         *
-         * XXX: Probably this should be wrapped into a thread mutex,
-         * shouldn't it? Is it worth the effort?
-         */
-        if (!rewrite_rand_init_done) {
-            srand((unsigned)(getpid()));
-            rewrite_rand_init_done = 1;
-        }
-
-        /* select a random subvalue */
-        n = (int)(((double)(rand() % RAND_MAX) / RAND_MAX) * n + 1);
+        n = ap_random_pick(1, n);
 
         /* extract it from the whole string */
         while (--n && (value = ap_strchr(value, '|')) != NULL) {
