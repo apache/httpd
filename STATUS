@@ -74,9 +74,14 @@ RELEASE SHOWSTOPPERS:
 
   * Modules that are not ready for production use must be removed.
     The same for modules without documentation.
-    Candidates:
-    - MPM simple
-    - mod_serf (which is optimal for async httpd anyways)
+
+    These modulese will be removed after branching 2.4.x from trunk.
+    If anyone disagrees, please comment.
+
+    - MPM simple (unfinished; buggy)
+    - mod_serf (which is optimal for async httpd anyways; didn't work
+      with MPM event last time sf tested it)
+    - mod_noloris (in experimental; obsoleted by mod_reqtimeout)
 
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
@@ -95,11 +100,10 @@ RELEASE SHOWSTOPPERS:
 
   * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
     a painless event mpm experience.
+    sf: can be done in 2.4.x>0
 
   * Investigate Windows AcceptFilter issues. Thread starts at
     http://mail-archives.apache.org/mod_mbox/httpd-dev/201107.mbox/%3C84552AF751934DA6AD70C93AAEA2B553@mother%3E
-
-  * Get a recent beta (2.3.14?) installed on apache.org machines for testing.
 
   FOR BETA:
 
