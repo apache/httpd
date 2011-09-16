@@ -367,7 +367,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                             APR_FPROT_WREAD);
     if (rv && rv != APR_INCOMPLETE && rv != APR_ENOTIMPL) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
-                     "Heartmonitor: Unable to set file permssions on %s",
+                     "Heartmonitor: Unable to set file permissions on %s",
                      path);
         return rv;
     }
@@ -446,7 +446,7 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
                             APR_FPROT_WREAD);
     if (rv && rv != APR_INCOMPLETE && rv != APR_ENOTIMPL) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
-                     "Heartmonitor: Unable to set file permssions on %s",
+                     "Heartmonitor: Unable to set file permissions on %s",
                      path);
         return rv;
     }
