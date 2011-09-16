@@ -2076,7 +2076,7 @@ AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c);
  * @note ap_random_insecure_bytes() is thread-safe, it uses a mutex on
  *       threaded MPMs.
  */
-APR_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size);
+AP_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size);
 
 /**
  * Get a pseudo random number in a range.
@@ -2084,7 +2084,7 @@ APR_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size);
  * @param max high end of range
  * @return a number in the range
  */
-APR_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max);
+AP_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max);
 
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
