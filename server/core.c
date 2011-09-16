@@ -4628,7 +4628,7 @@ error:
     exit(1);
 }
 
-APR_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size)
+AP_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size)
 {
 #if APR_HAS_THREADS
     if (rng_mutex)
@@ -4658,7 +4658,7 @@ APR_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size)
  */
 #define RAND_RANGE(__n, __min, __max, __tmax) \
 (__n) = (__min) + (long) ((double) ((__max) - (__min) + 1.0) * ((__n) / ((__tmax) + 1.0)))
-APR_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max)
+AP_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max)
 {
     apr_uint32_t number;
     if (max < 16384) {
