@@ -448,6 +448,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         char *token;
         const char *encoding;
 
+        /* We have checked above that bb is not empty */
         e = APR_BRIGADE_LAST(bb);
         if (APR_BUCKET_IS_EOS(e)) {
             /*
