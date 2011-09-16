@@ -365,7 +365,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
     rv = apr_file_perms_set(path,
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
-    if (rv && rv != APR_INCOMPLETE) {
+    if (rv && rv != APR_INCOMPLETE && rv != APR_ENOTIMPL) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Unable to set file permssions on %s",
                      path);
@@ -444,7 +444,7 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
     rv = apr_file_perms_set(path,
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
-    if (rv && rv != APR_INCOMPLETE) {
+    if (rv && rv != APR_INCOMPLETE && rv != APR_ENOTIMPL) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Unable to set file permssions on %s",
                      path);
