@@ -53,6 +53,12 @@
 #include "mod_core.h"
 #include "mod_cgi.h"
 
+#if APR_HAVE_STRUCT_RLIMIT 
+#if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+#define AP_CGI_USE_RLIMIT
+#endif
+#endif
+
 module AP_MODULE_DECLARE_DATA cgi_module;
 
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgi_pfn_reg_with_ssi;
@@ -382,9 +388,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     apr_proc_t *procnew;
     apr_status_t rc = APR_SUCCESS;
 
-#if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
-    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
-
+#ifdef AP_CGI_USE_RLIMIT
     core_dir_config *conf = ap_get_core_module_config(r->per_dir_config);
 #endif
 
@@ -424,15 +428,15 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
         ((rc = apr_procattr_dir_set(procattr,
                         ap_make_dirstr_parent(r->pool,
                                               r->filename))) != APR_SUCCESS) ||
-#ifdef RLIMIT_CPU
+#if defined(RLIMIT_CPU) && defined(AP_CGI_USE_RLIMIT)
         ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_CPU,
                                       conf->limit_cpu)) != APR_SUCCESS) ||
 #endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+#if defined(AP_CGI_USE_RLIMIT) && (defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS))
         ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_MEM,
                                       conf->limit_mem)) != APR_SUCCESS) ||
 #endif
-#ifdef RLIMIT_NPROC
+#if RLIMIT_NPROC && defined(AP_CGI_USE_RLIMIT)
         ((rc = apr_procattr_limit_set(procattr, APR_LIMIT_NPROC,
                                       conf->limit_nproc)) != APR_SUCCESS) ||
 #endif
