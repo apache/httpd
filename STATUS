@@ -128,6 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1160863
                  http://svn.apache.org/viewvc?view=revision&revision=1162103
                  http://svn.apache.org/viewvc?view=revision&revision=1170833
+                 http://svn.apache.org/viewvc?view=revision&revision=1172010
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2-SSLProxyMachineCertificateChainFile.patch
     +0 covener: needs r1162103 && needs druggeri's vote?
     +1: druggeri
