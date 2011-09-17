@@ -1181,21 +1181,57 @@ static void ssl_init_proxy_certs(server_rec *s,
     X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
-        int i;
-        X509_INFO *inf = sk_X509_INFO_value(pkp->certs, n);
-        X509_STORE_CTX_init(sctx, store, inf->x509, NULL);
-        X509_verify_cert(sctx);
-        ERR_clear_error();
+        int i, res;
+        char cert_cn[256];
 
+        X509_INFO *inf = sk_X509_INFO_value(pkp->certs, n);
+        X509_NAME *name = X509_get_subject_name(inf->x509);
+        X509_NAME_oneline(name, cert_cn, sizeof(cert_cn));
+        X509_STORE_CTX_init(sctx, store, inf->x509, NULL);
+
+        res=X509_verify_cert(sctx);
         chain = X509_STORE_CTX_get1_chain(sctx);
-        sk_X509_shift(chain);
+
+        if (res == 1) {
+            /* Removing the client cert if verification is OK
+             * could save a loop when choosing which cert to send
+             * when more than one is available */
+            /* XXX: This is not needed if we collapse the two
+             * checks in ssl_engine_kernel in the future */
+            X509_free(sk_X509_shift(chain));
+        }
+        else {
+            int n=X509_STORE_CTX_get_error(sctx);
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "SSL proxy client cert chain verification failed for %s: %s",
+                         cert_cn, X509_verify_cert_error_string(n));
+        }
+        ERR_clear_error();
         i=sk_X509_num(chain);
         pkp->ca_certs[n] = chain;
+
+        if (i == 0 || (res != 1 && i == 1) ) {
+            /* zero or only the client cert won't be very useful
+             * due to verification failure */
+            sk_X509_pop_free(chain, X509_free);
+            i = 0;
+            pkp->ca_certs[n] = NULL;
+        }
+         
         X509_STORE_CTX_cleanup(sctx);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "client certificate %i has loaded %i "
-                     "intermediate CA%s", n, i, i == 1 ? "" : "s");
+                     "loaded %i intermediate CA%s for cert %i (%s)",
+                     i, i == 1 ? "" : "s", n, cert_cn);
+        if (i > 0) {
+            int j;
+            for (j=0; j<i; j++) {
+                char ca_cn[256];
+                X509_NAME *ca_name = X509_get_subject_name(sk_X509_value(chain, j));
+                X509_NAME_oneline(ca_name, ca_cn, sizeof(ca_cn));
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "%i: %s", j, ca_cn);
+            }
+        }
     }
 
     X509_STORE_CTX_free(sctx);
