@@ -12,6 +12,10 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) core: Correctly obey ServerName / ServerAlias if the Host header from the
+     request matches the VirtualHost address.
+     PR 51709. [Micha Lenk <micha lenk.info>]
+
   *) mod_unique_id: Use random number generator to initialize counter.
      PR 45110. [Stefan Fritsch]
 

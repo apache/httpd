@@ -860,9 +860,11 @@ static void check_hostalias(request_rec *r)
     const char *host = r->hostname;
     apr_port_t port;
     server_rec *s;
+    server_rec *virthost_s;
     server_rec *last_s;
     name_chain *src;
 
+    virthost_s = NULL;
     last_s = NULL;
 
     port = r->connection->local_addr->port;
@@ -889,23 +891,34 @@ static void check_hostalias(request_rec *r)
 
         s = src->server;
 
-        /* does it match the virthost from the sar? */
-        if (!strcasecmp(host, sar->virthost)) {
-            goto found;
-        }
-
-        if (s == last_s) {
-            /* we've already done ServerName and ServerAlias checks for this
-             * vhost
-             */
-            continue;
+        /* If we still need to do ServerName and ServerAlias checks for this
+         * server, do them now.
+         */
+        if (s != last_s) {
+            /* does it match any ServerName or ServerAlias directive? */
+            if (matches_aliases(s, host)) {
+                goto found;
+            }
         }
         last_s = s;
 
-        if (matches_aliases(s, host)) {
-            goto found;
+        /* Fallback: does it match the virthost from the sar? */
+        if (!strcasecmp(host, sar->virthost)) {
+            /* only the first match is used */
+            if (virthost_s == NULL) {
+                virthost_s = s;
+            }
         }
     }
+
+    /* If ServerName and ServerAlias check failed, we end up here.  If it
+     * matches a VirtualHost, virthost_s is set. Use that as fallback
+     */
+    if (virthost_s) {
+        s = virthost_s;
+        goto found;
+    }
+
     return;
 
 found:
