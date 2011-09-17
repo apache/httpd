@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) Fix cross-compilation of mod_cgi/mod_cgid when APR_HAVE_STRUCT_RLIMIT is 
+     false but RLIMIT_* are defined.  PR51371. [Eric Covener]
+
   *) core: Correctly obey ServerName / ServerAlias if the Host header from the
      request matches the VirtualHost address.
      PR 51709. [Micha Lenk <micha lenk.info>]
