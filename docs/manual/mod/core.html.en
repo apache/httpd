@@ -1405,14 +1405,14 @@ in case of an error</td></tr>
         <td>Remote IP-address and port</td></tr>
 <tr><td><code>%...A</code></td>
         <td>Local IP-address and port</td></tr>
-<tr class="odd"><td><code>%...{name}e</code></td>
-        <td>Request environment variable <code>name</code></td></tr>
+<tr class="odd"><td><code>%...{<em>name</em>}e</code></td>
+        <td>Request environment variable <em>name</em></td></tr>
 <tr><td><code>%...E</code></td>
         <td>APR/OS error status code and string</td></tr>
 <tr class="odd"><td><code>%...F</code></td>
         <td>Source file name and line number of the log call</td></tr>
-<tr><td><code>%...{name}i</code></td>
-        <td>Request header <code>name</code></td></tr>
+<tr><td><code>%...{<em>name</em>}i</code></td>
+        <td>Request header <em>name</em></td></tr>
 <tr class="odd"><td><code>%...k</code></td>
         <td>Number of keep-alive requests on this connection</td></tr>
 <tr><td><code>%...l</code></td>
@@ -1427,8 +1427,8 @@ in case of an error</td></tr>
         <td>Name of the module logging the message</td></tr>
 <tr class="odd"><td><code>%M</code></td>
         <td>The actual log message</td></tr>
-<tr><td><code>%...{name}n</code></td>
-        <td>Request note <code>name</code></td></tr>
+<tr><td><code>%...{<em>name</em>}n</code></td>
+        <td>Request note <em>name</em></td></tr>
 <tr class="odd"><td><code>%...P</code></td>
         <td>Process ID of current process</td></tr>
 <tr><td><code>%...T</code></td>
