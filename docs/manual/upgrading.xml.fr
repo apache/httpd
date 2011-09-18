@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1137744:1170338 (outdated) -->
+<!-- English Revision: 1170338 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -297,6 +297,18 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
 
       <li><program>htpasswd</program> utilise maintenant par d&eacute;faut les
       condens&eacute;s MD5 sur toutes les plates-formes.</li>
+
+      <li>La directive <directive
+      module="core">NameVirtualHost</directive> n'a plus aucun effet, si
+      ce n'est l'&eacute;mission d'un avertissement. Toute combinaison
+      adresse/port apparaissant dans plusieurs serveurs virtuels est
+      trait&eacute;e implicitement comme un serveur virtuel bas&eacute; sur le nom.
+      </li>
+
+      <li><module>mod_deflate</module> n'effectue plus de compression
+      s'il s'aper&ccedil;oit que la quantit&eacute; de donn&eacute;es ajout&eacute;e par la
+      compression est sup&eacute;rieure &agrave; la quantit&eacute; de donn&eacute;es &agrave; compresser.
+      </li>
     </ul>
 
     </section>

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1142170 -->
+<!-- English Revision : 1170338 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -39,7 +39,6 @@ serveur HTTP Apache</title>
     <title>Am&eacute;liorations du noyau</title>
     <dl>
       <dt>KeepAliveTimeout en millisecondes</dt>
-
       <dd>La directive <directive module="core"
       >KeepAliveTimeout</directive> permet dor&eacute;navant de
       pr&eacute;ciser une dur&eacute;e de vie en millisecondes.
@@ -58,8 +57,8 @@ serveur HTTP Apache</title>
       ajout&eacute;s au dessus du niveau de journalisation <code>debug</code>.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le MPM Event est sorti du stade exp&eacute;rimental pour &ecirc;tre
-      pleinement support&eacute;.</dd>
+      <dd>Le MPM Event est sorti du stade exp&eacute;rimental et est
+      maintenant pleinement support&eacute;.</dd>
  
       <dt>Support du mode asynchrone</dt>
       <dd>Le support des lectures/&eacute;critures asynchrones pour les MPMs et
@@ -69,6 +68,9 @@ serveur HTTP Apache</title>
       <dd>Les sections &lt;<directive module="core">If</directive>&gt;
       permettent de d&eacute;finir une configuration en fonction de crit&egrave;res
       li&eacute;s &agrave; la requ&ecirc;te.</dd>
+
+      <dt>NameVirtualHost directive</dt>
+      <dd>Cette directive obsol&egrave;te n'est plus utile.</dd>
  
     </dl>
   </section>
@@ -91,6 +93,10 @@ serveur HTTP Apache</title>
       <dt><module>mod_lua</module></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
       httpd pour la configuration et les fonctions logiques courantes.</dd>
+
+      <dt><module>mod_proxy_express</module></dt>
+      <dd>Ajoute &agrave; <module>mod_proxy</module> la configuration dynamique
+      de mandataires inverses en masse.</dd>
 
       <dt><module>mod_proxy_fcgi</module></dt>
       <dd>Mise &agrave; disposition du protocole FastCGI pour
@@ -173,6 +179,14 @@ serveur HTTP Apache</title>
 
       <dd>Configuration &agrave; l'ex&eacute;cution d'un sous-ensemble de param&egrave;tres
       de r&eacute;partition de charge.</dd>
+
+      <dd>Les membres du groupe de r&eacute;partition peuvent &ecirc;tre d&eacute;finis &agrave;
+      'Drain' de fa&ccedil;on &agrave; ce qu'ils ne r&eacute;pondent qu'aux sessions
+      persistantes existantes, ce qui permet de les mettre hors ligne en
+      douceur.</dd>
+
+      <dd>Les r&egrave;glages du r&eacute;partiteur de charge peuvent &ecirc;tre rendus
+      persistants apr&egrave;s red&eacute;marrage.</dd>
 
       <dt><module>mod_cache</module></dt>
 
@@ -274,7 +288,7 @@ serveur HTTP Apache</title>
       <dt>Ajout d'un analyseur syntaxique d'expressions</dt>
       <dd>Nous disposons &agrave; pr&eacute;sent d'un analyseur g&eacute;n&eacute;rique d'expressions, dont l'API
       est d&eacute;crite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
-      l'analyseur qu'on trouvait auparavant dans <module>mod_include</module>.</dd>
+      l'analyseur qu'on trouvait auparavant dans <module>mod_ssl</module>.</dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
       

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1151484 -->
+<!-- English Revision : 1170273 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1114,9 +1114,20 @@ l'espace d'URLs du serveur local</description>
     <tr><td>status</td>
         <td>-</td>
         <td>Valeur constitu&eacute;e d'une simple lettre et d&eacute;finissant l'&eacute;tat
-	initial de ce serveur cible : 'D' correspond &agrave; "d&eacute;sactiv&eacute;", 'S' &agrave;
-	"arr&ecirc;t&eacute;", 'I' &agrave; "erreurs ignor&eacute;es", 'H' &agrave; "interruption &agrave; chaud"
-	et 'E' &agrave; "erreur". Une valeur d'&eacute;tat peut &ecirc;tre d&eacute;finie (ce qui
+	initial de ce serveur cible.
+	 <table>
+         <tr><td>D: le serveur cible est d&eacute;sactiv&eacute; et n'accepte aucune requ&ecirc;te.</td></tr>
+         <tr><td>S: le serveur cible est arr&ecirc;t&eacute;.</td></tr>
+         <tr><td>I: le serveur cible est en mode "erreurs ignor&eacute;es",
+	 et sera toujours consid&eacute;r&eacute; comme disponible.</td></tr>
+         <tr><td>H: le serveur cible est en mode d'attente et ne sera
+	 utilis&eacute; que si aucun autre serveur n'est disponible.</td></tr>
+         <tr><td>E: le serveur cible est en erreur.</td></tr>
+         <tr><td>N: le serveur cible est en mode vidage, n'acceptera que
+	 les sessions persistantes qui lui appartiennent, et refusera
+	 toutes les autres requ&ecirc;tes.</td></tr>
+        </table>
+	Une valeur d'&eacute;tat peut &ecirc;tre d&eacute;finie (ce qui
 	correspond au comportement par d&eacute;faut) en pr&eacute;fixant la valeur
 	par '+', ou annul&eacute;e en pr&eacute;fixant la valeur par '-'. Ainsi, la
 	valeur 'S-E' d&eacute;finit l'&eacute;tat de ce serveur cible &agrave; "arr&ecirc;t&eacute;" et supprime
