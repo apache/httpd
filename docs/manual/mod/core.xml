@@ -1432,10 +1432,19 @@ in case of an error</description>
     with error log lines. If <module>mod_unique_id</module> is loaded, its
     unique id will be used as log ID for requests.</p>
 
-    <example><title>Example (somewhat similar to default format)</title>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
+    <example><title>Example (default format)</title>
+        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a]
         %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </example>
+
+    <p>This would result in error messages such as:</p>
+
+    <example>
+    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    </example>
+
+    <p>Notice that, as discussed above, some fields are ommitted
+    entirely because they are not defined.</p>
 
     <example><title>Example (similar to the 2.2.x format)</title>
         ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
