@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1028730 $ -->
+<!-- English Revision : 1169760 $ -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -86,7 +86,7 @@ contr&ocirc;le d'acc&egrave;s</a></li>
 <li><a href="vhosts.html">Les serveurs virtuels dynamiques avec mod_rewrite</a></li>
 <li><a href="proxy.html">Les serveurs mandataires dynamiques avec mod_rewrite</a></li>
 <li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
-<li><a href="advanced.html">Techniques avanc&eacute;es et conseils</a></li>
+<li><a href="advanced.html">Techniques avanc&eacute;es</a></li>
 <li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
 <li><a href="flags.html">Drapeaux de r&eacute;&eacute;criture</a></li>
 <li><a href="tech.html">D&eacute;tails techniques</a></li>

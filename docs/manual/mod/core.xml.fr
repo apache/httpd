@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1166282 -->
+<!-- English Revision : 1170294 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3173,6 +3173,85 @@ Apache</compatibility>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>MaxRangeOverlaps</name>
+    <description>Nombre de chevauchements de segments de donn&eacute;es autoris&eacute;
+    (par exemple <code>100-200,150-300</code>) avant le renvoi de la
+    ressource compl&egrave;te</description>
+    <syntax>MaxRangeOverlaps default | unlimited | none | <var>nombre de
+    chevauchements</var></syntax>
+    <default>MaxRangeOverlaps 20</default>
+    <contextlist><context>server config</context><context>virtual host</context>
+        <context>directory</context>
+    </contextlist>
+    <compatibility>Disponible depuis la version 2.3.15 du serveur HTTP
+    Apache</compatibility>
+
+    <usage>
+        <p>La directive <directive>MaxRangeOverlaps</directive> permet
+	de limiter le nombre de chevauchements de segments de donn&eacute;es HTTP
+	autoris&eacute; par le serveur. Si le nombre de
+	chevauchements de segments demand&eacute; est sup&eacute;rieur au nombre maximal
+	autoris&eacute;, la ressource sera renvoy&eacute;e dans son int&eacute;gralit&eacute;.</p>
+
+        <dl>
+            <dt><strong>default</strong></dt>
+            <dd>Limite le nombre de chevauchements de segments &agrave; la valeur
+	    par d&eacute;faut 20 d&eacute;finie &agrave; la compilation.</dd>
+
+            <dt><strong>none</strong></dt>
+            <dd>Aucun chevauchement de segment n'est autoris&eacute;.</dd>
+
+            <dt><strong>unlimited</strong></dt>
+            <dd>Le nombre de chevauchements de segments est illimit&eacute;.</dd>
+
+            <dt><var>number-of-ranges</var></dt>
+            <dd>Un nombre positif repr&eacute;sente le nombre maximal de
+	    chevauchements de segments autoris&eacute; par le serveur.</dd>
+        </dl>
+    </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+    <name>MaxRangeReversals</name>
+    <description>Nombre d'inversions d'ordre autoris&eacute; dans la sp&eacute;cification des
+    segments de donn&eacute;es (par exemple <code>100-200,50-70</code>) avant le renvoi de la
+    ressource compl&egrave;te</description>
+    <syntax>MaxRangeReversals default | unlimited | none | <var>nombre
+    d'inversions</var></syntax>
+    <default>MaxRangeReversals 20</default>
+    <contextlist><context>server config</context><context>virtual host</context>
+        <context>directory</context>
+    </contextlist>
+    <compatibility>Disponible depuis la version 2.3.15 du serveur HTTP
+    Apache</compatibility>
+
+    <usage>
+        <p>La directive <directive>MaxRangeReversals</directive> permet
+	de limiter le nombre d'inversions d'ordre dans la sp&eacute;cification
+	des segments de donn&eacute;es HTTP
+	autoris&eacute; par le serveur. Si le nombre
+	d'inversions demand&eacute; est sup&eacute;rieur au nombre maximal
+	autoris&eacute;, la ressource sera renvoy&eacute;e dans son int&eacute;gralit&eacute;.</p>
+
+        <dl>
+            <dt><strong>default</strong></dt>
+            <dd>Limite le nombre d'inversions &agrave; la valeur
+	    par d&eacute;faut 20 d&eacute;finie &agrave; la compilation.</dd>
+
+            <dt><strong>none</strong></dt>
+            <dd>Aucune inversion n'est autoris&eacute;e.</dd>
+
+            <dt><strong>unlimited</strong></dt>
+            <dd>Le nombre d'inversions est illimit&eacute;.</dd>
+
+            <dt><var>number-of-ranges</var></dt>
+            <dd>Un nombre positif repr&eacute;sente le nombre maximal
+	    d'inversions autoris&eacute; par le serveur.</dd>
+        </dl>
+    </usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>Mutex</name>
 <description>D&eacute;finit les m&eacute;canismes de mutex et le repertoire du fichier
 verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</description>
@@ -3416,7 +3495,7 @@ verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</descr
 
 <directivesynopsis>
 <name>NameVirtualHost</name>
-<description>D&eacute;finit une adresse IP pour les serveurs virtuels &agrave; base de
+<description>OBSOLETE : D&eacute;finit une adresse IP pour les serveurs virtuels &agrave; base de
 nom</description>
 <syntax>NameVirtualHost <var>adresse</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context></contextlist>

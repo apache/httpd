@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1160345 -->
+<!-- English Revision : 1169760 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,7 +41,7 @@ correspondance</a></seealso>
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
 <seealso><a href="proxy.html">Mise en cache</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avanc&eacute;es et astuces</a></seealso>
+<seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
@@ -102,8 +102,8 @@ ce que l'on souhaitait.</p>
 &agrave; l'URL r&eacute;sultante, ce qui fournit une r&eacute;&eacute;criture correcte en
 <code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
 
-<p>Notez que vous devrez peut-&ecirc;tre aussi d&eacute;finir la directive <directive
-module="core">AllowEncodedSlashes</directive> &agrave; <code>On</code> pour
+<p>Notez que vous devrez peut-&ecirc;tre aussi d&eacute;finir la
+directive <directive module="core">AllowEncodedSlashes</directive> &agrave; <code>On</code> pour
 que cet exemple particulier fonctionne, car httpd ne permet pas les
 slashes encod&eacute;s dans les URLs, et renvoie une erreur 404 s'il en
 rencontre un.</p>
