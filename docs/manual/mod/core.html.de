@@ -1198,7 +1198,7 @@ Fehlermeldungen</a></li>
 <div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a>-<a name="errorlogformat" id="errorlogformat">Direktive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Format specification for error log entries</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> ErrorLog [connection|request] <var>format</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> ErrorLogFormat [connection|request] <var>format</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
