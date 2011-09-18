@@ -1287,7 +1287,7 @@ in case of an error</description>
 <directivesynopsis>
 <name>ErrorLogFormat</name>
 <description>Format specification for error log entries</description>
-<syntax> ErrorLog [connection|request] <var>format</var></syntax>
+<syntax> ErrorLogFormat [connection|request] <var>format</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Available in Apache httpd 2.3.9 and later</compatibility>
