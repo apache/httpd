@@ -323,24 +323,6 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CookieLog</name>
-<description>Çerezleri günlüğe kaydetmek için dosya ismi belirtmekte
-kullanılır.</description>
-<syntax>CookieLog <var>dosya-adı</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-<compatibility>Bu yönergenin kullanımı önerilmemektedir.</compatibility>
-
-<usage>
-    <p><directive>CookieLog</directive> yönergesi çerezleri günlüğe kaydetmek
-      için dosya ismi belirtir. Dosya isminin <directive
-      module="core">ServerRoot</directive> değerine göre belirtildiği
-      varsayılır. Yönerge <code>mod_cookies</code> ile uyumluluk için vardır
-      ve kullanımı önerilmemektedir.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CustomLog</name>
 <description>Günlük dosyasın ismini ve girdi biçemini belirler.</description>
 <syntax>CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
