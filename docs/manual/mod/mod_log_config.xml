@@ -124,7 +124,8 @@
 
     <tr><td><code>%L</code></td>
         <td>The request log ID from the error log (or '-' if nothing has been
-            logged to the error log for this request).</td></tr>
+            logged to the error log for this request). Look for the
+            matching error log line to see what request caused what error.</td></tr>
 
     <tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
@@ -141,8 +142,8 @@
         <td>The canonical port of the server serving the request.</td></tr>
 
     <tr><td><code>%{<var>format</var>}p</code></td>
-        <td>The canonical port of the server serving the request or the
-        server's actual port or the client's actual port.  Valid formats
+        <td>The canonical port of the server serving the request, or the
+        server's actual port, or the client's actual port. Valid formats
         are <code>canonical</code>, <code>local</code>, or <code>remote</code>.
         </td></tr>
 
@@ -150,7 +151,7 @@
         <td>The process ID of the child that serviced the request.</td></tr>
 
     <tr><td><code>%{<var>format</var>}P</code></td>
-        <td>The process ID or thread id of the child that serviced the 
+        <td>The process ID or thread ID of the child that serviced the 
         request.  Valid formats are <code>pid</code>, <code>tid</code>,
         and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or 
         higher.
@@ -167,20 +168,20 @@
         <td>The handler generating the response (if any).</td></tr>
 
     <tr><td><code>%s</code></td>
-        <td>Status. For requests that got internally redirected, this is
-        the status of the *original* request --- <code>%&gt;s</code>
-        for the last.</td></tr>
+        <td>Status. For requests that have been internally redirected, this is
+        the status of the <em>original</em> request. Use <code>%&gt;s</code>
+        for the final status.</td></tr>
 
     <tr><td><code>%t</code></td>
-        <td>Time the request was received (standard english
-        format)</td></tr>
+        <td>Time the request was received, in the format <code>[18/Sep/2011:19:18:28 -0400]</code>. 
+        The last number indicates the timezone offset from GMT</td></tr>
 
     <tr><td><code>%{<var>format</var>}t</code></td>
         <td>The time, in the form given by format, which should be in
         an extended <code>strftime(3)</code> format (potentially localized).
         If the format starts with <code>begin:</code> (default) the time is taken
-        at the beginning of the request processing, if it starts with
-        <code>end:</code> it is the time when the log entry gets written, so
+        at the beginning of the request processing. If it starts with
+        <code>end:</code> it is the time when the log entry gets written,
         close to the end of the request processing. In addition to the formats
         supported by <code>strftime(3)</code>, the following format tokens are
         supported:
@@ -200,8 +201,8 @@
         <td>The time taken to serve the request, in seconds.</td></tr>
 
     <tr><td><code>%u</code></td>
-        <td>Remote user (from auth; may be bogus if return status
-        (<code>%s</code>) is 401).</td></tr>
+        <td>Remote user if the request was authenticated. May be bogus if return status
+        (<code>%s</code>) is 401 (unauthorized).</td></tr>
 
     <tr><td><code>%U</code></td>
         <td>The URL path requested, not including any query string.</td></tr>
@@ -220,23 +221,23 @@
         <table>
         <columnspec><column width=".2"/><column width=".6"/></columnspec>
         <tr><td><code>X</code> =</td>
-            <td>connection aborted before the response completed.</td></tr>
+            <td>Connection aborted before the response completed.</td></tr>
         <tr><td><code>+</code> =</td>
-            <td>connection may be kept alive after the response is
+            <td>Connection may be kept alive after the response is
             sent.</td></tr>
         <tr><td><code>-</code> = </td>
-            <td>connection will be closed after the response is
+            <td>Connection will be closed after the response is
             sent.</td></tr>
         </table>
 
         </td></tr>
 
     <tr><td><code>%I</code></td>
-        <td>Bytes received, including request and headers, cannot be zero.
+        <td>Bytes received, including request and headers. Cannot be zero.
         You need to enable <module>mod_logio</module> to use this.</td></tr>
 
     <tr><td><code>%O</code></td>
-        <td>Bytes sent, including headers, cannot be zero. You need to
+        <td>Bytes sent, including headers. Cannot be zero. You need to
         enable <module>mod_logio</module> to use this.</td></tr>
     </table>
 
