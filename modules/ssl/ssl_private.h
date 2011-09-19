@@ -852,12 +852,23 @@ int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
 void         ssl_die(void);
 void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 
-/* ssl_log_cxerror is a wrapper for ap_log_cerror which takes a
- * certificate as an additional argument and appends details of that
- * cert to the log message.  All other arguments interpreted exactly
- * as ap_log_cerror. */
+/* ssl_log_xerror, ssl_log_cxerror and ssl_log_rxerror are wrappers for the
+ * respective ap_log_*error functions and take a certificate as an
+ * additional argument (whose details are appended to the log message).
+ * The other arguments are interpreted exactly as with their ap_log_*error
+ * counterparts. */
+void ssl_log_xerror(const char *file, int line, int level, 
+                    apr_status_t rv, apr_pool_t *p, server_rec *s,
+                    X509 *cert, const char *format, ...)
+    __attribute__((format(printf,8,9)));
+
 void ssl_log_cxerror(const char *file, int line, int level, 
                      apr_status_t rv, conn_rec *c, X509 *cert,
+                     const char *format, ...)
+    __attribute__((format(printf,7,8)));
+
+void ssl_log_rxerror(const char *file, int line, int level, 
+                     apr_status_t rv, request_rec *r, X509 *cert,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
 

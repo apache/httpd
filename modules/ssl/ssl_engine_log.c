@@ -108,44 +108,49 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
     }
 }
 
-void ssl_log_cxerror(const char *file, int line, int level, 
-                     apr_status_t rv, conn_rec *c, X509 *cert,
-                     const char *format, ...)
+static void ssl_log_cert_error(const char *file, int line, int level, 
+                               apr_status_t rv, const server_rec *s,
+                               const conn_rec *c, const request_rec *r,
+                               apr_pool_t *p, X509 *cert, const char *format,
+                               va_list ap)
 {
-    va_list ap;
     char buf[HUGE_STRING_LEN];
+    int msglen, n;
+    char *name;
     
-    if (!APLOG_IS_LEVEL(mySrvFromConn(c),level)) {
-        /* Bail early since the rest of this function is expensive. */
-        return;
-    }
-
-    va_start(ap, format);
     apr_vsnprintf(buf, sizeof buf, format, ap);
-    va_end(ap);
+
+    msglen = strlen(buf);
 
     if (cert) {
         BIO *bio = BIO_new(BIO_s_mem());
 
         if (bio) {
-            int n, msglen;
+            /*
+             * Limit the maximum length of the subject and issuer DN strings
+             * in the log message. 300 characters should always be sufficient
+             * for holding both the timestamp, module name, pid etc. stuff
+             * at the beginning of the line and the trailing information about
+             * serial, notbefore and notafter.
+             */
+            int maxdnlen = (HUGE_STRING_LEN - msglen - 300) / 2;
 
             BIO_puts(bio, " [subject: ");
-            n = X509_NAME_print_ex(bio, X509_get_subject_name(cert), 0,
-                                   XN_FLAG_RFC2253 & ~XN_FLAG_DN_REV);
-            if (n == 0) {
+            name = SSL_X509_NAME_to_string(p, X509_get_subject_name(cert),
+                                           maxdnlen);
+            if (!strIsEmpty(name)) {
+                BIO_puts(bio, name);
+            } else {
                 BIO_puts(bio, "-empty-");
-            } else if (n < 0) {
-                BIO_puts(bio, "(ERROR)");
             }
 
             BIO_puts(bio, " / issuer: ");
-            n = X509_NAME_print_ex(bio, X509_get_issuer_name(cert), 0,
-                                   XN_FLAG_RFC2253 & ~XN_FLAG_DN_REV);
-            if (n == 0) {
+            name = SSL_X509_NAME_to_string(p, X509_get_issuer_name(cert),
+                                           maxdnlen);
+            if (!strIsEmpty(name)) {
+                BIO_puts(bio, name);
+            } else {
                 BIO_puts(bio, "-empty-");
-            } else if (n < 0) {
-                BIO_puts(bio, "(ERROR)");
             }
 
             BIO_puts(bio, " / serial: ");
@@ -160,7 +165,6 @@ void ssl_log_cxerror(const char *file, int line, int level,
 
             BIO_puts(bio, "]");
 
-            msglen = strlen(buf);
             n = BIO_read(bio, buf + msglen, sizeof buf - msglen - 1);
             if (n > 0)
                buf[msglen + n] = '\0';
@@ -168,7 +172,62 @@ void ssl_log_cxerror(const char *file, int line, int level,
             BIO_free(bio);
         }
     }
+    else {
+        apr_snprintf(buf + msglen, sizeof buf - msglen,
+                     " [certificate: -not available-]");
+    }
 
-    ap_log_cerror(file, line, APLOG_MODULE_INDEX, level, rv, c,
-                  "%s%s", buf, cert ? "" : " [certificate: -not available-]");
+    if (r) {
+        ap_log_rerror(file, line, APLOG_MODULE_INDEX, level, rv, r, "%s", buf);
+    }
+    else if (c) {
+        ap_log_cerror(file, line, APLOG_MODULE_INDEX, level, rv, c, "%s", buf);
+    }
+    else if (s) {
+        ap_log_error(file, line, APLOG_MODULE_INDEX, level, rv, s, "%s", buf);
+    }
+
+}
+
+/*
+ * Wrappers for ap_log_error/ap_log_cerror/ap_log_rerror which log additional
+ * details of the X509 cert. For ssl_log_xerror, a pool needs to be passed in
+ * as well (for temporary allocation of the cert's subject/issuer name strings,
+ * in the other cases we use the connection and request pool, respectively).
+ */
+void ssl_log_xerror(const char *file, int line, int level, apr_status_t rv,
+                    apr_pool_t *ptemp, server_rec *s, X509 *cert,
+                    const char *fmt, ...)
+{
+    if (APLOG_IS_LEVEL(s,level)) {
+       va_list ap;
+       va_start(ap, fmt);
+       ssl_log_cert_error(file, line, level, rv, s, NULL, NULL, ptemp,
+                          cert, fmt, ap);
+       va_end(ap);
+    }
+}
+
+void ssl_log_cxerror(const char *file, int line, int level, apr_status_t rv,
+                     conn_rec *c, X509 *cert, const char *fmt, ...)
+{
+    if (APLOG_IS_LEVEL(mySrvFromConn(c),level)) {
+       va_list ap;
+       va_start(ap, fmt);
+       ssl_log_cert_error(file, line, level, rv, NULL, c, NULL, c->pool,
+                          cert, fmt, ap);
+       va_end(ap);
+    }
+}
+
+void ssl_log_rxerror(const char *file, int line, int level, apr_status_t rv,
+                     request_rec *r, X509 *cert, const char *fmt, ...)
+{
+    if (APLOG_R_IS_LEVEL(r,level)) {
+       va_list ap;
+       va_start(ap, fmt);
+       ssl_log_cert_error(file, line, level, rv, NULL, NULL, r, r->pool,
+                          cert, fmt, ap);
+       va_end(ap);
+    }
 }
