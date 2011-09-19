@@ -54,7 +54,6 @@
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cookielog">CookieLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
@@ -298,23 +297,6 @@
 
     <div class="note">このディレクティブは実験的なものですので、
     使用する際は注意してください。</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CookieLog" id="CookieLog">CookieLog</a> <a name="cookielog" id="cookielog">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クッキングのロギングのためのファイル名を設定する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CookieLog <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>このディレクティブは非推奨</td></tr>
-</table>
-    <p><code class="directive">CookieLog</code>
-    ディレクティブはクッキーのロギングのためのファイル名を
-    設定します。filename は <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
-    からの相対パスです。このディレクティブは <code>mod_cookies</code> との互換性のためだけに
-    存在し、使用は推奨されていません。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
