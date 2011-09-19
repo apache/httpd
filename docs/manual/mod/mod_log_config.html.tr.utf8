@@ -51,7 +51,6 @@
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cookielog">CookieLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
@@ -293,23 +292,6 @@
       yapılandırılamaz.</p>
 
     <div class="note">Bu yönerge deneyseldir ve dikkatli kullanılmalıdır.</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CookieLog" id="CookieLog">CookieLog</a> <a name="cookielog" id="cookielog">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Çerezleri günlüğe kaydetmek için dosya ismi belirtmekte
-kullanılır.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CookieLog <var>dosya-adı</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Bu yönergenin kullanımı önerilmemektedir.</td></tr>
-</table>
-    <p><code class="directive">CookieLog</code> yönergesi çerezleri günlüğe kaydetmek
-      için dosya ismi belirtir. Dosya isminin <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> değerine göre belirtildiği
-      varsayılır. Yönerge <code>mod_cookies</code> ile uyumluluk için vardır
-      ve kullanımı önerilmemektedir.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
