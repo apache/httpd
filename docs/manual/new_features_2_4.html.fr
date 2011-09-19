@@ -42,7 +42,6 @@ serveur HTTP Apache</h1>
     
     <dl>
       <dt>KeepAliveTimeout en millisecondes</dt>
-
       <dd>La directive <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> permet dorénavant de
       préciser une durée de vie en millisecondes.
       </dd>
@@ -60,8 +59,8 @@ serveur HTTP Apache</h1>
       ajoutés au dessus du niveau de journalisation <code>debug</code>.</dd>
 
       <dt>MPM Event</dt>
-      <dd>Le MPM Event est sorti du stade expérimental pour être
-      pleinement supporté.</dd>
+      <dd>Le MPM Event est sorti du stade expérimental et est
+      maintenant pleinement supporté.</dd>
  
       <dt>Support du mode asynchrone</dt>
       <dd>Le support des lectures/écritures asynchrones pour les MPMs et
@@ -71,6 +70,9 @@ serveur HTTP Apache</h1>
       <dd>Les sections &lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt;
       permettent de définir une configuration en fonction de critères
       liés à la requête.</dd>
+
+      <dt>NameVirtualHost directive</dt>
+      <dd>Cette directive obsolète n'est plus utile.</dd>
  
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -93,6 +95,10 @@ serveur HTTP Apache</h1>
       <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
       <dd>Embarque le langage <a href="http://www.lua.org/">Lua</a> dans
       httpd pour la configuration et les fonctions logiques courantes.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
+      <dd>Ajoute à <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> la configuration dynamique
+      de mandataires inverses en masse.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
       <dd>Mise à disposition du protocole FastCGI pour
@@ -172,6 +178,14 @@ serveur HTTP Apache</h1>
 
       <dd>Configuration à l'exécution d'un sous-ensemble de paramètres
       de répartition de charge.</dd>
+
+      <dd>Les membres du groupe de répartition peuvent être définis à
+      'Drain' de façon à ce qu'ils ne répondent qu'aux sessions
+      persistantes existantes, ce qui permet de les mettre hors ligne en
+      douceur.</dd>
+
+      <dd>Les règlages du répartiteur de charge peuvent être rendus
+      persistants après redémarrage.</dd>
 
       <dt><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></dt>
 
@@ -269,7 +283,7 @@ serveur HTTP Apache</h1>
       <dt>Ajout d'un analyseur syntaxique d'expressions</dt>
       <dd>Nous disposons à présent d'un analyseur générique d'expressions, dont l'API
       est décrite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
-      l'analyseur qu'on trouvait auparavant dans <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</dd>
+      l'analyseur qu'on trouvait auparavant dans <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
       
