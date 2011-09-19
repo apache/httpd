@@ -1007,7 +1007,7 @@ static apr_status_t s_socket_add(void *user_baton,
 {
     s_baton_t *s = (s_baton_t*)user_baton;
     /* XXXXX: recycle listener_poll_types */
-    listener_poll_type *pt = malloc(sizeof(*pt));
+    listener_poll_type *pt = ap_malloc(sizeof(*pt));
     pt->type = PT_SERF;
     pt->baton = serf_baton;
     pfd->client_data = pt;
@@ -1187,7 +1187,7 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
     }
     else {
         /* XXXXX: lol, pool allocation without a context from any thread.Yeah. Right. MPMs Suck. */
-        te = malloc(sizeof(timer_event_t));
+        te = ap_malloc(sizeof(timer_event_t));
         APR_RING_ELEM_INIT(te, link);
     }
 
@@ -1766,7 +1766,7 @@ static void create_listener_thread(thread_starter * ts)
     proc_info *my_info;
     apr_status_t rv;
 
-    my_info = (proc_info *) malloc(sizeof(proc_info));
+    my_info = (proc_info *) ap_malloc(sizeof(proc_info));
     my_info->pid = my_child_num;
     my_info->tid = -1;          /* listener thread doesn't have a thread slot */
     my_info->sd = 0;
@@ -1865,12 +1865,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                 continue;
             }
 
-            my_info = (proc_info *) malloc(sizeof(proc_info));
-            if (my_info == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-                             "malloc: out of memory");
-                clean_child_exit(APEXIT_CHILDFATAL);
-            }
+            my_info = (proc_info *) ap_malloc(sizeof(proc_info));
             my_info->pid = my_child_num;
             my_info->tid = i;
             my_info->sd = 0;
@@ -2047,16 +2042,8 @@ static void child_main(int child_num_arg)
     /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created
      */
-    threads = (apr_thread_t **) calloc(1,
-                                       sizeof(apr_thread_t *) *
-                                       threads_per_child);
-    if (threads == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-                     "malloc: out of memory");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
-
-    ts = (thread_starter *) apr_palloc(pchild, sizeof(*ts));
+    threads = ap_calloc(threads_per_child, sizeof(apr_thread_t *));
+    ts = apr_palloc(pchild, sizeof(*ts));
 
     apr_threadattr_create(&thread_attr, pchild);
     /* 0 means PTHREAD_CREATE_JOINABLE */

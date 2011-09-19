@@ -149,7 +149,7 @@ void ap_init_scoreboard(void *shared_score)
 
     ap_calc_scoreboard_size();
     ap_scoreboard_image =
-        calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *));
+        ap_calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *));
     more_storage = shared_score;
     ap_scoreboard_image->global = (global_score *)more_storage;
     more_storage += sizeof(global_score);
@@ -325,13 +325,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
 #endif
     {
         /* A simple malloc will suffice */
-        void *sb_mem = calloc(1, scoreboard_size);
-        if (sb_mem == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
-                         "(%d)%s: cannot allocate scoreboard",
-                         errno, strerror(errno));
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
+        void *sb_mem = ap_calloc(1, scoreboard_size);
         ap_init_scoreboard(sb_mem);
     }
 

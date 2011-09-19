@@ -75,7 +75,7 @@ static extra_process_t *extras;
 
 void ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen)
 {
-    extra_process_t *p = (extra_process_t *)malloc(sizeof(extra_process_t));
+    extra_process_t *p = (extra_process_t *)ap_malloc(sizeof(extra_process_t));
 
     p->next = extras;
     p->pid = pid;

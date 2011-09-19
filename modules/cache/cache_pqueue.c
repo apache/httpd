@@ -50,17 +50,9 @@ cache_pqueue_t *cache_pq_init(apr_ssize_t n,
                               cache_pqueue_getpos get,
                               cache_pqueue_setpos set)
 {
-    cache_pqueue_t *q;
-
-    if (!(q = malloc(sizeof(cache_pqueue_t)))) {
-        return NULL;
-    }
-
+    cache_pqueue_t *q = ap_malloc(sizeof(cache_pqueue_t));
     /* Need to allocate n+1 elements since element 0 isn't used. */
-    if (!(q->d = malloc(sizeof(void*) * (n+1)))) {
-        free(q);
-        return NULL;
-    }
+    q->d = ap_malloc(sizeof(void*) * (n+1));
     q->avail = q->step = (n+1);  /* see comment above about n+1 */
     q->pri = pri;
     q->size = 1;
@@ -148,7 +140,7 @@ apr_status_t cache_pq_insert(cache_pqueue_t *q, void *d)
     /* allocate more memory if necessary */
     if (q->size >= q->avail) {
         newsize = q->size + q->step;
-        if (!(tmp = realloc(q->d, sizeof(void*) * newsize))) {
+        if (!(tmp = ap_realloc(q->d, sizeof(void*) * newsize))) {
             return APR_EGENERAL;
         };
         q->d = tmp;
