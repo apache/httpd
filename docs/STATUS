@@ -62,9 +62,6 @@ To Do List
         - mod_watchdog
         - mod_heartbeat
         - mod_heartmonitor
-        - mod_lbmethod_bybusyness
-        - mod_lbmethod_byrequests
-        - mod_lbmethod_bytraffic
         - mod_lbmethod_heartbeat
         - mod_socache_dbm
         - mod_socache_memcache
@@ -155,12 +152,6 @@ To Do List
 - Order directives alphabetically. Some modules, particularly in
   translations, have directives in random order, rather than
   alphabetically.
-
-- Run review_translations.pl on each of the files in the mod directory,
-  and determine which directives are missing from the translation docs.
-  Add them. This makes them show up in the directives listing for that
-  language, and also encourages translators to provide translations for
-  those directives.
 
 - Add examples using expr to mod_rewrite recipes. Possibly benchmark the
   different approaches and make intelligent remarks about the
