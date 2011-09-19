@@ -31,7 +31,9 @@
 <compatibility>Split off from <module>mod_proxy_balancer</module> in 2.3</compatibility>
 
 <summary>
-<!-- FIXME: --> <p>This document is still under development.</p>
+<p>This module does not provide any configuration directives of its own.
+It requires the services of <module>mod_proxy_balancer</module>, and
+provides the <code>byrequests</code> load balancing method..</p>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 <seealso><module>mod_proxy_balancer</module></seealso>
