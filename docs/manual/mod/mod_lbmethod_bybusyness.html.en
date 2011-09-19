@@ -32,7 +32,7 @@
 
 <p>This module does not provide any configuration directives of its own.
 It requires the services of <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, and
-provides the <code>bybusyness</code> load balancing method..</p>
+provides the <code>bybusyness</code> load balancing method.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>This module provides no
