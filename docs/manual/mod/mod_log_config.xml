@@ -362,23 +362,6 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CookieLog</name>
-<description>Sets filename for the logging of cookies</description>
-<syntax>CookieLog <var>filename</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-<compatibility>This directive is deprecated.</compatibility>
-
-<usage>
-    <p>The <directive>CookieLog</directive> directive sets the 
-    filename for logging of cookies. The filename is relative to the
-    <directive module="core">ServerRoot</directive>. This directive is
-    included only for compatibility with <code>mod_cookies</code>,
-    and is deprecated.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CustomLog</name>
 <description>Sets filename and format of log file</description>
 <syntax>CustomLog  <var>file</var>|<var>pipe</var>

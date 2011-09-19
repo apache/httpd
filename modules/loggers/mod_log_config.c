@@ -31,9 +31,6 @@
  *                        Log to file fn with format given by the format
  *                        argument
  *
- *    CookieLog fn        For backwards compatability with old Cookie
- *                        logging module - now deprecated.
- *
  * There can be any number of TransferLog and CustomLog
  * commands. Each request will be logged to _ALL_ the
  * named files, in the appropriate format.
@@ -1284,11 +1281,6 @@ static const char *set_transfer_log(cmd_parms *cmd, void *dummy,
     return add_custom_log(cmd, dummy, fn, NULL, NULL);
 }
 
-static const char *set_cookie_log(cmd_parms *cmd, void *dummy, const char *fn)
-{
-    return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t", NULL);
-}
-
 static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
 {
     buffered_logs = flag;
@@ -1311,8 +1303,6 @@ AP_INIT_TAKE1("TransferLog", set_transfer_log, NULL, RSRC_CONF,
      "the filename of the access log"),
 AP_INIT_TAKE12("LogFormat", log_format, NULL, RSRC_CONF,
      "a log format string (see docs) and an optional format name"),
-AP_INIT_TAKE1("CookieLog", set_cookie_log, NULL, RSRC_CONF,
-     "the filename of the cookie log"),
 AP_INIT_FLAG("BufferedLogs", set_buffered_logs_on, NULL, RSRC_CONF,
                  "Enable Buffered Logging (experimental)"),
     {NULL}
