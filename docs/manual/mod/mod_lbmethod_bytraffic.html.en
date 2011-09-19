@@ -30,7 +30,9 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Split off from <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> in 2.3</td></tr></table>
 <h3>Summary</h3>
 
- <p>This document is still under development.</p>
+<p>This module does not provide any configuration directives of its own.
+It requires the services of <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, and
+provides the <code>bytraffic</code> load balancing method..</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>This module provides no
