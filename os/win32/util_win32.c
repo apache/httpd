@@ -112,7 +112,7 @@ PSECURITY_ATTRIBUTES GetNullACL(void)
     PSECURITY_ATTRIBUTES sa;
 
     sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof(SECURITY_ATTRIBUTES));
-    sa->nLength = sizeof(sizeof(SECURITY_ATTRIBUTES));
+    sa->nLength = sizeof(SECURITY_ATTRIBUTES);
 
     pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
     sa->lpSecurityDescriptor = pSD;
