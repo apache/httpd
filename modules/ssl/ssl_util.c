@@ -213,14 +213,14 @@ unsigned char *ssl_asn1_table_set(apr_hash_t *table,
         }
     }
     else {
-        asn1 = malloc(sizeof(*asn1));
+        asn1 = ap_malloc(sizeof(*asn1));
         asn1->source_mtime = 0; /* used as a note for encrypted private keys */
         asn1->cpData = NULL;
     }
 
     asn1->nData = length;
     if (!asn1->cpData) {
-        asn1->cpData = malloc(length);
+        asn1->cpData = ap_malloc(length);
     }
 
     apr_hash_set(table, key, klen, asn1);

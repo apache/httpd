@@ -77,23 +77,16 @@ struct cache_hash_t {
  */
 static cache_hash_entry_t **alloc_array(cache_hash_t *ht, int max)
 {
-   return calloc(1, sizeof(*ht->array) * (max + 1));
+   return ap_calloc(1, sizeof(*ht->array) * (max + 1));
 }
 
 cache_hash_t* cache_hash_make(apr_size_t size)
 {
     cache_hash_t *ht;
-    ht = malloc(sizeof(cache_hash_t));
-    if (!ht) {
-        return NULL;
-    }
+    ht = ap_malloc(sizeof(cache_hash_t));
     ht->count = 0;
     ht->max = size;
     ht->array = alloc_array(ht, ht->max);
-    if (!ht->array) {
-        free(ht);
-        return NULL;
-    }
     return ht;
 }
 
@@ -226,10 +219,7 @@ static cache_hash_entry_t **find_entry(cache_hash_t *ht,
     if (he || !val)
         return hep;
     /* add a new entry for non-NULL values */
-    he = malloc(sizeof(*he));
-    if (!he) {
-        return NULL;
-    }
+    he = ap_malloc(sizeof(*he));
     he->next = NULL;
     he->hash = hash;
     he->key  = key;
@@ -260,8 +250,7 @@ void* cache_hash_set(cache_hash_t *ht,
     cache_hash_entry_t **hep, *tmp;
     const void *tval;
     hep = find_entry(ht, key, klen, val);
-    /* If hep == NULL, then the malloc() in find_entry failed */
-    if (hep && *hep) {
+    if (*hep) {
         if (!val) {
             /* delete entry */
             tval = (*hep)->val;

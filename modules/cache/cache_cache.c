@@ -58,7 +58,7 @@ cache_cache_t* cache_init(int max_entries,
                                          cache_cache_free *free_entry)
 {
     cache_cache_t *tmp;
-    tmp = malloc(sizeof(cache_cache_t));
+    tmp = ap_malloc(sizeof(cache_cache_t));
     tmp->max_entries = max_entries;
     tmp->max_size = max_size;
     tmp->current_size = 0;

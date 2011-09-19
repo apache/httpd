@@ -265,14 +265,10 @@ static void destroy_and_exit_process(process_rec *process,
     exit(process_exit_value);
 }
 
-#define OOM_MESSAGE "[crit] Memory allocation failed, " \
-    "aborting process." APR_EOL_STR
-
 /* APR callback invoked if allocation fails. */
 static int abort_on_oom(int retcode)
 {
-    write(STDERR_FILENO, OOM_MESSAGE, strlen(OOM_MESSAGE));
-    abort();
+    ap_abort_on_oom();
     return retcode; /* unreachable, hopefully. */
 }
 

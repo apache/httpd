@@ -2583,3 +2583,36 @@ AP_DECLARE(void) ap_varbuf_free(struct ap_varbuf *vb)
     }
     vb->buf = NULL;
 }
+
+#define OOM_MESSAGE "[crit] Memory allocation failed, " \
+        "aborting process." APR_EOL_STR
+
+AP_DECLARE(void) ap_abort_on_oom()
+{
+    write(STDERR_FILENO, OOM_MESSAGE, strlen(OOM_MESSAGE));
+    abort();
+}
+
+AP_DECLARE(void *) ap_malloc(size_t size)
+{
+    void *p = malloc(size);
+    if (p == NULL && size != 0)
+        ap_abort_on_oom();
+    return p;
+}
+
+AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size)
+{
+    void *p = calloc(nelem, size);
+    if (p == NULL && nelem != 0 && size != 0)
+        ap_abort_on_oom();
+    return p;
+}
+
+AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
+{
+    void *p = realloc(ptr, size);
+    if (p == NULL && size != 0)
+        ap_abort_on_oom();
+    return p;
+}

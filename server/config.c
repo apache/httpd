@@ -772,10 +772,10 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
     ap_loaded_modules = (module **)apr_palloc(process->pool,
         sizeof(module *) * conf_vector_length);
     if (!ap_module_short_names)
-        ap_module_short_names = calloc(sizeof(char *), conf_vector_length);
+        ap_module_short_names = ap_calloc(sizeof(char *), conf_vector_length);
 
     if (!merger_func_cache)
-        merger_func_cache = calloc(sizeof(merger_func), conf_vector_length);
+        merger_func_cache = ap_calloc(sizeof(merger_func), conf_vector_length);
 
     if (ap_loaded_modules == NULL || ap_module_short_names == NULL
         || merger_func_cache == NULL)

@@ -12,6 +12,10 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) Add wrappers for malloc, calloc, realloc that check for out of memory
+     situations and use them in many places. PR 51568, PR 51569, PR 51571.
+     [Stefan Fritsch]
+
   *) Fix cross-compilation of mod_cgi/mod_cgid when APR_HAVE_STRUCT_RLIMIT is 
      false but RLIMIT_* are defined.  PR51371. [Eric Covener]
 

@@ -1384,7 +1384,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     (*balancer)->lbmethod = lbmethod;
 
     if (do_malloc)
-        bshared = malloc(sizeof(proxy_balancer_shared));
+        bshared = ap_malloc(sizeof(proxy_balancer_shared));
     else
         bshared = apr_palloc(p, sizeof(proxy_balancer_shared));
 
@@ -1798,7 +1798,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
      * if called during config, we don't have shm setup yet,
      * so just note the info for later. */
     if (do_malloc)
-        wshared = malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
+        wshared = ap_malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
     else
         wshared = apr_palloc(p, sizeof(proxy_worker_shared));
 

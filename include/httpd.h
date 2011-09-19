@@ -2086,6 +2086,38 @@ AP_DECLARE(void) ap_random_insecure_bytes(void *buf, apr_size_t size);
  */
 AP_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max);
 
+/**
+ * Abort with a error message signifying out of memory
+ */
+AP_DECLARE(void) ap_abort_on_oom(void) __attribute__((noreturn));
+
+/**
+ * Wrapper for malloc() that calls ap_abort_on_oom() if out of memory
+ * @param size size of the memory block
+ * @return pointer to the allocated memory
+ * @note ap_malloc may be implemented as a macro
+ */
+AP_DECLARE(void *) ap_malloc(size_t size) __attribute__((malloc));
+
+/**
+ * Wrapper for calloc() that calls ap_abort_on_oom() if out of memory
+ * @param nelem number of elements to allocate memory for
+ * @param size size of a single element
+ * @return pointer to the allocated memory
+ * @note ap_calloc may be implemented as a macro
+ */
+AP_DECLARE(void *) ap_calloc(size_t nelem, size_t size) __attribute__((malloc));
+
+/**
+ * Wrapper for realloc() that calls ap_abort_on_oom() if out of memory
+ * @param ptr pointer to the old memory block (or NULL)
+ * @param size new size of the memory block
+ * @return pointer to the reallocated memory
+ * @note ap_realloc may be implemented as a macro
+ */
+AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
+                   ap_func_attr_warn_unused_result;
+
 
 #define AP_NORESTART APR_OS_START_USEERR + 1
 

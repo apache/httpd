@@ -109,7 +109,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
         if(ret != APR_SUCCESS)
             return ret;
 
-        buf = malloc(len);
+        buf = ap_malloc(len);
         for(n=0 ; n < len ; ++n)
             buf[n] = apr_toupper(data[n]);
 

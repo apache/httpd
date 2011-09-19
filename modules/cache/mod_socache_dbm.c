@@ -210,12 +210,7 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
 
     /* create DBM value */
     dbmval.dsize = sizeof(apr_time_t) + nData;
-    dbmval.dptr  = (char *)malloc(dbmval.dsize);
-    if (dbmval.dptr == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "malloc error creating DBM value");
-        return APR_ENOMEM;
-    }
+    dbmval.dptr  = (char *)ap_malloc(dbmval.dsize);
     memcpy((char *)dbmval.dptr, &expiry, sizeof(apr_time_t));
     memcpy((char *)dbmval.dptr+sizeof(apr_time_t), ucaData, nData);
 

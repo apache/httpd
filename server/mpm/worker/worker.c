@@ -1006,7 +1006,7 @@ static void create_listener_thread(thread_starter *ts)
     proc_info *my_info;
     apr_status_t rv;
 
-    my_info = (proc_info *)malloc(sizeof(proc_info));
+    my_info = (proc_info *)ap_malloc(sizeof(proc_info));
     my_info->pid = my_child_num;
     my_info->tid = -1; /* listener thread doesn't have a thread slot */
     my_info->sd = 0;
@@ -1072,12 +1072,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                 continue;
             }
 
-            my_info = (proc_info *)malloc(sizeof(proc_info));
-            if (my_info == NULL) {
-                ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-                             "malloc: out of memory");
-                clean_child_exit(APEXIT_CHILDFATAL);
-            }
+            my_info = (proc_info *)ap_malloc(sizeof(proc_info));
             my_info->pid = my_child_num;
             my_info->tid = i;
             my_info->sd = 0;
@@ -1271,14 +1266,8 @@ static void child_main(int child_num_arg)
     /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created
      */
-    threads = (apr_thread_t **)calloc(1,
-                                sizeof(apr_thread_t *) * threads_per_child);
-    if (threads == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
-                     "malloc: out of memory");
-        clean_child_exit(APEXIT_CHILDFATAL);
-    }
-
+    threads = (apr_thread_t **)ap_calloc(1,
+                                  sizeof(apr_thread_t *) * threads_per_child);
     ts = (thread_starter *)apr_palloc(pchild, sizeof(*ts));
 
     apr_threadattr_create(&thread_attr, pchild);
