@@ -1278,9 +1278,20 @@ l'espace d'URLs du serveur local</td></tr>
     <tr><td>status</td>
         <td>-</td>
         <td>Valeur constituée d'une simple lettre et définissant l'état
-	initial de ce serveur cible : 'D' correspond à "désactivé", 'S' à
-	"arrêté", 'I' à "erreurs ignorées", 'H' à "interruption à chaud"
-	et 'E' à "erreur". Une valeur d'état peut être définie (ce qui
+	initial de ce serveur cible.
+	 <table>
+         <tr><td>D: le serveur cible est désactivé et n'accepte aucune requête.</td></tr>
+         <tr><td>S: le serveur cible est arrêté.</td></tr>
+         <tr><td>I: le serveur cible est en mode "erreurs ignorées",
+	 et sera toujours considéré comme disponible.</td></tr>
+         <tr><td>H: le serveur cible est en mode d'attente et ne sera
+	 utilisé que si aucun autre serveur n'est disponible.</td></tr>
+         <tr><td>E: le serveur cible est en erreur.</td></tr>
+         <tr><td>N: le serveur cible est en mode vidage, n'acceptera que
+	 les sessions persistantes qui lui appartiennent, et refusera
+	 toutes les autres requêtes.</td></tr>
+        </table>
+	Une valeur d'état peut être définie (ce qui
 	correspond au comportement par défaut) en préfixant la valeur
 	par '+', ou annulée en préfixant la valeur par '-'. Ainsi, la
 	valeur 'S-E' définit l'état de ce serveur cible à "arrêté" et supprime

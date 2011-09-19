@@ -80,11 +80,11 @@
     <table class="bordered"><tr class="header"><th>Format&nbsp;String</th>
         <th>Description</th></tr>
 <tr><td><code>%%</code></td>
-        <td>The percent sign</td></tr>
+        <td>The percent sign.</td></tr>
 <tr class="odd"><td><code>%a</code></td>
-        <td>Remote IP-address</td></tr>
+        <td>Remote IP-address.</td></tr>
 <tr><td><code>%A</code></td>
-        <td>Local IP-address</td></tr>
+        <td>Local IP-address.</td></tr>
 <tr class="odd"><td><code>%B</code></td>
         <td>Size of response in bytes, excluding HTTP headers.</td></tr>
 <tr><td><code>%b</code></td>
@@ -97,13 +97,13 @@
         <td>The time taken to serve the request, in microseconds.</td></tr>
 <tr class="odd"><td><code>%{<var>VARNAME</var>}e</code></td>
         <td>The contents of the environment variable
-        <var>VARNAME</var></td></tr>
+        <var>VARNAME</var>.</td></tr>
 <tr><td><code>%f</code></td>
-        <td>Filename</td></tr>
+        <td>Filename.</td></tr>
 <tr class="odd"><td><code>%h</code></td>
-        <td>Remote host</td></tr>
+        <td>Remote host.</td></tr>
 <tr><td><code>%H</code></td>
-        <td>The request protocol</td></tr>
+        <td>The request protocol.</td></tr>
 <tr class="odd"><td><code>%{<var>VARNAME</var>}i</code></td>
         <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the request sent to the server. Changes made by other
@@ -121,9 +121,9 @@
         <code>On</code>.</td></tr>
 <tr><td><code>%L</code></td>
         <td>The request log ID from the error log (or '-' if nothing has been
-            logged to the error log for this request)</td></tr>
+            logged to the error log for this request).</td></tr>
 <tr class="odd"><td><code>%m</code></td>
-        <td>The request method</td></tr>
+        <td>The request method.</td></tr>
 <tr><td><code>%{<var>VARNAME</var>}n</code></td>
         <td>The contents of note <var>VARNAME</var> from another
         module.</td></tr>
@@ -131,7 +131,7 @@
         <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the reply.</td></tr>
 <tr><td><code>%p</code></td>
-        <td>The canonical port of the server serving the request</td></tr>
+        <td>The canonical port of the server serving the request.</td></tr>
 <tr class="odd"><td><code>%{<var>format</var>}p</code></td>
         <td>The canonical port of the server serving the request or the
         server's actual port or the client's actual port.  Valid formats
@@ -147,9 +147,9 @@
         </td></tr>
 <tr><td><code>%q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
-        string exists, otherwise an empty string)</td></tr>
+        string exists, otherwise an empty string).</td></tr>
 <tr class="odd"><td><code>%r</code></td>
-        <td>First line of request</td></tr>
+        <td>First line of request.</td></tr>
 <tr><td><code>%R</code></td>
         <td>The handler generating the response (if any).</td></tr>
 <tr class="odd"><td><code>%s</code></td>
@@ -183,7 +183,7 @@
         <td>The time taken to serve the request, in seconds.</td></tr>
 <tr class="odd"><td><code>%u</code></td>
         <td>Remote user (from auth; may be bogus if return status
-        (<code>%s</code>) is 401)</td></tr>
+        (<code>%s</code>) is 401).</td></tr>
 <tr><td><code>%U</code></td>
         <td>The URL path requested, not including any query string.</td></tr>
 <tr class="odd"><td><code>%v</code></td>

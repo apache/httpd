@@ -3064,31 +3064,80 @@ persistante</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a> <a name="maxrangeoverlaps" id="maxrangeoverlaps">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of overlapping ranges (eg: <code>100-200,150-300</code>) allowed before returning the complete
-        resource </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxRangeOverlaps default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de chevauchements de segments de données autorisé
+    (par exemple <code>100-200,150-300</code>) avant le renvoi de la
+    ressource complète</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxRangeOverlaps default | unlimited | none | <var>nombre de
+    chevauchements</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxRangeOverlaps 20</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTP Server 2.3.15 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.15 du serveur HTTP
+    Apache</td></tr>
+</table>
+        <p>La directive <code class="directive">MaxRangeOverlaps</code> permet
+	de limiter le nombre de chevauchements de segments de données HTTP
+	autorisé par le serveur. Si le nombre de
+	chevauchements de segments demandé est supérieur au nombre maximal
+	autorisé, la ressource sera renvoyée dans son intégralité.</p>
+
+        <dl>
+            <dt><strong>default</strong></dt>
+            <dd>Limite le nombre de chevauchements de segments à la valeur
+	    par défaut 20 définie à la compilation.</dd>
+
+            <dt><strong>none</strong></dt>
+            <dd>Aucun chevauchement de segment n'est autorisé.</dd>
+
+            <dt><strong>unlimited</strong></dt>
+            <dd>Le nombre de chevauchements de segments est illimité.</dd>
+
+            <dt><var>number-of-ranges</var></dt>
+            <dd>Un nombre positif représente le nombre maximal de
+	    chevauchements de segments autorisé par le serveur.</dd>
+        </dl>
+    
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a> <a name="maxrangereversals" id="maxrangereversals">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of range reversals (eg: <code>100-200,50-70</code>) allowed before returning the complete
-        resource </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxRangeReversals default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre d'inversions d'ordre autorisé dans la spécification des
+    segments de données (par exemple <code>100-200,50-70</code>) avant le renvoi de la
+    ressource complète</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxRangeReversals default | unlimited | none | <var>nombre
+    d'inversions</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxRangeReversals 20</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in Apache HTTP Server 2.3.15 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
-	en langue anglaise.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.15 du serveur HTTP
+    Apache</td></tr>
+</table>
+        <p>La directive <code class="directive">MaxRangeReversals</code> permet
+	de limiter le nombre d'inversions d'ordre dans la spécification
+	des segments de données HTTP
+	autorisé par le serveur. Si le nombre
+	d'inversions demandé est supérieur au nombre maximal
+	autorisé, la ressource sera renvoyée dans son intégralité.</p>
+
+        <dl>
+            <dt><strong>default</strong></dt>
+            <dd>Limite le nombre d'inversions à la valeur
+	    par défaut 20 définie à la compilation.</dd>
+
+            <dt><strong>none</strong></dt>
+            <dd>Aucune inversion n'est autorisée.</dd>
+
+            <dt><strong>unlimited</strong></dt>
+            <dd>Le nombre d'inversions est illimité.</dd>
+
+            <dt><var>number-of-ranges</var></dt>
+            <dd>Un nombre positif représente le nombre maximal
+	    d'inversions autorisé par le serveur.</dd>
+        </dl>
+    
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Directive</a></h2>
 <table class="directive">
@@ -3367,7 +3416,7 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une adresse IP pour les serveurs virtuels à base de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>OBSOLETE : Définit une adresse IP pour les serveurs virtuels à base de
 nom</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>NameVirtualHost <var>adresse</var>[:<var>port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
