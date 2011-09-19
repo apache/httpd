@@ -673,6 +673,7 @@ static int magic_rsl_to_request(request_rec *r)
         encoding_pos,     /* content encoding starting point: position */
         encoding_len;     /* content encoding length */
 
+    char *tmp;
     magic_rsl *frag;      /* list-traversal pointer */
     rsl_states state;
 
@@ -784,17 +785,13 @@ static int magic_rsl_to_request(request_rec *r)
     }
 
     /* save the info in the request record */
-    if (state == rsl_subtype || state == rsl_encoding ||
-        state == rsl_encoding) {
-        char *tmp;
-        tmp = rsl_strdup(r, type_frag, type_pos, type_len);
-        /* XXX: this could be done at config time I'm sure... but I'm
-         * confused by all this magic_rsl stuff. -djg */
-        ap_content_type_tolower(tmp);
-        ap_set_content_type(r, tmp);
-    }
+    tmp = rsl_strdup(r, type_frag, type_pos, type_len);
+    /* XXX: this could be done at config time I'm sure... but I'm
+     * confused by all this magic_rsl stuff. -djg */
+    ap_content_type_tolower(tmp);
+    ap_set_content_type(r, tmp);
+
     if (state == rsl_encoding) {
-        char *tmp;
         tmp = rsl_strdup(r, encoding_frag,
                                          encoding_pos, encoding_len);
         /* XXX: this could be done at config time I'm sure... but I'm

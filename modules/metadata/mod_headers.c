@@ -332,7 +332,7 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
         return NULL;
     }
 
-    tag->arg = '\0';
+    tag->arg = "\0";
     /* grab the argument if there is one */
     if (*s == '{') {
         ++s;
