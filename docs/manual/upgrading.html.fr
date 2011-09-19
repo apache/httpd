@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -280,6 +278,17 @@ nécessiter une mise à jour des fichiers de configuration de la version
 
       <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> utilise maintenant par défaut les
       condensés MD5 sur toutes les plates-formes.</li>
+
+      <li>La directive <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> n'a plus aucun effet, si
+      ce n'est l'émission d'un avertissement. Toute combinaison
+      adresse/port apparaissant dans plusieurs serveurs virtuels est
+      traitée implicitement comme un serveur virtuel basé sur le nom.
+      </li>
+
+      <li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> n'effectue plus de compression
+      s'il s'aperçoit que la quantité de données ajoutée par la
+      compression est supérieure à la quantité de données à compresser.
+      </li>
     </ul>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
