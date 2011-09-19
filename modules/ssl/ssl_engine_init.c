@@ -1189,7 +1189,7 @@ static void ssl_init_proxy_certs(server_rec *s,
         X509_NAME_oneline(name, cert_cn, sizeof(cert_cn));
         X509_STORE_CTX_init(sctx, store, inf->x509, NULL);
 
-        res=X509_verify_cert(sctx);
+        res = X509_verify_cert(sctx);
         chain = X509_STORE_CTX_get1_chain(sctx);
 
         if (res == 1) {
@@ -1201,13 +1201,13 @@ static void ssl_init_proxy_certs(server_rec *s,
             X509_free(sk_X509_shift(chain));
         }
         else {
-            int n=X509_STORE_CTX_get_error(sctx);
+            int err = X509_STORE_CTX_get_error(sctx);
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                          "SSL proxy client cert chain verification failed for %s: %s",
-                         cert_cn, X509_verify_cert_error_string(n));
+                         cert_cn, X509_verify_cert_error_string(err));
         }
         ERR_clear_error();
-        i=sk_X509_num(chain);
+        i = sk_X509_num(chain);
         pkp->ca_certs[n] = chain;
 
         if (i == 0 || (res != 1 && i == 1) ) {
@@ -1217,7 +1217,7 @@ static void ssl_init_proxy_certs(server_rec *s,
             i = 0;
             pkp->ca_certs[n] = NULL;
         }
-         
+
         X509_STORE_CTX_cleanup(sctx);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
