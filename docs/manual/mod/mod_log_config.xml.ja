@@ -320,25 +320,6 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CookieLog</name>
-<description>クッキングのロギングのためのファイル名を設定する</description>
-<syntax>CookieLog <var>filename</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-<compatibility>このディレクティブは非推奨</compatibility>
-
-<usage>
-    <p><directive>CookieLog</directive>
-    ディレクティブはクッキーのロギングのためのファイル名を
-    設定します。filename は <directive
-    module="core">ServerRoot</directive>
-    からの相対パスです。このディレクティブは <code
-    >mod_cookies</code> との互換性のためだけに
-    存在し、使用は推奨されていません。</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CustomLog</name>
 <description>ログファイルの名前と書式を設定する</description>
 <syntax>CustomLog  <var>file</var>|<var>pipe</var>

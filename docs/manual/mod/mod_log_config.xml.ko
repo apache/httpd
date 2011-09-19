@@ -268,23 +268,6 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CookieLog</name>
-<description>쿠키를 로그에 남기기위해 사용할 파일명을 설정한다</description>
-<syntax>CookieLog <var>filename</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-<compatibility>이 지시어는 사용되지 않는다.</compatibility>
-
-<usage>
-    <p><directive>CookieLog</directive> 지시어는 쿠키를 로그에
-    남기기위해 사용할 파일명을 설정한다. 파일명은 <directive
-    module="core">ServerRoot</directive>에 상대경로이다. 이
-    지시어는 <code>mod_cookies</code>와 호환을 위해 포함했을뿐,
-    실제 사용되지 않는다.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CustomLog</name>
 <description>로그파일 이름과 형식을 지정한다</description>
 <syntax>CustomLog  <var>file</var>|<var>pipe</var>
