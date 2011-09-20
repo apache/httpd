@@ -137,10 +137,11 @@
     information written to <code>stderr</code> by a CGI script will
     be copied directly to the error log.</p>
 
-    <p>If <module>mod_unique_id</module> is loaded, you
-    can put a <code>%L</code> token in both the error log and the access
-    log, producing a log entry ID with which you can correlate the entry
-    in the error log with the entry in the access log.</p>
+    <p>Putting a <code>%L</code> token in both the error log and the access
+    log will produce a log entry ID with which you can correlate the entry
+    in the error log with the entry in the access log. If
+    <module>mod_unique_id</module> is loaded, its unique request ID will be
+    used as the log entry ID, too.</p>
 
     <p>During testing, it is often useful to continuously monitor
     the error log for any problems. On Unix systems, you can
