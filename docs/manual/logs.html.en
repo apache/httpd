@@ -107,27 +107,23 @@
     <code>syslog</code> or <a href="#piped">pipe them to a
     program</a>.</p>
 
-    <p>The default format of the error log is relatively free-form and
-    descriptive. But there is certain information that is contained
-    in most error log entries. For example, here is a typical
-    message.</p>
+    <p>The format of the error log is defined by the <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code> directive, with which you
+    can customize what values are logged. A default is format defined 
+    if you don't specify one. A typical log message follows:</p>
 
     <div class="example"><p><code>
-      [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
-      client denied by server configuration:
-      /export/home/live/ap/htdocs/test
+    [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416] 
+    [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
     </code></p></div>
 
     <p>The first item in the log entry is the date and time of the
-    message. The second item lists the severity of the error being
-    reported. The <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code>
-    directive is used to control the types of errors that are sent
-    to the error log by restricting the severity level. The third
-    item gives the IP address of the client that generated the
-    error. Beyond that is the message itself, which in this case
-    indicates that the server has been configured to deny the
-    client access. The server reports the file-system path (as
-    opposed to the web path) of the requested document.</p>
+    message. The next is the module producing the message (core, in this
+    case) and the severity level of that message. This is followed by
+    the process ID and, if appropriate, the thread ID, of the process
+    that experienced the condition. Next, we have the client address
+    that made the request. And finally is the detailed error message,
+    which in this case indicates a request for a file that did not
+    exist.</p>
 
     <p>A very wide variety of different messages can appear in the
     error log. Most look similar to the example above. The error
@@ -135,9 +131,7 @@
     information written to <code>stderr</code> by a CGI script will
     be copied directly to the error log.</p>
 
-    <p>Using the <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>
-    directive, you can customize the format of the error log, and what
-    values are logged. If you have <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code>, you
+    <p>If <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> is loaded, you
     can put a <code>%L</code> token in both the error log and the access
     log, producing a log entry ID with which you can correlate the entry
     in the error log with the entry in the access log.</p>
