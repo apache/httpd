@@ -1336,6 +1336,10 @@ in case of an error</description>
     message is not higher than the specified log severity level. The number can
     range from 1 (alert) over 4 (warn) and 7 (debug) to 15 (trace8).</p>
 
+    <p>For example, here's what would happen if you added modifiers to
+    the <code>%{Referer}i</code> token, which logs the
+    <code>Referer</code> request header.</p>
+
     <table border="1" style="zebra">
     <columnspec><column width=".3"/><column width=".7"/></columnspec>
 
