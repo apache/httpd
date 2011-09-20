@@ -531,16 +531,15 @@ PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y)
 
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
+    const char *uri = ap_escape_html(r->pool, r->uri);
     apr_table_setn(r->notes, "error-notes",
-    apr_pstrcat(r->pool,
-        "The proxy server could not handle the request "
-        "<em><a href=\"", ap_escape_html(r->pool, r->uri),
-        "\">", ap_escape_html(r->pool, r->method),
-        "&nbsp;",
-        ap_escape_html(r->pool, r->uri), "</a></em>.<p>\n"
-        "Reason: <strong>",
-        ap_escape_html(r->pool, message),
-        "</strong></p>", NULL));
+        apr_pstrcat(r->pool,
+            "The proxy server could not handle the request <em><a href=\"",
+            uri, "\">", ap_escape_html(r->pool, r->method), "&nbsp;", uri,
+            "</a></em>.<p>\n"
+            "Reason: <strong>", ap_escape_html(r->pool, message),
+            "</strong></p>",
+            NULL));
 
     /* Allow "error-notes" string to be printed by ap_send_error_response() */
     apr_table_setn(r->notes, "verbose-error-to", apr_pstrdup(r->pool, "*"));
