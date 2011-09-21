@@ -241,6 +241,11 @@
         <li><code class="module"><a href="./mod/mod_ext-filter.html">mod_ext-filter</a></code>: The <code>DebugLevel</code>
         option has been removed in favour of per-module <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> configuration.
         </li>
+
+        <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: CRL based revocation checking
+        now needs to be explicitly configured through <code class="directive"><a href="./mod/mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a></code>.
+        </li>
+
       </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
