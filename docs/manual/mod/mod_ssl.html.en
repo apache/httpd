@@ -88,8 +88,18 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslrequiressl">SSLRequireSSL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncache">SSLSessionCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingcache">SSLStaplingCache</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingfaketrylater">SSLStaplingFakeTryLater</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingforceurl">SSLStaplingForceURL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingrespondertimeout">SSLStaplingResponderTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslusername">SSLUserName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslusestapling">SSLUseStapling</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifyclient">SSLVerifyClient</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
 </ul>
@@ -1907,7 +1917,7 @@ up to four parallel requests are common) those requests are served by
 <em>different</em> pre-forked server processes. Here an inter-process cache
 helps to avoid unnecessary session handshakes.</p>
 <p>
-The following four storage <em>type</em>s are currently supported:</p>
+The following five storage <em>type</em>s are currently supported:</p>
 <ul>
 <li><code>none</code>
 
@@ -1981,6 +1991,161 @@ SSLSessionCacheTimeout 600
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingCache" id="SSLStaplingCache">SSLStaplingCache</a> <a name="sslstaplingcache" id="sslstaplingcache">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the OCSP stapling cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingCache <em>type</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>Configures the cache used to store OCSP responses which get included
+in the TLS handshake if <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code>
+is enabled. Configuration of a cache is mandatory for OCSP stapling.
+With the exception of <code>none</code> and <code>nonenotnull</code>,
+the same storage types are supported as with
+<code class="directive"><a href="#sslsessioncache">SSLSessionCache</a></code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingErrorCacheTimeout" id="SSLStaplingErrorCacheTimeout">SSLStaplingErrorCacheTimeout</a> <a name="sslstaplingerrorcachetimeout" id="sslstaplingerrorcachetimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of seconds before expiring invalid responses in the OCSP stapling cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingErrorCacheTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingErrorCacheTimeout 600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>Sets the timeout in seconds before <em>invalid</em> responses
+in the OCSP stapling cache (configured through <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>) will expire.
+To set the cache timeout for valid responses, see
+<code class="directive"><a href="#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingFakeTryLater" id="SSLStaplingFakeTryLater">SSLStaplingFakeTryLater</a> <a name="sslstaplingfaketrylater" id="sslstaplingfaketrylater">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Synthesize "tryLater" responses for failed OCSP stapling queries</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingFakeTryLater on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingFakeTryLater on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>When enabled and a query to an OCSP responder for stapling
+purposes fails, mod_ssl will synthesize a "tryLater" response for the
+client. Only effective if <code class="directive"><a href="#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></code>
+is also enabled.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingForceURL" id="SSLStaplingForceURL">SSLStaplingForceURL</a> <a name="sslstaplingforceurl" id="sslstaplingforceurl">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override the OCSP responder URI specified in the certificate's AIA extension</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingForceURL <em>uri</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>This directive overrides the URI of an OCSP responder as obtained from
+the authorityInfoAccess (AIA) extension of the certificate.
+Of potential use when going through a proxy for retrieving OCSP queries.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingResponderTimeout" id="SSLStaplingResponderTimeout">SSLStaplingResponderTimeout</a> <a name="sslstaplingrespondertimeout" id="sslstaplingrespondertimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout for OCSP stapling queries</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponderTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingResponderTimeout 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>This option sets the timeout for queries to OCSP responders when
+<code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> is enabled
+and mod_ssl is querying a responder for OCSP stapling purposes.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingResponseMaxAge" id="SSLStaplingResponseMaxAge">SSLStaplingResponseMaxAge</a> <a name="sslstaplingresponsemaxage" id="sslstaplingresponsemaxage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable age for OCSP stapling responses</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponseMaxAge <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingResponseMaxAge -1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>This option sets the maximum allowable age ("freshness") when
+considering OCSP responses for stapling purposes, i.e. when
+<code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> is turned on.
+The default value (<code>-1</code>) does not enforce a maximum age,
+which means that OCSP responses are considered valid as long as their
+<code>nextUpdate</code> field is in the future.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingResponseTimeSkew" id="SSLStaplingResponseTimeSkew">SSLStaplingResponseTimeSkew</a> <a name="sslstaplingresponsetimeskew" id="sslstaplingresponsetimeskew">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable time skew for OCSP stapling response validation</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponseTimeSkew <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingResponseTimeSkew 300</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>This option sets the maximum allowable time skew when mod_ssl checks the
+<code>thisUpdate</code> and <code>nextUpdate</code> fields of OCSP responses
+which get included in the TLS handshake (OCSP stapling). Only applicable
+if <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> is turned on.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingReturnResponderErrors" id="SSLStaplingReturnResponderErrors">SSLStaplingReturnResponderErrors</a> <a name="sslstaplingreturnrespondererrors" id="sslstaplingreturnrespondererrors">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pass stapling related OCSP errors on to client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingReturnResponderErrors on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingReturnResponderErrors on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>When enabled, mod_ssl will pass responses from unsuccessful
+stapling related OCSP queries (such as status errors, expired responses etc.)
+on to the client. If set to <code>off</code>, no stapled responses
+for failed queries will be included in the TLS handshake.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStaplingStandardCacheTimeout" id="SSLStaplingStandardCacheTimeout">SSLStaplingStandardCacheTimeout</a> <a name="sslstaplingstandardcachetimeout" id="sslstaplingstandardcachetimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of seconds before expiring responses in the OCSP stapling cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingStandardCacheTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingStandardCacheTimeout 3600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>Sets the timeout in seconds before responses in the OCSP stapling cache
+(configured through <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>)
+will expire. This directive applies to <em>valid</em> responses, while
+<code class="directive"><a href="#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout</a></code> is
+used for controlling the timeout for invalid/unavailable responses.
+</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStrictSNIVHostCheck" id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</a> <a name="sslstrictsnivhostcheck" id="sslstrictsnivhostcheck">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to allow non-SNI clients to access a name-based virtual
@@ -2036,6 +2201,35 @@ any of the <a href="#envvars">SSL environment variables</a>.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLUserName SSL_CLIENT_S_DN_CN
 </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLUseStapling" id="SSLUseStapling">SSLUseStapling</a> <a name="sslusestapling" id="sslusestapling">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable stapling of OCSP responses in the TLS handshake</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLUseStapling on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLUseStapling off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</td></tr>
+</table>
+<p>This option enables OCSP stapling, as defined by the "Certificate
+Status Request" TLS extension specified in RFC 6066. If enabled (and
+requested by the client), mod_ssl will include an OCSP response
+for its own certificate in the TLS handshake. Configuring an
+<code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code> is a
+prerequisite for enabling OCSP stapling.</p>
+
+<p>OCSP stapling relieves the client of querying the OCSP responder
+on its own, but it should be noted that in its current specification,
+the server's <code>CertificateStatus</code> reply may only include an
+OCSP response for a single cert. For server certificates with intermediate
+CA certificates in their chain (the typical case nowadays),
+stapling in its current form therefore only partially achieves the
+stated goal of "saving roundtrips and resources" - see also the <a href="https://datatracker.ietf.org/doc/draft-pettersen-tls-ext-multiple-ocsp/">
+"Adding Multiple TLS Certificate Status Extension requests"</a> Internet draft.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
