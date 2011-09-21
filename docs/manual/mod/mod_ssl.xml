@@ -431,7 +431,7 @@ up to four parallel requests are common) those requests are served by
 <em>different</em> pre-forked server processes. Here an inter-process cache
 helps to avoid unnecessary session handshakes.</p>
 <p>
-The following four storage <em>type</em>s are currently supported:</p>
+The following five storage <em>type</em>s are currently supported:</p>
 <ul>
 <li><code>none</code>
 
@@ -2081,6 +2081,192 @@ SSLInsecureRenegotiation on
 from an SSI or CGI script to determine whether secure renegotiation is
 supported for a given SSL connection.</p>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLUseStapling</name>
+<description>Enable stapling of OCSP responses in the TLS handshake</description>
+<syntax>SSLUseStapling on|off</syntax>
+<default>SSLUseStapling off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>This option enables OCSP stapling, as defined by the "Certificate
+Status Request" TLS extension specified in RFC 6066. If enabled (and
+requested by the client), mod_ssl will include an OCSP response
+for its own certificate in the TLS handshake. Configuring an
+<directive module="mod_ssl">SSLStaplingCache</directive> is a
+prerequisite for enabling OCSP stapling.</p>
+
+<p>OCSP stapling relieves the client of querying the OCSP responder
+on its own, but it should be noted that in its current specification,
+the server's <code>CertificateStatus</code> reply may only include an
+OCSP response for a single cert. For server certificates with intermediate
+CA certificates in their chain (the typical case nowadays),
+stapling in its current form therefore only partially achieves the
+stated goal of "saving roundtrips and resources" - see also the <a
+href="https://datatracker.ietf.org/doc/draft-pettersen-tls-ext-multiple-ocsp/">
+"Adding Multiple TLS Certificate Status Extension requests"</a> Internet draft.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingCache</name>
+<description>Configures the OCSP stapling cache</description>
+<syntax>SSLStaplingCache <em>type</em></syntax>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>Configures the cache used to store OCSP responses which get included
+in the TLS handshake if <directive module="mod_ssl">SSLUseStapling</directive>
+is enabled. Configuration of a cache is mandatory for OCSP stapling.
+With the exception of <code>none</code> and <code>nonenotnull</code>,
+the same storage types are supported as with
+<directive module="mod_ssl">SSLSessionCache</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingResponseTimeSkew</name>
+<description>Maximum allowable time skew for OCSP stapling response validation</description>
+<syntax>SSLStaplingResponseTimeSkew <em>seconds</em></syntax>
+<default>SSLStaplingResponseTimeSkew 300</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>This option sets the maximum allowable time skew when mod_ssl checks the
+<code>thisUpdate</code> and <code>nextUpdate</code> fields of OCSP responses
+which get included in the TLS handshake (OCSP stapling). Only applicable
+if <directive module="mod_ssl">SSLUseStapling</directive> is turned on.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingResponderTimeout</name>
+<description>Timeout for OCSP stapling queries</description>
+<syntax>SSLStaplingResponderTimeout <em>seconds</em></syntax>
+<default>SSLStaplingResponderTimeout 10</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>This option sets the timeout for queries to OCSP responders when
+<directive module="mod_ssl">SSLUseStapling</directive> is enabled
+and mod_ssl is querying a responder for OCSP stapling purposes.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingResponseMaxAge</name>
+<description>Maximum allowable age for OCSP stapling responses</description>
+<syntax>SSLStaplingResponseMaxAge <em>seconds</em></syntax>
+<default>SSLStaplingResponseMaxAge -1</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>This option sets the maximum allowable age ("freshness") when
+considering OCSP responses for stapling purposes, i.e. when
+<directive module="mod_ssl">SSLUseStapling</directive> is turned on.
+The default value (<code>-1</code>) does not enforce a maximum age,
+which means that OCSP responses are considered valid as long as their
+<code>nextUpdate</code> field is in the future.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingStandardCacheTimeout</name>
+<description>Number of seconds before expiring responses in the OCSP stapling cache</description>
+<syntax>SSLStaplingStandardCacheTimeout <em>seconds</em></syntax>
+<default>SSLStaplingStandardCacheTimeout 3600</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>Sets the timeout in seconds before responses in the OCSP stapling cache
+(configured through <directive module="mod_ssl">SSLStaplingCache</directive>)
+will expire. This directive applies to <em>valid</em> responses, while
+<directive module="mod_ssl">SSLStaplingErrorCacheTimeout</directive> is
+used for controlling the timeout for invalid/unavailable responses.
+</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingReturnResponderErrors</name>
+<description>Pass stapling related OCSP errors on to client</description>
+<syntax>SSLStaplingReturnResponderErrors on|off</syntax>
+<default>SSLStaplingReturnResponderErrors on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>When enabled, mod_ssl will pass responses from unsuccessful
+stapling related OCSP queries (such as status errors, expired responses etc.)
+on to the client. If set to <code>off</code>, no stapled responses
+for failed queries will be included in the TLS handshake.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingFakeTryLater</name>
+<description>Synthesize "tryLater" responses for failed OCSP stapling queries</description>
+<syntax>SSLStaplingFakeTryLater on|off</syntax>
+<default>SSLStaplingFakeTryLater on</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>When enabled and a query to an OCSP responder for stapling
+purposes fails, mod_ssl will synthesize a "tryLater" response for the
+client. Only effective if <directive
+module="mod_ssl">SSLStaplingReturnResponderErrors</directive>
+is also enabled.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingErrorCacheTimeout</name>
+<description>Number of seconds before expiring invalid responses in the OCSP stapling cache</description>
+<syntax>SSLStaplingErrorCacheTimeout <em>seconds</em></syntax>
+<default>SSLStaplingErrorCacheTimeout 600</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>Sets the timeout in seconds before <em>invalid</em> responses
+in the OCSP stapling cache (configured through <directive
+module="mod_ssl">SSLStaplingCache</directive>) will expire.
+To set the cache timeout for valid responses, see
+<directive module="mod_ssl">SSLStaplingStandardCacheTimeout</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLStaplingForceURL</name>
+<description>Override the OCSP responder URI specified in the certificate's AIA extension</description>
+<syntax>SSLStaplingForceURL <em>uri</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3.3 and later, if using OpenSSL 0.9.8h or later</compatibility>
+
+<usage>
+<p>This directive overrides the URI of an OCSP responder as obtained from
+the authorityInfoAccess (AIA) extension of the certificate.
+Of potential use when going through a proxy for retrieving OCSP queries.</p>
 </usage>
 </directivesynopsis>
 

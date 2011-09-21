@@ -256,6 +256,12 @@
         option has been removed in favour of per-module <directive
         module="core">LogLevel</directive> configuration.
         </li>
+
+        <li><module>mod_ssl</module>: CRL based revocation checking
+        now needs to be explicitly configured through <directive
+        module="mod_ssl">SSLCARevocationCheck</directive>.
+        </li>
+
       </ul>
     </section>
   </section>
