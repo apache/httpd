@@ -1641,7 +1641,7 @@ const char *ssl_cmd_SSLStaplingResponseTimeSkew(cmd_parms *cmd, void *dcfg,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     sc->server->stapling_resptime_skew = atoi(arg);
     if (sc->server->stapling_resptime_skew < 0) {
-        return "SSLstapling_resptime_skew: invalid argument";
+        return "SSLStaplingResponseTimeSkew: invalid argument";
     }
     return NULL;
 }
@@ -1652,7 +1652,7 @@ const char *ssl_cmd_SSLStaplingResponseMaxAge(cmd_parms *cmd, void *dcfg,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     sc->server->stapling_resp_maxage = atoi(arg);
     if (sc->server->stapling_resp_maxage < 0) {
-        return "SSLstapling_resp_maxage: invalid argument";
+        return "SSLStaplingResponseMaxAge: invalid argument";
     }
     return NULL;
 }
@@ -1663,7 +1663,7 @@ const char *ssl_cmd_SSLStaplingStandardCacheTimeout(cmd_parms *cmd, void *dcfg,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     sc->server->stapling_cache_timeout = atoi(arg);
     if (sc->server->stapling_cache_timeout < 0) {
-        return "SSLstapling_cache_timeout: invalid argument";
+        return "SSLStaplingStandardCacheTimeout: invalid argument";
     }
     return NULL;
 }
@@ -1674,7 +1674,7 @@ const char *ssl_cmd_SSLStaplingErrorCacheTimeout(cmd_parms *cmd, void *dcfg,
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     sc->server->stapling_errcache_timeout = atoi(arg);
     if (sc->server->stapling_errcache_timeout < 0) {
-        return "SSLstapling_errcache_timeout: invalid argument";
+        return "SSLStaplingErrorCacheTimeout: invalid argument";
     }
     return NULL;
 }
@@ -1702,7 +1702,7 @@ const char *ssl_cmd_SSLStaplingResponderTimeout(cmd_parms *cmd, void *dcfg,
     sc->server->stapling_responder_timeout = atoi(arg);
     sc->server->stapling_responder_timeout *= APR_USEC_PER_SEC;
     if (sc->server->stapling_responder_timeout < 0) {
-        return "SSLstapling_responder_timeout: invalid argument";
+        return "SSLStaplingResponderTimeout: invalid argument";
     }
     return NULL;
 }
