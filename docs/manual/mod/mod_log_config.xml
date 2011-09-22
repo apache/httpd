@@ -246,14 +246,28 @@
       <p>Particular items can be restricted to print only for
       responses with specific HTTP status codes by placing a
       comma-separated list of status codes immediately following the
-      "%".  For example, <code>"%400,501{User-agent}i"</code> logs
-      <code>User-agent</code> on 400 errors and 501 errors only.  For
+      "%". The status code list may be peceded by a "<code>!</code>" to
+      indicate negation.</p>
+     
+    <table border="1" style="zebra">
+    <columnspec><column width=".2"/><column width=".8"/></columnspec>
+
+    <tr><th>Format String</th>
+    <th>Meaning</th></tr>
+
+    <tr>
+    <td><code>%400,501{User-agent}i</code></td>
+    <td>Logs <code>User-agent</code> on 400 errors and 501 errors only. For
       other status codes, the literal string <code>"-"</code> will be
-      logged.  The status code list may be preceded by a
-      "<code>!</code>" to indicate negation:
-      <code>"%!200,304,302{Referer}i"</code> logs <code>Referer</code>
-      on all requests that do <em>not</em> return one of the three
-      specified codes.</p>
+      logged.</td></tr>
+   
+    <tr><td><code>%!200,304,302{Referer}i</code></td>
+    <td>Logs <code>Referer</code> on all requests that do 
+    <em>not</em> return one of the three specified codes,
+    "<code>-</code>" otherwise.
+    </td></tr>
+
+    </table>
 
       <p>The modifiers "&lt;" and "&gt;" can be used for requests that
       have been internally redirected to choose whether the original
@@ -268,7 +282,7 @@
 
     </section>
 
-    <section id="format-notes"><title>Some Notes</title>
+    <section id="format-notes"><title>Format Notes</title>
 
       <p>For security reasons, starting with version 2.0.46,
       non-printable and other special characters in <code>%r</code>,
@@ -290,10 +304,12 @@
       format provided by <module>mod_logio</module> will log the
       actual number of bytes sent over the network.</p>
 
+      <note>
       <p>Note: <module>mod_cache</module> is implemented as a
       quick-handler and not as a standard handler. Therefore, the
       <code>%R</code> format string will not return any handler
       information when content caching is involved.</p>
+      </note>
 
     </section>
 
