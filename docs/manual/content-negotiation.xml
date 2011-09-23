@@ -74,7 +74,7 @@
     <p>httpd supports 'server driven' content negotiation, as
     defined in the HTTP/1.1 specification. It fully supports the
     <code>Accept</code>, <code>Accept-Language</code>,
-    <code>Accept-Charset</code> and<code>Accept-Encoding</code> 
+    <code>Accept-Charset</code> and<code>Accept-Encoding</code>
     request headers. httpd also supports 'transparent'
     content negotiation, which is an experimental negotiation
     protocol defined in RFC 2295 and RFC 2296. It does not offer
@@ -129,7 +129,7 @@
     <code>.var</code>. In the examples shown below, the resource is
     named <code>foo</code>, so the type map file is named
     <code>foo.var</code>.</p>
-    
+
     <p>This file should have an entry for each available
     variant; these entries consist of contiguous HTTP-format header
     lines. Entries for different variants are separated by blank
@@ -337,7 +337,7 @@
         not selected at each test are eliminated. After each test,
         if only one variant remains, select it as the best match
         and proceed to step 3. If more than one variant remains,
-        move on to the next test. 
+        move on to the next test.
 
         <ol>
           <li>Multiply the quality factor from the <code>Accept</code>
@@ -519,7 +519,7 @@
 </section>
 
 <section id="extensions"><title>Extensions to Transparent Content
-Negotiation</title> 
+Negotiation</title>
 
 <p>httpd extends the transparent content negotiation protocol (RFC
 2295) as follows. A new <code>{encoding ..}</code> element is used in

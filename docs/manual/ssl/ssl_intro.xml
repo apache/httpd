@@ -41,7 +41,7 @@ intended to be a definitive guide to the SSL protocol, nor does it discuss
 specific techniques for managing certificates in an organization, or the
 important legal issues of patents and import and export restrictions.
 Rather, it is intended to provide a common background to <module
->mod_ssl</module> users by pulling together various concepts, definitions, 
+>mod_ssl</module> users by pulling together various concepts, definitions,
 and examples as a starting point for further exploration.</p>
 
 <p>The presented content is mainly derived, with the author's permission,
@@ -75,7 +75,7 @@ integrity, and authentication.</p>
     solution is to use a cryptographic algorithm, a technique that would
     transform her message into an encrypted form, unreadable until it is
     decrypted. Once in this form, the message can only be
-    decrypted by using a secret key. Without the key the message is useless: 
+    decrypted by using a secret key. Without the key the message is useless:
     good cryptographic algorithms make it so difficult
     for intruders to decode the original text that it isn't worth their
     effort.</p>
@@ -87,11 +87,11 @@ integrity, and authentication.</p>
     <dt>Conventional cryptography</dt>
     <dd>also known as symmetric cryptography, requires the sender and
     receiver to share a key: a secret piece of information that may be
-    used to encrypt or decrypt a message. As long as this key is kept 
-    secret, nobody other than the sender or recipient can read the message. 
+    used to encrypt or decrypt a message. As long as this key is kept
+    secret, nobody other than the sender or recipient can read the message.
     If Alice and the bank know a secret key, then they can send each other
     private messages. The task of sharing a key between sender and recipient
-    before communicating, while also keeping it secret from others, can be 
+    before communicating, while also keeping it secret from others, can be
     problematic.</dd>
 
     <dt>Public key cryptography</dt>
@@ -116,9 +116,9 @@ integrity, and authentication.</p>
     is still a concern that someone might modify her original message or
     substitute it with a different one, in order to transfer the money
     to themselves, for instance. One way of guaranteeing the integrity
-    of Alice's message is for her to create a concise summary of her 
-    message and send this to the bank as well. Upon receipt of the message, 
-    the bank creates its own summary and compares it with the one Alice 
+    of Alice's message is for her to create a concise summary of her
+    message and send this to the bank as well. Upon receipt of the message,
+    the bank creates its own summary and compares it with the one Alice
     sent. If the summaries are the same then the message has been received
     intact.</p>
 
@@ -126,10 +126,10 @@ integrity, and authentication.</p>
     function</em> or <em>hash function</em>. Message digests are used to create
     a short, fixed-length representation of a longer, variable-length message.
     Digest algorithms are designed to produce a unique digest for each
-    message. Message digests are designed to make it impractically difficult 
-    to determine the message from the digest and (in theory) impossible to 
-    find two different messages which create the same digest -- thus 
-    eliminating the possibility of substituting one message for another while 
+    message. Message digests are designed to make it impractically difficult
+    to determine the message from the digest and (in theory) impossible to
+    find two different messages which create the same digest -- thus
+    eliminating the possibility of substituting one message for another while
     maintaining the same digest.</p>
 
     <p>Another challenge that Alice faces is finding a way to send the digest
@@ -137,8 +137,8 @@ integrity, and authentication.</p>
     be compromised and with it the possibility for the bank to determine the
     integrity of the original message. Only if the digest is sent securely can
     the integrity of the associated message be determined.</p>
-    
-    <p>One way to send the digest securely is to include it in a digital 
+
+    <p>One way to send the digest securely is to include it in a digital
     signature.</p>
 </section>
 
@@ -168,7 +168,7 @@ the bank from a fraudulent claim from Alice that she did not send the message
 <p>Although Alice could have sent a private message to the bank, signed
 it and ensured the integrity of the message, she still needs to be sure
 that she is really communicating with the bank. This means that she needs
-to be sure that the public key she is using is part of the bank's key-pair, 
+to be sure that the public key she is using is part of the bank's key-pair,
 and not an intruder's. Similarly, the bank needs to verify that the message
 signature really was signed by the private key that belongs to Alice.</p>
 
@@ -257,7 +257,7 @@ certificates are used for authentication.</p>
     distinguished field names are optional and which are required. It
     may also place requirements upon the field contents, as may users of
     certificates. For example, a Netscape browser requires that the
-    Common Name for a certificate representing a server matches a wildcard 
+    Common Name for a certificate representing a server matches a wildcard
     pattern for the domain name of that server, such
     as <code>*.snakeoil.com</code>.</p>
 
@@ -300,9 +300,9 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 <title>Certificate Authorities</title>
     <p>By verifying the information in a certificate request
     before granting the certificate, the Certificate Authority assures
-    itself of the identity of the private key owner of a key-pair. 
-    For instance, if Alice requests a personal certificate, the 
-    Certificate Authority must first make sure that Alice really is the 
+    itself of the identity of the private key owner of a key-pair.
+    For instance, if Alice requests a personal certificate, the
+    Certificate Authority must first make sure that Alice really is the
     person the certificate request claims she is.</p>
 
     <section id="certificatechains">
@@ -356,17 +356,17 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
         they also manage them -- that is, they determine for how long
         certificates remain valid, they renew them and keep lists of
         certificates that were issued in the past but are no longer valid
-        (Certificate Revocation Lists, or CRLs).</p> 
+        (Certificate Revocation Lists, or CRLs).</p>
 
-        <p>For example, if Alice is entitled to a certificate as an 
+        <p>For example, if Alice is entitled to a certificate as an
         employee of a company but has now left
         that company, her certificate may need to be revoked.
         Because certificates are only issued after the subject's identity has
-        been verified and can then be passed around to all those with whom 
-        the subject may communicate, it is impossible to tell from the 
-        certificate alone that it has been revoked. 
-        Therefore when examining certificates for validity 
-        it is necessary to contact the issuing Certificate Authority to 
+        been verified and can then be passed around to all those with whom
+        the subject may communicate, it is impossible to tell from the
+        certificate alone that it has been revoked.
+        Therefore when examining certificates for validity
+        it is necessary to contact the issuing Certificate Authority to
         check CRLs -- this is usually not an automated part of the process.</p>
 
         <note><title>Note</title>
@@ -433,14 +433,14 @@ establishing a protocol session.</p>
     </table>
 </section>
 
-<p>There are a number of versions of the SSL protocol, as shown in 
+<p>There are a number of versions of the SSL protocol, as shown in
 <a href="#table4">Table 4</a>. As noted there, one of the benefits in
 SSL 3.0 is that it adds support of certificate chain loading. This feature
 allows a server to pass a server certificate along with issuer certificates
 to the browser. Chain loading also permits the browser to validate the
 server certificate, even if Certificate Authority certificates are not
 installed for the intermediate issuers, since they are included in the
-certificate chain. SSL 3.0 is the basis for the Transport Layer Security 
+certificate chain. SSL 3.0 is the basis for the Transport Layer Security
 [<a href="#TLS1">TLS</a>] protocol standard, currently in development by
 the Internet Engineering Task Force (IETF).</p>
 
@@ -506,14 +506,14 @@ the Internet Engineering Task Force (IETF).</p>
 
     <p>One variable in the choice of key exchange methods is digital
     signatures -- whether or not to use them, and if so, what kind of
-    signatures to use. Signing with a private key provides protection 
+    signatures to use. Signing with a private key provides protection
     against a man-in-the-middle-attack during the information exchange
     used to generating the shared key [<a href="#AC96">AC96</a>, p516].</p>
 </section>
 
 <section id="ciphertransfer">
 <title>Cipher for Data Transfer</title>
-    <p>SSL uses conventional symmetric cryptography, as described earlier, 
+    <p>SSL uses conventional symmetric cryptography, as described earlier,
     for encrypting messages in a session.
     There are nine choices of how to encrypt, including the option not to
     encrypt:</p>
@@ -539,8 +539,8 @@ the Internet Engineering Task Force (IETF).</p>
     portion of the previously encrypted cipher text is used in the
     encryption of the current block. "DES" refers to the Data Encryption
     Standard [<a href="#AC96">AC96</a>, ch12], which has a number of
-    variants (including DES40 and 3DES_EDE). "Idea" is currently one of 
-    the best and cryptographically strongest algorithms available, 
+    variants (including DES40 and 3DES_EDE). "Idea" is currently one of
+    the best and cryptographically strongest algorithms available,
     and "RC2" is a proprietary algorithm from RSA DSI [<a href="#AC96"
     >AC96</a>, ch13].</p>
 </section>
@@ -589,7 +589,7 @@ the Internet Engineering Task Force (IETF).</p>
 
     <p>The encapsulation of SSL control protocols by the record protocol
     means that if an active session is renegotiated the control protocols
-    will be transmitted securely. If there was no previous session,    
+    will be transmitted securely. If there was no previous session,
     the Null cipher suite is used, which means there will be no encryption and
     messages will have no integrity digests, until the session has been
     established.</p>
@@ -617,8 +617,8 @@ the Internet Engineering Task Force (IETF).</p>
 <title>Securing HTTP Communication</title>
     <p>One common use of SSL is to secure Web HTTP communication between
     a browser and a webserver. This does not preclude the use of
-    non-secured HTTP - the secure version (called HTTPS) is the same as 
-    plain HTTP over SSL, but uses the URL scheme <code>https</code> 
+    non-secured HTTP - the secure version (called HTTPS) is the same as
+    plain HTTP over SSL, but uses the URL scheme <code>https</code>
     rather than <code>http</code>, and a different server port (by default,
     port 443). This functionality is a large part of what <module
     >mod_ssl</module> provides for the Apache webserver.</p>
@@ -650,7 +650,7 @@ href="http://www.itu.int/rec/recommendation.asp?type=folders&amp;lang=e&amp;pare
 </dd>
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
-<dd><q>Public Key Cryptography Standards (PKCS)</q>, 
+<dd><q>Public Key Cryptography Standards (PKCS)</q>,
 RSA Laboratories Technical Notes, See <a
 href="http://www.rsasecurity.com/rsalabs/pkcs/"
 >http://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>

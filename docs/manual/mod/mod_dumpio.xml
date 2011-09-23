@@ -62,7 +62,7 @@
 <syntax>DumpIOInput On|Off</syntax>
 <default>DumpIOInput Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>DumpIOInput is only available in Apache 2.1.3 and 
+<compatibility>DumpIOInput is only available in Apache 2.1.3 and
 later.</compatibility>
 
 <usage>
@@ -82,7 +82,7 @@ later.</compatibility>
 <syntax>DumpIOOutput On|Off</syntax>
 <default>DumpIOOutput Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>DumpIOOutput is only available in Apache 2.1.3 and 
+<compatibility>DumpIOOutput is only available in Apache 2.1.3 and
 later.</compatibility>
 
 <usage>

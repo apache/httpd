@@ -46,7 +46,7 @@
     <module>mod_cgid</module> should be used in place of
     this module. At the user level, the two modules are essentially
     identical.</p>
-    
+
     <p>For backward-compatibility, the cgi-script handler will also be activated
     for any file with the mime-type <code>application/x-httpd-cgi</code>. The
     use of the magic mime-type is deprecated.</p>

@@ -116,7 +116,7 @@
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
-    <directive module="mpm_common">StartServers</directive> 
+    <directive module="mpm_common">StartServers</directive>
     parameter.</p>
 
     <p>Users of <module>mod_status</module>
@@ -147,7 +147,7 @@
     ensure that there are no errors in the configuration files.
     If your configuration file has errors in it, you will get an
     error message about that syntax error, and the server will refuse to
-    restart. This avoids the situation where the server halts and then 
+    restart. This avoids the situation where the server halts and then
     cannot restart, leaving you with a non-functioning server.</p>
 
     <p>This still will not
@@ -192,35 +192,35 @@ syntax error(s).</note>
     <p>The <code>WINCH</code> or <code>graceful-stop</code> signal causes
     the parent process to <em>advise</em> the children to exit after
     their current request (or to exit immediately if they're not
-    serving anything). The parent will then remove its <directive 
+    serving anything). The parent will then remove its <directive
     module="mpm_common">PidFile</directive> and cease listening on
     all ports. The parent will continue to run, and monitor children
     which are handling requests. Once all children have finalised
-    and exited or the timeout specified by the <directive 
+    and exited or the timeout specified by the <directive
     module="mpm_common">GracefulShutdownTimeout</directive> has been
     reached, the parent will also exit.  If the timeout is reached,
     any remaining children will be sent the <code>TERM</code> signal
     to force them to exit.</p>
-    
-    <p>A <code>TERM</code> signal will immediately terminate the 
+
+    <p>A <code>TERM</code> signal will immediately terminate the
     parent process and all children when in the "graceful" state. However
     as the <directive module="mpm_common">PidFile</directive> will
-    have been removed, you will not be able to use 
+    have been removed, you will not be able to use
     <code>apachectl</code> or <code>httpd</code> to send this signal.</p>
 
     <note><p>The <code>graceful-stop</code> signal allows you to run multiple
-    identically configured instances of <program>httpd</program> at the 
-    same time. This is a powerful feature when performing graceful 
-    upgrades of httpd, however it can also cause deadlocks and race 
-    conditions with some configurations.</p> 
+    identically configured instances of <program>httpd</program> at the
+    same time. This is a powerful feature when performing graceful
+    upgrades of httpd, however it can also cause deadlocks and race
+    conditions with some configurations.</p>
 
     <p>Care has been taken to ensure that on-disk files such as lock files
     (<directive module="core">Mutex</directive>) and Unix socket files
     (<directive module="mod_cgid">ScriptSock</directive>) contain the server
     PID, and should coexist without problem. However, if a configuration
-    directive, third-party module or persistent CGI utilises any other on-disk 
-    lock or  state files, care should be taken to ensure that multiple running 
-    instances of <program>httpd</program> do not clobber each other's files.</p> 
+    directive, third-party module or persistent CGI utilises any other on-disk
+    lock or  state files, care should be taken to ensure that multiple running
+    instances of <program>httpd</program> do not clobber each other's files.</p>
 
     <p>You should also be wary of other potential race conditions, such as
     using <program>rotatelogs</program> style piped logging. Multiple running

@@ -24,7 +24,7 @@
   <parentdocument href="./">Developer Documentation</parentdocument>
 
   <title>Guide to writing output filters</title>
-  
+
   <summary>
     <p>There are a number of common pitfalls encountered when writing
     output filters; this page aims to document best practice for
@@ -93,9 +93,9 @@
 
   <section id="invocation">
     <title>Filter invocation</title>
-    
+
     <p>For any given request, an output filter might be invoked only
-    once and be given a single brigade representing the entire response.  
+    once and be given a single brigade representing the entire response.
     It is also possible that the number of times a filter is invoked
     for a single response is proportional to the size of the content
     being filtered, with the filter being passed a brigade containing
@@ -185,10 +185,10 @@
     calling this function (since it comes from a pool), but the
     associated pool cleanup is unregistered.  Using
     <code>apr_brigade_destroy</code> can in fact cause memory leaks;
-    if a "destroyed" brigade contains buckets when its 
+    if a "destroyed" brigade contains buckets when its
     containing pool is destroyed, those buckets will <em>not</em> be
     immediately destroyed.</p>
-    
+
     <p>In general, filters should use <code>apr_brigade_cleanup</code>
     in preference to <code>apr_brigade_destroy</code>.</p></note>
 
@@ -302,14 +302,14 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
   <section id="state">
 
     <title>Maintaining state</title>
-    
+
     <p>A filter which needs to maintain state over multiple
     invocations per response can use the <code>->ctx</code> field of
     its <code>ap_filter_t</code> structure.  It is typical to store a
     temporary brigade in such a structure, to avoid having to allocate
     a new brigade per invocation as described in the <a
     href="#brigade">Brigade structure</a> section.</p>
-    
+
   <example><title>Example code to maintain filter state</title>
 struct dummy_state {<br />
 <indent>
@@ -340,7 +340,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
     </example>
 
   </section>
-  
+
   <section id="buffer">
     <title>Buffering buckets</title>
 
@@ -401,7 +401,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
     from every data bucket using a non-blocking read; if that fails
     with <code>APR_EAGAIN</code>, then send a <code>FLUSH</code>
     bucket down the filter chain, and retry using a blocking read.</p>
-    
+
     <p>This mode of operation ensures that any filters further down the
     filter chain will flush any buffered buckets if a slow content
     source is being used.</p>
@@ -470,7 +470,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
       <li>Output filters must process a fixed amount of data at a
       time, to ensure that memory consumption is not proportional to
       the size of the content being filtered.</li>
-      
+
       <li>Output filters should be agnostic with respect to bucket
       types, and must be able to process buckets of unfamiliar
       type.</li>
@@ -481,7 +481,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
       before reusing that brigade structure; output filters should
       never use <code>apr_brigade_destroy</code> to "destroy"
       brigades.</li>
-      
+
       <li>Output filters must <em>setaside</em> any buckets which are
       preserved beyond the duration of the filter function.</li>
 

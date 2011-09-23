@@ -204,11 +204,11 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     displayed as such. This information, also, is transmitted in
     HTTP headers.</p>
 
-    <p>The character set, language, encoding and mime type are all 
-    used in the process of content negotiation (See 
+    <p>The character set, language, encoding and mime type are all
+    used in the process of content negotiation (See
     <module>mod_negotiation</module>) to determine
     which document to give to the client, when there are
-    alternative documents in more than one character set, language, 
+    alternative documents in more than one character set, language,
     encoding or mime type. All filename extensions associations
     created with <directive module="mod_mime">AddCharset</directive>,
     <directive module="mod_mime">AddEncoding</directive>, <directive
@@ -533,10 +533,10 @@ type</description>
 
     <note>
       It is recommended that new media types be added using the
-      <directive>AddType</directive> directive rather than changing the 
+      <directive>AddType</directive> directive rather than changing the
       <directive module="mod_mime">TypesConfig</directive> file.
     </note>
-    
+
     <example><title>Example</title>
       AddType image/gif .gif
     </example>
@@ -567,8 +567,8 @@ type</description>
     the content returned by the server.</p>
 
     <p>This directive primarily configures the content types generated for
-    static files served out of the filesystem.  For resources other than 
-    static files, where the generator of the response typically specifies 
+    static files served out of the filesystem.  For resources other than
+    static files, where the generator of the response typically specifies
     a Content-Type, this directive has no effect.</p>
 
 </usage>
@@ -824,7 +824,7 @@ extensions</description>
 <compatibility>RemoveInputFilter is only available in Apache 2.0.26 and
 later.</compatibility>
 
-<usage>   
+<usage>
     <p>The <directive>RemoveInputFilter</directive> directive removes any
     input <a href="../filter.html">filter</a> associations for files with
     the given extensions.
@@ -875,7 +875,7 @@ extensions</description>
 <compatibility>RemoveOutputFilter is only available in Apache 2.0.26 and
 later.</compatibility>
 
-<usage>    
+<usage>
     <p>The <directive>RemoveOutputFilter</directive> directive removes any
     output <a href="../filter.html">filter</a> associations for files with
     the given extensions.

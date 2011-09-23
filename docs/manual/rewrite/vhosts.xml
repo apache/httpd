@@ -27,9 +27,9 @@
 
 <summary>
 
-<p>This document supplements the <module>mod_rewrite</module> 
+<p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
-how you can use <module>mod_rewrite</module> to create dynamically 
+how you can use <module>mod_rewrite</module> to create dynamically
 configured virtual hosts.</p>
 
 <note type="warning">mod_rewrite is not the best way to configure
@@ -83,9 +83,9 @@ RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
 <dt>Discussion</dt>
     <dd>
 
-    <note type="warning">You will need to take care of the DNS 
+    <note type="warning">You will need to take care of the DNS
     resolution - Apache does
-    not handle name resolution. You'll need either to create CNAME 
+    not handle name resolution. You'll need either to create CNAME
     records for each hostname, or a DNS wildcard record. Creating DNS
     records is beyond the scope of this document.</note>
 
@@ -105,7 +105,7 @@ As with many techniques discussed in this document, mod_rewrite really
 isn't the best way to accomplish this task. You should, instead,
 consider using <module>mod_vhost_alias</module> instead, as it will much
 more gracefully handle anything beyond serving static files, such as any
-dynamic content, and Alias resolution. 
+dynamic content, and Alias resolution.
 </p>
     </dd>
   </dl>
@@ -208,4 +208,4 @@ RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
 
 </section>
 
-</manualpage> 
+</manualpage>

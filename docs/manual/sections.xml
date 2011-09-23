@@ -156,7 +156,7 @@ counterparts, apply directives to
 parts of the filesystem.  Directives enclosed in a <directive
 type="section" module="core">Directory</directive> section apply to
 the named filesystem directory and all subdirectories of that
-directory (as well as the files in those directories).  
+directory (as well as the files in those directories).
 The same effect can be obtained using <a
 href="howto/htaccess.html">.htaccess files</a>.  For example, in the
 following configuration, directory indexes will be enabled for the
@@ -259,7 +259,7 @@ directives:</p>
 ProxyPass /special-area http://special.example.com smax=5 max=10<br />
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 </example>
-</section> 
+</section>
 
 <section id="wildcards"><title>Wildcards and Regular Expressions</title>
 
@@ -417,7 +417,7 @@ Deny from all<br />
 <p>To find out what directives are allowed in what types of
 configuration sections, check the <a
 href="mod/directive-dict.html#Context">Context</a> of the directive.
-Everything that is allowed in 
+Everything that is allowed in
 <directive type="section" module="core">Directory</directive>
 sections is also syntactically allowed in
 <directive type="section" module="core">DirectoryMatch</directive>,

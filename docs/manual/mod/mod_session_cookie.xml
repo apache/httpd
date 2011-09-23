@@ -40,38 +40,38 @@
 
     <p>This submodule of <module>mod_session</module> provides support for the
     storage of user sessions on the remote browser within HTTP cookies.</p>
-    
+
     <p>Using cookies to store a session removes the need for the server or
     a group of servers to store the session locally, or collaborate to share
     a session, and can be useful for high traffic environments where a
     server based session might be too resource intensive.</p>
-    
+
     <p>If session privacy is required, the <module>mod_session_crypto</module>
     module can be used to encrypt the contents of the session before writing
     the session to the client.</p>
-    
+
     <p>For more details on the session interface, see the documentation for
     the <module>mod_session</module> module.</p>
-    
+
 </summary>
 <seealso><module>mod_session</module></seealso>
 <seealso><module>mod_session_crypto</module></seealso>
 <seealso><module>mod_session_dbd</module></seealso>
 
     <section id="basicexamples"><title>Basic Examples</title>
-    
+
       <p>To create a simple session and store it in a cookie called
       <var>session</var>, configure the session as follows:</p>
-      
+
       <example><title>Browser based session</title>
         Session On<br />
         SessionCookieName session path=/<br />
       </example>
-      
+
       <p>For more examples on how the session can be configured to be read
       from and written to by a CGI application, see the
       <module>mod_session</module> examples section.</p>
-      
+
       <p>For documentation on how the session can be used to store username
       and password details, see the <module>mod_auth_form</module> module.</p>
 
@@ -93,12 +93,12 @@
     optional attributes of an RFC2109 compliant cookie inside which the session will
     be stored. RFC2109 cookies are set using the <code>Set-Cookie</code> HTTP header.
     </p>
-    
+
     <p>An optional list of cookie attributes can be specified, as per the example below.
     These attributes are inserted into the cookie as is, and are not interpreted by
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
-    
+
     <example><title>Cookie with attributes</title>
       Session On<br />
       SessionCookieName session path=/private;domain=example.com;httponly;secure;version=1;<br />
@@ -123,12 +123,12 @@
     optional attributes of an RFC2965 compliant cookie inside which the session will
     be stored. RFC2965 cookies are set using the <code>Set-Cookie2</code> HTTP header.
     </p>
-    
+
     <p>An optional list of cookie attributes can be specified, as per the example below.
     These attributes are inserted into the cookie as is, and are not interpreted by
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
-    
+
     <example><title>Cookie2 with attributes</title>
       Session On<br />
       SessionCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;<br />
@@ -151,7 +151,7 @@
 <usage>
     <p>The <directive>SessionCookieRemove</directive> flag controls whether the cookies
     containing the session will be removed from the headers during request processing.</p>
-    
+
     <p>In a reverse proxy situation where the Apache server acts as a server frontend for
     a backend origin server, revealing the contents of the session cookie to the backend
     could be a potential privacy violation. When set to on, the session cookie will be

@@ -109,7 +109,7 @@ existing HTML documents.</p>
     order to give it a <code>.shtml</code> extension, so that those
     directives would be executed.</p>
 
-    <p>The other method is to use the <directive 
+    <p>The other method is to use the <directive
     module="mod_include">XBitHack</directive> directive:</p>
 <example>
         XBitHack on
@@ -129,7 +129,7 @@ existing HTML documents.</p>
     see people recommending that you just tell Apache to parse all
     <code>.html</code> files for SSI, so that you don't have to
     mess with <code>.shtml</code> file names. These folks have
-    perhaps not heard about <directive 
+    perhaps not heard about <directive
     module="mod_include">XBitHack</directive>. The thing to
     keep in mind is that, by doing this, you're requiring that
     Apache read through every single file that it sends out to
@@ -152,7 +152,7 @@ existing HTML documents.</p>
       only at the date of the originally requested file, ignoring
       the modification date of any included files.</li>
 
-      <li>Use the directives provided by 
+      <li>Use the directives provided by
       <module>mod_expires</module> to set an explicit expiration
       time on your files, thereby letting browsers and proxies
       know that it is acceptable to cache them.</li>
@@ -382,7 +382,7 @@ modified?</title>
     discussed above (like <code>LAST_MODIFIED</code>, for example) to
     give values to your variables. You will specify that something is
     a variable, rather than a literal string, by using the dollar sign
-    ($) before the name of the variable.</p> 
+    ($) before the name of the variable.</p>
 
     <example> &lt;!--#set var="modified" value="$LAST_MODIFIED" --&gt;
     </example>

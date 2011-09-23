@@ -1,13 +1,13 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?> 
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
 
-<!--                                                                                                                              
- Licensed to the Apache Software Foundation (ASF) under one or more 
- contributor license agreements.  See the NOTICE file distributed with 
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
- The ASF licenses this file to You under the Apache License, Version 2.0 
+ The ASF licenses this file to You under the Apache License, Version 2.0
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
@@ -24,7 +24,7 @@
 The sequence of tags is important and must be followed in order for
 the document to validate. -->
 
-<modulesynopsis metafile="mod_ratelimit.xml.meta"> 
+<modulesynopsis metafile="mod_ratelimit.xml.meta">
 <name>mod_ratelimit</name>
 <description>Bandwidth Rate Limiting for Clients</description>
 <status>Extension</status>
@@ -33,8 +33,8 @@ the document to validate. -->
 
 <summary>
 
-<p>Provides a <code>rate_limit</code> filter to limit client bandwidth. 
-The connection speed to be simulated is specified, in kb/s, using the environment 
+<p>Provides a <code>rate_limit</code> filter to limit client bandwidth.
+The connection speed to be simulated is specified, in kb/s, using the environment
 variable <code>rate-limit</code>.</p>
 
 <example><title>Example Configuration</title>

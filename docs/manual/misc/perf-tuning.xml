@@ -706,9 +706,9 @@
       directives.</p>
 
       <p>The <directive module="core">Mutex</directive> directive can
-      be used to change the mutex implementation of the 
+      be used to change the mutex implementation of the
       <code>mpm-accept</code> mutex at run-time.  Special considerations
-      for different mutex implementations are documented with that 
+      for different mutex implementations are documented with that
       directive.</p>
 
       <p>Another solution that has been considered but never

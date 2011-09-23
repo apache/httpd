@@ -39,7 +39,7 @@
     dynamic growth, but is intended to handle much, much
     larger numbers of backends. It is ideally suited as a
     front-end HTTP switch.</p>
-    
+
     <p>This module <em>requires</em> the service of <module
     >mod_proxy</module>.</p>
 
@@ -74,7 +74,7 @@
 
 </summary>
 <seealso><module>mod_proxy</module></seealso>
-       
+
 <directivesynopsis>
 <name>ProxyExpressEnable</name>
 <description>Enable the module functionality.</description>
@@ -107,7 +107,7 @@
 
     <note><title>Note</title>
       <p>The file is constructed from a plain text file format using
-        the <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code> 
+        the <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code>
         utility.</p>
 
       <example><title>ProxyExpress map file</title>

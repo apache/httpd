@@ -32,21 +32,21 @@ URLs on the fly</description>
 <identifier>rewrite_module</identifier>
 
 <summary>
-	<p>The <module>mod_rewrite</module> module uses a rule-based rewriting 
+	<p>The <module>mod_rewrite</module> module uses a rule-based rewriting
       engine, based on a regular-expression parser, to rewrite requested URLs on
-      the fly. By default, <module>mod_rewrite</module> maps a URL to a filesystem 
+      the fly. By default, <module>mod_rewrite</module> maps a URL to a filesystem
       path. However, it can also be used to redirect one URL to another URL, or
       to invoke an internal proxy fetch.</p>
-      <p><module>mod_rewrite</module> provides a flexible and powerful way to 
-      manipulate URLs using an unlimited number of rules. Each rule can have an 
+      <p><module>mod_rewrite</module> provides a flexible and powerful way to
+      manipulate URLs using an unlimited number of rules. Each rule can have an
       unlimited number of attached rule conditions, to allow you to rewrite URL
-      based on server variables, environment variables, HTTP headers, or time 
+      based on server variables, environment variables, HTTP headers, or time
       stamps.</p>
       <p><module>mod_rewrite</module> operates on the full URL path, including the
-      path-info section. A rewrite rule can be invoked in 
-      <code>httpd.conf</code> or in <code>.htaccess</code>. The path generated 
-      by a rewrite rule can include a query string, or can lead to internal 
-      sub-processing, external request redirection, or internal proxy 
+      path-info section. A rewrite rule can be invoked in
+      <code>httpd.conf</code> or in <code>.htaccess</code>. The path generated
+      by a rewrite rule can include a query string, or can lead to internal
+      sub-processing, external request redirection, or internal proxy
       throughput.</p>
 
       <p>Further details, discussion, and examples, are provided in the
@@ -142,7 +142,7 @@ later</compatibility>
       <dl>
       <dt><code>Inherit</code></dt>
       <dd>
-      
+
       <p>This forces the current configuration to inherit the
       configuration of the parent. In per-virtual-server context,
       this means that the maps, conditions and rules of the main
@@ -157,7 +157,7 @@ later</compatibility>
       of local rules - has no influence on this behavior. If local
       rules forced the rewriting to stop, the inherited rules won't
       be processed.</p>
-     
+
       <note type="warning">
       Rules inherited from the parent scope are applied
       <strong>after</strong> rules specified in the child scope.
@@ -167,10 +167,10 @@ later</compatibility>
       <dt><code>InheritBefore</code></dt>
       <dd>
       <p> Like <code>Inherit</code> above, but the rules from the parent scope
-      are applied <strong>before</strong> rules specified in the child scope.  
+      are applied <strong>before</strong> rules specified in the child scope.
       Available in Apache HTTP Server 2.3.10 and later.</p>
       </dd>
-      
+
       </dl>
 
 </usage>
@@ -245,7 +245,7 @@ Apache HTTP Server 2.0.41 and later</compatibility>
     <dt>dbm</dt>
         <dd>Looks up an entry in a dbm file containing name, value
         pairs. Hash is constructed from a plain text file format using
-        the <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code> 
+        the <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code>
         utility.  (<a href="../rewrite/rewritemap.html#dbm">Details ...</a>)</dd>
 
     <dt>int</dt>
@@ -283,13 +283,13 @@ Apache HTTP Server 2.0.41 and later</compatibility>
       that result in the substitution of a relative path.
       When you use a <directive module="mod_rewrite">RewriteRule</directive>
       in a <code>.htaccess</code> file, <module>mod_rewrite</module> strips off
-      the local directory prefix before processing, then rewrites the rest of 
+      the local directory prefix before processing, then rewrites the rest of
       the URL. When the rewrite is completed, <module>mod_rewrite</module>
       automatically adds the local directory prefix (or the
-      <directive>RewriteBase</directive> when set) back on to the substitution 
+      <directive>RewriteBase</directive> when set) back on to the substitution
       before handing it back to the core of the server as if it were the original
       URL.</p>
-      
+
       <p>This directive is <em>required</em> for per-directory rewrites whose context
       is a directory made available via the <directive module="mod_alias">Alias</directive>
       directive, when the substitution uses a relative path.</p>
@@ -300,9 +300,9 @@ Apache HTTP Server 2.0.41 and later</compatibility>
       <code>.htaccess</code> file where you want to use <directive
       module="mod_rewrite">RewriteRule</directive> directives.</p>
 
-      <p>The example below demonstrates how to map 
-      http://example.com/myapp/index.html to 
-      /home/www/example/newsite.html, in a <code>.htaccess</code> file. This 
+      <p>The example below demonstrates how to map
+      http://example.com/myapp/index.html to
+      /home/www/example/newsite.html, in a <code>.htaccess</code> file. This
       assumes that the content available at
       http://example.com/ is on disk at /home/www/example/</p>
 <example>
@@ -452,7 +452,7 @@ RewriteRule ^index\.html$  newsite.html
                 Most are documented elsewhere in the Manual or in
                 the CGI specification.</p>
 
-                <p>SERVER_NAME and SERVER_PORT depend on the values of 
+                <p>SERVER_NAME and SERVER_PORT depend on the values of
                 <directive module="core">UseCanonicalName</directive> and
                 <directive module="core">UseCanonicalPhysicalPort</directive>
                 respectively.</p>
@@ -485,7 +485,7 @@ RewriteRule ^index\.html$  newsite.html
                   browser to the server (e.g., "<code>GET
                   /index.html HTTP/1.1</code>"). This does not
                   include any additional headers sent by the
-                  browser.  This value has not been unescaped 
+                  browser.  This value has not been unescaped
                   (decoded), unlike most other variables below.</dd>
 
                   <dt><code>REQUEST_URI</code></dt>
@@ -499,9 +499,9 @@ RewriteRule ^index\.html$  newsite.html
 
                   <dd>The full local filesystem path to the file or
                   script matching the request, if this has already
-                  been determined by the server at the time 
-                  <code>REQUEST_FILENAME</code> is referenced. Otherwise, 
-                  such as when used in virtual host context, the same 
+                  been determined by the server at the time
+                  <code>REQUEST_FILENAME</code> is referenced. Otherwise,
+                  such as when used in virtual host context, the same
                   value as <code>REQUEST_URI</code>.</dd>
 
                   <dt><code>HTTPS</code></dt>
@@ -685,7 +685,7 @@ RewriteRule ^index\.html$  newsite.html
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically greater than or equal
             to the <em>CondPattern</em>.</li>
-            
+
              <li>'<strong>-gt</strong>' (is numerically
             <strong>g</strong>reater <strong>t</strong>han)<br />
             The <em>TestString</em> is treated as an integer, and is
@@ -701,7 +701,7 @@ RewriteRule ^index\.html$  newsite.html
             to the <em>CondPattern</em>. Avoid confusion with the
             <strong>-l</strong> by using the <strong>-L</strong> or
             <strong>-h</strong> variant.</li>
-            
+
              <li>'<strong>-lt</strong>' (is numerically
             <strong>l</strong>ess <strong>t</strong>han)<br />
             The <em>TestString</em> is treated as an integer, and is
@@ -902,16 +902,16 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       RewriteRule.</p>
 
 <note><title>What is matched?</title>
-      <p>In <directive module="core">VirtualHost</directive> context, 
+      <p>In <directive module="core">VirtualHost</directive> context,
       The <em>Pattern</em> will initially be matched against the part of the
       URL after the hostname and port, and before the query string (e.g. "/app1/index.html").</p>
 
       <p>In <directive module="core">Directory</directive> and htaccess context,
-      the <em>Pattern</em> will initially be matched against the  
+      the <em>Pattern</em> will initially be matched against the
       <em>filesystem</em> path, after removing the prefix that lead the server
-      to the current <directive>RewriteRule</directive> (e.g. "app1/index.html" 
+      to the current <directive>RewriteRule</directive> (e.g. "app1/index.html"
       or "index.html" depending on where the directives are defined).</p>
-       
+
       <p>If you wish to match against the hostname, port, or query string, use a
       <directive module="mod_rewrite">RewriteCond</directive> with the
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
@@ -937,12 +937,12 @@ restriction is required for security reasons.</li>
 per-directory prefix (which always is the same for a specific
 directory) is automatically <em>removed</em> for the RewriteRule pattern matching
 and automatically <em>added</em> after any relative (not starting with a
-slash or protocol name) substitution encounters the end of a rule set.  
-See the <directive module="mod_rewrite">RewriteBase</directive> 
-directive for more information regarding what prefix will be added back to 
+slash or protocol name) substitution encounters the end of a rule set.
+See the <directive module="mod_rewrite">RewriteBase</directive>
+directive for more information regarding what prefix will be added back to
 relative substutions.</li>
 
-<li> If you wish to match against the full URL-path in a per-directory 
+<li> If you wish to match against the full URL-path in a per-directory
 (htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
 a <directive>RewriteCond</directive>.</li>
 
@@ -1100,14 +1100,14 @@ cannot use <code>$N</code> in the substitution string!
     </tr>
     <tr>
         <td>cookie|CO=<em>NAME</em>:<em>VAL</em></td>
-        <td>Sets a cookie in the client browser. Full syntax is: 
+        <td>Sets a cookie in the client browser. Full syntax is:
         CO=<em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>[:<em>secure</em>[:<em>httponly</em>]]]] <em><a href="../rewrite/flags.html#flag_co">details ...</a></em>
         </td>
     </tr>
     <tr>
         <td>discardpath|DPI</td>
         <td>Causes the PATH_INFO portion of the rewritten URI to be
-        discarded. <em><a href="../rewrite/flags.html#flag_dpi">details 
+        discarded. <em><a href="../rewrite/flags.html#flag_dpi">details
         ...</a></em></td>
     </tr>
     <tr>

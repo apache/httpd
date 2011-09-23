@@ -55,7 +55,7 @@
     <p>Once the user has been successfully authenticated, the user's login
     details will be stored in a session provided by <module>mod_session</module>.
     </p>
-    
+
 </summary>
 <seealso><module>mod_session</module></seealso>
 <seealso><directive module="mod_authn_core">AuthName</directive></seealso>
@@ -65,7 +65,7 @@
 <seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
 
     <section id="basicconfig"><title>Basic Configuration</title>
-    
+
       <p>To protect a particular URL with <module>mod_auth_form</module>, you need to
       decide where you will store your <var>session</var>, and you will need to
       decide what method you will use to authenticate. In this simple example, the
@@ -73,7 +73,7 @@
       <module>mod_session_cookie</module>, and authentication will be attempted against
       a file using <module>mod_authn_file</module>. If authentication is unsuccessful,
       the user will be redirected to the form login page.</p>
-      
+
       <example><title>Basic example</title>
         AuthFormProvider file<br />
         AuthUserFile conf/passwd<br />
@@ -84,14 +84,14 @@
         SessionCookieName session path=/<br />
         SessionCryptoPassphrase secret<br />
       </example>
-      
+
       <p>The directive <directive module="mod_authn_core">AuthType</directive> will enable
       the <module>mod_auth_form</module> authentication when set to the value <var>form</var>.
       The directives <directive module="mod_auth_form">AuthFormProvider</directive> and
       <directive module="mod_authn_file">AuthUserFile</directive> specify that usernames
       and passwords should be checked against the chosen file.</p>
 
-      <p>The directives <directive module="mod_session">Session</directive>, 
+      <p>The directives <directive module="mod_session">Session</directive>,
       <directive module="mod_session_cookie">SessionCookieName</directive> and
       <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> create an
       encrypted session stored within an HTTP cookie on the browser. For more information
@@ -104,18 +104,18 @@
       dedicated standalone login page for this purpose, or for providing the login
       page inline.</p>
     </section>
-    
+
     <section id="standalone"><title>Standalone Login</title>
 
       <p>The login form can be hosted as a standalone page, or can be provided inline on
       the same page.</p>
-      
+
       <p>When configuring the login as a standalone page, unsuccessful authentication
       attempts should be redirected to a login form created by the website for this purpose,
       using the <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive>
       directive. Typically this login page will contain an HTML form, asking the user to
       provide their usename and password.</p>
-      
+
       <example><title>Example login form</title>
         &lt;form method="POST" action="/dologin.html"&gt;<br />
         Username: &lt;input type="text" name="httpd_username" value="" /&gt;<br />
@@ -127,7 +127,7 @@
       <p>The part that does the actual login is handled by the <var>form-login-handler</var>.
       The action of the form should point at this handler, which is configured within
       Apache httpd as follows:</p>
-      
+
       <example><title>Form login handler example</title>
         &lt;Location /dologin.html&gt;
         <indent>
@@ -150,7 +150,7 @@
       point to a page explaining to the user that their login attempt was unsuccessful, and they
       should try again.  The <directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive>
       directive specifies the URL the user should be redirected to upon successful login.</p>
-      
+
       <p>Alternatively, the URL to redirect the user to on success can be embedded within the login
       form, as in the example below. As a result, the same <var>form-login-handler</var> can be
       reused for different areas of a website.</p>
@@ -169,9 +169,9 @@
     </section>
 
     <section id="inline"><title>Inline Login</title>
-    
+
       <note type="warning"><title>Warning</title>
-        <p>A risk exists that under certain circumstances, the login form configured 
+        <p>A risk exists that under certain circumstances, the login form configured
         using inline login may be submitted more than once, revealing login credentials to
         the application running underneath. The administrator must ensure that the underlying
         application is properly secured to prevent abuse. If in doubt, use the
@@ -190,7 +190,7 @@
       <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive> directive,
       a <var>HTTP_UNAUTHORIZED</var> status code is returned to the browser indicating to the user
       that they are not authorized to view the page.</p>
-      
+
       <p>To configure inline authentication, the administrator overrides the error document
       returned by the <var>HTTP_UNAUTHORIZED</var> status code with a custom error document
       containing the login form, as follows:</p>
@@ -206,7 +206,7 @@
         SessionCookieName session path=/<br />
         SessionCryptoPassphrase secret<br />
       </example>
-      
+
       <p>The error document page should contain a login form with an empty action property,
       as per the example below.  This has the effect of submitting the form to
       the original protected URL, without the page having to know what that
@@ -268,7 +268,7 @@
       <p>One option is to use the <module>mod_include</module> module along with the
       <directive module="core">KeptBodySize</directive> directive, along with a suitable
       CGI script to embed the variables in the form.</p>
-      
+
       <p>Another option is to render the login form using a CGI script or other dynamic
       technology.</p>
 
@@ -339,7 +339,7 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p>The <directive>AuthFormProvider</directive> directive sets 
+    <p>The <directive>AuthFormProvider</directive> directive sets
     which provider is used to authenticate the users for this location.
     The default <code>file</code> provider is implemented
     by the <module>mod_authn_file</module> module.  Make sure
@@ -454,9 +454,9 @@ lower level modules</description>
     <p>The <directive module="mod_auth_form">AuthFormMethod</directive> directive specifies
     the name of an HTML field which, if present, will contain the method of the request to
     to submit should login be successful.</p>
-    
+
     <p>By populating the form with fields described by
-    <directive module="mod_auth_form">AuthFormMethod</directive>, 
+    <directive module="mod_auth_form">AuthFormMethod</directive>,
     <directive module="mod_auth_form">AuthFormMimetype</directive> and
     <directive module="mod_auth_form">AuthFormBody</directive>, a website can retry
     a request that may have been interrupted by the login screen, or by a session
@@ -479,7 +479,7 @@ lower level modules</description>
     mimetype of the request to to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
-    <directive module="mod_auth_form">AuthFormMethod</directive>, 
+    <directive module="mod_auth_form">AuthFormMethod</directive>,
     <directive module="mod_auth_form">AuthFormMimetype</directive> and
     <directive module="mod_auth_form">AuthFormBody</directive>, a website can retry
     a request that may have been interrupted by the login screen, or by a session
@@ -502,7 +502,7 @@ lower level modules</description>
     to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
-    <directive module="mod_auth_form">AuthFormMethod</directive>, 
+    <directive module="mod_auth_form">AuthFormMethod</directive>,
     <directive module="mod_auth_form">AuthFormMimetype</directive> and
     <directive module="mod_auth_form">AuthFormBody</directive>, a website can retry
     a request that may have been interrupted by the login screen, or by a session
@@ -522,12 +522,12 @@ lower level modules</description>
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormSize</directive> directive specifies
     the maximum size of the body of the request that will be parsed to find the login form.</p>
-    
+
     <p>If a login request arrives that exceeds this size, the whole request will be aborted
     with the HTTP response code <code>HTTP_REQUEST_TOO_LARGE</code>.</p>
 
     <p>If you have populated the form with fields described by
-    <directive module="mod_auth_form">AuthFormMethod</directive>, 
+    <directive module="mod_auth_form">AuthFormMethod</directive>,
     <directive module="mod_auth_form">AuthFormMimetype</directive> and
     <directive module="mod_auth_form">AuthFormBody</directive>, you probably want to set this
     field to a similar size as the <directive module="core">KeptBodySize</directive>
@@ -552,7 +552,7 @@ lower level modules</description>
     will be returned with the page specified by the
     <directive module="core">ErrorDocument</directive> directive. This directive overrides this
     default.</p>
-    
+
     <p>Use this directive if you have a dedicated login page to redirect users to.</p>
 
 </usage>
@@ -572,7 +572,7 @@ lower level modules</description>
     specifies the URL to redirect to should the user have logged in successfully. This directive
     can be overridden if a form field has been defined containing another URL using the
     <directive module="mod_auth_form">AuthFormLocation</directive> directive.</p>
-    
+
     <p>Use this directive if you have a dedicated login URL, and you have not embedded the
     destination page in the login form.</p>
 
@@ -613,7 +613,7 @@ lower level modules</description>
 
     <p>When a URI is accessed that is served by the handler <code>form-logout-handler</code>,
     the page specified by this directive will be shown to the end user. For example:</p>
-    
+
     <example><title>Example</title>
       &lt;Location /logout&gt;<br />
       <indent>
@@ -624,7 +624,7 @@ lower level modules</description>
       </indent>
       &lt;/Location&gt;
     </example>
-    
+
     <p>An attempt to access the URI <var>/logout/</var> will result in the user being logged
     out, and the page <var>/loggedout.html</var> will be displayed. Make sure that the page
     <var>loggedout.html</var> is not password protected, otherwise the page will not be
@@ -667,7 +667,7 @@ lower level modules</description>
     specifies a passphrase which, if present in the user session, causes Apache httpd to
     bypass authentication checks for the given URL. It can be used on high traffic websites
     to reduce the load induced on authentication infrastructure.</p>
-    
+
     <p>The passphrase can be inserted into a user session by adding this directive to the
     configuration for the <var>form-login-handler</var>. The <var>form-login-handler</var>
     itself will always run the authentication checks, regardless of whether a passphrase

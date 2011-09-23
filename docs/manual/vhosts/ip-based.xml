@@ -52,7 +52,7 @@ Virtual Hosts</a> to help you decide.  </p>
     most commonly used to set them up), and/or using multiple
     port numbers.</p>
 
-    <p> In the terminology of Apache HTTP Server, using a single IP address 
+    <p> In the terminology of Apache HTTP Server, using a single IP address
     but multiple TCP ports, is also IP-based virtual hosting.</p>
 
 </section>
@@ -157,7 +157,7 @@ Virtual Hosts</a> to help you decide.  </p>
 
     <p> Specific IP addresses or ports have precedence over their wildcard
     equivalents, and any virtual host that matches has precedence over
-    the servers base configuration.</p> 
+    the servers base configuration.</p>
 
     <p>Almost <strong>any</strong> configuration directive can be
     put in the VirtualHost directive, with the exception of

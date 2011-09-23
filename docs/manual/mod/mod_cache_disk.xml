@@ -181,7 +181,7 @@ cache</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-  
+
 <usage>
     <p>The <directive>CacheMaxFileSize</directive> directive sets the
     maximum size, in bytes, for a document to be considered for storage in
@@ -204,7 +204,7 @@ cache</description>
     <context>directory</context>
     <context>.htaccess</context>
 </contextlist>
-    
+
 <usage>
     <p>The <directive>CacheReadSize</directive> directive sets the
     minimum amount of data, in bytes, to be read from the backend before the
@@ -216,7 +216,7 @@ cache</description>
 
     <p>This directive only takes effect when the data is being saved to the
     cache, as opposed to data being served from the cache.</p>
-  
+
     <example>
       CacheReadSize 102400
     </example>
@@ -256,5 +256,5 @@ cache</description>
     </example>
 </usage>
 </directivesynopsis>
-  
+
 </modulesynopsis>

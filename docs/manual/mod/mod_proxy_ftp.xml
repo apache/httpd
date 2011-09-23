@@ -154,7 +154,7 @@
         See the <directive>ProxyFtpListOnWildcard</directive> directive.
       </p>
     </section> <!-- /wildcard -->
-       
+
 <directivesynopsis>
 <name>ProxyFtpListOnWildcard</name>
 <description>Whether wildcards in requested filenames trigger a file listing</description>

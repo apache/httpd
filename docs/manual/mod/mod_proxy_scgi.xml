@@ -59,7 +59,7 @@
     </example>
 
     <p>The balanced gateway needs <module>mod_proxy_balancer</module> and
-    at least one load balancer algorithm module, such as 
+    at least one load balancer algorithm module, such as
     <module>mod_lbmethod_byrequests</module>, in addition to the proxy
     modules listed above.  <module>mod_lbmethod_byrequests</module> is the
     default, and will be used for this example configuration.</p>

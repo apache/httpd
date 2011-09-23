@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_authz_core.xml.meta">
 
-<name>mod_authz_core</name> 
+<name>mod_authz_core</name>
 <description>Core Authorization</description>
 <status>Base</status>
 <sourcefile>mod_authz_core.c</sourcefile>
@@ -32,12 +32,12 @@
 <summary>
     <p>This module provides core authorization capabilities so that
     authenticated users can be allowed or denied access to portions
-    of the web site. <module>mod_authz_core</module> provides the 
+    of the web site. <module>mod_authz_core</module> provides the
     functionality to register various authorization providers. It is
     usually used in conjunction with an authentication
-    provider module such as <module>mod_authn_file</module> and an 
+    provider module such as <module>mod_authn_file</module> and an
     authorization module such as <module>mod_authz_user</module>. It
-    also allows for advanced logic to be applied to the 
+    also allows for advanced logic to be applied to the
     authorization processing.</p>
 </summary>
 
@@ -57,36 +57,36 @@
         allows a single authorization location to check group membership within
         multiple ldap hosts:
         </p>
-    
+
         <example><title>Example</title>
           &lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;<br />
           <indent>
              AuthLDAPBindDN cn=youruser,o=ctx<br />
              AuthLDAPBindPassword yourpassword<br />
              AuthLDAPURL ldap://ldap.host/o=ctx<br />
-          </indent> 
-          &lt;/AuthzProviderAlias&gt;<br /><br /> 
+          </indent>
+          &lt;/AuthzProviderAlias&gt;<br /><br />
           &lt;AuthzProviderAlias ldap-group ldap-group-alias2
            cn=my-other-group,o=dev&gt;<br />
           <indent>
              AuthLDAPBindDN cn=yourotheruser,o=dev<br />
              AuthLDAPBindPassword yourotherpassword<br />
              AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
-          </indent> 
+          </indent>
           &lt;/AuthzProviderAlias&gt;<br /><br />
-    
+
           Alias /secure /webpages/secure<br />
           &lt;Directory /webpages/secure&gt;<br />
           <indent>
              Require all granted<br /><br />
-        
+
              AuthBasicProvider file<br /><br />
-        
+
              AuthType Basic<br />
              AuthName LDAP_Protected_Place<br /><br />
 
-             #implied OR operation<br /> 
-             Require ldap-group-alias1<br /> 
+             #implied OR operation<br />
+             Require ldap-group-alias1<br />
              Require ldap-group-alias2<br />
           </indent> &lt;/Directory&gt;<br />
         </example>
@@ -145,7 +145,7 @@
                 &lt;/RequireNone&gt;
             </indent>
             &lt;/RequireAll&gt;
-        </indent>      
+        </indent>
         &lt;/Directory&gt;
     </example>
 </section>
@@ -160,7 +160,7 @@
 
     <p>The <code>env</code> provider allows access to the server
     to be controlled based on the existence of an <a
-    href="../env.html">environment variable</a>. When <code>Require 
+    href="../env.html">environment variable</a>. When <code>Require
     env <var>env-variable</var></code> is specified, then the request is
     allowed access if the environment variable <var>env-variable</var>
     exists. The server provides the ability to set environment
@@ -170,7 +170,7 @@
     used to allow access based on such factors as the clients
     <code>User-Agent</code> (browser type), <code>Referer</code>, or
     other HTTP request header fields.</p>
-    
+
     <example><title>Example:</title>
       SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
       &lt;Directory /docroot&gt;<br />
@@ -179,7 +179,7 @@
       </indent>
       &lt;/Directory&gt;
     </example>
-    
+
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
@@ -190,8 +190,8 @@
 
     <p>The <code>all</code> provider mimics the functionality the
     was previously provided by the 'Allow from all' and 'Deny from all'
-    directives.  This provider can take one of two arguments which are 
-    'granted' or 'denied'.  The following examples will grant or deny 
+    directives.  This provider can take one of two arguments which are
+    'granted' or 'denied'.  The following examples will grant or deny
     access to all requests.</p>
 
     <example>
@@ -302,17 +302,17 @@ an authorization provider.</description>
 
     <p>Other authorization modules that implement require options
     include <module>mod_authnz_ldap</module>,
-    <module>mod_authz_dbm</module>, <module>mod_authz_dbd</module>, 
-    <module>mod_authz_host</module>, 
+    <module>mod_authz_dbm</module>, <module>mod_authz_dbd</module>,
+    <module>mod_authz_host</module>,
     <module>mod_authz_owner</module> and <module>mod_ssl</module>.</p>
 
     <p>In most cases, for a complete authentication and authorization
     configuration, <directive>Require</directive> must be accompanied by
     <directive module="mod_authn_core">AuthName</directive>, <directive
-    module="mod_authn_core">AuthType</directive> and 
+    module="mod_authn_core">AuthType</directive> and
     <directive module="mod_auth_basic">AuthBasicProvider</directive> or
-    <directive module="mod_auth_digest">AuthDigestProvider</directive> 
-    directives, and directives such as 
+    <directive module="mod_auth_digest">AuthDigestProvider</directive>
+    directives, and directives such as
     <directive module="mod_authn_file">AuthUserFile</directive>
     and <directive module="mod_authz_groupfile">AuthGroupFile</directive> (to
     define users and groups) in order to work correctly. Example:</p>
@@ -372,7 +372,7 @@ an authorization provider.</description>
 </usage>
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso> 
+    and Access Control</a></seealso>
 <seealso><a href="#logic">Authorization Containers</a></seealso>
 <seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
@@ -406,7 +406,7 @@ succeed.</description>
 
 <seealso><a href="#logic">Authorization Containers</a></seealso>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso> 
+    and Access Control</a></seealso>
 
 </directivesynopsis>
 
@@ -444,7 +444,7 @@ must succeed for the enclosing directive to succeed.</description>
 
 <seealso><a href="#logic">Authorization Containers</a></seealso>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso> 
+    and Access Control</a></seealso>
 
 </directivesynopsis>
 
@@ -485,7 +485,7 @@ must succeed for the enclosing directive to not fail.</description>
 
 <seealso><a href="#logic">Authorization Containers</a></seealso>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso> 
+    and Access Control</a></seealso>
 
 </directivesynopsis>
 
@@ -569,7 +569,7 @@ sections.</description>
 <description>Enclose a group of directives that represent an
 extension of a base authorization provider and referenced by the specified
 alias</description>
-<syntax>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
+<syntax>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </syntax>
 <contextlist><context>server config</context>

@@ -35,19 +35,19 @@
     >mod_proxy</module>. It provides support for the passing the socket of the
     client to another process.</p>
 
-    <p><code>mod_proxy_fdpass</code> uses the ability of AF_UNIX domain 
-    sockets to <a href="http://www.freebsd.org/cgi/man.cgi?query=recv">pass an 
+    <p><code>mod_proxy_fdpass</code> uses the ability of AF_UNIX domain
+    sockets to <a href="http://www.freebsd.org/cgi/man.cgi?query=recv">pass an
     open file descriptor</a> to allow another process to finish handling a request.
     </p>
 
-    <p>The module has a <code>proxy_fdpass_flusher</code> provider interface, 
+    <p>The module has a <code>proxy_fdpass_flusher</code> provider interface,
     which allows another module to optionally send the response headers, or even
     the start of the response body.  The default flush provider disables keep-alive,
     and sends the response headers, letting the external process just send a
     response body.</p>
 
-    <p>At this time the only data passed to the external process is the client 
-    socket. To receive a client socket, call recvfrom with an allocated 
+    <p>At this time the only data passed to the external process is the client
+    socket. To receive a client socket, call recvfrom with an allocated
     <a href="http://www.kernel.org/doc/man-pages/online/pages/man3/cmsg.3.html"
     ><code>struct cmsghdr</code></a>. Future versions of this module may include
     more data after the client socket, but this is not implemented at this time.

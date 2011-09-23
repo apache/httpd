@@ -59,7 +59,7 @@ of user groups for authorization</description>
 
     <example><title>Example:</title>
       mygroup: bob joe anne
-    </example> 
+    </example>
 
     <p>Note that searching large text files is <em>very</em>
     inefficient; <directive module="mod_authz_dbm"

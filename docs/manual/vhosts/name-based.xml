@@ -39,8 +39,8 @@
     determine the correct virtual host to serve.  Therefore you need to
     have a separate IP address for each host.</p>
 
-    <p>With name-based virtual hosting, the server relies on the client to 
-    report the hostname as part of the HTTP headers.  Using this technique, 
+    <p>With name-based virtual hosting, the server relies on the client to
+    report the hostname as part of the HTTP headers.  Using this technique,
     many different hosts can share the same IP address.</p>
 
     <p>Name-based virtual hosting is usually simpler, since you need
@@ -67,19 +67,19 @@
     after narrowing down the candidates to the best IP-based match.  Using a wildcard (*)
     for the IP address in all of the VirtualHost directives makes this
     IP-based mapping irrelevant.</p>
-    
-    <p>When a request arrives, the server will find the best (most specific) matching  
+
+    <p>When a request arrives, the server will find the best (most specific) matching
     <directive type="section" module="core">VirtualHost</directive> argument based on
     the IP address and port used by the request.  If there is more than one virtual host
     containing this best-match address and port combination,  Apache will further
-    compare the <directive module="core" >ServerName</directive> and <directive 
+    compare the <directive module="core" >ServerName</directive> and <directive
     module="core">ServerAlias</directive>  directives to the server name
     present in the request.</p>
 
     <section id="defaultvhost"><title>The default name-based vhost for an IP and port combination </title>
-    <p> If no matching ServerName or ServerAlias is found in the set of 
-    virtual hosts containing the most specific matching IP address and port 
-    combination, then <strong>the first listed virtual host</strong> that 
+    <p> If no matching ServerName or ServerAlias is found in the set of
+    virtual hosts containing the most specific matching IP address and port
+    combination, then <strong>the first listed virtual host</strong> that
     matches that will be used.</p></section>
 </section>
 
@@ -112,11 +112,11 @@
         module="core">VirtualHost</directive> is handled by the global
         server configuration, regardless of the hostname or ServerName.</p>
 
-        <p> When you add a name-based virtual host to an existing server, and 
-        the virtual host arguments match preexisting IP and port combinations, 
+        <p> When you add a name-based virtual host to an existing server, and
+        the virtual host arguments match preexisting IP and port combinations,
         requests will now be handled by an explicit virtual host.  In this case,
         it's usually wise to create a <a href="#defaultvhost">default virtual host</a>
-        with a <directive module="core">ServerName</directive> matching that of 
+        with a <directive module="core">ServerName</directive> matching that of
         the base server.  New domains on the same interface and port, but
         requiring separate configurations,  can then be added as subsequent (non-default)
         virtual hosts.</p>

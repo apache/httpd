@@ -43,12 +43,12 @@
 
 <section id="using"><title>Using Digest Authentication</title>
 
-    <p>To use MD5 Digest authentication, simply 
+    <p>To use MD5 Digest authentication, simply
     change the normal <code>AuthType Basic</code> and
     <directive module="mod_auth_basic">AuthBasicProvider</directive>
     to <code>AuthType Digest</code> and
     <directive module="mod_auth_digest">AuthDigestProvider</directive>,
-    when setting up authentication, then add a 
+    when setting up authentication, then add a
     <directive module="mod_auth_digest"
     >AuthDigestDomain</directive> directive containing at least the root
     URI(s) for this protection space.</p>
@@ -70,7 +70,7 @@
       &lt;/Location&gt;
     </example>
 
-    <note><title>Note</title> 
+    <note><title>Note</title>
     <p>Digest authentication is more secure than Basic authentication,
     but only works with supporting browsers. As of September 2004, major
     browsers that support digest authentication include <a
@@ -137,13 +137,13 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p>The <directive>AuthDigestProvider</directive> directive sets 
+    <p>The <directive>AuthDigestProvider</directive> directive sets
     which provider is used to authenticate the users for this location.
     The default <code>file</code> provider is implemented
     by the <module>mod_authn_file</module> module.  Make sure
     that the chosen provider module is present in the server.</p>
 
-    <p>See <module>mod_authn_dbm</module>, <module>mod_authn_file</module>, 
+    <p>See <module>mod_authn_dbm</module>, <module>mod_authn_file</module>,
     <module>mod_authn_dbd</module> and <module>mod_authn_socache</module>
     for providers.</p>
 </usage>

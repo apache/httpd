@@ -26,9 +26,9 @@
 
   <summary>
     <p>This document supplements the <module>mod_cache</module>,
-    <module>mod_cache_disk</module>, <module>mod_file_cache</module> and <a 
+    <module>mod_cache_disk</module>, <module>mod_file_cache</module> and <a
     href="programs/htcacheclean.html">htcacheclean</a> reference documentation.
-    It describes how to use the Apache HTTP Server's caching features to accelerate web and 
+    It describes how to use the Apache HTTP Server's caching features to accelerate web and
     proxy serving, while avoiding common problems and misconfigurations.</p>
   </summary>
 
@@ -41,44 +41,44 @@
     caching architectures provide a powerful means to accelerate HTTP
     handling, both as an origin webserver and as a proxy.</p>
 
-    <p><module>mod_cache</module> and its provider modules 
-    <module>mod_cache_disk</module> 
+    <p><module>mod_cache</module> and its provider modules
+    <module>mod_cache_disk</module>
     provide intelligent, HTTP-aware caching. The content itself is stored
     in the cache, and mod_cache aims to honor all of the various HTTP
     headers and options that control the cachability of content. It can
     handle both local and proxied content. <module>mod_cache</module>
     is aimed at both simple and complex caching configurations, where
-    you are dealing with proxied content, dynamic local content or 
-    have a need to speed up access to local files which change with 
+    you are dealing with proxied content, dynamic local content or
+    have a need to speed up access to local files which change with
     time.</p>
 
     <p><module>mod_file_cache</module> on the other hand presents a more
     basic, but sometimes useful, form of caching. Rather than maintain
     the complexity of actively ensuring the cachability of URLs,
-    <module>mod_file_cache</module> offers file-handle and memory-mapping 
-    tricks to keep a cache of files as they were when httpd was last 
-    started. As such, <module>mod_file_cache</module> is aimed at improving 
+    <module>mod_file_cache</module> offers file-handle and memory-mapping
+    tricks to keep a cache of files as they were when httpd was last
+    started. As such, <module>mod_file_cache</module> is aimed at improving
     the access time to local static files which do not change very
     often.</p>
 
     <p>As <module>mod_file_cache</module> presents a relatively simple
-    caching implementation, apart from the specific sections on <directive 
-    module="mod_file_cache">CacheFile</directive> and <directive 
+    caching implementation, apart from the specific sections on <directive
+    module="mod_file_cache">CacheFile</directive> and <directive
     module="mod_file_cache">MMapFile</directive>, the explanations
-    in this guide cover the <module>mod_cache</module> caching 
+    in this guide cover the <module>mod_cache</module> caching
     architecture.</p>
 
-    <p>To get the most from this document, you should be familiar with 
-    the basics of HTTP, and have read the Users' Guides to 
-    <a href="urlmapping.html">Mapping URLs to the Filesystem</a> and 
+    <p>To get the most from this document, you should be familiar with
+    the basics of HTTP, and have read the Users' Guides to
+    <a href="urlmapping.html">Mapping URLs to the Filesystem</a> and
     <a href="content-negotiation.html">Content negotiation</a>.</p>
 
   </section>
-   
+
   <section id="overview">
 
     <title>Caching Overview</title>
-    
+
     <related>
       <modulelist>
         <module>mod_cache</module>
@@ -98,7 +98,7 @@
     <p>There are two main stages in <module>mod_cache</module> that can
     occur in the lifetime of a request. First, <module>mod_cache</module>
     is a URL mapping module, which means that if a URL has been cached,
-    and the cached version of that URL has not expired, the request will 
+    and the cached version of that URL has not expired, the request will
     be served directly by <module>mod_cache</module>.</p>
 
     <p>This means that any other stages that might ordinarily happen
@@ -110,7 +110,7 @@
     <p>If the URL is not found within the cache, <module>mod_cache</module>
     will add a <a href="filter.html">filter</a> to the request handling. After
     httpd has located the content by the usual means, the filter will be run
-    as the content is served. If the content is determined to be cacheable, 
+    as the content is served. If the content is determined to be cacheable,
     the content will be saved to the cache for future serving.</p>
 
     <p>If the URL is found within the cache, but also found to have expired,
@@ -125,8 +125,8 @@
     <section>
       <title>Improving Cache Hits</title>
 
-      <p>When caching locally generated content, ensuring that  
-      <directive module="core">UseCanonicalName</directive> is set to 
+      <p>When caching locally generated content, ensuring that
+      <directive module="core">UseCanonicalName</directive> is set to
       <code>On</code> can dramatically improve the ratio of cache hits. This
       is because the hostname of the virtual-host serving the content forms
       a part of the cache key. With the setting set to <code>On</code>
@@ -134,10 +134,10 @@
       differently cached entities, and instead content will be cached as
       per the canonical hostname.</p>
 
-      <p>Because caching is performed within the URL to filename translation 
+      <p>Because caching is performed within the URL to filename translation
       phase, cached documents will only be served in response to URL requests.
       Ordinarily this is of little consequence, but there is one circumstance
-      in which it matters: If you are using <a href="howto/ssi.html">Server 
+      in which it matters: If you are using <a href="howto/ssi.html">Server
       Side Includes</a>;</p>
 
       <example>
@@ -152,19 +152,19 @@
       serves from the cache, you should use <code>virtual</code> include
       types.</p>
     </section>
-    
+
     <section>
       <title>Expiry Periods</title>
-    
-      <p>The default expiry period for cached entities is one hour, however 
-      this can be easily over-ridden by using the <directive 
+
+      <p>The default expiry period for cached entities is one hour, however
+      this can be easily over-ridden by using the <directive
       module="mod_cache">CacheDefaultExpire</directive> directive. This
       default is only used when the original source of the content does not
       specify an expire time or time of last modification.</p>
 
       <p>If a response does not include an <code>Expires</code> header but does
       include a <code>Last-Modified</code> header, <module>mod_cache</module>
-      can infer an expiry period based on the use of the <directive 
+      can infer an expiry period based on the use of the <directive
       module="mod_cache">CacheLastModifiedFactor</directive> directive.</p>
 
       <p>For local content, <module>mod_expires</module> may be used to
@@ -178,29 +178,29 @@
     <section>
       <title>A Brief Guide to Conditional Requests</title>
 
-      <p>When content expires from the cache and is re-requested from the 
+      <p>When content expires from the cache and is re-requested from the
       backend or content provider, rather than pass on the original request,
       httpd will use a conditional request instead.</p>
 
       <p>HTTP offers a number of headers which allow a client, or cache
       to discern between different versions of the same content. For
       example if a resource was served with an "Etag:" header, it is
-      possible to make a conditional request with an "If-None-Match:" 
+      possible to make a conditional request with an "If-None-Match:"
       header. If a resource was served with a "Last-Modified:" header
-      it is possible to make a conditional request with an 
+      it is possible to make a conditional request with an
       "If-Modified-Since:" header, and so on.</p>
 
       <p>When such a conditional request is made, the response differs
-      depending on whether the content matches the conditions. If a request is 
-      made with an "If-Modified-Since:" header, and the content has not been 
-      modified since the time indicated in the request then a terse "304 Not 
+      depending on whether the content matches the conditions. If a request is
+      made with an "If-Modified-Since:" header, and the content has not been
+      modified since the time indicated in the request then a terse "304 Not
       Modified" response is issued.</p>
 
       <p>If the content has changed, then it is served as if the request were
       not conditional to begin with.</p>
 
-      <p>The benefits of conditional requests in relation to caching are 
-      twofold. Firstly, when making such a request to the backend, if the 
+      <p>The benefits of conditional requests in relation to caching are
+      twofold. Firstly, when making such a request to the backend, if the
       content from the backend matches the content in the store, this can be
       determined easily and without the overhead of transferring the entire
       resource.</p>
@@ -213,30 +213,30 @@
       from the cache if it has not changed. As long as reading from the cache
       store is faster than reading from the backend (e.g. <module
       >mod_cache_disk</module> with memory disk
-      compared to reading from disk).</p> 
+      compared to reading from disk).</p>
     </section>
 
     <section>
       <title>What Can be Cached?</title>
 
-      <p>As mentioned already, the two styles of caching in httpd work 
-      differently, <module>mod_file_cache</module> caching maintains file 
-      contents as they were when httpd was started. When a request is 
-      made for a file that is cached by this module, it is intercepted 
+      <p>As mentioned already, the two styles of caching in httpd work
+      differently, <module>mod_file_cache</module> caching maintains file
+      contents as they were when httpd was started. When a request is
+      made for a file that is cached by this module, it is intercepted
       and the cached file is served.</p>
 
       <p><module>mod_cache</module> caching on the other hand is more
       complex. When serving a request, if it has not been cached
       previously, the caching module will determine if the content
-      is cacheable. The conditions for determining cachability of 
+      is cacheable. The conditions for determining cachability of
       a response are;</p>
 
       <ol>
-        <li>Caching must be enabled for this URL. See the <directive 
+        <li>Caching must be enabled for this URL. See the <directive
         module="mod_cache">CacheEnable</directive> and <directive
         module="mod_cache">CacheDisable</directive> directives.</li>
 
-        <li>The response must have a HTTP status code of 200, 203, 300, 301 or 
+        <li>The response must have a HTTP status code of 200, 203, 300, 301 or
         410.</li>
 
         <li>The request must be a HTTP GET request.</li>
@@ -257,17 +257,17 @@
         <li>If the response has a status of 200 (OK), the response must
         also include at least one of the "Etag", "Last-Modified" or
         the "Expires" headers, or the max-age or s-maxage directive of
-        the "Cache-Control:" header, unless the 
-        <directive module="mod_cache">CacheIgnoreNoLastMod</directive> 
+        the "Cache-Control:" header, unless the
+        <directive module="mod_cache">CacheIgnoreNoLastMod</directive>
         directive has been used to require otherwise.</li>
 
         <li>If the response includes the "private" option in a "Cache-Control:"
-        header, it will not be stored unless the 
+        header, it will not be stored unless the
         <directive module="mod_cache">CacheStorePrivate</directive> has been
         used to require otherwise.</li>
 
-        <li>Likewise, if the response includes the "no-store" option in a 
-        "Cache-Control:" header, it will not be stored unless the 
+        <li>Likewise, if the response includes the "no-store" option in a
+        "Cache-Control:" header, it will not be stored unless the
         <directive module="mod_cache">CacheStoreNoStore</directive> has been
         used.</li>
 
@@ -278,7 +278,7 @@
 
     <section>
       <title>What Should Not be Cached?</title>
-    
+
       <p>In short, any content which is highly time-sensitive, or which varies
       depending on the particulars of the request that are not covered by
       HTTP negotiation, should not be cached.</p>
@@ -295,11 +295,11 @@
     <section>
       <title>Variable/Negotiated Content</title>
 
-      <p>If a response with a "Vary" header is received by 
+      <p>If a response with a "Vary" header is received by
       <module>mod_cache</module> when requesting content by the backend it
-      will attempt to handle it intelligently. If possible, 
+      will attempt to handle it intelligently. If possible,
       <module>mod_cache</module> will detect the headers attributed in the
-      "Vary" response in future requests and serve the correct cached 
+      "Vary" response in future requests and serve the correct cached
       response.</p>
 
       <p>If for example, a response is received with a vary header such as;</p>
@@ -348,20 +348,20 @@ Vary: negotiate,accept-language,accept-charset
       <p>As requests to end-users can be served from the cache, the cache
       itself can become a target for those wishing to deface or interfere with
       content. It is important to bear in mind that the cache must at all
-      times be writable by the user which httpd is running as. This is in 
+      times be writable by the user which httpd is running as. This is in
       stark contrast to the usually recommended situation of maintaining
       all content unwritable by the Apache user.</p>
 
       <p>If the Apache user is compromised, for example through a flaw in
       a CGI process, it is possible that the cache may be targeted. When
-      using <module>mod_cache_disk</module>, it is relatively easy to 
+      using <module>mod_cache_disk</module>, it is relatively easy to
       insert or modify a cached entity.</p>
 
-      <p>This presents a somewhat elevated risk in comparison to the other 
-      types of attack it is possible to make as the Apache user. If you are 
-      using <module>mod_cache_disk</module> you should bear this in mind - 
-      ensure you upgrade httpd when security upgrades are announced and 
-      run CGI processes as a non-Apache user using <a 
+      <p>This presents a somewhat elevated risk in comparison to the other
+      types of attack it is possible to make as the Apache user. If you are
+      using <module>mod_cache_disk</module> you should bear this in mind -
+      ensure you upgrade httpd when security upgrades are announced and
+      run CGI processes as a non-Apache user using <a
       href="suexec.html">suEXEC</a> if possible.</p>
 
     </section>
@@ -370,8 +370,8 @@ Vary: negotiate,accept-language,accept-charset
       <title>Cache Poisoning</title>
 
       <p>When running httpd as a caching proxy server, there is also the
-      potential for so-called cache poisoning. Cache Poisoning is a broad 
-      term for attacks in which an attacker causes the proxy server to 
+      potential for so-called cache poisoning. Cache Poisoning is a broad
+      term for attacks in which an attacker causes the proxy server to
       retrieve incorrect (and usually undesirable) content from the backend.
       </p>
 
@@ -402,33 +402,33 @@ Vary: negotiate,accept-language,accept-charset
       </directivelist>
     </related>
 
-    <p>The act of opening a file can itself be a source of delay, particularly 
+    <p>The act of opening a file can itself be a source of delay, particularly
     on network filesystems. By maintaining a cache of open file descriptors
     for commonly served files, httpd can avoid this delay. Currently
         httpd
-    provides one implementation of File-Handle Caching.</p> 
+    provides one implementation of File-Handle Caching.</p>
 
     <section>
       <title>CacheFile</title>
 
       <p>The most basic form of caching present in httpd is the file-handle
-      caching provided by <module>mod_file_cache</module>. Rather than caching 
-      file-contents, this cache maintains a table of open file descriptors. Files 
+      caching provided by <module>mod_file_cache</module>. Rather than caching
+      file-contents, this cache maintains a table of open file descriptors. Files
       to be cached in this manner are specified in the configuration file using
-      the <directive module="mod_file_cache">CacheFile</directive> 
+      the <directive module="mod_file_cache">CacheFile</directive>
       directive.</p>
 
-      <p>The 
-      <directive module="mod_file_cache">CacheFile</directive> directive 
-      instructs httpd to open the file when it is started and to re-use 
+      <p>The
+      <directive module="mod_file_cache">CacheFile</directive> directive
+      instructs httpd to open the file when it is started and to re-use
       this file-handle for all subsequent access to this file.</p>
 
       <example>
       CacheFile /usr/local/apache2/htdocs/index.html
       </example>
 
-      <p>If you intend to cache a large number of files in this manner, you 
-      must ensure that your operating system's limit for the number of open 
+      <p>If you intend to cache a large number of files in this manner, you
+      must ensure that your operating system's limit for the number of open
       files is set appropriately.</p>
 
       <p>Although using <directive module="mod_file_cache">CacheFile</directive>
@@ -446,7 +446,7 @@ Vary: negotiate,accept-language,accept-charset
     </section>
 
   </section>
-  
+
   <section id="inmemory">
     <title>In-Memory Caching</title>
 
@@ -460,7 +460,7 @@ Vary: negotiate,accept-language,accept-charset
         <directive module="mod_file_cache">MMapFile</directive>
       </directivelist>
     </related>
-       
+
     <p>Serving directly from system memory is universally the fastest method
     of serving content. Reading files from a disk controller or, even worse,
     from a remote network is orders of magnitude slower. Disk controllers
@@ -470,12 +470,12 @@ Vary: negotiate,accept-language,accept-charset
 
     <p>System memory isn't cheap though, byte for byte it's by far the most
     expensive type of storage and it's important to ensure that it is used
-    efficiently. By caching files in memory you decrease the amount of 
+    efficiently. By caching files in memory you decrease the amount of
     memory available on the system. As we'll see, in the case of operating
     system caching, this is not so much of an issue, but when using
     httpd's own in-memory caching it is important to make sure that you
     do not allocate too much memory to a cache. Otherwise the system
-    will be forced to swap out memory, which will likely degrade 
+    will be forced to swap out memory, which will likely degrade
     performance.</p>
 
     <section>
@@ -502,28 +502,28 @@ sys     0m0.000s</pre>
       of time it takes to read the file. This is because the kernel has cached
       the file contents in memory.</p>
 
-      <p>By ensuring there is "spare" memory on your system, you can ensure 
-      that more and more file-contents will be stored in this cache. This 
-      can be a very efficient means of in-memory caching, and involves no 
+      <p>By ensuring there is "spare" memory on your system, you can ensure
+      that more and more file-contents will be stored in this cache. This
+      can be a very efficient means of in-memory caching, and involves no
       extra configuration of httpd at all.</p>
 
-      <p>Additionally, because the operating system knows when files are 
-      deleted or modified, it can automatically remove file contents from the 
-      cache when necessary. This is a big advantage over httpd's in-memory 
+      <p>Additionally, because the operating system knows when files are
+      deleted or modified, it can automatically remove file contents from the
+      cache when necessary. This is a big advantage over httpd's in-memory
       caching which has no way of knowing when a file has changed.</p>
     </section>
 
     <p>Despite the performance and advantages of automatic operating system
-    caching there are some circumstances in which in-memory caching may be 
+    caching there are some circumstances in which in-memory caching may be
     better performed by httpd.</p>
 
     <section>
       <title>MMapFile Caching</title>
 
-      <p><module>mod_file_cache</module> provides the 
+      <p><module>mod_file_cache</module> provides the
       <directive module="mod_file_cache">MMapFile</directive> directive, which
       allows you to have httpd map a static file's contents into memory at
-      start time (using the mmap system call). httpd will use the in-memory 
+      start time (using the mmap system call). httpd will use the in-memory
       contents for all subsequent accesses to this file.</p>
 
       <example>
@@ -535,7 +535,7 @@ sys     0m0.000s</pre>
       changes in these files will not be picked up by httpd after it has
       started.</p>
 
-      <p> The <directive module="mod_file_cache">MMapFile</directive> 
+      <p> The <directive module="mod_file_cache">MMapFile</directive>
       directive does not keep track of how much memory it allocates, so
       you must ensure not to over-use the directive. Each httpd child
       process will replicate this memory, so it is critically important
@@ -543,7 +543,7 @@ sys     0m0.000s</pre>
       system to swap memory.</p>
     </section>
   </section>
-             
+
   <section id="disk">
     <title>Disk-based Caching</title>
 
@@ -556,14 +556,14 @@ sys     0m0.000s</pre>
         <directive module="mod_cache">CacheDisable</directive>
       </directivelist>
     </related>
-       
-    <p><module>mod_cache_disk</module> provides a disk-based caching mechanism 
+
+    <p><module>mod_cache_disk</module> provides a disk-based caching mechanism
     for <module>mod_cache</module>. This cache is intelligent and content will
     be served from the cache only as long as it is considered valid.</p>
 
     <p>Typically the module will be configured as so;</p>
 
-    <example>  
+    <example>
 CacheRoot   /var/cache/apache/<br />
 CacheEnable disk /<br />
 CacheDirLevels 2<br />
@@ -571,8 +571,8 @@ CacheDirLength 1
     </example>
 
     <p>Importantly, as the cached files are locally stored, operating system
-    in-memory caching will typically be applied to their access also. So 
-    although the files are stored on disk, if they are frequently accessed 
+    in-memory caching will typically be applied to their access also. So
+    although the files are stored on disk, if they are frequently accessed
     it is likely the operating system will ensure that they are actually
     served from memory.</p>
 
@@ -590,68 +590,68 @@ CacheDirLength 1
       as a prefix for the naming of the files specific to that URL within
       the cache, however first it is split up into directories as per
       the <directive module="mod_cache_disk">CacheDirLevels</directive> and
-      <directive module="mod_cache_disk">CacheDirLength</directive> 
+      <directive module="mod_cache_disk">CacheDirLength</directive>
       directives.</p>
 
-      <p><directive module="mod_cache_disk">CacheDirLevels</directive> 
+      <p><directive module="mod_cache_disk">CacheDirLevels</directive>
       specifies how many levels of subdirectory there should be, and
       <directive module="mod_cache_disk">CacheDirLength</directive>
       specifies how many characters should be in each directory. With
       the example settings given above, the hash would be turned into
-      a filename prefix as 
+      a filename prefix as
       <code>/var/cache/apache/x/y/TGxSMO2b68mBCykqkp1w</code>.</p>
 
       <p>The overall aim of this technique is to reduce the number of
       subdirectories or files that may be in a particular directory,
       as most file-systems slow down as this number increases. With
-      setting of "1" for 
+      setting of "1" for
       <directive module="mod_cache_disk">CacheDirLength</directive>
-      there can at most be 64 subdirectories at any particular level. 
+      there can at most be 64 subdirectories at any particular level.
       With a setting of 2 there can be 64 * 64 subdirectories, and so on.
       Unless you have a good reason not to, using a setting of "1"
       for <directive module="mod_cache_disk">CacheDirLength</directive>
       is recommended.</p>
 
-      <p>Setting 
+      <p>Setting
       <directive module="mod_cache_disk">CacheDirLevels</directive>
       depends on how many files you anticipate to store in the cache.
       With the setting of "2" used in the above example, a grand
       total of 4096 subdirectories can ultimately be created. With
-      1 million files cached, this works out at roughly 245 cached 
+      1 million files cached, this works out at roughly 245 cached
       URLs per directory.</p>
 
       <p>Each URL uses at least two files in the cache-store. Typically
-      there is a ".header" file, which includes meta-information about 
+      there is a ".header" file, which includes meta-information about
       the URL, such as when it is due to expire and a ".data" file
       which is a verbatim copy of the content to be served.</p>
 
       <p>In the case of a content negotiated via the "Vary" header, a
-      ".vary" directory will be created for the URL in question. This 
+      ".vary" directory will be created for the URL in question. This
       directory will have multiple ".data" files corresponding to the
       differently negotiated content.</p>
     </section>
 
     <section>
       <title>Maintaining the Disk Cache</title>
-    
+
       <p>Although <module>mod_cache_disk</module> will remove cached content
       as it is expired, it does not maintain any information on the total
       size of the cache or how little free space may be left.</p>
 
-      <p>Instead, provided with httpd is the <a 
+      <p>Instead, provided with httpd is the <a
       href="programs/htcacheclean.html">htcacheclean</a> tool which, as the name
-      suggests, allows you to clean the cache periodically. Determining 
-      how frequently to run <a 
-      href="programs/htcacheclean.html">htcacheclean</a> and what target size to 
+      suggests, allows you to clean the cache periodically. Determining
+      how frequently to run <a
+      href="programs/htcacheclean.html">htcacheclean</a> and what target size to
       use for the cache is somewhat complex and trial and error may be needed to
       select optimal values.</p>
 
-      <p><a href="programs/htcacheclean.html">htcacheclean</a> has two modes of 
-      operation. It can be run as persistent daemon, or periodically from 
-      cron. <a 
-      href="programs/htcacheclean.html">htcacheclean</a> can take up to an hour 
-      or more to process very large (tens of gigabytes) caches and if you are 
-      running it from cron it is recommended that you determine how long a typical 
+      <p><a href="programs/htcacheclean.html">htcacheclean</a> has two modes of
+      operation. It can be run as persistent daemon, or periodically from
+      cron. <a
+      href="programs/htcacheclean.html">htcacheclean</a> can take up to an hour
+      or more to process very large (tens of gigabytes) caches and if you are
+      running it from cron it is recommended that you determine how long a typical
       run takes, to avoid running more than one instance at a time.</p>
 
       <p class="figure">
@@ -661,8 +661,8 @@ CacheDirLength 1
       cache growth / clean sequence.</p>
 
       <p>Because <module>mod_cache_disk</module> does not itself pay attention
-      to how much space is used you should ensure that 
-      <a href="programs/htcacheclean.html">htcacheclean</a> is configured to 
+      to how much space is used you should ensure that
+      <a href="programs/htcacheclean.html">htcacheclean</a> is configured to
       leave enough "grow room" following a clean.</p>
     </section>
 

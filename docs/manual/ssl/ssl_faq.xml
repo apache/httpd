@@ -36,13 +36,13 @@ he poses the right questions.</p>
 
 <section id="installation"><title>Installation</title>
 <ul>
-<li><a href="#mutex">Why do I get permission errors related to 
+<li><a href="#mutex">Why do I get permission errors related to
 SSLMutex when I start Apache?</a></li>
-<li><a href="#entropy">Why does mod_ssl stop with the error "Failed to 
+<li><a href="#entropy">Why does mod_ssl stop with the error "Failed to
 generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 </ul>
 
-<section id="mutex"><title>Why do I get permission errors related to 
+<section id="mutex"><title>Why do I get permission errors related to
         SSLMutex when I start Apache?</title>
     <p>Errors such as ``<code>mod_ssl: Child could not open
     SSLMutex lockfile /opt/apache/logs/ssl_mutex.18332 (System error follows)
@@ -55,7 +55,7 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 </section>
 
 <section id="entropy"><title>Why does mod_ssl stop with the error
-        "Failed to generate temporary 512 bit RSA private key" when I start 
+        "Failed to generate temporary 512 bit RSA private key" when I start
         Apache?</title>
     <p>Cryptographic software needs a source of unpredictable data
     to work correctly. Many open source operating systems provide
@@ -66,9 +66,9 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
     encryption. As of version 0.9.5, the OpenSSL functions that need
     randomness report an error if the PRNG has not been seeded with
     at least 128 bits of randomness.</p>
-    <p>To prevent this error, <module>mod_ssl</module> has to provide 
-    enough entropy to the PRNG to allow it to work correctly. This can 
-    be done via the <directive module="mod_ssl">SSLRandomSeed</directive> 
+    <p>To prevent this error, <module>mod_ssl</module> has to provide
+    enough entropy to the PRNG to allow it to work correctly. This can
+    be done via the <directive module="mod_ssl">SSLRandomSeed</directive>
     directive.</p>
 </section>
 </section>
@@ -76,29 +76,29 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 
 <section id="aboutconfig"><title>Configuration</title>
 <ul>
-<li><a href="#parallel">Is it possible to provide HTTP and HTTPS from 
+<li><a href="#parallel">Is it possible to provide HTTP and HTTPS from
 the same server?</a></li>
 <li><a href="#ports">Which port does HTTPS use?</a></li>
-<li><a href="#httpstest">How do I speak HTTPS manually for testing 
+<li><a href="#httpstest">How do I speak HTTPS manually for testing
 purposes?</a></li>
-<li><a href="#hang">Why does the connection hang when I connect to my 
+<li><a href="#hang">Why does the connection hang when I connect to my
 SSL-aware Apache server?</a></li>
-<li><a href="#refused">Why do I get ``Connection Refused'' errors, when 
+<li><a href="#refused">Why do I get ``Connection Refused'' errors, when
 trying to access my newly installed Apache+mod_ssl server via HTTPS?</a></li>
 <li><a href="#envvars">Why are the <code>SSL_XXX</code> variables not
 available to my CGI &amp; SSI scripts?</a></li>
-<li><a href="#relative">How can I switch between HTTP and HTTPS in 
+<li><a href="#relative">How can I switch between HTTP and HTTPS in
 relative hyperlinks?</a></li>
 </ul>
 
-<section id="parallel"><title>Is it possible to provide HTTP and HTTPS 
+<section id="parallel"><title>Is it possible to provide HTTP and HTTPS
         from the same server?</title>
-    <p>Yes. HTTP and HTTPS use different server ports (HTTP binds to 
-    port 80, HTTPS to port 443), so there is no direct conflict between 
-    them. You can either run two separate server instances bound to 
-    these ports, or use Apache's elegant virtual hosting facility to 
-    create two virtual servers, both served by the same instance of Apache 
-    - one responding over HTTP to requests on port 80, and the other 
+    <p>Yes. HTTP and HTTPS use different server ports (HTTP binds to
+    port 80, HTTPS to port 443), so there is no direct conflict between
+    them. You can either run two separate server instances bound to
+    these ports, or use Apache's elegant virtual hosting facility to
+    create two virtual servers, both served by the same instance of Apache
+    - one responding over HTTP to requests on port 80, and the other
     responding over HTTPS to requests on port 443.</p>
 </section>
 
@@ -112,15 +112,15 @@ relative hyperlinks?</a></li>
 
 <section id="httpstest"><title>How do I speak HTTPS manually for testing purposes?</title>
  <p>While you usually just use</p>
-    
+
     <example>$ telnet localhost 80<br />
     GET / HTTP/1.0</example>
 
     <p>for simple testing of Apache via HTTP, it's not so easy for
     HTTPS because of the SSL protocol between TCP and HTTP. With the
-    help of OpenSSL's <code>s_client</code> command, however, you can 
+    help of OpenSSL's <code>s_client</code> command, however, you can
     do a similar check via HTTPS:</p>
-    
+
     <example>$ openssl s_client -connect localhost:443 -state -debug<br />
     GET / HTTP/1.0</example>
 
@@ -137,7 +137,7 @@ relative hyperlinks?</a></li>
     $ curl https://localhost/</example>
 </section>
 
-<section id="hang"><title>Why does the connection hang when I connect 
+<section id="hang"><title>Why does the connection hang when I connect
     to my SSL-aware Apache server?</title>
 
 <p>This can happen when you try to connect to a HTTPS server (or virtual
@@ -148,29 +148,29 @@ relative hyperlinks?</a></li>
     or which supports it on a non-standard port). Make sure that you're
     connecting to a (virtual) server that supports SSL.</p></section>
 
-<section id="refused"><title>Why do I get ``Connection Refused'' messages, 
+<section id="refused"><title>Why do I get ``Connection Refused'' messages,
     when trying to access my newly installed Apache+mod_ssl server via HTTPS?</title>
 <p>
     This error can be caused by an incorrect configuration.
     Please make sure that your <directive module="mpm_common"
-    >Listen</directive> directives match your 
+    >Listen</directive> directives match your
     <directive type="section" module="core">VirtualHost</directive>
-    directives. If all else fails, please start afresh, using the default 
+    directives. If all else fails, please start afresh, using the default
     configuration provided by <module>mod_ssl</module>.</p>
 </section>
 
-<section id="envvars"><title>Why are the <code>SSL_XXX</code> variables 
+<section id="envvars"><title>Why are the <code>SSL_XXX</code> variables
     not available to my CGI &amp; SSI scripts?</title>
 <p>Please make sure you have ``<code>SSLOptions +StdEnvVars</code>''
     enabled for the context of your CGI/SSI requests.</p>
 </section>
 
 <section id="relative">
-<title>How can I switch between HTTP and HTTPS in relative 
+<title>How can I switch between HTTP and HTTPS in relative
     hyperlinks?</title>
-<p>Usually, to switch between HTTP and HTTPS, you have to use 
-    fully-qualified hyperlinks (because you have to change the URL 
-    scheme).  Using <module>mod_rewrite</module> however, you can 
+<p>Usually, to switch between HTTP and HTTPS, you have to use
+    fully-qualified hyperlinks (because you have to change the URL
+    scheme).  Using <module>mod_rewrite</module> however, you can
     manipulate relative hyperlinks, to achieve the same effect.</p>
     <example>
     RewriteEngine on<br />
@@ -187,24 +187,24 @@ relative hyperlinks?</a></li>
 
 <section id="aboutcerts"><title>Certificates</title>
 <ul>
-<li><a href="#keyscerts">What are RSA Private Keys, CSRs and 
+<li><a href="#keyscerts">What are RSA Private Keys, CSRs and
 Certificates?</a></li>
 <li><a href="#startup">Is there a difference on startup between
 a non-SSL-aware Apache and an SSL-aware Apache?</a></li>
-<li><a href="#selfcert">How do I create a self-signed SSL 
+<li><a href="#selfcert">How do I create a self-signed SSL
 Certificate for testing purposes?</a></li>
 <li><a href="#realcert">How do I create a real SSL Certificate?</a></li>
-<li><a href="#ownca">How do I create and use my own Certificate 
+<li><a href="#ownca">How do I create and use my own Certificate
 Authority (CA)?</a></li>
-<li><a href="#passphrase">How can I change the pass-phrase on my private 
+<li><a href="#passphrase">How can I change the pass-phrase on my private
 key file?</a></li>
-<li><a href="#removepassphrase">How can I get rid of the pass-phrase 
+<li><a href="#removepassphrase">How can I get rid of the pass-phrase
 dialog at Apache startup time?</a></li>
-<li><a href="#verify">How do I verify that a private key matches its 
+<li><a href="#verify">How do I verify that a private key matches its
 Certificate?</a></li>
-<li><a href="#badcert">Why do connections fail with an "alert bad 
+<li><a href="#badcert">Why do connections fail with an "alert bad
 certificate" error?</a></li>
-<li><a href="#pemder">How can I convert a certificate from PEM to DER 
+<li><a href="#pemder">How can I convert a certificate from PEM to DER
 format?</a></li>
 <li><a href="#gid">Why do browsers complain that they cannot
 verify my Verisign Global ID server certificate?</a></li>
@@ -217,7 +217,7 @@ verify my Verisign Global ID server certificate?</a></li>
     you.</p>
     <p>A Certificate Signing Request (CSR) is a digital file which contains
     your public key and your name. You send the CSR to a Certifying Authority
-    (CA), who will convert it into a real Certificate, by signing it.</p> 
+    (CA), who will convert it into a real Certificate, by signing it.</p>
     <p>A Certificate contains your
     RSA public key, your name, the name of the CA, and is digitally signed by
     the CA. Browsers that know the CA can verify the signature on that
@@ -227,23 +227,23 @@ verify my Verisign Global ID server certificate?</a></li>
     description of the SSL protocol.</p>
 </section>
 
-<section id="startup"><title>Is there a difference on startup between 
+<section id="startup"><title>Is there a difference on startup between
     a non-SSL-aware Apache and an SSL-aware Apache?</title>
-<p>Yes. In general, starting Apache with 
-    <module>mod_ssl</module> built-in is just like starting Apache 
-    without it. However, if you have a passphrase on your SSL private 
-    key file, a startup dialog will pop up which asks you to enter the 
+<p>Yes. In general, starting Apache with
+    <module>mod_ssl</module> built-in is just like starting Apache
+    without it. However, if you have a passphrase on your SSL private
+    key file, a startup dialog will pop up which asks you to enter the
     pass phrase.</p>
-    
-    <p>Having to manually enter the passphrase when starting the server 
-    can be problematic - for example, when starting the server from the 
+
+    <p>Having to manually enter the passphrase when starting the server
+    can be problematic - for example, when starting the server from the
     system boot scripts. In this case, you can follow the steps
     <a href="#removepassphrase">below</a> to remove the passphrase from
     your private key. Bear in mind that doing so brings additional security
     risks - proceed with caution!</p>
 </section>
 
-<section id="selfcert"><title>How do I create a self-signed SSL 
+<section id="selfcert"><title>How do I create a self-signed SSL
 Certificate for testing purposes?</title>
     <ol>
     <li>Make sure OpenSSL is installed and in your <code>PATH</code>.<br />
@@ -251,23 +251,23 @@ Certificate for testing purposes?</title>
     </li>
     <li>Run the following command, to create <code>server.key</code> and
         <code>server.crt</code> files:<br />
-        <code><strong>$ openssl req -new -x509 -nodes -out server.crt 
+        <code><strong>$ openssl req -new -x509 -nodes -out server.crt
                         -keyout server.key</strong></code><br />
-        These can be used as follows in your <code>httpd.conf</code> 
+        These can be used as follows in your <code>httpd.conf</code>
         file:
         <pre>
              SSLCertificateFile    /path/to/this/server.crt
              SSLCertificateKeyFile /path/to/this/server.key
         </pre>
     </li>
-    <li>It is important that you are aware that this 
+    <li>It is important that you are aware that this
         <code>server.key</code> does <em>not</em> have any passphrase.
-        To add a passphrase to the key, you should run the following 
+        To add a passphrase to the key, you should run the following
         command, and enter &amp; verify the passphrase as requested.<br />
-        <p><code><strong>$ openssl rsa -des3 -in server.key -out 
+        <p><code><strong>$ openssl rsa -des3 -in server.key -out
         server.key.new</strong></code><br />
         <code><strong>$ mv server.key.new server.key</strong></code><br /></p>
-        Please backup the <code>server.key</code> file, and the passphrase 
+        Please backup the <code>server.key</code> file, and the passphrase
         you entered, in a secure location.
     </li>
     </ol>
@@ -292,7 +292,7 @@ Certificate for testing purposes?</title>
        <br />
        <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
        <br />
-       If necessary, you can also create a decrypted PEM version (not 
+       If necessary, you can also create a decrypted PEM version (not
        recommended) of this RSA private key with:<br />
        <br />
        <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br />
@@ -315,18 +315,18 @@ Certificate for testing purposes?</title>
        <br />
     </li>
     <li>You now have to send this Certificate Signing Request (CSR) to
-       a Certifying Authority (CA) to be signed. Once the CSR has been 
+       a Certifying Authority (CA) to be signed. Once the CSR has been
        signed, you will have a real Certificate, which can be used by
-       Apache. You can have a CSR signed by a commercial CA, or you can 
+       Apache. You can have a CSR signed by a commercial CA, or you can
        create your own CA to sign it.<br />
-       Commercial CAs usually ask you to post the CSR into a web form, 
-       pay for the signing, and then send a signed Certificate, which 
+       Commercial CAs usually ask you to post the CSR into a web form,
+       pay for the signing, and then send a signed Certificate, which
        you can store in a server.crt file.<br />
 
        For details on how to create your own CA, and use this to sign
        a CSR, see <a href="#ownca">below</a>.<br />
-       
-       Once your CSR has been signed, you can see the details of the 
+
+       Once your CSR has been signed, you can see the details of the
        Certificate as follows:<br />
        <br />
        <code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
@@ -347,10 +347,10 @@ Certificate for testing purposes?</title>
 
 <section id="ownca"><title>How do I create and use my own Certificate Authority (CA)?</title>
     <p>The short answer is to use the <code>CA.sh</code> or <code>CA.pl</code>
-    script provided by OpenSSL. Unless you have a good reason not to, 
+    script provided by OpenSSL. Unless you have a good reason not to,
     you should use these for preference. If you cannot, you can create a
     self-signed Certificate as follows:</p>
-    
+
     <ol>
     <li>Create a RSA private key for your server
        (will be Triple-DES encrypted and PEM formatted):<br />
@@ -359,11 +359,11 @@ Certificate for testing purposes?</title>
        <br />
        Please backup this <code>host.key</code> file and the
        pass-phrase you entered in a secure location.
-       You can see the details of this RSA private key by using the 
+       You can see the details of this RSA private key by using the
        command:<br />
        <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
        <br />
-       If necessary, you can also create a decrypted PEM version (not 
+       If necessary, you can also create a decrypted PEM version (not
        recommended) of this RSA private key with:<br />
        <br />
        <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br />
@@ -372,7 +372,7 @@ Certificate for testing purposes?</title>
     <li>Create a self-signed Certificate (X509 structure)
        with the RSA key you just created (output will be PEM formatted):<br />
        <br />
-       <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365 
+       <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365
                        -key server.key -out server.crt</strong></code><br />
        <br />
        This signs the server CSR and results in a <code>server.crt</code> file.<br />
@@ -389,14 +389,14 @@ Certificate for testing purposes?</title>
     specifying the new pass-phrase. You can accomplish this with the following
     commands:</p>
 
-    
+
     <p><code><strong>$ openssl rsa -des3 -in server.key -out server.key.new</strong></code><br />
     <code><strong>$ mv server.key.new server.key</strong></code><br /></p>
-    
+
     <p>The first time you're asked for a PEM pass-phrase, you should
-    enter the old pass-phrase. After that, you'll be asked again to 
+    enter the old pass-phrase. After that, you'll be asked again to
     enter a pass-phrase - this time, use the new pass-phrase. If you
-    are asked to verify the pass-phrase, you'll need to enter the new 
+    are asked to verify the pass-phrase, you'll need to enter the new
     pass-phrase a second time.</p>
 </section>
 
@@ -404,7 +404,7 @@ Certificate for testing purposes?</title>
 <p>The reason this dialog pops up at startup and every re-start
     is that the RSA private key inside your server.key file is stored in
     encrypted format for security reasons. The pass-phrase is needed to decrypt
-    this file, so it can be read and parsed. Removing the pass-phrase 
+    this file, so it can be read and parsed. Removing the pass-phrase
     removes a layer of security from your server - proceed with caution!</p>
     <ol>
     <li>Remove the encryption from the RSA private key (while
@@ -429,7 +429,7 @@ Certificate for testing purposes?</title>
     file are such that only root or the web server user can read it
     (preferably get your web server to start as root but run as another
     user, and have the key readable only by root).</p>
-    
+
     <p>As an alternative approach you can use the ``<code>SSLPassPhraseDialog
     exec:/path/to/program</code>'' facility. Bear in mind that this is
     neither more nor less secure, of course.</p>
@@ -441,28 +441,28 @@ Certificate for testing purposes?</title>
     key" bits are included when you generate a CSR, and subsequently form
     part of the associated Certificate.</p>
     <p>To check that the public key in your Certificate matches the public
-    portion of your private key, you simply need to compare these numbers. 
+    portion of your private key, you simply need to compare these numbers.
     To view the Certificate and the key run the commands:</p>
-    
+
     <p><code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
     <code><strong>$ openssl rsa -noout -text -in server.key</strong></code></p>
-    
+
     <p>The `modulus' and the `public exponent' portions in the key and the
     Certificate must match. As the public exponent is usually 65537
     and it's difficult to visually check that the long modulus numbers
     are the same, you can use the following approach:</p>
-    
+
     <p><code><strong>$ openssl x509 -noout -modulus -in server.crt | openssl md5</strong></code><br />
     <code><strong>$ openssl rsa -noout -modulus -in server.key | openssl md5</strong></code></p>
-    
+
     <p>This leaves you with two rather shorter numbers to compare. It is,
-    in theory, possible that these numbers may be the same, without the 
-    modulus numbers being the same, but the chances of this are 
+    in theory, possible that these numbers may be the same, without the
+    modulus numbers being the same, but the chances of this are
     overwhelmingly remote.</p>
-    <p>Should you wish to check to which key or certificate a particular 
-    CSR belongs you can perform the same calculation on the CSR as 
+    <p>Should you wish to check to which key or certificate a particular
+    CSR belongs you can perform the same calculation on the CSR as
     follows:</p>
-    
+
     <p><code><strong>$ openssl req -noout -modulus -in server.csr | openssl md5</strong></code></p>
 </section>
 
@@ -475,15 +475,15 @@ Certificate for testing purposes?</title>
     <code><strong>$ openssl x509 -in cert.pem -out cert.der -outform DER</strong></code></p>
 </section>
 
-<section id="gid"><title>Why do browsers complain that they cannot 
+<section id="gid"><title>Why do browsers complain that they cannot
 verify my Verisign Global ID server certificate?</title>
-<p>Verisign uses an intermediate CA certificate between the root CA 
-    certificate (which is installed in the browsers) and the server 
-    certificate (which you installed on the server). You should have 
+<p>Verisign uses an intermediate CA certificate between the root CA
+    certificate (which is installed in the browsers) and the server
+    certificate (which you installed on the server). You should have
     received this additional CA certificate from Verisign.
     If not, complain to them. Then, configure this certificate with the
-    <directive module="mod_ssl">SSLCertificateChainFile</directive> 
-    directive. This ensures that the intermediate CA certificate is 
+    <directive module="mod_ssl">SSLCertificateChainFile</directive>
+    directive. This ensures that the intermediate CA certificate is
     sent to the browser, filling the gap in the certificate chain.</p>
 </section>
 </section>
@@ -491,7 +491,7 @@ verify my Verisign Global ID server certificate?</title>
 
 <section id="aboutssl"><title>The SSL Protocol</title>
 <ul>
-<li><a href="#random">Why do I get lots of random SSL protocol 
+<li><a href="#random">Why do I get lots of random SSL protocol
 errors under heavy server load?</a></li>
 <li><a href="#load">Why does my webserver have a higher load, now
 that it serves SSL encrypted traffic?</a></li>
@@ -502,7 +502,7 @@ sometimes take up to 30 seconds to establish a connection?</a></li>
 trying to use Anonymous Diffie-Hellman (ADH) ciphers?</a></li>
 <li><a href="#sharedciphers">Why do I get a 'no shared ciphers'
 error when connecting to my newly installed server?</a></li>
-<li><a href="#vhosts">Why can't I use SSL with name-based/non-IP-based 
+<li><a href="#vhosts">Why can't I use SSL with name-based/non-IP-based
 virtual hosts?</a></li>
 <li><a href="#vhosts2">Is it possible to use Name-Based Virtual
 Hosting to identify different SSL virtual hosts?</a></li>
@@ -511,11 +511,11 @@ Hosting to identify different SSL virtual hosts?</a></li>
 the lock icon in Netscape browsers stays unlocked when the dialog pops up.
 Does this mean the username/password is being sent unencrypted?</a></li>
 <li><a href="#msie">Why do I get I/O errors when connecting via
-HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer 
+HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer
 (MSIE)?</a></li>
 </ul>
 
-<section id="random"><title>Why do I get lots of random SSL protocol 
+<section id="random"><title>Why do I get lots of random SSL protocol
 errors under heavy server load?</title>
 <p>There can be a number of reasons for this, but the main one
     is problems with the SSL session Cache specified by the
@@ -524,7 +524,7 @@ errors under heavy server load?</title>
     no cache at all) may help.</p>
 </section>
 
-<section id="load"><title>Why does my webserver have a higher load, now 
+<section id="load"><title>Why does my webserver have a higher load, now
 that it serves SSL encrypted traffic?</title>
 <p>SSL uses strong cryptographic encryption, which necessitates a lot of
     number crunching. When you request a webpage via HTTPS, everything (even
@@ -532,63 +532,63 @@ that it serves SSL encrypted traffic?</title>
     traffic leads to load increases.</p>
 </section>
 
-<section id="establishing"><title>Why do HTTPS connections to my server 
+<section id="establishing"><title>Why do HTTPS connections to my server
 sometimes take up to 30 seconds to establish a connection?</title>
 <p>This is usually caused by a <code>/dev/random</code> device for
-    <directive module="mod_ssl">SSLRandomSeed</directive> which blocks the 
-    read(2) call until enough entropy is available to service the 
+    <directive module="mod_ssl">SSLRandomSeed</directive> which blocks the
+    read(2) call until enough entropy is available to service the
     request. More information is available in the reference
     manual for the <directive module="mod_ssl">SSLRandomSeed</directive>
     directive.</p>
 </section>
 
 <section id="ciphers"><title>What SSL Ciphers are supported by mod_ssl?</title>
-<p>Usually, any SSL ciphers supported by the version of OpenSSL in use, 
-    are also supported by <module>mod_ssl</module>. Which ciphers are 
-    available can depend on the way you built OpenSSL. Typically, at 
+<p>Usually, any SSL ciphers supported by the version of OpenSSL in use,
+    are also supported by <module>mod_ssl</module>. Which ciphers are
+    available can depend on the way you built OpenSSL. Typically, at
     least the following ciphers are supported:</p>
-    
+
     <ol>
     <li>RC4 with SHA1</li>
     <li>AES with SHA1</li>
     <li>Triple-DES with SHA1</li>
     </ol>
-    
-    <p>To determine the actual list of ciphers available, you should run 
+
+    <p>To determine the actual list of ciphers available, you should run
     the following:</p>
     <example>$ openssl ciphers -v</example>
 </section>
 
-<section id="adh"><title>Why do I get ``no shared cipher'' errors, when 
+<section id="adh"><title>Why do I get ``no shared cipher'' errors, when
 trying to use Anonymous Diffie-Hellman (ADH) ciphers?</title>
 <p>By default, OpenSSL does <em>not</em> allow ADH ciphers, for security
-    reasons. Please be sure you are aware of the potential side-effects 
+    reasons. Please be sure you are aware of the potential side-effects
     if you choose to enable these ciphers.</p>
-    <p>In order to use Anonymous Diffie-Hellman (ADH) ciphers, you must 
+    <p>In order to use Anonymous Diffie-Hellman (ADH) ciphers, you must
     build OpenSSL with ``<code>-DSSL_ALLOW_ADH</code>'', and then add
     ``<code>ADH</code>'' into your <directive module="mod_ssl"
     >SSLCipherSuite</directive>.</p>
 </section>
 
-<section id="sharedciphers"><title>Why do I get a 'no shared ciphers' 
+<section id="sharedciphers"><title>Why do I get a 'no shared ciphers'
 error when connecting to my newly installed server?</title>
-<p>Either you have made a mistake with your 
+<p>Either you have made a mistake with your
     <directive module="mod_ssl">SSLCipherSuite</directive>
     directive (compare it with the pre-configured example in
     <code>extra/httpd-ssl.conf</code>) or you chose to use DSA/DH
     algorithms instead of RSA when you generated your private key
     and ignored or overlooked the warnings. If you have chosen
-    DSA/DH, then your server cannot communicate using RSA-based SSL 
+    DSA/DH, then your server cannot communicate using RSA-based SSL
     ciphers (at least until you configure an additional RSA-based
-    certificate/key pair). Modern browsers like NS or IE can only 
-    communicate over SSL using RSA ciphers. The result is the 
-    "no shared ciphers" error. To fix this, regenerate your server 
+    certificate/key pair). Modern browsers like NS or IE can only
+    communicate over SSL using RSA ciphers. The result is the
+    "no shared ciphers" error. To fix this, regenerate your server
     certificate/key pair, using the RSA algorithm.</p>
 </section>
 
 <section id="vhosts"><title>Why can't I use SSL with name-based/non-IP-based virtual hosts?</title>
-<p>The reason is very technical, and a somewhat "chicken and egg" problem. 
-    The SSL protocol layer stays below the HTTP protocol layer and 
+<p>The reason is very technical, and a somewhat "chicken and egg" problem.
+    The SSL protocol layer stays below the HTTP protocol layer and
     encapsulates HTTP. When an SSL connection (HTTPS) is established
     Apache/mod_ssl has to negotiate the SSL protocol parameters with the
     client. For this, mod_ssl has to consult the configuration of the virtual
@@ -596,7 +596,7 @@ error when connecting to my newly installed server?</title>
     certificate, etc.). But in order to go to the correct virtual server
     Apache has to know the <code>Host</code> HTTP header field. To do this, the
     HTTP request header has to be read. This cannot be done before the SSL
-    handshake is finished, but the information is needed in order to 
+    handshake is finished, but the information is needed in order to
     complete the SSL handshake phase. See the next question for how to
     circumvent this issue.</p>
 </section>
@@ -615,12 +615,12 @@ Virtual Hosting to identify different SSL virtual hosts?</title>
     specification added, called Server Name Indication (SNI).</p>
 
     <p>The reason is that the SSL protocol is a separate layer which
-    encapsulates the HTTP protocol. So the SSL session is a separate 
-    transaction, that takes place before the HTTP session has begun. 
-    The server receives an SSL request on IP address X and port Y 
-    (usually 443). Since the SSL request did not contain any Host: 
+    encapsulates the HTTP protocol. So the SSL session is a separate
+    transaction, that takes place before the HTTP session has begun.
+    The server receives an SSL request on IP address X and port Y
+    (usually 443). Since the SSL request did not contain any Host:
     field, the server had no way to decide which SSL virtual host to use.
-    Usually, it just used the first one it found which matched the 
+    Usually, it just used the first one it found which matched the
     port and IP address specified.</p>
 
     <p>If you are using a version of the web server and OpenSSL that
@@ -629,19 +629,19 @@ Virtual Hosting to identify different SSL virtual hosts?</title>
     web server can select the correct SSL virtual host.</p>
 
     <p>You can, of course, use Name-Based Virtual Hosting to identify many
-    non-SSL virtual hosts (all on port 80, for example) and then 
+    non-SSL virtual hosts (all on port 80, for example) and then
     have a single SSL virtual host (on port 443). But if you do this,
     you must make sure to put the non-SSL port number on the NameVirtualHost
-    directive, e.g.</p> 
+    directive, e.g.</p>
 
     <example>
       NameVirtualHost 192.168.1.1:80
     </example>
-    
+
     <p>Other workaround solutions include: </p>
 
-    <p>Using separate IP addresses for different SSL hosts. 
-    Using different port numbers for different SSL hosts.</p> 
+    <p>Using separate IP addresses for different SSL hosts.
+    Using different port numbers for different SSL hosts.</p>
 </section>
 
 <section id="comp"><title>How do I get SSL compression working?</title>
@@ -655,50 +655,50 @@ it will be used. However, most clients still try to initially connect with an
 SSLv2 Hello. As SSLv2 did not include an array of prefered compression algorithms
 in its handshake, compression cannot be negotiated with these clients.
 If the client disables support for SSLv2, either an SSLv3 or TLS Hello
-may be sent, depending on which SSL library is used, and compression may 
-be set up. You can verify whether clients make use of SSL compression by 
+may be sent, depending on which SSL library is used, and compression may
+be set up. You can verify whether clients make use of SSL compression by
 logging the <code>%{SSL_COMPRESS_METHOD}x</code> variable.
 </p>
 </section>
 
-<section id="lockicon"><title>When I use Basic Authentication over HTTPS 
-the lock icon in Netscape browsers stays unlocked when the dialog pops up. 
+<section id="lockicon"><title>When I use Basic Authentication over HTTPS
+the lock icon in Netscape browsers stays unlocked when the dialog pops up.
 Does this mean the username/password is being sent unencrypted?</title>
 <p>No, the username/password is transmitted encrypted. The icon in
     Netscape browsers is not actually synchronized with the SSL/TLS layer.
-    It only toggles to the locked state when the first part of the actual 
-    webpage data is transferred, which may confuse people. The Basic 
-    Authentication facility is part of the HTTP layer, which is above 
-    the SSL/TLS layer in HTTPS. Before any HTTP data communication takes 
-    place in HTTPS, the SSL/TLS layer has already completed its handshake 
+    It only toggles to the locked state when the first part of the actual
+    webpage data is transferred, which may confuse people. The Basic
+    Authentication facility is part of the HTTP layer, which is above
+    the SSL/TLS layer in HTTPS. Before any HTTP data communication takes
+    place in HTTPS, the SSL/TLS layer has already completed its handshake
     phase, and switched to encrypted communication. So don't be
     confused by this icon.</p>
 </section>
 
-<section id="msie"><title>Why do I get I/O errors when connecting via 
+<section id="msie"><title>Why do I get I/O errors when connecting via
 HTTPS to an Apache+mod_ssl server with older versions of Microsoft Internet
 Explorer (MSIE)?</title>
 <p>The first reason is that the SSL implementation in some MSIE versions has
     some subtle bugs related to the HTTP keep-alive facility and the SSL close
     notify alerts on socket connection close. Additionally the interaction
-    between SSL and HTTP/1.1 features are problematic in some MSIE versions. 
-    You can work around these problems by forcing Apache not to use HTTP/1.1, 
-    keep-alive connections or send the SSL close notify messages to MSIE clients. 
-    This can be done by using the following directive in your SSL-aware 
+    between SSL and HTTP/1.1 features are problematic in some MSIE versions.
+    You can work around these problems by forcing Apache not to use HTTP/1.1,
+    keep-alive connections or send the SSL close notify messages to MSIE clients.
+    This can be done by using the following directive in your SSL-aware
     virtual host section:</p>
     <example>
     SetEnvIf User-Agent "MSIE [2-5]" \<br />
              nokeepalive ssl-unclean-shutdown \<br />
              downgrade-1.0 force-response-1.0
     </example>
-    <p>Further, some MSIE versions have problems with particular ciphers. 
-    Unfortunately, it is not possible to implement a MSIE-specific 
-    workaround for this, because the ciphers are needed as early as the 
-    SSL handshake phase. So a MSIE-specific 
-    <directive module="mod_setenvif">SetEnvIf</directive> won't solve these 
+    <p>Further, some MSIE versions have problems with particular ciphers.
+    Unfortunately, it is not possible to implement a MSIE-specific
+    workaround for this, because the ciphers are needed as early as the
+    SSL handshake phase. So a MSIE-specific
+    <directive module="mod_setenvif">SetEnvIf</directive> won't solve these
     problems. Instead, you will have to make more drastic
     adjustments to the global parameters. Before you decide to do
-    this, make sure your clients really have problems. If not, do not 
+    this, make sure your clients really have problems. If not, do not
     make these changes - they will affect <em>all</em> your clients, MSIE
     or otherwise.</p>
 </section>
@@ -708,11 +708,11 @@ Explorer (MSIE)?</title>
 
 <section id="support"><title>mod_ssl Support</title>
 <ul>
-<li><a href="#resources">What information resources are available in 
+<li><a href="#resources">What information resources are available in
 case of mod_ssl problems?</a></li>
-<li><a href="#contact">What support contacts are available in case of 
+<li><a href="#contact">What support contacts are available in case of
 mod_ssl problems?</a></li>
-<li><a href="#reportdetails">What information should I 
+<li><a href="#reportdetails">What information should I
 provide when writing a bug report?</a></li>
 <li><a href="#coredumphelp">I had a core dump, can you help me?</a></li>
 <li><a href="#backtrace">How do I get a backtrace, to help find the reason
@@ -734,10 +734,10 @@ for my core dump?</a></li>
     </dl>
 </section>
 
-<section id="contact"><title>What support contacts are available in case 
+<section id="contact"><title>What support contacts are available in case
 of mod_ssl problems?</title>
  <p>The following lists all support possibilities for mod_ssl, in order of
-         preference. Please go through these possibilities 
+         preference. Please go through these possibilities
          <em>in this order</em> - don't just pick the one you like the look of. </p>
     <ol>
 
@@ -775,22 +775,22 @@ provide when writing a bug report?</title>
 
     <dt>The details on how you built and installed Apache httpd and OpenSSL</dt>
     <dd>For this you can provide a logfile of your terminal session which shows
-    the configuration and install steps. If this is not possible, you 
+    the configuration and install steps. If this is not possible, you
     should at least provide the <program>configure</program> command line you used.
     </dd>
 
     <dt>In case of core dumps please include a Backtrace</dt>
     <dd>If your Apache httpd dumps its core, please attach
-    a stack-frame ``backtrace'' (see <a href="#backtrace">below</a> 
+    a stack-frame ``backtrace'' (see <a href="#backtrace">below</a>
     for information on how to get this). This information is required
     in order to find a reason for your core dump.
     </dd>
-    
+
     <dt>A detailed description of your problem</dt>
-    <dd>Don't laugh, we really mean it! Many problem reports don't 
+    <dd>Don't laugh, we really mean it! Many problem reports don't
     include a description of what the actual problem is. Without this,
-    it's very difficult for anyone to help you. So, it's in your own 
-    interest (you want the problem be solved, don't you?) to include as 
+    it's very difficult for anyone to help you. So, it's in your own
+    interest (you want the problem be solved, don't you?) to include as
     much detail as possible, please. Of course, you should still include
     all the essentials above too.
     </dd>
@@ -805,7 +805,7 @@ provide when writing a bug report?</title>
     fixing it.</p>
 </section>
 
-<section id="backtrace"><title>How do I get a backtrace, to help find 
+<section id="backtrace"><title>How do I get a backtrace, to help find
 the reason for my core dump?</title>
 <p>Following are the steps you will need to complete, to get a backtrace:</p>
     <ol>
@@ -819,7 +819,7 @@ the reason for my core dump?</title>
         want to use a directive like ``<code>CoreDumpDirectory /tmp</code>'' to
         make sure that the core-dump file can be written. This should result
         in a <code>/tmp/core</code> or <code>/tmp/httpd.core</code> file. If you
-        don't get one of these, try running your server under a non-root UID. 
+        don't get one of these, try running your server under a non-root UID.
         Many modern kernels do not allow a process to dump core after it has
         done a <code>setuid()</code> (unless it does an <code>exec()</code>) for
         security reasons (there can be privileged information left over in
@@ -828,9 +828,9 @@ the reason for my core dump?</title>
     </li>
 
     <li>Analyze the core-dump. For this, run <code>gdb /path/to/httpd
-        /tmp/httpd.core</code> or a similar command. In GDB, all you 
+        /tmp/httpd.core</code> or a similar command. In GDB, all you
         have to do then is to enter <code>bt</code>, and voila, you get the
-        backtrace. For other debuggers consult your local debugger manual. 
+        backtrace. For other debuggers consult your local debugger manual.
     </li>
     </ol>
 </section>

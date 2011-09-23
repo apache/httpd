@@ -23,7 +23,7 @@
 <manualpage metafile="logresolve.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
-  <title>logresolve - Resolve IP-addresses to hostnames in Apache 
+  <title>logresolve - Resolve IP-addresses to hostnames in Apache
    log files</title>
 
 <summary>

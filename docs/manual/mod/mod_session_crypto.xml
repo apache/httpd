@@ -41,37 +41,37 @@
     <p>This submodule of <module>mod_session</module> provides support for the
     encryption of user sessions before being written to a local database, or
     written to a remote browser via an HTTP cookie.</p>
-    
+
     <p>This can help provide privacy to user sessions where the contents of
     the session should be kept private from the user, or where protection is
     needed against the effects of cross site scripting attacks.</p>
-    
+
     <p>For more details on the session interface, see the documentation for
     the <module>mod_session</module> module.</p>
-    
+
 </summary>
 <seealso><module>mod_session</module></seealso>
 <seealso><module>mod_session_cookie</module></seealso>
 <seealso><module>mod_session_dbd</module></seealso>
 
     <section id="basicusage"><title>Basic Usage</title>
-    
+
       <p>To create a simple encrypted session and store it in a cookie called
       <var>session</var>, configure the session as follows:</p>
-      
+
       <example><title>Browser based encrypted session</title>
         Session On<br />
         SessionCookieName session path=/<br />
         SessionCryptoPassphrase secret
       </example>
-      
+
       <p>The session will be encrypted with the given key. Different servers can
       be configured to share sessions by ensuring the same encryption key is used
       on each server.</p>
-      
+
       <p>If the encryption key is changed, sessions will be invalidated
       automatically.</p>
-      
+
       <p>For documentation on how the session can be used to store username
       and password details, see the <module>mod_auth_form</module> module.</p>
 
@@ -146,7 +146,7 @@
     <p>The cipher can be set to <var>3des192</var> or <var>aes256</var> using the
     <var>cipher</var> parameter as per the example below. If not set, the cipher defaults
     to <var>aes256</var>.</p>
-    
+
     <example><title>Cipher</title>
       SessionCryptoPassphrase secret cipher=aes256
     </example>

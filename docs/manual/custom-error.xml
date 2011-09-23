@@ -29,7 +29,7 @@
     <p>Although the Apache HTTP Server provides generic error responses
     in the event of 4xx or 5xx HTTP status codes, these responses are
     rather stark, uninformative, and can be intimidating to site users.
-    You may wish to provide custom error responses which are either 
+    You may wish to provide custom error responses which are either
     friendlier, or in some language other than English, or perhaps which
     are styled more in line with your site layout.</p>
 
@@ -52,7 +52,7 @@
     module="core">ErrorDocument</directive> directive,
     which may be used in global,
     virtualhost, or directory context. It may be used in .htaccess files
-    if <directive module="core">AllowOverride</directive> is set to 
+    if <directive module="core">AllowOverride</directive> is set to
     FileInfo.</p>
 
     <example>
@@ -157,8 +157,8 @@
 
       <p>Note that if the response contains <code>Location:</code>
       header (in order to issue a client-side redirect), the script
-      <em>must</em> emit an appropriate <code>Status:</code> header 
-      (such as <code>302&nbsp;Found</code>). Otherwise the 
+      <em>must</em> emit an appropriate <code>Status:</code> header
+      (such as <code>302&nbsp;Found</code>). Otherwise the
       <code>Location:</code> header may have no effect.</p>
 
   </section>
@@ -191,7 +191,7 @@
     provide more useful information to users about your site, and what
     they can expect to find there.</p>
 
-    <p><module>mod_include</module> and <module>mod_negotiation</module> 
+    <p><module>mod_include</module> and <module>mod_negotiation</module>
     must be enabled to use this feature.</p>
 
  </section>

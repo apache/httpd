@@ -57,7 +57,7 @@ following directives.</p>
 <title>Cipher Suites and Enforcing Strong Security</title>
 <ul>
 <li><a href="#onlystrong">How can I create an SSL server which accepts strong encryption only?</a></li>
-<li><a href="#strongurl">How can I create an SSL server which accepts all types of ciphers in general, but 
+<li><a href="#strongurl">How can I create an SSL server which accepts all types of ciphers in general, but
 requires a strong cipher for access to a particular URL?</a></li>
 </ul>
 
@@ -88,8 +88,8 @@ only?</title>
 in general, but requires a strong ciphers for access to a particular
 URL?</title>
     <p>Obviously, a server-wide <directive
-    module="mod_ssl">SSLCipherSuite</directive> which restricts 
-    ciphers to the strong variants, isn't the answer here. However, 
+    module="mod_ssl">SSLCipherSuite</directive> which restricts
+    ciphers to the strong variants, isn't the answer here. However,
     <module>mod_ssl</module> can be reconfigured within <code>Location</code>
     blocks, to give a per-directory solution, and can automatically force
     a renegotiation of the SSL parameters to meet the new configuration.
@@ -112,7 +112,7 @@ URL?</title>
 <title>Client Authentication and Access Control</title>
 <ul>
 <li><a href="#allclients">How can I force clients to authenticate using certificates?</a></li>
-<li><a href="#arbitraryclients">How can I force clients to authenticate using certificates for a 
+<li><a href="#arbitraryclients">How can I force clients to authenticate using certificates for a
         particular URL, but still allow arbitrary clients to access the rest of the server?</a></li>
 <li><a href="#certauthenticate">How can I allow only clients who have certificates to access a
         particular URL, but allow all clients to access the rest of the server?</a></li>
@@ -165,14 +165,14 @@ Intranet website, for clients coming from the Internet?</a></li>
     matches what you expect. Usually this means checking all or part of the
     Distinguished Name (DN), to see if it contains some known string.
     There are two ways to do this, using either <module>mod_auth_basic</module> or
-    <directive module="mod_ssl">SSLRequire</directive>.</p> 
-    
+    <directive module="mod_ssl">SSLRequire</directive>.</p>
+
     <p>The <module>mod_auth_basic</module> method is generally required when
     the certificates are completely arbitrary, or when their DNs have
     no common fields (usually the organisation, etc.). In this case,
     you should establish a password database containing <em>all</em>
     clients allowed, as follows:</p>
-    
+
     <example><title>httpd.conf</title><pre>
 SSLVerifyClient      none
 &lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
@@ -190,11 +190,11 @@ AuthUserFile         /usr/local/apache2/conf/httpd.passwd
 Require              valid-user
 &lt;/Directory&gt;</pre>
     </example>
-    
+
     <p>The password used in this example is the DES encrypted string "password".
-    See the <directive module="mod_ssl">SSLOptions</directive> docs for more 
+    See the <directive module="mod_ssl">SSLOptions</directive> docs for more
     information.</p>
-    
+
     <example><title>httpd.passwd</title><pre>
 /C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
 /C=US/L=S.F./O=Snake Oil, Ltd./OU=CA/CN=Bar:xxj31ZMTZzkVA
@@ -227,10 +227,10 @@ SSLVerifyClient      none
 authentication or client certificates, for access to part of the
 Intranet website, for clients coming from the Internet? I still want to allow
 plain HTTP access for clients on the Intranet.</title>
-   
-   <p>These examples presume that clients on the Intranet have IPs in the range 
+
+   <p>These examples presume that clients on the Intranet have IPs in the range
    192.168.1.0/24, and that the part of the Intranet website you want to allow
-   internet access to is <code>/usr/local/apache2/htdocs/subarea</code>. 
+   internet access to is <code>/usr/local/apache2/htdocs/subarea</code>.
    This configuration should remain outside of your HTTPS virtual host, so
    that it applies to both HTTPS and HTTP.</p>
 

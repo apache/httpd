@@ -35,7 +35,7 @@ hosting</description>
     the HTTP request to be used as part of the pathname to
     determine what files to serve. This allows for easy use of a
     huge number of virtual hosts with similar configurations.</p>
-    
+
     <note><title>Note</title>
       <p>If <module>mod_alias</module> or <module>mod_userdir</module> are
       used for translating URIs to filenames, they will override the
@@ -52,7 +52,7 @@ hosting</description>
 </summary>
 
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
-<seealso><a href="../vhosts/mass.html">Dynamically configured mass 
+<seealso><a href="../vhosts/mass.html">Dynamically configured mass
     virtual hosting</a></seealso>
 
 <section id="interpol">
@@ -77,7 +77,7 @@ hosting</description>
 
 <tr><td><code>%N.M</code></td>
 <td>insert (part of) the name</td></tr>
-     
+
 </table>
 
     <p><code>N</code> and <code>M</code> are used to specify
@@ -135,7 +135,7 @@ hosting</description>
     <code>http://www.example.com/directory/file.html</code> will be
     satisfied by the file
     <code>/usr/local/apache/vhosts/www.example.com/directory/file.html</code>.
-    </p> 
+    </p>
 
     <p>For a very large number of virtual hosts it is a good idea
     to arrange the files to reduce the size of the
@@ -203,7 +203,7 @@ hosting</description>
     <code>http://www.domain.example.com/directory/file.html</code>
     will be satisfied by the file
     <code>/usr/local/apache/vhosts/domain.example/directory/file.html</code>.</p>
-     
+
     <p>The <directive module="mod_log_config">LogFormat</directive>
     directives <code>%V</code> and <code>%A</code> are useful
     in conjunction with this module.</p>
@@ -227,9 +227,9 @@ for a given virtual host</description>
     value of the server name. The result of expanding
     <em>interpolated-directory</em> is used as the root of the
     document tree in a similar manner to the <directive
-    module="core">DocumentRoot</directive> directive's argument. 
+    module="core">DocumentRoot</directive> directive's argument.
     If <em>interpolated-directory</em> is <code>none</code> then
-    <directive>VirtualDocumentRoot</directive> is turned off. This directive 
+    <directive>VirtualDocumentRoot</directive> is turned off. This directive
     cannot be used in the same context as <directive
     module="mod_vhost_alias">VirtualDocumentRootIP</directive>.</p>
 

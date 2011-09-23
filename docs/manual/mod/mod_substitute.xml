@@ -46,10 +46,10 @@
 <usage>
     <p>The <directive>Substitute</directive> directive specifies a
     search and replace pattern to apply to the response body.</p>
-    
+
     <p>The meaning of the pattern can be modified by using any
     combination of these flags:</p>
-    
+
     <dl>
         <dt><code>i</code></dt>
         <dd>Perform a case-insensitive match.</dd>
@@ -69,7 +69,7 @@
         that the result of one substitution will ever match a pattern
         or regex of a subsequent one.</dd>
     </dl>
-    
+
     <example><title>Example</title>
         &lt;Location /&gt;
         <indent>
@@ -78,10 +78,10 @@
         </indent>
         &lt;/Location&gt;
     </example>
-    
+
     <p>If either the pattern or the substitution contain a slash
     character then an alternative delimiter should be used:</p>
-    
+
     <example><title>Example of using an alternate delimiter</title>
         &lt;Location /&gt;
         <indent>

@@ -31,7 +31,7 @@
     describes the modes available and gives instructions on activating
     them.</p>
 </summary>
-  
+
 <section id="options"><title>Available debugging options</title>
     <section id="alloc_debug">
     <title>Allocation Debugging - ALLOC_DEBUG</title>

@@ -76,7 +76,7 @@ candidate lbstatus -= total factor</code></pre>
     </example>
 
     <p>If a balancer is configured as follows:</p>
-    
+
     <table style="data">
     <tr><th>worker</th>
         <th>a</th>

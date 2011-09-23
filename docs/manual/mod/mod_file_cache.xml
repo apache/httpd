@@ -124,7 +124,7 @@
 
     <note><title>Note</title>
       <p>Don't bother asking for a directive which recursively
-      caches all the files in a directory. Try this instead... See the 
+      caches all the files in a directory. Try this instead... See the
       <directive module="core">Include</directive> directive, and consider
       this command:</p>
 

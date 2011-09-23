@@ -24,7 +24,7 @@
   <parentdocument href="./">Miscellaneous Documentation</parentdocument>
 
   <title>Relevant Standards</title>
-  
+
   <summary>
     <p>This page documents all the relevant standards that the
     Apache HTTP Server follows, along with brief descriptions.</p>
@@ -53,7 +53,7 @@
     </note>
 
   </summary>
-  
+
   <section id="http_recommendations"><title>HTTP Recommendations</title>
 
     <p>Regardless of what modules are compiled and used, Apache as a

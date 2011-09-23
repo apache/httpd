@@ -52,7 +52,7 @@ provides the <code>bytraffic</code> load balancing method..</p>
     or produced.</p>
 
     <p>If a balancer is configured as follows:</p>
-    
+
     <table style="data">
     <tr><th>worker</th>
         <th>a</th>

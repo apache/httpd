@@ -202,7 +202,7 @@ expressions</description>
     regular expression to match the entire request URI from beginning
     to end, and to use substitution on the right side.</p>
 
-    <p>In other words, just changing 
+    <p>In other words, just changing
     <directive module="mod_alias">Alias</directive> to
     <directive module="mod_alias">AliasMatch</directive> will not
     have the same effect.  At a minimum, you need to
@@ -260,8 +260,8 @@ a different URL</description>
 
     <p>The old <em>URL-path</em> is a case-sensitive (%-decoded) path
     beginning with a slash.  A relative path is not allowed.</p>
-    
-    <p>The new <em>URL</em> may be either an absolute URL beginning 
+
+    <p>The new <em>URL</em> may be either an absolute URL beginning
     with a scheme and hostname, or a URL-path beginning with a slash.
     In this latter case the scheme and hostname of the current server will
     be added.</p>
@@ -284,7 +284,7 @@ a different URL</description>
     <code>http://foo2.example.com/service/foo.txt</code>
 	instead. This includes requests with <code>GET</code> parameters, such as
     <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>,
-    it will be redirected to 
+    it will be redirected to
     <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
 	Note that <code>POST</code>s will be discarded.<br />
 	Only complete path segments are matched, so the above
@@ -451,14 +451,14 @@ target as a CGI script</description>
 
 	<p><directive>ScriptAlias</directive> can also be used in conjunction with
 	a script or handler you have. For example:</p>
-	
+
 	<example>
 	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl
     </example>
-    
+
     <p>In this scenario all files requested in <code>/cgi-bin/</code> will be
-    handled by the file you have configured, this allows you to use your own custom 
-    handler.  You may want to use this as a wrapper for CGI so that you can add 
+    handled by the file you have configured, this allows you to use your own custom
+    handler.  You may want to use this as a wrapper for CGI so that you can add
     content, or some other bespoke action.</p>
 
     <note type="warning">It is safer to avoid placing CGI scripts under the

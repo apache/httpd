@@ -23,7 +23,7 @@
   <title>Using RewriteMap</title>
   <summary>
 
-    <p>This document supplements the <module>mod_rewrite</module> 
+    <p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 the use of the <directive module="mod_rewrite">RewriteMap</directive> directive,
 and provides examples of each of the various <code>RewriteMap</code> types.</p>
@@ -63,7 +63,7 @@ configuration.</note>
 <example>
 RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 </example>
-    
+
     <p>The <a id="mapfunc" name="mapfunc"><em>MapName</em></a> is an
     arbitray name that you assign to the map, and which you will use in
     directives later on. Arguments are passed to the map via the
@@ -298,9 +298,9 @@ by many requests.
     <title>int: Internal Function</title>
 
     <p>When a MapType of <code>int</code> is used, the MapSource is one
-    of the available internal RewriteMap functions.  Module authors can provide 
+    of the available internal RewriteMap functions.  Module authors can provide
     additional internal functions by registering them with the
-    <code>ap_register_rewrite_mapfunc</code> API. 
+    <code>ap_register_rewrite_mapfunc</code> API.
     The functions that are provided by default are:
     </p>
 
@@ -435,7 +435,7 @@ RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     once. For each mapping-function use one
     <directive>RewriteMap</directive> directive to declare its rewriting
     mapfile.</p>
-      
+
     <p>While you cannot <strong>declare</strong> a map in
     per-directory context (<code>.htaccess</code> files or
     &lt;Directory&gt; blocks) it is possible to

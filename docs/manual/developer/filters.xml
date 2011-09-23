@@ -140,7 +140,7 @@ Default_handler --> includes_filter --> byterange --> ...
     might not be SSI data.  So, the subrequest adds the following:</p>
 
 <example>
-<pre>    
+<pre>
 Default_handler --> includes_filter -/-> byterange --> ...
                                     /
 Default_handler --> sub_request_core
