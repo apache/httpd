@@ -1215,7 +1215,7 @@ l'espace d'URLs du serveur local</td></tr>
 
     </table>
 
-    <p>Si l'URL de la directive Proxy débute par
+    <p>Si l'URL de la directive <code class="directive">ProxyPass</code> débute par
     <code>balancer://</code> (par exemple:
     <code>balancer://cluster/</code>, toute information relative au
     chemin est ignorée), alors un serveur cible virtuel ne communiquant pas
@@ -1288,6 +1288,7 @@ l'espace d'URLs du serveur local</td></tr>
 	un état d'erreur lorsque le serveur d'arrière-plan retounera un
 	code d'état spécifié dans la liste. Le rétablissement du worker
 	est le même qu'avec les autres erreurs de worker.
+	Disponible à partir de la version 2.2.17 du serveur HTTP Apache.
     </td></tr>
     </table>
     <p>Exemple de configuration d'un répartiteur</p>
