@@ -72,9 +72,9 @@ configuration</description>
     this module should <strong>only</strong> be
     used in a controlled environment and always with caution.</p>
 
-    <p>You will probably want to use <module>mod_authz_host</module> 
+    <p>You will probably want to use <module>mod_authz_host</module>
     to limit access to your server configuration information.</p>
-      
+
     <example><title>Access control</title>
       &lt;Location /server-info&gt;<br />
       <indent>
@@ -95,12 +95,12 @@ configuration</description>
     the directives understood by that module, the hooks implemented
     by that module, and the relevant directives from the current
     configuration.</p>
-    
+
     <p>Other views of the configuration information are available by
     appending a query to the <code>server-info</code> request. For
     example, <code>http://your.host.example.com/server-info?config</code>
     will show all configuration directives.</p>
-    
+
     <dl>
         <dt><code>?&lt;module-name&gt;</code></dt>
             <dd>Only information relevant to the named module</dd>

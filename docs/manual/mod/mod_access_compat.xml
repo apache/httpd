@@ -22,15 +22,15 @@
 
 <modulesynopsis metafile="mod_access_compat.xml.meta">
 
-<name>mod_access_compat</name> 
+<name>mod_access_compat</name>
 <description>Group authorizations based on host (name or IP
 address)</description>
 <status>Extension</status>
 <sourcefile>mod_access_compat.c</sourcefile>
 <identifier>access_compat_module</identifier>
-<compatibility>Available in Apache HTTP Server 2.3 as a compatibility module with 
+<compatibility>Available in Apache HTTP Server 2.3 as a compatibility module with
 previous versions of Apache httpd 2.x.  The directives provided by this module
-have been deprecated by the new authz refactoring.  Please see 
+have been deprecated by the new authz refactoring.  Please see
 <module>mod_authz_host</module></compatibility>
 
 <summary>
@@ -59,7 +59,7 @@ have been deprecated by the new authz refactoring.  Please see
 
     <note type="warning"><title>Note</title>
       <p>The directives provided by <module>mod_access_compat</module> have
-      been deprecated by the new authz refactoring. Please see 
+      been deprecated by the new authz refactoring. Please see
       <module>mod_authz_host</module>.</p>
     </note>
 
@@ -178,8 +178,8 @@ server</description>
     href="../env.html">environment variable</a>. When <code>Allow from
     env=<var>env-variable</var></code> is specified, then the request is
     allowed access if the environment variable <var>env-variable</var>
-    exists. When <code>Allow from env=!<var>env-variable</var></code> is 
-    specified, then the request is allowed access if the environment 
+    exists. When <code>Allow from env=!<var>env-variable</var></code> is
+    specified, then the request is allowed access if the environment
     variable <var>env-variable</var> doesn't exist.
     The server provides the ability to set environment
     variables in a flexible way based on characteristics of the client
@@ -440,7 +440,7 @@ later</compatibility>
 
     <example>
       &lt;Directory /var/www/private&gt;<br />
-        Require valid-user<br /> 
+        Require valid-user<br />
       &lt;/Directory&gt;<br />
       <br />
       &lt;Directory /var/www/private/public&gt;<br />

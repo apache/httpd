@@ -48,7 +48,7 @@
 
       <li>The number of file descriptors required exceeds the hard
       limit.</li>
-      
+
       <li>Your system imposes other limits on file descriptors,
       such as a limit on stdio streams only using file descriptors
       below 256. (Solaris 2)</li>

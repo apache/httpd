@@ -31,12 +31,12 @@
 <summary>
     <note type="warning">This module should be used with care, as when the
     <directive module="mod_cache">CacheQuickHandler</directive> directive is
-    in its default value of <strong>on</strong>, the <directive 
-    module="mod_authz_host">Allow</directive> and <directive 
+    in its default value of <strong>on</strong>, the <directive
+    module="mod_authz_host">Allow</directive> and <directive
     module="mod_authz_host">Deny</directive> directives will be circumvented.
     You should not enable quick handler caching for any content to which you
     wish to limit access by client host name, address or environment
-    variable.</note>  
+    variable.</note>
 
     <p><module>mod_cache</module> implements an <a
     href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant
@@ -228,11 +228,11 @@
   <p>Under the default mode of cache operation, the cache runs as a quick handler,
   short circuiting the majority of server processing and offering the highest
   cache performance available.</p>
-  
+
   <p>In this mode, the cache <strong>bolts onto</strong> the front of the server,
   acting as if a free standing RFC 2616 caching proxy had been placed in front of
   the server.</p>
-  
+
   <p>While this mode offers the best performance, the administrator may find that
   under certain circumstances they may want to perform further processing on the
   request after the request is cached, such as to inject personalisation into the
@@ -360,7 +360,7 @@ manager</description>
     before globally defined <directive>CacheEnable</directive> directives.</p>
 
     <p>When acting as a forward proxy server, <var>url-string</var> can
-    also be used to specify remote sites and proxy protocols which 
+    also be used to specify remote sites and proxy protocols which
     caching should be enabled for.</p>
 
     <example>
@@ -395,7 +395,7 @@ manager</description>
       CacheEnable  disk  http://.example.org/<br />
     </example>
 
-    <p> The <code>no-cache</code> environment variable can be set to 
+    <p> The <code>no-cache</code> environment variable can be set to
     disable caching on a finer grained set of resources in versions
     2.2.12 and later.</p>
 
@@ -432,7 +432,7 @@ manager</description>
       &lt;/Location&gt;<br />
     </example>
 
-    <p>The <code>no-cache</code> environment variable can be set to 
+    <p>The <code>no-cache</code> environment variable can be set to
     disable caching on a finer grained set of resources in versions
     2.2.12 and later.</p>
 
@@ -519,7 +519,7 @@ header.</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-    
+
 <usage>
     <p>Ordinarily, documents without a last-modified date are not cached.
     Under some circumstances the last-modified date is removed (during
@@ -580,11 +580,11 @@ header.</description>
 <usage>
     <p>Ordinarily, requests with query string parameters are cached separately
     for each unique query string. This is according to RFC 2616/13.9 done only
-    if an expiration time is specified. The 
+    if an expiration time is specified. The
     <directive>CacheIgnoreQueryString</directive> directive tells the cache to
-    cache requests even if no expiration time is specified, and to reply with 
+    cache requests even if no expiration time is specified, and to reply with
     a cached reply even if the query string differs. From a caching point of
-    view the request is treated as if having no query string when this 
+    view the request is treated as if having no query string when this
     directive is enabled.</p>
 
     <example>
@@ -605,7 +605,7 @@ LastModified date.</description>
   <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
-    
+
 <usage>
     <p>In the event that a document does not provide an expiry date but does
     provide a last-modified date, an expiry date can be calculated based on
@@ -830,7 +830,7 @@ LastModified date.</description>
 <usage>
   <p>The <directive>CacheLock</directive> directive enables the thundering herd lock
   for the given URL space.</p>
-  
+
   <p>In a minimal configuration the following directive is all that is needed to
   enable the thundering herd lock in the default system temp directory.</p>
 
@@ -849,7 +849,7 @@ LastModified date.</description>
 <default>CacheLockPath /tmp/mod_cache-lock</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-    
+
 <usage>
   <p>The <directive>CacheLockPath</directive> directive allows you to specify the
   directory in which the locks are created. By default, the system's temporary
@@ -867,16 +867,16 @@ LastModified date.</description>
 <default>CacheLockMaxAge 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-    
+
 <usage>
   <p>The <directive>CacheLockMaxAge</directive> directive specifies the maximum
   age of any cache lock.</p>
-  
+
   <p>A lock older than this value in seconds will be ignored, and the next
   incoming request will be given the opportunity to re-establish the lock.
   This mechanism prevents a slow client taking an excessively long time to refresh
   an entity.</p>
-  
+
 </usage>
 </directivesynopsis>
 
@@ -936,7 +936,7 @@ LastModified date.</description>
     <context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.9 and later</compatibility>
-  
+
 <usage>
   <p>When the <directive module="mod_cache">CacheHeader</directive> directive
   is switched on, an <strong>X-Cache</strong> header will be added to the response
@@ -978,17 +978,17 @@ LastModified date.</description>
       <context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.9 and later</compatibility>
-    
+
 <usage>
   <p>When the <directive module="mod_cache">CacheDetailHeader</directive> directive
   is switched on, an <strong>X-Cache-Detail</strong> header will be added to the response
   containing the detailed reason for a particular caching decision.</p>
-  
+
   <p>It can be useful during development of cached RESTful services to have additional
   information about the caching decision written to the response headers, so as to
   confirm whether <code>Cache-Control</code> and other headers have been correctly
   used by the service and client.</p>
-  
+
   <p>If the normal handler is used, this directive may appear within a
   <directive module="core">&lt;Directory&gt;</directive> or
   <directive module="core">&lt;Location&gt;</directive> directive. If the quick handler

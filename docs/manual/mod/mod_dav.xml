@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_dav.xml.meta">
 
-<name>mod_dav</name> 
+<name>mod_dav</name>
 <description>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) functionality</description>
 <status>Extension</status>
@@ -51,7 +51,7 @@
     by the <module>mod_dav_fs</module> module. Therefore, that module
     must be compiled into the server or loaded at runtime using the
     <directive module="mod_so">LoadModule</directive> directive.</p>
-    
+
     <p>In addition, a location for the DAV lock database must be
     specified in the global section of your <code>httpd.conf</code>
     file using the <directive module="mod_dav_fs">DavLockDB</directive>
@@ -232,7 +232,7 @@ a DAV resource</description>
       </indent>
       &lt;/Location&gt;
     </example>
-</usage>     
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

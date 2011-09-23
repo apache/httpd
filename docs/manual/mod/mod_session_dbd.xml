@@ -49,13 +49,13 @@
 
     <p>SQL based sessions are hidden from the browser, and so offer a measure of
     privacy without the need for encryption.</p>
-    
+
     <p>Different webservers within a server farm may choose to share a database,
     and so share sessions with one another.</p>
-    
+
     <p>For more details on the session interface, see the documentation for
     the <module>mod_session</module> module.</p>
-    
+
 </summary>
 <seealso><module>mod_session</module></seealso>
 <seealso><module>mod_session_crypto</module></seealso>
@@ -67,7 +67,7 @@
       <p>Before the <module>mod_session_dbd</module> module can be configured to maintain a
       session, the <module>mod_dbd</module> module must be configured to make the various database queries
       available to the server.</p>
-      
+
       <p>There are four queries required to keep a session maintained, to select an existing session,
       to update an existing session, to insert a new session, and to delete an expired or empty
       session. These queries are configured as per the example below.</p>
@@ -85,58 +85,58 @@
     </section>
 
     <section id="anonymous"><title>Anonymous Sessions</title>
-    
+
       <p>Anonymous sessions are keyed against a unique UUID, and stored on the
       browser within an HTTP cookie. This method is similar to that used by most
       application servers to store session information.</p>
-    
+
       <p>To create a simple anonymous session and store it in a postgres database
       table called <var>apachesession</var>, and save the session ID in a cookie
       called <var>session</var>, configure the session as follows:</p>
-      
+
       <example><title>SQL based anonymous session</title>
         Session On<br />
         SessionDBDCookieName session path=/<br />
       </example>
-      
+
       <p>For more examples on how the session can be configured to be read
       from and written to by a CGI application, see the
       <module>mod_session</module> examples section.</p>
-      
+
       <p>For documentation on how the session can be used to store username
       and password details, see the <module>mod_auth_form</module> module.</p>
 
     </section>
 
     <section id="peruser"><title>Per User Sessions</title>
-    
+
       <p>Per user sessions are keyed against the username of a successfully
       authenticated user. It offers the most privacy, as no external handle
       to the session exists outside of the authenticated realm.</p>
-      
+
       <p>Per user sessions work within a correctly configured authenticated
       environment, be that using basic authentication, digest authentication
       or SSL client certificates. Due to the limitations of who came first,
       the chicken or the egg, per user sessions cannot be used to store
       authentication credentials from a module like
       <module>mod_auth_form</module>.</p>
-    
+
       <p>To create a simple per user session and store it in a postgres database
       table called <var>apachesession</var>, and with the session keyed to the
       userid, configure the session as follows:</p>
-      
+
       <example><title>SQL based per user session</title>
         Session On<br />
         SessionDBDPerUser On<br />
       </example>
-      
+
     </section>
 
     <section id="housekeeping"><title>Database Housekeeping</title>
       <p>Over the course of time, the database can be expected to start accumulating
       expired sessions. At this point, the <module>mod_session_dbd</module> module
       is not yet able to handle session expiry automatically.</p>
-      
+
       <note type="warning"><title>Warning</title>
       <p>The administrator will need to set up an external process via cron to clean
       out expired sessions.</p>
@@ -190,12 +190,12 @@
     optional attributes of an RFC2965 compliant cookie inside which the session ID will
     be stored. RFC2965 cookies are set using the <code>Set-Cookie2</code> HTTP header.
     </p>
-    
+
     <p>An optional list of cookie attributes can be specified, as per the example below.
     These attributes are inserted into the cookie as is, and are not interpreted by
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
-    
+
     <example><title>Cookie2 with attributes</title>
       Session On<br />
       SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;<br />

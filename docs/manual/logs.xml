@@ -27,7 +27,7 @@
   <summary>
     <p>In order to effectively manage a web server, it is necessary
     to get feedback about the activity and performance of the
-    server as well as any problems that may be occurring. The Apache HTTP Server 
+    server as well as any problems that may be occurring. The Apache HTTP Server
     provides very comprehensive and flexible logging
     capabilities. This document describes how to configure its
     logging capabilities, and how to understand what the logs
@@ -114,11 +114,11 @@
 
     <p>The format of the error log is defined by the <directive
     module="core">ErrorLogFormat</directive> directive, with which you
-    can customize what values are logged. A default is format defined 
+    can customize what values are logged. A default is format defined
     if you don't specify one. A typical log message follows:</p>
 
     <example>
-    [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416] 
+    [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]
     [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
     </example>
 
@@ -199,7 +199,7 @@
     server. The location and content of the access log are
     controlled by the <directive module="mod_log_config">CustomLog</directive>
     directive. The <directive module="mod_log_config">LogFormat</directive>
-    directive can be used to simplify the selection of 
+    directive can be used to simplify the selection of
     the contents of the logs. This section describes how to configure the server
     to record information in the access log.</p>
 
@@ -318,7 +318,7 @@
 
         <dd>
           The time that the request was received.
-          The format is: 
+          The format is:
 
           <p class="indent">
             <code>[day/month/year:hour:minute:second zone]<br />
@@ -425,7 +425,7 @@
       <title>Multiple Access Logs</title>
 
       <p>Multiple access logs can be created simply by specifying
-      multiple <directive module="mod_log_config">CustomLog</directive> 
+      multiple <directive module="mod_log_config">CustomLog</directive>
       directives in the configuration
       file. For example, the following directives will create three
       access logs. The first contains the basic CLF information,
@@ -457,7 +457,7 @@
       client request. This is easily accomplished with the help of <a
       href="env.html">environment variables</a>. First, an
       environment variable must be set to indicate that the request
-      meets certain conditions. This is usually accomplished with 
+      meets certain conditions. This is usually accomplished with
       <directive module="mod_setenvif">SetEnvIf</directive>. Then the
       <code>env=</code> clause of the <directive
       module="mod_log_config">CustomLog</directive> directive is used to
@@ -630,14 +630,14 @@
     hosts</a>, there are several options for dealing with log
     files. First, it is possible to use logs exactly as in a
     single-host server. Simply by placing the logging directives
-    outside the <directive module="core" 
+    outside the <directive module="core"
     type="section">VirtualHost</directive> sections in the
     main server context, it is possible to log all requests in the
     same access log and error log. This technique does not allow
     for easy collection of statistics on individual virtual
     hosts.</p>
 
-    <p>If <directive module="mod_log_config">CustomLog</directive> 
+    <p>If <directive module="mod_log_config">CustomLog</directive>
     or <directive module="core">ErrorLog</directive>
     directives are placed inside a
     <directive module="core" type="section">VirtualHost</directive>
@@ -722,7 +722,7 @@
       terminating the daemon by sending signals to the parent
       process; on Windows, use the -k command line option instead.
       For more information see the <a href="stopping.html">Stopping
-      and Restarting</a> page.</p>    
+      and Restarting</a> page.</p>
     </section>
 
     <section id="scriptlog">

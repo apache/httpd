@@ -66,7 +66,7 @@
     Extensions</a>.)</p>
 
     <p>Handlers can either be built into the server or included in
-    a module, or they can be added with the <directive 
+    a module, or they can be added with the <directive
     module="mod_actions">Action</directive> directive. The
     built-in handlers in the standard distribution are as
     follows:</p>

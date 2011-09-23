@@ -76,10 +76,10 @@ doesn't provide.</p>
 <tr><td><code>SSLLogFile</code> <em>file</em></td><td><code>SSLLog</code> <em>file</em></td><td>compactified</td></tr>
 
 <tr><td><code>SSLRequiredCiphers</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renamed</td></tr>
-<tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>", 
+<tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>",
 ...}</code></td><td>generalized</td></tr>
 
-<tr><td><code>SSLBanCipher</code> <em>c1</em> ...</td><td><code>SSLRequire not (%{SSL_CIPHER} in {"</code><em>c1</em><code>", 
+<tr><td><code>SSLBanCipher</code> <em>c1</em> ...</td><td><code>SSLRequire not (%{SSL_CIPHER} in {"</code><em>c1</em><code>",
 ...})</code></td><td>generalized</td></tr>
 <tr><td><code>SSLFakeBasicAuth</code></td><td><code>SSLOptions +FakeBasicAuth</code></td><td>merged</td></tr>
 <tr><td><code>SSLCacheServerPath</code> <em>dir</em></td><td>-</td><td>functionality removed</td></tr>
@@ -135,7 +135,7 @@ doesn't provide.</p>
 </section>
 </section>
 
-<section id="variables"><title>Environment Variables</title> 
+<section id="variables"><title>Environment Variables</title>
 
 <p>The mapping between environment variable names used by the older
 SSL solutions and the names used by mod_ssl is given in <a

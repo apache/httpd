@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_dav_lock.xml.meta">
 
-<name>mod_dav_lock</name> 
+<name>mod_dav_lock</name>
 <description>generic locking module for <module>mod_dav</module></description>
 <status>Extension</status>
 <sourcefile>mod_dav_lock.c</sourcefile>

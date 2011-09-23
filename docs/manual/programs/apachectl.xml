@@ -127,9 +127,9 @@ restart to make sure Apache doesn't die.  This is equivalent to
 
 <dt><code>graceful-stop</code></dt>
 
-<dd>Gracefully stops the Apache <program>httpd</program> daemon.  
-This differs from a normal stop in that currently open connections are not 
-aborted.  A side effect is that old log files will not be closed immediately. 
+<dd>Gracefully stops the Apache <program>httpd</program> daemon.
+This differs from a normal stop in that currently open connections are not
+aborted.  A side effect is that old log files will not be closed immediately.
 This is equivalent to <code>apachectl -k graceful-stop</code>.</dd>
 
 <dt><code>configtest</code></dt>

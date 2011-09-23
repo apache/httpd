@@ -1,4 +1,4 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -183,6 +183,6 @@ the load on backends</description>
     is not permitted in <var>.htaccess</var> contexts.</p>
 </usage>
 </directivesynopsis>
- 
+
 </modulesynopsis>
 

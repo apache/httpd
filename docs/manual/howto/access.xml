@@ -35,7 +35,7 @@
 
     <p>Access control can be done by several different modules. The most
     important of these are <module>mod_authz_core</module> and
-    <module>mod_authz_host</module>. Also discussed in this document 
+    <module>mod_authz_host</module>. Also discussed in this document
     is access control using <module>mod_rewrite</module>.</p>
 
 </section>
@@ -58,7 +58,7 @@
 
     <note type="warning"><p>
     The <directive module="mod_access_compat">Allow</directive>,
-    <directive module="mod_access_compat">Deny</directive>, and 
+    <directive module="mod_access_compat">Deny</directive>, and
     <directive module="mod_access_compat">Order</directive> directives,
     provided by <module>mod_access_compat</module>, are deprecated and
     will go away in a future version. You should avoid using them, and
@@ -72,8 +72,8 @@
       Require ip <var>ip.address</var>
     </example>
 
-    <p>In the first form, <var>address</var> is a fully qualified 
-    domain name (or a partial domain name); you may provide multiple 
+    <p>In the first form, <var>address</var> is a fully qualified
+    domain name (or a partial domain name); you may provide multiple
     addresses or domain names, if desired.</p>
 
     <p>In the second form, <var>ip.address</var> is an IP address, a

@@ -27,7 +27,7 @@
 
 <summary>
     <p><code>httxt2dbm</code> is used to generate dbm files from text input, for
-    use in <directive module="mod_rewrite">RewriteMap</directive> with the 
+    use in <directive module="mod_rewrite">RewriteMap</directive> with the
     <code>dbm</code> map type.
     </p>
 </summary>

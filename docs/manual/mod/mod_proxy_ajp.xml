@@ -32,7 +32,7 @@
 
 <summary>
     <p>This module <em>requires</em> the service of <module
-    >mod_proxy</module>. It provides support for the 
+    >mod_proxy</module>. It provides support for the
     <code>Apache JServ Protocol version 1.3</code> (hereafter
     <em>AJP13</em>).</p>
 
@@ -52,8 +52,8 @@
 <seealso><a href="../env.html">Environment Variable documentation</a></seealso>
 
 <section id="env"><title>Environment Variables</title>
-    <p>Environment variables whose names have the prefix <code>AJP_</code> 
-    are forwarded to the origin server as AJP request attributes 
+    <p>Environment variables whose names have the prefix <code>AJP_</code>
+    are forwarded to the origin server as AJP request attributes
     (with the AJP_ prefix removed from the name of the key).</p>
 </section>
 
@@ -296,7 +296,7 @@ AJP13_FORWARD_REQUEST :=
     </pre></example>
     <p>The <code>request_headers</code> have the following structure:
     </p><example><pre>
-req_header_name := 
+req_header_name :=
     sc_req_header_name | (string)  [see below for how this is parsed]
 
 sc_req_header_name := 0xA0xx (integer)
@@ -352,7 +352,7 @@ attribute_value := (string)
       <tr><td>BASELINE_CONTROL</td><td>26</td></tr>
       <tr><td>MKACTIVITY</td><td>27</td></tr>
     </table>
-    <p>Later version of ajp13, will transport 
+    <p>Later version of ajp13, will transport
     additional methods, even if they are not in this list.</p>
   </section>
   <section><title>protocol, req_uri, remote_addr, remote_host, server_name,

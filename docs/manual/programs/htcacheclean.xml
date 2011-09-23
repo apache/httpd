@@ -49,7 +49,7 @@
     -<strong>p</strong><var>path</var>
     [-<strong>l</strong><var>limit</var>|
     -<strong>L</strong><var>limit</var>]</code></p>
-    
+
     <p><code><strong>htcacheclean</strong>
     [ -<strong>n</strong> ]
     [ -<strong>t</strong> ]
@@ -113,7 +113,7 @@
     removed, however with some configurations the large number of
     directories created may require attention. If your configuration
     requires a very large number of directories, to the point that
-    inode or file allocation table exhaustion may become an issue, use 
+    inode or file allocation table exhaustion may become an issue, use
     of this option is advised.</dd>
 
     <dt><code>-p<var>path</var></code></dt>

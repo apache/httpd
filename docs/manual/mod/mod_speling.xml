@@ -66,7 +66,7 @@ misspellings.</description>
 
 <directivesynopsis>
 <name>CheckSpelling</name>
-<description>Enables the spelling 
+<description>Enables the spelling
 module</description>
 <syntax>CheckSpelling on|off</syntax>
 <default>CheckSpelling Off</default>
@@ -126,7 +126,7 @@ module</description>
 <override>Options</override>
 
 <usage>
-    <p>When set, this directive limits the action of the spelling correction to lower/upper case changes. 
+    <p>When set, this directive limits the action of the spelling correction to lower/upper case changes.
     Other potential corrections are not performed.</p>
 
 </usage>

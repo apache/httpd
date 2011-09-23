@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_echo.xml.meta">
 
 <name>mod_echo</name>
-<description>A simple echo server to illustrate protocol 
+<description>A simple echo server to illustrate protocol
 modules</description>
 <status>Experimental</status>
 <sourcefile>mod_echo.c</sourcefile>

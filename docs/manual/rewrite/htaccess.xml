@@ -27,7 +27,7 @@
 
 <summary>
 
-<p>This document supplements the <module>mod_rewrite</module> 
+<p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 the way that the rules change when you use mod_rewrite in .htaccess files,
 and how to deal with these changes.</p>
@@ -43,4 +43,4 @@ and how to deal with these changes.</p>
 <seealso><a href="advanced.html">Advanced techniques</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
-</manualpage> 
+</manualpage>

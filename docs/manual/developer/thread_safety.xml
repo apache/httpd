@@ -46,7 +46,7 @@
     allowed to use static or global variables.  There are times when you
     actually want something to affect all threads, but generally you need to
     avoid using them if you want your code to be thread safe.</p>
-   
+
     <p>In the case where you have a global variable that needs to be global and
     accessed by all threads, be very careful when you update it.  If, for
     example, it is an incrementing counter, you need to atomically increment
@@ -82,7 +82,7 @@
     to their <code><var>*</var>_r</code> equivalents and sometimes changes
     the common <code>getc</code>/<code>putc</code> macros into safer function
     calls.  Check your libc documentation for specifics.  Instead of, or in
-    addition to <code>_REENTRANT</code> the symbols that may affect this are 
+    addition to <code>_REENTRANT</code> the symbols that may affect this are
     <code>_POSIX_C_SOURCE</code>, <code>_THREAD_SAFE</code>,
     <code>_SVID_SOURCE</code>, and <code>_BSD_SOURCE</code>.</p>
 </section>

@@ -32,8 +32,8 @@ SSI pages</description>
     <p>This module allows for control of internal environment variables that
     are used by various Apache HTTP Server modules. These variables are also
     provided to CGI scripts as native system environment variables, and available
-    for use in SSI pages. Environment variables may be passed from the shell 
-    which invoked the <program>httpd</program> process. Alternatively, 
+    for use in SSI pages. Environment variables may be passed from the shell
+    which invoked the <program>httpd</program> process. Alternatively,
     environment variables may be set or unset within the configuration process.</p>
 </summary>
 <seealso><a href="../env.html">Environment Variables</a></seealso>
@@ -51,8 +51,8 @@ SSI pages</description>
 <usage>
     <p>Specifies one or more native system environment variables to make available
     as internal environment variables, which are available to Apache HTTP Server modules
-    as well as propogated to CGI scripts and SSI pages. Values come from the 
-    native OS environment of the shell which invoked the 
+    as well as propogated to CGI scripts and SSI pages. Values come from the
+    native OS environment of the shell which invoked the
     <program>httpd</program> process.</p>
 
     <example><title>Example</title>
@@ -70,7 +70,7 @@ SSI pages</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Sets an internal environment variable, which is then available to Apache 
+    <p>Sets an internal environment variable, which is then available to Apache
     HTTP Server modules, and passed on to CGI scripts and SSI pages.</p>
 
     <example><title>Example</title>
@@ -81,11 +81,11 @@ SSI pages</description>
     <em>after</em> most early request processing directives are run, such as access
     control and URI-to-filename mapping.  If the environment variable you're
     setting is meant as input into this early phase of processing such as the
-    <directive module="mod_rewrite">RewriteRule</directive> directive, you should 
+    <directive module="mod_rewrite">RewriteRule</directive> directive, you should
     instead set the environment variable with
     <directive module="mod_setenvif"> SetEnvIf</directive>.</p>
     </note>
-     
+
 </usage>
 <seealso><a href="../env.html">Environment Variables</a></seealso>
 </directivesynopsis>

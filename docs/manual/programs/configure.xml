@@ -331,7 +331,7 @@
       <dl>
         <dt><code>--with-mpm=MPM</code></dt>
         <dd>
-          <p>Choose the default MPM for your server.  If MPMs are built as DSO 
+          <p>Choose the default MPM for your server.  If MPMs are built as DSO
             modules (see <code>--enable-mpms-shared</code>), this directive
             selects the MPM which will be loaded in the default configuration
             file.  Otherwise, this directive selects the only available MPM,

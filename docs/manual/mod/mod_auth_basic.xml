@@ -55,7 +55,7 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p>The <directive>AuthBasicProvider</directive> directive sets 
+    <p>The <directive>AuthBasicProvider</directive> directive sets
     which provider is used to authenticate the users for this location.
     The default <code>file</code> provider is implemented
     by the <module>mod_authn_file</module> module.  Make sure
@@ -75,7 +75,7 @@
     </example>
 
     <p> Providers are queried in order until a provider finds a match
-    for the requested username, at which point this sole provider will 
+    for the requested username, at which point this sole provider will
     attempt to check the password.  A failure to verify the password does
     not result in control being passed on to subsequent providers.</p>
 

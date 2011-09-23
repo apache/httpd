@@ -70,8 +70,8 @@ on characteristics of the request</description>
   <code>User-Agent</code> HTTP request header.  The following two
   lines have the same effect:</p>
 <example>
-   BrowserMatchNoCase Robot is_a_robot<br /> 
-   SetEnvIfNoCase User-Agent Robot is_a_robot<br /> 
+   BrowserMatchNoCase Robot is_a_robot<br />
+   SetEnvIfNoCase User-Agent Robot is_a_robot<br />
 </example>
 
     <p>Some additional examples:</p>
@@ -140,7 +140,7 @@ respect to case</description>
 <li>An HTTP request header field (see <a
     href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
     for more information about these); for example: <code>Host</code>,
-    <code>User-Agent</code>, <code>Referer</code>, and 
+    <code>User-Agent</code>, <code>Referer</code>, and
     <code>Accept-Language</code>.  A regular expression may be
     used to specify a set of request headers.</li>
 
@@ -301,7 +301,7 @@ results.</seealso>
 <name>SetEnvIfNoCase</name>
 <description>Sets environment variables based on attributes of the request
 without respect to case</description>
-<syntax>SetEnvIfNoCase <em>attribute regex 
+<syntax>SetEnvIfNoCase <em>attribute regex
         [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>

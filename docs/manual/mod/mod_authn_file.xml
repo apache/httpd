@@ -50,7 +50,7 @@
 <seealso><program>htpasswd</program></seealso>
 <seealso><program>htdigest</program></seealso>
 <seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
- 
+
 <directivesynopsis>
 <name>AuthUserFile</name>
 <description>Sets the name of a text file containing the list of users and

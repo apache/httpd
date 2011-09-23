@@ -108,7 +108,7 @@
 
         <!-- Used for glossary link titles -->
         <message id="glossarylink">siehe Glossar</message>
-        
+
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP Server</message>
         <message id="apachehttpserver">Apache HTTP Server Version

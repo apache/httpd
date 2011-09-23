@@ -27,7 +27,7 @@
 
 <summary>
 <p>On systems with multiple users, each user can be permitted to have a
-    web site in their home directory using the <directive 
+    web site in their home directory using the <directive
     module="mod_userdir">UserDir</directive> directive. Visitors
     to a URL <code>http://example.com/~username/</code> will get content
     out of the home directory of the user "<code>username</code>", out of
@@ -109,30 +109,30 @@
       UserDir public_html /var/html
     </example>
 
-    <p>For the URL <code>http://example.com/~rbowen/file.html</code>, 
-    Apache will search for <code>~rbowen</code>. If it isn't found, 
+    <p>For the URL <code>http://example.com/~rbowen/file.html</code>,
+    Apache will search for <code>~rbowen</code>. If it isn't found,
     Apache will search for <code>rbowen</code> in <code>/var/html</code>. If
-    found, the above URL will then be translated to the file path 
+    found, the above URL will then be translated to the file path
     <code>/var/html/rbowen/file.html</code></p>
 
   </section>
-  
+
   <section id="redirect">
     <title>Redirecting to external URLs</title>
     <p>The <directive module="mod_userdir">UserDir</directive> directive can be
       used to redirect user directory requests to external URLs.</p>
-      
+
     <example>
       UserDir http://example.org/users/*/
     </example>
-    
+
     <p>The above example will redirect a request for
     <code>http://example.com/~bob/abc.html</code> to
     <code>http://example.org/users/bob/abc.html</code>.</p>
   </section>
 
   <section id="enable">
-    <title>Restricting what users are permitted to use this 
+    <title>Restricting what users are permitted to use this
     feature</title>
 
     <p>Using the syntax shown in the UserDir documentation, you can restrict

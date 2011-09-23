@@ -153,7 +153,7 @@ Negotiation</a></seealso>
     <code>document.html.de</code>, respectively. The type map file will
     be called <code>document.html.var</code>, and will contain the
     following:</p>
-    
+
     <example>
     URI: document.html<br />
     <br />
@@ -208,7 +208,7 @@ Negotiation</a></seealso>
 
 <directivesynopsis>
 <name>CacheNegotiatedDocs</name>
-<description>Allows content-negotiated documents to be 
+<description>Allows content-negotiated documents to be
 cached by proxy servers</description>
 <syntax>CacheNegotiatedDocs On|Off</syntax>
 <default>CacheNegotiatedDocs Off</default>
@@ -232,7 +232,7 @@ cached by proxy servers</description>
 
 <directivesynopsis>
 <name>ForceLanguagePriority</name>
-<description>Action to take if a single acceptable document is not 
+<description>Action to take if a single acceptable document is not
 found</description>
 <syntax>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</syntax>
 <default>ForceLanguagePriority Prefer</default>

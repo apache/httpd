@@ -27,7 +27,7 @@
 
 <summary>
 
-<p>This document supplements the <module>mod_rewrite</module> 
+<p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 perhaps one of the most important concepts about mod_rewrite - namely,
 when to avoid using it.</p>
@@ -235,5 +235,5 @@ use in &lt;If&gt; sections, and in certain other directives.</p>
 
 </section>
 
-</manualpage> 
+</manualpage>
 

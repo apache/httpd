@@ -93,7 +93,7 @@ client</description>
       <code>1</code> to only allow html files to be compressed (see
       below). If you set this to <em>anything but <code>1</code></em> it
       will be ignored.</p>
-      
+
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <directive module="mod_filter"
       >AddOutputFilterByType</directive> directive. Here is an example of
@@ -171,7 +171,7 @@ client</description>
       <p>This Example will uncompress gzip'ed output from example.com, so other
       filters can do further processing with it.
       </p>
-      
+
     </section>
     <section id="input"><title>Input Decompression</title>
       <p>The <module>mod_deflate</module> module also provides a filter for
@@ -188,7 +188,7 @@ client</description>
         </indent>
         &lt;/Location&gt;
       </example>
-      
+
       <p>Now if a request contains a <code>Content-Encoding:
       gzip</code> header, the body will be automatically decompressed.
       Few browsers have the ability to gzip request bodies. However,
@@ -216,7 +216,7 @@ client</description>
     not understand it.</p>
 
     <p>If you use some special exclusions dependent
-    on, for example, the <code>User-Agent</code> header, you must 
+    on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
     to alert proxies of the additional restrictions.  For example,
     in a typical configuration where the addition of the <code>DEFLATE</code>
@@ -225,7 +225,7 @@ client</description>
     <example>
       Header append Vary User-Agent
     </example>
-    
+
     <p>If your decision about compression depends on other information
     than request headers (<em>e.g.</em> HTTP version), you have to set the
     <code>Vary</code> header to the value <code>*</code>. This prevents
@@ -347,7 +347,7 @@ client</description>
 
 <usage>
     <p>The <directive>DeflateCompressionLevel</directive> directive specifies
-        what level of compression should be used, the higher the value, 
+        what level of compression should be used, the higher the value,
         the better the compression, but the more CPU time is required to
         achieve this.</p>
     <p>The value must between 1 (less compression) and 9 (more compression).</p>

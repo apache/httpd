@@ -61,7 +61,7 @@
     <p>At present, there are 3 load balancer scheduler algorithms available
     for use: Request Counting, Weighted Traffic Counting and Pending Request
     Counting. These are controlled via the <code>lbmethod</code> value of
-    the Balancer definition. See the <directive module="mod_proxy">ProxyPass</directive> 
+    the Balancer definition. See the <directive module="mod_proxy">ProxyPass</directive>
     directive for more information, especially regarding how to
     configure the Balancer and BalancerMembers.</p>
 </section>
@@ -132,14 +132,14 @@
     <!-- ============= BALANCER_SESSION_ROUTE ================ -->
     <dt><var><a name="balancer_session_route" id="balancer_session_route">BALANCER_SESSION_ROUTE</a></var></dt>
     <dd>
-    <p>This is assigned the <var>route</var> parsed from the current 
+    <p>This is assigned the <var>route</var> parsed from the current
     request.</p>
     </dd>
 
     <!-- ============= BALANCER_NAME ========================= -->
     <dt><var><a name="balancer_name" id="balancer_name">BALANCER_NAME</a></var></dt>
     <dd>
-    <p>This is assigned the name of the balancer used for the current 
+    <p>This is assigned the name of the balancer used for the current
     request. The value is something like <code>balancer://foo</code>.</p>
     </dd>
 
@@ -153,7 +153,7 @@
     <!-- ============= BALANCER_WORKER_ROUTE ================= -->
     <dt><var><a name="balancer_worker_route" id="balancer_worker_route">BALANCER_WORKER_ROUTE</a></var></dt>
     <dd>
-    <p>This is assigned the <var>route</var> of the worker that will be 
+    <p>This is assigned the <var>route</var> of the worker that will be
     used for the current request.</p>
     </dd>
 
@@ -172,7 +172,7 @@
 
 <section id="balancer_manager">
     <title>Enabling Balancer Manager Support</title>
-    <p>This module <em>requires</em> the service of 
+    <p>This module <em>requires</em> the service of
     <module>mod_status</module>.
     Balancer manager enables dynamic update of balancer
     members. You can use balancer manager to change the balance

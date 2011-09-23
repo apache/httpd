@@ -32,7 +32,7 @@
     <p>This module processes <code>.map</code> files, thereby
     replacing the functionality of the <code>imagemap</code> CGI
     program. Any directory or document type configured to use the
-    handler <code>imap-file</code> (using either 
+    handler <code>imap-file</code> (using either
     <directive module="mod_mime">AddHandler</directive> or
     <directive module="core">SetHandler</directive>)
     will be processed by this module.</p>

@@ -97,8 +97,8 @@
       &lt;/IfVersion&gt;
     </example>
 
-    <p>Besides the numerical comparison it is possible to match a 
-    <glossary ref="regex">regular expression</glossary> 
+    <p>Besides the numerical comparison it is possible to match a
+    <glossary ref="regex">regular expression</glossary>
     against the httpd version. There are two ways to write it:</p>
 
     <table style="zebra" border="1">

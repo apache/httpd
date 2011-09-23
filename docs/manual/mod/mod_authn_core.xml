@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_authn_core.xml.meta">
 
-<name>mod_authn_core</name> 
+<name>mod_authn_core</name>
 <description>Core Authentication</description>
 <status>Base</status>
 <sourcefile>mod_authn_core.c</sourcefile>
@@ -30,22 +30,22 @@
 <compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
-    <p>This module provides core authentication capabilities to 
-    allow or deny access to portions of the web site. 
-    <module>mod_authn_core</module> provides directives that are 
+    <p>This module provides core authentication capabilities to
+    allow or deny access to portions of the web site.
+    <module>mod_authn_core</module> provides directives that are
     common to all authentication providers.</p>
 </summary>
 
 <section id="authnalias"><title>Creating Authentication Provider Aliases</title>
 
-    <p>Extended authentication providers can be created 
-    within the configuration file and assigned an alias name.  The alias 
-    providers can then be referenced through the directives 
-    <directive module="mod_auth_basic">AuthBasicProvider</directive> or 
+    <p>Extended authentication providers can be created
+    within the configuration file and assigned an alias name.  The alias
+    providers can then be referenced through the directives
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> or
     <directive module="mod_auth_digest">AuthDigestProvider</directive> in
     the same way as a base authentication provider.  Besides the ability
-    to create and alias an extended provider, it also allows the same 
-    extended authentication provider to be reference by multiple 
+    to create and alias an extended provider, it also allows the same
+    extended authentication provider to be reference by multiple
     locations.</p>
 
     <section id="example"><title>Examples</title>
@@ -80,11 +80,11 @@
         &lt;/Directory&gt;<br />
         </example>
 
-        <p>The example below creates two different ldap authentication 
+        <p>The example below creates two different ldap authentication
         provider aliases based on the ldap provider.  This allows
         a single authenticated location to be serviced by multiple ldap
         hosts:</p>
-    
+
         <example><title>Checking multiple LDAP servers</title>
           &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
           <indent>
@@ -100,15 +100,15 @@
              AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
           </indent>
           &lt;/AuthnProviderAlias&gt;<br /><br />
-    
+
           Alias /secure /webpages/secure<br />
           &lt;Directory /webpages/secure&gt;<br />
           <indent>
              Order deny,allow<br />
              Allow from all<br /><br />
-        
+
              AuthBasicProvider ldap-other-alias  ldap-alias1<br /><br />
-        
+
              AuthType Basic<br />
              AuthName LDAP_Protected_Place<br />
              Require valid-user<br />
@@ -213,10 +213,10 @@ authentication</description>
     tree will typically continue to send authentication HTTP headers
     or cookies with each request, regardless of whether the server
     actually requires authentication for every resource.</note>
-</usage> 
+</usage>
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso> 
+    and Access Control</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -232,7 +232,7 @@ the specified alias</description>
 <usage>
     <p><code>&lt;AuthnProviderAlias&gt;</code> and
     <code>&lt;/AuthnProviderAlias&gt;</code> are used to enclose a group of
-    authentication directives that can be referenced by the alias name 
+    authentication directives that can be referenced by the alias name
     using one of the directives <directive module="mod_auth_basic">
     AuthBasicProvider</directive> or <directive module="mod_auth_digest">
     AuthDigestProvider</directive>.</p>

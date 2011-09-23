@@ -143,9 +143,9 @@ an application server stack, where an output filter provides the transformation
 required on the request body. For example, the <module>mod_deflate</module>
 module might be used to provide a general compression service, or an image
 transformation filter might be turned into an image transformation service.</p>
-    
+
 </section>
-  
+
 <section id="using">
 <title>Using Filters</title>
 <p>There are two ways to use filtering: Simple and Dynamic.

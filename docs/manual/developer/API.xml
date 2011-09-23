@@ -53,7 +53,7 @@
 
     <ul>
       <li>
-        <a href="#basics">Basic concepts.</a> 
+        <a href="#basics">Basic concepts.</a>
 
         <ul>
           <li><a href="#HMR">Handlers, Modules, and
@@ -65,7 +65,7 @@
       </li>
 
       <li>
-        <a href="#handlers">How handlers work</a> 
+        <a href="#handlers">How handlers work</a>
 
         <ul>
           <li><a href="#req_tour">A brief tour of the
@@ -92,7 +92,7 @@
       pools</a></li>
 
       <li>
-        <a href="#config">Configuration, commands and the like</a> 
+        <a href="#config">Configuration, commands and the like</a>
 
         <ul>
           <li><a href="#per-dir">Per-directory configuration
@@ -106,7 +106,7 @@
       </li>
     </ul>
 </summary>
-  
+
 <section id="basics"><title>Basic concepts</title>
     <p>We begin with an overview of the basic concepts behind the API, and how
     they are manifested in the code.</p>

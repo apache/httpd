@@ -69,7 +69,7 @@
     <p>The address can be specified as
     <code>*</code>, which will match a request if no
     other vhost has the explicit address on which the request was
-    received. </p> 
+    received. </p>
 
     <p>The address appearing in the <code>VirtualHost</code>
     directive can have an optional port. If the port is unspecified,
@@ -83,9 +83,9 @@
     Use the <directive module="core">Listen</directive> directive to
     control the addresses and ports on which the server listens.)
     </p>
-    
+
     <p>Collectively the
-    entire set of addresses (including multiple 
+    entire set of addresses (including multiple
     results from DNS lookups) are called the vhost's
     <em>address set</em>.</p>
 
@@ -94,7 +94,7 @@
     whenever the most specific match for an IP address and port combination
     is listed in multiple virtual hosts.</p>
 
-    <p>The 
+    <p>The
     <directive module="core">ServerName</directive> directive
     may appear anywhere within the definition of a server. However,
     each appearance overrides the previous appearance (within that
@@ -195,7 +195,7 @@
 
     <p>If there are multiple <code>VirtualHost</code> directives listing
     the IP address and port combination that was determined to be the
-    best match, the "list" in the remaining steps refers to the list of vhosts 
+    best match, the "list" in the remaining steps refers to the list of vhosts
     that matched, in the order they were in the configuration file.</p>
 
     <p>If the connection is using SSL, the server supports <glossary
@@ -272,11 +272,11 @@
       the client sent the request.</li>
 
       <li>If two vhosts have an address in common, those common addresses
-      act as name-based virtual hosts implicitly.  This is new behavior as of 
+      act as name-based virtual hosts implicitly.  This is new behavior as of
       2.3.11.</li>
 
       <li>The main server is only used to serve a request if the IP
-      address and port number to which the client connected 
+      address and port number to which the client connected
       does not match any vhost (including a
       <code>*</code> vhost). In other words, the main server
       only catches a request for an unspecified address/port

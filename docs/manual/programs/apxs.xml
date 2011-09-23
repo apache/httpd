@@ -132,12 +132,12 @@
     <section id="options.query"><title>Query Options</title>
       <dl>
       <dt><code>-q</code></dt>
-      <dd>Performs a query for variables and environment settings used to 
-      build <code>httpd</code>.  When invoked without <var>query</var> parameters, 
-      it prints all known variables and their values.  The optional <code>-v</code> 
+      <dd>Performs a query for variables and environment settings used to
+      build <code>httpd</code>.  When invoked without <var>query</var> parameters,
+      it prints all known variables and their values.  The optional <code>-v</code>
       parameter formats the list output.
 
-      <p>Use this to manually determine settings used to build the 
+      <p>Use this to manually determine settings used to build the
       <code>httpd</code> that will load your module.  For instance use</p>
       <example>
         INC=-I`apxs -q INCLUDEDIR`

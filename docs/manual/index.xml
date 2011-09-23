@@ -47,7 +47,7 @@ Documentation</title>
     <page href="expr.html">Expression parser</page>
     <page href="programs/">Server and Supporting Programs</page>
     <page href="glossary.html">Glossary</page>
-</category>    
+</category>
 
 <category id="usersguide"><title>Users' Guide</title>
     <page href="bind.html">Binding to Addresses and Ports</page>

@@ -39,13 +39,13 @@
       href="howto/auth.html">Authentication, Authorization, and Access
       Control</a>
     </dd>
-    
+
     <dt><a name="algorithm" id="algorithm">Algorithm</a></dt>
     <dd>An unambiguous formula or set of rules for solving a problem in a finite
       number of steps. Algorithms for encryption are usually called
       <dfn>Ciphers</dfn>.
     </dd>
-    
+
     <dt><a name="apacheextensiontool" id="apacheextensiontool">APache
         eXtension Tool</a> <a name="apxs" id="apxs">(apxs)</a></dt>
     <dd>A perl script that aids in compiling <glossary
@@ -143,7 +143,7 @@
       channels over HTTP. It can be used to encapsulate other protocols, such as
       the SSL protocol.
     </dd>
-    
+
     <dt><a name="context" id="context">Context</a></dt>
     <dd>An area in the <glossary ref="configurationfile">configuration
       files</glossary> where certain types of <glossary
@@ -163,7 +163,7 @@
       <em>Certificate</em>.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
-    
+
     <dt><a name="directive" id="directive">Directive</a></dt>
     <dd>A configuration command that controls one or more aspects of Apache's
       behavior.  Directives are placed in the <glossary
@@ -208,15 +208,15 @@
       See: <a href="filter.html">Filters</a>
     </dd>
 
-    <dt><a name="fully-qualifieddomain-name" 
+    <dt><a name="fully-qualifieddomain-name"
         id="fully-qualifieddomain-name">Fully-Qualified Domain-Name</a>
       <a name="fqdn" id="fqdn">(FQDN)</a></dt>
     <dd>The unique name of a network entity, consisting of a hostname and a
       domain name that can resolve to an IP address. For example,
       <code>www</code> is a hostname, <code>example.com</code> is a domain name,
       and <code>www.example.com</code> is a fully-qualified domain name.
-    </dd> 
-    
+    </dd>
+
     <dt><a name="handler" id="handler">Handler</a></dt>
     <dd>An internal Apache representation of the action to be performed when a
       file is called. Generally, files have implicit handlers, based on the file
@@ -237,9 +237,9 @@
     <dd>The part of the <glossary ref="http">HTTP</glossary> request and
       response that is sent before the actual content, and that contains
       meta-information describing the content.
-    </dd> 
-    
-    <dt><a name="htaccess" id="htaccess">.htaccess</a></dt> 
+    </dd>
+
+    <dt><a name="htaccess" id="htaccess">.htaccess</a></dt>
     <dd>A <glossary ref="configurationfile">configuration file</glossary> that
       is placed inside the web tree and applies configuration <glossary
       ref="directive">directives</glossary> to the directory where it is
@@ -269,15 +269,15 @@
       communication mechanism on the World Wide Web. This is actually just HTTP
       over <glossary ref="ssl">SSL</glossary>.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
-    </dd> 
+    </dd>
 
     <dt><a name="method" id="method">Method</a></dt>
     <dd>In the context of <glossary ref="http">HTTP</glossary>, an action to
       perform on a resource, specified on the request line by the client.  Some
       of the methods available in HTTP are <code>GET</code>, <code>POST</code>,
       and <code>PUT</code>.
-    </dd> 
-    
+    </dd>
+
     <dt><a name="messagedigest" id="messagedigest">Message Digest</a></dt>
     <dd>A hash of a message, which can be used to verify that the contents of
       the message have not been altered in transit.<br />
@@ -343,7 +343,7 @@
       sign outgoing ones.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
-    
+
     <dt><a name="proxy" id="proxy">Proxy</a></dt>
     <dd>An intermediate server that sits between the client and the <em>origin
         server</em>.  It accepts requests from clients, transmits those requests
@@ -398,7 +398,7 @@
       as if it is an <em>origin server</em>.  This is useful to hide the real
       origin server from the client for security reasons, or to load balance.
     </dd>
-  
+
     <dt><a name="securesocketslayer" id="securesocketslayer">Secure Sockets
         Layer</a> <a name="ssl" id="ssl">(SSL)</a></dt>
     <dd>A protocol created by Netscape Communications Corporation for general

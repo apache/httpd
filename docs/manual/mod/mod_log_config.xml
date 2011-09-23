@@ -151,9 +151,9 @@
         <td>The process ID of the child that serviced the request.</td></tr>
 
     <tr><td><code>%{<var>format</var>}P</code></td>
-        <td>The process ID or thread ID of the child that serviced the 
+        <td>The process ID or thread ID of the child that serviced the
         request.  Valid formats are <code>pid</code>, <code>tid</code>,
-        and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or 
+        and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or
         higher.
         </td></tr>
 
@@ -173,7 +173,7 @@
         for the final status.</td></tr>
 
     <tr><td><code>%t</code></td>
-        <td>Time the request was received, in the format <code>[18/Sep/2011:19:18:28 -0400]</code>. 
+        <td>Time the request was received, in the format <code>[18/Sep/2011:19:18:28 -0400]</code>.
         The last number indicates the timezone offset from GMT</td></tr>
 
     <tr><td><code>%{<var>format</var>}t</code></td>
@@ -248,7 +248,7 @@
       comma-separated list of status codes immediately following the
       "%". The status code list may be peceded by a "<code>!</code>" to
       indicate negation.</p>
-     
+
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
 
@@ -260,9 +260,9 @@
     <td>Logs <code>User-agent</code> on 400 errors and 501 errors only. For
       other status codes, the literal string <code>"-"</code> will be
       logged.</td></tr>
-   
+
     <tr><td><code>%!200,304,302{Referer}i</code></td>
-    <td>Logs <code>Referer</code> on all requests that do 
+    <td>Logs <code>Referer</code> on all requests that do
     <em>not</em> return one of the three specified codes,
     "<code>-</code>" otherwise.
     </td></tr>
@@ -415,7 +415,7 @@
       <note type="warning"><title>Note</title>
         <p>When entering a file path on non-Unix platforms, care should be taken
         to make sure that only forward slashed are used even though the platform
-        may allow the use of back slashes. In general it is a good idea to always 
+        may allow the use of back slashes. In general it is a good idea to always
         use forward slashes throughout the configuration files.</p>
       </note></dd>
     </dl>
@@ -452,7 +452,7 @@
     example, if you want to record requests for all GIF
     images on your server in a separate logfile but not in your main
     log, you can use:</p>
-    
+
     <example>
       SetEnvIf Request_URI \.gif$ gif-image<br />
       CustomLog gif-requests.log common env=gif-image<br />
@@ -493,7 +493,7 @@
     previous <directive>LogFormat</directive> directive as described
     below.</p>
 
-    <p>The second form of the <directive>LogFormat</directive> 
+    <p>The second form of the <directive>LogFormat</directive>
     directive associates an explicit <var>format</var> with a
     <var>nickname</var>. This <var>nickname</var> can then be used in
     subsequent <directive>LogFormat</directive> or

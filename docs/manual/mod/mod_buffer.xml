@@ -65,7 +65,7 @@
         cause the request/response to be slower than not using a buffer at
         all. These filters should be used with care, and only where
         necessary.</note>
-    
+
 </summary>
 <seealso><a href="../filter.html">Filters</a></seealso>
 

@@ -43,10 +43,10 @@ to provide the cryptography engine.</p>
 
 <section id="envvars"><title>Environment Variables</title>
 
-<p>This module can be configured to provide several items of SSL information 
+<p>This module can be configured to provide several items of SSL information
 as additional environment variables to the SSI and CGI namespace. This
 information is not provided by default for performance reasons. (See
-<directive>SSLOptions</directive> StdEnvVars, below.) The generated variables 
+<directive>SSLOptions</directive> StdEnvVars, below.) The generated variables
 are listed in the table below. For backward compatibility the information can
 be made available under different names, too. Look in the <a
 href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
@@ -146,7 +146,7 @@ REQUEST_URI            REMOTE_USER</pre></note>
   <dt><code>ENV:<em>variablename</em></code></dt>
   <dd>This will expand to the standard environment
   variable <em>variablename</em>.</dd>
-  
+
   <dt><code>HTTP:<em>headername</em></code></dt>
   <dd>This will expand to the value of the request header with name
   <em>headername</em>.</dd>
@@ -158,7 +158,7 @@ REQUEST_URI            REMOTE_USER</pre></note>
 
 <p>When <module>mod_ssl</module> is built into Apache or at least
 loaded (under DSO situation) additional functions exist for the <a
-href="mod_log_config.html#formats">Custom Log Format</a> of 
+href="mod_log_config.html#formats">Custom Log Format</a> of
 <module>mod_log_config</module>. First there is an
 additional ``<code>%{</code><em>varname</em><code>}x</code>''
 eXtension format function which can be used to expand any variables
@@ -241,7 +241,7 @@ string in <module>mod_log_config</module>.</p>
 
 <directivesynopsis>
 <name>SSLPassPhraseDialog</name>
-<description>Type of pass phrase dialog for encrypted private 
+<description>Type of pass phrase dialog for encrypted private
 keys</description>
 <syntax>SSLPassPhraseDialog <em>type</em></syntax>
 <default>SSLPassPhraseDialog builtin</default>
@@ -278,7 +278,7 @@ query can be done in two ways which can be configured by
     dialog (i.e. when you use a single Pass Phrase for all N Private Key files
     this Pass Phrase is queried only once).</p></li>
 
-<li><code>|/path/to/program [args...]</code> 
+<li><code>|/path/to/program [args...]</code>
 
    <p>This mode allows an external program to be used which acts as a
    pipe to a particular input device; the program is sent the standard
@@ -319,9 +319,9 @@ SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 
 <directivesynopsis>
 <name>SSLRandomSeed</name>
-<description>Pseudo Random Number Generator (PRNG) seeding 
+<description>Pseudo Random Number Generator (PRNG) seeding
 source</description>
-<syntax>SSLRandomSeed <em>context</em> <em>source</em> 
+<syntax>SSLRandomSeed <em>context</em> <em>source</em>
 [<em>bytes</em>]</syntax>
 <contextlist><context>server config</context></contextlist>
 
@@ -414,7 +414,7 @@ SSLRandomSeed connect file:/dev/urandom 1024<br />
 
 <directivesynopsis>
 <name>SSLSessionCache</name>
-<description>Type of the global/inter-process SSL Session 
+<description>Type of the global/inter-process SSL Session
 Cache</description>
 <syntax>SSLSessionCache <em>type</em></syntax>
 <default>SSLSessionCache none</default>
@@ -527,9 +527,9 @@ SSLEngine on<br />
 ...<br />
 &lt;/VirtualHost&gt;
 </example>
-<p>In Apache 2.1 and later, <directive>SSLEngine</directive> can be set to 
-<code>optional</code>. This enables support for 
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS 
+<p>In Apache 2.1 and later, <directive>SSLEngine</directive> can be set to
+<code>optional</code>. This enables support for
+<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS
 Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 </usage>
 </directivesynopsis>
@@ -545,7 +545,7 @@ Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 <p>
 This directive toggles the usage of the SSL library FIPS_mode flag.
 It must be set in the global server context and cannot be configured
-with conflicting settings (SSLFIPS on followed by SSLFIPS off or 
+with conflicting settings (SSLFIPS on followed by SSLFIPS off or
 similar).  The mode applies to all SSL library operations.
 </p>
 <p>
@@ -571,7 +571,7 @@ by the applicable Security Policy.
 
 <usage>
 <p>
-This directive can be used to control which versions of the SSL protocol 
+This directive can be used to control which versions of the SSL protocol
 will be accepted in new connections.</p>
 <p>
 The available (case-insensitive) <em>protocol</em>s are:</p>
@@ -585,21 +585,21 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>SSLv3</code>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
-    the Netscape Corporation. 
+    the Netscape Corporation.
     It is the successor to SSLv2 and the predecessor to TLSv1. It's supported by
     almost all popular browsers.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
-    successor to SSLv3 and is defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>. 
+    successor to SSLv3 and is defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>.
     Which has been obsoleted by <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC4346</a>.</p></li>
 
 <li><code>All</code>
     <p>
     This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
     convenient way for enabling all protocols except one when used in
-    combination with the minus sign on a protocol as the example above 
+    combination with the minus sign on a protocol as the example above
     shows.</p></li>
 </ul>
 <example><title>Example</title>
@@ -611,7 +611,7 @@ SSLProtocol all -SSLv2
 
 <directivesynopsis>
 <name>SSLCipherSuite</name>
-<description>Cipher Suite available for negotiation in SSL 
+<description>Cipher Suite available for negotiation in SSL
 handshake</description>
 <syntax>SSLCipherSuite <em>cipher-spec</em></syntax>
 <default>SSLCipherSuite DEFAULT (depends on OpenSSL version)</default>
@@ -864,7 +864,7 @@ SSLCertificateChainFile /usr/local/apache2/conf/ssl.crt/ca.crt
 
 <directivesynopsis>
 <name>SSLCACertificatePath</name>
-<description>Directory of PEM-encoded CA Certificates for 
+<description>Directory of PEM-encoded CA Certificates for
 Client Auth</description>
 <syntax>SSLCACertificatePath <em>directory-path</em></syntax>
 <contextlist><context>server config</context>
@@ -890,7 +890,7 @@ SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
 
 <directivesynopsis>
 <name>SSLCACertificateFile</name>
-<description>File of concatenated PEM-encoded CA Certificates 
+<description>File of concatenated PEM-encoded CA Certificates
 for Client Auth</description>
 <syntax>SSLCACertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>
@@ -902,7 +902,7 @@ This directive sets the <em>all-in-one</em> file where you can assemble the
 Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
 with. These are used for Client Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
-preference. This can be used alternatively and/or additionally to 
+preference. This can be used alternatively and/or additionally to
 <directive module="mod_ssl">SSLCACertificatePath</directive>.</p>
 <example><title>Example</title>
 SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
@@ -912,7 +912,7 @@ SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
 
 <directivesynopsis>
 <name>SSLCADNRequestFile</name>
-<description>File of concatenated PEM-encoded CA Certificates 
+<description>File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</description>
 <syntax>SSLCADNRequestFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>
@@ -957,7 +957,7 @@ SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
 
 <directivesynopsis>
 <name>SSLCADNRequestPath</name>
-<description>Directory of PEM-encoded CA Certificates for 
+<description>Directory of PEM-encoded CA Certificates for
 defining acceptable CA names</description>
 <syntax>SSLCADNRequestPath <em>directory-path</em></syntax>
 <contextlist><context>server config</context>
@@ -986,7 +986,7 @@ SSLCADNRequestPath /usr/local/apache2/conf/ca-names.crt/
 
 <directivesynopsis>
 <name>SSLCARevocationPath</name>
-<description>Directory of PEM-encoded CA CRLs for 
+<description>Directory of PEM-encoded CA CRLs for
 Client Auth</description>
 <syntax>SSLCARevocationPath <em>directory-path</em></syntax>
 <contextlist><context>server config</context>
@@ -1012,7 +1012,7 @@ SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
 
 <directivesynopsis>
 <name>SSLCARevocationFile</name>
-<description>File of concatenated PEM-encoded CA CRLs for 
+<description>File of concatenated PEM-encoded CA CRLs for
 Client Auth</description>
 <syntax>SSLCARevocationFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>
@@ -1116,7 +1116,7 @@ SSLVerifyClient require
 
 <directivesynopsis>
 <name>SSLVerifyDepth</name>
-<description>Maximum depth of CA Certificates in Client 
+<description>Maximum depth of CA Certificates in Client
 Certificate verification</description>
 <syntax>SSLVerifyDepth <em>number</em></syntax>
 <default>SSLVerifyDepth 1</default>
@@ -1260,7 +1260,7 @@ SSLOptions +FakeBasicAuth -StrictRequire<br />
 
 <directivesynopsis>
 <name>SSLRequireSSL</name>
-<description>Deny access when SSL is not used for the 
+<description>Deny access when SSL is not used for the
 HTTP request</description>
 <syntax>SSLRequireSSL</syntax>
 <contextlist><context>directory</context>
@@ -1282,7 +1282,7 @@ SSLRequireSSL
 
 <directivesynopsis>
 <name>SSLRequire</name>
-<description>Allow access only when an arbitrarily complex 
+<description>Allow access only when an arbitrarily complex
 boolean expression is true</description>
 <syntax>SSLRequire <em>expression</em></syntax>
 <contextlist><context>directory</context>
@@ -1499,8 +1499,8 @@ comes with mod_ssl to accomplish this task.
 </note>
 <example><title>Example</title>
 SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
-</example> 
-</usage> 
+</example>
+</usage>
 </directivesynopsis>
 
 
@@ -1713,7 +1713,7 @@ for additional information.
 
 <directivesynopsis>
 <name>SSLProxyCipherSuite</name>
-<description>Cipher Suite available for negotiation in SSL 
+<description>Cipher Suite available for negotiation in SSL
 proxy handshake</description>
 <syntax>SSLProxyCipherSuite <em>cipher-spec</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</default>
@@ -1731,7 +1731,7 @@ for additional information.</p>
 </directivesynopsis>
 <directivesynopsis>
 <name>SSLProxyCACertificatePath</name>
-<description>Directory of PEM-encoded CA Certificates for 
+<description>Directory of PEM-encoded CA Certificates for
 Remote Server Auth</description>
 <syntax>SSLProxyCACertificatePath <em>directory-path</em></syntax>
 <contextlist><context>server config</context>
@@ -1757,7 +1757,7 @@ SSLProxyCACertificatePath /usr/local/apache2/conf/ssl.crt/
 
 <directivesynopsis>
 <name>SSLProxyCACertificateFile</name>
-<description>File of concatenated PEM-encoded CA Certificates 
+<description>File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</description>
 <syntax>SSLProxyCACertificateFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>
@@ -1769,7 +1769,7 @@ This directive sets the <em>all-in-one</em> file where you can assemble the
 Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
 with. These are used for Remote Server Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
-preference. This can be used alternatively and/or additionally to 
+preference. This can be used alternatively and/or additionally to
 <directive module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
 <example><title>Example</title>
 SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt
@@ -1779,7 +1779,7 @@ SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-serve
 
 <directivesynopsis>
 <name>SSLProxyCARevocationPath</name>
-<description>Directory of PEM-encoded CA CRLs for 
+<description>Directory of PEM-encoded CA CRLs for
 Remote Server Auth</description>
 <syntax>SSLProxyCARevocationPath <em>directory-path</em></syntax>
 <contextlist><context>server config</context>
@@ -1805,7 +1805,7 @@ SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
 
 <directivesynopsis>
 <name>SSLProxyCARevocationFile</name>
-<description>File of concatenated PEM-encoded CA CRLs for 
+<description>File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</description>
 <syntax>SSLProxyCARevocationFile <em>file-path</em></syntax>
 <contextlist><context>server config</context>

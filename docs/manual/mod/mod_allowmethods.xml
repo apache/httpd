@@ -1,6 +1,6 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
-<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?> 
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
 
 <!--
@@ -12,12 +12,12 @@ svn ps svn:keywords LastChangedRevision mod_allowmethods.xml
 in order for it to rebuild correctly.
 
 -->
-                                                                                                                                  
-<!--                                                                                                                              
- Licensed to the Apache Software Foundation (ASF) under one or more 
- contributor license agreements.  See the NOTICE file distributed with 
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
- The ASF licenses this file to You under the Apache License, Version 2.0 
+ The ASF licenses this file to You under the Apache License, Version 2.0
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
@@ -30,7 +30,7 @@ in order for it to rebuild correctly.
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_allowmethods.xml.meta"> 
+<modulesynopsis metafile="mod_allowmethods.xml.meta">
 <name>mod_allowmethods</name>
 <description>Easily restrict what HTTP methods can be used on the server</description>
 <status>Experimental</status>
@@ -55,7 +55,7 @@ used on an server. The most common configuration would be:</p>
 <directivesynopsis>
 <name>AllowMethods</name>
 <description>Restrict access to the listed HTTP methods</description>
-<syntax>AllowMethods reset|<em>HTTP-method</em> 
+<syntax>AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</syntax>
 <default>AllowMethods reset</default>
 <contextlist><context>directory</context></contextlist>

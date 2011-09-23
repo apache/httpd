@@ -27,7 +27,7 @@
 
 <summary>
 
-<p>This document supplements the <module>mod_rewrite</module> 
+<p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <module>mod_rewrite</module> to control access to
 various resources, and other related techniques.
@@ -306,4 +306,4 @@ http://badguys.example.com/bad/index3.html   http://somewhere.example.com/
 
 </section>
 
-</manualpage> 
+</manualpage>

@@ -133,9 +133,9 @@
         <message id="before-license">Licenciado sob a</message>
         <message id="after-license"></message>
         <message id="langavail">L&#237;nguas Dispon&#237;veis</message>
- 
+
         <!-- not up to date -->
-        <message id="outofdate">Esta tradu&#231;&#227;o pode estar desatualizada. 
+        <message id="outofdate">Esta tradu&#231;&#227;o pode estar desatualizada.
         Confira a vers&#227;o em Ingl&#234;s para mudan&#231;as recentes.</message>
         <!-- directive not translated yet -->
         <message id="nottranslated">The documentation for this directive has

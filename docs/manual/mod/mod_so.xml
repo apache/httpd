@@ -28,7 +28,7 @@ modules into the server at start-up or restart time</description>
 <status>Extension</status>
 <sourcefile>mod_so.c</sourcefile>
 <identifier>so_module</identifier>
-<compatibility>This is a Base module (always included) on 
+<compatibility>This is a Base module (always included) on
 Windows</compatibility>
 
 <summary>

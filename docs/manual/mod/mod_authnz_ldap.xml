@@ -32,9 +32,9 @@ for HTTP Basic authentication.</description>
 
 <summary>
     <p>This module provides authentication front-ends such as
-    <module>mod_auth_basic</module> to authenticate users through 
+    <module>mod_auth_basic</module> to authenticate users through
     an ldap directory.</p>
-    
+
     <p><module>mod_authnz_ldap</module> supports the following features:</p>
 
     <ul>
@@ -69,7 +69,7 @@ for HTTP Basic authentication.</description>
 
     <ul>
       <li>
-        <a href="#operation">Operation</a> 
+        <a href="#operation">Operation</a>
 
         <ul>
           <li><a href="#authenphase">The Authentication
@@ -81,7 +81,7 @@ for HTTP Basic authentication.</description>
       </li>
 
       <li>
-        <a href="#requiredirectives">The Require Directives</a> 
+        <a href="#requiredirectives">The Require Directives</a>
 
         <ul>
           <li><a href="#requser">Require ldap-user</a></li>
@@ -99,7 +99,7 @@ for HTTP Basic authentication.</description>
       <li><a href="#activedirectory">Using Active Directory</a></li>
       <li>
         <a href="#frontpage">Using Microsoft FrontPage with
-        <module>mod_authnz_ldap</module></a> 
+        <module>mod_authnz_ldap</module></a>
 
         <ul>
           <li><a href="#howitworks">How It Works</a></li>
@@ -113,7 +113,7 @@ for HTTP Basic authentication.</description>
 
     <p>There are two phases in granting access to a user. The first
     phase is authentication, in which the <module>mod_authnz_ldap</module>
-    authentication provider verifies that the user's credentials are valid. 
+    authentication provider verifies that the user's credentials are valid.
     This is also called the <em>search/bind</em> phase. The second phase is
     authorization, in which <module>mod_authnz_ldap</module> determines
     if the authenticated user is allowed access to the resource in
@@ -122,11 +122,11 @@ for HTTP Basic authentication.</description>
 
     <p><module>mod_authnz_ldap</module> registers both an authn_ldap authentication
     provider and an authz_ldap authorization handler.  The authn_ldap
-    authentication provider can be enabled through the 
-    <directive module="mod_auth_basic">AuthBasicProvider</directive> directive 
-    using the <code>ldap</code> value. The authz_ldap handler extends the 
+    authentication provider can be enabled through the
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> directive
+    using the <code>ldap</code> value. The authz_ldap handler extends the
     <directive module="mod_authz_core">Require</directive> directive's authorization types
-    by adding <code>ldap-user</code>, <code>ldap-dn</code> and <code>ldap-group</code> 
+    by adding <code>ldap-user</code>, <code>ldap-dn</code> and <code>ldap-group</code>
     values.</p>
 
 <section id="authenphase"><title>The Authentication
@@ -215,14 +215,14 @@ for HTTP Basic authentication.</description>
       one of its sub-groups.</li>
 
       <li>Grant access if there is a <a href="#reqattribute">
-      <code>Require ldap-attribute</code></a> 
+      <code>Require ldap-attribute</code></a>
       directive, and the attribute fetched from the LDAP directory
-      matches the given value.</li> 
+      matches the given value.</li>
 
       <li>Grant access if there is a <a href="#reqfilter">
-      <code>Require ldap-filter</code></a> 
+      <code>Require ldap-filter</code></a>
       directive, and the search filter successfully finds a single user
-      object that matches the dn of the authenticated user.</li> 
+      object that matches the dn of the authenticated user.</li>
 
       <li>otherwise, deny or decline access</li>
     </ul>
@@ -231,16 +231,16 @@ for HTTP Basic authentication.</description>
     be used which may require loading additional authorization modules.</p>
 
     <ul>
-        <li>Grant access to all successfully authenticated users if 
-        there is a <a href="#requser"><code>Require valid-user</code></a> 
+        <li>Grant access to all successfully authenticated users if
+        there is a <a href="#requser"><code>Require valid-user</code></a>
         directive. (requires <module>mod_authz_user</module>)</li>
 
         <li>Grant access if there is a <a
         href="#reqgroup"><code>Require group</code></a> directive, and
-        <module>mod_authz_groupfile</module> has been loaded with the 
-        <directive module="mod_authz_groupfile">AuthGroupFile</directive> 
+        <module>mod_authz_groupfile</module> has been loaded with the
+        <directive module="mod_authz_groupfile">AuthGroupFile</directive>
         directive set.</li>
-    
+
         <li>others...</li>
      </ul>
 
@@ -317,10 +317,10 @@ for HTTP Basic authentication.</description>
 
     <p>Apache's <directive module="mod_authz_core">Require</directive>
     directives are used during the authorization phase to ensure that
-    a user is allowed to access a resource.  mod_authnz_ldap extends the 
-    authorization types with <code>ldap-user</code>, <code>ldap-dn</code>, 
-    <code>ldap-group</code>, <code>ldap-attribute</code> and 
-    <code>ldap-filter</code>.  Other authorization types may also be 
+    a user is allowed to access a resource.  mod_authnz_ldap extends the
+    authorization types with <code>ldap-user</code>, <code>ldap-dn</code>,
+    <code>ldap-group</code>, <code>ldap-attribute</code> and
+    <code>ldap-filter</code>.  Other authorization types may also be
     used but may require that additional authorization modules be loaded.</p>
 
 <section id="requser"><title>Require ldap-user</title>
@@ -412,7 +412,7 @@ uniqueMember: cn=Elliot Rhodes, o=Example<br />
 
     <p>The following directives would allow access for Bob Ellis, Tom Jackson,
     Barbara Jensen, Fred User, Allan Jefferson, and Paul Tilley but would not
-    allow access for Jim Swenson, or Elliot Rhodes (since they are at a 
+    allow access for Jim Swenson, or Elliot Rhodes (since they are at a
     sub-group depth of 2):</p>
 <example>
 Require ldap-group cn=Employees, o-Example<br />
@@ -453,18 +453,18 @@ AuthLDAPSubGroupDepth 1<br />
     administrator to grant access based on attributes of the authenticated
     user in the LDAP directory.  If the attribute in the directory
     matches the value given in the configuration, access is granted.</p>
-    
+
     <p>The following directive would grant access to anyone with
     the attribute employeeType = active</p>
 
     <example>Require ldap-attribute employeeType=active</example>
 
     <p>Multiple attribute/value pairs can be specified on the same line
-    separated by spaces or they can be specified in multiple 
-    <code>Require ldap-attribute</code> directives. The effect of listing 
-    multiple attribute/values pairs is an OR operation. Access will be 
-    granted if any of the listed attribute values match the value of the 
-    corresponding attribute in the user object. If the value of the 
+    separated by spaces or they can be specified in multiple
+    <code>Require ldap-attribute</code> directives. The effect of listing
+    multiple attribute/values pairs is an OR operation. Access will be
+    granted if any of the listed attribute values match the value of the
+    corresponding attribute in the user object. If the value of the
     attribute contains a space, only the value must be within double quotes.</p>
 
     <p>The following directive would grant access to anyone with
@@ -480,18 +480,18 @@ AuthLDAPSubGroupDepth 1<br />
     administrator to grant access based on a complex LDAP search filter.
     If the dn returned by the filter search matches the authenticated user
     dn, access is granted.</p>
-    
+
     <p>The following directive would grant access to anyone having a cell phone
     and is in the marketing department</p>
 
     <example>Require ldap-filter &amp;(cell=*)(department=marketing)</example>
 
-    <p>The difference between the <code>Require ldap-filter</code> directive and the 
-    <code>Require ldap-attribute</code> directive is that <code>ldap-filter</code> 
-    performs a search operation on the LDAP directory using the specified search 
-    filter rather than a simple attribute comparison. If a simple attribute 
-    comparison is all that is required, the comparison operation performed by 
-    <code>ldap-attribute</code> will be faster than the search operation 
+    <p>The difference between the <code>Require ldap-filter</code> directive and the
+    <code>Require ldap-attribute</code> directive is that <code>ldap-filter</code>
+    performs a search operation on the LDAP directory using the specified search
+    filter rather than a simple attribute comparison. If a simple attribute
+    comparison is all that is required, the comparison operation performed by
+    <code>ldap-attribute</code> will be faster than the search operation
     used by <code>ldap-filter</code> especially within a large directory.</p>
 
 </section>
@@ -503,7 +503,7 @@ AuthLDAPSubGroupDepth 1<br />
     <ul>
       <li>
         Grant access to anyone who exists in the LDAP directory,
-        using their UID for searches. 
+        using their UID for searches.
 <example>
 AuthLDAPURL "ldap://ldap1.example.com:389/ou=People, o=Example?uid?sub?(objectClass=*)"<br />
 Require valid-user
@@ -513,7 +513,7 @@ Require valid-user
       <li>
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
-        redundant LDAP server. 
+        redundant LDAP server.
 <example>AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/ou=People, o=Example"<br />
 Require valid-user
 </example>
@@ -527,7 +527,7 @@ Require valid-user
         <strong>must</strong> return exactly one entry. That's why
         this approach is not recommended: it's a better idea to
         choose an attribute that is guaranteed unique in your
-        directory, such as <code>uid</code>. 
+        directory, such as <code>uid</code>.
 <example>
 AuthLDAPURL "ldap://ldap.example.com/ou=People, o=Example?cn"<br />
 Require valid-user
@@ -536,7 +536,7 @@ Require valid-user
 
       <li>
         Grant access to anybody in the Administrators group. The
-        users must authenticate using their UID. 
+        users must authenticate using their UID.
 <example>
 AuthLDAPURL ldap://ldap.example.com/o=Example?uid<br />
 Require ldap-group cn=Administrators, o=Example
@@ -548,7 +548,7 @@ Require ldap-group cn=Administrators, o=Example
         carries an alphanumeric pager will have an LDAP attribute
         of <code>qpagePagerID</code>. The example will grant access
         only to people (authenticated via their UID) who have
-        alphanumeric pagers: 
+        alphanumeric pagers:
 <example>
 AuthLDAPURL ldap://ldap.example.com/o=Example?uid??(qpagePagerID=*)<br />
 Require valid-user
@@ -597,10 +597,10 @@ Require valid-user
     module="mod_ldap">LDAPTrustedGlobalCert</directive> and <directive
     module="mod_ldap">LDAPTrustedMode</directive>.</p>
 
-    <p>An optional second parameter can be added to the 
+    <p>An optional second parameter can be added to the
     <directive module="mod_authnz_ldap">AuthLDAPURL</directive> to override
     the default connection type set by <directive module="mod_ldap">LDAPTrustedMode</directive>.
-    This will allow the connection established by an <em>ldap://</em> Url 
+    This will allow the connection established by an <em>ldap://</em> Url
     to be upgraded to a secure connection on the same port.</p>
 </section>
 
@@ -619,11 +619,11 @@ Require valid-user
 <section id="exposed"><title>Exposing Login Information</title>
 
     <p>when this module performs <em>authentication</em>, ldap attributes specified
-    in the <directive module="mod_authnz_ldap">authldapurl</directive> 
+    in the <directive module="mod_authnz_ldap">authldapurl</directive>
     directive are placed in environment variables with the prefix "AUTHENTICATE_".</p>
 
     <p>when this module performs <em>authorization</em>, ldap attributes specified
-    in the <directive module="mod_authnz_ldap">authldapurl</directive> 
+    in the <directive module="mod_authnz_ldap">authldapurl</directive>
     directive are placed in environment variables with the prefix "AUTHORIZE_".</p>
 
     <p>If the attribute field contains the username, common name
@@ -706,7 +706,7 @@ Require group <em>mygroupfile</em>
     the LDAP directory is considered a valid user, whereas FrontPage
     considers only those people in the local user file to be
     valid. By substituting the ldap-group with group file authorization,
-    Apache is allowed to consult the local user file (which is managed by 
+    Apache is allowed to consult the local user file (which is managed by
     FrontPage) - instead of LDAP - when handling authorizing the user.</p>
 
     <p>Once directives have been added as specified above,
@@ -735,7 +735,7 @@ Require group <em>mygroupfile</em>
       <module>mod_authn_file</module> and
       <module>mod_authz_groupfile</module> in order to
       use FrontPage support. This is because Apache will still use
-      the <module>mod_authz_groupfile</module> group file for determine 
+      the <module>mod_authz_groupfile</module> group file for determine
       the extent of a user's access to the FrontPage web.</li>
 
       <li>The directives must be put in the <code>.htaccess</code>
@@ -772,7 +772,7 @@ authorization</description>
     whether LDAP has performed authentication, authorization, or both.</p>
 
     <note><title>Note</title>
-    No authorization variables are set when a user is authorized on the basis of 
+    No authorization variables are set when a user is authorized on the basis of
     <code>Require valid-user</code>.
     </note>
 </usage>
@@ -788,14 +788,14 @@ authorization</description>
 </contextlist>
 <override>AuthConfig</override>
 <usage>
-    <p>By default, subsequent authentication providers are only queried if a 
+    <p>By default, subsequent authentication providers are only queried if a
     user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
-    password cannot be verified with an LDAP bind.  
-    If <directive module="mod_authnz_ldap">AuthLDAPBindAuthoritative</directive> 
-    is set to <em>off</em>, other configured authentication modules will have 
-    a chance to validate the user if the LDAP bind (with the current user's credentials) 
+    password cannot be verified with an LDAP bind.
+    If <directive module="mod_authnz_ldap">AuthLDAPBindAuthoritative</directive>
+    is set to <em>off</em>, other configured authentication modules will have
+    a chance to validate the user if the LDAP bind (with the current user's credentials)
     fails for any reason.</p>
-    <p> This allows users present in both LDAP and 
+    <p> This allows users present in both LDAP and
     <directive module="mod_authn_file">AuthUserFile</directive> to authenticate
     when the LDAP server is available but the user's account is locked or password
     is otherwise unusable.</p>
@@ -820,13 +820,13 @@ own username, instead of anonymously or with hard-coded credentials for the serv
      distinguished name (DN).  This directive forces the server to use the verbatim username
      and password provided by the incoming user to perform the initial DN
      search.</p>
- 
+
      <p> If the verbatim username can't directly bind, but needs some
      cosmetic transformation, see <directive module="mod_authnz_ldap">
      AuthLDAPInitialBindPattern</directive>.</p>
-   
-     <p> This directive should only be used when your LDAP server doesn't 
-         accept anonymous searches and you cannot use a dedicated 
+
+     <p> This directive should only be used when your LDAP server doesn't
+         accept anonymous searches and you cannot use a dedicated
          <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
      </p>
 
@@ -858,9 +858,9 @@ to perform a DN lookup</description>
 
     <p> The regular expression argument is compared against the current basic authentication username.
         The substitution argument may contain backreferences, but has no other variable interpolation.</p>
-     
-    <p> This directive should only be used when your LDAP server doesn't 
-        accept anonymous searches and you cannot use a dedicated 
+
+    <p> This directive should only be used when your LDAP server doesn't
+        accept anonymous searches and you cannot use a dedicated
         <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
     </p>
 
@@ -872,8 +872,8 @@ to perform a DN lookup</description>
         has no effect when this module is used exclusively for authorization.
     </note>
     <note><title>debugging</title>
-        The substituted DN is recorded in the environment variable 
-        <em>LDAP_BINDASUSER</em>.  If the regular expression does not match the input, 
+        The substituted DN is recorded in the environment variable
+        <em>LDAP_BINDASUSER</em>.  If the regular expression does not match the input,
         the verbatim username is used.
     </note>
 </usage>
@@ -910,7 +910,7 @@ to perform a DN lookup</description>
     properly protected. You should only use the <directive
     module="mod_authnz_ldap">AuthLDAPBindDN</directive> and <directive
     module="mod_authnz_ldap">AuthLDAPBindPassword</directive> if you
-    absolutely need them to search the directory.</p> 
+    absolutely need them to search the directory.</p>
 </usage>
 </directivesynopsis>
 
@@ -953,16 +953,16 @@ to perform a DN lookup</description>
 <usage>
     <p>When set, and <module>mod_authnz_ldap</module> has authenticated the
     user, LDAP comparisons for authorization use the queried distinguished name (DN)
-    and HTTP basic authentication password of the authenticated user instead of 
+    and HTTP basic authentication password of the authenticated user instead of
     the servers configured credentials.</p>
 
-    <p> The <em>ldap-attribute</em>, <em>ldap-user</em>, and <em>ldap-group</em> (single-level only) 
+    <p> The <em>ldap-attribute</em>, <em>ldap-user</em>, and <em>ldap-group</em> (single-level only)
     authorization checks use comparisons.</p>
 
     <p>This directive only has effect on the comparisons performed during
     nested group processing when <directive module="mod_authnz_ldap">
     AuthLDAPSearchAsUser</directive> is also enabled.</p>
-    
+
     <p> This directive should only be used when your LDAP server doesn't
         accept anonymous comparisons and you cannot use a dedicated
         <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
@@ -1085,10 +1085,10 @@ query to set the REMOTE_USER environment variable</description>
 <default>none</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<override>AuthConfig</override> 
-      
+<override>AuthConfig</override>
+
 <usage>
-    <p>If this directive is set, the value of the 
+    <p>If this directive is set, the value of the
     <code>REMOTE_USER</code> environment variable will be set to the
     value of the attribute specified. Make sure that this attribute is
     included in the list of attributes in the AuthLDAPUrl definition,
@@ -1132,10 +1132,10 @@ environment variable</description>
 <usage>
     <p>When set, and <module>mod_authnz_ldap</module> has authenticated the
     user, LDAP searches for authorization use the queried distinguished name (DN)
-    and HTTP basic authentication password of the authenticated user instead of 
+    and HTTP basic authentication password of the authenticated user instead of
     the servers configured credentials.</p>
 
-    <p> The <em>ldap-filter</em> and <em>ldap-dn</em> authorization 
+    <p> The <em>ldap-filter</em> and <em>ldap-dn</em> authorization
     checks use searches.</p>
 
     <p>This directive only has effect on the comparisons performed during
@@ -1213,8 +1213,8 @@ objects that are groups during sub-group processing.</description>
 <example>ldap://host:port/basedn?attribute?scope?filter</example>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
 <example>AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</example>
-<p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes; 
-otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em> 
+<p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes;
+otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em>
 You can of course use search parameters on each of these.</p>
 
 <dl>
@@ -1234,7 +1234,7 @@ You can of course use search parameters on each of these.</p>
           specify multiple, redundant LDAP servers, just list all
           servers, separated by spaces. <module>mod_authnz_ldap</module>
           will try connecting to each server in turn, until it makes a
-          successful connection. If multiple ldap servers are specified, 
+          successful connection. If multiple ldap servers are specified,
           then entire LDAP URL must be encapsulated in double quotes.</p>
 
           <p>Once a connection has been made to a server, that
@@ -1298,7 +1298,7 @@ You can of course use search parameters on each of these.</p>
     Jenson</code>, the resulting search filter will be
     <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
 
-    <p>An optional parameter can be added to allow the LDAP Url to override 
+    <p>An optional parameter can be added to allow the LDAP Url to override
     the connection type.  This parameter can be one of the following:</p>
 
 <dl>
@@ -1310,7 +1310,7 @@ You can of course use search parameters on each of these.</p>
         This is the same as <code>ldaps://</code></dd>
     <dt>TLS | STARTTLS</dt>
         <dd>Establish an upgraded secure connection on the default LDAP port.
-        This connection will be initiated on port 389 by default and then 
+        This connection will be initiated on port 389 by default and then
         upgraded to a secure connection on the same port.</dd>
 </dl>
 

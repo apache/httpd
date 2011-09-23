@@ -100,7 +100,7 @@ and URL matching.</p>
           the <code>RewriteBase</code> directive below for the
           trick to achieve this) and then initiates a new internal
           sub-request with the new URL. This restarts processing of
-          the API phases. 
+          the API phases.
 
           <p>Again mod_rewrite tries hard to make this complicated
           step totally transparent to the user, but you should
@@ -117,7 +117,7 @@ and URL matching.</p>
 </section>
 
 <section id="InternalRuleset"><title>Ruleset Processing</title>
- 
+
       <p>Now when mod_rewrite is triggered in these two API phases, it
       reads the configured rulesets from its configuration
       structure (which itself was either created on startup for

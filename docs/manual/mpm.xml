@@ -62,7 +62,7 @@ how they are used by the Apache HTTP Server.</p>
 
       <li>The server can be better customized for the needs of the
       particular site. For example, sites that need a great deal of
-      scalability can choose to use a threaded MPM like 
+      scalability can choose to use a threaded MPM like
       <module>worker</module> or <module>event</module>, while sites requiring
       stability or compatibility with older software can use a
       <module>prefork</module>.</li>
@@ -85,7 +85,7 @@ choice at compile-time.</p>
 <columnspec><column width=".2"/><column width=".2"/></columnspec>
 <tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
 <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
-<tr><td>Unix</td><td><module>prefork</module>, <module>worker</module>, or 
+<tr><td>Unix</td><td><module>prefork</module>, <module>worker</module>, or
     <module>event</module>, depending on platform capabilities</td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
 </table>
@@ -113,7 +113,7 @@ choice at compile-time.</p>
     <p>On Unix and similar platforms, MPMs can be built as DSO modules and
     dynamically loaded into the server in the same manner as other DSO
     modules.  Building MPMs as DSO modules allows the MPM to be changed by
-    updating the <directive module="mod_so">LoadModule</directive> directive 
+    updating the <directive module="mod_so">LoadModule</directive> directive
     for the MPM instead of by rebuilding the server.</p>
 
     <p>This feature is enabled using the

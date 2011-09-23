@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_authz_user.xml.meta">
 
-<name>mod_authz_user</name> 
+<name>mod_authz_user</name>
 <description>User Authorization</description>
 <status>Base</status>
 <sourcefile>mod_authz_user.c</sourcefile>

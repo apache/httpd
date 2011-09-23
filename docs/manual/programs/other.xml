@@ -52,9 +52,9 @@
              combined_plus_vhost<br />
         CustomLog logs/access_log combined_plus_vhost
     </example>
-    
+
     <p>Log files will be created, in the directory where are running the
-    script, for each virtual host name that appears in the combined log file. 
+    script, for each virtual host name that appears in the combined log file.
     These logfiles will named after the hostname, with a
     <code>.log</code> file extension.</p>
 

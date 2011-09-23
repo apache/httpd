@@ -27,7 +27,7 @@
 
 <summary>
 
-<p>This document supplements the <module>mod_rewrite</module> 
+<p>This document supplements the <module>mod_rewrite</module>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <module>mod_rewrite</module> to redirect and remap
 request. This includes many examples of common uses of mod_rewrite,
@@ -296,7 +296,7 @@ hostname(s).</p>
 &lt;/VirtualHost&gt;
 </example>
 
-<p>You can alternatively accomplish this using the 
+<p>You can alternatively accomplish this using the
 <directive module="core" type="section">If</directive>
 directive:</p>
 
@@ -320,7 +320,7 @@ Redirect /admin/ https://www.example.com/admin/
 </example>
 
 <p>If, for whatever reason, you still want to use <code>mod_rewrite</code>
-- if, for example, you need this to work with a larger set of RewriteRules - 
+- if, for example, you need this to work with a larger set of RewriteRules -
 you might use one of the recipes below.</p>
 
 <p>For sites running on a port other than 80:</p>
@@ -444,8 +444,8 @@ com       http://www.example.com/<br />
 
     <dt>Discussion</dt>
     <dd>
-    <note type="warning">This ruleset relies on 
-    <directive module="core">HostNameLookups</directive> 
+    <note type="warning">This ruleset relies on
+    <directive module="core">HostNameLookups</directive>
     being set <code>on</code>, which can be
     a significant performance hit.</note>
 
@@ -564,7 +564,7 @@ using the following ruleset:</p>
       <p>We redirect the URL <code>/</code> to
       <code>/about/</code>:
       </p>
-     
+
 <example>
 RewriteEngine on<br />
 RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
@@ -579,9 +579,9 @@ RedirectMatch ^/$ http://example.com/about/
 
 <p>Note also that the example rewrites only the root URL. That is, it
 rewrites a request for <code>http://example.com/</code>, but not a
-request for <code>http://example.com/page.html</code>. If you have in 
-fact changed your document root - that is, if <strong>all</strong> of 
-your content is in fact in that subdirectory, it is greatly preferable 
+request for <code>http://example.com/page.html</code>. If you have in
+fact changed your document root - that is, if <strong>all</strong> of
+your content is in fact in that subdirectory, it is greatly preferable
 to simply change your <directive module="core">DocumentRoot</directive>
 directive, or move all of the content up one directory,
 rather than rewriting URLs.</p>
@@ -644,4 +644,4 @@ file, as well as in a &lt;Directory&gt; block.</p>
 
 </section>
 
-</manualpage> 
+</manualpage>
