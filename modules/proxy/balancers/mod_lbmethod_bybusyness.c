@@ -35,7 +35,7 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
     int checked_standby;
 
     int total_factor = 0;
-    
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering bybusyness for BALANCER (%s)",
                  balancer->name);
@@ -76,7 +76,7 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
 
                     (*worker)->s->lbstatus += (*worker)->s->lbfactor;
                     total_factor += (*worker)->s->lbfactor;
-                    
+
                     if (!mycandidate
                         || (*worker)->s->busy < mycandidate->s->busy
                         || ((*worker)->s->busy == mycandidate->s->busy && (*worker)->s->lbstatus > mycandidate->s->lbstatus))

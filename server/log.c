@@ -173,9 +173,9 @@ typedef struct read_handle_t {
 static read_handle_t *read_handles;
 
 /**
- * @brief The piped logging structure.  
+ * @brief The piped logging structure.
  *
- * Piped logs are used to move functionality out of the main server.  
+ * Piped logs are used to move functionality out of the main server.
  * For example, log rotation is done with piped logs.
  */
 struct piped_log {
@@ -209,7 +209,7 @@ AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl)
  * take the parent process's child procs.
  * If the win32 parent instead passed each and every
  * logger write handle from itself down to the child,
- * and the parent manages all aspects of keeping the 
+ * and the parent manages all aspects of keeping the
  * reliable pipe log children alive, this would still
  * make no sense :)  Cripple it on Win32.
  */
@@ -266,18 +266,18 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
          */
         stderr_pool = p;
     }
-    if ((rc = apr_file_open_stderr(&stderr_log, stderr_pool)) 
+    if ((rc = apr_file_open_stderr(&stderr_log, stderr_pool))
             == APR_SUCCESS) {
         apr_file_flush(stderr_log);
-        if ((rc = apr_file_dup2(stderr_log, stderr_file, stderr_pool)) 
+        if ((rc = apr_file_dup2(stderr_log, stderr_file, stderr_pool))
                 == APR_SUCCESS) {
             apr_file_close(stderr_file);
             /*
              * You might ponder why stderr_pool should survive?
              * The trouble is, stderr_pool may have s_main->error_log,
              * so we aren't in a position to destory stderr_pool until
-             * the next recycle.  There's also an apparent bug which 
-             * is not; if some folk decided to call this function before 
+             * the next recycle.  There's also an apparent bug which
+             * is not; if some folk decided to call this function before
              * the core open error logs hook, this pool won't survive.
              * Neither does the stderr logger, so this isn't a problem.
              */
@@ -328,7 +328,7 @@ static int log_child(apr_pool_t *p, const char *progname,
                                       APR_NO_PIPE,
                                       APR_NO_PIPE)) == APR_SUCCESS)
         && ((rc = apr_procattr_error_check_set(procattr, 1)) == APR_SUCCESS)
-        && ((rc = apr_procattr_child_errfn_set(procattr, log_child_errfn)) 
+        && ((rc = apr_procattr_child_errfn_set(procattr, log_child_errfn))
                 == APR_SUCCESS)) {
         char **args;
         const char *pname;
@@ -371,7 +371,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 
         /* In 2.4 favor PROGRAM_ENV, accept "||prog" syntax for compatibility
          * and "|$cmd" to override the default.
-         * Any 2.2 backport would continue to favor SHELLCMD_ENV so there 
+         * Any 2.2 backport would continue to favor SHELLCMD_ENV so there
          * accept "||prog" to override, and "|$cmd" to ease conversion.
          */
         if (*fname == '|')
@@ -450,17 +450,17 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
     /* Register to throw away the read_handles list when we
      * cleanup plog.  Upon fork() for the apache children,
      * this read_handles list is closed so only the parent
-     * can relaunch a lost log child.  These read handles 
+     * can relaunch a lost log child.  These read handles
      * are always closed on exec.
-     * We won't care what happens to our stderr log child 
-     * between log phases, so we don't mind losing stderr's 
+     * We won't care what happens to our stderr log child
+     * between log phases, so we don't mind losing stderr's
      * read_handle a little bit early.
      */
     apr_pool_cleanup_register(p, &read_handles, ap_pool_cleanup_set_null,
                               apr_pool_cleanup_null);
 
     /* HERE we need a stdout log that outlives plog.
-     * We *presume* the parent of plog is a process 
+     * We *presume* the parent of plog is a process
      * or global pool which spans server restarts.
      * Create our stderr_pool as a child of the plog's
      * parent pool.
@@ -1356,7 +1356,7 @@ AP_DECLARE(void) ap_log_command_line(apr_pool_t *plog, server_rec *s)
     process_rec *process = s->process;
     char *result;
     int len_needed = 0;
-    
+
     /* Piece together the command line from the pieces
      * in process->argv, with spaces in between.
      */
@@ -1721,7 +1721,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p,
 
     /* In 2.4 favor PROGRAM_ENV, accept "||prog" syntax for compatibility
      * and "|$cmd" to override the default.
-     * Any 2.2 backport would continue to favor SHELLCMD_ENV so there 
+     * Any 2.2 backport would continue to favor SHELLCMD_ENV so there
      * accept "||prog" to override, and "|$cmd" to ease conversion.
      */
     if (*program == '|')

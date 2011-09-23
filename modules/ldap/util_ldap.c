@@ -44,7 +44,7 @@
 
 /* Default define for ldap functions that need a SIZELIMIT but
  * do not have the define
- * XXX This should be removed once a supporting #define is 
+ * XXX This should be removed once a supporting #define is
  *  released through APR-Util.
  */
 #ifndef APR_LDAP_SIZELIMIT
@@ -59,7 +59,7 @@
 #endif
 #endif
 
-#define AP_LDAP_HOPLIMIT_UNSET -1 
+#define AP_LDAP_HOPLIMIT_UNSET -1
 #define AP_LDAP_CHASEREFERRALS_OFF 0
 #define AP_LDAP_CHASEREFERRALS_ON 1
 
@@ -154,10 +154,10 @@ static void uldap_connection_close(util_ldap_connection_t *ldc)
       * but always check/fix the binddn/bindpw when we take them out
       * of the pool
       */
-     if (!ldc->keep) { 
+     if (!ldc->keep) {
          uldap_connection_unbind(ldc);
      }
-     else { 
+     else {
          /* mark our connection as available for reuse */
          ldc->freed = apr_time_now();
 #if APR_HAS_THREADS
@@ -202,7 +202,7 @@ static apr_status_t uldap_connection_unbind(void *param)
  *
  * The caller should hold the lock for this connection
  */
-static apr_status_t util_ldap_connection_remove (void *param) { 
+static apr_status_t util_ldap_connection_remove (void *param) {
     util_ldap_connection_t *ldc = param, *l  = NULL, *prev = NULL;
     util_ldap_state_t *st;
 
@@ -220,9 +220,9 @@ static apr_status_t util_ldap_connection_remove (void *param) {
     for (l=st->connections; l; l=l->next) {
         if (l == ldc) {
             if (prev) {
-                prev->next = l->next; 
+                prev->next = l->next;
             }
-            else { 
+            else {
                 st->connections = l->next;
             }
             break;
@@ -244,8 +244,8 @@ static apr_status_t util_ldap_connection_remove (void *param) {
 
     /* Destory the pool associated with this connection */
 
-    apr_pool_destroy(ldc->pool);   
-   
+    apr_pool_destroy(ldc->pool);
+
     return APR_SUCCESS;
 }
 #endif
@@ -257,7 +257,7 @@ static int uldap_connection_init(request_rec *r,
     int version  = LDAP_VERSION3;
     apr_ldap_err_t *result = NULL;
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
-    struct timeval connectionTimeout = {0}; 
+    struct timeval connectionTimeout = {0};
 #endif
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
@@ -343,7 +343,7 @@ static int uldap_connection_init(request_rec *r,
     ldap_option = ldc->deref;
     ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &ldap_option);
 
-    if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) { 
+    if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* Set options for rebind and referrals. */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                 "LDAP: Setting referrals to %s.",
@@ -449,8 +449,8 @@ static int uldap_connection_init(request_rec *r,
     return(rc);
 }
 
-static int uldap_ld_errno(util_ldap_connection_t *ldc) 
-{ 
+static int uldap_ld_errno(util_ldap_connection_t *ldc)
+{
     int ldaprc;
 #ifdef LDAP_OPT_ERROR_NUMBER
     if (LDAP_SUCCESS == ldap_get_option(ldc->ldap, LDAP_OPT_ERROR_NUMBER, &ldaprc)) return ldaprc;
@@ -463,7 +463,7 @@ static int uldap_ld_errno(util_ldap_connection_t *ldc)
 
 /*
  * Replacement function for ldap_simple_bind_s() with a timeout.
- * To do this in a portable way, we have to use ldap_simple_bind() and 
+ * To do this in a portable way, we have to use ldap_simple_bind() and
  * ldap_result().
  *
  * Returns LDAP_SUCCESS on success; and an error code on failure
@@ -551,7 +551,7 @@ static int uldap_connection_open(request_rec *r,
      */
 
     while (failures <= st->retries) {
-        if (failures > 0 && st->retry_delay > 0) { 
+        if (failures > 0 && st->retry_delay > 0) {
             apr_sleep(st->retry_delay);
         }
         rc = uldap_simple_bind(ldc, (char *)ldc->binddn, (char *)ldc->bindpw,
@@ -561,7 +561,7 @@ static int uldap_connection_open(request_rec *r,
 
         failures++;
 
-        if (AP_LDAP_IS_SERVER_DOWN(rc)) { 
+        if (AP_LDAP_IS_SERVER_DOWN(rc)) {
              ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "ldap_simple_bind() failed with server down "
                           "(try %d)", failures);
@@ -569,24 +569,24 @@ static int uldap_connection_open(request_rec *r,
         else if (rc == LDAP_TIMEOUT) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "ldap_simple_bind() timed out on %s "
-                          "connection, dropped by firewall?", 
+                          "connection, dropped by firewall?",
                           new_connection ? "new" : "reused");
         }
-        else { 
+        else {
             /* Other errors not retryable */
             break;
         }
 
         if (!(failures % 2)) {
-            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "attempt to re-init the connection");
             uldap_connection_unbind(ldc);
-            if (LDAP_SUCCESS != uldap_connection_init(r, ldc)) { 
+            if (LDAP_SUCCESS != uldap_connection_init(r, ldc)) {
                 /* leave rc as the initial bind return code */
                 break;
             }
         }
-    } 
+    }
 
     /* free the handle if there was an error
     */
@@ -693,10 +693,10 @@ static util_ldap_connection_t *
             && (l->deref == deref) && (l->secure == secureflag)
             && !compare_client_certs(dc->client_certs, l->client_certs))
         {
-            if (st->connection_pool_ttl > 0) { 
-                if (l->bound && (now - l->freed) > st->connection_pool_ttl) { 
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, 
-                                  "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago", 
+            if (st->connection_pool_ttl > 0) {
+                if (l->bound && (now - l->freed) > st->connection_pool_ttl) {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                                  "Removing LDAP connection last used %" APR_TIME_T_FMT " seconds ago",
                                   (now - l->freed) / APR_USEC_PER_SEC);
                     uldap_connection_unbind(l);
                     /* Go ahead (by falling through) and use it, so we don't create more just to unbind some other old ones */
@@ -730,7 +730,7 @@ static util_ldap_connection_t *
                 /* the bind credentials have changed */
                 /* no check for connection_pool_ttl, since we are unbinding any way */
                 uldap_connection_unbind(l);
-                        
+
                 util_ldap_strdup((char**)&(l->binddn), binddn);
                 util_ldap_strdup((char**)&(l->bindpw), bindpw);
                 break;
@@ -762,7 +762,7 @@ static util_ldap_connection_t *
 #endif
             return NULL;
         }
- 
+
         /*
          * Add the new connection entry to the linked list. Note that we
          * don't actually establish an LDAP connection yet; that happens
@@ -800,7 +800,7 @@ static util_ldap_connection_t *
         /* whether or not to keep this connection in the pool when it's returned */
         l->keep = (st->connection_pool_ttl == 0) ? 0 : 1;
 
-        if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) { 
+        if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
             if (apr_pool_create(&(l->rebind_pool), l->pool) != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
                               "util_ldap: Failed to create memory pool");
@@ -1070,7 +1070,7 @@ start_over:
                             (char *)dn,
                             (char *)attrib,
                             (char *)value);
-    if (AP_LDAP_IS_SERVER_DOWN(result)) { 
+    if (AP_LDAP_IS_SERVER_DOWN(result)) {
         /* connection failed - try again */
         ldc->reason = "ldap_compare_s() failed with server down";
         uldap_connection_unbind(ldc);
@@ -2530,7 +2530,7 @@ static const char *util_ldap_set_chase_referrals(cmd_parms *cmd,
 
 static const char *util_ldap_set_debug_level(cmd_parms *cmd,
                                              void *config,
-                                             const char *arg) { 
+                                             const char *arg) {
 #ifdef AP_LDAP_OPT_DEBUG
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
@@ -2548,7 +2548,7 @@ static const char *util_ldap_set_debug_level(cmd_parms *cmd,
     st->debug_level = atoi(arg);
     return NULL;
 #endif
-} 
+}
 
 static const char *util_ldap_set_referral_hop_limit(cmd_parms *cmd,
                                                     void *config,
@@ -2558,7 +2558,7 @@ static const char *util_ldap_set_referral_hop_limit(cmd_parms *cmd,
 
     dc->ReferralHopLimit = atol(hop_limit);
 
-    if (dc->ReferralHopLimit <= 0) { 
+    if (dc->ReferralHopLimit <= 0) {
         return "LDAPReferralHopLimit must be greater than zero (Use 'LDAPReferrals Off' to disable referral chasing)";
     }
 
@@ -2638,11 +2638,11 @@ static const char *util_ldap_set_conn_ttl(cmd_parms *cmd,
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
 
-    if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) { 
+    if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) {
         return "LDAPConnPoolTTL has wrong format";
     }
 
-    if (timeout < 0) { 
+    if (timeout < 0) {
         /* reserve -1 for default value */
         timeout =  AP_LDAP_CONNPOOL_INFINITE;
     }
@@ -2663,11 +2663,11 @@ static const char *util_ldap_set_retry_delay(cmd_parms *cmd,
         return err;
     }
 
-    if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) { 
+    if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS) {
         return "LDAPRetryDelay has wrong format";
     }
 
-    if (timeout < 0) { 
+    if (timeout < 0) {
         return "LDAPRetryDelay must be >= 0";
     }
 
@@ -2689,11 +2689,11 @@ static const char *util_ldap_set_retries(cmd_parms *cmd,
     }
 
     st->retries = atoi(val);
-    if (st->retries < 0) { 
+    if (st->retries < 0) {
         return  "LDAPRetries must be >= 0";
     }
 
-    return NULL; 
+    return NULL;
 }
 
 static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
@@ -2701,7 +2701,7 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     util_ldap_state_t *st =
         (util_ldap_state_t *)apr_pcalloc(p, sizeof(util_ldap_state_t));
 
-    /* Create a per vhost pool for mod_ldap to use, serialized with 
+    /* Create a per vhost pool for mod_ldap to use, serialized with
      * st->mutex (also one per vhost).  both are replicated by fork(),
      * no shared memory managed by either.
      */
@@ -2746,7 +2746,7 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->mutex = overrides->mutex;
 #endif
 
-    /* The cache settings can not be modified in a 
+    /* The cache settings can not be modified in a
         virtual host since all server use the same
         shared memory cache. */
     st->cache_bytes = base->cache_bytes;
@@ -2754,7 +2754,7 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->search_cache_size = base->search_cache_size;
     st->compare_cache_ttl = base->compare_cache_ttl;
     st->compare_cache_size = base->compare_cache_size;
-    st->util_ldap_cache_lock = base->util_ldap_cache_lock; 
+    st->util_ldap_cache_lock = base->util_ldap_cache_lock;
 
     st->connections = NULL;
     st->ssl_supported = 0; /* not known until post-config and re-merged */
@@ -2763,22 +2763,22 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->secure = (overrides->secure_set == 0) ? base->secure
                                               : overrides->secure;
 
-    /* These LDAP connection settings can not be overwritten in 
-        a virtual host. Once set in the base server, they must 
+    /* These LDAP connection settings can not be overwritten in
+        a virtual host. Once set in the base server, they must
         remain the same. None of the LDAP SDKs seem to be able
-        to handle setting the verify_svr_cert flag on a 
+        to handle setting the verify_svr_cert flag on a
         per-connection basis.  The OpenLDAP client appears to be
         able to handle the connection timeout per-connection
         but the Novell SDK cannot.  Allowing the timeout to
         be set by each vhost is of little value so rather than
-        trying to make special expections for one LDAP SDK, GLOBAL_ONLY 
+        trying to make special expections for one LDAP SDK, GLOBAL_ONLY
         is being enforced on this setting as well. */
     st->connectionTimeout = base->connectionTimeout;
     st->opTimeout = base->opTimeout;
     st->verify_svr_cert = base->verify_svr_cert;
     st->debug_level = base->debug_level;
 
-    st->connection_pool_ttl = (overrides->connection_pool_ttl == AP_LDAP_CONNPOOL_DEFAULT) ? 
+    st->connection_pool_ttl = (overrides->connection_pool_ttl == AP_LDAP_CONNPOOL_DEFAULT) ?
                                 base->connection_pool_ttl : overrides->connection_pool_ttl;
 
     st->retries = base->retries;
@@ -2953,11 +2953,11 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     apr_ldap_rebind_init (p);
 
 #ifdef AP_LDAP_OPT_DEBUG
-    if (st->debug_level > 0) { 
+    if (st->debug_level > 0) {
         result = ldap_set_option(NULL, AP_LDAP_OPT_DEBUG, &st->debug_level);
         if (result != LDAP_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                    "LDAP: Could not set the LDAP library debug level to %d:(%d) %s", 
+                    "LDAP: Could not set the LDAP library debug level to %d:(%d) %s",
                     st->debug_level, result, ldap_err2string(result));
         }
     }
@@ -2996,9 +2996,9 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPCacheEntries", util_ldap_set_cache_entries,
                   NULL, RSRC_CONF,
                   "Set the maximum number of entries that are possible in the "
-                  "LDAP search cache. Use 0 or -1 to disable the search cache " 
+                  "LDAP search cache. Use 0 or -1 to disable the search cache "
                   "(default: 1024)"),
-                  
+
     AP_INIT_TAKE1("LDAPCacheTTL", util_ldap_set_cache_ttl,
                   NULL, RSRC_CONF,
                   "Set the maximum time (in seconds) that an item can be "
@@ -3008,7 +3008,7 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPOpCacheEntries", util_ldap_set_opcache_entries,
                   NULL, RSRC_CONF,
                   "Set the maximum number of entries that are possible "
-                  "in the LDAP compare cache. Use 0 or -1 to disable the compare cache " 
+                  "in the LDAP compare cache. Use 0 or -1 to disable the compare cache "
                   "(default: 1024)"),
 
     AP_INIT_TAKE1("LDAPOpCacheTTL", util_ldap_set_opcache_ttl,

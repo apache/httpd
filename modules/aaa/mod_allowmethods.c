@@ -38,7 +38,7 @@
  *      AllowMethods GET HEAD OPTIONS POST
  *   </Directory>
  *  Non-matching methods will be returned a status 405 (method not allowed)
- *  
+ *
  *  To allow all methods, and effectively turn off mod_allowmethods, use:
  *    AllowMethods reset
  */
@@ -54,32 +54,32 @@ static int am_check_access(request_rec *r)
 {
   int method = r->method_number;
   am_conf_t *conf;
-  
+
   conf = (am_conf_t *) ap_get_module_config(r->per_dir_config,
                                             &allowmethods_module);
   if (!conf || conf->allowed == 0) {
     return DECLINED;
   }
-  
+
   r->allowed = conf->allowed;
 
   if (conf->allowed & (AP_METHOD_BIT << method)) {
     return DECLINED;
   }
-  
+
   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "client method denied by server configuration: '%s' to %s%s",
                   r->method,
                   r->filename ? "" : "uri ",
                   r->filename ? r->filename : r->uri);
-  
+
   return HTTP_METHOD_NOT_ALLOWED;
 }
 
 static void *am_create_conf(apr_pool_t * p, char *dummy)
 {
   am_conf_t *conf = apr_pcalloc(p, sizeof(am_conf_t));
-  
+
   conf->allowed = 0;
   conf->allowed_set = 0;
   return conf;
@@ -89,7 +89,7 @@ static void* am_merge_conf(apr_pool_t* pool, void* a, void* b) {
   am_conf_t* base = (am_conf_t*) a;
   am_conf_t* add = (am_conf_t*) b;
   am_conf_t* conf = apr_palloc(pool, sizeof(am_conf_t));
-  
+
   if (add->allowed_set) {
       conf->allowed = add->allowed;
       conf->allowed_set = add->allowed_set;

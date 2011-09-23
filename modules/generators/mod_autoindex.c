@@ -583,8 +583,8 @@ static const command_rec autoindex_cmds[] =
                   "{Ascending,Descending} {Name,Size,Description,Date}"),
     AP_INIT_ITERATE("IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS,
                     "one or more file extensions"),
-    AP_INIT_FLAG("IndexIgnoreReset", ap_set_flag_slot, 
-                 (void *)APR_OFFSETOF(autoindex_config_rec, ign_noinherit), 
+    AP_INIT_FLAG("IndexIgnoreReset", ap_set_flag_slot,
+                 (void *)APR_OFFSETOF(autoindex_config_rec, ign_noinherit),
                  DIR_CMD_PERMS,
                  "Reset the inherited list of IndexIgnore filenames"),
     AP_INIT_ITERATE2("AddDescription", add_desc, BY_PATH, DIR_CMD_PERMS,
@@ -1101,9 +1101,9 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
     if (emit_amble) {
         emit_preamble(r, emit_xhtml, title);
     }
-    
+
     d = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config, &autoindex_module);
-    
+
     if (emit_H1) {
         if (d->style_sheet != NULL) {
     	    /* Insert style id if stylesheet used */
@@ -2313,7 +2313,7 @@ static int handle_autoindex(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Cannot serve directory %s: No matching DirectoryIndex (%s) found, and "
                       "server-generated directory index forbidden by "
-                      "Options directive", 
+                      "Options directive",
                        r->filename,
                        index_names ? index_names : "none");
         return HTTP_FORBIDDEN;

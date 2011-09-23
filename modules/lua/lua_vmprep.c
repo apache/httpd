@@ -238,7 +238,7 @@ static void munge_path(lua_State *L,
                        const char *sub_pat,
                        const char *rep_pat,
                        apr_pool_t *pool,
-                       apr_array_header_t *paths, 
+                       apr_array_header_t *paths,
                        const char *file)
 {
     const char *current;
@@ -287,7 +287,7 @@ static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool) {
 static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_pool)
 {
     lua_State* L;
-    
+
     ap_lua_vm_spec *spec = params;
 
     L = luaL_newstate();
@@ -321,17 +321,17 @@ static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_
         if (rc != 0) {
             char *err;
             switch (rc) {
-                case LUA_ERRSYNTAX: 
-                    err = "syntax error"; 
+                case LUA_ERRSYNTAX:
+                    err = "syntax error";
                     break;
-                case LUA_ERRMEM:    
-                    err = "memory allocation error"; 
+                case LUA_ERRMEM:
+                    err = "memory allocation error";
                     break;
-                case LUA_ERRFILE:   
-                    err = "error opening or reading file"; 
+                case LUA_ERRFILE:
+                    err = "error opening or reading file";
                     break;
                 default:
-                    err = "unknown error"; 
+                    err = "unknown error";
                     break;
             }
             ap_log_perror(APLOG_MARK, APLOG_ERR, 0, lifecycle_pool,
@@ -354,7 +354,7 @@ static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_
 
 static apr_status_t vm_destruct(void *vm, void *params, apr_pool_t *pool)
 {
-    lua_State *L = (lua_State *)vm; 
+    lua_State *L = (lua_State *)vm;
 
     (void)params;
     (void)pool;
@@ -390,8 +390,8 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
         if (apr_pool_userdata_get((void **)&reslist,
                                   "mod_lua", spec->pool) == APR_SUCCESS) {
             if(reslist==NULL) {
-                if(apr_reslist_create(&reslist, 
-                                      spec->vm_server_pool_min, 
+                if(apr_reslist_create(&reslist,
+                                      spec->vm_server_pool_min,
                                       spec->vm_server_pool_max,
                                       spec->vm_server_pool_max,
                                       0,

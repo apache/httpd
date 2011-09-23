@@ -36,7 +36,7 @@ module AP_MODULE_DECLARE_DATA authz_dbd_module;
  * to deal with those when we successfully login/logout at the server
  *
  * XXX: WHY would this be specific to dbd_authz?  Why wouldn't we track
- * this across all authz user providers in a lower level mod, such as 
+ * this across all authz user providers in a lower level mod, such as
  * mod_auth_basic/digest?
  */
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(authz_dbd, AUTHZ_DBD, int, client_login,

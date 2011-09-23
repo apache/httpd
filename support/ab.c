@@ -1201,12 +1201,12 @@ static void start_connect(struct connection * c)
     }
 
     if (windowsize != 0) {
-        rv = apr_socket_opt_set(c->aprsock, APR_SO_SNDBUF, 
+        rv = apr_socket_opt_set(c->aprsock, APR_SO_SNDBUF,
                                 windowsize);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
             apr_err("socket send buffer", rv);
         }
-        rv = apr_socket_opt_set(c->aprsock, APR_SO_RCVBUF, 
+        rv = apr_socket_opt_set(c->aprsock, APR_SO_RCVBUF,
                                 windowsize);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
             apr_err("socket receive buffer", rv);
@@ -1252,7 +1252,7 @@ static void start_connect(struct connection * c)
                    "\nTest aborted after 10 failures\n\n");
                 apr_err("apr_socket_connect()", rv);
             }
-            
+
             start_connect(c);
             return;
         }
@@ -1501,7 +1501,7 @@ static void read_connection(struct connection * c)
                 /* The response may not have a Content-Length header */
                 if (!cl) {
                     c->keepalive = 1;
-                    c->length = 0; 
+                    c->length = 0;
                 }
             }
             c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
@@ -1656,7 +1656,7 @@ static void test(void)
     }
 
     if (verbosity >= 2)
-        printf("INFO: %s header == \n---\n%s\n---\n", 
+        printf("INFO: %s header == \n---\n%s\n---\n",
                method_str[method], request);
 
     reqlen = strlen(request);
@@ -1708,7 +1708,7 @@ static void test(void)
     start = lasttime = apr_time_now();
     stoptime = tlimit ? (start + apr_time_from_sec(tlimit)) : AB_MAX;
 
-#ifdef SIGINT 
+#ifdef SIGINT
     /* Output the results if the user terminates the run early. */
     apr_signal(SIGINT, output_results);
 #endif
@@ -1768,10 +1768,10 @@ static void test(void)
                 bad++;
                 err_except++;
                 /* avoid apr_poll/EINPROGRESS loop on HP-UX, let recv discover ECONNREFUSED */
-                if (c->state == STATE_CONNECTING) { 
+                if (c->state == STATE_CONNECTING) {
                     read_connection(c);
                 }
-                else { 
+                else {
                     start_connect(c);
                 }
                 continue;
@@ -1807,7 +1807,7 @@ static void test(void)
             }
         }
     } while (lasttime < stoptime && done < requests);
-    
+
     if (heartbeatres)
         fprintf(stderr, "Finished %d requests\n", done);
     else

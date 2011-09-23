@@ -45,7 +45,7 @@
 
 #ifdef __MINGW32__
 #include <mswsock.h>
-#endif 
+#endif
 
 /*
  * The Windows MPM uses a queue of completion contexts that it passes
@@ -227,7 +227,7 @@ static winnt_conn_ctx_t *mpm_get_completion_context(int *timeout)
                 /* Create the transaction pool */
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
-                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL, 
+                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL,
                                         allocator);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
@@ -305,7 +305,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     else {
         accf = 0;
         accf_name = "none";
-        ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+        ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(),
                      ap_server_conf,
                      "winnt_accept: unrecognized AcceptFilter '%s', "
                      "only 'data', 'connect' or 'none' are valid. "
@@ -316,7 +316,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
 
 #if APR_HAVE_IPV6
     if (getsockname(nlsd, (struct sockaddr *)&ss_listen, &namelen) == SOCKET_ERROR) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), 
+        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(),
                      ap_server_conf,
                      "winnt_accept: getsockname error on listening socket, "
                      "is IPv6 available?");
@@ -386,13 +386,13 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             /* Create and initialize the accept socket */
 #if APR_HAVE_IPV6
             if (context->accept_socket == INVALID_SOCKET) {
-                context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
+                context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM,
                                                 IPPROTO_TCP);
                 context->socket_family = ss_listen.ss_family;
             }
             else if (context->socket_family != ss_listen.ss_family) {
                 closesocket(context->accept_socket);
-                context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
+                context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM,
                                                 IPPROTO_TCP);
                 context->socket_family = ss_listen.ss_family;
             }
@@ -402,7 +402,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
 #endif
 
             if (context->accept_socket == INVALID_SOCKET) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(),
                              ap_server_conf,
                              "winnt_accept: Failed to allocate an accept socket. "
                              "Temporary resource constraint? Try again.");
@@ -444,7 +444,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                     /* We can get here when:
                      * 1) TransmitFile does not properly recycle the accept socket (typically
                      *    because the client disconnected)
-                     * 2) there is VPN or Firewall software installed with 
+                     * 2) there is VPN or Firewall software installed with
                      *    buggy WSAAccept or WSADuplicateSocket implementation
                      * 3) the dynamic address / adapter has changed
                      * Give five chances, then fall back on AcceptFilter 'none'
@@ -539,14 +539,14 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 /* Not a failure condition. Keep running. */
             }
 
-            /* Get the local & remote address 
+            /* Get the local & remote address
              * TODO; error check
              */
             GetAcceptExSockaddrs(buf, len, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                                  &context->sa_server, &context->sa_server_len,
                                  &context->sa_client, &context->sa_client_len);
 
-            /* For 'data', craft a bucket for our data result 
+            /* For 'data', craft a bucket for our data result
              * and pass to worker_main as context->overlapped.Pointer
              */
             if (accf == 2 && BytesRead)
@@ -580,8 +580,8 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
 
 
             if (rv != WAIT_OBJECT_0 + 2) {
-                /* not FD_ACCEPT; 
-                 * exit_event triggered or event handle was closed 
+                /* not FD_ACCEPT;
+                 * exit_event triggered or event handle was closed
                  */
                 break;
             }
@@ -624,7 +624,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 }
                 break;
             }
-            /* Per MSDN, cancel the inherited association of this socket 
+            /* Per MSDN, cancel the inherited association of this socket
              * to the WSAEventSelect API, and restore the state corresponding
              * to apr_os_sock_make's default assumptions (really, a flaw within
              * os_sock_make and os_sock_put that it does not query).
@@ -640,14 +640,14 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
         sockinfo.family  = context->sa_server->sa_family;
         sockinfo.type    = SOCK_STREAM;
         /* Restore the state corresponding to apr_os_sock_make's default
-         * assumption of timeout -1 (really, a flaw of os_sock_make and 
+         * assumption of timeout -1 (really, a flaw of os_sock_make and
          * os_sock_put that it does not query to determine ->timeout).
          * XXX: Upon a fix to APR, these three statements should disappear.
          */
         ioctlsocket(context->accept_socket, FIONBIO, &zero);
-        setsockopt(context->accept_socket, SOL_SOCKET, SO_RCVTIMEO, 
+        setsockopt(context->accept_socket, SOL_SOCKET, SO_RCVTIMEO,
                    (char *) &zero, sizeof(zero));
-        setsockopt(context->accept_socket, SOL_SOCKET, SO_SNDTIMEO, 
+        setsockopt(context->accept_socket, SOL_SOCKET, SO_SNDTIMEO,
                    (char *) &zero, sizeof(zero));
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
@@ -847,7 +847,7 @@ static DWORD __stdcall worker_main(void *thread_num_val)
 }
 
 
-static void cleanup_thread(HANDLE *handles, int *thread_cnt, 
+static void cleanup_thread(HANDLE *handles, int *thread_cnt,
                            int thread_to_clean)
 {
     int i;
@@ -891,7 +891,7 @@ static void create_listener_thread(void)
     for (lr = ap_listeners; lr; lr = lr->next) {
         if (lr->sd != NULL) {
             /* A smaller stack is sufficient.
-             * To convert to CreateThread, the returned handle cannot be 
+             * To convert to CreateThread, the returned handle cannot be
              * ignored, it must be closed/joined.
              */
             _beginthreadex(NULL, 65536, winnt_accept,
@@ -953,11 +953,11 @@ void child_main(apr_pool_t *pconf)
      */
     /* Create the worker thread dispatch IOCP */
     ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
-                                                NULL, 0, 0); 
+                                                NULL, 0, 0);
     apr_thread_mutex_create(&qlock, APR_THREAD_MUTEX_DEFAULT, pchild);
     qwait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!qwait_event) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), 
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                      ap_server_conf,
                      "Child: Failed to create a qwait event.");
         exit(APEXIT_CHILDINIT);
@@ -980,7 +980,7 @@ void child_main(apr_pool_t *pconf)
                 continue;
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
-        
+
             child_handles[i] = CreateThread(NULL, ap_thread_stacksize,
                                             worker_main, (void *) i,
                                             stack_res_flag, &tid);
@@ -996,7 +996,7 @@ void child_main(apr_pool_t *pconf)
                 goto shutdown;
             }
             threads_created++;
-            /* Save the score board index in ht keyed to the thread handle. 
+            /* Save the score board index in ht keyed to the thread handle.
              * We need this when cleaning up threads down below...
              */
             apr_thread_mutex_lock(child_lock);
@@ -1134,7 +1134,7 @@ void child_main(apr_pool_t *pconf)
                      "Child: %d threads blocked on the completion port",
                      g_blocked_threads);
         for (i=g_blocked_threads; i > 0; i--) {
-            PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, 
+            PostQueuedCompletionStatus(ThreadDispatchIOCP, 0,
                                        IOCP_SHUTDOWN, NULL);
         }
         Sleep(1000);
@@ -1149,7 +1149,7 @@ void child_main(apr_pool_t *pconf)
     apr_thread_mutex_unlock(qlock);
 
     /* Give busy threads a chance to service their connections
-     * (no more than the global server timeout period which 
+     * (no more than the global server timeout period which
      * we track in msec remaining).
      */
     watch_thread = 0;
@@ -1170,10 +1170,10 @@ void child_main(apr_pool_t *pconf)
 
             /* Every 30 seconds give an update */
             if ((time_remains % 30000) == 0) {
-                ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, 
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS,
                              ap_server_conf,
                              "Child: Waiting %d more seconds "
-                             "for %d worker threads to finish.", 
+                             "for %d worker threads to finish.",
                              time_remains / 1000, threads_created);
             }
             /* We'll poll from the top, 10 times per second */

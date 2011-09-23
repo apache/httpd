@@ -42,7 +42,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
     struct ap_socache_hints hints;
-    
+
     /* The very first invocation of this function will be the
      * post_config invocation during server startup; do nothing for
      * this first (and only the first) time through, since the pool
@@ -57,7 +57,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         hints.avg_obj_size = 1500;
         hints.avg_id_len = 20;
         hints.expiry_interval = 300;
-    
+
         rv = mc->stapling_cache->init(mc->stapling_cache_context,
                                      "mod_ssl-stapling", &hints, s, p);
         if (rv) {
@@ -83,7 +83,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     hints.avg_obj_size = 150;
     hints.avg_id_len = 30;
     hints.expiry_interval = 30;
-    
+
     rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl-session", &hints, s, p);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
@@ -95,7 +95,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
 void ssl_scache_kill(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    
+
     if (mc->sesscache) {
         mc->sesscache->destroy(mc->sesscache_context, s);
     }
@@ -131,8 +131,8 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_on(s);
     }
-    
-    rv = mc->sesscache->store(mc->sesscache_context, s, id, idlen, 
+
+    rv = mc->sesscache->store(mc->sesscache_context, s, id, idlen,
                               expiry, encoded, len, p);
 
     if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
@@ -155,7 +155,7 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
         ssl_mutex_on(s);
     }
 
-    rv = mc->sesscache->retrieve(mc->sesscache_context, s, id, idlen, 
+    rv = mc->sesscache->retrieve(mc->sesscache_context, s, id, idlen,
                                  dest, &destlen, p);
 
     if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {

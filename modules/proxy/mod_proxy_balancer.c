@@ -846,7 +846,7 @@ static void push2table(const char *input, apr_table_t *params,
     char *args;
     char *tok, *val;
     char *key;
-    
+
     if (input == NULL) {
         return;
     }
@@ -943,7 +943,7 @@ static int balancer_handler(request_rec *r)
         apr_bucket_brigade *ib;
         apr_size_t len = 1024;
         char *buf = apr_pcalloc(r->pool, len+1);
-        
+
         ib = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
         rv = ap_get_brigade(r->input_filters, ib, AP_MODE_READBYTES,
                                 APR_BLOCK_READ, len);

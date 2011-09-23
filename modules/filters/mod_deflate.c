@@ -416,7 +416,7 @@ static void deflate_check_etag(request_rec *r, const char *transform)
 
             apr_table_setn(r->headers_out, "ETag", newtag);
         }
-    }   
+    }
 }
 
 static apr_status_t deflate_out_filter(ap_filter_t *f,

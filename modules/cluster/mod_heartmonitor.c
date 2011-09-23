@@ -275,10 +275,10 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
             apr_brigade_cleanup(tmpbb);
             if (APR_BRIGADE_EMPTY(bb)) {
                 break;
-            } 
+            }
             rv = apr_brigade_split_line(tmpbb, bb,
                                         APR_BLOCK_READ, sizeof(buf));
-       
+
             if (rv) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                              "Heartmonitor: Unable to read from file: %s", ctx->storage_path);
@@ -300,7 +300,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                 /* copy things we can't process */
                 apr_file_printf(fp, "%s\n", buf);
             } else if (strcmp(ip, s->ip) !=0 ) {
-                hm_server_t node; 
+                hm_server_t node;
                 apr_time_t seen;
                 /* Update seen time according to the last file modification */
                 apr_table_clear(hbt);
@@ -320,14 +320,14 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                 if (apr_table_get(hbt, "lastseen")) {
                     node.seen = atoi(apr_table_get(hbt, "lastseen"));
                 } else {
-                    node.seen = SEEN_TIMEOUT; 
+                    node.seen = SEEN_TIMEOUT;
                 }
                 seen = fage + node.seen;
 
                 if (apr_table_get(hbt, "port")) {
                     node.port = atoi(apr_table_get(hbt, "port"));
                 } else {
-                    node.port = 80; 
+                    node.port = 80;
                 }
                 apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u&port=%u\n",
                                 ip, node.ready, node.busy, (unsigned int) seen, node.port);
@@ -361,7 +361,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                    "Heartmonitor: Unable to close file: %s", path);
       return rv;
     }
-  
+
     rv = apr_file_perms_set(path,
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
@@ -440,7 +440,7 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
                    "Heartmonitor: Unable to close file: %s", path);
       return rv;
     }
-  
+
     rv = apr_file_perms_set(path,
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
@@ -542,7 +542,7 @@ static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
 
         if (apr_table_get(tbl, "port") != NULL)
             port = atoi(apr_table_get(tbl, "port"));
-           
+
         s = hm_get_server(ctx, ip, port);
 
         s->busy = atoi(apr_table_get(tbl, "busy"));
@@ -879,7 +879,7 @@ static const char *cmd_hm_maxworkers(cmd_parms *cmd,
 
     maxworkers = atoi(data);
     if (maxworkers <= 10)
-        return "HeartbeatMaxServers: Should be bigger than 10"; 
+        return "HeartbeatMaxServers: Should be bigger than 10";
 
     return NULL;
 }

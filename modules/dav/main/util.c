@@ -1421,11 +1421,11 @@ static int dav_meets_conditions(request_rec *r, int resource_state)
 
     retVal = ap_meets_conditions(r);
 
-    /* If-None-Match '*' fix. If-None-Match '*' request should succeed 
+    /* If-None-Match '*' fix. If-None-Match '*' request should succeed
      * if the resource does not exist. */
     if (retVal == HTTP_PRECONDITION_FAILED) {
         /* Note. If if_none_match != NULL, if_none_match is the culprit.
-         * Since, in presence of If-None-Match, 
+         * Since, in presence of If-None-Match,
          * other If-* headers are undefined. */
         if ((if_none_match =
             apr_table_get(r->headers_in, "If-None-Match")) != NULL) {

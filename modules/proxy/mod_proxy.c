@@ -281,7 +281,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             return "stickysession length must be < 64 characters";
         PROXY_STRNCPY(balancer->s->sticky_path, val);
         PROXY_STRNCPY(balancer->s->sticky, val);
-        
+
         if ((path = strchr((char *)balancer->s->sticky, '|'))) {
             *path++ = '\0';
             PROXY_STRNCPY(balancer->s->sticky_path, path);
@@ -369,7 +369,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
     else if (!strcasecmp(key, "nonce")) {
         if (!strcasecmp(val, "None")) {
             *balancer->s->nonce = '\0';
-        } 
+        }
         else {
             if (strlen(val) > sizeof(balancer->s->nonce)-1) {
                 return "Provided nonce is too large";

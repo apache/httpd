@@ -1551,7 +1551,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             }
             else {
                 current->value = 0;
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rr->status, r, 
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rr->status, r,
                               "mod_include: The tested "
                               "subrequest -A \"%s\" returned an error code.",
                               current->right->token.value);

@@ -134,7 +134,7 @@ static int set_group_privs(void)
 }
 
 
-static int 
+static int
 unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
 {
     int rv = set_group_privs();
@@ -230,7 +230,7 @@ unixd_set_user(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char* 
+static const char*
 unixd_set_group(cmd_parms *cmd, void *dummy,
                                          const char *arg)
 {
@@ -244,7 +244,7 @@ unixd_set_group(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char* 
+static const char*
 unixd_set_chroot_dir(cmd_parms *cmd, void *dummy,
                     const char *arg)
 {
@@ -282,7 +282,7 @@ unixd_set_suexec(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
 }
 
-static int 
+static int
 unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                  apr_pool_t *ptemp)
 {

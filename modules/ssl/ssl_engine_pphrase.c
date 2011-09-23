@@ -354,7 +354,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 if (pkey_mtime) {
                     ssl_asn1_t *asn1 =
                         ssl_asn1_table_get(mc->tPrivateKey, key_id);
-                    
+
                     if (asn1 && (asn1->source_mtime == pkey_mtime)) {
                         ap_log_error(APLOG_MARK, APLOG_INFO,
                                      0, pServ,

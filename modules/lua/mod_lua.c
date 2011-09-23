@@ -34,7 +34,7 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_request,
      module AP_MODULE_DECLARE_DATA lua_module;
 
 /**
- * error reporting if lua has an error. 
+ * error reporting if lua has an error.
  * Extracts the error from lua stack and prints
  */
 static void report_lua_error(lua_State *L, request_rec *r)
@@ -73,7 +73,7 @@ static apr_status_t luahood(ap_filter_t *f, apr_bucket_brigade *bb) {
     apr_status_t rs;
     for ( b = APR_BRIGADE_FIRST(bb);
           b != APR_BRIGADE_SENTINEL(bb);
-          b = APR_BUCKET_NEXT(b)) 
+          b = APR_BUCKET_NEXT(b))
     {
         if (APR_BUCKET_IS_EOS(b)) {kl
             break;
@@ -87,9 +87,9 @@ static apr_status_t luahood(ap_filter_t *f, apr_bucket_brigade *bb) {
         char *mine = apr_pstrmemdup(f->r->pool, buffer, bytes);
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, "sending '%s'", mine);
     }
-    
+
     ap_pass_brigade(f->next, bb);
-    
+
     return OK;
 }
 */
@@ -169,7 +169,7 @@ static int lua_handler(request_rec *r)
 
 
 /**
- * Like mod_alias except for lua handler fun :-) 
+ * Like mod_alias except for lua handler fun :-)
  */
 static int lua_alias_munger(request_rec *r)
 {
@@ -356,7 +356,7 @@ typedef struct cr_ctx
 
 /* Okay, this deserves a little explaination -- in order for the errors that lua
  * generates to be 'accuarate', including line numbers, we basically inject
- * N line number new lines into the 'top' of the chunk reader..... 
+ * N line number new lines into the 'top' of the chunk reader.....
  *
  * be happy. this is cool.
  *
@@ -788,7 +788,7 @@ static const char *register_package_cdir(cmd_parms *cmd, void *_cfg,
 
 /**
  * Called for config directive which looks like
- * LuaCodeCache 
+ * LuaCodeCache
  */
 static const char *register_code_cache(cmd_parms *cmd, void *_cfg,
                                        const char *arg)

@@ -52,7 +52,7 @@ static proxy_worker *find_best_roundrobin(proxy_balancer *balancer,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering roundrobin for BALANCER %s (%d)",
                  balancer->name, (int)getpid());
-    
+
     /* The index of the candidate last chosen is stored in ctx->index */
     if (!balancer->context) {
         /* UGLY */

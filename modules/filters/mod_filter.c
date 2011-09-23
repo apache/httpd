@@ -509,8 +509,8 @@ static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)
         break;
 
     case '!':        /* Empty the chain */
-                     /** IG: Add a NULL provider to the beginning so that 
-                      *  we can ensure that we'll empty everything before 
+                     /** IG: Add a NULL provider to the beginning so that
+                      *  we can ensure that we'll empty everything before
                       *  this when doing config merges later */
         p = apr_pcalloc(cmd->pool, sizeof(mod_filter_chain));
         p->fname = NULL;
@@ -622,7 +622,7 @@ static void filter_insert(request_rec *r)
      *  through the chain, and prune out the NULL filters */
 
     for (p = cfg->chain; p; p = p->next) {
-        if (p->fname == NULL) 
+        if (p->fname == NULL)
             cfg->chain = p->next;
     }
 

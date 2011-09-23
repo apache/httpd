@@ -71,7 +71,7 @@ struct ipaddr_chain {
     server_rec *server;         /* the server to use if this matches */
     name_chain *names;          /* if non-NULL then a list of name-vhosts
                                  * sharing this address */
-    name_chain *initialnames;   /* no runtime use, temporary storage of first 
+    name_chain *initialnames;   /* no runtime use, temporary storage of first
                                  * NVH'es names */
 };
 
@@ -254,11 +254,11 @@ AP_DECLARE_NONSTD(const char *)ap_set_name_virtual_host(cmd_parms *cmd,
                                                         const char *arg)
 {
     static int warnonce = 0;
-    if (++warnonce == 1) { 
-        ap_log_error(APLOG_MARK, APLOG_NOTICE|APLOG_STARTUP, APR_SUCCESS, NULL, 
-                     "NameVirtualHost has no effect and will be removed in the " 
-                     "next release %s:%d", 
-                     cmd->directive->filename, 
+    if (++warnonce == 1) {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE|APLOG_STARTUP, APR_SUCCESS, NULL,
+                     "NameVirtualHost has no effect and will be removed in the "
+                     "next release %s:%d",
+                     cmd->directive->filename,
                      cmd->directive->line_num);
     }
 
@@ -395,7 +395,7 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
         if (wild_match == NULL && (cur->port == 0 || sa->port == 0)) {
             if (apr_sockaddr_equal(cur, sa)) {
                 /* don't break, continue looking for an exact match */
-                wild_match = trav; 
+                wild_match = trav;
             }
         }
     }
@@ -417,7 +417,7 @@ static ipaddr_chain *find_default_server(apr_port_t port)
         if (wild_match == NULL && sar->host_port == 0) {
             /* don't break, continue looking for an exact match */
             wild_match = trav;
-        } 
+        }
     }
     return wild_match;
 }
@@ -525,16 +525,16 @@ static void add_name_vhost_config(apr_pool_t *p, server_rec *main_s,
    nc->next = ic->names;
 
    /* iterating backwards, so each one we see becomes the current default server */
-   ic->server = s; 
+   ic->server = s;
 
-   if (ic->names == NULL) { 
-       if (ic->initialnames == NULL) { 
+   if (ic->names == NULL) {
+       if (ic->initialnames == NULL) {
            /* first pass, set these names aside in case we see another VH.
             * Until then, this looks like an IP-based VH to runtime.
             */
            ic->initialnames = nc;
        }
-       else { 
+       else {
            /* second pass through this chain -- this really is an NVH, and we
             * have two sets of names to link in.
             */
@@ -543,7 +543,7 @@ static void add_name_vhost_config(apr_pool_t *p, server_rec *main_s,
            ic->initialnames = NULL;
        }
    }
-   else { 
+   else {
        /* 3rd or more -- just keep stacking the names */
        ic->names = nc;
    }
@@ -584,8 +584,8 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 
             if (!memcmp(sar->host_addr->ipaddr_ptr, inaddr_any, sar->host_addr->ipaddr_len)) {
                 ic = find_default_server(sar->host_port);
-                if (!ic || sar->host_port != ic->sar->host_port) { 
-                    /* No default server, or we found a default server but 
+                if (!ic || sar->host_port != ic->sar->host_port) {
+                    /* No default server, or we found a default server but
                     ** exactly one of us is a wildcard port, which means we want
                     ** two ip-based vhosts not an NVH with two names
                     */
@@ -599,8 +599,8 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                 /* see if it matches something we've already got */
                 ic = find_ipaddr(sar->host_addr);
 
-                if (!ic || sar->host_port != ic->sar->host_port) { 
-                    /* No matching server, or we found a matching server but 
+                if (!ic || sar->host_port != ic->sar->host_port) {
+                    /* No matching server, or we found a matching server but
                     ** exactly one of us is a wildcard port, which means we want
                     ** two ip-based vhosts not an NVH with two names
                     */

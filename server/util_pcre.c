@@ -115,7 +115,7 @@ AP_DECLARE(void) ap_regfree(ap_regex_t *preg)
  *  preg        points to a structure for recording the compiled expression
  *  pattern     the pattern to compile
  *  cflags      compilation flags
- * 
+ *
  * Returns:      0 on success
  *               various non-zero codes on failure
 */

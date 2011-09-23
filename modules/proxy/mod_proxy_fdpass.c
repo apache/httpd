@@ -44,7 +44,7 @@ static int proxy_fdpass_canon(request_rec *r, char *url)
     else {
         return DECLINED;
     }
-    
+
     path = ap_server_root_relative(r->pool, url);
 
     r->filename = apr_pstrcat(r->pool, "proxy:fd://", path, NULL);
@@ -89,7 +89,7 @@ static apr_status_t socket_connect_un(apr_socket_t *sock,
             return rv;
         }
     }
-    
+
     if (rv == -1 && errno != EISCONN) {
         return errno;
     }
@@ -137,7 +137,7 @@ static apr_status_t send_socket(apr_pool_t *p,
     struct cmsghdr *cmsg;
     struct iovec iov;
     char b = '\0';
-    
+
     rv = apr_os_sock_get(&rawsock, outbound);
     if (rv != APR_SUCCESS) {
         return rv;
@@ -147,7 +147,7 @@ static apr_status_t send_socket(apr_pool_t *p,
     if (rv != APR_SUCCESS) {
         return rv;
     }
-    
+
     memset(&msg, 0, sizeof(msg));
 
     msg.msg_iov = &iov;
@@ -172,7 +172,7 @@ static apr_status_t send_socket(apr_pool_t *p,
         return errno;
     }
 
-    
+
     return APR_SUCCESS;
 }
 
@@ -232,8 +232,8 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
 
     {
         apr_socket_t *dummy;
-        /* Create a dummy unconnected socket, and set it as the one we were 
-         * connected to, so that when the core closes it, it doesn't close 
+        /* Create a dummy unconnected socket, and set it as the one we were
+         * connected to, so that when the core closes it, it doesn't close
          * the tcp connection to the client.
          */
         rv = apr_socket_create(&dummy, APR_INET, SOCK_STREAM, APR_PROTO_TCP,
@@ -245,8 +245,8 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
         }
         ap_set_core_module_config(r->connection->conn_config, dummy);
     }
-    
-    
+
+
     return OK;
 }
 
@@ -260,7 +260,7 @@ static int standard_flush(request_rec *r)
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     e = apr_bucket_flush_create(r->connection->bucket_alloc);
-    
+
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     status = ap_pass_brigade(r->output_filters, bb);

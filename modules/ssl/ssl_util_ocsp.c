@@ -40,7 +40,7 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri)
                "Host: %s:%d\r\n"
                "Content-Type: application/ocsp-request\r\n"
                "Content-Length: %d\r\n"
-               "\r\n", 
+               "\r\n",
                uri->path ? uri->path : "/",
                uri->query ? "?" : "", uri->query ? uri->query : "",
                uri->hostname, uri->port, len);
@@ -56,7 +56,7 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri)
 /* Send the OCSP request serialized into BIO 'request' to the
  * responder at given server given by URI.  Returns socket object or
  * NULL on error. */
-static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri, 
+static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
                                   apr_interval_time_t timeout,
                                   conn_rec *c, apr_pool_t *p)
 {
@@ -69,13 +69,13 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
     rv = apr_sockaddr_info_get(&sa, uri->hostname, APR_UNSPEC, uri->port, 0, p);
     if (rv) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
-                      "could not resolve address of OCSP responder %s", 
+                      "could not resolve address of OCSP responder %s",
                       uri->hostinfo);
         return NULL;
     }
-    
-    /* establish a connection to the OCSP responder */ 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+
+    /* establish a connection to the OCSP responder */
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                   "connecting to OCSP responder '%s'", uri->hostinfo);
 
     /* Cycle through address until a connect() succeeds. */
@@ -100,14 +100,14 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
         return NULL;
     }
 
-    /* send the request and get a response */ 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+    /* send the request and get a response */
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                  "sending request to OCSP responder");
 
     while ((len = BIO_read(request, buf, sizeof buf)) > 0) {
         char *wbuf = buf;
         apr_size_t remain = len;
-        
+
         do {
             apr_size_t wlen = remain;
 
@@ -145,7 +145,7 @@ static char *get_line(apr_bucket_brigade *bbout, apr_bucket_brigade *bbin,
                       "failed reading line from OCSP server");
         return NULL;
     }
-    
+
     rv = apr_brigade_pflatten(bbout, &line, &len, p);
     if (rv) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
@@ -248,7 +248,7 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
             return NULL;
         }
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
-                      "OCSP response: got %" APR_SIZE_T_FMT 
+                      "OCSP response: got %" APR_SIZE_T_FMT
                       " bytes, %" APR_SIZE_T_FMT " total", len, count);
 
         BIO_write(bio, data, (int)len);
@@ -273,7 +273,7 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
 OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
                                             apr_interval_time_t timeout,
                                             OCSP_REQUEST *request,
-                                            conn_rec *c, apr_pool_t *p) 
+                                            conn_rec *c, apr_pool_t *p)
 {
     OCSP_RESPONSE *response = NULL;
     apr_socket_t *sd;
@@ -286,7 +286,7 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
                       "could not serialize OCSP request");
         return NULL;
     }
-    
+
     sd = send_request(bio, uri, timeout, c, p);
     if (sd == NULL) {
         /* Errors already logged. */

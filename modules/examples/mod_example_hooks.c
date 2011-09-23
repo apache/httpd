@@ -27,36 +27,36 @@
  *
  * To use mod_example_hooks, configure the Apache build with
  * --enable-example and compile.  Set up a <Location> block in your
- * configuration file like so: 
- * 
+ * configuration file like so:
+ *
  * <Location /example>
  *    SetHandler example-hooks-handler
- * </Location> 
- * 
- * When you look at that location on your server, you will see a backtrace of 
- * the callbacks that have been invoked up to that point.  See the ErrorLog for 
- * more information on code paths that  touch mod_example_hooks. 
+ * </Location>
+ *
+ * When you look at that location on your server, you will see a backtrace of
+ * the callbacks that have been invoked up to that point.  See the ErrorLog for
+ * more information on code paths that  touch mod_example_hooks.
  *
  * IMPORTANT NOTES
  * ===============
- * 
+ *
  * Do NOT use this module on a production server. It attaches itself to every
  * phase of the server runtime operations including startup, shutdown and
- * request processing, and produces copious amounts of logging data.  This will 
- * negatively affect server performance. 
- * 
+ * request processing, and produces copious amounts of logging data.  This will
+ * negatively affect server performance.
+ *
  * Do NOT use mod_example_hooks as the basis for your own code.  This module
  * implements every callback hook offered by the Apache core, and your
  * module will almost certainly not have to implement this much.  If you
- * want a simple module skeleton to start development, use apxs -g. 
- * 
+ * want a simple module skeleton to start development, use apxs -g.
+ *
  * XXX TO DO XXX
  * =============
  *
- * * Enable HTML backtrace entries for more callbacks that are not directly 
+ * * Enable HTML backtrace entries for more callbacks that are not directly
  *   associated with a request
  * * Make sure every callback that posts an HTML backtrace entry does so in the *   right category, so nothing gets overwritten
- * * Implement some logic to show what happens in the parent, and what in the 
+ * * Implement some logic to show what happens in the parent, and what in the
  *   child(ren)
  */
 
@@ -120,8 +120,8 @@ typedef struct x_cfg {
 } x_cfg;
 
 /*
- * String pointer to hold the startup trace. No harm working with a global until 
- * the server is (may be) multi-threaded. 
+ * String pointer to hold the startup trace. No harm working with a global until
+ * the server is (may be) multi-threaded.
  */
 static const char *trace = NULL;
 
@@ -283,10 +283,10 @@ static x_cfg *our_dconfig(const request_rec *r)
     return (x_cfg *) ap_get_module_config(r->per_dir_config, &example_hooks_module);
 }
 
-/* 
- * The following utility routines are not used in the module. Don't 
- * compile them so -Wall doesn't complain about functions that are 
- * defined but not used. 
+/*
+ * The following utility routines are not used in the module. Don't
+ * compile them so -Wall doesn't complain about functions that are
+ * defined but not used.
  */
 #if 0
 /*
@@ -320,15 +320,15 @@ static x_cfg *our_cconfig(const conn_rec *c)
  * these co-routines are called for every single request, and the impact
  * on the size (and readability) of the error_log is considerable.
  */
-#ifndef EXAMPLE_LOG_EACH 
+#ifndef EXAMPLE_LOG_EACH
 #define EXAMPLE_LOG_EACH 0
 #endif
 
-#if EXAMPLE_LOG_EACH 
+#if EXAMPLE_LOG_EACH
 static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
 {
     if (s != NULL) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", 
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s",
                      note);
     } else {
         apr_file_t *out = NULL;
@@ -339,19 +339,19 @@ static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
 }
 #endif
 
-/* 
- * This utility routine traces the hooks called when the server starts up. 
- * It leaves a trace in a global variable, so it should not be called from 
- * a hook handler that runs in a multi-threaded situation. 
+/*
+ * This utility routine traces the hooks called when the server starts up.
+ * It leaves a trace in a global variable, so it should not be called from
+ * a hook handler that runs in a multi-threaded situation.
  */
 
-static void trace_startup(apr_pool_t *p, server_rec *s, x_cfg *mconfig, 
+static void trace_startup(apr_pool_t *p, server_rec *s, x_cfg *mconfig,
                           const char *note)
 {
     const char *sofar;
     char *where, *addon;
 
-#if EXAMPLE_LOG_EACH 
+#if EXAMPLE_LOG_EACH
     example_log_each(p, s, note);
 #endif
 
@@ -374,28 +374,28 @@ static void trace_startup(apr_pool_t *p, server_rec *s, x_cfg *mconfig,
                         "   </li>\n",
                         NULL);
 
-    /* 
-     * Make sure that we start with a valid string, even if we have never been 
-     * called.  
+    /*
+     * Make sure that we start with a valid string, even if we have never been
+     * called.
      */
     sofar = (trace == NULL) ? "" : trace;
-    
+
     trace = apr_pstrcat(p, sofar, addon, NULL);
 }
 
 
 /*
- * This utility route traces the hooks called as a request is handled. 
- * It takes the current request as argument 
+ * This utility route traces the hooks called as a request is handled.
+ * It takes the current request as argument
  */
 #define TRACE_NOTE "example-hooks-trace"
- 
+
 static void trace_request(const request_rec *r, const char *note)
 {
     const char *trace_copy, *sofar;
     char *addon, *where;
     x_cfg *cfg;
-    
+
 #if EXAMPLE_LOG_EACH
     example_log_each(r->pool, r->server, note);
 #endif
@@ -403,13 +403,13 @@ static void trace_request(const request_rec *r, const char *note)
     if ((sofar = apr_table_get(r->notes, TRACE_NOTE)) == NULL) {
         sofar = "";
     }
-    
+
     cfg = our_dconfig(r);
-    
+
     where = (cfg != NULL) ? cfg->loc : "nowhere";
     where = (where != NULL) ? where : "";
-    
-    addon = apr_pstrcat(r->pool, 
+
+    addon = apr_pstrcat(r->pool,
                         "   <li>\n"
                         "    <dl>\n"
                         "     <dt><samp>", note, "</samp></dt>\n"
@@ -423,12 +423,12 @@ static void trace_request(const request_rec *r, const char *note)
 }
 
 /*
- * This utility routine traces the hooks called while processing a 
- * Connection. Its trace is kept in the pool notes of the pool associated 
+ * This utility routine traces the hooks called while processing a
+ * Connection. Its trace is kept in the pool notes of the pool associated
  * with the Connection.
  */
 
-/* 
+/*
  * Key to get and set the userdata.  We should be able to get away
  * with a constant key, since in prefork mode the process will have
  * the connection and its pool to itself entirely, and in
@@ -436,7 +436,7 @@ static void trace_request(const request_rec *r, const char *note)
  */
 #define CONN_NOTE "example-hooks-connection"
 
-static void trace_connection(conn_rec *c, const char *note) 
+static void trace_connection(conn_rec *c, const char *note)
 {
     const char *trace_copy, *sofar;
     char *addon, *where;
@@ -451,8 +451,8 @@ static void trace_connection(conn_rec *c, const char *note)
 
     where = (cfg != NULL) ? cfg->loc : "nowhere";
     where = (where != NULL) ? where : "";
-    
-    addon = apr_pstrcat(c->pool, 
+
+    addon = apr_pstrcat(c->pool,
                         "   <li>\n"
                         "    <dl>\n"
                         "     <dt><samp>", note, "</samp></dt>\n"
@@ -468,7 +468,7 @@ static void trace_connection(conn_rec *c, const char *note)
     /* Tack addon onto copy */
     trace_copy = apr_pstrcat(c->pool, sofar, addon, NULL);
 
-    /* 
+    /*
      * Stash copy back into pool notes.  This call has a cleanup
      * parameter, but we're not using it because the string has been
      * allocated from that same pool.  There is also an unused return
@@ -476,14 +476,14 @@ static void trace_connection(conn_rec *c, const char *note)
      * occur, and will have to check for the existence of this data on
      * the other end.
      */
-    apr_pool_userdata_set((const void *) trace_copy, CONN_NOTE, 
+    apr_pool_userdata_set((const void *) trace_copy, CONN_NOTE,
                           NULL, c->pool);
 }
 
-static void trace_nocontext(apr_pool_t *p, const char *file, int line, 
+static void trace_nocontext(apr_pool_t *p, const char *file, int line,
                             const char *note)
 {
-    /* 
+    /*
      * Since we have no request or connection to trace, or any idea
      * from where this routine was called, there's really not much we
      * can do.  If we are not logging everything by way of the
@@ -565,7 +565,7 @@ static void *x_create_dir_config(apr_pool_t *p, char *dirspec)
      */
     dname = (dname != NULL) ? dname : "";
     cfg->loc = apr_pstrcat(p, "DIR(", dname, ")", NULL);
-    note = apr_psprintf(p, "x_create_dir_config(p == %pp, dirspec == %s)", 
+    note = apr_psprintf(p, "x_create_dir_config(p == %pp, dirspec == %s)",
                         (void*) p, dirspec);
     trace_startup(p, NULL, cfg, note);
     return (void *) cfg;
@@ -618,7 +618,7 @@ static void *x_merge_dir_config(apr_pool_t *p, void *parent_conf,
      * Now just record our being called in the trace list.  Include the
      * locations we were asked to merge.
      */
-    note = apr_psprintf(p, "x_merge_dir_config(p == %pp, parent_conf == " 
+    note = apr_psprintf(p, "x_merge_dir_config(p == %pp, parent_conf == "
                         "%pp, newloc_conf == %pp)", (void*) p,
                         (void*) parent_conf, (void*) newloc_conf);
     trace_startup(p, NULL, merged_config, note);
@@ -773,7 +773,7 @@ static int x_check_config(apr_pool_t *pconf, apr_pool_t *plog,
  * phase and just before the process exits.  At this point the module
  * may output any information useful in configuration testing.
  *
- * This is a VOID hook: all defined handlers get called. 
+ * This is a VOID hook: all defined handlers get called.
  */
 static void x_test_config(apr_pool_t *pconf, server_rec *s)
 {
@@ -782,7 +782,7 @@ static void x_test_config(apr_pool_t *pconf, server_rec *s)
     apr_file_open_stderr(&out, pconf);
 
     apr_file_printf(out, "Example module configuration test routine\n");
-    
+
     trace_startup(pconf, s, NULL, "x_test_config()");
 }
 
@@ -846,7 +846,7 @@ static apr_status_t x_child_exit(void *data)
 /*
  * All our process initialiser does is add its trace to the log.
  *
- * This is a VOID hook: all defined handlers get called. 
+ * This is a VOID hook: all defined handlers get called.
  */
 static void x_child_init(apr_pool_t *p, server_rec *s)
 {
@@ -865,17 +865,17 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
 }
 
 /*
- * The hook runner for ap_hook_http_scheme is aliased to ap_http_scheme(), 
- * a routine that the core and other modules call when they need to know 
+ * The hook runner for ap_hook_http_scheme is aliased to ap_http_scheme(),
+ * a routine that the core and other modules call when they need to know
  * the URL scheme for the request.  For instance, mod_ssl returns "https"
- * if the server_rec associated with the request has SSL enabled. 
+ * if the server_rec associated with the request has SSL enabled.
  *
- * This hook was named 'ap_hook_http_method' in httpd 2.0. 
+ * This hook was named 'ap_hook_http_method' in httpd 2.0.
  *
- * This is a RUN_FIRST hook: the first handler to return a non NULL 
- * value aborts the handler chain.  The http_core module inserts a 
+ * This is a RUN_FIRST hook: the first handler to return a non NULL
+ * value aborts the handler chain.  The http_core module inserts a
  * fallback handler (with APR_HOOK_REALLY_LAST preference) that returns
- * "http". 
+ * "http".
  */
 static const char *x_http_scheme(const request_rec *r)
 {
@@ -891,14 +891,14 @@ static const char *x_http_scheme(const request_rec *r)
 /*
  * The runner for this hook is aliased to ap_default_port(), which the
  * core and other modules call when they need to know the default port
- * for a particular server.  This is used for instance to omit the 
+ * for a particular server.  This is used for instance to omit the
  * port number from a Redirect response Location header URL if the port
- * number is equal to the default port for the service (like 80 for http). 
+ * number is equal to the default port for the service (like 80 for http).
  *
- * This is a RUN_FIRST hook: the first handler to return a non-zero 
- * value is the last one executed.  The http_core module inserts a 
+ * This is a RUN_FIRST hook: the first handler to return a non-zero
+ * value is the last one executed.  The http_core module inserts a
  * fallback handler (with APR_HOOK_REALLY_LAST order specifier) that
- * returns 80. 
+ * returns 80.
  */
 static apr_port_t x_default_port(const request_rec *r)
 {
@@ -911,29 +911,29 @@ static apr_port_t x_default_port(const request_rec *r)
 
 /*
  * This routine is called just before the handler gets invoked. It allows
- * a module to insert a previously defined filter into the filter chain. 
- * 
- * No filter has been defined by this module, so we just log the call
- * and exit. 
+ * a module to insert a previously defined filter into the filter chain.
  *
- * This is a VOID hook: all defined handlers get called. 
+ * No filter has been defined by this module, so we just log the call
+ * and exit.
+ *
+ * This is a VOID hook: all defined handlers get called.
  */
 static void x_insert_filter(request_rec *r)
 {
     /*
      * Log the call and exit.
      */
-    trace_request(r, "x_insert_filter()"); 
+    trace_request(r, "x_insert_filter()");
 }
 
-/* 
- * This routine is called to insert a previously defined error filter into 
- * the filter chain as the request is being processed. 
- * 
- * For the purpose of this example, we don't have a filter to insert, 
- * so just add to the trace and exit. 
- * 
- * This is a VOID hook: all defined handlers get called. 
+/*
+ * This routine is called to insert a previously defined error filter into
+ * the filter chain as the request is being processed.
+ *
+ * For the purpose of this example, we don't have a filter to insert,
+ * so just add to the trace and exit.
+ *
+ * This is a VOID hook: all defined handlers get called.
  */
 static void x_insert_error_filter(request_rec *r)
 {
@@ -957,30 +957,30 @@ static void x_insert_error_filter(request_rec *r)
 /*
  * Sample content handler.  All this does is display the call list that has
  * been built up so far.
- * 
- * This routine gets called for every request, unless another handler earlier
- * in the callback chain has already handled the request. It is up to us to 
- * test the request_rec->handler field and see whether we are meant to handle 
- * this request. 
  *
- * The content handler gets to write directly to the client using calls like 
+ * This routine gets called for every request, unless another handler earlier
+ * in the callback chain has already handled the request. It is up to us to
+ * test the request_rec->handler field and see whether we are meant to handle
+ * this request.
+ *
+ * The content handler gets to write directly to the client using calls like
  * ap_rputs() and ap_rprintf()
  *
- * This is a RUN_FIRST hook. 
+ * This is a RUN_FIRST hook.
  */
 static int x_handler(request_rec *r)
 {
     x_cfg *dcfg;
-    char *note; 
+    char *note;
     void *conn_data;
     apr_status_t status;
 
     dcfg = our_dconfig(r);
-    /* 
-     * Add our trace to the log, and whether we get to write 
-     * content for this request. 
+    /*
+     * Add our trace to the log, and whether we get to write
+     * content for this request.
      */
-    note = apr_pstrcat(r->pool, "x_handler(), handler is \"", 
+    note = apr_pstrcat(r->pool, "x_handler(), handler is \"",
                       r->handler, "\"", NULL);
     trace_request(r, note);
 
@@ -990,8 +990,8 @@ static int x_handler(request_rec *r)
     }
 
     /*
-     * Set the Content-type header. Note that we do not actually have to send 
-     * the headers: this is done by the http core. 
+     * Set the Content-type header. Note that we do not actually have to send
+     * the headers: this is done by the http core.
      */
     ap_set_content_type(r, "text/html");
     /*
@@ -1046,7 +1046,7 @@ static int x_handler(request_rec *r)
             trace);
     ap_rputs("  <H2>Connection-specific callbacks so far:</H2>\n", r);
 
-    status =  apr_pool_userdata_get(&conn_data, CONN_NOTE, 
+    status =  apr_pool_userdata_get(&conn_data, CONN_NOTE,
                                     r->connection->pool);
     if ((status == APR_SUCCESS) && conn_data) {
         ap_rprintf(r, "  <OL>\n%s  </OL>\n", (char *) conn_data);
@@ -1081,17 +1081,17 @@ static int x_handler(request_rec *r)
 }
 
 /*
- * The quick_handler hook presents modules with a very powerful opportunity to 
- * serve their content in a very early request phase.  Note that this handler 
- * can not serve any requests from the file system because hooks like 
- * map_to_storage have not run.  The quick_handler hook also runs before any 
- * authentication and access control. 
+ * The quick_handler hook presents modules with a very powerful opportunity to
+ * serve their content in a very early request phase.  Note that this handler
+ * can not serve any requests from the file system because hooks like
+ * map_to_storage have not run.  The quick_handler hook also runs before any
+ * authentication and access control.
  *
- * This hook is used by mod_cache to serve cached content.  
+ * This hook is used by mod_cache to serve cached content.
  *
- * This is a RUN_FIRST hook. Return OK if you have served the request, 
- * DECLINED if you want processing to continue, or a HTTP_* error code to stop 
- * processing the request. 
+ * This is a RUN_FIRST hook. Return OK if you have served the request,
+ * DECLINED if you want processing to continue, or a HTTP_* error code to stop
+ * processing the request.
  */
 static int x_quick_handler(request_rec *r, int lookup_uri)
 {
@@ -1113,12 +1113,12 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
  */
 static int x_pre_connection(conn_rec *c, void *csd)
 {
-    char *note; 
+    char *note;
 
     /*
      * Log the call and exit.
      */
-    note = apr_psprintf(c->pool, "x_pre_connection(c = %pp, p = %pp)", 
+    note = apr_psprintf(c->pool, "x_pre_connection(c = %pp, p = %pp)",
                         (void*) c, (void*) c->pool);
     trace_connection(c, note);
 
@@ -1136,7 +1136,7 @@ static int x_pre_connection(conn_rec *c, void *csd)
 static int x_process_connection(conn_rec *c)
 {
     trace_connection(c, "x_process_connection()");
-    
+
     return DECLINED;
 }
 
@@ -1216,7 +1216,7 @@ static int x_map_to_storage(request_rec *r)
  * to the filename. For example this phase can be used to block evil
  * clients, while little resources were wasted on these.
  *
- * This is a RUN_ALL hook. 
+ * This is a RUN_ALL hook.
  */
 static int x_header_parser(request_rec *r)
 {
@@ -1235,7 +1235,7 @@ static int x_header_parser(request_rec *r)
  * example.)
  *
  * This is a RUN_ALL hook. The first handler to return a status other than OK
- * or DECLINED (for instance, HTTP_FORBIDDEN) aborts the callback chain. 
+ * or DECLINED (for instance, HTTP_FORBIDDEN) aborts the callback chain.
  */
 static int x_check_access(request_rec *r)
 {
@@ -1248,8 +1248,8 @@ static int x_check_access(request_rec *r)
  * the request (such as looking up the user in a database and verifying that
  * the [encrypted] password sent matches the one in the database).
  *
- * This is a RUN_FIRST hook. The return value is OK, DECLINED, or some 
- * HTTP_mumble error (typically HTTP_UNAUTHORIZED).  
+ * This is a RUN_FIRST hook. The return value is OK, DECLINED, or some
+ * HTTP_mumble error (typically HTTP_UNAUTHORIZED).
  */
 static int x_check_authn(request_rec *r)
 {
@@ -1264,8 +1264,8 @@ static int x_check_authn(request_rec *r)
  * This routine is called to check to see if the resource being requested
  * requires authorisation.
  *
- * This is a RUN_FIRST hook. The return value is OK, DECLINED, or 
- * HTTP_mumble.  If we return OK, no other modules are called during this 
+ * This is a RUN_FIRST hook. The return value is OK, DECLINED, or
+ * HTTP_mumble.  If we return OK, no other modules are called during this
  * phase.
  *
  * If *all* modules return DECLINED, the request is aborted with a server
@@ -1317,7 +1317,7 @@ static int x_fixups(request_rec *r)
  * This routine is called to perform any module-specific logging activities
  * over and above the normal server things.
  *
- * This is a RUN_ALL hook. 
+ * This is a RUN_ALL hook.
  */
 static int x_log_transaction(request_rec *r)
 {
@@ -1329,13 +1329,13 @@ static int x_log_transaction(request_rec *r)
 
 /*
  * This routine is called to find out under which user id to run suexec
- * Unless our module runs CGI programs, there is no reason for us to 
- * mess with this information. 
- * 
- * This is a RUN_FIRST hook. The return value is a pointer to an 
- * ap_unix_identity_t or NULL. 
+ * Unless our module runs CGI programs, there is no reason for us to
+ * mess with this information.
+ *
+ * This is a RUN_FIRST hook. The return value is a pointer to an
+ * ap_unix_identity_t or NULL.
  */
-static ap_unix_identity_t *x_get_suexec_identity(const request_rec *r) 
+static ap_unix_identity_t *x_get_suexec_identity(const request_rec *r)
 {
     trace_request(r, "x_get_suexec_identity()");
     return NULL;
@@ -1344,26 +1344,26 @@ static ap_unix_identity_t *x_get_suexec_identity(const request_rec *r)
 
 /*
  * This routine is called to create a connection. This hook is implemented
- * by the Apache core: there is no known reason a module should override 
- * it. 
- * 
- * This is a RUN_FIRST hook. 
- * 
- * Return NULL to decline, a valid conn_rec pointer to accept. 
+ * by the Apache core: there is no known reason a module should override
+ * it.
+ *
+ * This is a RUN_FIRST hook.
+ *
+ * Return NULL to decline, a valid conn_rec pointer to accept.
  */
-static conn_rec *x_create_connection(apr_pool_t *p, server_rec *server, 
-                                     apr_socket_t *csd, long conn_id, 
-                                     void *sbh, apr_bucket_alloc_t *alloc) 
+static conn_rec *x_create_connection(apr_pool_t *p, server_rec *server,
+                                     apr_socket_t *csd, long conn_id,
+                                     void *sbh, apr_bucket_alloc_t *alloc)
 {
     trace_nocontext(p, __FILE__, __LINE__, "x_create_connection()");
-    return NULL; 
+    return NULL;
 }
 
 /*
- * This hook is defined in server/core.c, but it is not actually called 
- * or documented. 
- * 
- * This is a RUN_ALL hook. 
+ * This hook is defined in server/core.c, but it is not actually called
+ * or documented.
+ *
+ * This is a RUN_ALL hook.
  */
 static int x_get_mgmt_items(apr_pool_t *p, const char *val, apr_hash_t *ht)
 {
@@ -1376,14 +1376,14 @@ static int x_get_mgmt_items(apr_pool_t *p, const char *val, apr_hash_t *ht)
 
 /*
  * This routine gets called shortly after the request_rec structure
- * is created. It provides the opportunity to manipulae the request 
- * at a very early stage. 
+ * is created. It provides the opportunity to manipulae the request
+ * at a very early stage.
  *
- * This is a RUN_ALL hook. 
+ * This is a RUN_ALL hook.
  */
 static int x_create_request(request_rec *r)
 {
-    /* 
+    /*
      * We have a request_rec, but it is not filled in enough to give
      * us a usable configuration. So, add a trace without context.
      */
@@ -1392,10 +1392,10 @@ static int x_create_request(request_rec *r)
 }
 
 /*
- * This routine gets called during the startup of the MPM. 
- * No known existing module implements this hook. 
- * 
- * This is a RUN_ALL hook. 
+ * This routine gets called during the startup of the MPM.
+ * No known existing module implements this hook.
+ *
+ * This is a RUN_ALL hook.
  */
 static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
@@ -1405,9 +1405,9 @@ static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 
 /*
  * This hook gets run periodically by a maintenance function inside
- * the MPM. Its exact purpose is unknown and undocumented at this time. 
- * 
- * This is a RUN_ALL hook. 
+ * the MPM. Its exact purpose is unknown and undocumented at this time.
+ *
+ * This is a RUN_ALL hook.
  */
 static int x_monitor(apr_pool_t *p, server_rec *s)
 {
@@ -1487,7 +1487,7 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_get_mgmt_items(x_get_mgmt_items, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(x_create_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(x_pre_mpm, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_monitor(x_monitor, NULL, NULL, APR_HOOK_MIDDLE); 
+    ap_hook_monitor(x_monitor, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /*--------------------------------------------------------------------------*/

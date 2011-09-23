@@ -204,7 +204,7 @@ static authz_status local_check_authorization(request_rec *r,
                                r->connection->remote_addr)
          || apr_ipsubnet_test(localhost_v4, r->connection->remote_addr)
 #if APR_HAVE_IPV6
-         || apr_ipsubnet_test(localhost_v6, r->connection->remote_addr) 
+         || apr_ipsubnet_test(localhost_v6, r->connection->remote_addr)
 #endif
         )
      {

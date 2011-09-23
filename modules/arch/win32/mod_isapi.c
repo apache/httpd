@@ -763,9 +763,9 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
         cid->ecb->dwHttpStatusCode = cid->r->status;
     }
     else {
-        /* None of dwHttpStatusCode, the parser's r->status nor the 
+        /* None of dwHttpStatusCode, the parser's r->status nor the
          * old value of r->status were helpful, and nothing was decoded
-         * from Status: string passed to us.  Let's just say HTTP_OK 
+         * from Status: string passed to us.  Let's just say HTTP_OK
          * and get the data out, this was the isapi dev's oversight.
          */
         cid->r->status = HTTP_OK;
@@ -983,7 +983,7 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
               && (file[len - 1] != '/'))
             file = apr_pstrcat(cid->r->pool, subreq->filename, "/", NULL);
         else
-            file = apr_pstrcat(cid->r->pool, subreq->filename, 
+            file = apr_pstrcat(cid->r->pool, subreq->filename,
                                               subreq->path_info, NULL);
 
         ap_destroy_sub_req(subreq);
@@ -1208,9 +1208,9 @@ static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
             /* XXX: Many authors issue their next HSE_REQ_ASYNC_READ_CLIENT
              * within the completion logic.  An example is MS's own PSDK
              * sample web/iis/extensions/io/ASyncRead.  This potentially
-             * leads to stack exhaustion.  To refactor, the notification 
+             * leads to stack exhaustion.  To refactor, the notification
              * logic needs to move to isapi_handler() - differentiating
-             * the cid->completed event with a new flag to indicate 
+             * the cid->completed event with a new flag to indicate
              * an async-notice versus the async request completed.
              */
             if (res >= 0) {
@@ -1634,7 +1634,7 @@ static apr_status_t isapi_handler (request_rec *r)
         default:
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, apr_get_os_error(), r,
                           "ISAPI: unrecognized result code %d "
-                          "from HttpExtensionProc(): %s ", 
+                          "from HttpExtensionProc(): %s ",
                           rv, r->filename);
             r->status = HTTP_INTERNAL_SERVER_ERROR;
             break;

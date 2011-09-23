@@ -70,7 +70,7 @@
 #include <sys/stat.h>
 #include <sys/un.h> /* for sockaddr_un */
 
-#if APR_HAVE_STRUCT_RLIMIT 
+#if APR_HAVE_STRUCT_RLIMIT
 #if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
 #define AP_CGID_USE_RLIMIT
 #endif
@@ -174,7 +174,7 @@ typedef struct {
 } cgid_server_conf;
 
 #ifdef AP_CGID_USE_RLIMIT
-typedef struct { 
+typedef struct {
 #ifdef RLIMIT_CPU
     int    limit_cpu_set;
     struct rlimit limit_cpu;

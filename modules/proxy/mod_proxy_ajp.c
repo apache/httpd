@@ -482,7 +482,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         }
                         else {
                             apr_status_t rv;
-    
+
                             /* Handle the case where the error document is itself reverse
                              * proxied and was successful. We must maintain any previous
                              * error status so that an underlying error (eg HTTP_NOT_FOUND)
@@ -493,11 +493,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                 r->status = original_status;
                                 r->status_line = original_status_line;
                             }
-    
+
                             e = apr_bucket_transient_create(send_body_chunk_buff, size,
                                                         r->connection->bucket_alloc);
                             APR_BRIGADE_INSERT_TAIL(output_brigade, e);
-    
+
                             if ((conn->worker->s->flush_packets == flush_on) ||
                                 ((conn->worker->s->flush_packets == flush_auto) &&
                                 ((rv = apr_poll(conn_poll, 1, &conn_poll_fd,

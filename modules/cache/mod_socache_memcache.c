@@ -61,24 +61,24 @@ struct ap_socache_instance_t {
     apr_size_t taglen; /* strlen(tag) + 1 */
 };
 
-static const char *socache_mc_create(ap_socache_instance_t **context, 
-                                     const char *arg, 
+static const char *socache_mc_create(ap_socache_instance_t **context,
+                                     const char *arg,
                                      apr_pool_t *tmp, apr_pool_t *p)
 {
     ap_socache_instance_t *ctx;
-    
+
     *context = ctx = apr_palloc(p, sizeof *ctx);
 
     if (!arg || !*arg) {
         return "List of server names required to create memcache socache.";
     }
-    
+
     ctx->servers = apr_pstrdup(p, arg);
 
     return NULL;
 }
 
-static apr_status_t socache_mc_init(ap_socache_instance_t *ctx, 
+static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
                                     const char *namespace,
                                     const struct ap_socache_hints *hints,
                                     server_rec *s, apr_pool_t *p)
@@ -103,7 +103,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
     rv = apr_memcache_create(p, nservers, 0, &ctx->mc);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "socache: Failed to create Memcache Object of '%d' size.", 
+                     "socache: Failed to create Memcache Object of '%d' size.",
                      nservers);
         return rv;
     }
@@ -144,7 +144,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
                                         &st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "socache: Failed to Create memcache Server: %s:%d", 
+                         "socache: Failed to Create memcache Server: %s:%d",
                          host_str, port);
             return rv;
         }
@@ -152,7 +152,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
         rv = apr_memcache_add_server(ctx->mc, st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "socache: Failed to Add memcache Server: %s:%d", 
+                         "socache: Failed to Add memcache Server: %s:%d",
                          host_str, port);
             return rv;
         }
@@ -198,7 +198,7 @@ static int socache_mc_id2key(ap_socache_instance_t *ctx,
     return 0;
 }
 
-static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s, 
+static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
                                      const unsigned char *id, unsigned int idlen,
                                      apr_time_t expiry,
                                      unsigned char *ucaData, unsigned int nData,
@@ -224,7 +224,7 @@ static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, server_rec *s, 
+static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, server_rec *s,
                                         const unsigned char *id, unsigned int idlen,
                                         unsigned char *dest, unsigned int *destlen,
                                         apr_pool_t *p)
@@ -252,7 +252,7 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, server_rec *
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "scache_mc: 'retrieve' OVERFLOW");
         return APR_ENOMEM;
-    }    
+    }
 
     memcpy(dest, data, data_len);
     *destlen = data_len;
@@ -260,8 +260,8 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, server_rec *
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s, 
-                                      const unsigned char *id, 
+static apr_status_t socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s,
+                                      const unsigned char *id,
                                       unsigned int idlen, apr_pool_t *p)
 {
     char buf[MC_KEY_LEN];
@@ -313,7 +313,7 @@ static const ap_socache_provider_t socache_mc = {
 static void register_hooks(apr_pool_t *p)
 {
 #ifdef HAVE_APU_MEMCACHE
-    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "mc", 
+    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "mc",
                          AP_SOCACHE_PROVIDER_VERSION,
                          &socache_mc);
 #endif

@@ -283,7 +283,7 @@ static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
             return APR_STATUS_IS_TIMEUP(status) ? HTTP_GATEWAY_TIME_OUT : HTTP_BAD_GATEWAY;
         }
         else {
-            return HTTP_BAD_REQUEST; 
+            return HTTP_BAD_REQUEST;
         }
     }
     apr_brigade_cleanup(bb);
@@ -439,7 +439,7 @@ static int stream_reqbody_cl(apr_pool_t *p,
 
         add_cl(p, bucket_alloc, header_brigade, old_cl_val);
         status = apr_strtoff(&cl_val, old_cl_val, &endstr, 10);
-        
+
         if (status || *endstr || endstr == old_cl_val || cl_val < 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                           "proxy: could not parse request Content-Length (%s)",
@@ -719,7 +719,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     proxy_dir_conf *dconf;
     conn_rec *origin = p_conn->connection;
     int do_100_continue;
-    
+
     dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
 
@@ -735,7 +735,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                        && ap_request_has_body(r)
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
-    
+
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         /*
          * According to RFC 2616 8.2.3 we are not allowed to forward an
@@ -762,14 +762,14 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     if (dconf->preserve_host == 0) {
         if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]:", 
+                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]:",
                                   uri->port_str, CRLF, NULL);
             } else {
                 buf = apr_pstrcat(p, "Host: [", uri->hostname, "]", CRLF, NULL);
             }
         } else {
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-                buf = apr_pstrcat(p, "Host: ", uri->hostname, ":", 
+                buf = apr_pstrcat(p, "Host: ", uri->hostname, ":",
                                   uri->port_str, CRLF, NULL);
             } else {
                 buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
@@ -966,7 +966,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * input_brigade and jump past all of the request body logic...
      * Reading anything with ap_get_brigade is likely to consume the
      * main request's body or read beyond EOS - which would be unplesant.
-     * 
+     *
      * An exception: when a kept_body is present, then subrequest CAN use
      * pass request bodies, and we DONT skip the body.
      */
@@ -1429,10 +1429,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                        && ap_request_has_body(r)
                        && (PROXYREQ_REVERSE == r->proxyreq)
                        && !(apr_table_get(r->subprocess_env, "force-proxy-request-1.0")));
-    
+
     bb = apr_brigade_create(p, c->bucket_alloc);
     pass_bb = apr_brigade_create(p, c->bucket_alloc);
-    
+
     /* Setup for 100-Continue timeout if appropriate */
     if (do_100_continue) {
         apr_socket_timeout_get(backend->sock, &old_timeout);
@@ -1497,7 +1497,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "proxy: Closing connection to client because"
                               " reading from backend server %s:%d failed."
-                              " Number of keepalives %i", backend->hostname, 
+                              " Number of keepalives %i", backend->hostname,
                               backend->port, c->keepalives);
                 ap_proxy_backend_broke(r, bb);
                 /*
@@ -2000,7 +2000,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     /* See define of AP_MAX_INTERIM_RESPONSES for why */
     if (interim_response >= AP_MAX_INTERIM_RESPONSES) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             apr_psprintf(p, 
+                             apr_psprintf(p,
                              "Too many (%d) interim responses from origin server",
                              interim_response));
     }

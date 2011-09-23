@@ -249,7 +249,7 @@ static int find_code_page(request_rec *r)
 
     reqinfo->dc = dc;
     output_ctx->dc = dc;
-    output_ctx->tmpbb = apr_brigade_create(r->pool, 
+    output_ctx->tmpbb = apr_brigade_create(r->pool,
                                            r->connection->bucket_alloc);
     ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
 
@@ -319,7 +319,7 @@ static void xlate_insert_filter(request_rec *r)
     charset_dir_t *dc = ap_get_module_config(r->per_dir_config,
                                              &charset_lite_module);
 
-    if (dc && (dc->implicit_add == IA_NOIMPADD)) { 
+    if (dc && (dc->implicit_add == IA_NOIMPADD)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, r,
                       "xlate output filter not added implicitly because "
                       "CharsetOptions included 'NoImplicitAdd'");
@@ -805,7 +805,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          */
             strcmp(mime_type, DIR_MAGIC_TYPE) == 0 ||
 #endif
-            strncasecmp(mime_type, "message/", 8) == 0 || 
+            strncasecmp(mime_type, "message/", 8) == 0 ||
             dc->force_xlate == FX_FORCE)) {
 
             rv = apr_xlate_open(&ctx->xlate,

@@ -44,7 +44,7 @@ static const char *set_dbmfile(cmd_parms *cmd,
 static const char *set_dbmtype(cmd_parms *cmd,
                                void *dconf,
                                const char *arg)
-{    
+{
     express_server_conf *sconf;
     sconf = ap_get_module_config(cmd->server->module_config, &proxy_express_module);
 
@@ -58,7 +58,7 @@ static const char *set_enabled(cmd_parms *cmd,
 {
     express_server_conf *sconf;
     sconf = ap_get_module_config(cmd->server->module_config, &proxy_express_module);
-    
+
     sconf->enabled = flag;
 
     return NULL;
@@ -67,20 +67,20 @@ static const char *set_enabled(cmd_parms *cmd,
 static void *server_create(apr_pool_t *p, server_rec *s)
 {
     express_server_conf *a;
-    
+
     a = (express_server_conf *)apr_pcalloc(p, sizeof(express_server_conf));
-    
+
     a->dbmfile = NULL;
     a->dbmtype = "default";
     a->enabled = 0;
-    
+
     return (void *)a;
 }
 
 static void *server_merge(apr_pool_t *p, void *basev, void *overridesv)
 {
     express_server_conf *a, *base, *overrides;
-    
+
     a         = (express_server_conf *)apr_pcalloc(p,
                                                    sizeof(express_server_conf));
     base      = (express_server_conf *)basev;
@@ -137,7 +137,7 @@ static int xlate_name(request_rec *r)
     if (rv != APR_SUCCESS) {
         return DECLINED;
     }
- 
+
     name = ap_get_server_name(r);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy_express: looking for %s", name);

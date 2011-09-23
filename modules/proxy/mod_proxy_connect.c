@@ -71,7 +71,7 @@ static void *merge_config(apr_pool_t *p, void *basev, void *overridesv)
     c->allowed_connect_ports = apr_array_append(p,
                                                 base->allowed_connect_ports,
                                                 overrides->allowed_connect_ports);
-    
+
     return c;
 }
 
@@ -118,7 +118,7 @@ static int allowed_port(connect_conf *conf, int port)
 {
     int i;
     port_range *list = (port_range *) conf->allowed_connect_ports->elts;
-    
+
     if (apr_is_empty_array(conf->allowed_connect_ports)){
         return port == APR_URI_HTTPS_DEFAULT_PORT
                || port == APR_URI_SNEWS_DEFAULT_PORT;
@@ -400,7 +400,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         nbytes = apr_snprintf(buffer, sizeof(buffer),
                               "HTTP/1.0 200 Connection Established" CRLF);
         ap_xlate_proto_to_ascii(buffer, nbytes);
-        ap_fwrite(c->output_filters, bb, buffer, nbytes); 
+        ap_fwrite(c->output_filters, bb, buffer, nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
                               "Proxy-agent: %s" CRLF CRLF,
                               ap_get_server_banner());
@@ -439,7 +439,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     while (1) { /* Infinite loop until error (one side closes the connection) */
         if ((rv = apr_pollset_poll(pollset, -1, &pollcnt, &signalled))
             != APR_SUCCESS) {
-            if (APR_STATUS_IS_EINTR(rv)) { 
+            if (APR_STATUS_IS_EINTR(rv)) {
                 continue;
             }
             apr_socket_close(sock);

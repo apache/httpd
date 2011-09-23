@@ -1349,7 +1349,7 @@ static void usage(const char *error)
 #undef NL
 
 static void usage_repeated_arg(apr_pool_t *pool, char option) {
-    usage(apr_psprintf(pool, 
+    usage(apr_psprintf(pool,
                        "The option '%c' cannot be specified more than once",
                        option));
 }
@@ -1370,7 +1370,7 @@ static void log_pid(apr_pool_t *pool, const char *pidfilename, apr_file_t **pidf
         if (errfile) {
             apr_file_printf(errfile,
                             "Could not write the pid file '%s': %s" APR_EOL_STR,
-                            pidfilename, 
+                            pidfilename,
                             apr_strerror(status, errmsg, sizeof errmsg));
         }
         exit(1);

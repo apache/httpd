@@ -829,7 +829,7 @@ static int status_handler(request_rec *r)
                                ap_escape_html(r->pool,
                                               ws_record->vhost),
                                ap_escape_html(r->pool,
-                                              ap_escape_logitem(r->pool, 
+                                              ap_escape_logitem(r->pool,
                                                       ws_record->request)));
                 } /* no_table_report */
             } /* for (j...) */
