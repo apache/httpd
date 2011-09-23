@@ -17,7 +17,7 @@
 /**
  * @file mod_include.h
  * @brief Server Side Include Filter Extension Module for Apache
- * 
+ *
  * @defgroup MOD_INCLUDE mod_include
  * @ingroup APACHE_MODS
  * @{
@@ -113,7 +113,7 @@ APR_DECLARE_OPTIONAL_FN(char*, ap_ssi_parse_string,
                         (include_ctx_t *ctx, const char *in, char *out,
                          apr_size_t length, int leave_name));
 
-APR_DECLARE_OPTIONAL_FN(void, ap_register_include_handler, 
+APR_DECLARE_OPTIONAL_FN(void, ap_register_include_handler,
                         (char *tag, include_handler_fn_t *func));
 
 #endif /* MOD_INCLUDE */

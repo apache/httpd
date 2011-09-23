@@ -17,7 +17,7 @@
 /**
  * @file  mod_rewrite.h
  * @brief Rewrite Extension module for Apache
- * 
+ *
  * @defgroup MOD_REWRITE mod_rewrite
  * @ingroup APACHE_MODS
  * @{

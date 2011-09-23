@@ -167,7 +167,7 @@ AP_DECLARE(apr_status_t) ap_mutex_register(apr_pool_t *pconf,
  * stored.  If this mutex is disabled, mutex will be set to NULL on
  * output.  (That is allowed only if the AP_MUTEX_ALLOW_NONE flag is
  * passed to ap_mutex_register().)
- * @param name The generated filename of the created mutex, or NULL if 
+ * @param name The generated filename of the created mutex, or NULL if
  * no file was created.  Pass NULL if this result is not needed.
  * @param type The type name of the mutex, matching the type name passed
  * to ap_mutex_register().
@@ -194,7 +194,7 @@ AP_DECLARE(apr_status_t) ap_global_mutex_create(apr_global_mutex_t **mutex,
  * stored.  If this mutex is disabled, mutex will be set to NULL on
  * output.  (That is allowed only if the AP_MUTEX_ALLOW_NONE flag is
  * passed to ap_mutex_register().)
- * @param name The generated filename of the created mutex, or NULL if 
+ * @param name The generated filename of the created mutex, or NULL if
  * no file was created.  Pass NULL if this result is not needed.
  * @param type The type name of the mutex, matching the type name passed
  * to ap_mutex_register().

@@ -36,7 +36,7 @@ extern "C" {
 
 #include "apr_xlate.h"
 
-/** On EBCDIC machine this is a translation handle used to translate the 
+/** On EBCDIC machine this is a translation handle used to translate the
  *  headers from the local machine format to ASCII for network transmission.
  *  On an ASCII machine this is NULL */
 extern apr_xlate_t *ap_hdrs_to_ascii;
@@ -46,7 +46,7 @@ extern apr_xlate_t *ap_hdrs_to_ascii;
 extern apr_xlate_t *ap_hdrs_from_ascii;
 
 #endif  /* APR_CHARSET_EBCDIC */
-    
+
 #ifdef __cplusplus
 }
 #endif

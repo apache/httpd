@@ -44,7 +44,7 @@ extern "C" {
 
     The MPM may or may not be multithreaded.  In the event that it is
     multithreaded, at any instant it guarantees a 1:1 mapping of threads
-    ap_process_connection invocations.  
+    ap_process_connection invocations.
 
     Note: In the future it will be possible for ap_process_connection
     to return to the MPM prior to finishing the entire connection; and
@@ -95,22 +95,22 @@ AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
  * Spawn a process with privileges that another module has requested
  * @param r The request_rec of the current request
  * @param newproc The resulting process handle.
- * @param progname The program to run 
- * @param args the arguments to pass to the new program.  The first 
+ * @param progname The program to run
+ * @param args the arguments to pass to the new program.  The first
  *                   one should be the program name.
- * @param env The new environment apr_table_t for the new process.  This 
+ * @param env The new environment apr_table_t for the new process.  This
  *            should be a list of NULL-terminated strings.
  * @param attr the procattr we should use to determine how to create the new
  *         process
- * @param p The pool to use. 
+ * @param p The pool to use.
  */
 AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     const request_rec *r,
-    apr_proc_t *newproc, 
+    apr_proc_t *newproc,
     const char *progname,
-    const char * const *args, 
+    const char * const *args,
     const char * const *env,
-    apr_procattr_t *attr, 
+    apr_procattr_t *attr,
     apr_pool_t *p);
 
 /* Subtypes/Values for AP_MPMQ_IS_THREADED and AP_MPMQ_IS_FORKED        */

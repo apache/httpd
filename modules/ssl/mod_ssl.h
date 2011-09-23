@@ -37,9 +37,9 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
                          char *));
 
 /** The ssl_ext_list() optional function attempts to build an array
- * of all the values contained in the named X.509 extension. The 
+ * of all the values contained in the named X.509 extension. The
  * returned array will be created in the supplied pool.
- * The client certificate is used if peer is non-zero; the server 
+ * The client certificate is used if peer is non-zero; the server
  * certificate is used otherwise.
  * Extension specifies the extensions to use as a string. This can be
  * one of the "known" long or short names, or a numeric OID,

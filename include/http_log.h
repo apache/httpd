@@ -88,21 +88,21 @@ extern "C" {
 #define APLOG_NOERRNO		(APLOG_LEVELMASK + 1)
 
 /** Use APLOG_TOCLIENT on ap_log_rerror() to give content
- * handlers the option of including the error text in the 
+ * handlers the option of including the error text in the
  * ErrorDocument sent back to the client. Setting APLOG_TOCLIENT
- * will cause the error text to be saved in the request_rec->notes 
+ * will cause the error text to be saved in the request_rec->notes
  * table, keyed to the string "error-notes", if and only if:
  * - the severity level of the message is APLOG_WARNING or greater
  * - there are no other "error-notes" set in request_rec->notes
  * Once error-notes is set, it is up to the content handler to
  * determine whether this text should be sent back to the client.
- * Note: Client generated text streams sent back to the client MUST 
+ * Note: Client generated text streams sent back to the client MUST
  * be escaped to prevent CSS attacks.
  */
 #define APLOG_TOCLIENT          ((APLOG_LEVELMASK + 1) * 2)
 
 /* normal but significant condition on startup, usually printed to stderr */
-#define APLOG_STARTUP           ((APLOG_LEVELMASK + 1) * 4) 
+#define APLOG_STARTUP           ((APLOG_LEVELMASK + 1) * 4)
 
 #ifndef DEFAULT_LOGLEVEL
 #define DEFAULT_LOGLEVEL	APLOG_WARNING
@@ -285,7 +285,7 @@ AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p);
  * @param p The pool to allocate out of
  * @param file Name of the file to log stderr output
  */
-AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p, 
+AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
                                                const char *file);
 
 /**
@@ -295,9 +295,9 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
  * @param ptemp Pool used for temporary allocations
  * @param s_main The main server
  * @note ap_open_logs isn't expected to be used by modules, it is
- * an internal core function 
+ * an internal core function
  */
-int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog, 
+int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
                  apr_pool_t *ptemp, server_rec *s_main);
 
 /**
@@ -310,13 +310,13 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
  */
 void ap_logs_child_init(apr_pool_t *p, server_rec *s);
 
-/* 
+/*
  * The primary logging functions, ap_log_error, ap_log_rerror, ap_log_cerror,
- * and ap_log_perror use a printf style format string to build the log message.  
- * It is VERY IMPORTANT that you not include any raw data from the network, 
- * such as the request-URI or request header fields, within the format 
- * string.  Doing so makes the server vulnerable to a denial-of-service 
- * attack and other messy behavior.  Instead, use a simple format string 
+ * and ap_log_perror use a printf style format string to build the log message.
+ * It is VERY IMPORTANT that you not include any raw data from the network,
+ * such as the request-URI or request header fields, within the format
+ * string.  Doing so makes the server vulnerable to a denial-of-service
+ * attack and other messy behavior.  Instead, use a simple format string
  * like "%s", followed by the string containing the untrusted data.
  */
 
@@ -338,11 +338,11 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * in preference to calling this function.  Otherwise, if a conn_rec is
  * available, use that with ap_log_cerror() in preference to calling
  * this function.
- * @warning It is VERY IMPORTANT that you not include any raw data from 
- * the network, such as the request-URI or request header fields, within 
- * the format string.  Doing so makes the server vulnerable to a 
- * denial-of-service attack and other messy behavior.  Instead, use a 
- * simple format string like "%s", followed by the string containing the 
+ * @warning It is VERY IMPORTANT that you not include any raw data from
+ * the network, such as the request-URI or request header fields, within
+ * the format string.  Doing so makes the server vulnerable to a
+ * denial-of-service attack and other messy behavior.  Instead, use a
+ * simple format string like "%s", followed by the string containing the
  * untrusted data.
  */
 #ifdef DOXYGEN
@@ -381,11 +381,11 @@ AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
  * @param ... The arguments to use to fill out fmt.
  * @note ap_log_perror is implemented as a macro
  * @note Use APLOG_MARK to fill out file, line, and module_index
- * @warning It is VERY IMPORTANT that you not include any raw data from 
- * the network, such as the request-URI or request header fields, within 
- * the format string.  Doing so makes the server vulnerable to a 
- * denial-of-service attack and other messy behavior.  Instead, use a 
- * simple format string like "%s", followed by the string containing the 
+ * @warning It is VERY IMPORTANT that you not include any raw data from
+ * the network, such as the request-URI or request header fields, within
+ * the format string.  Doing so makes the server vulnerable to a
+ * denial-of-service attack and other messy behavior.  Instead, use a
+ * simple format string like "%s", followed by the string containing the
  * untrusted data.
  */
 #ifdef DOXYGEN
@@ -423,11 +423,11 @@ AP_DECLARE(void) ap_log_perror_(const char *file, int line, int module_index,
  * @param ... The arguments to use to fill out fmt.
  * @note ap_log_rerror is implemented as a macro
  * @note Use APLOG_MARK to fill out file, line, and module_index
- * @warning It is VERY IMPORTANT that you not include any raw data from 
- * the network, such as the request-URI or request header fields, within 
- * the format string.  Doing so makes the server vulnerable to a 
- * denial-of-service attack and other messy behavior.  Instead, use a 
- * simple format string like "%s", followed by the string containing the 
+ * @warning It is VERY IMPORTANT that you not include any raw data from
+ * the network, such as the request-URI or request header fields, within
+ * the format string.  Doing so makes the server vulnerable to a
+ * denial-of-service attack and other messy behavior.  Instead, use a
+ * simple format string like "%s", followed by the string containing the
  * untrusted data.
  */
 #ifdef DOXYGEN
@@ -467,11 +467,11 @@ AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
  * @note Use APLOG_MARK to fill out file, line, and module_index
  * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function.
- * @warning It is VERY IMPORTANT that you not include any raw data from 
- * the network, such as the request-URI or request header fields, within 
- * the format string.  Doing so makes the server vulnerable to a 
- * denial-of-service attack and other messy behavior.  Instead, use a 
- * simple format string like "%s", followed by the string containing the 
+ * @warning It is VERY IMPORTANT that you not include any raw data from
+ * the network, such as the request-URI or request header fields, within
+ * the format string.  Doing so makes the server vulnerable to a
+ * denial-of-service attack and other messy behavior.  Instead, use a
+ * simple format string like "%s", followed by the string containing the
  * untrusted data.
  */
 #ifdef DOXYGEN
@@ -513,11 +513,11 @@ AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_index,
  * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function. This function is mainly useful for
  * modules like mod_ssl to use before the request_rec is created.
- * @warning It is VERY IMPORTANT that you not include any raw data from 
- * the network, such as the request-URI or request header fields, within 
- * the format string.  Doing so makes the server vulnerable to a 
- * denial-of-service attack and other messy behavior.  Instead, use a 
- * simple format string like "%s", followed by the string containing the 
+ * @warning It is VERY IMPORTANT that you not include any raw data from
+ * the network, such as the request-URI or request header fields, within
+ * the format string.  Doing so makes the server vulnerable to a
+ * denial-of-service attack and other messy behavior.  Instead, use a
+ * simple format string like "%s", followed by the string containing the
  * untrusted data.
  */
 #ifdef DOXYGEN
@@ -588,7 +588,7 @@ typedef struct piped_log piped_log;
  * @param p The pool to allocate out of
  * @param program The program to run in the logging process
  * @return The piped log structure
- * @note The log program is invoked as @p APR_PROGRAM_ENV, 
+ * @note The log program is invoked as @p APR_PROGRAM_ENV,
  *      @see ap_open_piped_log_ex to modify this behavior
  */
 AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program);
@@ -625,7 +625,7 @@ AP_DECLARE(apr_file_t *) ap_piped_log_read_fd(piped_log *pl);
 AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
 
 /**
- * hook method to log error messages 
+ * hook method to log error messages
  * @ingroup hooks
  * @param file The file in which this function is called
  * @param line The line number on which this function is called
@@ -635,7 +635,7 @@ AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
  * @param s The server which we are logging for
  * @param r The request which we are logging for
  * @param pool Memory pool to allocate from
- * @param errstr message to log 
+ * @param errstr message to log
  */
 AP_DECLARE_HOOK(void, error_log, (const char *file, int line,
                        int module_index, int level,

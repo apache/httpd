@@ -59,7 +59,7 @@ struct ap_serf_cluster_provider_t {
      */
     void *baton;
     /**
-     * Check that the key/value pairs used to configure the 
+     * Check that the key/value pairs used to configure the
      * cluster are valid.
      *
      * Return non-NULL on failure with an error message, like standard httpd
@@ -73,8 +73,8 @@ struct ap_serf_cluster_provider_t {
     /**
      * Provide an ordered array of ap_serf_server_t in the order that
      * mod_serf should attempt to use them.  If a server on the list
-     * is known to be not responding, it may be skipped.  If mod_serf is 
-     * unable to contact any of the servers, a 502 will be returned to the 
+     * is known to be not responding, it may be skipped.  If mod_serf is
+     * unable to contact any of the servers, a 502 will be returned to the
      * client.
      *
      * Returns OK on sucess, all other return codes will result in a 500.

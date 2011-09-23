@@ -17,7 +17,7 @@
 /**
  * @file mod_so.h
  * @brief Shared Object Loader Extension Module for Apache
- * 
+ *
  * @defgroup MOD_SO mod_so
  * @ingroup APACHE_MODS
  * @{

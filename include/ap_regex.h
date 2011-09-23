@@ -119,7 +119,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *regex, int cflags);
  * @param eflags Bitwise OR of AP_REG_* flags (NOTBOL and NOTEOL supported,
  *                                             other flags are ignored)
  * @return 0 for successful match, \p AP_REG_NOMATCH otherwise
- */ 
+ */
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch, int eflags);
 
@@ -146,7 +146,7 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
  * @param errbuf A buffer to store the error in
  * @param errbuf_size The size of the buffer
  */
-AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg, 
+AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg,
                                    char *errbuf, apr_size_t errbuf_size);
 
 /** Destroy a pre-compiled regex.

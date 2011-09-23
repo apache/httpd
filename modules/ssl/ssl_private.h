@@ -18,7 +18,7 @@
 #define SSL_PRIVATE_H
 
 /**
- * @file  ssl_private.h 
+ * @file  ssl_private.h
  * @brief Internal interfaces private to mod_ssl.
  *
  * @defgroup MOD_SSL_PRIVATE Private
@@ -147,7 +147,7 @@
 #ifndef PEM_F_DEF_CALLBACK
 #ifdef PEM_F_PEM_DEF_CALLBACK
 /** In OpenSSL 0.9.8 PEM_F_DEF_CALLBACK was renamed */
-#define PEM_F_DEF_CALLBACK PEM_F_PEM_DEF_CALLBACK 
+#define PEM_F_DEF_CALLBACK PEM_F_PEM_DEF_CALLBACK
 #endif
 #endif
 
@@ -428,7 +428,7 @@ typedef struct {
     /* Track the handshake/renegotiation state for the connection so
      * that all client-initiated renegotiations can be rejected, as a
      * partial fix for CVE-2009-3555. */
-    enum { 
+    enum {
         RENEG_INIT = 0, /* Before initial handshake */
         RENEG_REJECT, /* After initial handshake; any client-initiated
                        * renegotiation should be rejected */
@@ -437,7 +437,7 @@ typedef struct {
         RENEG_ABORT /* Renegotiation initiated by client, abort the
                      * connection */
     } reneg_state;
-    
+
     server_rec *server;
 } SSLConnRec;
 
@@ -720,7 +720,7 @@ int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_re
 void         ssl_init_Engine(server_rec *, apr_pool_t *);
 void         ssl_init_ConfigureServer(server_rec *, apr_pool_t *, apr_pool_t *, SSLSrvConfigRec *);
 void         ssl_init_CheckServers(server_rec *, apr_pool_t *);
-STACK_OF(X509_NAME) 
+STACK_OF(X509_NAME)
             *ssl_init_FindCAList(server_rec *, apr_pool_t *, const char *, const char *);
 void         ssl_init_Child(apr_pool_t *, server_rec *);
 apr_status_t ssl_init_ModuleKill(void *data);
@@ -806,7 +806,7 @@ void         ssl_util_ppclose(server_rec *, apr_pool_t *, apr_file_t *);
 char        *ssl_util_readfilter(server_rec *, apr_pool_t *, const char *,
                                  const char * const *);
 BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
-ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *); 
+ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *);
 char        *ssl_util_algotypestr(ssl_algo_t);
 void         ssl_util_thread_setup(apr_pool_t *);
 int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
@@ -857,17 +857,17 @@ void         ssl_log_ssl_error(const char *, int, int, server_rec *);
  * additional argument (whose details are appended to the log message).
  * The other arguments are interpreted exactly as with their ap_log_*error
  * counterparts. */
-void ssl_log_xerror(const char *file, int line, int level, 
+void ssl_log_xerror(const char *file, int line, int level,
                     apr_status_t rv, apr_pool_t *p, server_rec *s,
                     X509 *cert, const char *format, ...)
     __attribute__((format(printf,8,9)));
 
-void ssl_log_cxerror(const char *file, int line, int level, 
+void ssl_log_cxerror(const char *file, int line, int level,
                      apr_status_t rv, conn_rec *c, X509 *cert,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
 
-void ssl_log_rxerror(const char *file, int line, int level, 
+void ssl_log_rxerror(const char *file, int line, int level,
                      apr_status_t rv, request_rec *r, X509 *cert,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
@@ -891,7 +891,7 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p);
 /* Perform OCSP validation of the current cert in the given context.
  * Returns non-zero on success or zero on failure.  On failure, the
  * context error code is set. */
-int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc, 
+int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
                        server_rec *s, conn_rec *c, apr_pool_t *pool);
 
 /* OCSP helper interface; dispatches the given OCSP request to the

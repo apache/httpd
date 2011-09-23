@@ -35,7 +35,7 @@ extern "C" {
 typedef struct ap_directive_t ap_directive_t;
 
 /**
- * @brief Structure used to build the config tree.  
+ * @brief Structure used to build the config tree.
  *
  * The config tree only stores
  * the directives that will be active in the running server.  Directives
@@ -46,7 +46,7 @@ typedef struct ap_directive_t ap_directive_t;
 struct ap_directive_t {
     /** The current directive */
     const char *directive;
-    /** The arguments for the current directive, stored as a space 
+    /** The arguments for the current directive, stored as a space
      *  separated list */
     const char *args;
     /** The next directive node in the tree */
@@ -87,7 +87,7 @@ AP_DECLARE_DATA extern ap_directive_t *ap_conftree;
  * @param child Is the node to add a child node
  * @return the added node
  */
-ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current, 
+ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current,
                             ap_directive_t *toadd, int child);
 
 #ifdef __cplusplus

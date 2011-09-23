@@ -18,7 +18,7 @@
 #define MOD_AUTHZ_DBD_H
 #include "httpd.h"
 
-/* Create a set of AUTHZ_DBD_DECLARE(type), AUTHZ_DBD_DECLARE_NONSTD(type) and 
+/* Create a set of AUTHZ_DBD_DECLARE(type), AUTHZ_DBD_DECLARE_NONSTD(type) and
  * AUTHZ_DBD_DECLARE_DATA with appropriate export and import tags
  */
 #if !defined(WIN32)

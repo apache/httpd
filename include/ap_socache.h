@@ -24,7 +24,7 @@
  */
 
 #ifndef AP_SOCACHE_H
-#define AP_SOCACHE_H 
+#define AP_SOCACHE_H
 
 #include "httpd.h"
 #include "ap_provider.h"
@@ -93,7 +93,7 @@ typedef struct ap_socache_provider_t {
     /** Bitmask of AP_SOCACHE_FLAG_* flags: */
     unsigned int flags;
 
-    /** 
+    /**
      * Create a session cache based on the given configuration string.
      * The instance pointer returned in the instance paramater will be
      * passed as the first argument to subsequent invocations.
@@ -102,11 +102,11 @@ typedef struct ap_socache_provider_t {
      * @param arg Used-specified configuration string.  May be NULL to
      *        force use of defaults.
      * @param tmp Pool to be used for any temporary allocations
-     * @param p Pool to be use for any allocations lasting as long as 
+     * @param p Pool to be use for any allocations lasting as long as
      * the created instance
      * @return NULL on success, or an error string on failure.
      */
-    const char *(*create)(ap_socache_instance_t **instance, const char *arg, 
+    const char *(*create)(ap_socache_instance_t **instance, const char *arg,
                           apr_pool_t *tmp, apr_pool_t *p);
 
     /* Initialize the cache.  The cname must be of maximum length 16
@@ -124,18 +124,18 @@ typedef struct ap_socache_provider_t {
      * @param pool Pool for long-lived allocations
      * @return APR status value indicating success.
      */
-    apr_status_t (*init)(ap_socache_instance_t *instance, const char *cname, 
+    apr_status_t (*init)(ap_socache_instance_t *instance, const char *cname,
                          const struct ap_socache_hints *hints,
                          server_rec *s, apr_pool_t *pool);
 
-    /** 
+    /**
      * Destroy a given cache instance object.
      * @param instance The cache instance to destroy.
      * @param s Associated server structure (for logging purposes)
      */
     void (*destroy)(ap_socache_instance_t *instance, server_rec *s);
 
-    /** 
+    /**
      * Store an object in a cache instance.
      * @param instance The cache instance
      * @param s Associated server structure (for logging purposes)
@@ -147,9 +147,9 @@ typedef struct ap_socache_provider_t {
      * @param pool Pool for temporary allocations.
      * @return APR status value.
      */
-    apr_status_t (*store)(ap_socache_instance_t *instance, server_rec *s, 
-                          const unsigned char *id, unsigned int idlen, 
-                          apr_time_t expiry, 
+    apr_status_t (*store)(ap_socache_instance_t *instance, server_rec *s,
+                          const unsigned char *id, unsigned int idlen,
+                          apr_time_t expiry,
                           unsigned char *data, unsigned int datalen,
                           apr_pool_t *pool);
 

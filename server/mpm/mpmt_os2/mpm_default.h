@@ -17,7 +17,7 @@
 /**
  * @file  mpmt_os2/mpm_default.h
  * @brief os2 MPM defaults
- * 
+ *
  * @addtogroup APACHE_MPM_OS2
  * @{
  */

@@ -148,7 +148,7 @@ struct ap_slotmem_provider_t {
     /**
      * return number of free (not used) slots allocated for this entry.
      * Valid for slots which are AP_SLOTMEM_TYPE_PREGRAB as well as
-     * any which use get/release. 
+     * any which use get/release.
      * @param s ap_slotmem_instance_t to use.
      * @return number of slots
      */

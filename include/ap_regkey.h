@@ -34,7 +34,7 @@ extern "C" {
 
 typedef struct ap_regkey_t ap_regkey_t;
 
-/* Used to recover AP_REGKEY_* constants 
+/* Used to recover AP_REGKEY_* constants
  */
 AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
 
@@ -64,8 +64,8 @@ AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
  *           AP_REGKEY_CURRENT_USER
  *           AP_REGKEY_LOCAL_MACHINE
  *           AP_REGKEY_USERS
- *           AP_REGKEY_PERFORMANCE_DATA 
- *           AP_REGKEY_DYN_DATA 
+ *           AP_REGKEY_PERFORMANCE_DATA
+ *           AP_REGKEY_DYN_DATA
  * </PRE>
  * @param keyname The path of the key relative to the parent key
  * @param flags Or'ed value of:
@@ -77,10 +77,10 @@ AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i);
  * </PRE>
  * @param pool The pool in which newkey is allocated
  */
-AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey, 
+AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey,
                                         const ap_regkey_t *parentkey,
                                         const char *keyname,
-                                        apr_int32_t flags, 
+                                        apr_int32_t flags,
                                         apr_pool_t *pool);
 
 /**
@@ -98,22 +98,22 @@ AP_DECLARE(apr_status_t) ap_regkey_close(ap_regkey_t *key);
  *           AP_REGKEY_CURRENT_USER
  *           AP_REGKEY_LOCAL_MACHINE
  *           AP_REGKEY_USERS
- *           AP_REGKEY_PERFORMANCE_DATA 
- *           AP_REGKEY_DYN_DATA 
+ *           AP_REGKEY_PERFORMANCE_DATA
+ *           AP_REGKEY_DYN_DATA
  * </PRE>
  * @param keyname The path of the key relative to the parent key
  * @param pool The pool used for temp allocations
  * @remark ap_regkey_remove() is not recursive, although it removes
- * all values within the given keyname, it will not remove a key 
+ * all values within the given keyname, it will not remove a key
  * containing subkeys.
  */
-AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent, 
+AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent,
                                           const char *keyname,
                                           apr_pool_t *pool);
 
 /**
  * Win32 Only: Retrieve a registry value string from an open key.
- * @param result The string value retrieved 
+ * @param result The string value retrieved
  * @param key The registry key to retrieve the value from
  * @param valuename The named value to retrieve (pass "" for the default)
  * @param pool The pool used to store the result
@@ -121,9 +121,9 @@ AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent,
  * if the registry value is set with AP_REG_EXPAND (REG_EXPAND_SZ), such
  * expansions are always performed.
  */
-AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result, 
-                                             ap_regkey_t *key, 
-                                             const char *valuename, 
+AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
+                                             ap_regkey_t *key,
+                                             const char *valuename,
                                              apr_pool_t *pool);
 
 /**
@@ -135,26 +135,26 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
  * values will find all %foo% variables expanded from the environment.
  * @param pool The pool used for temp allocations
  */
-AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key, 
-                                             const char *valuename, 
-                                             const char *value, 
+AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
+                                             const char *valuename,
+                                             const char *value,
                                              apr_int32_t flags,
                                              apr_pool_t *pool);
 
 /**
  * Win32 Only: Retrieve a raw byte value from an open key.
- * @param result The raw bytes value retrieved 
- * @param resultsize Pointer to a variable to store the number raw bytes retrieved 
+ * @param result The raw bytes value retrieved
+ * @param resultsize Pointer to a variable to store the number raw bytes retrieved
  * @param resulttype Pointer to a variable to store the registry type of the value retrieved
  * @param key The registry key to retrieve the value from
  * @param valuename The named value to retrieve (pass "" for the default)
  * @param pool The pool used to store the result
  */
-AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result, 
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
                                                  apr_size_t *resultsize,
                                                  apr_int32_t *resulttype,
-                                                 ap_regkey_t *key, 
-                                                 const char *valuename, 
+                                                 ap_regkey_t *key,
+                                                 const char *valuename,
                                                  apr_pool_t *pool);
 
 /**
@@ -163,13 +163,13 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
  * @param valuename The named value to store (pass "" for the default)
  * @param value The bytes to store for the named value
  * @param valuesize The number of bytes for value
- * @param valuetype The 
+ * @param valuetype The
  * values will find all %foo% variables expanded from the environment.
  * @param pool The pool used for temp allocations
  */
-AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key, 
-                                                 const char *valuename, 
-                                                 const void *value, 
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key,
+                                                 const char *valuename,
+                                                 const void *value,
                                                  apr_size_t  valuesize,
                                                  apr_int32_t valuetype,
                                                  apr_pool_t *pool);
@@ -181,9 +181,9 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key,
  * @param valuename The named value to retrieve (pass "" for the default)
  * @param pool The pool used to store the result
  */
-AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result, 
+AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
                                                    ap_regkey_t *key,
-                                                   const char *valuename, 
+                                                   const char *valuename,
                                                    apr_pool_t *pool);
 
 /**
@@ -194,9 +194,9 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
  * @param elts The number of elements in the elts string array
  * @param pool The pool used for temp allocations
  */
-AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key, 
-                                                   const char *valuename, 
-                                                   int nelts, 
+AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
+                                                   const char *valuename,
+                                                   int nelts,
                                                    const char * const * elts,
                                                    apr_pool_t *pool);
 
@@ -206,7 +206,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
  * @param valuename The named value to remove (pass "" for the default)
  * @param pool The pool used for temp allocations
  */
-AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key, 
+AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key,
                                                 const char *valuename,
                                                 apr_pool_t *pool);
 

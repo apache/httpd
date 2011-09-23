@@ -16,7 +16,7 @@
 
 /**
  * @file  mpm_winnt.h
- * @brief WinNT MPM specific 
+ * @brief WinNT MPM specific
  *
  * @addtogroup APACHE_MPM_WINNT
  * @{
@@ -39,18 +39,18 @@
 #define SERVICECONFIG "System\\CurrentControlSet\\Services\\%s"
 #define SERVICEPARAMS "System\\CurrentControlSet\\Services\\%s\\Parameters"
 
-apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name, 
+apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
                                                  const char *set_name);
-apr_status_t mpm_merge_service_args(apr_pool_t *p, apr_array_header_t *args, 
+apr_status_t mpm_merge_service_args(apr_pool_t *p, apr_array_header_t *args,
                                    int fixed_args);
 
 apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p);
 apr_status_t mpm_service_started(void);
-apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                                 char const* const* argv, int reconfig);
 apr_status_t mpm_service_uninstall(void);
 
-apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                               char const* const* argv);
 
 void mpm_signal_service(apr_pool_t *ptemp, int signal);

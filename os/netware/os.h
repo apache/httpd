@@ -49,7 +49,7 @@ AP_DECLARE_DATA extern int hold_screen_on_exit; /* Indicates whether the screen 
 #define getpid NXThreadGetId
 
 /* Hold the screen open if there is an exit code and the hold_screen_on_exit flag >= 0 or the
-   hold_screen_on_exit > 0.  If the hold_screen_on_exit flag is < 0 then close the screen no 
+   hold_screen_on_exit > 0.  If the hold_screen_on_exit flag is < 0 then close the screen no
    matter what the exit code is. */
 #define exit(s) {if((s||hold_screen_on_exit)&&(hold_screen_on_exit>=0)){pressanykey();}apr_terminate();exit(s);}
 

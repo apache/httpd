@@ -71,7 +71,7 @@ char *ap_response_code_string(request_rec *r, int error_index);
  * @fn void ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
  */
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
- 
+
 /**
  * Send an appropriate response to an http TRACE request.
  * @param r The current request

@@ -25,8 +25,8 @@
 #include "ap_hooks.h"
 
 /* Although this file doesn't declare any hooks, declare the exports group here */
-/** 
- * @defgroup exports Apache exports 
+/**
+ * @defgroup exports Apache exports
  * @ingroup  APACHE_CORE
  */
 
@@ -40,8 +40,8 @@
  * @see AP_DECLARE_EXPORT
  *
  * AP_DECLARE_STATIC and AP_DECLARE_EXPORT are left undefined when
- * including Apache's Core headers, to import and link the symbols from the 
- * dynamic Apache Core library and assure appropriate indirection and calling 
+ * including Apache's Core headers, to import and link the symbols from the
+ * dynamic Apache Core library and assure appropriate indirection and calling
  * conventions at compile time.
  */
 # define AP_DECLARE_STATIC
@@ -67,7 +67,7 @@
 #define AP_DECLARE(type)            type
 
 /**
- * Apache Core dso variable argument and hook functions are declared with 
+ * Apache Core dso variable argument and hook functions are declared with
  * AP_DECLARE_NONSTD(), as they must use the C language calling convention.
  * @see AP_DECLARE
  * @code
@@ -106,7 +106,7 @@
 /**
  * Declare a dso module's exported module structure as AP_MODULE_DECLARE_DATA.
  *
- * Unless AP_MODULE_DECLARE_STATIC is defined at compile time, symbols 
+ * Unless AP_MODULE_DECLARE_STATIC is defined at compile time, symbols
  * declared with AP_MODULE_DECLARE_DATA are always exported.
  * @code
  * module AP_MODULE_DECLARE_DATA mod_tag
@@ -124,7 +124,7 @@
  * AP_MODULE_DECLARE_EXPORT is a no-op.  Unless contradicted by the
  * AP_MODULE_DECLARE_STATIC compile-time symbol, it is assumed and defined.
  *
- * The old SHARED_MODULE compile-time symbol is now the default behavior, 
+ * The old SHARED_MODULE compile-time symbol is now the default behavior,
  * so it is no longer referenced anywhere with Apache 2.0.
  */
 #define AP_MODULE_DECLARE_EXPORT

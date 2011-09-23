@@ -85,7 +85,7 @@ struct fd_queue_t
 typedef struct fd_queue_t fd_queue_t;
 
 void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info);
-void ap_push_pool(fd_queue_info_t * queue_info,          
+void ap_push_pool(fd_queue_info_t * queue_info,
                                     apr_pool_t * pool_to_recycle);
 
 apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,

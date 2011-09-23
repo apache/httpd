@@ -23,8 +23,8 @@
 #define AP_HOOKS_H
 
 /* Although this file doesn't declare any hooks, declare the hook group here */
-/** 
- * @defgroup hooks Apache Hooks 
+/**
+ * @defgroup hooks Apache Hooks
  * @ingroup  APACHE_CORE
  */
 
@@ -50,8 +50,8 @@
  * @see AP_DECLARE_EXPORT
  *
  * AP_DECLARE_STATIC and AP_DECLARE_EXPORT are left undefined when
- * including Apache's Core headers, to import and link the symbols from the 
- * dynamic Apache Core library and assure appropriate indirection and calling 
+ * including Apache's Core headers, to import and link the symbols from the
+ * dynamic Apache Core library and assure appropriate indirection and calling
  * conventions at compile time.
  */
 # define AP_DECLARE_STATIC
@@ -119,8 +119,8 @@
                                             args_use,ok,decline)
 
 /**
- * Implement a hook that runs until a function returns something other than 
- * decline. If all functions return decline, the hook runner returns decline. 
+ * Implement a hook that runs until a function returns something other than
+ * decline. If all functions return decline, the hook runner returns decline.
  * The implementation is called ap_run_<i>name</i>.
  *
  * @param ret The return type of the hook (and the hook runner)

@@ -62,7 +62,7 @@
 #include "http_request.h"
 #include "apr_optional.h"
 
-/* Create a set of LDAP_DECLARE macros with appropriate export 
+/* Create a set of LDAP_DECLARE macros with appropriate export
  * and import tags for the platform
  */
 #if !defined(WIN32)
@@ -93,9 +93,9 @@ extern "C" {
 
 /* Values that the deref member can have */
 typedef enum {
-    never=LDAP_DEREF_NEVER, 
-    searching=LDAP_DEREF_SEARCHING, 
-    finding=LDAP_DEREF_FINDING, 
+    never=LDAP_DEREF_NEVER,
+    searching=LDAP_DEREF_SEARCHING,
+    finding=LDAP_DEREF_FINDING,
     always=LDAP_DEREF_ALWAYS
 } deref_options;
 
@@ -137,7 +137,7 @@ typedef struct util_ldap_config_t {
     apr_array_header_t *client_certs;  /* Client certificates */
 } util_ldap_config_t;
 
-/* LDAP cache state information */ 
+/* LDAP cache state information */
 typedef struct util_ldap_state_t {
     apr_pool_t *pool;           /* pool from which this state is allocated */
 #if APR_HAS_THREADS
@@ -193,7 +193,7 @@ struct mod_auth_ldap_groupattr_entry_t {
  * @fn int util_ldap_connection_open(request_rec *r,
  *                                        util_ldap_connection_t *ldc)
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_connection_open,(request_rec *r, 
+APR_DECLARE_OPTIONAL_FN(int,uldap_connection_open,(request_rec *r,
                                             util_ldap_connection_t *ldc));
 
 /**
@@ -226,7 +226,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
  * @param binddn The DN to bind with
  * @param bindpw The password to bind with
  * @param deref The dereferencing behavior
- * @param secure use SSL on the connection 
+ * @param secure use SSL on the connection
  * @tip Once a connection is found and returned, a lock will be acquired to
  *      lock that particular connection, so that another thread does not try and
  *      use this connection while it is busy. Once you are finished with a connection,
@@ -257,8 +257,8 @@ APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find,(request_
  *                                        const char *url, const char *dn, const char *reqdn,
  *                                        int compare_dn_on_server)
  */
-APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_connection_t *ldc, 
-                              const char *url, const char *dn, const char *reqdn, 
+APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_connection_t *ldc,
+                              const char *url, const char *dn, const char *reqdn,
                               int compare_dn_on_server));
 
 /**
@@ -268,7 +268,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_con
  * @param url The URL of the LDAP connection - used for deciding which cache to use.
  * @param dn The DN of the object in which we do the compare.
  * @param attrib The attribute within the object we are comparing for.
- * @param value The value of the attribute we are trying to compare for. 
+ * @param value The value of the attribute we are trying to compare for.
  * @tip Use this function to determine whether an attribute/value pair exists within an
  *      object. Typically this would be used to determine LDAP top-level group
  *      membership.

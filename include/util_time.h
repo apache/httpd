@@ -81,7 +81,7 @@ AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t *tm,
 /**
  * format a recent timestamp in the ctime() format.
  * @param date_str String to write to.
- * @param t the time to convert 
+ * @param t the time to convert
  * @note Consider using ap_recent_ctime_ex instead.
  * @return APR_SUCCESS iff successful
  */
@@ -91,7 +91,7 @@ AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t);
 /**
  * format a recent timestamp in an extended ctime() format.
  * @param date_str String to write to.
- * @param t the time to convert 
+ * @param t the time to convert
  * @param option Additional formatting options (AP_CTIME_OPTION_*).
  * @param len Pointer to an int containing the length of the provided buffer.
  *        On successful return it contains the number of bytes written to the
@@ -105,7 +105,7 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
 /**
  * format a recent timestamp in the RFC822 format
  * @param date_str String to write to (must have length >= APR_RFC822_DATE_LEN)
- * @param t the time to convert 
+ * @param t the time to convert
  */
 AP_DECLARE(apr_status_t) ap_recent_rfc822_date(char *date_str, apr_time_t t);
 
