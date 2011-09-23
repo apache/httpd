@@ -16,7 +16,7 @@
 
 /**
  * @file  mod_unixd.h
- * @brief common stuff that unix MPMs will want 
+ * @brief common stuff that unix MPMs will want
  *
  * @addtogroup APACHE_OS_UNIX
  * @{

@@ -42,7 +42,7 @@ typedef enum {
     /** The filter should return at most readbytes data. */
     AP_MODE_READBYTES,
     /** The filter should return at most one line of CRLF data.
-     *  (If a potential line is too long or no CRLF is found, the 
+     *  (If a potential line is too long or no CRLF is found, the
      *   filter may return partial data).
      */
     AP_MODE_GETLINE,
@@ -106,7 +106,7 @@ typedef struct ap_filter_t ap_filter_t;
  *
  * Callbacks are associated with a filter definition, which is specified
  * by name. See ap_register_input_filter() and ap_register_output_filter()
- * for setting the association between a name for a filter and its 
+ * for setting the association between a name for a filter and its
  * associated callback (and other information).
  *
  * If the initialization function argument passed to the registration
@@ -127,14 +127,14 @@ typedef struct ap_filter_t ap_filter_t;
  * For the input and output filters, the return value of a filter should be
  * an APR status value.  For the init function, the return value should
  * be an HTTP error code or OK if it was successful.
- * 
+ *
  * @ingroup filter
  * @{
  */
 typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f,
                                            apr_bucket_brigade *b);
 typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f,
-                                          apr_bucket_brigade *b, 
+                                          apr_bucket_brigade *b,
                                           ap_input_mode_t mode,
                                           apr_read_type_e block,
                                           apr_off_t readbytes);
@@ -235,9 +235,9 @@ struct ap_filter_rec_t {
     /** Providers for this filter */
     ap_filter_provider_t *providers;
 
-    /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
-     * An AP_FTYPE_CONTENT filter modifies the data based on information 
-     * found in the content.  An AP_FTYPE_CONNECTION filter modifies the 
+    /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.
+     * An AP_FTYPE_CONTENT filter modifies the data based on information
+     * found in the content.  An AP_FTYPE_CONNECTION filter modifies the
      * data based on the type of connection.
      */
     ap_filter_type ftype;
@@ -250,7 +250,7 @@ struct ap_filter_rec_t {
 };
 
 /**
- * @brief The representation of a filter chain.  
+ * @brief The representation of a filter chain.
  *
  * Each request has a list
  * of these structures which are called in turn to filter the data.  Sub
@@ -282,7 +282,7 @@ struct ap_filter_t {
 
 /**
  * Get the current bucket brigade from the next filter on the filter
- * stack.  The filter returns an apr_status_t value.  If the bottom-most 
+ * stack.  The filter returns an apr_status_t value.  If the bottom-most
  * filter doesn't read from the network, then ::AP_NOBODY_READ is returned.
  * The bucket brigade will be empty when there is nothing left to get.
  * @param filter The next filter in the chain
@@ -293,15 +293,15 @@ struct ap_filter_t {
  *               ::APR_BLOCK_READ, ::APR_NONBLOCK_READ
  * @param readbytes How many bytes to read from the next filter.
  */
-AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, 
-                                        apr_bucket_brigade *bucket, 
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter,
+                                        apr_bucket_brigade *bucket,
                                         ap_input_mode_t mode,
-                                        apr_read_type_e block, 
+                                        apr_read_type_e block,
                                         apr_off_t readbytes);
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter
- * stack.  The filter returns an apr_status_t value.  If the bottom-most 
+ * stack.  The filter returns an apr_status_t value.  If the bottom-most
  * filter doesn't write to the network, then ::AP_NOBODY_WROTE is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
@@ -315,14 +315,14 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
                                          apr_bucket_brigade *bucket);
 
 /**
- * This function is used to register an input filter with the system. 
- * After this registration is performed, then a filter may be added 
- * into the filter chain by using ap_add_input_filter() and simply 
+ * This function is used to register an input filter with the system.
+ * After this registration is performed, then a filter may be added
+ * into the filter chain by using ap_add_input_filter() and simply
  * specifying the name.
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param filter_init The function to call before the filter handlers 
+ * @param filter_init The function to call before the filter handlers
                       are invoked
  * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT_SET or
  *              ::AP_FTYPE_CONNECTION
@@ -345,14 +345,14 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
 */
 
 /**
- * This function is used to register an output filter with the system. 
- * After this registration is performed, then a filter may be added 
+ * This function is used to register an output filter with the system.
+ * After this registration is performed, then a filter may be added
  * directly to the filter chain by using ap_add_output_filter() and
  * simply specifying the name, or as a provider under mod_filter.
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param filter_init The function to call before the filter handlers 
+ * @param filter_init The function to call before the filter handlers
  *                    are invoked
  * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT_SET or
  *              ::AP_FTYPE_CONNECTION
@@ -376,7 +376,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter_protocol(
  * calls to ap_add_filter). If the current filter chain contains filters
  * from another request, then this filter will be added before those other
  * filters.
- * 
+ *
  * To re-iterate that last comment.  This function is building a FIFO
  * list of filters.  Take note of that when adding your filter to the chain.
  *
@@ -421,7 +421,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_get_input_filter_handle(const char *name);
  * object r must be passed in to ensure the filter chains are modified
  * correctly.  f->r will still be initialized as NULL in the new filter.
  */
-AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx, 
+AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
                                                request_rec *r, conn_rec *c);
 
 /**
@@ -479,7 +479,7 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
  */
 
 /**
- * prepare a bucket brigade to be setaside.  If a different brigade was 
+ * prepare a bucket brigade to be setaside.  If a different brigade was
  * set-aside earlier, then the two brigades are concatenated together.
  * @param f The current filter
  * @param save_to The brigade that was previously set-aside.  Regardless, the
@@ -490,7 +490,7 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
  */
 AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
                                          apr_bucket_brigade **save_to,
-                                         apr_bucket_brigade **b, apr_pool_t *p);    
+                                         apr_bucket_brigade **b, apr_pool_t *p);
 
 /**
  * Flush function for apr_brigade_* calls.  This calls ap_pass_brigade
@@ -560,7 +560,7 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
                                            apr_bucket_brigade *bb,
                                            const char *fmt,
                                            ...)
-        __attribute__((format(printf,3,4)));                                    
+        __attribute__((format(printf,3,4)));
 
 /**
  * set protocol requirements for an output content filter

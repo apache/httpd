@@ -54,7 +54,7 @@
 #define SSL_SESSION_ID_STRING_LEN \
     ((SSL_MAX_SSL_SESSION_ID_LENGTH + 1) * 2)
 
-/**  
+/**
  *  Additional Functions
  */
 void        SSL_init_app_data2_idx(void);

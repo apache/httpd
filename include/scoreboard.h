@@ -43,7 +43,7 @@ extern "C" {
 #define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
 #endif
 
-/* Scoreboard info on a process is, for now, kept very brief --- 
+/* Scoreboard info on a process is, for now, kept very brief ---
  * just status value and pid (the latter so that the caretaker process
  * can properly update the scoreboard when a process dies).  We may want
  * to eventually add a separate set of long_score structures which would
@@ -77,7 +77,7 @@ extern "C" {
  */
 typedef int ap_generation_t;
 
-/* Is the scoreboard shared between processes or not? 
+/* Is the scoreboard shared between processes or not?
  * Set by the MPM when the scoreboard is created.
  */
 typedef enum {
@@ -168,7 +168,7 @@ apr_status_t ap_cleanup_scoreboard(void *d);
 
 AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
                                      int child_num, int thread_num);
-    
+
 AP_DECLARE(int) ap_find_child_by_pid(apr_proc_t *pid);
 AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status, request_rec *r);
 AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_num,
@@ -198,10 +198,10 @@ const char *ap_set_reqtail(cmd_parms *cmd, void *dummy, int arg);
 /**
   * Hook for post scoreboard creation, pre mpm.
   * @param p       Apache pool to allocate from.
-  * @param sb_type 
+  * @param sb_type
   * @ingroup hooks
   * @return OK or DECLINE on success; anything else is a error
-  */  
+  */
 AP_DECLARE_HOOK(int, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
 
 /* for time_process_request() in http_main.c */

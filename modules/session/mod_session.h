@@ -17,7 +17,7 @@
 #ifndef MOD_SESSION_H
 #define MOD_SESSION_H
 
-/* Create a set of SESSION_DECLARE(type), SESSION_DECLARE_NONSTD(type) and 
+/* Create a set of SESSION_DECLARE(type), SESSION_DECLARE_NONSTD(type) and
  * SESSION_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(WIN32)

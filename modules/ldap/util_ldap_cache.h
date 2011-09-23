@@ -57,7 +57,7 @@ struct util_ald_cache {
     double avg_purgetime;       /* Average time to purge the cache */
     apr_time_t last_purge;      /* Time of the last purge */
     unsigned long npurged;      /* Number of elements purged in last purge. This is not
-                                   obvious: it won't be 3/4 the size of the cache if 
+                                   obvious: it won't be 3/4 the size of the cache if
                                    there were a lot of expired entries. */
 
     unsigned long fetches;      /* Number of fetches */
@@ -105,14 +105,14 @@ typedef struct util_compare_subgroup_t {
 } util_compare_subgroup_t;
 
 /*
- * We cache every successful search and bind operation, using the username 
- * as the key. Each node in the cache contains the returned DN, plus the 
+ * We cache every successful search and bind operation, using the username
+ * as the key. Each node in the cache contains the returned DN, plus the
  * password used to bind.
  */
 typedef struct util_search_node_t {
     const char *username;		/* Cache key */
     const char *dn;			/* DN returned from search */
-    const char *bindpw;			/* The most recently used bind password; 
+    const char *bindpw;			/* The most recently used bind password;
 					   NULL if the bind failed */
     apr_time_t lastbind;		/* Time of last successful bind */
     const char **vals;			/* Values of queried attributes */
@@ -121,11 +121,11 @@ typedef struct util_search_node_t {
 
 /*
  * We cache every successful compare operation, using the DN, attrib, and
- * value as the key. 
+ * value as the key.
  */
 typedef struct util_compare_node_t {
     const char *dn;			/* DN, attrib and value combine to be the key */
-    const char *attrib;			
+    const char *attrib;
     const char *value;
     apr_time_t lastcompare;
     int result;
@@ -188,12 +188,12 @@ void util_ald_cache_purge(util_ald_cache_t *cache);
 util_url_node_t *util_ald_create_caches(util_ldap_state_t *s, const char *url);
 util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 long cache_size,
-                                unsigned long (*hashfunc)(void *), 
+                                unsigned long (*hashfunc)(void *),
                                 int (*comparefunc)(void *, void *),
                                 void * (*copyfunc)(util_ald_cache_t *cache, void *),
                                 void (*freefunc)(util_ald_cache_t *cache, void *),
                                 void (*displayfunc)(request_rec *r, util_ald_cache_t *cache, void *));
-                                
+
 void util_ald_destroy_cache(util_ald_cache_t *cache);
 void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload);
 void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload);

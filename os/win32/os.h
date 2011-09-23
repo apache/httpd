@@ -19,7 +19,7 @@
  * @brief This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
  * and prototypes of OS specific functions defined in os.c or os-inline.c
- * 
+ *
  * @defgroup APACHE_OS_WIN32 win32
  * @ingroup  APACHE_OS
  * @{
@@ -107,8 +107,8 @@ void CleanNullACL(void *sa);
 
 /* Win2K kernel only */
 AP_DECLARE_LATE_DLL_FUNC(AP_DLL_WINADVAPI, BOOL, WINAPI, ChangeServiceConfig2A, 0, (
-    SC_HANDLE hService, 
-    DWORD dwInfoLevel, 
+    SC_HANDLE hService,
+    DWORD dwInfoLevel,
     LPVOID lpInfo),
     (hService, dwInfoLevel, lpInfo));
 #undef ChangeServiceConfig2

@@ -57,7 +57,7 @@ typedef void cache_cache_free(void *a);
  * @param key_entry   callback to get the key of a entry
  * @param free_entry  callback to free an entry
  */
-cache_cache_t* cache_init(int max_entries, 
+cache_cache_t* cache_init(int max_entries,
                                          apr_size_t max_size,
                                          cache_pqueue_get_priority get_pri,
                                          cache_pqueue_set_priority set_pri,
@@ -79,13 +79,13 @@ void cache_free(cache_cache_t *c);
  * @param key the key
  */
 void* cache_find(cache_cache_t* c, const char *key);
-/** 
+/**
  * insert a entry into the cache
  * @param c the cache
  * @param entry the entry
  */
 void cache_update(cache_cache_t* c, void *entry);
-/** 
+/**
  * insert a entry into the cache
  * @param c the cache
  * @param entry the entry
@@ -97,8 +97,8 @@ void cache_insert(cache_cache_t* c, void *entry);
  * @returns the entry or NULL
  */
 void* cache_pop(cache_cache_t* c);
-/** 
- * remove an item from the cache 
+/**
+ * remove an item from the cache
  * @param c the cache
  * @param entry the actual entry (from a find)
  */

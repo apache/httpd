@@ -48,24 +48,24 @@ typedef int (APR_THREAD_FUNC *PFN_GETEXTENSIONVERSION)(HSE_VERSION_INFO *ver_inf
 typedef struct isapi_cid isapi_cid;
 typedef struct isapi_cid *HCONN;
 
-/* Prototypes of the essential functions exposed by mod_isapi 
+/* Prototypes of the essential functions exposed by mod_isapi
  * for the module to communicate with Apache.
  */
-typedef int (APR_THREAD_FUNC 
+typedef int (APR_THREAD_FUNC
                 *PFN_GETSERVERVARIABLE)(HCONN         cid,
                                         char         *variable_name,
                                         void         *buf_data,
                                         apr_uint32_t *buf_size);
-typedef int (APR_THREAD_FUNC 
-                *PFN_WRITECLIENT)(HCONN         cid, 
+typedef int (APR_THREAD_FUNC
+                *PFN_WRITECLIENT)(HCONN         cid,
                                   void         *buf_data,
                                   apr_uint32_t *buf_size,
                                   apr_uint32_t  flags);
-typedef int (APR_THREAD_FUNC 
-                *PFN_READCLIENT)(HCONN         cid, 
+typedef int (APR_THREAD_FUNC
+                *PFN_READCLIENT)(HCONN         cid,
                                  void         *buf_data,
                                  apr_uint32_t *buf_size);
-typedef int (APR_THREAD_FUNC 
+typedef int (APR_THREAD_FUNC
                 *PFN_SERVERSUPPORTFUNCTION)(HCONN         cid,
                                             apr_uint32_t  HSE_code,
                                             void         *buf_data,
@@ -95,14 +95,14 @@ typedef struct EXTENSION_CONTROL_BLOCK {
     PFN_SERVERSUPPORTFUNCTION ServerSupportFunction;
 } EXTENSION_CONTROL_BLOCK;
 
-/* Status/Headers structure to pass to HSE_SEND_HEADER_EX, 
+/* Status/Headers structure to pass to HSE_SEND_HEADER_EX,
  * an MS extension to ServerSupportFunction
  */
 typedef struct HSE_SEND_HEADER_EX_INFO {
     const char * pszStatus; /* HTTP status text, such as "200 OK" */
     const char * pszHeader; /* HTTP header lines text, such as
                              *   "Content-type: text/plain\r\n"
-                             *   "Content-Language: en\r\n" 
+                             *   "Content-Language: en\r\n"
                              * Note that (in spite of cchFoo lengths below)
                              * NULL characters will interfere in headers.
                              */
@@ -124,7 +124,7 @@ typedef struct HSE_SEND_HEADER_EX_INFO {
  * relation to Apache; the rules that the Apache server obeys follow
  * its own design and HTTP protocol filter rules.
  *
- * We do not support async, however, we fake it.  If HSE_IO_SYNC is 
+ * We do not support async, however, we fake it.  If HSE_IO_SYNC is
  * not passed, and a completion context was defined, we will invoke the
  * completion function immediately following the transfer, and then
  * return to the caller.  If HSE_IO_SYNC is passed, there is no call
@@ -135,7 +135,7 @@ typedef struct HSE_SEND_HEADER_EX_INFO {
 #define HSE_IO_DISCONNECT_AFTER_SEND 4
 #define HSE_IO_NODELAY 4096
 
-/* The Completion function prototype.  This callback may be fixed with 
+/* The Completion function prototype.  This callback may be fixed with
  * the HSE_REQ_IO_COMPLETION ServerSupportFunction call, or overriden
  * for the HSE_REQ_TRANSMIT_FILE call.
  */
@@ -153,7 +153,7 @@ typedef struct HSE_TF_INFO {
                                           */
     void                 *pContext;
     apr_os_file_t         hFile;         /* HANDLE/fd to transmit */
-    const char           *pszStatusCode; /* Ignored if HSE_IO_SEND_HEADERS is 
+    const char           *pszStatusCode; /* Ignored if HSE_IO_SEND_HEADERS is
                                           * not set.  Includes HTTP status text
                                           * plus header text lines, such as
                                           *   "200 OK\r\n"
@@ -182,7 +182,7 @@ typedef struct HSE_URL_MAPEX_INFO {
 #define HSE_REQ_SEND_URL                 2
 #define HSE_REQ_SEND_RESPONSE_HEADER     3
 #define HSE_REQ_DONE_WITH_SESSION        4
-    
+
 /* MS Extented methods to ISAPI ServerSupportFunction() HSE_code */
 #define HSE_REQ_MAP_URL_TO_PATH          1001 /* Emulated */
 #define HSE_REQ_GET_SSPI_INFO            1002 /* Not Supported */
@@ -203,13 +203,13 @@ typedef struct HSE_URL_MAPEX_INFO {
 #define HSE_REQ_IS_CONNECTED             1018 /* Supported */
 #define HSE_REQ_EXTENSION_TRIGGER        1020 /* Not Supported */
 
-/* The request entry point that must be exported by every ISAPI handler 
+/* The request entry point that must be exported by every ISAPI handler
  */
 apr_uint32_t APR_THREAD_FUNC HttpExtensionProc(EXTENSION_CONTROL_BLOCK *ecb);
-typedef apr_uint32_t (APR_THREAD_FUNC 
+typedef apr_uint32_t (APR_THREAD_FUNC
                         *PFN_HTTPEXTENSIONPROC)(EXTENSION_CONTROL_BLOCK *ecb);
 
-/* Allowable return values from HttpExtensionProc (apparently 0 is also 
+/* Allowable return values from HttpExtensionProc (apparently 0 is also
  * accepted by MS IIS, and we will respect it as Success.)
  * If the HttpExtensionProc returns HSE_STATUS_PENDING, we will create
  * a wait mutex and lock on it, until HSE_REQ_DONE_WITH_SESSION is called.
@@ -246,10 +246,10 @@ typedef apr_uint32_t (APR_THREAD_FUNC
 #define HSE_TERM_ADVISORY_UNLOAD  2
 
 /* The shutdown entry point óptionally exported by an ISAPI handler, passed
- * HSE_TERM_MUST_UNLOAD or HSE_TERM_ADVISORY_UNLOAD.  The module may return 
+ * HSE_TERM_MUST_UNLOAD or HSE_TERM_ADVISORY_UNLOAD.  The module may return
  * if passed HSE_TERM_ADVISORY_UNLOAD, and the module will remain loaded.
- * If the module returns 1 to HSE_TERM_ADVISORY_UNLOAD it is immediately 
- * unloaded.  If the module is passed HSE_TERM_MUST_UNLOAD, its return value 
+ * If the module returns 1 to HSE_TERM_ADVISORY_UNLOAD it is immediately
+ * unloaded.  If the module is passed HSE_TERM_MUST_UNLOAD, its return value
  * is ignored.
  */
 int APR_THREAD_FUNC TerminateExtension(apr_uint32_t flags);

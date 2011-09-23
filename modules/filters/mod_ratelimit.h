@@ -17,7 +17,7 @@
 #ifndef _MOD_RATELIMIT_H_
 #define _MOD_RATELIMIT_H_
 
-/* Create a set of AP_RL_DECLARE(type), AP_RL_DECLARE_NONSTD(type) and 
+/* Create a set of AP_RL_DECLARE(type), AP_RL_DECLARE_NONSTD(type) and
  * AP_RL_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(WIN32)

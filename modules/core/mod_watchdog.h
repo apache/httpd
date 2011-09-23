@@ -78,7 +78,7 @@ extern "C" {
 
 typedef struct ap_watchdog_t ap_watchdog_t;
 
-/* Create a set of AP_WD_DECLARE(type), AP_WD_DECLARE_NONSTD(type) and 
+/* Create a set of AP_WD_DECLARE(type), AP_WD_DECLARE_NONSTD(type) and
  * AP_WD_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(AP_WD_DECLARE)
@@ -154,7 +154,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_watchdog_set_callback_interval,
 
 /**
  * Watchdog require hook.
- * @param s The server record 
+ * @param s The server record
  * @param name Watchdog name.
  * @param parent Non-zero to indicate the parent process watchdog mode.
  * @param singleton Non-zero to indicate the singleton watchdog mode.
@@ -172,7 +172,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_need, (server_rec *s,
 /**
  * Watchdog initialize hook.
  * It is called after the watchdog thread is initialized.
- * @param s The server record 
+ * @param s The server record
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
@@ -184,7 +184,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_init, (
 /**
  * Watchdog terminate hook.
  * It is called when the watchdog thread is terminated.
- * @param s The server record 
+ * @param s The server record
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
@@ -196,7 +196,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_exit, (
 /**
  * Fixed interval watchdog hook.
  * It is called regularly on @p AP_WD_TM_INTERVAL interval.
- * @param s The server record 
+ * @param s The server record
  * @param name Watchdog name.
  * @param pool Temporary pool destroyed after the call.
  */

@@ -17,7 +17,7 @@
 /**
  * @file mod_suexec.h
  * @brief SuExec Extension Module for Apache
- * 
+ *
  * @defgroup MOD_SUEXEC mod_suexec
  * @ingroup  APACHE_MODS
  * @{

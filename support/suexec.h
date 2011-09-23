@@ -56,15 +56,15 @@
 #endif
 
 /*
- * USERDIR_SUFFIX -- Define to be the subdirectory under users' 
+ * USERDIR_SUFFIX -- Define to be the subdirectory under users'
  *                   home directories where suEXEC access should
  *                   be allowed.  All executables under this directory
- *                   will be executable by suEXEC as the user so 
- *                   they should be "safe" programs.  If you are 
- *                   using a "simple" UserDir directive (ie. one 
- *                   without a "*" in it) this should be set to 
+ *                   will be executable by suEXEC as the user so
+ *                   they should be "safe" programs.  If you are
+ *                   using a "simple" UserDir directive (ie. one
+ *                   without a "*" in it) this should be set to
  *                   the same value.  suEXEC will not work properly
- *                   in cases where the UserDir directive points to 
+ *                   in cases where the UserDir directive points to
  *                   a location that is not the same as the user's
  *                   home directory as referenced in the passwd file.
  *

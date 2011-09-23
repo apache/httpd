@@ -91,7 +91,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r,
                                               ap_filter_t *next_filter);
 /**
- * Create a subrequest for the given apr_dir_read result.  This subrequest 
+ * Create a subrequest for the given apr_dir_read result.  This subrequest
  * can be inspected to find information about the requested file
  * @param finfo The apr_dir_read result to lookup
  * @param r The current request
@@ -103,7 +103,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
  * @param next_filter The first filter the sub_request should use.  If this is
  *                    NULL, it defaults to the first filter for the main request
  * @return The new request record
- * @note The apr_dir_read flags value APR_FINFO_MIN|APR_FINFO_NAME flag is the 
+ * @note The apr_dir_read flags value APR_FINFO_MIN|APR_FINFO_NAME flag is the
  * minimum recommended query if the results will be passed to apr_dir_read.
  * The file info passed must include the name, and must have the same relative
  * directory as the current request.
@@ -315,7 +315,7 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
  */
 void ap_process_request(request_rec *r);
 
-/* For post-processing after a handler has finished with a request. 
+/* For post-processing after a handler has finished with a request.
  * (Commonly used after it was suspended)
  */
 AP_DECLARE(void) ap_process_request_after_handler(request_rec *r);
@@ -357,15 +357,15 @@ AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
 
 /**
  * This hook allow modules to set the per_dir_config based on their own
- * context (such as "<Proxy>" sections) and responds to contextless requests 
+ * context (such as "<Proxy>" sections) and responds to contextless requests
  * such as TRACE that need no security or filesystem mapping.
  * based on the filesystem.
  * @param r The current request
- * @return DONE (or HTTP_) if this contextless request was just fulfilled 
+ * @return DONE (or HTTP_) if this contextless request was just fulfilled
  * (such as TRACE), OK if this is not a file, and DECLINED if this is a file.
  * The core map_to_storage (HOOK_RUN_REALLY_LAST) will directory_walk
  * and file_walk the r->filename.
- * 
+ *
  * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,map_to_storage,(request_rec *r))
@@ -394,7 +394,7 @@ AP_DECLARE_HOOK(int,check_user_id,(request_rec *r))
  * @ingroup hooks
  */
 AP_DECLARE_HOOK(int,fixups,(request_rec *r))
- 
+
 /**
  * This routine is called to determine and/or set the various document type
  * information bits, like Content-type (via r->content_type), language, et
@@ -467,7 +467,7 @@ AP_DECLARE(void) ap_hook_check_access(ap_HOOK_access_checker_t *pf,
                                       int nOrder, int type);
 
 /**
- * Register a hook function that will apply additional access control 
+ * Register a hook function that will apply additional access control
  * and/or bypass authentication for the current request.
  * @param pf An access_checker_ex hook function
  * @param aszPre A NULL-terminated array of strings that name modules whose

@@ -86,9 +86,9 @@ typedef struct
     /* pool to use for lifecycle if APL_SCOPE_ONCE is set, otherwise unused */
     apr_pool_t *pool;
 
-    /* Pre-compiled Lua Byte code to load directly.  If bytecode_len is >0, 
+    /* Pre-compiled Lua Byte code to load directly.  If bytecode_len is >0,
      * the file part of this structure is ignored for loading purposes, but
-     * it is used for error messages. 
+     * it is used for error messages.
      */
     const char *bytecode;
     apr_size_t bytecode_len;
@@ -129,7 +129,7 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L);
  * If one exists, will return extant one, otherwise will create, attach, and return
  * This does no locking around the lua_State, so if the pool is shared between
  * threads, locking is up the client.
- * 
+ *
  * @lifecycle_pool -> pool whose lifeycle controls the lua_State
  * @file file to be opened, also used as a key for uniquing lua_States
  * @cb callback for vm initialization called *before* the file is opened

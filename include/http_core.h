@@ -88,7 +88,7 @@ extern "C" {
 /** @} */
 
 /**
- * @defgroup get_remote_host Remote Host Resolution 
+ * @defgroup get_remote_host Remote Host Resolution
  * @ingroup APACHE_CORE_HTTPD
  * @{
  */
@@ -152,7 +152,7 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r);
 /**
  * Retrieve the document root for this server
  * @param r The current request
- * @warning Don't use this!  If your request went through a Userdir, or 
+ * @warning Don't use this!  If your request went through a Userdir, or
  * something like that, it'll screw you.  But it's back-compatible...
  * @return The document root
  */
@@ -175,10 +175,10 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r);
  *                     never forced.
  *     REMOTE_DOUBLE_REV will always force a DNS lookup, and also force
  *                   a double reverse lookup, regardless of the HostnameLookups
- *                   setting.  The result is the (double reverse checked) 
+ *                   setting.  The result is the (double reverse checked)
  *                   hostname, or NULL if any of the lookups fail.
  * </pre>
- * @param str_is_ip unless NULL is passed, this will be set to non-zero on output when an IP address 
+ * @param str_is_ip unless NULL is passed, this will be set to non-zero on output when an IP address
  *        string is returned
  * @return The remote hostname
  */
@@ -228,7 +228,7 @@ AP_DECLARE(const char *) ap_get_server_name_for_url(request_rec *r);
 AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r);
 
 /**
- * Return the limit on bytes in request msg body 
+ * Return the limit on bytes in request msg body
  * @param r The current request
  * @return the maximum number of bytes in the request msg body
  */
@@ -276,8 +276,8 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r);
 /** @see require_line */
 typedef struct require_line require_line;
 
-/** 
- * @brief A structure to keep track of authorization requirements 
+/**
+ * @brief A structure to keep track of authorization requirements
 */
 struct require_line {
     /** Where the require line is in the config file. */
@@ -285,7 +285,7 @@ struct require_line {
     /** The complete string from the command line */
     char *requirement;
 };
-     
+
 /**
  * Return the type of authorization required for this request
  * @param r The current request
@@ -298,7 +298,7 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r);
  * @param r The current request
  * @return The current authorization realm
  */
-AP_DECLARE(const char *) ap_auth_name(request_rec *r);     
+AP_DECLARE(const char *) ap_auth_name(request_rec *r);
 
 /**
  * How the requires lines must be met.
@@ -355,10 +355,10 @@ AP_DECLARE(apr_socket_t *) ap_get_conn_socket(conn_rec *c);
 #endif
 
 /**
- * @brief  Per-request configuration 
+ * @brief  Per-request configuration
 */
 typedef struct {
-    /** bucket brigade used by getline for look-ahead and 
+    /** bucket brigade used by getline for look-ahead and
      * ap_get_client_block for holding left-over request body */
     struct apr_bucket_brigade *bb;
 
@@ -474,8 +474,8 @@ typedef enum {
     srv_sig_withmail
 } server_signature_e;
 
-/** 
- * @brief Per-directory configuration 
+/**
+ * @brief Per-directory configuration
  */
 typedef struct {
     /** path of the directory/regex/etc. see also d_is_fnmatch/absolute below */
@@ -495,13 +495,13 @@ typedef struct {
     allow_options_t opts_remove;
     overrides_t override;
     allow_options_t override_opts;
-    
+
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
      * if it's not null then it's allocated to sizeof(char*)*RESPONSE_CODES.
      * This lets us do quick merges in merge_core_dir_configs().
      */
-  
+
     char **response_code_strings; /* from ErrorDocument, not from
                                    * ap_custom_response() */
 
@@ -625,7 +625,7 @@ typedef struct {
 /* Per-server core configuration */
 
 typedef struct {
-  
+
     char *gprof_dir;
 
     /* Name translations --- we want the core to be able to do *something*
@@ -633,7 +633,7 @@ typedef struct {
      * can be tested that way).  But let's keep it to the bare minimum:
      */
     const char *ap_document_root;
-  
+
     /* Access control */
 
     char *access_name;

@@ -37,7 +37,7 @@ extern "C" {
 AP_DECLARE(void) ap_init_vhost_config(apr_pool_t *p);
 
 /**
- * called after the config has been read to compile the tables needed to do 
+ * called after the config has been read to compile the tables needed to do
  * the run-time vhost lookups
  * @param p The pool to allocate out of
  * @param main_server The start of the virtual host list
@@ -53,7 +53,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_server);
 const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s);
 
 /**
- * handle NameVirtualHost directive 
+ * handle NameVirtualHost directive
  * @param cmd Command Parameters structure
  * @param dummy NOT USED
  * @param arg a host of the form "<address>[:port]"
@@ -71,15 +71,15 @@ AP_DECLARE_NONSTD(const char *)ap_set_name_virtual_host(cmd_parms *cmd,
  * @return 0 on success, any non-zero return will stop the iteration.
  */
 typedef int(*ap_vhost_iterate_conn_cb)(void* baton, conn_rec* conn, server_rec* s);
-                
+
 /**
  * For every virtual host on this connection, call func_cb.
  * @param conn The current connection
- * @param func_cb Function called for every Name Based Virtual Host for this 
+ * @param func_cb Function called for every Name Based Virtual Host for this
  *                connection.
  * @param baton Opaque object passed to func_cb.
  * @return The return value from func_cb.
- * @note If func_cb returns non-zero, the function will return at this point, 
+ * @note If func_cb returns non-zero, the function will return at this point,
  *       and not continue iterating the virtual hosts.
  */
 AP_DECLARE(int) ap_vhost_iterate_given_conn(conn_rec *conn,
@@ -87,13 +87,13 @@ AP_DECLARE(int) ap_vhost_iterate_given_conn(conn_rec *conn,
                                             void* baton);
 
 /**
- * given an ip address only, give our best guess as to what vhost it is 
+ * given an ip address only, give our best guess as to what vhost it is
  * @param conn The current connection
  */
 AP_DECLARE(void) ap_update_vhost_given_ip(conn_rec *conn);
 
 /**
- * ap_update_vhost_given_ip is never enough, and this is always called after 
+ * ap_update_vhost_given_ip is never enough, and this is always called after
  * the headers have been read.  It may change r->server.
  * @param r The current request
  */

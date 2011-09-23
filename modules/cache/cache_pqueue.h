@@ -136,8 +136,8 @@ void *cache_pq_peek(cache_pqueue_t *q);
  * @param out the output handle
  * @param print the callback function to print the entry
  */
-void cache_pq_print(cache_pqueue_t *q, 
-                    FILE *out, 
+void cache_pq_print(cache_pqueue_t *q,
+                    FILE *out,
                     cache_pqueue_print_entry print);
 
 /**
@@ -148,7 +148,7 @@ void cache_pq_print(cache_pqueue_t *q,
  * @param out the output handle
  * @param print the callback function to print the entry
  */
-void cache_pq_dump(cache_pqueue_t *q, 
+void cache_pq_dump(cache_pqueue_t *q,
                    FILE *out,
                    cache_pqueue_print_entry print);
 

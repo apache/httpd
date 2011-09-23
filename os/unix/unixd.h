@@ -16,7 +16,7 @@
 
 /**
  * @file  unixd.h
- * @brief common stuff that unix MPMs will want 
+ * @brief common stuff that unix MPMs will want
  *
  * @addtogroup APACHE_OS_UNIX
  * @{
@@ -83,13 +83,13 @@ AP_DECLARE_DATA extern unixd_config_rec ap_unixd_config;
 
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
 AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
-                                     const char *arg, 
+                                     const char *arg,
                                      const char * arg2, int type);
 #endif
 
 /**
  * One of the functions to set mutex permissions should be called in
- * the parent process on platforms that switch identity when the 
+ * the parent process on platforms that switch identity when the
  * server is started as root.
  * If the child init logic is performed before switching identity
  * (e.g., MPM setup for an accept mutex), it should only be called

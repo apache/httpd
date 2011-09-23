@@ -44,7 +44,7 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-/* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and 
+/* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and
  * AP_LUA_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(WIN32)
@@ -98,7 +98,7 @@ typedef struct
      */
     unsigned int code_cache_style;
 
-    /** 
+    /**
      * APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER
      */
     unsigned int vm_scope;

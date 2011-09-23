@@ -56,7 +56,7 @@ typedef struct cache_hash_index_t cache_hash_index_t;
 
 /**
  * Create a hash table.
- * @param size 
+ * @param size
  * @return The hash table just created
   */
 cache_hash_t* cache_hash_make(apr_size_t size);
@@ -66,7 +66,7 @@ cache_hash_t* cache_hash_make(apr_size_t size);
  * @param *ht Pointer to the hash table to be freed.
  * @return void
  * @remark The caller should ensure that all objects have been removed
- *         from the cache prior to calling cache_hash_free(). Objects 
+ *         from the cache prior to calling cache_hash_free(). Objects
  *         not removed from the cache prior to calling cache_hash_free()
  *         will be unaccessable.
  */
@@ -124,7 +124,7 @@ cache_hash_index_t* cache_hash_first(cache_hash_t *ht);
 /**
  * Continue iterating over the entries in a hash table.
  * @param hi The iteration state
- * @return a pointer to the updated iteration state.  NULL if there are no more  
+ * @return a pointer to the updated iteration state.  NULL if there are no more
  *         entries.
  */
 cache_hash_index_t* cache_hash_next(cache_hash_index_t *hi);
@@ -138,7 +138,7 @@ cache_hash_index_t* cache_hash_next(cache_hash_index_t *hi);
  * @remark The return pointers should point to a variable that will be set to the
  *         corresponding data, or they may be NULL if the data isn't interesting.
  */
-void cache_hash_this(cache_hash_index_t *hi, const void **key, 
+void cache_hash_this(cache_hash_index_t *hi, const void **key,
                                   apr_ssize_t *klen, void **val);
 
 /**

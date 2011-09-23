@@ -28,7 +28,7 @@ void
 simple_register_timer(simple_core_t * sc,
                       simple_timer_cb cb,
                       void *baton,
-                      apr_time_t relative_time, 
+                      apr_time_t relative_time,
                       apr_pool_t *shutdown_pool);
 
 void

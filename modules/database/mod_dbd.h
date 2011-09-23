@@ -22,7 +22,7 @@
  * http://www.apache.org/~niq/dbd.html
  * or
  * http://apache.webthing.com/database/
- * 
+ *
  * @defgroup MOD_DBD mod_dbd
  * @ingroup APACHE_MODS
  * @{
@@ -31,7 +31,7 @@
 #ifndef DBD_H
 #define DBD_H
 
-/* Create a set of DBD_DECLARE(type), DBD_DECLARE_NONSTD(type) and 
+/* Create a set of DBD_DECLARE(type), DBD_DECLARE_NONSTD(type) and
  * DBD_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(WIN32)

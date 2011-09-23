@@ -38,12 +38,12 @@
 /* hint for MSL C++ that we're on NetWare platform */
 #define __NETWARE__
 
-/* the FAR keyword has no meaning in a 32-bit environment 
+/* the FAR keyword has no meaning in a 32-bit environment
    but is used in the SDK headers so we take it out */
 #define FAR
 #define far
 
-/* no-op for Codewarrior C compiler; a functions are cdecl 
+/* no-op for Codewarrior C compiler; a functions are cdecl
    by default */
 #define cdecl
 
