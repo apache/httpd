@@ -43,17 +43,18 @@ provides the <code>bybusyness</code> load balancing method.</p>
     <title>Pending Request Counting Algorithm</title>
 
     <p>Enabled via <code>lbmethod=bybusyness</code>, this scheduler keeps
-    track of how many requests each worker is assigned at present. A new
+    track of how many requests each worker is currently assigned at present. A new
     request is automatically assigned to the worker with the lowest
     number of active requests. This is useful in the case of workers
     that queue incoming requests independently of Apache, to ensure that
     queue length stays even and a request is always given to the worker
-    most likely to service it fastest.</p>
+    most likely to service it the fastest and reduce latency.</p>
 
     <p>In the case of multiple least-busy workers, the statistics (and
     weightings) used by the Request Counting method are used to break the
     tie. Over time, the distribution of work will come to resemble that
-    characteristic of <code>byrequests</code>.</p>
+    characteristic of <code>byrequests</code> (as implemented
+    by <module>mod_lbmethod_byrequests</module>).</p>
 
 </section>
 
