@@ -72,11 +72,11 @@
  * @param args The arguments the hook function takes, in brackets.
  */
 #define AP_DECLARE_HOOK(ret,name,args) \
-	APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
+        APR_DECLARE_EXTERNAL_HOOK(ap,AP,ret,name,args)
 
 /** @internal */
 #define AP_IMPLEMENT_HOOK_BASE(name) \
-	APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
+        APR_IMPLEMENT_EXTERNAL_HOOK_BASE(ap,AP,name)
 
 /**
  * Implement an Apache core hook that has no return code, and
@@ -92,7 +92,7 @@
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_VOID.
  */
 #define AP_IMPLEMENT_HOOK_VOID(name,args_decl,args_use) \
-	APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
+        APR_IMPLEMENT_EXTERNAL_HOOK_VOID(ap,AP,name,args_decl,args_use)
 
 /**
  * Implement an Apache core hook that runs until one of the functions
@@ -115,7 +115,7 @@
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL.
  */
 #define AP_IMPLEMENT_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok,decline) \
-	APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
+        APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
                                             args_use,ok,decline)
 
 /**
@@ -135,7 +135,7 @@
  * (e.g. within a dso) see APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST.
  */
 #define AP_IMPLEMENT_HOOK_RUN_FIRST(ret,name,args_decl,args_use,decline) \
-	APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl, \
+        APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap,AP,ret,name,args_decl, \
                                               args_use,decline)
 
 /* Note that the other optional hook implementations are straightforward but
@@ -148,8 +148,8 @@
  * @see AP_IMPLEMENT_HOOK_RUN_ALL
  */
 #define AP_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ret,name,args_decl,args_use,ok, \
-					   decline) \
-	APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
+                                           decline) \
+        APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap,AP,ret,name,args_decl, \
                                             args_use,ok,decline)
 
 /**

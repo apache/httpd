@@ -92,9 +92,9 @@ static apr_status_t have_lf_or_eos(apr_bucket_brigade *bb)
     apr_bucket *b = APR_BRIGADE_LAST(bb);
 
     for ( ; b != APR_BRIGADE_SENTINEL(bb) ; b = APR_BUCKET_PREV(b) ) {
-    	const char *str;
-    	apr_size_t len;
-    	apr_status_t rv;
+        const char *str;
+        apr_size_t len;
+        apr_status_t rv;
 
         if (APR_BUCKET_IS_EOS(b))
             return APR_SUCCESS;
@@ -430,7 +430,7 @@ static void *reqtimeout_merge_srv_config(apr_pool_t *p, void *base_, void *add_)
     cfg->header_rate_factor = (cfg->header_min_rate == -1) ? base->header_rate_factor :
                               add->header_rate_factor;
     cfg->body_rate_factor = (cfg->body_min_rate == -1) ? base->body_rate_factor :
-    			     add->body_rate_factor;
+                             add->body_rate_factor;
 
     return cfg;
 }

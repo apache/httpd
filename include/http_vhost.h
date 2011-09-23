@@ -115,5 +115,5 @@ AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
 }
 #endif
 
-#endif	/* !APACHE_HTTP_VHOST_H */
+#endif  /* !APACHE_HTTP_VHOST_H */
 /** @} */

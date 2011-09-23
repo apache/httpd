@@ -79,5 +79,5 @@ APR_DECLARE_OPTIONAL_FN(int, ap_signal_server, (int *status, apr_pool_t *pool));
 }
 #endif
 
-#endif	/* !APACHE_HTTP_MAIN_H */
+#endif  /* !APACHE_HTTP_MAIN_H */
 /** @} */

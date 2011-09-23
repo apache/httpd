@@ -1106,11 +1106,11 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 
     if (emit_H1) {
         if (d->style_sheet != NULL) {
-    	    /* Insert style id if stylesheet used */
-    	    ap_rvputs(r, "  <h1 id=\"indextitle\">Index of ", title, "</h1>\n", NULL);
-    	} else {
-        ap_rvputs(r, "<h1>Index of ", title, "</h1>\n", NULL);
-    }
+            /* Insert style id if stylesheet used */
+            ap_rvputs(r, "  <h1 id=\"indextitle\">Index of ", title, "</h1>\n", NULL);
+        } else {
+            ap_rvputs(r, "<h1>Index of ", title, "</h1>\n", NULL);
+        }
     }
     if (rr != NULL) {
         ap_destroy_sub_req(rr);
@@ -1286,8 +1286,8 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
         }
         if (!(p->alt = find_default_alt(d, testpath))) {
             if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^"))) {
-            	/* Special alt text for parent dir to distinguish it from other directories
-            	   this is essential when trying to style this dir entry via AddAltClass */
+                /* Special alt text for parent dir to distinguish it from other directories
+                   this is essential when trying to style this dir entry via AddAltClass */
                 p->alt = "PARENTDIR";
             }
         }

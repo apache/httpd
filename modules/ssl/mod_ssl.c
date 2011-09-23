@@ -231,10 +231,10 @@ static const command_rec ssl_config_cmds[] = {
                 "SSL stapling option for normal OCSP Response Cache Lifetime")
     SSL_CMD_SRV(StaplingReturnResponderErrors, FLAG,
                 "SSL stapling switch to return Status Errors Back to Client"
-		"(`on', `off')")
+                "(`on', `off')")
     SSL_CMD_SRV(StaplingFakeTryLater, FLAG,
                 "SSL stapling switch to send tryLater response to client on error "
-		"(`on', `off')")
+                "(`on', `off')")
     SSL_CMD_SRV(StaplingErrorCacheTimeout, TAKE1,
                 "SSL stapling option for OCSP Response Error Cache Lifetime")
     SSL_CMD_SRV(StaplingForceURL, TAKE1,

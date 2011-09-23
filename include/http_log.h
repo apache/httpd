@@ -85,7 +85,7 @@ extern "C" {
 /* APLOG_NOERRNO is ignored and should not be used.  It will be
  * removed in a future release of Apache.
  */
-#define APLOG_NOERRNO		(APLOG_LEVELMASK + 1)
+#define APLOG_NOERRNO           (APLOG_LEVELMASK + 1)
 
 /** Use APLOG_TOCLIENT on ap_log_rerror() to give content
  * handlers the option of including the error text in the
@@ -105,7 +105,7 @@ extern "C" {
 #define APLOG_STARTUP           ((APLOG_LEVELMASK + 1) * 4)
 
 #ifndef DEFAULT_LOGLEVEL
-#define DEFAULT_LOGLEVEL	APLOG_WARNING
+#define DEFAULT_LOGLEVEL        APLOG_WARNING
 #endif
 
 /**
@@ -659,5 +659,5 @@ AP_DECLARE_HOOK(int, generate_log_id,
 }
 #endif
 
-#endif	/* !APACHE_HTTP_LOG_H */
+#endif  /* !APACHE_HTTP_LOG_H */
 /** @} */

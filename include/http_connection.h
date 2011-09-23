@@ -145,5 +145,5 @@ AP_DECLARE(apr_bucket *) ap_bucket_eoc_create(apr_bucket_alloc_t *list);
 }
 #endif
 
-#endif	/* !APACHE_HTTP_REQUEST_H */
+#endif  /* !APACHE_HTTP_REQUEST_H */
 /** @} */

@@ -2,8 +2,8 @@
  * Copyright (c) 2005, 2008 Sun Microsystems, Inc. All Rights Reserved.
  * Use is subject to license terms.
  *
- *	Copyright (c) 1984 AT&T
- *	  All Rights Reserved
+ *      Copyright (c) 1984 AT&T
+ *        All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

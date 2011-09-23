@@ -96,7 +96,7 @@ static int ssl_expr_lookup(ap_expr_lookup_parms *parms)
             *parms->data = "PeerExtList";
             return OK;
         }
-	break;
+        break;
     }
     return DECLINED;
 }

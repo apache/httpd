@@ -1475,8 +1475,8 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
     int cached;
 
     if (dconf->sec_file) {
-    	sec_ent = (ap_conf_vector_t **)dconf->sec_file->elts;
-    	num_sec = dconf->sec_file->nelts;
+        sec_ent = (ap_conf_vector_t **)dconf->sec_file->elts;
+        num_sec = dconf->sec_file->nelts;
     }
 
     /* To allow broken modules to proceed, we allow missing filenames to pass.
@@ -1640,8 +1640,8 @@ AP_DECLARE(int) ap_if_walk(request_rec *r)
     walk_walked_t *last_walk;
 
     if (dconf->sec_if) {
-    	sec_ent = (ap_conf_vector_t **)dconf->sec_if->elts;
-    	num_sec = dconf->sec_if->nelts;
+        sec_ent = (ap_conf_vector_t **)dconf->sec_if->elts;
+        num_sec = dconf->sec_if->nelts;
     }
 
     /* No tricks here, there are just no <If > to parse in this context.

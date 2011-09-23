@@ -959,8 +959,8 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     if (APLOGrtrace3(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                       "Response sent with status %d%s",
-		      r->status,
-		      APLOGrtrace4(r) ? ", headers:" : "");
+                      r->status,
+                      APLOGrtrace4(r) ? ", headers:" : "");
 
         /*
          * Date and Server are less interesting, use TRACE5 for them while

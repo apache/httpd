@@ -48,5 +48,5 @@
 pid_t os_fork(const char *user);
 #endif
 
-#endif	/* !APACHE_OS_H */
+#endif  /* !APACHE_OS_H */
 /** @} */

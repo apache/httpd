@@ -3733,12 +3733,12 @@ static apr_array_header_t *parse_errorlog_string(apr_pool_t *p,
             *err = "The '+' flag cannot be used in the main error log format";
             return NULL;
         }
-	if (!is_main_fmt && item->min_loglevel) {
+        if (!is_main_fmt && item->min_loglevel) {
             *err = "The loglevel cannot be used as a condition in "
-		   "once-per-request or once-per-connection formats";
+                   "once-per-request or once-per-connection formats";
             return NULL;
         }
-	if (item->min_loglevel > APLOG_TRACE8) {
+        if (item->min_loglevel > APLOG_TRACE8) {
             *err = "The specified loglevel modifier is out of range";
             return NULL;
         }

@@ -2953,7 +2953,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
     /* balancer sync */
     lbmethod = ap_lookup_provider(PROXY_LBMETHOD, b->s->lbpname, "0");
     if (lbmethod) {
-	b->lbmethod = lbmethod;
+        b->lbmethod = lbmethod;
     }
     /* worker sync */
 

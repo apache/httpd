@@ -54,17 +54,17 @@ extern "C" {
  */
 
 #define SERVER_DEAD 0
-#define SERVER_STARTING 1	/* Server Starting up */
-#define SERVER_READY 2		/* Waiting for connection (or accept() lock) */
-#define SERVER_BUSY_READ 3	/* Reading a client request */
-#define SERVER_BUSY_WRITE 4	/* Processing a client request */
-#define SERVER_BUSY_KEEPALIVE 5	/* Waiting for more requests via keepalive */
-#define SERVER_BUSY_LOG 6	/* Logging the request */
-#define SERVER_BUSY_DNS 7	/* Looking up a hostname */
-#define SERVER_CLOSING 8	/* Closing the connection */
-#define SERVER_GRACEFUL 9	/* server is gracefully finishing request */
+#define SERVER_STARTING 1       /* Server Starting up */
+#define SERVER_READY 2          /* Waiting for connection (or accept() lock) */
+#define SERVER_BUSY_READ 3      /* Reading a client request */
+#define SERVER_BUSY_WRITE 4     /* Processing a client request */
+#define SERVER_BUSY_KEEPALIVE 5 /* Waiting for more requests via keepalive */
+#define SERVER_BUSY_LOG 6       /* Logging the request */
+#define SERVER_BUSY_DNS 7       /* Looking up a hostname */
+#define SERVER_CLOSING 8        /* Closing the connection */
+#define SERVER_GRACEFUL 9       /* server is gracefully finishing request */
 #define SERVER_IDLE_KILL 10     /* Server is cleaning up idle children. */
-#define SERVER_NUM_STATUS 11	/* number of status settings */
+#define SERVER_NUM_STATUS 11    /* number of status settings */
 
 /* Type used for generation indicies.  Startup and every restart cause a
  * new generation of children to be spawned.  Children within the same
@@ -112,9 +112,9 @@ struct worker_score {
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
-    char client[32];		/* Keep 'em small... */
-    char request[64];		/* We just want an idea... */
-    char vhost[32];	        /* What virtual host is being accessed? */
+    char client[32];            /* Keep 'em small... */
+    char request[64];           /* We just want an idea... */
+    char vhost[32];             /* What virtual host is being accessed? */
 };
 
 typedef struct {
@@ -131,7 +131,7 @@ typedef struct {
 typedef struct process_score process_score;
 struct process_score {
     pid_t pid;
-    ap_generation_t generation;	/* generation of this child */
+    ap_generation_t generation; /* generation of this child */
     char quiescing;         /* the process whose pid is stored above is
                              * going down gracefully
                              */
@@ -212,4 +212,4 @@ AP_DECLARE_HOOK(int, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
 }
 #endif
 
-#endif	/* !APACHE_SCOREBOARD_H */
+#endif  /* !APACHE_SCOREBOARD_H */

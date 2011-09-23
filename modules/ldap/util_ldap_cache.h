@@ -33,15 +33,15 @@
 #include "util_ldap.h"
 
 typedef struct util_cache_node_t {
-    void *payload;		/* Pointer to the payload */
-    apr_time_t add_time;	/* Time node was added to cache */
+    void *payload;              /* Pointer to the payload */
+    apr_time_t add_time;        /* Time node was added to cache */
     struct util_cache_node_t *next;
 } util_cache_node_t;
 
 typedef struct util_ald_cache util_ald_cache_t;
 
 struct util_ald_cache {
-    unsigned long size;	                /* Size of cache array */
+    unsigned long size;                 /* Size of cache array */
     unsigned long maxentries;           /* Maximum number of cache entries */
     unsigned long numentries;           /* Current number of cache entries */
     unsigned long fullmark;             /* Used to keep track of when cache becomes 3/4 full */
@@ -110,12 +110,12 @@ typedef struct util_compare_subgroup_t {
  * password used to bind.
  */
 typedef struct util_search_node_t {
-    const char *username;		/* Cache key */
-    const char *dn;			/* DN returned from search */
-    const char *bindpw;			/* The most recently used bind password;
-					   NULL if the bind failed */
-    apr_time_t lastbind;		/* Time of last successful bind */
-    const char **vals;			/* Values of queried attributes */
+    const char *username;               /* Cache key */
+    const char *dn;                     /* DN returned from search */
+    const char *bindpw;                 /* The most recently used bind password;
+                                           NULL if the bind failed */
+    apr_time_t lastbind;                /* Time of last successful bind */
+    const char **vals;                  /* Values of queried attributes */
     int        numvals;         /* Number of queried attributes */
 } util_search_node_t;
 
@@ -124,7 +124,7 @@ typedef struct util_search_node_t {
  * value as the key.
  */
 typedef struct util_compare_node_t {
-    const char *dn;			/* DN, attrib and value combine to be the key */
+    const char *dn;                     /* DN, attrib and value combine to be the key */
     const char *attrib;
     const char *value;
     apr_time_t lastcompare;
@@ -138,8 +138,8 @@ typedef struct util_compare_node_t {
  * statement and the dn fetched based on the client-provided username.
  */
 typedef struct util_dn_compare_node_t {
-    const char *reqdn;		/* The DN in the require dn statement */
-    const char *dn;			/* The DN found in the search */
+    const char *reqdn;          /* The DN in the require dn statement */
+    const char *dn;                     /* The DN found in the search */
 } util_dn_compare_node_t;
 
 

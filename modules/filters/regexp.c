@@ -2,8 +2,8 @@
  * Copyright (c) 2005, 2008 Sun Microsystems, Inc. All Rights Reserved.
  * Use is subject to license terms.
  *
- *	Copyright (c) 1984, 1986, 1987, 1988, 1989 AT&T
- *	  All Rights Reserved
+ *      Copyright (c) 1984, 1986, 1987, 1988, 1989 AT&T
+ *        All Rights Reserved
  *
  * University Copyright- Copyright (c) 1982, 1986, 1988
  * The Regents of the University of California

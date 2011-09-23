@@ -194,8 +194,8 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs_ex(request_rec *r,
  * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
  */
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
-				       int (*getsfunc) (char *, int, void *),
-				       void *getsfunc_data);
+                                               int (*getsfunc) (char *, int, void *),
+                                               void *getsfunc_data);
 
 /**
  * Read headers output from a script, ensuring that the output is valid.  If
@@ -229,5 +229,5 @@ AP_DECLARE(void) ap_args_to_table(request_rec *r, apr_table_t **table);
 }
 #endif
 
-#endif	/* !APACHE_UTIL_SCRIPT_H */
+#endif  /* !APACHE_UTIL_SCRIPT_H */
 /** @} */

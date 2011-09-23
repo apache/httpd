@@ -78,11 +78,11 @@ typedef struct
 
     /* APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER */
     int scope;
-	unsigned int vm_server_pool_min;
-	unsigned int vm_server_pool_max;
+        unsigned int vm_server_pool_min;
+        unsigned int vm_server_pool_max;
 
-	ap_lua_state_open_callback cb;
-	void* cb_arg;
+        ap_lua_state_open_callback cb;
+        void* cb_arg;
     /* pool to use for lifecycle if APL_SCOPE_ONCE is set, otherwise unused */
     apr_pool_t *pool;
 

@@ -331,7 +331,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
         envlen += vallen;
 
-	/* The cast of bodylen is safe since FCGI_MAX_ENV_SIZE is for sure an int */
+        /* The cast of bodylen is safe since FCGI_MAX_ENV_SIZE is for sure an int */
         if (envlen > FCGI_MAX_ENV_SIZE) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "proxy: FCGI: truncating environment to %d bytes and %d elements",

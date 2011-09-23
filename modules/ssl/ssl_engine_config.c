@@ -135,15 +135,15 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->ocsp_responder_timeout = UNSET;
 
 #ifdef HAVE_OCSP_STAPLING
-    mctx->stapling_enabled                   = UNSET;
-    mctx->stapling_resptime_skew      = UNSET;
-    mctx->stapling_resp_maxage        = UNSET;
-    mctx->stapling_cache_timeout  = UNSET;
-    mctx->stapling_return_errors = UNSET;
-    mctx->stapling_fake_trylater          = UNSET;
-    mctx->stapling_errcache_timeout     = UNSET;
-    mctx->stapling_responder_timeout      = UNSET;
-    mctx->stapling_force_url   		= NULL;
+    mctx->stapling_enabled           = UNSET;
+    mctx->stapling_resptime_skew     = UNSET;
+    mctx->stapling_resp_maxage       = UNSET;
+    mctx->stapling_cache_timeout     = UNSET;
+    mctx->stapling_return_errors     = UNSET;
+    mctx->stapling_fake_trylater     = UNSET;
+    mctx->stapling_errcache_timeout  = UNSET;
+    mctx->stapling_responder_timeout = UNSET;
+    mctx->stapling_force_url         = NULL;
 #endif
 }
 

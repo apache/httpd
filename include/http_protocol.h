@@ -257,7 +257,7 @@ AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts);
  * @param   src  List to copy from
  */
 AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
-				     ap_method_list_t *src);
+                                     ap_method_list_t *src);
 
 /**
  * Search for an HTTP method name in an ap_method_list_t structure, and
@@ -287,7 +287,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method);
  * @return  None.
  */
 AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
-				       const char *method);
+                                       const char *method);
 
 /**
  * Reset a method list to be completely empty.
@@ -372,7 +372,7 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list vlist);
  * @return The number of bytes sent
  */
 AP_DECLARE_NONSTD(int) ap_rprintf(request_rec *r, const char *fmt,...)
-				__attribute__((format(printf,2,3)));
+                                __attribute__((format(printf,2,3)));
 
 /**
  * Flush all of the data for the current request to the client
@@ -700,5 +700,5 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers);
 }
 #endif
 
-#endif	/* !APACHE_HTTP_PROTOCOL_H */
+#endif  /* !APACHE_HTTP_PROTOCOL_H */
 /** @} */
