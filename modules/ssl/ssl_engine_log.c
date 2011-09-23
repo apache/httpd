@@ -96,9 +96,9 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
         ap_log_error(file, line, APLOG_MODULE_INDEX, level, 0, s,
                      "SSL Library Error: %s%s%s%s%s%s",
                      /* %s */
-                     err, 
+                     err,
                      /* %s%s%s */
-                     data ? " (" : "", data ? data : "", data ? ")" : "", 
+                     data ? " (" : "", data ? data : "", data ? ")" : "",
                      /* %s%s */
                      annotation ? " -- " : "",
                      annotation ? annotation : "");
@@ -108,7 +108,7 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
     }
 }
 
-static void ssl_log_cert_error(const char *file, int line, int level, 
+static void ssl_log_cert_error(const char *file, int line, int level,
                                apr_status_t rv, const server_rec *s,
                                const conn_rec *c, const request_rec *r,
                                apr_pool_t *p, X509 *cert, const char *format,
@@ -117,7 +117,7 @@ static void ssl_log_cert_error(const char *file, int line, int level,
     char buf[HUGE_STRING_LEN];
     int msglen, n;
     char *name;
-    
+
     apr_vsnprintf(buf, sizeof buf, format, ap);
 
     msglen = strlen(buf);

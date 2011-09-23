@@ -342,7 +342,7 @@ static int req_dispatch(lua_State *L)
                               "request_rec->dispatching %s -> apr table",
                               name);
                 rs = (*func)(r);
-                ap_lua_push_apr_table(L, rs);          
+                ap_lua_push_apr_table(L, rs);
                 return 1;
             }
 
@@ -594,7 +594,7 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_notes, APL_REQ_FUNTYPE_TABLE, p));
     apr_hash_set(dispatch, "subprocess_env", APR_HASH_KEY_STRING,
                  makefun(&req_subprocess_env, APL_REQ_FUNTYPE_TABLE, p));
-    
+
 
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");

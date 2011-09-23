@@ -80,7 +80,7 @@ static apr_status_t check_time_left(reqtimeout_con_cfg *ccfg,
     *time_left_p = ccfg->timeout_at - apr_time_now();
     if (*time_left_p <= 0)
         return APR_TIMEUP;
-    
+
     if (*time_left_p < apr_time_from_sec(1)) {
         *time_left_p = apr_time_from_sec(1);
     }
@@ -393,7 +393,7 @@ static int reqtimeout_after_body(request_rec *r)
     ccfg->new_max_timeout = cfg->header_max_timeout;
     ccfg->min_rate = cfg->header_min_rate;
     ccfg->rate_factor = cfg->header_rate_factor;
-    
+
     ccfg->type = "header";
 
     return OK;
@@ -470,7 +470,7 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
     else {
         return "Unknown RequestReadTimeout parameter";
     }
-    
+
     if ((rate_str = ap_strcasestr(val, ",minrate="))) {
         initial_str = apr_pstrndup(p, val, rate_str - val);
         rate_str += strlen(",minrate=");
@@ -487,7 +487,7 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
             if (ret)
                 return ret;
         }
-        
+
         ret = parse_int(p, initial_str, &initial);
     }
     else {
@@ -495,7 +495,7 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
             return "Must set MinRate option if using timeout range";
         ret = parse_int(p, val, &initial);
     }
-        
+
     if (ret)
         return ret;
 
@@ -526,11 +526,11 @@ static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
     reqtimeout_srv_cfg *conf =
     ap_get_module_config(cmd->server->module_config,
                          &reqtimeout_module);
-    
+
     while (*arg) {
         char *word, *val;
         const char *err;
-        
+
         word = ap_getword_conf(cmd->temp_pool, &arg);
         val = strchr(word, '=');
         if (!val) {
@@ -541,14 +541,14 @@ static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
             *val++ = '\0';
 
         err = set_reqtimeout_param(conf, cmd->pool, word, val);
-        
+
         if (err)
             return apr_psprintf(cmd->temp_pool, "RequestReadTimeout: %s=%s: %s",
                                word, val, err);
     }
-    
+
     return NULL;
-    
+
 }
 
 static void reqtimeout_hooks(apr_pool_t *pool)

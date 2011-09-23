@@ -271,7 +271,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
                             "is garbled - expected signature %08lx but saw "
                             "%08lx - perhaps this is not an Apache module DSO, "
                             "or was compiled for a different Apache version?",
-                            modname, szModuleFile, 
+                            modname, szModuleFile,
                             MODULE_MAGIC_COOKIE, modp->magic);
     }
 

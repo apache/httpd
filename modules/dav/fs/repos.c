@@ -143,7 +143,7 @@ enum {
 /*
  * prefix for temporary files
  */
-#define DAV_FS_TMP_PREFIX ".davfs.tmp" 
+#define DAV_FS_TMP_PREFIX ".davfs.tmp"
 
 static const dav_liveprop_spec dav_fs_props[] =
 {
@@ -360,7 +360,7 @@ static dav_error * dav_fs_copymove_file(
 
     dav_set_bufsize(p, pbuf, DAV_FS_COPY_BLOCKSIZE);
 
-    if ((status = apr_file_open(&inf, src, APR_READ | APR_BINARY, 
+    if ((status = apr_file_open(&inf, src, APR_READ | APR_BINARY,
                                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
         /* ### use something besides 500? */
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, status,
@@ -391,7 +391,7 @@ static dav_error * dav_fs_copymove_file(
                 /* ### ACK! Inconsistent state... */
 
                 /* ### use something besides 500? */
-                return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, 
+                return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
                                      lcl_status,
                                      "Could not delete output after read "
                                      "failure. Server is now in an "
@@ -448,7 +448,7 @@ static dav_error * dav_fs_copymove_file(
                                               "server may be in an "
                                               "inconsistent state.", src, dst));
             return err;
-        } 
+        }
         else if ((lcl_status = apr_file_remove(dst, p)) != APR_SUCCESS) {
             /* ### ACK. this creates an inconsistency. do more!? */
 
@@ -899,7 +899,7 @@ static apr_status_t dav_fs_mktemp(apr_file_t **fp, char *templ, apr_pool_t *p)
                            APR_WRITE | APR_CREATE | APR_BINARY | APR_EXCL,
                            APR_OS_DEFAULT, p);
     } while (APR_STATUS_IS_EEXIST(rv));
-        
+
     return rv;
 }
 

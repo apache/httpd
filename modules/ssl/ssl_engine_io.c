@@ -147,7 +147,7 @@ static int bio_filter_out_flush(BIO *bio)
     apr_bucket *e;
 
     AP_DEBUG_ASSERT(APR_BRIGADE_EMPTY(outctx->bb));
-    
+
     e = apr_bucket_flush_create(outctx->bb->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
 
@@ -192,7 +192,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
         outctx->rc = APR_ECONNABORTED;
         return -1;
     }
-    
+
     /* when handshaking we'll have a small number of bytes.
      * max size SSL will pass us here is about 16k.
      * (16413 bytes to be exact)
@@ -203,7 +203,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
      * filter must setaside if necessary. */
     e = apr_bucket_transient_create(in, inl, outctx->bb->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(outctx->bb, e);
-    
+
     if (bio_filter_out_pass(outctx) < 0) {
         return -1;
     }
@@ -863,10 +863,10 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
             break;
-            
+
     case MODSSL_ERROR_BAD_GATEWAY:
         bucket = ap_bucket_error_create(HTTP_BAD_REQUEST, NULL,
-                                        f->c->pool, 
+                                        f->c->pool,
                                         f->c->bucket_alloc);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                       "SSL handshake failed: sending 502");
@@ -1292,8 +1292,8 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         /* Satisfy the read directly out of the buffer if possible;
          * invoking ssl_io_input_getline will mean the entire buffer
          * is copied once (unnecessarily) for each GETLINE call. */
-        if (inctx->cbuf.length 
-            && (pos = memchr(inctx->cbuf.value, APR_ASCII_LF, 
+        if (inctx->cbuf.length
+            && (pos = memchr(inctx->cbuf.value, APR_ASCII_LF,
                              inctx->cbuf.length)) != NULL) {
             start = inctx->cbuf.value;
             len = 1 + pos - start; /* +1 to include LF */
@@ -1340,7 +1340,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
  * overhead (network packets) for any output comprising many small
  * buckets.  SSI page applied through the HTTP chunk filter, for
  * example, may produce many brigades containing small buckets -
- * [chunk-size CRLF] [chunk-data] [CRLF]. 
+ * [chunk-size CRLF] [chunk-data] [CRLF].
  *
  * The coalescing filter merges many small buckets into larger buckets
  * where possible, allowing the SSL I/O output filter to handle them
@@ -1363,7 +1363,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
 
     /* The brigade consists of zero-or-more small data buckets which
      * can be coalesced (the prefix), followed by the remainder of the
-     * brigade.  
+     * brigade.
      *
      * Find the last bucket - if any - of that prefix.  count gives
      * the number of buckets in the prefix.  The "prefix" must contain
@@ -1389,9 +1389,9 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
     }
 
     /* Coalesce the prefix, if:
-     * a) more than one bucket is found to coalesce, or 
+     * a) more than one bucket is found to coalesce, or
      * b) the brigade contains only a single data bucket, or
-     * c) 
+     * c)
      */
     if (bytes > 0
         && (count > 1
@@ -1411,7 +1411,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
          * in this loop it is safe to break out and fall back to the
          * normal path of sending the buffer + remaining buckets in
          * brigade.  */
-        e = APR_BRIGADE_FIRST(bb); 
+        e = APR_BRIGADE_FIRST(bb);
         while (e != last) {
             apr_size_t len;
             const char *data;
@@ -1422,7 +1422,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
                               "unexpected bucket type during coalesce");
                 break; /* non-fatal error; break out */
-            }                
+            }
 
             if (e->length) {
                 apr_status_t rv;
@@ -1438,7 +1438,7 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
                 }
 
                 /* Be paranoid. */
-                if (len > sizeof ctx->buffer 
+                if (len > sizeof ctx->buffer
                     || (len + ctx->bytes > sizeof ctx->buffer)) {
                     ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
                                   "unexpected coalesced bucket data length");
@@ -1468,13 +1468,13 @@ static apr_status_t ssl_io_filter_coalesce(ap_filter_t *f,
 
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                       "coalesce: passing on %" APR_SIZE_T_FMT " bytes", ctx->bytes);
-        
+
         e = apr_bucket_transient_create(ctx->buffer, ctx->bytes, bb->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, e);
         ctx->bytes = 0; /* buffer now emptied. */
     }
-    
-    return ap_pass_brigade(f->next, bb);    
+
+    return ap_pass_brigade(f->next, bb);
 }
 
 static apr_status_t ssl_io_filter_output(ap_filter_t *f,
@@ -1666,7 +1666,7 @@ int ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen)
         /* Fail if this exceeds the maximum buffer size. */
         if (total > maxlen) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request body exceeds maximum size (%" APR_SIZE_T_FMT 
+                          "request body exceeds maximum size (%" APR_SIZE_T_FMT
                           ") for SSL buffer", maxlen);
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
@@ -1677,7 +1677,7 @@ int ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen)
 
     /* After consuming all protocol-level input, remove all protocol-level
      * filters.  It should strictly only be necessary to remove filters
-     * at exactly ftype == AP_FTYPE_PROTOCOL, since this filter will 
+     * at exactly ftype == AP_FTYPE_PROTOCOL, since this filter will
      * precede all > AP_FTYPE_PROTOCOL anyway. */
     while (r->proto_input_filters->frec->ftype < AP_FTYPE_CONNECTION) {
         ap_remove_input_filter(r->proto_input_filters);

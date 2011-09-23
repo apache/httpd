@@ -120,7 +120,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     /* Ensure pid sanity. */
     if (pid < 1) {
         return 1;
-    }        
+    }
 
     proc.pid = pid;
     waitret = apr_proc_wait(&proc, &status, &why, APR_NOWAIT);
@@ -350,7 +350,7 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
         return APR_EINVAL;
     }
 
-    pg = getpgid(pid);    
+    pg = getpgid(pid);
     if (pg == -1) {
         /* Process already dead... */
         return errno;
@@ -362,7 +362,7 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
                      "process group", sig, (long)pid);
         return APR_EINVAL;
     }
-#endif        
+#endif
 
     return kill(pid, sig) ? errno : APR_SUCCESS;
 }
@@ -777,8 +777,8 @@ void ap_mpm_rewrite_args(process_rec *process)
 
     process->argc = mpm_new_argv->nelts;
     process->argv = (const char * const *)mpm_new_argv->elts;
-  
-    if (NULL == dash_k_arg) { 
+
+    if (NULL == dash_k_arg) {
         dash_k_arg = dash_k_arg_noarg;
     }
 

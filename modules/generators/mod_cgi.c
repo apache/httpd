@@ -53,7 +53,7 @@
 #include "mod_core.h"
 #include "mod_cgi.h"
 
-#if APR_HAVE_STRUCT_RLIMIT 
+#if APR_HAVE_STRUCT_RLIMIT
 #if defined (RLIMIT_CPU) || defined (RLIMIT_NPROC) || defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
 #define AP_CGI_USE_RLIMIT
 #endif

@@ -71,12 +71,12 @@ struct ap_socache_instance_t {
 
 static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s);
 
-static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx, 
-                                       server_rec *s, const unsigned char *id, 
+static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx,
+                                       server_rec *s, const unsigned char *id,
                                        unsigned int idlen, apr_pool_t *p);
 
-static const char *socache_dbm_create(ap_socache_instance_t **context, 
-                                      const char *arg, 
+static const char *socache_dbm_create(ap_socache_instance_t **context,
+                                      const char *arg,
                                       apr_pool_t *tmp, apr_pool_t *p)
 {
     ap_socache_instance_t *ctx;
@@ -95,8 +95,8 @@ static const char *socache_dbm_create(ap_socache_instance_t **context,
     return NULL;
 }
 
-static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx, 
-                                     const char *namespace, 
+static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
+                                     const char *namespace,
                                      const struct ap_socache_hints *hints,
                                      server_rec *s, apr_pool_t *p)
 {
@@ -130,7 +130,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
     }
     apr_dbm_close(dbm);
 
-    ctx->expiry_interval = (hints && hints->expiry_interval 
+    ctx->expiry_interval = (hints && hints->expiry_interval
                             ? hints->expiry_interval : apr_time_from_sec(30));
 
 #if AP_NEED_SET_MUTEX_PERMS
@@ -176,10 +176,10 @@ static void socache_dbm_destroy(ap_socache_instance_t *ctx, server_rec *s)
     return;
 }
 
-static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx, 
-                                      server_rec *s, const unsigned char *id, 
-                                      unsigned int idlen, apr_time_t expiry, 
-                                      unsigned char *ucaData, 
+static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
+                                      server_rec *s, const unsigned char *id,
+                                      unsigned int idlen, apr_time_t expiry,
+                                      unsigned char *ucaData,
                                       unsigned int nData, apr_pool_t *pool)
 {
     apr_dbm_t *dbm;
@@ -245,7 +245,7 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec *s, 
+static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec *s,
                                          const unsigned char *id, unsigned int idlen,
                                          unsigned char *dest, unsigned int *destlen,
                                          apr_pool_t *p)
@@ -270,7 +270,7 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
      * do the apr_dbm_close? This would make the code a bit cleaner.
      */
     apr_pool_clear(ctx->pool);
-    if ((rc = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
+    if ((rc = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                      "Cannot open socache DBM file `%s' for reading "
@@ -293,7 +293,7 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
     if (nData > *destlen) {
         apr_dbm_close(dbm);
         return APR_ENOSPC;
-    }    
+    }
 
     *destlen = nData;
     memcpy(&expiry, dbmval.dptr, sizeof(apr_time_t));
@@ -311,7 +311,7 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx, 
+static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx,
                                        server_rec *s, const unsigned char *id,
                                        unsigned int idlen, apr_pool_t *p)
 {
@@ -326,7 +326,7 @@ static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx,
     /* and delete it from the DBM file */
     apr_pool_clear(ctx->pool);
 
-    if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
+    if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot open socache DBM file `%s' for writing "
@@ -447,7 +447,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
                  elts, elts-deleted, deleted);
 }
 
-static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r, 
+static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
                                int flags)
 {
     apr_dbm_t *dbm;
@@ -462,7 +462,7 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
     size = 0;
 
     apr_pool_clear(ctx->pool);
-    if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
+    if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                      "Cannot open socache DBM file `%s' for status "
@@ -565,7 +565,7 @@ static const ap_socache_provider_t socache_dbm = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "dbm", 
+    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "dbm",
                          AP_SOCACHE_PROVIDER_VERSION,
                          &socache_dbm);
 }

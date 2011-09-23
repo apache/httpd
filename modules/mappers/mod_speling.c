@@ -107,7 +107,7 @@ static const command_rec speling_cmds[] =
                   (void*)APR_OFFSETOF(spconfig, enabled), OR_OPTIONS,
                  "whether or not to fix miscapitalized/misspelled requests"),
     AP_INIT_FLAG("CheckCaseOnly", ap_set_flag_slot,
-                  (void*)APR_OFFSETOF(spconfig, case_only), OR_OPTIONS, 
+                  (void*)APR_OFFSETOF(spconfig, case_only), OR_OPTIONS,
                  "whether or not to fix only miscapitalized requests"),
     { NULL }
 };

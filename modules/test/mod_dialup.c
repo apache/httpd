@@ -49,14 +49,14 @@ dialup_send_pulse(dialup_baton_t *db)
     int status;
     apr_off_t len = 0;
     apr_size_t bytes_sent = 0;
-    
+
     while (!APR_BRIGADE_EMPTY(db->bb) && bytes_sent < db->bytes_per_second) {
         apr_bucket *e;
 
         if (db->r->connection->aborted) {
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        
+
         status = apr_brigade_partition(db->bb, db->bytes_per_second, &e);
 
         if (status != APR_SUCCESS && status != APR_INCOMPLETE) {
@@ -74,9 +74,9 @@ dialup_send_pulse(dialup_baton_t *db)
         else {
             APR_BRIGADE_CONCAT(db->tmpbb, db->bb);
         }
-        
+
         e = apr_bucket_flush_create(db->r->connection->bucket_alloc);
-        
+
         APR_BRIGADE_INSERT_TAIL(db->tmpbb, e);
 
         apr_brigade_length(db->tmpbb, 1, &len);
@@ -100,7 +100,7 @@ dialup_send_pulse(dialup_baton_t *db)
     }
 }
 
-static void 
+static void
 dialup_callback(void *baton)
 {
     int status;
@@ -142,8 +142,8 @@ dialup_handler(request_rec *r)
 
 
     /* See core.c, default handler for all of the cases we just decline. */
-    if (r->method_number != M_GET || 
-        r->finfo.filetype == APR_NOFILE || 
+    if (r->method_number != M_GET ||
+        r->finfo.filetype == APR_NOFILE ||
         r->finfo.filetype == APR_DIR) {
         return DECLINED;
     }
@@ -183,7 +183,7 @@ dialup_handler(request_rec *r)
     }
 
     db = apr_palloc(r->pool, sizeof(dialup_baton_t));
-    
+
     db->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     db->tmpbb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
@@ -194,8 +194,8 @@ dialup_handler(request_rec *r)
         apr_bucket_file_enable_mmap(e, 0);
     }
 #endif
-    
-    
+
+
     db->bytes_per_second = dcfg->bytes_per_second;
     db->r = r;
     db->fd = fd;
@@ -256,7 +256,7 @@ cmd_modem_standard(cmd_parms *cmd,
     const modem_speed_t *standard;
     int i = 0;
     dialup_dcfg_t *dcfg = (dialup_dcfg_t*)dconf;
-    
+
     dcfg->bytes_per_second = 0;
 
     while (modem_bitrates[i].name != NULL) {
@@ -279,7 +279,7 @@ static void *
 dialup_dcfg_create(apr_pool_t *p, char *dummy)
 {
     dialup_dcfg_t *cfg = apr_palloc(p, sizeof(dialup_dcfg_t));
-    
+
     cfg->bytes_per_second = 0;
 
     return cfg;

@@ -44,7 +44,7 @@ static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_f
     char *ptr;
     char *inuse;
     apr_status_t retval = APR_SUCCESS;
-    
+
 
     if (!mem)
         return APR_ENOSHMAVAIL;

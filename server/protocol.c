@@ -916,7 +916,7 @@ request_rec *ap_read_request(conn_rec *conn)
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     ap_run_pre_read_request(r, conn);
-    
+
     /* Get the request... */
     if (!read_request_line(r, tmp_bb)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE
@@ -1379,7 +1379,7 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r,
     apr_status_t rv;
 
     bb = apr_brigade_create(r->pool, c->bucket_alloc);
-    
+
     apr_brigade_insert_file(bb, fd, offset, len, r->pool);
 
     rv = ap_pass_brigade(r->output_filters, bb);

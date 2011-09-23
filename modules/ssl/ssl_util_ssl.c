@@ -297,7 +297,7 @@ char *SSL_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne)
     return result;
 }
 
-/* 
+/*
  * convert an X509_NAME to an RFC 2253 formatted string, optionally truncated
  * to maxlen characters (specify a maxlen of 0 for no length limit)
  */

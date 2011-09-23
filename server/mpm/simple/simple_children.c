@@ -39,11 +39,11 @@ static void simple_kill_random_child(simple_core_t * sc)
         apr_thread_mutex_lock(sc->mtx);
         hi = apr_hash_first(sc->pool, sc->children);
         if (hi != NULL) {
-            apr_hash_this(hi, NULL, NULL, (void **)&child); 
+            apr_hash_this(hi, NULL, NULL, (void **)&child);
             apr_hash_set(sc->children, &child->pid, sizeof(child->pid), NULL);
         }
         apr_thread_mutex_unlock(sc->mtx);
-        
+
         if (child != NULL) {
             kill(child->pid, 9);
             /* TODO: recycle child object */
@@ -62,14 +62,14 @@ static int simple_spawn_child(simple_core_t * sc)
 {
     pid_t pid = 0;
     int rv = 0;
-    /* Although we could cut this off 'earlier', and not even invoke this 
+    /* Although we could cut this off 'earlier', and not even invoke this
      * function, I would like to keep the functions invoked when in debug mode
      * to be as close as possible to those when not in debug... So, we just skip
      * the actual spawn itself, but go through all of the motions...
      */
     if (!sc->run_single_process) {
         if (sc->spawn_via == SIMPLE_SPAWN_FORK) {
-            
+
             pid = fork();
             if (pid == -1) {
                 rv = errno;
@@ -77,10 +77,10 @@ static int simple_spawn_child(simple_core_t * sc)
                              "simple_spawn_child: Unable to fork new process");
                 return rv;
             }
-            
+
             if (pid == 0) {
                 /* this is the child process */
-                
+
                 rv = simple_child_loop(sc);
 
                 if (rv) {
@@ -108,7 +108,7 @@ static int simple_spawn_child(simple_core_t * sc)
 
         apr_thread_mutex_unlock(sc->mtx);
     }
-    
+
     return 0;
 }
 
@@ -125,7 +125,7 @@ void simple_check_children_size(simple_core_t * sc, void *baton)
 
     if (sc->run_single_process && sc->restart_num == 2) {
         static int run = 0;
-        /* This is kinda of hack, but rather than spawning a child process, 
+        /* This is kinda of hack, but rather than spawning a child process,
          * we register the normal IO handlers in the main event loop....
          */
         if (run == 0) {

@@ -40,7 +40,7 @@ static void ssl_add_version_components(apr_pool_t *p,
 {
     char *modver = ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_INTERFACE");
     char *libver = ssl_var_lookup(p, s, NULL, NULL, "SSL_VERSION_LIBRARY");
-    char *incver = ssl_var_lookup(p, s, NULL, NULL, 
+    char *incver = ssl_var_lookup(p, s, NULL, NULL,
                                   "SSL_VERSION_LIBRARY_INTERFACE");
 
     ap_add_version_component(p, modver);
@@ -401,8 +401,8 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
             ssl_die();
         }
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, 
-                     "Init: loaded Crypto Device API `%s'", 
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                     "Init: loaded Crypto Device API `%s'",
                      mc->szCryptoDevice);
 
         ENGINE_free(e);
@@ -901,7 +901,7 @@ static int ssl_server_import_cert(server_rec *s,
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
-  
+
 #ifdef HAVE_OCSP_STAPLING
     if ((mctx->pkp == FALSE) && (mctx->stapling_enabled == TRUE)) {
         if (!ssl_stapling_init_cert(s, mctx, cert)) {
@@ -1338,11 +1338,11 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         klen = strlen(key);
 
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
-            ap_log_error(APLOG_MARK, 
+            ap_log_error(APLOG_MARK,
 #ifdef OPENSSL_NO_TLSEXT
-                         APLOG_WARNING, 
+                         APLOG_WARNING,
 #else
-                         APLOG_DEBUG, 
+                         APLOG_DEBUG,
 #endif
                          0,
                          base_server,
@@ -1378,7 +1378,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     }
 }
 
-static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a, 
+static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a,
                                            const X509_NAME * const *b)
 {
     return(X509_NAME_cmp(*a, *b));

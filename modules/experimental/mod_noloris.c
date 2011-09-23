@@ -80,7 +80,7 @@ static int noloris_conn(conn_rec *conn)
     }
 
     /* store this client IP for the monitor to pick up */
- 
+
     ap_update_child_status_from_conn(conn->sbh, SERVER_READY, conn);
 
     return DECLINED;

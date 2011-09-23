@@ -101,7 +101,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     if (r->assbackwards) {
         return 0;
     }
-    
+
     /*
      * Check for Range request-header (HTTP/1.1) or Request-Range for
      * backwards-compatibility with second-draft Luotonen/Franks
@@ -112,27 +112,27 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
      * Request-Range based requests to work around a bug in Netscape
      * Navigator 2-3 and MSIE 3.
      */
-    
+
     if (!(range = apr_table_get(r->headers_in, "Range"))) {
         range = apr_table_get(r->headers_in, "Request-Range");
     }
-    
+
     if (!range || strncasecmp(range, "bytes=", 6) || r->status != HTTP_OK) {
         return 0;
     }
-    
+
     /* is content already a single range? */
     if (apr_table_get(r->headers_out, "Content-Range")) {
         return 0;
     }
-    
+
     /* is content already a multiple range? */
     if ((ct = apr_table_get(r->headers_out, "Content-Type"))
         && (!strncasecmp(ct, "multipart/byteranges", 20)
             || !strncasecmp(ct, "multipart/x-byteranges", 22))) {
             return 0;
         }
-    
+
     /*
      * Check the If-Range header for Etag or Date.
      * Note that this check will return false (as required) if either
@@ -150,7 +150,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             return 0;
         }
     }
-    
+
     range += 6;
     it = range;
     while (*it) {
@@ -167,19 +167,19 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         char *dash;
         char *errp;
         apr_off_t number, start, end;
-        
+
         if (!*cur)
             break;
-        
+
         /*
          * Per RFC 2616 14.35.1: If there is at least one syntactically invalid
          * byte-range-spec, we must ignore the whole header.
          */
-        
+
         if (!(dash = strchr(cur, '-'))) {
             return 0;
         }
-        
+
         if (dash == cur) {
             /* In the form "-5" */
             if (apr_strtoff(&number, dash+1, &errp, 10) || *errp) {
@@ -210,7 +210,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
                 end = clength - 1;
             }
         }
-        
+
         if (start < 0) {
             start = 0;
         }
@@ -221,7 +221,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         if (end >= clength) {
             end = clength - 1;
         }
-        
+
         if (!in_merge) {
             /* new set */
             ostart = start;
@@ -230,11 +230,11 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             continue;
         }
         in_merge = 0;
-        
+
         if (start >= ostart && end <= oend) {
             in_merge = 1;
         }
-        
+
         if (start < ostart && end >= ostart-1) {
             ostart = start;
             ++*reversals;
@@ -244,7 +244,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             oend = end;
             in_merge = 1;
         }
-        
+
         if (in_merge) {
             ++*overlaps;
             continue;
@@ -260,7 +260,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             num_ranges++;
         }
     }
-    
+
     if (in_merge) {
         idx = (indexes_t *)apr_array_push(*indexes);
         idx->start = ostart;
@@ -294,7 +294,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "Range: %s | %s (%d : %d : %"APR_OFF_T_FMT")",
                   it, r->range, *overlaps, *reversals, clength);
-    
+
     return num_ranges;
 }
 

@@ -112,7 +112,7 @@ void ssl_var_register(apr_pool_t *p)
 
     /* Perform once-per-process library version determination: */
     var_library = apr_pstrdup(p, SSL_LIBRARY_DYNTEXT);
-    
+
     if ((cp = strchr(var_library, ' ')) != NULL) {
         *cp = '/';
         if ((cp2 = strchr(cp, ' ')) != NULL)
@@ -342,7 +342,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         }
     }
     else if(ssl != NULL && strcEQ(var, "SESSION_RESUMED")) {
-        if (SSL_session_reused(ssl) == 1) 
+        if (SSL_session_reused(ssl) == 1)
             result = "Resumed";
         else
             result = "Initial";
@@ -386,7 +386,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, request_rec *r,
         flag = SSL_get_secure_renegotiation_support(ssl);
 #endif
         result = apr_pstrdup(p, flag ? "true" : "false");
-    }                             
+    }
 
     return result;
 }
@@ -769,10 +769,10 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
     }
     return NULL;
 }
-  
+
 /* Add each RDN in 'xn' to the table 't' where the NID is present in
  * 'nids', using key prefix 'pfx'.  */
-static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx, 
+static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
                        X509_NAME *xn, apr_pool_t *p)
 {
     STACK_OF(X509_NAME_ENTRY) *ents = xn->entries;
@@ -834,7 +834,7 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p)
                          ssl_var_lookup_ssl_cert_dn_rec[n].name);
         }
     }
-    
+
     /* Extract the server cert DNS -- note that the refcount does NOT
      * increase: */
     xs = SSL_get_certificate(ssl);
@@ -842,7 +842,7 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p)
         extract_dn(t, nids, "SSL_SERVER_S_DN_", X509_get_subject_name(xs), p);
         extract_dn(t, nids, "SSL_SERVER_I_DN_", X509_get_issuer_name(xs), p);
     }
-    
+
     /* Extract the client cert DNs -- note that the refcount DOES
      * increase: */
     xs = SSL_get_peer_certificate(ssl);
@@ -862,7 +862,7 @@ static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
     MODSSL_D2I_ASN1_type_bytes_CONST unsigned char *pp = str->data;
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
-    
+
     /* This allows UTF8String, IA5String, VisibleString, or BMPString;
      * conversion to UTF-8 is forced. */
     if (d2i_DISPLAYTEXT(&ret, &pp, str->length)) {

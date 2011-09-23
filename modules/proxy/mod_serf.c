@@ -76,7 +76,7 @@ typedef struct {
 static void timed_cleanup_callback(void *baton)
 {
     s_baton_t *ctx = baton;
-    
+
     /* Causes all serf connections to unregister from the event mpm */
     if (ctx->rstatus) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->rstatus, ctx->r,
@@ -95,7 +95,7 @@ static void timed_cleanup_callback(void *baton)
 
         /* TODO: return code? bleh */
         ap_pass_brigade(ctx->r->output_filters, ctx->tmpbb);
-        
+
         apr_pool_destroy(ctx->serf_pool);
 
         ap_finalize_request_protocol(ctx->r);
@@ -144,7 +144,7 @@ static int copy_headers_in(void *vbaton, const char *key, const char *value)
 {
     serf_bucket_t *hdrs_bkt = (serf_bucket_t *)vbaton;
 
-    /* XXXXX: List of headers not to copy to serf. serf's serf_bucket_headers_setn, 
+    /* XXXXX: List of headers not to copy to serf. serf's serf_bucket_headers_setn,
      * doesn't actually overwrite a header if we set it once, so we need to ignore anything
      * we might want to toggle or combine.
      */
@@ -292,9 +292,9 @@ static apr_status_t handle_response(serf_request_t *request,
 
         return rv;
     }
-    
+
     /**
-     * XXXXX: If I understood serf buckets better, it might be possible to not 
+     * XXXXX: If I understood serf buckets better, it might be possible to not
      * copy all of the data here, and better stream it to the client.
      **/
 
@@ -314,7 +314,7 @@ static apr_status_t handle_response(serf_request_t *request,
             /* TODO: improve */
             serf_bucket_response_status(response, &line);
             ctx->r->status = line.code;
-            
+
             hdrs = serf_bucket_response_get_headers(response);
             serf_bucket_headers_do(hdrs, copy_headers_out, ctx);
             ctx->done_headers = 1;
@@ -390,7 +390,7 @@ static apr_status_t setup_request(serf_request_t *request,
                                                       ctx->bkt_alloc);
         }
     }
-    
+
     *acceptor = accept_response;
     *acceptor_baton = ctx;
     *handler = handle_response;
@@ -409,7 +409,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
     /* XXXXX: make persistent/per-process or something.*/
     serf_context_t *serfme;
     serf_connection_t *conn;
-    serf_server_config_t *ctx = 
+    serf_server_config_t *ctx =
         (serf_server_config_t *)ap_get_module_config(r->server->module_config,
                                                      &serf_module);
 
@@ -426,7 +426,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         apr_uint32_t pick = 0;
         ap_serf_server_t *choice;
 
-        /* TODO: could this be optimized in post-config to pre-setup the 
+        /* TODO: could this be optimized in post-config to pre-setup the
          * pointers to the right cluster inside the conf structure?
          */
         cluster = apr_hash_get(ctx->clusters,
@@ -439,7 +439,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         }
 
         cp = ap_lookup_provider(AP_SERF_CLUSTER_PROVIDER, cluster->provider, "0");
-        
+
         if (cp == NULL) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "SerfCluster: unable to find provider %s", cluster->provider);
@@ -451,7 +451,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
                           "SerfCluster: %s is missing list servers provider.", cluster->provider);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        
+
         rc = cp->list_servers(cp->baton,
                               r,
                               cluster->params,
@@ -557,7 +557,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         apr_file_seek(fp, APR_SET, &flen);
         baton->body_bkt = serf_bucket_file_create(fp, baton->bkt_alloc);
     }
-    
+
     conn = serf_connection_create(serfme, address,
                                   conn_setup, baton,
                                   closed_connection, baton,
@@ -572,20 +572,20 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
     else {
         do {
             rv = serf_context_run(serfme, SERF_DURATION_FOREVER, pool);
-            
+
             /* XXXX: Handle timeouts */
             if (APR_STATUS_IS_TIMEUP(rv)) {
                 continue;
             }
-            
+
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "serf_context_run() for %pI", address);
-                return HTTP_INTERNAL_SERVER_ERROR;       
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
-            
+
             serf_debug__closed_conn(baton->bkt_alloc);
         } while (baton->keep_reading);
-        
+
         return baton->rstatus;
     }
 }
@@ -645,7 +645,7 @@ static const char *add_pass(cmd_parms *cmd, void *vconf,
     for (i = 1; i < argc; i++) {
         const char *p = argv[i];
         const char *x = ap_strchr_c(p, '=');
-        
+
         if (x) {
             if (strncmp(p, "preservehost", x-p) == 0) {
                 conf->preservehost = is_true(x+1);
@@ -654,7 +654,7 @@ static const char *add_pass(cmd_parms *cmd, void *vconf,
     }
 
     conf->on = 1;
-    
+
     return NULL;
 }
 
@@ -667,12 +667,12 @@ static const char *add_cluster(cmd_parms *cmd, void *d,
     ap_serf_cluster_provider_t *backend;
     int i;
     serf_cluster_t *cluster = NULL;
-    serf_server_config_t *ctx = 
+    serf_server_config_t *ctx =
         (serf_server_config_t *)ap_get_module_config(cmd->server->module_config,
                                                      &serf_module);
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-  
+
     if (err != NULL) {
         return err;
     }
@@ -680,14 +680,14 @@ static const char *add_cluster(cmd_parms *cmd, void *d,
     if (argc < 2) {
         return "SerfCluster must have at least a name and provider.";
     }
-    
+
     cluster = apr_palloc(cmd->pool, sizeof(serf_cluster_t));
     cluster->name = apr_pstrdup(cmd->pool, argv[0]);
     cluster->provider = apr_pstrdup(cmd->pool, argv[1]);
     cluster->params = apr_table_make(cmd->pool, 6);
 
     backend = ap_lookup_provider(AP_SERF_CLUSTER_PROVIDER, cluster->provider, "0");
-    
+
     if (backend == NULL) {
         return apr_psprintf(cmd->pool, "SerfCluster: unable to find "
                             "provider '%s'", cluster->provider);
@@ -703,7 +703,7 @@ static const char *add_cluster(cmd_parms *cmd, void *d,
                            x+1);
         }
         else {
-            apr_table_addn(cluster->params, 
+            apr_table_addn(cluster->params,
                            apr_pstrdup(cmd->pool, p),
                            "");
         }
@@ -716,7 +716,7 @@ static const char *add_cluster(cmd_parms *cmd, void *d,
     }
 
     rv = backend->check_config(backend->baton, cmd, cluster->params);
-    
+
     if (rv) {
         return rv;
     }
@@ -736,7 +736,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 
 static void *create_server_config(apr_pool_t *p, server_rec *s)
 {
-    serf_server_config_t *ctx = 
+    serf_server_config_t *ctx =
         (serf_server_config_t *) apr_pcalloc(p, sizeof(serf_server_config_t));
 
     ctx->clusters = apr_hash_make(p);
@@ -749,10 +749,10 @@ static void * merge_server_config(apr_pool_t *p, void *basev, void *overridesv)
     serf_server_config_t *ctx = apr_pcalloc(p, sizeof(serf_server_config_t));
     serf_server_config_t *base = (serf_server_config_t *) basev;
     serf_server_config_t *overrides = (serf_server_config_t *) overridesv;
-    
+
     ctx->clusters = apr_hash_overlay(p, base->clusters, overrides->clusters);
     return ctx;
-}    
+}
 
 static const command_rec serf_cmds[] =
 {
@@ -790,12 +790,12 @@ static const char* hb_config_check(void *baton,
     if (apr_is_empty_table(params)) {
         return "SerfCluster Heartbeat requires a path to the heartbat information.";
     }
-    
+
     b.p = cmd->pool;
     b.msg = NULL;
 
     apr_table_do(hb_table_check, &b, params, NULL);
-    
+
     if (b.msg) {
         return b.msg;
     }
@@ -817,7 +817,7 @@ argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
     char *key;
     char *value;
     char *strtok_state;
-    
+
     key = apr_strtok(str, "&", &strtok_state);
     while (key) {
         value = strchr(key, '=');
@@ -842,24 +842,24 @@ static apr_status_t read_heartbeats(const char *path,
     apr_finfo_t fi;
     apr_status_t rv;
     apr_file_t *fp;
-    
+
     if (!path) {
         return APR_SUCCESS;
     }
-    
+
     rv = apr_file_open(&fp, path, APR_READ|APR_BINARY|APR_BUFFERED,
                        APR_OS_DEFAULT, pool);
-    
+
     if (rv) {
         return rv;
     }
-    
+
     rv = apr_file_info_get(&fi, APR_FINFO_SIZE, fp);
-    
+
     if (rv) {
         return rv;
     }
-    
+
     {
         char *t;
         int lineno = 0;
@@ -875,14 +875,14 @@ static apr_status_t read_heartbeats(const char *path,
             if (buf[0] == '#') {
                 continue;
             }
-            
-            
+
+
             /* line format: <IP> <query_string>\n */
             t = strchr(buf, ' ');
             if (!t) {
                 continue;
             }
-            
+
             ip = apr_pstrndup(pool, buf, t - buf);
             t++;
             server = apr_pcalloc(pool, sizeof(hb_server_t));
@@ -890,29 +890,29 @@ static apr_status_t read_heartbeats(const char *path,
             server->port = 80;
             server->seen = -1;
             apr_table_clear(hbt);
-            
+
             argstr_to_table(pool, apr_pstrdup(pool, t), hbt);
-            
+
             if (apr_table_get(hbt, "busy")) {
                 server->busy = atoi(apr_table_get(hbt, "busy"));
             }
-            
+
             if (apr_table_get(hbt, "ready")) {
                 server->ready = atoi(apr_table_get(hbt, "ready"));
             }
-            
+
             if (apr_table_get(hbt, "lastseen")) {
                 server->seen = atoi(apr_table_get(hbt, "lastseen"));
             }
-            
+
             if (apr_table_get(hbt, "port")) {
                 server->port = atoi(apr_table_get(hbt, "port"));
             }
-            
+
             if (server->busy == 0 && server->ready != 0) {
-                /* Server has zero threads active, but lots of them ready, 
-                 * it likely just started up, so lets /4 the number ready, 
-                 * to prevent us from completely flooding it with all new 
+                /* Server has zero threads active, but lots of them ready,
+                 * it likely just started up, so lets /4 the number ready,
+                 * to prevent us from completely flooding it with all new
                  * requests.
                  */
                 server->ready = server->ready / 4;
@@ -921,7 +921,7 @@ static apr_status_t read_heartbeats(const char *path,
             APR_ARRAY_PUSH(servers, hb_server_t *) = server;
         }
     }
-    
+
     return APR_SUCCESS;
 }
 
@@ -966,7 +966,7 @@ static int hb_list_servers(void *baton,
         apr_pool_destroy(tpool);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    
+
     qsort(tmpservers->elts, tmpservers->nelts, sizeof(hb_server_t *),
           hb_server_sort);
 
@@ -1011,7 +1011,7 @@ static int static_table_check(void *rec, const char *key, const char *value)
                               key);
         return 1;
     }
-    
+
     return 0;
 }
 
@@ -1020,20 +1020,20 @@ static const char* static_config_check(void *baton,
                                    apr_table_t *params)
 {
     hb_table_baton_t b;
-    
+
     if (apr_is_empty_table(params)) {
         return "SerfCluster Static requires at least a host list.";
     }
-    
+
     b.p = cmd->pool;
     b.msg = NULL;
-    
+
     apr_table_do(static_table_check, &b, params, NULL);
-    
+
     if (b.msg) {
         return b.msg;
     }
-    
+
     if (apr_table_get(params, "hosts") == NULL) {
         return "SerfCluster Static requires at least a hosts parameter";
     }
@@ -1053,13 +1053,13 @@ static int static_list_servers(void *baton,
     const char *order = apr_table_get(params, "order");
 
     servers = apr_array_make(r->pool, 10, sizeof(ap_serf_server_t *));
-    
+
     ip = apr_strtok(apr_pstrdup(r->pool, hosts), ",", &strtok_state);
     while (ip) {
         char *host_str;
         char *scope_id;
         apr_port_t port = 0;
-        
+
         rv = apr_parse_addr_port(&host_str, &scope_id, &port, ip, r->pool);
         if (!rv) {
             ap_serf_server_t *s = apr_palloc(r->pool, sizeof(ap_serf_server_t));
@@ -1097,8 +1097,8 @@ static int serf_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     if (rv != APR_SUCCESS) {
         mpm_supprts_serf = 0;
     }
-    
-    return OK; 
+
+    return OK;
 }
 
 static void register_hooks(apr_pool_t *p)

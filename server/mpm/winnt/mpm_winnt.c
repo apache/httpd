@@ -624,7 +624,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     for (envc = 0; _environ[envc]; ++envc) {
         ;
     }
-    env = apr_palloc(ptemp, (envc + 2) * sizeof (char*));  
+    env = apr_palloc(ptemp, (envc + 2) * sizeof (char*));
     memcpy(env, _environ, envc * sizeof (char*));
     apr_snprintf(pidbuf, sizeof(pidbuf), "AP_PARENT_PID=%lu", parent_pid);
     env[envc] = pidbuf;
@@ -1026,7 +1026,7 @@ static void winnt_rewrite_args(process_rec *process)
     /* We wish this was *always* a reservation, but sadly it wasn't so and
      * we couldn't break a hard limit prior to NT Kernel 5.1
      */
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT 
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT
         && ((osver.dwMajorVersion > 5)
          || ((osver.dwMajorVersion == 5) && (osver.dwMinorVersion > 0)))) {
         stack_res_flag = STACK_SIZE_PARAM_IS_A_RESERVATION;
@@ -1072,7 +1072,7 @@ static void winnt_rewrite_args(process_rec *process)
         }
 
         /* This child needs the existing stderr opened for logging,
-         * already 
+         * already
          */
 
 
@@ -1231,7 +1231,7 @@ static void winnt_rewrite_args(process_rec *process)
 
         /* Open a null handle to soak stdout in this process.
          * Windows service processes are missing any file handle
-         * usable for stdin/out/err.  This was the cause of later 
+         * usable for stdin/out/err.  This was the cause of later
          * trouble with invocations of apr_file_open_stdout()
          */
         if ((rv = apr_file_open(&nullfile, "NUL",
@@ -1605,7 +1605,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             }
         }
         /* Always reset our console handler to be the first, even on a restart
-        *  because some modules (e.g. mod_perl) might have set a console 
+        *  because some modules (e.g. mod_perl) might have set a console
         *  handler to terminate the process.
         */
         if (strcasecmp(signal_arg, "runservice"))

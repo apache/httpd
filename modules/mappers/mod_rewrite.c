@@ -1663,7 +1663,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
         rewritelog((r, 5, NULL, "cache lookup OK: map=%s[SQL] key=%s, val=%s",
                     name, key, value));
         return *value ? value : NULL;
-        
+
     /*
      * Program file map
      */
@@ -2336,7 +2336,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
                     current->len = span;
                     current->string = bri->source + bri->regmatch[n].rm_so;
                 }
-                
+
                 outlen += span;
             }
 
@@ -2751,7 +2751,7 @@ static void *config_server_merge(apr_pool_t *p, void *basev, void *overridesv)
                                               overrides->rewritemaps);
         a->rewriteconds    = apr_array_append(p, base->rewriteconds,
                                               overrides->rewriteconds);
-        a->rewriterules    = apr_array_append(p, base->rewriterules, 
+        a->rewriterules    = apr_array_append(p, base->rewriterules,
                                               overrides->rewriterules);
     }
     else {
@@ -3331,7 +3331,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     case 'B':
         if (!*key || !strcasecmp(key, "ackrefescaping")) {
             cfg->flags |= RULEFLAG_ESCAPEBACKREF;
-        } 
+        }
         else {
             ++error;
         }
@@ -3365,9 +3365,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         break;
     case 'd':
     case 'D':
-        if (!*key || !strcasecmp(key, "PI") || !strcasecmp(key,"iscardpath")) {       
+        if (!*key || !strcasecmp(key, "PI") || !strcasecmp(key,"iscardpath")) {
             cfg->flags |= (RULEFLAG_DISCARDPATHINFO);
-        } 
+        }
         break;
     case 'e':
     case 'E':
@@ -4031,7 +4031,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     r->filename = newuri;
 
     if (ctx->perdir && (p->flags & RULEFLAG_DISCARDPATHINFO)) {
-        r->path_info = NULL; 
+        r->path_info = NULL;
     }
 
     splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND, p->flags & RULEFLAG_QSDISCARD);
@@ -4064,12 +4064,12 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
          * instead.  See PR 39746, 46428, and other headaches. */
         if (ctx->perdir && (p->flags & RULEFLAG_NOESCAPE) == 0) {
             char *old_filename = r->filename;
-            
+
             r->filename = ap_escape_uri(r->pool, r->filename);
             rewritelog((r, 2, ctx->perdir, "escaped URI in per-dir context "
                         "for proxy, %s -> %s", old_filename, r->filename));
         }
-        
+
         fully_qualify_uri(r);
 
         rewritelog((r, 2, ctx->perdir, "forcing proxy-throughput with %s",
@@ -4209,7 +4209,7 @@ static int apply_rewrite_list(request_rec *r, apr_array_header_t *rewriterules,
                 break;
             }
 
-            if (p->flags & RULEFLAG_END) { 
+            if (p->flags & RULEFLAG_END) {
                 rewritelog((r, 8, perdir, "Rule has END flag, no further rewriting for this request"));
                 apr_pool_userdata_set("1", really_last_key, apr_pool_cleanup_null, r->pool);
                 break;
@@ -4397,9 +4397,9 @@ static int hook_uri2file(request_rec *r)
         return DECLINED;
     }
 
-    /* END flag was used as a RewriteRule flag on this request */ 
+    /* END flag was used as a RewriteRule flag on this request */
     apr_pool_userdata_get(&skipdata, really_last_key, r->pool);
-    if (skipdata != NULL) { 
+    if (skipdata != NULL) {
         rewritelog((r, 8, NULL, "Declining, no further rewriting due to END flag"));
         return DECLINED;
     }
@@ -4698,9 +4698,9 @@ static int hook_fixup(request_rec *r)
         }
     }
 
-    /* END flag was used as a RewriteRule flag on this request */ 
+    /* END flag was used as a RewriteRule flag on this request */
     apr_pool_userdata_get(&skipdata, really_last_key, r->pool);
-    if (skipdata != NULL) { 
+    if (skipdata != NULL) {
         rewritelog((r, 8, dconf->directory, "Declining, no further rewriting due to END flag"));
         return DECLINED;
     }
@@ -4833,18 +4833,18 @@ static int hook_fixup(request_rec *r)
             /* append the QUERY_STRING part */
             if (r->args) {
                 char *escaped_args = NULL;
-                int noescape = (rulestatus == ACTION_NOESCAPE || 
+                int noescape = (rulestatus == ACTION_NOESCAPE ||
                                 (oargs && !strcmp(r->args, oargs)));
-                             
+
                 r->filename = apr_pstrcat(r->pool, r->filename, "?",
-                                          noescape 
+                                          noescape
                                             ? r->args
                                             : (escaped_args = ap_escape_uri(r->pool, r->args)),
                                           NULL);
 
                 rewritelog((r, 1, dconf->directory, "%s %s to query string for redirect %s",
-                            noescape ? "copying" : "escaping",  
-                            r->args , 
+                            noescape ? "copying" : "escaping",
+                            r->args ,
                             noescape ? "" : escaped_args));
             }
 

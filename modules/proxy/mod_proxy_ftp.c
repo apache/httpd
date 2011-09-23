@@ -146,7 +146,7 @@ static const char *ftp_escape_globbingchars(apr_pool_t *p, const char *path, pro
 {
     char *ret;
     char *d;
-    
+
     if (!dconf->ftp_escape_wildcards) {
         return path;
     }
@@ -1008,9 +1008,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         && (password = ap_pbase64decode(r->pool, password))[0] != ':') {
         /* Check the decoded string for special characters. */
         if (!ftp_check_string(password)) {
-            return ap_proxyerror(r, HTTP_BAD_REQUEST, 
+            return ap_proxyerror(r, HTTP_BAD_REQUEST,
                                  "user credentials contained invalid character");
-        } 
+        }
         /*
          * Note that this allocation has to be made from r->connection->pool
          * because it has the lifetime of the connection.  The other

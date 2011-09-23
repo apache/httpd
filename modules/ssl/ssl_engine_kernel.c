@@ -48,7 +48,7 @@ static apr_status_t upgrade_connection(request_rec *r)
     apr_status_t rv;
     SSL *ssl;
 
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, 
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                   "upgrading connection to TLS");
 
     bb = apr_brigade_create(r->pool, conn->bucket_alloc);
@@ -69,10 +69,10 @@ static apr_status_t upgrade_connection(request_rec *r)
     }
 
     ssl_init_ssl_connection(conn, r);
-    
+
     sslconn = myConnConfig(conn);
     ssl = sslconn->ssl;
-    
+
     /* Perform initial SSL handshake. */
     SSL_set_accept_state(ssl);
     SSL_do_handshake(ssl);
@@ -80,7 +80,7 @@ static apr_status_t upgrade_connection(request_rec *r)
     if (SSL_get_state(ssl) != SSL_ST_OK) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "TLS upgrade handshake failed: not accepted by client!?");
-        
+
         return APR_ECONNABORTED;
     }
 
@@ -90,23 +90,23 @@ static apr_status_t upgrade_connection(request_rec *r)
 /* Perform a speculative (and non-blocking) read from the connection
  * filters for the given request, to determine whether there is any
  * pending data to read.  Return non-zero if there is, else zero. */
-static int has_buffered_data(request_rec *r) 
+static int has_buffered_data(request_rec *r)
 {
     apr_bucket_brigade *bb;
     apr_off_t len;
     apr_status_t rv;
     int result;
-    
+
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    
+
     rv = ap_get_brigade(r->connection->input_filters, bb, AP_MODE_SPECULATIVE,
-                        APR_NONBLOCK_READ, 1); 
+                        APR_NONBLOCK_READ, 1);
     result = rv == APR_SUCCESS
         && apr_brigade_length(bb, 1, &len) == APR_SUCCESS
         && len > 0;
-    
+
     apr_brigade_destroy(bb);
-    
+
     return result;
 }
 
@@ -122,7 +122,7 @@ int ssl_hook_ReadReq(request_rec *r)
     const char *servername;
 #endif
     SSL *ssl;
-    
+
     /* Perform TLS upgrade here if "SSLEngine optional" is configured,
      * SSL is not already set up for this connection, and the client
      * has sent a suitable Upgrade header. */
@@ -768,7 +768,7 @@ int ssl_hook_Access(request_rec *r)
                           "Performing full renegotiation: complete handshake "
                           "protocol (%s support secure renegotiation)",
 #if defined(SSL_get_secure_renegotiation_support)
-                          SSL_get_secure_renegotiation_support(ssl) ? 
+                          SSL_get_secure_renegotiation_support(ssl) ?
                           "client does" : "client does not"
 #else
                           "server does not"
@@ -782,7 +782,7 @@ int ssl_hook_Access(request_rec *r)
             /* Toggle the renegotiation state to allow the new
              * handshake to proceed. */
             sslconn->reneg_state = RENEG_ALLOW;
-            
+
             SSL_renegotiate(ssl);
             SSL_do_handshake(ssl);
 
@@ -1190,7 +1190,7 @@ int ssl_hook_Fixup(request_rec *r)
 
 
 #ifdef SSL_get_secure_renegotiation_support
-    apr_table_setn(r->notes, "ssl-secure-reneg", 
+    apr_table_setn(r->notes, "ssl-secure-reneg",
                    SSL_get_secure_renegotiation_support(ssl) ? "1" : "0");
 #endif
 
@@ -1391,12 +1391,12 @@ EC_KEY *ssl_callback_TmpECDH(SSL *ssl, int export, int keylen)
         ecdh = EC_KEY_new();
         if (ecdh != NULL) {
             /* ecdh->group = EC_GROUP_new_by_nid(NID_secp160r2); */
-            EC_KEY_set_group(ecdh, 
+            EC_KEY_set_group(ecdh,
               EC_GROUP_new_by_curve_name(NID_X9_62_prime256v1));
         }
         init = 1;
     }
-    
+
     return ecdh;
 }
 #endif
@@ -1819,7 +1819,7 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
 }
 
 /* Dump debugginfo trace to the log file. */
-static void log_tracing_state(const SSL *ssl, conn_rec *c, 
+static void log_tracing_state(const SSL *ssl, conn_rec *c,
                               server_rec *s, int where, int rc)
 {
     /*
@@ -1912,8 +1912,8 @@ void ssl_callback_Info(const SSL *ssl, int where, int rc)
      * read. */
     if ((where & SSL_CB_ACCEPT_LOOP) && scr->reneg_state == RENEG_REJECT) {
         int state = SSL_get_state((SSL *)ssl);
-        
-        if (state == SSL3_ST_SR_CLNT_HELLO_A 
+
+        if (state == SSL3_ST_SR_CLNT_HELLO_A
             || state == SSL23_ST_SR_CLNT_HELLO_A) {
             scr->reneg_state = RENEG_ABORT;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
@@ -1970,7 +1970,7 @@ int ssl_callback_ServerNameIndication(SSL *ssl, int *al, modssl_ctx_t *mctx)
  * or one of the ServerAliases matches the supplied name (to be used
  * with ap_vhost_iterate_given_conn())
  */
-static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s) 
+static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 {
     SSLSrvConfigRec *sc;
     SSL *ssl;
@@ -1984,7 +1984,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
         found = TRUE;
     }
 
-    /* 
+    /*
      * if not matched yet, check ServerAlias entries
      * (adapted from vhost.c:matches_aliases())
      */

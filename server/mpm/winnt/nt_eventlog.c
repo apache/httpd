@@ -157,7 +157,7 @@ void mpm_nt_eventlog_stderr_open(const char *argv0, apr_pool_t *p)
 
     WaitForSingleObject(stderr_ready, INFINITE);
 
-    if ((apr_file_open_stderr(&stderr_file, p) 
+    if ((apr_file_open_stderr(&stderr_file, p)
              == APR_SUCCESS)
      && (apr_os_file_put(&eventlog_file, &hPipeWrite, APR_WRITE, p)
              == APR_SUCCESS))

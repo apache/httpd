@@ -39,9 +39,9 @@ typedef struct {
 typedef struct {
     /** The header to retrieve a proxy-via ip list */
     const char *header_name;
-    /** A header to record the proxied IP's 
-     * (removed as the physical connection and 
-     * from the proxy-via ip header value list) 
+    /** A header to record the proxied IP's
+     * (removed as the physical connection and
+     * from the proxy-via ip header value list)
      */
     const char *proxies_header_name;
     /** A list of trusted proxies, ideally configured
@@ -153,8 +153,8 @@ static const char *proxies_set(cmd_parms *cmd, void *internal,
         apr_sockaddr_t *temp_sa;
 
         if (s) {
-            return apr_pstrcat(cmd->pool, "RemoteIP: Error parsing IP ", arg, 
-                               " the subnet /", s, " is invalid for ", 
+            return apr_pstrcat(cmd->pool, "RemoteIP: Error parsing IP ", arg,
+                               " the subnet /", s, " is invalid for ",
                                cmd->cmd->name, NULL);
         }
 
@@ -166,7 +166,7 @@ static const char *proxies_set(cmd_parms *cmd, void *internal,
             rv = apr_ipsubnet_create(&match->ip, ip, NULL, cmd->pool);
             if (!(temp_sa = temp_sa->next))
                 break;
-            match = (remoteip_proxymatch_t *) 
+            match = (remoteip_proxymatch_t *)
                     apr_array_push(config->proxymatch_ip);
             match->internal = internal;
         }
@@ -175,7 +175,7 @@ static const char *proxies_set(cmd_parms *cmd, void *internal,
     if (rv != APR_SUCCESS) {
         char msgbuf[128];
         apr_strerror(rv, msgbuf, sizeof(msgbuf));
-        return apr_pstrcat(cmd->pool, "RemoteIP: Error parsing IP ", arg, 
+        return apr_pstrcat(cmd->pool, "RemoteIP: Error parsing IP ", arg,
                            " (", msgbuf, " error) for ", cmd->cmd->name, NULL);
     }
 
@@ -196,7 +196,7 @@ static const char *proxylist_read(cmd_parms *cmd, void *internal,
     rv = ap_pcfg_openfile(&cfp, cmd->temp_pool, filename);
     if (rv != APR_SUCCESS) {
         return apr_psprintf(cmd->pool, "%s: Could not open file %s: %s",
-                            cmd->cmd->name, filename, 
+                            cmd->cmd->name, filename,
                             apr_strerror(rv, lbuf, sizeof(lbuf)));
     }
 
@@ -207,7 +207,7 @@ static const char *proxylist_read(cmd_parms *cmd, void *internal,
                 break;
             errmsg = proxies_set(cmd, internal, arg);
             if (errmsg) {
-                errmsg = apr_psprintf(cmd->pool, "%s at line %d of %s", 
+                errmsg = apr_psprintf(cmd->pool, "%s at line %d of %s",
                                       errmsg, cfp->line_number, filename);
                 return errmsg;
             }
@@ -292,7 +292,7 @@ static int remoteip_modify_connection(request_rec *r)
             *(parse_remote++) = '\0';
         }
 
-        while (*parse_remote == ' ') 
+        while (*parse_remote == ' ')
             ++parse_remote;
 
         eos = parse_remote + strlen(parse_remote) - 1;
@@ -309,12 +309,12 @@ static int remoteip_modify_connection(request_rec *r)
 
 #ifdef REMOTEIP_OPTIMIZED
         /* Decode remote_addr - sucks; apr_sockaddr_vars_set isn't 'public' */
-        if (inet_pton(AF_INET, parse_remote, 
+        if (inet_pton(AF_INET, parse_remote,
                       &temp_sa->sa.sin.sin_addr) > 0) {
             apr_sockaddr_vars_set(temp_sa, APR_INET, temp_sa.port);
         }
 #if APR_HAVE_IPV6
-        else if (inet_pton(AF_INET6, parse_remote, 
+        else if (inet_pton(AF_INET6, parse_remote,
                            &temp_sa->sa.sin6.sin6_addr) > 0) {
             apr_sockaddr_vars_set(temp_sa, APR_INET6, temp_sa.port);
         }
@@ -323,9 +323,9 @@ static int remoteip_modify_connection(request_rec *r)
             rv = apr_get_netos_error();
 #else /* !REMOTEIP_OPTIMIZED */
         /* We map as IPv4 rather than IPv6 for equivilant host names
-         * or IPV4OVERIPV6 
+         * or IPV4OVERIPV6
          */
-        rv = apr_sockaddr_info_get(&temp_sa,  parse_remote, 
+        rv = apr_sockaddr_info_get(&temp_sa,  parse_remote,
                                    APR_UNSPEC, temp_sa->port,
                                    APR_IPV4_ADDR_OK, r->pool);
         if (rv != APR_SUCCESS) {
@@ -348,7 +348,7 @@ static int remoteip_modify_connection(request_rec *r)
               && ((temp_sa->family == APR_INET
                    /* For internet (non-Internal proxies) deny all
                     * RFC3330 designated local/private subnets:
-                    * 10.0.0.0/8   169.254.0.0/16  192.168.0.0/16 
+                    * 10.0.0.0/8   169.254.0.0/16  192.168.0.0/16
                     * 127.0.0.0/8  172.16.0.0/12
                     */
                       && (addrbyte[0] == 10
@@ -358,7 +358,7 @@ static int remoteip_modify_connection(request_rec *r)
                        || (addrbyte[0] == 192 && addrbyte[1] == 168)))
 #if APR_HAVE_IPV6
                || (temp_sa->family == APR_INET6
-                   /* For internet (non-Internal proxies) we translated 
+                   /* For internet (non-Internal proxies) we translated
                     * IPv4-over-IPv6-mapped addresses as IPv4, above.
                     * Accept only Global Unicast 2000::/3 defined by RFC4291
                     */
@@ -386,7 +386,7 @@ static int remoteip_modify_connection(request_rec *r)
         /* Set remote_ip string */
         if (!internal) {
             if (proxy_ips)
-                proxy_ips = apr_pstrcat(r->pool, proxy_ips, ", ", 
+                proxy_ips = apr_pstrcat(r->pool, proxy_ips, ", ",
                                         c->remote_ip, NULL);
             else
                 proxy_ips = c->remote_ip;
@@ -400,7 +400,7 @@ static int remoteip_modify_connection(request_rec *r)
     if (!conn || (c->remote_addr == conn->orig_addr))
         return OK;
 
-    /* Fixups here, remote becomes the new Via header value, etc 
+    /* Fixups here, remote becomes the new Via header value, etc
      * In the heavy operations above we used request scope, to limit
      * conn pool memory growth on keepalives, so here we must scope
      * the final results to the connection pool lifetime.
@@ -416,7 +416,7 @@ static int remoteip_modify_connection(request_rec *r)
     if (remote)
         remote = apr_pstrdup(c->pool, remote);
     conn->proxied_remote = remote;
-    conn->prior_remote = apr_pstrdup(c->pool, apr_table_get(r->headers_in, 
+    conn->prior_remote = apr_pstrdup(c->pool, apr_table_get(r->headers_in,
                                                       config->header_name));
     if (proxy_ips)
         proxy_ips = apr_pstrdup(c->pool, proxy_ips);
@@ -440,7 +440,7 @@ ditto_request_rec:
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
-                  conn->proxy_ips 
+                  conn->proxy_ips
                       ? "Using %s as client's IP by proxies %s"
                       : "Using %s as client's IP by internal proxies",
                   conn->proxied_ip, conn->proxy_ips);

@@ -92,7 +92,7 @@ static apr_status_t brigade_peek(apr_bucket_brigade *bbIn,
 }
 
 
-static int update_echo_child_status(ap_sb_handle_t *sbh, 
+static int update_echo_child_status(ap_sb_handle_t *sbh,
                                     int status, conn_rec *c,
                                     apr_bucket_brigade *last_echoed)
 {
@@ -108,7 +108,7 @@ static int update_echo_child_status(ap_sb_handle_t *sbh,
 
     /* initial pass only, please - in the name of efficiency */
     if (c) {
-        apr_cpystrn(ws->client, 
+        apr_cpystrn(ws->client,
                     ap_get_remote_host(c, c->base_server->lookup_defaults,
                                        REMOTE_NOLOOKUP, NULL),
                     sizeof(ws->client));
@@ -120,7 +120,7 @@ static int update_echo_child_status(ap_sb_handle_t *sbh,
 
     /* each subsequent WRITE pass, let's update what we echoed */
     if (last_echoed) {
-        brigade_peek(last_echoed, ws->request + sizeof("ECHO ") - 1, 
+        brigade_peek(last_echoed, ws->request + sizeof("ECHO ") - 1,
                      sizeof(ws->request) - sizeof("ECHO ") + 1);
     }
 
@@ -138,7 +138,7 @@ static int process_echo_connection(conn_rec *c)
     if (!pConfig->bEnabled) {
         return DECLINED;
     }
-    
+
     ap_time_process_request(c->sbh, START_PREQUEST);
     update_echo_child_status(c->sbh, SERVER_BUSY_READ, c, NULL);
 
@@ -182,7 +182,7 @@ static int process_echo_connection(conn_rec *c)
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                          "ProtocolEcho: Failure writing to %s",
                          c->remote_ip);
-            break; 
+            break;
         }
         apr_brigade_cleanup(bb);
 

@@ -483,7 +483,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
 
             /* PR#38070: This fails because it gets confused when a
              * CGI Status header overrides ap_meets_conditions.
-             * 
+             *
              * We can fix that by dropping ap_meets_conditions when
              * Status has been set.  Since this is the only place
              * cgi_status gets used, let's test it explicitly.
@@ -809,7 +809,7 @@ argstr_to_table(char *str, apr_table_t *parms)
     if (str == NULL) {
         return;
     }
-    
+
     key = apr_strtok(str, "&", &strtok_state);
     while (key) {
         value = strchr(key, '=');

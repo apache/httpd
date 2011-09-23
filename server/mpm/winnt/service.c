@@ -262,7 +262,7 @@ static void set_service_description(void)
 
 /* handle the SCM's ControlService() callbacks to our service */
 
-static DWORD WINAPI service_nt_ctrl(DWORD dwCtrlCode, DWORD dwEventType, 
+static DWORD WINAPI service_nt_ctrl(DWORD dwCtrlCode, DWORD dwEventType,
                                    LPVOID lpEventData, LPVOID lpContext)
 {
     nt_service_ctx_t *ctx = lpContext;

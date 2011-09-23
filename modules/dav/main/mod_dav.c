@@ -1622,18 +1622,18 @@ static int dav_method_options(request_rec *r)
     /* DAV header additions registered by external modules */
     extensions = ap_list_provider_names(r->pool, DAV_OPTIONS_EXTENSION_GROUP, "0");
     entry = (ap_list_provider_names_t *)extensions->elts;
-	
+
     for (i = 0; i < extensions->nelts; i++, entry++) {
-	const dav_options_provider *options = 
+	const dav_options_provider *options =
 	    dav_get_options_providers(entry->provider_name);
-	
+
 	if (options && options->dav_header) {
 	    apr_text_header hoptions = { 0 };
-	    
+
 	    options->dav_header(r, resource, &hoptions);
 	    for (t = hoptions.first; t && t->text; t = t->next)
 		dav_level = apr_pstrcat(r->pool, dav_level, ",", t->text, NULL);
-	}   
+	}
     }
 
     /* ###
@@ -1782,18 +1782,18 @@ static int dav_method_options(request_rec *r)
     /* additional methods registered by external modules */
     extensions = ap_list_provider_names(r->pool, DAV_OPTIONS_EXTENSION_GROUP, "0");
     entry = (ap_list_provider_names_t *)extensions->elts;
-    
+
     for (i = 0; i < extensions->nelts; i++, entry++) {
-	const dav_options_provider *options = 
+	const dav_options_provider *options =
 	    dav_get_options_providers(entry->provider_name);
-	
+
 	if (options && options->dav_method) {
 	    apr_text_header hoptions = { 0 };
-	    
+
 	    options->dav_method(r, resource, &hoptions);
 	    for (t = hoptions.first; t && t->text; t = t->next)
 		apr_table_addn(methods, t->text, "");
-	}    
+	}
     }
 
     /* Generate the Allow header */
@@ -3045,7 +3045,7 @@ static int dav_method_lock(request_rec *r)
         err = dav_new_error(r->pool, HTTP_CONFLICT, 0, 0,
                            apr_psprintf(r->pool,
                                         "The parent resource of %s does not "
-                                        "exist or is not a collection.", 
+                                        "exist or is not a collection.",
                                         ap_escape_html(r->pool, r->uri)));
         return dav_handle_err(r, err, NULL);
     }

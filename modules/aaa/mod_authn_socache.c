@@ -314,7 +314,7 @@ static authn_status check_password(request_rec *r, const char *user,
     /* construct key
      * look it up
      * if found, test password
-     * 
+     *
      * mutexing here would be a big performance drag.
      * It's definitely unnecessary with some backends (like ndbm or gdbm)
      * Is there a risk in the general case?  I guess the only risk we

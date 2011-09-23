@@ -143,7 +143,7 @@ static const apr_bucket_type_t bucket_type_socket_ex = {
     "SOCKET_EX", 5, APR_BUCKET_DATA,
     apr_bucket_destroy_noop,
     bucket_socket_ex_read,
-    apr_bucket_setaside_notimpl, 
+    apr_bucket_setaside_notimpl,
     apr_bucket_split_notimpl,
     apr_bucket_copy_notimpl
 };
@@ -189,9 +189,9 @@ static int scgi_canon(request_rec *r, char *url)
                       "error parsing URL %s: %s", url, err);
         return HTTP_BAD_REQUEST;
     }
-        
+
     apr_snprintf(sport, sizeof(sport), ":%u", port);
-        
+
     if (ap_strchr(host, ':')) { /* if literal IPv6 address */
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }

@@ -2083,7 +2083,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
                 && !APR_STATUS_IS_ENOTDIR(status)) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
                               "%s pcfg_openfile: unable to check htaccess file, "
-                              "ensure it is readable and that '%s' " 
+                              "ensure it is readable and that '%s' "
                               "is executable",
                               filename, d);
                 apr_table_setn(r->notes, "error-notes",

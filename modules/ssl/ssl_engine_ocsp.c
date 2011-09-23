@@ -34,7 +34,7 @@ static const char *extract_responder_uri(X509 *cert, apr_pool_t *pool)
 
     for (j = 0; j < sk_ACCESS_DESCRIPTION_num(values) && !result; j++) {
         ACCESS_DESCRIPTION *value = sk_ACCESS_DESCRIPTION_value(values, j);
-        
+
         /* Name found in extension, and is a URI: */
         if (OBJ_obj2nid(value->method) == NID_ad_OCSP
             && value->location->type == GEN_URI) {
@@ -42,7 +42,7 @@ static const char *extract_responder_uri(X509 *cert, apr_pool_t *pool)
                                  (char *)value->location->d.uniformResourceIdentifier->data);
         }
     }
-    
+
     AUTHORITY_INFO_ACCESS_free(values);
 
     return result;
@@ -51,7 +51,7 @@ static const char *extract_responder_uri(X509 *cert, apr_pool_t *pool)
 /* Return the responder URI object which should be used in the given
  * configuration for the given certificate, or NULL if none can be
  * determined. */
-static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert, 
+static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
                                           conn_rec *c, apr_pool_t *p)
 {
     apr_uri_t *u = apr_palloc(p, sizeof *u);
@@ -65,7 +65,7 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
         s = sc->server->ocsp_responder;
     }
     else {
-        s = extract_responder_uri(cert, p); 
+        s = extract_responder_uri(cert, p);
 
         if (s == NULL && sc->server->ocsp_responder) {
             s = sc->server->ocsp_responder;
@@ -80,14 +80,14 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
     }
 
     rv = apr_uri_parse(p, s, u);
-    if (rv || !u->hostname) {    
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, 
+    if (rv || !u->hostname) {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
                       "failed to parse OCSP responder URI '%s'", s);
         return NULL;
     }
 
     if (strcasecmp(u->scheme, "http") != 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
                       "cannot handle OCSP responder URI '%s'", s);
         return NULL;
     }
@@ -102,8 +102,8 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
 /* Create an OCSP request for the given certificate; returning the
  * certificate ID in *certid and *issuer on success.  Returns the
  * request object on success, or NULL on error. */
-static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert, 
-                                    OCSP_CERTID **certid, 
+static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
+                                    OCSP_CERTID **certid,
                                     server_rec *s, apr_pool_t *p)
 {
     OCSP_REQUEST *req = OCSP_REQUEST_new();
@@ -115,17 +115,17 @@ static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
                      "could not retrieve certificate id");
         return NULL;
     }
-    
+
     OCSP_request_add1_nonce(req, 0, -1);
-    
+
     return req;
 }
-        
+
 /* Verify the OCSP status of given certificate.  Returns
  * V_OCSP_CERTSTATUS_* result code. */
-static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c, 
+static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
                               SSLSrvConfigRec *sc, server_rec *s,
-                              apr_pool_t *pool) 
+                              apr_pool_t *pool)
 {
     int rc = V_OCSP_CERTSTATUS_GOOD;
     OCSP_RESPONSE *response = NULL;
@@ -133,7 +133,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     OCSP_REQUEST *request = NULL;
     OCSP_CERTID *certID = NULL;
     apr_uri_t *ruri;
-   
+
     ruri = determine_responder_uri(sc, cert, c, pool);
     if (!ruri) {
         return V_OCSP_CERTSTATUS_UNKNOWN;
@@ -150,7 +150,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     if (!request || !response) {
         rc = V_OCSP_CERTSTATUS_UNKNOWN;
     }
-    
+
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         int r = OCSP_response_status(response);
 
@@ -160,7 +160,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
-    
+
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         basicResponse = OCSP_response_get1_basic(response);
         if (!basicResponse) {
@@ -170,7 +170,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
-    
+
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         if (OCSP_check_nonce(request, basicResponse) != 1) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
@@ -178,7 +178,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
-    
+
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         /* TODO: allow flags configuration. */
         if (OCSP_basic_verify(basicResponse, NULL, ctx->ctx, 0) != 1) {
@@ -188,7 +188,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
-    
+
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         int reason = -1, status;
         ASN1_GENERALIZEDTIME *thisup = NULL, *nextup = NULL;
@@ -224,10 +224,10 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         }
 
         {
-            int level = 
+            int level =
                 (status == V_OCSP_CERTSTATUS_GOOD) ? APLOG_INFO : APLOG_ERR;
-            const char *result = 
-                status == V_OCSP_CERTSTATUS_GOOD ? "good" : 
+            const char *result =
+                status == V_OCSP_CERTSTATUS_GOOD ? "good" :
                 (status == V_OCSP_CERTSTATUS_REVOKED ? "revoked" : "unknown");
 
             ssl_log_cxerror(SSLLOG_MARK, level, 0, c, cert,
@@ -236,7 +236,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
                             result, status, reason);
         }
     }
-    
+
     if (request) OCSP_REQUEST_free(request);
     if (response) OCSP_RESPONSE_free(response);
     if (basicResponse) OCSP_BASICRESP_free(basicResponse);
@@ -245,8 +245,8 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     return rc;
 }
 
-int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc, 
-                       server_rec *s, conn_rec *c, apr_pool_t *pool) 
+int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
+                       server_rec *s, conn_rec *c, apr_pool_t *pool)
 {
     X509 *cert = X509_STORE_CTX_get_current_cert(ctx);
     apr_pool_t *vpool;
@@ -272,7 +272,7 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
     apr_pool_create(&vpool, pool);
 
     rv = verify_ocsp_status(cert, ctx, c, sc, s, vpool);
-    
+
     apr_pool_destroy(vpool);
 
     /* Propagate the verification status back to the passed-in
@@ -281,11 +281,11 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
     case V_OCSP_CERTSTATUS_GOOD:
         X509_STORE_CTX_set_error(ctx, X509_V_OK);
         break;
-        
+
     case V_OCSP_CERTSTATUS_REVOKED:
         X509_STORE_CTX_set_error(ctx, X509_V_ERR_CERT_REVOKED);
         break;
-        
+
     case V_OCSP_CERTSTATUS_UNKNOWN:
         /* correct error code for application errors? */
         X509_STORE_CTX_set_error(ctx, X509_V_ERR_APPLICATION_VERIFICATION);
@@ -293,5 +293,5 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
     }
 
     return rv == V_OCSP_CERTSTATUS_GOOD;
-} 
+}
 #endif /* HAVE_OCSP */

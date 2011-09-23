@@ -517,7 +517,7 @@ static void child_main(int child_num_arg)
     osthd = apr_os_thread_current();
     apr_os_thread_put(&thd, &osthd, pchild);
 #endif
-    
+
     apr_pool_create(&ptrans, pchild);
     apr_pool_tag(ptrans, "transaction");
 
@@ -625,7 +625,7 @@ static void child_main(int child_num_arg)
                 /* timeout == 10 seconds to avoid a hang at graceful restart/stop
                  * caused by the closing of sockets by the signal handler
                  */
-                status = apr_pollset_poll(pollset, apr_time_from_sec(10), 
+                status = apr_pollset_poll(pollset, apr_time_from_sec(10),
                                           &numdesc, &pdesc);
                 if (status != APR_SUCCESS) {
                     if (APR_STATUS_IS_TIMEUP(status) ||

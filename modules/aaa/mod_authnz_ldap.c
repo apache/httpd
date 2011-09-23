@@ -352,7 +352,7 @@ static apr_status_t authnz_ldap_cleanup_connection_close(void *param)
     return APR_SUCCESS;
 }
 
-static int set_request_vars(request_rec *r, enum auth_ldap_phase phase) { 
+static int set_request_vars(request_rec *r, enum auth_ldap_phase phase) {
     char *prefix = NULL;
     int prefix_len;
     int remote_user_attribute_set = 0;
@@ -379,7 +379,7 @@ static int set_request_vars(request_rec *r, enum auth_ldap_phase phase) {
 
             /* handle remote_user_attribute, if set */
             if ((phase == LDAP_AUTHN) &&
-                sec->remote_user_attribute && 
+                sec->remote_user_attribute &&
                 !strcmp(sec->remote_user_attribute, sec->attributes[i])) {
                 r->user = (char *)apr_pstrdup(r->pool, vals[i]);
                 remote_user_attribute_set = 1;
@@ -890,7 +890,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                 set_request_vars(r, LDAP_AUTHZ);
                 return AUTHZ_GRANTED;
             }
-            case LDAP_NO_SUCH_ATTRIBUTE: 
+            case LDAP_NO_SUCH_ATTRIBUTE:
             case LDAP_COMPARE_FALSE: {
                 /* nested groups need searches and compares, so grab a new handle */
                 authnz_ldap_cleanup_connection_close(ldc);

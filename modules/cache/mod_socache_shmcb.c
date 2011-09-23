@@ -61,7 +61,7 @@ typedef struct {
     unsigned int subcache_data_size;
 } SHMCBHeader;
 
-/* 
+/*
  * Subcache structure - the start of each subcache, followed by
  * indexes then data
  */
@@ -72,7 +72,7 @@ typedef struct {
     unsigned int data_pos, data_used;
 } SHMCBSubcache;
 
-/* 
+/*
  * Index structure - each subcache has an array of these
  */
 typedef struct {
@@ -124,7 +124,7 @@ struct ap_socache_instance_t {
  *
  * Each in-use SHMCBIndex structure represents a single cached object.
  * The ID and data segment are stored consecutively in the subcache's
- * cyclic data buffer.  The "Data" segment can thus be seen to 
+ * cyclic data buffer.  The "Data" segment can thus be seen to
  * look like this, for example
  *
  * offset:  [ 0     1     2     3     4     5     6    ...
@@ -213,7 +213,7 @@ static void shmcb_cyclic_ntoc_memcpy(unsigned int buf_size, unsigned char *data,
  * SRC_LEN against the contents of cyclic buffer DATA (which is of
  * size BUF_SIZE), starting at offset DEST_OFFSET. Got that?  Good. */
 static int shmcb_cyclic_memcmp(unsigned int buf_size, unsigned char *data,
-                               unsigned int dest_offset, 
+                               unsigned int dest_offset,
                                const unsigned char *src,
                                unsigned int src_len)
 {
@@ -223,7 +223,7 @@ static int shmcb_cyclic_memcmp(unsigned int buf_size, unsigned char *data,
     else {
         /* Compare the two splits */
         int diff;
-        
+
         diff = memcmp(data + dest_offset, src, buf_size - dest_offset);
         if (diff) {
             return diff;
@@ -237,17 +237,17 @@ static int shmcb_cyclic_memcmp(unsigned int buf_size, unsigned char *data,
 /* Prototypes for low-level subcache operations */
 static void shmcb_subcache_expire(server_rec *, SHMCBHeader *, SHMCBSubcache *,
                                   apr_time_t);
-/* Returns zero on success, non-zero on failure. */   
+/* Returns zero on success, non-zero on failure. */
 static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
-                                SHMCBSubcache *subcache, 
+                                SHMCBSubcache *subcache,
                                 unsigned char *data, unsigned int data_len,
                                 const unsigned char *id, unsigned int id_len,
                                 apr_time_t expiry);
-/* Returns zero on success, non-zero on failure. */   
+/* Returns zero on success, non-zero on failure. */
 static int shmcb_subcache_retrieve(server_rec *, SHMCBHeader *, SHMCBSubcache *,
                                    const unsigned char *id, unsigned int idlen,
                                    unsigned char *data, unsigned int *datalen);
-/* Returns zero on success, non-zero on failure. */   
+/* Returns zero on success, non-zero on failure. */
 static int shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
                                  const unsigned char *, unsigned int);
 
@@ -269,7 +269,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
  */
 
 static const char *socache_shmcb_create(ap_socache_instance_t **context,
-                                        const char *arg, 
+                                        const char *arg,
                                         apr_pool_t *tmp, apr_pool_t *p)
 {
     ap_socache_instance_t *ctx;
@@ -277,14 +277,14 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
 
     /* Allocate the context. */
     *context = ctx = apr_pcalloc(p, sizeof *ctx);
-    
+
     ctx->shm_size  = 1024*512; /* 512KB */
 
     if (!arg || *arg == '\0') {
         /* Use defaults. */
         return NULL;
     }
-    
+
     ctx->data_file = path = ap_server_root_relative(p, arg);
 
     cp = strrchr(path, '(');
@@ -297,24 +297,24 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
         }
         *cp++ = '\0';
         *cp2  = '\0';
-        
-        
+
+
         ctx->shm_size = strtol(cp, &endptr, 10);
         if (endptr != cp2) {
             return "Invalid argument: cache size not numerical";
         }
-        
+
         if (ctx->shm_size < 8192) {
             return "Invalid argument: size has to be >= 8192 bytes";
-            
+
         }
-        
+
         if (ctx->shm_size >= SHMCB_MAX_SIZE) {
             return apr_psprintf(tmp,
                                 "Invalid argument: size has "
-                                "to be < %d bytes on this platform", 
+                                "to be < %d bytes on this platform",
                                 SHMCB_MAX_SIZE);
-            
+
         }
     }
     else if (cp2 >= path && *cp2 == ')') {
@@ -325,7 +325,7 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
 }
 
 static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
-                                       const char *namespace, 
+                                       const char *namespace,
                                        const struct ap_socache_hints *hints,
                                        server_rec *s, apr_pool_t *p)
 {
@@ -338,7 +338,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
 
     /* Create shared memory segment */
     if (ctx->data_file == NULL) {
-        const char *path = apr_pstrcat(p, DEFAULT_SHMCB_PREFIX, namespace, 
+        const char *path = apr_pstrcat(p, DEFAULT_SHMCB_PREFIX, namespace,
                                        DEFAULT_SHMCB_SUFFIX, NULL);
 
         ctx->data_file = ap_server_root_relative(p, path);
@@ -394,7 +394,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
         num_subcache /= 2;
     num_idx /= num_subcache;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "for %" APR_SIZE_T_FMT " bytes (%" APR_SIZE_T_FMT 
+                 "for %" APR_SIZE_T_FMT " bytes (%" APR_SIZE_T_FMT
                  " including header), recommending %u subcaches, "
                  "%u indexes each", shm_segsize,
                  shm_segsize + sizeof(SHMCBHeader), num_subcache, num_idx);
@@ -461,9 +461,9 @@ static void socache_shmcb_destroy(ap_socache_instance_t *ctx, server_rec *s)
     }
 }
 
-static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx, 
-                                        server_rec *s, const unsigned char *id, 
-                                        unsigned int idlen, apr_time_t expiry, 
+static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx,
+                                        server_rec *s, const unsigned char *id,
+                                        unsigned int idlen, apr_time_t expiry,
                                         unsigned char *encoded,
                                         unsigned int len_encoded,
                                         apr_pool_t *p)
@@ -499,8 +499,8 @@ static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx, 
-                                           server_rec *s, 
+static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx,
+                                           server_rec *s,
                                            const unsigned char *id, unsigned int idlen,
                                            unsigned char *dest, unsigned int *destlen,
                                            apr_pool_t *p)
@@ -526,7 +526,7 @@ static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx,
     return rv == 0 ? APR_SUCCESS : APR_NOTFOUND;
 }
 
-static apr_status_t socache_shmcb_remove(ap_socache_instance_t *ctx, 
+static apr_status_t socache_shmcb_remove(ap_socache_instance_t *ctx,
                                          server_rec *s, const unsigned char *id,
                                          unsigned int idlen, apr_pool_t *p)
 {
@@ -555,7 +555,7 @@ static apr_status_t socache_shmcb_remove(ap_socache_instance_t *ctx,
     return rv;
 }
 
-static void socache_shmcb_status(ap_socache_instance_t *ctx, 
+static void socache_shmcb_status(ap_socache_instance_t *ctx,
                                  request_rec *r, int flags)
 {
     server_rec *s = r->server;
@@ -654,7 +654,7 @@ static apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
 }
 
 /*
- * Subcache-level cache operations 
+ * Subcache-level cache operations
  */
 
 static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
@@ -704,7 +704,7 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
 }
 
 static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
-                                SHMCBSubcache *subcache, 
+                                SHMCBSubcache *subcache,
                                 unsigned char *data, unsigned int data_len,
                                 const unsigned char *id, unsigned int id_len,
                                 apr_time_t expiry)
@@ -797,7 +797,7 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
     idx->removed = 0;
     subcache->idx_used++;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "insert happened at idx=%d, data=(%u:%u)", new_idx, 
+                 "insert happened at idx=%d, data=(%u:%u)", new_idx,
                  id_offset, data_offset);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "finished insert, subcache: idx_pos/idx_used=%d/%d, "
@@ -808,7 +808,7 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
 }
 
 static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
-                                   SHMCBSubcache *subcache, 
+                                   SHMCBSubcache *subcache,
                                    const unsigned char *id, unsigned int idlen,
                                    unsigned char *dest, unsigned int *destlen)
 {
@@ -823,7 +823,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
 
         /* Only consider 'idx' if the id matches, and the "removed"
          * flag isn't set, and the record is not expired.
-         * Check the data length too to avoid a buffer overflow 
+         * Check the data length too to avoid a buffer overflow
          * in case of corruption, which should be impossible,
          * but it's cheap to be safe. */
         if (!idx->removed
@@ -838,7 +838,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
                 unsigned int data_offset;
 
                 /* Find the offset of the data segment, after the id */
-                data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
+                data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos,
                                                      idx->id_len,
                                                      header->subcache_data_size);
 
@@ -936,13 +936,13 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
                 apr_size_t buf_req;
 
                 /* Find the offset of the data segment, after the id */
-                data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
+                data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos,
                                                      idx->id_len,
                                                      header->subcache_data_size);
 
                 dest_len = idx->data_used - idx->id_len;
 
-                buf_req = APR_ALIGN_DEFAULT(idx->id_len + 1) 
+                buf_req = APR_ALIGN_DEFAULT(idx->id_len + 1)
                         + APR_ALIGN_DEFAULT(dest_len + 1);
 
                 if (buf_req > *buf_len) {
@@ -1004,12 +1004,12 @@ static const ap_socache_provider_t socache_shmcb = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "shmcb", 
+    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "shmcb",
                          AP_SOCACHE_PROVIDER_VERSION,
                          &socache_shmcb);
 
     /* Also register shmcb under the default provider name. */
-    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, 
+    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP,
                          AP_SOCACHE_DEFAULT_PROVIDER,
                          AP_SOCACHE_PROVIDER_VERSION,
                          &socache_shmcb);

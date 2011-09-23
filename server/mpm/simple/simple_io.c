@@ -260,10 +260,10 @@ apr_status_t simple_io_accept(simple_core_t * sc, simple_sb_t * sb)
     rv = apr_socket_accept(&socket, lr->sd, ptrans);
     if (rv) {
         /* pqXXXXXX: unixd.c has _tons_ of custom handling on return values
-         * from accept, but it seems really crazy, it either worked, or didn't, 
-         * but taking this approach of swallowing the error it is possible we have a 
-         * fatal error on our listening socket, but we don't notice.  
-         * 
+         * from accept, but it seems really crazy, it either worked, or didn't,
+         * but taking this approach of swallowing the error it is possible we have a
+         * fatal error on our listening socket, but we don't notice.
+         *
          * Need to discuss this on dev@
          */
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,

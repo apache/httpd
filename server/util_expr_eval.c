@@ -99,7 +99,7 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
     return result;
 }
 
-static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx, 
+static const char *ap_expr_eval_var(ap_expr_eval_ctx_t *ctx,
                                     const ap_expr_var_func_t *func,
                                     const void *data)
 {
@@ -862,7 +862,7 @@ static const char *req_table_func(ap_expr_eval_ctx_t *ctx, const void *data,
             return v;
         }
         t = ctx->r->err_headers_out;
-    }        
+    }
     else if (name[0] == 'n')        /* notes */
         t = ctx->r->notes;
     else if (name[3] == 'e')        /* reqenv */
@@ -980,7 +980,7 @@ static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
     if (ret == OK)
         return result;
     ap_log_rerror(LOG_MARK(ctx->info), APLOG_DEBUG, 0, ctx->r,
-                      "%s %% escape in unescape('%s') at %s:%d", 
+                      "%s %% escape in unescape('%s') at %s:%d",
 		      ret == HTTP_BAD_REQUEST ? "Bad" : "Forbidden", arg,
 		      ctx->info->filename, ctx->info->line_number);
     return "";

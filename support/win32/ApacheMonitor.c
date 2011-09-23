@@ -219,7 +219,7 @@ void ErrorMessage(LPCTSTR szError, BOOL bFatal)
 }
 
 
-int am_RespawnAsUserAdmin(HWND hwnd, DWORD op, LPCTSTR szService, 
+int am_RespawnAsUserAdmin(HWND hwnd, DWORD op, LPCTSTR szService,
                           LPCTSTR szComputerName)
 {
     TCHAR args[MAX_PATH + MAX_COMPUTERNAME_LENGTH + 12];
@@ -229,7 +229,7 @@ int am_RespawnAsUserAdmin(HWND hwnd, DWORD op, LPCTSTR szService,
         return 0;
     }
 
-    _sntprintf(args, sizeof(args) / sizeof(TCHAR), 
+    _sntprintf(args, sizeof(args) / sizeof(TCHAR),
                _T("%d \"%s\" \"%s\""), op, szService,
                szComputerName ? szComputerName : _T(""));
     if (!ShellExecute(hwnd, _T("runas"), __targv[0], args, NULL, SW_NORMAL)) {
@@ -259,7 +259,7 @@ BOOL am_ConnectComputer(LPTSTR szComputerName)
     }
     if (RegConnectRegistry(szComputerName, HKEY_LOCAL_MACHINE, &hKeyRemote)
             != ERROR_SUCCESS) {
-        _sntprintf(szTmp, sizeof(szTmp) / sizeof(TCHAR), 
+        _sntprintf(szTmp, sizeof(szTmp) / sizeof(TCHAR),
                    g_lpMsg[IDS_MSG_ECONNECT - IDS_MSG_FIRST],
                    szComputerName);
         ErrorMessage(szTmp, FALSE);
@@ -303,7 +303,7 @@ BOOL GetSystemOSVersion(LPDWORD dwVersion)
         if (osvi.dwMajorVersion >= 5)
             *dwVersion = OS_VERSION_WIN2K;
         else
-            *dwVersion = OS_VERSION_WINNT;            
+            *dwVersion = OS_VERSION_WINNT;
         break;
 
     case VER_PLATFORM_WIN32_WINDOWS:
@@ -351,11 +351,11 @@ static VOID ShowNotifyIcon(HWND hWnd, DWORD dwMessage)
         _tcscpy(nid.szTip, g_lpMsg[IDS_MSG_RUNNINGALL - IDS_MSG_FIRST]);
     }
     else if (n) {
-        _sntprintf(nid.szTip, sizeof(nid.szTip) / sizeof(TCHAR), 
+        _sntprintf(nid.szTip, sizeof(nid.szTip) / sizeof(TCHAR),
                   g_lpMsg[IDS_MSG_RUNNING - IDS_MSG_FIRST], n, i);
     }
     else if (i) {
-        _sntprintf(nid.szTip, sizeof(nid.szTip) / sizeof(TCHAR), 
+        _sntprintf(nid.szTip, sizeof(nid.szTip) / sizeof(TCHAR),
                   g_lpMsg[IDS_MSG_RUNNINGNONE - IDS_MSG_FIRST], i);
     }
     else {
@@ -563,7 +563,7 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
     {
         /* Avoid recursion of ImagePath NULL (from this Respawn) */
         if (szImagePath) {
-            am_RespawnAsUserAdmin(g_hwndMain, dwCommand, 
+            am_RespawnAsUserAdmin(g_hwndMain, dwCommand,
                                   szServiceName, szComputerName);
         }
         else {
@@ -581,7 +581,7 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
         switch (dwCommand)
         {
           case SERVICE_CONTROL_STOP:
-            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
                        g_lpMsg[IDS_MSG_SRVSTOP - IDS_MSG_FIRST],
                        szServiceName);
             addListBoxString(g_hwndStdoutList, szMsg);
@@ -604,7 +604,7 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
                 if (schSStatus.dwCurrentState == SERVICE_STOPPED)
                 {
                     retValue = TRUE;
-                    _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+                    _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
                                g_lpMsg[IDS_MSG_SRVSTOPPED - IDS_MSG_FIRST],
                                szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
@@ -637,7 +637,7 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
                 if (schSStatus.dwCurrentState == SERVICE_RUNNING)
                 {
                     retValue = TRUE;
-                    _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+                    _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
                                g_lpMsg[IDS_MSG_SRVSTARTED - IDS_MSG_FIRST],
                                szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
@@ -646,7 +646,7 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
             break;
 
           case SERVICE_APACHE_RESTART:
-            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
                        g_lpMsg[IDS_MSG_SRVRESTART - IDS_MSG_FIRST],
                        szServiceName);
             addListBoxString(g_hwndStdoutList, szMsg);
@@ -673,7 +673,7 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
             if (schSStatus.dwCurrentState == SERVICE_RUNNING)
             {
                 retValue = TRUE;
-                _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+                _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
                            g_lpMsg[IDS_MSG_SRVRESTARTED - IDS_MSG_FIRST],
                            szServiceName);
                 addListBoxString(g_hwndStdoutList, szMsg);
@@ -1474,7 +1474,7 @@ static int KillAllMonitors(void)
     int exitcode = 0;
     PWTS_PROCESS_INFO tsProcs;
     DWORD tsProcCount, i;
-    DWORD thisProcId; 
+    DWORD thisProcId;
 
     /* This is graceful, close our own Window, clearing the icon */
     if ((appwindow = FindWindow(g_szWindowClass, g_szTitle)) != NULL)
@@ -1498,7 +1498,7 @@ static int KillAllMonitors(void)
     for (i = 0; i < tsProcCount; ++i) {
         if (_tcscmp(tsProcs[i].pProcessName, _T(AM_STRINGIFY(BIN_NAME))) == 0
                 && tsProcs[i].ProcessId != thisProcId)
-            WTSTerminateProcess(WTS_CURRENT_SERVER_HANDLE, 
+            WTSTerminateProcess(WTS_CURRENT_SERVER_HANDLE,
                                 tsProcs[i].ProcessId, 1);
     }
     WTSFreeMemory(tsProcs);

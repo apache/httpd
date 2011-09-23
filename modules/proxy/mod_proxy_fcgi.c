@@ -85,7 +85,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     else {
         return DECLINED;
     }
-    
+
     ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
                  "proxy: FCGI: canonicalising URL %s", url);
 
@@ -95,9 +95,9 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
                       "error parsing URL %s: %s", url, err);
         return HTTP_BAD_REQUEST;
     }
-        
+
     apr_snprintf(sport, sizeof(sport), ":%d", port);
-        
+
     if (ap_strchr_c(host, ':')) {
         /* if literal IPv6 address */
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
@@ -246,7 +246,7 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
     fill_in_header(&header, FCGI_BEGIN_REQUEST, request_id, sizeof(abrb), 0);
 
     brb.roleB1 = ((FCGI_RESPONDER >> 8) & 0xff);
-    brb.roleB0 = ((FCGI_RESPONDER) & 0xff); 
+    brb.roleB0 = ((FCGI_RESPONDER) & 0xff);
     brb.flags = FCGI_KEEP_CONN;
     brb.reserved[0] = 0;
     brb.reserved[1] = 0;
@@ -265,7 +265,7 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
     return send_data(conn, vec, 2, &len, 1);
 }
 
-static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r, 
+static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
                                      int request_id)
 {
     const apr_array_header_t *envarr;
@@ -350,7 +350,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     for (i = 0; i < numenv; ++i) {
         apr_size_t keylen, vallen;
-       
+
         if (! elts[i].key) {
             continue;
         }
@@ -494,7 +494,7 @@ static void dump_header_to_log(request_rec *r, unsigned char fheader[],
     memset(hex_line, 0, sizeof(hex_line));
 
     while (posn < length) {
-        unsigned char c = fheader[posn]; 
+        unsigned char c = fheader[posn];
 
         if (i >= 20) {
             i = 0;
@@ -669,11 +669,11 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
             }
 
             dump_header_to_log(r, farray, readbuflen);
-            
+
             if (readbuflen != FCGI_HEADER_LEN) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Failed to read entire header "
-                             "got %" APR_SIZE_T_FMT " wanted %d", 
+                             "got %" APR_SIZE_T_FMT " wanted %d",
                              readbuflen, FCGI_HEADER_LEN);
                 rv = APR_EINVAL;
                 break;
@@ -881,13 +881,13 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
                            char *url, char *server_portstr)
 {
     /* Request IDs are arbitrary numbers that we assign to a
-     * single request. This would allow multiplex/pipelinig of 
-     * multiple requests to the same FastCGI connection, but 
+     * single request. This would allow multiplex/pipelinig of
+     * multiple requests to the same FastCGI connection, but
      * we don't support that, and always use a value of '1' to
      * keep things simple. */
-    int request_id = 1; 
+    int request_id = 1;
     apr_status_t rv;
-   
+
     /* Step 1: Send FCGI_BEGIN_REQUEST */
     rv = send_begin_request(conn, request_id);
     if (rv != APR_SUCCESS) {
@@ -897,7 +897,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         conn->close = 1;
         return HTTP_SERVICE_UNAVAILABLE;
     }
-    
+
     /* Step 2: Send Environment via FCGI_PARAMS */
     rv = send_environment(conn, r, request_id);
     if (rv != APR_SUCCESS) {
@@ -955,7 +955,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                      "proxy: FCGI: declining URL %s", url);
         return DECLINED;
     }
-    
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: FCGI: serving URL %s", url);
 

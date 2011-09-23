@@ -64,7 +64,7 @@ argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
     char *key;
     char *value;
     char *strtok_state;
-    
+
     key = apr_strtok(str, "&", &strtok_state);
     while (key) {
         value = strchr(key, '=');
@@ -158,12 +158,12 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
             if (!t) {
                 continue;
             }
-            
+
             ip = apr_pstrndup(pool, buf, t - buf);
             t++;
 
             server = apr_hash_get(servers, ip, APR_HASH_KEY_STRING);
-            
+
             if (server == NULL) {
                 server = apr_pcalloc(pool, sizeof(hb_server_t));
                 server->ip = ip;
@@ -172,7 +172,7 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
 
                 apr_hash_set(servers, server->ip, APR_HASH_KEY_STRING, server);
             }
-            
+
             apr_table_clear(hbt);
 
             argstr_to_table(pool, apr_pstrdup(pool, t), hbt);
@@ -194,9 +194,9 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
             }
 
             if (server->busy == 0 && server->ready != 0) {
-                /* Server has zero threads active, but lots of them ready, 
-                 * it likely just started up, so lets /4 the number ready, 
-                 * to prevent us from completely flooding it with all new 
+                /* Server has zero threads active, but lots of them ready,
+                 * it likely just started up, so lets /4 the number ready,
+                 * to prevent us from completely flooding it with all new
                  * requests.
                  */
                 server->ready = server->ready / 4;
@@ -266,7 +266,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
     apr_pool_t *tpool;
     apr_hash_t *servers;
 
-    lb_hb_ctx_t *ctx = 
+    lb_hb_ctx_t *ctx =
         ap_get_module_config(r->server->module_config,
                              &lbmethod_heartbeat_module);
 
@@ -354,7 +354,7 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
     unsigned int num;
     lb_hb_ctx_t *ctx = ap_get_module_config(s->module_config,
                                             &lbmethod_heartbeat_module);
-    
+
     /* do nothing on first call */
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
@@ -389,9 +389,9 @@ static void register_hooks(apr_pool_t *p)
 static void *lb_hb_create_config(apr_pool_t *p, server_rec *s)
 {
     lb_hb_ctx_t *ctx = (lb_hb_ctx_t *) apr_palloc(p, sizeof(lb_hb_ctx_t));
-    
+
     ctx->path = ap_server_root_relative(p, "logs/hb.dat");
-    
+
     return ctx;
 }
 
@@ -420,7 +420,7 @@ static const char *cmd_lb_hb_storage(cmd_parms *cmd,
                                          &lbmethod_heartbeat_module);
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    
+
     if (err != NULL) {
         return err;
     }

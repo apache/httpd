@@ -38,22 +38,22 @@ struct ap_socache_instance_t {
     DC_CTX *dc;
 };
 
-static const char *socache_dc_create(ap_socache_instance_t **context, 
-                                     const char *arg, 
+static const char *socache_dc_create(ap_socache_instance_t **context,
+                                     const char *arg,
                                      apr_pool_t *tmp, apr_pool_t *p)
 {
     struct ap_socache_instance_t *ctx;
 
     ctx = *context = apr_palloc(p, sizeof *ctx);
-    
+
     ctx->target = apr_pstrdup(p, arg);
 
     return NULL;
 }
 
-static apr_status_t socache_dc_init(ap_socache_instance_t *ctx, 
-                                    const char *namespace, 
-                                    const struct ap_socache_hints *hints, 
+static apr_status_t socache_dc_init(ap_socache_instance_t *ctx,
+                                    const char *namespace,
+                                    const struct ap_socache_hints *hints,
                                     server_rec *s, apr_pool_t *p)
 {
 #if 0
@@ -90,13 +90,13 @@ static void socache_dc_destroy(ap_socache_instance_t *ctx, server_rec *s)
     }
 }
 
-static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s, 
+static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s,
                                      const unsigned char *id, unsigned int idlen,
                                      apr_time_t expiry,
                                      unsigned char *der, unsigned int der_len,
                                      apr_pool_t *p)
 {
-    /* !@#$%^ - why do we deal with *absolute* time anyway??? 
+    /* !@#$%^ - why do we deal with *absolute* time anyway???
      * Uhm - because most things expire things at a specific time?
      * Were the API were thought out expiry - r->request_time is a good approximation
      */
@@ -111,7 +111,7 @@ static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_dc_retrieve(ap_socache_instance_t *ctx, server_rec *s, 
+static apr_status_t socache_dc_retrieve(ap_socache_instance_t *ctx, server_rec *s,
                                         const unsigned char *id, unsigned int idlen,
                                         unsigned char *dest, unsigned int *destlen,
                                         apr_pool_t *p)
@@ -132,8 +132,8 @@ static apr_status_t socache_dc_retrieve(ap_socache_instance_t *ctx, server_rec *
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_dc_remove(ap_socache_instance_t *ctx, 
-                                      server_rec *s, const unsigned char *id, 
+static apr_status_t socache_dc_remove(ap_socache_instance_t *ctx,
+                                      server_rec *s, const unsigned char *id,
                                       unsigned int idlen, apr_pool_t *p)
 {
     /* Remove any corresponding session from the distributed cache context */
@@ -177,7 +177,7 @@ static const ap_socache_provider_t socache_dc = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "dc", 
+    ap_register_provider(p, AP_SOCACHE_PROVIDER_GROUP, "dc",
                          AP_SOCACHE_PROVIDER_VERSION,
                          &socache_dc);
 }

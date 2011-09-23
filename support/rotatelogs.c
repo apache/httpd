@@ -288,7 +288,7 @@ static void post_rotate(apr_pool_t *pool, struct logfile *newlog,
             exit(2);
         }
     }
-    
+
     if (!config->postrotate_prog) {
         /* Nothing more to do. */
         return;
@@ -358,7 +358,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     int tLogStart;
     apr_status_t rv;
     struct logfile newlog;
- 
+
     status->rotateReason = ROTATE_NONE;
 
     if (config->tRotation) {
@@ -427,10 +427,10 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
             fprintf(stderr, "Could not open log file '%s' (%s)\n", newlog.name, error);
             exit(2);
         }
-        
+
         /* Throw away new state; it isn't going to be used. */
         apr_pool_destroy(newlog.pool);
-        
+
         /* Try to keep this error message constant length
          * in case it occurs several times. */
         apr_snprintf(status->errbuf, sizeof status->errbuf,
@@ -438,17 +438,17 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
                      "new log file, %10d messages lost: %-25.25s\n",
                      status->nMessCount, error);
         nWrite = strlen(status->errbuf);
-        
+
         if (apr_file_trunc(status->current.fd, 0) != APR_SUCCESS) {
             fprintf(stderr, "Error truncating the file %s\n", status->current.name);
             exit(2);
-        }        
+        }
         if (apr_file_write(status->current.fd, status->errbuf, &nWrite) != APR_SUCCESS) {
             fprintf(stderr, "Error writing to the file %s\n", status->current.name);
             exit(2);
         }
     }
-    
+
     status->nMessCount = 0;
 }
 

@@ -275,7 +275,7 @@ static void wakeup_listener(void)
     }
 
     /* unblock the listener if it's waiting for a worker */
-    ap_queue_info_term(worker_queue_info); 
+    ap_queue_info_term(worker_queue_info);
 
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
@@ -661,15 +661,15 @@ static void accept_mutex_error(const char *func, apr_status_t rv, int process_sl
     if (ap_scoreboard_image->parent[process_slot].generation !=
         ap_scoreboard_image->global->running_generation) {
         level = APLOG_DEBUG; /* common to get these at restart time */
-    } 
-    else if (requests_this_child == INT_MAX  
+    }
+    else if (requests_this_child == INT_MAX
         || ((requests_this_child == ap_max_requests_per_child)
-            && ap_max_requests_per_child)) { 
+            && ap_max_requests_per_child)) {
         ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
                      "apr_proc_mutex_%s failed "
                      "before this child process served any requests.",
                      func);
-        clean_child_exit(APEXIT_CHILDSICK); 
+        clean_child_exit(APEXIT_CHILDSICK);
     }
     ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
                  "apr_proc_mutex_%s failed. Attempting to "
@@ -977,7 +977,7 @@ worker_pop:
         bucket_alloc = apr_bucket_alloc_create(ptrans);
         process_socket(thd, ptrans, csd, process_slot, thread_slot, bucket_alloc);
         worker_sockets[thread_slot] = NULL;
-        requests_this_child--; 
+        requests_this_child--;
         apr_pool_clear(ptrans);
         last_ptrans = ptrans;
     }
@@ -1500,7 +1500,7 @@ static void perform_idle_server_maintenance(void)
              */
             if (ps->pid != 0) { /* XXX just set all_dead_threads in outer for
                                    loop if no pid?  not much else matters */
-                if (status <= SERVER_READY && 
+                if (status <= SERVER_READY &&
                         !ps->quiescing &&
                         ps->generation == retained->my_generation) {
                     ++idle_thread_count;
@@ -1571,7 +1571,7 @@ static void perform_idle_server_maintenance(void)
         /* terminate the free list */
         if (free_length == 0) { /* scoreboard is full, can't fork */
 
-            if (active_thread_count >= ap_daemons_limit * threads_per_child) { 
+            if (active_thread_count >= ap_daemons_limit * threads_per_child) {
                 /* no threads are "inactive" - starting, stopping, etc. */
                 /* have we reached MaxRequestWorkers, or just getting close? */
                 if (0 == idle_thread_count) {

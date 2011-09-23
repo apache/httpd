@@ -124,7 +124,7 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
     subst_pattern_t *script;
 
     APR_BRIGADE_INSERT_TAIL(mybb, inb);
-    
+
     script = (subst_pattern_t *) cfg->patterns->elts;
     apr_pool_create(&tpool, tmp_pool);
     scratch = NULL;
@@ -281,7 +281,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_status_t rv;
 
     substitute_module_ctx *ctx = f->ctx;
-    
+
     /*
      * First time around? Create the saved bb that we used for each pass
      * through. Note that we can also get here when we explicitly clear ctx,
@@ -560,7 +560,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
 
     if (is_pattern) {
         nscript->patlen = strlen(from);
-        nscript->pattern = apr_strmatch_precompile(cmd->pool, from, 
+        nscript->pattern = apr_strmatch_precompile(cmd->pool, from,
                                                    !ignore_case);
     }
     else {

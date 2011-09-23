@@ -1485,7 +1485,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                  "in this process");
                 }
                 else if (apr_atomic_read32(&connection_count) > threads_per_child
-                         + ap_queue_info_get_idlers(worker_queue_info) * 
+                         + ap_queue_info_get_idlers(worker_queue_info) *
                            worker_factor / WORKER_FACTOR_SCALE)
                 {
                     if (!listeners_disabled)

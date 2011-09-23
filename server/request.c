@@ -1845,7 +1845,7 @@ static request_rec *make_sub_request(const request_rec *r,
      * until some module interjects and changes the value.
      */
     rnew->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
-    
+
     /* Pass on the kept body (if any) into the new request. */
     rnew->kept_body = r->kept_body;
 

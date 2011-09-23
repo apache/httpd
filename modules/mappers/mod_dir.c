@@ -90,9 +90,9 @@ static const char *configure_redirect(cmd_parms *cmd, void *d_, const char *arg1
     dir_config_rec *d = d_;
     int status;
 
-    if (!strcasecmp(arg1, "ON")) 
+    if (!strcasecmp(arg1, "ON"))
         status = HTTP_MOVED_TEMPORARILY;
-    else if (!strcasecmp(arg1, "OFF")) 
+    else if (!strcasecmp(arg1, "OFF"))
         status = REDIRECT_OFF;
     else if (!strcasecmp(arg1, "permanent"))
         status = HTTP_MOVED_PERMANENTLY;
@@ -100,13 +100,13 @@ static const char *configure_redirect(cmd_parms *cmd, void *d_, const char *arg1
         status = HTTP_MOVED_TEMPORARILY;
     else if (!strcasecmp(arg1, "seeother"))
         status = HTTP_SEE_OTHER;
-    else if (apr_isdigit(*arg1)) { 
+    else if (apr_isdigit(*arg1)) {
         status = atoi(arg1);
-        if (!ap_is_HTTP_REDIRECT(status)) { 
+        if (!ap_is_HTTP_REDIRECT(status)) {
             return "DirectoryIndexRedirect only accepts values between 300 and 399";
         }
     }
-    else { 
+    else {
         return "DirectoryIndexRedirect ON|OFF|permanent|temp|seeother|3xx";
     }
 
@@ -122,7 +122,7 @@ static const command_rec dir_cmds[] =
                     "a list of file names"),
     AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
                  "On or Off"),
-    AP_INIT_TAKE1("DirectoryIndexRedirect", configure_redirect, 
+    AP_INIT_TAKE1("DirectoryIndexRedirect", configure_redirect,
                    NULL, DIR_CMD_PERMS, "On, Off, or a 3xx status code."),
 
     {NULL}
@@ -299,8 +299,8 @@ static int fixup_dir(request_rec *r)
         if (rr->status == HTTP_OK
             && (   (rr->handler && !strcmp(rr->handler, "proxy-server"))
                 || rr->finfo.filetype == APR_REG)) {
-  
-            if (ap_is_HTTP_REDIRECT(d->redirect_index)) { 
+
+            if (ap_is_HTTP_REDIRECT(d->redirect_index)) {
                 apr_table_setn(r->headers_out, "Location", ap_construct_url(r->pool, rr->uri, r));
                 return d->redirect_index;
             }
@@ -347,9 +347,9 @@ static int fixup_dir(request_rec *r)
     }
 
     /* record what we tried, mostly for the benefit of mod_autoindex */
-    apr_table_set(r->notes, "dir-index-names", 
-                  d->index_names ? 
-                  apr_array_pstrcat(r->pool, d->index_names, ','): 
+    apr_table_set(r->notes, "dir-index-names",
+                  d->index_names ?
+                  apr_array_pstrcat(r->pool, d->index_names, ','):
                   AP_DEFAULT_INDEX);
 
     /* nothing for us to do, pass on through */

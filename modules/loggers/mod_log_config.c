@@ -1082,7 +1082,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     else if (cls->condition_expr != NULL) {
         const char *err;
         int rc = ap_expr_exec(r, cls->condition_expr, &err);
-        if (rc < 0) 
+        if (rc < 0)
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                            "Error evaluating log condition: %s", err);
         if (rc <= 0)

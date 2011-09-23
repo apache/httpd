@@ -172,7 +172,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
             /* no groups available, so exit immediately */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "Authorization of user %s to access %s failed, reason: "
-                          "user doesn't appear in DBM group file (%s).", 
+                          "user doesn't appear in DBM group file (%s).",
                           r->user, r->uri, conf->grpfile);
             return AUTHZ_DENIED;
         }
@@ -240,7 +240,7 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
         /* no groups available, so exit immediately */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Authorization of user %s to access %s failed, reason: "
-                      "user doesn't appear in DBM group file (%s).", 
+                      "user doesn't appear in DBM group file (%s).",
                       r->user, r->uri, conf->grpfile);
         return AUTHZ_DENIED;
     }
