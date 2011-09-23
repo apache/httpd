@@ -57,7 +57,8 @@ provides the <code>bytraffic</code> load balancing method..</p>
     this worker to handle</em>. This is also a normalized value
     representing their "share" of the amount of work to be done,
     but instead of simply counting the number of requests, we take
-    into account the amount of traffic this worker has seen.</p>
+    into account the amount of traffic this worker has either seen
+    or produced.</p>
 
     <p>If a balancer is configured as follows:</p>
     
@@ -77,6 +78,8 @@ provides the <code>bytraffic</code> load balancing method..</p>
     many requests, but it would process twice the I/O. Thus, the
     size of the request and response are applied to the weighting
     and selection algorithm.</p>
+
+    <p>Note: input and output bytes are weighted the same.</p>
 
 </div>
 </div>

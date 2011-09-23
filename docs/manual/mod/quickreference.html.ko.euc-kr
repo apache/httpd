@@ -866,10 +866,20 @@ HTTP request</td></tr>
 Cache</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before an SSL session expires
 in the Session Cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to allow non-SNI clients to access a name-based virtual
+<tr><td><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache <em>type</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures the OCSP stapling cache</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout <em>seconds</em></a></td><td> 600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before expiring invalid responses in the OCSP stapling cache</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Synthesize "tryLater" responses for failed OCSP stapling queries</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL <em>uri</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override the OCSP responder URI specified in the certificate's AIA extension</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout <em>seconds</em></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Timeout for OCSP stapling queries</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge <em>seconds</em></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowable age for OCSP stapling responses</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum allowable time skew for OCSP stapling response validation</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pass stapling related OCSP errors on to client</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <em>seconds</em></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of seconds before expiring responses in the OCSP stapling cache</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to allow non-SNI clients to access a name-based virtual
 host.
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Variable name to determine user name</td></tr>
+<tr><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Variable name to determine user name</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslusestapling">SSLUseStapling on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable stapling of OCSP responses in the TLS handshake</td></tr>
 <tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
