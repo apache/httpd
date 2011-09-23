@@ -101,10 +101,10 @@ AP_DECLARE(apr_status_t) ap_unixd_set_global_mutex_perms(apr_global_mutex_t *gmu
 AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *ptrans);
 
 #ifdef HAVE_KILLPG
-#define ap_unixd_killpg(x, y)	(killpg ((x), (y)))
+#define ap_unixd_killpg(x, y)   (killpg ((x), (y)))
 #define ap_os_killpg(x, y)      (killpg ((x), (y)))
 #else /* HAVE_KILLPG */
-#define ap_unixd_killpg(x, y)	(kill (-(x), (y)))
+#define ap_unixd_killpg(x, y)   (kill (-(x), (y)))
 #define ap_os_killpg(x, y)      (kill (-(x), (y)))
 #endif /* HAVE_KILLPG */
 

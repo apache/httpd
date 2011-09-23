@@ -104,13 +104,13 @@ void* cache_hash_get(cache_hash_t *ht, const void *key,
  *     int sum_values(cache_hash_t *ht)
  *     {
  *         cache_hash_index_t *hi;
- * 	   void *val;
- * 	   int sum = 0;
- * 	   for (hi = cache_hash_first(ht); hi; hi = cache_hash_next(hi)) {
- * 	       cache_hash_this(hi, NULL, NULL, &val);
- * 	       sum += *(int *)val;
- * 	   }
- * 	   return sum;
+ *         void *val;
+ *         int sum = 0;
+ *         for (hi = cache_hash_first(ht); hi; hi = cache_hash_next(hi)) {
+ *             cache_hash_this(hi, NULL, NULL, &val);
+ *             sum += *(int *)val;
+ *         }
+ *         return sum;
  *     }
  * @endcode
  *
@@ -154,4 +154,4 @@ int cache_hash_count(cache_hash_t *ht);
 }
 #endif
 
-#endif	/* !CACHE_HASH_H */
+#endif  /* !CACHE_HASH_H */

@@ -269,26 +269,26 @@ extern "C" {
 /* -------------- Port number for server running standalone --------------- */
 
 /** default HTTP Port */
-#define DEFAULT_HTTP_PORT	80
+#define DEFAULT_HTTP_PORT       80
 /** default HTTPS Port */
-#define DEFAULT_HTTPS_PORT	443
+#define DEFAULT_HTTPS_PORT      443
 /**
  * Check whether @a port is the default port for the request @a r.
  * @param port The port number
  * @param r The request
  * @see #ap_default_port
  */
-#define ap_is_default_port(port,r)	((port) == ap_default_port(r))
+#define ap_is_default_port(port,r)      ((port) == ap_default_port(r))
 /**
  * Get the default port for a request (which depends on the scheme).
  * @param r The request
  */
-#define ap_default_port(r)	ap_run_default_port(r)
+#define ap_default_port(r)      ap_run_default_port(r)
 /**
  * Get the scheme for a request.
  * @param r The request
  */
-#define ap_http_scheme(r)	ap_run_http_scheme(r)
+#define ap_http_scheme(r)       ap_run_http_scheme(r)
 
 /** The default string length */
 #define MAX_STRING_LEN HUGE_STRING_LEN
@@ -316,11 +316,11 @@ extern "C" {
  *
  */
 /** a normal exit */
-#define APEXIT_OK		0x0
+#define APEXIT_OK               0x0
 /** A fatal error arising during the server's init sequence */
-#define APEXIT_INIT		0x2
+#define APEXIT_INIT             0x2
 /**  The child died during its init sequence */
-#define APEXIT_CHILDINIT	0x3
+#define APEXIT_CHILDINIT        0x3
 /**
  *   The child exited due to a resource shortage.
  *   The parent should limit the rate of forking until
@@ -332,7 +332,7 @@ extern "C" {
  *     If a child exits with this error, the parent process
  *     considers this a server-wide fatal error and aborts.
  */
-#define APEXIT_CHILDFATAL	0xf
+#define APEXIT_CHILDFATAL       0xf
 
 #ifndef AP_DECLARE
 /**
@@ -372,7 +372,7 @@ extern "C" {
  * modules should not use functions marked AP_CORE_DECLARE
  */
 #ifndef AP_CORE_DECLARE
-# define AP_CORE_DECLARE	AP_DECLARE
+# define AP_CORE_DECLARE        AP_DECLARE
 #endif
 
 /**
@@ -381,7 +381,7 @@ extern "C" {
  */
 
 #ifndef AP_CORE_DECLARE_NONSTD
-# define AP_CORE_DECLARE_NONSTD	AP_DECLARE_NONSTD
+# define AP_CORE_DECLARE_NONSTD AP_DECLARE_NONSTD
 #endif
 
 /**
@@ -435,11 +435,11 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 
 /* non-HTTP status codes returned by hooks */
 
-#define OK 0			/**< Module has handled this stage. */
-#define DECLINED -1		/**< Module declines to handle */
-#define DONE -2			/**< Module has served the response completely
-				 *  - it's safe to die() with no more output
-				 */
+#define OK 0                    /**< Module has handled this stage. */
+#define DECLINED -1             /**< Module declines to handle */
+#define DONE -2                 /**< Module has served the response completely
+                                 *  - it's safe to die() with no more output
+                                 */
 #define SUSPENDED -3 /**< Module will handle the remainder of the request.
                       * The core will never invoke the request again, */
 
@@ -539,7 +539,7 @@ AP_DECLARE(const char *) ap_get_server_built(void);
                                     ((x) == HTTP_REQUEST_URI_TOO_LARGE) || \
                                     ((x) == HTTP_INTERNAL_SERVER_ERROR) || \
                                     ((x) == HTTP_SERVICE_UNAVAILABLE) || \
-				    ((x) == HTTP_NOT_IMPLEMENTED))
+                                    ((x) == HTTP_NOT_IMPLEMENTED))
 /** @} */
 
 /**
@@ -901,9 +901,9 @@ struct request_rec {
      * they should not be modified in place.
      */
     /** The content-type for the current request */
-    const char *content_type;	/* Break these out --- we dispatch on 'em */
+    const char *content_type;   /* Break these out --- we dispatch on 'em */
     /** The handler string that we use to call a handler function */
-    const char *handler;	/* What we *really* dispatch on */
+    const char *handler;        /* What we *really* dispatch on */
 
     /** How to encode the data */
     const char *content_encoding;
@@ -1015,10 +1015,10 @@ struct request_rec {
  * @{
  */
 
-#define PROXYREQ_NONE 0		/**< No proxy */
-#define PROXYREQ_PROXY 1	/**< Standard proxy */
-#define PROXYREQ_REVERSE 2	/**< Reverse proxy */
-#define PROXYREQ_RESPONSE 3 /**< Origin response */
+#define PROXYREQ_NONE     0     /**< No proxy */
+#define PROXYREQ_PROXY    1     /**< Standard proxy */
+#define PROXYREQ_REVERSE  2     /**< Reverse proxy */
+#define PROXYREQ_RESPONSE 3     /**< Origin response */
 
 /* @} */
 
@@ -1405,7 +1405,7 @@ AP_DECLARE(char *) ap_getword_white_nc(apr_pool_t *p, char **line);
  *         character
  */
 AP_DECLARE(char *) ap_getword_nulls(apr_pool_t *p, const char **line,
-				    char stop);
+                                    char stop);
 
 /**
  * Get all characters from the first occurance of @a stop to the first "\0"
@@ -1624,7 +1624,7 @@ AP_DECLARE(apr_size_t) ap_escape_errorlog_item(char *dest, const char *source,
  * @return The server's hostname
  */
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
-				    apr_port_t port, const request_rec *r);
+                                    apr_port_t port, const request_rec *r);
 
 /**
  * Escape a shell command
@@ -1813,7 +1813,7 @@ AP_DECLARE(void) ap_str_toupper(char *s);
  * @param c The character to search for
  * @return The index of the first occurrence of c in str
  */
-AP_DECLARE(int) ap_ind(const char *str, char c);	/* Sigh... */
+AP_DECLARE(int) ap_ind(const char *str, char c);        /* Sigh... */
 
 /**
  * Search a string from right to left for the first occurrence of a
@@ -1924,7 +1924,7 @@ typedef struct {
  * @return OK or HTTP error
  */
 AP_DECLARE(int) ap_parse_form_data(request_rec *r, struct ap_filter_t *f,
-				   apr_array_header_t **ptr,
+                                   apr_array_header_t **ptr,
                                    apr_size_t num, apr_size_t size);
 
 /* Misc system hackery */
@@ -1962,7 +1962,7 @@ char *ap_get_local_host(apr_pool_t *p);
  * @param nLine The line the assertion is defined on
  */
 AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
-			    __attribute__((noreturn));
+                            __attribute__((noreturn));
 
 /**
  * @internal Internal Assert function
@@ -1991,21 +1991,21 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
  * debugging isn't possible.
  */
 /** stop on a Detach */
-#define SIGSTOP_DETACH			1
+#define SIGSTOP_DETACH                  1
 /** stop making a child process */
-#define SIGSTOP_MAKE_CHILD		2
+#define SIGSTOP_MAKE_CHILD              2
 /** stop spawning a child process */
-#define SIGSTOP_SPAWN_CHILD		4
+#define SIGSTOP_SPAWN_CHILD             4
 /** stop spawning a child process with a piped log */
-#define SIGSTOP_PIPED_LOG_SPAWN		8
+#define SIGSTOP_PIPED_LOG_SPAWN         8
 /** stop spawning a CGI child process */
-#define SIGSTOP_CGI_CHILD		16
+#define SIGSTOP_CGI_CHILD               16
 
 /** Macro to get GDB started */
 #ifdef DEBUG_SIGSTOP
 extern int raise_sigstop_flags;
-#define RAISE_SIGSTOP(x)	do { \
-	if (raise_sigstop_flags & SIGSTOP_##x) raise(SIGSTOP);\
+#define RAISE_SIGSTOP(x)        do { \
+        if (raise_sigstop_flags & SIGSTOP_##x) raise(SIGSTOP);\
     } while (0)
 #else
 #define RAISE_SIGSTOP(x)
@@ -2125,7 +2125,7 @@ AP_DECLARE(void *) ap_realloc(void *ptr, size_t size)
 }
 #endif
 
-#endif	/* !APACHE_HTTPD_H */
+#endif  /* !APACHE_HTTPD_H */
 
 /** @} //APACHE Daemon      */
 /** @} //APACHE Core        */

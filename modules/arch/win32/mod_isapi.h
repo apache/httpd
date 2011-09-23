@@ -266,6 +266,6 @@ typedef int (APR_THREAD_FUNC *PFN_TERMINATEEXTENSION)(apr_uint32_t flags);
 }
 #endif
 
-#endif	/* !MOD_ISAPI_H */
+#endif  /* !MOD_ISAPI_H */
 /** @} */
 

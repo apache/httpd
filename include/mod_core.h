@@ -94,5 +94,5 @@ extern AP_DECLARE_DATA const char *ap_multipart_boundary;
 }
 #endif
 
-#endif	/* !MOD_CORE_H */
+#endif  /* !MOD_CORE_H */
 /** @} */

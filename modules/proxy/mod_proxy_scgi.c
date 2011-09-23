@@ -370,7 +370,7 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
     status = ap_scan_script_header_err_brigade_ex(r, bb, NULL,
-		                                  APLOG_MODULE_INDEX);
+                                                  APLOG_MODULE_INDEX);
     if (status != OK) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: " PROXY_FUNCTION ": error reading response "

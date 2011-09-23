@@ -160,7 +160,7 @@ static void mod_info_indent(request_rec * r, int nest,
         ap_rputs(":&nbsp;", r);
     }
     else if (linenum > 0) {
-    	for (i = 1; i <= nest; ++i)
+        for (i = 1; i <= nest; ++i)
             printf("  ");
         putchar('#');
         put_int_flush_right(r, linenum, 4);

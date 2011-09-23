@@ -120,8 +120,8 @@ static void *merge_authz_core_dir_config(apr_pool_t *p,
     authz_core_dir_conf *conf;
 
     if (new->op == AUTHZ_LOGIC_UNSET && !new->section && base->section ) {
-	/* Only authz_forbidden_on_fail has been set in new. Don't treat
-	 * it as a new auth config w.r.t. AuthMerging */
+        /* Only authz_forbidden_on_fail has been set in new. Don't treat
+         * it as a new auth config w.r.t. AuthMerging */
         conf = apr_pmemdup(p, base, sizeof(*base));
     }
     else if (new->op == AUTHZ_LOGIC_OFF || new->op == AUTHZ_LOGIC_UNSET ||
@@ -1024,7 +1024,7 @@ static authz_status expr_check_authorization(request_rec *r,
     int rc = ap_expr_exec(r, expr, &err);
 
     if (rc <= 0)
-	    /* XXX: real error handling? */
+        /* XXX: real error handling? */
         return AUTHZ_DENIED;
     else
         return AUTHZ_GRANTED;

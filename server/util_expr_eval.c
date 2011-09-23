@@ -719,7 +719,7 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
                           ctx->info->filename, ctx->info->line_number,
                           *ctx->result_string);
             return 1;
-	}
+        }
     }
     else {
         rc = ap_expr_eval(ctx, ctx->info->root_node);
@@ -980,9 +980,9 @@ static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
     if (ret == OK)
         return result;
     ap_log_rerror(LOG_MARK(ctx->info), APLOG_DEBUG, 0, ctx->r,
-                      "%s %% escape in unescape('%s') at %s:%d",
-		      ret == HTTP_BAD_REQUEST ? "Bad" : "Forbidden", arg,
-		      ctx->info->filename, ctx->info->line_number);
+                  "%s %% escape in unescape('%s') at %s:%d",
+                  ret == HTTP_BAD_REQUEST ? "Bad" : "Forbidden", arg,
+                  ctx->info->filename, ctx->info->line_number);
     return "";
 }
 
@@ -1055,7 +1055,7 @@ static int op_url_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
     ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
                   "Subrequest for -U %s at %s:%d gave status: %d",
                   arg, ctx->info->filename, ctx->info->line_number,
-		  rsub->status);
+                  rsub->status);
     ap_destroy_sub_req(rsub);
     return rc;
 }
@@ -1076,7 +1076,7 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
     ap_log_rerror(LOG_MARK(ctx->info), APLOG_TRACE5, 0, r,
                   "Subrequest for -F %s at %s:%d gave status: %d",
                   arg, ctx->info->filename, ctx->info->line_number,
-		  rsub->status);
+                  rsub->status);
     ap_destroy_sub_req(rsub);
     return rc;
 }

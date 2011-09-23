@@ -72,5 +72,5 @@ AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile);
 }
 #endif
 
-#endif	/* !APACHE_UTIL_MD5_H */
+#endif  /* !APACHE_UTIL_MD5_H */
 /** @} */

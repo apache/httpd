@@ -1592,7 +1592,7 @@ static void test(void)
      */
     stats = calloc(requests, sizeof(struct data));
     if (stats == NULL || con == NULL) {
-    	err("Cannot allocate memory for result statistics");
+        err("Cannot allocate memory for result statistics");
     }
 
     if ((status = apr_pollset_create(&readbits, concurrency, cntxt,

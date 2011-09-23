@@ -930,7 +930,7 @@ static int cgi_handler(request_rec *r)
 
     b = cgi_bucket_create(r, script_in, script_err, c->bucket_alloc);
     if (b == NULL)
-	return HTTP_INTERNAL_SERVER_ERROR;
+        return HTTP_INTERNAL_SERVER_ERROR;
 #else
     b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
 #endif
@@ -945,8 +945,8 @@ static int cgi_handler(request_rec *r)
         int ret;
 
         if ((ret = ap_scan_script_header_err_brigade_ex(r, bb, sbuf,
-					                APLOG_MODULE_INDEX)))
-	{
+                                                        APLOG_MODULE_INDEX)))
+        {
             ret = log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
 
             /*

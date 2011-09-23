@@ -506,10 +506,10 @@ typedef struct {
                                    * ap_custom_response() */
 
     /* Hostname resolution etc */
-#define HOSTNAME_LOOKUP_OFF	0
-#define HOSTNAME_LOOKUP_ON	1
-#define HOSTNAME_LOOKUP_DOUBLE	2
-#define HOSTNAME_LOOKUP_UNSET	3
+#define HOSTNAME_LOOKUP_OFF     0
+#define HOSTNAME_LOOKUP_ON      1
+#define HOSTNAME_LOOKUP_DOUBLE  2
+#define HOSTNAME_LOOKUP_UNSET   3
     unsigned int hostname_lookups : 4;
 
     unsigned int content_md5 : 2;  /* calculate Content-MD5? */
@@ -924,5 +924,5 @@ AP_DECLARE(int) ap_state_query(int query_code);
 }
 #endif
 
-#endif	/* !APACHE_HTTP_CORE_H */
+#endif  /* !APACHE_HTTP_CORE_H */
 /** @} */
