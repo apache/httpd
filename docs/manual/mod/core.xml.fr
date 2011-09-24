@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1170294 -->
+<!-- English Revision : 1173140 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1410,7 +1410,7 @@ host</context>
 <directivesynopsis>
 <name>ErrorLogFormat</name>
 <description>Sp&eacute;cification du format des entr&eacute;es du journal des erreurs</description>
-<syntax> ErrorLog [connection|request] <var>format</var></syntax>
+<syntax> ErrorLogFormat [connection|request] <var>format</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
@@ -1467,6 +1467,35 @@ host</context>
     valeurs possibles vont de 1 (alert) &agrave; 15 (trace8), en passant par 4
     (warn) ou 7 (debug).</p>
 
+    <p>Par exemple, voici ce qui arriverait si vous ajoutiez des
+    modificateurs &agrave; l'item <code>%{Referer}i</code> qui enregistre le
+    contenu de l'en-t&ecirc;te <code>Referer</code>.</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".3"/><column width=".7"/></columnspec>
+
+    <tr><th>Item modifi&eacute;</th><th>Signification</th></tr>
+
+    <tr>
+    <td><code>%-{Referer}i</code></td>
+    <td>Enregistre le caract&egrave;re <code>-</code> si l'en-t&ecirc;te
+    <code>Referer</code> n'est pas d&eacute;fini.</td>
+    </tr>
+
+    <tr>
+    <td><code>%+{Referer}i</code></td>
+    <td>N'enregistre rien si l'en-t&ecirc;te
+    <code>Referer</code> n'est pas d&eacute;fini.</td>
+    </tr>
+
+    <tr>
+    <td><code>%4{Referer}i</code></td>
+    <td>N'enregistre le contenu de l'en-t&ecirc;te <code>Referer</code> que si
+    la s&eacute;v&eacute;rit&eacute; du message de journalisation est sup&eacute;rieure &agrave; 4.</td>
+    </tr>
+
+    </table>
+
     <p>Certains items de format acceptent des param&egrave;tres suppl&eacute;mentaires
     entre accolades.</p>
 
@@ -1478,76 +1507,76 @@ host</context>
     <tr><td><code>%%</code></td>
         <td>Le signe pourcentage</td></tr>
 
-    <tr><td><code>%...a</code></td>
+    <tr><td><code>%a</code></td>
         <td>Adresse IP et port distants</td></tr>
 
-    <tr><td><code>%...A</code></td>
+    <tr><td><code>%A</code></td>
         <td>Adresse IP et port locaux</td></tr>
 
-    <tr><td><code>%...{name}e</code></td>
-        <td>Variable d'environnement de requ&ecirc;te <code>name</code></td></tr>
+    <tr><td><code>%{<em>name</em>}e</code></td>
+        <td>Variable d'environnement de requ&ecirc;te <em>name</em></td></tr>
 
-    <tr><td><code>%...E</code></td>
+    <tr><td><code>%E</code></td>
         <td>Etat d'erreur APR/OS et cha&icirc;ne</td></tr>
 
-    <tr><td><code>%...F</code></td>
+    <tr><td><code>%F</code></td>
         <td>Nom du fichier source et num&eacute;ro de ligne de l'appel du
 	journal</td></tr>
 
-    <tr><td><code>%...{name}i</code></td>
-        <td>En-t&ecirc;te de requ&ecirc;te <code>name</code></td></tr>
+    <tr><td><code>%{<em>name</em>}i</code></td>
+        <td>En-t&ecirc;te de requ&ecirc;te <em>name</em></td></tr>
 
-    <tr><td><code>%...k</code></td>
+    <tr><td><code>%k</code></td>
         <td>Nombre de requ&ecirc;tes persistantes pour cette connexion</td></tr>
 
-    <tr><td><code>%...l</code></td>
+    <tr><td><code>%l</code></td>
         <td>S&eacute;v&eacute;rit&eacute; du message</td></tr>
 
-    <tr><td><code>%...L</code></td>
+    <tr><td><code>%L</code></td>
         <td>Identifiant journal de la requ&ecirc;te</td></tr>
 
-    <tr><td><code>%...{c}L</code></td>
+    <tr><td><code>%{c}L</code></td>
         <td>Identifiant journal de la connexion</td></tr>
 
-    <tr><td><code>%...{C}L</code></td>
+    <tr><td><code>%{C}L</code></td>
         <td>Identifiant journal de la connexion si utilis&eacute; dans la
 	port&eacute;e de la connexion, vide sinon</td></tr>
 
-    <tr><td><code>%...m</code></td>
+    <tr><td><code>%m</code></td>
         <td>Nom du module qui effectue la journalisation du message</td></tr>
 
     <tr><td><code>%M</code></td>
         <td>Le message effectif</td></tr>
 
-    <tr><td><code>%...{name}n</code></td>
-        <td>Note de requ&ecirc;te <code>name</code></td></tr>
+    <tr><td><code>%{<em>name</em>}n</code></td>
+        <td>Note de requ&ecirc;te <em>name</em></td></tr>
 
-    <tr><td><code>%...P</code></td>
+    <tr><td><code>%P</code></td>
         <td>Identifiant du processus courant</td></tr>
 
-    <tr><td><code>%...T</code></td>
+    <tr><td><code>%T</code></td>
         <td>Identifiant du thread courant</td></tr>
 
-    <tr><td><code>%...{g}T</code></td>
+    <tr><td><code>%{g}T</code></td>
         <td>Identifiant unique de thread syst&egrave;me du thread courant
 	(l'identifiant affich&eacute; par la commande <code>top</code> par
 	exemple ; seulement sous Linux pour l'instant)</td></tr>
 
-    <tr><td><code>%...t</code></td>
+    <tr><td><code>%t</code></td>
         <td>L'heure courante</td></tr>
 
-    <tr><td><code>%...{u}t</code></td>
+    <tr><td><code>%{u}t</code></td>
         <td>L'heure courante avec les microsecondes</td></tr>
 
-    <tr><td><code>%...{cu}t</code></td>
+    <tr><td><code>%{cu}t</code></td>
         <td>L'heure courante au format compact ISO 8601, avec les
 	microsecondes</td></tr>
 
-    <tr><td><code>%...v</code></td>
+    <tr><td><code>%v</code></td>
         <td>Le nom de serveur canonique <directive
 	module="core">ServerName</directive> du serveur courant.</td></tr>
 
-    <tr><td><code>%...V</code></td>
+    <tr><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requ&ecirc;te en accord
 	avec la d&eacute;finition de la directive <directive module="core"
 	>UseCanonicalName</directive>.</td></tr>
@@ -1570,10 +1599,19 @@ host</context>
     c'est son identifiant unique qui sera utilis&eacute; comme identifiant de
     journal pour les requ&ecirc;tes.</p>
 
-    <example><title>Exemple (assez similaire au format par d&eacute;faut)</title>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
+    <example><title>Exemple (format par d&eacute;faut)</title>
+        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a]
         %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </example>
+
+    <p>Cet exemple renverrait un message d'erreur du style :</p>
+
+    <example>
+    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    </example>
+
+    <p>Notez que, comme indiqu&eacute; plus haut, certains champs sont
+    totalement supprim&eacute;s s'ils n'ont pas &eacute;t&eacute; d&eacute;finis.</p>
 
     <example><title>Exemple (similaire au format 2.2.x)</title>
         ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]
