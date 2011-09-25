@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_ssl/proxy: enable the SNI extension for backend TLS connections
+     [Kaspar Brand]
+
   *) Add wrappers for malloc, calloc, realloc that check for out of memory
      situations and use them in many places. PR 51568, PR 51569, PR 51571.
      [Stefan Fritsch]
