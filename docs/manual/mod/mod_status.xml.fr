@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1150943 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -131,7 +131,7 @@ du serveur</description>
 <section id="troubleshoot">
     <title>Utilisation de server-status pour la recherche de d&eacute;fauts de
     fonctionnement</title>
-    
+
     <p>La page <code>server-status</code> peut servir de point de d&eacute;part
     &agrave; la recherche de d&eacute;fauts de fonctionnement lorsque votre serveur
     mobilise toutes les ressources disponibles (CPU ou m&eacute;moire), pour

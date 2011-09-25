@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1147329 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -116,7 +116,7 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
 <description>D&eacute;finit une redirection externe pour les index de
 r&eacute;pertoires.
 </description>
-<syntax>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<syntax>DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-code</var>
 </syntax>
 <default>DirectoryIndexRedirect off</default>

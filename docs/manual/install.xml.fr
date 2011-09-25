@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1061947 -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -430,5 +430,5 @@ $ tar xvf httpd-<em>NN</em>.tar
     cependant vous familiariser par vous-m&ecirc;me avec la gestion du paquet
     de votre plate-forme particuli&egrave;re et les proc&eacute;dures d'installation.</p>
 
-</section>    
+</section>
 </manualpage>

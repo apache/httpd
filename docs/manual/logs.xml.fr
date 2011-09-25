@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1127905:1173368 (outdated) -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -638,7 +638,7 @@
     <p>Comme la journalisation conditionnelle, la journalisation redirig&eacute;e est
     un outil tr&egrave;s puissant, mais si elle existe, il est pr&eacute;f&eacute;rable d'utiliser
     une solution plus simple comme le traitement &agrave; posteriori hors ligne.</p>
-  
+
 
   <p>Par d&eacute;faut, le processus de redirection du journal est lanc&eacute; sans
   invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"

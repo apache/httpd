@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1080834 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -118,7 +118,7 @@
     inclut un module de gestion de stockage :</p>
     <dl>
     <dt><module>mod_cache_disk</module></dt>
-    
+
     <dd>impl&eacute;mente un gestionnaire de stockage sur disque. Les en-t&ecirc;tes
     et corps sont stock&eacute;s s&eacute;par&eacute;ment sur le disque dans une structure de
     r&eacute;pertoires bas&eacute;e sur le condens&eacute; md5 de l'URL mise en cache.
@@ -1032,7 +1032,7 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
     <context>.htaccess</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
-  
+
 <usage>
   <p>Lorsque la directive <directive
   module="mod_cache">CacheHeader</directive> est d&eacute;finie &agrave; on, un
@@ -1077,21 +1077,21 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
       <context>.htaccess</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.3.9 d'Apache</compatibility>
-    
+
 <usage>
   <p>Lorsque la directive <directive
   module="mod_cache">CacheDetailHeader</directive> est d&eacute;finie &agrave; on, un
   en-t&ecirc;te <strong>X-Cache-Detail</strong> est ajout&eacute; &agrave; la r&eacute;ponse et
   contient les raisons pr&eacute;cises d'une d&eacute;cision d'utilisation du cache
   vis &agrave; vis de cette derni&egrave;re.</p>
-   
+
   <p>Ceci peut s'av&eacute;rer utile au cours du d&eacute;veloppement de services
   RESTful mis en cache pour obtenir des informations suppl&eacute;mentaires &agrave;
   propos des d&eacute;cisions vis &agrave; vis du cache &eacute;crites dans les en-t&ecirc;tes de
   la r&eacute;ponse. Il est ainsi possible de v&eacute;rifier si
   <code>Cache-Control</code> et d'autres en-t&ecirc;tes ont &eacute;t&eacute; correctement
   utilis&eacute;s par le service et le client.</p>
-  
+
   <p>Si le gestionnaire normal est utilis&eacute;, cette directive peut se
   situer dans une section <directive
   module="core">&lt;Directory&gt;</directive> ou <directive

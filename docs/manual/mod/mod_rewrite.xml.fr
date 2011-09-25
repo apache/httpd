@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1165114 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -294,7 +294,7 @@ bases de donn&eacute;es depuis la version 2.0.41 du serveur HTTP Apache</compati
         <dd>Une commande SQL SELECT &agrave; ex&eacute;cuter pour rechercher la cible
 	de r&eacute;&eacute;criture (<a href="../rewrite/rewritemap.html#int">D&eacute;tails
 	...</a>).</dd>
-    </dl>    
+    </dl>
 
 <p>Vous trouverez plus de d&eacute;tails et de nombreux exemples dans le <a
 href="../rewrite/rewritemap.html">RewriteMap HowTo</a>.</p>
@@ -347,7 +347,7 @@ r&eacute;pertoire</description>
       <code>.htaccess</code>. On suppose que le contenu disponible &agrave;
       http://example.com/ se situe sur le disque &agrave;
       /home/www/exemple/.</p>
-      
+
 <example>
 <pre>
 RewriteEngine On
@@ -385,7 +385,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 
       <p><em>TestString</em> est une cha&icirc;ne qui peut contenir les
       extensions suivantes en plus du texte simple :</p>
-      
+
       <ul>
         <li>
           <strong>r&eacute;f&eacute;rences arri&egrave;res de r&egrave;gle de r&eacute;&eacute;criture</strong> :
@@ -490,7 +490,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
               </td>
             </tr>
           </table>
-	
+
                 <p>Ces variables correspondent toutes aux en-t&ecirc;tes MIME
 		HTTP de m&ecirc;mes noms, au variables C du serveur HTTP Apache, ou
 		aux champs <code>struct tm</code> du syst&egrave;me Unix. La
@@ -501,7 +501,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 		des valeurs des directives <directive
 		module="core">UseCanonicalName</directive> et <directive
 		module="core">UseCanonicalPhysicalPort</directive>.</p>
-		
+
 		<p>Parmi les variables
 		sp&eacute;cifiques &agrave; mod_rewrite, ou trouve les suivantes :</p>
         <note>
@@ -623,7 +623,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	charg&eacute;, cette variable contiendra toujours une cha&icirc;ne vide.
 	Exemple : <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> pourra
 	contenir la valeur <code>128</code>.</li>
-	
+
 	<li>
         On peut utiliser <code>%{HTTP:en-t&ecirc;te}</code>, o&ugrave;
 	<em>en-t&ecirc;te</em> peut correspondre &agrave; tout nom d'en-t&ecirc;te MIME
@@ -668,8 +668,8 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	d&eacute;terminer la valeur finale de <em>variable</em>. La plupart du
 	temps, elle est identique &agrave; LA-U (voir ci-dessus).</li>
       </ol>
-	
- 
+
+
       <p><em>expression de comparaison</em> est une expression
       rationnelle qui est appliqu&eacute;e &agrave; l'instance actuelle de
       <em>cha&icirc;ne de test</em>. <em>cha&icirc;ne de test</em> est d'abord
@@ -754,7 +754,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    comparaison</em>. Vrai si <em>cha&icirc;ne de test</em> est
 	    num&eacute;riquement
 	    sup&eacute;rieure ou &eacute;gale &agrave; <em>expression de comparaison</em>.</li>
-            
+
              <li>'<strong>-gt</strong>' (est num&eacute;riquement sup&eacute;rieur &agrave;)<br />
             La <em>cha&icirc;ne de test</em> est consid&eacute;r&eacute;e comme un entier,
 	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression de
@@ -772,7 +772,7 @@ la r&eacute;&eacute;criture soit effectu&eacute;e
 	    Attention &agrave; la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</li>
-            
+
              <li>'<strong>-lt</strong>' (est num&eacute;riquement inf&eacute;rieur &agrave;)<br />
             La <em>cha&icirc;ne de test</em> est consid&eacute;r&eacute;e comme un entier,
 	    et est compar&eacute;e num&eacute;riquement &agrave; l'<em>expression de
@@ -987,7 +987,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui a &eacute;t&eacute; appliqu&eacute;e.</p>
 
 <note><title>Qu'est-ce qui est compar&eacute; ?</title>
-      
+
       <p>Dans un contexte de serveur virtuel <directive
       module="core">VirtualHost</directive>, le <em>mod&egrave;le</em> est tout
       d'abord compar&eacute; &agrave; la portion de l'URL situ&eacute;e entre le nom d'h&ocirc;te
@@ -1001,7 +1001,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       ayant conduit &agrave; la r&egrave;gle <directive>RewriteRule</directive> (par
       exemple "app1/index.html" ou
       "index.html" selon l'endroit o&ugrave; les directives sont d&eacute;finies).</p>
-      
+
       <p>Si vous souhaitez faire une comparaison sur le nom
       d'h&ocirc;te, le port, ou la cha&icirc;ne de requ&ecirc;te, utilisez une
       directive <directive module="mod_rewrite">RewriteCond</directive>
@@ -1225,7 +1225,7 @@ substitution !
     <tr>
         <td>discardpath|DPI</td>
         <td>Supprime la partie PATH_INFO de l'URI r&eacute;&eacute;crit. <em><a
-	href="../rewrite/flags.html#flag_dpi">d&eacute;tails 
+	href="../rewrite/flags.html#flag_dpi">d&eacute;tails
         ...</a></em></td>
     </tr>
     <tr>
@@ -1341,7 +1341,7 @@ substitution !
         href="../rewrite/flags.html#flag_t">d&eacute;tails ...</a></em></td>
     </tr>
     </table>
-        
+
 <note><title>D&eacute;veloppement du r&eacute;pertoire home</title>
 <p> Quand la cha&icirc;ne de substitution commence par quelque chose comme
 "/~user" (de mani&egrave;re explicite ou par r&eacute;f&eacute;rences arri&egrave;res), mod_rewrite
@@ -1427,7 +1427,7 @@ redondant)</td>
 <td>^/somepath(.*) http://otherhost/otherpath$1 [P]</td>
 <td>http://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
-</table>      
+</table>
 
       <p><strong>Dans une configuration de niveau r&eacute;pertoire pour
       <code>/chemin</code><br />

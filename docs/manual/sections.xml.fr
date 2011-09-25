@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1060606 -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -278,7 +278,7 @@ module="mod_proxy">ProxyPass</directive> :</p>
 ProxyPass /special-area http://special.example.com smax=5 max=10<br />
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 </example>
-</section> 
+</section>
 
 
 <section id="wildcards"><title>Caract&egrave;res de remplacement

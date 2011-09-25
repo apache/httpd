@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1137744 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -463,7 +463,7 @@
       <p>Apache 2.x supporte les mod&egrave;les simultan&eacute;s enfichables, appel&eacute;s
       <a href="../mpm.html">Modules Multi-Processus</a> (MPMs). Vous devez
       choisir un MPM au moment de la construction d'Apache. Certaines
-      plateformes ont des modules MPM sp&eacute;cifiques : 
+      plateformes ont des modules MPM sp&eacute;cifiques :
       <module>mpm_netware</module>, <module>mpmt_os2</module> et
       <module>mpm_winnt</module>. Sur les syst&egrave;mes de type Unix, vous avez le
       choix entre un grand nombre de modules MPM. Le choix du MPM peut affecter
@@ -751,7 +751,7 @@
       de modifier l'impl&eacute;mentation du mutex <code>mpm-accept</code> &agrave;
       l'ex&eacute;cution. Des consid&eacute;rations sp&eacute;cifiques aux diff&eacute;rentes
       impl&eacute;mentations de mutex sont document&eacute;es avec cette directive.</p>
-      
+
       <p>Une autre solution qui a &eacute;t&eacute; imagin&eacute;e mais jamais impl&eacute;ment&eacute;e, consiste
       &agrave; s&eacute;rialiser partiellement la boucle -- c'est &agrave; dire y faire entrer un
       certain nombre de processus. Ceci ne pr&eacute;senterait un int&eacute;r&ecirc;t que sur les

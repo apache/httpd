@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1088619 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -696,7 +696,7 @@ connexion</title>
     module="mod_authnz_ldap">authldapurl</directive> sont enregistrés
     dans des variables d'environnement préfixées par la chaîne
     "AUTHORIZE_".</p>
-    
+
     <p>Si les champs attribut contiennent le nom, le CN et le numéro de
     téléphone d'un utilisateur, un programme CGI pourra accéder à ces
     informations sans devoir effectuer une autre requête LDAP pour
@@ -919,11 +919,11 @@ codées en dur pour le serveur</description>
     directive permet de forcer le serveur à utiliser les véritables nom
     d'utilisateur et mot de passe fournis par l'utilisateur pour
     effectuer la recherche initiale du DN.</p>
- 
+
      <p>Si le nom d'utilisateur ne peut pas s'authentifier directement
      et nécessite de légères modifications, voir la directive <directive
      module="mod_authnz_ldap">AuthLDAPInitialBindPattern</directive>.</p>
-   
+
      <p>Cette directive ne doit être utilisée que si votre serveur LDAP
      n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
      utiliser de nom d'utilisateur dédié via la directive <directive
@@ -965,7 +965,7 @@ distant utilisé tel quel)</default>
     l'authentification de base courant. L'argument
     <var>substitution</var> peut contenir des références arrières, mais
     n'effectue aucune autre interpolation de variable.</p>
-     
+
     <p>Cette directive ne doit être utilisée que si votre serveur LDAP
      n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
      utiliser de nom d'utilisateur dédié via la directive <directive
@@ -1089,7 +1089,7 @@ pour effectuer les comparaisons pour l'attribution des autorisations</descriptio
     cours des traitements de groupe imbriqués, et lorsque la directive
     <directive module="mod_authnz_ldap">AuthLDAPSearchAsUser</directive>
     est aussi activée.</p>
-    
+
     <p>Cette directive ne doit être utilisée que si votre serveur LDAP
      n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
      utiliser de nom d'utilisateur dédié via la directive <directive

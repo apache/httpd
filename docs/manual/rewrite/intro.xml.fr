@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1169760 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -178,7 +178,7 @@ arri&egrave;res dans les expressions rationnelles</title>
       effectu&eacute;es par les r&egrave;gles RewriteRule et RewriteCond.</p>
 
 <p class="figure">
-      <img src="../images/rewrite_rule_flow.png" 
+      <img src="../images/rewrite_rule_flow.png"
       alt="Flux des comparaisons effectu&eacute;es par les r&egrave;gles RewriteRule
       et RewriteCond" /><br />
       <dfn>Figure 1 :</dfn> Le cheminement d'une r&eacute;f&eacute;rence arri&egrave;re &agrave;
@@ -206,7 +206,7 @@ partie situ&eacute;e apr&egrave;s le nom d'h&ocirc;te mais avant tout point d'in
 qui indique le d&eacute;but d'une cha&icirc;ne de requ&ecirc;te).</p>
 
 <p class="figure">
-      <img src="../images/syntax_rewriterule.png" 
+      <img src="../images/syntax_rewriterule.png"
       alt="Syntaxe de la directive RewriteRule" /><br />
       <dfn>Figure 2 :</dfn> Syntaxe de la directive RewriteRule.
 </p>
@@ -295,7 +295,7 @@ est une liste de drapeaux qui modifient la mani&egrave;re dont la
 correspondance est &eacute;valu&eacute;e.</p>
 
 <p class="figure">
-      <img src="../images/syntax_rewritecond.png" 
+      <img src="../images/syntax_rewritecond.png"
       alt="Syntaxe de la directive RewriteCond" /><br />
       <dfn>Figure 3 :</dfn> Syntaxe de la directive RewriteCond
 </p>
