@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1169760 $ -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,13 +28,13 @@
   <title>Le module Apache mod_rewrite</title>
 
 <summary>
-      
+
        <p><module>mod_rewrite</module> permet de modifier les requ&ecirc;tes
        entrantes dynamiquement, en fonction de r&egrave;gles manipulant des <a
        href="intro.html#regex">expressions rationnelles</a>. Vous pouvez
        ainsi relier des URLs arbitraires &agrave; votre propre structure d'URLs
        interne comme vous le souhaitez.</p>
-      
+
       <p>Il fournit un
       m&eacute;canisme de manipulation d'URL particuli&egrave;rement souple et
       puissant en supportant un nombre illimit&eacute; de r&egrave;gles et de

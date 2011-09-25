@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1170338:1173755 (outdated) -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -63,7 +63,7 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
      est enregistr&eacute;e dans le fichier <code>build/config.nice</code>
      situ&eacute; dans le r&eacute;pertoire de compilation du serveur). Voici certains
      changements intervenus dans la configuration par d&eacute;faut :</p>
-    
+
     <ul>
       <li>Les modules suivants ont &eacute;t&eacute; supprim&eacute;s : mod_authn_default,
       mod_authz_default et mod_mem_cache. Si vous utilisiez
@@ -276,7 +276,7 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
 	configuration de la directive <directive
 	module="core">LogLevel</directive> au niveau r&eacute;pertoire.
         </li>
-    
+
     </ul>
     </section>
   </section>

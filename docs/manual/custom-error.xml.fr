@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1068329 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,7 +46,7 @@
     dynamique (PHP, mod_perl, etc...) peut aussi utiliser ces variables
     pour g&eacute;rer les conditions d'erreur.</p>
 
-    
+
   </summary>
 
   <section id="configuration"><title>Configuration</title>
@@ -66,7 +66,7 @@
       ErrorDocument 404 /erreurs/non_trouve.html <br />
       ErrorDocument 401 /inscription/comment_s_inscrire.html
     </example>
-      
+
 <p>La syntaxe de la directive <code>ErrorDocument</code> est :</p>
       <example>
       ErrorDocument &lt;code_3_chiffres&gt; &lt;action&gt;
@@ -100,7 +100,7 @@
 
       <p>Par exemple, en plus des variables d'environnement habituelles,
       vous pouvez recevoir ce qui suit :</p>
-      
+
 
       <example>
         REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/jpeg, image/png<br />
@@ -131,19 +131,19 @@
       sp&eacute;cifie une redirection <em>externe</em> (toute URL commen&ccedil;ant
       par un protocole du style <code>http:</code>, m&ecirc;me si elle fait
       r&eacute;f&eacute;rence au m&ecirc;me h&ocirc;te que le serveur).</p>
-    
+
   </section>
 
   <section id="custom"><title>Personnalisation des messages d'erreur</title>
 
-       
+
 	<p>Si vous faites pointer votre directive
 	<code>ErrorDocument</code> vers certains gestionnaires
 	dynamiques comme les inclusions c&ocirc;t&eacute; serveur, les scripts CGI ou
 	d'autres gestionnaires, vous pouvez utiliser les variables
 	d'environnement suppl&eacute;mentaires disponibles pour personnaliser
 	le message.</p>
-      
+
 
       <p>Si la directive ErrorDname-basedocument sp&eacute;cifie une redirection locale
       vers un script CGI, ce dernier doit ajouter un en-t&ecirc;te

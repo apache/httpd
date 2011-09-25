@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1070889 -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -99,7 +99,7 @@
     module="mpm_common">Listen</directive>
     imbriqu&eacute;es provoqueront une erreur fatale qui
     emp&ecirc;chera le serveur de d&eacute;marrer.</p>
-    
+
     <example>
     (48)Address already in use: make_sock: could not bind to address [::]:80
     </example>

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1058639 -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -513,7 +513,7 @@ Vary: negotiate,accept-language,accept-charset
       descripteur de fichier sera ferm&eacute;.</p>
     </section>
 
-    
+
   </section>
 
   <section id="inmemory">
@@ -624,7 +624,7 @@ sys     0m0.000s</pre>
       trop importante afin d'&eacute;pargner au syst&egrave;me l'utilisation du swap.</p>
     </section>
 
-    
+
   </section>
 
   <section id="disk">

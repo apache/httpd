@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1058587 -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -119,7 +119,7 @@ $ make install
 $ ./configure --enable-mods-shared=all<br />
 $ make install
 </example>
-   
+
         <p>L'argument <code>most</code> de l'option
 	<code>--enable-modules</code> indique que tous les modules
 	non-exp&eacute;rimentaux ou qui ne sont pas l&agrave; &agrave; titre d'exemple seront

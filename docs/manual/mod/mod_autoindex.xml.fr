@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1059584 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -629,7 +629,7 @@ r&eacute;pertoire</description>
       d&eacute;fini par une des diff&eacute;rentes directives <code>AddAlt*</code>.
       </dd>
 
-    
+
       <dt><a name="indexoptions.charset"
                id="indexoptions.charset"
       >Charset=<var>jeu de caract&egrave;res</var></a> (<em>Versions 2.0.61 et

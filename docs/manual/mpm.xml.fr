@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 927046 -->
+<!-- English Revision : 1174747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -118,7 +118,7 @@ souhaitez changer de module MPM.</p>
     a &eacute;t&eacute; choisi &agrave; l'aide de la commande <code>./httpd -l</code>.
     Cette commande fournit la liste de tous les modules compil&eacute;s
     avec le serveur, y compris le MPM.</p>
-    
+
 </section>
 
 <section id="dynamic"><title>Compiler un module MPM en tant que module

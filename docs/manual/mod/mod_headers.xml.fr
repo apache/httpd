@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1053526 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -369,7 +369,7 @@ tardif</title>
        composant du serveur, mais cet en-t&ecirc;te n'est pas trouv&eacute; par la
        condition par d&eacute;faut <code>onsuccess</code>.</li>
     </ul>
-    
+
     <p>L'action que cette directive provoque est d&eacute;termin&eacute;e par le
     premier argument (ou par le second argument si une
     <var>condition</var> est sp&eacute;cifi&eacute;e). Il peut prendre

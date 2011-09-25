@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1149182 -->
+<!-- English Revision : 1174747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -161,7 +161,7 @@ contenu</a></seealso>
     <code>document.html.fr</code>, et <code>document.html.de</code>. Le
     fichier de correspondances de types se nommera
     <code>document.html.var</code> et contiendra ce qui suit :</p>
-    
+
     <example>
     URI: document.html<br />
     <br />
