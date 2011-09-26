@@ -480,6 +480,8 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
 /* return number of chars of the scheme (incl. '://')
  * if the URI is absolute (includes a scheme etc.)
  * otherwise 0.
+ * If supportqs is not NULL, we return a whether or not
+ * the scheme supports a query string or not.
  *
  * NOTE: If you add new schemes here, please have a
  *       look at escape_absolute_uri and splitout_queryargs.
@@ -490,8 +492,12 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
  *      appropriate escape callbacks to allow other modules
  *      to extend mod_rewrite at runtime.
  */
-static unsigned is_absolute_uri(char *uri)
+static unsigned is_absolute_uri(char *uri, int *supportsqs)
 {
+    int dummy, *sqs;
+
+    sqs = (supportsqs ? supportsqs : &dummy);
+    *sqs = 0;
     /* fast exit */
     if (*uri == '/' || strlen(uri) <= 5) {
         return 0;
@@ -501,6 +507,7 @@ static unsigned is_absolute_uri(char *uri)
     case 'a':
     case 'A':
         if (!strncasecmp(uri, "jp://", 5)) {        /* ajp://    */
+          *sqs = 1;
           return 6;
         }
         break;
@@ -508,6 +515,7 @@ static unsigned is_absolute_uri(char *uri)
     case 'b':
     case 'B':
         if (!strncasecmp(uri, "alancer://", 10)) {   /* balancer:// */
+          *sqs = 1;
           return 11;
         }
         break;
@@ -518,6 +526,7 @@ static unsigned is_absolute_uri(char *uri)
             return 6;
         }
         if (!strncasecmp(uri, "cgi://", 6)) {       /* fcgi://   */
+            *sqs = 1;
             return 7;
         }
         break;
@@ -532,9 +541,11 @@ static unsigned is_absolute_uri(char *uri)
     case 'h':
     case 'H':
         if (!strncasecmp(uri, "ttp://", 6)) {       /* http://   */
+            *sqs = 1;
             return 7;
         }
         else if (!strncasecmp(uri, "ttps://", 7)) { /* https://  */
+            /* *sqs = 1; */
             return 8;
         }
         break;
@@ -549,6 +560,7 @@ static unsigned is_absolute_uri(char *uri)
     case 'm':
     case 'M':
         if (!strncasecmp(uri, "ailto:", 6)) {       /* mailto:   */
+            *sqs = 1;
             return 7;
         }
         break;
@@ -566,6 +578,7 @@ static unsigned is_absolute_uri(char *uri)
     case 's':
     case 'S':
         if (!strncasecmp(uri, "cgi://", 6)) {       /* scgi://   */
+            *sqs = 1;
             return 7;
         }
         break;
@@ -691,15 +704,13 @@ static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme)
 static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard)
 {
     char *q;
+    int split;
 
-    /* don't touch, unless it's an http or mailto URL.
+    /* don't touch, unless it's a scheme for which a query string makes sense.
      * See RFC 1738 and RFC 2368.
      */
-    if (is_absolute_uri(r->filename)
-        && strncasecmp(r->filename, "ajp", 3)
-        && strncasecmp(r->filename, "balancer", 8)
-        && strncasecmp(r->filename, "http", 4)
-        && strncasecmp(r->filename, "mailto", 6)) {
+    if (is_absolute_uri(r->filename, &split)
+        && !split) {
         r->args = NULL; /* forget the query that's still flying around */
         return;
     }
@@ -809,7 +820,7 @@ static void fully_qualify_uri(request_rec *r)
     if (r->method_number == M_CONNECT) {
         return;
     }
-    else if (!is_absolute_uri(r->filename)) {
+    else if (!is_absolute_uri(r->filename, NULL)) {
         const char *thisserver;
         char *thisport;
         int port;
@@ -4041,7 +4052,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
      * (2) it's a full qualified URL
      */
     if (   ctx->perdir && !is_proxyreq && *r->filename != '/'
-        && !is_absolute_uri(r->filename)) {
+        && !is_absolute_uri(r->filename, NULL)) {
         rewritelog((r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
                     r->filename, ctx->perdir, r->filename));
 
@@ -4108,7 +4119,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
      * redirection (`RewriteRule .. <scheme>://...') then
      * directly force an external HTTP redirect.
      */
-    if (is_absolute_uri(r->filename)) {
+    if (is_absolute_uri(r->filename, NULL)) {
         rewritelog((r, 2, ctx->perdir, "implicitly forcing redirect (rc=%d) "
                     "with %s", p->forced_responsecode, r->filename));
 
@@ -4525,7 +4536,7 @@ static int hook_uri2file(request_rec *r)
                         r->filename));
             return OK;
         }
-        else if ((skip = is_absolute_uri(r->filename)) > 0) {
+        else if ((skip = is_absolute_uri(r->filename, NULL)) > 0) {
             int n;
 
             /* it was finally rewritten to a remote URL */
@@ -4759,6 +4770,7 @@ static int hook_fixup(request_rec *r)
              * rewriting engine because of the per-dir context!)
              */
             if (r->args != NULL) {
+                /* see proxy_http:proxy_http_canon() */
                 r->filename = apr_pstrcat(r->pool, r->filename,
                                           "?", r->args, NULL);
             }
@@ -4773,7 +4785,7 @@ static int hook_fixup(request_rec *r)
                         "%s [OK]", r->filename));
             return OK;
         }
-        else if ((skip = is_absolute_uri(r->filename)) > 0) {
+        else if ((skip = is_absolute_uri(r->filename, NULL)) > 0) {
             /* it was finally rewritten to a remote URL */
 
             /* because we are in a per-dir context
