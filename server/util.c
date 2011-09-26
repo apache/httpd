@@ -361,15 +361,15 @@ AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
  * input should be the string with the $-expressions, source should be the
  * string that was matched against.
  *
- * It returns the substituted string, or NULL on error.
+ * It returns the substituted string, or NULL if a vbuf is used.
  *
  * Parts of this code are based on Henry Spencer's regsub(), from his
  * AT&T V8 regexp package.
  */
 
-AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
-                              const char *source, size_t nmatch,
-                              ap_regmatch_t pmatch[])
+static char *regsub_core(apr_pool_t *p, struct ap_varbuf *vb,
+                         const char *input, const char *source,
+                         size_t nmatch, ap_regmatch_t pmatch[])
 {
     const char *src = input;
     char *dest, *dst;
@@ -379,8 +379,15 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
 
     if (!source)
         return NULL;
-    if (!nmatch)
-        return apr_pstrdup(p, src);
+    if (!nmatch) {
+        if (!vb) {
+            return apr_pstrdup(p, src);
+        }
+        else {
+            ap_varbuf_strcat(vb, src);
+            return NULL;
+        }
+    }
 
     /* First pass, find the size */
 
@@ -403,7 +410,16 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
 
     }
 
-    dest = dst = apr_pcalloc(p, len + 1);
+    if (!vb) {
+        dest = dst = apr_pcalloc(p, len + 1);
+    }
+    else {
+        if (vb->buf && vb->strlen == AP_VARBUF_UNKNOWN)
+            vb->strlen = strlen(vb->buf);
+        ap_varbuf_grow(vb, vb->strlen + len);
+        dest = dst = vb->buf + vb->strlen;
+        vb->strlen += len;
+    }
 
     /* Now actually fill in the string */
 
@@ -432,6 +448,13 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
     *dst = '\0';
 
     return dest;
+}
+
+AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
+                              const char *source, size_t nmatch,
+                              ap_regmatch_t pmatch[])
+{
+    return regsub_core(p, NULL, input, source, nmatch, pmatch);
 }
 
 /*
@@ -2462,10 +2485,13 @@ static apr_status_t varbuf_cleanup(void *info_)
     return APR_SUCCESS;
 }
 
+const char nul = '\0';
+static char * const varbuf_empty = (char *)&nul;
+
 AP_DECLARE(void) ap_varbuf_init(apr_pool_t *p, struct ap_varbuf *vb,
                                 apr_size_t init_size)
 {
-    vb->buf = NULL;
+    vb->buf = varbuf_empty;
     vb->avail = 0;
     vb->strlen = AP_VARBUF_UNKNOWN;
     vb->pool = p;
@@ -2499,8 +2525,9 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
     if (new_len <= VARBUF_SMALL_SIZE) {
         new_len = APR_ALIGN_DEFAULT(new_len);
         new = apr_palloc(vb->pool, new_len);
-        if (vb->buf && vb->strlen > 0) {
-            AP_DEBUG_ASSERT(vb->avail > 0);
+        if (vb->avail && vb->strlen != 0) {
+            AP_DEBUG_ASSERT(vb->buf != NULL);
+            AP_DEBUG_ASSERT(vb->buf != varbuf_empty);
             if (new == vb->buf + vb->avail + 1) {
                 /* We are lucky: the new memory lies directly after our old
                  * buffer, we can now use both.
@@ -2510,7 +2537,7 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
             }
             else {
                 /* copy up to vb->strlen + 1 bytes */
-                memcpy(new, vb->buf, vb->strlen > vb->avail ?
+                memcpy(new, vb->buf, vb->strlen == AP_VARBUF_UNKNOWN ?
                                      vb->avail + 1 : vb->strlen + 1);
             }
         }
@@ -2542,9 +2569,9 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
     AP_DEBUG_ASSERT(new_node->endp - new_node->first_avail >= new_len);
     new_len = new_node->endp - new_node->first_avail;
 
-    if (vb->buf && vb->strlen > 0)
-        memcpy(new, vb->buf, vb->strlen > vb->avail ?
-                             vb->avail + 1: vb->strlen + 1);
+    if (vb->avail && vb->strlen != 0)
+        memcpy(new, vb->buf, vb->strlen == AP_VARBUF_UNKNOWN ?
+                             vb->avail + 1 : vb->strlen + 1);
     else
         *new = '\0';
     if (vb->info)
@@ -2559,16 +2586,17 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
 AP_DECLARE(void) ap_varbuf_strmemcat(struct ap_varbuf *vb, const char *str,
                                      int len)
 {
-    AP_DEBUG_ASSERT(len == strlen(str));
+    if (len == 0)
+        return;
     if (!vb->avail) {
         ap_varbuf_grow(vb, len);
-        memcpy(vb->buf, str, len + 1);
+        memcpy(vb->buf, str, len);
+        vb->buf[len] = '\0';
+        vb->strlen = len;
         return;
     }
-    if (vb->strlen > vb->avail) {
-        AP_DEBUG_ASSERT(vb->strlen == AP_VARBUF_UNKNOWN);
+    if (vb->strlen == AP_VARBUF_UNKNOWN)
         vb->strlen = strlen(vb->buf);
-    }
     ap_varbuf_grow(vb, vb->strlen + len);
     memcpy(vb->buf + vb->strlen, str, len);
     vb->strlen += len;
@@ -2582,6 +2610,45 @@ AP_DECLARE(void) ap_varbuf_free(struct ap_varbuf *vb)
         vb->info = NULL;
     }
     vb->buf = NULL;
+}
+
+AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *buf,
+                                  const char *prepend, apr_size_t prepend_len,
+                                  const char *append, apr_size_t append_len,
+                                  apr_size_t *new_len)
+{
+    apr_size_t i = 0;
+    struct iovec vec[3];
+
+    if (prepend) {
+        vec[i].iov_base = (void *)prepend;
+        vec[i].iov_len = prepend_len;
+        i++;
+    }
+    if (buf->avail && buf->strlen) {
+        vec[i].iov_base = (void *)buf->buf;
+        vec[i].iov_len = (buf->strlen == AP_VARBUF_UNKNOWN) ? buf->avail
+                                                            : buf->strlen;
+        i++;
+    }
+    if (append) {
+        vec[i].iov_base = (void *)append;
+        vec[i].iov_len = append_len;
+        i++;
+    }
+    if (i)
+        return apr_pstrcatv(p, vec, i, new_len);
+
+    if (new_len)
+        *new_len = 0;
+    return "";
+}
+
+AP_DECLARE(void) ap_varbuf_regsub(struct ap_varbuf *vb, const char *input,
+                                  const char *source, size_t nmatch,
+                                  ap_regmatch_t pmatch[])
+{
+    regsub_core(NULL, vb, input, source, nmatch, pmatch);
 }
 
 #define OOM_MESSAGE "[crit] Memory allocation failed, " \
