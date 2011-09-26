@@ -36,7 +36,7 @@ struct ap_varbuf_info;
 
 /** A resizable buffer */
 struct ap_varbuf {
-    /** the actual buffer */
+    /** the actual buffer; will point to a const '\0' if avail == 0 */
     char *buf;
 
     /** allocated size of the buffer (minus one for the final \0);
@@ -100,12 +100,48 @@ AP_DECLARE(void) ap_varbuf_free(struct ap_varbuf *vb);
 AP_DECLARE(void) ap_varbuf_strmemcat(struct ap_varbuf *vb, const char *str,
                                      int len);
 
+/** Duplicate an ap_varbuf's content into pool memory
+ * @param p the pool to allocate from
+ * @param vb the ap_varbuf to copy from
+ * @param prepend an optional buffer to prepend (may be NULL)
+ * @param prepend_len length of prepend
+ * @param append an optional buffer to append (may be NULL)
+ * @param append_len length of append
+ * @param new_len where to store the length of the resulting string
+ *        (may be NULL)
+ * @return the new string
+ * @note ap_varbuf_pdup() uses vb->strlen to determine how much memory to
+ *       copy. It works even if 0-bytes are embedded in vb->buf, prepend, or
+ *       append
+ */
+AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *vb,
+                                  const char *prepend, apr_size_t prepend_len,
+                                  const char *append, apr_size_t append_len,
+                                  apr_size_t *new_len);
+
+
 /** Concatenate a string to an ap_varbuf
  * @param vb pointer to the ap_varbuf struct
  * @param str the string to append
  * @note vb->strlen will be set to the length of the new string
  */
 #define ap_varbuf_strcat(vb, str) ap_varbuf_strmemcat(vb, str, strlen(str))
+
+/** Perform string substitutions based on regexp match, using an ap_varbuf.
+ * This function behaves like ap_pregsub(), but appends to an ap_varbuf
+ * instead of allocating the result from a pool.
+ * @param input An arbitrary string containing $1 through $9.  These are
+ *              replaced with the corresponding matched sub-expressions
+ * @param source The string that was originally matched to the regex
+ * @param nmatch the nmatch returned from ap_pregex
+ * @param pmatch the pmatch array returned from ap_pregex
+ * @note Just like ap_pregsub(), this function does not copy the part of
+ *       *source before the matching part (i.e. the first pmatch[0].rm_so
+ *       characters).
+ */
+AP_DECLARE(void) ap_varbuf_regsub(struct ap_varbuf *vb, const char *input,
+                                  const char *source, size_t nmatch,
+                                  ap_regmatch_t pmatch[]);
 
 /** Read a line from an ap_configfile_t into an ap_varbuf.
  * @param vb pointer to the ap_varbuf struct

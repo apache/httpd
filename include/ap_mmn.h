@@ -354,6 +354,7 @@
  * 20110724.7 (2.3.15-dev) add ap_random_insecure_bytes(), ap_random_pick()
  * 20110724.8 (2.3.15-dev) add ap_abort_on_oom(), ap_malloc(), ap_calloc(),
  *                         ap_realloc()
+ * 20110724.9 (2.3.15-dev) add ap_varbuf_pdup() and ap_varbuf_regsub()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -361,7 +362,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20110724
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 8                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 9                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
