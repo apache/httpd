@@ -1175,63 +1175,60 @@ static void ssl_init_proxy_certs(server_rec *s,
     if (!sctx) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
                      "SSL proxy client cert initialization failed");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
     }
 
     X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
-        int i, res;
-        char cert_cn[256];
+        int i;
 
         X509_INFO *inf = sk_X509_INFO_value(pkp->certs, n);
-        X509_NAME *name = X509_get_subject_name(inf->x509);
-        X509_NAME_oneline(name, cert_cn, sizeof(cert_cn));
         X509_STORE_CTX_init(sctx, store, inf->x509, NULL);
 
-        res = X509_verify_cert(sctx);
+        /* Attempt to verify the client cert */
+        if (X509_verify_cert(sctx) != 1) {
+            int err = X509_STORE_CTX_get_error(sctx);
+            ssl_log_xerror(SSLLOG_MARK, APLOG_WARNING, 0, ptemp, s, inf->x509,
+                         "SSL proxy client cert chain verification failed: %s :",
+                          X509_verify_cert_error_string(err));
+        }
+
+        /* Clear X509_verify_cert errors */
+        ERR_clear_error();
+
+        /* Obtain a copy of the verified chain */
         chain = X509_STORE_CTX_get1_chain(sctx);
 
-        if (res == 1) {
-            /* Removing the client cert if verification is OK
-             * could save a loop when choosing which cert to send
-             * when more than one is available */
-            /* XXX: This is not needed if we collapse the two
-             * checks in ssl_engine_kernel in the future */
+        if (chain != NULL) {
+            /* Discard end entity cert from the chain */
             X509_free(sk_X509_shift(chain));
-        }
-        else {
-            int err = X509_STORE_CTX_get_error(sctx);
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "SSL proxy client cert chain verification failed for %s: %s",
-                         cert_cn, X509_verify_cert_error_string(err));
-        }
-        ERR_clear_error();
-        i = sk_X509_num(chain);
-        pkp->ca_certs[n] = chain;
 
-        if (i == 0 || (res != 1 && i == 1) ) {
-            /* zero or only the client cert won't be very useful
-             * due to verification failure */
-            sk_X509_pop_free(chain, X509_free);
-            i = 0;
-            pkp->ca_certs[n] = NULL;
-        }
+            if ((i = sk_X509_num(chain)) > 0) {
+                /* Store the chain for later use */
+                pkp->ca_certs[n] = chain;
+            }
+            else {
+                /* Discard empty chain */
+                sk_X509_pop_free(chain, X509_free);
+                pkp->ca_certs[n] = NULL;
+            }
 
-        X509_STORE_CTX_cleanup(sctx);
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "loaded %i intermediate CA%s for cert %i (%s)",
-                     i, i == 1 ? "" : "s", n, cert_cn);
-        if (i > 0) {
-            int j;
-            for (j=0; j<i; j++) {
-                char ca_cn[256];
-                X509_NAME *ca_name = X509_get_subject_name(sk_X509_value(chain, j));
-                X509_NAME_oneline(ca_name, ca_cn, sizeof(ca_cn));
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "%i: %s", j, ca_cn);
+            ssl_log_xerror(SSLLOG_MARK, APLOG_DEBUG, 0, ptemp, s, inf->x509,
+                         "loaded %i intermediate CA%s for cert %i: ",
+                         i, i == 1 ? "" : "s", n);
+            if (i > 0) {
+                int j;
+                for (j = 0; j < i; j++) {
+                    ssl_log_xerror(SSLLOG_MARK, APLOG_DEBUG, 0, ptemp, s,
+                                   sk_X509_value(chain, j), "%i:", j);
+                }
             }
         }
+
+        /* get ready for next X509_STORE_CTX_init */
+        X509_STORE_CTX_cleanup(sctx);
     }
 
     X509_STORE_CTX_free(sctx);
