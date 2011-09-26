@@ -155,6 +155,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Revert r1002174 in test framework, once this is fixed.
     +1: rjung, wrowe
 
+  * byterange: Range of '0-' returns 206.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
+    2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
+    +1: jim
+  
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
