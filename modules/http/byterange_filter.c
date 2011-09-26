@@ -288,7 +288,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     }
     if (sum_lengths > clength) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                      "Sum of ranges not smaller than file, ignoring.");
+                      "Sum of ranges larger than file, ignoring.");
         return 0;
     }
 
