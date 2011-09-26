@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_substitute: Reduce memory usage and copying of data. PR 50559.
+     [Stefan Fritsch]
+
   *) mod_ssl/proxy: enable the SNI extension for backend TLS connections
      [Kaspar Brand]
 

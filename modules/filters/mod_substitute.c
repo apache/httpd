@@ -26,6 +26,7 @@
 #include "apr_strmatch.h"
 #include "apr_lib.h"
 #include "util_filter.h"
+#include "util_varbuf.h"
 #include "apr_buckets.h"
 #include "http_request.h"
 #define APR_WANT_STRFUNC
@@ -79,17 +80,6 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 
 #define AP_MAX_BUCKETS 1000
 
-#define SEDSCAT(s1, s2, pool, buff, blen, repl) do { \
-    if (!s1) {                                       \
-        s1 = apr_pstrmemdup(pool, buff, blen);       \
-    }                                                \
-    else {                                           \
-        s2 = apr_pstrmemdup(pool, buff, blen);       \
-        s1 = apr_pstrcat(pool, s1, s2, NULL);        \
-    }                                                \
-    s1 = apr_pstrcat(pool, s1, repl, NULL);          \
-} while (0)
-
 #define SEDRMPATBCKT(b, offset, tmp_b, patlen) do {  \
     apr_bucket_split(b, offset);                     \
     tmp_b = APR_BUCKET_NEXT(b);                      \
@@ -100,23 +90,18 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 
 static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                          apr_bucket_brigade *mybb,
-                         apr_pool_t *tmp_pool)
+                         apr_pool_t *pool)
 {
     int i;
     int force_quick = 0;
     ap_regmatch_t regm[AP_MAX_REG_MATCH];
     apr_size_t bytes;
     apr_size_t len;
-    apr_size_t fbytes;
     const char *buff;
     const char *repl;
-    char *scratch;
-    char *p;
-    char *s1;
-    char *s2;
+    struct ap_varbuf vb;
     apr_bucket *b;
     apr_bucket *tmp_b;
-    apr_pool_t *tpool;
 
     subst_dir_conf *cfg =
     (subst_dir_conf *) ap_get_module_config(f->r->per_dir_config,
@@ -124,11 +109,9 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
     subst_pattern_t *script;
 
     APR_BRIGADE_INSERT_TAIL(mybb, inb);
+    ap_varbuf_init(pool, &vb, 0);
 
     script = (subst_pattern_t *) cfg->patterns->elts;
-    apr_pool_create(&tpool, tmp_pool);
-    scratch = NULL;
-    fbytes = 0;
     /*
      * Simple optimization. If we only have one pattern, then
      * we can safely avoid the overhead of flattening
@@ -149,10 +132,12 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
             }
             if (apr_bucket_read(b, &buff, &bytes, APR_BLOCK_READ)
                     == APR_SUCCESS) {
-                s1 = NULL;
+                int have_match = 0;
+                vb.strlen = 0;
                 if (script->pattern) {
                     while ((repl = apr_strmatch(script->pattern, buff, bytes)))
                     {
+                        have_match = 1;
                         /* get offset into buff for pattern */
                         len = (apr_size_t) (repl - buff);
                         if (script->flatten && !force_quick) {
@@ -164,8 +149,8 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                              * are constanting allocing space and copying
                              * strings.
                              */
-                            SEDSCAT(s1, s2, tmp_pool, buff, len,
-                                    script->replacement);
+                            ap_varbuf_strmemcat(&vb, buff, len);
+                            ap_varbuf_strcat(&vb, script->replacement);
                         }
                         else {
                             /*
@@ -189,82 +174,70 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         bytes -= len;
                         buff += len;
                     }
-                    if (script->flatten && s1 && !force_quick) {
-                        /*
-                         * we've finished looking at the bucket, so remove the
-                         * old one and add in our new one
-                         */
-                        s2 = apr_pstrmemdup(tmp_pool, buff, bytes);
-                        s1 = apr_pstrcat(tmp_pool, s1, s2, NULL);
-                        tmp_b = apr_bucket_transient_create(s1, strlen(s1),
-                                            f->r->connection->bucket_alloc);
+                    if (have_match && script->flatten && !force_quick) {
+                        char *copy = ap_varbuf_pdup(pool, &vb, NULL, 0,
+                                                    buff, bytes, &len);
+                        tmp_b = apr_bucket_pool_create(copy, len, pool,
+                                                       f->r->connection->bucket_alloc);
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         apr_bucket_delete(b);
                         b = tmp_b;
                     }
-
                 }
                 else if (script->regexp) {
-                    /*
-                     * we need a null terminated string here :(. To hopefully
-                     * save time and memory, we don't alloc for each run
-                     * through, but only if we need to have a larger chunk
-                     * to save the string to. So we keep track of how much
-                     * we've allocated and only re-alloc when we need it.
-                     * NOTE: this screams for a macro.
-                     */
-                    if (!scratch || (bytes > (fbytes + 1))) {
-                        fbytes = bytes + 1;
-                        scratch = apr_palloc(tpool, fbytes);
-                    }
-                    /* reset pointer to the scratch space */
-                    p = scratch;
-                    memcpy(p, buff, bytes);
-                    p[bytes] = '\0';
-                    while (!ap_regexec(script->regexp, p,
+                    int left = bytes;
+                    const char *pos = buff;
+                    while (!ap_regexec_len(script->regexp, pos, left,
                                        AP_MAX_REG_MATCH, regm, 0)) {
-                        /* first, grab the replacement string */
-                        repl = ap_pregsub(tmp_pool, script->replacement, p,
-                                          AP_MAX_REG_MATCH, regm);
+                        have_match = 1;
                         if (script->flatten && !force_quick) {
-                            SEDSCAT(s1, s2, tmp_pool, p, regm[0].rm_so, repl);
+                            /* copy bytes before the match */
+                            if (regm[0].rm_so > 0)
+                                ap_varbuf_strmemcat(&vb, pos, regm[0].rm_so);
+                            /* add replacement string */
+                            ap_varbuf_regsub(&vb, script->replacement, pos,
+                                             AP_MAX_REG_MATCH, regm);
                         }
                         else {
+                            repl = ap_pregsub(pool, script->replacement, pos,
+                                              AP_MAX_REG_MATCH, regm);
                             len = (apr_size_t) (regm[0].rm_eo - regm[0].rm_so);
                             SEDRMPATBCKT(b, regm[0].rm_so, tmp_b, len);
                             tmp_b = apr_bucket_transient_create(repl,
-                                                                strlen(repl),
+                                             strlen(repl),
                                              f->r->connection->bucket_alloc);
                             APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         }
                         /*
-                         * reset to past what we just did. buff now maps to b
+                         * reset to past what we just did. pos now maps to b
                          * again
                          */
-                        p += regm[0].rm_eo;
+                        pos += regm[0].rm_eo;
+                        left -= regm[0].rm_eo;
                     }
-                    if (script->flatten && s1 && !force_quick) {
-                        s1 = apr_pstrcat(tmp_pool, s1, p, NULL);
-                        tmp_b = apr_bucket_transient_create(s1, strlen(s1),
-                                            f->r->connection->bucket_alloc);
+                    if (have_match && script->flatten && !force_quick) {
+                        char *copy;
+                        /* Copy result plus the part after the last match into
+                         * a bucket.
+                         */
+                        copy = ap_varbuf_pdup(pool, &vb, NULL, 0, pos, left,
+                                              &len);
+                        tmp_b = apr_bucket_pool_create(copy, len, pool,
+                                           f->r->connection->bucket_alloc);
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         apr_bucket_delete(b);
                         b = tmp_b;
                     }
-
                 }
                 else {
-                    /* huh? */
+                    ap_assert(0);
                     continue;
                 }
             }
         }
         script++;
     }
-
-    apr_pool_destroy(tpool);
-
-    return;
+    ap_varbuf_free(&vb);
 }
 
 static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
