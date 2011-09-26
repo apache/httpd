@@ -155,6 +155,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     that fix the check for the timeout status?
     jfclere: Ooops see above.
 
+  * byterange: Range of '0-' returns 206.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
+    2.2.x patch: http://people.apache.org/~jim/patches/byterange0-.txt
+    +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
