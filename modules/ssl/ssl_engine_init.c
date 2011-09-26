@@ -1385,7 +1385,8 @@ static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a,
 }
 
 static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
-                                server_rec *s, const char *file)
+                                server_rec *s, apr_pool_t *ptemp,
+                                const char *file)
 {
     int n;
     STACK_OF(X509_NAME) *sk;
@@ -1398,12 +1399,11 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
     }
 
     for (n = 0; n < sk_X509_NAME_num(sk); n++) {
-        char name_buf[256];
         X509_NAME *name = sk_X509_NAME_value(sk, n);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "CA certificate: %s",
-                     X509_NAME_oneline(name, name_buf, sizeof(name_buf)));
+                     SSL_X509_NAME_to_string(ptemp, name, 0));
 
         /*
          * note that SSL_load_client_CA_file() checks for duplicates,
@@ -1441,7 +1441,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
      * Process CA certificate bundle file
      */
     if (ca_file) {
-        ssl_init_PushCAList(ca_list, s, ca_file);
+        ssl_init_PushCAList(ca_list, s, ptemp, ca_file);
         /*
          * If ca_list is still empty after trying to load ca_file
          * then the file failed to load, and users should hear about that.
@@ -1475,7 +1475,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
                 continue; /* don't try to load directories */
             }
             file = apr_pstrcat(ptemp, ca_path, "/", direntry.name, NULL);
-            ssl_init_PushCAList(ca_list, s, file);
+            ssl_init_PushCAList(ca_list, s, ptemp, file);
         }
 
         apr_dir_close(dir);
