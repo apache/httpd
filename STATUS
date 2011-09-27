@@ -157,6 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * byterange: Range of '0-' returns 206.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
+                 http://svn.apache.org/viewvc?view=revision&revision=1175992
     2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
     +1: jim
   
