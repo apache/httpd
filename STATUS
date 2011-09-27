@@ -158,16 +158,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * byterange: Range of '0-' returns 206.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
     2.2.x patch: http://people.apache.org/~jim/patches/byterange0-.txt
+                 ('sum_lengths = clength' typo fixed)
     +1: jim
-    rpluem asks: Shouldn't it be 
-
-     if (sum_lengths > clength) {
-
-     instead of
-
-     if (sum_lengths = clength) {
-
-     like in trunk as otherwise we still send a 200 for 0-?
 
 PATCHES/ISSUES THAT ARE STALLED
 
