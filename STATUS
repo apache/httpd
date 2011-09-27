@@ -160,6 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~jim/patches/byterange0-.txt
                  ('sum_lengths = clength' typo fixed)
     +1: jim
+    rpluem says: I am +1 as soon as you add r1175992 to fix the log message.
 
 PATCHES/ISSUES THAT ARE STALLED
 
