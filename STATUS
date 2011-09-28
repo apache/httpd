@@ -94,6 +94,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * byterange: Range of '0-' returns 206.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
+                 http://svn.apache.org/viewvc?view=revision&revision=1175992
+    2.2.x patch: http://people.apache.org/~jim/patches/2.2-byterange0-.txt
+    +1: jim, rpluem, rjung, sf
+    sf says: please also mention PR 51878 in CHANGES
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -161,12 +167,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     rpluem says: Can you please update your proposal with the trunk revision numbers
     that fix the check for the timeout status?
     jfclere: Ooops see above.
-
-  * byterange: Range of '0-' returns 206.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
-                 http://svn.apache.org/viewvc?view=revision&revision=1175992
-    2.2.x patch: http://people.apache.org/~jim/patches/2.2-byterange0-.txt
-    +1: jim, rpluem, rjung
 
 PATCHES/ISSUES THAT ARE STALLED
 
