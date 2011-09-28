@@ -50,7 +50,6 @@ endif
 #
 XINCDIRS	+= \
 			$(SSL_INC) \
-			$(SSL_INC)/openssl \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
