@@ -159,7 +159,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
                  http://svn.apache.org/viewvc?view=revision&revision=1175992
     2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
-    +1: jim
+    +1: jim, rjung
+    rjung: You might want to add the "special case: 0- ..." comment from the
+           2.2 patch. I'm fine either way.
   
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
