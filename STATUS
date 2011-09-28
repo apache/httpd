@@ -146,15 +146,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, wrowe
       minfrin: The r933919 patch is obsolete, as this trunk code no longer
-               exists. The fix you're after is r951221, backported to both
+               exists. The fix you're after is r951222, backported to both
                mod_disk_cache.c and mod_mem_cache.c.
+      rjung: I combined backports of r933919 and r951222:
+      http://people.apache.org/~rjung/patches/mod_cache_partial_content-2.2.x.patch
+      +1: rjung
 
   * mod_proxy_ajp: try to prevent a single long request marking a worker in error.
     Trunk version of patch:
                          http://svn.apache.org/viewvc?view=revision&revision=r1092076
                          http://svn.apache.org/viewvc?view=revision&revision=r1100513
     http://people.apache.org/~jfclere/patches/ajp_timeout.patch
-    +1: jfclere
+    +1: jfclere, rjung
     rpluem says: Can you please update your proposal with the trunk revision numbers
     that fix the check for the timeout status?
     jfclere: Ooops see above.
@@ -163,7 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
                  http://svn.apache.org/viewvc?view=revision&revision=1175992
     2.2.x patch: http://people.apache.org/~jim/patches/2.2-byterange0-.txt
-    +1: jim, rpluem
+    +1: jim, rpluem, rjung
 
 PATCHES/ISSUES THAT ARE STALLED
 
