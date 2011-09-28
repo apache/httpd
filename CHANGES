@@ -12,6 +12,10 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_ssl: At startup, when checking a server certificate whether it
+     matches the configured ServerName, also take dNSName entries in the
+     subjectAltName extension into account. PR 32652, PR 47051. [Kaspar Brand]
+
   *) mod_substitute: Reduce memory usage and copying of data. PR 50559.
      [Stefan Fritsch]
 
