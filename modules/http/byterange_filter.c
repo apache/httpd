@@ -500,6 +500,20 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
             }
             else {                  /* "5-" */
                 end = clength - 1;
+                /*
+                 * special case: 0-
+                 *   ignore all other ranges provided
+                 *   return as a single range: 0-
+                 */
+                if (start == 0) {
+                    apr_array_clear(*indexes);
+                    idx = (indexes_t *)apr_array_push(*indexes);
+                    idx->start = start;
+                    idx->end = end;
+                    sum_lengths = clength;
+                    num_ranges = 1;
+                    break;
+                }
             }
         }
 
@@ -526,9 +540,9 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
         /* If all ranges are unsatisfiable, we should return 416 */
         return -1;
     }
-    if (sum_lengths >= clength) {
+    if (sum_lengths > clength) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "Sum of ranges not smaller than file, ignoring.");
+                      "Sum of ranges larger than file, ignoring.");
         return 0;
     }
 

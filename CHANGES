@@ -1,7 +1,8 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.22
 
-
+ *) Fix a regression introduced by the CVE-2011-3192 byterange fix in 2.2.20:
+    A range of '0-' returns a 206. PR 51878. [Jim Jagielski]
 
 Changes with Apache 2.2.21
 
