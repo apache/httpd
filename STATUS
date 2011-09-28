@@ -132,6 +132,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~druggeri/patches/httpd-2.2-SSLProxyMachineCertificateChainFile.patch
     +0 covener: needs r1162103 && needs druggeri's vote?
     +1: druggeri
+    kbrand: +1 (non-binding) with the following fixes applied: indentation of
+            the "if (ca_cert_chains)" line, ca_certs assignment (5 lines below)
+            changed as in r1162103, and in ssl_toolkit_compat.h, omit
+            sk_X509_new_null and remove "(st)" from the sk_X509_shift define
 
   * mod_cache: * Do not cache 206 responses in any case since we currently do not provide any
     backends that are capable to cache partial responses. PR 49113.
