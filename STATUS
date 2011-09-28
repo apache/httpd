@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
                  http://svn.apache.org/viewvc?view=revision&revision=1175992
     2.2.x patch: http://people.apache.org/~jim/patches/2.2-byterange0-.txt
-    +1: jim
+    +1: jim, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
