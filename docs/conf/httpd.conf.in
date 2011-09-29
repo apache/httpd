@@ -351,9 +351,10 @@ DefaultType text/plain
 
 #
 # MaxRanges: Maximum number of Ranges in a request before
-# returning the entire resource, or 0 for unlimited
-# Default setting is to accept 200 Ranges
-#MaxRanges 0
+# returning the entire resource, or one of the special
+# values 'default', 'none' or 'unlimited'.
+# Default setting is to accept 200 Ranges.
+#MaxRanges unlimited
 
 #
 # EnableMMAP and EnableSendfile: On systems that support it, 
