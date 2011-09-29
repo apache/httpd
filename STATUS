@@ -161,6 +161,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     that fix the check for the timeout status?
     jfclere: Ooops see above.
 
+  * mod_substitute: buffer alloc off by two
+    Trunk patch: Code not present.
+    2.2.x patch: http://people.apache.org/~rjung/patches/substitute-off-by-two-2.2.patch
+    +1: rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
