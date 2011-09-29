@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_substitute: buffer alloc off by two
     Trunk patch: Code not present.
     2.2.x patch: http://people.apache.org/~rjung/patches/substitute-off-by-two-2.2.patch
-    +1: rjung
+    +1: rjung, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
