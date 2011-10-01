@@ -1391,7 +1391,7 @@ a superset of the syntax of <code>SSLRequire</code>, with the following
 exception:</p>
 
 <p>In <code>SSLRequire</code>, the comparison operators <code>&lt;</code>,
-<code>&lt;=</code>, ...  completely equivalent to the operators
+<code>&lt;=</code>, ... are completely equivalent to the operators
 <code>lt</code>, <code>le</code>, ... and work in a somewhat pecular way that
 first compares the length of two strings and then the lexical order.
 On the other hand, <a href="../expr.html">ap_expr</a> has two sets of

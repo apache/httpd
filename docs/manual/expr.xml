@@ -495,4 +495,12 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 
 </section>
 
+<section id="sslrequire">
+    <title>Comparison with SSLRequire</title>
+    <p>The <em>ap_expr</em> syntax is mostly a superset of the syntax of the
+    deprecated <directive module="mod_ssl">SSLRequire</directive> directive.
+    The differences are described in <directive
+    module="mod_ssl">SSLRequire</directive>'s documentation.</p>
+</section>
+
 </manualpage>
