@@ -213,7 +213,7 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                      * we've allocated and only re-alloc when we need it.
                      * NOTE: this screams for a macro.
                      */
-                    if (!scratch || (bytes > (fbytes + 1))) {
+                    if (!scratch || (bytes + 1 > fbytes)) {
                         fbytes = bytes + 1;
                         scratch = apr_palloc(tpool, fbytes);
                     }

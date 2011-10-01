@@ -8,6 +8,8 @@ Changes with Apache 2.2.22
   *) Example configuration: Fix entry for MaxRanges (use "unlimited" instead
      of "0").  [Rainer Jung]
 
+  *) mod_substitute: Fix buffer overrun.  [Ruediger Pluem, Rainer Jung]
+
 Changes with Apache 2.2.21
 
   *) SECURITY: CVE-2011-3348 (cve.mitre.org)
