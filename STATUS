@@ -180,6 +180,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.0.x patch: http://people.apache.org/~rjung/patches/max-ranges-2.0.patch
     +1: rjung
 
+  * mod_ssl: Backport SSLHonorCipher
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=103832
+                 http://svn.apache.org/viewvc?view=revision&revision=103837
+                 http://svn.apache.org/viewvc?view=revision&revision=966160
+    Backport: http://people.apache.org/~rjung/patches/sslhonorcipher-2.0.patch
+    +1: rjung
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
