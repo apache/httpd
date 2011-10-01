@@ -2288,6 +2288,10 @@ int main(int argc, const char * const argv[])
         exit(1);
     }
     SSL_CTX_set_options(ssl_ctx, SSL_OP_ALL);
+#ifdef SSL_MODE_RELEASE_BUFFERS
+    /* Keep memory usage as low as possible */
+    SSL_CTX_set_mode (ssl_ctx, SSL_MODE_RELEASE_BUFFERS);
+#endif
     if (ssl_cipher != NULL) {
         if (!SSL_CTX_set_cipher_list(ssl_ctx, ssl_cipher)) {
             fprintf(stderr, "error setting cipher list [%s]\n", ssl_cipher);
