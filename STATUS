@@ -166,6 +166,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~rjung/patches/substitute-off-by-two-2.2.patch
     +1: rjung, rpluem
 
+  * mod_ssl: Update default config (SSLCipherSuite, SSLHonorCipherOrder, MSIE pattern)
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966160
+                 http://svn.apache.org/viewvc?view=revision&revision=1132793
+                 http://svn.apache.org/viewvc?view=revision&revision=1135234
+    2.2.x patch: http://people.apache.org/~rjung/patches/default-sslciphersuite_and_sslhonorciphers_2.2.patch
+    +1: rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
