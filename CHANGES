@@ -12,6 +12,10 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_ssl: If MaxMemFree is set, ask OpenSSL >= 1.0.0 to reduce memory
+     usage.  PR 51618. [Cristian Rodríguez <crrodriguez opensuse org>,
+     Stefan Fritsch]
+
   *) mod_ssl: At startup, when checking a server certificate whether it
      matches the configured ServerName, also take dNSName entries in the
      subjectAltName extension into account. PR 32652, PR 47051. [Kaspar Brand]
