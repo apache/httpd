@@ -94,6 +94,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_substitute: buffer alloc off by two
+    Trunk patch: Code not present.
+    2.2.x patch: http://people.apache.org/~rjung/patches/substitute-off-by-two-2.2.patch
+    +1: rjung, rpluem, sf
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -161,17 +166,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     that fix the check for the timeout status?
     jfclere: Ooops see above.
 
-  * mod_substitute: buffer alloc off by two
-    Trunk patch: Code not present.
-    2.2.x patch: http://people.apache.org/~rjung/patches/substitute-off-by-two-2.2.patch
-    +1: rjung, rpluem
-
   * mod_ssl: Update default config (SSLCipherSuite, SSLHonorCipherOrder, MSIE pattern)
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966160
                  http://svn.apache.org/viewvc?view=revision&revision=1132793
                  http://svn.apache.org/viewvc?view=revision&revision=1135234
     2.2.x patch: http://people.apache.org/~rjung/patches/default-sslciphersuite_and_sslhonorciphers_2.2.patch
-    +1: rjung
+    +1: rjung, sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
