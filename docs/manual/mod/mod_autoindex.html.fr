@@ -638,7 +638,7 @@ répertoire</td></tr>
       défini par une des différentes directives <code>AddAlt*</code>.
       </dd>
 
-    
+
       <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>jeu de caractères</var></a> (<em>Versions 2.0.61 et
       supérieures du serveur HTTP Apache</em>)</dt>
 

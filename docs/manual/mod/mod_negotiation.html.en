@@ -166,7 +166,7 @@ Negotiation</a></li>
     <code>document.html.de</code>, respectively. The type map file will
     be called <code>document.html.var</code>, and will contain the
     following:</p>
-    
+
     <div class="example"><p><code>
     URI: document.html<br />
     <br />
@@ -220,7 +220,7 @@ Negotiation</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows content-negotiated documents to be 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows content-negotiated documents to be
 cached by proxy servers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheNegotiatedDocs On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheNegotiatedDocs Off</code></td></tr>
@@ -244,7 +244,7 @@ cached by proxy servers</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action to take if a single acceptable document is not 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action to take if a single acceptable document is not
 found</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ForceLanguagePriority Prefer</code></td></tr>

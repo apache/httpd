@@ -22,7 +22,7 @@
 </div>
 
 
-<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
+<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to redirect and remap
 request. This includes many examples of common uses of mod_rewrite,
@@ -294,7 +294,7 @@ hostname(s).</p>
 &lt;/VirtualHost&gt;
 </code></p></div>
 
-<p>You can alternatively accomplish this using the 
+<p>You can alternatively accomplish this using the
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
 directive:</p>
 
@@ -318,7 +318,7 @@ Redirect /admin/ https://www.example.com/admin/
 </code></p></div>
 
 <p>If, for whatever reason, you still want to use <code>mod_rewrite</code>
-- if, for example, you need this to work with a larger set of RewriteRules - 
+- if, for example, you need this to work with a larger set of RewriteRules -
 you might use one of the recipes below.</p>
 
 <p>For sites running on a port other than 80:</p>
@@ -441,8 +441,8 @@ com       http://www.example.com/<br />
 
     <dt>Discussion</dt>
     <dd>
-    <div class="warning">This ruleset relies on 
-    <code class="directive"><a href="../mod/core.html#hostnamelookups">HostNameLookups</a></code> 
+    <div class="warning">This ruleset relies on
+    <code class="directive"><a href="../mod/core.html#hostnamelookups">HostNameLookups</a></code>
     being set <code>on</code>, which can be
     a significant performance hit.</div>
 
@@ -561,7 +561,7 @@ using the following ruleset:</p>
       <p>We redirect the URL <code>/</code> to
       <code>/about/</code>:
       </p>
-     
+
 <div class="example"><p><code>
 RewriteEngine on<br />
 RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
@@ -575,9 +575,9 @@ RedirectMatch ^/$ http://example.com/about/
 
 <p>Note also that the example rewrites only the root URL. That is, it
 rewrites a request for <code>http://example.com/</code>, but not a
-request for <code>http://example.com/page.html</code>. If you have in 
-fact changed your document root - that is, if <strong>all</strong> of 
-your content is in fact in that subdirectory, it is greatly preferable 
+request for <code>http://example.com/page.html</code>. If you have in
+fact changed your document root - that is, if <strong>all</strong> of
+your content is in fact in that subdirectory, it is greatly preferable
 to simply change your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
 directive, or move all of the content up one directory,
 rather than rewriting URLs.</p>

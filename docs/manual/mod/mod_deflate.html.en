@@ -113,7 +113,7 @@ client</td></tr>
       <code>1</code> to only allow html files to be compressed (see
       below). If you set this to <em>anything but <code>1</code></em> it
       will be ignored.</p>
-      
+
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
       enabling compression only for the html files of the Apache
@@ -186,7 +186,7 @@ client</td></tr>
       <p>This Example will uncompress gzip'ed output from example.com, so other
       filters can do further processing with it.
       </p>
-      
+
     
     <h3><a name="input" id="input">Input Decompression</a></h3>
       <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
@@ -201,7 +201,7 @@ client</td></tr>
         </span>
         &lt;/Location&gt;
       </code></p></div>
-      
+
       <p>Now if a request contains a <code>Content-Encoding:
       gzip</code> header, the body will be automatically decompressed.
       Few browsers have the ability to gzip request bodies. However,
@@ -228,7 +228,7 @@ client</td></tr>
     not understand it.</p>
 
     <p>If you use some special exclusions dependent
-    on, for example, the <code>User-Agent</code> header, you must 
+    on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
     to alert proxies of the additional restrictions.  For example,
     in a typical configuration where the addition of the <code>DEFLATE</code>
@@ -237,7 +237,7 @@ client</td></tr>
     <div class="example"><p><code>
       Header append Vary User-Agent
     </code></p></div>
-    
+
     <p>If your decision about compression depends on other information
     than request headers (<em>e.g.</em> HTTP version), you have to set the
     <code>Vary</code> header to the value <code>*</code>. This prevents
@@ -274,7 +274,7 @@ client</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>This directive is available since Apache 2.0.45</td></tr>
 </table>
     <p>The <code class="directive">DeflateCompressionLevel</code> directive specifies
-        what level of compression should be used, the higher the value, 
+        what level of compression should be used, the higher the value,
         the better the compression, but the more CPU time is required to
         achieve this.</p>
     <p>The value must between 1 (less compression) and 9 (more compression).</p>

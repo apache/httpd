@@ -118,7 +118,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Configures an external redirect for directory indexes.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-code</var>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>

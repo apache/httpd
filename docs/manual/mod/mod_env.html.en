@@ -37,8 +37,8 @@ SSI pages</td></tr>
     <p>This module allows for control of internal environment variables that
     are used by various Apache HTTP Server modules. These variables are also
     provided to CGI scripts as native system environment variables, and available
-    for use in SSI pages. Environment variables may be passed from the shell 
-    which invoked the <code class="program"><a href="../programs/httpd.html">httpd</a></code> process. Alternatively, 
+    for use in SSI pages. Environment variables may be passed from the shell
+    which invoked the <code class="program"><a href="../programs/httpd.html">httpd</a></code> process. Alternatively,
     environment variables may be set or unset within the configuration process.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -66,8 +66,8 @@ SSI pages</td></tr>
 </table>
     <p>Specifies one or more native system environment variables to make available
     as internal environment variables, which are available to Apache HTTP Server modules
-    as well as propogated to CGI scripts and SSI pages. Values come from the 
-    native OS environment of the shell which invoked the 
+    as well as propogated to CGI scripts and SSI pages. Values come from the
+    native OS environment of the shell which invoked the
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> process.</p>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -85,7 +85,7 @@ SSI pages</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Sets an internal environment variable, which is then available to Apache 
+    <p>Sets an internal environment variable, which is then available to Apache
     HTTP Server modules, and passed on to CGI scripts and SSI pages.</p>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -96,11 +96,11 @@ SSI pages</td></tr>
     <em>after</em> most early request processing directives are run, such as access
     control and URI-to-filename mapping.  If the environment variable you're
     setting is meant as input into this early phase of processing such as the
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive, you should 
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive, you should
     instead set the environment variable with
     <code class="directive"><a href="../mod/mod_setenvif.html# setenvif"> SetEnvIf</a></code>.</p>
     </div>
-     
+
 
 <h3>See also</h3>
 <ul>

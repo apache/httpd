@@ -114,10 +114,10 @@ to provide the cryptography engine.</p>
 <div class="section">
 <h2><a name="envvars" id="envvars">Environment Variables</a></h2>
 
-<p>This module can be configured to provide several items of SSL information 
+<p>This module can be configured to provide several items of SSL information
 as additional environment variables to the SSI and CGI namespace. This
 information is not provided by default for performance reasons. (See
-<code class="directive">SSLOptions</code> StdEnvVars, below.) The generated variables 
+<code class="directive">SSLOptions</code> StdEnvVars, below.) The generated variables
 are listed in the table below. For backward compatibility the information can
 be made available under different names, too. Look in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
@@ -215,7 +215,7 @@ REQUEST_URI            REMOTE_USER</pre></div>
   <dt><code>ENV:<em>variablename</em></code></dt>
   <dd>This will expand to the standard environment
   variable <em>variablename</em>.</dd>
-  
+
   <dt><code>HTTP:<em>headername</em></code></dt>
   <dd>This will expand to the value of the request header with name
   <em>headername</em>.</dd>
@@ -226,7 +226,7 @@ REQUEST_URI            REMOTE_USER</pre></div>
 <h2><a name="logformats" id="logformats">Custom Log Formats</a></h2>
 
 <p>When <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
-loaded (under DSO situation) additional functions exist for the <a href="mod_log_config.html#formats">Custom Log Format</a> of 
+loaded (under DSO situation) additional functions exist for the <a href="mod_log_config.html#formats">Custom Log Format</a> of
 <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>. First there is an
 additional ``<code>%{</code><em>varname</em><code>}x</code>''
 eXtension format function which can be used to expand any variables
@@ -308,7 +308,7 @@ string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_conf
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCACertificateFile" id="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile" id="sslcacertificatefile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
 for Client Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCACertificateFile <em>file-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -320,7 +320,7 @@ This directive sets the <em>all-in-one</em> file where you can assemble the
 Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
 with. These are used for Client Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
-preference. This can be used alternatively and/or additionally to 
+preference. This can be used alternatively and/or additionally to
 <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
@@ -330,7 +330,7 @@ SSLCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCACertificatePath" id="SSLCACertificatePath">SSLCACertificatePath</a> <a name="sslcacertificatepath" id="sslcacertificatepath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for
 Client Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCACertificatePath <em>directory-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -356,7 +356,7 @@ SSLCACertificatePath /usr/local/apache2/conf/ssl.crt/
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCADNRequestFile" id="SSLCADNRequestFile">SSLCADNRequestFile</a> <a name="sslcadnrequestfile" id="sslcadnrequestfile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCADNRequestFile <em>file-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -395,7 +395,7 @@ SSLCADNRequestFile /usr/local/apache2/conf/ca-names.crt
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCADNRequestPath" id="SSLCADNRequestPath">SSLCADNRequestPath</a> <a name="sslcadnrequestpath" id="sslcadnrequestpath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for
 defining acceptable CA names</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCADNRequestPath <em>directory-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -460,7 +460,7 @@ SSLCARevocationCheck chain
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCARevocationFile" id="SSLCARevocationFile">SSLCARevocationFile</a> <a name="sslcarevocationfile" id="sslcarevocationfile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA CRLs for 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA CRLs for
 Client Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationFile <em>file-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -482,7 +482,7 @@ SSLCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCARevocationPath" id="SSLCARevocationPath">SSLCARevocationPath</a> <a name="sslcarevocationpath" id="sslcarevocationpath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA CRLs for 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA CRLs for
 Client Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationPath <em>directory-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -593,7 +593,7 @@ SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCipherSuite" id="SSLCipherSuite">SSLCipherSuite</a> <a name="sslciphersuite" id="sslciphersuite">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL
 handshake</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCipherSuite <em>cipher-spec</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCipherSuite DEFAULT (depends on OpenSSL version)</code></td></tr>
@@ -796,9 +796,9 @@ SSLEngine on<br />
 ...<br />
 &lt;/VirtualHost&gt;
 </code></p></div>
-<p>In Apache 2.1 and later, <code class="directive">SSLEngine</code> can be set to 
-<code>optional</code>. This enables support for 
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS 
+<p>In Apache 2.1 and later, <code class="directive">SSLEngine</code> can be set to
+<code>optional</code>. This enables support for
+<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS
 Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 
 </div>
@@ -815,7 +815,7 @@ Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 <p>
 This directive toggles the usage of the SSL library FIPS_mode flag.
 It must be set in the global server context and cannot be configured
-with conflicting settings (SSLFIPS on followed by SSLFIPS off or 
+with conflicting settings (SSLFIPS on followed by SSLFIPS off or
 similar).  The mode applies to all SSL library operations.
 </p>
 <p>
@@ -1106,7 +1106,7 @@ SSLOptions +FakeBasicAuth -StrictRequire<br />
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLPassPhraseDialog" id="SSLPassPhraseDialog">SSLPassPhraseDialog</a> <a name="sslpassphrasedialog" id="sslpassphrasedialog">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of pass phrase dialog for encrypted private 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of pass phrase dialog for encrypted private
 keys</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLPassPhraseDialog <em>type</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLPassPhraseDialog builtin</code></td></tr>
@@ -1143,7 +1143,7 @@ query can be done in two ways which can be configured by
     dialog (i.e. when you use a single Pass Phrase for all N Private Key files
     this Pass Phrase is queried only once).</p></li>
 
-<li><code>|/path/to/program [args...]</code> 
+<li><code>|/path/to/program [args...]</code>
 
    <p>This mode allows an external program to be used which acts as a
    pipe to a particular input device; the program is sent the standard
@@ -1192,7 +1192,7 @@ SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
-This directive can be used to control which versions of the SSL protocol 
+This directive can be used to control which versions of the SSL protocol
 will be accepted in new connections.</p>
 <p>
 The available (case-insensitive) <em>protocol</em>s are:</p>
@@ -1206,21 +1206,21 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>SSLv3</code>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
-    the Netscape Corporation. 
+    the Netscape Corporation.
     It is the successor to SSLv2 and the predecessor to TLSv1. It's supported by
     almost all popular browsers.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
-    successor to SSLv3 and is defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>. 
+    successor to SSLv3 and is defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>.
     Which has been obsoleted by <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC4346</a>.</p></li>
 
 <li><code>All</code>
     <p>
     This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
     convenient way for enabling all protocols except one when used in
-    combination with the minus sign on a protocol as the example above 
+    combination with the minus sign on a protocol as the example above
     shows.</p></li>
 </ul>
 <div class="example"><h3>Example</h3><p><code>
@@ -1232,7 +1232,7 @@ SSLProtocol all -SSLv2
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyCACertificateFile" id="SSLProxyCACertificateFile">SSLProxyCACertificateFile</a> <a name="sslproxycacertificatefile" id="sslproxycacertificatefile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCACertificateFile <em>file-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -1244,7 +1244,7 @@ This directive sets the <em>all-in-one</em> file where you can assemble the
 Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
 with. These are used for Remote Server Authentication. Such a file is simply the
 concatenation of the various PEM-encoded Certificate files, in order of
-preference. This can be used alternatively and/or additionally to 
+preference. This can be used alternatively and/or additionally to
 <code class="directive"><a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></code>.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt
@@ -1254,7 +1254,7 @@ SSLProxyCACertificateFile /usr/local/apache2/conf/ssl.crt/ca-bundle-remote-serve
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyCACertificatePath" id="SSLProxyCACertificatePath">SSLProxyCACertificatePath</a> <a name="sslproxycacertificatepath" id="sslproxycacertificatepath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for
 Remote Server Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCACertificatePath <em>directory-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -1318,7 +1318,7 @@ SSLProxyCARevocationCheck chain
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyCARevocationFile" id="SSLProxyCARevocationFile">SSLProxyCARevocationFile</a> <a name="sslproxycarevocationfile" id="sslproxycarevocationfile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA CRLs for 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCARevocationFile <em>file-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -1340,7 +1340,7 @@ SSLProxyCARevocationFile /usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyCARevocationPath" id="SSLProxyCARevocationPath">SSLProxyCARevocationPath</a> <a name="sslproxycarevocationpath" id="sslproxycarevocationpath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA CRLs for 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCARevocationPath <em>directory-path</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -1408,7 +1408,7 @@ SSLProxyCheckPeerExpire on
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProxyCipherSuite" id="SSLProxyCipherSuite">SSLProxyCipherSuite</a> <a name="sslproxyciphersuite" id="sslproxyciphersuite">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL
 proxy handshake</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCipherSuite <em>cipher-spec</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code></td></tr>
@@ -1528,7 +1528,7 @@ comes with mod_ssl to accomplish this task.
 </div>
 <div class="example"><h3>Example</h3><p><code>
 SSLProxyMachineCertificatePath /usr/local/apache2/conf/proxy.crt/
-</code></p></div> 
+</code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1619,9 +1619,9 @@ SSLProxyVerifyDepth 10
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLRandomSeed" id="SSLRandomSeed">SSLRandomSeed</a> <a name="sslrandomseed" id="sslrandomseed">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pseudo Random Number Generator (PRNG) seeding 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pseudo Random Number Generator (PRNG) seeding
 source</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRandomSeed <em>context</em> <em>source</em> 
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRandomSeed <em>context</em> <em>source</em>
 [<em>bytes</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1744,7 +1744,7 @@ SSLRenegBufferSize 262144
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLRequire" id="SSLRequire">SSLRequire</a> <a name="sslrequire" id="sslrequire">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow access only when an arbitrarily complex 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow access only when an arbitrarily complex
 boolean expression is true</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRequire <em>expression</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
@@ -1850,7 +1850,7 @@ a superset of the syntax of <code>SSLRequire</code>, with the following
 exception:</p>
 
 <p>In <code>SSLRequire</code>, the comparison operators <code>&lt;</code>,
-<code>&lt;=</code>, ...  completely equivalent to the operators
+<code>&lt;=</code>, ... are completely equivalent to the operators
 <code>lt</code>, <code>le</code>, ... and work in a somewhat pecular way that
 first compares the length of two strings and then the lexical order.
 On the other hand, <a href="../expr.html">ap_expr</a> has two sets of
@@ -1877,7 +1877,7 @@ for additional examples.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLRequireSSL" id="SSLRequireSSL">SSLRequireSSL</a> <a name="sslrequiressl" id="sslrequiressl">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Deny access when SSL is not used for the 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Deny access when SSL is not used for the
 HTTP request</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRequireSSL</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
@@ -1899,7 +1899,7 @@ SSLRequireSSL
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLSessionCache" id="SSLSessionCache">SSLSessionCache</a> <a name="sslsessioncache" id="sslsessioncache">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of the global/inter-process SSL Session 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of the global/inter-process SSL Session
 Cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionCache <em>type</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLSessionCache none</code></td></tr>
@@ -2277,7 +2277,7 @@ SSLVerifyClient require
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLVerifyDepth" id="SSLVerifyDepth">SSLVerifyDepth</a> <a name="sslverifydepth" id="sslverifydepth">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum depth of CA Certificates in Client 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum depth of CA Certificates in Client
 Certificate verification</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLVerifyDepth <em>number</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLVerifyDepth 1</code></td></tr>

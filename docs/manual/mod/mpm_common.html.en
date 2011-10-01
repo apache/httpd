@@ -68,16 +68,16 @@ switch before dumping core</td></tr>
 </table>
     <p>This controls the directory to which Apache httpd attempts to
     switch before dumping core. If your operating system is configured to
-    create core files in the working directory of the crashing process, 
+    create core files in the working directory of the crashing process,
     <code class="directive">CoreDumpDirectory</code> is necessary to change working
-    directory from the default <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> 
+    directory from the default <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
     directory, which should not be writable by the user the server runs as.</p>
 
-    <p>If you want a core dump for debugging, you can use this directive to 
+    <p>If you want a core dump for debugging, you can use this directive to
     place it in a different location. This directive has no effect if your
     operating system is not configured to write core files to the working directory
     of the crashing processes.</p>
-    
+
     <div class="note"><h3>Core Dumps on Linux</h3>
       <p>If Apache httpd starts as root and switches to another user, the
       Linux kernel <em>disables</em> core dumps even if the directory is
@@ -93,8 +93,8 @@ switch before dumping core</td></tr>
     </div>
 
     <div class="note"><h3>Specific signals</h3>
-      <p><code class="directive">CoreDumpDirectory</code> processing only occurs for 
-      a select set of fatal signals: SIGFPE, SIGILL, SIGABORT, 
+      <p><code class="directive">CoreDumpDirectory</code> processing only occurs for
+      a select set of fatal signals: SIGFPE, SIGILL, SIGABORT,
       SIGSEGV, and SIGBUS.</p>
       <p>On some operating systems, SIGQUIT also results in a core dump but
       does not go through <code class="directive">CoreDumpDirectory</code> or
@@ -120,7 +120,7 @@ after a crash</td></tr>
     configured with the <code>--enable-exception-hook</code> option. It
     enables a hook that allows external modules to plug in and do something
     after a child crashed.</p>
-    
+
     <p>There are already two modules, <code>mod_whatkilledus</code> and
     <code>mod_backtrace</code> that make use of this hook. Please have a
     look at Jeff Trawick's <a href="http://www.apache.org/~trawick/exception_hook.html">EnableExceptionHook site</a> for more information about these.</p>
@@ -139,7 +139,7 @@ will exit.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.2 and later</td></tr>
 </table>
     <p>The <code class="directive">GracefulShutdownTimeout</code> specifies
-    how many seconds after receiving a "graceful-stop" signal, a 
+    how many seconds after receiving a "graceful-stop" signal, a
     server should continue to run, handling the existing connections.</p>
 
     <p>Setting this value to zero means that the server will wait
@@ -199,14 +199,14 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </code></p></div>
 
-    <p>The optional <var>protocol</var> argument is not required for most 
-       configurations. If not specified, <code>https</code> is the default for 
-       port 443 and <code>http</code> the default for all other ports.  The 
+    <p>The optional <var>protocol</var> argument is not required for most
+       configurations. If not specified, <code>https</code> is the default for
+       port 443 and <code>http</code> the default for all other ports.  The
        protocol is used to determine which module should handle a request, and
-       to apply protocol specific optimizations with the 
+       to apply protocol specific optimizations with the
        <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> directive.</p>
 
-    <p>You only need to set the protocol if you are running on non-standard 
+    <p>You only need to set the protocol if you are running on non-standard
        ports.  For example, running an <code>https</code> site on port 8443:</p>
 
     <div class="example"><p><code>
@@ -345,7 +345,7 @@ simultaneously</td></tr>
     <p>Maximum number of idle threads. Different MPMs deal with this
     directive differently.</p>
 
-    <p>For <code class="module"><a href="../mod/worker.html">worker</a></code>, the default is 
+    <p>For <code class="module"><a href="../mod/worker.html">worker</a></code>, the default is
     <code>MaxSpareThreads 250</code>. This MPM deals with idle threads
     on a server-wide basis. If there are too many idle threads in the
     server then child processes are killed until the number of idle
@@ -517,7 +517,7 @@ Apache HTTP Server</a></li>
 </table>
     <p>Sets the server's TCP send buffer size to the number of bytes
     specified. It is often useful to set this past the OS's standard
-    default value on high speed, high latency conections 
+    default value on high speed, high latency conections
     (<em>i.e.</em>, 100ms or so, such as transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
@@ -603,7 +603,7 @@ Apache HTTP Server</a></li>
     there is usually little reason to adjust this parameter.</p>
 
     <p>The default value differs from MPM to MPM. <code class="module"><a href="../mod/worker.html">worker</a></code>
-    defaults to <code>StartServers 3</code>; <code class="module"><a href="../mod/prefork.html">prefork</a></code> 
+    defaults to <code>StartServers 3</code>; <code class="module"><a href="../mod/prefork.html">prefork</a></code>
     defaults to <code>5</code>; <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> defaults to
     <code>2</code>.</p>
 
@@ -702,7 +702,7 @@ and later</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The size in bytes of the stack used by threads handling 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The size in bytes of the stack used by threads handling
 client connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ThreadStackSize <var>size</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>65536 on NetWare; varies on other operating systems</code></td></tr>
@@ -711,11 +711,11 @@ client connections</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.1 and later</td></tr>
 </table>
-    <p>The <code class="directive">ThreadStackSize</code> directive sets the 
+    <p>The <code class="directive">ThreadStackSize</code> directive sets the
     size of the stack (for autodata) of threads which handle client
-    connections and call modules to help process those connections.  
-    In most cases the operating system default for stack size is 
-    reasonable, but there are some conditions where it may need to be 
+    connections and call modules to help process those connections.
+    In most cases the operating system default for stack size is
+    reasonable, but there are some conditions where it may need to be
     adjusted:</p>
 
     <ul>
@@ -724,13 +724,13 @@ client connections</td></tr>
       which use a relatively large amount of autodata storage.  Those
       same modules may have worked fine on other platforms where the
       default thread stack size is larger.  This type of crash is
-      resolved by setting <code class="directive">ThreadStackSize</code> to a 
-      value higher than the operating system default.  This type of 
-      adjustment is necessary only if the provider of the third-party 
+      resolved by setting <code class="directive">ThreadStackSize</code> to a
+      value higher than the operating system default.  This type of
+      adjustment is necessary only if the provider of the third-party
       module specifies that it is required, or if diagnosis of an Apache httpd
       crash indicates that the thread stack size was too small.</li>
 
-      <li>On platforms where the default thread stack size is 
+      <li>On platforms where the default thread stack size is
       significantly larger than necessary for the web server
       configuration, a higher number of threads per child process
       will be achievable if <code class="directive">ThreadStackSize</code> is
@@ -743,9 +743,9 @@ client connections</td></tr>
       the current <code class="directive">ThreadStackSize</code> setting.</li>
 
       <li>On Linux, this directive can only be used to increase the default
-      stack size, as the underlying system call uses the value as a 
-      <em>minimum</em> stack size.  The (often large) soft limit for 
-      <code>ulimit -s</code> (8MB if unlimited) is used as the default stack 
+      stack size, as the underlying system call uses the value as a
+      <em>minimum</em> stack size.  The (often large) soft limit for
+      <code>ulimit -s</code> (8MB if unlimited) is used as the default stack
       size.</li>
     </ul>
 

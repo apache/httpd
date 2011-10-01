@@ -58,9 +58,9 @@
 
     
 
-    <p>Apache 2.0 is designed to run on NetWare 6.0 service pack 3 
+    <p>Apache 2.0 is designed to run on NetWare 6.0 service pack 3
     and above. If you are running a service pack less
-    than SP3, you must install the latest 
+    than SP3, you must install the latest
     <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
     for C (LibC)</a>.</p>
 
@@ -69,7 +69,7 @@
     <p>Apache 2.0 for NetWare can also be run in a NetWare 5.1 environment
     as long as the latest service pack or the latest version
     of the <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
-    for C (LibC)</a> has been installed .  <strong>WARNING:</strong> Apache 2.0 
+    for C (LibC)</a> has been installed .  <strong>WARNING:</strong> Apache 2.0
     for NetWare has not been targeted for or tested in this environment.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -83,7 +83,7 @@
     will list the current release, any more recent alpha or
     beta-test releases, together with details of mirror web and
     anonymous ftp sites. Binary builds of the latest releases of
-    Apache 2.0 for NetWare can be downloaded from 
+    Apache 2.0 for NetWare can be downloaded from
     <a href="http://www.apache.org/dist/httpd/binaries/netware">here</a>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -93,7 +93,7 @@
     
 
     <p>There is no Apache install program for NetWare currently. If you
-    are building Apache 2.0 for NetWare from source, you will need to 
+    are building Apache 2.0 for NetWare from source, you will need to
     copy the files over to the server manually.</p>
 
     <p>Follow these steps to install Apache on NetWare from the
@@ -127,7 +127,7 @@
       <li>Create a directory under <code>SYS:/APACHE2</code>
       called <code>BIN</code></li>
 
-      <li>Copy <code>HTDIGEST.NLM</code>, <code>HTPASSWD.NLM</code>, 
+      <li>Copy <code>HTDIGEST.NLM</code>, <code>HTPASSWD.NLM</code>,
       <code>HTDBM.NLM</code>, <code>LOGRES.NLM</code>, <code>ROTLOGS.NLM</code>
       to <code>SYS:/APACHE2/BIN</code></li>
 
@@ -138,7 +138,7 @@
       <code>SYS:/APACHE2/CONF</code> directory and rename to
       <code>HTTPD.CONF</code></li>
 
-      <li>Copy the <code>MIME.TYPES</code>, <code>CHARSET.CONV</code> and 
+      <li>Copy the <code>MIME.TYPES</code>, <code>CHARSET.CONV</code> and
       <code>MAGIC</code> files to <code>SYS:/APACHE2/CONF</code> directory</li>
 
       <li>Copy all files and subdirectories in <code>\HTTPD-2.0\DOCS\ICONS</code>
@@ -174,9 +174,9 @@
     <p>Apache may be installed to other volumes besides the default <code>SYS</code> volume.</p>
 
     <p>During the build process, adding the keyword "install" to the makefile command line
-    will automatically produce a complete distribution package under the subdirectory 
-    <code>DIST</code>. Install Apache by simply copying the distribution that was produced 
-    by the makfiles to the root of a NetWare volume (see: <a href="#comp">Compiling Apache for 
+    will automatically produce a complete distribution package under the subdirectory
+    <code>DIST</code>. Install Apache by simply copying the distribution that was produced
+    by the makfiles to the root of a NetWare volume (see: <a href="#comp">Compiling Apache for
     NetWare</a> below).</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -277,7 +277,7 @@
 
     <p>Apache 2.0 for NetWare includes a set of command line directives that can
     be used to modify or display information about the running instance of the
-    web server. These directives are only available while Apache is running. Each 
+    web server. These directives are only available while Apache is running. Each
     of these directives must be preceded by the keyword <code>APACHE2</code>.</p>
 
     <dl>
@@ -299,7 +299,7 @@
 
       <dt>SETTINGS</dt>
       <dd>Enables or disables the thread status display
-      on the console. When enabled, the state of each running threads is displayed 
+      on the console. When enabled, the state of each running threads is displayed
       on the Apache console screen.</dd>
 
       <dt>SHUTDOWN</dt>
@@ -322,7 +322,7 @@
     
 
     <p>Apache is configured by reading configuration files usually stored
-    in the <code>conf</code> directory. These are the same as files used 
+    in the <code>conf</code> directory. These are the same as files used
     to configure the Unix version, but there are a few different directives for
     Apache on NetWare. See the <a href="../">Apache
     documentation</a> for all the available directives.</p>
@@ -370,11 +370,11 @@
       </li>
 
       <li>
-        <p>The directives that accept filenames as arguments must use 
-        NetWare filenames instead of Unix names. However, because Apache 
-        uses Unix-style names internally, forward slashes must be used 
-        rather than backslashes. It is recommended that all rooted file paths 
-        begin with a volume name. If omitted, Apache will assume the 
+        <p>The directives that accept filenames as arguments must use
+        NetWare filenames instead of Unix names. However, because Apache
+        uses Unix-style names internally, forward slashes must be used
+        rather than backslashes. It is recommended that all rooted file paths
+        begin with a volume name. If omitted, Apache will assume the
         <code>SYS:</code> volume which may not be correct.</p>
       </li>
 
@@ -425,8 +425,8 @@
 
     
 
-    <p>Compiling Apache requires MetroWerks CodeWarrior 6.x or higher. Once 
-    Apache has been built, it can be installed to the root of any NetWare 
+    <p>Compiling Apache requires MetroWerks CodeWarrior 6.x or higher. Once
+    Apache has been built, it can be installed to the root of any NetWare
     volume. The default is the <code>sys:/Apache2</code> directory.</p>
 
     <p>Before running the server you must fill out the <code>conf</code>
@@ -495,7 +495,7 @@
         for example:
         <div class="example"><p><code>Set ZLIBSDK=D:\NOVELL\zlib</code></p></div>
         </li>
-        
+
         <li>Set the environment variable <code>PCRESDK</code> to the location
         where you installed the source code for the PCRE Library, for example:
         <div class="example"><p><code>Set PCRESDK=D:\NOVELL\pcre</code></p></div>
@@ -527,11 +527,11 @@
 
         <li>Change directory to <code>\httpd-2.0</code> and build the prebuild utilities
         by running "<code>gmake -f nwgnumakefile prebuild</code>". This target will create
-        the directory <code>\httpd-2.0\nwprebuild</code> and copy each of the utilities 
+        the directory <code>\httpd-2.0\nwprebuild</code> and copy each of the utilities
         to this location that are necessary to complete the following build steps.
         </li>
 
-        <li>Copy the files <code>\httpd-2.0\nwprebuild\GENCHARS.nlm</code> and 
+        <li>Copy the files <code>\httpd-2.0\nwprebuild\GENCHARS.nlm</code> and
         <code>\httpd-2.0\nwprebuild\DFTABLES.nlm</code> to the <code>SYS:</code> volume of a
         NetWare server and run them using the following commands:
           <div class="example"><p><code>
@@ -589,7 +589,7 @@
       
 
       <ul>
-        <li>To build all of the experimental modules, set the environment 
+        <li>To build all of the experimental modules, set the environment
         variable <code>EXPERIMENTAL</code>:
         <div class="example"><p><code>Set EXPERIMENTAL=1</code></p></div>
         </li>
@@ -607,14 +607,14 @@
 
       
 
-      <p>By default Apache for NetWare uses the built-in module 
+      <p>By default Apache for NetWare uses the built-in module
       <code class="module"><a href="../mod/mod_nw_ssl.html">mod_nw_ssl</a></code> to provide SSL services.  This module
       simply enables the native SSL services implemented in NetWare OS
       to handle all encryption for a given port.  Alternatively, mod_ssl
       can also be used in the same manner as on other platforms.</p>
 
       <p>Before mod_ssl can be built for the NetWare platform, the OpenSSL
-      libraries must be provided.  This can be done through the following 
+      libraries must be provided.  This can be done through the following
       steps:</p>
 
       <ul>
@@ -623,8 +623,8 @@
           page (older 0.9.7 versions need to be patched and are therefore not
           recommended).</li>
 
-          <li>Edit the file <code>NetWare/set_env.bat</code> and modify any 
-          tools and utilities paths so that they correspond to your build 
+          <li>Edit the file <code>NetWare/set_env.bat</code> and modify any
+          tools and utilities paths so that they correspond to your build
           environment.</li>
 
           <li>From the root of the OpenSSL source directory, run the following
@@ -635,7 +635,7 @@
           </code></p></div>
           For performance reasons you should enable to build with ASM code.
           Download NASM from the <a href="http://nasm.sourceforge.net/">SF site</a>.
-          Then configure OpenSSL to use ASM code: 
+          Then configure OpenSSL to use ASM code:
           <div class="example"><p><code>
               Netware\build netware-libc nw-nasm enable-mdc2 enable-md5
           </code></p></div>

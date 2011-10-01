@@ -447,7 +447,7 @@
       <p>Apache 2.x supporte les modèles simultanés enfichables, appelés
       <a href="../mpm.html">Modules Multi-Processus</a> (MPMs). Vous devez
       choisir un MPM au moment de la construction d'Apache. Certaines
-      plateformes ont des modules MPM spécifiques : 
+      plateformes ont des modules MPM spécifiques :
       <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> et
       <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Sur les systèmes de type Unix, vous avez le
       choix entre un grand nombre de modules MPM. Le choix du MPM peut affecter
@@ -735,7 +735,7 @@
       de modifier l'implémentation du mutex <code>mpm-accept</code> à
       l'exécution. Des considérations spécifiques aux différentes
       implémentations de mutex sont documentées avec cette directive.</p>
-      
+
       <p>Une autre solution qui a été imaginée mais jamais implémentée, consiste
       à sérialiser partiellement la boucle -- c'est à dire y faire entrer un
       certain nombre de processus. Ceci ne présenterait un intérêt que sur les

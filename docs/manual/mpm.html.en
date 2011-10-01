@@ -71,7 +71,7 @@ how they are used by the Apache HTTP Server.</p>
 
       <li>The server can be better customized for the needs of the
       particular site. For example, sites that need a great deal of
-      scalability can choose to use a threaded MPM like 
+      scalability can choose to use a threaded MPM like
       <code class="module"><a href="./mod/worker.html">worker</a></code> or <code class="module"><a href="./mod/event.html">event</a></code>, while sites requiring
       stability or compatibility with older software can use a
       <code class="module"><a href="./mod/prefork.html">prefork</a></code>.</li>
@@ -92,7 +92,7 @@ choice at compile-time.</p>
 
 <table class="bordered"><tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 <tr class="odd"><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
-<tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code>, or 
+<tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code>, or
     <code class="module"><a href="./mod/event.html">event</a></code>, depending on platform capabilities</td></tr>
 <tr class="odd"><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
@@ -120,7 +120,7 @@ choice at compile-time.</p>
     <p>On Unix and similar platforms, MPMs can be built as DSO modules and
     dynamically loaded into the server in the same manner as other DSO
     modules.  Building MPMs as DSO modules allows the MPM to be changed by
-    updating the <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> directive 
+    updating the <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> directive
     for the MPM instead of by rebuilding the server.</p>
 
     <p>This feature is enabled using the

@@ -115,7 +115,7 @@
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
-    <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> 
+    <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code>
     parameter.</p>
 
     <p>Users of <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
@@ -146,7 +146,7 @@
     ensure that there are no errors in the configuration files.
     If your configuration file has errors in it, you will get an
     error message about that syntax error, and the server will refuse to
-    restart. This avoids the situation where the server halts and then 
+    restart. This avoids the situation where the server halts and then
     cannot restart, leaving you with a non-functioning server.</p>
 
     <p>This still will not
@@ -198,26 +198,26 @@ syntax error(s).</div>
     reached, the parent will also exit.  If the timeout is reached,
     any remaining children will be sent the <code>TERM</code> signal
     to force them to exit.</p>
-    
-    <p>A <code>TERM</code> signal will immediately terminate the 
+
+    <p>A <code>TERM</code> signal will immediately terminate the
     parent process and all children when in the "graceful" state. However
     as the <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> will
-    have been removed, you will not be able to use 
+    have been removed, you will not be able to use
     <code>apachectl</code> or <code>httpd</code> to send this signal.</p>
 
     <div class="note"><p>The <code>graceful-stop</code> signal allows you to run multiple
-    identically configured instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> at the 
-    same time. This is a powerful feature when performing graceful 
-    upgrades of httpd, however it can also cause deadlocks and race 
-    conditions with some configurations.</p> 
+    identically configured instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> at the
+    same time. This is a powerful feature when performing graceful
+    upgrades of httpd, however it can also cause deadlocks and race
+    conditions with some configurations.</p>
 
     <p>Care has been taken to ensure that on-disk files such as lock files
     (<code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>) and Unix socket files
     (<code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code>) contain the server
     PID, and should coexist without problem. However, if a configuration
-    directive, third-party module or persistent CGI utilises any other on-disk 
-    lock or  state files, care should be taken to ensure that multiple running 
-    instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> do not clobber each other's files.</p> 
+    directive, third-party module or persistent CGI utilises any other on-disk
+    lock or  state files, care should be taken to ensure that multiple running
+    instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> do not clobber each other's files.</p>
 
     <p>You should also be wary of other potential race conditions, such as
     using <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> style piped logging. Multiple running

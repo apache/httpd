@@ -24,12 +24,12 @@
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-      
+
        <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> permet de modifier les requêtes
        entrantes dynamiquement, en fonction de règles manipulant des <a href="intro.html#regex">expressions rationnelles</a>. Vous pouvez
        ainsi relier des URLs arbitraires à votre propre structure d'URLs
        interne comme vous le souhaitez.</p>
-      
+
       <p>Il fournit un
       mécanisme de manipulation d'URL particulièrement souple et
       puissant en supportant un nombre illimité de règles et de

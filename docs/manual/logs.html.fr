@@ -24,8 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -618,7 +616,7 @@
     <p>Comme la journalisation conditionnelle, la journalisation redirigée est
     un outil très puissant, mais si elle existe, il est préférable d'utiliser
     une solution plus simple comme le traitement à posteriori hors ligne.</p>
-  
+
 
   <p>Par défaut, le processus de redirection du journal est lancé sans
   invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"

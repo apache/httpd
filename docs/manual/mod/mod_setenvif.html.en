@@ -83,8 +83,8 @@ on characteristics of the request</td></tr>
   <code>User-Agent</code> HTTP request header.  The following two
   lines have the same effect:</p>
 <div class="example"><p><code>
-   BrowserMatchNoCase Robot is_a_robot<br /> 
-   SetEnvIfNoCase User-Agent Robot is_a_robot<br /> 
+   BrowserMatchNoCase Robot is_a_robot<br />
+   SetEnvIfNoCase User-Agent Robot is_a_robot<br />
 </code></p></div>
 
     <p>Some additional examples:</p>
@@ -148,7 +148,7 @@ respect to case</td></tr>
 <ol>
 <li>An HTTP request header field (see <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>
     for more information about these); for example: <code>Host</code>,
-    <code>User-Agent</code>, <code>Referer</code>, and 
+    <code>User-Agent</code>, <code>Referer</code>, and
     <code>Accept-Language</code>.  A regular expression may be
     used to specify a set of request headers.</li>
 
@@ -308,7 +308,7 @@ results.</li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets environment variables based on attributes of the request
 without respect to case</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnvIfNoCase <em>attribute regex 
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SetEnvIfNoCase <em>attribute regex
         [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>

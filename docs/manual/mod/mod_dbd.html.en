@@ -243,9 +243,9 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <dt>FreeTDS (for MSSQL and SyBase)</dt>
     <dd>username, password, appname, dbname, host, charset, lang, server</dd>
     <dt>MySQL</dt>
-    <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd> 
+    <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd>
     <dt>Oracle</dt>
-    <dd>user, pass, dbname, server</dd> 
+    <dd>user, pass, dbname, server</dd>
     <dt>PostgreSQL</dt>
     <dd>The connection string is passed straight through to <code>PQconnectdb</code></dd>
     <dt>SQLite2</dt>

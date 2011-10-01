@@ -195,7 +195,7 @@
       determined by the <code class="directive"><a href="#ssiundefinedecho">SSIUndefinedEcho</a></code> directive. Any dates printed are
       subject to the currently configured <code>timefmt</code>.</p>
 
-      <p>Attributes:</p> 
+      <p>Attributes:</p>
 
       <dl>
       <dt><code>var</code></dt>
@@ -218,7 +218,7 @@
       <p>The <code>decoding</code> attribute must <em>precede</em> the
       corresponding <code>var</code> attribute to be effective.</p>
       </dd>
-        
+
       <dt><code>encoding</code></dt>
       <dd><p>Specifies how Apache should encode special characters
       contained in the variable before outputting them. If set
@@ -451,7 +451,7 @@
       <em>precede</em> the corresponding <code>var</code> attribute to
       be effective.</p>
       </dd>
-      
+
       <dt><code>encoding</code></dt>
       <dd><p>Specifies how Apache should encode special characters
       contained in the variable before setting them. The default is
@@ -644,7 +644,7 @@
       <dt><code><var>string1</var> = <var>string2</var><br />
       <var>string1</var> == <var>string2</var><br />
       <var>string1</var> != <var>string2</var></code></dt>
-      
+
       <dd><p>Compare <var>string1</var> with <var>string2</var>. If
       <var>string2</var> has the form <code>/<var>string2</var>/</code>
       then it is treated as a regular expression. Regular expressions are
@@ -744,7 +744,7 @@
       parsed expression tokenizer information, the parse tree and how it is
       evaluated into the output sent to the client.</p>
     </div>
- 
+
     <div class="note"><h3>Escaping slashes in regex strings</h3>
      <p>All slashes which are not intended to act as delimiters in your regex must
      be escaped.  This is regardless of their meaning to the regex engine.</p>
@@ -901,23 +901,23 @@ server.</td></tr>
         if already present, or set if the header is not already present. This can
         be used to enable caching of the output. <code class="directive">SSILastModified</code>
         can take on the following values:</p>
-      
+
       <dl>
-        
+
         <dt><code>off</code></dt>
         <dd>The <code>Last-Modified</code> header will be stripped from responses,
           unless the <code class="directive"><a href="#xbithack">XBitHack</a></code> directive
           is set to <code>full</code> as described below.</dd>
-        
+
         <dt><code>on</code></dt>
         <dd>The <code>Last-Modified</code> header will be respected if already
           present in a response, and added to the response if the response is a
           file and the header is missing. The
           <code class="directive"><a href="#ssilastmodified">SSILastModified</a></code> directive
           takes precedence over <code class="directive"><a href="#xbithack">XBitHack</a></code>.</dd>
-        
+
       </dl>
-      
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -935,7 +935,7 @@ server.</td></tr>
     new <a href="../expr.html">ap_expr</a> syntax for conditional expressions
     in <code>#if</code> flow control elements.  This directive allows to
     switch to the <a href="#legacyexpr">old syntax</a> which is compatible
-    with Apache HTTPD version 2.2.x and earlier. 
+    with Apache HTTPD version 2.2.x and earlier.
     </p>
 
 </div>
@@ -955,7 +955,7 @@ server.</td></tr>
 
     <p>You may want to use this option if you have 2 servers parsing the
     output of a file each processing different commands (possibly at
-    different times).</p> 
+    different times).</p>
 
     <div class="example"><h3>Example</h3><p><code>
       SSIStartTag "&lt;%"<br />
@@ -963,8 +963,8 @@ server.</td></tr>
     </code></p></div>
 
     <p>The example given above, which also specifies a matching
-    <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code>, will 
-    allow you to use SSI directives as shown in the example 
+    <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code>, will
+    allow you to use SSI directives as shown in the example
     below:</p>
 
     <div class="example"><h3>SSI directives with alternate start and end tags</h3><p><code>
@@ -989,7 +989,7 @@ displayed</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.30 and later.</td></tr>
 </table>
-<p>This directive changes the format in which date strings are displayed 
+<p>This directive changes the format in which date strings are displayed
     when echoing <code>DATE</code> environment variables. The
     <var>formatstring</var> is as in <code>strftime(3)</code> from the
     C standard library.</p>
@@ -1055,13 +1055,13 @@ set</td></tr>
       returned file to be the last modified time of the file. If
       it is not set, then no last-modified date is sent. Setting
       this bit allows clients and proxies to cache the result of
-      the request. 
+      the request.
 
       <div class="note"><h3>Note</h3>
       <p>You would not want to use the full option, unless you assure the
       group-execute bit is unset for every SSI script which might <code>#include</code> a CGI or otherwise produces different output on
       each hit (or could potentially change on subsequent requests).</p>
-      
+
       <p>The <code class="directive"><a href="#ssilastmodified">SSILastModified</a></code>
       directive takes precedence over the
       <code class="directive"><a href="#xbithack">XBitHack</a></code> directive when

@@ -135,7 +135,7 @@ directives, along with their <a class="glossarylink" href="./glossary.html#regex
 counterparts, apply directives to
 parts of the filesystem.  Directives enclosed in a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> section apply to
 the named filesystem directory and all subdirectories of that
-directory (as well as the files in those directories).  
+directory (as well as the files in those directories).
 The same effect can be obtained using <a href="howto/htaccess.html">.htaccess files</a>.  For example, in the
 following configuration, directory indexes will be enabled for the
 <code>/var/web/dir1</code> directory and all subdirectories.</p>
@@ -236,7 +236,7 @@ directives:</p>
 ProxyPass /special-area http://special.example.com smax=5 max=10<br />
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 </code></p></div>
- 
+
 
 <h3><a name="wildcards" id="wildcards">Wildcards and Regular Expressions</a></h3>
 
@@ -383,7 +383,7 @@ Deny from all<br />
 
 <p>To find out what directives are allowed in what types of
 configuration sections, check the <a href="mod/directive-dict.html#Context">Context</a> of the directive.
-Everything that is allowed in 
+Everything that is allowed in
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
 sections is also syntactically allowed in
 <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>,

@@ -44,7 +44,7 @@
      [ -<strong>C</strong> <var>directive</var> ] [ -<strong>c</strong>
      <var>directive</var> ] [ -<strong>D</strong> <var>parameter</var> ]
      [ -<strong>e</strong> <var>level</var> ] [ -<strong>E</strong>
-     <var>file</var> ] 
+     <var>file</var> ]
      [ <strong>-k</strong> start|restart|graceful|stop|graceful-stop ]
      [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
@@ -181,7 +181,7 @@ the Apache service; and uninstall the Apache service.</dd>
 
 <dt><code>-w</code></dt>
 
-<dd>Keep the console window open on error so that the error message can 
+<dd>Keep the console window open on error so that the error message can
 be read.</dd>
 
 </dl>

@@ -67,7 +67,7 @@ of user groups for authorization</td></tr>
 
     <div class="example"><h3>Example:</h3><p><code>
       mygroup: bob joe anne
-    </code></p></div> 
+    </code></p></div>
 
     <p>Note that searching large text files is <em>very</em>
     inefficient; <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code> provides a much better performance.</p>

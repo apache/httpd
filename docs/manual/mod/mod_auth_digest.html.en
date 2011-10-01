@@ -63,12 +63,12 @@
 <div class="section">
 <h2><a name="using" id="using">Using Digest Authentication</a></h2>
 
-    <p>To use MD5 Digest authentication, simply 
+    <p>To use MD5 Digest authentication, simply
     change the normal <code>AuthType Basic</code> and
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
     to <code>AuthType Digest</code> and
     <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code>,
-    when setting up authentication, then add a 
+    when setting up authentication, then add a
     <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> directive containing at least the root
     URI(s) for this protection space.</p>
 
@@ -89,7 +89,7 @@
       &lt;/Location&gt;
     </code></p></div>
 
-    <div class="note"><h3>Note</h3> 
+    <div class="note"><h3>Note</h3>
     <p>Digest authentication is more secure than Basic authentication,
     but only works with supporting browsers. As of September 2004, major
     browsers that support digest authentication include <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://konqueror.kde.org/">Konqueror</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
@@ -255,13 +255,13 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
-    <p>The <code class="directive">AuthDigestProvider</code> directive sets 
+    <p>The <code class="directive">AuthDigestProvider</code> directive sets
     which provider is used to authenticate the users for this location.
     The default <code>file</code> provider is implemented
     by the <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> module.  Make sure
     that the chosen provider module is present in the server.</p>
 
-    <p>See <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>, <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, 
+    <p>See <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>, <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>,
     <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> and <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>
     for providers.</p>
 

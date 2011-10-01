@@ -36,7 +36,7 @@ hosting</td></tr>
     the HTTP request to be used as part of the pathname to
     determine what files to serve. This allows for easy use of a
     huge number of virtual hosts with similar configurations.</p>
-    
+
     <div class="note"><h3>Note</h3>
       <p>If <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> or <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> are
       used for translating URIs to filenames, they will override the
@@ -65,7 +65,7 @@ hosting</td></tr>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
-<li><a href="../vhosts/mass.html">Dynamically configured mass 
+<li><a href="../vhosts/mass.html">Dynamically configured mass
     virtual hosting</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -91,7 +91,7 @@ hosting</td></tr>
 
 <tr><td><code>%N.M</code></td>
 <td>insert (part of) the name</td></tr>
-     
+
 </table>
 
     <p><code>N</code> and <code>M</code> are used to specify
@@ -149,7 +149,7 @@ hosting</td></tr>
     <code>http://www.example.com/directory/file.html</code> will be
     satisfied by the file
     <code>/usr/local/apache/vhosts/www.example.com/directory/file.html</code>.
-    </p> 
+    </p>
 
     <p>For a very large number of virtual hosts it is a good idea
     to arrange the files to reduce the size of the
@@ -217,7 +217,7 @@ hosting</td></tr>
     <code>http://www.domain.example.com/directory/file.html</code>
     will be satisfied by the file
     <code>/usr/local/apache/vhosts/domain.example/directory/file.html</code>.</p>
-     
+
     <p>The <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code>
     directives <code>%V</code> and <code>%A</code> are useful
     in conjunction with this module.</p>
@@ -238,9 +238,9 @@ for a given virtual host</td></tr>
     determine where Apache HTTP Server will find your documents based on the
     value of the server name. The result of expanding
     <em>interpolated-directory</em> is used as the root of the
-    document tree in a similar manner to the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> directive's argument. 
+    document tree in a similar manner to the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> directive's argument.
     If <em>interpolated-directory</em> is <code>none</code> then
-    <code class="directive">VirtualDocumentRoot</code> is turned off. This directive 
+    <code class="directive">VirtualDocumentRoot</code> is turned off. This directive
     cannot be used in the same context as <code class="directive"><a href="#virtualdocumentrootip">VirtualDocumentRootIP</a></code>.</p>
 
 

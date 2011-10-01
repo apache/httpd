@@ -113,7 +113,7 @@ $ make install
 $ ./configure --enable-mods-shared=all<br />
 $ make install
 </code></p></div>
-   
+
         <p>L'argument <code>most</code> de l'option
 	<code>--enable-modules</code> indique que tous les modules
 	non-expérimentaux ou qui ne sont pas là à titre d'exemple seront

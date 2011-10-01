@@ -42,7 +42,7 @@
     interface. Sessions can be used for keeping track of whether a user
     has been logged in, or for other per user information that should
     be kept available across requests.</p>
-    
+
     <p>Sessions may be stored on the server, or may be stored on the
     browser. Sessions may also be optionally encrypted for added security.
     These features are divided into several modules in addition to
@@ -55,7 +55,7 @@
     <p>Sessions may be manipulated from other modules that depend on the
     session, or the session may be read from and written to using
     environment variables and HTTP headers, as appropriate.</p>
-    
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -87,10 +87,10 @@
 <h2><a name="whatisasession" id="whatisasession">What is a session?</a></h2>
       <p>At the core of the session interface is a table of key and value pairs
       that are made accessible across browser requests.</p>
-      
+
       <p>These pairs can be set to any valid string, as needed by the
       application making use of the session.</p>
-      
+
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="whocanuseasession" id="whocanuseasession">Who can use a session?</a></h2>
@@ -107,17 +107,17 @@
       <p>Apache can be configured to keep track of per user sessions stored
       on a particular server or group of servers. This functionality is
       similar to the sessions available in typical application servers.</p>
-      
+
       <p>If configured, sessions are tracked through the use of a session ID that
       is stored inside a cookie, or extracted from the parameters embedded
       within the URL query string, as found in a typical GET request.</p>
-      
+
       <p>As the contents of the session are stored exclusively on the server,
       there is an expectation of privacy of the contents of the session. This
       does have performance and resource implications should a large number
       of sessions be present, or where a large number of webservers have to
       share sessions with one another.</p>
-      
+
       <p>The <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> module allows the storage of user
       sessions within a SQL database via <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>.</p>
 
@@ -127,11 +127,11 @@
       <p>Where keeping track of a session on a server is too resource
       intensive or inconvenient, the option exists to store the contents
       of the session within a cookie on the client browser instead.</p>
-      
+
       <p>This has the advantage that minimal resources are required on the
       server to keep track of sessions, and multiple servers within a server
       farm have no need to share session information.</p>
-      
+
       <p>The contents of the session however are exposed to the client, with a
       corresponding risk of a loss of privacy. The
       <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code> module can be configured to encrypt the
@@ -143,11 +143,11 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="basicexamples" id="basicexamples">Basic Examples</a></h2>
-    
+
       <p>Creating a session is as simple as turning the session on, and deciding
       where the session will be stored. In this example, the session will be
       stored on the browser, in a cookie called <code>session</code>.</p>
-      
+
       <div class="example"><h3>Browser based session</h3><p><code>
         Session On<br />
         SessionCookieName session path=/<br />
@@ -157,7 +157,7 @@
       following example shows how values can be injected into the session through
       the use of a predetermined HTTP response header called
       <code>X-Replace-Session</code>.</p>
-      
+
       <div class="example"><h3>Writing to a session</h3><p><code>
         Session On<br />
         SessionCookieName session path=/<br />
@@ -167,7 +167,7 @@
       <p>The header should contain name value pairs expressed in the same format
       as a query string in a URL, as in the example below. Setting a key to the
       empty string has the effect of removing that key from the session.</p>
-      
+
       <div class="example"><h3>CGI to write to a session</h3><p><code>
         #!/bin/bash<br />
         echo "Content-Type: text/plain"<br />
@@ -180,7 +180,7 @@
       environment variable. By default, the session is kept private, so this
       has to be explicitly turned on with the
       <code class="directive"><a href="#sessionenv">SessionEnv</a></code> directive.</p>
-      
+
       <div class="example"><h3>Read from a session</h3><p><code>
         Session On<br />
         SessionEnv On<br />
@@ -194,32 +194,32 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sessionprivacy" id="sessionprivacy">Session Privacy</a></h2>
-    
+
       <p>Using the "show cookies" feature of your browser, you would have seen
       a clear text representation of the session. This could potentially be a
       problem should the end user need to be kept unaware of the contents of
       the session, or where a third party could gain unauthorised access to the
       data within the session.</p>
-      
+
       <p>The contents of the session can be optionally encrypted before being
       placed on the browser using the <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code>
       module.</p>
-      
+
       <div class="example"><h3>Browser based encrypted session</h3><p><code>
         Session On<br />
         SessionCryptoPassphrase secret<br />
         SessionCookieName session path=/<br />
       </code></p></div>
-      
+
       <p>The session will be automatically decrypted on load, and encrypted on
       save by Apache, the underlying application using the session need have
       no knowledge that encryption is taking place.</p>
-      
+
       <p>Sessions stored on the server rather than on the browser can also be
       encrypted as needed, offering privacy where potentially sensitive
       information is being shared between webservers in a server farm using
       the <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> module.</p>
-      
+
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cookieprivacy" id="cookieprivacy">Cookie Privacy</a></h2>
@@ -228,7 +228,7 @@
       ability to restrict cookie transport to SSL protected pages only, or
       to prevent browser based javascript from gaining access to the contents
       of the cookie.</p>
-      
+
       <div class="warning"><h3>Warning</h3>
       <p>Some of the HTTP cookie privacy features are either non-standard, or
       are not implemented consistently across browsers. The session modules
@@ -241,13 +241,13 @@
 
       <p>Standard cookie parameters can be specified after the name of the cookie,
       as in the example below.</p>
-      
+
       <div class="example"><h3>Setting cookie parameters</h3><p><code>
         Session On<br />
         SessionCryptoPassphrase secret<br />
         SessionCookieName session path=/private;domain=example.com;httponly;secure;<br />
       </code></p></div>
-      
+
       <p>In cases where the Apache server forms the frontend for backend origin servers,
       it is possible to have the session cookies removed from the incoming HTTP headers using
       the <code class="directive"><a href="../mod/mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></code> directive.
@@ -274,7 +274,7 @@
         AuthName realm<br />
         ...<br />
       </code></p></div>
-      
+
       <p>See the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> module for documentation and complete
       examples.</p>
 
@@ -308,7 +308,7 @@
     <p>If set to <var>On</var>, the <code class="directive">SessionEnv</code> directive
     causes the contents of the session to be written to a CGI environment
     variable called <var>HTTP_SESSION</var>.</p>
-    
+
     <p>The string is written in the URL query format, for example:</p>
 
     <div class="example"><p><code>
@@ -356,13 +356,13 @@
     <p>The <code class="directive">SessionHeader</code> directive defines the name of an
     HTTP response header which, if present, will be parsed and written to the
     current session.</p>
-    
+
     <p>The header value is expected to be in the URL query format, for example:</p>
 
     <div class="example"><p><code>
       <code>key1=foo&amp;key2=&amp;key3=bar</code>
     </code></p></div>
-    
+
     <p>Where a key is set to the empty string, that key will be removed from the
     session.</p>
 
@@ -383,7 +383,7 @@
     website more efficient, by targeting a more precise URL space for which
     a session should be maintained. By default, all URLs within the directory
     or location are included in the session.</p>
-    
+
     <div class="warning"><h3>Warning</h3>
     <p>This directive has a similar purpose to the <var>path</var> attribute
     in HTTP cookies, but should not be confused with this attribute. This
@@ -408,7 +408,7 @@
     the session, the session will time out and be removed. Where a session is
     used to stored user login details, this has the effect of logging the user
     out automatically after the given time.</p>
-    
+
     <p>Setting the maxage to zero disables session expiry.</p>
 
 </div>

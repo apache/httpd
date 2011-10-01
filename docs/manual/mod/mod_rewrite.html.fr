@@ -155,7 +155,7 @@ répertoire</td></tr>
       <code>.htaccess</code>. On suppose que le contenu disponible à
       http://example.com/ se situe sur le disque à
       /home/www/exemple/.</p>
-      
+
 <div class="example"><pre>
 RewriteEngine On
 # Le chemin URL utilisé pour arriver dans ce contexte, et non le chemin
@@ -189,7 +189,7 @@ la réécriture soit effectuée
 
       <p><em>TestString</em> est une chaîne qui peut contenir les
       extensions suivantes en plus du texte simple :</p>
-      
+
       <ul>
         <li>
           <strong>références arrières de règle de réécriture</strong> :
@@ -291,7 +291,7 @@ la réécriture soit effectuée
               </td>
             </tr>
           </table>
-	
+
                 <p>Ces variables correspondent toutes aux en-têtes MIME
 		HTTP de mêmes noms, au variables C du serveur HTTP Apache, ou
 		aux champs <code>struct tm</code> du système Unix. La
@@ -300,7 +300,7 @@ la réécriture soit effectuée
 
 		<p>SERVER_NAME et SERVER_PORT dépendent respectivement
 		des valeurs des directives <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> et <code class="directive"><a href="../mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>.</p>
-		
+
 		<p>Parmi les variables
 		spécifiques à mod_rewrite, ou trouve les suivantes :</p>
         <div class="note">
@@ -420,7 +420,7 @@ la réécriture soit effectuée
 	chargé, cette variable contiendra toujours une chaîne vide.
 	Exemple : <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> pourra
 	contenir la valeur <code>128</code>.</li>
-	
+
 	<li>
         On peut utiliser <code>%{HTTP:en-tête}</code>, où
 	<em>en-tête</em> peut correspondre à tout nom d'en-tête MIME
@@ -465,8 +465,8 @@ la réécriture soit effectuée
 	déterminer la valeur finale de <em>variable</em>. La plupart du
 	temps, elle est identique à LA-U (voir ci-dessus).</li>
       </ol>
-	
- 
+
+
       <p><em>expression de comparaison</em> est une expression
       rationnelle qui est appliquée à l'instance actuelle de
       <em>chaîne de test</em>. <em>chaîne de test</em> est d'abord
@@ -551,7 +551,7 @@ la réécriture soit effectuée
 	    comparaison</em>. Vrai si <em>chaîne de test</em> est
 	    numériquement
 	    supérieure ou égale à <em>expression de comparaison</em>.</li>
-            
+
              <li>'<strong>-gt</strong>' (est numériquement supérieur à)<br />
             La <em>chaîne de test</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
@@ -569,7 +569,7 @@ la réécriture soit effectuée
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</li>
-            
+
              <li>'<strong>-lt</strong>' (est numériquement inférieur à)<br />
             La <em>chaîne de test</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
@@ -880,7 +880,7 @@ bases de données depuis la version 2.0.41 du serveur HTTP Apache</td></tr>
         <dd>Une commande SQL SELECT à exécuter pour rechercher la cible
 	de réécriture (<a href="../rewrite/rewritemap.html#int">Détails
 	...</a>).</dd>
-    </dl>    
+    </dl>
 
 <p>Vous trouverez plus de détails et de nombreux exemples dans le <a href="../rewrite/rewritemap.html">RewriteMap HowTo</a>.</p>
 
@@ -970,7 +970,7 @@ la version version 2.1</td></tr>
       la dernière règle de réécriture qui a été appliquée.</p>
 
 <div class="note"><h3>Qu'est-ce qui est comparé ?</h3>
-      
+
       <p>Dans un contexte de serveur virtuel <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>, le <em>modèle</em> est tout
       d'abord comparé à la portion de l'URL située entre le nom d'hôte
       éventuellement accompagné du port, et la chaîne de paramètres (par
@@ -982,7 +982,7 @@ la version version 2.1</td></tr>
       ayant conduit à la règle <code class="directive">RewriteRule</code> (par
       exemple "app1/index.html" ou
       "index.html" selon l'endroit où les directives sont définies).</p>
-      
+
       <p>Si vous souhaitez faire une comparaison sur le nom
       d'hôte, le port, ou la chaîne de requête, utilisez une
       directive <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
@@ -1194,7 +1194,7 @@ substitution !
     </tr>
     <tr>
         <td>discardpath|DPI</td>
-        <td>Supprime la partie PATH_INFO de l'URI réécrit. <em><a href="../rewrite/flags.html#flag_dpi">détails 
+        <td>Supprime la partie PATH_INFO de l'URI réécrit. <em><a href="../rewrite/flags.html#flag_dpi">détails
         ...</a></em></td>
     </tr>
     <tr>
@@ -1295,7 +1295,7 @@ substitution !
 	spécifié au fichier cible. <em><a href="../rewrite/flags.html#flag_t">détails ...</a></em></td>
     </tr>
     </table>
-        
+
 <div class="note"><h3>Développement du répertoire home</h3>
 <p> Quand la chaîne de substitution commence par quelque chose comme
 "/~user" (de manière explicite ou par références arrières), mod_rewrite
@@ -1381,7 +1381,7 @@ redondant)</td>
 <td>^/somepath(.*) http://otherhost/otherpath$1 [P]</td>
 <td>http://otherhost/otherpath/pathinfo via internal proxy</td>
 </tr>
-</table>      
+</table>
 
       <p><strong>Dans une configuration de niveau répertoire pour
       <code>/chemin</code><br />

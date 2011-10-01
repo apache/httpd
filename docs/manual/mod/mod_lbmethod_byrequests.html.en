@@ -84,7 +84,7 @@ provides the <code>byrequests</code> load balancing method..</p>
 candidate lbstatus -= total factor</code></pre></div>
 
     <p>If a balancer is configured as follows:</p>
-    
+
     <table><tr><th>worker</th>
         <th class="data">a</th>
         <th class="data">b</th>

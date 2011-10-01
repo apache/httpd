@@ -121,7 +121,7 @@ of consuming threads only for connections with active processing</td></tr>
     moot.</p>
 
     <ul>
-    
+
       <li>To use this MPM on FreeBSD, FreeBSD 5.3 or higher is recommended.
       However, it is possible to run this MPM on FreeBSD 5.2.1, if you
       use <code>libkse</code> (see <code>man libmap.conf</code>).</li>

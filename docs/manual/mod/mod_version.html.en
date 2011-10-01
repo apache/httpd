@@ -104,8 +104,8 @@
       &lt;/IfVersion&gt;
     </code></p></div>
 
-    <p>Besides the numerical comparison it is possible to match a 
-    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a> 
+    <p>Besides the numerical comparison it is possible to match a
+    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     against the httpd version. There are two ways to write it:</p>
 
     <table class="bordered"><tr class="header"><th><var>operator</var></th><th>description</th></tr>

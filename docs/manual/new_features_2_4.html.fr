@@ -45,7 +45,7 @@ serveur HTTP Apache</h1>
       <dd>La directive <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> permet dorénavant de
       préciser une durée de vie en millisecondes.
       </dd>
- 
+
       <dt>Modules multiprocessus (MPMs) chargeables</dt>
       <dd>On peut maintenant compiler plusieurs MPMs en tant que modules
       chargeables. Le choix du MPM à utiliser s'effectue à
@@ -61,7 +61,7 @@ serveur HTTP Apache</h1>
       <dt>MPM Event</dt>
       <dd>Le MPM Event est sorti du stade expérimental et est
       maintenant pleinement supporté.</dd>
- 
+
       <dt>Support du mode asynchrone</dt>
       <dd>Le support des lectures/écritures asynchrones pour les MPMs et
       les plateformes qui l'implémentent a été amélioré.</dd>
@@ -73,7 +73,7 @@ serveur HTTP Apache</h1>
 
       <dt>NameVirtualHost directive</dt>
       <dd>Cette directive obsolète n'est plus utile.</dd>
- 
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -157,18 +157,18 @@ serveur HTTP Apache</h1>
 	l'estampillage OCSP (OCSP stapling), qui permet au serveur
 	d'attester la validité de son certificat auprès du client au
 	cours de la phase de négociation de la connexion.</dd>
-      
+
       <dd>Enfin, <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> peut maintenant être configuré pour
       que celui-ci partage les données de session SSL entre les serveurs
       via memcached.</dd>
- 
+
       <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
       <dd>La directive <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> est maintenant configurée
       de manière optimale dans les sections <code class="directive"><a href="./mod/core.html#location">Location</a></code> ou <code class="directive"><a href="./mod/core.html#locationmatch">LocationMatch</a></code>, et offre un gain de
       performances important par rapport à la syntaxe traditionnelle à
       deux paramètres lorsqu'elle est présente en grand nombre.</dd>
- 
+
       <dt><code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dt>
 
       <dd>Le gestionnaire de répartition de charge propose de nouvelles
@@ -240,7 +240,7 @@ serveur HTTP Apache</h1>
       des drapeaux <code>[QSD]</code> (Query String Discard) et
       <code>[END]</code> qui permettent de simplifier les scénarios de
       réécriture courants.</dd>
-      
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -286,7 +286,7 @@ serveur HTTP Apache</h1>
       l'analyseur qu'on trouvait auparavant dans <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
-      
+
       <dd>Afin de fournir une logique d'autorisation avancée via des
       directives telles que <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>, les modules d'autorisation
       s'enregistrent maintenant en tant
@@ -304,7 +304,7 @@ serveur HTTP Apache</h1>
       distribués de type memcache.</dd>
 
       <dt>Ajout du point d'ancrage Cache Status</dt>
-      
+
       <dd>Le module <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> inclut maintenant un
       nouveau point d'ancrage, <code>cache_status</code>, qui est appelé
       lorsque la décision à propos de la mise en cache est connue. Il en
@@ -312,7 +312,7 @@ serveur HTTP Apache</h1>
       optionnels <code>X-Cache</code> et <code>X-Cache-Detail</code> à
       la réponse.</dd>
 
-      
+
     </dl>
     <p>La documentation du développeur contient une <a href="developer/new_api_2_4.html">liste détaillée des modifications
     de l'API</a>.</p>

@@ -52,10 +52,10 @@
 </table>
     <p>The <code class="directive">Substitute</code> directive specifies a
     search and replace pattern to apply to the response body.</p>
-    
+
     <p>The meaning of the pattern can be modified by using any
     combination of these flags:</p>
-    
+
     <dl>
         <dt><code>i</code></dt>
         <dd>Perform a case-insensitive match.</dd>
@@ -75,7 +75,7 @@
         that the result of one substitution will ever match a pattern
         or regex of a subsequent one.</dd>
     </dl>
-    
+
     <div class="example"><h3>Example</h3><p><code>
         &lt;Location /&gt;
         <span class="indent">
@@ -84,10 +84,10 @@
         </span>
         &lt;/Location&gt;
     </code></p></div>
-    
+
     <p>If either the pattern or the substitution contain a slash
     character then an alternative delimiter should be used:</p>
-    
+
     <div class="example"><h3>Example of using an alternate delimiter</h3><p><code>
         &lt;Location /&gt;
         <span class="indent">

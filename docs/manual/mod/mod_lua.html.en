@@ -31,14 +31,14 @@ request processing</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-<p>This module allows the server to be extended with scripts written in the 
+<p>This module allows the server to be extended with scripts written in the
 Lua programming language.  The extension points (hooks) available with
 <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> include many of the hooks available to
 natively compiled Apache HTTP Server modules, such as mapping requests to
-files, generating dynamic responses, access control, authentication, and 
+files, generating dynamic responses, access control, authentication, and
 authorization</p>
 
-<p>More information on the Lua programming language can be found at the 
+<p>More information on the Lua programming language can be found at the
 <a href="http://www.lua.org/">the Lua website</a>.</p>
 
 <div class="note"><code>mod_lua</code> is still in experimental state.
@@ -104,8 +104,8 @@ ending in <code>.lua</code> by invoking that file's
 <div class="section">
 <h2><a name="writinghandlers" id="writinghandlers">Writing Handlers</a></h2>
 <p> In the Apache HTTP Server API, the handler is a specific kind of hook
-responsible for generating the response.  Examples of modules that include a 
-handler are <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, 
+responsible for generating the response.  Examples of modules that include a
+handler are <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>,
 and <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
 
 <p><code>mod_lua</code> always looks to invoke a Lua function for the handler, rather than
@@ -117,9 +117,9 @@ something like this:</p>
 
 require "string"
 
---[[ 
-     This is the default method name for Lua handlers, see the optional 
-     function-name in the LuaMapHandler directive to choose a different 
+--[[
+     This is the default method name for Lua handlers, see the optional
+     function-name in the LuaMapHandler directive to choose a different
      entry point.
 --]]
 function handle(r)
@@ -136,7 +136,7 @@ function handle(r)
         end
     else
         r:puts("unknown HTTP method " .. r.method)
-    end 
+    end
 end
 </pre></div>
 
@@ -155,8 +155,8 @@ handlers (or hooks, or filters) in the same script.
 <h2><a name="writinghooks" id="writinghooks">Writing Hooks</a></h2>
 
 <p>Hook functions are how modules (and Lua scripts) participate in the
-processing of requests. Each type of hook exposed by the server exists for 
-a specific purposes such as mapping requests to the filesystem, 
+processing of requests. Each type of hook exposed by the server exists for
+a specific purposes such as mapping requests to the filesystem,
 performing access control, or setting mimetypes.  General purpose hooks
 that simply run at handy times in the request lifecycle exist as well.</p>
 
@@ -185,7 +185,7 @@ end
 --[[ example hook that rewrites one URI to another URI. It returns a
      apache2.DECLINED to give other URL mappers a chance to work on the
      substitution, including the core translate_name hook which maps based
-     on the DocumentRoot.  
+     on the DocumentRoot.
 
      Note: It is currently undefined as to whether this runs before or after
      mod_alias.
@@ -210,7 +210,7 @@ end
         <dd>
         <p>The request_rec is mapped in as a userdata. It has a metatable
         which lets you do useful things with it. For the most part it
-        has the same fields as the request_rec struct (see httpd.h 
+        has the same fields as the request_rec struct (see httpd.h
         until we get better docs here) many of which are writeable as
         well as readable.  (The table fields' content can be changed, but the
         fields themselves cannot be set to different tables.)</p>
@@ -341,7 +341,7 @@ end
         <div class="example"><p><code>
         r:addoutputfilter(name|function) -- add an output filter
         </code></p></div>
-       
+
         <div class="example"><p><code>
         r:parseargs() -- returns a lua table containing the request's
                          query string arguments
@@ -361,7 +361,7 @@ end
         </code></p></div>
         </dd>
     </dl>
-       
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Logging Functions</a></h2>
@@ -415,12 +415,12 @@ end
     ones) each time that file is needed, and reloads it if the
     modified time indicates it is newer than the one it has
     already loaded. The other values cause it to keep the file
-    cached forever (don't stat and replace) or to never cache the 
+    cached forever (don't stat and replace) or to never cache the
     file.</p>
-    
+
     <p>In general stat or forever is good for production, and stat or never
     for development.</p>
-    
+
     <div class="example"><h3>Examples:</h3><p><code>
         LuaCodeCache stat<br />
         LuaCodeCache forever<br />
@@ -552,7 +552,7 @@ processing</td></tr>
 </table><p>
     Add a hook (at APR_HOOK_MIDDLE) to the translate name phase of
     request processing. The hook function receives a single
-    argument, the request_rec, and should return a status code, 
+    argument, the request_rec, and should return a status code,
     which is either an HTTP error code, or the constants defined
     in the apache2 module: apache2.OK, apache2.DECLINED, or
     apache2.DONE. </p>
@@ -616,7 +616,7 @@ end
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
         loading that file.</p>
-        
+
 <div class="example"><p><code>
     LuaMapHandler /bingo /scripts/wombat.lua
 </code></p></div>
@@ -636,9 +636,9 @@ end
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Add a path to lua's shared library search path. Follows the same
-    conventions as lua. This just munges the package.cpath in the 
+    conventions as lua. This just munges the package.cpath in the
     lua vms.</p>
-    
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -651,9 +651,9 @@ end
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Add a path to lua's module search path. Follows the same
-    conventions as lua. This just munges the package.path in the 
+    conventions as lua. This just munges the package.path in the
     lua vms.</p>
-    
+
     <div class="example"><h3>Examples:</h3><p><code>
         LuaPackagePath /scripts/lib/?.lua<br />
         LuaPackagePath /scripts/lib/?/init.lua
@@ -700,16 +700,16 @@ end
 </table>
     <p>Specify the lifecycle scope of the Lua interpreter which will
     be used by handlers in this "Directory." The default is "once"</p>
-   
+
    <dl>
     <dt>once:</dt> <dd>use the interpreter once and throw it away.</dd>
-    
-    <dt>request:</dt> <dd>use the interpreter to handle anything based on 
-             the same file within this request, which is also 
+
+    <dt>request:</dt> <dd>use the interpreter to handle anything based on
+             the same file within this request, which is also
              request scoped.</dd>
-             
+
     <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
-    
+
     <dt>server:</dt>  <dd>This one is different than others because the
             server scope is quite long lived, and multiple threads
             will have the same server_rec. To accommodate this

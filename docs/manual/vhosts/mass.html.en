@@ -90,7 +90,7 @@ mod_rewrite</a></li>
 
     <p>The main disadvantage is that you cannot have a different log file for
     each virtual host; however, if you have many virtual hosts, doing
-    this can be a bad idea anyway, because of the <a href="fd-limits.html">number of file descriptors needed</a>. 
+    this can be a bad idea anyway, because of the <a href="fd-limits.html">number of file descriptors needed</a>.
     It is better to <a href="../logs.html#piped">log to a pipe or a fifo</a>,
     and arrange for the process at the other end to split up the log
     files into one per virtual host. One example of such a process can
@@ -106,9 +106,9 @@ mod_rewrite</a></li>
     in the HTTP request. The dynamic mass virtual hosting technique
     used here is based on automatically inserting this information into the
     pathname of the file that is used to satisfy the request. This
-    can be most easily done by using <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> 
-    with Apache httpd. Alternatively, 
-    <a href="../rewrite/vhosts.html">mod_rewrite can 
+    can be most easily done by using <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>
+    with Apache httpd. Alternatively,
+    <a href="../rewrite/vhosts.html">mod_rewrite can
     be used</a>.</p>
     <p>Both of these modules are disabled by default; you must enable
     one of them when configuring and building Apache httpd if you want to
@@ -268,7 +268,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
     <h3>Note</h3>
     <p>If the first VirtualHost block does <em>not</em> include a
     <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive, the reverse
-    DNS of the relevant IP will be used instead. 
+    DNS of the relevant IP will be used instead.
     If this is not the server name you
     wish to use, a bogus entry (eg. <code>ServerName
     none.example.com</code>) can be added to get around this

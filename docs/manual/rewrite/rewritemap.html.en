@@ -22,7 +22,7 @@
 </div>
 
 
-    <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
+    <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 the use of the <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive,
 and provides examples of each of the various <code>RewriteMap</code> types.</p>
@@ -64,7 +64,7 @@ configuration.</div>
 <div class="example"><p><code>
 RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 </code></p></div>
-    
+
     <p>The <a id="mapfunc" name="mapfunc"><em>MapName</em></a> is an
     arbitray name that you assign to the map, and which you will use in
     directives later on. Arguments are passed to the map via the
@@ -299,9 +299,9 @@ by many requests.
     
 
     <p>When a MapType of <code>int</code> is used, the MapSource is one
-    of the available internal RewriteMap functions.  Module authors can provide 
+    of the available internal RewriteMap functions.  Module authors can provide
     additional internal functions by registering them with the
-    <code>ap_register_rewrite_mapfunc</code> API. 
+    <code>ap_register_rewrite_mapfunc</code> API.
     The functions that are provided by default are:
     </p>
 
@@ -435,7 +435,7 @@ RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     once. For each mapping-function use one
     <code class="directive">RewriteMap</code> directive to declare its rewriting
     mapfile.</p>
-      
+
     <p>While you cannot <strong>declare</strong> a map in
     per-directory context (<code>.htaccess</code> files or
     &lt;Directory&gt; blocks) it is possible to

@@ -214,11 +214,11 @@
     displayed as such. This information, also, is transmitted in
     HTTP headers.</p>
 
-    <p>The character set, language, encoding and mime type are all 
-    used in the process of content negotiation (See 
+    <p>The character set, language, encoding and mime type are all
+    used in the process of content negotiation (See
     <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>) to determine
     which document to give to the client, when there are
-    alternative documents in more than one character set, language, 
+    alternative documents in more than one character set, language,
     encoding or mime type. All filename extensions associations
     created with <code class="directive"><a href="#addcharset">AddCharset</a></code>,
     <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> and <code class="directive"><a href="#addtype">AddType</a></code> directives
@@ -541,10 +541,10 @@ type</td></tr>
 
     <div class="note">
       It is recommended that new media types be added using the
-      <code class="directive">AddType</code> directive rather than changing the 
+      <code class="directive">AddType</code> directive rather than changing the
       <code class="directive"><a href="#typesconfig">TypesConfig</a></code> file.
     </div>
-    
+
     <div class="example"><h3>Example</h3><p><code>
       AddType image/gif .gif
     </code></p></div>
@@ -574,8 +574,8 @@ type</td></tr>
     the content returned by the server.</p>
 
     <p>This directive primarily configures the content types generated for
-    static files served out of the filesystem.  For resources other than 
-    static files, where the generator of the response typically specifies 
+    static files served out of the filesystem.  For resources other than
+    static files, where the generator of the response typically specifies
     a Content-Type, this directive has no effect.</p>
 
 
@@ -840,7 +840,7 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoveInputFilter is only available in Apache 2.0.26 and
 later.</td></tr>
-</table>   
+</table>
     <p>The <code class="directive">RemoveInputFilter</code> directive removes any
     input <a href="../filter.html">filter</a> associations for files with
     the given extensions.
@@ -894,7 +894,7 @@ extensions</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>RemoveOutputFilter is only available in Apache 2.0.26 and
 later.</td></tr>
-</table>    
+</table>
     <p>The <code class="directive">RemoveOutputFilter</code> directive removes any
     output <a href="../filter.html">filter</a> associations for files with
     the given extensions.

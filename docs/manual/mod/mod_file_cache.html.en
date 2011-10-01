@@ -130,7 +130,7 @@
 
     <div class="note"><h3>Note</h3>
       <p>Don't bother asking for a directive which recursively
-      caches all the files in a directory. Try this instead... See the 
+      caches all the files in a directory. Try this instead... See the
       <code class="directive"><a href="../mod/core.html#include">Include</a></code> directive, and consider
       this command:</p>
 

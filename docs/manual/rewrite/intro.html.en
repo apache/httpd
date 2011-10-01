@@ -100,7 +100,7 @@ well as write your own.</p>
 character</td><td><code>c.t</code> will match <code>cat</code>,
 <code>cot</code>, <code>cut</code>, etc.</td></tr>
 <tr><td><code>+</code></td><td>Repeats the previous match one or more
-times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>, 
+times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>,
 <code>aaa</code>, etc</td></tr>
 <tr><td><code>*</code></td><td>Repeats the previous match zero or more
 times.</td><td><code>a*</code> matches all the same things
@@ -115,7 +115,7 @@ of the string</td><td><code>^a</code> matches a string that begins with
 the string.</td><td><code>a$</code> matches a string that ends with
 <code>a</code>.</td></tr>
 <tr><td><code>( )</code></td><td>Groups several characters into a single
-unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code> 
+unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code>
 matches <code>ababab</code> - that is, the <code>+</code> applies to the group.
 For more on backreferences see <a href="#InternalBackRefs">below</a>.</td></tr>
 <tr><td><code>[ ]</code></td><td>A character class - matches one of the

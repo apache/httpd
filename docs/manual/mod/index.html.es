@@ -125,7 +125,7 @@ client</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and
     serving directory index files</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
-<dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
+<dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol
 modules</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>Modifies the environment which is passed to CGI scripts and
 SSI pages</dd>
@@ -188,8 +188,8 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
 <dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
-<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the apparent client remote IP address and hostname 
-for the request with the IP address list presented by a proxies or a load 
+<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the apparent client remote IP address and hostname
+for the request with the IP address list presented by a proxies or a load
 balancer via the request headers.
 </dd>
 <dt><a href="mod_reqtimeout.html">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests

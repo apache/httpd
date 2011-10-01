@@ -113,7 +113,7 @@ $ make install
         Build and install a <em>third-party</em> Apache httpd module, say
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code> <em>outside of</em> the Apache httpd
-        source tree using <code class="program"><a href="./programs/apxs.html">apxs</a></code>: 
+        source tree using <code class="program"><a href="./programs/apxs.html">apxs</a></code>:
 
 <div class="example"><p><code>
 $ cd /path/to/3rdparty<br />

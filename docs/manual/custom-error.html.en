@@ -30,7 +30,7 @@
     <p>Although the Apache HTTP Server provides generic error responses
     in the event of 4xx or 5xx HTTP status codes, these responses are
     rather stark, uninformative, and can be intimidating to site users.
-    You may wish to provide custom error responses which are either 
+    You may wish to provide custom error responses which are either
     friendlier, or in some language other than English, or perhaps which
     are styled more in line with your site layout.</p>
 
@@ -58,7 +58,7 @@
     <p>Custom error documents are configured using the <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> directive,
     which may be used in global,
     virtualhost, or directory context. It may be used in .htaccess files
-    if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set to 
+    if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set to
     FileInfo.</p>
 
     <div class="example"><p><code>
@@ -163,8 +163,8 @@
 
       <p>Note that if the response contains <code>Location:</code>
       header (in order to issue a client-side redirect), the script
-      <em>must</em> emit an appropriate <code>Status:</code> header 
-      (such as <code>302&nbsp;Found</code>). Otherwise the 
+      <em>must</em> emit an appropriate <code>Status:</code> header
+      (such as <code>302&nbsp;Found</code>). Otherwise the
       <code>Location:</code> header may have no effect.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -197,7 +197,7 @@
     provide more useful information to users about your site, and what
     they can expect to find there.</p>
 
-    <p><code class="module"><a href="./mod/mod_include.html">mod_include</a></code> and <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> 
+    <p><code class="module"><a href="./mod/mod_include.html">mod_include</a></code> and <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
     must be enabled to use this feature.</p>
 
  </div></div>

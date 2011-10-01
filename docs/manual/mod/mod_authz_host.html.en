@@ -34,9 +34,9 @@ address)</td></tr>
 
     <p>The authorization providers implemented by <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> are
     registered using the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
-    directive. The directive can be referenced within a 
+    directive. The directive can be referenced within a
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
-    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, 
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>,
     or <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section
     as well as <code><a href="core.html#accessfilename">.htaccess</a>
     </code> files to control access to particular parts of the server.
@@ -65,11 +65,11 @@ address)</td></tr>
 <div class="section">
 <h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
 
-    <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
+    <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directive is used during the authorization phase to ensure that a user is allowed or
-    denied access to a resource.  mod_authz_host extends the 
+    denied access to a resource.  mod_authz_host extends the
     authorization types with <code>ip</code> and <code>host</code>.
-    Other authorization types may also be 
+    Other authorization types may also be
     used but may require that additional authorization modules be loaded.</p>
 
     <p>These authorization providers affect which hosts can
@@ -79,50 +79,50 @@ address)</td></tr>
 <h3><a name="reqip" id="reqip">Require ip</a></h3>
 
     <p>The <code>ip</code> provider allows access to the server
-    to be controlled based on the IP address of the remote client. 
-    When <code>Require ip <var>ip-address</var></code> is specified, 
+    to be controlled based on the IP address of the remote client.
+    When <code>Require ip <var>ip-address</var></code> is specified,
     then the request is allowed access if the IP address matches.</p>
 
     <p>A full IP address:</p>
-    
+
     <div class="example"><p><code>
       Require ip 10.1.2.3<br />
       Require ip 192.168.1.104 192.168.1.205
     </code></p></div>
 
     <p>An IP address of a host allowed access</p>
-    
+
     <p>A partial IP address:</p>
-    
+
     <div class="example"><p><code>
       Require ip 10.1<br />
       Require ip 10 172.20 192.168.2
     </code></p></div>
     <p>The first 1 to 3 bytes of an IP address, for subnet
     restriction.</p>
-    
+
     <p>A network/netmask pair:</p>
-    
+
     <div class="example"><p><code>
       Require ip 10.1.0.0/255.255.0.0
     </code></p></div>
     <p>A network a.b.c.d, and a netmask w.x.y.z. For more
     fine-grained subnet restriction.</p>
-    
+
     <p>A network/nnn CIDR specification:</p>
-    
+
     <div class="example"><p><code>
       Require ip 10.1.0.0/16
     </code></p></div>
     <p>Similar to the previous case, except the netmask consists of
     nnn high-order 1 bits.</p>
-    
+
     <p>Note that the last three examples above match exactly the
     same set of hosts.</p>
-    
+
     <p>IPv6 addresses and IPv6 subnets can be specified as shown
     below:</p>
-    
+
     <div class="example"><p><code>
      Require ip 2001:db8::a00:20ff:fea7:ccea<br />
      Require ip 2001:db8::a00:20ff:fea7:ccea/10
@@ -134,17 +134,17 @@ address)</td></tr>
 <h3><a name="reqhost" id="reqhost">Require host</a></h3>
 
     <p>The <code>host</code> provider allows access to the server
-    to be controlled based on the host name of the remote client. 
-    When <code>Require host <var>host-name</var></code> is specified, 
+    to be controlled based on the host name of the remote client.
+    When <code>Require host <var>host-name</var></code> is specified,
     then the request is allowed access if the host name matches.</p>
 
     <p>A (partial) domain-name</p>
-    
+
     <div class="example"><p><code>
     Require host example.org<br />
     Require host .net example.edu
     </code></p></div>
-    
+
     <p>Hosts whose names match, or end in, this string are allowed
     access. Only complete components are matched, so the above
     example will match <code>foo.example.org</code> but it will not

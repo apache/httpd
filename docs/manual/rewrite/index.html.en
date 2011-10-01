@@ -26,7 +26,7 @@
 
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> provides a way to modify incoming
-    URL requests, dynamically, based on <a href="intro.html#regex">regular 
+    URL requests, dynamically, based on <a href="intro.html#regex">regular
     expression</a> rules. This allows you to map arbitrary URLs onto
     your internal URL structure in any way you like.</p>
 

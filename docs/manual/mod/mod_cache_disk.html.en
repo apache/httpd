@@ -195,7 +195,7 @@ cache</td></tr>
 
     <p>This directive only takes effect when the data is being saved to the
     cache, as opposed to data being served from the cache.</p>
-  
+
     <div class="example"><p><code>
       CacheReadSize 102400
     </code></p></div>

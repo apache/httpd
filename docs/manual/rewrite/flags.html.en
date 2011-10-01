@@ -64,7 +64,7 @@ RewriteRule pattern target [Flag1,Flag2,Flag3]
 a longer form, such as <code>cookie</code>. Some flags take one or more
 arguments. Flags are not case sensitive.</p>
 
-<p>Each flag (with a few exceptions) 
+<p>Each flag (with a few exceptions)
 has a long and short form. While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
 long form, so that you remember what each flag is supposed to do.</p>
@@ -283,7 +283,7 @@ redirects.</p>
 <h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>
 <p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
-the <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directive, this 
+the <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directive, this
 allows more flexibility in assigning a Forbidden status.</p>
 
 <p>The following rule will forbid <code>.exe</code> files from being
@@ -358,13 +358,13 @@ C. Use this flag to indicate that the current rule should be applied
 immediately without considering further rules.</p>
 
 <p>If you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in either
-<code>.htaccess</code> files or in 
+<code>.htaccess</code> files or in
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections,
 it is important to have some understanding of how the rules are
 processed.  The simplified form of this is that once the rules have been
 processed, the rewritten request is handed back to the URL parsing
 engine to do what it may with it. It is possible that as the rewritten
-request is handled, the <code>.htaccess</code> file or 
+request is handled, the <code>.htaccess</code> file or
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section
 may be encountered again, and thus the ruleset may be run again from the
 start. Most commonly this will happen if one of the rules causes a
@@ -384,7 +384,7 @@ redirects.</p>
 
 <p>The example given here will rewrite any request to
 <code>index.php</code>, giving the original request as a query string
-argument to <code>index.php</code>, however, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> ensures that if the request 
+argument to <code>index.php</code>, however, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> ensures that if the request
 is already for <code>index.php</code>, the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> will be skipped.</p>
 
 <div class="example"><p><code>
@@ -464,7 +464,7 @@ On subrequests, it is not always useful, and can even cause errors, if
 the complete set of rules are applied. Use this flag to exclude
 problematic rules.</p>
 
-<p>To decide whether or not to use this rule: if you prefix URLs with 
+<p>To decide whether or not to use this rule: if you prefix URLs with
 CGI-scripts, to force them to be processed by the CGI-script, it's
 likely that you will run into problems (or significant overhead)
 on sub-requests. In these cases, use this flag.</p>
@@ -510,15 +510,15 @@ The target (or substitution string) in a RewriteRule is assumed to be a
 file path, by default. The use of the [PT] flag causes it to be treated
 as a URI instead. That is to say, the
 use of the [PT] flag causes the result of the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be passed back through
-URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/core.html#redirect">Redirect</a></code>, or <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, for example, might have a 
+URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/core.html#redirect">Redirect</a></code>, or <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, for example, might have a
 chance to take effect.
 </p>
 
 <p>
-If, for example, you have an 
+If, for example, you have an
 <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
 for /icons, and have a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pointing there, you should
-use the [PT] flag to ensure that the 
+use the [PT] flag to ensure that the
 <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> is evaluated.
 </p>
 
@@ -599,8 +599,8 @@ will be used to generate the URL sent with the redirect.
 </p>
 
 <p>
-<em>Any</em> valid HTTP response  status code may be specified, 
-using the syntax [R=305], with a 302 status code being used by 
+<em>Any</em> valid HTTP response  status code may be specified,
+using the syntax [R=305], with a 302 status code being used by
 default if none is specified. The status code specified need not
 necessarily be a redirect (3xx) status code.
 </p>
@@ -610,7 +610,7 @@ substitution string is dropped entirely, and rewriting is stopped as if
 the <code>L</code> were used.</p>
 
 <p>In addition to response status codes, you may also specify redirect
-status using their symbolic names: <code>temp</code> (default), 
+status using their symbolic names: <code>temp</code> (default),
 <code>permanent</code>, or <code>seeother</code>.</p>
 
 <p>
@@ -644,9 +644,9 @@ RewriteRule (.*\.html) docs.php?$1
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> immediately
 following it. Thus, if you want to make a <code>RewriteCond</code> apply
 to several <code>RewriteRule</code>s, one possible technique is to
-negate those conditions and use a [Skip] flag. So, you can 
-use this to make pseudo if-then-else constructs: The last rule of 
-the then-clause becomes <code>skip=N</code>, where N is the 
+negate those conditions and use a [Skip] flag. So, you can
+use this to make pseudo if-then-else constructs: The last rule of
+the then-clause becomes <code>skip=N</code>, where N is the
 number of rules in the else-clause.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -679,10 +679,10 @@ invariably be a less efficient solution than the alternatives.</p>
 
 <p>
 If used in per-directory context, use only <code>-</code> (dash)
-as the substitution <em>for the entire round of mod_rewrite processing</em>, 
-otherwise the MIME-type set with this flag is lost due to an internal 
+as the substitution <em>for the entire round of mod_rewrite processing</em>,
+otherwise the MIME-type set with this flag is lost due to an internal
 re-processing (including subsequent rounds of mod_rewrite processing).
-The <code>L</code> flag can be useful in this context to end the 
+The <code>L</code> flag can be useful in this context to end the
 <em>current</em> round of mod_rewrite processing.</p>
 
 </div></div>

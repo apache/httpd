@@ -566,7 +566,7 @@ a directory</td></tr>
     </code></p></div>
 
     <div class="warning"><p> Review the default configuration for a list of
-    patterns that you might want to explicitly ignore after using this 
+    patterns that you might want to explicitly ignore after using this
     directive.</p></div>
 
 </div>
@@ -590,7 +590,7 @@ indexing</td></tr>
     <dl>
       <dt><a name="indexoptions.addaltclass" id="indexoptions.addaltclass">AddAltClass</a></dt>
       <dd>Adds an additional CSS class declaration to each row of the
-      directory listing table when <code>IndexOptions HTMLTable</code> 
+      directory listing table when <code>IndexOptions HTMLTable</code>
       is in effect and an <code>IndexStyleSheet</code> is defined.
       Rather than the standard <code>even</code> and <code>odd</code>
       classes that would otherwise be applied to each row of the table,
@@ -659,7 +659,7 @@ indexing</td></tr>
       HTTP Server 2.0.23 and later</em>)</dt>
 
       <dd>This option with <code>FancyIndexing</code> constructs
-      a simple table for the fancy directory listing. 
+      a simple table for the fancy directory listing.
       It is necessary for utf-8 enabled platforms or if file
       names or description text will alternate between
       left-to-right and right-to-left reading order.</dd>
@@ -944,7 +944,7 @@ Name|Date|Size|Description</code></td></tr>
     <em>always</em> the ascending filename.</p>
 
     <p>You can, if desired, prevent the client from reordering the list
-    by also adding the <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> 
+    by also adding the <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
     index option to remove the sort link from the top of the column,
     along with the <code><a href="#indexoptions.ignoreclient">IgnoreClient</a></code> index
     option to prevent them from manually adding sort options to the

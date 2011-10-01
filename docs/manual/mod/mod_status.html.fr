@@ -143,7 +143,7 @@ du serveur</td></tr>
 <h2><a name="troubleshoot" id="troubleshoot">Utilisation de server-status pour la recherche de défauts de
     fonctionnement</a></h2>
     
-    
+
     <p>La page <code>server-status</code> peut servir de point de départ
     à la recherche de défauts de fonctionnement lorsque votre serveur
     mobilise toutes les ressources disponibles (CPU ou mémoire), pour

@@ -67,8 +67,8 @@ performance</td></tr>
       <li>The current hosts and requests being processed (*)</li>
     </ul>
 
-    <p>The lines marked "(*)" are only available if 
-    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> 
+    <p>The lines marked "(*)" are only available if
+    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code>
     is <code>On</code>.  In version 2.3.6, loading mod_status will
     toggle <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> On
     by default.</p>
@@ -123,7 +123,7 @@ performance</td></tr>
     accessing the page
     <code>http://your.server.name/server-status?auto</code>. This
     is useful when automatically run, see the Perl program
-    <code>log_server_status</code>, which you will find in the 
+    <code>log_server_status</code>, which you will find in the
     <code>/support</code> directory of your Apache HTTP Server installation.</p>
 
     <div class="note">
@@ -139,7 +139,7 @@ performance</td></tr>
 <div class="section">
 <h2><a name="troubleshoot" id="troubleshoot">Using server-status to troubleshoot</a></h2>
     
-    
+
     <p>The <code>server-status</code> page may be used as a starting
     place for troubleshooting a situation where your server is consuming
     all available resources (CPU or memory), and you wish to identify

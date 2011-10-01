@@ -138,7 +138,7 @@ Default_handler --&gt; includes_filter --&gt; byterange --&gt; ...
     data from that sub-request to go through the includes filter, because it
     might not be SSI data.  So, the subrequest adds the following:</p>
 
-<div class="example"><pre>    
+<div class="example"><pre>
 Default_handler --&gt; includes_filter -/-&gt; byterange --&gt; ...
                                     /
 Default_handler --&gt; sub_request_core

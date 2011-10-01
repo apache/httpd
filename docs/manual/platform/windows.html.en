@@ -25,7 +25,7 @@
     <p>This document explains how to install, configure and run
     Apache 2.3 under Microsoft Windows.  If you have questions after
     reviewing the documentation (and any event and error logs), you
-    should consult the peer-supported 
+    should consult the peer-supported
     <a href="http://httpd.apache.org/userslist.html">users' mailing
     list</a>.</p>
 
@@ -78,7 +78,7 @@
 
     <p>There is a choice between an *-openssl-*.msi flavor and
     a *-no_ssl.msi flavor.  The *-openssl-*.msi flavor is distributed
-    by the Apache Software Foundation under ECCN 5D002 pursuant to 
+    by the Apache Software Foundation under ECCN 5D002 pursuant to
     US Export Law license exception TSU.  This law may or may not
     apply to your circumstance, please review the httpd README as
     well as the <a href="http://www.apache.org/licenses/exports/">ASF
@@ -139,7 +139,7 @@
 
       <li><p><strong>Where to install.</strong> The default path is
       <code>C:\Program Files\Apache Software Foundation</code>
-      under which a directory called 
+      under which a directory called
       <code>Apache2.3</code> will be created by default.</p></li>
     </ol>
 
@@ -189,7 +189,7 @@
 
     <p>The installation options above can be customized by users familiar
     with msiexec.exe options and silent installation.  The actual installer
-    sources are available in the httpd/httpd/win32-msi/ tree of the httpd 
+    sources are available in the httpd/httpd/win32-msi/ tree of the httpd
     project subversion respository.  For reference, some of the more common
     variables which may be modified are;</p>
 
@@ -211,7 +211,7 @@
       <li><code>SetupType</code> (default "Typical")</li>
     </ul>
 
-    <p>The installation level of various features, which may be individually 
+    <p>The installation level of various features, which may be individually
     toggled, include;</p>
 
     <ul>
@@ -273,7 +273,7 @@
       <li><p>The directives that accept filenames as arguments must use
       Windows filenames instead of Unix ones. However, because Apache
       may interpret backslashes as an "escape character" sequence, you
-      should consistently use forward slashes in path names, not 
+      should consistently use forward slashes in path names, not
       backslashes.  Drive letters can be used; if omitted, the drive
       of the SystemRoot directive (or -d command line option) becomes
       the default.</p></li>
