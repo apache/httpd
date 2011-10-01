@@ -109,7 +109,8 @@ ce que l'on souhaitait.</p>
 <code>/search.php?term=x%20%26%20y%2Fz</code>.</p>
 
 <p>Notez que vous devrez peut-être aussi définir la
-directive <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> à <code>On</code> pour
+directive <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code>
+à <code>On</code> pour
 que cet exemple particulier fonctionne, car httpd ne permet pas les
 slashes encodés dans les URLs, et renvoie une erreur 404 s'il en
 rencontre un.</p>
@@ -155,7 +156,7 @@ deux parties séparées par un point. C'est à dire que vous ne pouvez pas
 utiliser les valeurs <code>.com</code> ou <code>.net</code>. En effet,
 ce style de cookie est interdit par le modèle de sécurité des cookies.</dd>
 </dl>
- 
+
 <p>Vous pouvez aussi définir les valeurs suivantes :</p>
 
 <dl>

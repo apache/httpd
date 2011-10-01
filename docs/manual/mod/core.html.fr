@@ -1419,7 +1419,7 @@ personnalisation des réponses</a></li>
 <div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécification du format des entrées du journal des erreurs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog [connection|request] <var>format</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLogFormat [connection|request] <var>format</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -1476,60 +1476,82 @@ personnalisation des réponses</a></li>
     valeurs possibles vont de 1 (alert) à 15 (trace8), en passant par 4
     (warn) ou 7 (debug).</p>
 
+    <p>Par exemple, voici ce qui arriverait si vous ajoutiez des
+    modificateurs à l'item <code>%{Referer}i</code> qui enregistre le
+    contenu de l'en-tête <code>Referer</code>.</p>
+
+    <table class="bordered"><tr class="header"><th>Item modifié</th><th>Signification</th></tr>
+<tr>
+    <td><code>%-{Referer}i</code></td>
+    <td>Enregistre le caractère <code>-</code> si l'en-tête
+    <code>Referer</code> n'est pas défini.</td>
+    </tr>
+<tr class="odd">
+    <td><code>%+{Referer}i</code></td>
+    <td>N'enregistre rien si l'en-tête
+    <code>Referer</code> n'est pas défini.</td>
+    </tr>
+<tr>
+    <td><code>%4{Referer}i</code></td>
+    <td>N'enregistre le contenu de l'en-tête <code>Referer</code> que si
+    la sévérité du message de journalisation est supérieure à 4.</td>
+    </tr>
+</table>
+
     <p>Certains items de format acceptent des paramètres supplémentaires
     entre accolades.</p>
 
     <table class="bordered"><tr class="header"><th>Chaîne&nbsp;de&nbsp;format</th> <th>Description</th></tr>
 <tr><td><code>%%</code></td>
         <td>Le signe pourcentage</td></tr>
-<tr class="odd"><td><code>%...a</code></td>
+<tr class="odd"><td><code>%a</code></td>
         <td>Adresse IP et port distants</td></tr>
-<tr><td><code>%...A</code></td>
+<tr><td><code>%A</code></td>
         <td>Adresse IP et port locaux</td></tr>
-<tr class="odd"><td><code>%...{name}e</code></td>
-        <td>Variable d'environnement de requête <code>name</code></td></tr>
-<tr><td><code>%...E</code></td>
+<tr class="odd"><td><code>%{<em>name</em>}e</code></td>
+        <td>Variable d'environnement de requête <em>name</em></td></tr>
+<tr><td><code>%E</code></td>
         <td>Etat d'erreur APR/OS et chaîne</td></tr>
-<tr class="odd"><td><code>%...F</code></td>
+<tr class="odd"><td><code>%F</code></td>
         <td>Nom du fichier source et numéro de ligne de l'appel du
 	journal</td></tr>
-<tr><td><code>%...{name}i</code></td>
-        <td>En-tête de requête <code>name</code></td></tr>
-<tr class="odd"><td><code>%...k</code></td>
+<tr><td><code>%{<em>name</em>}i</code></td>
+        <td>En-tête de requête <em>name</em></td></tr>
+<tr class="odd"><td><code>%k</code></td>
         <td>Nombre de requêtes persistantes pour cette connexion</td></tr>
-<tr><td><code>%...l</code></td>
+<tr><td><code>%l</code></td>
         <td>Sévérité du message</td></tr>
-<tr class="odd"><td><code>%...L</code></td>
+<tr class="odd"><td><code>%L</code></td>
         <td>Identifiant journal de la requête</td></tr>
-<tr><td><code>%...{c}L</code></td>
+<tr><td><code>%{c}L</code></td>
         <td>Identifiant journal de la connexion</td></tr>
-<tr class="odd"><td><code>%...{C}L</code></td>
+<tr class="odd"><td><code>%{C}L</code></td>
         <td>Identifiant journal de la connexion si utilisé dans la
 	portée de la connexion, vide sinon</td></tr>
-<tr><td><code>%...m</code></td>
+<tr><td><code>%m</code></td>
         <td>Nom du module qui effectue la journalisation du message</td></tr>
 <tr class="odd"><td><code>%M</code></td>
         <td>Le message effectif</td></tr>
-<tr><td><code>%...{name}n</code></td>
-        <td>Note de requête <code>name</code></td></tr>
-<tr class="odd"><td><code>%...P</code></td>
+<tr><td><code>%{<em>name</em>}n</code></td>
+        <td>Note de requête <em>name</em></td></tr>
+<tr class="odd"><td><code>%P</code></td>
         <td>Identifiant du processus courant</td></tr>
-<tr><td><code>%...T</code></td>
+<tr><td><code>%T</code></td>
         <td>Identifiant du thread courant</td></tr>
-<tr class="odd"><td><code>%...{g}T</code></td>
+<tr class="odd"><td><code>%{g}T</code></td>
         <td>Identifiant unique de thread système du thread courant
 	(l'identifiant affiché par la commande <code>top</code> par
 	exemple ; seulement sous Linux pour l'instant)</td></tr>
-<tr><td><code>%...t</code></td>
+<tr><td><code>%t</code></td>
         <td>L'heure courante</td></tr>
-<tr class="odd"><td><code>%...{u}t</code></td>
+<tr class="odd"><td><code>%{u}t</code></td>
         <td>L'heure courante avec les microsecondes</td></tr>
-<tr><td><code>%...{cu}t</code></td>
+<tr><td><code>%{cu}t</code></td>
         <td>L'heure courante au format compact ISO 8601, avec les
 	microsecondes</td></tr>
-<tr class="odd"><td><code>%...v</code></td>
+<tr class="odd"><td><code>%v</code></td>
         <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur courant.</td></tr>
-<tr><td><code>%...V</code></td>
+<tr><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
 	avec la définition de la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
 <tr class="odd"><td><code>\&nbsp;</code> (anti-slash espace)</td>
@@ -1549,10 +1571,19 @@ personnalisation des réponses</a></li>
     c'est son identifiant unique qui sera utilisé comme identifiant de
     journal pour les requêtes.</p>
 
-    <div class="example"><h3>Exemple (assez similaire au format par défaut)</h3><p><code>
-        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P] %7F: %E: [client\ %a]
+    <div class="example"><h3>Exemple (format par défaut)</h3><p><code>
+        ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a]
         %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
     </code></p></div>
+
+    <p>Cet exemple renverrait un message d'erreur du style :</p>
+
+    <div class="example"><p><code>
+    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    </code></p></div>
+
+    <p>Notez que, comme indiqué plus haut, certains champs sont
+    totalement supprimés s'ils n'ont pas été définis.</p>
 
     <div class="example"><h3>Exemple (similaire au format 2.2.x)</h3><p><code>
         ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a]

@@ -268,7 +268,7 @@ tardif</a></h2>
        composant du serveur, mais cet en-tête n'est pas trouvé par la
        condition par défaut <code>onsuccess</code>.</li>
     </ul>
-    
+
     <p>L'action que cette directive provoque est déterminée par le
     premier argument (ou par le second argument si une
     <var>condition</var> est spécifiée). Il peut prendre

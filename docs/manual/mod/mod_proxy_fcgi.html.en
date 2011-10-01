@@ -31,7 +31,7 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the 
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the
     <a href="http://www.fastcgi.com/">FastCGI</a> protocol.</p>
 
     <p>Thus, in order to get the ability of handling the <code>FastCGI</code>
@@ -39,7 +39,7 @@
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> have to be present in the server.</p>
 
     <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
-    and <a href="http://www.fastcgi.com/">mod_fastcgi</a>, 
+    and <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> has no provision for starting the
     application process; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> is provided for
     that purpose.</p>
@@ -73,10 +73,10 @@
     </code></p></div>
 
     <p>This application should be able to handle multiple concurrent
-    connections.  <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> enables connection reuse by 
+    connections.  <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> enables connection reuse by
     default, so after a request has been completed the connection will be
     held open by that httpd child process and won't be reused until that
-    httpd process routes another request to the application.  If the 
+    httpd process routes another request to the application.  If the
     FastCGI application is unable to handle enough concurrent connections
     from httpd, requests can block waiting for the application to close
     an existing connection.  One way to resolve this is to disable connection
@@ -88,7 +88,7 @@
     </code></p></div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
-    at least one load balancer algorithm module, such as 
+    at least one load balancer algorithm module, such as
     <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>, in addition to the proxy
     modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
     default, and will be used for this example configuration.</p>

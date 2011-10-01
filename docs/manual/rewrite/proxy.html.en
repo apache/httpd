@@ -22,7 +22,7 @@
 </div>
 
 
-<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
+<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how to use the RewriteRule's [P] flag to proxy content to another server.
 A number of recipes are provided that describe common scenarios.</p>
@@ -78,7 +78,7 @@ ProxyPassReverse / http://old.example.com/
     <dd><p>In each case, we add a <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> directive to ensure
     that any redirects issued by the backend are correctly passed on to
     the client.</p>
-    
+
     <p>Consider using either <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or <code class="directive"><a href="../mod/mod_rewrite.html#proxypassmatch">ProxyPassMatch</a></code> whenever possible in
     preference to mod_rewrite.</p>
     </dd>

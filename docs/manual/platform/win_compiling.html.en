@@ -100,7 +100,7 @@
         a newer or different version of the Platform SDK.</p>
 
         <p>To use Visual C++ 6.0 or 7.0 (Studio 2000 .NET), the Platform SDK
-        environment must be prepared using the <code>setenv.bat</code> 
+        environment must be prepared using the <code>setenv.bat</code>
         script (installed by the Platform SDK) before starting the command
         line build or launching the msdev/devenv GUI environment.  Installing
         the Platform SDK for Visual Studio Express versions (2003 and later)
@@ -117,7 +117,7 @@
 
         <p>Several steps recommended here require a perl interpreter during
         the build preparation process, but it is otherwise not required.</p>
- 
+
         <p>To install Apache within the build system, several files are
         modified using the <code>awk.exe</code> utility. awk was chosen since
         it is a very small download (compared with Perl or WSH/VB) and
@@ -141,12 +141,12 @@
         awk.exe is in your system path.</div>
 
         <div class="note">Also note that if you are using Cygwin tools
-        (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>) 
-        the awk utility is named <code>gawk.exe</code> and that the file 
+        (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>)
+        the awk utility is named <code>gawk.exe</code> and that the file
         <code>awk.exe</code> is really a symlink to the <code>gawk.exe</code>
-        file. The Windows command shell does not recognize symlinks, and 
-        because of this building InstallBin will fail. A workaround is 
-        to delete <code>awk.exe</code> from the cygwin installation and 
+        file. The Windows command shell does not recognize symlinks, and
+        because of this building InstallBin will fail. A workaround is
+        to delete <code>awk.exe</code> from the cygwin installation and
         copy <code>gawk.exe</code> to <code>awk.exe</code>.  Also note the
         cygwin/mingw ports of gawk 3.0.x were buggy, please upgrade to 3.1.x
         before attempting to use any gawk port.</div>
@@ -156,9 +156,9 @@
         <p>[Optional] zlib library (for <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>)</p>
 
         <p>Zlib must be installed into a <code>srclib</code> subdirectory named
-        <code>zlib</code>.  This must be built in-place.  Zlib can be obtained 
+        <code>zlib</code>.  This must be built in-place.  Zlib can be obtained
         from <a href="http://www.zlib.net/">http://www.zlib.net/</a> -- the
-        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is confirmed to work correctly with 
+        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is confirmed to work correctly with
         version 1.2.3.</p>
 
         <div class="example"><p><code>
@@ -177,22 +177,22 @@
         software.  BEFORE using any encryption software, please check your
         country's laws, regulations and policies concerning the import,
         possession, or use, and re-export of encryption software, to see
-        if this is permitted.  See 
+        if this is permitted.  See
         <a href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>
         for more information.</div>
 
         <p>Configuring and building OpenSSL requires perl to be installed.</p>
 
-        <p>OpenSSL must be installed into a <code>srclib</code> subdirectory 
-        named <code>openssl</code>, obtained from 
-        <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile 
+        <p>OpenSSL must be installed into a <code>srclib</code> subdirectory
+        named <code>openssl</code>, obtained from
+        <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile
         <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> or the <code>abs.exe</code> project, which
-        is ab.c with SSL support enabled.  To prepare OpenSSL to be linked 
+        is ab.c with SSL support enabled.  To prepare OpenSSL to be linked
         to Apache mod_ssl or abs.exe, and disable patent encumbered features
         in OpenSSL,  you might use the following build commands:</p>
 
         <div class="example"><p><code>
-          perl Configure no-rc5 no-idea enable-mdc2 enable-zlib VC-WIN32 
+          perl Configure no-rc5 no-idea enable-mdc2 enable-zlib VC-WIN32
                -Ipath/to/srclib/zlib -Lpath/to/srclib/zlib<br />
           ms\do_masm.bat<br />
           nmake -f ms\ntdll.mak
@@ -203,7 +203,7 @@
         load the zlib dll.  Note the suggested patch enables the -L flag to
         work with windows builds, corrects the name of zdll.lib and ensures
         .pdb files are generated for troubleshooting.  If the assembler is
-        not installed, you would add no-asm above and use ms\do_ms.bat 
+        not installed, you would add no-asm above and use ms\do_ms.bat
         instead of the ms\do_masm.bat script.</div>
       </li>
 
@@ -266,7 +266,7 @@
     step the code to find bugs and track down problems.</p>
 
     <p>You can add your apr-util dbd and dbm provider choices with the
-    additional make (environment) variables DBD_LIST and DBM_LIST, 
+    additional make (environment) variables DBD_LIST and DBM_LIST,
     see the comments about [Optional] Database libraries, above.
     Review the initial comments in Makefile.win for additional options
     that can be provided when invoking the build.</p>
@@ -318,7 +318,7 @@
 
     <p>Visual Studio 2002 (.NET) and later users should also use the Build
     menu, Configuration Manager dialog to uncheck both the <code>Debug</code>
-    and <code>Release</code> Solution modules <code>abs</code>, 
+    and <code>Release</code> Solution modules <code>abs</code>,
     <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> and <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> components, as
     well as every component starting with <code>apr_db*</code>.  These modules
     are built by invoking <code>nmake</code>, or the IDE directly with the
@@ -339,8 +339,8 @@
     <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.  The .mak files also support a broader
     range of C++ tool chain distributions, such as Visual Studio Express.</p>
 
-    <p>You must first build all projects in order to create all dynamic 
-    auto-generated targets, so that dependencies can be parsed correctly. 
+    <p>You must first build all projects in order to create all dynamic
+    auto-generated targets, so that dependencies can be parsed correctly.
     Build the entire project from within the Visual Studio 6.0 (98) IDE,
     using the <code>BuildAll</code> target, then use the Project Menu Export
     for all makefiles (checking on "with dependencies".)  Run the following
@@ -363,7 +363,7 @@
     a <code>sysincl.dat</code> file, which lists all exceptions.  Update
     this file (including both forward and backslashed paths, such as both
     <code>sys/time.h</code> and <code>sys\time.h</code>) to ignore such
-    newer dependencies.  Including local-install paths in a distributed 
+    newer dependencies.  Including local-install paths in a distributed
     <code>.mak</code> file will cause the build to fail completely.</p>
 
     <p>If you contribute back a patch that revises project files, we

@@ -105,7 +105,7 @@ d'Apache</td></tr></table>
       &lt;Location /statut-ldap&gt;<br />
       <span class="indent">
         SetHandler ldap-status<br />
-        
+
         Require host votre-domaine.example.com<br />
 
         Satisfy any<br />
@@ -263,7 +263,7 @@ d'Apache</td></tr></table>
         SetHandler ldap-status<br />
 
         Require host votre-domaine.example.com<br />
-        
+
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "Protégé par LDAP"<br />
@@ -285,7 +285,7 @@ d'Apache</td></tr></table>
       &lt;Location /statut-ldap&gt;<br />
       <span class="indent">
         SetHandler ldap-status<br />
-        
+
         Require host votre-domaine.example.com<br />
 
         Satisfy any<br />
@@ -343,7 +343,7 @@ d'Apache</td></tr></table>
             &lt;Location /statut-ldap&gt;<br />
             <span class="indent">
                 SetHandler ldap-status<br />
-                
+
                 Require host votre-domaine.example.com<br />
 
                 Satisfy any<br />
@@ -421,7 +421,7 @@ d'Apache</td></tr></table>
             &lt;Location /statut-ldap&gt;<br />
             <span class="indent">
                 SetHandler ldap-status<br />
-                
+
                 Require host votre-domaine.example.com<br />
 
                 LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
@@ -592,7 +592,7 @@ connexion</td></tr>
     et de purger le journal des erreurs lorsque cette directive est
     utilisée.</p>
     </div>
-    
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -649,7 +649,7 @@ LDAP.</td></tr>
 
 <div class="warning">
 <p>L'ajustement de ce paramètre n'est pas commun à tous les SDKs LDAP.</p>
-</div>    
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

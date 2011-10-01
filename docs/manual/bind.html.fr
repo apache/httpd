@@ -91,7 +91,7 @@
     <div class="warning"><p>Des directives <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     imbriquées provoqueront une erreur fatale qui
     empêchera le serveur de démarrer.</p>
-    
+
     <div class="example"><p><code>
     (48)Address already in use: make_sock: could not bind to address [::]:80
     </code></p></div>

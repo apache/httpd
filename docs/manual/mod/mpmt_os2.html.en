@@ -36,7 +36,7 @@
     involves spawning children as required to ensure there are always
     <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> processes
     accepting connections.</p>
-    
+
     <p>Each child process consists of a a pool of worker threads and a
     main thread that accepts connections and passes them to the workers via
     a work queue. The worker thread pool is dynamic, managed by a

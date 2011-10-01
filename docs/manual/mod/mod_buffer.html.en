@@ -66,7 +66,7 @@
         cause the request/response to be slower than not using a buffer at
         all. These filters should be used with care, and only where
         necessary.</div>
-    
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">

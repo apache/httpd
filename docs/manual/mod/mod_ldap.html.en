@@ -230,7 +230,7 @@ by other LDAP modules</td></tr>
 <div class="section">
 <h2><a name="usingssltls" id="usingssltls">Using SSL/TLS</a></h2>
 
-    <p>The ability to create an SSL and TLS connections to an LDAP server 
+    <p>The ability to create an SSL and TLS connections to an LDAP server
     is defined by the directives <code class="directive"><a href="#&#10;    ldaptrustedglobalcert">
     LDAPTrustedGlobalCert</a></code>, <code class="directive"><a href="#&#10;    ldaptrustedclientcert">
     LDAPTrustedClientCert</a></code> and <code class="directive"><a href="#&#10;    ldaptrustedmode">
@@ -377,8 +377,8 @@ by other LDAP modules</td></tr>
         binary DER or Base64 (PEM) encoded files.</p>
 
         <p>Both CA and client certificates may be specified globally
-        (LDAPTrustedGlobalCert) or per-connection (LDAPTrustedClientCert).  
-        When any settings are specified per-connection, the global 
+        (LDAPTrustedGlobalCert) or per-connection (LDAPTrustedClientCert).
+        When any settings are specified per-connection, the global
         settings are superceded.</p>
 
         <p>The documentation for the SDK claims to support both SSL and
@@ -482,11 +482,11 @@ by other LDAP modules</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.3.12 and later</td></tr>
 </table>
     <p>Specifies the maximum age, in seconds, that a pooled LDAP connection can remain idle
-    and still be available for use.  Connections are cleaned up when they are next needed, 
+    and still be available for use.  Connections are cleaned up when they are next needed,
     not asynchronously.</p>
 
-    <p>A setting of 0 causes connections to never be saved in the backend 
-    connection pool.  The default value of -1, and any other negative value, 
+    <p>A setting of 0 causes connections to never be saved in the backend
+    connection pool.  The default value of -1, and any other negative value,
      allows connections of any age to be reused.</p>
 
     <div class="note"><p>This timeout defaults to units of seconds, but accepts
@@ -508,17 +508,17 @@ by other LDAP modules</td></tr>
     typically controls how long the LDAP client library will wait for the TCP
     connection to the LDAP server to complete.</p>
 
-    <p> If a connection is not successful with the timeout period, either an error will be 
-    returned or the LDAP client library will attempt to connect to a secondary LDAP 
-    server if one is specified (via a space-separated list of hostnames in the 
+    <p> If a connection is not successful with the timeout period, either an error will be
+    returned or the LDAP client library will attempt to connect to a secondary LDAP
+    server if one is specified (via a space-separated list of hostnames in the
     <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>).</p>
 
-    <p>The default is 10 seconds, if the LDAP client library linked with the 
+    <p>The default is 10 seconds, if the LDAP client library linked with the
     server supports the LDAP_OPT_NETWORK_TIMEOUT option.</p>
 
     <div class="note">LDAPConnectionTimeout is only available when the LDAP client library linked
-    with the server supports the LDAP_OPT_NETWORK_TIMEOUT 
-    (or LDAP_OPT_CONNECT_TIMEOUT) option, and the ultimate behavior is 
+    with the server supports the LDAP_OPT_NETWORK_TIMEOUT
+    (or LDAP_OPT_CONNECT_TIMEOUT) option, and the ultimate behavior is
     dictated entirely by the LDAP client library.
     </div>
 
@@ -533,28 +533,28 @@ by other LDAP modules</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Turns on SDK-specific LDAP debug options that generally cause the LDAP 
-    SDK to log verbose trace information to the main Apache error log.  
+    <p>Turns on SDK-specific LDAP debug options that generally cause the LDAP
+    SDK to log verbose trace information to the main Apache error log.
     The trace messages from the LDAP SDK provide gory details that
     can be useful during debugging of connectivity problems with backend LDAP servers</p>
 
-    <p>This option is only configurable when Apache HTTP Server is linked with 
-    an LDAP SDK that implements <code>LDAP_OPT_DEBUG</code> or 
-    <code>LDAP_OPT_DEBUG_LEVEL</code>, such as OpenLDAP (a value of 7 is verbose) 
+    <p>This option is only configurable when Apache HTTP Server is linked with
+    an LDAP SDK that implements <code>LDAP_OPT_DEBUG</code> or
+    <code>LDAP_OPT_DEBUG_LEVEL</code>, such as OpenLDAP (a value of 7 is verbose)
     or Tivoli Directory Server (a value of 65535 is verbose).</p>
 
     <div class="warning">
-    <p>The logged information will likely contain plaintext credentials being used or 
+    <p>The logged information will likely contain plaintext credentials being used or
     validated by LDAP authentication, so care should be taken in protecting and purging
     the error log when this directive is used.</p>
     </div>
-    
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LDAPOpCacheEntries" id="LDAPOpCacheEntries">LDAPOpCacheEntries</a> <a name="ldapopcacheentries" id="ldapopcacheentries">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of entries used to cache LDAP compare 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of entries used to cache LDAP compare
 operations</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPOpCacheEntries <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPOpCacheEntries 1024</code></td></tr>
@@ -619,7 +619,7 @@ valid</td></tr>
     <code>LDAPReferralHopLimit</code> works in conjunction with this directive to limit the
     number of referral hops to follow before terminating the LDAP query. When referral processing
     is enabled client credentials will be provided, via a rebind callback, for any LDAP server
-    requiring them. </p> 
+    requiring them. </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -783,8 +783,8 @@ Certificate Authority or global client certificates</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies whether to force the verification of a 
-    server certificate when establishing an SSL connection to the 
+    <p>Specifies whether to force the verification of a
+    server certificate when establishing an SSL connection to the
     LDAP server.</p>
 
 </div>

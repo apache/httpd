@@ -32,12 +32,12 @@
 
     <p>This module provides core authorization capabilities so that
     authenticated users can be allowed or denied access to portions
-    of the web site. <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides the 
+    of the web site. <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides the
     functionality to register various authorization providers. It is
     usually used in conjunction with an authentication
-    provider module such as <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> and an 
+    provider module such as <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> and an
     authorization module such as <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>. It
-    also allows for advanced logic to be applied to the 
+    also allows for advanced logic to be applied to the
     authorization processing.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -74,36 +74,36 @@
         allows a single authorization location to check group membership within
         multiple ldap hosts:
         </p>
-    
+
         <div class="example"><h3>Example</h3><p><code>
           &lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;<br />
           <span class="indent">
              AuthLDAPBindDN cn=youruser,o=ctx<br />
              AuthLDAPBindPassword yourpassword<br />
              AuthLDAPURL ldap://ldap.host/o=ctx<br />
-          </span> 
-          &lt;/AuthzProviderAlias&gt;<br /><br /> 
+          </span>
+          &lt;/AuthzProviderAlias&gt;<br /><br />
           &lt;AuthzProviderAlias ldap-group ldap-group-alias2
            cn=my-other-group,o=dev&gt;<br />
           <span class="indent">
              AuthLDAPBindDN cn=yourotheruser,o=dev<br />
              AuthLDAPBindPassword yourotherpassword<br />
              AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
-          </span> 
+          </span>
           &lt;/AuthzProviderAlias&gt;<br /><br />
-    
+
           Alias /secure /webpages/secure<br />
           &lt;Directory /webpages/secure&gt;<br />
           <span class="indent">
              Require all granted<br /><br />
-        
+
              AuthBasicProvider file<br /><br />
-        
+
              AuthType Basic<br />
              AuthName LDAP_Protected_Place<br /><br />
 
-             #implied OR operation<br /> 
-             Require ldap-group-alias1<br /> 
+             #implied OR operation<br />
+             Require ldap-group-alias1<br />
              Require ldap-group-alias2<br />
           </span> &lt;/Directory&gt;<br />
         </code></p></div>
@@ -162,7 +162,7 @@
                 &lt;/RequireNone&gt;
             </span>
             &lt;/RequireAll&gt;
-        </span>      
+        </span>
         &lt;/Directory&gt;
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -176,7 +176,7 @@
   <h3><a name="reqenv" id="reqenv">Require env</a></h3>
 
     <p>The <code>env</code> provider allows access to the server
-    to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Require 
+    to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Require
     env <var>env-variable</var></code> is specified, then the request is
     allowed access if the environment variable <var>env-variable</var>
     exists. The server provides the ability to set environment
@@ -186,7 +186,7 @@
     used to allow access based on such factors as the clients
     <code>User-Agent</code> (browser type), <code>Referer</code>, or
     other HTTP request header fields.</p>
-    
+
     <div class="example"><h3>Example:</h3><p><code>
       SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
       &lt;Directory /docroot&gt;<br />
@@ -195,7 +195,7 @@
       </span>
       &lt;/Directory&gt;
     </code></p></div>
-    
+
     <p>In this case, browsers with a user-agent string beginning
     with <code>KnockKnock/2.0</code> will be allowed access, and all
     others will be denied.</p>
@@ -206,8 +206,8 @@
 
     <p>The <code>all</code> provider mimics the functionality the
     was previously provided by the 'Allow from all' and 'Deny from all'
-    directives.  This provider can take one of two arguments which are 
-    'granted' or 'denied'.  The following examples will grant or deny 
+    directives.  This provider can take one of two arguments which are
+    'granted' or 'denied'.  The following examples will grant or deny
     access to all requests.</p>
 
     <div class="example"><p><code>
@@ -343,7 +343,7 @@ sections.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that represent an
 extension of a base authorization provider and referenced by the specified
 alias</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -439,16 +439,16 @@ an authorization provider.</td></tr>
 
     <p>Other authorization modules that implement require options
     include <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
-    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code>, 
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>, 
+    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code>,
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>,
     <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> and <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
     <p>In most cases, for a complete authentication and authorization
     configuration, <code class="directive">Require</code> must be accompanied by
-    <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>, <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> and 
+    <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>, <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> and
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
-    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> 
-    directives, and directives such as 
+    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
+    directives, and directives such as
     <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
     and <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> (to
     define users and groups) in order to work correctly. Example:</p>

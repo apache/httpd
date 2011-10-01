@@ -49,13 +49,13 @@
 
     <p>SQL based sessions are hidden from the browser, and so offer a measure of
     privacy without the need for encryption.</p>
-    
+
     <p>Different webservers within a server farm may choose to share a database,
     and so share sessions with one another.</p>
-    
+
     <p>For more details on the session interface, see the documentation for
     the <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> module.</p>
-    
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -88,7 +88,7 @@
       <p>Before the <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> module can be configured to maintain a
       session, the <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> module must be configured to make the various database queries
       available to the server.</p>
-      
+
       <p>There are four queries required to keep a session maintained, to select an existing session,
       to update an existing session, to insert a new session, and to delete an expired or empty
       session. These queries are configured as per the example below.</p>
@@ -106,58 +106,58 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="anonymous" id="anonymous">Anonymous Sessions</a></h2>
-    
+
       <p>Anonymous sessions are keyed against a unique UUID, and stored on the
       browser within an HTTP cookie. This method is similar to that used by most
       application servers to store session information.</p>
-    
+
       <p>To create a simple anonymous session and store it in a postgres database
       table called <var>apachesession</var>, and save the session ID in a cookie
       called <var>session</var>, configure the session as follows:</p>
-      
+
       <div class="example"><h3>SQL based anonymous session</h3><p><code>
         Session On<br />
         SessionDBDCookieName session path=/<br />
       </code></p></div>
-      
+
       <p>For more examples on how the session can be configured to be read
       from and written to by a CGI application, see the
       <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> examples section.</p>
-      
+
       <p>For documentation on how the session can be used to store username
       and password details, see the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> module.</p>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="peruser" id="peruser">Per User Sessions</a></h2>
-    
+
       <p>Per user sessions are keyed against the username of a successfully
       authenticated user. It offers the most privacy, as no external handle
       to the session exists outside of the authenticated realm.</p>
-      
+
       <p>Per user sessions work within a correctly configured authenticated
       environment, be that using basic authentication, digest authentication
       or SSL client certificates. Due to the limitations of who came first,
       the chicken or the egg, per user sessions cannot be used to store
       authentication credentials from a module like
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>.</p>
-    
+
       <p>To create a simple per user session and store it in a postgres database
       table called <var>apachesession</var>, and with the session keyed to the
       userid, configure the session as follows:</p>
-      
+
       <div class="example"><h3>SQL based per user session</h3><p><code>
         Session On<br />
         SessionDBDPerUser On<br />
       </code></p></div>
-      
+
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="housekeeping" id="housekeeping">Database Housekeeping</a></h2>
       <p>Over the course of time, the database can be expected to start accumulating
       expired sessions. At this point, the <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> module
       is not yet able to handle session expiry automatically.</p>
-      
+
       <div class="warning"><h3>Warning</h3>
       <p>The administrator will need to set up an external process via cron to clean
       out expired sessions.</p>
@@ -205,12 +205,12 @@
     optional attributes of an RFC2965 compliant cookie inside which the session ID will
     be stored. RFC2965 cookies are set using the <code>Set-Cookie2</code> HTTP header.
     </p>
-    
+
     <p>An optional list of cookie attributes can be specified, as per the example below.
     These attributes are inserted into the cookie as is, and are not interpreted by
     Apache. Ensure that your attributes are defined correctly as per the cookie specification.
     </p>
-    
+
     <div class="example"><h3>Cookie2 with attributes</h3><p><code>
       Session On<br />
       SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;version=1;<br />

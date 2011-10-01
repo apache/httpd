@@ -24,8 +24,8 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_remoteip.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the apparent client remote IP address and hostname 
-for the request with the IP address list presented by a proxies or a load 
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the apparent client remote IP address and hostname
+for the request with the IP address list presented by a proxies or a load
 balancer via the request headers.
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -33,12 +33,12 @@ balancer via the request headers.
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_remoteip.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module is used to treat the remote host which initiated the 
+    <p>This module is used to treat the remote host which initiated the
     request as the originating remote host as identified by httpd for the
     purposes of authorization and logging, even where that remote host is
     behind a load balancer, front end server, or proxy server.</p>
 
-    <p>The module replaces the apparent remote (client) IP/hostname for 
+    <p>The module replaces the apparent remote (client) IP/hostname for
     the request with the IP address reported in the request header
     configured with the <code class="directive">RemoteIPHeader</code> directive.</p>
 
@@ -48,8 +48,8 @@ balancer via the request headers.
     and <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code>,
     is reported by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, and is recorded by
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> <code>%a</code> and <code>%h</code>
-    directives.  It also determines the machine probed for an inetd 
-    identity by <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> based on the 
+    directives.  It also determines the machine probed for an inetd
+    identity by <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> based on the
     <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> configuration.</p>
 
     <div class="warning">It is critical to only enable this behavior from
@@ -81,19 +81,19 @@ balancer via the request headers.
 <h2><a name="processing" id="processing">Remote IP Processing</a></h2>
 
     <p>Apache identifies the client with the connection's remote_ip value,
-    and the connection remote_host and remote_logname are derived from this 
-    value.  These fields play a role in authentication, authorization and 
+    and the connection remote_host and remote_logname are derived from this
+    value.  These fields play a role in authentication, authorization and
     logging and other purposes by other loadable modules.</p>
 
     <p>mod_remoteip replaces the true remote_ip with the advertised remote_ip as
     provided by a proxy, for every evaluation of the client that occurs in the
-    server, and resets the remote_host and remote_logname values to trigger a 
+    server, and resets the remote_host and remote_logname values to trigger a
     fresh dns or ident query of the remote IP address.</p>
 
-    <p>When multiple, comma delimited remote IP addresses are listed in the 
+    <p>When multiple, comma delimited remote IP addresses are listed in the
     header value, they are processed in Right-to-Left order.  Processing
     halts when a given remote IP address is not trusted to present the
-    preceeding IP address.  The header field is updated to this remaining 
+    preceeding IP address.  The header field is updated to this remaining
     list of unconfirmed IP addresses, or if all IP addresses were trusted,
     this header is removed from the request altogether.</p>
 
@@ -112,7 +112,7 @@ balancer via the request headers.
     All internal addresses 10/8, 172.16/12, 192.168/16, 169.254/16 and 127/8
     blocks (and IPv6 addresses outside of the public 2000::/3 block) are only
     evaluated by mod_remoteip when <code class="directive">RemoteIPInternalProxy</code>
-    internal (intranet) proxies are registered.</div> 
+    internal (intranet) proxies are registered.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -124,10 +124,10 @@ balancer via the request headers.
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
 </table>
-    <p>The <code class="directive">RemoteIPHeader</code> directive triggers 
+    <p>The <code class="directive">RemoteIPHeader</code> directive triggers
     <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> to treat the value of the specified
     <var>header-field</var> header as the client IP address, or list
-    of intermediate client IP addresses, subject to further configuration 
+    of intermediate client IP addresses, subject to further configuration
     of the <code class="directive">RemoteIPInternalProxy</code> and
     <code class="directive">RemoteIPTrustedProxy</code> directives.  Unless these
     other directives are used, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will trust all
@@ -155,7 +155,7 @@ balancer via the request headers.
     or more addresses (or address blocks) to trust as presenting a valid
     RemoteIPHeader value of the client IP.  Unlike the
     <code class="directive">RemoteIPTrustedProxy</code> directive, any IP address
-    presented in this header, including private intranet addresses, are 
+    presented in this header, including private intranet addresses, are
     trusted when passed from these proxies.</p>
 
     <div class="example"><h3>Internal (Load Balancer) Example</h3><p><code>
@@ -207,7 +207,7 @@ balancer via the request headers.
     a header into which <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will collect a list of
     all of the intermediate client IP addresses trusted to resolve the actual
     remote IP.  Note that intermediate <code class="directive">RemoteIPTrustedProxy</code>
-    addresses are recorded in this header, while any intermediate 
+    addresses are recorded in this header, while any intermediate
     <code class="directive">RemoteIPInternalProxy</code> addresses are discarded.</p>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -228,10 +228,10 @@ balancer via the request headers.
     <p>The <code class="directive">RemoteIPTrustedProxy</code> directive adds one
     or more addresses (or address blocks) to trust as presenting a valid
     RemoteIPHeader value of the client IP.  Unlike the
-    <code class="directive">RemoteIPInternalProxy</code> directive, any intranet 
+    <code class="directive">RemoteIPInternalProxy</code> directive, any intranet
     or private IP address reported by such proxies, including the 10/8, 172.16/12,
     192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
-    2000::/3 block) are not trusted as the remote IP, and are left in the 
+    2000::/3 block) are not trusted as the remote IP, and are left in the
     <code class="directive">RemoteIPHeader</code> header's value.</p>
 
     <div class="example"><h3>Trusted (Load Balancer) Example</h3><p><code>

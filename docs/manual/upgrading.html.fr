@@ -21,8 +21,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -65,7 +63,7 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
      est enregistrée dans le fichier <code>build/config.nice</code>
      situé dans le répertoire de compilation du serveur). Voici certains
      changements intervenus dans la configuration par défaut :</p>
-    
+
     <ul>
       <li>Les modules suivants ont été supprimés : mod_authn_default,
       mod_authz_default et mod_mem_cache. Si vous utilisiez
@@ -260,7 +258,7 @@ nécessiter une mise à jour des fichiers de configuration de la version
 	<code>DebugLevel</code> a été supprimée en faveur d'une
 	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau répertoire.
         </li>
-    
+
     </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

@@ -256,7 +256,7 @@ delivery to the client</td></tr>
       escape blanks which should be part of a program argument. Any
       backslashes which are part of the argument must be escaped with
       backslash themselves.  In addition to the standard CGI environment
-      variables, DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
+      variables, DOCUMENT_URI, DOCUMENT_PATH_INFO, and
       QUERY_STRING_UNESCAPED will also be set for the program.</dd>
 
       <dt><code>mode=<var>mode</var></code></dt>

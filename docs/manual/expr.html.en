@@ -40,6 +40,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#unnop">Unary operators</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#functions">Functions</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Other</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#sslrequire">Comparison with SSLRequire</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -460,6 +461,13 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
         uses.</p>
     
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="sslrequire" id="sslrequire">Comparison with SSLRequire</a></h2>
+    
+    <p>The <em>ap_expr</em> syntax is mostly a superset of the syntax of the
+    deprecated <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code> directive.
+    The differences are described in <code class="directive"><a href="./mod/mod_ssl.html#sslrequire">SSLRequire</a></code>'s documentation.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/expr.html" title="English">&nbsp;en&nbsp;</a> |

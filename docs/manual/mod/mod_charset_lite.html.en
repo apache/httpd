@@ -37,7 +37,7 @@
     process locale to ISO-8859-1, but not the body of responses.  In
     any environment, <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> can be used to
     specify that response bodies should be translated.  For example,
-    if files are stored in EBCDIC, then 
+    if files are stored in EBCDIC, then
     <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> can translate them to
     ISO-8859-1 before sending them to the client.</p>
 
@@ -181,7 +181,7 @@
     as a valid character set name by the character set support in
     <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>. Generally, this means that it must be
     supported by iconv.</p>
-    
+
     <div class="example"><h3>Example</h3><p><code>
       &lt;Directory /export/home/trawick/apacheinst/htdocs/convert&gt;<br />
       <span class="indent">
@@ -193,7 +193,7 @@
 
     <p>The character set names in this example work with the iconv
     translation support in Solaris 8.</p>
- 
+
      <div class="note">
      Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
      and <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code> disables translation. The charset

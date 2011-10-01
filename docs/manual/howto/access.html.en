@@ -36,7 +36,7 @@
 
     <p>Access control can be done by several different modules. The most
     important of these are <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> and
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Also discussed in this document 
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Also discussed in this document
     is access control using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -56,7 +56,7 @@
 
     <div class="warning"><p>
     The <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
-    <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>, and 
+    <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>, and
     <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code> directives,
     provided by <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>, are deprecated and
     will go away in a future version. You should avoid using them, and
@@ -70,8 +70,8 @@
       Require ip <var>ip.address</var>
     </code></p></div>
 
-    <p>In the first form, <var>address</var> is a fully qualified 
-    domain name (or a partial domain name); you may provide multiple 
+    <p>In the first form, <var>address</var> is a fully qualified
+    domain name (or a partial domain name); you may provide multiple
     addresses or domain names, if desired.</p>
 
     <p>In the second form, <var>ip.address</var> is an IP address, a

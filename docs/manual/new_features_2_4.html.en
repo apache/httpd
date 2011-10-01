@@ -41,11 +41,11 @@
       <dt>KeepAliveTimeout in milliseconds</dt>
       <dd>It is now possible to specify <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> in milliseconds.
       </dd>
- 
+
       <dt>Loadable MPMs</dt>
-      <dd>Multiple MPMs can now be built as loadable modules at compile time.  
+      <dd>Multiple MPMs can now be built as loadable modules at compile time.
       The MPM of choice can be configured at run time.</dd>
- 
+
       <dt>Per-module and per-directory LogLevel configuration</dt>
       <dd>The <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> can now be
       configured per module and per directory.  New levels <code>trace1</code>
@@ -54,13 +54,13 @@
 
       <dt>Event MPM</dt>
       <dd>The Event MPM is no longer experimental but is now fully supported.</dd>
- 
+
       <dt>Asynchronous support</dt>
       <dd>Better support for asynchronous read/write for supporting MPMs and
       platforms.</dd>
 
       <dt>Per-request configuration sections</dt>
-      <dd>&lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt; sections can be used to 
+      <dd>&lt;<code class="directive"><a href="./mod/core.html#if">If</a></code>&gt; sections can be used to
       set the configuration based on per-request criteria</dd>
 
       <dt>NameVirtualHost directive</dt>
@@ -83,7 +83,7 @@
       <dd>Convert response body into an RFC2397 data URL</dd>
 
       <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
-      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd, 
+      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd,
       for configuration and small business logic functions.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
@@ -132,14 +132,14 @@
       certificate.  The default responder is configurable, along with
       the decision on whether to prefer the responder designated in
       the client certificate itself.</dd>
-      
-      <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> now also supports OCSP stapling, where the 
-      server pro-actively obtains an OCSP verification of its certificate and 
+
+      <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> now also supports OCSP stapling, where the
+      server pro-actively obtains an OCSP verification of its certificate and
       transmits that to the client during the handshake. </dd>
-      
-      <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> can now be configured to share SSL Session 
+
+      <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> can now be configured to share SSL Session
       data between servers through memcached</dd>
- 
+
       <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
       <dd>The <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive
@@ -185,7 +185,7 @@
 
       <dt><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>,
           <code class="module"><a href="./mod/mod_isapi.html">mod_isapi</a></code>, ...</dt>
-      <dd>Translation of headers to environment variables is more strict than 
+      <dd>Translation of headers to environment variables is more strict than
       before to mitigate some possible cross-site-scripting attacks via header
       injection. Headers containing invalid characters (including underscores)
       are now silently dropped. <a href="env.html">Environment Variables
@@ -254,7 +254,7 @@
           <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
 
       <dt>Authorization Logic Containers</dt>
-      
+
       <dd>Authorization modules now register as a provider, via
       ap_register_auth_provider(), to support advanced authorization logic,
       such as <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>.</dd>
@@ -269,7 +269,7 @@
       supported.</dd>
 
       <dt>Cache Status Hook Added</dt>
-      
+
       <dd>The <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> module now includes a new
       <code>cache_status</code> hook, which is called when the caching
       decision becomes known. A default implementation is provided

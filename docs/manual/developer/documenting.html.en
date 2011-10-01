@@ -41,7 +41,7 @@
       @return description<br />
       @deffunc signature of the function<br />
     </code></p></div>
-      
+
     <p>The <code>deffunc</code> is not always necessary. DoxyGen does not
     have a full parser  in it, so any prototype that use a macro in the
     return type declaration is too complex for scandoc. Those functions

@@ -77,20 +77,20 @@
 
     <p>The domain string <strong>must</strong> begin with a dot, and
     <strong>must</strong> include at least one embedded dot. That is,
-    <code>.example.com</code> is legal, but <code>www.example.com</code> and 
+    <code>.example.com</code> is legal, but <code>www.example.com</code> and
     <code>.com</code> are not.</p>
 
     <div class="note">Most browsers in use today will not allow cookies to be set
-    for a two-part top level domain, such as <code>.co.uk</code>, 
+    for a two-part top level domain, such as <code>.co.uk</code>,
     although such a domain ostensibly fulfills the requirements
-    above.<br /> 
-    
+    above.<br />
+
     These domains are equivalent to top level domains such as
     <code>.com</code>, and allowing such cookies may be a security
     risk. Thus, if you are under a two-part top level domain, you
     should still use your actual domain, as you would with any other top
     level domain (for example <code>.example.co.uk</code>).
-    </div> 
+    </div>
 
     <div class="example"><p><code>
     CookieDomain .example.com
@@ -201,7 +201,7 @@
     user-tracking cookie for all new requests. This directive can
     be used to turn this behavior on or off on a per-server or
     per-directory basis. By default, enabling
-    <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> will <strong>not</strong> 
+    <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> will <strong>not</strong>
     activate cookies. </p>
 
     <div class="example"><p><code>

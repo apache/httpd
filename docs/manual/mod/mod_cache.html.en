@@ -37,7 +37,7 @@
     in its default value of <strong>on</strong>, the <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives will be circumvented.
     You should not enable quick handler caching for any content to which you
     wish to limit access by client host name, address or environment
-    variable.</div>  
+    variable.</div>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant
     <strong>HTTP content caching filter</strong>, with support for the caching
@@ -253,11 +253,11 @@
   <p>Under the default mode of cache operation, the cache runs as a quick handler,
   short circuiting the majority of server processing and offering the highest
   cache performance available.</p>
-  
+
   <p>In this mode, the cache <strong>bolts onto</strong> the front of the server,
   acting as if a free standing RFC 2616 caching proxy had been placed in front of
   the server.</p>
-  
+
   <p>While this mode offers the best performance, the administrator may find that
   under certain circumstances they may want to perform further processing on the
   request after the request is cached, such as to inject personalisation into the
@@ -386,12 +386,12 @@
   <p>When the <code class="directive"><a href="#cachedetailheader">CacheDetailHeader</a></code> directive
   is switched on, an <strong>X-Cache-Detail</strong> header will be added to the response
   containing the detailed reason for a particular caching decision.</p>
-  
+
   <p>It can be useful during development of cached RESTful services to have additional
   information about the caching decision written to the response headers, so as to
   confirm whether <code>Cache-Control</code> and other headers have been correctly
   used by the service and client.</p>
-  
+
   <p>If the normal handler is used, this directive may appear within a
   <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> or
   <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code> directive. If the quick handler
@@ -438,7 +438,7 @@
       &lt;/Location&gt;<br />
     </code></p></div>
 
-    <p>The <code>no-cache</code> environment variable can be set to 
+    <p>The <code>no-cache</code> environment variable can be set to
     disable caching on a finer grained set of resources in versions
     2.2.12 and later.</p>
 
@@ -480,7 +480,7 @@ manager</td></tr>
     before globally defined <code class="directive">CacheEnable</code> directives.</p>
 
     <p>When acting as a forward proxy server, <var>url-string</var> can
-    also be used to specify remote sites and proxy protocols which 
+    also be used to specify remote sites and proxy protocols which
     caching should be enabled for.</p>
 
     <div class="example"><p><code>
@@ -515,7 +515,7 @@ manager</td></tr>
       CacheEnable  disk  http://.example.org/<br />
     </code></p></div>
 
-    <p> The <code>no-cache</code> environment variable can be set to 
+    <p> The <code>no-cache</code> environment variable can be set to
     disable caching on a finer grained set of resources in versions
     2.2.12 and later.</p>
 
@@ -690,11 +690,11 @@ header.</td></tr>
 </table>
     <p>Ordinarily, requests with query string parameters are cached separately
     for each unique query string. This is according to RFC 2616/13.9 done only
-    if an expiration time is specified. The 
+    if an expiration time is specified. The
     <code class="directive">CacheIgnoreQueryString</code> directive tells the cache to
-    cache requests even if no expiration time is specified, and to reply with 
+    cache requests even if no expiration time is specified, and to reply with
     a cached reply even if the query string differs. From a caching point of
-    view the request is treated as if having no query string when this 
+    view the request is treated as if having no query string when this
     directive is enabled.</p>
 
     <div class="example"><p><code>
@@ -818,7 +818,7 @@ LastModified date.</td></tr>
 </table>
   <p>The <code class="directive">CacheLock</code> directive enables the thundering herd lock
   for the given URL space.</p>
-  
+
   <p>In a minimal configuration the following directive is all that is needed to
   enable the thundering herd lock in the default system temp directory.</p>
 
@@ -841,12 +841,12 @@ LastModified date.</td></tr>
 </table>
   <p>The <code class="directive">CacheLockMaxAge</code> directive specifies the maximum
   age of any cache lock.</p>
-  
+
   <p>A lock older than this value in seconds will be ignored, and the next
   incoming request will be given the opportunity to re-establish the lock.
   This mechanism prevents a slow client taking an excessively long time to refresh
   an entity.</p>
-  
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

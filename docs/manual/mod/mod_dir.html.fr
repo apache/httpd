@@ -128,7 +128,7 @@ client envoie une requête pour un répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une redirection externe pour les index de
 répertoires.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-code</var>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>

@@ -22,8 +22,8 @@
 </div>
 
 
-<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
-<a href="../mod/mod_rewrite.html">reference documentation</a>. It provides 
+<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It provides
 a few advanced techniques using mod_rewrite.</p>
 
 <div class="warning">Note that many of these examples won't work unchanged in your
@@ -51,8 +51,8 @@ configuration.</div>
     <dt>Description:</dt>
 
     <dd>
-      <p>A common technique for distributing the burden of 
-      server load or storage space is called "sharding". 
+      <p>A common technique for distributing the burden of
+      server load or storage space is called "sharding".
       When using this method, a front-end server will use the
       url to consistently "shard" users or objects to separate
       backend servers.</p>
@@ -136,7 +136,7 @@ RewriteRule ^(.+)\.html$          /regenerate_page.cgi   [PT,L]
     the CGI program <code>/regenerate_page.cgi</code>, which generates
     the requested resource and saves it into the document directory, so
     that the next time it is requested, a static copy can be served.</p>
-    
+
     <p>In this way, documents that are infrequently updated can be served in
     static form. if documents need to be refreshed, they can be deleted
     from the document directory, and they will then be regenerated the
@@ -403,7 +403,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
     </dd>
 
     <dt>Discussion:</dt>
-    <dd>This technique will of course also work with other 
+    <dd>This technique will of course also work with other
     special characters that mod_rewrite, by default, URL-encodes.</dd>
   </dl>
 

@@ -69,7 +69,7 @@
     </code></p></div>
 
     <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
-    at least one load balancer algorithm module, such as 
+    at least one load balancer algorithm module, such as
     <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>, in addition to the proxy
     modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
     default, and will be used for this example configuration.</p>

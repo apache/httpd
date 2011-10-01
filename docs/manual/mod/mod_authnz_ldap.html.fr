@@ -697,7 +697,7 @@ connexion</a></h2>
     spécifiés par la directive <code class="directive"><a href="#authldapurl">authldapurl</a></code> sont enregistrés
     dans des variables d'environnement préfixées par la chaîne
     "AUTHORIZE_".</p>
-    
+
     <p>Si les champs attribut contiennent le nom, le CN et le numéro de
     téléphone d'un utilisateur, un programme CGI pourra accéder à ces
     informations sans devoir effectuer une autre requête LDAP pour
@@ -995,7 +995,7 @@ pour effectuer les comparaisons pour l'attribution des autorisations</td></tr>
     cours des traitements de groupe imbriqués, et lorsque la directive
     <code class="directive"><a href="#authldapsearchasuser">AuthLDAPSearchAsUser</a></code>
     est aussi activée.</p>
-    
+
     <p>Cette directive ne doit être utilisée que si votre serveur LDAP
      n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
      utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
@@ -1115,10 +1115,10 @@ codées en dur pour le serveur</td></tr>
     directive permet de forcer le serveur à utiliser les véritables nom
     d'utilisateur et mot de passe fournis par l'utilisateur pour
     effectuer la recherche initiale du DN.</p>
- 
+
      <p>Si le nom d'utilisateur ne peut pas s'authentifier directement
      et nécessite de légères modifications, voir la directive <code class="directive"><a href="#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></code>.</p>
-   
+
      <p>Cette directive ne doit être utilisée que si votre serveur LDAP
      n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
      utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.
@@ -1162,7 +1162,7 @@ distant utilisé tel quel)</code></td></tr>
     l'authentification de base courant. L'argument
     <var>substitution</var> peut contenir des références arrières, mais
     n'effectue aucune autre interpolation de variable.</p>
-     
+
     <p>Cette directive ne doit être utilisée que si votre serveur LDAP
      n'autorise pas les recherches anonymes, ou si vous ne pouvez pas
      utiliser de nom d'utilisateur dédié via la directive <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code>.

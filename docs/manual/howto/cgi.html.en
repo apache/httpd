@@ -69,7 +69,7 @@
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
       
 
-      <p>The 
+      <p>The
       <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
 
       directive tells Apache that a particular directory is set
@@ -102,7 +102,7 @@
 
       <p>For example, if the URL
       <code>http://www.example.com/cgi-bin/test.pl</code>
-      is requested, Apache will attempt to execute the file 
+      is requested, Apache will attempt to execute the file
       <code>/usr/local/apache2/cgi-bin/test.pl</code>
       and return the output. Of course, the file will have to
       exist, and be executable, and return output in a particular
@@ -117,7 +117,7 @@
       use CGI programs. However, if the proper security precautions are
       taken, there is no reason why CGI programs cannot be run from
       arbitrary directories. For example, you may wish to let users
-      have web content in their home directories with the 
+      have web content in their home directories with the
       <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive.
       If they want to have their own CGI programs, but don't have access to
       the main <code>cgi-bin</code> directory, they will need to be able to
@@ -126,7 +126,7 @@
       <p>There are two steps to allowing CGI execution in an arbitrary
       directory.  First, the <code>cgi-script</code> handler must be
       activated using the <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> or <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> directive.  Second,
-      <code>ExecCGI</code> must be specified in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.</p> 
+      <code>ExecCGI</code> must be specified in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.</p>
     
 
     <h3><a name="options" id="options">Explicitly using Options to permit CGI execution</a></h3>
@@ -225,7 +225,7 @@
 
       <p>The following is an example CGI program that prints one
       line to your browser. Type in the following, save it to a
-      file called <code>first.pl</code>, and put it in your 
+      file called <code>first.pl</code>, and put it in your
       <code>cgi-bin</code> directory.</p>
 
       <div class="example"><p><code>
@@ -253,7 +253,7 @@
         http://www.example.com/cgi-bin/first.pl
       </code></p></div>
 
-      <p>or wherever you put your file, you will see the one line 
+      <p>or wherever you put your file, you will see the one line
       <code>Hello, World.</code> appear in your browser window.
       It's not very exciting, but once you get that working, you'll
       have a good chance of getting just about anything working.</p>
@@ -275,7 +275,7 @@
       <dt>The source code of your CGI program or a "POST Method Not
       Allowed" message</dt>
       <dd>That means that you have not properly configured Apache
-      to process your CGI program. Reread the section on 
+      to process your CGI program. Reread the section on
       <a href="#configuring">configuring
       Apache</a> and try to find what you missed.</dd>
 
@@ -285,7 +285,7 @@
       <a href="#permissions">file permissions</a>.</dd>
 
       <dt>A message saying "Internal Server Error"</dt>
-      <dd>If you check the 
+      <dd>If you check the
       <a href="#errorlogs">Apache error log</a>, you will probably
       find that it says "Premature end of
       script headers", possibly along with an error message
@@ -359,9 +359,9 @@
       assure that those variables are passed by Apache.</p>
 
       <p>When you miss HTTP headers from the environment, make
-      sure they are formatted according to 
+      sure they are formatted according to
       <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>,
-      section 4.2: Header names must start with a letter, 
+      section 4.2: Header names must start with a letter,
       followed only by letters, numbers or hyphen. Any header
       violating this rule will be dropped silently.</p>
 
@@ -449,7 +449,7 @@
       (where the computer searches for the actual file
       implementing a command when you type it), your username, your
       terminal type, and so on. For a full list of your normal,
-      every day environment variables, type 
+      every day environment variables, type
       <code>env</code> at a command prompt.</p>
 
       <p>During the CGI transaction, the server and the browser
@@ -460,19 +460,19 @@
 
       <p>These variables are available to the CGI programmer, and
       are half of the story of the client-server communication. The
-      complete list of required variables is at 
+      complete list of required variables is at
       <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
       Interface RFC</a>.</p>
 
       <p>This simple Perl CGI program will display all of the
       environment variables that are being passed around. Two
-      similar programs are included in the 
+      similar programs are included in the
       <code>cgi-bin</code>
 
       directory of the Apache distribution. Note that some
       variables are required, while others are optional, so you may
       see some variables listed that were not in the official list.
-      In addition, Apache provides many different ways for you to 
+      In addition, Apache provides many different ways for you to
       <a href="../env.html">add your own environment variables</a>
       to the basic ones provided by default.</p>
 
@@ -492,10 +492,10 @@
 
       <p>Other communication between the server and the client
       happens over standard input (<code>STDIN</code>) and standard
-      output (<code>STDOUT</code>). In normal everyday context, 
-      <code>STDIN</code> means the keyboard, or a file that a 
+      output (<code>STDOUT</code>). In normal everyday context,
+      <code>STDIN</code> means the keyboard, or a file that a
       program is given to act on, and <code>STDOUT</code>
-      usually means the console or screen.</p> 
+      usually means the console or screen.</p>
 
       <p>When you <code>POST</code> a web form to a CGI program,
       the data in that form is bundled up into a special format
@@ -517,10 +517,10 @@
 
       <p>You'll sometimes also see this type of string appended to
       a URL. When that is done, the server puts that string
-      into the environment variable called 
+      into the environment variable called
       <code>QUERY_STRING</code>. That's called a <code>GET</code>
       request. Your HTML form specifies whether a <code>GET</code>
-      or a <code>POST</code> is used to deliver the data, by setting the 
+      or a <code>POST</code> is used to deliver the data, by setting the
       <code>METHOD</code> attribute in the <code>FORM</code> tag.</p>
 
       <p>Your program is then responsible for splitting that string
@@ -544,14 +544,14 @@
     set of functionality, which is all you need in most programs.</p>
 
     <p>If you're writing CGI programs in C, there are a variety of
-    options. One of these is the <code>CGIC</code> library, from 
+    options. One of these is the <code>CGIC</code> library, from
     <a href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="moreinfo" id="moreinfo">For more information</a></h2>
     
 
-    <p>The current CGI specification is available in the 
+    <p>The current CGI specification is available in the
     <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
     Interface RFC</a>.</p>
 

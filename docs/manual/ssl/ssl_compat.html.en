@@ -69,9 +69,9 @@ doesn't provide.</p>
 <tr class="odd"><td><code>SSLDisable</code></td><td><code>SSLEngine off</code></td><td>compactified</td></tr>
 <tr><td><code>SSLLogFile</code> <em>file</em></td><td><code>SSLLog</code> <em>file</em></td><td>compactified</td></tr>
 <tr class="odd"><td><code>SSLRequiredCiphers</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renamed</td></tr>
-<tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>", 
+<tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>",
 ...}</code></td><td>generalized</td></tr>
-<tr class="odd"><td><code>SSLBanCipher</code> <em>c1</em> ...</td><td><code>SSLRequire not (%{SSL_CIPHER} in {"</code><em>c1</em><code>", 
+<tr class="odd"><td><code>SSLBanCipher</code> <em>c1</em> ...</td><td><code>SSLRequire not (%{SSL_CIPHER} in {"</code><em>c1</em><code>",
 ...})</code></td><td>generalized</td></tr>
 <tr><td><code>SSLFakeBasicAuth</code></td><td><code>SSLOptions +FakeBasicAuth</code></td><td>merged</td></tr>
 <tr class="odd"><td><code>SSLCacheServerPath</code> <em>dir</em></td><td>-</td><td>functionality removed</td></tr>
@@ -115,7 +115,7 @@ doesn't provide.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Environment Variables</a></h2> 
+<h2><a name="variables" id="variables">Environment Variables</a></h2>
 
 <p>The mapping between environment variable names used by the older
 SSL solutions and the names used by mod_ssl is given in <a href="#table2">Table 2</a>.</p>

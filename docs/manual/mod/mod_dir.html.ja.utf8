@@ -123,7 +123,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Configures an external redirect for directory indexes.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother | 
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-code</var>
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>

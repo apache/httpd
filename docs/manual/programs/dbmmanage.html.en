@@ -108,27 +108,27 @@
       <dt><code>add</code></dt>
       <dd>Adds an entry for <var>username</var> to <var>filename</var> using the
       encrypted password <var>encpasswd</var>.
-      
+
       <div class="example"><p><code>dbmmanage passwords.dat add rbowen foKntnEF3KSXA</code></p></div>
       </dd>
 
       <dt><code>adduser</code></dt>
       <dd>Asks for a password and then adds an entry for <var>username</var> to
       <var>filename</var>.
-      
+
       <div class="example"><p><code>dbmmanage passwords.dat adduser krietz</code></p></div>
       </dd>
 
       <dt><code>check</code></dt>
       <dd>Asks for a password and then checks if <var>username</var> is in
       <var>filename</var> and if it's password matches the specified one.
-      
+
       <div class="example"><p><code>dbmmanage passwords.dat check rbowen</code></p></div>
       </dd>
 
       <dt><code>delete</code></dt>
       <dd>Deletes the <var>username</var> entry from <var>filename</var>.
-      
+
       <div class="example"><p><code>dbmmanage passwords.dat delete rbowen</code></p></div>
       </dd>
 
@@ -140,14 +140,14 @@
       <dt><code>update</code></dt>
       <dd>Same as the <code>adduser</code> command, except that it makes
       sure <var>username</var> already exists in <var>filename</var>.
-      
+
       <div class="example"><p><code>dbmmanage passwords.dat update rbowen</code></p></div>
       </dd>
 
       <dt><code>view</code></dt>
       <dd>Just displays the contents of the DBM file. If you specify a
       <var>username</var>, it displays the particular record only.
-      
+
       <div class="example"><p><code>dbmmanage passwords.dat view</code></p></div>
       </dd>
       </dl>

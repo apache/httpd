@@ -67,7 +67,7 @@
     by the <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> module. Therefore, that module
     must be compiled into the server or loaded at runtime using the
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive.</p>
-    
+
     <p>In addition, a location for the DAV lock database must be
     specified in the global section of your <code>httpd.conf</code>
     file using the <code class="directive"><a href="../mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code>

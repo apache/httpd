@@ -254,7 +254,7 @@ Alias /foo /srv/www/common/foo<br />
 ProxyPass /special-area http://special.example.com smax=5 max=10<br />
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 </code></p></div>
- 
+
 
 
 <h3><a name="wildcards" id="wildcards">Caractères de remplacement

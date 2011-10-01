@@ -27,7 +27,7 @@
 
     <p>In order to effectively manage a web server, it is necessary
     to get feedback about the activity and performance of the
-    server as well as any problems that may be occurring. The Apache HTTP Server 
+    server as well as any problems that may be occurring. The Apache HTTP Server
     provides very comprehensive and flexible logging
     capabilities. This document describes how to configure its
     logging capabilities, and how to understand what the logs
@@ -108,11 +108,11 @@
     program</a>.</p>
 
     <p>The format of the error log is defined by the <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code> directive, with which you
-    can customize what values are logged. A default is format defined 
+    can customize what values are logged. A default is format defined
     if you don't specify one. A typical log message follows:</p>
 
     <div class="example"><p><code>
-    [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416] 
+    [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]
     [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
     </code></p></div>
 
@@ -183,7 +183,7 @@
     server. The location and content of the access log are
     controlled by the <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
     directive. The <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code>
-    directive can be used to simplify the selection of 
+    directive can be used to simplify the selection of
     the contents of the logs. This section describes how to configure the server
     to record information in the access log.</p>
 
@@ -296,7 +296,7 @@
 
         <dd>
           The time that the request was received.
-          The format is: 
+          The format is:
 
           <p class="indent">
             <code>[day/month/year:hour:minute:second zone]<br />
@@ -401,7 +401,7 @@
       
 
       <p>Multiple access logs can be created simply by specifying
-      multiple <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> 
+      multiple <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
       directives in the configuration
       file. For example, the following directives will create three
       access logs. The first contains the basic CLF information,
@@ -428,7 +428,7 @@
       entries from the access logs based on characteristics of the
       client request. This is easily accomplished with the help of <a href="env.html">environment variables</a>. First, an
       environment variable must be set to indicate that the request
-      meets certain conditions. This is usually accomplished with 
+      meets certain conditions. This is usually accomplished with
       <code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. Then the
       <code>env=</code> clause of the <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> directive is used to
       include or exclude requests where the environment variable is
@@ -603,7 +603,7 @@
     for easy collection of statistics on individual virtual
     hosts.</p>
 
-    <p>If <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> 
+    <p>If <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
     or <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>
     directives are placed inside a
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
@@ -668,7 +668,7 @@
       terminating the daemon by sending signals to the parent
       process; on Windows, use the -k command line option instead.
       For more information see the <a href="stopping.html">Stopping
-      and Restarting</a> page.</p>    
+      and Restarting</a> page.</p>
     
 
     <h3><a name="scriptlog" id="scriptlog">Script Log</a></h3>

@@ -57,7 +57,7 @@
     found in <code>build/config.nice</code> in the installed server
     directory) can be used in most cases.  There are some changes in
     the default settings.  Some details of changes:</p>
-    
+
     <ul>
       <li>These modules have been removed: mod_authn_default,
       mod_authz_default, mod_mem_cache.  If you were using

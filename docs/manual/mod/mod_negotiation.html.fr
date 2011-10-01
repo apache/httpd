@@ -171,7 +171,7 @@ contenu</a></li>
     <code>document.html.fr</code>, et <code>document.html.de</code>. Le
     fichier de correspondances de types se nommera
     <code>document.html.var</code> et contiendra ce qui suit :</p>
-    
+
     <div class="example"><p><code>
     URI: document.html<br />
     <br />

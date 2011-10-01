@@ -30,9 +30,9 @@ address)</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>access_compat_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_access_compat.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3 as a compatibility module with 
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3 as a compatibility module with
 previous versions of Apache httpd 2.x.  The directives provided by this module
-have been deprecated by the new authz refactoring.  Please see 
+have been deprecated by the new authz refactoring.  Please see
 <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></td></tr></table>
 <h3>Summary</h3>
 
@@ -57,7 +57,7 @@ have been deprecated by the new authz refactoring.  Please see
 
     <div class="warning"><h3>Note</h3>
       <p>The directives provided by <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> have
-      been deprecated by the new authz refactoring. Please see 
+      been deprecated by the new authz refactoring. Please see
       <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
     </div>
 
@@ -183,8 +183,8 @@ server</td></tr>
     to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Allow from
     env=<var>env-variable</var></code> is specified, then the request is
     allowed access if the environment variable <var>env-variable</var>
-    exists. When <code>Allow from env=!<var>env-variable</var></code> is 
-    specified, then the request is allowed access if the environment 
+    exists. When <code>Allow from env=!<var>env-variable</var></code> is
+    specified, then the request is allowed access if the environment
     variable <var>env-variable</var> doesn't exist.
     The server provides the ability to set environment
     variables in a flexible way based on characteristics of the client
@@ -422,7 +422,7 @@ later</td></tr>
 
     <div class="example"><p><code>
       &lt;Directory /var/www/private&gt;<br />
-        Require valid-user<br /> 
+        Require valid-user<br />
       &lt;/Directory&gt;<br />
       <br />
       &lt;Directory /var/www/private/public&gt;<br />

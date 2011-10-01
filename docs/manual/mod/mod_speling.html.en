@@ -80,7 +80,7 @@ misspellings.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_speling</td></tr>
 </table>
-    <p>When set, this directive limits the action of the spelling correction to lower/upper case changes. 
+    <p>When set, this directive limits the action of the spelling correction to lower/upper case changes.
     Other potential corrections are not performed.</p>
 
 
@@ -88,7 +88,7 @@ misspellings.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a> <a name="checkspelling" id="checkspelling">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables the spelling 
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables the spelling
 module</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CheckSpelling on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CheckSpelling Off</code></td></tr>

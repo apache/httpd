@@ -109,7 +109,7 @@
     inclut un module de gestion de stockage :</p>
     <dl>
     <dt><code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code></dt>
-    
+
     <dd>implémente un gestionnaire de stockage sur disque. Les en-têtes
     et corps sont stockés séparément sur le disque dans une structure de
     répertoires basée sur le condensé md5 de l'URL mise en cache.
@@ -427,14 +427,14 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
   en-tête <strong>X-Cache-Detail</strong> est ajouté à la réponse et
   contient les raisons précises d'une décision d'utilisation du cache
   vis à vis de cette dernière.</p>
-   
+
   <p>Ceci peut s'avérer utile au cours du développement de services
   RESTful mis en cache pour obtenir des informations supplémentaires à
   propos des décisions vis à vis du cache écrites dans les en-têtes de
   la réponse. Il est ainsi possible de vérifier si
   <code>Cache-Control</code> et d'autres en-têtes ont été correctement
   utilisés par le service et le client.</p>
-  
+
   <p>Si le gestionnaire normal est utilisé, cette directive peut se
   situer dans une section <code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#&lt;location&gt;">&lt;Location&gt;</a></code>. Si c'est le gestionnaire
   rapide qui est utilisé, elle doit se situer dans un contexte de
