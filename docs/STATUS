@@ -157,6 +157,15 @@ To Do List
   different approaches and make intelligent remarks about the
   comparative value of each.
 
+- Fix this error message:
+    Request exceeded the limit of 10 internal redirects due to probable
+    configuration error. Use 'LimitInternalRecursion' to increase the limit
+    if necessary. Use 'LogLevel debug' to get a backtrace.
+  This error message is often returned when a RewriteRUle loops, in
+  which case setting LimitInternalRecursion won't do anything towards
+  fixing the problem. However, the error message is already very long.
+  Thoughts?
+
 LaTeX Todo list
 ==================
 
@@ -172,4 +181,5 @@ LaTeX Todo list
 - Reduce the size of the pdf (both bytes and pages) in any way possible.
 
 - Translations.
+
 
