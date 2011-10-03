@@ -685,6 +685,23 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
     return 1;
 }
 
+static int table_do_fn_check_lengths(void *r_, const char *key,
+                                     const char *value)
+{
+    request_rec *r = r_;
+    if (value == NULL || r->server->limit_req_fieldsize >= strlen(value) )
+        return 1;
+
+    r->status = HTTP_BAD_REQUEST;
+    apr_table_setn(r->notes, "error-notes",
+                   apr_pstrcat(r->pool, "Size of a request header field "
+                               "after merging exceeds server limit.<br />"
+                               "\n<pre>\n",
+                               ap_escape_html(r->pool, key),
+                               "</pre>\n", NULL));
+    return 0;
+}
+
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
 {
     char *last_field = NULL;
@@ -850,6 +867,9 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
      * field-name, following RFC 2616, 4.2.
      */
     apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
+
+    /* enforce LimitRequestFieldSize for merged headers */
+    apr_table_do(table_do_fn_check_lengths, r, r->headers_in, NULL);
 }
 
 AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
