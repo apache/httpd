@@ -132,12 +132,15 @@ SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
 #   Certificate Revocation Lists (CRL):
 #   Set the CA revocation path where to find CA CRLs for client
 #   authentication or alternatively one huge file containing all
-#   of them (file must be PEM encoded)
+#   of them (file must be PEM encoded).
+#   The CRL checking mode needs to be configured explicitly
+#   through SSLCARevocationCheck (defaults to "none" otherwise).
 #   Note: Inside SSLCARevocationPath you need hash symlinks
 #         to point to the certificate files. Use the provided
 #         Makefile to update the hash symlinks after changes.
 #SSLCARevocationPath "@exp_sysconfdir@/ssl.crl"
 #SSLCARevocationFile "@exp_sysconfdir@/ssl.crl/ca-bundle.crl"
+#SSLCARevocationCheck chain
 
 #   Client Authentication (Type):
 #   Client certificate verification type and depth.  Types are
