@@ -1641,7 +1641,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
                 return TRUE;
             }
 
-           if (ca_cert_chains) {
+            if (ca_cert_chains) {
                 /*
                  * Failed to find direct issuer - search intermediates
                  * (by issuer name), if provided.
