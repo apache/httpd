@@ -129,6 +129,7 @@ RELEASE SHOWSTOPPERS:
     +1: jim, rjung
     rjung: You might want to add the "special case: 0- ..." comment from the
            2.2 patch. I'm fine either way.
+    jim:   Added.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
