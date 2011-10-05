@@ -1220,6 +1220,15 @@ expressions</description>
     <p>If you require a more flexible reverse-proxy configuration, see the
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
     <code>[P]</code> flag.</p>
+
+    <note type="warning">
+      <title>Security Warning</title>
+      <p>Take care when constructing the target URL of the rule, considering
+        the security impact from allowing the client influence over the set of
+        URLs to which your server will act as a proxy.  Ensure that the scheme
+        and hostname part of the URL is either fixed, or does not allow the
+        client undue influence.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
