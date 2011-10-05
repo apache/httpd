@@ -482,7 +482,7 @@ example, if you wanted all image requests to be handled by a back-end
 image server, you might do something like the following:</p>
 
 <example>
-RewriteRule (.*)\.(jpg|gif|png) http://images.example.com$1.$2 [P]
+RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]
 </example>
 
 <p>Use of the [P] flag implies [L] - that is, the request is immediately
@@ -497,6 +497,15 @@ error from the proxy module. Use this flag to achieve a
 more powerful implementation of the <directive
 module="mod_proxy">ProxyPass</directive> directive,
 to map remote content into the namespace of the local server.</p>
+
+<note type="warning">
+<title>Security Warning</title>
+<p>Take care when constructing the target URL of the rule, considering
+the security impact from allowing the client influence over the set of
+URLs to which your server will act as a proxy.  Ensure that the scheme
+and hostname part of the URL is either fixed, or does not allow the
+client undue influence.</p>
+</note>
 
 <p>Note: <module>mod_proxy</module> must be enabled in order
 to use this flag.</p>
