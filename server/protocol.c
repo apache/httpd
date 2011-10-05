@@ -655,6 +655,25 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 
     ap_parse_uri(r, uri);
 
+    /* RFC 2616:
+     *   Request-URI    = "*" | absoluteURI | abs_path | authority
+     *
+     * authority is a special case for CONNECT.  If the request is not
+     * using CONNECT, and the parsed URI does not have scheme, and
+     * it does not begin with '/', and it is not '*', then, fail
+     * and give a 400 response. */
+    if (r->method_number != M_CONNECT 
+        && !r->parsed_uri.scheme 
+        && uri[0] != '/'
+        && !(uri[0] == '*' && uri[1] == '\0')) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "invalid request-URI %s", uri);
+        r->args = NULL;
+        r->hostname = NULL;
+        r->status = HTTP_BAD_REQUEST;
+        r->uri = apr_pstrdup(r->pool, uri);
+    }
+
     if (ll[0]) {
         r->assbackwards = 0;
         pro = ll;
