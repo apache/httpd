@@ -1393,6 +1393,15 @@ through</td></tr>
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
     <code>[P]</code> flag.</p>
 
+    <div class="warning">
+      <h3>Security Warning</h3>
+      <p>Take care when constructing the target URL of the rule, considering
+        the security impact from allowing the client influence over the set of
+        URLs to which your server will act as a proxy.  Ensure that the scheme
+        and hostname part of the URL is either fixed, or does not allow the
+        client undue influence.</p>
+    </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse">Directive</a></h2>
