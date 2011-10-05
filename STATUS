@@ -114,9 +114,26 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  * SECURITY (CVE-2011-3368): Prevent unintended pattern expansion in some
+    reverse proxy configurations by strictly validating the request-URI.
+    Trunk patch: http://svn.apache.org/viewvc?rev=1179239&view=rev
+    2.2.x patch: http://www.apache.org/dist/httpd/patches/apply_to_2.2.21/CVE-2011-3368.patch
+    +1: jim
+
+  * byterange: Range of '0-' returns 206.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
+                 http://svn.apache.org/viewvc?view=revision&revision=1175992
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1177080
+    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1177081
+    2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
+    +1: jim, rjung
+    rjung: You might want to add the "special case: 0- ..." comment from the
+           2.2 patch. I'm fine either way.
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -154,16 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport: http://people.apache.org/~rjung/patches/pr-39369-2_0.patch
     Revert r1002174 in test framework, once this is fixed.
     +1: rjung, wrowe
-
-  * byterange: Range of '0-' returns 206.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1175980
-                 http://svn.apache.org/viewvc?view=revision&revision=1175992
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1177080
-    2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1177081
-    2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
-    +1: jim, rjung
-    rjung: You might want to add the "special case: 0- ..." comment from the
-           2.2 patch. I'm fine either way.
 
   * byterange: Backport MaxRanges configuration directive and
     ap_set_accept_ranges() utility function.
