@@ -142,7 +142,7 @@ int ap_max_requests_per_child;
 char ap_coredump_dir[MAX_STRING_LEN];
 int ap_coredumpdir_configured;
 int ap_graceful_shutdown_timeout;
-apr_uint32_t ap_max_mem_free;
+AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 apr_size_t ap_thread_stacksize;
 
 /* Set defaults for config directives implemented here.  This is
