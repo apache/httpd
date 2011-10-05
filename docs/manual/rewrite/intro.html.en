@@ -73,7 +73,7 @@ Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
 recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
 <a href="http://perldoc.perl.org/perlre.html">Perl regular
-expression man page</a>, and <a href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
+expression man page</a>, and <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
 <p>In this document, we attempt to provide enough of a regex vocabulary
