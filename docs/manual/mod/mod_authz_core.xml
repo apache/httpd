@@ -237,7 +237,7 @@
   decisions on arbitrary expressions.</p>
 
     <example>
-        Require expr %{TIME_HOUR} &gt;= 9 &amp; %{TIME_HOUR} &lt;= 17 <br />
+        Require expr %{TIME_HOUR} &gt;= 9 &amp;&amp; %{TIME_HOUR} &lt;= 17 <br />
     </example>
 
   <p>The syntax is described in the <a href="../expr.html">ap_expr</a>
