@@ -314,7 +314,7 @@ AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, \
 int ap_signal_server(int *, apr_pool_t *);
 void ap_mpm_rewrite_args(process_rec *);
 
-AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
+extern AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 extern const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
                                            const char *arg);
 
