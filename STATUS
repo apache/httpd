@@ -89,12 +89,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  * SECURITY (CVE-2011-3368): Prevent unintended pattern expansion in some
-    reverse proxy configurations by strictly validating the request-URI.
-    Trunk patch: http://svn.apache.org/viewvc?rev=1179239&view=rev
-    2.2.x patch: http://www.apache.org/dist/httpd/patches/apply_to_2.2.21/CVE-2011-3368.patch
-    +1: jim, covener, rjung
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
