@@ -98,7 +98,9 @@
         <td>Filename.</td></tr>
 
     <tr><td><code>%h</code></td>
-        <td>Remote host.</td></tr>
+        <td>Remote hostname. Will log the IP address if <directive
+        module="core">HostnameLookups</directive> is set to
+        <code>Off</code>, which is the default.</td></tr>
 
     <tr><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
