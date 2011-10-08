@@ -37,6 +37,7 @@ the load on backends</td></tr>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authncachecontext">AuthnCacheContext</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authncacheenable">AuthnCacheEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authncacheprovidefor">AuthnCacheProvideFor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authncachesocache">AuthnCacheSOCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authncachetimeout">AuthnCacheTimeout</a></li>
@@ -129,6 +130,24 @@ the load on backends</td></tr>
     credentials are shared.  However, this has potential to become a vector
     for cross-site or cross-application security breaches, so this directive
     is not permitted in <var>.htaccess</var> contexts.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthnCacheEnable" id="AuthnCacheEnable">AuthnCacheEnable</a> <a name="authncacheenable" id="authncacheenable">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable Authn caching configured anywhere</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthnCacheEnable</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>None</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_socache</td></tr>
+</table>
+    <p>This directive is not normally necessary: it is implied if
+    authentication cacheing is enabled anywhere in <var>httpd.conf</var>.
+    However, if it is not enabled anywhere in <var>httpd.conf</var>
+    it will by default not be initialised, and is therefore not
+    available in a <var>.htaccess</var> context.  This directive
+    ensures it is initialised so it can be used in <var>.htaccess</var>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

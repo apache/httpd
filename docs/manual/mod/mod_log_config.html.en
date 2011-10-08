@@ -101,7 +101,10 @@
         <td>Filename.</td></tr>
 <tr class="odd"><td><code>%h</code></td>
         <td>Remote hostname. Will log the IP address if <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> is set to
-        <code>Off</code>, which is the default.</td></tr>
+        <code>Off</code>, which is the default. If it logs the hostname
+        for only a few hosts, you probably have access control
+        directives mentioning them by name. See <a href="mod_authz_host.html#reqhost">the Require host
+        documentation</a>.</td></tr>
 <tr><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
 <tr class="odd"><td><code>%{<var>VARNAME</var>}i</code></td>
