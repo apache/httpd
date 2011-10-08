@@ -151,6 +151,13 @@ static const char *authn_cache_socache(cmd_parms *cmd, void *CFG,
     return errmsg;
 }
 
+static const char *authn_cache_enable(cmd_parms *cmd, void *CFG)
+{
+    const char *errmsg = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    configured = 1;
+    return errmsg;
+}
+
 static const char *const directory = "directory";
 static void* authn_cache_dircfg_create(apr_pool_t *pool, char *s)
 {
@@ -205,6 +212,8 @@ static const command_rec authn_cache_cmds[] =
     /* global stuff: cache and mutex */
     AP_INIT_TAKE1("AuthnCacheSOCache", authn_cache_socache, NULL, RSRC_CONF,
                   "socache provider for authn cache"),
+    AP_INIT_NO_ARGS("AuthnCacheEnable", authn_cache_enable, NULL, RSRC_CONF,
+                    "enable socache configuration in htaccess even if not enabled anywhere else"),
     /* per-dir stuff */
     AP_INIT_ITERATE("AuthnCacheProvideFor", authn_cache_setprovider, NULL,
                     OR_AUTHCFG, "Determine what authn providers to cache for"),
@@ -250,7 +259,7 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
 
     /* first check whether we're cacheing for this module */
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
-    if (!dcfg->providers) {
+    if (!configured || !dcfg->providers) {
         return;
     }
     for (i = 0; i < dcfg->providers->nelts; ++i) {
@@ -327,7 +336,7 @@ static authn_status check_password(request_rec *r, const char *user,
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
-    if (!dcfg->providers) {
+    if (!configured || !dcfg->providers) {
         return AUTH_USER_NOT_FOUND;
     }
     key = construct_key(r, dcfg->context, user, NULL);
@@ -372,7 +381,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
-    if (!dcfg->providers) {
+    if (!configured || !dcfg->providers) {
         return AUTH_USER_NOT_FOUND;
     }
     key = construct_key(r, dcfg->context, user, realm);

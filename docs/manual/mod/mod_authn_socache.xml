@@ -94,6 +94,23 @@ the load on backends</description>
 </section>
 
 <directivesynopsis>
+<name>AuthnCacheEnable</name>
+<description>Enable Authn caching configured anywhere</description>
+<syntax>AuthnCacheEnable</syntax>
+<contextlist><context>server config</context></contextlist>
+<override>None</override>
+
+<usage>
+    <p>This directive is not normally necessary: it is implied if
+    authentication cacheing is enabled anywhere in <var>httpd.conf</var>.
+    However, if it is not enabled anywhere in <var>httpd.conf</var>
+    it will by default not be initialised, and is therefore not
+    available in a <var>.htaccess</var> context.  This directive
+    ensures it is initialised so it can be used in <var>.htaccess</var>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>AuthnCacheSOCache</name>
 <description>Select socache backend provider to use</description>
 <syntax>AuthnCacheSOCache <var>provider-name</var></syntax>
