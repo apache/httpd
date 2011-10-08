@@ -1816,6 +1816,10 @@ media type in the HTTP Content-Type header field</td></tr>
     directory, can be used to look up host names from logged IP addresses
     offline.</p>
 
+    <p>Finally, if you have <a href="mod_authz_host.html#reqhost">hostname-based Require
+    directives</a>, a hostname lookup will be performed regardless of
+    the setting of <code>HostnameLookups</code>.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Directive</a></h2>

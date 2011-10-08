@@ -129,6 +129,7 @@
 <li><a href="mod_authz_core.html#authmerging">AuthMerging</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_socache.html#authncachecontext">AuthnCacheContext</a></li>
+<li><a href="mod_authn_socache.html#authncacheenable">AuthnCacheEnable</a></li>
 <li><a href="mod_authn_socache.html#authncacheprovidefor">AuthnCacheProvideFor</a></li>
 <li><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></li>
 <li><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout</a></li>
