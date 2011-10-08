@@ -1791,6 +1791,11 @@ media type in the HTTP Content-Type header field</description>
     default to the <code>bin</code> subdirectory of your installation
     directory, can be used to look up host names from logged IP addresses
     offline.</p>
+
+    <p>Finally, if you have <a
+    href="mod_authz_host.html#reqhost">hostname-based Require
+    directives</a>, a hostname lookup will be performed regardless of
+    the setting of <code>HostnameLookups</code>.</p>
 </usage>
 </directivesynopsis>
 
