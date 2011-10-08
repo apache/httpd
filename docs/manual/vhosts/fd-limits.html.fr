@@ -24,55 +24,53 @@
 <a href="../ko/vhosts/fd-limits.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/fd-limits.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
-    <p>Quand de nombreux serveurs virtuels sont créés, Apache peut 
-    dépasser les limites en descripteurs de fichiers ('file descriptors', 
-    également appelés <cite>gestionnaires de fichiers</cite>) si chacun 
-    des serveurs virtuels utilise ses propres fichiers journaux. Le 
-    nombre total de descripteurs de fichiers utilisés par Apache est 
-    d'un par fichier journal, un pour chacune des autres directives 
-    de fichiers journaux, plus un nombre constant compris entre 10 et 20 
-    pour son fonctionnement interne. Les systèmes d'exploitation Unix 
-    limitent le nombre de descripteurs de fichiers utilisables par 
-    processus&nbsp;; une valeur courante pour cette limite est de 64, et 
+    <p>Quand de nombreux serveurs virtuels sont créés, Apache peut
+    dépasser les limites en descripteurs de fichiers ('file descriptors',
+    également appelés <cite>gestionnaires de fichiers</cite>) si chacun
+    des serveurs virtuels utilise ses propres fichiers journaux. Le
+    nombre total de descripteurs de fichiers utilisés par Apache est
+    d'un par fichier journal, un pour chacune des autres directives
+    de fichiers journaux, plus un nombre constant compris entre 10 et 20
+    pour son fonctionnement interne. Les systèmes d'exploitation Unix
+    limitent le nombre de descripteurs de fichiers utilisables par
+    processus&nbsp;; une valeur courante pour cette limite est de 64, et
     cette valeur peut le plus souvent être augmentée.</p>
 
-    <p>Apache tente d'accroître cette valeur limite si nécessaire, mais 
+    <p>Apache tente d'accroître cette valeur limite si nécessaire, mais
     sans y parvenir dans les cas suivants&nbsp;:</p>
 
     <ol>
-      <li>Le système d'exploitation ne permet pas l'utilisation d'appels 
+      <li>Le système d'exploitation ne permet pas l'utilisation d'appels
       systèmes <code>setrlimit()</code>.</li>
 
-      <li>L'appel <code>setrlimit(RLIMIT_NOFILE)</code> ne fonctionne pas 
+      <li>L'appel <code>setrlimit(RLIMIT_NOFILE)</code> ne fonctionne pas
       sur votre système d'exploitation (c'est le cas sous Solaris 2.3).</li>
 
-      <li>Le nombre de descripteurs de fichiers nécessaires à Apache 
+      <li>Le nombre de descripteurs de fichiers nécessaires à Apache
       dépasse la limite physique du matériel.</li>
-      
-      <li>Le système impose d'autres limites sur l'utilisation des 
-      descripteurs de fichiers, comme par exemple une limite sur les 
-      flux stdio, utilisables uniquement sur les descripteurs de 
+
+      <li>Le système impose d'autres limites sur l'utilisation des
+      descripteurs de fichiers, comme par exemple une limite sur les
+      flux stdio, utilisables uniquement sur les descripteurs de
       fichiers inférieurs à 256. (sous Solaris 2).</li>
     </ol>
 
     <p>En cas de problème, Vous pouvez&nbsp;:</p>
 
     <ul>
-      <li>Réduire le nombre de fichiers journaux, en ne spécifiant 
-      aucun fichier journal dans les sections 
-      <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, 
-      en donc en envoyant les informations aux fichiers journaux du 
-      serveur principal (Voir <a href="#splitlogs">Éclatement des 
-      fichiers journaux</a> ci-dessous pour plus d'informations sur 
+      <li>Réduire le nombre de fichiers journaux, en ne spécifiant
+      aucun fichier journal dans les sections
+      <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
+      en donc en envoyant les informations aux fichiers journaux du
+      serveur principal (Voir <a href="#splitlogs">Éclatement des
+      fichiers journaux</a> ci-dessous pour plus d'informations sur
       cette possibilité).</li>
 
       <li>
-        Dans les cas 1 ou 2 (évoqués ci-dessus), augmentez la limite sur 
-        les descripteurs de fichiers avant le démarrage d'Apache, au 
+        Dans les cas 1 ou 2 (évoqués ci-dessus), augmentez la limite sur
+        les descripteurs de fichiers avant le démarrage d'Apache, au
         moyen d'un script comme
 
         <div class="example"><p><code>
@@ -82,7 +80,7 @@
         </code></p></div>
       </li>
     </ul>
-    
+
 
 
 </div>
@@ -90,16 +88,16 @@
 <div class="section">
 <h2><a name="splitlogs" id="splitlogs">Éclatement des fichiers journaux</a></h2>
 
-<p>Lorsque vous choisissez d'enregistrer les informations émanant de 
-plusieurs serveurs virtuels dans un même fichier journal, vous voudrez 
-ensuite pouvoir scinder ces informations à des fins de statistiques, par 
-exemple, sur les différents serveurs virtuels. Il est possible de procéder 
+<p>Lorsque vous choisissez d'enregistrer les informations émanant de
+plusieurs serveurs virtuels dans un même fichier journal, vous voudrez
+ensuite pouvoir scinder ces informations à des fins de statistiques, par
+exemple, sur les différents serveurs virtuels. Il est possible de procéder
 de la manière suivante&nbsp;:</p>
 
-<p>Tout d'abord, vous devez ajouter le nom du serveur virtuel à chaque 
-entrée du journal. Ceci se paramètre au moyen de la directive 
-<code class="directive"><a href="../mod/mod_log_config.html# logformat"> LogFormat</a></code> et de la 
-variable <code>%v</code>. Ajoutez cette variable au début de la chaîne 
+<p>Tout d'abord, vous devez ajouter le nom du serveur virtuel à chaque
+entrée du journal. Ceci se paramètre au moyen de la directive
+<code class="directive"><a href="../mod/mod_log_config.html# logformat"> LogFormat</a></code> et de la
+variable <code>%v</code>. Ajoutez cette variable au début de la chaîne
 de définition du format de journalisations&nbsp;:</p>
 
 <div class="example"><p><code>
@@ -107,18 +105,18 @@ LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
 CustomLog logs/multiple_vhost_log vhost
 </code></p></div>
 
-<p>Cette configuration va provoquer la création d'un fichier de 
-journalisation au format standard (CLF&nbsp;: 'Common Log Format'), mais dont 
-chaque ligne débutera par le nom canonique du serveur virtuel (spécifié 
-par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>). 
-(Voir <code class="directive"><a href="../mod/mod_log_config.html#formats de journalisation &#10;personnalisés">Formats de journalisation 
-personnalisés</a></code> pour d'autres informations sur la 
+<p>Cette configuration va provoquer la création d'un fichier de
+journalisation au format standard (CLF&nbsp;: 'Common Log Format'), mais dont
+chaque ligne débutera par le nom canonique du serveur virtuel (spécifié
+par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>).
+(Voir <code class="directive"><a href="../mod/mod_log_config.html#formats de journalisation&#10;personnalisés">Formats de journalisation
+personnalisés</a></code> pour d'autres informations sur la
 personnalisation des fichiers journaux.)</p>
 
-<p>Au moment de séparer les informations du fichier journal en un fichier 
+<p>Au moment de séparer les informations du fichier journal en un fichier
 par serveur virtuel, le programme <code>
-<a href="../programs/other.html">split-logfile</a></code> peut être 
-utilisé. Ce programme peut être trouvé dans le répertoire 
+<a href="../programs/other.html">split-logfile</a></code> peut être
+utilisé. Ce programme peut être trouvé dans le répertoire
 <code>support</code> de la distribution d'Apache.</p>
 
 <p>Exécutez ce programme au moyen de la commande&nbsp;:</p>
@@ -127,9 +125,9 @@ utilisé. Ce programme peut être trouvé dans le répertoire
 split-logfile &lt; /logs/multiple_vhost_log
 </code></p></div>
 
-<p>Une fois exécuté avec le nom du fichier contenant tous les journaux, 
-ce programme va générer un fichier pour chacun des serveurs virtuels 
-qui apparaît dans le fichier d'entrée. Chaque fichier en sortie est 
+<p>Une fois exécuté avec le nom du fichier contenant tous les journaux,
+ce programme va générer un fichier pour chacun des serveurs virtuels
+qui apparaît dans le fichier d'entrée. Chaque fichier en sortie est
 nommé <code>nomduserveur.log</code>.</p>
 
 </div></div>
