@@ -566,6 +566,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     double expiry_total = 0;
     int index_pct, cache_pct;
 
+    AP_DEBUG_ASSERT(header->subcache_num > 0);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "inside shmcb_status");
     /* Perform the iteration inside the mutex to avoid corruption or invalid
      * pointer arithmetic. The rest of our logic uses read-only header data so

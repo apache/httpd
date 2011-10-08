@@ -257,7 +257,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->session_cache_timeout = SSL_SESSION_CACHE_TIMEOUT;
         }
 
-        if (sc->server->pphrase_dialog_type == SSL_PPTYPE_UNSET) {
+        if (sc->server && sc->server->pphrase_dialog_type == SSL_PPTYPE_UNSET) {
             sc->server->pphrase_dialog_type = SSL_PPTYPE_BUILTIN;
         }
 
