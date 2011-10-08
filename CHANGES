@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) core: Fix hook sorting with perl modules. PR: 45076. [Torsten Foertsch
+     <torsten foertsch gmx net>]
+
   *) core: Enforce LimitRequestFieldSize after multiple headers with the same
      name have been merged. [Stefan Fritsch]
 

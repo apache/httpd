@@ -618,6 +618,7 @@ int main(int argc, const char * const argv[])
     }
     apr_pool_cleanup_register(pconf, &ap_server_conf, ap_pool_cleanup_set_null,
                               apr_pool_cleanup_null);
+    /* sort hooks here to make sure pre_config hooks are sorted properly */
     apr_hook_sort_all();
 
     if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
@@ -631,6 +632,12 @@ int main(int argc, const char * const argv[])
     if (rv == OK) {
         ap_fixup_virtual_hosts(pconf, ap_server_conf);
         ap_fini_vhost_config(pconf, ap_server_conf);
+        /*
+         * Sort hooks again because ap_process_config_tree may have add modules
+         * and hence hooks. This happens with mod_perl and modules written in
+         * perl.
+         */
+        apr_hook_sort_all();
 
         if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
@@ -707,6 +714,7 @@ int main(int argc, const char * const argv[])
         }
         apr_pool_cleanup_register(pconf, &ap_server_conf,
                                   ap_pool_cleanup_set_null, apr_pool_cleanup_null);
+        /* sort hooks here to make sure pre_config hooks are sorted properly */
         apr_hook_sort_all();
 
         if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
@@ -721,6 +729,12 @@ int main(int argc, const char * const argv[])
         }
         ap_fixup_virtual_hosts(pconf, ap_server_conf);
         ap_fini_vhost_config(pconf, ap_server_conf);
+        /*
+         * Sort hooks again because ap_process_config_tree may have add modules
+         * and hence hooks. This happens with mod_perl and modules written in
+         * perl.
+         */
+        apr_hook_sort_all();
 
         if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
