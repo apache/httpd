@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1162192 -->
+<!-- English Revision : 1178088 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -524,6 +524,15 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
 	modules permettent de les utiliser de mani&egrave;re sp&eacute;ciale.</p>
     </section>
 
+</section>
+
+<section id="sslrequire">
+    <title>Comparaison avec SSLRequire</title>
+    <p>La syntaxe <em>ap_expr</em> consiste principalement en une
+    surcouche de la syntaxe de la directive obsol&egrave;te <directive
+    module="mod_ssl">SSLRequire</directive>. Vous pouvez consulter la
+    liste de leur diff&eacute;rences dans la documentation de la directive
+    <directive module="mod_ssl">SSLRequire</directive>.</p>
 </section>
 
 </manualpage>
