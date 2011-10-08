@@ -4216,7 +4216,7 @@ static int default_handler(request_rec *r)
 
     if (r->method_number == M_GET || r->method_number == M_POST) {
         if (r->finfo.filetype == APR_NOFILE) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "File does not exist: %s", r->filename);
             return HTTP_NOT_FOUND;
         }
@@ -4225,7 +4225,7 @@ static int default_handler(request_rec *r)
          * raw I/O on a dir.
          */
         if (r->finfo.filetype == APR_DIR) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "Attempt to serve directory: %s", r->filename);
             return HTTP_NOT_FOUND;
         }
@@ -4234,7 +4234,7 @@ static int default_handler(request_rec *r)
             r->path_info && *r->path_info)
         {
             /* default to reject */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "File does not exist: %s",
                           apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
             return HTTP_NOT_FOUND;

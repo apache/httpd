@@ -12,6 +12,10 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) core, mod_actions, mod_asis: Downgrade error log messages which accompany
+     a 404 request status from loglevel error to info. PR: 35768. [Stefan
+     Fritsch]
+
   *) core: Fix hook sorting with perl modules. PR: 45076. [Torsten Foertsch
      <torsten foertsch gmx net>]
 
