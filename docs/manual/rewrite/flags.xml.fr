@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1179266 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -519,7 +519,7 @@ soient trait&eacute;es par un serveur d'images annexe, vous pouvez utiliser
 une r&egrave;gle de ce style :</p>
 
 <example>
-RewriteRule (.*)\.(jpg|gif|png) http://images.example.com$1.$2 [P]
+RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]
 </example>
 
 <p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
@@ -535,6 +535,16 @@ L'utilisation de ce drapeau impl&eacute;mente de mani&egrave;re plus puissante l
 directive <directive module="mod_proxy">ProxyPass</directive>, pour
 faire correspondre le contenu distant &agrave; l'espace de nommage du serveur
 local.</p>
+
+<note type="warning">
+      <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title>
+      <p>Lors de la construction de l'URL cible de la r&egrave;gle, il convient
+      de prendre en compte l'impact en mati&egrave;re de s&eacute;curit&eacute; qu'aura le
+      fait de permettre au client d'influencer le jeu d'URLs pour
+      lesquelles votre serveur agira en tant que mandataire.
+      Assurez-vous que la partie protocole://nom-serveur de l'URL soit
+      fixe, ou ne permette pas au client de l'influencer induement.</p>
+</note>
 
 <p>Note: <module>mod_proxy</module> doit &ecirc;tre activ&eacute; pour pouvoir
 utiliser ce drapeau.</p>

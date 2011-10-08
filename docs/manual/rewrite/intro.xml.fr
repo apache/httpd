@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1179179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -89,7 +89,7 @@ expressions rationnelles. A cet effet, nous recommandons les <a
 href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a
 href="http://perldoc.perl.org/perlre.html">page de manuel des
 expressions rationnelles Perl</a>, et l'ouvrage <a
-href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
+href="http://shop.oreilly.com/product/9780596528126.do">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
 <p>Dans ce document, nous avons pour but de vous fournir suffisamment de
