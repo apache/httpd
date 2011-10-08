@@ -517,7 +517,7 @@ soient traitées par un serveur d'images annexe, vous pouvez utiliser
 une règle de ce style :</p>
 
 <div class="example"><p><code>
-RewriteRule (.*)\.(jpg|gif|png) http://images.example.com$1.$2 [P]
+RewriteRule /(.*)\.(jpg|gif|png) http://images.example.com/$1.$2 [P]
 </code></p></div>
 
 <p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
@@ -533,6 +533,16 @@ L'utilisation de ce drapeau implémente de manière plus puissante la
 directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>, pour
 faire correspondre le contenu distant à l'espace de nommage du serveur
 local.</p>
+
+<div class="warning">
+      <h3>Avertissement à propos de la sécurité</h3>
+      <p>Lors de la construction de l'URL cible de la règle, il convient
+      de prendre en compte l'impact en matière de sécurité qu'aura le
+      fait de permettre au client d'influencer le jeu d'URLs pour
+      lesquelles votre serveur agira en tant que mandataire.
+      Assurez-vous que la partie protocole://nom-serveur de l'URL soit
+      fixe, ou ne permette pas au client de l'influencer induement.</p>
+</div>
 
 <p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit être activé pour pouvoir
 utiliser ce drapeau.</p>

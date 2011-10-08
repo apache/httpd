@@ -76,7 +76,7 @@ exactement comment chaque règle est traitée.</p>
 <p>mod_rewrite utilise le vocabulaire des <a href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
 Ce document n'a pas pour prétention d'être une référence détaillée des
 expressions rationnelles. A cet effet, nous recommandons les <a href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a href="http://perldoc.perl.org/perlre.html">page de manuel des
-expressions rationnelles Perl</a>, et l'ouvrage <a href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
+expressions rationnelles Perl</a>, et l'ouvrage <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
 <p>Dans ce document, nous avons pour but de vous fournir suffisamment de
