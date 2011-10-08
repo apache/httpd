@@ -137,6 +137,10 @@ Changes with Apache 2.3.15
   *) mod_deflate: Fix endless loop if first bucket is metadata. PR 51590.
      [Torsten Foertsch <torsten foertsch gmx net>]
 
+  *) mod_authn_socache: Fix to work in .htaccess if not configured anywhere
+     in httpd.conf, and introduce an AuthnCacheEnable directive.
+     PR 51991 [Nick Kew]
+
 Changes with Apache 2.3.14
 
   *) mod_proxy_ajp: Improve trace logging.  [Rainer Jung]
