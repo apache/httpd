@@ -2651,12 +2651,22 @@ AP_DECLARE(void) ap_varbuf_regsub(struct ap_varbuf *vb, const char *input,
     regsub_core(NULL, vb, input, source, nmatch, pmatch);
 }
 
-#define OOM_MESSAGE "[crit] Memory allocation failed, " \
-        "aborting process." APR_EOL_STR
+static const char * const oom_message = "[crit] Memory allocation failed, "
+                                        "aborting process." APR_EOL_STR;
 
 AP_DECLARE(void) ap_abort_on_oom()
 {
-    write(STDERR_FILENO, OOM_MESSAGE, strlen(OOM_MESSAGE));
+    int written, count = strlen(oom_message);
+    const char *buf = oom_message;
+    do {
+        written = write(STDERR_FILENO, buf, count);
+        if (written == count)
+            break;
+        if (written > 0) {
+            buf += written;
+            count -= written;
+        }
+    } while (written >= 0 || errno == EINTR);
     abort();
 }
 
