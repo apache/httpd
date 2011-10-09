@@ -166,7 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_log_config: Fix segfault for 'BufferedLogs Off'. PR 50861.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082518
     2.2.x patch: Trunk patch works
-    +1: sf
+    +1: sf, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
