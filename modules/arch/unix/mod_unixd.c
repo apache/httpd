@@ -19,6 +19,7 @@
 #include "http_config.h"
 #include "http_main.h"
 #include "http_log.h"
+#include "http_core.h"
 #include "mpm_common.h"
 #include "os.h"
 #include "ap_mpm.h"
@@ -377,6 +378,8 @@ static void unixd_dump_config(apr_pool_t *p, server_rec *s)
     apr_uid_t uid = ap_unixd_config.user_id;
     apr_gid_t gid = ap_unixd_config.group_id;
     char *no_root = "";
+    if (!ap_exists_config_define("DUMP_RUN_CFG"))
+        return;
     if (geteuid() != 0)
         no_root = " not_used";
     apr_file_open_stdout(&out, p);
