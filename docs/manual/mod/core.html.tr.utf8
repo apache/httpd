@@ -27,7 +27,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -2320,16 +2319,36 @@ uygulanır.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Number of ranges allowed before returning the complete
-resource </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRanges default | unlimited | none | <var>number-of-ranges</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamı döndürülmeden önce gönderilebilecek HTTP range başlıklarının azami miktarı</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRanges default | unlimited | none | <var>miktar</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxRanges 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Available in Apache HTTP Server 2.2.21 and later</td></tr>
-</table><p>Bu yönergenin belgesi henüz Türkçeye çevrilmedi.
-            Lütfen İngilizce sürümüne bakınız.</p></div>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.2.21 ve sonraki sürümlerinde kullanılabilir.</td></tr>
+</table>
+    <p><code class="directive">MaxRanges</code> yönergesi, sunucunu istemciye
+			gönderebileceği HTTP <code>range</code> başlıklarının sayısını
+			sınırlamak için kullanılır. Eğer izin verilenden daha fazla
+			<code>range </code> başlığı istenirse fazlalık yerine özkaynağın
+			tamamı gönderilir.</p>
+
+    <dl>
+      <dt><strong>default</strong></dt>
+      <dd>Sayı derleme sırasında 200 olarak belirlenmiştir.</dd>
+
+      <dt><strong>none</strong></dt>
+			<dd><code>Range</code> başlıkları yoksayılır.</dd>
+
+      <dt><strong>unlimited</strong></dt>
+      <dd>Sunucunun gönerebileceği başlık sayısı sınırlanmaz.</dd>
+
+      <dt><var>miktar</var></dt>
+      <dd>Sunucunun gönderebileceği azami HTTP <code>range</code> başlık
+			  sayısını gösteren bir pozitif tamsayı.</dd>
+    </dl>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Yönergesi</a></h2>
 <table class="directive">
