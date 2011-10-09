@@ -6,7 +6,7 @@ Changes with Apache 2.2.22
      specification, preventing unexpected expansion of target URLs in
      some reverse proxy configurations.  [Joe Orton]
 
-  *) core: Fix hook sorting for perl modules, a regression introduced in
+  *) core: Fix hook sorting for Perl modules, a regression introduced in
      2.2.21. PR: 45076. [Torsten Foertsch <torsten foertsch gmx net>]
 
   *) Fix a regression introduced by the CVE-2011-3192 byterange fix in 2.2.20:
