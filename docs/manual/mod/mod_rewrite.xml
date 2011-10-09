@@ -940,7 +940,7 @@ and automatically <em>added</em> after any relative (not starting with a
 slash or protocol name) substitution encounters the end of a rule set.
 See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
-relative substutions.</li>
+relative substitions.</li>
 
 <li> If you wish to match against the full URL-path in a per-directory
 (htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
@@ -1053,14 +1053,16 @@ cannot use <code>$N</code> in the substitution string!
       <code>RewriteMap</code> directive and are explained there.
       These three types of variables are expanded in the order above.</p>
 
-      <p>As already mentioned, all rewrite rules are
-      applied to the <em>Substitution</em> (in the order in which
-      they are defined
-      in the config file). The URL is <strong>completely
+      <p>Rewrite rules are applied to the results of previous rewrite
+      rules, in the order in which they are defined
+      in the config file. The URL is <strong>completely
       replaced</strong> by the <em>Substitution</em> and the
       rewriting process continues until all rules have been applied,
       or it is explicitly terminated by a
-      <code><strong>L</strong></code> flag.</p>
+      <a href="../rewrite/flags.html#flag_l"><code><strong>L</strong></code> flag</a>,
+      or other flag which implies immediate termination, such as
+      <code><strong>END</strong></code> or
+      <code><strong>F</strong></code>.</p>
 
      <note><title>Modifying the Query String</title>
       <p>By default, the query string is passed through unchanged. You
