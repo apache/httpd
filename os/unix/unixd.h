@@ -73,6 +73,7 @@ AP_DECLARE_HOOK(ap_unix_identity_t *, get_suexec_identity,(const request_rec *r)
 
 typedef struct {
     const char *user_name;
+    const char *group_name;
     uid_t user_id;
     gid_t group_id;
     int suexec_enabled;

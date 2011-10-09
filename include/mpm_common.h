@@ -290,6 +290,7 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
 extern const char *ap_pid_fname;
 const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
                                const char *arg);
+void ap_mpm_dump_pidfile(apr_pool_t *p, apr_file_t *out);
 
 /*
  * The directory that the server changes directory to dump core.

@@ -239,6 +239,7 @@ unixd_set_group(cmd_parms *cmd, void *dummy,
         return err;
     }
 
+    ap_unixd_config.group_name = arg;
     ap_unixd_config.group_id = ap_gname2id(arg);
 
     return NULL;
@@ -289,6 +290,7 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_finfo_t wrapper;
     ap_unixd_config.user_name = DEFAULT_USER;
     ap_unixd_config.user_id = ap_uname2id(DEFAULT_USER);
+    ap_unixd_config.group_name = DEFAULT_GROUP;
     ap_unixd_config.group_id = ap_gname2id(DEFAULT_GROUP);
 
     ap_unixd_config.chroot_dir = NULL; /* none */
@@ -369,11 +371,30 @@ AP_DECLARE(int) ap_unixd_setup_child(void)
     return 0;
 }
 
+static void unixd_dump_config(apr_pool_t *p, server_rec *s)
+{
+    apr_file_t *out = NULL;
+    apr_uid_t uid = ap_unixd_config.user_id;
+    apr_gid_t gid = ap_unixd_config.group_id;
+    char *no_root = "";
+    if (geteuid() != 0)
+        no_root = " not_used";
+    apr_file_open_stdout(&out, p);
+    apr_file_printf(out, "User: name=\"%s\" id=%lu%s\n",
+                    ap_unixd_config.user_name, (unsigned long)uid, no_root);
+    apr_file_printf(out, "Group: name=\"%s\" id=%lu%s\n",
+                    ap_unixd_config.group_name, (unsigned long)gid, no_root);
+    if (ap_unixd_config.chroot_dir)
+        apr_file_printf(out, "ChrootDir: \"%s\"%s\n",
+                        ap_unixd_config.chroot_dir, no_root);
+}
+
 static void unixd_hooks(apr_pool_t *pool)
 {
     ap_hook_pre_config(unixd_pre_config,
                        NULL, NULL, APR_HOOK_FIRST);
-
+    ap_hook_test_config(unixd_dump_config,
+                        NULL, NULL, APR_HOOK_FIRST);
     ap_hook_drop_privileges(unixd_drop_privileges,
                             NULL, NULL, APR_HOOK_MIDDLE);
 }

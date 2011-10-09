@@ -415,10 +415,11 @@ static void usage(process_rec *process)
                  "  -L                 : list available configuration "
                  "directives");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -t -D DUMP_VHOSTS  : show parsed settings (currently only "
-                 "vhost settings)");
+                 "  -t -D DUMP_VHOSTS  : show parsed vhost settings");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -S                 : a synonym for -t -D DUMP_VHOSTS");
+                 "  -t -D DUMP_RUN_CFG : show parsed run settings");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "  -S                 : a synonym for -t -D DUMP_VHOSTS -D DUMP_RUN_CFG");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -t -D DUMP_MODULES : show all loaded modules ");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
@@ -511,11 +512,14 @@ int main(int argc, const char * const argv[])
         case 'D':
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = apr_pstrdup(pcommands, opt_arg);
-            /* Setting -D DUMP_VHOSTS is equivalent to setting -S */
+            /* Setting -D DUMP_VHOSTS should work like setting -S */
             if (strcmp(opt_arg, "DUMP_VHOSTS") == 0)
                 ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
+            /* Setting -D DUMP_RUN_CFG should work like setting -S */
+            else if (strcmp(opt_arg, "DUMP_RUN_CFG") == 0)
+                ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             /* Setting -D DUMP_MODULES is equivalent to setting -M */
-            if (strcmp(opt_arg, "DUMP_MODULES") == 0)
+            else if (strcmp(opt_arg, "DUMP_MODULES") == 0)
                 ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             break;
 
@@ -563,6 +567,8 @@ int main(int argc, const char * const argv[])
             ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_VHOSTS";
+            new = (char **)apr_array_push(ap_server_config_defines);
+            *new = "DUMP_RUN_CFG";
             break;
 
         case 'M':
