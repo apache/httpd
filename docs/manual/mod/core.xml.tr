@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1154942:1166612 (outdated) -->
+<!-- English Revision: 1166612 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -2277,6 +2277,40 @@ uygulanır.</description>
     <example>
       MaxKeepAliveRequests 500
     </example>
+</usage>
+</directivesynopsis>
+
+ <directivesynopsis>
+<name>MaxRanges</name>
+<description>Özkaynağın tamamı döndürülmeden önce gönderilebilecek HTTP range başlıklarının azami miktarı</description>
+<syntax>MaxRanges default | unlimited | none | <var>miktar</var></syntax>
+<default>MaxRanges 200</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Apache HTTP Sunucusunun 2.2.21 ve sonraki sürümlerinde kullanılabilir.</compatibility>
+
+<usage>
+    <p><directive>MaxRanges</directive> yönergesi, sunucunu istemciye
+			gönderebileceği HTTP <code>range</code> başlıklarının sayısını
+			sınırlamak için kullanılır. Eğer izin verilenden daha fazla
+			<code>range </code> başlığı istenirse fazlalık yerine özkaynağın
+			tamamı gönderilir.</p>
+
+    <dl>
+      <dt><strong>default</strong></dt>
+      <dd>Sayı derleme sırasında 200 olarak belirlenmiştir.</dd>
+
+      <dt><strong>none</strong></dt>
+			<dd><code>Range</code> başlıkları yoksayılır.</dd>
+
+      <dt><strong>unlimited</strong></dt>
+      <dd>Sunucunun gönerebileceği başlık sayısı sınırlanmaz.</dd>
+
+      <dt><var>miktar</var></dt>
+      <dd>Sunucunun gönderebileceği azami HTTP <code>range</code> başlık
+			  sayısını gösteren bir pozitif tamsayı.</dd>
+    </dl>
 </usage>
 </directivesynopsis>
 
