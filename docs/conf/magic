@@ -262,6 +262,9 @@
 #0	string		CP		color pointer
 #0	string		BA		bitmap array
 
+0	string		\x89PNG		image/png
+0	string		FWS		application/x-shockwave-flash
+0	string		CWS		application/x-shockwave-flash
 
 #------------------------------------------------------------------------------
 # lisp:  file(1) magic for lisp programs

@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_mime_magic: Add signatures for PNG and SWF to the example config.
+     PR: 48352. [Jeremy Wagner-Kaiser <jwagner-kaiser adknowledge com>]
+
   *) core, unixd: Add -D DUMP_RUN_CFG option to dump some configuration items
      from the parsed (or default) config. This is useful for init scripts that
      need to setup temporary directories and permissions. [Stefan Fritsch]
