@@ -213,6 +213,8 @@ AP_DECLARE(apr_status_t) ap_proc_mutex_create(apr_proc_mutex_t **mutex,
                                               apr_pool_t *pool,
                                               apr_int32_t options);
 
+AP_CORE_DECLARE(void) ap_dump_mutexes(apr_pool_t *p, server_rec *s, apr_file_t *out);
+
 #ifdef __cplusplus
 }
 #endif

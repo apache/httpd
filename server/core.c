@@ -4674,6 +4674,43 @@ AP_DECLARE(apr_uint32_t) ap_random_pick(apr_uint32_t min, apr_uint32_t max)
     return number;
 }
 
+static void core_dump_config(apr_pool_t *p, server_rec *s)
+{
+    core_server_config *sconf = ap_get_core_module_config(s->module_config);
+    apr_file_t *out = NULL;
+    char *tmp;
+    const char **defines;
+    int i;
+    if (!ap_exists_config_define("DUMP_RUN_CFG"))
+        return;
+
+    apr_file_open_stdout(&out, p);
+    apr_file_printf(out, "ServerRoot: \"%s\"\n", ap_server_root);
+    tmp = ap_server_root_relative(p, sconf->ap_document_root);
+    apr_file_printf(out, "Main DocumentRoot: \"%s\"\n", tmp);
+    tmp = ap_server_root_relative(p, s->error_fname);
+    apr_file_printf(out, "Main ErrorLog: \"%s\"\n", tmp);
+    if (ap_scoreboard_fname) {
+        tmp = ap_server_root_relative(p, ap_scoreboard_fname);
+        apr_file_printf(out, "ScoreBoardFile: \"%s\"\n", tmp);
+    }
+    ap_dump_mutexes(p, s, out);
+    ap_mpm_dump_pidfile(p, out);
+
+    defines = (const char **)ap_server_config_defines->elts;
+    for (i = 0; i < ap_server_config_defines->nelts; i++) {
+        const char *name = defines[i];
+        const char *val = NULL;
+        if (server_config_defined_vars)
+           val = apr_table_get(server_config_defined_vars, name);
+        if (val)
+            apr_file_printf(out, "Define: %s=%s\n", name, val);
+        else
+            apr_file_printf(out, "Define: %s\n", name);
+    }
+
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     errorlog_hash = apr_hash_make(p);
@@ -4694,6 +4731,7 @@ static void register_hooks(apr_pool_t *p)
 
     ap_hook_pre_config(core_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
+    ap_hook_test_config(core_dump_config,NULL,NULL,APR_HOOK_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(ap_open_logs,NULL,NULL,APR_HOOK_REALLY_FIRST);

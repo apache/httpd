@@ -356,7 +356,8 @@
  *                         ap_realloc()
  * 20110724.9 (2.3.15-dev) add ap_varbuf_pdup() and ap_varbuf_regsub()
  * 20110724.10(2.3.15-dev) Export ap_max_mem_free
- * 20111009.0 (2.3.15-dev) Remove ap_proxy_removestr()
+ * 20111009.0 (2.3.15-dev) Remove ap_proxy_removestr(),
+ *                         add ap_unixd_config.group_name
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
