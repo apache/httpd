@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 678115:1059591 (outdated) -->
+<!-- English Revision: 1059591 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -321,7 +321,8 @@ metni belirler.</description>
       >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde adı
       <code><em>isim</em></code> ile biten bir dosya için gösterilecek simgeyi
       belirler. <code><em>simge</em></code> ya simgenin göreli URL’si (%
-      öncelemeli) ya da <code>(<var>alt-metin</var>,<var>url</var>)</code>
+      öncelemeli) ya tam nitelenmiş uzak bir URL ya da
+			<code>(<var>alt-metin</var>,<var>url</var>)</code>
       biçeminde olmalıdır; buradaki <code><em>alt-metin</em></code> simge
       gösterilemediği durumda tarayıcı tarafından simgenin yerinde
       gösterilecek metindir.</p>
@@ -332,7 +333,11 @@ metni belirler.</description>
       uzantısı, dosya isminin bir kısmı, bir dosya ismi kalıbı veya tam
       yoluyla bir dosya ismi belirtilebilir.</p>
 
-    <example><title>Örnekler</title>
+    <p><code>^^BLANKICON^^</code> sadece biçemlemek amacıyla kullanılır,
+			ancak <code>IndexOptions HTMLTable</code> kullanıyorsanız
+			gereksizdir.</p>
+
+<example><title>Örnekler</title>
       AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
       AddIcon /icons/backup.xbm *~
@@ -359,10 +364,10 @@ göre belirler.</description>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing"
       >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde bir
       dosya için gösterilecek simgeyi belirler. <code><em>simge</em></code> ya
-      simgenin göreli URL’si (% öncelemeli) ya da
-      <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
-      buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
-      tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
+      simgenin göreli URL’si (% öncelemeli) ya tam nitelenmiş uzak bir URL ya
+			da <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde
+			olmalıdır; buradaki <code><em>alt-metin</em></code> simge gösterilemediği
+			durumda tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
 
     <p><code><em>MIME-kodlaması</em></code> olarak <code>x-compress</code>
       gibi geçerli bir içerik kodlaması belirtilmelidir.</p>
@@ -389,7 +394,7 @@ belirler.</description>
       >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde MIME
       türü <code><em>MIME-türü</em></code> olarak belirtilen bir dosya için
       gösterilecek simgeyi belirler. <code><em>simge</em></code> ya simgenin
-      göreli URL’si (% öncelemeli) ya da
+      göreli URL’si (% öncelemeli) ya tam nitelenmiş uzak bir URL ya da
       <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
       buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
       tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
@@ -418,7 +423,8 @@ belirler.</description>
       href="#indexoptions.fancyindexing" >FancyIndexing</a></code> seçeneğiyle
       üretilen dizin listesinde özel bir simge atanmamış dosyalar için
       gösterilecek simgeyi belirler. <code><em>URL-yolu</em></code> simgeye
-      bir göreli URL (% öncelemeli) belirtir.</p>
+      bir göreli URL (% öncelemeli) veya tam nitelenmiş uzak bir URL
+			belirtir.</p>
 
     <example><title>Örnek</title>
       DefaultIcon /icon/unknown.xbm
@@ -493,6 +499,7 @@ belirler.</description>
 <description>Dizin içerik listesinden gizlenecek dosyaların listesi belirtilir.
 </description>
 <syntax>IndexIgnore <var>dosya</var> [<var>dosya</var>] ...</syntax>
+<default>IndexIgnore "."</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -508,7 +515,7 @@ belirler.</description>
       öntanımlı olarak içinde bulunulan dizini (<code>./</code>) içerir.</p>
 
     <example>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </example>
 </usage>
 </directivesynopsis>
@@ -519,6 +526,7 @@ belirler.</description>
 </description>
 <syntax>IndexOptions  [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>]
 ...</syntax>
+<default>Öntanımlı olarak hiçbir seçenek etkin değildir.</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -913,6 +921,15 @@ Name|Date|Size|Description</syntax>
       >SuppressColumnSorting</a></code> sıralama seçeneği ile birlikte
       belirtebilirsiniz; böylece, istemcinin farklı sıralamalara sahip içerik
       isteğini engellemiş olursunuz.</p>
+
+    <p>İsterseniz, istemcinin farklı sıralamalara sahip içerik
+			isteğini engellemek için <code><a
+			href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a
+			></code> seçeneğinin yanında, istemcinin sıralama tercihlerinizi geçersiz
+			kılmak amacıyla sorgu dizgisine sıralama seçenekleri eklemesini
+			engelleyecek <code><a href="#indexoptions.ignoreclient"
+			>IgnoreClient</a></code> seçeneğini kullanabilirsiniz.</p>
+
 </usage>
 </directivesynopsis>
 
