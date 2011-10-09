@@ -2421,10 +2421,27 @@ static void server_main_loop(int remaining_children_to_start)
 
         if (pid.pid != -1) {
             processed_status = ap_process_child_status(&pid, exitwhy, status);
+            child_slot = ap_find_child_by_pid(&pid);
             if (processed_status == APEXIT_CHILDFATAL) {
-                shutdown_pending = 1;
-                child_fatal = 1;
-                return;
+                /* fix race condition found in PR 39311
+                 * A child created at the same time as a graceful happens 
+                 * can find the lock missing and create a fatal error.
+                 * It is not fatal for the last generation to be in this state.
+                 */
+                if (child_slot < 0
+                    || ap_get_scoreboard_process(child_slot)->generation
+                       == retained->my_generation) {
+                    shutdown_pending = 1;
+                    child_fatal = 1;
+                    return;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                                 "Ignoring fatal error in child of previous "
+                                 "generation (pid %ld).",
+                                 (long)pid.pid);
+                    retained->sick_child_detected = 1;
+                }
             }
             else if (processed_status == APEXIT_CHILDSICK) {
                 /* tell perform_idle_server_maintenance to check into this
@@ -2433,7 +2450,6 @@ static void server_main_loop(int remaining_children_to_start)
                 retained->sick_child_detected = 1;
             }
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = ap_find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 for (i = 0; i < threads_per_child; i++)
                     ap_update_child_status_from_indexes(child_slot, i,

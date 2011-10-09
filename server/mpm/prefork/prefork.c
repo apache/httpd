@@ -1004,13 +1004,28 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          */
         if (pid.pid != -1) {
             processed_status = ap_process_child_status(&pid, exitwhy, status);
+            child_slot = ap_find_child_by_pid(&pid);
             if (processed_status == APEXIT_CHILDFATAL) {
-                mpm_state = AP_MPMQ_STOPPING;
-                return DONE;
+                /* fix race condition found in PR 39311
+                 * A child created at the same time as a graceful happens 
+                 * can find the lock missing and create a fatal error.
+                 * It is not fatal for the last generation to be in this state.
+                 */
+                if (child_slot < 0
+                    || ap_get_scoreboard_process(child_slot)->generation
+                       == retained->my_generation) {
+                    mpm_state = AP_MPMQ_STOPPING;
+                    return DONE;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                                 "Ignoring fatal error in child of previous "
+                                 "generation (pid %ld).",
+                                 (long)pid.pid);
+                }
             }
 
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = ap_find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 (void) ap_update_child_status_from_indexes(child_slot, 0, SERVER_DEAD,
                                                            (request_rec *) NULL);

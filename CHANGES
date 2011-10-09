@@ -12,6 +12,11 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mpm_prefork, mpm_worker, mpm_event: If a child is created just before
+     graceful restart and then exits because of a missing lock file, don't
+     shutdown the whole server. PR 39311. [Shawn Michael
+     <smichael rightnow com>]
+
   *) mpm_event: Check the return value from ap_run_create_connection.
      PR: 41194. [Davi Arnaut]
 
