@@ -479,12 +479,12 @@ kullanımı önerilmemektedir.</compatibility>
 
       <note><title>Seçeneklerin örtük iptali</title>
       <p>.htaccess dosyalarında kullanılabilecek seçenekler bu yönergeyle
-				sınırlanabileceği gibi miras alınmış bir seçenek olarak, bağıntısız
-				sözdizimi kullanılarak iptal edilebilen herhangi bir seçenek de
-				<directive module="core">Options</directive> yönergesi ile dolaylı
-				olarak iptal edilmiş olacaktır. Başka bir deyişle, bu mekanizma
-				evvelce etkisiz kılınmış bir seçeneğin etkin kılınmasını
-				sağlamayacaktır.
+        sınırlanabileceği gibi miras alınmış bir seçenek olarak, bağıntısız
+        sözdizimi kullanılarak iptal edilebilen herhangi bir seçenek de
+        <directive module="core">Options</directive> yönergesi ile dolaylı
+        olarak iptal edilmiş olacaktır. Başka bir deyişle, bu mekanizma
+        evvelce etkisiz kılınmış bir seçeneğin etkin kılınmasını
+        sağlamayacaktır.
       </p></note>
       </dd>
     </dl>
@@ -519,8 +519,16 @@ kullanımı önerilmemektedir.</compatibility>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Bu yönerge bir dizin için yetki alanı ismi belirler. Bu alan istemciye bildirilerek kullanıcının hangi kullanıcı ismini ve parolasını kullanacağını bilmesi sağlanır. <directive>AuthName</directive> tek bir argüman alır. Bu bakımdan eğer alan ismi boşluk karakterleri içeriyorsa ismin tırnak içine alınması gerekir. Çalışması için <directive module="mod_authn_file">AuthUserFile</directive> ve
-    <directive module="mod_authz_groupfile">AuthGroupFile</directive> gibi yönergelerden başka <directive module="core">AuthType</directive> ve <directive module="core">Require</directive> yönergelerinin kendine eşlik etmesini gerektirir.</p>
+    <p>Bu yönerge bir dizin için yetki alanı ismi belirler. Bu alan istemciye
+      bildirilerek kullanıcının hangi kullanıcı ismini ve parolasını
+      kullanacağını bilmesi sağlanır. <directive>AuthName</directive> tek bir
+      argüman alır. Bu bakımdan eğer alan ismi boşluk karakterleri içeriyorsa
+      ismin tırnak içine alınması gerekir. Çalışması için <directive
+      module="mod_authn_file">AuthUserFile</directive> ve
+      <directive module="mod_authz_groupfile">AuthGroupFile</directive> gibi
+      yönergelerden başka <directive module="core">AuthType</directive> ve
+      <directive module="core">Require</directive> yönergelerinin kendine
+      eşlik etmesini gerektirir.</p>
 
    <p>Örnek:</p>
 
@@ -528,10 +536,11 @@ kullanımı önerilmemektedir.</compatibility>
      AuthName "Top Secret"
    </example>
 
-    <p><code>AuthName</code> için belirtilen dizge çoğu tarayıcı tarafından parola diyaloğunda gösterilir.</p>
+    <p><code>AuthName</code> için belirtilen dizge çoğu tarayıcı tarafından
+      parola diyaloğunda gösterilir.</p>
 </usage>
-<seealso><a
-    href="../howto/auth.html">Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</a></seealso>
+<seealso><a href="../howto/auth.html">Kimlik Doğrulama, Yetkilendirme ve
+  Erişim Denetimi</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -543,11 +552,18 @@ kullanımı önerilmemektedir.</compatibility>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Bu yönerge bir dizin için kullanıcı kimlik doğrulaması türünü belirler. Olası kimlik doğrulama türleri <code>Basic</code> (<module>mod_auth_basic</module> modülüyle sağlanır) ve <code>Digest</code>’tir (<module>mod_auth_digest</module> modülüyle sağlanır).</p>
+    <p>Bu yönerge bir dizin için kullanıcı kimlik doğrulaması türünü belirler.
+      Olası kimlik doğrulama türleri <code>Basic</code>
+      (<module>mod_auth_basic</module> modülüyle sağlanır) ve
+      <code>Digest</code>’tir (<module>mod_auth_digest</module> modülüyle
+      sağlanır).</p>
 
     <p>Kimlik doğrulamasının gerçekleşmesi için <directive
-    module="core">AuthName</directive> ve <directive
-    module="core">Require</directive> yönergelerini de kullanmalısınız. Bunlara ek olarak sunucunun <module>mod_authn_file</module> gibi bir kimlik doğrulayıcı modülüne ve <module>mod_authz_user</module> gibi bir yetkilendirme modülüne ihtiyacı vardır.</p>
+      module="core">AuthName</directive> ve <directive
+      module="core">Require</directive> yönergelerini de kullanmalısınız.
+      Bunlara ek olarak sunucunun <module>mod_authn_file</module> gibi bir
+      kimlik doğrulayıcı modülüne ve <module>mod_authz_user</module> gibi bir
+      yetkilendirme modülüne ihtiyacı vardır.</p>
 </usage>
 
 <seealso><a href="../howto/auth.html">Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</a></seealso>
@@ -679,8 +695,8 @@ kullanımı önerilmemektedir.</compatibility>
       dizinin tam yolu olabileceği gibi Unix kabuk tarzı bir dosya ismi
       eşleştirme kalıbı da olabilir. Kalıp dizgesinde, <code>?</code> herhangi
       bir tek karakterle, <code>*</code> herhangi bir karakter dizisiyle
-      eşleşir. Ayrıca <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’
-      karakteri ile hiçbir kalıp karakteri eşleşmez, bu bakımdan
+      eşleşir. Ayrıca <code>[]</code> karakter aralıkları da kullanılabilir.
+      ‘/’ karakteri ile hiçbir kalıp karakteri eşleşmez, bu bakımdan
       <code>&lt;Directory /*/public_html&gt;</code> ile
       <code>/home/user/public_html</code> değil, ama <code>&lt;Directory
       /home/*/public_html&gt;</code> eşleşecektir. Örnek:</p>
@@ -2280,36 +2296,38 @@ uygulanır.</description>
 </usage>
 </directivesynopsis>
 
- <directivesynopsis>
+<directivesynopsis>
 <name>MaxRanges</name>
-<description>Özkaynağın tamamı döndürülmeden önce gönderilebilecek HTTP range başlıklarının azami miktarı</description>
+<description>Özkaynağın tamamı döndürülmeden önce gönderilebilecek HTTP range
+  başlıklarının azami miktarı</description>
 <syntax>MaxRanges default | unlimited | none | <var>miktar</var></syntax>
 <default>MaxRanges 200</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Apache HTTP Sunucusunun 2.2.21 ve sonraki sürümlerinde kullanılabilir.</compatibility>
+<compatibility>Apache HTTP Sunucusunun 2.2.21 ve sonraki sürümlerinde
+  kullanılabilir.</compatibility>
 
 <usage>
     <p><directive>MaxRanges</directive> yönergesi, sunucunu istemciye
-			gönderebileceği HTTP <code>range</code> başlıklarının sayısını
-			sınırlamak için kullanılır. Eğer izin verilenden daha fazla
-			<code>range </code> başlığı istenirse fazlalık yerine özkaynağın
-			tamamı gönderilir.</p>
+      gönderebileceği HTTP <code>range</code> başlıklarının sayısını
+      sınırlamak için kullanılır. Eğer izin verilenden daha fazla
+      <code>range </code> başlığı istenirse fazlalık yerine özkaynağın
+      tamamı gönderilir.</p>
 
     <dl>
       <dt><strong>default</strong></dt>
       <dd>Sayı derleme sırasında 200 olarak belirlenmiştir.</dd>
 
       <dt><strong>none</strong></dt>
-			<dd><code>Range</code> başlıkları yoksayılır.</dd>
+      <dd><code>Range</code> başlıkları yoksayılır.</dd>
 
       <dt><strong>unlimited</strong></dt>
       <dd>Sunucunun gönerebileceği başlık sayısı sınırlanmaz.</dd>
 
       <dt><var>miktar</var></dt>
       <dd>Sunucunun gönderebileceği azami HTTP <code>range</code> başlık
-			  sayısını gösteren bir pozitif tamsayı.</dd>
+        sayısını gösteren bir pozitif tamsayı.</dd>
     </dl>
 </usage>
 </directivesynopsis>
