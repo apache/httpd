@@ -277,7 +277,7 @@ static const char *set_cookie_form_size(cmd_parms * cmd, void *config,
     auth_form_config_rec *conf = config;
     apr_off_t size;
 
-    if (APR_SUCCESS != apr_strtoff(&size, arg, NULL, 0)
+    if (APR_SUCCESS != apr_strtoff(&size, arg, NULL, 10)
         || size < 0 || size > APR_SIZE_MAX) {
         return "AuthCookieFormSize must be a size in bytes, or zero.";
     }
