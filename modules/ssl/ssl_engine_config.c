@@ -1719,9 +1719,11 @@ const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
 {
+    apr_file_t *out = NULL;
     if (!ap_exists_config_define("DUMP_CERTS")) {
         return;
     }
+    apr_file_open_stdout(&out, pconf);
 
     /* Dump the filenames of all configured server certificates to
      * stdout. */
@@ -1733,7 +1735,7 @@ void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
             int i;
 
             for (i = 0; (i < SSL_AIDX_MAX) && pks->cert_files[i]; i++) {
-                printf("%s\n", pks->cert_files[i]);
+                apr_file_printf(out, "%s\n", pks->cert_files[i]);
             }
         }
 
