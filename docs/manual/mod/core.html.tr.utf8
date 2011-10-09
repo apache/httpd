@@ -543,12 +543,12 @@ kullanımı önerilmemektedir.</td></tr>
 
       <div class="note"><h3>Seçeneklerin örtük iptali</h3>
       <p>.htaccess dosyalarında kullanılabilecek seçenekler bu yönergeyle
-				sınırlanabileceği gibi miras alınmış bir seçenek olarak, bağıntısız
-				sözdizimi kullanılarak iptal edilebilen herhangi bir seçenek de
-				<code class="directive"><a href="#options">Options</a></code> yönergesi ile dolaylı
-				olarak iptal edilmiş olacaktır. Başka bir deyişle, bu mekanizma
-				evvelce etkisiz kılınmış bir seçeneğin etkin kılınmasını
-				sağlamayacaktır.
+        sınırlanabileceği gibi miras alınmış bir seçenek olarak, bağıntısız
+        sözdizimi kullanılarak iptal edilebilen herhangi bir seçenek de
+        <code class="directive"><a href="#options">Options</a></code> yönergesi ile dolaylı
+        olarak iptal edilmiş olacaktır. Başka bir deyişle, bu mekanizma
+        evvelce etkisiz kılınmış bir seçeneğin etkin kılınmasını
+        sağlamayacaktır.
       </p></div>
       </dd>
     </dl>
@@ -585,8 +585,15 @@ kullanımı önerilmemektedir.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p>Bu yönerge bir dizin için yetki alanı ismi belirler. Bu alan istemciye bildirilerek kullanıcının hangi kullanıcı ismini ve parolasını kullanacağını bilmesi sağlanır. <code class="directive">AuthName</code> tek bir argüman alır. Bu bakımdan eğer alan ismi boşluk karakterleri içeriyorsa ismin tırnak içine alınması gerekir. Çalışması için <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> ve
-    <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> gibi yönergelerden başka <code class="directive"><a href="#authtype">AuthType</a></code> ve <code class="directive"><a href="#require">Require</a></code> yönergelerinin kendine eşlik etmesini gerektirir.</p>
+    <p>Bu yönerge bir dizin için yetki alanı ismi belirler. Bu alan istemciye
+      bildirilerek kullanıcının hangi kullanıcı ismini ve parolasını
+      kullanacağını bilmesi sağlanır. <code class="directive">AuthName</code> tek bir
+      argüman alır. Bu bakımdan eğer alan ismi boşluk karakterleri içeriyorsa
+      ismin tırnak içine alınması gerekir. Çalışması için <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> ve
+      <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> gibi
+      yönergelerden başka <code class="directive"><a href="#authtype">AuthType</a></code> ve
+      <code class="directive"><a href="#require">Require</a></code> yönergelerinin kendine
+      eşlik etmesini gerektirir.</p>
 
    <p>Örnek:</p>
 
@@ -594,11 +601,13 @@ kullanımı önerilmemektedir.</td></tr>
      AuthName "Top Secret"
    </code></p></div>
 
-    <p><code>AuthName</code> için belirtilen dizge çoğu tarayıcı tarafından parola diyaloğunda gösterilir.</p>
+    <p><code>AuthName</code> için belirtilen dizge çoğu tarayıcı tarafından
+      parola diyaloğunda gösterilir.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
-<li><a href="../howto/auth.html">Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</a></li>
+<li><a href="../howto/auth.html">Kimlik Doğrulama, Yetkilendirme ve
+  Erişim Denetimi</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -611,9 +620,16 @@ kullanımı önerilmemektedir.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p>Bu yönerge bir dizin için kullanıcı kimlik doğrulaması türünü belirler. Olası kimlik doğrulama türleri <code>Basic</code> (<code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> modülüyle sağlanır) ve <code>Digest</code>’tir (<code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> modülüyle sağlanır).</p>
+    <p>Bu yönerge bir dizin için kullanıcı kimlik doğrulaması türünü belirler.
+      Olası kimlik doğrulama türleri <code>Basic</code>
+      (<code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> modülüyle sağlanır) ve
+      <code>Digest</code>’tir (<code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> modülüyle
+      sağlanır).</p>
 
-    <p>Kimlik doğrulamasının gerçekleşmesi için <code class="directive"><a href="#authname">AuthName</a></code> ve <code class="directive"><a href="#require">Require</a></code> yönergelerini de kullanmalısınız. Bunlara ek olarak sunucunun <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> gibi bir kimlik doğrulayıcı modülüne ve <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> gibi bir yetkilendirme modülüne ihtiyacı vardır.</p>
+    <p>Kimlik doğrulamasının gerçekleşmesi için <code class="directive"><a href="#authname">AuthName</a></code> ve <code class="directive"><a href="#require">Require</a></code> yönergelerini de kullanmalısınız.
+      Bunlara ek olarak sunucunun <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> gibi bir
+      kimlik doğrulayıcı modülüne ve <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> gibi bir
+      yetkilendirme modülüne ihtiyacı vardır.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
@@ -744,8 +760,8 @@ kullanımı önerilmemektedir.</td></tr>
       dizinin tam yolu olabileceği gibi Unix kabuk tarzı bir dosya ismi
       eşleştirme kalıbı da olabilir. Kalıp dizgesinde, <code>?</code> herhangi
       bir tek karakterle, <code>*</code> herhangi bir karakter dizisiyle
-      eşleşir. Ayrıca <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’
-      karakteri ile hiçbir kalıp karakteri eşleşmez, bu bakımdan
+      eşleşir. Ayrıca <code>[]</code> karakter aralıkları da kullanılabilir.
+      ‘/’ karakteri ile hiçbir kalıp karakteri eşleşmez, bu bakımdan
       <code>&lt;Directory /*/public_html&gt;</code> ile
       <code>/home/user/public_html</code> değil, ama <code>&lt;Directory
       /home/*/public_html&gt;</code> eşleşecektir. Örnek:</p>
@@ -2319,33 +2335,35 @@ uygulanır.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamı döndürülmeden önce gönderilebilecek HTTP range başlıklarının azami miktarı</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özkaynağın tamamı döndürülmeden önce gönderilebilecek HTTP range
+  başlıklarının azami miktarı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxRanges default | unlimited | none | <var>miktar</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxRanges 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.2.21 ve sonraki sürümlerinde kullanılabilir.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.2.21 ve sonraki sürümlerinde
+  kullanılabilir.</td></tr>
 </table>
     <p><code class="directive">MaxRanges</code> yönergesi, sunucunu istemciye
-			gönderebileceği HTTP <code>range</code> başlıklarının sayısını
-			sınırlamak için kullanılır. Eğer izin verilenden daha fazla
-			<code>range </code> başlığı istenirse fazlalık yerine özkaynağın
-			tamamı gönderilir.</p>
+      gönderebileceği HTTP <code>range</code> başlıklarının sayısını
+      sınırlamak için kullanılır. Eğer izin verilenden daha fazla
+      <code>range </code> başlığı istenirse fazlalık yerine özkaynağın
+      tamamı gönderilir.</p>
 
     <dl>
       <dt><strong>default</strong></dt>
       <dd>Sayı derleme sırasında 200 olarak belirlenmiştir.</dd>
 
       <dt><strong>none</strong></dt>
-			<dd><code>Range</code> başlıkları yoksayılır.</dd>
+      <dd><code>Range</code> başlıkları yoksayılır.</dd>
 
       <dt><strong>unlimited</strong></dt>
       <dd>Sunucunun gönerebileceği başlık sayısı sınırlanmaz.</dd>
 
       <dt><var>miktar</var></dt>
       <dd>Sunucunun gönderebileceği azami HTTP <code>range</code> başlık
-			  sayısını gösteren bir pozitif tamsayı.</dd>
+        sayısını gösteren bir pozitif tamsayı.</dd>
     </dl>
 
 </div>
