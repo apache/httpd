@@ -805,6 +805,12 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
         cs->bucket_alloc = apr_bucket_alloc_create(p);
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, sbh, cs->bucket_alloc);
+        if (!c) {
+            apr_bucket_alloc_destroy(cs->bucket_alloc);
+            apr_pool_clear(p);
+            ap_push_pool(worker_queue_info, p);
+            return 1;
+        }
         apr_atomic_inc32(&connection_count);
         apr_pool_cleanup_register(c->pool, NULL, decrement_connection_count, apr_pool_cleanup_null);
         c->current_thread = thd;

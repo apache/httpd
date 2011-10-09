@@ -208,6 +208,7 @@ static void *simple_io_setup_conn(apr_thread_t * thread, void *baton)
 
     scon->c = ap_run_create_connection(scon->pool, ap_server_conf, scon->sock,
                                        conn_id, sbh, scon->ba);
+    /* XXX: handle failure */
 
     scon->c->cs = apr_pcalloc(scon->pool, sizeof(conn_state_t));
     cs = scon->c->cs;
