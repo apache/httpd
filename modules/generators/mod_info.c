@@ -78,6 +78,8 @@ module AP_MODULE_DECLARE_DATA info_module;
 
 /* current file name when doing -DDUMP_CONFIG */
 const char *dump_config_fn_info;
+/* file handle when doing -DDUMP_CONFIG */
+apr_file_t *out = NULL;
 
 static void *create_info_config(apr_pool_t * p, server_rec * s)
 {
@@ -108,13 +110,13 @@ static void put_int_flush_right(request_rec * r, int i, int field)
         if (r)
             ap_rputc('0' + i % 10, r);
         else
-            putchar('0' + i % 10);
+            apr_file_putc('0' + i % 10, out);
     }
     else {
         if (r)
             ap_rputs("&nbsp;", r);
         else
-            printf(" ");
+            apr_file_printf(out, " ");
     }
 }
 
@@ -149,7 +151,7 @@ static void mod_info_indent(request_rec * r, int nest,
                    thisfn);
         }
         else {
-            printf("# In file: %s\n", thisfn);
+            apr_file_printf(out, "# In file: %s\n", thisfn);
         }
         set_fn_info(r, thisfn);
     }
@@ -161,17 +163,17 @@ static void mod_info_indent(request_rec * r, int nest,
     }
     else if (linenum > 0) {
         for (i = 1; i <= nest; ++i)
-            printf("  ");
-        putchar('#');
+            apr_file_printf(out, "  ");
+        apr_file_putc('#', out);
         put_int_flush_right(r, linenum, 4);
-        printf(":\n");
+        apr_file_printf(out, ":\n");
     }
 
     for (i = 1; i <= nest; ++i) {
         if (r)
             ap_rputs("&nbsp;&nbsp;", r);
         else
-            printf("  ");
+            apr_file_printf(out, "  ");
     }
 }
 
@@ -184,7 +186,7 @@ static void mod_info_show_cmd(request_rec * r, const ap_directive_t * dir,
                    ap_escape_html(r->pool, dir->directive),
                    ap_escape_html(r->pool, dir->args));
     else
-        printf("%s %s\n", dir->directive, dir->args);
+        apr_file_printf(out, "%s %s\n", dir->directive, dir->args);
 }
 
 static void mod_info_show_open(request_rec * r, const ap_directive_t * dir,
@@ -196,7 +198,7 @@ static void mod_info_show_open(request_rec * r, const ap_directive_t * dir,
                    ap_escape_html(r->pool, dir->directive),
                    ap_escape_html(r->pool, dir->args));
     else
-        printf("%s %s\n", dir->directive, dir->args);
+        apr_file_printf(out, "%s %s\n", dir->directive, dir->args);
 }
 
 static void mod_info_show_close(request_rec * r, const ap_directive_t * dir,
@@ -209,13 +211,13 @@ static void mod_info_show_close(request_rec * r, const ap_directive_t * dir,
             ap_rprintf(r, "&lt;/%s&gt;</tt></dd>",
                        ap_escape_html(r->pool, dirname + 1));
         else
-            printf("</%s>\n", dirname + 1);
+            apr_file_printf(out, "</%s>\n", dirname + 1);
     }
     else {
         if (r)
             ap_rprintf(r, "/%s</tt></dd>", ap_escape_html(r->pool, dirname));
         else
-            printf("/%s\n", dirname);
+            apr_file_printf(out, "/%s\n", dirname);
     }
 }
 
@@ -859,8 +861,10 @@ static const command_rec info_cmds[] = {
 static int check_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp,
                         server_rec *s)
 {
-    if (ap_exists_config_define("DUMP_CONFIG"))
+    if (ap_exists_config_define("DUMP_CONFIG")) {
+        apr_file_open_stdout(&out, ptemp);
         mod_info_module_cmds(NULL, NULL, ap_conftree, 0, 0);
+    }
 
     return DECLINED;
 }
