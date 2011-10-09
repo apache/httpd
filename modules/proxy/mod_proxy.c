@@ -1011,7 +1011,7 @@ static int proxy_handler(request_rec *r)
                         }
                         cl_a = apr_table_get(r->headers_in, "Content-Length");
                         if (cl_a) {
-                            apr_strtoff(&cl, cl_a, &end, 0);
+                            apr_strtoff(&cl, cl_a, &end, 10);
                             /*
                              * The request body is of length > 0. We cannot
                              * retry with a direct connection since we already
