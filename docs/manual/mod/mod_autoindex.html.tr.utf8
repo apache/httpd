@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -316,7 +315,8 @@ metni belirler.</td></tr>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde adı
       <code><em>isim</em></code> ile biten bir dosya için gösterilecek simgeyi
       belirler. <code><em>simge</em></code> ya simgenin göreli URL’si (%
-      öncelemeli) ya da <code>(<var>alt-metin</var>,<var>url</var>)</code>
+      öncelemeli) ya tam nitelenmiş uzak bir URL ya da
+			<code>(<var>alt-metin</var>,<var>url</var>)</code>
       biçeminde olmalıdır; buradaki <code><em>alt-metin</em></code> simge
       gösterilemediği durumda tarayıcı tarafından simgenin yerinde
       gösterilecek metindir.</p>
@@ -327,7 +327,11 @@ metni belirler.</td></tr>
       uzantısı, dosya isminin bir kısmı, bir dosya ismi kalıbı veya tam
       yoluyla bir dosya ismi belirtilebilir.</p>
 
-    <div class="example"><h3>Örnekler</h3><p><code>
+    <p><code>^^BLANKICON^^</code> sadece biçemlemek amacıyla kullanılır,
+			ancak <code>IndexOptions HTMLTable</code> kullanıyorsanız
+			gereksizdir.</p>
+
+<div class="example"><h3>Örnekler</h3><p><code>
       AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
       AddIcon /icons/backup.xbm *~
@@ -351,10 +355,10 @@ göre belirler.</td></tr>
 </table>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde bir
       dosya için gösterilecek simgeyi belirler. <code><em>simge</em></code> ya
-      simgenin göreli URL’si (% öncelemeli) ya da
-      <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
-      buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
-      tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
+      simgenin göreli URL’si (% öncelemeli) ya tam nitelenmiş uzak bir URL ya
+			da <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde
+			olmalıdır; buradaki <code><em>alt-metin</em></code> simge gösterilemediği
+			durumda tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
 
     <p><code><em>MIME-kodlaması</em></code> olarak <code>x-compress</code>
       gibi geçerli bir içerik kodlaması belirtilmelidir.</p>
@@ -379,7 +383,7 @@ belirler.</td></tr>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde MIME
       türü <code><em>MIME-türü</em></code> olarak belirtilen bir dosya için
       gösterilecek simgeyi belirler. <code><em>simge</em></code> ya simgenin
-      göreli URL’si (% öncelemeli) ya da
+      göreli URL’si (% öncelemeli) ya tam nitelenmiş uzak bir URL ya da
       <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
       buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
       tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
@@ -406,7 +410,8 @@ belirler.</td></tr>
     <p>The <code class="directive">DefaultIcon</code> yönergesi  <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
       üretilen dizin listesinde özel bir simge atanmamış dosyalar için
       gösterilecek simgeyi belirler. <code><em>URL-yolu</em></code> simgeye
-      bir göreli URL (% öncelemeli) belirtir.</p>
+      bir göreli URL (% öncelemeli) veya tam nitelenmiş uzak bir URL
+			belirtir.</p>
 
     <div class="example"><h3>Örnek</h3><p><code>
       DefaultIcon /icon/unknown.xbm
@@ -477,6 +482,7 @@ belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin içerik listesinden gizlenecek dosyaların listesi belirtilir.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexIgnore <var>dosya</var> [<var>dosya</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>IndexIgnore "."</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -491,7 +497,7 @@ belirler.</td></tr>
       öntanımlı olarak içinde bulunulan dizini (<code>./</code>) içerir.</p>
 
     <div class="example"><p><code>
-      IndexIgnore README .htaccess *.bak *~
+      IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </code></p></div>
 
 </div>
@@ -502,6 +508,7 @@ belirler.</td></tr>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexOptions  [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>]
 ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Öntanımlı olarak hiçbir seçenek etkin değildir.</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -847,6 +854,12 @@ Name|Date|Size|Description</code></td></tr>
       yönergeyi <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> sıralama seçeneği ile birlikte
       belirtebilirsiniz; böylece, istemcinin farklı sıralamalara sahip içerik
       isteğini engellemiş olursunuz.</p>
+
+    <p>İsterseniz, istemcinin farklı sıralamalara sahip içerik
+			isteğini engellemek için <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code> seçeneğinin yanında, istemcinin sıralama tercihlerinizi geçersiz
+			kılmak amacıyla sorgu dizgisine sıralama seçenekleri eklemesini
+			engelleyecek <code><a href="#indexoptions.ignoreclient">IgnoreClient</a></code> seçeneğini kullanabilirsiniz.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
