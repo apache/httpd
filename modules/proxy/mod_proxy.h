@@ -523,7 +523,6 @@ PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, cha
                                            char **passwordp, char **hostp, apr_port_t *port);
 PROXY_DECLARE(const char *)ap_proxy_date_canon(apr_pool_t *p, const char *x);
 PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val);
-PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
 PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x);
 PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y);
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message);

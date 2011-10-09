@@ -435,51 +435,6 @@ PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val)
 }
 
 /*
- * list is a comma-separated list of case-insensitive tokens, with
- * optional whitespace around the tokens.
- * if val appears on the list of tokens, it is removed from the list,
- * and the new list is returned.
- */
-PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val)
-{
-    int len, i;
-    const char *p;
-    char *new = NULL;
-
-    len = strlen(val);
-
-    while (list != NULL) {
-        p = ap_strchr_c(list, ',');
-        if (p != NULL) {
-            i = p - list;
-            do {
-                p++;
-            } while (apr_isspace(*p));
-        }
-        else {
-            i = strlen(list);
-        }
-
-        while (i > 0 && apr_isspace(list[i - 1])) {
-            i--;
-        }
-        if (i == len && strncasecmp(list, val, len) == 0) {
-            /* do nothing */
-        }
-        else {
-            if (new) {
-                new = apr_pstrcat(pool, new, ",", apr_pstrndup(pool, list, i), NULL);
-            }
-            else {
-                new = apr_pstrndup(pool, list, i);
-            }
-        }
-        list = p;
-    }
-    return new;
-}
-
-/*
  * Converts 8 hex digits to a time integer
  */
 PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x)

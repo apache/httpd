@@ -356,14 +356,15 @@
  *                         ap_realloc()
  * 20110724.9 (2.3.15-dev) add ap_varbuf_pdup() and ap_varbuf_regsub()
  * 20110724.10(2.3.15-dev) Export ap_max_mem_free
+ * 20111009.0 (2.3.15-dev) Remove ap_proxy_removestr()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20110724
+#define MODULE_MAGIC_NUMBER_MAJOR 20111009
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 10                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -306,7 +306,6 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_pre_http_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_pre_request,$(DL)>> $@
 	@echo $(DL) ap_proxy_release_connection,$(DL)>> $@
-	@echo $(DL) ap_proxy_removestr,$(DL)>> $@
 	@echo $(DL) ap_proxy_retry_worker,$(DL)>> $@
 	@echo $(DL) ap_proxy_sec2hex,$(DL)>> $@
 	@echo $(DL) ap_proxy_set_wstatus,$(DL)>> $@
