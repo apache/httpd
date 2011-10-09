@@ -20,7 +20,7 @@ Changes with Apache 2.3.15
      a 404 request status from loglevel error to info. PR: 35768. [Stefan
      Fritsch]
 
-  *) core: Fix hook sorting with perl modules. PR: 45076. [Torsten Foertsch
+  *) core: Fix hook sorting with Perl modules. PR: 45076. [Torsten Foertsch
      <torsten foertsch gmx net>]
 
   *) core: Enforce LimitRequestFieldSize after multiple headers with the same
