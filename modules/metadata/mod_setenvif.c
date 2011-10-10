@@ -94,8 +94,6 @@
 #include "http_log.h"
 #include "http_protocol.h"
 
-#include "mod_ssl.h"
-
 enum special {
     SPECIAL_NOT,
     SPECIAL_REMOTE_ADDR,
@@ -103,8 +101,7 @@ enum special {
     SPECIAL_REQUEST_URI,
     SPECIAL_REQUEST_METHOD,
     SPECIAL_REQUEST_PROTOCOL,
-    SPECIAL_SERVER_ADDR,
-    SPECIAL_OID_VALUE
+    SPECIAL_SERVER_ADDR
 };
 typedef struct {
     char *name;                 /* header name */
@@ -123,8 +120,6 @@ typedef struct {
 } sei_cfg_rec;
 
 module AP_MODULE_DECLARE_DATA setenvif_module;
-
-static APR_OPTIONAL_FN_TYPE(ssl_ext_list) *ssl_ext_list_func = NULL;
 
 /*
  * These routines, the create- and merge-config functions, are called
@@ -380,31 +375,6 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
         else if (!strcasecmp(fname, "server_addr")) {
             new->special_type = SPECIAL_SERVER_ADDR;
         }
-        else if (!strncasecmp(fname, "oid(",4)) {
-            ap_regmatch_t match[AP_MAX_REG_MATCH];
-
-            new->special_type = SPECIAL_OID_VALUE;
-
-            /* Syntax check and extraction of the OID as a regex: */
-            new->pnamereg = ap_pregcomp(cmd->temp_pool,
-                                        "^oid\\(\"?([0-9.]+)\"?\\)$",
-                                        (AP_REG_EXTENDED /* | AP_REG_NOSUB */
-                                         | AP_REG_ICASE));
-            /* this can never happen, as long as pcre works:
-              if (new->pnamereg == NULL)
-                    return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                                       "OID regex could not be compiled.", NULL);
-             */
-            if (ap_regexec(new->pnamereg, fname, AP_MAX_REG_MATCH, match, 0) == AP_REG_NOMATCH) {
-                return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                                       "OID syntax is: oid(\"1.2.3.4.5\"); error in: ",
-                                       fname, NULL);
-            }
-            new->pnamereg = NULL;
-            /* The name field is used for the stripped oid string */
-            new->name = fname = apr_pstrdup(cmd->pool, fname+match[1].rm_so);
-            fname[match[1].rm_eo - match[1].rm_so] = '\0';
-        }
         else {
             new->special_type = SPECIAL_NOT;
             /* Handle fname as a regular expression.
@@ -552,8 +522,6 @@ static int match_headers(request_rec *r)
              * same header.  Remember we don't need to strcmp the two header
              * names because we made sure the pointers were equal during
              * configuration.
-             * In the case of SPECIAL_OID_VALUE values, each oid string is
-             * dynamically allocated, thus there are no duplicates.
              */
             if (b->name != last_name) {
                 last_name = b->name;
@@ -576,35 +544,6 @@ static int match_headers(request_rec *r)
                     break;
                 case SPECIAL_REQUEST_PROTOCOL:
                     val = r->protocol;
-                    break;
-                case SPECIAL_OID_VALUE:
-                    /* If mod_ssl is not loaded, the accessor function is NULL */
-                    if (ssl_ext_list_func != NULL)
-                    {
-                        apr_array_header_t *oid_array;
-                        char **oid_value;
-                        int j, len = 0;
-                        char *retval = NULL;
-
-                        /* The given oid can occur multiple times. Concatenate the values */
-                        if ((oid_array = ssl_ext_list_func(r->pool, r->connection, 1,
-                                                           b->name)) != NULL) {
-                            oid_value = (char **) oid_array->elts;
-                            /* pass 1: determine the size of the string */
-                            for (len=j=0; j < oid_array->nelts; j++) {
-                              len += strlen(oid_value[j]) + 1; /* +1 for ',' or terminating NIL */
-                            }
-                            retval = apr_palloc(r->pool, len);
-                            /* pass 2: fill the string */
-                            for (j=0; j < oid_array->nelts; j++) {
-                              if (j > 0) {
-                                  strcat(retval, ",");
-                              }
-                              strcat(retval, oid_value[j]);
-                            }
-                        }
-                        val = retval;
-                    }
                     break;
                 case SPECIAL_NOT:
                     if (b->pnamereg) {
@@ -683,19 +622,10 @@ static int match_headers(request_rec *r)
     return DECLINED;
 }
 
-static int setenvif_post_config(apr_pool_t *pconf, apr_pool_t *plog,
-                                apr_pool_t *ptemp, server_rec *s)
-{
-    ssl_ext_list_func = APR_RETRIEVE_OPTIONAL_FN(ssl_ext_list);
-    return OK;
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_header_parser(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(match_headers, NULL, NULL, APR_HOOK_MIDDLE);
-    /* post config handling */
-    ap_hook_post_config(setenvif_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(setenvif) =

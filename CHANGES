@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_setenvif: Remove OID match which is obsoleted by SetEnvIfExpr with
+     PeerExtList(). [Stefan Fritsch]
+
   *) mpm_prefork, mpm_worker, mpm_event: If a child is created just before
      graceful restart and then exits because of a missing lock file, don't
      shutdown the whole server. PR 39311. [Shawn Michael
