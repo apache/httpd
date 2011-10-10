@@ -7,7 +7,7 @@ Body:----------cs--
 
     Požadované URL nebylo na tomto serveru nalezeno.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Zdá se, že odkaz na
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazující
@@ -34,7 +34,7 @@ Body:----------de--
 
     Der angeforderte URL konnte auf dem Server nicht gefunden werden.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Der Link auf der
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">verweisenden
@@ -61,7 +61,7 @@ Body:----------en--
 
     The requested URL was not found on this server.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     The link on the
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referring
@@ -87,7 +87,7 @@ Body:----------es--
 
     El URL solicitado no ha sido localizado en este servidor.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     El URL de la <a href="<!--#echo encoding="url" 
     var="HTTP_REFERER"-->">p&aacute;gina que lo refiri&oacute;</a> 
@@ -114,7 +114,7 @@ Body:----------fr--
 
     L'URL demand&eacute;e n'a pas pu &ecirc;tre trouv&eacute;e sur ce serveur.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     La r&eacute;f&eacute;rence sur
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la page
@@ -142,7 +142,7 @@ Body:----------ga--
 
     N&iacute;or aimsigh an URL iarraithe ar an fhreastala&iacute; seo.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Is cos&uacute;il go bhfuil an nasc ar an
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">leathanach
@@ -171,7 +171,7 @@ Body:----------it--
 
     L'URL richiesto non esiste su questo server.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Il link della
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina da cui
@@ -198,7 +198,7 @@ Body:----------ja--
 
     要求された URL は本サーバでは見つかりませんでした。
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">
     参照元ページ</a>のリンクが間違っているか、古くなってしまっているようです。
@@ -223,7 +223,7 @@ Body:----------ko--
 
     요청한 URL을 이 서버에서 찾을 수 없습니다.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">이전
     페이지</a>에 있는 링크가 잘못되었거나 오래되어 없어진 것 같습니다.
@@ -249,7 +249,7 @@ Body:----------nl--
 
     De gevraagde URL was niet gevonden op deze server.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     De link op
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">deze pagina
@@ -276,7 +276,7 @@ Body:----------pl--
 
     Nie znaleziono &#380;&#261;danego URL-a na tym serwerze.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Odno&#347;nik na
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referuj&#261;cej stronie
@@ -301,7 +301,7 @@ Body:-------pt-br--
 
     A URL requisitada n&atilde;o foi encontrada neste servidor.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     O link na
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
@@ -340,7 +340,7 @@ Body:----------ro--
 
     URL-ul cerut nu a fost gasit pe acest server.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Link-ul de pe
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina
@@ -367,7 +367,7 @@ Body:----------sr--
 
     Захтевани УРЛ није пронађен на овом серверу.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Изгледа да је веза на
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">исходишној
@@ -394,7 +394,7 @@ Body:----------sv--
 
     Den efterfr&aring;gade adressen hittades inte p&aring; denna server.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     L&auml;nken p&aring; den
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">tidigare sidan</a> 
@@ -421,7 +421,7 @@ Body:----------tr--
 
     Talep ettiğiniz URL, sunucu üzerinde bulunmuyor.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">İstek yapılan sayfa</a>
     üzerindeki bağlantı güncel değil. Lütfen <a href="<!--#echo encoding="url" 

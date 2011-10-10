@@ -8,7 +8,7 @@ Body:----------cs--
     Proxy server obdržel od nadřazeného
     serveru chybnou odpověď.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -26,7 +26,7 @@ Body:----------de--
     Der Proxy-Server erhielt eine fehlerhafte Antwort
     eines &uuml;bergeordneten Servers oder Proxies. 
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -43,7 +43,7 @@ Body:----------en--
     The proxy server received an invalid
     response from an upstream server.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -60,7 +60,7 @@ Body:----------es--
     El servidor 'proxy' recibi&oacute; informaci&oacute;n
     inv&aacute;lida del servidor solicitante.
 
-   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
       <!--#include virtual="include/spacer.html" -->
       <!--#echo var="REDIRECT_ERROR_NOTES" -->
@@ -80,7 +80,7 @@ Body:----------fr--
     Le serveur proxy a re&ccedil;u une r&eacute;ponse
     incorrecte de la part d'un serveur sup&eacute;rieur. 
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -98,7 +98,7 @@ Body:----------ga--
     Fuair an seachfhreastala&iacute; freagairt neamhbhail&iacute;
     &oacute; freastala&iacute; thuasthrutha.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -116,7 +116,7 @@ Body:----------it--
     Il server proxy ha ricevuto una risposta
     non valida dal server precedente.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -133,7 +133,7 @@ Body:----------ja--
 
     プロクシサーバは上流サーバから不正な応答を受信しました。
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -150,7 +150,7 @@ Body:----------ko--
 
     프록시 서버가 더 윗쪽의 서버로부터 잘못된 응답을 받았습니다.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo  encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -168,7 +168,7 @@ Body:----------nl--
     De proxy server heeft een ongeldig
     antwoord ontvangen van een gecontacteerde server.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -186,7 +186,7 @@ Body:----------pl--
     Serwer otrzyma&#322; nieprawid&#322;ow&#261; odpowied&#378;
     od kolejnego serwera.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -204,7 +204,7 @@ Body:-------pt-br--
     O servidor proxy recebeu uma resposta
     inv&aacute;lida do servidor destino.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo  encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -221,7 +221,7 @@ Body:----------pt--
 	O servidor de <i>proxy</i> recebeu uma resposta
 	inválida de um outro servidor externo a ele.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -239,7 +239,7 @@ Body:----------ro--
     Serverul proxy a primit un raspuns invalid
     de la serverul precedent.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -257,7 +257,7 @@ Body:----------sr--
     Посреднички сервер је примио неисправан
     одговор од следећег сервера у низу.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -275,7 +275,7 @@ Body:----------sv--
     Proxyservern mottog ett felaktigt svar fr&aring;n
     en tidigare server.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
@@ -293,7 +293,7 @@ Body:----------tr--
     Vekil sunucu üstbirim sunucudan
     anlamsız bir yanıt aldı.
 
-  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     <!--#include virtual="include/spacer.html" -->
     <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
   <!--#endif -->
