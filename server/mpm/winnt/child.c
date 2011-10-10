@@ -305,8 +305,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     else {
         accf = 0;
         accf_name = "none";
-        ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(),
-                     ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
                      "winnt_accept: unrecognized AcceptFilter '%s', "
                      "only 'data', 'connect' or 'none' are valid. "
                      "Using 'none' instead", accf_name);
@@ -352,7 +351,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  "Child: Accept thread listening on %s:%d using AcceptFilter %s",
                  lr->bind_addr->hostname ? lr->bind_addr->hostname : "*",
                  lr->bind_addr->port, accf_name);
@@ -412,10 +411,10 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
 
             if (accf == 2) { /* 'data' */
                 len = APR_BUCKET_BUFF_SIZE;
-                buf = apr_bucket_alloc(len, context->ba); /* XXX: check for failure? */
+                buf = apr_bucket_alloc(len, context->ba);
                 len -= PADDED_ADDR_SIZE * 2;
             }
-            else {
+            else /* (accf == 1) 'connect' */ {
                 len = 0;
                 buf = context->buff;
             }
@@ -586,9 +585,12 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                 break;
             }
 
-            context->sa_client = NULL;
             context->sa_server = (void *) context->buff;
-            context->sa_server_len = sizeof(context->buff);
+            context->sa_server_len = sizeof(context->buff) / 2;
+            context->sa_client_len = context->sa_server_len;
+            context->sa_client = (void *) (context->buff
+                                         + context->sa_server_len);
+
             context->accept_socket = accept(nlsd, context->sa_server,
                                             &context->sa_server_len);
 
@@ -632,6 +634,20 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
             WSAEventSelect(context->accept_socket, 0, 0);
             context->overlapped.Pointer = NULL;
             err_count = 0;
+
+            context->sa_server_len = sizeof(context->buff) / 2;
+            if (getsockname(context->accept_socket, context->sa_server,
+                            &context->sa_server_len) == SOCKET_ERROR) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
+                             "getsockname failed");
+                continue;
+            }
+            if ((getpeername(context->accept_socket, context->sa_client,
+                             &context->sa_client_len)) == SOCKET_ERROR) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
+                             "getpeername failed");
+                memset(&context->sa_client, '\0', sizeof(context->sa_client));
+            }
         }
 
         sockinfo.os_sock = &context->accept_socket;
@@ -667,7 +683,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
         SetEvent(exit_event);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
                  "Child: Accept thread exiting.");
     return 0;
 }
@@ -1130,7 +1146,7 @@ void child_main(apr_pool_t *pconf)
      * Post worker threads blocked on the ThreadDispatch IOCompletion port
      */
     while (g_blocked_threads > 0) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
                      "Child: %d threads blocked on the completion port",
                      g_blocked_threads);
         for (i=g_blocked_threads; i > 0; i--) {

@@ -505,7 +505,7 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId,
         apr_os_sock_t nsd;
         lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
         apr_os_sock_get(&nsd, lr->sd);
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
                      "Parent: Duplicating socket %d (%pI) and sending it to child process %lu",
                      nsd, lr->bind_addr, dwProcessId);
         if (WSADuplicateSocket(nsd, dwProcessId,
