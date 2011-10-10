@@ -36,7 +36,7 @@ and URL matching.</p>
     each of these phases, one or more modules may be called upon to
     handle that portion of the request lifecycle. Phases include things
     like URL-to-filename translation, authentication, authorization,
-    content, and logging. (These is not an exhaustive list.)</p>
+    content, and logging. (This is not an exhaustive list.)</p>
 
     <p>mod_rewrite acts in two of these phases (or "hooks", as they are
     often called) to influence how URLs may be rewritten.</p>
@@ -44,39 +44,39 @@ and URL matching.</p>
     <p>First, it uses the URL-to-filename translation hook, which occurs
     after the HTTP request has been read, but before any authorization
     starts. Secondly, it uses the Fixup hook, which is after the
-    authorizatin phases, and after per-directory configuration files
+    authorization phases, and after per-directory configuration files
     (<code>.htaccess</code> files) have been read, but before the
     content handler is called.</p>
 
     <p>So, after a request comes in and a corresponding server or
     virtual host has been determined, the rewriting engine starts
     processing any <code>mod_rewrite</code> directives appearing in the
-    per-server configuration. (ie, in the main server configuration file
+    per-server configuration. (i.e., in the main server configuration file
     and <code class="directive"><a href="../mod/core.html#virtualhost">&lt;Virtualhost&gt;</a></code>
     sections.) This happens in the URL-to-filename phase.</p>
 
-    <p>A few steps later, when the finaly data directories are found,
+    <p>A few steps later, once the final data directories have been found,
     the per-directory configuration directives (<code>.htaccess</code>
     files and <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks) are applied. This
     happens in the Fixup phase.</p>
 
     <p>In each of these cases, mod_rewrite rewrites the
-    <code>REQUEST_URI</code> either to a new URI, or to a filename.</p>
+    <code>REQUEST_URI</code> either to a new URL, or to a filename.</p>
 
     <p>In per-directory context (ie, within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
-    after a URI has already been translated to a filename. Because of
-    this, mod_rewrite temporarily translates the filename back into a URI,
-    by stripping off directory paty before appling the rules. (See the
+    after a URL has already been translated to a filename. Because of
+    this, mod_rewrite temporarily translates the filename back into a URL,
+    by stripping off directory path before appling the rules. (See the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> directive to
     see how you can further manipulate how this is handled.) Then, a new
-    internal subrequest is issued with the new URI. This restarts
+    internal subrequest is issued with the new URL. This restarts
     processing of the API phases.</p>
 
-    <p>Because of this further manipulation of the URI in per-directory
+    <p>Because of this further manipulation of the URL in per-directory
     context, you'll need to take care to craft your rewrite rules
     differently in that context. In particular, remember that the
-    leading directory path will be stripped off of the URI that your
+    leading directory path will be stripped off of the URL that your
     rewrite rules will see. Consider the examples below for further
     clarification.</p>
 
@@ -104,7 +104,7 @@ and URL matching.</p>
 
     </table>
 
-    <p>For even more insight into how mod_rewrite manipulates URIs in
+    <p>For even more insight into how mod_rewrite manipulates URLs in
     different contexts, you should consult the <a href="../mod/mod_rewrite.html#logging">log entries</a> made during 
     rewriting.</p>
 
@@ -121,7 +121,7 @@ and URL matching.</p>
       rules together with their conditions). The operation of the
       URL rewriting engine itself is exactly the same for both
       configuration contexts. Only the final result processing is
-      different. </p>
+      different.</p>
 
       <p>The order of rules in the ruleset is important because the
       rewriting engine processes them in a special (and not very
