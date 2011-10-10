@@ -184,14 +184,6 @@ Environment variables will be considered only if there was no match
 among request characteristics and a regular expression was not
 used for the <em>attribute</em>.</li>
 
-<li>
- A reference to an extension of an SSL client certificate, located by
- its object id <em>oid</em>.
- If a non-SSL request, or in absense of the configured <em>oid</em>,
- no variable will be set. If the <em>oid</em> is found multiple times,
- the individual strings will be concatenated, separated by a comma <code>','</code>.
- The <em>oid</em> should reference a string-valued extension.
-</li>
 </ol>
 
 <p>The second argument (<em>regex</em>) is a <glossary
@@ -229,8 +221,6 @@ of</p>
         :<br />
    SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
         :<br />
-   SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" NetscapeComment=$1<br />
-        :<br />
    SetEnvIf ^TS  ^[a-z]  HAVE_TS<br />
 </example>
 
@@ -239,10 +229,6 @@ of</p>
     file, and the fourth sets <code>intra_site_referral</code> if
     the referring page was somewhere on the
     <code>www.mydomain.example.com</code> Web site.</p>
-
-    <p>The sixth example will set the <code>NetscapeComment</code>
-    environment variable to the string found in the corresponding
-    SSL client certificate field (if found).</p>
 
     <p>The last example will set environment variable
     <code>HAVE_TS</code> if the request contains any headers that
