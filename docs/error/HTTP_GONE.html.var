@@ -8,7 +8,7 @@ Body:----------cs--
     Požadované URL již není na tomto serveru k dispozici, ani není k dispozici
     žádná adresa k přesměrování.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
   
     Informujte, prosím, autora
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazující
@@ -35,7 +35,7 @@ Body:----------de--
     und wurde dauerhaft entfernt.
     Eine Weiterleitungsadresse ist nicht verf&uuml;gbar.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Bitte informieren Sie den Autor der
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">verweisenden
@@ -60,7 +60,7 @@ Body:----------en--
     The requested URL is no longer available on this server and there is no
     forwarding address.
   
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
   
     Please inform the author of the
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referring
@@ -85,7 +85,7 @@ Body:----------es--
     El URL solicitado actualmente no esta disponible en este servidor y
    no existe una direcci&oacute;n a la cual referirlo.
 
-   <!--#if expr="$HTTP_REFERER" -->
+   <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Por favor comunique al autor de la
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina
@@ -111,7 +111,7 @@ Body:----------fr--
     L'URL demand&eacute;e n'est plus accessible sur ce serveur et il
     n'y a pas d'adresse de redirection. 
 
-  <!--#if expr="$HTTP_REFERER" --> 
+  <!--#if expr="-n v('HTTP_REFERER')" --> 
 
     Nous vous prions d'informer l'auteur de
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la 
@@ -136,7 +136,7 @@ Body:----------ga--
     N&iacute;l an URL iarraithe ar f&aacute;il ar an fhreastala&iacute; seo 
     a thuilleadh, agus n&iacute;l aon seoladh nua ann d&oacute;.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Cur in &uacute;il do &uacute;adar an
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">leathanach
@@ -163,7 +163,7 @@ Body:----------it--
     e non esistono indirizzi verso i quali sia possibile inoltrare
     la richiesta.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Per favore, informa l'autore della
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina
@@ -189,7 +189,7 @@ Body:----------ja--
     要求された URL は既に本サーバでは利用できませんし、
     移動先もわかりません。
   
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
   
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->"
     >参照元ページ</a>の著者に、
@@ -215,7 +215,7 @@ Body:----------ko--
    요청한 URL은 더 이상 이 서버에 남아있지 않으며,
    그 객체가 옮겨진 다른 URL 역시 남아있지 않습니다.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">이전
     페이지</a>의 만든이에게 주소가 잘못되었다고 알려주시기 바랍니다.
@@ -240,7 +240,7 @@ Body:----------nl--
    De gevraagde URL is niet langer beschikbaar op deze server en er is geen
    doorverwijsadres.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
    Gelieve aan de auteur van
    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">deze pagina</a>
@@ -266,7 +266,7 @@ Body:----------pl--
     Poszukiwany zas&#243;b nie jest ju&#380; dost&#281;pny na tym serwerze i nie
     podano nowego adresu zasobu.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Prosimy poinformowa&#263; autora
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referuj&#261;cej
@@ -292,7 +292,7 @@ Body:-------pt-br--
    A URL solicitada n&atilde;o est&aacute; dispon&iacute;vel neste servidor
    e n&atilde;o existe um endere&ccedil;o alternativo.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
    Por favor informe o autor da
    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
@@ -318,7 +318,7 @@ Body:----------pt--
 	O URL desejado j&aacute; n&atilde;o est&aacute; dispon&iacute;vel
 	neste servidor e n&atilde;o existe endere&ccedil;o alternativo.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
 	Por favor informe o autor da
 	<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
@@ -345,7 +345,7 @@ Body:----------ro--
     URL-ul cerut nu mai este disponibil pe acest server si nu
     exista o adresa de inaintare.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Va rugam informati autorul
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">paginii
@@ -371,7 +371,7 @@ Body:----------sr--
     Захтевани УРЛ није више доступан на овом серверу и нема
     адресе на коју бисте могли бити прослеђени.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     Молимо обавестите аутора
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">исходишне
@@ -397,7 +397,7 @@ Body:----------sv--
     Den &ouml;nskade adressen &auml;r inte l&auml;ngre tillg&auml;nglig hos
     denna server och det finns inte n&aring;gon adress f&ouml;r vidarebefodran.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
 
     V&auml;nligen informera f&ouml;rfattaren bakom 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">den aktuella
@@ -423,7 +423,7 @@ Body:----------tr--
     Talep ettiğiniz URL artık kullanılabilir değil
     ve herhangi bir yönlendirme de mevcut değil.
 
-  <!--#if expr="$HTTP_REFERER" -->
+  <!--#if expr="-n v('HTTP_REFERER')" -->
   
     Lütfen
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">istenen sayfanın</a>
