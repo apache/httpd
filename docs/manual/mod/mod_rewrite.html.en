@@ -899,7 +899,7 @@ later</td></tr>
       subsequent patterns are applied to the output of the last matched
       RewriteRule.</p>
 
-<div class="note"><h3>What is matched?</h3>
+<div class="note"><h3><a id="what_is_matched" name="what_is_matched">What is matched?</a></h3>
       <p>In <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> context,
       The <em>Pattern</em> will initially be matched against the part of the
       URL after the hostname and port, and before the query string (e.g. "/app1/index.html").</p>
@@ -1047,10 +1047,10 @@ cannot use <code>$N</code> in the substitution string!
 
       <p>Rewrite rules are applied to the results of previous rewrite
       rules, in the order in which they are defined
-      in the config file. The URL is <strong>completely
+      in the config file. The URI or file path (see <a href="#what_is_matched">"What is matched?"</a>, above) is <strong>completely
       replaced</strong> by the <em>Substitution</em> and the
       rewriting process continues until all rules have been applied,
-      or it is explicitly terminated by a
+      or it is explicitly terminated by an
       <a href="../rewrite/flags.html#flag_l"><code><strong>L</strong></code> flag</a>,
       or other flag which implies immediate termination, such as
       <code><strong>END</strong></code> or
