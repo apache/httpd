@@ -292,6 +292,14 @@
       that the size overhead added by the compression is larger than the data
       to be compressed.
       </li>
+
+      <li>Multi-language error documents from 2.2.x may not work unless
+      they are adjusted to the new syntax of <module>mod_include</module>'s
+      <code>#if expr=</code> element or the directive
+      <directive module="mod_include">SSILegacyExprParser</directive> is
+      enabled for the directory containing the error documents.
+      </li>
+
     </ul>
 
   </section>
