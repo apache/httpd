@@ -1705,12 +1705,12 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     {
         /* The child process or in one_process (debug) mode
          */
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
                      "Child process is running");
 
         child_main(pconf);
 
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
                      "Child process is exiting");
         return DONE;
     }
