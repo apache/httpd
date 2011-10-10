@@ -39,7 +39,7 @@ and URL matching.</p>
     content, and logging. (These is not an exhaustive list.)</p>
 
     <p>mod_rewrite acts in two of these phases (or "hooks", as they are
-    sometimes called) to influence how URLs may be rewritten.</p>
+    often called) to influence how URLs may be rewritten.</p>
 
     <p>First, it uses the URL-to-filename translation hook, which occurs
     after the HTTP request has been read, but before any authorization
@@ -103,6 +103,10 @@ and URL matching.</p>
         </tr>
 
     </table>
+
+    <p>For even more insight into how mod_rewrite manipulates URIs in
+    different contexts, you should consult the <a href="../mod/mod_rewrite.html#logging">log entries</a> made during 
+    rewriting.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
