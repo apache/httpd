@@ -961,7 +961,7 @@ void child_main(apr_pool_t *pconf)
                      "Process will exit.");
         exit(APEXIT_CHILDINIT);
     }
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
                  "Child: Acquired the start mutex.");
 
     /*
@@ -1084,7 +1084,7 @@ void child_main(apr_pool_t *pconf)
         }
         else if (cld == 0) {
             /* Exit event was signaled */
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
                          "Child: Exit event signaled. Child process is "
                          "ending.");
             break;
@@ -1134,7 +1134,7 @@ void child_main(apr_pool_t *pconf)
      */
     rv = apr_proc_mutex_unlock(start_mutex);
     if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
                      "Child: Released the start mutex");
     }
     else {
