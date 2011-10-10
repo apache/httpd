@@ -111,7 +111,7 @@ typedef struct {
 
 /* flex/bison functions */
 int  ap_expr_yyparse(ap_expr_parse_ctx_t *context);
-void ap_expr_yyerror(ap_expr_parse_ctx_t *context, char *err);
+void ap_expr_yyerror(ap_expr_parse_ctx_t *context, const char *err);
 int  ap_expr_yylex_init(void **scanner);
 int  ap_expr_yylex_destroy(void *scanner);
 void ap_expr_yyset_extra(ap_expr_parse_ctx_t *context, void *scanner);
