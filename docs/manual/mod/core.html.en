@@ -552,7 +552,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     <p>Example:</p>
 
     <div class="example"><p><code>
-      AllowOverride None
+      AllowOverride None<br />
       AllowOverrideList Redirect RedirectMatch
     </code></p></div>
 
@@ -563,7 +563,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     <p>Example:</p>
 
     <div class="example"><p><code>
-      AllowOverride AuthConfig
+      AllowOverride AuthConfig<br />
       AllowOverrideList CookieTracking CookieName
     </code></p></div>
 
