@@ -357,7 +357,8 @@ AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
  * submatches. Pass it the same nmatch and pmatch arguments that you
  * passed ap_regexec(). pmatch should not be greater than the maximum number
  * of subexpressions - i.e. one more than the re_nsub member of ap_regex_t.
- * nmatch must be >=AP_MAX_REG_MATCH (10).
+ *
+ * nmatch must be <=AP_MAX_REG_MATCH (10).
  *
  * input should be the string with the $-expressions, source should be the
  * string that was matched against.
