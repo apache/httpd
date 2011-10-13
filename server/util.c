@@ -357,11 +357,13 @@ AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
  * submatches. Pass it the same nmatch and pmatch arguments that you
  * passed ap_regexec(). pmatch should not be greater than the maximum number
  * of subexpressions - i.e. one more than the re_nsub member of ap_regex_t.
+ * nmatch must be >=AP_MAX_REG_MATCH (10).
  *
  * input should be the string with the $-expressions, source should be the
  * string that was matched against.
  *
  * It returns the substituted string, or NULL if a vbuf is used.
+ * On errors, returns the orig string.
  *
  * Parts of this code are based on Henry Spencer's regsub(), from his
  * AT&T V8 regexp package.
@@ -379,7 +381,7 @@ static char *regsub_core(apr_pool_t *p, struct ap_varbuf *vb,
 
     if (!source)
         return NULL;
-    if (!nmatch) {
+    if (!nmatch || nmatch>AP_MAX_REG_MATCH) {
         if (!vb) {
             return apr_pstrdup(p, src);
         }
@@ -397,7 +399,7 @@ static char *regsub_core(apr_pool_t *p, struct ap_varbuf *vb,
         if (c == '$' && apr_isdigit(*src))
             no = *src++ - '0';
         else
-            no = 10;
+            no = AP_MAX_REG_MATCH;
 
         if (no > 9) {                /* Ordinary character. */
             if (c == '\\' && *src)
