@@ -1220,8 +1220,6 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->raliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_paths = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
-    new->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
-    new->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
     new->preserve_host_set = 0;
     new->preserve_host = 0;
     new->interpolate_env = -1; /* unset */
@@ -1248,8 +1246,6 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
         = apr_array_append(p, base->cookie_paths, add->cookie_paths);
     new->cookie_domains
         = apr_array_append(p, base->cookie_domains, add->cookie_domains);
-    new->cookie_path_str = base->cookie_path_str;
-    new->cookie_domain_str = base->cookie_domain_str;
     new->interpolate_env = (add->interpolate_env == -1) ? base->interpolate_env
                                                         : add->interpolate_env;
     new->preserve_host = (add->preserve_host_set == 0) ? base->preserve_host
@@ -2299,6 +2295,8 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
     proxy_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    ap_proxy_strmatch_path = apr_strmatch_precompile(pconf, "path=", 0);
+    ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
 
     return OK;
 }

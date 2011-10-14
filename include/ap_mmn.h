@@ -358,12 +358,14 @@
  * 20110724.10(2.3.15-dev) Export ap_max_mem_free
  * 20111009.0 (2.3.15-dev) Remove ap_proxy_removestr(),
  *                         add ap_unixd_config.group_name
+ * 20111014.0 (2.3.15-dev) Remove cookie_path_str and cookie_domain_str from
+ *                         proxy_dir_conf
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20111009
+#define MODULE_MAGIC_NUMBER_MAJOR 20111014
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 
