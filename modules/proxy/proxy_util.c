@@ -65,6 +65,8 @@ static struct wstat {
 /* Global balancer counter */
 int PROXY_DECLARE_DATA proxy_lb_workers = 0;
 static int lb_workers_limit = 0;
+const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_path;
+const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_domain;
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -1170,7 +1172,7 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     * Find the match and replacement, but save replacing until we've done
     * both path and domain so we know the new strlen
     */
-    if ((pathp = apr_strmatch(conf->cookie_path_str, str, len)) != NULL) {
+    if ((pathp = apr_strmatch(ap_proxy_strmatch_path, str, len)) != NULL) {
         pathp += 5;
         poffs = pathp - str;
         pathe = ap_strchr_c(pathp, ';');
@@ -1192,7 +1194,7 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
         }
     }
 
-    if ((domainp = apr_strmatch(conf->cookie_domain_str, str, len)) != NULL) {
+    if ((domainp = apr_strmatch(ap_proxy_strmatch_domain, str, len)) != NULL) {
         domainp += 7;
         doffs = domainp - str;
         domaine = ap_strchr_c(domainp, ';');

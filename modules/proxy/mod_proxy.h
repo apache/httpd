@@ -193,8 +193,6 @@ typedef struct {
     apr_array_header_t *raliases;
     apr_array_header_t* cookie_paths;
     apr_array_header_t* cookie_domains;
-    const apr_strmatch_pattern* cookie_path_str;
-    const apr_strmatch_pattern* cookie_domain_str;
     signed char p_is_fnmatch; /* Is the path an fnmatch candidate? */
     signed char interpolate_env;
     struct proxy_alias *alias;
@@ -907,6 +905,8 @@ int ap_proxy_lb_workers(void);
 extern module PROXY_DECLARE_DATA proxy_module;
 
 extern int PROXY_DECLARE_DATA proxy_lb_workers;
+extern const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_path;
+extern const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_domain;
 
 #endif /*MOD_PROXY_H*/
 /** @} */
