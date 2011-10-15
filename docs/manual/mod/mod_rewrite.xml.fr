@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1180879 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -986,7 +986,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       requ&ecirc;te ; les expressions suivantes sont compar&eacute;es &agrave; la sortie de
       la derni&egrave;re r&egrave;gle de r&eacute;&eacute;criture qui a &eacute;t&eacute; appliqu&eacute;e.</p>
 
-<note><title>Qu'est-ce qui est compar&eacute; ?</title>
+<note><title><a id="what_is_matched" name="what_is_matched">Qu'est-ce qui est compar&eacute; ?</a></title>
 
       <p>Dans un contexte de serveur virtuel <directive
       module="core">VirtualHost</directive>, le <em>mod&egrave;le</em> est tout
@@ -1162,14 +1162,19 @@ substitution !
       section de laquelle elles sont d&eacute;crites. Ces trois types de
       variables sont &eacute;valu&eacute;es dans l'ordre ci-dessus.</p>
 
-      <p>Comme mentionn&eacute; pr&eacute;c&eacute;demment, toutes les r&egrave;gles de
-      r&eacute;&eacute;criture sont appliqu&eacute;es &agrave; la cha&icirc;ne de <em>Substitution</em>
-      (selon l'ordre dans lequel elles sont d&eacute;finies dans le fichier
-      de configuration). L'URL est <strong>int&eacute;gralement
+       <p>Chaque r&egrave;gle de r&eacute;&eacute;criture s'applique au r&eacute;sultat de la r&egrave;gle
+       pr&eacute;c&eacute;dente, selon l'ordre dans lequel elles ont &eacute;t&eacute; d&eacute;finies dans
+       le fichier de configuration. L'URI du chemin du fichier (voir
+       ci-dessus <a href="#what_is_matched">Qu'est-ce qui est
+       compar&eacute; ?</a>) est <strong>int&eacute;gralement
       remplac&eacute;e</strong> par la cha&icirc;ne de <em>Substitution</em> et le
       processus de r&eacute;&eacute;criture se poursuit jusqu'&agrave; ce que toutes les
       r&egrave;gles aient &eacute;t&eacute; appliqu&eacute;es, ou qu'il soit explicitement stopp&eacute;
-      par un drapeau <code><strong>L</strong></code>.</p>
+      par un drapeau <a
+      href="../rewrite/flags.html#flag_l"><code><strong>L</strong></code></a>,
+      ou par un autre drapeau qui implique un arr&ecirc;t imm&eacute;diat, comme
+      <code><strong>END</strong></code> ou
+      <code><strong>F</strong></code>.</p>
 
      <note><title>Modifier la cha&icirc;ne de requ&ecirc;te</title>
       <p>Par d&eacute;faut, la cha&icirc;ne de requ&ecirc;te est transmise sans

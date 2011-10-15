@@ -78,7 +78,7 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
     autres modules Apache httpd. La principale diff&eacute;rence r&eacute;side dans le fait qu'un
     et un seul MPM &agrave; la fois doit &ecirc;tre charg&eacute;
     lorsque le serveur s'ex&eacute;cute. La liste des
-    MPMs disponibles est fournie dans <a href="mod/">l'indexe des
+    MPMs disponibles est fournie dans <a href="mod/">l'index des
     modules</a>.</p>
 
 </section>

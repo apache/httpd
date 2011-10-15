@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1173140 -->
+<!-- English Revision : 1182379 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -538,7 +538,7 @@ All pour les versions ant&eacute;rieures</default>
     <p>Example:</p>
 
     <example>
-      AllowOverride None
+      AllowOverride None<br />
       AllowOverrideList Redirect RedirectMatch
     </example>
 
@@ -549,7 +549,7 @@ All pour les versions ant&eacute;rieures</default>
     <p>Example:</p>
 
     <example>
-      AllowOverride AuthConfig
+      AllowOverride AuthConfig<br />
       AllowOverrideList CookieTracking CookieName
     </example>
 
@@ -1972,6 +1972,11 @@ host</context>
     le sous-r&eacute;pertoire <code>bin</code> de votre r&eacute;pertoire
     d'installation, afin de d&eacute;terminer les noms d'h&ocirc;tes associ&eacute;s aux
     adresses IP journalis&eacute;es.</p>
+
+    <p>Enfin, si vous avez des <a
+    href="mod_authz_host.html#reqhost">directives Require &agrave; base de
+    nom</a>, une recherche de nom d'h&ocirc;te sera effectu&eacute;e quelle que soit
+    la d&eacute;finition de la directive <code>HostnameLookups</code>.</p>
 </usage>
 </directivesynopsis>
 
