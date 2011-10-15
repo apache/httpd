@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1181242 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -308,6 +308,14 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
       <li><module>mod_deflate</module> n'effectue plus de compression
       s'il s'aper&ccedil;oit que la quantit&eacute; de donn&eacute;es ajout&eacute;e par la
       compression est sup&eacute;rieure &agrave; la quantit&eacute; de donn&eacute;es &agrave; compresser.
+      </li>
+
+      <li>Les pages d'erreur multilingues de la version 2.2.x ne
+      fonctionneront qu'apr&egrave;s avoir &eacute;t&eacute; corrig&eacute;es pour
+      respecter la nouvelle syntaxe de l'&eacute;l&eacute;ment <code>#if expr=</code>
+      du module <module>mod_include</module>, ou si la directive
+      <directive module="mod_include">SSILegacyExprParser</directive> a
+      &eacute;t&eacute; activ&eacute;e pour le r&eacute;pertoire contenant les pages d'erreur.
       </li>
     </ul>
 

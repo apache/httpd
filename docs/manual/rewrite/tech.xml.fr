@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1180985 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,88 +42,94 @@ correspondance</a></seealso>
 <seealso><a href="advanced.html">Techniques avanc&eacute;es</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
-<section id="Internal"><title>Fonctionnement interne</title>
-
-      <p>Le fonctionnement interne de ce module est tr&egrave;s complexe, mais
-      il est n&eacute;cessaire de l'expliquer, m&ecirc;me &agrave; l'utilisateur "standard",
-      afin d'&eacute;viter les erreurs courantes et de pouvoir exploiter toutes
-      ses fonctionnalit&eacute;s.</p>
-</section>
-
 <section id="InternalAPI"><title>Phases de l'API</title>
 
-      <p>Il faut tout d'abord bien comprendre que le traitement d'une
-      requ&ecirc;te HTTP par Apache s'effectue en plusieurs phases. L'API
-      d'Apache fournit un point d'accroche (hook) pour chacune de ces
-      phases. Mod_rewrite utilise deux de ces hooks : le hook de
-      conversion des URLs en noms de fichiers qui est utilis&eacute; quand la
-      requ&ecirc;te HTTP a &eacute;t&eacute; lue mais avant le d&eacute;marrage de tout processus
-      d'autorisation, et le hook "Fixup" qui est d&eacute;clench&eacute; apr&egrave;s les
-      phases d'autorisation et apr&egrave;s la lecture des fichiers de
-      configuration niveau r&eacute;pertoire (<code>.htaccess</code>), mais
-      avant que le gestionnaire de contenu soit activ&eacute;.</p>
+      <p>Le traitement des requ&ecirc;tes par le serveur HTTP Apache se
+      d&eacute;roule en plusieurs phases. Au cours de chaque phase, un ou
+      plusieurs modules peuvent &ecirc;tre appel&eacute;s pour traiter la partie
+      concern&eacute;e du cycle de vie de la requ&ecirc;te. Les diff&eacute;rentes phases
+      peuvent consister en traduction d'URL en nom de fichier,
+      authentification, autorisation, gestion de contenu ou journalisation (la
+      liste n'est pas exhaustive).</p>
 
-      <p>Donc, lorsqu'une requ&ecirc;te arrive et quand Apache a d&eacute;termin&eacute; le
-      serveur correspondant (ou le serveur virtuel), le moteur de
-      r&eacute;&eacute;criture commence le traitement de toutes les directives de
-      mod_rewrite de la configuration du serveur principal dans la phase
-      de conversion URL vers nom de fichier. Une fois ces &eacute;tapes
-      franchies, lorsque les repertoires de donn&eacute;es finaux ont &eacute;t&eacute;
-      trouv&eacute;s, les directives de configuration de mod_rewrite au niveau
-      r&eacute;pertoire sont &eacute;x&eacute;cut&eacute;es dans la phase Fixup. Dans les deux cas,
-      mod_rewrite r&eacute;&eacute;crit les URLs soit en nouvelles URLs, soit en noms
-      de fichiers, bien que la distinction entre les deux ne soit pas
-      &eacute;vidente. Cette utilisation de l'API n'&eacute;tait pas sens&eacute;e s'op&eacute;rer
-      de cette mani&egrave;re lorsque l'API fut con&ccedil;ue, mais depuis Apache 1.x,
-      c'est le seul mode op&eacute;ratoire possible pour mod_rewrite. Afin de
-      rendre les choses plus claires, souvenez-vous de ces deux points :</p>
+    <p>mod_rewrite agit dans deux de ces phases (ou accroches - hooks -
+    comme on les nomme souvent) pour la r&eacute;&eacute;criture des URLs.</p>
 
-      <ol>
-        <li>Bien que mod_rewrite r&eacute;&eacute;crive les URLs en URLs, les URLs en
-	noms de fichiers et m&ecirc;me des noms de fichiers en d'autres noms
-	de fichiers, l'API ne propose actuellement qu'un hook URL vers
-	nom de fichier. Les deux hooks manquants seront ajout&eacute;s dans
-	Apache &agrave; partir de la version 2.0 afin de rendre le processus
-	plus clair. Mais ce point ne pr&eacute;sente pas d'inconv&eacute;nient pour
-	l'utilisateur, il s'agit simplement d'un fait que vous devez
-	garder &agrave; l'esprit : Apache en fait plus avec le hook URL vers
-	nom de fichier que l'API n'a la pr&eacute;tention d'en faire.</li>
+    <p>Tout d'abord, il utilise le hook traduction URL vers nom de
+    fichier qui intervient apr&egrave;s la lecture de la requ&ecirc;te HTTP, mais
+    avant le processus d'autorisation. Ensuite, il utilise le hook
+    Fixup, qui intervient apr&egrave;s les phases d'autorisation, apr&egrave;s la
+    lecture des fichiers de configuration de niveau r&eacute;pertoire (fichiers
+    <code>.htaccess</code>), mais avant l'appel du gestionnaire de
+    contenu.</p>
 
-        <li>
-          Paradoxalement, mod_rewrite permet la manipulation d'URLs dans
-	  un contexte de r&eacute;pertoire, <em>c'est &agrave; dire</em> dans les
-	  fichiers <code>.htaccess</code>, bien que ces derniers
-	  soient trait&eacute;s bien longtemps apr&egrave;s que les URLs n'aient &eacute;t&eacute;
-	  traduites en noms de fichiers. Les choses doivent se d&eacute;rouler
-	  ainsi car les fichiers <code>.htaccess</code> r&eacute;sident dans le
-	  syst&egrave;me de fichiers, et le traitement a d&eacute;j&agrave; atteint
-	  cette &eacute;tape. Autrement dit, en accord avec les phases de
-	  l'API, &agrave; ce point du traitement, il est trop tard pour
-	  effectuer des manipulations d'URLs. Pour r&eacute;soudre ce probl&egrave;me
-	  d'ant&eacute;riorit&eacute;, mod_rewrite utilise une astuce : pour effectuer
-	  une manipulation URL/nom de fichier dans un contexte de
-	  r&eacute;pertoire, mod_rewrite r&eacute;&eacute;crit tout d'abord le nom de fichier
-	  en son URL d'origine (ce qui est normalement impossible, mais
-	  voir ci-dessous l'astuce utilis&eacute;e par la directive
-	  <code>RewriteBase</code> pour y parvenir), puis
-	  initialise une nouvelle sous-requ&ecirc;te interne avec la nouvelle
-	  URL ; ce qui a pour effet de red&eacute;marrer le processus des
-	  phases de l'API.
+    <p>Ainsi, lorsqu'une requ&ecirc;te arrive et une fois le serveur
+    correspondant ou le serveur virtuel d&eacute;termin&eacute;, le moteur de
+    r&eacute;&eacute;criture commence &agrave; traiter toute directive apparaissant dans la
+    configuration de niveau serveur (autrement dit dans le
+    fichier de configuration principal du serveur et les sections
+    <directive module="core" type="section">Virtualhost</directive>).
+    Tout ce processus s'ex&eacute;cute au cours de la phase de traduction URL
+    vers nom de fichier.</p>
 
-          <p>Encore une fois, mod_rewrite fait tout ce qui est en son
-	  pouvoir pour rendre la complexit&eacute; de cette &eacute;tape compl&egrave;tement
-	  transparente &agrave; l'utilisateur, mais vous devez garder ceci &agrave;
-	  l'esprit : alors que les manipulations d'URLs dans le contexte
-	  du serveur sont vraiment rapides et efficaces, les r&eacute;&eacute;critures
-	  dans un contexte de r&eacute;pertoire sont lentes et inefficaces &agrave;
-	  cause du probl&egrave;me d'ant&eacute;riorit&eacute; pr&eacute;cit&eacute;. Cependant, c'est la
-	  seule mani&egrave;re dont mod_rewrite peut proposer des manipulations
-	  d'URLs (limit&eacute;es &agrave; une branche du syst&egrave;me de fichiers) &agrave;
-	  l'utilisateur standard.</p>
-        </li>
-      </ol>
+    <p>Quelques &eacute;tapes plus loin, une fois les r&eacute;pertoires de donn&eacute;es
+    finaux trouv&eacute;s, les directives de configuration de niveau r&eacute;pertoire
+    (fichiers <code>.htaccess</code> et sections <directive module="core"
+    type="section">Directory</directive>) sont appliqu&eacute;es. Ce processus
+    s'ex&eacute;cute au cours de la phase Fixup.</p>
 
-      <p>Ne perdez pas de vue ces deux points!</p>
+    <p>Dans tous ces cas, mod_rewrite r&eacute;&eacute;crit le
+    <code>REQUEST_URI</code> soit vers une nouvelle URL, soit vers un
+    nom de fichier.</p>
+
+    <p>Dans un contexte de niveau r&eacute;pertoire (autrement dit dans les
+    fichiers <code>.htaccess</code> et les sections
+    <code>Directory</code>), les r&egrave;gles de r&eacute;&eacute;criture s'appliquent apr&egrave;s
+    la traduction de l'URL en nom de fichier. C'est pourquoi mod_rewrite
+    retraduit temporairement le nom de fichier en URL en supprimant le
+    chemin de r&eacute;pertoire avant d'appliquer les r&egrave;gles (Reportez-vous &agrave;
+    la directive <directive module="mod_rewrite">RewriteBase</directive>
+    pour voir comment vous pourrez par la suite personnaliser la mani&egrave;re
+    dont tout ceci est trait&eacute;). Ensuite, une nouvelle sous-requ&ecirc;te
+    interne est initi&eacute;e avec la nouvelle URL, ce qui red&eacute;marre le
+    traitement des phases de l'API.</p>
+
+    <p>En cons&eacute;quence de cette manipulation de l'URL , vous devrez
+    pensez &agrave; confectionner diff&eacute;remment vos r&egrave;gles de r&eacute;&eacute;criture dans un
+    contexte de niveau r&eacute;pertoire. En particulier, rappelez-vous que le
+    chemin de r&eacute;pertoire sera absent de l'URL que vos r&egrave;gles de
+    r&eacute;&eacute;criture verront. Voici quelques exemples qui permettront de
+    clarifier les choses :</p>
+
+    <table border="1">
+
+        <tr>
+            <th>Position de la r&egrave;gle</th>
+            <th>R&egrave;gle</th>
+        </tr>
+
+        <tr>
+            <td>Section VirtualHost</td>
+            <td>RewriteRule ^/images/(.+)\.jpg /images/$1.gif</td>
+        </tr>
+
+        <tr>
+            <td>Fichier .htaccess &agrave; la racine des documents</td>
+            <td>RewriteRule ^images/(.+)\.jpg images/$1.gif</td>
+        </tr>
+
+        <tr>
+            <td>Fichier .htaccess dans le r&eacute;pertoire images</td>
+            <td>RewriteRule ^(.+)\.jpg $1.gif</td>
+        </tr>
+
+    </table>
+
+    <p>Pour une &eacute;tude plus approfondie de la mani&egrave;re dont mod_rewrite
+    manipule les URLs dans les diff&eacute;rents contextes, vous pouvez
+    consulter les <a href="../mod/mod_rewrite.html#logging">entr&eacute;es du
+    journal</a> g&eacute;n&eacute;r&eacute;es au cours du processus de r&eacute;&eacute;criture.</p>
+
 </section>
 
 <section id="InternalRuleset"><title>Traitement du jeu de r&egrave;gles</title>

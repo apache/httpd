@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1180828 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -194,14 +194,6 @@ en compte que si aucune correspondance n'a &eacute;t&eacute; trouv&eacute;e parm
 caract&eacute;ristiques de la requ&ecirc;te, et si <em>attribut</em> n'a pas &eacute;t&eacute;
 sp&eacute;cifi&eacute; sous la forme d'une expression rationnelle.</li>
 
-<li>La r&eacute;f&eacute;rence &agrave; une extension d'un certificat client SSL, localis&eacute;
-par son identifiant objet <em>oid</em>. Dans le cas d'une requ&ecirc;te non
-SSL, ou en l'absence d'<em>oid</em> configur&eacute;, aucune variable ne sera
-d&eacute;finie. Si l'<em>oid</em> est trouv&eacute; plusieurs fois, les cha&icirc;nes
-individuelles seront concat&eacute;n&eacute;es, en les s&eacute;parant par des virgules
-<code>','</code>. L'<em>oid</em> doit faire r&eacute;f&eacute;rence &agrave; une extension
-sous forme de cha&icirc;ne.
-</li>
 </ol>
 
 <p>Le second argument (<em>regex</em>) est une <glossary
@@ -240,8 +232,6 @@ peuvent se pr&eacute;senter sous les formes suivantes :</p>
         :<br />
    SetEnvIf objet_est_une_image xbm XBIT_PROCESSING=1<br />
         :<br />
-   SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" commentaire-netscape=$1<br />
-        :<br />
    SetEnvIf ^TS  ^[a-z]  HAVE_TS<br />
 </example>
 
@@ -251,10 +241,6 @@ peuvent se pr&eacute;senter sous les formes suivantes :</p>
     <code>r&eacute;f&eacute;rant_intra_site</code> si la page r&eacute;f&eacute;rante se trouve
     quelque part dans le site web
     <code>www.mon-domaine.example.com</code>.</p>
-
-    <p>La sixi&egrave;me ligne d&eacute;finit la variable d'environnement
-    <code>commentaire-netscape</code> avec la cha&icirc;ne trouv&eacute;e dans le
-    champ du certificat client SSL correspondant.</p>
 
     <p>La derni&egrave;re ligne d&eacute;finit la variable d'environnement
     <code>HAVE_TS</code> si la requ&ecirc;te contient un en-t&ecirc;te dont le nom
