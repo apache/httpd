@@ -555,7 +555,7 @@ LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
 require "apache2"
 function silly_mapper(r)
     if r.uri == "/" then
-        r.file = "/var/www/home.lua"
+        r.filename = "/var/www/home.lua"
         return apache2.OK
     else
         return apache2.DECLINED
