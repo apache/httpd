@@ -121,9 +121,6 @@ RELEASE SHOWSTOPPERS:
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1177081
     2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
     +1: jim, rjung
-    rjung: You might want to add the "special case: 0- ..." comment from the
-           2.2 patch. I'm fine either way.
-    jim:   Added.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
