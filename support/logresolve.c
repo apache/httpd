@@ -68,9 +68,9 @@
 #include <stdlib.h>
 #endif
 
-#define READ_BUF_SIZE 10240
-#define WRITE_BUF_SIZE 10240
-#define LINE_BUF_SIZE 2048
+#define READ_BUF_SIZE  128*1024
+#define WRITE_BUF_SIZE 128*1024
+#define LINE_BUF_SIZE  128*1024
 
 static apr_file_t *errfile;
 static const char *shortname = "logresolve";
@@ -140,7 +140,7 @@ int main(int argc, const char * const argv[])
     char * stats = NULL;
     char * inbuffer;
     char * outbuffer;
-    char line[LINE_BUF_SIZE];
+    char * line;
     int doublelookups = 0;
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
@@ -189,8 +189,9 @@ int main(int argc, const char * const argv[])
     apr_file_open_stdin(&infile, pool);
 
     /* Allocate two new 10k file buffers */
-    if ((outbuffer = apr_palloc(pool, WRITE_BUF_SIZE)) == NULL ||
-        (inbuffer = apr_palloc(pool, READ_BUF_SIZE)) == NULL) {
+    if (   (outbuffer = apr_palloc(pool, WRITE_BUF_SIZE)) == NULL
+        || (inbuffer  = apr_palloc(pool, READ_BUF_SIZE))  == NULL
+        || (line      = apr_palloc(pool, LINE_BUF_SIZE))  == NULL) {
         return 1;
     }
 
@@ -203,7 +204,7 @@ int main(int argc, const char * const argv[])
         return 1;
     }
 
-    while (apr_file_gets(line, sizeof(line), infile) == APR_SUCCESS) {
+    while (apr_file_gets(line, LINE_BUF_SIZE, infile) == APR_SUCCESS) {
         char *hostname;
         char *space;
         apr_sockaddr_t *ip;
