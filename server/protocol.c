@@ -666,7 +666,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         && !r->parsed_uri.scheme 
         && uri[0] != '/'
         && !(uri[0] == '*' && uri[1] == '\0')) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                       "invalid request-URI %s", uri);
         r->args = NULL;
         r->hostname = NULL;
@@ -718,7 +718,19 @@ static int table_do_fn_check_lengths(void *r_, const char *key,
                                "\n<pre>\n",
                                ap_escape_html(r->pool, key),
                                "</pre>\n", NULL));
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Request header exceeds "
+                  "LimitRequestFieldSize after merging: %s", key);
     return 0;
+}
+
+/* get the length of the field name for logging, but no more than 80 bytes */
+#define LOG_NAME_MAX_LEN 80
+static int field_name_len(const char *field)
+{
+    const char *end = ap_strchr_c(field, ':');
+    if (end == NULL || end - field > LOG_NAME_MAX_LEN)
+        return LOG_NAME_MAX_LEN;
+    return end - field;
 }
 
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
@@ -766,6 +778,9 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                            "<pre>\n",
                                            ap_escape_html(r->pool, field),
                                            "</pre>\n", NULL));
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                              "Request header exceeds LimitRequestFieldSize: "
+                              "%.*s", field_name_len(field), field);
             }
             return;
         }
@@ -793,6 +808,10 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                                "<pre>\n",
                                                ap_escape_html(r->pool, last_field),
                                                "</pre>\n", NULL));
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                                  "Request header exceeds LimitRequestFieldSize "
+                                  "after folding: %.*s",
+                                  field_name_len(last_field), last_field);
                     return;
                 }
 
@@ -818,6 +837,9 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                     apr_table_setn(r->notes, "error-notes",
                                    "The number of request header fields "
                                    "exceeds this server's limit.");
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                                  "Number of request headers exceeds "
+                                  "LimitRequestFields");
                     return;
                 }
 
@@ -831,6 +853,10 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                                ap_escape_html(r->pool,
                                                               last_field),
                                                "</pre>\n", NULL));
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                                  "Request header field is missing ':' "
+                                  "separator: %.*s", (int)LOG_NAME_MAX_LEN,
+                                  last_field);
                     return;
                 }
 
@@ -961,12 +987,13 @@ request_rec *ap_read_request(conn_rec *conn)
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE
             || r->status == HTTP_BAD_REQUEST) {
             if (r->status == HTTP_BAD_REQUEST) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                               "request failed: invalid characters in URI");
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "request failed: URI too long (longer than %d)", r->server->limit_req_line);
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                              "request failed: URI too long (longer than %d)",
+                              r->server->limit_req_line);
             }
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
@@ -1002,7 +1029,7 @@ request_rec *ap_read_request(conn_rec *conn)
     if (!r->assbackwards) {
         ap_get_mime_headers_core(r, tmp_bb);
         if (r->status != HTTP_OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
@@ -1027,7 +1054,7 @@ request_rec *ap_read_request(conn_rec *conn)
              * headers! Have to dink things just to make sure the error message
              * comes through...
              */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "client sent invalid HTTP/0.9 request: HEAD %s",
                           r->uri);
             r->header_only = 0;
@@ -1069,7 +1096,7 @@ request_rec *ap_read_request(conn_rec *conn)
          * a Host: header, and the server MUST respond with 400 if it doesn't.
          */
         r->status = HTTP_BAD_REQUEST;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                       "client sent HTTP/1.1 request without hostname "
                       "(see RFC2616 section 14.23): %s", r->uri);
     }
@@ -1274,7 +1301,7 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                       "client used wrong authentication scheme: %s", r->uri);
         ap_note_auth_failure(r);
         return HTTP_UNAUTHORIZED;
