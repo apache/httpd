@@ -572,17 +572,16 @@ static char* process_tags(header_entry *hdr, request_rec *r)
 static const char *process_regexp(header_entry *hdr, const char *value,
                                   apr_pool_t *pool)
 {
-    unsigned int nmatch = 10;
-    ap_regmatch_t pmatch[10];
+    ap_regmatch_t pmatch[AP_MAX_REG_MATCH];
     const char *subs;
     const char *remainder;
     char *ret;
     int diffsz;
-    if (ap_regexec(hdr->regex, value, nmatch, pmatch, 0)) {
+    if (ap_regexec(hdr->regex, value, AP_MAX_REG_MATCH, pmatch, 0)) {
         /* no match, nothing to do */
         return value;
     }
-    subs = ap_pregsub(pool, hdr->subs, value, nmatch, pmatch);
+    subs = ap_pregsub(pool, hdr->subs, value, AP_MAX_REG_MATCH, pmatch);
     diffsz = strlen(subs) - (pmatch[0].rm_eo - pmatch[0].rm_so);
     if (hdr->action == hdr_edit) {
         remainder = value + pmatch[0].rm_eo;
