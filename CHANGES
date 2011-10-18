@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_remote_ip: Fix configuration of internal proxies. PR 49272.
+     [Jim Riggs <jim riggs me>]
+
   *) mpm_winnt: Handle AcceptFilter 'none' mode correctly; resolve specific
      server IP endpoint and remote client IP upon connection.  [William Rowe]
 
