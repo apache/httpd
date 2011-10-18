@@ -363,7 +363,7 @@ typedef struct {
 /* fallback regex for ls -s1;  ($0..$2) == 3 */
 #define LS_REG_PATTERN "^ *([0-9]+) +([^ ]+)$"
 #define LS_REG_MATCH   3
-ap_regex_t *ls_regex = NULL;
+static ap_regex_t *ls_regex;
 
 static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
                                           apr_bucket_brigade *in)
