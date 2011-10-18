@@ -749,7 +749,7 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     ap_expr_eval_ctx_t ctx;
     int dont_vary = (info->flags & AP_EXPR_FLAG_DONT_VARY);
     const char *tmp_source = NULL, *vary_this = NULL;
-    ap_regmatch_t tmp_pmatch[10];
+    ap_regmatch_t tmp_pmatch[AP_MAX_REG_MATCH];
 
     AP_DEBUG_ASSERT((info->flags & AP_EXPR_FLAG_STRING_RESULT) == 0);
 
@@ -766,7 +766,7 @@ AP_DECLARE(int) ap_expr_exec_re(request_rec *r, const ap_expr_info_t *info,
     ctx.data = NULL;
 
     if (!pmatch) {
-        ctx.re_nmatch = 10;
+        ctx.re_nmatch = AP_MAX_REG_MATCH;
         ctx.re_pmatch = tmp_pmatch;
         ctx.re_source = &tmp_source;
     }
@@ -784,7 +784,7 @@ AP_DECLARE(const char *) ap_expr_str_exec_re(request_rec *r,
     ap_expr_eval_ctx_t ctx;
     int dont_vary, rc;
     const char *tmp_source = NULL, *vary_this = NULL;
-    ap_regmatch_t tmp_pmatch[10];
+    ap_regmatch_t tmp_pmatch[AP_MAX_REG_MATCH];
     const char *result;
 
     AP_DEBUG_ASSERT(info->flags & AP_EXPR_FLAG_STRING_RESULT);
@@ -811,7 +811,7 @@ AP_DECLARE(const char *) ap_expr_str_exec_re(request_rec *r,
     ctx.result_string = &result;
 
     if (!pmatch) {
-        ctx.re_nmatch = 10;
+        ctx.re_nmatch = AP_MAX_REG_MATCH;
         ctx.re_pmatch = tmp_pmatch;
         ctx.re_source = &tmp_source;
     }

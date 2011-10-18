@@ -363,6 +363,7 @@ typedef struct {
 /* fallback regex for ls -s1;  ($0..$2) == 3 */
 #define LS_REG_PATTERN "^ *([0-9]+) +([^ ]+)$"
 #define LS_REG_MATCH   3
+ap_regex_t *ls_regex = NULL;
 
 static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
                                           apr_bucket_brigade *in)
@@ -524,13 +525,7 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
         char *filename;
         int found = 0;
         int eos = 0;
-
-        ap_regex_t *re = NULL;
         ap_regmatch_t re_result[LS_REG_MATCH];
-
-        /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
-        re = ap_pregcomp(p, LS_REG_PATTERN, AP_REG_EXTENDED);
-        ap_assert(re != NULL);
 
         /* get a complete line */
         /* if the buffer overruns - throw data away */
@@ -654,8 +649,11 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
             }
         }
         /* Try a fallback for listings in the format of "ls -s1" */
-        else if (0 == ap_regexec(re, ctx->buffer, LS_REG_MATCH, re_result, 0)) {
-
+        else if (0 == ap_regexec(ls_regex, ctx->buffer, LS_REG_MATCH, re_result, 0)) {
+            /*
+             * We don't need to check for rm_eo == rm_so == -1 here since ls_regex
+             * is such that $2 cannot be unset if we have a match.
+             */
             filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
 
             str = apr_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, ctx->buffer, re_result[2].rm_so)),
@@ -2016,6 +2014,9 @@ static void ap_proxy_ftp_register_hook(apr_pool_t *p)
     /* filters */
     ap_register_output_filter("PROXY_SEND_DIR", proxy_send_dir_filter,
                               NULL, AP_FTYPE_RESOURCE);
+    /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
+    ls_regex = ap_pregcomp(p, LS_REG_PATTERN, AP_REG_EXTENDED);
+    ap_assert(ls_regex != NULL);
 }
 
 static const command_rec proxy_ftp_cmds[] =

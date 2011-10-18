@@ -674,12 +674,9 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
             return NULL;
         }
         else if (re->match[idx].rm_so < 0 || re->match[idx].rm_eo < 0) {
-            /* I don't think this can happen if have_match is true.
-             * But let's not risk a regression by dropping this
-             */
+            /* This particular subpattern was not used by the regex */
             return NULL;
         }
-
         else {
             val = apr_pstrmemdup(ctx->dpool, re->source + re->match[idx].rm_so,
                                  re->match[idx].rm_eo - re->match[idx].rm_so);
