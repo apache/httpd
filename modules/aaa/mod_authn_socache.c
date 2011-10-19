@@ -399,7 +399,6 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
         /* OK, we got a value */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "Authn cache: found credentials for %s", user);
-        val[vallen] = 0;
     }
     else {
         /* error: give up and pass the buck */
@@ -408,7 +407,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
                       "Error accessing authentication cache");
         return AUTH_USER_NOT_FOUND;
     }
-    *rethash = (char*)val;
+    *rethash = apr_pstrmemdup(r->pool, (char *)val, vallen);
 
     return AUTH_USER_FOUND;
 }
