@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_xml2enc.xml.meta">
+
+<name>mod_xml2enc</name>
+<description>Enhanced charset/internationalisation support for libxml2-based
+filter modules</description>
+<status>Base</status>
+<sourcefile>mod_xml2enc.c</sourcefile>
+<identifier>xml2enc_module</identifier>
+<compatibility>Version 2.4 and later.  Available as a third-party module
+for 2.2.x versions</compatibility>
+
+<summary>
+    <p>This module provides enhanced internationalisation support for
+    markup-aware filter modules such as <module>mod_proxy_html</module>.
+    It can automatically detect the encoding of input data and ensure
+    they are correctly processed by the <a href="http://xmlsoft.org/"
+    >libxml2</a> parser, including converting to Unicode (UTF-8) where
+    necessary.  It can also convert data to an encoding of choice
+    after markup processing, and will ensure the correct <var>charset</var>
+    value is set in the HTTP <var>Content-Type</var> header.</p>
+</summary>
+
+<section id="usage"><title>Usage</title>
+    <p>There are two usage scenarios: with modules programmed to work
+    with mod_xml2enc, and with those that are not aware of it:</p>
+    <dl>
+    <dt>Filter modules enabled for mod_xml2enc</dt><dd>
+    <p>Modules such as <module>mod_proxy_html</module> version 3.1
+    and up use the <code>xml2enc_charset</code> optional function to retrieve
+    the charset argument to pass to the libxml2 parser, and may use the
+    <code>xml2enc_filter</code> optional function to postprocess to another
+    encoding.  Using mod_xml2enc with an enabled module, no configuration
+    is necessary: the other module will configure mod_xml2enc for you
+    (though you may still want to customise it using the configuration
+    directives below).</p>
+    </dd>
+    <dt>Non-enabled modules</dt><dd>
+    <p>To use it with a libxml2-based module that isn't explicitly enabled for
+    mod_xml2enc, you will have to configure the filter chain yourself.
+    So to use it with a filter foo provided by a module mod_foo to
+    improve the latter's i18n support with HTML and XML, you could use</p>
+    <pre><code>
+    FilterProvider iconv    xml2enc Content-Type $text/html
+    FilterProvider iconv    xml2enc Content-Type $xml
+    FilterProvider markup   foo Content-Type $text/html
+    FilterProvider markup   foo Content-Type $xml
+    FilterChain     iconv markup
+    </code></pre>
+    <p>mod_foo will now support any character set supported by either
+    (or both) of libxml2 or apr_xlate/iconv.</p>
+    </dd></dl>
+</section>
+
+<section id="api"><title>Programming API</title>
+    <p>Programmers writing libxml2-based filter modules are encouraged to
+    enable them for mod_xml2enc, to provide strong i18n support for your
+    users without reinventing the wheel.  The programming API is exposed in
+    <var>mod_xml2enc.h</var>, and a usage example is
+    <module>mod_proxy_html</module>.</p>
+</section>
+
+<section id="sniffing"><title>Detecting an Encoding</title>
+    <p>Unlike <module>mod_charset_lite</module>, mod_xml2enc is designed
+    to work with data whose encoding cannot be known in advance and thus
+    configured.  It therefore uses 'sniffing' techniques to detect the
+    encoding of HTTP data as follows:</p>
+    <ol>
+        <li>If the HTTP <var>Content-Type</var> header includes a
+        <var>charset</var> parameter, that is used.</li>
+        <li>If the data start with an XML Byte Order Mark (BOM) or an
+        XML encoding declaration, that is used.</li>
+        <li>If an encoding is declared in an HTML <code>&lt;META&gt;</code>
+        element, that is used.</li>
+        <li>If none of the above match, the default value set by
+        <directive>xml2EncDefault</directive> is used.</li>
+    </ol>
+    <p>The rules are applied in order.  As soon as a match is found,
+    it is used and detection is stopped.</p>
+</section>
+
+<section id="output"><title>Output Encoding</title>
+<p><a href="http://xmlsoft.org/">libxml2</a> always uses UTF-8 (Unicode)
+internally, and libxml2-based filter modules will output that by default.
+mod_xml2enc can change the output encoding through the API, but there
+is currently no way to configure that directly.</p>
+<p>Changing the output encoding should (in theory, at least) never be
+necessary, and is not recommended due to the extra processing load on
+the server of an unnecessary conversion.</p>
+</section>
+
+<section id="alias"><title>Unsupported Encodings</title>
+<p>If you are working with encodings that are not supported by any of
+the conversion methods available on your platform, you can still alias
+them to a supported encoding using <directive>xml2EncAlias</directive>.</p>
+</section>
+
+<directivesynopsis>
+<name>xml2EncDefault</name>
+<description>Sets a default encoding to assume when absolutely no information
+can be <a href="#sniffing">automatically detected</a></description>
+<syntax>xml2EncDefault <var>name</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<compatibility>Version 2.4.0 and later; available as a third-party
+module for earlier versions.</compatibility>
+
+<usage>
+    <p>If you are processing data with known encoding but no encoding
+    information, you can set this default to help mod_xml2enc process
+    the data correctly.  For example, to work with the default value
+    of Latin1 (<var>iso-8859-1</var> specified in HTTP/1.0, use</p>
+    <example>xml2EncDefault iso-8859-1</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>xml2EncAlias</name>
+<description>Recognise Aliases for encoding values</description>
+<syntax>xml2EncAlias <var>charset alias [alias ...]</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>This server-wide directive aliases one or more encoding to another
+    encoding.  This enables encodings not recognised by libxml2 to be handled
+    internally by libxml2's encoding support using the translation table for
+    a recognised encoding.  This serves two purposes: to support character sets
+    (or names) not recognised either by libxml2 or iconv, and to skip
+    conversion for an encoding where it is known to be unnecessary.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>xml2StartParse</name>
+<description>Advise the parser to skip leading junk.</description>
+<syntax>xml2StartParse <var>element [element ...]</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+
+<usage>
+    <p>Specify that the markup parser should start at the first instance
+    of any of the elements specified.  This can be used as a workaround
+    where a broken backend inserts leading junk that messes up the parser (<a
+    href="http://bahumbug.wordpress.com/2006/10/12/mod_proxy_html-revisited/"
+    >example here</a>).</p>
+    <p>It should never be used for XML, nor well-formed HTML.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
