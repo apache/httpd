@@ -200,6 +200,14 @@ static int req_add_output_filter(lua_State *L)
     return 0;
 }
 
+/* wrap ap_construct_url as r:construct_url(String) */
+static int req_construct_url(lua_State *L)
+{
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    const char *name = luaL_checkstring(L, 2);
+    lua_pushstring(L, ap_construct_url(r->pool, name, r));
+    return 1;
+}
 /* BEGIN dispatch mathods for request_rec fields */
 
 /* not really a field, but we treat it like one */
@@ -549,6 +557,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_emerg, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "add_output_filter", APR_HASH_KEY_STRING,
                  makefun(&req_add_output_filter, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "construct_url", APR_HASH_KEY_STRING,
+                 makefun(&req_construct_url, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "assbackwards", APR_HASH_KEY_STRING,
                  makefun(&req_assbackwards_field, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "status", APR_HASH_KEY_STRING,
