@@ -283,6 +283,11 @@ end
           <td>no</td>
         </tr>
         <tr>
+          <td><code>subprocess_env</code></td>
+          <td>table</td>
+          <td>yes</td>
+        </tr>
+        <tr>
           <td><code>status</code></td>
           <td>number</td>
           <td>yes</td>
