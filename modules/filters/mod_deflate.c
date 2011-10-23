@@ -463,7 +463,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             while (1) {
                 apr_status_t rc;
                 if (APR_BUCKET_IS_EOS(e)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                                   "Not compressing very small response of %"
                                   APR_SIZE_T_FMT " bytes", len);
                     ap_remove_output_filter(f);
@@ -498,6 +498,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             apr_table_get(r->subprocess_env, "no-gzip") ||
             apr_table_get(r->headers_out, "Content-Range")
            ) {
+            if (APLOG_R_IS_LEVEL(r, APLOG_TRACE1)) {
+                const char *reason =
+                    (r->main != NULL)                           ? "subrequest" :
+                    (r->status == HTTP_NO_CONTENT)              ? "no content" :
+                    apr_table_get(r->subprocess_env, "no-gzip") ? "no-gzip" :
+                    "content-range";
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                              "Not compressing (%s)", reason);
+            }
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -511,6 +520,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             const char *env_value = apr_table_get(r->subprocess_env,
                                                   "gzip-only-text/html");
             if ( env_value && (strcmp(env_value,"1") == 0) ) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                              "Not compressing, (gzip-only-text/html)");
                 ap_remove_output_filter(f);
                 return ap_pass_brigade(f->next, bb);
             }
@@ -547,7 +558,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 /* stolen from mod_negotiation: */
                 if (strcmp(token, "identity") && strcmp(token, "7bit") &&
                     strcmp(token, "8bit") && strcmp(token, "binary")) {
-
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                                  "Not compressing (content-encoding already "
+                                  " set: %s)", token);
                     ap_remove_output_filter(f);
                     return ap_pass_brigade(f->next, bb);
                 }
@@ -595,9 +608,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             /* No acceptable token found. */
             if (token == NULL || token[0] == '\0') {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                              "Not compressing (no Accept-Encoding: gzip)");
                 ap_remove_output_filter(f);
                 return ap_pass_brigade(f->next, bb);
             }
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                          "Forcing compression (force-gzip set)");
         }
 
         /* At this point we have decided to filter the content. Let's try to
