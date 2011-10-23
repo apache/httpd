@@ -630,6 +630,22 @@ proxied</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Define the character set for proxied FTP listings</td></tr>
 <tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether wildcards in requested filenames are escaped when sent to the FTP server</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether wildcards in requested filenames trigger a file listing</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize <var>bytes</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the buffer size increment for buffering inline scripts and
+stylesheets.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut <var>Charset | *</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify a charset for mod_proxy_html output.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType <var>HTML|XHTML [Legacy]</var><br /><strong>OR</strong>
+<br />ProxyHTMLDocType <var>fpi [SGML|XML]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets an HTML or XHTML document type declaration.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmlenable">ProxyHTMLEnable <var>On|Off</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Turns the proxy_html filter on or off.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlevents">ProxyHTMLEvents <var>attribute [attribute ...]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specify attributes to treat as scripting events.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmlextended">ProxyHTMLExtended <var>On|Off</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Determines whether to fix links in inline scripts, stylesheets,
+and scripting events.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlfixups">ProxyHTMLFixups <var>[lowercase] [dospath] [reset]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fixes for simple HTML errors.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmlinterp">ProxyHTMLInterp <var>On|Off</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Enables per-request interpolation of
+<code class="directive">ProxyHTMLURLMap</code> rules.</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmllinks">ProxyHTMLLinks <var>element attribute [attribute2 ...]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specify HTML elements that have URL attributes to be rewritten.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmllogverbose">ProxyHTMLLogVerbose <var>On|Off</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Enables extra verbose logging for debug</td></tr>
+<tr class="odd"><td><a href="mod_proxy_html.html#proxyhtmlstripcomments">ProxyHTMLStripComments <var>On|Off</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether to strip HTML comments.</td></tr>
+<tr><td><a href="mod_proxy_html.html#proxyhtmlurlmap">ProxyHTMLURLMap <var>from-pattern to-pattern [flags] [cond]</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Defines a rule to rewrite HTML links</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <var>bytes</var></a></td><td> 8192 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine size of internal data throughput buffer</td></tr>
 <tr><td><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to regular-expression-matched
 proxied resources</td></tr>
@@ -963,6 +979,10 @@ a given virtual host</td></tr>
 a given virtual host</td></tr>
 <tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
 set</td></tr>
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>charset alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Recognise Aliases for encoding values</td></tr>
+<tr><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>name</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets a default encoding to assume when absolutely no information
+can be <a href="#sniffing">automatically detected</a></td></tr>
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>element [element ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Advise the parser to skip leading junk.</td></tr>
 </table></div>
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../de/mod/quickreference.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

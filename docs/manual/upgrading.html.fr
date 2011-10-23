@@ -289,6 +289,14 @@ nécessiter une mise à jour des fichiers de configuration de la version
       s'il s'aperçoit que la quantité de données ajoutée par la
       compression est supérieure à la quantité de données à compresser.
       </li>
+
+      <li>Les pages d'erreur multilingues de la version 2.2.x ne
+      fonctionneront qu'après avoir été corrigées pour
+      respecter la nouvelle syntaxe de l'élément <code>#if expr=</code>
+      du module <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>, ou si la directive
+      <code class="directive"><a href="./mod/mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></code> a
+      été activée pour le répertoire contenant les pages d'erreur.
+      </li>
     </ul>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
