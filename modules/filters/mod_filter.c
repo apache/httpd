@@ -155,17 +155,28 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                               err);
                 match = 0;
             }
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "Expression condition for '%s' %s",
+                          provider->frec->name,
+                          match ? "matched" : "did not match");
         }
         else if (r->content_type) {
             const char **type = provider->types;
             AP_DEBUG_ASSERT(type != NULL);
             while (*type) {
-                if (strcmp(*type, r->content_type) == 0) {
+                /* Handle 'content-type;charset=...' correctly */
+                size_t len = strcspn(r->content_type, "; \t");
+                if (strlen(*type) == len
+                    && strncmp(*type, r->content_type, len) == 0) {
                     match = 1;
                     break;
                 }
                 type++;
             }
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "Content-Type condition for '%s' %s",
+                          provider->frec->name,
+                          match ? "matched" : "did not match");
         }
 
         if (match) {
