@@ -243,6 +243,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Módulo Apache mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Módulo Apache mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Módulo Apache mod_proxy_ftp</a></li>
+<li><a href="mod/mod_proxy_html.html">Módulo Apache mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Módulo Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Módulo Apache mod_proxy_scgi</a></li>
 <li><a href="mod/mod_ratelimit.html">Módulo Apache mod_ratelimit</a></li>
@@ -271,6 +272,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_usertrack.html">Módulo Apache mod_usertrack</a></li>
 <li><a href="mod/mod_version.html">Módulo Apache mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Módulo Apache mod_vhost_alias</a></li>
+<li><a href="mod/mod_xml2enc.html">Módulo Apache mod_xml2enc</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="developer" id="developer">Documentación para desarrolladores</a></h2>

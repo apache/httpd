@@ -75,12 +75,13 @@
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
     </code></p></div>
 
-    <p>where the action can be one of:</p>
+    <p>where the action will be treated as:</p>
 
     <ol>
-      <li>Text to be displayed. Wrap the text with quotes (").</li>
-      <li>A local URL to redirect to.</li>
-      <li>An external URL to redirect to.</li>
+      <li>A local URL to redirect to (if the action begins with a "/").</li>
+      <li>An external URL to redirect to (if the action is a valid URL).</li>
+      <li>Text to be displayed (if none of the above). The text must be
+          wrapped in quotes (") if it consists of more than one word.</li>
     </ol>
 
     <p>When redirecting to a local URL, additional environment variables

@@ -381,6 +381,18 @@
 <li><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmldoctype">ProxyHTMLDocType</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlenable">ProxyHTMLEnable</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlevents">ProxyHTMLEvents</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlextended">ProxyHTMLExtended</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlfixups">ProxyHTMLFixups</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlinterp">ProxyHTMLInterp</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmllinks">ProxyHTMLLinks</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmllogverbose">ProxyHTMLLogVerbose</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
+<li><a href="mod_proxy_html.html#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 <li><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize</a></li>
 <li><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
@@ -583,6 +595,9 @@
 <li><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>
 <li><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
 <li><a href="mod_include.html#xbithack" id="X" name="X">XBitHack</a></li>
+<li><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias</a></li>
+<li><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault</a></li>
+<li><a href="mod_xml2enc.html#xml2startparse">xml2StartParse</a></li>
 </ul></div>
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

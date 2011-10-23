@@ -87,7 +87,7 @@ DSO (Dynamic Shared Object)</a></li>
     autres modules Apache httpd. La principale différence réside dans le fait qu'un
     et un seul MPM à la fois doit être chargé
     lorsque le serveur s'exécute. La liste des
-    MPMs disponibles est fournie dans <a href="mod/">l'indexe des
+    MPMs disponibles est fournie dans <a href="mod/">l'index des
     modules</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

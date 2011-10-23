@@ -200,14 +200,6 @@ en compte que si aucune correspondance n'a été trouvée parmi les
 caractéristiques de la requête, et si <em>attribut</em> n'a pas été
 spécifié sous la forme d'une expression rationnelle.</li>
 
-<li>La référence à une extension d'un certificat client SSL, localisé
-par son identifiant objet <em>oid</em>. Dans le cas d'une requête non
-SSL, ou en l'absence d'<em>oid</em> configuré, aucune variable ne sera
-définie. Si l'<em>oid</em> est trouvé plusieurs fois, les chaînes
-individuelles seront concaténées, en les séparant par des virgules
-<code>','</code>. L'<em>oid</em> doit faire référence à une extension
-sous forme de chaîne.
-</li>
 </ol>
 
 <p>Le second argument (<em>regex</em>) est une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>. Si  <em>regex</em>
@@ -245,8 +237,6 @@ peuvent se présenter sous les formes suivantes :</p>
         :<br />
    SetEnvIf objet_est_une_image xbm XBIT_PROCESSING=1<br />
         :<br />
-   SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" commentaire-netscape=$1<br />
-        :<br />
    SetEnvIf ^TS  ^[a-z]  HAVE_TS<br />
 </code></p></div>
 
@@ -256,10 +246,6 @@ peuvent se présenter sous les formes suivantes :</p>
     <code>référant_intra_site</code> si la page référante se trouve
     quelque part dans le site web
     <code>www.mon-domaine.example.com</code>.</p>
-
-    <p>La sixième ligne définit la variable d'environnement
-    <code>commentaire-netscape</code> avec la chaîne trouvée dans le
-    champ du certificat client SSL correspondant.</p>
 
     <p>La dernière ligne définit la variable d'environnement
     <code>HAVE_TS</code> si la requête contient un en-tête dont le nom

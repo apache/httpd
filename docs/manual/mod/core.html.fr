@@ -573,7 +573,7 @@ All pour les versions antérieures</code></td></tr>
     <p>Example:</p>
 
     <div class="example"><p><code>
-      AllowOverride None
+      AllowOverride None<br />
       AllowOverrideList Redirect RedirectMatch
     </code></p></div>
 
@@ -584,7 +584,7 @@ All pour les versions antérieures</code></td></tr>
     <p>Example:</p>
 
     <div class="example"><p><code>
-      AllowOverride AuthConfig
+      AllowOverride AuthConfig<br />
       AllowOverrideList CookieTracking CookieName
     </code></p></div>
 
@@ -1932,6 +1932,10 @@ clients</td></tr>
     le sous-répertoire <code>bin</code> de votre répertoire
     d'installation, afin de déterminer les noms d'hôtes associés aux
     adresses IP journalisées.</p>
+
+    <p>Enfin, si vous avez des <a href="mod_authz_host.html#reqhost">directives Require à base de
+    nom</a>, une recherche de nom d'hôte sera effectuée quelle que soit
+    la définition de la directive <code>HostnameLookups</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

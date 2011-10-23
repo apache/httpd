@@ -252,6 +252,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Apache-Modul mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_fdpass.html">Apache-Modul mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache-Modul mod_proxy_ftp</a></li>
+<li><a href="mod/mod_proxy_html.html">Apache-Modul mod_proxy_html</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache-Modul mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Apache-Modul mod_proxy_scgi</a></li>
 <li><a href="mod/mod_ratelimit.html">Apache-Modul mod_ratelimit</a></li>
@@ -280,6 +281,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_usertrack.html">Apache-Modul mod_usertrack</a></li>
 <li><a href="mod/mod_version.html">Apache-Modul mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache-Modul mod_vhost_alias</a></li>
+<li><a href="mod/mod_xml2enc.html">Apache-Modul mod_xml2enc</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="developer" id="developer">Dokumentation für Entwickler</a></h2>
