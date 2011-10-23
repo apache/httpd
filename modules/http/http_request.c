@@ -459,6 +459,11 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 
     new->headers_in      = r->headers_in;
     new->headers_out     = apr_table_make(r->pool, 12);
+    if (ap_is_HTTP_REDIRECT(new->status)) {
+        const char *location = apr_table_get(r->headers_out, "Location");
+        if (location)
+            apr_table_setn(new->headers_out, "Location", location);
+    }
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
     new->notes           = apr_table_make(r->pool, 5);
