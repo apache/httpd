@@ -66,7 +66,7 @@ static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
          * it did. Within subrequests, we have no EOS to check for,
          * so we don't know when to flush the buffer to the network
          */
-        if (!ap_is_initial_req(f->r)) {
+        if (f->r->main) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
