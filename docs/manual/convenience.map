@@ -234,6 +234,7 @@ loglevel	mod/core.html#loglevel
 maxclients	mod/mpm_common.html#maxclients
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
+maxranges	mod/core.html#maxranges
 maxrequestsperchild	mod/mpm_common.html#maxrequestsperchild
 maxrequestsperthread	mod/beos.html#maxrequestsperthread
 maxspareservers	mod/prefork.html#maxspareservers
