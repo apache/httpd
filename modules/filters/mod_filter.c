@@ -162,12 +162,12 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
         }
         else if (r->content_type) {
             const char **type = provider->types;
+            size_t len = strcspn(r->content_type, "; \t");
             AP_DEBUG_ASSERT(type != NULL);
             while (*type) {
                 /* Handle 'content-type;charset=...' correctly */
-                size_t len = strcspn(r->content_type, "; \t");
-                if (strlen(*type) == len
-                    && strncmp(*type, r->content_type, len) == 0) {
+                if (strncmp(*type, r->content_type, len) == 0
+                    && (*type)[len] == '\0') {
                     match = 1;
                     break;
                 }
