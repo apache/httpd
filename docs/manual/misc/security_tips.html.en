@@ -84,6 +84,10 @@
     settings that can help mitigate problems:</p>
 
     <ul>
+      <li>The <code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code>
+      directive allows to limit the time a client may take to send the
+      request.</li>
+
       <li>The <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> directive
       should be lowered on sites that are subject to DoS attacks.
       Setting this to as low as a few seconds may be appropriate.
