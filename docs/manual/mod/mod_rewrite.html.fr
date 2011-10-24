@@ -1392,14 +1392,16 @@ substitution !
       section de laquelle elles sont décrites. Ces trois types de
       variables sont évaluées dans l'ordre ci-dessus.</p>
 
-      <p>Comme mentionné précédemment, toutes les règles de
-      réécriture sont appliquées à la chaîne de <em>Substitution</em>
-      (selon l'ordre dans lequel elles sont définies dans le fichier
-      de configuration). L'URL est <strong>intégralement
+      <p>Chaque règle de réécriture s'applique au résultat de la règle
+       précédente, selon l'ordre dans lequel elles ont été définies dans
+       le fichier de configuration. L'URL est <strong>intégralement
       remplacée</strong> par la chaîne de <em>Substitution</em> et le
       processus de réécriture se poursuit jusqu'à ce que toutes les
       règles aient été appliquées, ou qu'il soit explicitement stoppé
-      par un drapeau <code><strong>L</strong></code>.</p>
+      par un drapeau <a href="../rewrite/flags.html#flag_l"><code><strong>L</strong></code></a>,
+      ou par un autre drapeau qui implique un arrêt immédiat, comme
+      <code><strong>END</strong></code> ou
+      <code><strong>F</strong></code>.</p>
 
      <div class="note"><h3>Modifier la chaîne de requête</h3>
       <p>Par défaut, la chaîne de requête est transmise sans
