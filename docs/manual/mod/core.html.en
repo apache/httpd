@@ -1222,7 +1222,7 @@ in case of an error</td></tr>
       ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
-      ErrorDocument 403 "Sorry can't allow you access today"
+      ErrorDocument 403 "Sorry can't allow you access today"<br />
       ErrorDocument 403 Forbidden!
     </code></p></div>
 
