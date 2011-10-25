@@ -35,7 +35,7 @@
 #include "apr_crypto.h"                /* for apr_*_crypt et al */
 
 #define LOG_PREFIX "mod_session_crypto: "
-#define DRIVER_KEY "session_crypto_driver"
+#define CRYPTO_KEY "session_crypto_context"
 
 module AP_MODULE_DECLARE_DATA session_crypto_module;
 
@@ -43,23 +43,20 @@ module AP_MODULE_DECLARE_DATA session_crypto_module;
  * Structure to carry the per-dir session config.
  */
 typedef struct {
-    const char *passphrase;
-    apr_array_header_t *params;
-    int passphrase_set;
-    apr_crypto_block_key_type_e cipher;
+    apr_array_header_t *passphrases;
+    int passphrases_set;
+    const char *cipher;
     int cipher_set;
-}session_crypto_dir_conf;
+} session_crypto_dir_conf;
 
 /**
  * Structure to carry the server wide session config.
  */
 typedef struct {
     const char *library;
-    apr_array_header_t *params;
+    const char *params;
     int library_set;
-    int noinit;
-    int noinit_set;
-}session_crypto_conf;
+} session_crypto_conf;
 
 AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z);
 AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z);
@@ -71,59 +68,52 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t crypt_init(request_rec * r,
-                               const apr_crypto_driver_t *driver,
-                               apr_crypto_t **f, apr_crypto_key_t **key,
-                               apr_uuid_t *salt, apr_size_t *ivSize,
-                               session_crypto_dir_conf * dconf)
+static apr_status_t crypt_init(request_rec *r,
+        const apr_crypto_t *f, apr_crypto_block_key_type_e **cipher,
+        session_crypto_dir_conf * dconf)
 {
     apr_status_t res;
+    apr_hash_t *ciphers;
 
-    if (!driver) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
-                "encryption driver not configured, "
-                "no SessionCryptoDriver set");
-        return APR_EGENERAL;
-    }
-
-    if (!dconf->passphrase_set) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, LOG_PREFIX
-                "encryption not configured, "
-                "no passphrase set");
-        return APR_EGENERAL;
-    }
-
-    /* set up */
-    res = apr_crypto_make(f, driver, dconf->params, r->pool);
-    if (APR_ENOTIMPL == res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "generic symmetrical encryption is not supported by this "
-                "version of APR. session encryption not possible");
-    }
-
-    if (APR_SUCCESS == res) {
-        res = apr_crypto_passphrase(key, ivSize, dconf->passphrase,
-                strlen(dconf->passphrase),
-                (unsigned char *) salt, salt ? sizeof(apr_uuid_t) : 0,
-                dconf->cipher, APR_MODE_CBC, 1, 4096, *f, r->pool);
-    }
-
-    if (APR_STATUS_IS_ENOKEY(res)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "the passphrase '%s' was empty", dconf->passphrase);
-    }
-    if (APR_STATUS_IS_EPADDING(res)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "padding is not supported for cipher");
-    }
-    if (APR_STATUS_IS_EKEYTYPE(res)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "the key type is not known");
-    }
+    res = apr_crypto_get_block_key_types(&ciphers, f);
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "encryption could not be configured. Please check the "
-                "certificates and/or passphrase as appropriate");
+                "no ciphers returned by APR. "
+                "session encryption not possible");
+        return res;
+    }
+
+    *cipher = apr_hash_get(ciphers, dconf->cipher, APR_HASH_KEY_STRING);
+    if (!(*cipher)) {
+        apr_hash_index_t *hi;
+        const void *key;
+        apr_ssize_t klen;
+        int sum = 0;
+        int offset = 0;
+        char *options = NULL;
+
+        for (hi = apr_hash_first(r->pool, ciphers); hi; hi = apr_hash_next(hi)) {
+            apr_hash_this(hi, NULL, &klen, NULL);
+            sum += klen + 2;
+        }
+        for (hi = apr_hash_first(r->pool, ciphers); hi; hi = apr_hash_next(hi)) {
+            apr_hash_this(hi, &key, &klen, NULL);
+            if (!options) {
+                options = apr_palloc(r->pool, sum + 1);
+            }
+            else {
+                options[offset++] = ',';
+                options[offset++] = ' ';
+            }
+            strncpy(options + offset, key, klen);
+            offset += klen;
+        }
+        options[offset] = 0;
+
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
+                "cipher '%s' not recognised by crypto driver. "
+                "session encryption not possible, options: %s", dconf->cipher, options);
+
         return APR_EGENERAL;
     }
 
@@ -135,13 +125,10 @@ static apr_status_t crypt_init(request_rec * r,
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t encrypt_string(request_rec * r,
-                                   const apr_crypto_driver_t *driver,
-                                   session_crypto_dir_conf *dconf,
-                                   const char *in, char **out)
+static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
+        session_crypto_dir_conf *dconf, const char *in, char **out)
 {
     apr_status_t res;
-    apr_crypto_t *f = NULL;
     apr_crypto_key_t *key = NULL;
     apr_size_t ivSize = 0;
     apr_crypto_block_t *block = NULL;
@@ -152,6 +139,8 @@ static apr_status_t encrypt_string(request_rec * r,
     apr_size_t blockSize = 0;
     const unsigned char *iv = NULL;
     apr_uuid_t salt;
+    apr_crypto_block_key_type_e *cipher;
+    const char *passphrase;
 
     /* by default, return an empty string */
     *out = "";
@@ -163,8 +152,32 @@ static apr_status_t encrypt_string(request_rec * r,
 
     /* use a uuid as a salt value, and prepend it to our result */
     apr_uuid_get(&salt);
-    res = crypt_init(r, driver, &f, &key, &salt, &ivSize, dconf);
+    res = crypt_init(r, f, &cipher, dconf);
     if (res != APR_SUCCESS) {
+        return res;
+    }
+
+    /* encrypt using the first passphrase in the list */
+    passphrase = APR_ARRAY_IDX(dconf->passphrases, 0, char *);
+    res = apr_crypto_passphrase(&key, &ivSize, passphrase,
+            strlen(passphrase),
+            (unsigned char *) (&salt), sizeof(apr_uuid_t),
+            *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
+    if (APR_STATUS_IS_ENOKEY(res)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
+                "the passphrase '%s' was empty", passphrase);
+    }
+    if (APR_STATUS_IS_EPADDING(res)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
+                "padding is not supported for cipher");
+    }
+    if (APR_STATUS_IS_EKEYTYPE(res)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
+                "the key type is not known");
+    }
+    if (APR_SUCCESS != res) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
+                "encryption could not be configured.");
         return res;
     }
 
@@ -199,10 +212,10 @@ static apr_status_t encrypt_string(request_rec * r,
 
     /* base64 encode the result */
     base64 = apr_palloc(r->pool, apr_base64_encode_len(ivSize + encryptlen +
-                                                       sizeof(apr_uuid_t) + 1)
-                                 * sizeof(char));
+                    sizeof(apr_uuid_t) + 1)
+            * sizeof(char));
     apr_base64_encode(base64, (const char *) combined,
-                      ivSize + encryptlen + sizeof(apr_uuid_t));
+            ivSize + encryptlen + sizeof(apr_uuid_t));
     *out = base64;
 
     return res;
@@ -214,13 +227,10 @@ static apr_status_t encrypt_string(request_rec * r,
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t decrypt_string(request_rec * r,
-                                   const apr_crypto_driver_t *driver,
-                                   session_crypto_dir_conf *dconf,
-                                   const char *in, char **out)
+static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
+        session_crypto_dir_conf *dconf, const char *in, char **out)
 {
     apr_status_t res;
-    apr_crypto_t *f = NULL;
     apr_crypto_key_t *key = NULL;
     apr_size_t ivSize = 0;
     apr_crypto_block_t *block = NULL;
@@ -229,60 +239,104 @@ static apr_status_t decrypt_string(request_rec * r,
     apr_size_t decodedlen;
     char *decoded;
     apr_size_t blockSize = 0;
+    apr_uuid_t salt;
+    apr_crypto_block_key_type_e *cipher;
+    int i = 0;
 
     /* strip base64 from the string */
     decoded = apr_palloc(r->pool, apr_base64_decode_len(in));
     decodedlen = apr_base64_decode(decoded, in);
     decoded[decodedlen] = '\0';
 
-    res = crypt_init(r, driver, &f, &key, (apr_uuid_t *)decoded, &ivSize, dconf);
+    res = crypt_init(r, f, &cipher, dconf);
     if (res != APR_SUCCESS) {
         return res;
     }
 
-    /* sanity check - decoded too short? */
-    if (decodedlen < (sizeof(apr_uuid_t) + ivSize)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, LOG_PREFIX
-                "too short to decrypt, skipping");
-        return APR_ECRYPT;
+    /* try each passphrase in turn */
+    for (; i < dconf->passphrases->nelts; i++) {
+        const char *passphrase = APR_ARRAY_IDX(dconf->passphrases, i, char *);
+        apr_size_t len = decodedlen;
+        char *slider = decoded;
+
+        /* encrypt using the first passphrase in the list */
+        res = apr_crypto_passphrase(&key, &ivSize, passphrase,
+                strlen(passphrase),
+                (unsigned char *)decoded, sizeof(apr_uuid_t),
+                *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
+        if (APR_STATUS_IS_ENOKEY(res)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
+                    "the passphrase '%s' was empty", passphrase);
+            continue;
+        }
+        else if (APR_STATUS_IS_EPADDING(res)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
+                    "padding is not supported for cipher");
+            continue;
+        }
+        else if (APR_STATUS_IS_EKEYTYPE(res)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
+                    "the key type is not known");
+            continue;
+        }
+        else if (APR_SUCCESS != res) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
+                    "encryption could not be configured.");
+            continue;
+        }
+
+        /* sanity check - decoded too short? */
+        if (decodedlen < (sizeof(apr_uuid_t) + ivSize)) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, LOG_PREFIX
+                    "too short to decrypt, skipping");
+            res = APR_ECRYPT;
+            continue;
+        }
+
+        /* bypass the salt at the start of the decoded block */
+        slider += sizeof(apr_uuid_t);
+        len -= sizeof(apr_uuid_t);
+
+        res = apr_crypto_block_decrypt_init(&block, &blockSize, (unsigned char *)slider, key,
+                r->pool);
+        if (APR_SUCCESS != res) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
+                    "apr_crypto_block_decrypt_init failed");
+            continue;
+        }
+
+        /* bypass the iv at the start of the decoded block */
+        slider += ivSize;
+        len -= ivSize;
+
+        /* decrypt the given string */
+        res = apr_crypto_block_decrypt(&decrypted, &decryptedlen,
+                (unsigned char *)slider, len, block);
+        if (res) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
+                    "apr_crypto_block_decrypt failed");
+            continue;
+        }
+        *out = (char *) decrypted;
+
+        res = apr_crypto_block_decrypt_finish(decrypted + decryptedlen, &tlen, block);
+        if (APR_SUCCESS != res) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
+                    "apr_crypto_block_decrypt_finish failed");
+            continue;
+        }
+        decryptedlen += tlen;
+        decrypted[decryptedlen] = 0;
+
+        break;
     }
 
-    /* bypass the salt at the start of the decoded block */
-    decoded += sizeof(apr_uuid_t);
-    decodedlen -= sizeof(apr_uuid_t);
-
-    res = apr_crypto_block_decrypt_init(&block, &blockSize, (unsigned char *)decoded, key,
-            r->pool);
     if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "apr_crypto_block_decrypt_init failed");
-        return res;
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, res, r, LOG_PREFIX
+                "decryption failed");
     }
 
-    /* bypass the iv at the start of the decoded block */
-    decoded += ivSize;
-    decodedlen -= ivSize;
-
-    /* decrypt the given string */
-    res = apr_crypto_block_decrypt(&decrypted, &decryptedlen,
-            (unsigned char *)decoded, decodedlen, block);
-    if (res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "apr_crypto_block_decrypt failed");
-        return res;
-    }
-    *out = (char *) decrypted;
-
-    res = apr_crypto_block_decrypt_finish(decrypted + decryptedlen, &tlen, block);
-    if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "apr_crypto_block_decrypt_finish failed");
-        return res;
-    }
-    decryptedlen += tlen;
-    decrypted[decryptedlen] = 0;
-
-    return APR_SUCCESS;
+    return res;
 
 }
 
@@ -297,13 +351,13 @@ AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z)
 
     char *encoded = NULL;
     apr_status_t res;
-    const apr_crypto_driver_t *driver = NULL;
+    const apr_crypto_t *f = NULL;
     session_crypto_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
             &session_crypto_module);
 
-    if (dconf->passphrase_set && z->encoded && *z->encoded) {
-        apr_pool_userdata_get((void **)&driver, DRIVER_KEY, r->server->process->pconf);
-        res = encrypt_string(r, driver, dconf, z->encoded, &encoded);
+    if (dconf->passphrases_set && z->encoded && *z->encoded) {
+        apr_pool_userdata_get((void **)&f, CRYPTO_KEY, r->server->process->pconf);
+        res = encrypt_string(r, f, dconf, z->encoded, &encoded);
         if (res != OK) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
                     "encrypt session failed");
@@ -327,14 +381,14 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
 
     char *encoded = NULL;
     apr_status_t res;
-    const apr_crypto_driver_t *driver = NULL;
+    const apr_crypto_t *f = NULL;
     session_crypto_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
             &session_crypto_module);
 
-    if ((dconf->passphrase_set) && z->encoded && *z->encoded) {
-        apr_pool_userdata_get((void **)&driver, DRIVER_KEY,
-                              r->server->process->pconf);
-        res = decrypt_string(r, driver, dconf, z->encoded, &encoded);
+    if ((dconf->passphrases_set) && z->encoded && *z->encoded) {
+        apr_pool_userdata_get((void **)&f, CRYPTO_KEY,
+                r->server->process->pconf);
+        res = decrypt_string(r, f, dconf, z->encoded, &encoded);
         if (res != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                     "decrypt session failed, wrong passphrase?");
@@ -354,6 +408,7 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
         apr_pool_t *ptemp, server_rec *s)
 {
     const apr_crypto_driver_t *driver = NULL;
+    apr_crypto_t *f = NULL;
 
     session_crypto_conf *conf = ap_get_module_config(s->module_config,
             &session_crypto_module);
@@ -361,8 +416,9 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
     /* session_crypto_init() will be called twice. Don't bother
      * going through all of the initialization on the first call
      * because it will just be thrown away.*/
-    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
         return OK;
+    }
 
     if (conf->library) {
 
@@ -378,20 +434,10 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
 
         rv = apr_crypto_get_driver(&driver, conf->library, conf->params, &err, p);
         if (APR_EREINIT == rv) {
-            if (!conf->noinit) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, LOG_PREFIX
-                        "warning: crypto for '%s' was already initialised, "
-                        "using existing configuration", conf->library);
-            }
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, LOG_PREFIX
+                    "warning: crypto for '%s' was already initialised, "
+                    "using existing configuration", conf->library);
             rv = APR_SUCCESS;
-        }
-        else {
-            if (conf->noinit) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, LOG_PREFIX
-                        "warning: crypto for '%s' was not previously initialised "
-                        "when it was expected to be, initialised instead by "
-                        "mod_session_crypto", conf->library);
-            }
         }
         if (APR_SUCCESS != rv && err) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, LOG_PREFIX
@@ -411,11 +457,19 @@ AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
             return rv;
         }
 
+        rv = apr_crypto_make(&f, driver, conf->params, p);
+        if (APR_SUCCESS != rv) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, LOG_PREFIX
+                    "The crypto library '%s' could not be initialised",
+                    conf->library);
+            return rv;
+        }
+
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, LOG_PREFIX
                 "The crypto library '%s' was loaded successfully",
                 conf->library);
 
-        apr_pool_userdata_set((const void *)driver, DRIVER_KEY,
+        apr_pool_userdata_set((const void *)f, CRYPTO_KEY,
                 apr_pool_cleanup_null, s->process->pconf);
 
     }
@@ -443,8 +497,10 @@ static void *create_session_crypto_dir_config(apr_pool_t * p, char *dummy)
     session_crypto_dir_conf *new =
     (session_crypto_dir_conf *) apr_pcalloc(p, sizeof(session_crypto_dir_conf));
 
+    new->passphrases = apr_array_make(p, 10, sizeof(char *));
+
     /* default cipher AES256-SHA */
-    new->cipher = APR_KEY_AES_256;
+    new->cipher = "aes256";
 
     return (void *) new;
 }
@@ -455,9 +511,8 @@ static void *merge_session_crypto_dir_config(apr_pool_t * p, void *basev, void *
     session_crypto_dir_conf *add = (session_crypto_dir_conf *) addv;
     session_crypto_dir_conf *base = (session_crypto_dir_conf *) basev;
 
-    new->passphrase = (add->passphrase_set == 0) ? base->passphrase : add->passphrase;
-    new->params = (add->passphrase_set == 0) ? base->params : add->params;
-    new->passphrase_set = add->passphrase_set || base->passphrase_set;
+    new->passphrases = (add->passphrases_set == 0) ? base->passphrases : add->passphrases;
+    new->passphrases_set = add->passphrases_set || base->passphrases_set;
     new->cipher = (add->cipher_set == 0) ? base->cipher : add->cipher;
     new->cipher_set = add->cipher_set || base->cipher_set;
 
@@ -466,12 +521,9 @@ static void *merge_session_crypto_dir_config(apr_pool_t * p, void *basev, void *
 
 static const char *set_crypto_driver(cmd_parms * cmd, void *config, const char *arg)
 {
-    char *word, *val;
-    int library_set = 0;
     session_crypto_conf *conf =
-        (session_crypto_conf *)ap_get_module_config(cmd->server->module_config,
+    (session_crypto_conf *)ap_get_module_config(cmd->server->module_config,
             &session_crypto_module);
-    apr_crypto_param_t *param;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
@@ -479,50 +531,9 @@ static const char *set_crypto_driver(cmd_parms * cmd, void *config, const char *
         return err;
     }
 
-    conf->params = apr_array_make(cmd->pool, 10, sizeof(apr_crypto_param_t));
-
-    while (*arg) {
-        word = ap_getword_conf(cmd->pool, &arg);
-        val = strchr(word, '=');
-        if (!val) {
-            if (!strcasecmp(word, "noinit")) {
-                conf->noinit = 1;
-                conf->noinit_set = 1;
-            }
-            else if (!library_set) {
-                conf->library = word;
-                conf->library_set = 1;
-                library_set = 1;
-            }
-            else {
-                return "Invalid SessionCryptoDriver parameter. Parameter must "
-                "be in the form 'key=value'.";
-            }
-        }
-        else {
-            *val++ = '\0';
-            if (!strcasecmp(word, "dir")) {
-                param = apr_array_push(conf->params);
-                param->type = APR_CRYPTO_CA_TYPE_DIR;
-                param->path = val;
-            }
-            else if (!strcasecmp(word, "key3")) {
-                param = apr_array_push(conf->params);
-                param->type = APR_CRYPTO_CERT_TYPE_KEY3_DB;
-                param->path = val;
-            }
-            else if (!strcasecmp(word, "cert7")) {
-                param = apr_array_push(conf->params);
-                param->type = APR_CRYPTO_CA_TYPE_CERT7_DB;
-                param->path = val;
-            }
-            else if (!strcasecmp(word, "secmod")) {
-                param = apr_array_push(conf->params);
-                param->type = APR_CRYPTO_CA_TYPE_SECMOD;
-                param->path = val;
-            }
-        }
-    }
+    conf->library = ap_getword_conf(cmd->pool, &arg);
+    conf->params = arg;
+    conf->library_set = 1;
 
     return NULL;
 }
@@ -531,81 +542,54 @@ static const char *set_crypto_passphrase(cmd_parms * cmd, void *config, const ch
 {
     char *word, *val;
     int passphrase_set = 0;
+    const char **passphrase;
     session_crypto_dir_conf *dconf = (session_crypto_dir_conf *) config;
-    apr_crypto_param_t *param;
-    dconf->params = apr_array_make(cmd->pool, 10, sizeof(apr_crypto_param_t));
 
-    while (*arg) {
-        word = ap_getword_conf(cmd->pool, &arg);
-        val = strchr(word, '=');
-        if (!val) {
-            if (!passphrase_set) {
-                dconf->passphrase = word;
-                dconf->passphrase_set = 1;
-                passphrase_set = 1;
-            }
-            else {
-                return "Invalid SessionCryptoPassphrase parameter. Parameter must "
-                "be in the form 'key=value'.";
-            }
-        }
-        else {
-            *val++ = '\0';
-            if (!strcasecmp(word, "engine")) {
-                param = apr_array_push(dconf->params);
-                param->type = APR_CRYPTO_ENGINE;
-                param->path = val;
-            }
-            else if (!strcasecmp(word, "cipher")) {
-                if (!strcasecmp(val, "3des192")) {
-                    dconf->cipher = APR_KEY_3DES_192;
-                    dconf->cipher_set = 1;
-                }
-                else if (!strcasecmp(val, "aes256")) {
-                    dconf->cipher = APR_KEY_AES_256;
-                    dconf->cipher_set = 1;
-                }
-                else {
-                    return "Invalid SessionCryptoPassphrase parameter. Cipher must "
-                    "be '3des192' or 'aes256'.";
-                }
-            }
-            else {
-                return "Invalid SessionCryptoPassphrase parameter. Parameters must "
-                "be 'engine' or 'cipher'.";
-            }
-        }
-    }
+    passphrase = apr_array_push(dconf->passphrases);
+    *passphrase = arg;
+    dconf->passphrases_set = 1;
+
+    return NULL;
+}
+
+static const char *set_crypto_cipher(cmd_parms * cmd, void *config, const char *cipher)
+{
+    session_crypto_dir_conf *dconf = (session_crypto_dir_conf *) config;
+
+    dconf->cipher = ap_getword_conf(cmd->pool, &cipher);
+    dconf->cipher = cipher;
+    dconf->cipher_set = 1;
 
     return NULL;
 }
 
 static const command_rec session_crypto_cmds[] =
 {
-    AP_INIT_RAW_ARGS("SessionCryptoPassphrase", set_crypto_passphrase, NULL, RSRC_CONF|OR_AUTHCFG,
-            "The passphrase used to encrypt the session"),
+    AP_INIT_ITERATE("SessionCryptoPassphrase", set_crypto_passphrase, NULL, RSRC_CONF|OR_AUTHCFG,
+            "The passphrase(s) used to encrypt the session. First will be used for encryption, all phrases will be accepted for decryption"),
+    AP_INIT_TAKE1("SessionCryptoCipher", set_crypto_cipher, NULL, RSRC_CONF|OR_AUTHCFG,
+            "The underlying crypto cipher to use"),
     AP_INIT_RAW_ARGS("SessionCryptoDriver", set_crypto_driver, NULL, RSRC_CONF,
             "The underlying crypto library driver to use"),
-    {    NULL}
+    { NULL }
 };
 
 static void register_hooks(apr_pool_t * p)
 {
     ap_hook_session_encode(ap_session_crypto_encode, NULL, NULL, APR_HOOK_LAST);
     ap_hook_session_decode(ap_session_crypto_decode, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_post_config(ap_session_crypto_init, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_post_config(ap_session_crypto_init, NULL, NULL, APR_HOOK_LAST);
 }
 
 AP_DECLARE_MODULE(session_crypto) =
 {
     STANDARD20_MODULE_STUFF,
     create_session_crypto_dir_config, /* dir config creater */
-    merge_session_crypto_dir_config,  /* dir merger --- default is to
-                                       * override */
-    create_session_crypto_config,     /* server config */
-    NULL,                             /* merge server config */
-    session_crypto_cmds,              /* command apr_table_t */
-    register_hooks                    /* register hooks */
+    merge_session_crypto_dir_config, /* dir merger --- default is to override */
+    create_session_crypto_config, /* server config */
+    NULL, /* merge server config */
+    session_crypto_cmds, /* command apr_table_t */
+    register_hooks /* register hooks */
 };
 
 #endif

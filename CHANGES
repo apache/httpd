@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_session_crypto: Refactor to support the new apr_crypto API.
+     [Graham Leggett]
+
   *) http: Add missing Location header if local URL-path is used as
      ErrorDocument for 30x. [Stefan Fritsch]
 
