@@ -31,6 +31,7 @@ APLOG_USE_MODULE(mpm_simple);
 
 static void simple_io_timeout_cb(simple_core_t * sc, void *baton)
 {
+/* Code disabled because it does nothing yet but causes a compiler warning */
 #if 0
     simple_conn_t *scon = (simple_conn_t *) baton;
     /* pqXXXXX: handle timeouts. */
