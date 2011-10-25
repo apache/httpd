@@ -196,7 +196,8 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                                 ap_varbuf_strmemcat(&vb, pos, regm[0].rm_so);
                             /* add replacement string */
                             ap_varbuf_regsub(&vb, script->replacement, pos,
-                                             AP_MAX_REG_MATCH, regm);
+                                             AP_MAX_REG_MATCH, regm,
+                                             APR_SIZE_MAX);
                         }
                         else {
                             repl = ap_pregsub(pool, script->replacement, pos,

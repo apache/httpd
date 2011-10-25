@@ -135,13 +135,17 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *vb,
  * @param source The string that was originally matched to the regex
  * @param nmatch the nmatch returned from ap_pregex
  * @param pmatch the pmatch array returned from ap_pregex
+ * @param maxlen the maximum string length to append to vb
+ * @return APR_SUCCESS if successful
  * @note Just like ap_pregsub(), this function does not copy the part of
  *       *source before the matching part (i.e. the first pmatch[0].rm_so
  *       characters).
  */
-AP_DECLARE(void) ap_varbuf_regsub(struct ap_varbuf *vb, const char *input,
-                                  const char *source, size_t nmatch,
-                                  ap_regmatch_t pmatch[]);
+AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
+                                          const char *input,
+                                          const char *source, size_t nmatch,
+                                          ap_regmatch_t pmatch[],
+                                          apr_size_t maxlen);
 
 /** Read a line from an ap_configfile_t into an ap_varbuf.
  * @param vb pointer to the ap_varbuf struct
