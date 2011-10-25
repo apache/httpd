@@ -975,17 +975,16 @@ Name|Date|Size|Description</code></td></tr>
     following classes are associated with the various parts of the
     listing:</p>
 
-    <table>
-    <tr><th>Class</th><th>Definition</th></tr>
-    <tr><td>tr.indexhead</td><td>Header row of listing</td></tr>
-    <tr><td>th.indexcolicon and td.indexcolicon</td> <td>Icon column</td></tr>
-    <tr><td>th.indexcolname and td.indexcolname</td> <td>File name column</td></tr>
-    <tr><td>th.indexcollastmod and td.indexcollastmod</td> <td>Last modified column</td></tr>
-    <tr><td>th.indexcolsize and td.indexcolsize</td> <td>File size column</td></tr>
-    <tr><td>th.indexcoldesc and td.indexcoldesc</td> <td>Description column</td></tr>
-    <tr><td>tr.breakrow</td> <td>Horizontal rule at the bottom of the table</td></tr>
-    <tr><td>tr.odd and tr.even</td> <td>Alternating even and odd rows</td></tr>
-    </table>
+    <table class="bordered"><tr class="header"><th>Class</th><th>Definition</th></tr>
+<tr><td>tr.indexhead</td><td>Header row of listing</td></tr>
+<tr class="odd"><td>th.indexcolicon and td.indexcolicon</td> <td>Icon column</td></tr>
+<tr><td>th.indexcolname and td.indexcolname</td> <td>File name column</td></tr>
+<tr class="odd"><td>th.indexcollastmod and td.indexcollastmod</td> <td>Last modified column</td></tr>
+<tr><td>th.indexcolsize and td.indexcolsize</td> <td>File size column</td></tr>
+<tr class="odd"><td>th.indexcoldesc and td.indexcoldesc</td> <td>Description column</td></tr>
+<tr><td>tr.breakrow</td> <td>Horizontal rule at the bottom of the table</td></tr>
+<tr class="odd"><td>tr.odd and tr.even</td> <td>Alternating even and odd rows</td></tr>
+</table>
 
 
 </div>

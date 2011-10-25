@@ -1012,7 +1012,7 @@ Name|Date|Size|Description</syntax>
     following classes are associated with the various parts of the
     listing:</p>
 
-    <table>
+    <table border="1" style="zebra"> 
     <tr><th>Class</th><th>Definition</th></tr>
     <tr><td>tr.indexhead</td><td>Header row of listing</td></tr>
     <tr><td>th.indexcolicon and td.indexcolicon</td> <td>Icon column</td></tr>
