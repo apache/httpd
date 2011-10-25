@@ -106,6 +106,10 @@
       SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod
     </example>
 
+    <example><title>NSS with paths containing spaces</title>
+      SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod
+    </example>
+
     <p>The <var>NSS</var> crypto driver might have already been configured by another
     part of the server, for example from <module>mod_nss</module> or
     <module>mod_ldap</module>. If found to have already been configured,
@@ -119,13 +123,20 @@
     <p>To prevent confusion, ensure that all modules requiring NSS are configured with
     identical parameters.</p>
 
+    <p>The <var>openssl</var> crypto driver supports an optional parameter to specify
+    the engine to be used for encryption.</p>
+
+    <example><title>OpenSSL with engine support</title>
+      SessionCryptoDriver openssl engine=name
+    </example>
+
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SessionCryptoPassphrase</name>
 <description>The key used to encrypt the session</description>
-<syntax>SessionCryptoPassphrase <var>secret</var></syntax>
+<syntax>SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </syntax>
 <default>none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -135,7 +146,7 @@
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
-    <p>The <directive>SessionCryptoPassphrase</directive> directive specifies the key
+    <p>The <directive>SessionCryptoPassphrase</directive> directive specifies the keys
     to be used to enable symmetrical encryption on the contents of the session before
     writing the session, or decrypting the contents of the session after reading the
     session.</p>
@@ -143,20 +154,35 @@
     <p>Keys are more secure when they are long, and consist of truly random characters.
     Changing the key on a server has the effect of invalidating all existing sessions.</p>
 
-    <p>The cipher can be set to <var>3des192</var> or <var>aes256</var> using the
-    <var>cipher</var> parameter as per the example below. If not set, the cipher defaults
-    to <var>aes256</var>.</p>
+    <p>Multiple keys can be specified in order to support key rotation. The first key
+    listed will be used for encryption, while all keys listed will be attempted for
+    decryption. To rotate keys across multiple servers over a period of time, add a new
+    secret to the end of the list, and once rolled out completely to all servers, remove
+    the first key from the start of the list.</p>
 
-    <example><title>Cipher</title>
-      SessionCryptoPassphrase secret cipher=aes256
-    </example>
+</usage>
+</directivesynopsis>
 
-    <p>The <var>openssl</var> crypto driver supports an optional parameter to specify
-    the engine to be used for encryption.</p>
+<directivesynopsis>
+<name>SessionCryptoCipher</name>
+<description>The crypto cipher to be used to encrypt the session</description>
+<syntax>SessionCryptoCipher <var>name</var></var></syntax>
+<default>aes256</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
-    <example><title>OpenSSL with engine support</title>
-      SessionCryptoPassphrase secret engine=name
-    </example>
+<usage>
+    <p>The <directive>SessionCryptoCipher</directive> directive allows the cipher to
+    be used during encryption. If not specified, the cipher defaults to
+    <code>aes256</code>.</p>
+
+    <p>Possible values depend on the crypto driver in use, and could be one of:</p>
+
+    <ul><li>3des192</li><li>aes128</li><li>aes192</li><li>aes256</li></ul>
 
 </usage>
 </directivesynopsis>
