@@ -166,7 +166,7 @@
 <directivesynopsis>
 <name>SessionCryptoCipher</name>
 <description>The crypto cipher to be used to encrypt the session</description>
-<syntax>SessionCryptoCipher <var>name</var></var></syntax>
+<syntax>SessionCryptoCipher <var>name</var></syntax>
 <default>aes256</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>

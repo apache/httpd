@@ -52,6 +52,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocipher">SessionCryptoCipher</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptodriver">SessionCryptoDriver</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
 </ul>
@@ -89,6 +90,27 @@
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoCipher" id="SessionCryptoCipher">SessionCryptoCipher</a> <a name="sessioncryptocipher" id="sessioncryptocipher">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The crypto cipher to be used to encrypt the session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCipher <var>name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>aes256</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoCipher</code> directive allows the cipher to
+    be used during encryption. If not specified, the cipher defaults to
+    <code>aes256</code>.</p>
+
+    <p>Possible values depend on the crypto driver in use, and could be one of:</p>
+
+    <ul><li>3des192</li><li>aes128</li><li>aes192</li><li>aes256</li></ul>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SessionCryptoDriver" id="SessionCryptoDriver">SessionCryptoDriver</a> <a name="sessioncryptodriver" id="sessioncryptodriver">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The crypto driver to be used to encrypt the session</td></tr>
@@ -118,6 +140,10 @@
       SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod
     </code></p></div>
 
+    <div class="example"><h3>NSS with paths containing spaces</h3><p><code>
+      SessionCryptoDriver nss "dir=My Certs" key3=key3.db cert7=cert7.db secmod=secmod
+    </code></p></div>
+
     <p>The <var>NSS</var> crypto driver might have already been configured by another
     part of the server, for example from <code class="module"><a href="../mod/mod_nss.html">mod_nss</a></code> or
     <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. If found to have already been configured,
@@ -131,20 +157,27 @@
     <p>To prevent confusion, ensure that all modules requiring NSS are configured with
     identical parameters.</p>
 
+    <p>The <var>openssl</var> crypto driver supports an optional parameter to specify
+    the engine to be used for encryption.</p>
+
+    <div class="example"><h3>OpenSSL with engine support</h3><p><code>
+      SessionCryptoDriver openssl engine=name
+    </code></p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SessionCryptoPassphrase" id="SessionCryptoPassphrase">SessionCryptoPassphrase</a> <a name="sessioncryptopassphrase" id="sessioncryptopassphrase">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The key used to encrypt the session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoPassphrase <var>secret</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoPassphrase <var>secret</var> [ <var>secret</var> ... ] </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive">SessionCryptoPassphrase</code> directive specifies the key
+    <p>The <code class="directive">SessionCryptoPassphrase</code> directive specifies the keys
     to be used to enable symmetrical encryption on the contents of the session before
     writing the session, or decrypting the contents of the session after reading the
     session.</p>
@@ -152,20 +185,11 @@
     <p>Keys are more secure when they are long, and consist of truly random characters.
     Changing the key on a server has the effect of invalidating all existing sessions.</p>
 
-    <p>The cipher can be set to <var>3des192</var> or <var>aes256</var> using the
-    <var>cipher</var> parameter as per the example below. If not set, the cipher defaults
-    to <var>aes256</var>.</p>
-
-    <div class="example"><h3>Cipher</h3><p><code>
-      SessionCryptoPassphrase secret cipher=aes256
-    </code></p></div>
-
-    <p>The <var>openssl</var> crypto driver supports an optional parameter to specify
-    the engine to be used for encryption.</p>
-
-    <div class="example"><h3>OpenSSL with engine support</h3><p><code>
-      SessionCryptoPassphrase secret engine=name
-    </code></p></div>
+    <p>Multiple keys can be specified in order to support key rotation. The first key
+    listed will be used for encryption, while all keys listed will be attempted for
+    decryption. To rotate keys across multiple servers over a period of time, add a new
+    secret to the end of the list, and once rolled out completely to all servers, remove
+    the first key from the start of the list.</p>
 
 
 </div>
