@@ -1775,7 +1775,8 @@ AP_DECLARE(void) ap_pregfree(apr_pool_t *p, ap_regex_t *reg);
 /**
  * After performing a successful regex match, you may use this function to
  * perform a series of string substitutions based on subexpressions that were
- * matched during the call to ap_regexec
+ * matched during the call to ap_regexec. This function is limited to
+ * result strings of 64K. Consider using ap_pregsub_ex() instead.
  * @param p The pool to allocate from
  * @param input An arbitrary string containing $1 through $9.  These are
  *              replaced with the corresponding matched sub-expressions
@@ -1786,6 +1787,25 @@ AP_DECLARE(void) ap_pregfree(apr_pool_t *p, ap_regex_t *reg);
  */
 AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
                               size_t nmatch, ap_regmatch_t pmatch[]);
+
+/**
+ * After performing a successful regex match, you may use this function to
+ * perform a series of string substitutions based on subexpressions that were
+ * matched during the call to ap_regexec
+ * @param p The pool to allocate from
+ * @param result where to store the result, will be set to NULL on error
+ * @param input An arbitrary string containing $1 through $9.  These are
+ *              replaced with the corresponding matched sub-expressions
+ * @param source The string that was originally matched to the regex
+ * @param nmatch the nmatch returned from ap_pregex
+ * @param pmatch the pmatch array returned from ap_pregex
+ * @param maxlen the maximum string length to return
+ * @return The substituted string, or NULL on error
+ */
+AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,
+                                       const char *input, const char *source,
+                                       size_t nmatch, ap_regmatch_t pmatch[],
+                                       apr_size_t maxlen);
 
 /**
  * We want to downcase the type/subtype for comparison purposes

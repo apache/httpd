@@ -370,32 +370,35 @@ AP_DECLARE(const char *) ap_stripprefix(const char *bigstring,
  * AT&T V8 regexp package.
  */
 
-static char *regsub_core(apr_pool_t *p, struct ap_varbuf *vb,
-                         const char *input, const char *source,
-                         size_t nmatch, ap_regmatch_t pmatch[])
+static apr_status_t regsub_core(apr_pool_t *p, char **result,
+                                struct ap_varbuf *vb, const char *input,
+                                const char *source, size_t nmatch,
+                                ap_regmatch_t pmatch[], apr_size_t maxlen)
 {
     const char *src = input;
-    char *dest, *dst;
+    char *dst;
     char c;
     size_t no;
-    int len;
+    apr_size_t len = 0;
 
+    AP_DEBUG_ASSERT((result && p && !vb) || (vb && !p && !result));
     if (!source)
-        return NULL;
+        return APR_EINVAL;
     if (!nmatch || nmatch>AP_MAX_REG_MATCH) {
+        len = strlen(src);
+        if (maxlen > 0 && len > maxlen)
+            return APR_ENOMEM;
         if (!vb) {
-            return apr_pstrdup(p, src);
+            *result = apr_pstrmemdup(p, src, len);
+            return APR_SUCCESS;
         }
         else {
-            ap_varbuf_strcat(vb, src);
-            return NULL;
+            ap_varbuf_strmemcat(vb, src, len);
+            return APR_SUCCESS;
         }
     }
 
     /* First pass, find the size */
-
-    len = 0;
-
     while ((c = *src++) != '\0') {
         if (c == '$' && apr_isdigit(*src))
             no = *src++ - '0';
@@ -413,14 +416,17 @@ static char *regsub_core(apr_pool_t *p, struct ap_varbuf *vb,
 
     }
 
+    if (len > maxlen && maxlen > 0)
+        return APR_ENOMEM;
+
     if (!vb) {
-        dest = dst = apr_pcalloc(p, len + 1);
+        *result = dst = apr_pcalloc(p, len + 1);
     }
     else {
         if (vb->buf && vb->strlen == AP_VARBUF_UNKNOWN)
             vb->strlen = strlen(vb->buf);
         ap_varbuf_grow(vb, vb->strlen + len);
-        dest = dst = vb->buf + vb->strlen;
+        dst = vb->buf + vb->strlen;
         vb->strlen += len;
     }
 
@@ -450,14 +456,34 @@ static char *regsub_core(apr_pool_t *p, struct ap_varbuf *vb,
     }
     *dst = '\0';
 
-    return dest;
+    return APR_SUCCESS;
 }
 
+#ifndef AP_PREGSUB_MAXLEN
+#define AP_PREGSUB_MAXLEN   65536
+#endif
 AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
                               const char *source, size_t nmatch,
                               ap_regmatch_t pmatch[])
 {
-    return regsub_core(p, NULL, input, source, nmatch, pmatch);
+    char *result;
+    apr_status_t rc = regsub_core(p, &result, NULL, input, source, nmatch,
+                                  pmatch, AP_PREGSUB_MAXLEN);
+    if (rc != APR_SUCCESS)
+        result = NULL;
+    return result;
+}
+
+AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,
+                                       const char *input, const char *source,
+                                       size_t nmatch, ap_regmatch_t pmatch[],
+                                       apr_size_t maxlen)
+{
+    apr_status_t rc = regsub_core(p, result, NULL, input, source, nmatch,
+                                  pmatch, maxlen);
+    if (rc != APR_SUCCESS)
+        *result = NULL;
+    return rc;
 }
 
 /*
@@ -2647,11 +2673,13 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *buf,
     return "";
 }
 
-AP_DECLARE(void) ap_varbuf_regsub(struct ap_varbuf *vb, const char *input,
-                                  const char *source, size_t nmatch,
-                                  ap_regmatch_t pmatch[])
+AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
+                                          const char *input,
+                                          const char *source, size_t nmatch,
+                                          ap_regmatch_t pmatch[],
+                                          apr_size_t maxlen)
 {
-    regsub_core(NULL, vb, input, source, nmatch, pmatch);
+    return regsub_core(NULL, NULL, vb, input, source, nmatch, pmatch, maxlen);
 }
 
 static const char * const oom_message = "[crit] Memory allocation failed, "

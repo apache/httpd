@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) core: Limit ap_pregsub() to 64K, add ap_pregsub_ex() for longer strings.
+     [Stefan Fritsch]
+
   *) mod_session_crypto: Refactor to support the new apr_crypto API.
      [Graham Leggett]
 
