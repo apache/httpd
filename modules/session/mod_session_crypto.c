@@ -556,7 +556,6 @@ static const char *set_crypto_cipher(cmd_parms * cmd, void *config, const char *
 {
     session_crypto_dir_conf *dconf = (session_crypto_dir_conf *) config;
 
-    dconf->cipher = ap_getword_conf(cmd->pool, &cipher);
     dconf->cipher = cipher;
     dconf->cipher_set = 1;
 
