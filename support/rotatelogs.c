@@ -49,6 +49,9 @@
 #include "apr_time.h"
 #include "apr_getopt.h"
 #include "apr_thread_proc.h"
+#if APR_FILES_AS_SOCKETS
+#include "apr_poll.h"
+#endif
 
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
@@ -93,6 +96,9 @@ struct rotate_config {
     int truncate;
     const char *linkfile;
     const char *postrotate_prog;
+#if APR_FILES_AS_SOCKETS
+    int create_empty;
+#endif
 };
 
 typedef struct rotate_status rotate_status_t;
@@ -123,7 +129,11 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
+#if APR_FILES_AS_SOCKETS
+            "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] [-c] <logfile> "
+#else
             "Usage: %s [-v] [-l] [-L linkname] [-p prog] [-f] [-t] [-e] <logfile> "
+#endif
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -156,6 +166,9 @@ static void usage(const char *argv0, const char *reason)
             "  -f       Force opening of log on program start.\n"
             "  -t       Truncate logfile instead of rotating, tail friendly.\n"
             "  -e       Echo log to stdout for further processing.\n"
+#if APR_FILES_AS_SOCKETS
+            "  -c       Create log even if it is empty.\n"
+#endif
             "\n"
             "The program is invoked as \"[prog] <curfile> [<prevfile>]\"\n"
             "where <curfile> is the filename of the newly opened logfile, and\n"
@@ -208,6 +221,9 @@ static void dumpConfig (rotate_config_t *config)
     fprintf(stderr, "Rotation file date pattern:  %12s\n", config->use_strftime ? "yes" : "no");
     fprintf(stderr, "Rotation file forced open:   %12s\n", config->force_open ? "yes" : "no");
     fprintf(stderr, "Rotation verbose:            %12s\n", config->verbose ? "yes" : "no");
+#if APR_FILES_AS_SOCKETS
+    fprintf(stderr, "Rotation create empty logs:  %12s\n", config->create_empty ? "yes" : "no");
+#endif
     fprintf(stderr, "Rotation file name: %21s\n", config->szLogRoot);
     fprintf(stderr, "Post-rotation prog: %21s\n", config->postrotate_prog);
 }
@@ -518,6 +534,11 @@ int main (int argc, const char * const argv[])
     char c;
     const char *opt_arg;
     const char *err = NULL;
+#if APR_FILES_AS_SOCKETS
+    apr_pollfd_t pollfd = { 0 };
+    apr_status_t pollret = APR_SUCCESS;
+    int polltimeout;
+#endif
 
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
@@ -528,7 +549,11 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
+#if APR_FILES_AS_SOCKETS
+    while ((rv = apr_getopt(opt, "lL:p:ftvec", &c, &opt_arg)) == APR_SUCCESS) {
+#else
     while ((rv = apr_getopt(opt, "lL:p:ftve", &c, &opt_arg)) == APR_SUCCESS) {
+#endif
         switch (c) {
         case 'l':
             config.use_localtime = 1;
@@ -551,6 +576,11 @@ int main (int argc, const char * const argv[])
         case 'e':
             config.echo = 1;
             break;
+#if APR_FILES_AS_SOCKETS
+        case 'c':
+            config.create_empty = 1;
+            break;
+#endif
         }
     }
 
@@ -596,6 +626,15 @@ int main (int argc, const char * const argv[])
         dumpConfig(&config);
     }
 
+#if APR_FILES_AS_SOCKETS
+    if (config.create_empty && config.tRotation) {
+        pollfd.p = status.pool;
+        pollfd.desc_type = APR_POLL_FILE;
+        pollfd.reqevents = APR_POLLIN;
+        pollfd.desc.f = f_stdin;
+    }
+#endif
+
     /*
      * Immediately open the logfile as we start, if we were forced
      * to do so via '-f'.
@@ -606,6 +645,34 @@ int main (int argc, const char * const argv[])
 
     for (;;) {
         nRead = sizeof(buf);
+#if APR_FILES_AS_SOCKETS
+        if (config.create_empty && config.tRotation) {
+            polltimeout = status.tLogEnd ? status.tLogEnd - get_now(&config) : config.tRotation;
+            if (polltimeout <= 0) {
+                pollret = APR_TIMEUP;
+            }
+            else {
+                pollret = apr_poll(&pollfd, 1, &pollret, apr_time_from_sec(polltimeout));
+            }
+        }
+        if (pollret == APR_SUCCESS) {
+            rv = apr_file_read(f_stdin, buf, &nRead);
+            if (APR_STATUS_IS_EOF(rv)) {
+                break;
+            }
+            else if (rv != APR_SUCCESS) {
+                exit(3);
+            }
+        }
+        else if (pollret == APR_TIMEUP) {
+            *buf = 0;
+            nRead = 0;
+        }
+        else {
+            fprintf(stderr, "Unable to poll stdin\n");
+            exit(5);
+        }
+#else /* APR_FILES_AS_SOCKETS */
         rv = apr_file_read(f_stdin, buf, &nRead);
         if (APR_STATUS_IS_EOF(rv)) {
             break;
@@ -613,6 +680,7 @@ int main (int argc, const char * const argv[])
         else if (rv != APR_SUCCESS) {
             exit(3);
         }
+#endif /* APR_FILES_AS_SOCKETS */
         checkRotate(&config, &status);
         if (status.rotateReason != ROTATE_NONE) {
             doRotate(&config, &status);
