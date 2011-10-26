@@ -40,6 +40,7 @@
      [ -<strong>f</strong> ]
      [ -<strong>v</strong> ]
      [ -<strong>e</strong> ]
+     [ -<strong>c</strong> ]
      <var>logfile</var>
      <var>rotationtime</var>|<var>filesize</var>(B|K|M|G)
      [ <var>offset</var> ]</code></p>
@@ -97,6 +98,9 @@ close actions.</dd>
 <dt><code>-e</code></dt>
 <dd>Echo logs through to stdout. Useful when logs need to be further
 processed in real time by a further tool in the chain.</dd>
+
+<dt><code>-c</code></dt>
+<dd>Create log file for each interval, even if empty.</dd>
 
 <dt><code><var>logfile</var></code></dt>
 
