@@ -89,6 +89,30 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
   fi
 ])
 
+AC_DEFUN(FIND_LIBXML2, [
+  AC_ARG_WITH(libxml2, 
+    [APACHE_HELP_STRING(--with-libxml2,location for libxml2)],
+    [test_paths="${with_libxml2}"],
+    [test_paths="/usr/include/libxml2 /usr/local/include/libxml2 /usr/include /usr/local/include"]
+  )
+  AC_MSG_CHECKING(Checking for libxml2)
+  xml2_path=""
+  for x in ${test_paths}; do
+      if test -e "${x}/libxml/parser.h"; then
+        xml2_path="${x}"
+        break
+      fi
+  done
+  if test -n ${xml2_path}; then
+    APR_ADDTO(CFLAGS, [-I${xml2_path}])
+  else
+    AC_MSG_ERROR([libxml2 headers not found!])
+  fi
+])
+
+APACHE_MODULE(xml2enc, i18n support for markup filters, , , , FIND_LIBXML2)
+APACHE_MODULE(proxy_html, Fix HTML Links in a Reverse Proxy, , , , FIND_LIBXML2)
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
 APACHE_MODPATH_FINISH
