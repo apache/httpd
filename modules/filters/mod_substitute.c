@@ -98,7 +98,6 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
     apr_size_t bytes;
     apr_size_t len;
     const char *buff;
-    const char *repl;
     struct ap_varbuf vb;
     apr_bucket *b;
     apr_bucket *tmp_b;
@@ -135,6 +134,7 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                 int have_match = 0;
                 vb.strlen = 0;
                 if (script->pattern) {
+                    const char *repl;
                     while ((repl = apr_strmatch(script->pattern, buff, bytes)))
                     {
                         have_match = 1;
@@ -187,6 +187,7 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                 else if (script->regexp) {
                     int left = bytes;
                     const char *pos = buff;
+                    char *repl;
                     while (!ap_regexec_len(script->regexp, pos, left,
                                        AP_MAX_REG_MATCH, regm, 0)) {
                         have_match = 1;
@@ -196,12 +197,11 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                                 ap_varbuf_strmemcat(&vb, pos, regm[0].rm_so);
                             /* add replacement string */
                             ap_varbuf_regsub(&vb, script->replacement, pos,
-                                             AP_MAX_REG_MATCH, regm,
-                                             APR_SIZE_MAX);
+                                             AP_MAX_REG_MATCH, regm, 0);
                         }
                         else {
-                            repl = ap_pregsub(pool, script->replacement, pos,
-                                              AP_MAX_REG_MATCH, regm);
+                            ap_pregsub_ex(pool, &repl, script->replacement, pos,
+                                              AP_MAX_REG_MATCH, regm, 0);
                             len = (apr_size_t) (regm[0].rm_eo - regm[0].rm_so);
                             SEDRMPATBCKT(b, regm[0].rm_so, tmp_b, len);
                             tmp_b = apr_bucket_transient_create(repl,

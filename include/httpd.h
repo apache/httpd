@@ -1799,7 +1799,7 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *sour
  * @param source The string that was originally matched to the regex
  * @param nmatch the nmatch returned from ap_pregex
  * @param pmatch the pmatch array returned from ap_pregex
- * @param maxlen the maximum string length to return
+ * @param maxlen the maximum string length to return, 0 for unlimited
  * @return The substituted string, or NULL on error
  */
 AP_DECLARE(apr_status_t) ap_pregsub_ex(apr_pool_t *p, char **result,

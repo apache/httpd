@@ -135,7 +135,7 @@ AP_DECLARE(char *) ap_varbuf_pdup(apr_pool_t *p, struct ap_varbuf *vb,
  * @param source The string that was originally matched to the regex
  * @param nmatch the nmatch returned from ap_pregex
  * @param pmatch the pmatch array returned from ap_pregex
- * @param maxlen the maximum string length to append to vb
+ * @param maxlen the maximum string length to append to vb, 0 for unlimited
  * @return APR_SUCCESS if successful
  * @note Just like ap_pregsub(), this function does not copy the part of
  *       *source before the matching part (i.e. the first pmatch[0].rm_so

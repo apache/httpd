@@ -386,7 +386,7 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
         return APR_EINVAL;
     if (!nmatch || nmatch>AP_MAX_REG_MATCH) {
         len = strlen(src);
-        if (maxlen > 0 && len > maxlen)
+        if (maxlen > 0 && len >= maxlen)
             return APR_ENOMEM;
         if (!vb) {
             *result = apr_pstrmemdup(p, src, len);
@@ -416,7 +416,7 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
 
     }
 
-    if (len > maxlen && maxlen > 0)
+    if (len >= maxlen && maxlen > 0)
         return APR_ENOMEM;
 
     if (!vb) {
