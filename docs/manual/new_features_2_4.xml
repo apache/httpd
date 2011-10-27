@@ -116,6 +116,15 @@
       <dd>Allows to add customizable debug logging at different phases of the
       request processing.</dd>
 
+      <dt><module>mod_xml2enc</module></dt>
+      <dd>Formerly a third-party module, this supports internationalisation
+      in libxml2-based (markup-aware) filter modules.</dd>
+
+      <dt><module>mod_proxy_html</module></dt>
+      <dd>Formerly a third-party module, this supports fixing of HTML
+      links in a reverse proxy situation, where the backend generates
+      URLs that are not valid for the proxy's clients.</dd>
+
     </dl>
   </section>
 
