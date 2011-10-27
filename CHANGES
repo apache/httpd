@@ -183,6 +183,14 @@ Changes with Apache 2.3.15
      in httpd.conf, and introduce an AuthnCacheEnable directive.
      PR 51991 [Nick Kew]
 
+  *) mod_xml2enc: new (formerly third-party) module supporting
+     internationalisation for filters via smart charset sniffing
+     and conversion. [Nick Kew]
+
+  *) mod_proxy_html: new (formerly third-party) module to fix up
+     HTML links in a reverse proxy situation, where a backend
+     generates URLs that are not resolvable by Clients. [Nick Kew]
+
 Changes with Apache 2.3.14
 
   *) mod_proxy_ajp: Improve trace logging.  [Rainer Jung]
