@@ -207,7 +207,7 @@ certificate" error?</a></li>
 <li><a href="#pemder">How can I convert a certificate from PEM to DER
 format?</a></li>
 <li><a href="#gid">Why do browsers complain that they cannot
-verify my Verisign Global ID server certificate?</a></li>
+verify my server certificate?</a></li>
 </ul>
 
 <h3><a name="keyscerts" id="keyscerts">What are RSA Private Keys, CSRs and Certificates?</a></h3>
@@ -475,16 +475,24 @@ Certificate for testing purposes?</a></h3>
     <code><strong>$ openssl x509 -in cert.pem -out cert.der -outform DER</strong></code></p>
 
 
-<h3><a name="gid" id="gid">Why do browsers complain that they cannot
-verify my Verisign Global ID server certificate?</a></h3>
-<p>Verisign uses an intermediate CA certificate between the root CA
-    certificate (which is installed in the browsers) and the server
-    certificate (which you installed on the server). You should have
-    received this additional CA certificate from Verisign.
-    If not, complain to them. Then, configure this certificate with the
+<h3><a name="gid" id="gid">Why do browsers complain that they cannot verify my server certificate?</a></h3>
+
+    <p>One reason this might happen is because your server certificate is signed
+    by an intermediate CA. Various CAs, such as Verisign or Thawte, have started
+    signing certificates not with their root certificate but with intermediate
+    certificates.</p>
+
+    <p>Intermediate CA certificates lie between the root CA certificate (which is
+    installed in the browsers) and the server certificate (which you installed
+    on the server). In order for the browser to be able to traverse and verify
+    the trust chain from the server certificate to the root certificate it
+    needs need to be given the intermediate certificates. The CAs should
+    be able to provide you such intermediate certificate packages that can be
+    installed on the server.</p>
+
+    <p>You need to include those intermediate certificates with the
     <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></code>
-    directive. This ensures that the intermediate CA certificate is
-    sent to the browser, filling the gap in the certificate chain.</p>
+    directive.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
