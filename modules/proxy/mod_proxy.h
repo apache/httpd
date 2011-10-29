@@ -641,13 +641,6 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
                                          proxy_server_conf *conf);
 
 /**
- * Request status function
- * @param status   status of proxy request
- * @return         OK or DECLINED
- */
- PROXY_DECLARE(int) ap_proxy_request_status(int *status, request_rec *r);
-
-/**
  * Deternime backend hostname and port
  * @param p       memory pool used for processing
  * @param r       current request
