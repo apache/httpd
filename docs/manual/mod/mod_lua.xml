@@ -203,7 +203,7 @@ end
         <tr>
           <td><code>args</code></td>
           <td>string</td>
-          <td>no</td>
+          <td>yes</td>
         </tr>
         <tr>
           <td><code>assbackwards</code></td>
