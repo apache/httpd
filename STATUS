@@ -115,7 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     mods return UTF-8 chars in any var during a request.
     Trunk patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/arch/win32/mod_win32.c?r1=1054347&r2=1146932
     2.2.x patch: http://people.apache.org/~fuankg/diffs/2.2.x-mod_win32.c.diff
-    +1: fuankg, gsmith
+    +1: fuankg, gsmith, rjung
 
   * mod_ssl: Add SSLProxyMachineCertificateChainFile directive
     Uses openssl to construct a chain for each proxy cert. When a remote server requests
@@ -166,7 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_log_config: Fix segfault for 'BufferedLogs Off'. PR 50861.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1082518
     2.2.x patch: Trunk patch works
-    +1: sf, trawick
+    +1: sf, trawick, rjung
 
 PATCHES/ISSUES THAT ARE STALLED
 
