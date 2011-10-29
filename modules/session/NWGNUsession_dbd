@@ -18,12 +18,8 @@ endif
 XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(AP_WORK)/include \
-			$(AP_WORK)/modules/http \
-			$(AP_WORK)/modules/database \
-			$(AP_WORK)/modules/generators \
-			$(AP_WORK)/modules/ssl \
-			$(AP_WORK)/server/mpm/netware \
+			$(SRC)/include \
+			$(STDMOD)/database \
 			$(NWOS) \
 
 #
