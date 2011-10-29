@@ -158,7 +158,8 @@ TARGET_nlm = \
 	$(EOLIST)
 
 # If the APU library has cryptp API then build the mod_session_crypto module
-ifdef APU_HAVE_CRYPTO
+AWKCMD = $(AWK) '/^\#define APU_HAVE_CRYPTO/{print $$3}' $(APRUTIL)/include/apu.h
+ifeq "$(shell $(AWKCMD))" "1"
 TARGET_nlm += $(OBJDIR)/session_crypto.nlm
 endif
 
