@@ -18,6 +18,11 @@ include $(AP_WORK)/build/NWGNUhead.inc
 #
 # Make sure all needed macro's are defined
 #
+ifeq "$(wildcard $(APRUTIL)/include/apr_ldap.h)" "$(APRUTIL)/include/apr_ldap.h"
+WITH_LDAP = $(shell $(AWK) '/^\#define APR_HAS_LDAP /{print $$3}' $(APRUTIL)/include/apr_ldap.h)
+else
+WITH_LDAP = 0
+endif
 
 #
 # These directories will be at the beginning of the include list, followed by
@@ -168,10 +173,11 @@ TARGET_nlm = \
 	$(OBJDIR)/accesscompat.nlm \
 	$(EOLIST)
 
-# If LDAPSDK has been defined then build the authnz_ldap module
+# If WITH_LDAP and LDAPSDK have been defined then build the authnz_ldap module
+ifeq "$(WITH_LDAP)" "1"
 ifneq "$(LDAPSDK)" ""
-TARGET_nlm += $(OBJDIR)/authnzldap.nlm \
-	$(EOLIST)
+TARGET_nlm += $(OBJDIR)/authnzldap.nlm
+endif
 endif
 
 #
