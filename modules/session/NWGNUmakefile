@@ -157,7 +157,10 @@ TARGET_nlm = \
 	$(OBJDIR)/session_dbd.nlm \
 	$(EOLIST)
 
-#	$(OBJDIR)/session_crypto.nlm \
+# If the APU library has cryptp API then build the mod_session_crypto module
+ifdef APU_HAVE_CRYPTO
+TARGET_nlm += $(OBJDIR)/session_crypto.nlm
+endif
 
 #
 # If there is an LIB target, put it here

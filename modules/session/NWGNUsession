@@ -18,10 +18,7 @@ endif
 XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(AP_WORK)/include \
-			$(AP_WORK)/modules/http \
-			$(AP_WORK)/modules/generators \
-			$(AP_WORK)/modules/ssl \
+			$(SRC)/include \
 			$(NWOS) \
 			$(EOLIST)
 
