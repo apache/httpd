@@ -1,29 +1,27 @@
 #
-# Declare the sub-directories to be built here
-#
-
-SUBDIRS = \
-	$(EOLIST)
-
-#
-# Get the 'head' of the build environment.  This includes default targets and
-# paths to tools
-#
-
-include $(AP_WORK)/build/NWGNUhead.inc
-
-#
-# build this level's files
-
-#
 # Make sure all needed macro's are defined
 #
+
+#
+# Get the 'head' of the build environment if necessary.  This includes default
+# targets and paths to tools
+#
+
+ifndef EnvironmentDefined
+include $(AP_WORK)/build/NWGNUhead.inc
+endif
 
 #
 # These directories will be at the beginning of the include list, followed by
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(LIBXML2SDK)/include \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(AP_WORK)/include \
+			$(AP_WORK)/modules/http \
+			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -42,6 +40,7 @@ XDEFINES	+= \
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \
+			-L$(LIBXML2SDK)/lib -llibxml2.lib \
 			$(EOLIST)
 
 #
@@ -95,19 +94,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	=
+NLM_NAME	= proxyhtml
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy HTML Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= Proxy HTTP Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -118,7 +117,7 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
+NLM_STACK_SIZE	= 8192
 
 
 #
@@ -152,35 +151,8 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/extfiltr.nlm \
-	$(OBJDIR)/charsetl.nlm \
-	$(OBJDIR)/mod_filter.nlm \
-	$(OBJDIR)/mod_request.nlm \
-	$(OBJDIR)/substitute.nlm \
-	$(OBJDIR)/modsed.nlm \
-	$(OBJDIR)/modbuffer.nlm \
-	$(OBJDIR)/ratelimit.nlm \
-	$(OBJDIR)/reqtimeout.nlm \
-	$(OBJDIR)/reflector.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
-
-# If the zlib library source exists then build the mod_deflate module
-ifneq "$(ZLIBSDK)" ""
-ifeq "$(wildcard $(ZLIBSDK))" "$(ZLIBSDK)"
-TARGET_nlm += $(OBJDIR)/deflate.nlm \
-	$(EOLIST)
-endif
-endif
-
-# If the libxml2 library source exists then build the mod_proxy_html module
-ifneq "$(LIBXML2SDK)" ""
-ifeq "$(wildcard $(LIBXML2SDK))" "$(LIBXML2SDK)"
-TARGET_nlm += \
-	$(OBJDIR)/proxyhtml.nlm \
-	$(OBJDIR)/xml2enc.nlm \
-	$(EOLIST)
-endif
-endif
 
 #
 # If there is an LIB target, put it here
@@ -193,6 +165,8 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_proxy_html.o \
+	$(OBJDIR)/libprews.o \
 	$(EOLIST)
 
 #
@@ -200,6 +174,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	$(PRELUDE) \
 	$(EOLIST)
 
 #
@@ -207,6 +182,9 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	aprlib \
+	libc \
+	proxy \
 	$(EOLIST)
 
 #
@@ -228,12 +206,22 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@aprlib.imp \
+	@httpd.imp \
+	@libc.imp \
 	$(EOLIST)
+
+# Don't link with Winsock if standard sockets are being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
 
 #
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	proxy_html_module \
 	$(EOLIST)
 
 #
@@ -256,11 +244,12 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)/build/NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	$(call COPY,$(OBJDIR)/*.nlm, $(INSTALLBASE)/modules/)
 
 #
 # Any specialized rules here
 #
+
+vpath %.c ../arch/netware
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
