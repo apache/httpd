@@ -18,6 +18,9 @@ include $(AP_WORK)/build/NWGNUhead.inc
 #
 # Make sure all needed macro's are defined
 #
+ifneq ($(MAKECMDGOALS),clean)
+APU_HAVE_CRYPTO = $(shell $(AWK) '/^\#define APU_HAVE_CRYPTO/{print $$3}' $(APRUTIL)/include/apu.h)
+endif
 
 #
 # These directories will be at the beginning of the include list, followed by
@@ -158,8 +161,7 @@ TARGET_nlm = \
 	$(EOLIST)
 
 # If the APU library has cryptp API then build the mod_session_crypto module
-AWKCMD = $(AWK) '/^\#define APU_HAVE_CRYPTO/{print $$3}' $(APRUTIL)/include/apu.h
-ifeq "$(shell $(AWKCMD))" "1"
+ifeq "$(APU_HAVE_CRYPTO)" "1"
 TARGET_nlm += $(OBJDIR)/session_crypto.nlm
 endif
 
