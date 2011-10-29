@@ -362,6 +362,8 @@
  *                         proxy_dir_conf
  * 20111025.0 (2.3.15-dev) Add return value and maxlen to ap_varbuf_regsub(),
  *                         add ap_pregsub_ex()
+ * 20111025.1 (2.3.15-dev) Add ap_escape_urlencoded(), ap_escape_urlencoded_buffer()
+ *                         and ap_unescape_urlencoded().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -369,7 +371,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20111025
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

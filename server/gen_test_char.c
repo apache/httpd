@@ -51,6 +51,7 @@
 #define T_HTTP_TOKEN_STOP     (0x08)
 #define T_ESCAPE_LOGITEM      (0x10)
 #define T_ESCAPE_FORENSIC     (0x20)
+#define T_ESCAPE_URLENCODED   (0x40)
 
 int main(int argc, char *argv[])
 {
@@ -65,6 +66,7 @@ int main(int argc, char *argv[])
            "#define T_HTTP_TOKEN_STOP      (%u)\n"
            "#define T_ESCAPE_LOGITEM       (%u)\n"
            "#define T_ESCAPE_FORENSIC      (%u)\n"
+           "#define T_ESCAPE_URLENCODED    (%u)\n"
            "\n"
            "static const unsigned char test_char_table[256] = {",
            T_ESCAPE_SHELL_CMD,
@@ -72,7 +74,8 @@ int main(int argc, char *argv[])
            T_OS_ESCAPE_PATH,
            T_HTTP_TOKEN_STOP,
            T_ESCAPE_LOGITEM,
-           T_ESCAPE_FORENSIC);
+           T_ESCAPE_FORENSIC,
+           T_ESCAPE_URLENCODED);
 
     for (c = 0; c < 256; ++c) {
         flags = 0;
@@ -106,6 +109,10 @@ int main(int argc, char *argv[])
 
         if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:@&=/~", c)) {
             flags |= T_OS_ESCAPE_PATH;
+        }
+
+        if (!apr_isalnum(c) && !strchr(".-*_ ", c)) {
+            flags |= T_ESCAPE_URLENCODED;
         }
 
         /* these are the "tspecials" (RFC2068) or "separators" (RFC2616) */
