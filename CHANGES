@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.22
 
+  *) mod_log_config: Prevent segfault. PR 50861. [Torsten Förtsch
+     <torsten.foertsch gmx.net>]
+
   *) mod_win32: Invert logic for env var UTF-8 fixing.
      Now we exclude a list of vars which we know for sure they dont hold UTF-8
      chars; all other vars will be fixed. This has the benefit that now also
