@@ -1957,6 +1957,11 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                         ap_unescape_url(buf);
                         echo_text = buf;
                     }
+                    else if (!strcasecmp(token, "urlencoded")) {
+                        char *buf = apr_pstrdup(ctx->pool, echo_text);
+                        ap_unescape_urlencoded(buf);
+                        echo_text = buf;
+                    }
                     else if (!strcasecmp(token, "entity")) {
                         char *buf = apr_pstrdup(ctx->pool, echo_text);
                         decodehtml(buf);
@@ -1985,6 +1990,9 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                     }
                     else if (!strcasecmp(token, "url")) {
                         echo_text = ap_escape_uri(ctx->dpool, echo_text);
+                    }
+                    else if (!strcasecmp(token, "urlencoded")) {
+                        echo_text = ap_escape_urlencoded(ctx->dpool, echo_text);
                     }
                     else if (!strcasecmp(token, "entity")) {
                         echo_text = ap_escape_html2(ctx->dpool, echo_text, 0);
@@ -2576,6 +2584,11 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                         ap_unescape_url(buf);
                         parsed_string = buf;
                     }
+                    else if (!strcasecmp(token, "urlencoded")) {
+                        char *buf = apr_pstrdup(ctx->pool, parsed_string);
+                        ap_unescape_urlencoded(buf);
+                        parsed_string = buf;
+                    }
                     else if (!strcasecmp(token, "entity")) {
                         char *buf = apr_pstrdup(ctx->pool, parsed_string);
                         decodehtml(buf);
@@ -2604,6 +2617,9 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
                     }
                     else if (!strcasecmp(token, "url")) {
                         parsed_string = ap_escape_uri(ctx->dpool, parsed_string);
+                    }
+                    else if (!strcasecmp(token, "urlencoded")) {
+                        parsed_string = ap_escape_urlencoded(ctx->dpool, parsed_string);
                     }
                     else if (!strcasecmp(token, "entity")) {
                         parsed_string = ap_escape_html2(ctx->dpool, parsed_string, 0);

@@ -1621,6 +1621,23 @@ AP_DECLARE(int) ap_unescape_url_reserved(char *url, const char *reserved)
 }
 #endif
 
+AP_DECLARE(int) ap_unescape_urlencoded(char *query)
+{
+    char *slider;
+
+    /* replace plus with a space */
+    if (query) {
+        for (slider = query; *slider; slider++) {
+            if (*slider == '+') {
+                *slider = ' ';
+            }
+        }
+    }
+
+    /* unescape everything else */
+    return unescape_url(query, NULL, NULL);
+}
+
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
                                        apr_port_t port, const request_rec *r)
 {
@@ -1727,6 +1744,33 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
     }
     *d = '\0';
     return copy;
+}
+
+AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *copy, const char *buffer)
+{
+    const unsigned char *s = (const unsigned char *)buffer;
+    unsigned char *d = (unsigned char *)copy;
+    unsigned c;
+
+    while ((c = *s)) {
+        if (TEST_CHAR(c, T_ESCAPE_URLENCODED)) {
+            d = c2x(c, '%', d);
+        }
+        else if (c == ' ') {
+            *d++ = '+';
+        }
+        else {
+            *d++ = c;
+        }
+        ++s;
+    }
+    *d = '\0';
+    return copy;
+}
+
+AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *buffer)
+{
+    return ap_escape_urlencoded_buffer(apr_palloc(p, 3 * strlen(buffer) + 1), buffer);
 }
 
 /* ap_escape_uri is now a macro for os_escape_path */

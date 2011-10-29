@@ -1540,6 +1540,13 @@ AP_DECLARE(int) ap_unescape_url(char *url);
 AP_DECLARE(int) ap_unescape_url_keep2f(char *url, int decode_slashes);
 
 /**
+ * Unescape an application/x-www-form-urlencoded string
+ * @param query The query to unescape
+ * @return 0 on success, non-zero otherwise
+ */
+AP_DECLARE(int) ap_unescape_urlencoded(char *query);
+
+/**
  * Convert all double slashes to single slashes
  * @param name The string to convert
  */
@@ -1580,6 +1587,22 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
 
 /** @see ap_os_escape_path */
 #define ap_escape_uri(ppool,path) ap_os_escape_path(ppool,path,1)
+
+/**
+ * Escape a string as application/x-www-form-urlencoded
+ * @param p The pool to allocate from
+ * @param s The path to convert
+ * @return The converted URL
+ */
+AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *s);
+
+/**
+ * Escape a string as application/x-www-form-urlencoded, to a preallocated buffer
+ * @param c The preallocated buffer to write to
+ * @param s The path to convert
+ * @return The converted URL (c)
+ */
+AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *c, const char *s);
 
 /**
  * Escape an html string
