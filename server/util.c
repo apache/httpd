@@ -382,9 +382,9 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
     apr_size_t len = 0;
 
     AP_DEBUG_ASSERT((result && p && !vb) || (vb && !p && !result));
-    if (!source)
+    if (!source || nmatch>AP_MAX_REG_MATCH)
         return APR_EINVAL;
-    if (!nmatch || nmatch>AP_MAX_REG_MATCH) {
+    if (!nmatch) {
         len = strlen(src);
         if (maxlen > 0 && len >= maxlen)
             return APR_ENOMEM;
@@ -405,7 +405,7 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
         else
             no = AP_MAX_REG_MATCH;
 
-        if (no > 9) {                /* Ordinary character. */
+        if (no >= AP_MAX_REG_MATCH) {  /* Ordinary character. */
             if (c == '\\' && *src)
                 src++;
             len++;
@@ -440,9 +440,9 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
         else if (c == '$' && apr_isdigit(*src))
             no = *src++ - '0';
         else
-            no = 10;
+            no = AP_MAX_REG_MATCH;
 
-        if (no > 9) {                /* Ordinary character. */
+        if (no >= AP_MAX_REG_MATCH) {  /* Ordinary character. */
             if (c == '\\' && (*src == '$' || *src == '&'))
                 c = *src++;
             *dst++ = c;
@@ -460,7 +460,7 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
 }
 
 #ifndef AP_PREGSUB_MAXLEN
-#define AP_PREGSUB_MAXLEN   65536
+#define AP_PREGSUB_MAXLEN   (HUGE_STRING_LEN * 8)
 #endif
 AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
                               const char *source, size_t nmatch,
