@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.22
 
+  *) mod_win32: Invert logic for env var UTF-8 fixing.
+     Now we exclude a list of vars which we know for sure they dont hold UTF-8
+     chars; all other vars will be fixed. This has the benefit that now also
+     all vars from 3rd-party modules will be fixed. PR 13029 / 34985.
+     [Guenter Knauf]
+
   *) SECURITY: CVE-2011-3368 (cve.mitre.org)
      Reject requests where the request-URI does not match the HTTP
      specification, preventing unexpected expansion of target URLs in
