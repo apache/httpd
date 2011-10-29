@@ -207,13 +207,15 @@
       is <code>none</code>, where no decoding will be done. If set to
       <code>url</code>, then URL decoding (also known as %-encoding;
       this is appropriate for use within URLs in links, etc.) will be
-      performed. If set to <code>base64</code>, base64 will be decoded,
-      and if set to <code>entity</code>, HTML entity encoding will be
-      stripped. Decoding is done prior to any further encoding on the
-      variable. Multiple encodings can be stripped by specifying more
-      than one comma separated encoding. The decoding setting will
-      remain in effect until the next decoding attribute is encountered,
-      or the element ends.</p>
+      performed. If set to <code>urlencoded</code>,
+      application/x-www-form-urlencoded compatible encoding (found in
+      query strings) will be stripped. If set to <code>base64</code>,
+      base64 will be decoded, and if set to <code>entity</code>, HTML
+      entity encoding will be stripped. Decoding is done prior to any
+      further encoding on the variable. Multiple encodings can be
+      stripped by specifying more than one comma separated encoding.
+      The decoding setting will remain in effect until the next decoding
+      attribute is encountered, or the element ends.</p>
 
       <p>The <code>decoding</code> attribute must <em>precede</em> the
       corresponding <code>var</code> attribute to be effective.</p>
@@ -225,14 +227,17 @@
       to <code>none</code>, no encoding will be done. If set to
       <code>url</code>, then URL encoding (also known as %-encoding;
       this is appropriate for use within URLs in links, etc.) will be
-      performed. If set to <code>base64</code>, base64 encoding will
-      be performed. At the start of an <code>echo</code> element,
-      the default is set to <code>entity</code>, resulting in entity
-      encoding (which is appropriate in the context of a block-level
-      HTML element, <em>e.g.</em> a paragraph of text). This can be
-      changed by adding an <code>encoding</code> attribute, which will
-      remain in effect until the next <code>encoding</code> attribute
-      is encountered or the element ends, whichever comes first.</p>
+      performed. If set to <code>urlencoded</code>,
+      application/x-www-form-urlencoded compatible encoding will be
+      performed instead, and should be used with query strings. If set
+      to <code>base64</code>, base64 encoding will be performed. At
+      the start of an <code>echo</code> element, the default is set to
+      <code>entity</code>, resulting in entity encoding (which is
+      appropriate in the context of a block-level HTML element,
+      <em>e.g.</em> a paragraph of text). This can be changed by adding
+      an <code>encoding</code> attribute, which will remain in effect
+      until the next <code>encoding</code> attribute is encountered or
+      the element ends, whichever comes first.</p>
 
       <p>The <code>encoding</code> attribute must <em>precede</em> the
       corresponding <code>var</code> attribute to be effective.</p>
@@ -442,29 +447,32 @@
       <dd><p>Specifies whether Apache should strip an encoding from
       the variable before processing the variable further. The default
       is <code>none</code>, where no decoding will be done. If set to
-      <code>url</code>, <code>base64</code> or <code>entity</code>,
-      URL decoding, base64 decoding or HTML entity decoding will be
-      performed respectively. More than one decoding can be specified
-      by separating with commas. The decoding setting will remain in
-      effect until the next decoding attribute is encountered, or the
-      element ends. The <code>decoding</code> attribute must
-      <em>precede</em> the corresponding <code>var</code> attribute to
-      be effective.</p>
+      <code>url</code>, <code>urlencoded</code>, <code>base64</code>
+      or <code>entity</code>, URL decoding,
+      application/x-www-form-urlencoded decoding, base64 decoding or HTML
+      entity decoding will be performed respectively. More than one
+      decoding can be specified by separating with commas. The decoding
+      setting will remain in effect until the next decoding attribute
+      is encountered, or the element ends. The <code>decoding</code>
+      attribute must <em>precede</em> the corresponding
+      <code>var</code> attribute to be effective.</p>
       </dd>
 
       <dt><code>encoding</code></dt>
       <dd><p>Specifies how Apache should encode special characters
       contained in the variable before setting them. The default is
       <code>none</code>, where no encoding will be done. If set to
-      <code>url</code>, <code>base64</code> or <code>entity</code>,
-      URL encoding, base64 encoding or HTML entity encoding will be
-      performed respectively. More than one encoding can be specified
-      by separating with commas. The encoding setting will remain in
-      effect until the next encoding attribute is encountered, or the
-      element ends. The <code>encoding</code> attribute must
-      <em>precede</em> the corresponding <code>var</code> attribute
-      to be effective. Encodings are applied after all decodings have
-      been stripped.</p>
+      <code>url</code>, <code>urlencoding</code>, <code>base64</code>
+      or <code>entity</code>, URL encoding,
+      application/x-www-form-urlencoded encoding, base64 encoding or
+      HTML entity encoding will be performed respectively. More than
+      one encoding can be specified by separating with commas. The
+      encoding setting will remain in effect until the next encoding
+      attribute is encountered, or the element ends. The
+      <code>encoding</code> attribute must <em>precede</em> the
+      corresponding <code>var</code> attribute to be effective.
+      Encodings are applied after all decodings have been
+      stripped.</p>
       </dd>
       </dl>
 
