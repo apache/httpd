@@ -486,6 +486,12 @@ static int req_newindex(lua_State *L)
         return 0;
     }
 
+    if (0 == strcmp("args", key)) {
+        const char *value = luaL_checkstring(L, 3);
+        r->args = apr_pstrdup(r->pool, value);
+        return 0;
+    }
+
     if (0 == apr_strnatcmp("user", key)) {
         const char *value = luaL_checkstring(L, 3);
         r->user = apr_pstrdup(r->pool, value);
