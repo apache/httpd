@@ -122,6 +122,18 @@ AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
     lua_pushinteger(L, HTTP_MOVED_TEMPORARILY);
     lua_setfield(L, -2, "HTTP_MOVED_TEMPORARILY");
 
+    lua_pushinteger(L, PROXYREQ_NONE);
+    lua_setfield(L, -2, "PROXYREQ_NONE");
+
+    lua_pushinteger(L, PROXYREQ_PROXY);
+    lua_setfield(L, -2, "PROXYREQ_PROXY");
+
+    lua_pushinteger(L, PROXYREQ_REVERSE);
+    lua_setfield(L, -2, "PROXYREQ_REVERSE");
+
+    lua_pushinteger(L, PROXYREQ_RESPONSE);
+    lua_setfield(L, -2, "PROXYREQ_RESPONSE");
+
     /*
        lua_pushinteger(L, HTTP_CONTINUE);
        lua_setfield(L, -2, "HTTP_CONTINUE");
