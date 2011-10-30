@@ -225,7 +225,20 @@ static const char *req_method_field(request_rec *r)
 {
     return r->method;
 }
-
+static const char *req_handler_field(request_rec *r)
+{
+    return r->handler;
+}
+static const char *req_proxyreq_field(request_rec *r)
+{
+    switch (r->proxyreq) {
+        case PROXYREQ_NONE:     return "PROXYREQ_NONE";
+        case PROXYREQ_PROXY:    return "PROXYREQ_PROXY";
+        case PROXYREQ_REVERSE:  return "PROXYREQ_REVERSE";
+        case PROXYREQ_RESPONSE: return "PROXYREQ_RESPONSE";
+        default: return NULL;
+    }
+}
 static const char *req_hostname_field(request_rec *r)
 {
     return r->hostname;
@@ -606,6 +619,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_path_info_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "args", APR_HASH_KEY_STRING,
                  makefun(&req_args_field, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "handler", APR_HASH_KEY_STRING,
+                 makefun(&req_handler_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "hostname", APR_HASH_KEY_STRING,
                  makefun(&req_hostname_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "uri", APR_HASH_KEY_STRING,
@@ -614,6 +629,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_the_request_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "method", APR_HASH_KEY_STRING,
                  makefun(&req_method_field, APL_REQ_FUNTYPE_STRING, p));
+    apr_hash_set(dispatch, "proxyreq", APR_HASH_KEY_STRING,
+                 makefun(&req_proxyreq_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "headers_in", APR_HASH_KEY_STRING,
                  makefun(&req_headers_in, APL_REQ_FUNTYPE_TABLE, p));
     apr_hash_set(dispatch, "headers_out", APR_HASH_KEY_STRING,
