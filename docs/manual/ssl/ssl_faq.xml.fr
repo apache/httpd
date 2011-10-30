@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1132802 -->
+<!-- English revision : 1189739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -220,7 +220,7 @@ l'erreur "alert bad certificate" ?</a></li>
 <li><a href="#pemder">Comment convertir un certificat du format PEM
 au format DER ?</a></li>
 <li><a href="#gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
-v&eacute;rifier mon certificat de serveur Verisign Global ID ?</a></li>
+v&eacute;rifier mon certificat de serveur ?</a></li>
 </ul>
 
 <section id="keyscerts"><title>Qu'est-ce qu'un cl&eacute; priv&eacute;e RSA, un certificat,
@@ -508,15 +508,26 @@ au format DER <code>cert.der</code> &agrave; l'aide de la commande suivante :
 </section>
 
 <section id="gid"><title>Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
-v&eacute;rifier mon certificat de serveur Verisign Global ID ?</title>
-<p>Verisign utilise un certificat de CA interm&eacute;diaire entre le certificat
-de CA racine (install&eacute; dans les navigateurs) et le certificat du serveur (que
-vous avez install&eacute; sur le serveur). Verisign a d&ucirc; vous envoyer ce certificat
-de CA additionnel. Dans la n&eacute;gative, r&eacute;clamez-le. Ensuite, installez ce
-certificat &agrave; l'aide de la directive
-<directive module="mod_ssl">SSLCertificateChainFile</directive>. Ceci assure
-que le certificat de CA interm&eacute;diaire est bien envoy&eacute; au navigateur, ce qui
-comble le vide dans la cha&icirc;ne de certification.</p>
+v&eacute;rifier mon certificat de serveur ?</title>
+
+    <p>Ceci peut se produire si votre certificat de serveur est sign&eacute;
+    par une autorit&eacute; de certification interm&eacute;diaire. Plusieurs CAs,
+    comme Verisign ou Thawte, ont commenc&eacute; &agrave; signer les certificats avec
+    des certificats interm&eacute;diaires au lieu de leur certificat racine.</p>
+
+    <p>Les certificats de CA interm&eacute;diaires se situe &agrave; un niveau
+    interm&eacute;diaire entre le certificat racine de la CA (qui est install&eacute; dans les
+    navigateurs) et le certificat du serveur (que vous avez install&eacute; sur
+    votre serveur). Pour que le navigateur puisse traverser et v&eacute;rifier
+    la cha&icirc;ne de confiance depuis le certificat du serveur jusqu'au
+    certificat racine, il faut lui fournir les certificats
+    interm&eacute;diaires. Les CAs devraient pouvoir fournir de tels
+    paquetages de certificats interm&eacute;diaires &agrave; installer sur les
+    serveurs.</p>
+
+    <p>Vous devez inclure ces certificats interm&eacute;diaires via la
+    directive <directive
+    module="mod_ssl">SSLCertificateChainFile</directive>.</p>
 </section>
 </section>
 <!-- /certs -->

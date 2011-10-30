@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1182379 -->
+<!-- English Revision : 1188095 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1270,7 +1270,8 @@ host</context>
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
       ErrorDocument 403 "D&eacute;sol&eacute;, vous n'avez pas l'autorisation d'acc&egrave;s
-      aujourd'hui"
+      aujourd'hui"<br />
+      ErrorDocument 403 Interdit!
     </example>
 
     <p>De plus, on peut sp&eacute;cifier la valeur sp&eacute;ciale <code>default</code>

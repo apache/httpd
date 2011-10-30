@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1187986 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -71,12 +71,14 @@
       <example>
       ErrorDocument &lt;code_3_chiffres&gt; &lt;action&gt;
     </example>
-      <p>o&ugrave; action peut &ecirc;tre :</p>
+      <p>o&ugrave; action peut &ecirc;tre trait&eacute;e comme :</p>
         <ol>
-      <li>Le texte &agrave; afficher. Entourez le texte de guillemets (").</li>
-      <li>Une URL de redirection local.</li>
-      <li>Une URL de redirection externe.</li>
-    </ol>
+      <li>Une URL de redirection local (si l'action commence par un "/").</li>
+      <li>Une URL de redirection externe (si action est une URL valide).</li>
+      <li>Le texte &agrave; afficher (si l'action ne r&eacute;pond &agrave; aucune des
+      deux conditions pr&eacute;c&eacute;dentes). Entourez le texte de guillemets (")
+      s'il contient plusieurs mots.</li>
+        </ol>
 
     <p>Dans le cas d'une redirection vers une URL locale, des variables
     d'environnement suppl&eacute;mentaires sont d&eacute;finies de fa&ccedil;on &agrave; ce que la

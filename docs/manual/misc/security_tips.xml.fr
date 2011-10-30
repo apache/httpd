@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1137744 -->
+<!-- English revision : 1188200 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -81,6 +81,10 @@
     minimiser les probl&egrave;mes :</p>
 
     <ul>
+      <li>La directive <directive
+      module="mod_reqtimeout">RequestReadTimeout</directive> permet de
+      limiter le temps que met le client pour envoyer sa requ&ecirc;te.</li>
+
       <li>La valeur de la directive
       <directive module="core">TimeOut</directive> doit &ecirc;tre diminu&eacute;e sur les
       sites sujets aux attaques DoS. Une valeur de quelques secondes devrait
