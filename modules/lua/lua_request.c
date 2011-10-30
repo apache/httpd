@@ -481,6 +481,18 @@ static int req_newindex(lua_State *L)
         return 0;
     }
 
+    if (0 == strcmp("handler", key)) {
+        const char *value = luaL_checkstring(L, 3);
+        r->handler = apr_pstrdup(r->pool, value);
+        return 0;
+    }
+
+    if (0 == strcmp("proxyreq", key)) {
+        int value = luaL_checkinteger(L, 3);
+        r->proxyreq = value;
+        return 0;
+    }
+
     if (0 == strcmp("status", key)) {
         int code = luaL_checkinteger(L, 3);
         r->status = code;
