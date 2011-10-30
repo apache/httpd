@@ -270,6 +270,12 @@ end
           <td>yes</td>
         </tr>
         <tr>
+          <td><code>handler</code></td>
+          <td>string</td>
+          <td>yes</td>
+        </tr>
+
+        <tr>
           <td><code>headers_in</code></td>
           <td>table</td>
           <td>yes</td>
@@ -303,6 +309,11 @@ end
           <td><code>protocol</code></td>
           <td>string</td>
           <td>no</td>
+        </tr>
+        <tr>
+          <td><code>proxyreq</code></td>
+          <td>string</td>
+          <td>yes</td>
         </tr>
         <tr>
           <td><code>range</code></td>
@@ -401,6 +412,8 @@ end
   <dd>Apache HTTP server version string</dd>
   <dt>apache2.HTTP_MOVED_TEMPORARILY</dt>
   <dd>HTTP status code</dd>
+  <dt>apache2.PROXYREQ_NONE, apache2.PROXYREQ_PROXY, apache2.PROXYREQ_REVERSE, apache2.PROXYREQ_RESPONSE</dt>
+  <dd>internal constants used by <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 </dl>
 <p>(Other HTTP status codes are not yet implemented.)</p>
 </div>
