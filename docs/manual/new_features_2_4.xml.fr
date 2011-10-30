@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1189549 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -135,6 +135,18 @@ serveur HTTP Apache</title>
       <dt><module>mod_log_debug</module></dt>
       <dd>Permet d'introduire une journalisation personnalis&eacute;e &agrave;
       diff&eacute;rentes phases du traitement de la requ&ecirc;te.</dd>
+
+      <dt><module>mod_xml2enc</module></dt>
+      <dd>Anciennement module tiers, il supporte l'internationalisation
+      dans les modules de filtrage bas&eacute;s sur libxml2 (support du
+      markup)</dd>
+      
+
+      <dt><module>mod_proxy_html</module></dt>
+      <dd>Anciennement module tiers, il supporte la correction des liens
+      HTML dans une situation de mandat inverse, o&ugrave; le serveur
+      d'arri&egrave;re-plan g&eacute;n&egrave;re des URLs qui ne sont pas valides du point de
+      vue des clients du mandataire.</dd>
 
     </dl>
   </section>

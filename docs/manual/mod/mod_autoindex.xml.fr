@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1188475 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1098,7 +1098,7 @@ r&eacute;pertoire</description>
     l'ensemble de la table et les classes suivantes sont associ&eacute;es aux
     diff&eacute;rentes parties du listing :</p>
 
-    <table>
+    <table border="1" style="zebra">
     <tr><th>Classe</th><th>D&eacute;finition</th></tr>
     <tr><td>tr.indexhead</td><td>Ligne d'en-t&ecirc;te du listing</td></tr>
     <tr><td>th.indexcolicon and td.indexcolicon</td> <td>Colonne de
