@@ -65,8 +65,8 @@ static struct wstat {
 /* Global balancer counter */
 int PROXY_DECLARE_DATA proxy_lb_workers = 0;
 static int lb_workers_limit = 0;
-const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_path;
-const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_domain;
+const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_path;
+const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_domain;
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);

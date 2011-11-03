@@ -897,8 +897,8 @@ int ap_proxy_lb_workers(void);
 extern module PROXY_DECLARE_DATA proxy_module;
 
 extern int PROXY_DECLARE_DATA proxy_lb_workers;
-extern const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_path;
-extern const apr_strmatch_pattern * PROXY_DECLARE_DATA ap_proxy_strmatch_domain;
+extern const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_path;
+extern const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_domain;
 
 #endif /*MOD_PROXY_H*/
 /** @} */
