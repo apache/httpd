@@ -150,6 +150,7 @@ BEGIN {
 	  print "#LoadModule proxy_express_module modules/mod_proxy_express.so" > dstfl;
 	  print "#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so" > dstfl;
 	  print "#LoadModule proxy_ftp_module modules/mod_proxy_ftp.so" > dstfl;
+	  print "#LoadModule proxy_html_module modules/mod_proxy_html.so" > dstfl;
 	  print "#LoadModule proxy_http_module modules/mod_proxy_http.so" > dstfl;
 	  print "#LoadModule proxy_scgi_module modules/mod_proxy_scgi.so" > dstfl;
 	  print "#LoadModule reqtimeout_module modules/mod_reqtimeout.so" > dstfl;
@@ -167,6 +168,7 @@ BEGIN {
 	  print "#LoadModule usertrack_module modules/mod_usertrack.so" > dstfl;
 	  print "#LoadModule version_module modules/mod_version.so" > dstfl;
 	  print "#LoadModule vhost_alias_module modules/mod_vhost_alias.so" > dstfl;
+	  print "#LoadModule xml2enc_module modules/mod_xml2enc.so" > dstfl;
 	  continue;
 	}
 	gsub( /^SSLMutex.*/, "SSLMutex default" );
