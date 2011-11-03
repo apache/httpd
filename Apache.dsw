@@ -2597,6 +2597,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_proxy_html"=.\modules\filters\mod_proxy_html.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_proxy_http"=.\modules\proxy\mod_proxy_http.dsp - Package Owner=<4>
 
 Package=<5>
@@ -3264,6 +3285,30 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_xml2enc"=.\modules\filters\mod_xml2enc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_html
     End Project Dependency
 }}}
 
