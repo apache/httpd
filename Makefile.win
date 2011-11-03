@@ -187,6 +187,35 @@ _tryzlib:
 
 !ENDIF
 
+!IF EXIST("srclib\libxml2")
+
+_tryxml:
+!IF $(USEMAK) == 1
+	cd modules\filters
+	$(MAKE) $(MAKEOPT) -f mod_proxy_html.mak CFG="mod_proxy_html - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	$(MAKE) $(MAKEOPT) -f mod_xml2enc.mak CFG="mod_xml2enc - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ELSEIF $(USESLN) == 1
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_proxy_html
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_xml2enc
+!ELSE
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_proxy_html - Win32 $(LONG)" /NORECURSE $(CTARGET)
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_xml2enc - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\libxml2")
+
+_tryxml:
+	@echo -----
+	@echo mod_proxy_html and mod_xml2enc will not build unless libxml2 is 
+	@echo built in srclib\libxml2. Version 2.7.7 and later available from
+	@echo http://xmlsoft.org/ will satisfy this requirement.
+
+!ENDIF
+
 
 !IF EXIST("srclib\lua")
 
@@ -453,6 +482,10 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_filter.mak      CFG="mod_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!IF EXIST("srclib\libxml2")
+	 $(MAKE) $(MAKEOPT) -f mod_proxy_html.mak     CFG="mod_proxy_html - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_xml2enc.mak     CFG="mod_xml2enc - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!ENDIF
 	 $(MAKE) $(MAKEOPT) -f mod_ratelimit.mak   CFG="mod_ratelimit - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_reflector.mak   CFG="mod_reflector - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_reqtimeout.mak  CFG="mod_reqtimeout - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -591,6 +624,10 @@ _build:
 !IF EXIST("srclib\lua")
 	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_lua
 !ENDIF
+!IF EXIST("srclib\libxml2")
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_proxy_html
+	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_xml2enc
+!ENDIF
 
 !ELSE
 
@@ -629,6 +666,12 @@ _build:
 !IF EXIST("srclib\lua")
 	@msdev $(TLP).dsw /USEENV /MAKE \
 		"mod_lua - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+!IF EXIST("srclib\libxml2")
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_proxy_html - Win32 $(LONG)" /NORECURSE $(CTARGET)
+	@msdev $(TLP).dsw /USEENV /MAKE \
+		"mod_xml2enc - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ENDIF
@@ -709,6 +752,13 @@ _copybin:
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\libxml2")
+	copy modules\filters\$(LONG)\mod_proxy_html.$(src_so) 	"$(inst_so)" <.y
+	copy modules\filters\$(LONG)\mod_xml2enc.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\libxml2\win32\bin.msvc\libxml2.$(src_dll)")
+	copy srclib\libxml2\win32\bin.msvc\libxml2.$(src_dll)		 	"$(inst_dll)" <.y
+!ENDIF
+!ENDIF
 	copy modules\filters\$(LONG)\mod_ratelimit.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_reflector.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_reqtimeout.$(src_so) 	"$(inst_so)" <.y
