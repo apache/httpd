@@ -201,6 +201,9 @@ static int lua_alias_munger(request_rec *r)
                 spec->pool = r->pool;
             }
 
+            spec->cb = &lua_open_callback;
+            spec->cb_arg = NULL;
+
             d = apr_palloc(r->pool, sizeof(mapped_request_details));
 
             d->function_name = ap_pregsub(r->pool, cnd->function_name, r->uri,
