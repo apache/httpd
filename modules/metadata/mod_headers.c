@@ -490,14 +490,18 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
             }
             condition_var = envclause + 4;
         }
-        else {
+        else if (strncasecmp(envclause, "expr=", 5) == 0) {
             const char *err = NULL;
-            expr = ap_expr_parse_cmd(cmd, envclause, 0, &err, NULL);
+            expr = ap_expr_parse_cmd(cmd, envclause + 5, 0, &err, NULL);
             if (err) {
                 return apr_pstrcat(cmd->pool,
                                    "Can't parse envclause/expression: ", err,
                                    NULL);
             }
+        }
+        else {
+            return apr_pstrcat(cmd->pool, "Unknown parameter: ", envclause,
+                               NULL);
         }
     }
 

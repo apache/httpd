@@ -221,8 +221,8 @@ static const char *cmd_log_message(cmd_parms *cmd, void *dconf_, const char *arg
                     return apr_psprintf(cmd->pool, "Invalid hook name: %s", name);
             }
         }
-        else if (strncasecmp(args[i], "if=", 3) == 0) {
-            const char *expr = args[i] + 3;
+        else if (strncasecmp(args[i], "expr=", 5) == 0) {
+            const char *expr = args[i] + 5;
             entry->condition = ap_expr_parse_cmd(cmd, expr,
                                                  AP_EXPR_FLAG_DONT_VARY,
                                                  &err, NULL);
