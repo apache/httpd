@@ -319,7 +319,8 @@ headers</td></tr>
 switch before dumping core</td></tr>
 <tr><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
+[env=[!]<var>environment-variable</var>|
+expr=<var>expression</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable WebDAV HTTP methods</td></tr>
 <tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Allow PROPFIND, Depth: Infinity requests</td></tr>
 <tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
@@ -545,7 +546,7 @@ matching URLs</td></tr>
     [<var>module</var>:<var>level</var>] ...
 </a></td><td> warn </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the verbosity of the ErrorLog</td></tr>
 <tr><td><a href="mod_log_debug.html#logmessage">LogMessage <var>message</var>
-[hook=<var>hook</var>] [if=<var>expression</var>]
+[hook=<var>hook</var>] [expr=<var>expression</var>]
 </a></td><td></td><td>d</td><td>X</td></tr><tr><td class="descr" colspan="4">Log userdefined message to error log
 </td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luacodecache">LuaCodeCache stat|forever|never</a></td><td> stat </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the compiled code cache.</td></tr>

@@ -56,7 +56,7 @@
         Log message if request to /foo/* is processed in a sub-request:
         <div class="example"><p><code>
             &lt;Location /foo/&gt;<br />
-            &nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker if=%{IS_SUBREQ}<br />
+            &nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker expr=%{IS_SUBREQ}<br />
             &lt;/Location&gt;<br />
         </code></p></div>
 
@@ -69,9 +69,9 @@
         Log message if an IPv6 client causes a request timeout:
         <div class="example"><p><code>
             LogMessage "IPv6 timeout from %{REMOTE_ADDR}"
-              "if=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
+              "expr=-T %{IPV6} &amp;&amp; %{REQUEST_STATUS} = 408"
         </code></p></div>
-        Note the placing of the double quotes for the <code>if=</code> argument.
+        Note the placing of the double quotes for the <code>expr=</code> argument.
       </li>
 
       <li>
@@ -95,7 +95,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log userdefined message to error log
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogMessage <var>message</var>
-[hook=<var>hook</var>] [if=<var>expression</var>]
+[hook=<var>hook</var>] [expr=<var>expression</var>]
 </code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>

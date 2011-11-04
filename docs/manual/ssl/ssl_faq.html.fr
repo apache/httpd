@@ -218,7 +218,7 @@ l'erreur "alert bad certificate" ?</a></li>
 <li><a href="#pemder">Comment convertir un certificat du format PEM
 au format DER ?</a></li>
 <li><a href="#gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
-vérifier mon certificat de serveur Verisign Global ID ?</a></li>
+vérifier mon certificat de serveur ?</a></li>
 </ul>
 
 <h3><a name="keyscerts" id="keyscerts">Qu'est-ce qu'un clé privée RSA, un certificat,
@@ -506,15 +506,25 @@ au format DER <code>cert.der</code> à l'aide de la commande suivante :
 
 
 <h3><a name="gid" id="gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
-vérifier mon certificat de serveur Verisign Global ID ?</a></h3>
-<p>Verisign utilise un certificat de CA intermédiaire entre le certificat
-de CA racine (installé dans les navigateurs) et le certificat du serveur (que
-vous avez installé sur le serveur). Verisign a dû vous envoyer ce certificat
-de CA additionnel. Dans la négative, réclamez-le. Ensuite, installez ce
-certificat à l'aide de la directive
-<code class="directive"><a href="../mod/mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></code>. Ceci assure
-que le certificat de CA intermédiaire est bien envoyé au navigateur, ce qui
-comble le vide dans la chaîne de certification.</p>
+vérifier mon certificat de serveur ?</a></h3>
+
+    <p>Ceci peut se produire si votre certificat de serveur est signé
+    par une autorité de certification intermédiaire. Plusieurs CAs,
+    comme Verisign ou Thawte, ont commencé à signer les certificats avec
+    des certificats intermédiaires au lieu de leur certificat racine.</p>
+
+    <p>Les certificats de CA intermédiaires se situe à un niveau
+    intermédiaire entre le certificat racine de la CA (qui est installé dans les
+    navigateurs) et le certificat du serveur (que vous avez installé sur
+    votre serveur). Pour que le navigateur puisse traverser et vérifier
+    la chaîne de confiance depuis le certificat du serveur jusqu'au
+    certificat racine, il faut lui fournir les certificats
+    intermédiaires. Les CAs devraient pouvoir fournir de tels
+    paquetages de certificats intermédiaires à installer sur les
+    serveurs.</p>
+
+    <p>Vous devez inclure ces certificats intermédiaires via la
+    directive <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
