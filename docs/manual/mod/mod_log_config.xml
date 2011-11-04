@@ -388,7 +388,8 @@
 <description>Sets filename and format of log file</description>
 <syntax>CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</syntax>
+[env=[!]<var>environment-variable</var>|
+expr=<var>expression</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -445,12 +446,13 @@
     </example>
 
     <p>The third argument is optional and controls whether or
-    not to log a particular request based on the
-    presence or absence of a particular variable in the server
-    environment. If the specified <a href="../env.html">environment
-    variable</a> is set for the request (or is not set, in the case
-    of a '<code>env=!<var>name</var></code>' clause), then the
-    request will be logged.</p>
+    not to log a particular request. The condition can be the
+    presence or absence (in the case of a '<code>env=!<var>name</var></code>'
+    clause) of a particular variable in the server
+    <a href="../env.html">environment</a>. Alternatively, the condition
+    can be expressed as arbitrary boolean <a href="../expr.html"
+    >expression</a>. If the condition is not satisfied, the request
+    will not be logged.</p>
 
     <p>Environment variables can be set on a per-request
     basis using the <module>mod_setenvif</module>
