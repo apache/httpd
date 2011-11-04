@@ -12,6 +12,9 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_lua: Resolve "attempt to index local 'r' (a userdata value)" errors
+     in LuaMapHandler scripts [Eric Covener]
+
   *) mod_log_debug: Rename optional argument from if= to expr=, to be more
      in line with other config directives. [Stefan Fritsch]
 
