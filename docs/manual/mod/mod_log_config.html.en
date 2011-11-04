@@ -354,7 +354,8 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</code></td></tr>
+[env=[!]<var>environment-variable</var>|
+expr=<var>expression</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_log_config</td></tr>
@@ -410,12 +411,12 @@
     </code></p></div>
 
     <p>The third argument is optional and controls whether or
-    not to log a particular request based on the
-    presence or absence of a particular variable in the server
-    environment. If the specified <a href="../env.html">environment
-    variable</a> is set for the request (or is not set, in the case
-    of a '<code>env=!<var>name</var></code>' clause), then the
-    request will be logged.</p>
+    not to log a particular request. The condition can be the
+    presence or absence (in the case of a '<code>env=!<var>name</var></code>'
+    clause) of a particular variable in the server
+    <a href="../env.html">environment</a>. Alternatively, the condition
+    can be expressed as arbitrary boolean <a href="../expr.html">expression</a>. If the condition is not satisfied, the request
+    will not be logged.</p>
 
     <p>Environment variables can be set on a per-request
     basis using the <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>

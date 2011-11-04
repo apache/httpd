@@ -90,6 +90,9 @@
     minimiser les problèmes :</p>
 
     <ul>
+      <li>La directive <code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code> permet de
+      limiter le temps que met le client pour envoyer sa requête.</li>
+
       <li>La valeur de la directive
       <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> doit être diminuée sur les
       sites sujets aux attaques DoS. Une valeur de quelques secondes devrait

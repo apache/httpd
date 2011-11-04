@@ -138,6 +138,18 @@ serveur HTTP Apache</h1>
       <dd>Permet d'introduire une journalisation personnalisée à
       différentes phases du traitement de la requête.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_xml2enc.html">mod_xml2enc</a></code></dt>
+      <dd>Anciennement module tiers, il supporte l'internationalisation
+      dans les modules de filtrage basés sur libxml2 (support du
+      markup)</dd>
+      
+
+      <dt><code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code></dt>
+      <dd>Anciennement module tiers, il supporte la correction des liens
+      HTML dans une situation de mandat inverse, où le serveur
+      d'arrière-plan génère des URLs qui ne sont pas valides du point de
+      vue des clients du mandataire.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

@@ -77,12 +77,14 @@
       <div class="example"><p><code>
       ErrorDocument &lt;code_3_chiffres&gt; &lt;action&gt;
     </code></p></div>
-      <p>où action peut être :</p>
+      <p>où action peut être traitée comme :</p>
         <ol>
-      <li>Le texte à afficher. Entourez le texte de guillemets (").</li>
-      <li>Une URL de redirection local.</li>
-      <li>Une URL de redirection externe.</li>
-    </ol>
+      <li>Une URL de redirection local (si l'action commence par un "/").</li>
+      <li>Une URL de redirection externe (si action est une URL valide).</li>
+      <li>Le texte à afficher (si l'action ne répond à aucune des
+      deux conditions précédentes). Entourez le texte de guillemets (")
+      s'il contient plusieurs mots.</li>
+        </ol>
 
     <p>Dans le cas d'une redirection vers une URL locale, des variables
     d'environnement supplémentaires sont définies de façon à ce que la

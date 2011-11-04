@@ -1279,7 +1279,8 @@ d'erreur</td></tr>
       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
       ErrorDocument 401 /subscription_info.html<br />
       ErrorDocument 403 "Désolé, vous n'avez pas l'autorisation d'accès
-      aujourd'hui"
+      aujourd'hui"<br />
+      ErrorDocument 403 Interdit!
     </code></p></div>
 
     <p>De plus, on peut spécifier la valeur spéciale <code>default</code>

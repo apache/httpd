@@ -197,7 +197,7 @@ headers</td></tr>
       <li>
         Set a test cookie if and only if the client didn't send us a cookie
         <div class="example"><p><code>
-          Header set Set-Cookie testcookie !$req{Cookie}
+          Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
         </code></p></div>
       </li>
     </ol>
@@ -350,14 +350,14 @@ headers</td></tr>
     <dl>
     <dt><code>early</code></dt>
     <dd>Specifies <a href="#early">early processing</a>.</dd>
-    <dt><code>env=[!]varname</code></dt>
+    <dt><code>env=[!]<var>varname</var></code></dt>
     <dd>The directive is applied if and only if the <a href="../env.html">environment variable</a> <code>varname</code> exists.
         A <code>!</code> in front of <code>varname</code> reverses the test,
         so the directive applies only if <code>varname</code> is unset.</dd>
-    <dt><code>expr</code></dt>
-    <dd>An string that matches neither of the above is parsed as an
-        expression.  Details of expression syntax and evaluation are
-        currently best documented on the <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> page.</dd>
+    <dt><code>expr=<var>expression</var></code></dt>
+    <dd>The directive is applied if and only if <var>expression</var>
+        evaluates to true. Details of expression syntax and evaluation are
+        documented in the <a href="../expr.html">ap_expr</a> documentation.</dd>
     </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
@@ -450,14 +450,14 @@ headers</td></tr>
     <dl>
     <dt><code>early</code></dt>
     <dd>Specifies <a href="#early">early processing</a>.</dd>
-    <dt><code>env=[!]varname</code></dt>
+    <dt><code>env=[!]<var>varname</var></code></dt>
     <dd>The directive is applied if and only if the <a href="../env.html">environment variable</a> <code>varname</code> exists.
         A <code>!</code> in front of <code>varname</code> reverses the test,
         so the directive applies only if <code>varname</code> is unset.</dd>
-    <dt><code>expr</code></dt>
-    <dd>An string that matches neither of the above is parsed as an
-        expression.  Details of expression syntax and evaluation are
-        currently best documented on the <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> page.</dd>
+    <dt><code>expr=<var>expression</var></code></dt>
+    <dd>The directive is applied if and only if <var>expression</var>
+        evaluates to true. Details of expression syntax and evaluation are
+        documented in the <a href="../expr.html">ap_expr</a> documentation.</dd>
     </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
