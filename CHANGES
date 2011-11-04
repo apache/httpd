@@ -12,6 +12,8 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) mod_substitute: To prevent overboarding memory usage, limit line length
+     to 1MB. [Stefan Fritsch]
 
   *) mod_lua: Make the query string (r.args) writable. [Eric Covener]
 

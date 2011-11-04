@@ -262,6 +262,10 @@
         module="mod_ssl">SSLCARevocationCheck</directive>.
         </li>
 
+        <li><module>mod_substitute</module>: The maximum line length is now
+        limited to 1MB.
+        </li>
+
       </ul>
     </section>
   </section>
