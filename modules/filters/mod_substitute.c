@@ -450,6 +450,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                             rv = ap_pass_brigade(f->next, ctx->passbb);
                             apr_brigade_cleanup(ctx->passbb);
                             num = 0;
+                            apr_pool_clear(ctx->tpool);
                             if (rv != APR_SUCCESS)
                                 goto err;
                         }
