@@ -117,6 +117,7 @@ APACHE_MODULE(xml2enc, i18n support for markup filters, , , , [
   FIND_LIBXML2
   if test "$ac_cv_libxml2" = "yes" ; then
     APR_ADDTO(CFLAGS, [-I${XML2_INCLUDES}])
+    APR_ADDTO(MOD_XML2ENC_LDADD, [-lxml2])
   else
     enable_xml2enc=no
   fi
@@ -125,6 +126,7 @@ APACHE_MODULE(proxy_html, Fix HTML Links in a Reverse Proxy, , , , [
   FIND_LIBXML2
   if test "$ac_cv_libxml2" = "yes" ; then
     APR_ADDTO(CFLAGS, [-I${XML2_INCLUDES}])
+    APR_ADDTO(MOD_PROXY_HTML_LDADD, [-lxml2])
   else
     enable_proxy_html=no
   fi
