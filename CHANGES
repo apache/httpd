@@ -267,7 +267,7 @@ Changes with Apache 2.3.14
   *) mod_deflate: Don't try to compress requests with a zero sized body.
      PR 51350. [Stefan Fritsch]
 
-  *) core: Fix startup on IP6-only systems. PR 50592. [Joe Orton,
+  *) core: Fix startup on IPv6-only systems. PR 50592. [Joe Orton,
      <root linkage white-void net>]
 
   *) suexec: Add environment variables CONTEXT_DOCUMENT_ROOT, CONTEXT_PREFIX,
