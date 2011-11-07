@@ -184,6 +184,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         buff += len;
                     }
                     if (have_match && script->flatten && !force_quick) {
+                        /* XXX: we should check for AP_MAX_BUCKETS here and
+                         * XXX: call ap_pass_brigade accordingly
+                         */
                         char *copy = ap_varbuf_pdup(pool, &vb, NULL, 0,
                                                     buff, bytes, &len);
                         tmp_b = apr_bucket_pool_create(copy, len, pool,
@@ -346,6 +349,10 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                           &fbytes, ctx->tpool);
                 if (rv != APR_SUCCESS)
                     goto err;
+                if (fbytes > AP_SUBST_MAX_LINE_LENGTH) {
+                    rv = APR_ENOMEM;
+                    goto err;
+                }
                 tmp_b = apr_bucket_transient_create(bflat, fbytes,
                                                 f->r->connection->bucket_alloc);
                 rv = do_pattmatch(f, tmp_b, ctx->pattbb, ctx->tpool);
