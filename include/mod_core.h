@@ -90,6 +90,9 @@ AP_DECLARE(int) ap_send_http_options(request_rec *r);
 /* Used for multipart/byteranges boundary string */
 extern AP_DECLARE_DATA const char *ap_multipart_boundary;
 
+/* Update RNG state in parent after fork */
+AP_CORE_DECLARE(void) ap_random_parent_after_fork(void);
+
 #ifdef __cplusplus
 }
 #endif

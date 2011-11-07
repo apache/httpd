@@ -4597,16 +4597,40 @@ AP_DECLARE(int) ap_state_query(int query)
 static apr_random_t *rng = NULL;
 #if APR_HAS_THREADS
 static apr_thread_mutex_t *rng_mutex = NULL;
-
-static void create_rng_mutex(apr_pool_t *pchild, server_rec *s)
-{
-    int threaded_mpm;
-    if (ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm) != APR_SUCCESS)
-        return;
-    if (threaded_mpm)
-        apr_thread_mutex_create(&rng_mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
-}
 #endif
+
+static void core_child_init(apr_pool_t *pchild, server_rec *s)
+{
+    apr_proc_t proc;
+#if APR_HAS_THREADS
+    int threaded_mpm;
+    if (ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm) == APR_SUCCESS
+        && threaded_mpm)
+    {
+        apr_thread_mutex_create(&rng_mutex, APR_THREAD_MUTEX_DEFAULT, pchild);
+    }
+#endif
+    /* The MPMs use plain fork() and not apr_proc_fork(), so we have to call
+     * apr_random_after_fork() manually in the child
+     */
+    proc.pid = getpid();
+    apr_random_after_fork(&proc);
+}
+
+AP_CORE_DECLARE(void) ap_random_parent_after_fork(void)
+{
+    /*
+     * To ensure that the RNG state in the parent changes after the fork, we
+     * pull some data from the RNG and discard it. This ensures that the RNG
+     * states in the children ar different even after the pid wraps around.
+     * As we only use apr_random for insecure random bytes, pulling 2 bytes
+     * should be enough.
+     * XXX: APR should probably have some dedicated API to do this, but it
+     * XXX: currently doesn't.
+     */
+    apr_uint16_t data;
+    apr_random_insecure_bytes(rng, &data, sizeof(data));
+}
 
 static void rng_init(apr_pool_t *p)
 {
@@ -4735,9 +4759,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_open_logs(ap_open_logs,NULL,NULL,APR_HOOK_REALLY_FIRST);
-#if APR_HAS_THREADS
-    ap_hook_child_init(create_rng_mutex,NULL,NULL,APR_HOOK_REALLY_FIRST);
-#endif
+    ap_hook_child_init(core_child_init,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_child_init(ap_logs_child_init,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(default_handler,NULL,NULL,APR_HOOK_REALLY_LAST);
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */

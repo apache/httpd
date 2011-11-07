@@ -41,6 +41,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "mpm_common.h"
+#include "mod_core.h"
 #include "ap_mpm.h"
 #include "ap_listen.h"
 #include "util_mutex.h"
@@ -453,6 +454,7 @@ void ap_core_child_status(server_rec *s, pid_t pid,
             APR_RING_ELEM_INIT(cur, link);
             APR_RING_INSERT_HEAD(geninfo, cur, mpm_gen_info_t, link);
         }
+        ap_random_parent_after_fork();
         ++cur->active;
         break;
     case MPM_CHILD_EXITED:
