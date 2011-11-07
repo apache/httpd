@@ -99,7 +99,7 @@ AC_DEFUN(FIND_LIBXML2, [
     AC_MSG_CHECKING(for libxml2)
     xml2_path=""
     for x in ${test_paths}; do
-        if test -e "${x}/libxml/parser.h"; then
+        if test -f "${x}/libxml/parser.h"; then
           xml2_path="${x}"
           break
         fi
