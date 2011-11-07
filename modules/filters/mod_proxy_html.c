@@ -18,12 +18,7 @@
  */
 
 /*      GO_FASTER
-        You can #define GO_FASTER to disable informational logging.
-        This disables the ProxyHTMLLogVerbose option altogether.
-
-        Default is to leave it undefined, and enable verbose logging
-        as a configuration option.  Binaries are supplied with verbose
-        logging enabled.
+        You can #define GO_FASTER to disable trace logging.
 */
 
 #ifdef GO_FASTER
@@ -109,9 +104,6 @@ typedef struct {
     int strip_comments;
     int interp;
     int enabled;
-#ifndef GO_FASTER
-    int verbose;
-#endif
 } proxy_html_conf;
 typedef struct {
     ap_filter_t* f;
@@ -222,7 +214,7 @@ static void dump_content(saxctxt* ctx)
     size_t len, offs;
     urlmap* themap = ctx->map;
 #ifndef GO_FASTER
-    int verbose = ctx->cfg->verbose;
+    int verbose = APLOGrtrace1(ctx->f->r);
 #endif
 
     pappend(ctx, &c, 1);        /* append null byte */
@@ -244,7 +236,7 @@ static void dump_content(saxctxt* ctx)
                 VERBOSEB(
                     const char* f = apr_pstrndup(ctx->f->r->pool,
                     ctx->buf + offs, s_from);
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, ctx->f->r,
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, ctx->f->r,
                                   "C/RX: match at %s, substituting %s", f, subs);
                 )
                 if (s_to > s_from) {
@@ -272,7 +264,7 @@ static void dump_content(saxctxt* ctx)
                 len = strlen(ctx->buf);
                 if ((m->flags & M_ATEND) && (match < (len - s_from)))
                     continue;
-                VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, ctx->f->r,
+                VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, ctx->f->r,
                                       "C: matched %s, substituting %s",
                                       m->from.c, m->to));
                 if (s_to > s_from) {
@@ -368,7 +360,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
     size_t nmatch;
     ap_regmatch_t pmatch[10];
 #ifndef GO_FASTER
-    int verbose = ctx->cfg->verbose;
+    int verbose = APLOGrtrace1(ctx->f->r);
 #endif
     apr_array_header_t *linkattrs;
     int i;
@@ -483,7 +475,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                                     const char* f;
                                     f = apr_pstrndup(ctx->f->r->pool,
                                                      ctx->buf + offs, s_from);
-                                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0,
+                                    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0,
                                                   ctx->f->r,
                                          "H/RX: match at %s, substituting %s",
                                                   f, subs);
@@ -510,7 +502,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                                 ++num_match;
                                 s_to = strlen(m->to);
                                 len = strlen(ctx->buf);
-                                VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_INFO,
+                                VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_TRACE3,
                                                       0, ctx->f->r,
                                               "H: matched %s, substituting %s",
                                                       m->from.c, m->to));
@@ -551,7 +543,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                                     const char* f;
                                     f = apr_pstrndup(ctx->f->r->pool,
                                                      ctx->buf + offs, s_from);
-                                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0,
+                                    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0,
                                                   ctx->f->r,
                                            "E/RX: match at %s, substituting %s",
                                                   f, subs);
@@ -594,7 +586,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                                     found = strstr(ctx->buf+match+s_to,
                                                    m->from.c);
                                 }
-                                VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_INFO,
+                                VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_TRACE3,
                                                       0, ctx->f->r,
                                               "E: matched %s, substituting %s",
                                                       m->from.c, m->to));
@@ -653,11 +645,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
     }
 }
 
-static meta* metafix(request_rec* r, const char* buf
-#ifndef GO_FASTER
-                    , int verbose
-#endif
-       )
+static meta* metafix(request_rec* r, const char* buf)
 {
     meta* ret = NULL;
     size_t offs = 0;
@@ -705,9 +693,11 @@ static meta* metafix(request_rec* r, const char* buf
             ret->end = pmatch[0].rm_eo;
         }
         if (header && content) {
-            VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                                  "Adding header [%s: %s] from HTML META",
-                                  header, content)); 
+#ifndef GO_FASTER
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "Adding header [%s: %s] from HTML META",
+                          header, content); 
+#endif
             apr_table_setn(r->headers_out, header, content);
         }
         offs += pmatch[0].rm_eo;
@@ -749,7 +739,7 @@ static const char* interpolate_vars(request_rec* r, const char* str)
                 replacement = "";
         }
         str = apr_pstrcat(r->pool, before, replacement, after, NULL);
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                       "Interpolating %s  =>  %s", var, replacement);
     }
     return str;
@@ -846,9 +836,7 @@ static saxctxt* check_filter_init (ap_filter_t* f)
 
         if (errmsg) {
 #ifndef GO_FASTER
-            if (cfg->verbose) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, f->r, "%s", errmsg);
-            }
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, f->r, "%s", errmsg);
 #endif
             ap_remove_output_filter(f);
             return NULL;
@@ -955,11 +943,7 @@ static int proxy_html_filter(ap_filter_t* f, apr_bucket_brigade* bb)
                                   "Unsupported parser opts %x", xmlopts);
 #endif
                 if (ctxt->cfg->metafix)
-#ifndef GO_FASTER
-                    m = metafix(f->r, buf, ctxt->cfg->verbose);
-#else
                     m = metafix(f->r, buf);
-#endif
                 if (m) {
                     consume_buffer(ctxt, buf, m->start, 0);
                     consume_buffer(ctxt, buf+m->end, bytes-m->end, 0);
@@ -1033,9 +1017,6 @@ static void* proxy_html_merge(apr_pool_t* pool, void* BASE, void* ADD)
         conf->interp = add->interp;
         conf->strip_comments = add->strip_comments;
         conf->enabled = add->enabled;
-#ifndef GO_FASTER
-        conf->verbose = add->verbose;
-#endif
     }
     else {
         conf->flags = base->flags | add->flags;
@@ -1044,9 +1025,6 @@ static void* proxy_html_merge(apr_pool_t* pool, void* BASE, void* ADD)
         conf->interp = base->interp | add->interp;
         conf->strip_comments = base->strip_comments | add->strip_comments;
         conf->enabled = add->enabled | base->enabled;
-#ifndef GO_FASTER
-        conf->verbose = base->verbose | add->verbose;
-#endif
     }
     return conf;
 }
@@ -1232,12 +1210,6 @@ static const command_rec proxy_html_cmds[] = {
     AP_INIT_FLAG("ProxyHTMLStripComments", ap_set_flag_slot,
                  (void*)APR_OFFSETOF(proxy_html_conf, strip_comments),
                  RSRC_CONF|ACCESS_CONF, "Strip out comments"),
-#ifndef GO_FASTER
-    AP_INIT_FLAG("ProxyHTMLLogVerbose", ap_set_flag_slot,
-                 (void*)APR_OFFSETOF(proxy_html_conf, verbose),
-                 RSRC_CONF|ACCESS_CONF,
-                 "Verbose Logging (use with LogLevel Info)"),
-#endif
     AP_INIT_TAKE1("ProxyHTMLBufSize", ap_set_int_slot,
                   (void*)APR_OFFSETOF(proxy_html_conf, bufsz),
                   RSRC_CONF|ACCESS_CONF, "Buffer size"),

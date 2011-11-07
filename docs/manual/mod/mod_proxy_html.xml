@@ -259,24 +259,6 @@ filter chain if stripping comments!</p>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>ProxyHTMLLogVerbose</name>
-<description>Enables extra verbose logging for debug</description>
-<syntax>ProxyHTMLLogVerbose <var>On|Off</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context><context>directory</context>
-</contextlist>
-<compatibility>Version 2.4 and later; available as a third-party
-for earlier 2.x versions</compatibility>
-<usage>
-<p>If On, mod_proxy_html will log extra diagnostic information (at
-<directive module="mod_log_config">LogLevel</directive> Info)
-including charset detection and processing and
-<directive>ProxyHTMLURLMap</directive> matches and rewrites.
-This may be helpful in debugging a configuration.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>ProxyHTMLBufSize</name>
 <description>Sets the buffer size increment for buffering inline scripts and
 stylesheets.</description>
