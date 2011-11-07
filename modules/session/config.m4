@@ -31,22 +31,32 @@ esac
 
 APACHE_MODULE(session, session module, , , most)
 APACHE_MODULE(session_cookie, session cookie module, $session_cookie_objects, , $session_mods_enable)
-APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , $session_mods_enable, [
+
+if test "$enable_session_crypto" != ""; then
+  session_mods_enable_crypto=$enable_session_crypto
+else
+  session_mods_enable_crypto=$session_mods_enable
+fi
+if test "$session_mods_enable_crypto" != "no"; then
   saved_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES"
   AC_TRY_COMPILE([#include <apr_crypto.h>],[
 #if APU_HAVE_CRYPTO == 0
 #error no crypto support
 #endif
-], [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
+  ], [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
   CPPFLAGS="$saved_CPPFLAGS"
   if test $ap_HAVE_APR_CRYPTO = "no"; then
     AC_MSG_WARN([Your APR does not include SSL/EVP support.])
-    enable_session_crypto="no"
+    if test "$enable_session_crypto" != "" -a "$enable_session_crypto" != "no"; then
+        AC_MSG_ERROR([mod_session_crypto cannot be enabled])
+    fi
+    session_mods_enable_crypto="no"
   fi
-])
+fi
+APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , $session_mods_enable_crypto)
+
 APACHE_MODULE(session_dbd, session dbd module, $session_dbd_objects, , $session_mods_enable)
-dnl APACHE_MODULE(session_ldap, session ldap module, , , $session_mods_enable)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
