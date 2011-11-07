@@ -12,6 +12,10 @@ Changes with Apache 2.3.15
      PR 51714. [Stefan Fritsch, Jim Jagielski, Ruediger Pluem, Eric Covener,
      <lowprio20 gmail.com>]
 
+  *) SECURITY: CVE-2011-3607 (cve.mitre.org)
+     core: Fix integer overflow in ap_pregsub. This can be triggered e.g.
+     with mod_setenvif via a malicious .htaccess. [Stefan Fritsch]
+
   *) mod_lua: Prevent early Lua hooks (LuaHookTranslateName and 
      LuaHookQuickHandler) from being configured in <Directory>, <Files>, 
      and htaccess where the configuration would have been ignored.
