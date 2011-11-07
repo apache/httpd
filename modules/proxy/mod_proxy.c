@@ -576,6 +576,13 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
             }
             found = ap_pregsub(r->pool, real, use_uri, AP_MAX_REG_MATCH,
                     (use_uri == r->uri) ? regm : reg1);
+            if (!found) {
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                              "Substitution in regular expression failed. "
+                              "Replacement too long?");
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+
             /* Note: The strcmp() below catches cases where there
              * was no regex substitution. This is so cases like:
              *
@@ -589,7 +596,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r, struct proxy_alias *ent,
              *
              * which may be confusing.
              */
-            if (found && strcmp(found, real)) {
+            if (strcmp(found, real) != 0) {
                 found = apr_pstrcat(r->pool, "proxy:", found, NULL);
             }
             else {

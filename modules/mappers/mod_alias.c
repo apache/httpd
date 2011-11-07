@@ -333,6 +333,9 @@ static int alias_matches(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
+static char magic_error_value;
+#define PREGSUB_ERROR      (&magic_error_value)
+
 static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                             int is_redir, int *status)
 {
@@ -378,6 +381,12 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                                                apr_pstrmemdup(r->pool, found,
                                                               pathlen));
                        }
+                    }
+                    else {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                      "Regex substitution in '%s' failed. "
+                                      "Replacement too long?", alias->real);
+                        return PREGSUB_ERROR;
                     }
                 }
                 else {
@@ -438,6 +447,8 @@ static int translate_alias_redir(request_rec *r)
     }
 
     if ((ret = try_alias_list(r, serverconf->redirects, 1, &status)) != NULL) {
+        if (ret == PREGSUB_ERROR)
+            return HTTP_INTERNAL_SERVER_ERROR;
         if (ap_is_HTTP_REDIRECT(status)) {
             if (ret[0] == '/') {
                 char *orig_target = ret;
@@ -487,6 +498,8 @@ static int fixup_redir(request_rec *r)
     /* It may have changed since last time, so try again */
 
     if ((ret = try_alias_list(r, dirconf->redirects, 1, &status)) != NULL) {
+        if (ret == PREGSUB_ERROR)
+            return HTTP_INTERNAL_SERVER_ERROR;
         if (ap_is_HTTP_REDIRECT(status)) {
             if (ret[0] == '/') {
                 char *orig_target = ret;
