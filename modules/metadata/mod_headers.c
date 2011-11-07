@@ -586,12 +586,16 @@ static const char *process_regexp(header_entry *hdr, const char *value,
         return value;
     }
     subs = ap_pregsub(pool, hdr->subs, value, AP_MAX_REG_MATCH, pmatch);
+    if (subs == NULL)
+        return NULL;
     diffsz = strlen(subs) - (pmatch[0].rm_eo - pmatch[0].rm_so);
     if (hdr->action == hdr_edit) {
         remainder = value + pmatch[0].rm_eo;
     }
     else { /* recurse to edit multiple matches if applicable */
         remainder = process_regexp(hdr, value + pmatch[0].rm_eo, pool);
+        if (remainder == NULL)
+            return NULL;
         diffsz += strlen(remainder) - strlen(value + pmatch[0].rm_eo);
     }
     ret = apr_palloc(pool, strlen(value) + 1 + diffsz);
@@ -616,8 +620,11 @@ static int echo_header(echo_do *v, const char *key, const char *val)
 static int edit_header(void *v, const char *key, const char *val)
 {
     edit_do *ed = (edit_do *)v;
+    const char *repl = process_regexp(ed->hdr, val, ed->p);
+    if (repl == NULL)
+        return 0;
 
-    apr_table_addn(ed->t, key, process_regexp(ed->hdr, val, ed->p));
+    apr_table_addn(ed->t, key, repl);
     return 1;
 }
 
@@ -629,7 +636,7 @@ static int add_them_all(void *v, const char *key, const char *val)
     return 1;
 }
 
-static void do_headers_fixup(request_rec *r, apr_table_t *headers,
+static int do_headers_fixup(request_rec *r, apr_table_t *headers,
                              apr_array_header_t *fixup, int early)
 {
     echo_do v;
@@ -738,8 +745,10 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
         case hdr_edit:
         case hdr_edit_r:
             if (!strcasecmp(hdr->header, "Content-Type") && r->content_type) {
-                ap_set_content_type(r, process_regexp(hdr, r->content_type,
-                                                      r->pool));
+                const char *repl = process_regexp(hdr, r->content_type, r->pool);
+                if (repl == NULL)
+                    return 0;
+                ap_set_content_type(r, repl);
             }
             if (apr_table_get(headers, hdr->header)) {
                 edit_do ed;
@@ -747,14 +756,16 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
                 ed.p = r->pool;
                 ed.hdr = hdr;
                 ed.t = apr_table_make(r->pool, 5);
-                apr_table_do(edit_header, (void *) &ed, headers, hdr->header,
-                             NULL);
+                if (!apr_table_do(edit_header, (void *) &ed, headers,
+                                  hdr->header, NULL))
+                    return 0;
                 apr_table_unset(headers, hdr->header);
                 apr_table_do(add_them_all, (void *) headers, ed.t, NULL);
             }
             break;
         }
     }
+    return 1;
 }
 
 static void ap_headers_insert_output_filter(request_rec *r)
@@ -851,16 +862,23 @@ static apr_status_t ap_headers_early(request_rec *r)
 
     /* do the fixup */
     if (dirconf->fixup_in->nelts) {
-        do_headers_fixup(r, r->headers_in, dirconf->fixup_in, 1);
+        if (!do_headers_fixup(r, r->headers_in, dirconf->fixup_in, 1))
+            goto err;
     }
     if (dirconf->fixup_err->nelts) {
-        do_headers_fixup(r, r->err_headers_out, dirconf->fixup_err, 1);
+        if (!do_headers_fixup(r, r->err_headers_out, dirconf->fixup_err, 1))
+            goto err;
     }
     if (dirconf->fixup_out->nelts) {
-        do_headers_fixup(r, r->headers_out, dirconf->fixup_out, 1);
+        if (!do_headers_fixup(r, r->headers_out, dirconf->fixup_out, 1))
+            goto err;
     }
 
     return DECLINED;
+err:
+    ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                  "Regular expression replacement failed (replacement too long?)");
+    return HTTP_INTERNAL_SERVER_ERROR;
 }
 
 static const command_rec headers_cmds[] =
