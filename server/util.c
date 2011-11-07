@@ -420,7 +420,7 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
         return APR_ENOMEM;
 
     if (!vb) {
-        *result = dst = apr_pcalloc(p, len + 1);
+        *result = dst = apr_palloc(p, len + 1);
     }
     else {
         if (vb->buf && vb->strlen == AP_VARBUF_UNKNOWN)
