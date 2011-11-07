@@ -34,6 +34,7 @@
 #include "http_log.h"
 #include "http_config.h"
 #include "http_core.h"
+#include "mod_core.h"
 #include "http_request.h"
 #include "http_vhost.h"
 #include "apr_uri.h"
@@ -459,6 +460,7 @@ int main(int argc, const char * const argv[])
     ap_pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
+    ap_init_rng(ap_pglobal);
 
     /* Set up the OOM callback in the global pool, so all pools should
      * by default inherit it. */
