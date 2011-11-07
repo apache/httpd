@@ -884,14 +884,8 @@ static int proxy_html_filter(ap_filter_t* f, apr_bucket_brigade* bb)
 #endif
 
     saxctxt* ctxt = check_filter_init(f);
-#ifndef GO_FASTER
-    int verbose;
-#endif
     if (!ctxt)
         return ap_pass_brigade(f->next, bb);
-#ifndef GO_FASTER
-    verbose = ctxt->cfg->verbose;
-#endif
     for (b = APR_BRIGADE_FIRST(bb);
          b != APR_BRIGADE_SENTINEL(bb);
          b = APR_BUCKET_NEXT(b)) {
