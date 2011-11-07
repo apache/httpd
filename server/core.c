@@ -4632,7 +4632,7 @@ AP_CORE_DECLARE(void) ap_random_parent_after_fork(void)
     apr_random_insecure_bytes(rng, &data, sizeof(data));
 }
 
-static void rng_init(apr_pool_t *p)
+AP_CORE_DECLARE(void) ap_init_rng(apr_pool_t *p)
 {
     unsigned char seed[8];
     apr_status_t rv;
@@ -4741,7 +4741,6 @@ static void register_hooks(apr_pool_t *p)
     ap_register_log_hooks(p);
     ap_register_config_hooks(p);
     ap_expr_init(p);
-    rng_init(p);
 
     /* create_connection and pre_connection should always be hooked
      * APR_HOOK_REALLY_LAST by core to give other modules the opportunity
