@@ -33,6 +33,9 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_request,
 
      module AP_MODULE_DECLARE_DATA lua_module;
 
+#define AP_LUA_HOOK_FIRST (APR_HOOK_FIRST - 1)
+#define AP_LUA_HOOK_LAST  (APR_HOOK_LAST  + 1)
+
 /**
  * error reporting if lua has an error.
  * Extracts the error from lua stack and prints
@@ -223,7 +226,7 @@ static int lua_alias_munger(request_rec *r)
 
 /** harnesses for magic hooks **/
 
-static int lua_request_rec_hook_harness(request_rec *r, const char *name)
+static int lua_request_rec_hook_harness(request_rec *r, const char *name, int apr_hook_when)
 {
     int rc;
     lua_State *L;
@@ -232,7 +235,8 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
                                                          &lua_module);
     const ap_lua_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                                      &lua_module);
-    apr_array_header_t *hook_specs = apr_hash_get(cfg->hooks, name,
+    const char *key = apr_psprintf(r->pool, "%s_%d", name, apr_hook_when);
+    apr_array_header_t *hook_specs = apr_hash_get(cfg->hooks, key,
                                                   APR_HASH_KEY_STRING);
     if (hook_specs) {
         int i;
@@ -400,6 +404,7 @@ typedef struct hack_section_baton
 {
     const char *name;
     ap_lua_mapped_handler_spec *spec;
+    int apr_hook_when;
 } hack_section_baton;
 
 /* You can be unhappy now.
@@ -418,13 +423,14 @@ static const char *hack_section_handler(cmd_parms *cmd, void *_cfg,
     ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
     ap_directive_t *directive = cmd->directive;
     hack_section_baton *baton = directive->data;
+    const char *key = apr_psprintf(cmd->pool, "%s_%d", baton->name, baton->apr_hook_when);
 
-    apr_array_header_t *hook_specs = apr_hash_get(cfg->hooks, baton->name,
+    apr_array_header_t *hook_specs = apr_hash_get(cfg->hooks, key,
                                                   APR_HASH_KEY_STRING);
     if (!hook_specs) {
         hook_specs = apr_array_make(cmd->pool, 2,
                                     sizeof(ap_lua_mapped_handler_spec *));
-        apr_hash_set(cfg->hooks, apr_pstrdup(cmd->pool, baton->name),
+        apr_hash_set(cfg->hooks, key,
                      APR_HASH_KEY_STRING, hook_specs);
     }
 
@@ -440,23 +446,36 @@ static const char *register_named_block_function_hook(const char *name,
                                                       void *mconfig,
                                                       const char *line)
 {
-    const char *function;
+    const char *function = NULL;
     ap_lua_mapped_handler_spec *spec;
+    int when = APR_HOOK_MIDDLE;
+    const char *endp = ap_strrchr_c(line, '>');
 
-    if (line && line[0] == '>') {
-        function = NULL;
+    if (endp == NULL) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive missing closing '>'", NULL);
     }
-    else {
+
+    line = apr_pstrndup(cmd->temp_pool, line, endp - line);
+
+    if (line[0]) { 
         const char *word;
-        apr_size_t wordlen;
         word = ap_getword_conf(cmd->temp_pool, &line);
-        wordlen = strlen(word);
-        if (wordlen == 0 || word[wordlen - 1] != '>') {
-            return apr_pstrcat(cmd->pool, cmd->directive->directive,
-                               "> takes exactly one argument", NULL);
+        if (word && *word) {
+            function = apr_pstrdup(cmd->pool, word);
         }
-        else {
-            function = apr_pstrndup(cmd->pool, word, wordlen - 1);
+        word = ap_getword_conf(cmd->temp_pool, &line);
+        if (word && *word) {
+            if (!strcasecmp("early", word)) { 
+                when = AP_LUA_HOOK_FIRST;
+            }
+            else if (!strcasecmp("late", word)) {
+                when = AP_LUA_HOOK_LAST;
+            }
+            else { 
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   "> 2nd argument must be 'early' or 'late'", NULL);
+            }
         }
     }
 
@@ -523,6 +542,7 @@ static const char *register_named_block_function_hook(const char *name,
         baton = apr_pcalloc(cmd->pool, sizeof(hack_section_baton));
         baton->name = name;
         baton->spec = spec;
+        baton->apr_hook_when = when;
 
         (*current)->filename = cmd->config_file->name;
         (*current)->line_num = cmd->config_file->line_number;
@@ -538,18 +558,19 @@ static const char *register_named_file_function_hook(const char *name,
                                                      cmd_parms *cmd,
                                                      void *_cfg,
                                                      const char *file,
-                                                     const char *function)
+                                                     const char *function,
+                                                     int apr_hook_when)
 {
     ap_lua_mapped_handler_spec *spec;
     ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
-
-    apr_array_header_t *hook_specs = apr_hash_get(cfg->hooks, name,
+    const char *key = apr_psprintf(cmd->pool, "%s_%d", name, apr_hook_when);
+    apr_array_header_t *hook_specs = apr_hash_get(cfg->hooks, key,
                                                   APR_HASH_KEY_STRING);
+
     if (!hook_specs) {
         hook_specs = apr_array_make(cmd->pool, 2,
                                     sizeof(ap_lua_mapped_handler_spec *));
-        apr_hash_set(cfg->hooks, apr_pstrdup(cmd->pool, name),
-                     APR_HASH_KEY_STRING, hook_specs);
+        apr_hash_set(cfg->hooks, key, APR_HASH_KEY_STRING, hook_specs);
     }
 
     spec = apr_pcalloc(cmd->pool, sizeof(ap_lua_mapped_handler_spec));
@@ -567,41 +588,73 @@ static const char *register_named_file_function_hook(const char *name,
     return NULL;
 }
 
+static int lua_check_user_id_harness_first(request_rec *r)
+{
+
+    return lua_request_rec_hook_harness(r, "check_user_id", AP_LUA_HOOK_FIRST);
+}
 static int lua_check_user_id_harness(request_rec *r)
 {
-    return lua_request_rec_hook_harness(r, "check_user_id");
+    return lua_request_rec_hook_harness(r, "check_user_id", APR_HOOK_MIDDLE);
+}
+static int lua_check_user_id_harness_last(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "check_user_id", AP_LUA_HOOK_LAST);
 }
 
+static int lua_translate_name_harness_first(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "translate_name", AP_LUA_HOOK_FIRST);
+}
 static int lua_translate_name_harness(request_rec *r)
 {
-    return lua_request_rec_hook_harness(r, "translate_name");
+    return lua_request_rec_hook_harness(r, "translate_name", APR_HOOK_MIDDLE);
+}
+static int lua_translate_name_harness_last(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "translate_name", AP_LUA_HOOK_LAST);
 }
 
 static int lua_fixup_harness(request_rec *r)
 {
-    return lua_request_rec_hook_harness(r, "fixups");
+    return lua_request_rec_hook_harness(r, "fixups", APR_HOOK_MIDDLE);
 }
 
 static int lua_map_to_storage_harness(request_rec *r)
 {
-    return lua_request_rec_hook_harness(r, "map_to_storage");
+    return lua_request_rec_hook_harness(r, "map_to_storage", APR_HOOK_MIDDLE);
 }
 
 static int lua_type_checker_harness(request_rec *r)
 {
-    return lua_request_rec_hook_harness(r, "type_checker");
+    return lua_request_rec_hook_harness(r, "type_checker", APR_HOOK_MIDDLE);
 }
 
+static int lua_access_checker_harness_first(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "access_checker", AP_LUA_HOOK_FIRST);
+}
 static int lua_access_checker_harness(request_rec *r)
 {
-    return lua_request_rec_hook_harness(r, "access_checker");
+    return lua_request_rec_hook_harness(r, "access_checker", APR_HOOK_MIDDLE);
+}
+static int lua_access_checker_harness_last(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "access_checker", AP_LUA_HOOK_LAST);
 }
 
+static int lua_auth_checker_harness_first(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "auth_checker", AP_LUA_HOOK_FIRST);
+}
 static int lua_auth_checker_harness(request_rec *r)
 {
-    return lua_request_rec_hook_harness(r, "auth_checker");
+    return lua_request_rec_hook_harness(r, "auth_checker", APR_HOOK_MIDDLE);
 }
-
+static int lua_auth_checker_harness_last(request_rec *r)
+{
+    return lua_request_rec_hook_harness(r, "auth_checker", AP_LUA_HOOK_LAST);
+}
 static void lua_insert_filter_harness(request_rec *r)
 {
     /* ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "LuaHookInsertFilter not yet implemented"); */
@@ -612,20 +665,35 @@ static int lua_quick_harness(request_rec *r, int lookup)
     if (lookup) {
         return DECLINED;
     }
-    return lua_request_rec_hook_harness(r, "quick");
+    return lua_request_rec_hook_harness(r, "quick", APR_HOOK_MIDDLE);
 }
 
 static const char *register_translate_name_hook(cmd_parms *cmd, void *_cfg,
                                                 const char *file,
-                                                const char *function)
+                                                const char *function,
+                                                const char *when)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES|
                                            NOT_IN_HTACCESS);
+    int apr_hook_when = APR_HOOK_MIDDLE;
     if (err) {
         return err;
     }
+    
+    if (when) { 
+        if (!strcasecmp(when, "early")) { 
+            apr_hook_when = AP_LUA_HOOK_FIRST;
+        } 
+        else if (!strcasecmp(when, "late")) { 
+            apr_hook_when = AP_LUA_HOOK_LAST;
+        } 
+        else { 
+            return "Third argument must be 'early' or 'late'";
+        }
+    }
+
     return register_named_file_function_hook("translate_name", cmd, _cfg,
-                                             file, function);
+                                             file, function, apr_hook_when);
 }
 
 static const char *register_translate_name_block(cmd_parms *cmd, void *_cfg,
@@ -646,7 +714,7 @@ static const char *register_fixups_hook(cmd_parms *cmd, void *_cfg,
                                         const char *function)
 {
     return register_named_file_function_hook("fixups", cmd, _cfg, file,
-                                             function);
+                                             function, APR_HOOK_MIDDLE);
 }
 static const char *register_fixups_block(cmd_parms *cmd, void *_cfg,
                                          const char *line)
@@ -659,7 +727,7 @@ static const char *register_map_to_storage_hook(cmd_parms *cmd, void *_cfg,
                                                 const char *function)
 {
     return register_named_file_function_hook("map_to_storage", cmd, _cfg,
-                                             file, function);
+                                             file, function, APR_HOOK_MIDDLE);
 }
 static const char *register_map_to_storage_block(cmd_parms *cmd, void *_cfg,
                                                  const char *line)
@@ -670,10 +738,25 @@ static const char *register_map_to_storage_block(cmd_parms *cmd, void *_cfg,
 
 static const char *register_check_user_id_hook(cmd_parms *cmd, void *_cfg,
                                                const char *file,
-                                               const char *function)
+                                               const char *function,
+                                               const char *when)
 {
+    int apr_hook_when = APR_HOOK_MIDDLE;
+
+    if (when) {
+        if (!strcasecmp(when, "early")) {
+            apr_hook_when = AP_LUA_HOOK_FIRST;
+        }
+        else if (!strcasecmp(when, "late")) {
+            apr_hook_when = AP_LUA_HOOK_LAST;
+        }
+        else {
+            return "Third argument must be 'early' or 'late'";
+        }
+    }
+
     return register_named_file_function_hook("check_user_id", cmd, _cfg, file,
-                                             function);
+                                             function, apr_hook_when);
 }
 static const char *register_check_user_id_block(cmd_parms *cmd, void *_cfg,
                                                 const char *line)
@@ -687,7 +770,7 @@ static const char *register_type_checker_hook(cmd_parms *cmd, void *_cfg,
                                               const char *function)
 {
     return register_named_file_function_hook("type_checker", cmd, _cfg, file,
-                                             function);
+                                             function, APR_HOOK_MIDDLE);
 }
 static const char *register_type_checker_block(cmd_parms *cmd, void *_cfg,
                                                const char *line)
@@ -698,24 +781,55 @@ static const char *register_type_checker_block(cmd_parms *cmd, void *_cfg,
 
 static const char *register_access_checker_hook(cmd_parms *cmd, void *_cfg,
                                                 const char *file,
-                                                const char *function)
+                                                const char *function,
+                                                const char *when)
 {
+    int apr_hook_when = APR_HOOK_MIDDLE;
+
+    if (when) {
+        if (!strcasecmp(when, "early")) {
+            apr_hook_when = AP_LUA_HOOK_FIRST;
+        }
+        else if (!strcasecmp(when, "late")) {
+            apr_hook_when = AP_LUA_HOOK_LAST;
+        }
+        else {
+            return "Third argument must be 'early' or 'late'";
+        }
+    }
+
     return register_named_file_function_hook("access_checker", cmd, _cfg,
-                                             file, function);
+                                             file, function, apr_hook_when);
 }
 static const char *register_access_checker_block(cmd_parms *cmd, void *_cfg,
                                                  const char *line)
 {
+
     return register_named_block_function_hook("access_checker", cmd, _cfg,
                                               line);
 }
 
 static const char *register_auth_checker_hook(cmd_parms *cmd, void *_cfg,
                                               const char *file,
-                                              const char *function)
+                                              const char *function,
+                                              const char *when)
 {
+    int apr_hook_when = APR_HOOK_MIDDLE;
+
+    if (when) {
+        if (!strcasecmp(when, "early")) {
+            apr_hook_when = AP_LUA_HOOK_FIRST;
+        }
+        else if (!strcasecmp(when, "late")) {
+            apr_hook_when = AP_LUA_HOOK_LAST;
+        }
+        else {
+            return "Third argument must be 'early' or 'late'";
+        }
+    }
+
     return register_named_file_function_hook("auth_checker", cmd, _cfg, file,
-                                             function);
+                                             function, apr_hook_when);
 }
 static const char *register_auth_checker_block(cmd_parms *cmd, void *_cfg,
                                                const char *line)
@@ -740,7 +854,7 @@ static const char *register_quick_hook(cmd_parms *cmd, void *_cfg,
         return err;
     }
     return register_named_file_function_hook("quick", cmd, _cfg, file,
-                                             function);
+                                             function, APR_HOOK_MIDDLE);
 }
 static const char *register_quick_block(cmd_parms *cmd, void *_cfg,
                                         const char *line)
@@ -909,7 +1023,7 @@ command_rec lua_commands[] = {
     AP_INIT_TAKE23("LuaMapHandler", lua_map_handler, NULL, OR_ALL,
                    "Map a path to a lua handler"),
 
-    AP_INIT_TAKE2("LuaHookTranslateName", register_translate_name_hook, NULL,
+    AP_INIT_TAKE23("LuaHookTranslateName", register_translate_name_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the translate name phase of request processing"),
     AP_INIT_RAW_ARGS("<LuaHookTranslateName", register_translate_name_block,
@@ -933,7 +1047,7 @@ command_rec lua_commands[] = {
                      "Provide a hook for the map_to_storage phase of request processing"),
 
     /* todo: test */
-    AP_INIT_TAKE2("LuaHookCheckUserID", register_check_user_id_hook, NULL,
+    AP_INIT_TAKE23("LuaHookCheckUserID", register_check_user_id_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the check_user_id phase of request processing"),
     AP_INIT_RAW_ARGS("<LuaHookCheckUserID", register_check_user_id_block,
@@ -950,7 +1064,7 @@ command_rec lua_commands[] = {
                      "Provide a hook for the type_checker phase of request processing"),
 
     /* todo: test */
-    AP_INIT_TAKE2("LuaHookAccessChecker", register_access_checker_hook, NULL,
+    AP_INIT_TAKE23("LuaHookAccessChecker", register_access_checker_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the access_checker phase of request processing"),
     AP_INIT_RAW_ARGS("<LuaHookAccessChecker", register_access_checker_block,
@@ -959,7 +1073,7 @@ command_rec lua_commands[] = {
                      "Provide a hook for the access_checker phase of request processing"),
 
     /* todo: test */
-    AP_INIT_TAKE2("LuaHookAuthChecker", register_auth_checker_hook, NULL,
+    AP_INIT_TAKE23("LuaHookAuthChecker", register_auth_checker_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the auth_checker phase of request processing"),
     AP_INIT_RAW_ARGS("<LuaHookAuthChecker", register_auth_checker_block, NULL,
@@ -983,7 +1097,6 @@ command_rec lua_commands[] = {
     AP_INIT_RAW_ARGS("<LuaQuickHandler", register_quick_block, NULL,
                      EXEC_ON_READ | OR_ALL,
                      "Provide a hook for the quick handler of request processing"),
-
     AP_INIT_RAW_ARGS("Lua_____ByteCodeHack", hack_section_handler, NULL,
                      OR_ALL,
                      "(internal) Byte code handler"),
@@ -1044,24 +1157,44 @@ static void lua_register_hooks(apr_pool_t *p)
                            APR_HOOK_MIDDLE);
 
     /* http_request.h hooks */
+    ap_hook_translate_name(lua_translate_name_harness_first, NULL, NULL,
+                           AP_LUA_HOOK_FIRST);
     ap_hook_translate_name(lua_translate_name_harness, NULL, NULL,
                            APR_HOOK_MIDDLE);
+    ap_hook_translate_name(lua_translate_name_harness_last, NULL, NULL,
+                           AP_LUA_HOOK_LAST);
+
     ap_hook_fixups(lua_fixup_harness, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_map_to_storage(lua_map_to_storage_harness, NULL, NULL,
                            APR_HOOK_MIDDLE);
+
+    ap_hook_check_user_id(lua_check_user_id_harness_first, NULL, NULL,
+                          AP_LUA_HOOK_FIRST);
     ap_hook_check_user_id(lua_check_user_id_harness, NULL, NULL,
-                          APR_HOOK_MIDDLE);
+                           APR_HOOK_MIDDLE);
+    ap_hook_check_user_id(lua_check_user_id_harness_last, NULL, NULL,
+                          AP_LUA_HOOK_LAST);
+
     ap_hook_type_checker(lua_type_checker_harness, NULL, NULL,
                          APR_HOOK_MIDDLE);
+
+    ap_hook_access_checker(lua_access_checker_harness_first, NULL, NULL,
+                           AP_LUA_HOOK_FIRST);
     ap_hook_access_checker(lua_access_checker_harness, NULL, NULL,
                            APR_HOOK_MIDDLE);
+    ap_hook_access_checker(lua_access_checker_harness_last, NULL, NULL,
+                           AP_LUA_HOOK_LAST);
+    ap_hook_auth_checker(lua_auth_checker_harness_first, NULL, NULL,
+                         AP_LUA_HOOK_FIRST);
     ap_hook_auth_checker(lua_auth_checker_harness, NULL, NULL,
                          APR_HOOK_MIDDLE);
+    ap_hook_auth_checker(lua_auth_checker_harness_last, NULL, NULL,
+                         AP_LUA_HOOK_LAST);
+
     ap_hook_insert_filter(lua_insert_filter_harness, NULL, NULL,
                           APR_HOOK_MIDDLE);
     ap_hook_quick_handler(lua_quick_harness, NULL, NULL, APR_HOOK_FIRST);
 
-    /* ap_hook_translate_name(lua_alias_munger, NULL, NULL, APR_HOOK_MIDDLE); */
     ap_hook_translate_name(lua_alias_munger, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_OPTIONAL_HOOK(ap_lua, lua_open, lua_open_hook, NULL, NULL,
