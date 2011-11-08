@@ -217,6 +217,16 @@ static int req_escape_html(lua_State *L)
     lua_pushstring(L, ap_escape_html(r->pool, s));
     return 1;
 }
+/* wrap optional ssl_var_lookup as  r:ssl_var_lookup(String) */
+static int req_ssl_var_lookup(lua_State *L)
+{
+    request_rec *r = ap_lua_check_request_rec(L, 1);
+    const char *s = luaL_checkstring(L, 2);
+    const char *res = ap_lua_ssl_val(r->pool, r->server, r->connection, r, 
+                                     (char *)s);
+    lua_pushstring(L, res);
+    return 1;
+}
 /* BEGIN dispatch mathods for request_rec fields */
 
 /* not really a field, but we treat it like one */
@@ -602,6 +612,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_construct_url, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "escape_html", APR_HASH_KEY_STRING,
                  makefun(&req_escape_html, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "ssl_var_lookup", APR_HASH_KEY_STRING,
+                 makefun(&req_ssl_var_lookup, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "assbackwards", APR_HASH_KEY_STRING,
                  makefun(&req_assbackwards_field, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "status", APR_HASH_KEY_STRING,

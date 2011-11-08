@@ -16,6 +16,8 @@ Changes with Apache 2.3.15
      core: Fix integer overflow in ap_pregsub. This can be triggered e.g.
      with mod_setenvif via a malicious .htaccess. [Stefan Fritsch]
 
+  *) mod_lua: Expose SSL variables via r:ssl_var_lookup().  [Eric Covener]
+
   *) mod_lua: LuaHook{AccessChecker,AuthChecker,CheckUserID,TranslateName}
      can now additionally be run as "early" or "late" relative to other modules.
      [Eric Covener]
