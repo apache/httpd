@@ -257,9 +257,9 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
     fcgi_header_to_array(&header, farray);
     fcgi_begin_request_body_to_array(&brb, abrb);
 
-    vec[0].iov_base = farray;
+    vec[0].iov_base = (void *)farray;
     vec[0].iov_len = sizeof(farray);
-    vec[1].iov_base = abrb;
+    vec[1].iov_base = (void *)abrb;
     vec[1].iov_len = sizeof(abrb);
 
     return send_data(conn, vec, 2, &len, 1);
@@ -393,7 +393,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     fill_in_header(&header, FCGI_PARAMS, request_id, bodylen, 0);
     fcgi_header_to_array(&header, farray);
 
-    vec[0].iov_base = farray;
+    vec[0].iov_base = (void *)farray;
     vec[0].iov_len = sizeof(farray);
     vec[1].iov_base = body;
     vec[1].iov_len = bodylen;
@@ -406,7 +406,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     fill_in_header(&header, FCGI_PARAMS, request_id, 0, 0);
     fcgi_header_to_array(&header, farray);
 
-    vec[0].iov_base = farray;
+    vec[0].iov_base = (void *)farray;
     vec[0].iov_len = sizeof(farray);
 
     return send_data(conn, vec, 1, &len, 1);
@@ -617,7 +617,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                            (apr_uint16_t) writebuflen, 0);
             fcgi_header_to_array(&header, farray);
 
-            vec[nvec].iov_base = farray;
+            vec[nvec].iov_base = (void *)farray;
             vec[nvec].iov_len = sizeof(farray);
             ++nvec;
             if (writebuflen) {
@@ -638,7 +638,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                     fill_in_header(&header, FCGI_STDIN, request_id, 0, 0);
                     fcgi_header_to_array(&header, farray);
 
-                    vec[0].iov_base = farray;
+                    vec[0].iov_base = (void *)farray;
                     vec[0].iov_len = sizeof(farray);
 
                     rv = send_data(conn, vec, 1, &len, 1);
