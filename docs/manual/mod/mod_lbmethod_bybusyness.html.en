@@ -21,7 +21,8 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_lbmethod_bybusyness</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_lbmethod_bybusyness.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_lbmethod_bybusyness.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../zh-cn/mod/mod_lbmethod_bybusyness.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Pending Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -68,7 +69,8 @@ provides the <code>bybusyness</code> load balancing method.</p>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_lbmethod_bybusyness.html" title="English">&nbsp;en&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_lbmethod_bybusyness.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../zh-cn/mod/mod_lbmethod_bybusyness.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

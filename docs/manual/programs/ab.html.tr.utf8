@@ -20,7 +20,8 @@
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/ab.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/ab.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
@@ -240,7 +241,8 @@
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/ab.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/ab.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2011 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
