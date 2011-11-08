@@ -16,6 +16,9 @@ Changes with Apache 2.3.15
      core: Fix integer overflow in ap_pregsub. This can be triggered e.g.
      with mod_setenvif via a malicious .htaccess. [Stefan Fritsch]
 
+  *) configure: Load all modules in the generated default configuration
+     when using --enable-load-all-modules. [Rainer Jung]
+
   *) mod_reqtimeout: Change the default to set some reasonable timeout
      values. [Stefan Fritsch]
 

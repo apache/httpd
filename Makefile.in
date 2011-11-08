@@ -61,10 +61,14 @@ install-conf:
 	    			for j in $(DSO_MODULES) "^EOL^"; do \
 	    				if test $$j != "^EOL^"; then \
 	    					if echo "$(ENABLED_DSO_MODULES)"|$(EGREP) "\<$$j\>" > /dev/null ; then \
-	    						echo "LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+	    						loading_disabled=""; \
 	    					else \
-	    						echo "#LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+	    						loading_disabled="#"; \
 	    					fi; \
+	    					if test "$(LOAD_ALL_MODULES)" = "yes"; then \
+	    						loading_disabled=""; \
+	    					fi; \
+    						echo "$${loading_disabled}LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
 	    				fi; \
 	    			done; \
 	    			sed -e '1,/@@LoadModule@@/d' \
