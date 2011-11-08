@@ -89,6 +89,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(MKDEP)
   APACHE_SUBST(INSTALL_PROG_FLAGS)
   APACHE_SUBST(DSO_MODULES)
+  APACHE_SUBST(ENABLED_DSO_MODULES)
   APACHE_SUBST(APR_BINDIR)
   APACHE_SUBST(APR_INCLUDEDIR)
   APACHE_SUBST(APR_VERSION)
@@ -255,6 +256,7 @@ EOF
             # add default MPM to LoadModule list
             if test $1 = $default_mpm; then
                 DSO_MODULES="$DSO_MODULES mpm_$1"
+                ENABLED_DSO_MODULES="$ENABLED_DSO_MODULES mpm_$1"
             fi
         fi
         $4
@@ -290,15 +292,15 @@ AC_DEFUN(APACHE_MODULE,[
   dnl its pre-reqs fail.
   case "$enable_$1" in
     yes|static|shared)
-      _apmod_error_fatal="yes"
+      _apmod_required="yes"
       ;;
     *)
       case "$module_selection" in
       reallyall|all|most)
-        _apmod_error_fatal="no"
+        _apmod_required="no"
         ;;
       *)
-        _apmod_error_fatal="yes"
+        _apmod_required="yes"
         ;;
       esac
   esac
@@ -335,7 +337,7 @@ AC_DEFUN(APACHE_MODULE,[
                     $6
                     AC_MSG_CHECKING(whether to enable mod_$1)
                     if test "$enable_$1" = "no"; then
-                      if test "$_apmod_error_fatal" = "no"; then
+                      if test "$_apmod_required" = "no"; then
                         _apmod_extra_msg=" (disabled)"
                       else
                         AC_MSG_ERROR([mod_$1 has been requested but can not be built due to prerequisite failures])
@@ -356,6 +358,9 @@ AC_DEFUN(APACHE_MODULE,[
       sharedobjs=yes
       shared=yes
       DSO_MODULES="$DSO_MODULES $1"
+      if test "$_apmod_required" = "yes" ; then
+        ENABLED_DSO_MODULES="$ENABLED_DSO_MODULES $1"
+      fi
       ;;
     esac
     define([modprefix], [MOD_]translit($1, [a-z-], [A-Z_]))
