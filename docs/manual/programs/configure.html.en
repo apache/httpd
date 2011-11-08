@@ -20,7 +20,8 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/programs/configure.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/configure.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
     <p>The <code>configure</code> script configures the source tree
@@ -287,15 +288,15 @@
     
 
     <h4><a name="choosemodules" id="choosemodules">Choosing modules to compile</a></h4>
-      <p>Some modules are compiled by default and have to be disabled
+      <p>Most modules are compiled by default and have to be disabled
         explicitly or by using the keywords <code>few</code> or
         <code>none</code> (see <code>--enable-modules</code>,
         <code>--enable-mods-shared</code> and <code>--enable-mods-static</code>
         below for further explanation) to be removed.</p>
 
         <p>Other modules are not compiled by default and have to be enabled
-        explicitly or by using the keywords <code>most</code> or
-        <code>all</code> to be available.</p>
+        explicitly or by using the keywords <code>all</code> or
+        <code>reallyall</code> to be available.</p>
 
         <p>To find out which modules are compiled by default, run
         <code>./configure -h</code> or <code>./configure --help</code>
@@ -399,8 +400,9 @@
           <div class="example"><p><code>
             --enable-mods-shared='headers rewrite dav'
           </code></p></div>
-          <p>Additionally you can use the special keywords <code>all</code>,
-            <code>most</code> and <code>few</code>. For example,</p>
+          <p>Additionally you can use the special keywords <code>reallyall</code>,
+            <code>all</code>, <code>most</code>, <code>few</code> and <code>none</code>.
+            For example,</p>
           <div class="example"><p><code>
             --enable-mods-shared=most
           </code></p></div>
@@ -411,6 +413,16 @@
           <p>will only compile a very basic set of modules.</p>
           <p>The default set is <code>most</code>.</p>
             
+          <p>The <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directives for
+          the chosen modules will be automatically generated in the main
+          configuration file. By default, all those directives will be commented
+          out except for the modules that are either required or explicitly selected
+          by a configure <code>--enable-foo</code> argument. You can change the set
+          of loaded modules by activating or deactivating the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directives in
+          <code>httpd.conf</code>. In addition the
+          <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directives for all
+          built modules can be activated via the configure option
+          <code>--enable-load-all-modules</code>.</p>
           <p><strong>Caveat:</strong>
           <code>--enable-mods-shared=all</code> does not actually build all
           modules. To build all modules then, one might use:</p>
@@ -669,7 +681,8 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/configure.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/programs/configure.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

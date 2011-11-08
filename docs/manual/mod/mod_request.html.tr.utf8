@@ -22,7 +22,8 @@
 <div id="preamble"><h1>Apache Modülü mod_request</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_request.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../tr/mod/mod_request.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_request.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/mod/mod_request.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>HTTP istek gövdelerini işleme sokup kullanılabilir kılan süzgeçler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -95,7 +96,8 @@ istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_request.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../tr/mod/mod_request.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_request.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/mod/mod_request.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2011 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
 <p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
