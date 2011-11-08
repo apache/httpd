@@ -156,7 +156,7 @@ extern "C" {
 
 /** The timeout for waiting for messages */
 #ifndef DEFAULT_TIMEOUT
-#define DEFAULT_TIMEOUT 300
+#define DEFAULT_TIMEOUT 60
 #endif
 
 /** The timeout for waiting for keepalive timeout until next request */
