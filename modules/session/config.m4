@@ -54,7 +54,11 @@ if test "$session_mods_enable_crypto" != "no"; then
     session_mods_enable_crypto="no"
   fi
 fi
-APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , $session_mods_enable_crypto)
+APACHE_MODULE(session_crypto, session crypto module, $session_crypto_objects, , $session_mods_enable_crypto, [
+if test "$session_mods_enable_crypto" = "no" ; then
+  enable_session_crypto=no
+fi
+])
 
 APACHE_MODULE(session_dbd, session dbd module, $session_dbd_objects, , $session_mods_enable)
 
