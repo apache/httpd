@@ -80,6 +80,10 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 }
 
 #define AP_MAX_BUCKETS 1000
+/*
+ * We want to limit the memory usage in a way that is predictable. Therefore
+ * we limit the resulting length of the line to this value.
+ */
 #define AP_SUBST_MAX_LINE_LENGTH (128*MAX_STRING_LEN)
 
 #define SEDRMPATBCKT(b, offset, tmp_b, patlen) do {  \
@@ -137,6 +141,10 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                 vb.strlen = 0;
                 if (script->pattern) {
                     const char *repl;
+                    /*
+                     * space_left counts how many bytes we have left until the
+                     * line length reaches AP_SUBST_MAX_LINE_LENGTH.
+                     */
                     apr_size_t space_left = AP_SUBST_MAX_LINE_LENGTH;
                     apr_size_t repl_len = strlen(script->replacement);
                     while ((repl = apr_strmatch(script->pattern, buff, bytes)))
@@ -160,13 +168,19 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         }
                         else {
                             /*
-                             * We now split off the stuff before the regex
-                             * as its own bucket, then isolate the pattern
-                             * and delete it.
+                             * The string before the match but after the
+                             * previous match (if any) has length 'len'.
+                             * Check if we still have space for this string and
+                             * the replacement string.
                              */
                             if (space_left < len + repl_len)
                                 return APR_ENOMEM;
                             space_left -= len + repl_len;
+                            /*
+                             * We now split off the string before the match
+                             * as its own bucket, then isolate the matched
+                             * string and delete it.
+                             */
                             SEDRMPATBCKT(b, len, tmp_b, script->patlen);
                             /*
                              * Finally, we create a bucket that contains the
@@ -183,17 +197,31 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         bytes -= len;
                         buff += len;
                     }
-                    if (have_match && script->flatten && !force_quick) {
-                        /* XXX: we should check for AP_MAX_BUCKETS here and
-                         * XXX: call ap_pass_brigade accordingly
-                         */
-                        char *copy = ap_varbuf_pdup(pool, &vb, NULL, 0,
-                                                    buff, bytes, &len);
-                        tmp_b = apr_bucket_pool_create(copy, len, pool,
-                                                       f->r->connection->bucket_alloc);
-                        APR_BUCKET_INSERT_BEFORE(b, tmp_b);
-                        apr_bucket_delete(b);
-                        b = tmp_b;
+                    if (have_match) {
+                        if (script->flatten && !force_quick) {
+                            /* XXX: we should check for AP_MAX_BUCKETS here and
+                             * XXX: call ap_pass_brigade accordingly
+                             */
+                            char *copy = ap_varbuf_pdup(pool, &vb, NULL, 0,
+                                                        buff, bytes, &len);
+                            tmp_b = apr_bucket_pool_create(copy, len, pool,
+                                                           f->r->connection->bucket_alloc);
+                            APR_BUCKET_INSERT_BEFORE(b, tmp_b);
+                            apr_bucket_delete(b);
+                            b = tmp_b;
+                        }
+                        else {
+                            /*
+                             * We want the behaviour to be predictable.
+                             * Therefore we try to always error out if the
+                             * line length is larger than the limit,
+                             * regardless of the content of the line. So,
+                             * let's check if the remaining non-matching
+                             * string does not exceed the limit.
+                             */
+                            if (space_left < b->length)
+                                return APR_ENOMEM;
+                        }
                     }
                 }
                 else if (script->regexp) {
