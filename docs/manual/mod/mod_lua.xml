@@ -543,9 +543,10 @@ end
 <directivesynopsis>
 <name>LuaHookTranslateName</name>
 <description>Provide a hook for the translate name phase of request processing</description>
-<syntax>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name</syntax>
+<syntax>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name [early|late]</syntax>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<context>directory</context>
 </contextlist>
 <override>All</override>
 
@@ -580,6 +581,15 @@ function silly_mapper(r)
     end
 end
 </pre></example>
+
+   <note><title>Context</title><p>This directive is not valid in <directive
+   type="section" module="core">Directory</directive>, <directive
+   type="section" module="core">Files</directive>, or htaccess
+   context.</p></note>
+
+   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   control when this script runs relative to other modules.</p></note>
+
 </usage>
 </directivesynopsis>
 
@@ -613,12 +623,16 @@ processing</description>
 <directivesynopsis>
 <name>LuaHookCheckUserID</name>
 <description>Provide a hook for the check_user_id phase of request processing</description>
-<syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</syntax>
+<syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name [early|late]</syntax>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-    <usage><p>...</p></usage>
+<usage><p>...</p>
+   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   control when this script runs relative to other modules.</p></note>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -635,7 +649,8 @@ processing</description>
 <directivesynopsis>
 <name>LuaHookAuthChecker</name>
 <description>Provide a hook for the auth_checker phase of request processing</description>
-<syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</syntax>
+<syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name [early|late]</syntax>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -677,13 +692,16 @@ function authcheck_hook(r)
    return apache2.OK
 end
 </pre></example>
+   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   control when this script runs relative to other modules.</p></note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>LuaHookAccessChecker</name>
 <description>Provide a hook for the access_checker phase of request processing</description>
-<syntax>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name</syntax>
+<syntax>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name [early|late]</syntax>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -691,6 +709,8 @@ end
 <usage>
 <p>Add your hook to the access_checker phase.  An access checker
 hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
+   <note><title>Ordering</title><p>The optional arguments "early" or "late" 
+   control when this script runs relative to other modules.</p></note>
 </usage>
 </directivesynopsis>
 
@@ -713,7 +733,12 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-<usage><p>...</p></usage>
+<usage><p>...</p>
+   <note><title>Context</title><p>This directive is not valid in <directive
+   type="section" module="core">Directory</directive>, <directive
+   type="section" module="core">Files</directive>, or htaccess
+   context.</p></note>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>
