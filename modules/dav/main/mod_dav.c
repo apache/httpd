@@ -987,11 +987,20 @@ static int dav_method_put(request_rec *r)
                                 APR_BLOCK_READ, DAV_READ_BLOCKSIZE);
 
             if (rc != APR_SUCCESS) {
-                err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0, rc,
-                                    apr_psprintf(r->pool,
-                                                 "Could not get next bucket "
-                                                 "brigade (URI: %s)",
-                                                 ap_escape_html(r->pool, r->uri)));
+                int http_err;
+                char *msg = ap_escape_html(r->pool, r->uri);
+                if (APR_STATUS_IS_TIMEUP(rc)) {
+                    http_err = HTTP_REQUEST_TIME_OUT;
+                    msg = apr_psprintf(r->pool, "Timeout reading the body "
+                                       "(URI: %s)", msg);
+                }
+                else {
+                    /* XXX: should this actually be HTTP_BAD_REQUEST? */
+                    http_err = HTTP_INTERNAL_SERVER_ERROR;
+                    msg = apr_psprintf(r->pool, "Could not get next bucket "
+                                       "brigade (URI: %s)", msg);
+                }
+                err = dav_new_error(r->pool, http_err, 0, rc, msg);
                 break;
             }
 
