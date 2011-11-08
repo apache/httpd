@@ -199,7 +199,7 @@ INSTALL_HEADERS = \
 	$(srcdir)/modules/mappers/mod_rewrite.h \
 	$(srcdir)/modules/proxy/mod_proxy.h \
 	$(srcdir)/modules/proxy/mod_serf.h \
-        ${srcdir}/modules/session/mod_session.h \
+        $(srcdir)/modules/session/mod_session.h \
 	$(srcdir)/modules/ssl/mod_ssl.h \
 	$(srcdir)/os/$(OS_DIR)/*.h
 
