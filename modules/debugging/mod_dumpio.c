@@ -55,12 +55,12 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
 {
     conn_rec *c = f->c;
 
-    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, c->base_server,
-        "mod_dumpio:  %s (%s-%s): %" APR_SIZE_T_FMT " bytes",
-                f->frec->name,
-                (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
-                b->type->name,
-                b->length) ;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
+                  "mod_dumpio:  %s (%s-%s): %" APR_SIZE_T_FMT " bytes",
+                  f->frec->name,
+                  (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
+                  b->type->name,
+                  b->length) ;
 
     if (!(APR_BUCKET_IS_METADATA(b)))
     {
@@ -84,10 +84,10 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
                 memcpy(xlatebuf, buf, logbytes);
                 ap_xlate_proto_from_ascii(xlatebuf, logbytes);
                 xlatebuf[logbytes] = '\0';
-                ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, c->base_server,
-                             "mod_dumpio:  %s (%s-%s): %s", f->frec->name,
-                             (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
-                             b->type->name, xlatebuf);
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
+                              "mod_dumpio:  %s (%s-%s): %s", f->frec->name,
+                              (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
+                              b->type->name, xlatebuf);
 #else
                 /* XXX: Seriously flawed; we do not pay attention to embedded
                  * \0's in the request body, these should be escaped; however,
@@ -97,17 +97,17 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
                  * within ap_log_error, and introduce new vformatter %-escapes
                  * for escaping text, and for binary text (fixed len strings).
                  */
-                ap_log_error(APLOG_MARK | APLOG_NOERRNO, APLOG_TRACE7, 0, c->base_server,
-                             "mod_dumpio:  %s (%s-%s): %.*s", f->frec->name,
-                             (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
-                             b->type->name, (int)logbytes, buf);
+                ap_log_cerror(APLOG_MARK | APLOG_NOERRNO, APLOG_TRACE7, 0, c,
+                              "mod_dumpio:  %s (%s-%s): %.*s", f->frec->name,
+                              (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
+                              b->type->name, (int)logbytes, buf);
 #endif
             }
         } else {
-            ap_log_error(APLOG_MARK, APLOG_TRACE7, rv, c->base_server,
-                         "mod_dumpio:  %s (%s-%s): %s", f->frec->name,
-                         (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
-                         b->type->name, "error reading data");
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE7, rv, c,
+                          "mod_dumpio:  %s (%s-%s): %s", f->frec->name,
+                          (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
+                          b->type->name, "error reading data");
         }
     }
 }
@@ -130,12 +130,12 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
     conn_rec *c = f->c;
     dumpio_conf_t *ptr = f->ctx;
 
-    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, c->base_server,
-        "mod_dumpio: %s [%s-%s] %" APR_OFF_T_FMT " readbytes",
-         f->frec->name,
-         whichmode(mode),
-         ((block) == APR_BLOCK_READ) ? "blocking" : "nonblocking",
-         readbytes) ;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
+                  "mod_dumpio: %s [%s-%s] %" APR_OFF_T_FMT " readbytes",
+                  f->frec->name,
+                  whichmode(mode),
+                  ((block) == APR_BLOCK_READ) ? "blocking" : "nonblocking",
+                  readbytes) ;
 
     ret = ap_get_brigade(f->next, bb, mode, block, readbytes);
 
@@ -144,8 +144,8 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
           dumpit(f, b, ptr);
         }
     } else {
-        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, c->base_server,
-        "mod_dumpio: %s - %d", f->frec->name, ret) ;
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c,
+                      "mod_dumpio: %s - %d", f->frec->name, ret) ;
     }
 
     return APR_SUCCESS ;
@@ -157,7 +157,7 @@ static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
     conn_rec *c = f->c;
     dumpio_conf_t *ptr = f->ctx;
 
-    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, c->base_server, "mod_dumpio: %s", f->frec->name) ;
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE7, 0, c, "mod_dumpio: %s", f->frec->name);
 
     for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
         /*
