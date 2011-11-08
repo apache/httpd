@@ -60,7 +60,11 @@ install-conf:
 	    				< $$i; \
 	    			for j in $(DSO_MODULES) "^EOL^"; do \
 	    				if test $$j != "^EOL^"; then \
-	    					echo "LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+	    					if echo "$(ENABLED_DSO_MODULES)"|$(EGREP) "\<$$j\>" > /dev/null ; then \
+	    						echo "LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+	    					else \
+	    						echo "#LoadModule $${j}_module $(rel_libexecdir)/mod_$${j}.so"; \
+	    					fi; \
 	    				fi; \
 	    			done; \
 	    			sed -e '1,/@@LoadModule@@/d' \
