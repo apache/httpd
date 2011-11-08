@@ -544,11 +544,11 @@ end
 <name>LuaHookTranslateName</name>
 <description>Provide a hook for the translate name phase of request processing</description>
 <syntax>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name [early|late]</syntax>
-<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <override>All</override>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 
 <usage><p>
     Add a hook (at APR_HOOK_MIDDLE) to the translate name phase of
@@ -624,11 +624,11 @@ processing</description>
 <name>LuaHookCheckUserID</name>
 <description>Provide a hook for the check_user_id phase of request processing</description>
 <syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name [early|late]</syntax>
-<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <usage><p>...</p>
    <note><title>Ordering</title><p>The optional arguments "early" or "late" 
    control when this script runs relative to other modules.</p></note>
@@ -650,11 +650,11 @@ processing</description>
 <name>LuaHookAuthChecker</name>
 <description>Provide a hook for the auth_checker phase of request processing</description>
 <syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name [early|late]</syntax>
-<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <usage>
 <p>Invoke a lua function in the auth_checker phase of processing
 a request.  This can be used to implement arbitrary authentication
@@ -701,11 +701,11 @@ end
 <name>LuaHookAccessChecker</name>
 <description>Provide a hook for the access_checker phase of request processing</description>
 <syntax>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name [early|late]</syntax>
-<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>The optional third argument is supported in 2.3.15 and later</compatibility>
 <usage>
 <p>Add your hook to the access_checker phase.  An access checker
 hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
@@ -742,4 +742,3 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 </directivesynopsis>
 
 </modulesynopsis>
-
