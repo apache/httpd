@@ -22,7 +22,7 @@
 <language id="zh-cn">
     <name>Simplified Chinese</name>
     <charset>UTF-8</charset>
-    <source-ext>.xml</source-ext>
+    <source-ext>.xml.zh-cn</source-ext>
     <target-ext>.html.zh-cn</target-ext>
 
     <chm>
