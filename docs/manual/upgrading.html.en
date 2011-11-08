@@ -253,6 +253,9 @@
         limited to 1MB.
         </li>
 
+        <li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code>: If the module is loaded, it
+        will now set some default timeouts.</li>
+
       </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
