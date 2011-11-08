@@ -11,5 +11,6 @@
     <variant>ja</variant>
     <variant>ko</variant>
     <variant>tr</variant>
+    <variant htmlonly="yes">zh-cn</variant>
   </variants>
 </metafile>

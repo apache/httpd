@@ -9,5 +9,6 @@
   <variants>
     <variant>en</variant>
     <variant>ko</variant>
+    <variant htmlonly="yes">zh-cn</variant>
   </variants>
 </metafile>

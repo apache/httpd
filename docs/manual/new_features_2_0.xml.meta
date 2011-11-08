@@ -15,5 +15,6 @@
     <variant outdated="yes">pt-br</variant>
     <variant outdated="yes">ru</variant>
     <variant outdated="yes">tr</variant>
+    <variant htmlonly="yes">zh-cn</variant>
   </variants>
 </metafile>
