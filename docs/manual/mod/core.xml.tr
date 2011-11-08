@@ -2981,7 +2981,7 @@ belirler.</description>
 <description>Bir istek için başarısız olmadan önce belirli olayların
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <syntax>TimeOut <var>saniye</var></syntax>
-<default>TimeOut 300</default>
+<default>TimeOut 60</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 

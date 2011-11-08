@@ -3194,7 +3194,7 @@ verarbeiten</description>
 <description>Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
 bevor er die Anfrage abbricht</description>
 <syntax>TimeOut <var>Sekunden</var></syntax>
-<default>TimeOut 300</default>
+<default>TimeOut 60</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -3218,7 +3218,7 @@ bevor er die Anfrage abbricht</description>
     meisten Situationen ben&ouml;tigt wird. Die Voreinstellung wurde nicht
     weiter herabgesetzt, da gelegentlich noch Stellen im Code existieren
     k&ouml;nnen, wo der Zeitgeber nicht zur&uuml;ckgesetzt wird, wenn ein
-    Paket verschickt wird.</p>
+    Paket verschickt wird. Seit Apache 2.4 ist die Voreinstellung 60.</p>
 </usage>
 </directivesynopsis>
 

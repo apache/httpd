@@ -2937,7 +2937,7 @@ module="core">Directory</directive></seealso>
 <description>各イベントについて、リクエストを失敗させるまでにサーバが
 待つ時間を設定</description>
 <syntax>TimeOut <var>seconds</var></syntax>
-<default>TimeOut 300</default>
+<default>TimeOut 60</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
