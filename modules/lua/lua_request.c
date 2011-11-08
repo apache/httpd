@@ -210,7 +210,7 @@ static int req_construct_url(lua_State *L)
 }
 
 /* wrap ap_escape_html r:escape_html(String) */
-static char * req_escape_html(lua_State *L)
+static int req_escape_html(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *s = luaL_checkstring(L, 2);
