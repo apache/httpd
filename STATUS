@@ -82,6 +82,9 @@ RELEASE SHOWSTOPPERS:
     - mod_serf (which is optimal for async httpd anyways; didn't work
       with MPM event last time sf tested it)
     - mod_noloris (in experimental; obsoleted by mod_reqtimeout)
+    
+    See https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS 
+    under 'modules docs' for a more comprehensive list of undocumented modules. 
 
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
