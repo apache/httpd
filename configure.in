@@ -730,6 +730,14 @@ if test $v4mapped = "yes" -a $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
               [Allow IPv4 connections on IPv6 listening sockets])
 fi
 
+AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load all modules),
+[ 
+  LOAD_ALL_MODULES=$enableval
+],
+[
+  LOAD_ALL_MODULES="no"
+])
+
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
 APACHE_FAST_OUTPUT(support/Makefile)
