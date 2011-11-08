@@ -50,7 +50,6 @@ extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlfixups">ProxyHTMLFixups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlinterp">ProxyHTMLInterp</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmllinks">ProxyHTMLLinks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmllogverbose">ProxyHTMLLogVerbose</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 </ul>
@@ -248,24 +247,6 @@ using standard <code class="directive">ProxyHTMLURLMap</code>s.  You will need o
 ProxyHTMLLinks directive per element, but it can have any number of attributes.</p>
 <p>The default configuration defines the HTML links for standard HTML 4
 and XHTML 1.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLLogVerbose" id="ProxyHTMLLogVerbose">ProxyHTMLLogVerbose</a> <a name="proxyhtmllogverbose" id="proxyhtmllogverbose">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables extra verbose logging for debug</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLLogVerbose <var>On|Off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later; available as a third-party
-for earlier 2.x versions</td></tr>
-</table>
-<p>If On, mod_proxy_html will log extra diagnostic information (at
-<code class="directive"><a href="../mod/mod_log_config.html#loglevel">LogLevel</a></code> Info)
-including charset detection and processing and
-<code class="directive">ProxyHTMLURLMap</code> matches and rewrites.
-This may be helpful in debugging a configuration.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

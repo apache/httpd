@@ -1560,11 +1560,13 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File attributes used to create the ETag
 HTTP response header for static files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FileETag <var>component</var> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>FileETag INode MTime Size</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>FileETag MTime Size</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The default used to be "INode&nbsp;MTime&nbsp;Size" in 2.3.14 and
+earlier.</td></tr>
 </table>
     <p>
     The <code class="directive">FileETag</code> directive configures the file
@@ -1606,7 +1608,7 @@ HTTP response header for static files</td></tr>
     <div class="warning"><h3>Warning</h3>
     Do not change the default for directories or locations that have WebDAV
     enabled and use <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> as a storage provider.
-    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> uses <code>INode&nbsp;MTime&nbsp;Size</code>
+    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> uses <code>MTime&nbsp;Size</code>
     as a fixed format for <code>ETag</code> comparisons on conditional requests.
     These conditional requests will break if the <code>ETag</code> format is
     changed via <code class="directive">FileETag</code>.

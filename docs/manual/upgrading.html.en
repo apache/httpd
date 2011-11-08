@@ -184,6 +184,9 @@
         <li><code class="directive"><a href="./mod/core.html#enablesendfile">EnableSendfile</a></code> now
         defaults to Off.</li>
 
+        <li><code class="directive"><a href="./mod/core.html#fileetag">FileETag</a></code> now
+        defaults to "MTime Size" (without INode).</li>
+
         <li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>: <a href="modules/mod_log_config.html#formats">${cookie}C</a>
         matches whole cookie names.  Previously any substring would
         match.</li>
