@@ -29,9 +29,6 @@
 #define VERBOSEB(x) if (verbose) {x}
 #endif
 
-/* 3.1.2 - trivial changes to fix compile on Windows */
-#define VERSION_STRING "proxy_html/3.1.2"
-
 #include <ctype.h>
 
 /* libxml2 */
@@ -1225,7 +1222,6 @@ static const command_rec proxy_html_cmds[] = {
 static int mod_proxy_html(apr_pool_t* p, apr_pool_t* p1, apr_pool_t* p2,
                           server_rec* s)
 {
-    ap_add_version_component(p, VERSION_STRING);
     seek_meta = ap_pregcomp(p, "<meta[^>]*(http-equiv)[^>]*>",
                             AP_REG_EXTENDED|AP_REG_ICASE);
     seek_content = apr_strmatch_precompile(p, "content", 0);
