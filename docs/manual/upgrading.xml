@@ -188,6 +188,9 @@
         <li><directive module="core">EnableSendfile</directive> now
         defaults to Off.</li>
 
+        <li><directive module="core">FileETag</directive> now
+        defaults to "MTime Size" (without INode).</li>
+
         <li><module>mod_log_config</module>: <a
         href="modules/mod_log_config.html#formats">${cookie}C</a>
         matches whole cookie names.  Previously any substring would

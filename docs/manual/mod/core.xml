@@ -1532,11 +1532,13 @@ request</description>
 <description>File attributes used to create the ETag
 HTTP response header for static files</description>
 <syntax>FileETag <var>component</var> ...</syntax>
-<default>FileETag INode MTime Size</default>
+<default>FileETag MTime Size</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>The default used to be "INode&nbsp;MTime&nbsp;Size" in 2.3.14 and
+earlier.</compatibility>
 
 <usage>
     <p>
@@ -1579,7 +1581,7 @@ HTTP response header for static files</description>
     <note type="warning"><title>Warning</title>
     Do not change the default for directories or locations that have WebDAV
     enabled and use <module>mod_dav_fs</module> as a storage provider.
-    <module>mod_dav_fs</module> uses <code>INode&nbsp;MTime&nbsp;Size</code>
+    <module>mod_dav_fs</module> uses <code>MTime&nbsp;Size</code>
     as a fixed format for <code>ETag</code> comparisons on conditional requests.
     These conditional requests will break if the <code>ETag</code> format is
     changed via <directive>FileETag</directive>.
