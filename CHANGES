@@ -16,6 +16,10 @@ Changes with Apache 2.3.15
      core: Fix integer overflow in ap_pregsub. This can be triggered e.g.
      with mod_setenvif via a malicious .htaccess. [Stefan Fritsch]
 
+  *) mod_lua: LuaHook{AccessChecker,AuthChecker,CheckUserID,TranslateName}
+     can now additionally be run as "early" or "late" relative to other modules.
+     [Eric Covener]
+
   *) configure: By default, only load those modules that are either required
      or explicitly selected by a configure --enable-foo argument. The
      LoadModule statements for modules enabled by --enable-mods-shared=most
