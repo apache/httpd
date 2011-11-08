@@ -16,6 +16,9 @@ Changes with Apache 2.3.15
      core: Fix integer overflow in ap_pregsub. This can be triggered e.g.
      with mod_setenvif via a malicious .htaccess. [Stefan Fritsch]
 
+  *) mod_reqtimeout: Change the default to set some reasonable timeout
+     values. [Stefan Fritsch]
+
   *) core, mod_dav_fs: Change default ETag to be "size mtime", i.e. remove
      the inode. PR 49623. [Stefan Fritsch]
 
