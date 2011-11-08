@@ -246,15 +246,19 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         }
                         else {
                             apr_size_t repl_len;
+                            /* acount for string before the match */
+                            if (space_left <= regm[0].rm_so)
+                                return APR_ENOMEM;
+                            space_left -= regm[0].rm_so;
                             rv = ap_pregsub_ex(pool, &repl,
                                                script->replacement, pos,
                                                AP_MAX_REG_MATCH, regm,
                                                space_left);
                             if (rv != APR_SUCCESS)
                                 return rv;
-                            len = (apr_size_t) (regm[0].rm_eo - regm[0].rm_so);
                             repl_len = strlen(repl);
-                            space_left -= len + repl_len;
+                            space_left -= repl_len;
+                            len = (apr_size_t) (regm[0].rm_eo - regm[0].rm_so);
                             SEDRMPATBCKT(b, regm[0].rm_so, tmp_b, len);
                             tmp_b = apr_bucket_transient_create(repl, repl_len,
                                                 f->r->connection->bucket_alloc);
