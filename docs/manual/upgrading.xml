@@ -269,6 +269,9 @@
         limited to 1MB.
         </li>
 
+        <li><module>mod_reqtimeout</module>: If the module is loaded, it
+        will now set some default timeouts.</li>
+
       </ul>
     </section>
   </section>

@@ -73,3 +73,18 @@ ServerSignature Off
 # nameserver.
 #
 HostnameLookups Off
+
+#
+# Set a timeout for how long the client may take to send the request header
+# and body.
+# The default for the headers is header=20-40,MinRate=500, which means wait
+# for the first byte of headers for 20 seconds. If some data arrives,
+# increase the timeout corresponding to a data rate of 500 bytes/s, but not
+# above 40 seconds.
+# The default for the request body is body=20,MinRate=500, which is the same
+# but has no upper limit for the timeout.
+# To disable, set to header=0 body=0
+#
+<IfModule reqtimeout_module>
+  RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
+</IfModule>

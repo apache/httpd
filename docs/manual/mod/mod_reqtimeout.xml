@@ -28,7 +28,7 @@
 <status>Extension</status>
 <sourcefile>mod_reqtimeout.c</sourcefile>
 <identifier>reqtimeout_module</identifier>
-<compatibility>Available in Apache 2.2.15 and later</compatibility>
+<compatibility>Available in Apache HTTPD 2.2.15 and later</compatibility>
 
 <section id="examples"><title>Examples</title>
 
@@ -83,12 +83,14 @@
 <description>Set timeout values for receiving request headers and body from client.
 </description>
 <syntax>RequestReadTimeout
-[header=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
-[body=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
+[header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
+[body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 </syntax>
-<default>Unset; no limit</default>
+<default>header=20-40,MinRate=500 body=20,MinRate=500</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Available in version 2.2.15 and later; defaulted to disabled in
+version 2.3.14 and earlier.</compatibility>
 
 <usage>
     <p>This directive can set various timeouts for receiving the request headers
@@ -124,6 +126,13 @@
 
     <p>The time in seconds allowed for reading all of the request headers or
     body, respectively. A value of 0 means no limit.</p>
+    </li>
+
+    <li><strong>Disable module for a vhost:</strong>:<br />
+
+    <example>header=0 body=0</example>
+
+    <p>This disables <module>mod_reqtimeout</module> completely.</p>
     </li>
 
     <li><strong>Timeout value that is increased when data is
