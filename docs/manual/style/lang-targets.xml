@@ -283,7 +283,7 @@
 <target description="- builds the Simplified Chinese CHM file" name="chm-zh-cn">
     <chm.generic lang="zh-cn"/>
 </target>
-<target description="- builds the Simplified Chinese nroff files" depends="check-man" name="man-zh-cn">
+<target description="- builds the Simplified Chinese nroff files" unless="skip-man" depends="check-man" name="man-zh-cn">
     <nroff.generic lang="zh-cn"/>
 </target>
 
