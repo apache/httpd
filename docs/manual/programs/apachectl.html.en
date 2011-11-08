@@ -20,8 +20,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/programs/apachectl.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/apachectl.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
-<a href="../zh-cn/programs/apachectl.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
      <p><code>apachectl</code> is a front end to the Apache HyperText
@@ -154,8 +153,7 @@ use the normal <code>apachectl start</code>.</dd>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/apachectl.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/apachectl.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
-<a href="../zh-cn/programs/apachectl.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+<a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2011 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

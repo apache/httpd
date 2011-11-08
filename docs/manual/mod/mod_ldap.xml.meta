@@ -9,6 +9,5 @@
   <variants>
     <variant>en</variant>
     <variant>fr</variant>
-    <variant htmlonly="yes">zh-cn</variant>
   </variants>
 </metafile>
