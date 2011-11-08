@@ -364,6 +364,7 @@
  *                         add ap_pregsub_ex()
  * 20111025.1 (2.3.15-dev) Add ap_escape_urlencoded(), ap_escape_urlencoded_buffer()
  *                         and ap_unescape_urlencoded().
+ * 20111025.2 (2.3.15-dev) Add ap_lua_ssl_val to mod_lua
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -371,7 +372,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20111025
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

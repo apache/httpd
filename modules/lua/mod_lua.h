@@ -148,4 +148,6 @@ APR_DECLARE_EXTERNAL_HOOK(ap_lua, AP_LUA, int, lua_open,
 APR_DECLARE_EXTERNAL_HOOK(ap_lua, AP_LUA, int, lua_request,
                           (lua_State *L, request_rec *r))
 
+AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var);
+
 #endif /* !_MOD_LUA_H_ */

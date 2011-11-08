@@ -22,6 +22,8 @@
 
 #include "lua_apr.h"
 #include "lua_config.h"
+#include "apr_optional.h"
+#include "mod_ssl.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_open,
                                     (lua_State *L, apr_pool_t *p),
@@ -30,6 +32,7 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_open,
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_request,
                                     (lua_State *L, request_rec *r),
                                     (L, r), OK, DECLINED)
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *lua_ssl_val = NULL;
 
      module AP_MODULE_DECLARE_DATA lua_module;
 
@@ -1006,6 +1009,13 @@ static const char *register_lua_root(cmd_parms *cmd, void *_cfg,
     cfg->root_path = root;
     return NULL;
 }
+AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var)
+{
+    if (lua_ssl_val) { 
+        return (const char *)lua_ssl_val(p, s, c, r, (char *)var);
+    }
+    return NULL;
+}
 
 /*******************************/
 
@@ -1149,6 +1159,13 @@ static int lua_request_hook(lua_State *L, request_rec *r)
     return OK;
 }
 
+static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                             apr_pool_t *ptemp, server_rec *s)
+{
+    lua_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    return OK;
+}
+
 static void lua_register_hooks(apr_pool_t *p)
 {
     /* ap_register_output_filter("luahood", luahood, NULL, AP_FTYPE_RESOURCE); */
@@ -1196,6 +1213,7 @@ static void lua_register_hooks(apr_pool_t *p)
     ap_hook_quick_handler(lua_quick_harness, NULL, NULL, APR_HOOK_FIRST);
 
     ap_hook_translate_name(lua_alias_munger, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(lua_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_OPTIONAL_HOOK(ap_lua, lua_open, lua_open_hook, NULL, NULL,
                       APR_HOOK_REALLY_FIRST);
