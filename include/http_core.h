@@ -461,8 +461,9 @@ typedef unsigned long etag_components_t;
 #define ETAG_MTIME (1 << 1)
 #define ETAG_INODE (1 << 2)
 #define ETAG_SIZE  (1 << 3)
-#define ETAG_BACKWARD (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
 #define ETAG_ALL   (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
+/* This is the default value used */
+#define ETAG_BACKWARD (ETAG_MTIME | ETAG_SIZE)
 
 /**
  * @brief Server Signature Enumeration
