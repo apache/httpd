@@ -358,7 +358,6 @@ proxyhtmlextended	mod/mod_proxy_html.html#proxyhtmlextended
 proxyhtmlfixups	mod/mod_proxy_html.html#proxyhtmlfixups
 proxyhtmlinterp	mod/mod_proxy_html.html#proxyhtmlinterp
 proxyhtmllinks	mod/mod_proxy_html.html#proxyhtmllinks
-proxyhtmllogverbose	mod/mod_proxy_html.html#proxyhtmllogverbose
 proxyhtmlstripcomments	mod/mod_proxy_html.html#proxyhtmlstripcomments
 proxyhtmlurlmap	mod/mod_proxy_html.html#proxyhtmlurlmap
 proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize
@@ -442,6 +441,7 @@ session	mod/mod_session.html#session
 sessioncookiename	mod/mod_session_cookie.html#sessioncookiename
 sessioncookiename2	mod/mod_session_cookie.html#sessioncookiename2
 sessioncookieremove	mod/mod_session_cookie.html#sessioncookieremove
+sessioncryptocipher	mod/mod_session_crypto.html#sessioncryptocipher
 sessioncryptodriver	mod/mod_session_crypto.html#sessioncryptodriver
 sessioncryptopassphrase	mod/mod_session_crypto.html#sessioncryptopassphrase
 sessiondbdcookiename	mod/mod_session_dbd.html#sessiondbdcookiename
