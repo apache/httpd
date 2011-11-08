@@ -76,7 +76,13 @@
 
       <li>configure: dynamic modules (DSO) are built by default</li>
 
+      <li>configure: By default, only load those modules that are either required
+      or explicitly selected by a configure <code>--enable-foo</code> argument.</li>
+
       <li>configure: the "most" module set gets built by default</li>
+
+      <li>configure: the "realyall" module set adds developer modules
+      to the "all" set</li>
     </ul>
 
   </section>
