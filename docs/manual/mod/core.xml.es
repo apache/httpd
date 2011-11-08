@@ -3785,7 +3785,7 @@ server</description>
 <description>Amount of time the server will wait for
 certain events before failing a request</description>
 <syntax>TimeOut <var>seconds</var></syntax>
-<default>TimeOut 300</default>
+<default>TimeOut 60</default>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>

@@ -4468,7 +4468,7 @@ host</context>
 <description>Temps pendant lequel le serveur va attendre certains
 &eacute;v&egrave;nements avant de consid&eacute;rer qu'une requ&ecirc;te a &eacute;chou&eacute;</description>
 <syntax>TimeOut <var>secondes</var></syntax>
-<default>TimeOut 300</default>
+<default>TimeOut 60</default>
 <contextlist><context>server config</context><context>virtual
 host</context></contextlist>
 
