@@ -54,13 +54,13 @@
 <section id="usage"><title>Usage</title>
     <p>This module is used to reverse proxy to a backend application server
     (e.g. Apache Tomcat) using the AJP13 protocol. The usage is similar to
-    an HTTP reverse proxy, but uses the <code>ajp://</code> prefix:
+    an HTTP reverse proxy, but uses the <code>ajp://</code> prefix:</p>
 
     <example><title>Simple Reverse Proxy</title>
     ProxyPass /app ajp://backend.example.com:8009/app
     </example>
 
-    Balancers may also be used:
+    <p>Balancers may also be used:</p>
     <example><title>Balancer Reverse Proxy</title>
       &lt;Proxy balancer://cluster&gt;<br />
       <indent>
@@ -71,22 +71,24 @@
       &lt;/Proxy&gt;<br />
       ProxyPass /app balancer://cluster/app
     </example>
-    </p><p>
-    Note that usually no
+
+    <p>Note that usually no
     <directive module="mod_proxy">ProxyPassReverse</directive>
     directive is necessary. The AJP request includes the original host
     header given to the proxy, and the application server can be expected
     to generate self-referential headers relative to this host, so no
-    rewriting is necessary.
-    </p><p>
-    The main exception is when the URL path on the proxy differs from that on the
+    rewriting is necessary.</p>
+    
+    <p>The main exception is when the URL path on the proxy differs from that
+    on the
     backend. In this case, a redirect header can be rewritten relative to the
-    original host URL (not the backend <code>ajp://</code> URL), for example:
+    original host URL (not the backend <code>ajp://</code> URL), for
+    example:</p>
     <example><title>Rewriting Proxied Path</title>
       ProxyPass /apps/foo ajp://backend.example.com:8009/foo<br />
       ProxyPassReverse /apps/foo http://www.example.com/foo
     </example>
-    However, it is usually better to deploy the application on the backend
+    <p>However, it is usually better to deploy the application on the backend
     server at the same path as the proxy rather than to take this approach.
     </p>
 </section>
