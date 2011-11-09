@@ -891,7 +891,7 @@ read_request:
         }
         rv = output_filter->frec->filter_func.out_func(output_filter, NULL);
         if (rv != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, rv, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
                           "network write failure in core output filter");
             cs->state = CONN_STATE_LINGER;
         }
