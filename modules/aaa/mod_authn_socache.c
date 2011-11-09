@@ -232,10 +232,9 @@ static const char *construct_key(request_rec *r, const char *context,
     if (!strcmp(context, "directory")) {
         /* FIXME: are we at risk of this blowing up? */
         char *slash = strrchr(r->uri, '/');
-        context = apr_palloc(r->pool, slash - r->uri
-                             + strlen(r->server->server_hostname) + 2);
+        context = apr_palloc(r->pool, slash - r->uri +
+                                      strlen(r->server->server_hostname) + 1);
         strcpy(context, r->server->server_hostname);
-        strcat(context, ":");
         strncat(context, r->uri, slash - r->uri);
     }
     else if (!strcmp(context, "server")) {
