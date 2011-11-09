@@ -200,6 +200,12 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->fips                   = UNSET;
 #endif
 
+#ifdef HAVE_TLSEXT_TICKETS
+    sc->default_ticket_name = NULL;
+    sc->default_ticket = NULL;
+    sc->tickets = apr_array_make(p, 4, sizeof(modssl_ticket_t*));
+#endif
+
     modssl_ctx_init_proxy(sc, p);
 
     modssl_ctx_init_server(sc, p);
@@ -304,6 +310,11 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMerge(mc, NULL);
     cfgMerge(enabled, SSL_ENABLED_UNSET);
+#ifdef HAVE_TLSEXT_TICKETS
+    cfgMergeString(default_ticket_name);
+    apr_array_cat(mrg->tickets, base->tickets);
+    apr_array_cat(mrg->tickets, add->tickets);
+#endif
     cfgMergeBool(proxy_enabled);
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
@@ -582,6 +593,62 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
     }
 
     return "Argument must be On, Off, or Optional";
+}
+
+const char *ssl_cmd_SSLTicketKeyDefault(cmd_parms *cmd, void *dcfg, const char *name)
+{
+#ifdef HAVE_TLSEXT_TICKETS
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->default_ticket_name = name;
+
+    return NULL;
+#else
+    return "TLS Ticket keys are not supported.";
+#endif
+}
+
+const char *ssl_cmd_SSLTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *name, const char *path)
+{
+#ifdef HAVE_TLSEXT_TICKETS
+    apr_status_t rv;
+    apr_file_t *fp;
+    apr_size_t len;
+    char buf[TLSEXT_TICKET_KEYLEN];
+    modssl_ticket_t* ticket = NULL;
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    rv = apr_file_open(&fp, path, APR_READ|APR_BINARY,
+                       APR_OS_DEFAULT, cmd->temp_pool);
+
+    if (rv != APR_SUCCESS) {
+      return apr_psprintf(cmd->pool,
+                          "Failed to open %s: (%d) %pm",
+                          path, rv, &rv);
+    }
+
+    rv = apr_file_read_full(fp, &buf[0], TLSEXT_TICKET_KEYLEN, &len);
+
+    if (rv != APR_SUCCESS) {
+      return apr_psprintf(cmd->pool,
+                          "Failed to read at least 48 bytes from %s: (%d) %pm",
+                          path, rv, &rv);
+    }
+
+    ticket = apr_palloc(cmd->pool, sizeof(modssl_ticket_t));
+
+    ticket->conf_name = name;
+
+    memcpy(ticket->key_name, buf, 16);
+    memcpy(ticket->hmac_secret, buf + 16, 16);
+    memcpy(ticket->aes_key, buf + 32, 16);
+
+    APR_ARRAY_PUSH(sc->tickets, modssl_ticket_t*) = ticket;
+
+    return NULL;
+#else
+    return "TLS Ticket keys are not supported.";
+#endif
 }
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)

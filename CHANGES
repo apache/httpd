@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) mod_ssl: Add support for RFC 5077 TLS Session tickets.
+     [Paul Querna]
+
   *) mod_usertrack: Use random value instead of remote IP address.
      [Stefan Fritsch]
 

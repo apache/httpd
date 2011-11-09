@@ -2067,3 +2067,94 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
     return 0;
 }
 #endif
+
+#ifdef HAVE_TLSEXT_TICKETS
+
+#ifndef tlsext_tick_md
+#ifdef OPENSSL_NO_SHA256
+#define tlsext_tick_md	EVP_sha1
+#else
+#define tlsext_tick_md	EVP_sha256
+#endif
+#endif
+
+int ssl_callback_tlsext_tickets(SSL *ssl,
+                                char *keyname,
+                                char *iv,
+                                EVP_CIPHER_CTX *cipher_ctx,
+                                HMAC_CTX *hctx,
+                                int mode)
+{
+    conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
+    server_rec *s       = mySrvFromConn(conn);
+    SSLSrvConfigRec *sc = mySrvConfig(s);
+
+    if (mode == 1) {
+        modssl_ticket_t* ticket = sc->default_ticket;
+
+        /* Setting up the stuff for encrypting:
+         *  - keyname contains at least 16 bytes we can write to.
+         *  - iv contains at least EVP_MAX_IV_LENGTH (16) bytes we can write to.
+         *  - hctx is already allocated, we just need to set the
+         *    secret key via HMAC_Init_ex.
+         *  - cipher_ctx is also allocated, and we need to configure
+         *    the cipher and private key.
+         */
+
+        if (ticket == NULL) {
+            /* this should not happen, we always set the default
+             * ticket.
+             */
+            return -1;
+        }
+
+        memcpy(keyname, ticket->key_name, 16);
+
+        RAND_pseudo_bytes(iv, EVP_MAX_IV_LENGTH);
+
+        memcpy(iv, iv, EVP_MAX_IV_LENGTH);
+
+        EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
+                           ticket->aes_key, iv);
+
+        HMAC_Init_ex(hctx, ticket->hmac_secret, 16, tlsext_tick_md(), NULL);
+
+        return 0;
+    }
+    else if (mode == 0) {
+        /* Setup contextes for decryption, based on the keyname input */
+        int i;
+        modssl_ticket_t* ticket = NULL;
+
+        for (i = 0; i < sc->tickets->nelts; i++) {
+            modssl_ticket_t* itticket = APR_ARRAY_IDX(sc->tickets, i, modssl_ticket_t*);
+            if (memcmp(keyname, itticket->key_name, 16) == 0) {
+                ticket = itticket;
+                break;
+            }
+        }
+
+        if (ticket == NULL) {
+            /* Ticket key not found, but no error */
+            return 0;
+        }
+
+        EVP_DecryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL, ticket->aes_key, iv);
+
+        HMAC_Init_ex(hctx, ticket->hmac_secret, 16, tlsext_tick_md(), NULL);
+
+        if (ticket != sc->default_ticket) {
+            /* Ticket key found, we did our stuff, but didn't use the default,
+             * re-issue a ticket with the default ticket */
+            return 2;
+        }
+        else {
+            return 1;
+        }
+    }
+
+    /* TODO: log invalid use */
+    return -1;
+}
+
+#endif
