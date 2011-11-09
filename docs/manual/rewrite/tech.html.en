@@ -71,7 +71,9 @@ and URL matching.</p>
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> directive to
     see how you can further manipulate how this is handled.) Then, a new
     internal subrequest is issued with the new URL. This restarts
-    processing of the API phases.</p>
+    processing of the request phases. (Be careful to avoid rules that
+    can cause looping. See <a href="http://wiki.apache.org/httpd/RewriteLooping">RewriteLooping</a>
+    for further discussion of this problem.</p>
 
     <p>Because of this further manipulation of the URL in per-directory
     context, you'll need to take care to craft your rewrite rules
@@ -136,16 +138,17 @@ and URL matching.</p>
       <img src="../images/rewrite_rule_flow.png" alt="Flow of RewriteRule and RewriteCond matching" /><br />
       <dfn>Figure 1:</dfn>The control flow through the rewriting ruleset
 </p>
-      <p>As you can see, first the URL is matched against the
-      <em>Pattern</em> of each rule. When it fails mod_rewrite
-      immediately stops processing this rule and continues with the
+      <p>First the URL is matched against the
+      <em>Pattern</em> of each rule. If it fails, mod_rewrite
+      immediately stops processing this rule, and continues with the
       next rule. If the <em>Pattern</em> matches, mod_rewrite looks
-      for corresponding rule conditions. If none are present, it
-      just substitutes the URL with a new value which is
-      constructed from the string <em>Substitution</em> and goes on
+      for corresponding rule conditions (RewriteCond directives,
+      appearing immediately above the RewriteRule in the configuration).
+      If none are present, it substitutes the URL with a new value, which is
+      constructed from the string <em>Substitution</em>, and goes on
       with its rule-looping. But if conditions exist, it starts an
       inner loop for processing them in the order that they are
-      listed. For conditions the logic is different: we don't match
+      listed. For conditions, the logic is different: we don't match
       a pattern against the current URL. Instead we first create a
       string <em>TestString</em> by expanding variables,
       back-references, map lookups, <em>etc.</em> and then we try
