@@ -570,11 +570,11 @@ typedef struct {
 #define TLSEXT_TICKET_KEYLEN (48)
 
 typedef struct {
-  /* Human readable name, used in the configuration */
-  const char *conf_name;
-  char key_name[16];
-  char hmac_secret[16];
-  char aes_key[16];
+    /* Human readable name, used in the configuration */
+    const char *conf_name;
+    char key_name[16];
+    char hmac_secret[16];
+    char aes_key[16];
 } modssl_ticket_t;
 #endif
 

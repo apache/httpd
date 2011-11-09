@@ -622,17 +622,17 @@ const char *ssl_cmd_SSLTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *nam
                        APR_OS_DEFAULT, cmd->temp_pool);
 
     if (rv != APR_SUCCESS) {
-      return apr_psprintf(cmd->pool,
-                          "Failed to open %s: (%d) %pm",
-                          path, rv, &rv);
+        return apr_psprintf(cmd->pool,
+                            "Failed to open %s: (%d) %pm",
+                            path, rv, &rv);
     }
 
     rv = apr_file_read_full(fp, &buf[0], TLSEXT_TICKET_KEYLEN, &len);
 
     if (rv != APR_SUCCESS) {
-      return apr_psprintf(cmd->pool,
-                          "Failed to read at least 48 bytes from %s: (%d) %pm",
-                          path, rv, &rv);
+        return apr_psprintf(cmd->pool,
+                            "Failed to read at least 48 bytes from %s: (%d) %pm",
+                            path, rv, &rv);
     }
 
     ticket = apr_palloc(cmd->pool, sizeof(modssl_ticket_t));
