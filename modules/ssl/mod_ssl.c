@@ -79,6 +79,14 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(FIPS, FLAG,
                 "Enable FIPS-140 mode "
                 "(`on', `off')")
+#ifdef HAVE_TLSEXT_TICKETS
+    SSL_CMD_SRV(TicketKeyFile, TAKE2,
+                "Key file to use for encrypting and decrypting the client ticket (RFC 5077) "
+                "(keyname '/path/to/file')")
+    SSL_CMD_SRV(TicketKeyDefault, TAKE1,
+                "Set the key name used by default for new sessions "
+               "(keyname)")
+#endif
     SSL_CMD_ALL(CipherSuite, TAKE1,
                 "Colon-delimited list of permitted SSL Ciphers "
                 "('XXX:...:XXX' - see manual)")

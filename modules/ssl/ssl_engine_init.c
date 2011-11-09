@@ -1143,6 +1143,43 @@ static void ssl_init_server_certs(server_rec *s,
 #endif
         ssl_die();
     }
+
+#ifdef HAVE_TLSEXT_TICKETS
+    if (mctx->sc->tickets->nelts > 0) { 
+
+        if (mctx->sc->default_ticket_name != NULL) {
+            int i;
+            modssl_ticket_t* ticket = NULL;
+            mctx->sc->default_ticket = NULL;
+
+            for (i = 0; i < mctx->sc->tickets->nelts; i++) {
+                ticket = APR_ARRAY_IDX(mctx->sc->tickets, i, modssl_ticket_t*);
+                if (strcmp(ticket->conf_name, mctx->sc->default_ticket_name) == 0) {
+                    mctx->sc->default_ticket = ticket;
+                }
+            }
+
+            if (mctx->sc->default_ticket == NULL) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                            "Misconfigured TLS Tickets.  Couldn't find key named '%s'",
+                            mctx->sc->default_ticket_name);
+                ssl_die();
+            }
+        }
+        else {
+            mctx->sc->default_ticket = APR_ARRAY_IDX(mctx->sc->tickets, 0, modssl_ticket_t*);
+        }
+
+        if (!SSL_CTX_set_tlsext_ticket_key_cb(mctx->ssl_ctx, ssl_callback_tlsext_tickets)) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+                        "Unable to initialize TLS session ticket extension "
+                        "(incompatible OpenSSL version?)");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            ssl_die();
+        }
+    }
+#endif
+
 }
 
 static void ssl_init_proxy_certs(server_rec *s,

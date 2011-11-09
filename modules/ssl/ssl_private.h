@@ -157,6 +157,12 @@
 #endif
 #endif
 
+#ifndef OPENSSL_NO_TLSEXT
+#ifdef SSL_CTX_set_tlsext_ticket_key_cb
+#define HAVE_TLSEXT_TICKETS
+#endif
+#endif
+
 /* mod_ssl headers */
 #include "ssl_util_ssl.h"
 
@@ -557,6 +563,21 @@ typedef struct {
     ssl_verify_t verify_mode;
 } modssl_auth_ctx_t;
 
+
+#ifdef HAVE_TLSEXT_TICKETS
+
+/* 48 bytes: 16 for keyname, 16 for HMAC secret, 16 for AES private key */
+#define TLSEXT_TICKET_KEYLEN (48)
+
+typedef struct {
+  /* Human readable name, used in the configuration */
+  const char *conf_name;
+  char key_name[16];
+  char hmac_secret[16];
+  char aes_key[16];
+} modssl_ticket_t;
+#endif
+
 typedef struct SSLSrvConfigRec SSLSrvConfigRec;
 
 typedef struct {
@@ -624,6 +645,11 @@ struct SSLSrvConfigRec {
 #endif
 #ifdef HAVE_FIPS
     BOOL             fips;
+#endif
+#ifdef HAVE_TLSEXT_TICKETS
+    const char *default_ticket_name;
+    modssl_ticket_t* default_ticket;
+    apr_array_header_t* tickets;
 #endif
 };
 
@@ -716,6 +742,8 @@ const char *ssl_cmd_SSLOCSPResponderTimeout(cmd_parms *cmd, void *dcfg, const ch
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag);
+const char *ssl_cmd_SSLTicketKeyDefault(cmd_parms *cmd, void *dcfg, const char *name);
+const char *ssl_cmd_SSLTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *name, const char *path);
 
 /**  module initialization  */
 int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
@@ -755,6 +783,15 @@ void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_Info(const SSL *, int, int);
 #ifndef OPENSSL_NO_TLSEXT
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
+#endif
+
+#ifdef HAVE_TLSEXT_TICKETS
+int         ssl_callback_tlsext_tickets(SSL *ssl,
+                                        char *keyname,
+                                        char *iv,
+                                        EVP_CIPHER_CTX *cipher_ctx,
+                                        HMAC_CTX *hctx,
+                                        int mode);
 #endif
 
 /**  Session Cache Support  */
