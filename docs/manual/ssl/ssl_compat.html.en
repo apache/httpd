@@ -22,22 +22,16 @@
 <a href="../fr/ssl/ssl_compat.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-<blockquote>
-<p>All PCs are compatible. But some of
-them are more compatible than others.</p>
-<p class="cite">-- <cite>Unknown</cite></p>
-</blockquote>
-
 <p>
 This page covers backwards compatibility between mod_ssl and other
 SSL solutions.  mod_ssl is not the only SSL solution for Apache; four
 additional products are (or were) also available: Ben Laurie's freely
 available <a href="http://www.apache-ssl.org/">Apache-SSL</a> (from
 where mod_ssl were originally derived in 1998), Red Hat's commercial
-<a href="http://www.redhat.com/products/product-details.phtml?id=rhsa">Secure
-Web Server</a> (which was based on mod_ssl), Covalent's commercial <a href="http://www.covalent.net/">Raven SSL Module</a> (also based on
+Secure Web Server (which was based on mod_ssl), Covalent's commercial
+Raven SSL Module (also based on
 mod_ssl) and finally C2Net's (now Red Hat's) commercial product <a href="http://www.redhat.com/explore/stronghold/">Stronghold</a> (based
-on a different evolution branch named Sioux up to Stronghold 2.x and
+on a different evolution branch, named Sioux up to Stronghold 2.x, and
 based on mod_ssl since Stronghold 3.x).</p>
 
 <p>
@@ -67,7 +61,7 @@ doesn't provide.</p>
 <tr class="header"><th colspan="3">Apache-SSL 1.x &amp; mod_ssl 2.0.x compatibility:</th></tr>
 <tr><td><code>SSLEnable</code></td><td><code>SSLEngine on</code></td><td>compactified</td></tr>
 <tr class="odd"><td><code>SSLDisable</code></td><td><code>SSLEngine off</code></td><td>compactified</td></tr>
-<tr><td><code>SSLLogFile</code> <em>file</em></td><td><code>SSLLog</code> <em>file</em></td><td>compactified</td></tr>
+<tr><td><code>SSLLogFile</code> <em>file</em></td><td><code /></td><td>Use per-module <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> setting instead.</td></tr>
 <tr class="odd"><td><code>SSLRequiredCiphers</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renamed</td></tr>
 <tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>",
 ...}</code></td><td>generalized</td></tr>
@@ -84,7 +78,7 @@ doesn't provide.</p>
 <tr><td><code>SSL_KeyFile</code> <em>file</em></td><td><code>SSLCertificateKeyFile</code> <em>file</em></td><td>renamed</td></tr>
 <tr class="odd"><td><code>SSL_CipherSuite</code> <em>arg</em></td><td><code>SSLCipherSuite</code> <em>arg</em></td><td>renamed</td></tr>
 <tr><td><code>SSL_X509VerifyDir</code> <em>arg</em></td><td><code>SSLCACertificatePath</code> <em>arg</em></td><td>renamed</td></tr>
-<tr class="odd"><td><code>SSL_Log</code> <em>file</em></td><td><code>SSLLogFile</code> <em>file</em></td><td>renamed</td></tr>
+<tr class="odd"><td><code>SSL_Log</code> <em>file</em></td><td><code>-</code></td><td>Use per-module <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> setting instead.</td></tr>
 <tr><td><code>SSL_Connect</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renamed</td></tr>
 <tr class="odd"><td><code>SSL_ClientAuth</code> <em>arg</em></td><td><code>SSLVerifyClient</code> <em>arg</em></td><td>renamed</td></tr>
 <tr><td><code>SSL_X509VerifyDepth</code> <em>arg</em></td><td><code>SSLVerifyDepth</code> <em>arg</em></td><td>renamed</td></tr>
