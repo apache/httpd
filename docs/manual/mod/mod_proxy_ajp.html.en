@@ -51,6 +51,7 @@
             directives.</p>
 <h3>Topics</h3>
 <ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#overviewprotocol">Overview of the protocol</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#basppacketstruct">Basic Packet Structure</a></li>
@@ -62,6 +63,46 @@
 <li><a href="../env.html">Environment Variable documentation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="usage" id="usage">Usage</a></h2>
+    <p>This module is used to reverse proxy to a backend application server
+    (e.g. Apache Tomcat) using the AJP13 protocol. The usage is similar to
+    an HTTP reverse proxy, but uses the <code>ajp://</code> prefix:
+
+    <div class="example"><h3>Simple Reverse Proxy</h3><p><code>
+    ProxyPass /app ajp://backend.example.com:8009/app
+    </code></p></div>
+
+    Balancers may also be used:
+    <div class="example"><h3>Balancer Reverse Proxy</h3><p><code>
+      &lt;Proxy balancer://cluster&gt;<br />
+      <span class="indent">
+        BalancerMember ajp://app1.example.com:8009 loadfactor=1<br />
+        BalancerMember ajp://app2.example.com:8009 loadfactor=2<br />
+        ProxySet lbmethod=bytraffic<br />
+      </span>
+      &lt;/Proxy&gt;<br />
+      ProxyPass /app balancer://cluster/app
+    </code></p></div>
+    </p><p>
+    Note that usually no
+    <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
+    directive is necessary. The AJP request includes the original host
+    header given to the proxy, and the application server can be expected
+    to generate self-referential headers relative to this host, so no
+    rewriting is necessary.
+    </p><p>
+    The main exception is when the URL path on the proxy differs from that on the
+    backend. In this case, a redirect header can be rewritten relative to the
+    original host URL (not the backend <code>ajp://</code> URL), for example:
+    <div class="example"><h3>Rewriting Proxied Path</h3><p><code>
+      ProxyPass /apps/foo ajp://backend.example.com:8009/foo<br />
+      ProxyPassReverse /apps/foo http://www.example.com/foo
+    </code></p></div>
+    However, it is usually better to deploy the application on the backend
+    server at the same path as the proxy rather than to take this approach.
+    </p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="env" id="env">Environment Variables</a></h2>
     <p>Environment variables whose names have the prefix <code>AJP_</code>
