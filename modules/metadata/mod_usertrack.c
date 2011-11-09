@@ -97,19 +97,16 @@ static void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = ap_get_module_config(r->server->module_config,
                                                  &usertrack_module);
-    /* 1024 == hardcoded constant */
-    char cookiebuf[1024];
+    char cookiebuf[2 * (sizeof(apr_uint64_t) + sizeof(int)) + 2];
+    unsigned int random;
+    apr_time_t now = r->request_time ? r->request_time : apr_time_now();
     char *new_cookie;
-    const char *rname = ap_get_remote_host(r->connection, r->per_dir_config,
-                                           REMOTE_NAME, NULL);
     cookie_dir_rec *dcfg;
 
+    ap_random_insecure_bytes(&random, sizeof(random));
+    apr_snprintf(cookiebuf, sizeof(cookiebuf), "%x.%" APR_UINT64_T_HEX_FMT,
+                 random, (apr_uint64_t)now);
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
-
-    /* XXX: hmm, this should really tie in with mod_unique_id */
-    apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%" APR_TIME_T_FMT, rname,
-                 apr_time_now());
-
     if (cls->expires) {
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
