@@ -1033,7 +1033,7 @@ static int do_errorlog_format(apr_array_header_t *fmt, ap_errorlog_info *info,
         else if (skipping) {
             continue;
         }
-        else if ((int)item->min_loglevel > info->level) {
+        else if (info->level != -1 && (int)item->min_loglevel > info->level) {
             len = field_start;
             skipping = 1;
         }
