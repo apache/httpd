@@ -28,6 +28,7 @@ XINCDIRS	+= \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
 			$(AP_WORK)/modules/http \
+			$(AP_WORK)/modules/ssl \
 			$(NWOS) \
 			$(LUASRC)/src \
 			$(EOLIST)
