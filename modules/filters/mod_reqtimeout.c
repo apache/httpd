@@ -203,7 +203,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     if (rv != APR_SUCCESS)
         goto out;
 
-    if (block == APR_NONBLOCK_READ || mode == AP_MODE_INIT
+    if (block == APR_NONBLOCK_READ
         || mode == AP_MODE_EATCRLF) {
         rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
         if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {

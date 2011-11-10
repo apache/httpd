@@ -56,10 +56,6 @@ typedef enum {
      *  Use this mode with extreme caution.
      */
     AP_MODE_EXHAUSTIVE,
-    /** The filter should initialize the connection if needed,
-     *  NNTP or FTP over SSL for example.
-     */
-    AP_MODE_INIT
 } ap_input_mode_t;
 
 /**

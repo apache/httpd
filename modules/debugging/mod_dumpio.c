@@ -117,8 +117,7 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
    (( mode ) == AP_MODE_GETLINE) ? "getline" : \
    (( mode ) == AP_MODE_EATCRLF) ? "eatcrlf" : \
    (( mode ) == AP_MODE_SPECULATIVE) ? "speculative" : \
-   (( mode ) == AP_MODE_EXHAUSTIVE) ? "exhaustive" : \
-   (( mode ) == AP_MODE_INIT) ? "init" : "unknown" \
+   (( mode ) == AP_MODE_EXHAUSTIVE) ? "exhaustive" : "unknown" \
  )
 
 static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,

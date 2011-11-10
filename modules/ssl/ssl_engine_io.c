@@ -1265,7 +1265,6 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     bio_filter_in_ctx_t *inctx = f->ctx;
     const char *start = inctx->buffer; /* start of block to return */
     apr_size_t len = sizeof(inctx->buffer); /* length of block to return */
-    int is_init = (mode == AP_MODE_INIT);
 
     if (f->c->aborted) {
         /* XXX: Ok, if we aborted, we ARE at the EOS.  We also have
@@ -1283,7 +1282,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 
     /* XXX: we don't currently support anything other than these modes. */
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE &&
-        mode != AP_MODE_SPECULATIVE && mode != AP_MODE_INIT) {
+        mode != AP_MODE_SPECULATIVE) {
         return APR_ENOTIMPL;
     }
 
@@ -1297,13 +1296,6 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
      */
     if ((status = ssl_io_filter_handshake(inctx->filter_ctx)) != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
-    }
-
-    if (is_init) {
-        /* protocol module needs to handshake before sending
-         * data to client (e.g. NNTP or FTP)
-         */
-        return APR_SUCCESS;
     }
 
     if (inctx->mode == AP_MODE_READBYTES ||
