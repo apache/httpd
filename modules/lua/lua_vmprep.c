@@ -282,18 +282,22 @@ static void munge_path(lua_State *L,
     current = lua_tostring(L, -1);
 
     parent_dir = ap_make_dirstr_parent(pool, file);
+ 
+    ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, NULL, "parent_dir %s", parent_dir);
+
     pattern = apr_pstrcat(pool, parent_dir, sub_pat, NULL);
+    ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, NULL, "pattern %s", pattern);
     luaL_gsub(L, current, rep_pat, pattern);
     lua_setfield(L, -3, field);
     lua_getfield(L, -2, field);
     modified = lua_tostring(L, -1);
-
+    ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, NULL, "modified %s", modified);
 
     lua_pop(L, 2);
 
     part = apr_pstrcat(pool, modified, ";", apr_array_pstrcat(pool, paths, ';'),
                        NULL);
-
+    ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, NULL, "part %s", part);
     lua_pushstring(L, part);
     lua_setfield(L, -2, field);
     lua_pop(L, 1);              /* pop "package" off the stack     */
@@ -438,8 +442,10 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                       spec->pool) != APR_SUCCESS)
                     return NULL;
 
-                apr_pool_userdata_set(reslist, "mod_lua",
-                                      vm_reslist_destroy, spec->pool);
+                apr_pool_userdata_set(reslist, 
+                                      "mod_lua",
+                                      vm_reslist_destroy, 
+                                      spec->pool);
             }
             apr_reslist_acquire(reslist, (void **)&L);
             lua_pushlightuserdata(L, L);

@@ -94,11 +94,6 @@ typedef struct
     apr_pool_t *pool;
 
     /**
-     * CODE_CACHE_STAT | CODE_CACHE_FOREVER | CODE_CACHE_NEVER
-     */
-    unsigned int code_cache_style;
-
-    /**
      * APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER
      */
     unsigned int vm_scope;
