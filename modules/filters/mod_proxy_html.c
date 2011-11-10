@@ -29,8 +29,6 @@
 #define VERBOSEB(x) if (verbose) {x}
 #endif
 
-#include <ctype.h>
-
 /* libxml2 */
 #include <libxml/HTMLparser.h>
 
@@ -40,6 +38,7 @@
 #include "apr_strings.h"
 #include "apr_hash.h"
 #include "apr_strmatch.h"
+#include "apr_lib.h"
 
 #include "apr_optional.h"
 #include "mod_xml2enc.h"
@@ -47,8 +46,8 @@
 #include "ap_expr.h"
 
 /* globals set once at startup */
-static ap_rxplus_t* old_expr;
-static ap_regex_t* seek_meta;
+static ap_rxplus_t *old_expr;
+static ap_regex_t *seek_meta;
 static const apr_strmatch_pattern* seek_content;
 static apr_status_t (*xml2enc_charset)(request_rec*, xmlCharEncoding*, const char**) = NULL;
 static apr_status_t (*xml2enc_filter)(request_rec*, const char*, unsigned int) = NULL;
@@ -67,32 +66,32 @@ module AP_MODULE_DECLARE_DATA proxy_html_module;
 #define M_INTERPOLATE_FROM      0x200
 
 typedef struct {
-    const char* val;
+    const char *val;
 } tattr;
 typedef struct {
     unsigned int start;
     unsigned int end;
 } meta;
 typedef struct urlmap {
-    struct urlmap* next;
+    struct urlmap *next;
     unsigned int flags;
     unsigned int regflags;
     union {
-        const char* c;
-        ap_regex_t* r;
+        const char *c;
+        ap_regex_t *r;
     } from;
-    const char* to;
+    const char *to;
     ap_expr_info_t *cond;
 } urlmap;
 typedef struct {
-    urlmap* map;
-    const char* doctype;
-    const char* etag;
+    urlmap *map;
+    const char *doctype;
+    const char *etag;
     unsigned int flags;
     size_t bufsz;
-    apr_hash_t* links;
-    apr_array_header_t* events;
-    const char* charset_out;
+    apr_hash_t *links;
+    apr_array_header_t *events;
+    const char *charset_out;
     int extfix;
     int metafix;
     int strip_comments;
@@ -100,15 +99,15 @@ typedef struct {
     int enabled;
 } proxy_html_conf;
 typedef struct {
-    ap_filter_t* f;
-    proxy_html_conf* cfg;
+    ap_filter_t *f;
+    proxy_html_conf *cfg;
     htmlParserCtxtPtr parser;
-    apr_bucket_brigade* bb;
-    char* buf;
+    apr_bucket_brigade *bb;
+    char *buf;
     size_t offset;
     size_t avail;
-    const char* encoding;
-    urlmap* map;
+    const char *encoding;
+    urlmap *map;
 } saxctxt;
 
 
@@ -119,23 +118,23 @@ static htmlSAXHandler sax;
 
 typedef enum { ATTR_IGNORE, ATTR_URI, ATTR_EVENT } rewrite_t;
 
-static const char* const fpi_html =
+static const char *const fpi_html =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n";
-static const char* const fpi_html_legacy =
+static const char *const fpi_html_legacy =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n";
-static const char* const fpi_xhtml =
+static const char *const fpi_xhtml =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
-static const char* const fpi_xhtml_legacy =
+static const char *const fpi_xhtml_legacy =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-static const char* const html_etag = ">";
-static const char* const xhtml_etag = " />";
+static const char *const html_etag = ">";
+static const char *const xhtml_etag = " />";
 /*#define DEFAULT_DOCTYPE fpi_html */
-static const char* const DEFAULT_DOCTYPE = "";
+static const char *const DEFAULT_DOCTYPE = "";
 #define DEFAULT_ETAG html_etag
 
-static void normalise(unsigned int flags, char* str)
+static void normalise(unsigned int flags, char *str)
 {
-    char* p;
+    char *p;
     if (flags & NORM_LC)
         for (p = str; *p; ++p)
             if (isupper(*p))
@@ -154,10 +153,10 @@ static void normalise(unsigned int flags, char* str)
 
 /* This is always utf-8 on entry.  We can convert charset within FLUSH */
 #define FLUSH AP_fwrite(ctx, (chars+begin), (i-begin), 0); begin = i+1
-static void pcharacters(void* ctxt, const xmlChar *uchars, int length)
+static void pcharacters(void *ctxt, const xmlChar *uchars, int length)
 {
-    const char* chars = (const char*) uchars;
-    saxctxt* ctx = (saxctxt*) ctxt;
+    const char *chars = (const char*) uchars;
+    saxctxt *ctx = (saxctxt*) ctxt;
     int i;
     int begin;
     for (begin=i=0; i<length; i++) {
@@ -171,9 +170,10 @@ static void pcharacters(void* ctxt, const xmlChar *uchars, int length)
     }
     FLUSH;
 }
-static void preserve(saxctxt* ctx, const size_t len)
+
+static void preserve(saxctxt *ctx, const size_t len)
 {
-    char* newbuf;
+    char *newbuf;
     if (len <= (ctx->avail - ctx->offset))
         return;
     else while (len > (ctx->avail - ctx->offset))
@@ -189,24 +189,26 @@ static void preserve(saxctxt* ctx, const size_t len)
         ctx->buf = newbuf;
     }
 }
-static void pappend(saxctxt* ctx, const char* buf, const size_t len)
+
+static void pappend(saxctxt *ctx, const char *buf, const size_t len)
 {
     preserve(ctx, len);
     memcpy(ctx->buf+ctx->offset, buf, len);
     ctx->offset += len;
 }
-static void dump_content(saxctxt* ctx)
+
+static void dump_content(saxctxt *ctx)
 {
-    urlmap* m;
-    char* found;
+    urlmap *m;
+    char *found;
     size_t s_from, s_to;
     size_t match;
     char c = 0;
     int nmatch;
     ap_regmatch_t pmatch[10];
-    char* subs;
+    char *subs;
     size_t len, offs;
-    urlmap* themap = ctx->map;
+    urlmap *themap = ctx->map;
 #ifndef GO_FASTER
     int verbose = APLOGrtrace1(ctx->f->r);
 #endif
@@ -228,7 +230,7 @@ static void dump_content(saxctxt* ctx)
                 len = strlen(ctx->buf);
                 offs += match;
                 VERBOSEB(
-                    const char* f = apr_pstrndup(ctx->f->r->pool,
+                    const char *f = apr_pstrndup(ctx->f->r->pool,
                     ctx->buf + offs, s_from);
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, ctx->f->r,
                                   "C/RX: match at %s, substituting %s", f, subs);
@@ -277,10 +279,10 @@ static void dump_content(saxctxt* ctx)
     }
     AP_fwrite(ctx, ctx->buf, strlen(ctx->buf), 1);
 }
-static void pcdata(void* ctxt, const xmlChar *uchars, int length)
+static void pcdata(void *ctxt, const xmlChar *uchars, int length)
 {
-    const char* chars = (const char*) uchars;
-    saxctxt* ctx = (saxctxt*) ctxt;
+    const char *chars = (const char*) uchars;
+    saxctxt *ctx = (saxctxt*) ctxt;
     if (ctx->cfg->extfix) {
         pappend(ctx, chars, length);
     }
@@ -291,10 +293,10 @@ static void pcdata(void* ctxt, const xmlChar *uchars, int length)
         AP_fwrite(ctx, chars, length, 0);
     }
 }
-static void pcomment(void* ctxt, const xmlChar *uchars)
+static void pcomment(void *ctxt, const xmlChar *uchars)
 {
-    const char* chars = (const char*) uchars;
-    saxctxt* ctx = (saxctxt*) ctxt;
+    const char *chars = (const char*) uchars;
+    saxctxt *ctx = (saxctxt*) ctxt;
     if (ctx->cfg->strip_comments)
         return;
 
@@ -309,10 +311,10 @@ static void pcomment(void* ctxt, const xmlChar *uchars)
         ap_fputs(ctx->f->next, ctx->bb, "-->");
     }
 }
-static void pendElement(void* ctxt, const xmlChar* uname)
+static void pendElement(void *ctxt, const xmlChar *uname)
 {
-    saxctxt* ctx = (saxctxt*) ctxt;
-    const char* name = (const char*) uname;
+    saxctxt *ctx = (saxctxt*) ctxt;
+    const char *name = (const char*) uname;
     const htmlElemDesc* desc = htmlTagLookup(uname);
 
     if ((ctx->cfg->doctype == fpi_html) || (ctx->cfg->doctype == fpi_xhtml)) {
@@ -338,19 +340,20 @@ static void pendElement(void* ctxt, const xmlChar* uname)
         ap_fprintf(ctx->f->next, ctx->bb, "</%s>", name);
     }
 }
-static void pstartElement(void* ctxt, const xmlChar* uname,
+
+static void pstartElement(void *ctxt, const xmlChar *uname,
                           const xmlChar** uattrs)
 {
     int required_attrs;
     int num_match;
     size_t offs, len;
-    char* subs;
+    char *subs;
     rewrite_t is_uri;
     const char** a;
-    urlmap* m;
+    urlmap *m;
     size_t s_to, s_from, match;
-    char* found;
-    saxctxt* ctx = (saxctxt*) ctxt;
+    char *found;
+    saxctxt *ctx = (saxctxt*) ctxt;
     size_t nmatch;
     ap_regmatch_t pmatch[10];
 #ifndef GO_FASTER
@@ -358,10 +361,10 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
 #endif
     apr_array_header_t *linkattrs;
     int i;
-    const char* name = (const char*) uname;
+    const char *name = (const char*) uname;
     const char** attrs = (const char**) uattrs;
     const htmlElemDesc* desc = htmlTagLookup(uname);
-    urlmap* themap = ctx->map;
+    urlmap *themap = ctx->map;
 #ifdef HAVE_STACK
     const void** descp;
 #endif
@@ -432,7 +435,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                 pappend(ctx, a[1], strlen(a[1])+1);
                 is_uri = ATTR_IGNORE;
                 if (linkattrs) {
-                    tattr* attrs = (tattr*) linkattrs->elts;
+                    tattr *attrs = (tattr*) linkattrs->elts;
                     for (i=0; i < linkattrs->nelts; ++i) {
                         if (!strcmp(*a, attrs[i].val)) {
                             is_uri = ATTR_URI;
@@ -443,7 +446,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                 if ((is_uri == ATTR_IGNORE) && ctx->cfg->extfix
                     && (ctx->cfg->events != NULL)) {
                     for (i=0; i < ctx->cfg->events->nelts; ++i) {
-                        tattr* attrs = (tattr*) ctx->cfg->events->elts;
+                        tattr *attrs = (tattr*) ctx->cfg->events->elts;
                         if (!strcmp(*a, attrs[i].val)) {
                             is_uri = ATTR_EVENT;
                             break;
@@ -466,7 +469,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                                 subs = ap_pregsub(ctx->f->r->pool, m->to,
                                                   ctx->buf, nmatch, pmatch);
                                 VERBOSE({
-                                    const char* f;
+                                    const char *f;
                                     f = apr_pstrndup(ctx->f->r->pool,
                                                      ctx->buf + offs, s_from);
                                     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0,
@@ -534,7 +537,7 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
                                 subs = ap_pregsub(ctx->f->r->pool, m->to, ctx->buf+offs,
                                                     nmatch, pmatch);
                                 VERBOSE({
-                                    const char* f;
+                                    const char *f;
                                     f = apr_pstrndup(ctx->f->r->pool,
                                                      ctx->buf + offs, s_from);
                                     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0,
@@ -639,14 +642,14 @@ static void pstartElement(void* ctxt, const xmlChar* uname,
     }
 }
 
-static meta* metafix(request_rec* r, const char* buf)
+static meta *metafix(request_rec *r, const char *buf)
 {
-    meta* ret = NULL;
+    meta *ret = NULL;
     size_t offs = 0;
-    const char* p;
-    const char* q;
-    char* header;
-    char* content;
+    const char *p;
+    const char *q;
+    char *header;
+    char *content;
     ap_regmatch_t pmatch[2];
     char delim;
 
@@ -654,8 +657,8 @@ static meta* metafix(request_rec* r, const char* buf)
         header = NULL;
         content = NULL;
         p = buf+offs+pmatch[1].rm_eo;
-        while (!isalpha(*++p));
-        for (q = p; isalnum(*q) || (*q == '-'); ++q);
+        while (!apr_isalpha(*++p));
+        for (q = p; apr_isalnum(*q) || (*q == '-'); ++q);
         header = apr_pstrndup(r->pool, p, q-p);
         if (strncasecmp(header, "Content-", 8)) {
             /* find content=... string */
@@ -665,16 +668,16 @@ static meta* metafix(request_rec* r, const char* buf)
             if (p != NULL) {
                 while (*p) {
                     p += 7;
-                    while (*p && isspace(*p))
+                    while (*p && apr_isspace(*p))
                         ++p;
                     if (*p != '=')
                         continue;
-                    while (*p && isspace(*++p));
+                    while (*p && apr_isspace(*++p));
                     if ((*p == '\'') || (*p == '"')) {
                         delim = *p++;
                         for (q = p; *q != delim; ++q);
                     } else {
-                        for (q = p; *q && !isspace(*q) && (*q != '>'); ++q);
+                        for (q = p; *q && !apr_isspace(*q) && (*q != '>'); ++q);
                     }
                     content = apr_pstrndup(r->pool, p, q-p);
                     break;
@@ -699,15 +702,15 @@ static meta* metafix(request_rec* r, const char* buf)
     return ret;
 }
 
-static const char* interpolate_vars(request_rec* r, const char* str)
+static const char *interpolate_vars(request_rec *r, const char *str)
 {
-    const char* start;
-    const char* end;
-    const char* delim;
-    const char* before;
-    const char* after;
-    const char* replacement;
-    const char* var;
+    const char *start;
+    const char *end;
+    const char *delim;
+    const char *before;
+    const char *after;
+    const char *replacement;
+    const char *var;
     for (;;) {
         start = str;
         if (start = ap_strstr_c(start, "${"), start == NULL)
@@ -738,12 +741,12 @@ static const char* interpolate_vars(request_rec* r, const char* str)
     }
     return str;
 }
-static void fixup_rules(saxctxt* ctx)
+static void fixup_rules(saxctxt *ctx)
 {
-    urlmap* newp;
-    urlmap* p;
-    urlmap* prev = NULL;
-    request_rec* r = ctx->f->r;
+    urlmap *newp;
+    urlmap *p;
+    urlmap *prev = NULL;
+    request_rec *r = ctx->f->r;
 
     for (p = ctx->cfg->map; p; p = p->next) {
         if (p->cond != NULL) {
@@ -787,13 +790,14 @@ static void fixup_rules(saxctxt* ctx)
     if (prev)
         prev->next = NULL;
 }
-static saxctxt* check_filter_init (ap_filter_t* f)
+
+static saxctxt *check_filter_init (ap_filter_t *f)
 {
-    saxctxt* fctx;
+    saxctxt *fctx;
     if (!f->ctx) {
-        proxy_html_conf* cfg;
-        const char* force;
-        const char* errmsg = NULL;
+        proxy_html_conf *cfg;
+        const char *force;
+        const char *errmsg = NULL;
         cfg = ap_get_module_config(f->r->per_dir_config, &proxy_html_module);
         force = apr_table_get(f->r->subprocess_env, "PROXY_HTML_FORCE");
 
@@ -839,19 +843,20 @@ static saxctxt* check_filter_init (ap_filter_t* f)
     }
     return f->ctx;
 }
-static int proxy_html_filter(ap_filter_t* f, apr_bucket_brigade* bb)
+
+static int proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket* b;
-    meta* m = NULL;
+    meta *m = NULL;
     xmlCharEncoding enc;
-    const char* buf = 0;
+    const char *buf = 0;
     apr_size_t bytes = 0;
 #ifndef USE_OLD_LIBXML2
     int xmlopts = XML_PARSE_RECOVER | XML_PARSE_NONET |
                   XML_PARSE_NOBLANKS | XML_PARSE_NOERROR | XML_PARSE_NOWARNING;
 #endif
 
-    saxctxt* ctxt = check_filter_init(f);
+    saxctxt *ctxt = check_filter_init(f);
     if (!ctxt)
         return ap_pass_brigade(f->next, bb);
     for (b = APR_BRIGADE_FIRST(bb);
@@ -878,7 +883,7 @@ static int proxy_html_filter(ap_filter_t* f, apr_bucket_brigade* bb)
         else if (apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ)
                  == APR_SUCCESS) {
             if (ctxt->parser == NULL) {
-                const char* cenc;
+                const char *cenc;
                 if (!xml2enc_charset ||
                     (xml2enc_charset(f->r, &enc, &cenc) != APR_SUCCESS)) {
                     if (!xml2enc_charset)
@@ -946,9 +951,9 @@ static int proxy_html_filter(ap_filter_t* f, apr_bucket_brigade* bb)
     return APR_SUCCESS;
 }
 
-static void* proxy_html_config(apr_pool_t* pool, char* x)
+static void *proxy_html_config(apr_pool_t *pool, char *x)
 {
-    proxy_html_conf* ret = apr_pcalloc(pool, sizeof(proxy_html_conf));
+    proxy_html_conf *ret = apr_pcalloc(pool, sizeof(proxy_html_conf));
     ret->doctype = DEFAULT_DOCTYPE;
     ret->etag = DEFAULT_ETAG;
     ret->bufsz = 8192;
@@ -956,11 +961,12 @@ static void* proxy_html_config(apr_pool_t* pool, char* x)
     /* don't initialise links and events until they get set/used */
     return ret;
 }
-static void* proxy_html_merge(apr_pool_t* pool, void* BASE, void* ADD)
+
+static void *proxy_html_merge(apr_pool_t *pool, void *BASE, void *ADD)
 {
-    proxy_html_conf* base = (proxy_html_conf*) BASE;
-    proxy_html_conf* add = (proxy_html_conf*) ADD;
-    proxy_html_conf* conf = apr_palloc(pool, sizeof(proxy_html_conf));
+    proxy_html_conf *base = (proxy_html_conf *) BASE;
+    proxy_html_conf *add = (proxy_html_conf *) ADD;
+    proxy_html_conf *conf = apr_palloc(pool, sizeof(proxy_html_conf));
 
     /* don't merge declarations - just use the most specific */
     conf->links = (add->links == NULL) ? base->links : add->links;
@@ -970,15 +976,15 @@ static void* proxy_html_merge(apr_pool_t* pool, void* BASE, void* ADD)
                         ? base->charset_out : add->charset_out;
 
     if (add->map && base->map) {
-        urlmap* a;
+        urlmap *a;
         conf->map = NULL;
         for (a = base->map; a; a = a->next) {
-            urlmap* save = conf->map;
+            urlmap *save = conf->map;
             conf->map = apr_pmemdup(pool, a, sizeof(urlmap));
             conf->map->next = save;
         }
         for (a = add->map; a; a = a->next) {
-            urlmap* save = conf->map;
+            urlmap *save = conf->map;
             conf->map = apr_pmemdup(pool, a, sizeof(urlmap));
             conf->map->next = save;
         }
@@ -1010,9 +1016,9 @@ static void* proxy_html_merge(apr_pool_t* pool, void* BASE, void* ADD)
 }
 #define REGFLAG(n,s,c) ((s&&(ap_strchr_c((s),(c))!=NULL)) ? (n) : 0)
 #define XREGFLAG(n,s,c) ((!s||(ap_strchr_c((s),(c))==NULL)) ? (n) : 0)
-static const char* comp_urlmap(cmd_parms *cmd, urlmap* newmap,
-                               const char* from, const char* to,
-                               const char* flags, const char* cond)
+static const char *comp_urlmap(cmd_parms *cmd, urlmap *newmap,
+                               const char *from, const char *to,
+                               const char *flags, const char *cond)
 {
     const char *err = NULL;
     newmap->flags
@@ -1067,18 +1073,19 @@ static const char* comp_urlmap(cmd_parms *cmd, urlmap* newmap,
     }
     return err;
 }
-static const char* set_urlmap(cmd_parms* cmd, void* CFG, const char* args)
+
+static const char *set_urlmap(cmd_parms *cmd, void *CFG, const char *args)
 {
-    proxy_html_conf* cfg = (proxy_html_conf*)CFG;
-    urlmap* map;
-    apr_pool_t* pool = cmd->pool;
-    urlmap* newmap;
-    const char* usage =
+    proxy_html_conf *cfg = (proxy_html_conf *)CFG;
+    urlmap *map;
+    apr_pool_t *pool = cmd->pool;
+    urlmap *newmap;
+    const char *usage =
               "Usage: ProxyHTMLURLMap from-pattern to-pattern [flags] [cond]";
-    const char* from;
-    const char* to;
-    const char* flags;
-    const char* cond = NULL;
+    const char *from;
+    const char *to;
+    const char *flags;
+    const char *cond = NULL;
   
     if (from = ap_getword_conf(cmd->pool, &args), !from)
         return usage;
@@ -1103,10 +1110,10 @@ static const char* set_urlmap(cmd_parms* cmd, void* CFG, const char* args)
     return comp_urlmap(cmd, newmap, from, to, flags, cond);
 }
 
-static const char* set_doctype(cmd_parms* cmd, void* CFG,
-                               const char* t, const char* l)
+static const char *set_doctype(cmd_parms *cmd, void *CFG,
+                               const char *t, const char *l)
 {
-    proxy_html_conf* cfg = (proxy_html_conf*)CFG;
+    proxy_html_conf *cfg = (proxy_html_conf *)CFG;
     if (!strcasecmp(t, "xhtml")) {
         cfg->etag = xhtml_etag;
         if (l && !strcasecmp(l, "legacy"))
@@ -1130,9 +1137,10 @@ static const char* set_doctype(cmd_parms* cmd, void* CFG,
     }
     return NULL;
 }
-static const char* set_flags(cmd_parms* cmd, void* CFG, const char* arg)
+
+static const char *set_flags(cmd_parms *cmd, void *CFG, const char *arg)
 {
-    proxy_html_conf* cfg = CFG;
+    proxy_html_conf *cfg = CFG;
     if (arg && *arg) {
         if (!strcmp(arg, "lowercase"))
             cfg->flags |= NORM_LC;
@@ -1143,22 +1151,24 @@ static const char* set_flags(cmd_parms* cmd, void* CFG, const char* arg)
     }
     return NULL;
 }
-static const char* set_events(cmd_parms* cmd, void* CFG, const char* arg)
+
+static const char *set_events(cmd_parms *cmd, void *CFG, const char *arg)
 {
-    tattr* attr;
-    proxy_html_conf* cfg = CFG;
+    tattr *attr;
+    proxy_html_conf *cfg = CFG;
     if (cfg->events == NULL)
         cfg->events = apr_array_make(cmd->pool, 20, sizeof(tattr));
     attr = apr_array_push(cfg->events);
     attr->val = arg;
     return NULL;
 }
-static const char* set_links(cmd_parms* cmd, void* CFG,
-                             const char* elt, const char* att)
+
+static const char *set_links(cmd_parms *cmd, void *CFG,
+                             const char *elt, const char *att)
 {
-    apr_array_header_t* attrs;
-    tattr* attr;
-    proxy_html_conf* cfg = CFG;
+    apr_array_header_t *attrs;
+    tattr *attr;
+    proxy_html_conf *cfg = CFG;
 
     if (cfg->links == NULL)
         cfg->links = apr_hash_make(cmd->pool);
@@ -1209,7 +1219,7 @@ static const command_rec proxy_html_cmds[] = {
                  "Enable proxy-html and xml2enc filters"),
     { NULL }
 };
-static int mod_proxy_html(apr_pool_t* p, apr_pool_t* p1, apr_pool_t* p2)
+static int mod_proxy_html(apr_pool_t *p, apr_pool_t *p1, apr_pool_t *p2)
 {
     seek_meta = ap_pregcomp(p, "<meta[^>]*(http-equiv)[^>]*>",
                             AP_REG_EXTENDED|AP_REG_ICASE);
@@ -1233,9 +1243,9 @@ static int mod_proxy_html(apr_pool_t* p, apr_pool_t* p1, apr_pool_t* p2)
     old_expr = ap_rxplus_compile(p1, "s/^(!)?(\\w+)((=)(.+))?$/reqenv('$2')$1$4'$5'/");
     return OK;
 }
-static void proxy_html_insert(request_rec* r)
+static void proxy_html_insert(request_rec *r)
 {
-    proxy_html_conf* cfg;
+    proxy_html_conf *cfg;
     cfg = ap_get_module_config(r->per_dir_config, &proxy_html_module);
     if (cfg->enabled) {
         if (xml2enc_filter)
@@ -1243,9 +1253,9 @@ static void proxy_html_insert(request_rec* r)
         ap_add_output_filter("proxy-html", NULL, r, r->connection);
     }
 }
-static void proxy_html_hooks(apr_pool_t* p)
+static void proxy_html_hooks(apr_pool_t *p)
 {
-    static const char* aszSucc[] = { "mod_filter.c", NULL };
+    static const char *aszSucc[] = { "mod_filter.c", NULL };
     ap_register_output_filter_protocol("proxy-html", proxy_html_filter,
                                        NULL, AP_FTYPE_RESOURCE,
                           AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH);
