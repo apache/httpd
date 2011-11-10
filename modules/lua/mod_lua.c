@@ -129,7 +129,6 @@ static int lua_handler(request_rec *r)
             spec->scope = dcfg->vm_scope;
             spec->pool = spec->scope==APL_SCOPE_SERVER ? cfg->pool : r->pool;
             spec->file = r->filename;
-            spec->code_cache_style = dcfg->code_cache_style;
             spec->package_paths = cfg->package_paths;
             spec->package_cpaths = cfg->package_cpaths;
             spec->vm_server_pool_min = cfg->vm_server_pool_min;
@@ -141,9 +140,8 @@ static int lua_handler(request_rec *r)
         }
 
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "request details scope:%u, cache:%u, filename:%s, function:%s",
+                      "request details scope:%u, filename:%s, function:%s",
                       d->spec->scope,
-                      d->spec->code_cache_style,
                       d->spec->file,
                       d->function_name);
         L = ap_lua_get_lua_state(r->pool,
@@ -200,7 +198,6 @@ static int lua_alias_munger(request_rec *r)
             spec->file = ap_pregsub(r->pool, cnd->file_name, r->uri,
                                     AP_MAX_REG_MATCH, matches);
             spec->scope = cnd->scope;
-            spec->code_cache_style = cnd->code_cache_style;
             spec->bytecode = cnd->bytecode;
             spec->bytecode_len = cnd->bytecode_len;
             if (spec->scope == APL_SCOPE_ONCE) {
@@ -253,7 +250,6 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
 
             spec->file = hook_spec->file_name;
-            spec->code_cache_style = hook_spec->code_cache_style;
             spec->scope = hook_spec->scope;
             spec->vm_server_pool_min = cfg->vm_server_pool_min;
             spec->vm_server_pool_max = cfg->vm_server_pool_max;
@@ -502,7 +498,6 @@ static const char *register_named_block_function_hook(const char *name,
         else {
             function = NULL;
         }
-        spec->code_cache_style = APL_CODE_CACHE_FOREVER;
 
         ctx.cmd = cmd;
         tmp = apr_pstrdup(cmd->pool, cmd->err_directive->directive + 1);
@@ -580,20 +575,13 @@ static const char *register_named_file_function_hook(const char *name,
     spec->file_name = apr_pstrdup(cmd->pool, file);
     spec->function_name = apr_pstrdup(cmd->pool, function);
     spec->scope = cfg->vm_scope;
-    spec->code_cache_style = APL_CODE_CACHE_STAT;
-    /*
-       int code_cache_style;
-       char *function_name;
-       char *file_name;
-       int scope;
-     */
+
     *(ap_lua_mapped_handler_spec **) apr_array_push(hook_specs) = spec;
     return NULL;
 }
 
 static int lua_check_user_id_harness_first(request_rec *r)
 {
-
     return lua_request_rec_hook_harness(r, "check_user_id", AP_LUA_HOOK_FIRST);
 }
 static int lua_check_user_id_harness(request_rec *r)
@@ -905,7 +893,8 @@ static const char *register_package_dir(cmd_parms *cmd, void *_cfg,
  * Called for config directive which looks like
  * LuaPackageCPath /lua/package/path/mapped/thing/like/this/?.so
  */
-static const char *register_package_cdir(cmd_parms *cmd, void *_cfg,
+static const char *register_package_cdir(cmd_parms *cmd, 
+                                         void *_cfg,
                                          const char *arg)
 {
     ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
@@ -913,35 +902,11 @@ static const char *register_package_cdir(cmd_parms *cmd, void *_cfg,
     return register_package_helper(cmd, arg, cfg->package_cpaths);
 }
 
-/**
- * Called for config directive which looks like
- * LuaCodeCache
- */
-static const char *register_code_cache(cmd_parms *cmd, void *_cfg,
-                                       const char *arg)
-{
-    ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
-    if (strcmp("stat", arg) == 0) {
-        cfg->code_cache_style = APL_CODE_CACHE_STAT;
-    }
-    else if (strcmp("forever", arg) == 0) {
-        cfg->code_cache_style = APL_CODE_CACHE_FOREVER;
-    }
-    else if (strcmp("never", arg) == 0) {
-        cfg->code_cache_style = APL_CODE_CACHE_NEVER;
-    }
-    else {
-        return apr_psprintf(cmd->pool,
-                            "Invalid value for LuaCodeCache, '%s', "
-                            "acceptable values are 'stat', 'forever', and "
-                            "'never'",
-                            arg);
-    }
-    return NULL;
-}
 
-static const char *register_lua_scope(cmd_parms *cmd, void *_cfg,
-                                      const char *scope, const char *min,
+static const char *register_lua_scope(cmd_parms *cmd, 
+                                      void *_cfg,
+                                      const char *scope, 
+                                      const char *min,
                                       const char *max)
 {
     ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
@@ -1090,10 +1055,6 @@ command_rec lua_commands[] = {
                   OR_ALL,
                   "Provide a hook for the insert_filter phase of request processing"),
 
-    AP_INIT_TAKE1("LuaCodeCache", register_code_cache, NULL, OR_ALL,
-                  "Configure the compiled code cache. \
-                   Default is to stat the file each time, options are stat|forever|never"),
-
     AP_INIT_TAKE123("LuaScope", register_lua_scope, NULL, OR_ALL,
                     "One of once, request, conn, server -- default is once"),
 
@@ -1116,7 +1077,6 @@ static void *create_dir_config(apr_pool_t *p, char *dir)
     cfg->package_cpaths = apr_array_make(p, 2, sizeof(char *));
     cfg->mapped_handlers =
         apr_array_make(p, 1, sizeof(ap_lua_mapped_handler_spec *));
-    cfg->code_cache_style = APL_CODE_CACHE_STAT;
     cfg->pool = p;
     cfg->hooks = apr_hash_make(p);
     cfg->dir = apr_pstrdup(p, dir);
@@ -1137,12 +1097,8 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
 {
 
     ap_lua_server_cfg *cfg = apr_pcalloc(p, sizeof(ap_lua_server_cfg));
-    cfg->code_cache = apr_pcalloc(p, sizeof(ap_lua_code_cache));
-    apr_thread_rwlock_create(&cfg->code_cache->compiled_files_lock, p);
-    cfg->code_cache->compiled_files = apr_hash_make(p);
     cfg->vm_reslists = apr_hash_make(p);
     apr_thread_rwlock_create(&cfg->vm_reslists_lock, p);
-    cfg->code_cache->pool = p;
     cfg->root_path = NULL;
 
     return cfg;
