@@ -1060,12 +1060,7 @@ static const char* comp_urlmap(cmd_parms *cmd, urlmap* newmap,
             }
             cond = newcond;
         }
-#if 0
-        newmap->cond = apr_palloc(pool, sizeof(ap_expr_info_t));
-        err = ap_expr_parse(pool, tpool, newmap->cond, cond, NULL);
-#else
         newmap->cond = ap_expr_parse_cmd(cmd, cond, 0, &err, NULL);
-#endif
     }
     else {
         newmap->cond = NULL;
