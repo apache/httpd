@@ -427,37 +427,6 @@ AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
 {
     lua_State *L = NULL;
 
-    /*
-    if (spec->scope == AP_LUA_SCOPE_SERVER) {
-        apr_reslist_t *reslist;
-
-        if (apr_pool_userdata_get((void **)&reslist,
-                                  "mod_lua", spec->pool) == APR_SUCCESS) {
-            if(reslist==NULL) {
-                if(apr_reslist_create(&reslist,
-                                      spec->vm_server_pool_min,
-                                      spec->vm_server_pool_max,
-                                      spec->vm_server_pool_max,
-                                      0,
-                                      vm_construct,
-                                      vm_destruct,
-                                      spec,
-                                      spec->pool) != APR_SUCCESS)
-                    return NULL;
-
-                apr_pool_userdata_set(reslist, 
-                                      "mod_lua",
-                                      vm_reslist_destroy, 
-                                      spec->pool);
-            }
-            apr_reslist_acquire(reslist, (void **)&L);
-            lua_pushlightuserdata(L, L);
-            lua_pushlightuserdata(L, reslist);
-            lua_rawset(L,LUA_REGISTRYINDEX);
-            apr_pool_userdata_set(L, spec->file, vm_release, lifecycle_pool);
-        }
-    } else {
-    */
     if (apr_pool_userdata_get((void **)&L, spec->file,
                               lifecycle_pool) == APR_SUCCESS) {
       
