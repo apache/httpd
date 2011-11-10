@@ -74,32 +74,6 @@ static int lua_open_hook(lua_State *L, apr_pool_t *p)
     return OK;
 }
 
-/*
-static apr_status_t luahood(ap_filter_t *f, apr_bucket_brigade *bb) {
-    apr_bucket* b;
-    apr_status_t rs;
-    for ( b = APR_BRIGADE_FIRST(bb);
-          b != APR_BRIGADE_SENTINEL(bb);
-          b = APR_BUCKET_NEXT(b))
-    {
-        if (APR_BUCKET_IS_EOS(b)) {kl
-            break;
-        }
-        const char *buffer;
-        size_t bytes;
-        if (( rs = apr_bucket_read(b, &buffer, &bytes, APR_BLOCK_READ))) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, rs, f->r, "read failure in luahood");
-            return rs;
-        }
-        char *mine = apr_pstrmemdup(f->r->pool, buffer, bytes);
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, "sending '%s'", mine);
-    }
-
-    ap_pass_brigade(f->next, bb);
-
-    return OK;
-}
-*/
 
 /**
  * "main"
@@ -110,7 +84,7 @@ static int lua_handler(request_rec *r)
     if (strcmp(r->handler, "lua-script")) {
         return DECLINED;
     }
-
+  
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "handling [%s] in mod_lua",
                   r->filename);
     dcfg = ap_get_module_config(r->per_dir_config, &lua_module);
@@ -121,33 +95,28 @@ static int lua_handler(request_rec *r)
                                                          &lua_module);
         ap_lua_request_cfg *rcfg = ap_get_module_config(r->request_config,
                                                         &lua_module);
-        mapped_request_details *d = rcfg->mapped_request_details;
+
         ap_lua_vm_spec *spec = NULL;
 
-        if (!d) {
-            d = apr_palloc(r->pool, sizeof(mapped_request_details));
-            spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
-            spec->scope = dcfg->vm_scope;
-            spec->pool = spec->scope==APL_SCOPE_SERVER ? cfg->pool : r->pool;
-            spec->file = r->filename;
-            spec->package_paths = cfg->package_paths;
-            spec->package_cpaths = cfg->package_cpaths;
-            spec->vm_server_pool_min = cfg->vm_server_pool_min;
-            spec->vm_server_pool_max = cfg->vm_server_pool_max;
-            spec->cb = &lua_open_callback;
-            spec->cb_arg = NULL;
-            d->spec = spec;
-            d->function_name = "handle";
-        }
-
+        spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
+        spec->scope = dcfg->vm_scope;
+        spec->pool = spec->scope==AP_LUA_SCOPE_SERVER ? cfg->pool : r->pool;
+        spec->file = r->filename;
+        spec->package_paths = cfg->package_paths;
+        spec->package_cpaths = cfg->package_cpaths;
+        spec->vm_server_pool_min = cfg->vm_server_pool_min;
+        spec->vm_server_pool_max = cfg->vm_server_pool_max;
+        spec->cb = &lua_open_callback;
+        spec->cb_arg = NULL;
+      
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "request details scope:%u, filename:%s, function:%s",
-                      d->spec->scope,
-                      d->spec->file,
-                      d->function_name);
+                      spec->scope,
+                      spec->file,
+                      "handle");
         L = ap_lua_get_lua_state(r->pool,
-                              d->spec);
-
+                                 spec);
+        
         if (!L) {
             /* TODO annotate spec with failure reason */
             r->status = HTTP_INTERNAL_SERVER_ERROR;
@@ -155,12 +124,12 @@ static int lua_handler(request_rec *r)
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "got a vm!");
-        lua_getglobal(L, d->function_name);
+        lua_getglobal(L, "handle");
         if (!lua_isfunction(L, -1)) {
             ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
                           "lua: Unable to find function %s in %s",
-                          d->function_name,
-                          d->spec->file);
+                          "handle",
+                          spec->file);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         ap_lua_run_lua_request(L, r);
@@ -173,55 +142,6 @@ static int lua_handler(request_rec *r)
 
 
 
-/**
- * Like mod_alias except for lua handler fun :-)
- */
-static int lua_alias_munger(request_rec *r)
-{
-    ap_lua_vm_spec *spec;
-    ap_lua_request_cfg *rcfg = ap_get_module_config(r->request_config,
-                                                    &lua_module);
-    const ap_lua_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
-                                                     &lua_module);
-    int i;
-    ap_regmatch_t matches[AP_MAX_REG_MATCH];
-
-    for (i = 0; i < cfg->mapped_handlers->nelts; i++) {
-        const ap_lua_mapped_handler_spec *cnd =
-            ((const ap_lua_mapped_handler_spec **) cfg->mapped_handlers->elts)[i];
-
-        if (OK == ap_regexec(cnd->uri_pattern, r->uri, AP_MAX_REG_MATCH,
-                             matches, 0)) {
-            mapped_request_details *d;
-            r->handler = "lua-script";
-
-            spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
-            spec->file = ap_pregsub(r->pool, cnd->file_name, r->uri,
-                                    AP_MAX_REG_MATCH, matches);
-            spec->scope = cnd->scope;
-            spec->bytecode = cnd->bytecode;
-            spec->bytecode_len = cnd->bytecode_len;
-            if (spec->scope == APL_SCOPE_ONCE) {
-                spec->pool = r->pool;
-            }
-
-            spec->cb = &lua_open_callback;
-            spec->cb_arg = NULL;
-
-            d = apr_palloc(r->pool, sizeof(mapped_request_details));
-
-            d->function_name = ap_pregsub(r->pool, cnd->function_name, r->uri,
-                                          AP_MAX_REG_MATCH, matches);
-            d->spec = spec;
-
-            /* now do replacement on method name where? */
-            r->filename = apr_pstrdup(r->pool, spec->file);
-            rcfg->mapped_request_details = d;
-            return OK;
-        }
-    }
-    return DECLINED;
-}
 
 /* ---------------- Configury stuff --------------- */
 
@@ -256,7 +176,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             spec->vm_server_pool_max = cfg->vm_server_pool_max;
             spec->bytecode = hook_spec->bytecode;
             spec->bytecode_len = hook_spec->bytecode_len;
-            spec->pool = spec->scope==APL_SCOPE_SERVER ? cfg->pool : r->pool;
+            spec->pool = spec->scope==AP_LUA_SCOPE_SERVER ? cfg->pool : r->pool;
             spec->package_paths = cfg->package_paths;
             spec->package_cpaths = cfg->package_cpaths;
             spec->cb = &lua_open_callback;
@@ -912,16 +832,16 @@ static const char *register_lua_scope(cmd_parms *cmd,
 {
     ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
     if (strcmp("once", scope) == 0) {
-        cfg->vm_scope = APL_SCOPE_ONCE;
+        cfg->vm_scope = AP_LUA_SCOPE_ONCE;
     }
     else if (strcmp("request", scope) == 0) {
-        cfg->vm_scope = APL_SCOPE_REQUEST;
+        cfg->vm_scope = AP_LUA_SCOPE_REQUEST;
     }
     else if (strcmp("conn", scope) == 0) {
-        cfg->vm_scope = APL_SCOPE_CONN;
+        cfg->vm_scope = AP_LUA_SCOPE_CONN;
     }
     else if (strcmp("server", scope) == 0) {
-        cfg->vm_scope = APL_SCOPE_SERVER;
+        cfg->vm_scope = AP_LUA_SCOPE_SERVER;
         if (min)
             cfg->vm_server_pool_min = atoi(min);
         if (max)
@@ -938,27 +858,6 @@ static const char *register_lua_scope(cmd_parms *cmd,
 }
 
 
-/**
- * Called for config directive which looks like
- * AddLuaHandler /alias /path/to/lua/file.lua [handler_function_name]
- */
-static const char *lua_map_handler(cmd_parms *cmd, void *_cfg,
-                                   const char *path, const char *file,
-                                   const char *function)
-{
-    ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
-    apr_status_t rv;
-    const char *function_name;
-    function_name = function ? function : "handle";
-    rv = ap_lua_map_handler(cfg, file, function_name, path, "once");
-    if (rv != APR_SUCCESS) {
-        return apr_psprintf(cmd->pool,
-                            "Unable to configure a lua handler for path "
-                            "'%s', handler %s#%s",
-                            path, file, function_name);
-    }
-    return NULL;
-}
 
 static const char *register_lua_root(cmd_parms *cmd, void *_cfg,
                                      const char *root)
@@ -996,12 +895,11 @@ command_rec lua_commands[] = {
     AP_INIT_TAKE1("LuaPackageCPath", register_package_cdir, NULL, OR_ALL,
                   "Add a directory to lua's package.cpath"),
 
-    AP_INIT_TAKE23("LuaMapHandler", lua_map_handler, NULL, OR_ALL,
-                   "Map a path to a lua handler"),
 
     AP_INIT_TAKE23("LuaHookTranslateName", register_translate_name_hook, NULL,
                   OR_ALL,
                   "Provide a hook for the translate name phase of request processing"),
+
     AP_INIT_RAW_ARGS("<LuaHookTranslateName", register_translate_name_block,
                      NULL,
                      EXEC_ON_READ | OR_ALL,
@@ -1086,7 +984,7 @@ static void *create_dir_config(apr_pool_t *p, char *dir)
     cfg->pool = p;
     cfg->hooks = apr_hash_make(p);
     cfg->dir = apr_pstrdup(p, dir);
-    cfg->vm_scope = APL_SCOPE_ONCE;
+    cfg->vm_scope = AP_LUA_SCOPE_ONCE;
     return cfg;
 }
 
@@ -1170,7 +1068,6 @@ static void lua_register_hooks(apr_pool_t *p)
                           APR_HOOK_MIDDLE);
     ap_hook_quick_handler(lua_quick_harness, NULL, NULL, APR_HOOK_FIRST);
 
-    ap_hook_translate_name(lua_alias_munger, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(lua_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_OPTIONAL_HOOK(ap_lua, lua_open, lua_open_hook, NULL, NULL,
