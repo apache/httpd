@@ -76,8 +76,9 @@
 
       <li>configure: dynamic modules (DSO) are built by default</li>
 
-      <li>configure: By default, only load those modules that are either required
-      or explicitly selected by a configure <code>--enable-foo</code> argument.</li>
+      <li>configure: By default, only a basic set of modules is loaded. The
+      other <directive>LoadModule</directive> directives are commented
+      out.</li>
 
       <li>configure: the "most" module set gets built by default</li>
 
