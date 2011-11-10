@@ -618,6 +618,8 @@ const char *ssl_cmd_SSLTicketKeyFile(cmd_parms *cmd, void *dcfg, const char *nam
     modssl_ticket_t* ticket = NULL;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
+    path = ap_server_root_relative(cmd->pool, path);
+
     rv = apr_file_open(&fp, path, APR_READ|APR_BINARY,
                        APR_OS_DEFAULT, cmd->temp_pool);
 
