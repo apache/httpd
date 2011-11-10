@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) configure: Only load the really imporant modules (i.e. those enabled by
+     the 'few' selection) by default. Don't handle modules enabled with
+     --enable-foo specially. [Stefan Fritsch]
+
   *) end-generation hook: Fix false notification of end-of-generation for
      temporary intervals with no active MPM children.  [Jeff Trawick]
 
