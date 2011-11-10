@@ -730,7 +730,7 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <description>Provide a hook for the quick handler of request processing</description>
 <syntax></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<context>directory</context>
 </contextlist>
 <override>All</override>
 <usage><p>...</p>
