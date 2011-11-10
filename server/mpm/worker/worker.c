@@ -692,7 +692,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 
     free(ti);
 
-    rv = apr_pollset_create_ex(&pollset, num_listensocks, tpool, 0, APR_POLLSET_POLL);
+    rv = apr_pollset_create(&pollset, num_listensocks, tpool, 0);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                      "Couldn't create pollset in thread;"
