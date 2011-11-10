@@ -1054,7 +1054,7 @@ static const char* comp_urlmap(cmd_parms *cmd, urlmap* newmap,
            /* we got a substitution.  Check for the case (3) above
             * that the regexp gets wrong: a negation without a comparison.
             */
-            if ((cond[0] == '!') && !strchr(cond, '=')) {
+            if ((cond[0] == '!') && !ap_strchr_c(cond, '=')) {
                 memmove(newcond+1, newcond, strlen(newcond)-1);
                 newcond[0] = '!';
             }
