@@ -697,13 +697,13 @@ int main(int argc, const char * const argv[])
     apr_pool_destroy(ptemp);
 
     for (;;) {
-        ap_config_generation++;
         ap_main_state = AP_SQ_MS_DESTROY_CONFIG;
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
         ap_clear_auth_internal();
 
         ap_main_state = AP_SQ_MS_CREATE_CONFIG;
+        ap_config_generation++;
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
         }
