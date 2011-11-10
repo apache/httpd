@@ -112,6 +112,7 @@ ServerAdmin you@example.com
 # <Directory> blocks below.
 #
 <Directory />
+    AllowOverride none
     Require all denied
 </Directory>
 
