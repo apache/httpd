@@ -257,7 +257,7 @@ EOF
             # add default MPM to LoadModule list
             if test $1 = $default_mpm; then
                 DSO_MODULES="$DSO_MODULES mpm_$1"
-                ENABLED_DSO_MODULES="$ENABLED_DSO_MODULES mpm_$1"
+                ENABLED_DSO_MODULES="${ENABLED_DSO_MODULES},mpm_$1"
             fi
         fi
         $4
@@ -360,7 +360,7 @@ AC_DEFUN(APACHE_MODULE,[
       shared=yes
       DSO_MODULES="$DSO_MODULES $1"
       if test "$_apmod_required" = "yes" ; then
-        ENABLED_DSO_MODULES="$ENABLED_DSO_MODULES $1"
+        ENABLED_DSO_MODULES="${ENABLED_DSO_MODULES},$1"
       fi
       ;;
     esac

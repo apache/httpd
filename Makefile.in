@@ -60,7 +60,7 @@ install-conf:
 	    				< $$i; \
 	    			for j in $(DSO_MODULES) "^EOL^"; do \
 	    				if test $$j != "^EOL^"; then \
-	    					if echo "$(ENABLED_DSO_MODULES)"|$(EGREP) "\<$$j\>" > /dev/null ; then \
+	    					if echo ",$(ENABLED_DSO_MODULES),"|$(EGREP) ",$$j," > /dev/null ; then \
 	    						loading_disabled=""; \
 	    					else \
 	    						loading_disabled="#"; \
