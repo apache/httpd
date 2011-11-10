@@ -17,10 +17,14 @@
 #
 #
 
+if [ "$1" = "--verbose" -o "$1" = "-v" ]; then
+    verbose="--verbose"
+    shift
+fi
+
 # Default place to look for apr source.  Can be overridden with 
 #   --with-apr=[directory]
 apr_src_dir=../apr
-apu_src_dir=../apr-util
 
 while test $# -gt 0 
 do
@@ -34,33 +38,19 @@ do
   --with-apr=*)
   apr_src_dir=$optarg
   ;;
-  --with-apr-util=*)
-  apu_src_dir=$optarg
-  ;;
   esac
 
   shift
 done
 
 if [ -f "$apr_src_dir/build/apr_common.m4" ]; then
-  echo ""
+  apr_src_dir=`cd $apr_src_dir; pwd`
   echo "Looking for apr source in $apr_src_dir"
 else
   echo ""
   echo "Problem finding apr source in $apr_src_dir."
   echo "Use:"
   echo "  --with-apr=[directory]" 
-  exit 1
-fi
-
-if [ -f "$apu_src_dir/build/find_apu.m4" ]; then
-  echo ""
-  echo "Looking for apr-util source in $apu_src_dir"
-else
-  echo ""
-  echo "Problem finding apr-util source in $apu_src_dir."
-  echo "Use:"
-  echo "  --with-apr-util=[directory]" 
   exit 1
 fi
 
@@ -72,10 +62,6 @@ rm -f build/apr_common.m4 build/find_apr.m4 build/install.sh \
 cp $apr_src_dir/build/apr_common.m4 $apr_src_dir/build/find_apr.m4 \
    $apr_src_dir/build/install.sh $apr_src_dir/build/config.guess  \
    $apr_src_dir/build/config.sub build
-
-rm -f build/find_apu.m4
-cp $apu_src_dir/build/find_apu.m4 build
-
 
 # Remove aclocal.m4 as it'll break some builds...
 rm -rf aclocal.m4 autom4te*.cache

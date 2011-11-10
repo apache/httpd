@@ -92,8 +92,8 @@ if test "$apr_found" = "reconfig"; then
                     [$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir],
                     [--enable-layout=*|\'--enable-layout=*])
   dnl We must be the first to build and the last to be cleaned
-  AP_BUILD_SRCLIB_DIRS="apr $AP_BUILD_SRCLIB_DIRS"
-  AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS apr"
+  AP_BUILD_SRCLIB_DIRS="apr libapreq $AP_BUILD_SRCLIB_DIRS"
+  AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS libapreq apr"
 
   dnl We have to find apr-N-config when we reconfigure APR.
   for majorver in 1 2; do
@@ -118,6 +118,9 @@ APR_INCLUDES=`$apr_config --includes`
 APR_VERSION=`$apr_config --version`
 apr_major_version=`echo ${APR_VERSION} | sed 's,\..*,,'`
 APR_CONFIG="$APR_BINDIR/apr-${apr_major_version}-config"
+
+echo $ac_n "${nl}Configuring Apache Request Library...${nl}"
+APR_SUBDIR_CONFIG(srclib/libapreq, [--with-apr=../apr/apr-2-config])
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
