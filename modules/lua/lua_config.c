@@ -39,16 +39,16 @@ static cmd_parms *check_cmd_parms(lua_State *L, int index)
 static int apl_toscope(const char *name)
 {
     if (0 == strcmp("once", name))
-        return APL_SCOPE_ONCE;
+        return AP_LUA_SCOPE_ONCE;
     if (0 == strcmp("request", name))
-        return APL_SCOPE_REQUEST;
+        return AP_LUA_SCOPE_REQUEST;
     if (0 == strcmp("connection", name))
-        return APL_SCOPE_CONN;
+        return AP_LUA_SCOPE_CONN;
     if (0 == strcmp("conn", name))
-        return APL_SCOPE_CONN;
+        return AP_LUA_SCOPE_CONN;
     if (0 == strcmp("server", name))
-        return APL_SCOPE_SERVER;
-    return APL_SCOPE_ONCE;
+        return AP_LUA_SCOPE_SERVER;
+    return AP_LUA_SCOPE_ONCE;
 }
 
 AP_LUA_DECLARE(apr_status_t) ap_lua_map_handler(ap_lua_dir_cfg *cfg,
@@ -114,7 +114,7 @@ static int cfg_lua_map_handler(lua_State *L)
         handler->scope = apl_toscope(scope);
     }
     else {
-        handler->scope = APL_SCOPE_ONCE;
+        handler->scope = AP_LUA_SCOPE_ONCE;
     }
     lua_pop(L, 1);
 
@@ -259,7 +259,6 @@ static int cmd_trace8(lua_State *L)
     cmd_log_at(L, APLOG_TRACE8);
     return 0;
 }
-
 
 static const struct luaL_Reg cmd_methods[] = {
     {"foo", cmd_foo},

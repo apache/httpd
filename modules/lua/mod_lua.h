@@ -94,7 +94,7 @@ typedef struct
     apr_pool_t *pool;
 
     /**
-     * APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER
+     * AP_LUA_SCOPE_ONCE | AP_LUA_SCOPE_REQUEST | AP_LUA_SCOPE_CONN | AP_LUA_SCOPE_SERVER
      */
     unsigned int vm_scope;
     unsigned int vm_server_pool_min;
@@ -109,7 +109,6 @@ typedef struct
 
 typedef struct
 {
-    ap_lua_code_cache *code_cache;
     apr_hash_t *vm_reslists;
     apr_thread_rwlock_t *vm_reslists_lock;
 
