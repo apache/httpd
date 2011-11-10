@@ -245,6 +245,23 @@ static apr_status_t cleanup_lua(void *l)
     return APR_SUCCESS;
 }
 
+/*
+        munge_path(L, 
+                   "path", 
+                   "?.lua", 
+                   "./?.lua", 
+                   lifecycle_pool,
+                   spec->package_paths, 
+                   spec->file);
+*/
+/**
+ * field -> "path" or "cpath"
+ * sub_pat -> "?.lua"
+ * rep_pat -> "./?.lua"
+ * pool -> lifecycle pool for allocations
+ * paths -> things to add
+ * file -> ???
+ */
 static void munge_path(lua_State *L,
                        const char *field,
                        const char *sub_pat,
@@ -261,17 +278,22 @@ static void munge_path(lua_State *L,
 
     lua_getglobal(L, "package");
     lua_getfield(L, -1, field);
+    
     current = lua_tostring(L, -1);
+
     parent_dir = ap_make_dirstr_parent(pool, file);
     pattern = apr_pstrcat(pool, parent_dir, sub_pat, NULL);
     luaL_gsub(L, current, rep_pat, pattern);
     lua_setfield(L, -3, field);
     lua_getfield(L, -2, field);
     modified = lua_tostring(L, -1);
+
+
     lua_pop(L, 2);
 
-    part = apr_pstrcat(pool, modified, apr_array_pstrcat(pool, paths, ';'),
+    part = apr_pstrcat(pool, modified, ";", apr_array_pstrcat(pool, paths, ';'),
                        NULL);
+
     lua_pushstring(L, part);
     lua_setfield(L, -2, field);
     lua_pop(L, 1);              /* pop "package" off the stack     */
@@ -308,8 +330,11 @@ static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_
 #endif
     luaL_openlibs(L);
     if (spec->package_paths) {
-        munge_path(L, "path", "?.lua", "./?.lua", lifecycle_pool,
-            spec->package_paths, spec->file);
+        munge_path(L, 
+                   "path", "?.lua", "./?.lua", 
+                   lifecycle_pool,
+                   spec->package_paths, 
+                   spec->file);
     }
     if (spec->package_cpaths) {
         munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,

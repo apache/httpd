@@ -18,7 +18,7 @@
 local mu = require "moonunit" 
 local http = require "helpers"
 
-http.base_url = "http://localhost:8000"
+http.base_url = "http://localhost:8008"
 
 local test = mu.TestCase:new{}
 

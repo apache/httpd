@@ -155,7 +155,6 @@ static const struct luaL_Reg cfg_methods[] = {
 };
 
 
-
 static int cmd_foo(lua_State *L)
 {
     cmd_parms *cmd = check_cmd_parms(L, 1);
