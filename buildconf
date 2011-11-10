@@ -161,6 +161,14 @@ if [ "$apr_src_dir" = "srclib/apr" ]; then
     rm -f srclib/apr/apr.spec
 fi
 
+apreq_configure="srclib/libapreq"
+echo
+echo rebuilding $apreq_configure
+(cd srclib/libapreq && ./buildconf) || {
+    echo "./buildconf failed for apreq"
+    exit 1
+}
+
 apr_src_dir=`cd $apr_src_dir && pwd` 
 
 if [ $apr_major_version -lt 2 ] ; then

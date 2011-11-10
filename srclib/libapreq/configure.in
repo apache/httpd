@@ -15,7 +15,6 @@ sinclude(build/apreq-conf.m4)
 sinclude(build/apreq-hints.m4)
 sinclude(build/apr_common.m4)
 sinclude(build/find_apr.m4)
-sinclude(build/find_apu.m4)
 
 dnl Generate ./config.nice for reproducing runs of configure
 dnl 
@@ -90,8 +89,6 @@ APR_ADDTO(CPPFLAGS, `$apr_config --cppflags`)
 
 AC_SUBST(CPP)
 
-APREQ_FIND_APU
-
 dnl get our version information
 get_version="$abs_srcdir/build/get-version.sh"
 version_hdr="$abs_srcdir/include/apreq_version.h"
@@ -125,7 +122,6 @@ dnl
 dnl Prep all the flags and stuff for compilation and export to other builds
 dnl
 APR_ADDTO(APREQ_LIBS, [$APR_LIBS])
-APR_ADDTO(APREQ_LIBS, [$APU_LIBS])
 
 AC_SUBST(APREQ_EXPORT_LIBS)
 AC_SUBST(APREQ_PRIV_INCLUDES)
