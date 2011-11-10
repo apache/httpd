@@ -120,7 +120,7 @@ apr_major_version=`echo ${APR_VERSION} | sed 's,\..*,,'`
 APR_CONFIG="$APR_BINDIR/apr-${apr_major_version}-config"
 
 echo $ac_n "${nl}Configuring Apache Request Library...${nl}"
-APR_SUBDIR_CONFIG(srclib/libapreq, [--with-apr=../apr/apr-2-config])
+APR_SUBDIR_CONFIG(srclib/libapreq, [--with-apr=../apr/apr-2-config --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir])
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
