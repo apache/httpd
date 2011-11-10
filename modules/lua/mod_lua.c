@@ -33,6 +33,7 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_request,
                                     (lua_State *L, request_rec *r),
                                     (L, r), OK, DECLINED)
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *lua_ssl_val = NULL;
+static APR_OPTIONAL_FN_TYPE(ssl_is_https) *lua_ssl_is_https = NULL;
 
      module AP_MODULE_DECLARE_DATA lua_module;
 
@@ -977,6 +978,11 @@ AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_r
     return NULL;
 }
 
+AP_LUA_DECLARE(int) ap_lua_ssl_is_https(conn_rec *c)
+{
+    return lua_ssl_is_https ? lua_ssl_is_https(c) : 0;
+}
+
 /*******************************/
 
 command_rec lua_commands[] = {
@@ -1114,6 +1120,7 @@ static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
     lua_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
+    lua_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     return OK;
 }
 

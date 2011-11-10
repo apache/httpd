@@ -358,6 +358,11 @@ static apr_table_t* req_notes(request_rec *r)
   return r->notes;
 }
 
+static int req_ssl_is_https_field(request_rec *r)
+{
+    return ap_lua_ssl_is_https(r->connection);
+}
+
 /* END dispatch mathods for request_rec fields */
 
 static int req_dispatch(lua_State *L)
@@ -645,6 +650,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_escape_html, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "ssl_var_lookup", APR_HASH_KEY_STRING,
                  makefun(&req_ssl_var_lookup, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "is_https", APR_HASH_KEY_STRING,
+                 makefun(&req_ssl_is_https_field, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "assbackwards", APR_HASH_KEY_STRING,
                  makefun(&req_assbackwards_field, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "status", APR_HASH_KEY_STRING,
