@@ -345,6 +345,13 @@ Patterns supported are as above.</p>
 </dd>
 </dl>
 
+<p>The optional fourth <strong>cond</strong> argument defines a condition
+that will be evaluated per Request, provided
+<code class="directive">ProxyHTMLInterp</code> is <var>On</var>.
+If the condition evaluates FALSE the map will not be applied in this request.
+If TRUE, or if no condition is defined, the map is applied.</p>
+<p>A <strong>cond</strong> is evaluated by the <a href="../expr.html">Expression Parser</a>.  In addition, the simpler syntax of conditions
+in mod_proxy_html 3.x for HTTPD 2.0 and 2.2 is also supported.</p>
 
 </div>
 </div>
