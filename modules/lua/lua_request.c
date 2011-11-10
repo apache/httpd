@@ -486,6 +486,21 @@ static int req_debug(lua_State *L)
     return 0;
 }
 
+#define APLUA_REQ_TRACE(lev) static int req_trace##lev(lua_State *L)  \
+{                                                               \
+    req_log_at(L, APLOG_TRACE##lev);                            \
+    return 0;                                                   \
+}
+
+APLUA_REQ_TRACE(1)
+APLUA_REQ_TRACE(2)
+APLUA_REQ_TRACE(3)
+APLUA_REQ_TRACE(4)
+APLUA_REQ_TRACE(5)
+APLUA_REQ_TRACE(6)
+APLUA_REQ_TRACE(7)
+APLUA_REQ_TRACE(8)
+
 /* handle r.status = 201 */
 static int req_newindex(lua_State *L)
 {
@@ -606,6 +621,22 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_alert, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "emerg", APR_HASH_KEY_STRING,
                  makefun(&req_emerg, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace1", APR_HASH_KEY_STRING,
+                 makefun(&req_trace1, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace2", APR_HASH_KEY_STRING,
+                 makefun(&req_trace2, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace3", APR_HASH_KEY_STRING,
+                 makefun(&req_trace3, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace4", APR_HASH_KEY_STRING,
+                 makefun(&req_trace4, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace5", APR_HASH_KEY_STRING,
+                 makefun(&req_trace5, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace6", APR_HASH_KEY_STRING,
+                 makefun(&req_trace6, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace7", APR_HASH_KEY_STRING,
+                 makefun(&req_trace7, APL_REQ_FUNTYPE_LUACFUN, p));
+    apr_hash_set(dispatch, "trace8", APR_HASH_KEY_STRING,
+                 makefun(&req_trace8, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "add_output_filter", APR_HASH_KEY_STRING,
                  makefun(&req_add_output_filter, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "construct_url", APR_HASH_KEY_STRING,
