@@ -16,7 +16,6 @@
  */
 #include "mod_lua.h"
 #include "http_log.h"
-#include "apr_reslist.h"
 #include "apr_uuid.h"
 #include "lua_config.h"
 #include "apr_file_info.h"
@@ -401,21 +400,6 @@ static apr_status_t vm_destruct(void *vm, void *params, apr_pool_t *pool)
     cleanup_lua(L);
 
     return APR_SUCCESS;
-}
-
-static apr_status_t vm_release(void *vm)
-{
-    apr_reslist_t* reslist;
-    lua_pushlightuserdata(vm,vm);
-    lua_rawget(vm,LUA_REGISTRYINDEX);
-    reslist = (apr_reslist_t*)lua_topointer(vm,-1);
-
-    return apr_reslist_release(reslist, vm);
-}
-
-static apr_status_t vm_reslist_destroy(void *data)
-{
-    return apr_reslist_destroy(data);
 }
 
 /**

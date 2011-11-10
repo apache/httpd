@@ -37,7 +37,7 @@
 #define AP_LUA_SCOPE_ONCE          1
 #define AP_LUA_SCOPE_REQUEST       2
 #define AP_LUA_SCOPE_CONN          3
-#define AP_LUA_SCOPE_SERVER        4
+#define AP_LUA_SCOPE_THREAD        4
 
 
 typedef void (*ap_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
@@ -55,7 +55,7 @@ typedef struct
     /* name of base file to load in the vm */
     char *file;
 
-    /* APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER */
+    /* APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_THREAD */
     int scope;
 
     ap_lua_state_open_callback cb;

@@ -46,8 +46,8 @@ static int apl_toscope(const char *name)
         return AP_LUA_SCOPE_CONN;
     if (0 == strcmp("conn", name))
         return AP_LUA_SCOPE_CONN;
-    if (0 == strcmp("server", name))
-        return AP_LUA_SCOPE_SERVER;
+    if (0 == strcmp("thread", name))
+        return AP_LUA_SCOPE_THREAD;
     return AP_LUA_SCOPE_ONCE;
 }
 

@@ -100,7 +100,7 @@ static int lua_handler(request_rec *r)
 
         spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
         spec->scope = dcfg->vm_scope;
-        spec->pool = spec->scope==AP_LUA_SCOPE_SERVER ? cfg->pool : r->pool;
+        spec->pool = r->pool;
         spec->file = r->filename;
         spec->package_paths = cfg->package_paths;
         spec->package_cpaths = cfg->package_cpaths;
@@ -172,7 +172,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             spec->scope = hook_spec->scope;
             spec->bytecode = hook_spec->bytecode;
             spec->bytecode_len = hook_spec->bytecode_len;
-            spec->pool = spec->scope==AP_LUA_SCOPE_SERVER ? cfg->pool : r->pool;
+            spec->pool = r->pool;
             spec->package_paths = cfg->package_paths;
             spec->package_cpaths = cfg->package_cpaths;
             spec->cb = &lua_open_callback;
@@ -836,8 +836,8 @@ static const char *register_lua_scope(cmd_parms *cmd,
     else if (strcmp("conn", scope) == 0) {
         cfg->vm_scope = AP_LUA_SCOPE_CONN;
     }
-    else if (strcmp("server", scope) == 0) {
-        cfg->vm_scope = AP_LUA_SCOPE_SERVER;
+    else if (strcmp("thread", scope) == 0) {
+        cfg->vm_scope = AP_LUA_SCOPE_THREAD;
     }
     else {
         return apr_psprintf(cmd->pool,
