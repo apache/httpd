@@ -2112,8 +2112,6 @@ int ssl_callback_tlsext_tickets(SSL *ssl,
 
         RAND_pseudo_bytes(iv, EVP_MAX_IV_LENGTH);
 
-        memcpy(iv, iv, EVP_MAX_IV_LENGTH);
-
         EVP_EncryptInit_ex(cipher_ctx, EVP_aes_128_cbc(), NULL,
                            ticket->aes_key, iv);
 
