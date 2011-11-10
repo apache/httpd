@@ -44,8 +44,10 @@
 #include "apr_optional.h"
 #include "mod_xml2enc.h"
 #include "http_request.h"
+#include "ap_expr.h"
 
 /* globals set once at startup */
+static ap_rxplus_t* old_expr;
 static ap_regex_t* seek_meta;
 static const apr_strmatch_pattern* seek_content;
 static apr_status_t (*xml2enc_charset)(request_rec*, xmlCharEncoding*, const char**) = NULL;
@@ -71,11 +73,6 @@ typedef struct {
     unsigned int start;
     unsigned int end;
 } meta;
-typedef struct {
-    const char* env;
-    const char* val;
-    int rel;
-} rewritecond;
 typedef struct urlmap {
     struct urlmap* next;
     unsigned int flags;
@@ -85,7 +82,7 @@ typedef struct urlmap {
         ap_regex_t* r;
     } from;
     const char* to;
-    rewritecond* cond;
+    ap_expr_info_t *cond;
 } urlmap;
 typedef struct {
     urlmap* map;
@@ -743,34 +740,20 @@ static const char* interpolate_vars(request_rec* r, const char* str)
 }
 static void fixup_rules(saxctxt* ctx)
 {
-    const char* thisval;
     urlmap* newp;
     urlmap* p;
     urlmap* prev = NULL;
     request_rec* r = ctx->f->r;
-    int has_cond;
 
     for (p = ctx->cfg->map; p; p = p->next) {
-        has_cond = -1;
         if (p->cond != NULL) {
-            thisval = apr_table_get(r->subprocess_env, p->cond->env);
-            if (!p->cond->val) {
-                /* required to be "anything" */
-                if (thisval)
-                    has_cond = 1;        /* satisfied */
-                else
-                    has_cond = 0;        /* unsatisfied */
+            const char *err;
+            int ok = ap_expr_exec(r, p->cond, &err);
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Error evaluating expr: %s", err);
             }
-            else {
-                if (thisval && !strcasecmp(p->cond->val, thisval)) {
-                    has_cond = 1;        /* satisfied */
-                }
-                else {
-                    has_cond = 0;        /* unsatisfied */
-                }
-            }
-            if (((has_cond == 0) && (p->cond->rel ==1))
-                || ((has_cond == 1) && (p->cond->rel == -1))) {
+            if (ok == 0) {
                 continue;  /* condition is unsatisfied */
             }
         }
@@ -1027,10 +1010,11 @@ static void* proxy_html_merge(apr_pool_t* pool, void* BASE, void* ADD)
 }
 #define REGFLAG(n,s,c) ((s&&(ap_strchr_c((s),(c))!=NULL)) ? (n) : 0)
 #define XREGFLAG(n,s,c) ((!s||(ap_strchr_c((s),(c))==NULL)) ? (n) : 0)
-static void comp_urlmap(apr_pool_t* pool, urlmap* newmap, const char* from,
-                        const char* to, const char* flags, const char* cond)
+static const char* comp_urlmap(cmd_parms *cmd, urlmap* newmap,
+                               const char* from, const char* to,
+                               const char* flags, const char* cond)
 {
-    char* eq;
+    const char *err = NULL;
     newmap->flags
         = XREGFLAG(M_HTML,flags,'h')
         | XREGFLAG(M_EVENTS,flags,'e')
@@ -1053,28 +1037,40 @@ static void comp_urlmap(apr_pool_t* pool, urlmap* newmap, const char* from,
             | REGFLAG(AP_REG_ICASE,flags,'i')
             | REGFLAG(AP_REG_NOSUB,flags,'n')
             | REGFLAG(AP_REG_NEWLINE,flags,'s');
-        newmap->from.r = ap_pregcomp(pool, from, newmap->regflags);
+        newmap->from.r = ap_pregcomp(cmd->pool, from, newmap->regflags);
         newmap->to = to;
     }
     if (cond != NULL) {
-        char* cond_copy;
-        newmap->cond = apr_pcalloc(pool, sizeof(rewritecond));
-        if (cond[0] == '!') {
-            newmap->cond->rel = -1;
-            newmap->cond->env = cond_copy = apr_pstrdup(pool, cond+1);
-        } else {
-            newmap->cond->rel = 1;
-            newmap->cond->env = cond_copy = apr_pstrdup(pool, cond);
+        /* back-compatibility: support old-style ENV expressions
+         * by converting to ap_expr syntax.
+         *
+         * 1. var --> env(var)
+         * 2. var=val --> env(var)=val
+         * 3. !var --> !env(var)
+         * 4. !var=val --> env(var)!=val
+         */
+        char *newcond = NULL;
+        if (ap_rxplus_exec(cmd->temp_pool, old_expr, cond, &newcond)) {
+           /* we got a substitution.  Check for the case (3) above
+            * that the regexp gets wrong: a negation without a comparison.
+            */
+            if ((cond[0] == '!') && !strchr(cond, '=')) {
+                memmove(newcond+1, newcond, strlen(newcond)-1);
+                newcond[0] = '!';
+            }
+            cond = newcond;
         }
-        eq = ap_strchr(++cond_copy, '=');
-        if (eq) {
-            *eq = 0;
-            newmap->cond->val = eq+1;
-        }
+#if 0
+        newmap->cond = apr_palloc(pool, sizeof(ap_expr_info_t));
+        err = ap_expr_parse(pool, tpool, newmap->cond, cond, NULL);
+#else
+        newmap->cond = ap_expr_parse_cmd(cmd, cond, 0, &err, NULL);
+#endif
     }
     else {
         newmap->cond = NULL;
     }
+    return err;
 }
 static const char* set_urlmap(cmd_parms* cmd, void* CFG, const char* args)
 {
@@ -1109,8 +1105,7 @@ static const char* set_urlmap(cmd_parms* cmd, void* CFG, const char* args)
     else
         cfg->map = newmap;
 
-    comp_urlmap(cmd->pool, newmap, from, to, flags, cond);
-    return NULL;
+    return comp_urlmap(cmd, newmap, from, to, flags, cond);
 }
 
 static const char* set_doctype(cmd_parms* cmd, void* CFG,
@@ -1219,8 +1214,7 @@ static const command_rec proxy_html_cmds[] = {
                  "Enable proxy-html and xml2enc filters"),
     { NULL }
 };
-static int mod_proxy_html(apr_pool_t* p, apr_pool_t* p1, apr_pool_t* p2,
-                          server_rec* s)
+static int mod_proxy_html(apr_pool_t* p, apr_pool_t* p1, apr_pool_t* p2)
 {
     seek_meta = ap_pregcomp(p, "<meta[^>]*(http-equiv)[^>]*>",
                             AP_REG_EXTENDED|AP_REG_ICASE);
@@ -1239,6 +1233,9 @@ static int mod_proxy_html(apr_pool_t* p, apr_pool_t* p1, apr_pool_t* p2,
                       "Without it, non-ASCII characters in proxied pages are "
                       "likely to display incorrectly.");
     }
+
+    /* old_expr only needs to last the life of the config phase */
+    old_expr = ap_rxplus_compile(p1, "s/^(!)?(\\w+)((=)(.+))?$/reqenv('$2')$1$4'$5'/");
     return OK;
 }
 static void proxy_html_insert(request_rec* r)
@@ -1257,7 +1254,10 @@ static void proxy_html_hooks(apr_pool_t* p)
     ap_register_output_filter_protocol("proxy-html", proxy_html_filter,
                                        NULL, AP_FTYPE_RESOURCE,
                           AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH);
-    ap_hook_post_config(mod_proxy_html, NULL, NULL, APR_HOOK_MIDDLE);
+    /* move this to pre_config so old_expr is available to interpret
+     * old-style conditions on URL maps.
+     */
+    ap_hook_pre_config(mod_proxy_html, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter(proxy_html_insert, NULL, aszSucc, APR_HOOK_MIDDLE);
 }
 module AP_MODULE_DECLARE_DATA proxy_html_module = {
