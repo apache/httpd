@@ -137,6 +137,11 @@ void ap_register_extra_mpm_process(pid_t pid, ap_generation_t gen);
 int ap_unregister_extra_mpm_process(pid_t pid, ap_generation_t *old_gen);
 
 /**
+ * Pool cleanup for end-generation hook implementation
+ */
+apr_status_t ap_mpm_end_gen_helper(void *unused);
+
+/**
  * Safely signal an MPM child process, if the process is in the
  * current process group.  Otherwise fail.
  * @param pid the process id of a child process to signal

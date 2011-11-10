@@ -4389,6 +4389,8 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
                      "or other system security module is loaded.");
         return !OK;
     }
+    apr_pool_cleanup_register(pconf, NULL, ap_mpm_end_gen_helper,
+                              apr_pool_cleanup_null);
     return OK;
 }
 
