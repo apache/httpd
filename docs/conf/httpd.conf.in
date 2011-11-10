@@ -388,6 +388,9 @@ LogLevel warn
 # Various default settings
 #Include @rel_sysconfdir@/extra/httpd-default.conf
 
+# If mod_proxy_html is required
+#Include @rel_sysconfdir@/extra/proxy-html.conf
+
 # Secure (SSL/TLS) connections
 #Include @rel_sysconfdir@/extra/httpd-ssl.conf
 #
