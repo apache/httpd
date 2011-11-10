@@ -571,7 +571,6 @@ static int child_fatal;
 /* volatile because they're updated from a signal handler */
 static int volatile shutdown_pending;
 static int volatile restart_pending;
-ap_generation_t volatile ap_my_generation = 0;
 
 static apr_status_t decrement_connection_count(void *dummy) {
     apr_atomic_dec32(&connection_count);
