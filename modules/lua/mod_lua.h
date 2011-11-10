@@ -97,8 +97,6 @@ typedef struct
      * AP_LUA_SCOPE_ONCE | AP_LUA_SCOPE_REQUEST | AP_LUA_SCOPE_CONN | AP_LUA_SCOPE_SERVER
      */
     unsigned int vm_scope;
-    unsigned int vm_server_pool_min;
-    unsigned int vm_server_pool_max;
 
     /* info for the hook harnesses */
     apr_hash_t *hooks;          /* <wombat_hook_info> */

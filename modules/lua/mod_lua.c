@@ -104,8 +104,6 @@ static int lua_handler(request_rec *r)
         spec->file = r->filename;
         spec->package_paths = cfg->package_paths;
         spec->package_cpaths = cfg->package_cpaths;
-        spec->vm_server_pool_min = cfg->vm_server_pool_min;
-        spec->vm_server_pool_max = cfg->vm_server_pool_max;
         spec->cb = &lua_open_callback;
         spec->cb_arg = NULL;
       
@@ -172,8 +170,6 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
 
             spec->file = hook_spec->file_name;
             spec->scope = hook_spec->scope;
-            spec->vm_server_pool_min = cfg->vm_server_pool_min;
-            spec->vm_server_pool_max = cfg->vm_server_pool_max;
             spec->bytecode = hook_spec->bytecode;
             spec->bytecode_len = hook_spec->bytecode_len;
             spec->pool = spec->scope==AP_LUA_SCOPE_SERVER ? cfg->pool : r->pool;
@@ -842,10 +838,6 @@ static const char *register_lua_scope(cmd_parms *cmd,
     }
     else if (strcmp("server", scope) == 0) {
         cfg->vm_scope = AP_LUA_SCOPE_SERVER;
-        if (min)
-            cfg->vm_server_pool_min = atoi(min);
-        if (max)
-            cfg->vm_server_pool_max = atoi(max);
     }
     else {
         return apr_psprintf(cmd->pool,
