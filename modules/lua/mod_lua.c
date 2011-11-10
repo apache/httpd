@@ -702,11 +702,6 @@ static const char *register_translate_name_hook(cmd_parms *cmd, void *_cfg,
 static const char *register_translate_name_block(cmd_parms *cmd, void *_cfg,
                                                  const char *line)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES|
-                                                NOT_IN_HTACCESS);
-    if (err) {
-        return err;
-    }
     return register_named_block_function_hook("translate_name", cmd, _cfg,
                                               line);
 }
@@ -862,12 +857,6 @@ static const char *register_quick_hook(cmd_parms *cmd, void *_cfg,
 static const char *register_quick_block(cmd_parms *cmd, void *_cfg,
                                         const char *line)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIRECTORY|NOT_IN_FILES|
-                                                NOT_IN_HTACCESS);
-    if (err) {
-        return err;
-    }
- 
     return register_named_block_function_hook("quick", cmd, _cfg,
                                               line);
 }
