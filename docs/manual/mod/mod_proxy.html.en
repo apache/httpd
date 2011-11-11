@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
-<p class="apache">Apache HTTP Server Version 2.3</p>
+<p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_proxy</h1>
 <div class="toplang">
@@ -1502,23 +1502,10 @@ proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-<p>
-Useful in conjunction with
-<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>
-in situations where backend URL paths are mapped to public paths on the
-reverse proxy. This directive rewrites the <code>path</code> string in
-<code>Set-Cookie</code> headers. If the beginning of the cookie path matches
-<var>internal-path</var>, the cookie path will be replaced with
-<var>public-path</var>.
-</p><p>
-In the example given with 
-<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, the directive:
-    <div class="example"><p><code>
-      ProxyPassReverseCookiePath  /  /mirror/foo/
-    </code></p></div>
-will rewrite a cookie with backend path <code>/</code> (or
-<code>/example</code> or, in fact, anything) to <code>/mirror/foo/</code>.
-</p>
+<p>Usage is basically similar to
+<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, but instead of
+rewriting headers that are a URL, this rewrites the <code>path</code>
+string in <code>Set-Cookie</code> headers.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
