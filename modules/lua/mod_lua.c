@@ -85,6 +85,7 @@ static int lua_open_hook(lua_State *L, apr_pool_t *p)
 static int lua_handler(request_rec *r)
 {
     ap_lua_dir_cfg *dcfg;
+    apr_pool_t *pool;
     if (strcmp(r->handler, "lua-script")) {
         return DECLINED;
     }
@@ -97,9 +98,6 @@ static int lua_handler(request_rec *r)
         lua_State *L;
         const ap_lua_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                                          &lua_module);
-        ap_lua_request_cfg *rcfg = ap_get_module_config(r->request_config,
-                                                        &lua_module);
-
         ap_lua_vm_spec *spec = NULL;
 
         spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
@@ -117,7 +115,6 @@ static int lua_handler(request_rec *r)
                       spec->file,
                       "handle");
 
-        apr_pool_t *pool;
         switch (dcfg->vm_scope) {
         case AP_LUA_SCOPE_ONCE:
           apr_pool_create(&pool, r->pool);
