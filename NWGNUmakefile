@@ -416,6 +416,7 @@ install :: nlms instscripts FORCE
 	$(call MKCNF,docs/conf/extra/httpd-userdir.conf.in,            $(INSTALLBASE)/conf/extra/httpd-userdir.conf)
 	$(call MKCNF,docs/conf/extra/httpd-vhosts.conf.in,             $(INSTALLBASE)/conf/extra/httpd-vhosts.conf)
 	$(call MKCNF,docs/conf/extra/httpd-ssl.conf.in,                $(INSTALLBASE)/conf/extra/httpd-ssl.conf)
+	$(call MKCNF,docs/conf/extra/proxy-html.conf.in,                $(INSTALLBASE)/conf/extra/proxy-html.conf)
 	$(call COPYR,docs/docroot,                                     $(INSTALLBASE)/htdocs)
 	$(call COPYR,docs/error,                                       $(INSTALLBASE)/error)
 	$(call COPYR,docs/icons,                                       $(INSTALLBASE)/icons)
