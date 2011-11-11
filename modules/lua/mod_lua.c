@@ -168,6 +168,7 @@ static int lua_handler(request_rec *r)
 static int lua_request_rec_hook_harness(request_rec *r, const char *name, int apr_hook_when)
 {
     int rc;
+    apr_pool_t *pool;
     lua_State *L;
     ap_lua_vm_spec *spec;
     ap_lua_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
@@ -200,7 +201,31 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
 
             apr_filepath_merge(&spec->file, server_cfg->root_path,
                                spec->file, APR_FILEPATH_NOTRELATIVE, r->pool);
-            L = ap_lua_get_lua_state(r->pool, spec);
+
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "request details scope:%u, filename:%s, function:%s",
+                          spec->scope,
+                          spec->file,
+                          hook_spec->function_name ? hook_spec->function_name : "-");
+
+            switch (spec->scope) {
+            case AP_LUA_SCOPE_ONCE:
+             apr_pool_create(&pool, r->pool);
+              break;
+            case AP_LUA_SCOPE_REQUEST:
+              pool = r->pool;
+              break;
+            case AP_LUA_SCOPE_CONN:
+              pool = r->connection->pool;
+              break;
+            case AP_LUA_SCOPE_THREAD:
+              #if APR_HAS_THREADS
+              pool = apr_thread_pool_get(r->connection->current_thread);
+              break;
+              #endif
+            }
+
+            L = ap_lua_get_lua_state(pool, spec);
 
             if (!L) {
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
