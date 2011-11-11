@@ -41,7 +41,7 @@ install-conf:
 	done; \
 	for j in $(top_srcdir)/docs/conf $(top_builddir)/docs/conf ; do \
 	    cd $$j ; \
-	    for i in httpd.conf extra/httpd-*.conf; do \
+	    for i in httpd.conf extra/*.conf; do \
 	    	if [ -f $$i ] ; then \
 	    	( \
 	    		n_lm=`awk 'BEGIN {n=0} /@@LoadModule@@/ {n+=1} END {print n}' < $$i`; \
