@@ -94,16 +94,9 @@ typedef struct
     apr_pool_t *pool;
 
     /**
-     * CODE_CACHE_STAT | CODE_CACHE_FOREVER | CODE_CACHE_NEVER
-     */
-    unsigned int code_cache_style;
-
-    /**
-     * APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER
+     * AP_LUA_SCOPE_ONCE | AP_LUA_SCOPE_REQUEST | AP_LUA_SCOPE_CONN | AP_LUA_SCOPE_SERVER
      */
     unsigned int vm_scope;
-    unsigned int vm_server_pool_min;
-    unsigned int vm_server_pool_max;
 
     /* info for the hook harnesses */
     apr_hash_t *hooks;          /* <wombat_hook_info> */
@@ -114,7 +107,6 @@ typedef struct
 
 typedef struct
 {
-    ap_lua_code_cache *code_cache;
     apr_hash_t *vm_reslists;
     apr_thread_rwlock_t *vm_reslists_lock;
 
@@ -149,5 +141,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap_lua, AP_LUA, int, lua_request,
                           (lua_State *L, request_rec *r))
 
 AP_LUA_DECLARE(const char *) ap_lua_ssl_val(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, const char *var);
+
+AP_LUA_DECLARE(int) ap_lua_ssl_is_https(conn_rec *c);
 
 #endif /* !_MOD_LUA_H_ */

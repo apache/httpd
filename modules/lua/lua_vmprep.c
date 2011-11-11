@@ -16,7 +16,6 @@
  */
 #include "mod_lua.h"
 #include "http_log.h"
-#include "apr_reslist.h"
 #include "apr_uuid.h"
 #include "lua_config.h"
 #include "apr_file_info.h"
@@ -245,6 +244,23 @@ static apr_status_t cleanup_lua(void *l)
     return APR_SUCCESS;
 }
 
+/*
+        munge_path(L, 
+                   "path", 
+                   "?.lua", 
+                   "./?.lua", 
+                   lifecycle_pool,
+                   spec->package_paths, 
+                   spec->file);
+*/
+/**
+ * field -> "path" or "cpath"
+ * sub_pat -> "?.lua"
+ * rep_pat -> "./?.lua"
+ * pool -> lifecycle pool for allocations
+ * paths -> things to add
+ * file -> ???
+ */
 static void munge_path(lua_State *L,
                        const char *field,
                        const char *sub_pat,
@@ -261,17 +277,24 @@ static void munge_path(lua_State *L,
 
     lua_getglobal(L, "package");
     lua_getfield(L, -1, field);
+    
     current = lua_tostring(L, -1);
+
     parent_dir = ap_make_dirstr_parent(pool, file);
+ 
     pattern = apr_pstrcat(pool, parent_dir, sub_pat, NULL);
+
     luaL_gsub(L, current, rep_pat, pattern);
     lua_setfield(L, -3, field);
     lua_getfield(L, -2, field);
     modified = lua_tostring(L, -1);
+
+
     lua_pop(L, 2);
 
-    part = apr_pstrcat(pool, modified, apr_array_pstrcat(pool, paths, ';'),
+    part = apr_pstrcat(pool, modified, ";", apr_array_pstrcat(pool, paths, ';'),
                        NULL);
+
     lua_pushstring(L, part);
     lua_setfield(L, -2, field);
     lua_pop(L, 1);              /* pop "package" off the stack     */
@@ -308,8 +331,11 @@ static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_
 #endif
     luaL_openlibs(L);
     if (spec->package_paths) {
-        munge_path(L, "path", "?.lua", "./?.lua", lifecycle_pool,
-            spec->package_paths, spec->file);
+        munge_path(L, 
+                   "path", "?.lua", "./?.lua", 
+                   lifecycle_pool,
+                   spec->package_paths, 
+                   spec->file);
     }
     if (spec->package_cpaths) {
         munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,
@@ -376,67 +402,32 @@ static apr_status_t vm_destruct(void *vm, void *params, apr_pool_t *pool)
     return APR_SUCCESS;
 }
 
-static apr_status_t vm_release(void *vm)
-{
-    apr_reslist_t* reslist;
-    lua_pushlightuserdata(vm,vm);
-    lua_rawget(vm,LUA_REGISTRYINDEX);
-    reslist = (apr_reslist_t*)lua_topointer(vm,-1);
-
-    return apr_reslist_release(reslist, vm);
-}
-
-static apr_status_t vm_reslist_destroy(void *data)
-{
-    return apr_reslist_destroy(data);
-}
-
+/**
+ * Function used to create a lua_State instance bound into the web
+ * server in the appropriate scope.
+ */
 AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
                                                ap_lua_vm_spec *spec)
 {
     lua_State *L = NULL;
 
-    if (spec->scope == APL_SCOPE_SERVER) {
-        apr_reslist_t *reslist;
-
-        if (apr_pool_userdata_get((void **)&reslist,
-                                  "mod_lua", spec->pool) == APR_SUCCESS) {
-            if(reslist==NULL) {
-                if(apr_reslist_create(&reslist,
-                                      spec->vm_server_pool_min,
-                                      spec->vm_server_pool_max,
-                                      spec->vm_server_pool_max,
-                                      0,
-                                      vm_construct,
-                                      vm_destruct,
-                                      spec,
-                                      spec->pool) != APR_SUCCESS)
-                    return NULL;
-
-                apr_pool_userdata_set(reslist, "mod_lua",
-                                      vm_reslist_destroy, spec->pool);
-            }
-            apr_reslist_acquire(reslist, (void **)&L);
-            lua_pushlightuserdata(L, L);
-            lua_pushlightuserdata(L, reslist);
-            lua_rawset(L,LUA_REGISTRYINDEX);
-            apr_pool_userdata_set(L, spec->file, vm_release, lifecycle_pool);
+    if (apr_pool_userdata_get((void **)&L, spec->file,
+                              lifecycle_pool) == APR_SUCCESS) {
+      
+      if(L==NULL) {
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
+                      "creating lua_State with file %s", spec->file);
+        /* not available, so create */
+        
+        if(!vm_construct((void **)&L, spec, lifecycle_pool)) {
+          apr_pool_userdata_set(L, 
+                                spec->file, 
+                                cleanup_lua,
+                                lifecycle_pool);
         }
-    } else {
-        if (apr_pool_userdata_get((void **)&L, spec->file,
-                                  lifecycle_pool) == APR_SUCCESS) {
-
-            if(L==NULL) {
-                ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
-                              "creating lua_State with file %s", spec->file);
-                /* not available, so create */
-
-                if(!vm_construct((void **)&L, spec, lifecycle_pool))
-                    apr_pool_userdata_set(L, spec->file, cleanup_lua,
-                                          lifecycle_pool);
-            }
-        }
+      }
     }
+        /*}*/
 
     return L;
 }

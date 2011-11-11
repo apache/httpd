@@ -2079,8 +2079,8 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
 #endif
 
 int ssl_callback_tlsext_tickets(SSL *ssl,
-                                char *keyname,
-                                char *iv,
+                                unsigned char *keyname,
+                                unsigned char *iv,
                                 EVP_CIPHER_CTX *cipher_ctx,
                                 HMAC_CTX *hctx,
                                 int mode)

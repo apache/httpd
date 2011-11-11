@@ -359,7 +359,7 @@ AC_DEFUN(APACHE_MODULE,[
       sharedobjs=yes
       shared=yes
       DSO_MODULES="$DSO_MODULES $1"
-      if test "$_apmod_required" = "yes" ; then
+      if test "$5" = "yes" ; then
         ENABLED_DSO_MODULES="${ENABLED_DSO_MODULES},$1"
       fi
       ;;
