@@ -1725,7 +1725,7 @@ header for proxied requests</description>
     <directive>ProxyPassReverseCookiePath</directive> directives,
     and causes them to substitute the value of an environment
     variable <code>varname</code> for the string <code>${varname}</code>
-    in configuration directives.</p>
+    in configuration directives (if the <var>interpolate</var> option is set).</p>
     <p>Keep this turned off (for server performance) unless you need it!</p>
 </usage>
 </directivesynopsis>
