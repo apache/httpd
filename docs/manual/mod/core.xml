@@ -2409,7 +2409,7 @@ client</description>
     that will be allowed in an HTTP request header.</p>
 
     <p>The <directive>LimitRequestFieldSize</directive> directive
-    allows the server administrator to reduce or increase the limit
+    allows the server administrator to set the limit
     on the allowed size of an HTTP request header field. A server
     needs this value to be large enough to hold any one header field
     from a normal client request. The size of a normal request header
@@ -2429,7 +2429,8 @@ client</description>
     </example>
 
     <note>Under normal conditions, the value should not be changed from
-    the default.</note>
+    the default. Also, you can't set this higher than 8190 without
+    modifying the source code and rebuilding.</note>
 
     <note type="warning"><title>Warning</title>
     <p> When name-based virtual hosting is used, the value for this
@@ -2452,7 +2453,7 @@ from the client</description>
     allowed on the HTTP request-line.</p>
 
     <p>The <directive>LimitRequestLine</directive> directive allows
-    the server administrator to reduce or increase the limit on the allowed size
+    the server administrator to set the limit on the allowed size
     of a client's HTTP request-line. Since the request-line consists of the
     HTTP method, URI, and protocol version, the
     <directive>LimitRequestLine</directive> directive places a
@@ -2472,7 +2473,8 @@ from the client</description>
     </example>
 
     <note>Under normal conditions, the value should not be changed from
-    the default.</note>
+    the default. Also, you can't set this higher than 8190 without
+    modifying the source and rebuilding.</note>
 
     <note type="warning"><title>Warning</title>
     <p> When name-based virtual hosting is used, the value for this

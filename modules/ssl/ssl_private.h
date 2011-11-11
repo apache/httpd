@@ -573,8 +573,8 @@ typedef struct {
     /* Human readable name, used in the configuration */
     const char *conf_name;
     char key_name[16];
-    char hmac_secret[16];
-    char aes_key[16];
+    unsigned char hmac_secret[16];
+    unsigned char aes_key[16];
 } modssl_ticket_t;
 #endif
 
@@ -787,8 +787,8 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 
 #ifdef HAVE_TLSEXT_TICKETS
 int         ssl_callback_tlsext_tickets(SSL *ssl,
-                                        char *keyname,
-                                        char *iv,
+                                        unsigned char *keyname,
+                                        unsigned char *iv,
                                         EVP_CIPHER_CTX *cipher_ctx,
                                         HMAC_CTX *hctx,
                                         int mode);
