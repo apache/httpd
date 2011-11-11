@@ -92,8 +92,6 @@ if test "$apr_found" = "reconfig"; then
                     [$apache_apr_flags --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir],
                     [--enable-layout=*|\'--enable-layout=*])
   dnl We must be the first to build and the last to be cleaned
-dnl  AP_BUILD_SRCLIB_DIRS="apr libapreq $AP_BUILD_SRCLIB_DIRS"
-dnl  AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS libapreq apr"
   AP_BUILD_SRCLIB_DIRS="apr $AP_BUILD_SRCLIB_DIRS"
   AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS apr"
 
@@ -120,10 +118,6 @@ APR_INCLUDES=`$apr_config --includes`
 APR_VERSION=`$apr_config --version`
 apr_major_version=`echo ${APR_VERSION} | sed 's,\..*,,'`
 APR_CONFIG="$APR_BINDIR/apr-${apr_major_version}-config"
-
-dnl echo $ac_n "${nl}Configuring Apache Request Library...${nl}"
-dnl APR_SUBDIR_CONFIG(srclib/libapreq, [--with-apr=../apr/apr-2-config --prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir --datadir=$datadir --with-installbuilddir=$installbuilddir])
-dnl APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/srclib/libapreq/include])
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
@@ -743,6 +737,23 @@ AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load
 [
   LOAD_ALL_MODULES="no"
 ])
+
+### libapreq build integration.
+if test -d $abs_srcdir/srclib/libapreq && false; then
+   get_version="$abs_srcdir/build/get-version.sh"
+   version_hdr="$abs_srcdir/srclib/libapreq/include/apreq_version.h"
+   APREQ_MAJOR_VERSION="`$get_version major $version_hdr APREQ`"
+   APREQ_LIBTOOL_VERSION="`$get_version libtool $version_hdr APREQ`"
+
+   APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/srclib/libapreq/include])
+   AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS libapreq"
+   AP_CLEAN_SRCLIB_DIRS="libapreq $AP_BUILD_SRCLIB_DIRS"
+
+   APACHE_FAST_OUTPUT(srclib/libapreq/Makefile srclib/libapreq/library/Makefile)
+   
+   AC_CONFIG_FILES([srclib/libapreq/apreq2-config])
+   AC_CONFIG_COMMANDS([apreq], [chmod 755 srclib/libapreq/apreq2-config])
+fi
 
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)

@@ -1,0 +1,15 @@
+TARGETS = $(LIBRARY)
+OBJECTS = cookie.lo error.lo module.lo module_cgi.lo module_custom.lo	\
+	param.lo parser.lo parser_header.lo parser_multipart.lo		\
+	parser_urlencoded.lo util.lo version.lo
+LIBRARY = libapreq-2.la
+INSTALL_TARGETS = install-library
+
+include $(top_builddir)/build/rules.mk
+
+$(LIBRARY): $(OBJECTS)
+	$(LINK) -shared $(APREQ_LIBTOOL_VERSION) -rpath $(libdir) $(OBJECTS) $(EXTRA_LIBS) $(AP_LIBS)
+
+install-library: $(LIBRARY)
+	@$(MKINSTALLDIRS) $(DESTDIR)$(libdir)
+	$(INSTALL) $(LIBRARY) $(DESTDIR)$(libdir)/$(LIBRARY)
