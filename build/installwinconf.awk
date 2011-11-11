@@ -66,6 +66,7 @@ BEGIN {
     filelist["httpd-ssl.conf"] = "httpd-ssl.conf.in";
     filelist["httpd-userdir.conf"] = "httpd-userdir.conf.in";
     filelist["httpd-vhosts.conf"] = "httpd-vhosts.conf.in";
+    filelist["proxy-html.conf"] = "proxy-html.conf.in";
 
     for ( conffile in filelist ) {
 
