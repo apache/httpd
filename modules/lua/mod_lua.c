@@ -857,14 +857,23 @@ static const char *register_lua_scope(cmd_parms *cmd,
         cfg->vm_scope = AP_LUA_SCOPE_CONN;
     }
     else if (strcmp("thread", scope) == 0) {
+#if !APR_HAS_THREADS
+        return apr_psprintf(cmd->pool,
+                            "Scope type of '%s' cannot be used because this "
+                            "server does not have threading support "
+                            "(APR_HAS_THREADS)" 
+                            scope);
+#endif
         cfg->vm_scope = AP_LUA_SCOPE_THREAD;
     }
     else {
         return apr_psprintf(cmd->pool,
                             "Invalid value for LuaScope, '%s', acceptable "
-                            "values are 'once', 'request', 'conn', and "
-                            "'server'",
-                            scope);
+                            "values are: 'once', 'request', 'conn', 'server'"
+#if APR_HAS_THREADS
+                            ", 'thread'"
+#endif
+                            ,scope);
     }
     return NULL;
 }
