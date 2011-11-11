@@ -120,7 +120,7 @@ static int lua_handler(request_rec *r)
         apr_pool_t *pool;
         switch (dcfg->vm_scope) {
         case AP_LUA_SCOPE_ONCE:
-          pool = r->pool;
+          apr_pool_create(&pool, r->pool);
           break;
         case AP_LUA_SCOPE_REQUEST:
           pool = r->pool;
