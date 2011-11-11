@@ -120,7 +120,7 @@ RELEASE SHOWSTOPPERS:
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1177080
     2.2.x patch: http://svn.apache.org/viewvc?view=revision&revision=1177081
     2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
-    +1: jim, rjung
+    +1: jim, rjung, wrowe
 
   * Backport jorton's work on backstopping unrooted URI's (regex protection)
     and any mod_rewrite example corrections.
