@@ -25,6 +25,10 @@
 #include "apr_optional.h"
 #include "mod_ssl.h"
 
+#ifdef APR_HAS_THREADS
+#include "apr_thread_proc.h"
+#endif
+
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap_lua, AP_LUA, int, lua_open,
                                     (lua_State *L, apr_pool_t *p),
                                     (L, p), OK, DECLINED)
@@ -112,7 +116,26 @@ static int lua_handler(request_rec *r)
                       spec->scope,
                       spec->file,
                       "handle");
-        L = ap_lua_get_lua_state(r->pool,
+
+        apr_pool_t *pool;
+        switch (dcfg->vm_scope) {
+        case AP_LUA_SCOPE_ONCE:
+          pool = r->pool;
+          break;
+        case AP_LUA_SCOPE_REQUEST:
+          pool = r->pool;
+          break;
+        case AP_LUA_SCOPE_CONN:
+          pool = r->connection->pool;
+          break;
+        case AP_LUA_SCOPE_THREAD:
+          #if APR_HAS_THREADS
+          pool = apr_thread_pool_get(r->connection->current_thread);
+          break;
+          #endif
+        }
+
+        L = ap_lua_get_lua_state(pool,
                                  spec);
         
         if (!L) {
