@@ -23,7 +23,7 @@ Consult the trunk/ for all new development and documentation efforts:
 
 Release history:
 
-    2.0.65  : In maintainance. Jim proposes T&R 9/12-15 and offers to RM.
+    2.0.65  : In maintainance.
     2.0.64  : Released October 19, 2010.
     2.0.63  : Released January 19, 2008.
     2.0.62  : Tagged January 4, 2008. Not released.
@@ -122,6 +122,8 @@ RELEASE SHOWSTOPPERS:
     2.0.x patch: http://people.apache.org/~jim/patches/2.0-byterange0-.txt
     +1: jim, rjung
 
+  * Backport jorton's work on backstopping unrooted URI's (regex protection)
+    and any mod_rewrite example corrections.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
