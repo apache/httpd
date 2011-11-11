@@ -198,7 +198,7 @@
       <li><code>ALLUSERS</code> (choose between Null and "1")</li>
       <li><code>ApplicationUsers</code> (toggle to "OnlyCurrentUser")</li>
       <li><code>EXISTING_APACHE_SERVICE_PATH</code></li>
-      <li><code>INSTALLDIR</code> (default "ProgramFilesFolder\Apache Software Foundation\Apache2.2\")</li>
+      <li><code>INSTALLDIR</code> (default "ProgramFilesFolder\Apache Software Foundation\Apache2.3\")</li>
       <li><code>INSTALLLEVEL</code> (default "100", refer to list below)</li>
       <li><code>RESOLVED_WINSOCK2</code> (toggle to "1")</li>
       <li><code>SERVERADMIN</code></li>
@@ -206,8 +206,8 @@
       <li><code>SERVERNAME</code></li>
       <li><code>SERVERPORT</code> (default "80")</li>
       <li><code>SERVERSSLPORT</code> (default "443")</li>
-      <li><code>SERVICEINTERNALNAME</code> (default "Apache2.2", no spaces!)</li>
-      <li><code>SERVICENAME</code> (default "Apache2.2", include spaces)</li>
+      <li><code>SERVICEINTERNALNAME</code> (default "Apache2.3", no spaces!)</li>
+      <li><code>SERVICENAME</code> (default "Apache2.3", include spaces)</li>
       <li><code>SetupType</code> (default "Typical")</li>
     </ul>
 
@@ -215,7 +215,7 @@
     toggled, include;</p>
 
     <ul>
-      <li>Apache (1, base Apache HTTP Server 2.2 feature)</li>
+      <li>Apache (1, base Apache HTTP Server 2.3 feature)</li>
       <li>ApacheDocs (11, Apache Documentation)</li>
       <li>ApacheMonitoring (41, Apache Service Taskbar Icon)</li>
       <li>ApacheRuntime (1, Apache Runtime)</li>
@@ -680,7 +680,7 @@
     </p>
 
     <div class="example"><p><code>
-      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.2.2
+      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.316
     </code></p></div>
 
     <p>Correspondingly, if you chose to install Apache for the current
@@ -689,7 +689,7 @@
     logged on:</p>
 
     <div class="example"><p><code>
-      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.2.2
+      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.316
     </code></p></div>
 
     <p>This key is compiled into the server and can enable you to test
