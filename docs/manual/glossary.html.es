@@ -12,11 +12,11 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.3 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.3</a></div><div id="page-content"><div id="preamble"><h1>Glosario</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.4</a></div><div id="page-content"><div id="preamble"><h1>Glosario</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -364,7 +364,7 @@ llama un <a href="#uniformresourceidentifier">Identificador de
 Recursos Uniforme</a>.  Las URLs están compuestas normalmente por
 un esquema, tal como <code>http</code> o <code>https</code>, un nombre
 de host, y una ruta.  Una URL para esta página es
-<code>http://httpd.apache.org/docs/trunk/glossary.html</code>.</dd>
+<code>http://httpd.apache.org/docs/2.4/glossary.html</code>.</dd>
 
 <dt><a name="uniformresourceidentifier">Identificador de Recursos
 Uniforme</a> <a name="URI">(URI)</a></dt> <dd>Una cadena de caracteres

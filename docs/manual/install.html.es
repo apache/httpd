@@ -12,11 +12,11 @@
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.3 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.3</a></div><div id="page-content"><div id="preamble"><h1>Compilación e Instalación</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.4</a></div><div id="page-content"><div id="preamble"><h1>Compilación e Instalación</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -342,7 +342,7 @@ directorios</a></h2>
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>échele un vistazo al Manual de Apache que está en <a href="./">docs/manual/</a> o consulte en <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> la versión más
+    <p>échele un vistazo al Manual de Apache que está en <a href="./">docs/manual/</a> o consulte en <a href="http://httpd.apache.org/docs/2.4/">http://httpd.apache.org/docs/2.4/</a> la versión más
     reciente de este manual y la Guia de Referencia de todas las <a href="mod/directives.html">directivas de configuración</a>
     disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
