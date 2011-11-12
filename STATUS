@@ -110,11 +110,6 @@ RELEASE SHOWSTOPPERS:
     the hackathon seems to be that mod_lua should be released as experimental
     with a note that the API may change during 2.4.x.
 
-  * mpm_event can abort under very high load with
-        (17)File exists: process_socket: apr_pollset_add failure
-        file event.c, line 952, assertion "rc == 0" failed
-        child pid 18196 exit signal Aborted (6)
-
   FOR BETA:
 
 

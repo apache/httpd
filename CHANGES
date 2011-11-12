@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) mpm_event: Fix assertion failure during very high load. [Stefan Fritsch]
+
   *) configure: Additional modules loaded by default: mod_headers.
      Modules moved from module set "few" to "most" and no longer loaded
      by default: mod_actions, mod_allowmethods, mod_auth_form, mod_buffer,
