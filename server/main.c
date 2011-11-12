@@ -438,7 +438,7 @@ static void usage(process_rec *process)
 int main(int argc, const char * const argv[])
 {
     char c;
-    int showcompile = 0;
+    int showcompile = 0, showdirectives = 0;
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
     const char *temp_error_log = NULL;
@@ -553,8 +553,9 @@ int main(int argc, const char * const argv[])
             destroy_and_exit_process(process, 0);
 
         case 'L':
-            ap_show_directives();
-            destroy_and_exit_process(process, 0);
+            ap_run_mode = AP_SQ_RM_CONFIG_DUMP;
+            showdirectives = 1;
+            break;
 
         case 't':
             if (ap_run_mode == AP_SQ_RM_UNKNOWN)
@@ -656,6 +657,10 @@ int main(int argc, const char * const argv[])
         if (ap_run_mode != AP_SQ_RM_NORMAL) {
             if (showcompile) { /* deferred due to dynamically loaded MPM */
                 show_compile_settings();
+            }
+            else if (showdirectives) { /* deferred in case of DSOs */
+                ap_show_directives();
+                destroy_and_exit_process(process, 0);
             }
             else {
                 ap_run_test_config(pconf, ap_server_conf);
