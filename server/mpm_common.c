@@ -147,7 +147,7 @@ int ap_graceful_shutdown_timeout;
 AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 apr_size_t ap_thread_stacksize;
 
-#define ALLOCATOR_MAX_FREE_DEFAULT (4096*1024)
+#define ALLOCATOR_MAX_FREE_DEFAULT (2048*1024)
 
 /* Set defaults for config directives implemented here.  This is
  * called from core's pre-config hook, so MPMs which need to override
