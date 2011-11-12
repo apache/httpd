@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) Server directive display (-L): Include directives of DSOs.
+     [Jeff Trawick]
+
   *) mod_cache: Make sure we merge headers correctly when we handle a
      non cacheable conditional response. PR52120. [Graham Leggett]
 
