@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_cache: Make sure we merge headers correctly when we handle a
+     non cacheable conditional response. PR52120. [Graham Leggett]
+
   *) Pre GA removal of components that will not be included:
      - mod_noloris was superseded by mod_reqtimeout
      - mod_serf

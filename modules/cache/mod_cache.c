@@ -1081,6 +1081,20 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             APR_BRIGADE_INSERT_TAIL(bb, bkt);
         }
         else {
+            /* RFC 2616 10.3.5 states that entity headers are not supposed
+             * to be in the 304 response.  Therefore, we need to combine the
+             * response headers with the cached headers *before* we update
+             * the cached headers.
+             *
+             * However, before doing that, we need to first merge in
+             * err_headers_out and we also need to strip any hop-by-hop
+             * headers that might have snuck in.
+             */
+            r->headers_out = ap_cache_cacheable_headers_out(r);
+
+            /* Merge in our cached headers.  However, keep any updated values. */
+            cache_accept_headers(cache->handle, r, 1);
+
             cache->provider->recall_body(cache->handle, r->pool, bb);
 
             bkt = apr_bucket_eos_create(bb->bucket_alloc);
