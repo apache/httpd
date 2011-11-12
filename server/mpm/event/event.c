@@ -97,11 +97,6 @@
 #include <limits.h>             /* for INT_MAX */
 
 
-#if HAVE_SERF
-#include "mod_serf.h"
-#include "serf.h"
-#endif
-
 /* Limit on the total --- clients will be locked out if more servers than
  * this are needed.  It is intended solely to keep the server from crashing
  * when things get out of hand.
@@ -237,15 +232,6 @@ static apr_pollfd_t *listener_pollfd;
  */
 static apr_pollset_t *event_pollset;
 
-#if HAVE_SERF
-typedef struct {
-    apr_pollset_t *pollset;
-    apr_pool_t *pool;
-} s_baton_t;
-
-static serf_context_t *g_serf;
-#endif
-
 /* The structure used to pass unique initialization info to each thread */
 typedef struct
 {
@@ -269,9 +255,6 @@ typedef enum
 {
     PT_CSD,
     PT_ACCEPT
-#if HAVE_SERF
-    , PT_SERF
-#endif
 } poll_type_e;
 
 typedef struct
@@ -465,9 +448,6 @@ static int event_query(int query_code, int *result, apr_status_t *rv)
         *result = AP_MPMQ_DYNAMIC;
         break;
     case AP_MPMQ_IS_ASYNC:
-        *result = 1;
-        break;
-    case AP_MPMQ_HAS_SERF:
         *result = 1;
         break;
     case AP_MPMQ_HARD_LIMIT_DAEMONS:
@@ -1041,36 +1021,8 @@ static void dummy_signal_handler(int sig)
 }
 
 
-#if HAVE_SERF
-static apr_status_t s_socket_add(void *user_baton,
-                                 apr_pollfd_t *pfd,
-                                 void *serf_baton)
-{
-    s_baton_t *s = (s_baton_t*)user_baton;
-    /* XXXXX: recycle listener_poll_types */
-    listener_poll_type *pt = ap_malloc(sizeof(*pt));
-    pt->type = PT_SERF;
-    pt->baton = serf_baton;
-    pfd->client_data = pt;
-    return apr_pollset_add(s->pollset, pfd);
-}
-
-static apr_status_t s_socket_remove(void *user_baton,
-                                    apr_pollfd_t *pfd,
-                                    void *serf_baton)
-{
-    s_baton_t *s = (s_baton_t*)user_baton;
-    listener_poll_type *pt = pfd->client_data;
-    free(pt);
-    return apr_pollset_remove(s->pollset, pfd);
-}
-#endif
-
 static apr_status_t init_pollset(apr_pool_t *p)
 {
-#if HAVE_SERF
-    s_baton_t *baton = NULL;
-#endif
     ap_listen_rec *lr;
     listener_poll_type *pt;
     int i = 0;
@@ -1100,21 +1052,6 @@ static apr_status_t init_pollset(apr_pool_t *p)
 
         lr->accept_func = ap_unixd_accept;
     }
-
-#if HAVE_SERF
-    baton = apr_pcalloc(p, sizeof(*baton));
-    baton->pollset = event_pollset;
-    /* TODO: subpools, threads, reuse, etc.  -- currently use malloc() inside :( */
-    baton->pool = p;
-
-    g_serf = serf_context_create_ex(baton,
-                                    s_socket_add,
-                                    s_socket_remove, p);
-
-    ap_register_provider(p, "mpm_serf",
-                         "instance", "0", g_serf);
-
-#endif
 
     return APR_SUCCESS;
 }
@@ -1423,12 +1360,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
         apr_thread_mutex_unlock(g_timer_ring_mtx);
 
-#if HAVE_SERF
-        rc = serf_context_prerun(g_serf);
-        if (rc != APR_SUCCESS) {
-            /* TOOD: what should do here? ugh. */
-        }
-#endif
         rc = apr_pollset_poll(event_pollset, timeout_interval, &num, &out_pfd);
         if (rc != APR_SUCCESS) {
             if (APR_STATUS_IS_EINTR(rc)) {
@@ -1621,13 +1552,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     }
                 }
             }               /* if:else on pt->type */
-#if HAVE_SERF
-            else if (pt->type == PT_SERF) {
-                /* send socket to serf. */
-                /* XXXX: this doesn't require get_worker() */
-                serf_event_trigger(g_serf, pt->baton, out_pfd);
-            }
-#endif
             out_pfd++;
             num--;
         }                   /* while for processing poll */
