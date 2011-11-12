@@ -32,7 +32,7 @@ case $host in
 esac
 
 if test $cgid_needed = "yes"; then
-    APACHE_MODULE(cgid, CGI scripts.  Enabled by default with threaded MPMs, , , yes, [
+    APACHE_MODULE(cgid, CGI scripts.  Enabled by default with threaded MPMs, , , most, [
     case $host in
       *-solaris2*)
         case `uname -r` in
@@ -72,7 +72,7 @@ For more info: <http://issues.apache.org/bugzilla/show_bug.cgi?id=34264>])
   ])
     APACHE_MODULE(cgi, CGI scripts.  Enabled by default with non-threaded MPMs, , , no)
 else
-    APACHE_MODULE(cgi, CGI scripts.  Enabled by default with non-threaded MPMs, , , yes)
+    APACHE_MODULE(cgi, CGI scripts.  Enabled by default with non-threaded MPMs, , , most)
     APACHE_MODULE(cgid, CGI scripts.  Enabled by default with threaded MPMs, , , no)
 fi
 

@@ -63,7 +63,7 @@ APACHE_MODULE(access_compat, mod_access compatibility, , , yes)
 dnl these are the front-end authentication modules
 
 APACHE_MODULE(auth_basic, basic authentication, , , yes)
-APACHE_MODULE(auth_form, form authentication, , , yes)
+APACHE_MODULE(auth_form, form authentication, , , most)
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   APR_CHECK_APR_DEFINE(APR_HAS_RANDOM)
   if test $ac_cv_define_APR_HAS_RANDOM = "no"; then
@@ -73,7 +73,7 @@ APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   fi
 ])
 
-APACHE_MODULE(allowmethods, restrict allowed HTTP methods, , , yes)
+APACHE_MODULE(allowmethods, restrict allowed HTTP methods, , , most)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 
