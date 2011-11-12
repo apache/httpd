@@ -151,16 +151,16 @@ XDCDATA		=
 #
 # If there is an NLM target, put it here
 #
-# We are referencing substitute.nlm twice to get around a known issue with the
-# makefiles.  Normally if there is only one element to be built within a
+# If there is only one element to build it needs to be included twice
+# in the below target list.
+# Normally if there is only one element to be built within a
 # directory, the makefile for the single element would be called NWGNUmakefile.
 # But if there are multiples, the parent NWGNUmakefile must reference more
 # than one submakefile. Because the experimental directory might vary in the
 # number of submakefiles, but for the moment only contains one, we reference
 # it twice to allow it parent NWGNUmakefile to work properly.  If another
-# submakefile is added, the extra reference to substitute.nlm should be removed.
-TARGET_nlm = \
-	$(OBJDIR)/optfnexport.nlm \
+# submakefile is added, the extra reference to the first NLM should be removed.
+$(OBJDIR)/optfnexport.nlm \
 	$(OBJDIR)/optfnimport.nlm \
 	$(OBJDIR)/opthookexport.nlm \
 	$(OBJDIR)/opthookimport.nlm \

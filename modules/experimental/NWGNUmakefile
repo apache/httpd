@@ -151,7 +151,7 @@ XDCDATA		=
 #
 # If there is an NLM target, put it here
 #
-# If there is only onle element to build it needs to be included twice
+# If there is only one element to build it needs to be included twice
 # in the below target list.
 # Normally if there is only one element to be built within a
 # directory, the makefile for the single element would be called NWGNUmakefile.
