@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) configure: Additional modules loaded by default: mod_headers.
+     Modules moved from module set "few" to "most" and no longer loaded
+     by default: mod_actions, mod_allowmethods, mod_auth_form, mod_buffer,
+     mod_cgi(d), mod_include, mod_negotiation, mod_ratelimit, mod_request,
+     mod_userdir. [Rainer Jung]
+
   *) mod_lua: Use the right lua scope when used as a hook. [Rainer Jung]
 
   *) configure: Only load the really imporant modules (i.e. those enabled by
