@@ -439,7 +439,6 @@ installdev :: FORCE
 	$(call COPY,$(STDMOD)/loggers/mod_log_config.h,                $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/mappers/mod_rewrite.h,                   $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/proxy/mod_proxy.h,                       $(INSTALLBASE)/include/)
-	$(call COPY,$(STDMOD)/proxy/mod_serf.h,                        $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/session/mod_session.h,                   $(INSTALLBASE)/include/)
 	$(call COPY,$(STDMOD)/ssl/mod_ssl.h,                           $(INSTALLBASE)/include/)
 	$(call COPY,$(APR)/*.imp,                                      $(INSTALLBASE)/lib/)

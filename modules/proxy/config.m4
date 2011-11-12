@@ -55,15 +55,6 @@ APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module.  Requires
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module.  Requires and is enabled by --enable-proxy., $proxy_ajp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires and is enabled by --enable-proxy., $proxy_balancer_objs, , $proxy_mods_enable)
 
-APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
-    APACHE_CHECK_SERF
-    if test "$ac_cv_serf" = "yes" ; then
-      APR_ADDTO(MOD_SERF_LDADD, [\$(SERF_LIBS)])
-    else
-      enable_serf=no
-    fi
-])
-
 APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , $proxy_mods_enable)
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
