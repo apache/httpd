@@ -147,6 +147,8 @@ int ap_graceful_shutdown_timeout;
 AP_DECLARE_DATA apr_uint32_t ap_max_mem_free;
 apr_size_t ap_thread_stacksize;
 
+#define ALLOCATOR_MAX_FREE_DEFAULT (4096*1024)
+
 /* Set defaults for config directives implemented here.  This is
  * called from core's pre-config hook, so MPMs which need to override
  * one of these should run their pre-config hook after that of core.
@@ -158,7 +160,7 @@ void mpm_common_pre_config(apr_pool_t *pconf)
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
     ap_coredumpdir_configured = 0;
     ap_graceful_shutdown_timeout = 0; /* unlimited */
-    ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+    ap_max_mem_free = ALLOCATOR_MAX_FREE_DEFAULT;
     ap_thread_stacksize = 0; /* use system default */
 }
 
