@@ -3,12 +3,16 @@ Last modified at [$Date$]
 
 The current version of this file can be found at:
 
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk/STATUS
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
-Documentation status is maintained seperately and can be found at:
+Documentation status is maintained separately and can be found at:
 
   * docs/STATUS in this source tree, or
   * http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS
+
+The current development branch of this software can be found at:
+
+  * http://svn.apache.org/repos/asf/httpd/httpd/trunk
 
 Consult the following STATUS files for information on related projects:
 
@@ -19,6 +23,7 @@ Patches considered for backport are noted in their branches' STATUS:
 
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
 
 
@@ -26,7 +31,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.3.16  : In Development.
+    2.4.0   : In Development.
     2.3.15  : Tagged on November 8, 2011.
     2.3.14  : Tagged on August 1, 2011. Released Aug. 9, 2011.
     2.3.13  : Tagged on June 28, 2011, not released.
@@ -81,7 +86,7 @@ RELEASE SHOWSTOPPERS:
 
     - MPM simple (unfinished; buggy)
 
-    See https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS 
+    See https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/docs/STATUS 
     under 'modules docs' for a more comprehensive list of undocumented modules. 
 
   * The mod_session* modules need to be checked that their hooks respect
