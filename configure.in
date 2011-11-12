@@ -540,7 +540,16 @@ AC_ARG_ENABLE(exception-hook,APACHE_HELP_STRING(--enable-exception-hook,Enable f
               [Allow modules to run hook after a fatal exception])
 ])dnl
 
-AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings),
+AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load all modules),
+[
+  LOAD_ALL_MODULES=$enableval
+  AC_MSG_NOTICE([Setting "LOAD_ALL_MODULES" to $LOAD_ALL_MODULES])
+],
+[
+  LOAD_ALL_MODULES="no"
+])
+
+AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn on debugging and compile time warnings and load all compiled modules),
 [
   APR_ADDTO(CPPFLAGS, -DAP_DEBUG)
   if test "$GCC" = "yes"; then
@@ -552,6 +561,10 @@ AC_ARG_ENABLE(maintainer-mode,APACHE_HELP_STRING(--enable-maintainer-mode,Turn o
     APACHE_ADD_GCC_CFLAG([-Werror=format-security])
   elif test "$AIX_XLC" = "yes"; then
     APR_ADDTO(CFLAGS,-qfullpath -qinitauto=FE -qcheck=all -qinfo=pro)
+  fi
+  if test "x$enable_load_all_modules" = "x"; then
+    LOAD_ALL_MODULES=yes
+    AC_MSG_NOTICE([Maintainer mode setting "LOAD_ALL_MODULES" to $LOAD_ALL_MODULES])
   fi
 ])dnl
 
@@ -729,14 +742,6 @@ if test $v4mapped = "yes" -a $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
     AC_DEFINE(AP_ENABLE_V4_MAPPED, 1,
               [Allow IPv4 connections on IPv6 listening sockets])
 fi
-
-AC_ARG_ENABLE(load-all-modules,APACHE_HELP_STRING(--enable-load-all-modules,Load all modules),
-[ 
-  LOAD_ALL_MODULES=$enableval
-],
-[
-  LOAD_ALL_MODULES="no"
-])
 
 ### libapreq build integration.
 if test -d $abs_srcdir/srclib/libapreq && false; then
