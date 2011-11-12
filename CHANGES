@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) mpm_event: Fix assertion failure during very high load. [Stefan Fritsch]
+
   *) configure: Only load the really imporant modules (i.e. those enabled by
      the 'few' selection) by default. Don't handle modules enabled with
      --enable-foo specially. [Stefan Fritsch]
