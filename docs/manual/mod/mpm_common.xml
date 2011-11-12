@@ -327,7 +327,7 @@ simultaneously</description>
 <description>Maximum amount of memory that the main allocator is allowed
 to hold without calling <code>free()</code></description>
 <syntax>MaxMemFree <var>KBytes</var></syntax>
-<default>MaxMemFree 0</default>
+<default>MaxMemFree 2048</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>mpm_netware</module>
 <module>prefork</module><module>worker</module><module>mpm_winnt</module>
@@ -335,8 +335,9 @@ to hold without calling <code>free()</code></description>
 
 <usage>
     <p>The <directive>MaxMemFree</directive> directive sets the
-    maximum number of free Kbytes that the main allocator is allowed
-    to hold without calling <code>free()</code>. When not set, or when set
+    maximum number of free Kbytes that every allocator is allowed
+    to hold without calling <code>free()</code>. In threaded MPMs, every
+    thread has its own allocator. When not set, or when set
     to zero, the threshold will be set to unlimited.</p>
 </usage>
 </directivesynopsis>

@@ -92,7 +92,6 @@
     MaxSpareThreads        250
     MaxThreads            1000
     MaxConnectionsPerChild   0
-    MaxMemFree             100
 </IfModule>
 
 # OS/2 MPM
@@ -116,3 +115,13 @@
     MaxConnectionsPerChild   0
 </IfModule>
 
+# The maximum number of free Kbytes that every allocator is allowed
+# to hold without calling free(). In threaded MPMs, every thread has its own
+# allocator. When not set, or when set to zero, the threshold will be set to
+# unlimited.
+<IfModule !mpm_netware_module>
+    MaxMemFree            2048
+</IfModule>
+<IfModule mpm_netware_module>
+    MaxMemFree             100
+</IfModule>
