@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) core: Set MaxMemFree 2048 by default. [Stefan Fritsch]
+
   *) mpm_event: Fix assertion failure during very high load. [Stefan Fritsch]
 
   *) configure: Only load the really imporant modules (i.e. those enabled by
