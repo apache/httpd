@@ -2394,27 +2394,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_serf"=.\modules\proxy\mod_serf.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_proxy
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "mod_session"=.\modules\session\mod_session.dsp - Package Owner=<4>
 
 Package=<5>

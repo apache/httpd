@@ -57,7 +57,6 @@ To Do List
 
 - modules docs
     - the follwing modules added since 2.2 lack documentation
-        - mod_serf
         - mod_watchdog
         - mod_heartbeat
         - mod_heartmonitor

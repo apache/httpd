@@ -3,6 +3,7 @@ Changes with Apache 2.4.0
 
   *) Pre GA removal ob components that will not be included:
      - mod_noloris was superseded by mod_reqtimeout.
+     - mod_serf
      [Rainer Jung]
 
   *) core: Set MaxMemFree 2048 by default. [Stefan Fritsch]

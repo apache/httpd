@@ -553,48 +553,6 @@ AC_DEFUN(APACHE_CHECK_OPENSSL,[
 ])
 
 dnl
-dnl APACHE_CHECK_SERF
-dnl
-dnl Configure for the detected libserf, giving preference to
-dnl "--with-serf=<path>" if it was specified.
-dnl
-AC_DEFUN([APACHE_CHECK_SERF], [
-  AC_CACHE_CHECK([for libserf], [ac_cv_serf], [
-    ac_cv_serf=no
-    serf_prefix=/usr
-    SERF_LIBS=""
-    AC_ARG_WITH(serf, APACHE_HELP_STRING([--with-serf=PREFIX],
-                                    [Serf client library]),
-    [
-        if test "$withval" = "yes" ; then
-          serf_prefix=/usr
-        else
-          serf_prefix=$withval
-        fi
-    ])
-
-    if test "$serf_prefix" != "no" ; then
-      save_cppflags="$CPPFLAGS"
-      CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES -I$serf_prefix/include/serf-0"
-      AC_CHECK_HEADERS(serf.h,[
-        save_ldflags="$LDFLAGS"
-        LDFLAGS="$LDFLAGS -L$serf_prefix/lib"
-        AC_CHECK_LIB(serf-0, serf_context_create,[ac_cv_serf="yes"])
-        LDFLAGS="$save_ldflags"])
-      CPPFLAGS="$save_cppflags"
-    fi
-  ])
-
-  APACHE_SUBST(SERF_LIBS)
-  if test "$ac_cv_serf" = "yes"; then
-    AC_DEFINE(HAVE_SERF, 1, [Define if libserf is available])
-    APR_SETVAR(SERF_LIBS, [-L$serf_prefix/lib -lserf-0])
-    APR_ADDTO(INCLUDES, [-I$serf_prefix/include/serf-0])
-  fi
-])
-
-
-dnl
 dnl APACHE_EXPORT_ARGUMENTS
 dnl Export (via APACHE_SUBST) the various path-related variables that
 dnl apache will use while generating scripts like autoconf and apxs and

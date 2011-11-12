@@ -136,32 +136,6 @@ _tryssl:
 !ENDIF
 #     NOT EXIST("srclib\openssl")
 
-!IF EXIST("srclib\serf")
-
-_tryserf:
-!IF $(USEMAK) == 1
-	cd modules\proxy
-	$(MAKE) $(MAKEOPT) -f mod_serf.mak CFG="mod_serf - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-!ELSEIF $(USESLN) == 1
-	devenv $(TLP).sln /useenv $(CTARGET) $(LONG) /project mod_serf
-!ELSE
-	@msdev $(TLP).dsw /USEENV /MAKE \
-		"mod_serf - Win32 $(LONG)" /NORECURSE $(CTARGET)
-!ENDIF
-
-!ELSE
-#     NOT EXIST("srclib\serf")
-
-_tryserf:
-	@echo -----
-	@echo mod_serf will not build unless libserf.dll is built in srclib\serf
-	@echo For purposes of alpha, libserf release 0.3.0 works, but only with
-	@echo http://people.apache.org/~wrowe/fixserf-win32-0.3.0.patch
-
-!ENDIF
-#     NOT EXIST("srclib\serf")
-
 !IF EXIST("srclib\zlib")
 
 _tryzlib:
@@ -548,9 +522,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_ftp.mak   CFG="mod_proxy_ftp - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_http.mak  CFG="mod_proxy_http - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_scgi.mak  CFG="mod_proxy_scgi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-!IF EXIST("srclib\serf")
-	 $(MAKE) $(MAKEOPT) -f mod_serf.mak        CFG="mod_serf - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-!ENDIF
 	cd ..\..
 	cd modules\proxy\balancers
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_bybusyness.mak CFG="mod_lbmethod_bybusyness - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -692,9 +663,6 @@ _copybin:
 	for %d in ($(DBM_LIST) x) do if not %d == x ( \
 	  copy srclib\$(UTILDIR)\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
-!IF EXIST("srclib\serf")
-	copy srclib\serf\$(LONG)\libserf.$(src_dll) 		"$(inst_dll)" <.y
-!ENDIF
 	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
@@ -811,9 +779,6 @@ _copybin:
 	copy modules\proxy\$(LONG)\mod_proxy_ftp.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_http.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_scgi.$(src_so) 	"$(inst_so)" <.y
-!IF EXIST("srclib\serf")
-	copy modules\proxy\$(LONG)\mod_serf.$(src_so)		"$(inst_so)" <.y
-!ENDIF
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_bybusyness.$(src_so) "$(inst_so)" <.y
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_byrequests.$(src_so) "$(inst_so)" <.y
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_bytraffic.$(src_so)  "$(inst_so)" <.y
@@ -1059,9 +1024,6 @@ BEGIN {
 		srclib\apr-util\xml\expat\lib\expat.h \
 		srclib\apr\include\*.h \
 		srclib\apr-util\include\*.h \
-!IF EXIST("srclib\serf")
-		srclib\serf\*.h \
-!ENDIF
 		include\*.h \
 		os\win32\os.h \
 		modules\cache\mod_cache.h \
@@ -1075,7 +1037,6 @@ BEGIN {
 		modules\loggers\mod_log_config.h \
 		modules\mappers\mod_rewrite.h \
 		modules\proxy\mod_proxy.h \
-		modules\proxy\mod_serf.h \
 		modules\ssl\mod_ssl.h \
           ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
@@ -1098,10 +1059,6 @@ BEGIN {
 	copy srclib\expat\win32\$(LONG)\libexpat.lib    "$(INSTDIR)\lib" <.y
 	copy srclib\expat\win32\$(LONG)\libexpat.exp    "$(INSTDIR)\lib" <.y
 	copy srclib\expat\win32\$(LONG)\libexpat.dll    "$(INSTDIR)\bin" <.y
-!ENDIF
-!IF EXIST("srclib\serf")
-	copy srclib\serf\$(LONG)\libserf.lib 		"$(INSTDIR)\lib" <.y
-	copy srclib\serf\$(LONG)\libserf.exp 		"$(INSTDIR)\lib" <.y
 !ENDIF
 	copy $(LONG)\libhttpd.exp 			"$(INSTDIR)\lib" <.y
 	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
