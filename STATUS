@@ -84,6 +84,12 @@ RELEASE SHOWSTOPPERS:
     See https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/docs/STATUS 
     under 'modules docs' for a comprehensive list of undocumented modules.
 
+  * Decide and document the API guarantees for mod_lua. Current consensous at
+    the hackathon seems to be that mod_lua should be released as experimental
+    with a note that the API may change during 2.4.x.
+
+  NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
+
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
     and any anomolies fixed.
@@ -102,13 +108,6 @@ RELEASE SHOWSTOPPERS:
   * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
     a painless event mpm experience.
     sf: can be done in 2.4.x>0
-
-  * Decide and document the API guarantees for mod_lua. Current consensous at
-    the hackathon seems to be that mod_lua should be released as experimental
-    with a note that the API may change during 2.4.x.
-
-  FOR BETA:
-
 
   OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.2 BUT OBVIOUSLY WEREN'T:
 
