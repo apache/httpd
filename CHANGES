@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) mod_cache: Make sure we merge headers correctly when we handle a
+     non cacheable conditional response. PR52120. [Graham Leggett]
+
   *) core: Set MaxMemFree 2048 by default. [Stefan Fritsch]
 
   *) mpm_event: Fix assertion failure during very high load. [Stefan Fritsch]
