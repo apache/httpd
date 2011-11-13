@@ -14,7 +14,12 @@ LTLIBRARY_SOURCES = \
 	util_filter.c util_pcre.c util_regex.c exports.c \
 	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c \
 	eoc_bucket.c eor_bucket.c core_filters.c \
-	util_expr_parse.c util_expr_scan.c util_expr_eval.c
+	util_expr_parse.c util_expr_scan.c util_expr_eval.c \
+	apreq_cookie.c apreq_error.c apreq_module.c \
+	apreq_module_cgi.c apreq_module_custom.c apreq_param.c \
+	apreq_parser.c apreq_parser_header.c apreq_parser_multipart.c \
+	apreq_parser_urlencoded.c apreq_util.c
+
 LTLIBRARY_DEPENDENCIES = test_char.h
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
