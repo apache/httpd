@@ -69,6 +69,12 @@
 #include "lua_request.h"
 #include "lua_vmprep.h"
 
+typedef enum {
+    AP_LUA_INHERIT_UNSET        = -1,
+    AP_LUA_INHERIT_NONE         =  0,
+    AP_LUA_INHERIT_PARENT_FIRST =  1,
+    AP_LUA_INHERIT_PARENT_LAST  =  2,
+} ap_lua_inherit_t;
 
 /**
  * make a userdata out of a C pointer, and vice versa
@@ -103,6 +109,10 @@ typedef struct
 
     /* the actual directory being configured */
     char *dir;
+  
+    /* Whether Lua scripts in a sub-dir are run before parents */
+    ap_lua_inherit_t inherit;
+
 } ap_lua_dir_cfg;
 
 typedef struct
