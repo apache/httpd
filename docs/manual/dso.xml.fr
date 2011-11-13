@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1199481 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -110,9 +110,10 @@ $ make install
 
       <li>
         <p>Configure le serveur HTTP Apache avec tous les modules
-	activ&eacute;s et charg&eacute;s en tant qu'objets partag&eacute;s. Vous pouvez
-	ensuite les d&eacute;sactiver un &agrave; un en commentant la directive <directive
-      module="mod_so">LoadModule</directive> correspondante dans le
+	activ&eacute;s. Seul un jeu de modules de base sera charg&eacute; au
+	d&eacute;marrage du serveur. Vous pouvez modifier ce jeu de modules
+	charg&eacute;s au d&eacute;marrage en activant ou d&eacute;sactivant les directives <directive
+      module="mod_so">LoadModule</directive> correspondantes dans le
       fichier <code>httpd.conf</code>.</p>
 
 <example>
@@ -124,6 +125,22 @@ $ make install
 	<code>--enable-modules</code> indique que tous les modules
 	non-exp&eacute;rimentaux ou qui ne sont pas l&agrave; &agrave; titre d'exemple seront
 	compil&eacute;s.</p>
+      </li>
+
+      <li>
+      <p>Certains modules ne sont utilis&eacute;s que par les d&eacute;veloppeurs et
+      ne seront pas compil&eacute;s. Si vous voulez les utiliser, sp&eacute;cifiez
+      l'option <em>all</em>. Pour compiler tous les modules disponibles,
+      y compris les modules de d&eacute;veloppeurs, sp&eacute;cifiez l'option
+      <em>reallyall</em>. En outre, la directive <directive
+      module="mod_so">LoadModule</directive> peut &ecirc;tre activ&eacute;e pour tous
+      les modules compil&eacute;s via l'option du script configure
+      <code>--enable-load-all-modules</code>.</p>
+
+<example>
+$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
+$ make install
+</example>
       </li>
 
       <li>
