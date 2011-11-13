@@ -743,23 +743,6 @@ if test $v4mapped = "yes" -a $ac_cv_define_APR_HAVE_IPV6 = "yes"; then
               [Allow IPv4 connections on IPv6 listening sockets])
 fi
 
-### libapreq build integration.
-if test -d $abs_srcdir/srclib/libapreq && false; then
-   get_version="$abs_srcdir/build/get-version.sh"
-   version_hdr="$abs_srcdir/srclib/libapreq/include/apreq_version.h"
-   APREQ_MAJOR_VERSION="`$get_version major $version_hdr APREQ`"
-   APREQ_LIBTOOL_VERSION="`$get_version libtool $version_hdr APREQ`"
-
-   APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/srclib/libapreq/include])
-   AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS libapreq"
-   AP_CLEAN_SRCLIB_DIRS="libapreq $AP_BUILD_SRCLIB_DIRS"
-
-   APACHE_FAST_OUTPUT(srclib/libapreq/Makefile srclib/libapreq/library/Makefile)
-   
-   AC_CONFIG_FILES([srclib/libapreq/apreq2-config])
-   AC_CONFIG_COMMANDS([apreq], [chmod 755 srclib/libapreq/apreq2-config])
-fi
-
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
 APACHE_FAST_OUTPUT(support/Makefile)
