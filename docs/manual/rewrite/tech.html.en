@@ -69,11 +69,13 @@ and URL matching.</p>
     this, mod_rewrite temporarily translates the filename back into a URL,
     by stripping off directory path before appling the rules. (See the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> directive to
-    see how you can further manipulate how this is handled.) Then, a new
-    internal subrequest is issued with the new URL. This restarts
-    processing of the request phases. (Be careful to avoid rules that
-    can cause looping. See <a href="http://wiki.apache.org/httpd/RewriteLooping">RewriteLooping</a>
-    for further discussion of this problem.</p>
+    see how you can further manipulate how this is handled.) If a substitution
+    is made, a new internal subrequest is issued with the new URL, which restarts
+    processing of the request phases. In this context, care must be taken to 
+    create rules which will eventually (in some future "round" of per-directory
+    rewrite processing) not perform a substitution to avoid looping.
+    (See <a href="http://wiki.apache.org/httpd/RewriteLooping">RewriteLooping</a>
+    for further discussion of this problem.)</p>
 
     <p>Because of this further manipulation of the URL in per-directory
     context, you'll need to take care to craft your rewrite rules
