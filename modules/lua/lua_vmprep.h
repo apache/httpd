@@ -34,6 +34,7 @@
 #ifndef VMPREP_H
 #define VMPREP_H
 
+#define AP_LUA_SCOPE_UNSET         0
 #define AP_LUA_SCOPE_ONCE          1
 #define AP_LUA_SCOPE_REQUEST       2
 #define AP_LUA_SCOPE_CONN          3
