@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.3.16
 
+  *) mod_lua: Stop losing track of all but the most specific LuaHook* directives
+     when multiple per-directory config sections are used.  Adds LuaInherit 
+     directive to control how parent sections are merged.  [Eric Covener]
+
   *) mod_cache: Make sure we merge headers correctly when we handle a
      non cacheable conditional response. PR52120. [Graham Leggett]
 
