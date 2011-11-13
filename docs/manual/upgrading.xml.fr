@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1181242 -->
+<!-- English Revision : 1200496 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -83,7 +83,14 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
       <li>configure: les modules dynamiques (DSO) sont compil&eacute;s par
       d&eacute;faut</li>
 
+      <li>configure: par d&eacute;faut, seul un jeu de modules de base est
+      charg&eacute;. Les autres directives <directive>LoadModule</directive>
+      sont mises en commentaires.</li>
+
       <li>configure: le jeu de modules "most" est compil&eacute; par d&eacute;faut</li>
+
+      <li>configure: le jeu de modules "realyall" ajoute les modules de
+      d&eacute;veloppeur au jeu "all".</li>
     </ul>
 
   </section>
@@ -200,6 +207,10 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
 	<li>La valeur par d&eacute;faut de la directive <directive
 	module="core">EnableSendfile</directive> est maintenant Off.</li>
 
+	<li>La valeur par d&eacute;faut de la directive <directive
+	module="core">FileETag</directive> est maintenant "MTime Size"
+	(sans INode).</li>
+
         <li><module>mod_log_config</module>: <a
         href="modules/mod_log_config.html#formats">${cookie}C</a>
         correspond au nom du cookie dans son ensemble, alors qu'avant,
@@ -276,6 +287,19 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
 	configuration de la directive <directive
 	module="core">LogLevel</directive> au niveau r&eacute;pertoire.
         </li>
+
+	<li><module>mod_ssl</module>: le contr&ocirc;le de r&eacute;vocation des
+	certificats bas&eacute; sur les CRL doit &ecirc;tre maintenant explicitement
+	configur&eacute; via la directive <directive
+        module="mod_ssl">SSLCARevocationCheck</directive>.
+        </li>
+
+        <li><module>mod_substitute</module>: la taille maximale d'une
+	ligne est maintenant 1Mo.
+        </li>
+
+        <li><module>mod_reqtimeout</module>: si ce module est charg&eacute;, il
+	d&eacute;finit maintenant certains temps d'attente par d&eacute;faut.</li>
 
     </ul>
     </section>

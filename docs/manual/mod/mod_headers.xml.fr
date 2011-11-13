@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1197413 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -202,7 +202,7 @@ tardif</title>
         D&eacute;finit un cookie de test si et seulement si le client n'envoie
 	pas de cookie
         <example>
-          Header set Set-Cookie testcookie !$req{Cookie}
+          Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
         </example>
       </li>
     </ol>
@@ -298,17 +298,17 @@ tardif</title>
     <dl>
     <dt><code>early</code></dt>
     <dd>Sp&eacute;cifie <a href="#early">traitement pr&eacute;alable</a>.</dd>
-    <dt><code>env=[!]variable</code></dt>
+    <dt><code>env=[!]<var>variable</var></code></dt>
     <dd>La directive est appliqu&eacute;e si et seulement si la <a
     href="../env.html">variable d'environnement</a>
     <code>variable</code> existe. Un <code>!</code> devant
     <code>variable</code> inverse le test, et la directive ne
     s'appliquera alors que si <code>variable</code> n'est pas d&eacute;finie.</dd>
-    <dt><code>expr</code></dt>
-    <dd>Une cha&icirc;ne qui correspond &agrave; toute valeur ci-dessus est
-    interpr&eacute;t&eacute;e comme une expression. Les d&eacute;tails &agrave; propos de la syntaxe
-    des expressions et leur &eacute;valuation sont pour l'instant mieux
-    document&eacute;s dans la page de <module>mod_filter</module>.</dd>
+    <dt><code>expr=<var>expression</var></code></dt>
+    <dd>La directive s'applique si et seulement si <var>expression</var>
+    est &eacute;valu&eacute;e &agrave; true. Vous trouverez plus de d&eacute;tails &agrave; propos de la
+    syntaxe et de l'&eacute;valuation des expressions dans la documentation <a
+    href="../expr.html">ap_expr</a>.</dd>
     </dl>
 
     <p>Except&eacute; le cas du mode <a href="#early">pr&eacute;coce</a>, la directive
@@ -493,17 +493,17 @@ tardif</title>
     <dl>
     <dt><code>early</code></dt>
     <dd>Sp&eacute;cifie <a href="#early">traitement pr&eacute;alable</a>.</dd>
-    <dt><code>env=[!]variable</code></dt>
+    <dt><code>env=[!]<var>variable</var></code></dt>
     <dd>La directive est appliqu&eacute;e si et seulement si la <a
     href="../env.html">variable d'environnement</a>
     <code>variable</code> existe. Un <code>!</code> devant
     <code>variable</code> inverse le test, et la directive ne
     s'appliquera alors que si <code>variable</code> n'est pas d&eacute;finie.</dd>
-    <dt><code>expr</code></dt>
-    <dd>Une cha&icirc;ne qui correspond &agrave; toute valeur ci-dessus est
-    interpr&eacute;t&eacute;e comme une expression. Les d&eacute;tails &agrave; propos de la syntaxe
-    des expressions et leur &eacute;valuation sont pour l'instant mieux
-    document&eacute;s dans la page de <module>mod_filter</module>.</dd>
+    <dt><code>expr=<var>expression</var></code></dt>
+    <dd>La directive s'applique si et seulement si <var>expression</var>
+    est &eacute;valu&eacute;e &agrave; true. Vous trouverez plus de d&eacute;tails &agrave; propos de la
+    syntaxe et de l'&eacute;valuation des expressions dans la documentation <a
+    href="../expr.html">ap_expr</a>.</dd>
     </dl>
 
     <p>Except&eacute; le cas du mode <a href="#early">pr&eacute;coce</a>, les

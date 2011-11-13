@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1180985 -->
+<!-- English Revision : 1199568 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -92,7 +92,11 @@ correspondance</a></seealso>
     pour voir comment vous pourrez par la suite personnaliser la mani&egrave;re
     dont tout ceci est trait&eacute;). Ensuite, une nouvelle sous-requ&ecirc;te
     interne est initi&eacute;e avec la nouvelle URL, ce qui red&eacute;marre le
-    traitement des phases de l'API.</p>
+    traitement des phases de la requ&ecirc;te. V&eacute;rifiez que vos r&egrave;gles ne
+    cr&eacute;ent pas de boucle infinie. Voir <a
+    href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans la
+    r&eacute;&eacute;criture</a> pour une discussion plus approfondie &agrave; propos de ce
+    probl&egrave;me.</p>
 
     <p>En cons&eacute;quence de cette manipulation de l'URL , vous devrez
     pensez &agrave; confectionner diff&eacute;remment vos r&egrave;gles de r&eacute;&eacute;criture dans un
@@ -163,13 +167,15 @@ correspondance</a></seealso>
       <dfn>Figure 1:</dfn>D&eacute;roulement du contr&ocirc;le &agrave; travers le jeu de
       r&egrave;gles de r&eacute;&eacute;criture
 </p>
-      <p>Comme vous pouvez le voir, l'URL est tout d'abord compar&eacute;e au
+      <p>L'URL est tout d'abord compar&eacute;e au
       <em>Mod&egrave;le</em> de chaque r&egrave;gle. Lorsqu'une r&egrave;gle ne s'applique
       pas, mod_rewrite stoppe imm&eacute;diatement le traitement de cette r&egrave;gle
       et passe &agrave; la r&egrave;gle suivante. Si l'URL correspond au
       <em>Mod&egrave;le</em>, mod_rewrite recherche la pr&eacute;sence de conditions
-      correspondantes. S'il n'y en a pas, mod_rewrite remplace
-      simplement l'URL par une cha&icirc;ne &eacute;labor&eacute;e &agrave; partir de la cha&icirc;ne de
+      correspondantes (les directives Rewritecond apparaissant dans la
+      configuration juste
+      avant les r&egrave;gles de r&eacute;&eacute;criture). S'il n'y en a pas, mod_rewrite remplace
+      l'URL par une cha&icirc;ne &eacute;labor&eacute;e &agrave; partir de la cha&icirc;ne de
       <em>Substitution</em>, puis passe &agrave; la r&egrave;gle suivante. Si des
       conditions sont pr&eacute;sentes, mod_rewrite lance un bouclage
       secondaire afin de les traiter selon l'ordre dans lequel elles

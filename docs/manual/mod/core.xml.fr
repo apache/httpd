@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1188095 -->
+<!-- English Revision : 1199485 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1676,12 +1676,14 @@ requ&ecirc;te</description>
 <description>Caract&eacute;ristiques de fichier utilis&eacute;es lors de la g&eacute;n&eacute;ration
 de l'en-t&ecirc;te de r&eacute;ponse HTTP ETag pour les fichiers statiques</description>
 <syntax>FileETag <var>composant</var> ...</syntax>
-<default>FileETag INode MTime Size</default>
+<default>FileETag MTime Size</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>La valeur par d&eacute;faut &eacute;tait "INode&nbsp;MTime&nbsp;Size"
+dans les versions 2.3.14 et ant&eacute;rieures.</compatibility>
 
 <usage>
     <p>
@@ -1733,7 +1735,7 @@ host</context>
     localisations o&ugrave; WebDAV est activ&eacute; et qui utilisent
     <module>mod_dav_fs</module> comme fournisseur de stockage.
     <module>mod_dav_fs</module> utilise
-    <code>INode&nbsp;MTime&nbsp;Size</code> comme format fixe pour les
+    <code>MTime&nbsp;Size</code> comme format fixe pour les
     comparaisons de champs <code>ETag</code> dans les requ&ecirc;tes
     conditionnelles. Ces requ&ecirc;tes conditionnelles &eacute;choueront si le
     format <code>ETag</code> est modifi&eacute; via la directive
