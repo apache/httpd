@@ -54,6 +54,13 @@
 ** TODO apw_rgetvm needs to handle connection scoped vms     
 ** TODO options in server scoped vms (ie, min and max vm counts)
 ** TODO provide means to implement authn and authz providers
+** TODO: Flatten LuaHook* to LuaHook phase file fn ?
+** TODO: Lua and ap_expr integration in one or both directions
+** TODO: document or remove block sections
+** TODO: test per-dir behavior of block sections
+** TODO: Catch-up documentation on r: methods
+** TODO: 500 errors instead of 404 with AddHandler lua-script
+** TODO: Suppress internal details (fs path to scripts, etc) in error responses
     
 * License
   Apache License, Version 2.0,
