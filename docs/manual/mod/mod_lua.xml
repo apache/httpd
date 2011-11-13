@@ -726,6 +726,26 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LuaInherit</name>
+<description>Controls how parent configuration sections are merged into children</description>
+<syntax>LuaInherit none|parent-first|parent-last</syntax>
+<default>LuaInherit parent-first</default>
+<compatibility>2.5.0 and later</compatibility>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+    <usage><p>By default, if LuaHook* directives are used in overlapping
+    Directory or Location configuration sections, the scripts defined in the
+    more specific section are run <em>after</em> those defined in the more
+    generic section (LuaInherit parent-first).  You can reverse this order, or
+    make the parent context not apply at all.</p>
+    
+    <p> In previous 2.3.x releases, the default was effectively to ignore LuaHook*
+    directives from parent configuration sections.</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LuaQuickHandler</name>
 <description>Provide a hook for the quick handler of request processing</description>
 <syntax></syntax>

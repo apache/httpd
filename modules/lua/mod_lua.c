@@ -115,8 +115,9 @@ static int lua_handler(request_rec *r)
                       spec->file,
                       "handle");
 
-        switch (dcfg->vm_scope) {
+        switch (spec->scope) {
         case AP_LUA_SCOPE_ONCE:
+        case AP_LUA_SCOPE_UNSET:
           apr_pool_create(&pool, r->pool);
           break;
         case AP_LUA_SCOPE_REQUEST:
@@ -190,7 +191,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
             spec = apr_pcalloc(r->pool, sizeof(ap_lua_vm_spec));
 
             spec->file = hook_spec->file_name;
-            spec->scope = hook_spec->scope;
+            spec->scope = cfg->vm_scope;
             spec->bytecode = hook_spec->bytecode;
             spec->bytecode_len = hook_spec->bytecode_len;
             spec->pool = r->pool;
@@ -210,6 +211,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name, int ap
 
             switch (spec->scope) {
             case AP_LUA_SCOPE_ONCE:
+            case AP_LUA_SCOPE_UNSET:
              apr_pool_create(&pool, r->pool);
               break;
             case AP_LUA_SCOPE_REQUEST:
@@ -864,7 +866,29 @@ static const char *register_package_cdir(cmd_parms *cmd,
     return register_package_helper(cmd, arg, cfg->package_cpaths);
 }
 
-
+static const char *register_lua_inherit(cmd_parms *cmd, 
+                                      void *_cfg,
+                                      const char *arg)
+{
+    ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
+    
+    if (strcasecmp("none", arg) == 0) {
+        cfg->inherit = AP_LUA_INHERIT_NONE;
+    }
+    else if (strcasecmp("parent-first", arg) == 0) {
+        cfg->inherit = AP_LUA_INHERIT_PARENT_FIRST;
+    }
+    else if (strcasecmp("parent-last", arg) == 0) {
+        cfg->inherit = AP_LUA_INHERIT_PARENT_LAST;
+    }
+    else { 
+        return apr_psprintf(cmd->pool,
+                            "LuaInherit type of '%s' not recognized, valid "
+                            "options are 'none', 'parent-first', and 'parent-last'", 
+                            arg);
+    }
+    return NULL;
+}
 static const char *register_lua_scope(cmd_parms *cmd, 
                                       void *_cfg,
                                       const char *scope, 
@@ -900,6 +924,7 @@ static const char *register_lua_scope(cmd_parms *cmd,
 #endif
                             ,scope);
     }
+
     return NULL;
 }
 
@@ -1008,6 +1033,10 @@ command_rec lua_commands[] = {
     AP_INIT_TAKE123("LuaScope", register_lua_scope, NULL, OR_ALL,
                     "One of once, request, conn, server -- default is once"),
 
+    AP_INIT_TAKE1("LuaInherit", register_lua_inherit, NULL, OR_ALL,
+     "Controls how Lua scripts in parent contexts are merged with the current " 
+     " context: none|parent-last|parent-first (default: parent-first) "),
+
     AP_INIT_TAKE2("LuaQuickHandler", register_quick_hook, NULL, OR_ALL,
                   "Provide a hook for the quick handler of request processing"),
     AP_INIT_RAW_ARGS("<LuaQuickHandler", register_quick_block, NULL,
@@ -1030,7 +1059,8 @@ static void *create_dir_config(apr_pool_t *p, char *dir)
     cfg->pool = p;
     cfg->hooks = apr_hash_make(p);
     cfg->dir = apr_pstrdup(p, dir);
-    cfg->vm_scope = AP_LUA_SCOPE_ONCE;
+    cfg->vm_scope = AP_LUA_SCOPE_UNSET;
+
     return cfg;
 }
 
@@ -1066,6 +1096,58 @@ static int lua_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     lua_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     lua_ssl_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     return OK;
+}
+static void *overlay_hook_specs(apr_pool_t *p,
+                                        const void *key,
+                                        apr_ssize_t klen,
+                                        const void *overlay_val,
+                                        const void *base_val,
+                                        const void *data)
+{
+    const apr_array_header_t *overlay_info = (const apr_array_header_t*)overlay_val;
+    const apr_array_header_t *base_info = (const apr_array_header_t*)base_val;
+    apr_array_header_t *newspecs  = apr_array_make(p, 2, 
+                                        sizeof(ap_lua_mapped_handler_spec *));
+
+    newspecs = apr_array_append(p, base_info, overlay_info);
+    return newspecs;
+}
+
+static void *merge_dir_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    ap_lua_dir_cfg *a, *base, *overrides;
+
+    a         = (ap_lua_dir_cfg *)apr_pcalloc(p, sizeof(ap_lua_dir_cfg));
+    base      = (ap_lua_dir_cfg*)basev;
+    overrides = (ap_lua_dir_cfg*)overridesv;
+
+    a->pool = overrides->pool;
+    a->dir = apr_pstrdup(p, overrides->dir);
+
+    a->vm_scope = (overrides->vm_scope == AP_LUA_SCOPE_UNSET) ? base->vm_scope: overrides->vm_scope;
+    a->inherit = (overrides->inherit== AP_LUA_INHERIT_UNSET) ? base->inherit : overrides->inherit;
+
+    if (a->inherit == AP_LUA_INHERIT_UNSET || a->inherit == AP_LUA_INHERIT_PARENT_FIRST) { 
+        a->package_paths = apr_array_append(p, base->package_paths, overrides->package_paths);
+        a->package_cpaths = apr_array_append(p, base->package_cpaths, overrides->package_cpaths);
+        a->mapped_handlers = apr_array_append(p, base->mapped_handlers, overrides->mapped_handlers);
+        a->hooks = apr_hash_merge(p, overrides->hooks, base->hooks, overlay_hook_specs, NULL);
+    }
+    else if (a->inherit == AP_LUA_INHERIT_PARENT_LAST) { 
+        a->package_paths = apr_array_append(p, overrides->package_paths, base->package_paths);
+        a->package_cpaths = apr_array_append(p, overrides->package_cpaths, base->package_cpaths);
+        a->mapped_handlers = apr_array_append(p, overrides->mapped_handlers, base->mapped_handlers);
+        a->hooks = apr_hash_merge(p, base->hooks, overrides->hooks, overlay_hook_specs, NULL);
+    }
+    else { 
+        a->package_paths = overrides->package_paths;
+        a->package_cpaths = overrides->package_cpaths;
+        a->package_cpaths = overrides->package_cpaths;
+        a->mapped_handlers= overrides->mapped_handlers;
+        a->hooks= overrides->hooks;
+    }
+
+    return a;
 }
 
 static void lua_register_hooks(apr_pool_t *p)
@@ -1126,7 +1208,7 @@ static void lua_register_hooks(apr_pool_t *p)
 AP_DECLARE_MODULE(lua) = {
     STANDARD20_MODULE_STUFF,
     create_dir_config,          /* create per-dir    config structures */
-    NULL,                       /* merge  per-dir    config structures */
+    merge_dir_config,           /* merge  per-dir    config structures */
     create_server_config,       /* create per-server config structures */
     NULL,                       /* merge  per-server config structures */
     lua_commands,               /* table of config file commands       */
