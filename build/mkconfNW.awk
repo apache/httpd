@@ -84,6 +84,8 @@ BEGIN {
     print "#LoadModule userdir_module modules/userdir.nlm"
     print "#LoadModule vhost_alias_module modules/vhost.nlm"
     if (MODSSL) {
+       print "#LoadModule socache_dbm_module modules/socachedbm.nlm"
+       print "#LoadModule socache_shmcb_module modules/socachedbm.nlm"
        print "#LoadModule ssl_module modules/mod_ssl.nlm"
     }
     print ""
