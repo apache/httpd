@@ -22,19 +22,14 @@
 <a href="../fr/ssl/ssl_compat.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
-<blockquote>
-<p>Tous les PCs sont compatibles. Mais certains sont plus compatibles que
-d'autres.</p>
-<p class="cite">-- <cite>Inconnu</cite></p>
-</blockquote>
 
 <p>Ce document couvre la compatibilité ascendante entre mod_ssl et
 d'autres solutions SSL. mod_ssl n'est pas la seule solution SSL pour Apache ;
 quatre autres produits sont (ou ont été) également disponibles :
 <a href="http://www.apache-ssl.org/">Apache-SSL</a>, le produit libre de
-Ben Laurie (d'où mod_ssl est issu à l'origine en 1998), <a href="http://www.redhat.com/products/product-details.phtml?id=rhsa">Secure
-Web Server</a>, un produit commercial de Red Hat (basé sur mod_ssl),
-<a href="http://www.covalent.net/">Raven SSL Module</a>, un produit commercial
+Ben Laurie (d'où mod_ssl est issu à l'origine en 1998), Secure
+Web Server, un produit commercial de Red Hat (basé sur mod_ssl),
+Raven SSL Module, un produit commercial
 de Covalent (basé lui aussi sur mod_ssl), et enfin <a href="http://www.redhat.com/explore/stronghold/">Stronghold</a>, produit
 commercial de C2Net et maintenant de Red Hat, (basé sur une branche
 d'évolution différente appelée Sioux jusqu'à Stronghold 2.x et basé sur
@@ -68,7 +63,9 @@ supportées par mod_ssl.</p>
 <tr class="header"><th colspan="3">Compatibilité entre Apache-SSL 1.x et mod_ssl 2.0.x :</th></tr>
 <tr><td><code>SSLEnable</code></td><td><code>SSLEngine on</code></td><td>plus compacte</td></tr>
 <tr class="odd"><td><code>SSLDisable</code></td><td><code>SSLEngine off</code></td><td>plus compacte</td></tr>
-<tr><td><code>SSLLogFile</code> <em>file</em></td><td><code>SSLLog</code> <em>file</em></td><td>plus compacte</td></tr>
+<tr><td><code>SSLLogFile</code>
+<em>file</em></td><td><code /></td><td>Utilisez plutôt la directive
+de niveau module <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>.</td></tr>
 <tr class="odd"><td><code>SSLRequiredCiphers</code> <em>spec</em></td><td><code>SSLCipherSuite</code> <em>spec</em></td><td>renommée</td></tr>
 <tr><td><code>SSLRequireCipher</code> <em>c1</em> ...</td><td><code>SSLRequire %{SSL_CIPHER} in {"</code><em>c1</em><code>",
 ...}</code></td><td>plus générale</td></tr>
@@ -85,7 +82,9 @@ supportées par mod_ssl.</p>
 <tr><td><code>SSL_KeyFile</code> <em>file</em></td><td><code>SSLCertificateKeyFile</code> <em>file</em></td><td>renommée</td></tr>
 <tr class="odd"><td><code>SSL_CipherSuite</code> <em>arg</em></td><td><code>SSLCipherSuite</code> <em>arg</em></td><td>renommée</td></tr>
 <tr><td><code>SSL_X509VerifyDir</code> <em>arg</em></td><td><code>SSLCACertificatePath</code> <em>arg</em></td><td>renommée</td></tr>
-<tr class="odd"><td><code>SSL_Log</code> <em>file</em></td><td><code>SSLLogFile</code> <em>file</em></td><td>renommée</td></tr>
+<tr class="odd"><td><code>SSL_Log</code>
+<em>file</em></td><td><code>-</code></td><td>Utilisez plutôt la directive
+de niveau module <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code></td></tr>
 <tr><td><code>SSL_Connect</code> <em>flag</em></td><td><code>SSLEngine</code> <em>flag</em></td><td>renommée</td></tr>
 <tr class="odd"><td><code>SSL_ClientAuth</code> <em>arg</em></td><td><code>SSLVerifyClient</code> <em>arg</em></td><td>renommée</td></tr>
 <tr><td><code>SSL_X509VerifyDepth</code> <em>arg</em></td><td><code>SSLVerifyDepth</code> <em>arg</em></td><td>renommée</td></tr>

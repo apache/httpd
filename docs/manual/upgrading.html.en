@@ -82,7 +82,7 @@
 
       <li>configure: the "most" module set gets built by default</li>
 
-      <li>configure: the "realyall" module set adds developer modules
+      <li>configure: the "reallyall" module set adds developer modules
       to the "all" set</li>
     </ul>
 

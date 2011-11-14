@@ -105,8 +105,9 @@ $ make install
 
       <li>
         <p>Configure le serveur HTTP Apache avec tous les modules
-	activés et chargés en tant qu'objets partagés. Vous pouvez
-	ensuite les désactiver un à un en commentant la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> correspondante dans le
+	activés. Seul un jeu de modules de base sera chargé au
+	démarrage du serveur. Vous pouvez modifier ce jeu de modules
+	chargés au démarrage en activant ou désactivant les directives <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> correspondantes dans le
       fichier <code>httpd.conf</code>.</p>
 
 <div class="example"><p><code>
@@ -118,6 +119,21 @@ $ make install
 	<code>--enable-modules</code> indique que tous les modules
 	non-expérimentaux ou qui ne sont pas là à titre d'exemple seront
 	compilés.</p>
+      </li>
+
+      <li>
+      <p>Certains modules ne sont utilisés que par les développeurs et
+      ne seront pas compilés. Si vous voulez les utiliser, spécifiez
+      l'option <em>all</em>. Pour compiler tous les modules disponibles,
+      y compris les modules de développeurs, spécifiez l'option
+      <em>reallyall</em>. En outre, la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> peut être activée pour tous
+      les modules compilés via l'option du script configure
+      <code>--enable-load-all-modules</code>.</p>
+
+<div class="example"><p><code>
+$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
+$ make install
+</code></p></div>
       </li>
 
       <li>
