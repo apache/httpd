@@ -337,6 +337,7 @@
 <li><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></li>
 <li><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></li>
 <li><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></li>
+<li><a href="mod_lua.html#luainherit">LuaInherit</a></li>
 <li><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></li>
 <li><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></li>
 <li><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></li>
