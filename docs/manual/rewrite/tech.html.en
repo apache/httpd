@@ -66,12 +66,18 @@ and URL matching.</p>
     <p>In per-directory context (i.e., within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
-    this, mod_rewrite temporarily translates the filename back into a URL,
-    by stripping off the directory path (including a trailing slash) 
-    before applying the rules. ) If a substitution is made, a new internal 
+    this, the URL-path that mod_rewrite initially compares <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives against
+    is the full filesystem path to the translated filename with the current
+    directories path (including a trailing slash) removed from the front.</p>
+
+    <p> To illustrate: If rules are in /var/www/foo/.htaccess and a request
+    for /foo/bar/baz is being processed, an expression like ^bar/baz$ would
+    match.</p>
+
+    <p> If a substitution is made in per-directory context, a new internal 
     subrequest is issued with the new URL, which restarts processing of the 
-    request phases. If the substution is a relative path, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> directive 
-    determines the URL-path prefix appended to the substitution.
+    request phases. If the substitution is a relative path, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> directive 
+    determines the URL-path prefix prepended to the substitution.
     In per-directory context, care must be taken to 
     create rules which will eventually (in some future "round" of per-directory
     rewrite processing) not perform a substitution to avoid looping.
