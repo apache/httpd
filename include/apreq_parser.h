@@ -67,13 +67,13 @@ typedef apr_status_t (*apreq_hook_function_t)(APREQ_HOOK_ARGS);
  * Declares a API parser.
  */
 #define APREQ_DECLARE_PARSER(f) APREQ_DECLARE_NONSTD(apr_status_t) \
-                                (f) (APREQ_PARSER_ARGS)
+                                f (APREQ_PARSER_ARGS)
 
 /**
  * Declares an API hook.
  */
 #define APREQ_DECLARE_HOOK(f)   APREQ_DECLARE_NONSTD(apr_status_t) \
-                                (f) (APREQ_HOOK_ARGS)
+                                f (APREQ_HOOK_ARGS)
 
 /**
  * A hook is called by the parser whenever data arrives in a file

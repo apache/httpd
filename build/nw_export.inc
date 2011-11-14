@@ -23,6 +23,12 @@
 #define APR_DECLARE_OPTIONAL_FN    APR_DECLARE_OPTIONAL_FN
 #undef  APR_DECLARE_EXTERNAL_HOOK
 #define APR_DECLARE_EXTERNAL_HOOK  APR_DECLARE_EXTERNAL_HOOK
+#undef  APREQ_DECLARE
+#define APREQ_DECLARE              APREQ_DECLARE
+#undef  APREQ_DECLARE_NONSTD
+#define APREQ_DECLARE_NONSTD       APREQ_DECLARE_NONSTD
+#undef  APREQ_DECLARE_DATA
+#define APREQ_DECLARE_DATA         APREQ_DECLARE_DATA
 #undef  APACHE_OS_H
 
 #include "httpd.h"
@@ -35,6 +41,12 @@
 #include "ap_provider.h"
 #include "ap_release.h"
 #include "ap_expr.h"
+#include "apreq_cookie.h"
+#include "apreq_error.h"
+#include "apreq_module.h"
+#include "apreq_param.h"
+#include "apreq_parser.h"
+#include "apreq_util.h"
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_core.h"

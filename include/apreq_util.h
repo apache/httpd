@@ -434,7 +434,7 @@ APREQ_DECLARE(apr_status_t) apreq_brigade_concat(apr_pool_t *pool,
  * @param bb the bucket brigade
  * @return the spool file, or NULL.
  */
-APREQ_DECLARE(apr_file_t *)apreq_brigade_spoolfile(apr_bucket_brigade *bb);
+APREQ_DECLARE(apr_file_t *) apreq_brigade_spoolfile(apr_bucket_brigade *bb);
 
 #ifdef __cplusplus
  }

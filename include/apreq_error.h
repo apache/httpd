@@ -29,8 +29,9 @@
  * apreq's wrapper around apr_strerror();
  * recognizes APREQ_ERROR_* status codes.
  */
-APREQ_DECLARE(char *)
-apreq_strerror(apr_status_t s, char *buf, apr_size_t bufsize);
+APREQ_DECLARE(char *) apreq_strerror(apr_status_t s,
+                                     char *buf,
+                                     apr_size_t bufsize);
 
 /**
  * @file apreq_error.h
