@@ -27,6 +27,7 @@ endif
 
 SUBDIRS = \
 	aaa \
+	apreq \
 	cache \
 	cluster \
 	dav/main \

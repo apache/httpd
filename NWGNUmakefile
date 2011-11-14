@@ -226,6 +226,17 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/apreq_cookie.o \
+	$(OBJDIR)/apreq_error.o \
+	$(OBJDIR)/apreq_module.o \
+	$(OBJDIR)/apreq_module_cgi.o \
+	$(OBJDIR)/apreq_module_custom.o \
+	$(OBJDIR)/apreq_param.o \
+	$(OBJDIR)/apreq_parser.o \
+	$(OBJDIR)/apreq_parser_header.o \
+	$(OBJDIR)/apreq_parser_multipart.o \
+	$(OBJDIR)/apreq_parser_urlencoded.o \
+	$(OBJDIR)/apreq_util.o \
 	$(OBJDIR)/buildmark.o \
 	$(OBJDIR)/config.o \
 	$(OBJDIR)/connection.o \
