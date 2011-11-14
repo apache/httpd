@@ -77,11 +77,13 @@ and URL matching.</p>
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
     this, mod_rewrite temporarily translates the filename back into a URL,
-    by stripping off directory path before appling the rules. (See the
-    <directive module="mod_rewrite">RewriteBase</directive> directive to
-    see how you can further manipulate how this is handled.) If a substitution
-    is made, a new internal subrequest is issued with the new URL, which restarts
-    processing of the request phases. In this context, care must be taken to 
+    by stripping off the directory path (including a trailing slash) 
+    before applying the rules. ) If a substitution is made, a new internal 
+    subrequest is issued with the new URL, which restarts processing of the 
+    request phases. If the substution is a relative path, the <directive 
+    module="mod_rewrite">RewriteBase</directive> directive 
+    determines the URL-path prefix appended to the substitution.
+    In per-directory context, care must be taken to 
     create rules which will eventually (in some future "round" of per-directory
     rewrite processing) not perform a substitution to avoid looping.
     (See <a href="http://wiki.apache.org/httpd/RewriteLooping">RewriteLooping</a>
