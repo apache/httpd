@@ -386,7 +386,8 @@
     <h4><a name="otheroptfeat" id="otheroptfeat">Cumulative and other options</a></h4>
       <dl>
         <dt><code>--enable-maintainer-mode</code></dt>
-        <dd>Turn on debugging and compile time warnings.</dd>
+        <dd>Turn on debugging and compile time warnings
+            and load all compiled modules.</dd>
 
         <dt><code>--enable-mods-shared=<var>MODULE-LIST</var></code></dt>
         <dd>
