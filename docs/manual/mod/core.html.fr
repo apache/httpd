@@ -1651,11 +1651,13 @@ requête</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Caractéristiques de fichier utilisées lors de la génération
 de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FileETag <var>composant</var> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FileETag INode MTime Size</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FileETag MTime Size</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La valeur par défaut était "INode&nbsp;MTime&nbsp;Size"
+dans les versions 2.3.14 et antérieures.</td></tr>
 </table>
     <p>
     La directive <code class="directive">FileETag</code> définit les
@@ -1706,7 +1708,7 @@ de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
     localisations où WebDAV est activé et qui utilisent
     <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> comme fournisseur de stockage.
     <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> utilise
-    <code>INode&nbsp;MTime&nbsp;Size</code> comme format fixe pour les
+    <code>MTime&nbsp;Size</code> comme format fixe pour les
     comparaisons de champs <code>ETag</code> dans les requêtes
     conditionnelles. Ces requêtes conditionnelles échoueront si le
     format <code>ETag</code> est modifié via la directive

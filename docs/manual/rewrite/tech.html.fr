@@ -80,7 +80,10 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
     pour voir comment vous pourrez par la suite personnaliser la manière
     dont tout ceci est traité). Ensuite, une nouvelle sous-requête
     interne est initiée avec la nouvelle URL, ce qui redémarre le
-    traitement des phases de l'API.</p>
+    traitement des phases de la requête. Vérifiez que vos règles ne
+    créent pas de boucle infinie. Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans la
+    réécriture</a> pour une discussion plus approfondie à propos de ce
+    problème.</p>
 
     <p>En conséquence de cette manipulation de l'URL , vous devrez
     pensez à confectionner différemment vos règles de réécriture dans un
@@ -149,13 +152,15 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
       <dfn>Figure 1:</dfn>Déroulement du contrôle à travers le jeu de
       règles de réécriture
 </p>
-      <p>Comme vous pouvez le voir, l'URL est tout d'abord comparée au
+      <p>L'URL est tout d'abord comparée au
       <em>Modèle</em> de chaque règle. Lorsqu'une règle ne s'applique
       pas, mod_rewrite stoppe immédiatement le traitement de cette règle
       et passe à la règle suivante. Si l'URL correspond au
       <em>Modèle</em>, mod_rewrite recherche la présence de conditions
-      correspondantes. S'il n'y en a pas, mod_rewrite remplace
-      simplement l'URL par une chaîne élaborée à partir de la chaîne de
+      correspondantes (les directives Rewritecond apparaissant dans la
+      configuration juste
+      avant les règles de réécriture). S'il n'y en a pas, mod_rewrite remplace
+      l'URL par une chaîne élaborée à partir de la chaîne de
       <em>Substitution</em>, puis passe à la règle suivante. Si des
       conditions sont présentes, mod_rewrite lance un bouclage
       secondaire afin de les traiter selon l'ordre dans lequel elles

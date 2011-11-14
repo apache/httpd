@@ -83,7 +83,14 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
       <li>configure: les modules dynamiques (DSO) sont compilés par
       défaut</li>
 
+      <li>configure: par défaut, seul un jeu de modules de base est
+      chargé. Les autres directives <code class="directive">LoadModule</code>
+      sont mises en commentaires.</li>
+
       <li>configure: le jeu de modules "most" est compilé par défaut</li>
+
+      <li>configure: le jeu de modules "realyall" ajoute les modules de
+      développeur au jeu "all".</li>
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -191,6 +198,9 @@ nécessiter une mise à jour des fichiers de configuration de la version
 
 	<li>La valeur par défaut de la directive <code class="directive"><a href="./mod/core.html#enablesendfile">EnableSendfile</a></code> est maintenant Off.</li>
 
+	<li>La valeur par défaut de la directive <code class="directive"><a href="./mod/core.html#fileetag">FileETag</a></code> est maintenant "MTime Size"
+	(sans INode).</li>
+
         <li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>: <a href="modules/mod_log_config.html#formats">${cookie}C</a>
         correspond au nom du cookie dans son ensemble, alors qu'avant,
 	toute sous-chaîne pouvait correspondre.</li>
@@ -258,6 +268,18 @@ nécessiter une mise à jour des fichiers de configuration de la version
 	<code>DebugLevel</code> a été supprimée en faveur d'une
 	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau répertoire.
         </li>
+
+	<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: le contrôle de révocation des
+	certificats basé sur les CRL doit être maintenant explicitement
+	configuré via la directive <code class="directive"><a href="./mod/mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a></code>.
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>: la taille maximale d'une
+	ligne est maintenant 1Mo.
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code>: si ce module est chargé, il
+	définit maintenant certains temps d'attente par défaut.</li>
 
     </ul>
     
