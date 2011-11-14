@@ -160,7 +160,8 @@ XDCDATA		=
 # number of submakefiles, but for the moment only contains one, we reference
 # it twice to allow it parent NWGNUmakefile to work properly.  If another
 # submakefile is added, the extra reference to the first NLM should be removed.
-$(OBJDIR)/optfnexport.nlm \
+TARGET_nlm = \
+	$(OBJDIR)/optfnexport.nlm \
 	$(OBJDIR)/optfnimport.nlm \
 	$(OBJDIR)/opthookexport.nlm \
 	$(OBJDIR)/opthookimport.nlm \
