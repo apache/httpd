@@ -836,6 +836,7 @@ static int start_lingering_close(conn_state_t *cs, ap_equeue_t *eq)
         v->cs = cs;
         if (eq != NULL) {
             ap_equeue_writer_onward(eq);
+            apr_pollset_wakeup(event_pollset);
         }
         else {
             process_pollop(v);
@@ -994,6 +995,7 @@ read_request:
             v->tag = "process_socket(write_completion)";
 
             ap_equeue_writer_onward(eq);
+            apr_pollset_wakeup(event_pollset);
             return 1;
         }
         else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted ||
@@ -1035,6 +1037,7 @@ read_request:
         cs->pfd.reqevents = APR_POLLIN;
         v->tag = "process_socket(keepalive)";
         ap_equeue_writer_onward(eq);
+        apr_pollset_wakeup(event_pollset);
     }
     return 1;
 }
@@ -1944,7 +1947,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                                                 * connections in K-A or lingering
                                                 * close?
                                                 */
-                            pchild, APR_POLLSET_NOCOPY);
+                            pchild, APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                      "apr_pollset_create with Thread Safety failed.");
@@ -2860,7 +2863,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     ++retained->module_loads;
     if (retained->module_loads == 2) {
         rv = apr_pollset_create(&event_pollset, 1, plog,
-                                APR_POLLSET_NOCOPY);
+                                APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                          "Couldn't create a suiteable pollset. "
