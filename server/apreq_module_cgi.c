@@ -14,7 +14,6 @@
 **  See the License for the specific language governing permissions and
 **  limitations under the License.
 */
-#include <assert.h>
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -410,7 +409,7 @@ static void init_body(apreq_handle_t *handle)
     req->in         = apr_brigade_create(pool, ba);
     req->tmpbb      = apr_brigade_create(pool, ba);
 
-    apr_file_open_stdin(&file, pool); // error status?
+    apr_file_open_stdin(&file, pool); /* error status? */
     pipe = apr_bucket_pipe_create(file, ba);
     eos = apr_bucket_eos_create(ba);
     APR_BRIGADE_INSERT_HEAD(req->in, pipe);
