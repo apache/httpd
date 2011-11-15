@@ -33,7 +33,7 @@
 #define SERVICE_APACHE_RESTART 128
 
 #ifndef AP_DEFAULT_SERVICE_NAME
-#define AP_DEFAULT_SERVICE_NAME "Apache2.x"
+#define AP_DEFAULT_SERVICE_NAME "Apache2.4"
 #endif
 
 #define SERVICECONFIG "System\\CurrentControlSet\\Services\\%s"
