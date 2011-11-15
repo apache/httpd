@@ -216,6 +216,19 @@
       (Query String Discard) and <code>[END]</code> flags for
       <directive module="mod_rewrite">RewriteRule</directive> to
       simplify common rewriting scenarios.</dd>
+
+      <dt><module>mod_ldap</module>, <module>mod_authnz_ldap</module></dt>
+      <dd><module>mod_authnz_ldap</module> adds support for nested groups.</dd>
+      <dd><module>mod_ldap</module> adds
+          <directive module="mod_ldap">LDAPConnectionPoolTTL</directive>,
+          <directive module="mod_ldap">LDAPTimeout</directive>, and
+          other improvements in the handling of timeouts.
+          This is especially useful for setups where a
+          stateful firewall drops idle connections to the LDAP server.</dd>
+      <dd><module>mod_ldap</module> adds
+          <directive module="mod_ldap">LDAPLibraryDebug</directive> to log
+          debug information provided by the used LDAP toolkit.</dd>
+
     </dl>
   </section>
 
@@ -259,6 +272,13 @@
           exposed in <var>ap_expr.h</var>.  This is adapted from the
           expression parser previously implemented in
           <module>mod_ssl</module>.</dd>
+
+      <dd>The expression parser allows to specify
+          <a href="expr.html">complex conditions</a> in directives like
+          <directive module="mod_setenvif">SetEnvIfExpr</directive>,
+          <directive module="mod_rewrite">RewriteCond</directive>, and
+          <directive module="mod_headers">Header</directive>.
+      </dd>
 
       <dt>Authorization Logic Containers</dt>
 

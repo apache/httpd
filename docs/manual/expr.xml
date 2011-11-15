@@ -43,6 +43,8 @@
 <seealso><directive module="core" type="section">Else</directive></seealso>
 <seealso><directive module="mod_rewrite">RewriteCond</directive></seealso>
 <seealso><directive module="mod_setenvif">SetEnvIfExpr</directive></seealso>
+<seealso><directive module="mod_headers">Header</directive></seealso>
+<seealso><directive module="mod_headers">RequestHeader</directive></seealso>
 <seealso><directive module="mod_filter">FilterProvider</directive></seealso>
 <seealso><a href="mod/mod_authz_core.html#reqexpr">Require expr</a></seealso>
 <seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
