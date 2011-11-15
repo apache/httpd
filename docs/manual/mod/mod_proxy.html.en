@@ -1513,9 +1513,11 @@ reverse proxy. This directive rewrites the <code>path</code> string in
 </p><p>
 In the example given with 
 <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, the directive:
+</p>
     <div class="example"><p><code>
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </code></p></div>
+<p>
 will rewrite a cookie with backend path <code>/</code> (or
 <code>/example</code> or, in fact, anything) to <code>/mirror/foo/</code>.
 </p>

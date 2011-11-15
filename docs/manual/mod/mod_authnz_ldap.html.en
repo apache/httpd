@@ -1086,6 +1086,7 @@ evaluated before the user search is discontinued.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.0 and later</td></tr>
 </table>
    <p>When this directive is set to a non-zero value <code>X</code>
    combined with use of the <code>Require ldap-group someGroupDN</code>
@@ -1186,6 +1187,7 @@ are groups.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.0 and later</td></tr>
 </table>
     <p>An LDAP group object may contain members that are users and
     members that are groups (called nested or sub groups). The
@@ -1208,6 +1210,7 @@ objects that are groups during sub-group processing.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.0 and later</td></tr>
 </table>
     <p>An LDAP group object may contain members that are users and
     members that are groups (called nested or sub groups). The

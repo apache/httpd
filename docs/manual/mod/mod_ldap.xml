@@ -665,6 +665,7 @@ connection client certificates.</description>
 <syntax>LDAPTimeout <var>seconds</var></syntax>
 <default>LDAPTimeout 60</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Apache HTTP Server 2.3.5 and later</compatibility>
 
 <usage>
     <p>This directive configures the timeout for bind and search operations, as well as
