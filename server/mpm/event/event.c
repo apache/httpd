@@ -2866,7 +2866,7 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
                                 APR_POLLSET_WAKEABLE|APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                         "Couldn't create a suiteable pollset. "
+                         "Couldn't create a suitable pollset. "
                          "Is it supported on your platform?"
                          "Also check system or user limits!");
             return HTTP_INTERNAL_SERVER_ERROR;
