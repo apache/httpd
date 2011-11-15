@@ -385,7 +385,7 @@ apr_status_t apache2_temp_dir_set(apreq_handle_t *handle,
         apreq_filter_make_context(f);
 
     ctx = f->ctx;
-    // init vs incomplete state?
+    /* init vs incomplete state? */
     if (ctx->temp_dir == NULL && ctx->bytes_read == 0) {
         if (path != NULL)
             ctx->temp_dir = apr_pstrdup(handle->pool, path);
