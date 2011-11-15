@@ -13,11 +13,11 @@
 <body id="manual-page">
 <div id="page-header">
 <p class="menu"><a href="./mod/">模块</a> | <a href="./mod/directives.html">指令</a> | <a href="./faq/">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a></p>
-<p class="apache">Apache HTTP 服务器版本 2.3</p>
+<p class="apache">Apache HTTP 服务器版本 2.5</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="./">版本 2.3</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="./">版本 2.5</a></div>
 <div id="page-content"><div id="preamble"><h1>站点导航</h1>
 <div class="toplang">
 <p><span>可用语言: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -31,7 +31,7 @@
 </div>
 
 <p>本页列出了
-<a href="./">Apache HTTP 服务器 2.3
+<a href="./">Apache HTTP 服务器 2.5
 的全部文档</a>。</p>
 </div>
 <div id="quickview"><ul id="toc">

@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.3 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.3</a></div><div id="page-content"><div id="preamble"><h1>El Servidor Apache y Programas de Soporte</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>El Servidor Apache y Programas de Soporte</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/programs/" title="Español">&nbsp;es&nbsp;</a> |

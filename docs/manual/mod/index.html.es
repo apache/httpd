@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.3 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.3</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

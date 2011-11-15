@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/directives.html">指令</a> | <a href="../faq/">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p>
-<p class="apache">Apache HTTP 服务器版本 2.3</p>
+<p class="apache">Apache HTTP 服务器版本 2.5</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.3</a> &gt; <a href="./">开发者文档</a></div><div id="page-content"><div id="preamble"><h1>Apache 2.0 文档</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.5</a> &gt; <a href="./">开发者文档</a></div><div id="page-content"><div id="preamble"><h1>Apache 2.0 文档</h1>
 <div class="toplang">
 <p><span>可用语言: </span><a href="../en/developer/documenting.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../zh-cn/developer/documenting.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
