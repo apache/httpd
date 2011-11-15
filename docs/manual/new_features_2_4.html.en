@@ -218,6 +218,19 @@
       (Query String Discard) and <code>[END]</code> flags for
       <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to
       simplify common rewriting scenarios.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> adds support for nested groups.</dd>
+      <dd><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> adds
+          <code class="directive"><a href="./mod/mod_ldap.html#ldapconnectionpoolttl">LDAPConnectionPoolTTL</a></code>,
+          <code class="directive"><a href="./mod/mod_ldap.html#ldaptimeout">LDAPTimeout</a></code>, and
+          other improvements in the handling of timeouts.
+          This is especially useful for setups where a
+          stateful firewall drops idle connections to the LDAP server.</dd>
+      <dd><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> adds
+          <code class="directive"><a href="./mod/mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug</a></code> to log
+          debug information provided by the used LDAP toolkit.</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -261,6 +274,13 @@
           exposed in <var>ap_expr.h</var>.  This is adapted from the
           expression parser previously implemented in
           <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
+
+      <dd>The expression parser allows to specify
+          <a href="expr.html">complex conditions</a> in directives like
+          <code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code>,
+          <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, and
+          <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>.
+      </dd>
 
       <dt>Authorization Logic Containers</dt>
 
