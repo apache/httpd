@@ -13,7 +13,7 @@
 # The following install defaults may be customized;
 #
 #   Option      Default
-#   INSTDIR     /Apache2x
+#   INSTDIR     /Apache24
 #   PORT        80
 #   SSLPORT     443
 #   DOMAINNAME  example.com
@@ -241,7 +241,7 @@ _trydb:
 
 
 !IF "$(INSTDIR)" == ""
-INSTDIR=\Apache2x
+INSTDIR=\Apache24
 !ENDIF
 !IF "$(DOMAINNAME)" == ""
 DOMAINNAME=example.com
