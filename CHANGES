@@ -1,5 +1,5 @@
                                                          -*- coding: utf-8 -*-
-Changes with Apache 2.3.16
+Changes with Apache 2.5.0
 
   *) mod_lua: Stop losing track of all but the most specific LuaHook* directives
      when multiple per-directory config sections are used.  Adds LuaInherit 
