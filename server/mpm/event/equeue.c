@@ -77,8 +77,8 @@ ap_equeue_create(apr_pool_t *p, apr_uint32_t nelem, apr_size_t elem_size, ap_equ
     *eqout = NULL;
 
     eq = apr_palloc(p, sizeof(ap_equeue_t));
-    eq->bytes = apr_palloc(p, (1 + nelem) * elem_size);
     eq->nelem = nearest_power(nelem);
+    eq->bytes = apr_palloc(p, eq->nelem * elem_size);
     eq->elem_size = elem_size;
     eq->writeCount = 0;
     eq->readCount = 0;
