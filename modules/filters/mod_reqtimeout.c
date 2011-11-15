@@ -340,6 +340,11 @@ static int reqtimeout_init(conn_rec *c)
         return DECLINED;
     }
 
+    if (cfg->header_timeout == UNSET && cfg->body_timeout == UNSET) {
+        /* if everything is unset, skip by default. */
+        return DECLINED;
+    }
+
     ccfg = apr_pcalloc(c->pool, sizeof(reqtimeout_con_cfg));
     ccfg->type = "header";
     if (cfg->header_timeout != UNSET) {
