@@ -168,6 +168,9 @@ Package=<4>
     Project_Dep_Name mod_charset_lite
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_data
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_dav_fs
     End Project Dependency
     Begin Project Dependency
@@ -1316,6 +1319,24 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_charset_lite"=.\modules\filters\mod_charset_lite.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_data"=.\modules\filters\mod_data.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
