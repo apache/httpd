@@ -1944,7 +1944,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                                                 * connections in K-A or lingering
                                                 * close?
                                                 */
-                            pchild, APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
+                            pchild, APR_POLLSET_NOCOPY);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                      "apr_pollset_create with Thread Safety failed.");
@@ -2860,10 +2860,10 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     ++retained->module_loads;
     if (retained->module_loads == 2) {
         rv = apr_pollset_create(&event_pollset, 1, plog,
-                                APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY);
+                                APR_POLLSET_NOCOPY);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                         "Couldn't create a Thread Safe Pollset. "
+                         "Couldn't create a suiteable pollset. "
                          "Is it supported on your platform?"
                          "Also check system or user limits!");
             return HTTP_INTERNAL_SERVER_ERROR;
