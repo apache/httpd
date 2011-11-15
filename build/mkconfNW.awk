@@ -42,6 +42,7 @@ BEGIN {
 /@@LoadModule@@/ {
     print "#LoadModule access_compat_module modules/accesscompat.nlm"
     print "#LoadModule actions_module modules/actions.nlm"
+    print "#LoadModule allowmethods_module modules/allowmethods.nlm"
     print "#LoadModule auth_basic_module modules/authbasc.nlm"
     print "#LoadModule auth_digest_module modules/authdigt.nlm"
     print "#LoadModule authn_anon_module modules/authnano.nlm"
