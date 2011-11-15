@@ -661,6 +661,7 @@ valid</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.3.5 and later</td></tr>
 </table>
     <p>This directive configures the timeout for bind and search operations, as well as
     the LDAP_OPT_TIMEOUT option in the underlying LDAP client library, when available.</p>
