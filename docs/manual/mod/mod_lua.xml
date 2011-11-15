@@ -730,11 +730,11 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
 <description>Controls how parent configuration sections are merged into children</description>
 <syntax>LuaInherit none|parent-first|parent-last</syntax>
 <default>LuaInherit parent-first</default>
-<compatibility>2.5.0 and later</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>2.5.0 and later</compatibility>
     <usage><p>By default, if LuaHook* directives are used in overlapping
     Directory or Location configuration sections, the scripts defined in the
     more specific section are run <em>after</em> those defined in the more
