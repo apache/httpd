@@ -1533,35 +1533,35 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 }
             }
             else if (pt->type == PT_ACCEPT) {
+                int skip_accept = 0;
+                int connection_count_local = connection_count;
+
                 /* A Listener Socket is ready for an accept() */
                 if (workers_were_busy) {
-                    if (!listeners_disabled)
-                        disable_listensocks(process_slot);
-                    listeners_disabled = 1;
+                    skip_accept = 1;
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                                  "All workers busy, not accepting new conns"
                                  "in this process");
-                }
-                else if (apr_atomic_read32(&connection_count) > threads_per_child
-                         + ap_queue_info_get_idlers(worker_queue_info) *
-                           worker_factor / WORKER_FACTOR_SCALE)
-                {
-                    if (!listeners_disabled)
-                        disable_listensocks(process_slot);
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                                 "Too many open connections (%u), "
-                                 "not accepting new conns in this process",
-                                 apr_atomic_read32(&connection_count));
-                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
-                                 "Idle workers: %u",
-                                 ap_queue_info_get_idlers(worker_queue_info));
-                    listeners_disabled = 1;
                 }
                 else if (listeners_disabled) {
                     listeners_disabled = 0;
                     enable_listensocks(process_slot);
                 }
-                if (!listeners_disabled) {
+                else if (connection_count_local > threads_per_child
+                         + ap_queue_info_get_idlers(worker_queue_info) *
+                           worker_factor / WORKER_FACTOR_SCALE)
+                {
+                    skip_accept = 1;
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+                                 "Too many open connections (%u), "
+                                 "not accepting new conns in this process",
+                                 connection_count_local);
+                    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
+                                 "Idle workers: %u",
+                                 ap_queue_info_get_idlers(worker_queue_info));
+                }
+
+                if (skip_accept == 0) {
                     lr = (ap_listen_rec *) pt->baton;
                     ap_pop_pool(&ptrans, worker_queue_info);
 
