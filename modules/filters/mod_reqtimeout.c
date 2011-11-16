@@ -85,9 +85,12 @@ static void extend_timeout(reqtimeout_con_cfg *ccfg, apr_bucket_brigade *bb)
 }
 
 static apr_status_t check_time_left(reqtimeout_con_cfg *ccfg,
-                                    apr_time_t *time_left_p)
+                                    apr_time_t *time_left_p,
+                                    apr_time_t now)
 {
-    *time_left_p = ccfg->timeout_at - apr_time_now();
+    if (!now)
+        now = apr_time_now();
+    *time_left_p = ccfg->timeout_at - now;
     if (*time_left_p <= 0)
         return APR_TIMEUP;
 
@@ -169,7 +172,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
                                       apr_off_t readbytes)
 {
     apr_time_t time_left;
-    apr_time_t now;
+    apr_time_t now = 0;
     apr_status_t rv;
     apr_interval_time_t saved_sock_timeout = UNSET;
     reqtimeout_con_cfg *ccfg = f->ctx;
@@ -180,9 +183,9 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
-    now = apr_time_now();
     if (ccfg->new_timeout > 0) {
         /* set new timeout */
+        now = apr_time_now();
         ccfg->timeout_at = now + apr_time_from_sec(ccfg->new_timeout);
         ccfg->new_timeout = 0;
         if (ccfg->new_max_timeout > 0) {
@@ -199,7 +202,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         ccfg->socket = ap_get_conn_socket(f->c);
     }
 
-    rv = check_time_left(ccfg, &time_left);
+    rv = check_time_left(ccfg, &time_left, now);
     if (rv != APR_SUCCESS)
         goto out;
 
@@ -281,7 +284,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             if (rv != APR_SUCCESS)
                 break;
 
-            rv = check_time_left(ccfg, &time_left);
+            rv = check_time_left(ccfg, &time_left, 0);
             if (rv != APR_SUCCESS)
                 break;
 
