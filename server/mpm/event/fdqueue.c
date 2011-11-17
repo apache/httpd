@@ -26,7 +26,7 @@ typedef struct recycled_pool
 struct fd_queue_info_t
 {
     apr_int32_t idlers;      /**
-                                  * 0 or positive: number of idle worker threads
+                              * 0 or positive: number of idle worker threads
                               * negative: number of threads blocked waiting
                               *           for an idle worker
                               */
