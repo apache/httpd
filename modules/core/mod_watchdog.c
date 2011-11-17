@@ -31,9 +31,9 @@
 #include "http_core.h"
 #include "util_mutex.h"
 
-#define AP_WATCHODG_PGROUP    "watchdog"
-#define AP_WATCHODG_PVERSION  "parent"
-#define AP_WATCHODG_CVERSION  "child"
+#define AP_WATCHDOG_PGROUP    "watchdog"
+#define AP_WATCHDOG_PVERSION  "parent"
+#define AP_WATCHDOG_CVERSION  "child"
 
 typedef struct watchdog_list_t watchdog_list_t;
 
@@ -313,7 +313,7 @@ static apr_status_t ap_watchdog_get_instance(ap_watchdog_t **watchdog,
                                              apr_pool_t *p)
 {
     ap_watchdog_t *w;
-    const char *pver = parent ? AP_WATCHODG_PVERSION : AP_WATCHODG_CVERSION;
+    const char *pver = parent ? AP_WATCHDOG_PVERSION : AP_WATCHDOG_CVERSION;
 
     if (parent && mpm_is_forked != AP_MPMQ_NOT_SUPPORTED) {
         /* Parent threads are not supported for
@@ -322,7 +322,7 @@ static apr_status_t ap_watchdog_get_instance(ap_watchdog_t **watchdog,
         *watchdog = NULL;
         return APR_ENOTIMPL;
     }
-    w = ap_lookup_provider(AP_WATCHODG_PGROUP, name, pver);
+    w = ap_lookup_provider(AP_WATCHDOG_PGROUP, name, pver);
     if (w) {
         *watchdog = w;
         return APR_SUCCESS;
@@ -332,7 +332,7 @@ static apr_status_t ap_watchdog_get_instance(ap_watchdog_t **watchdog,
     w->pool      = p;
     w->singleton = parent ? 0 : singleton;
     *watchdog    = w;
-    return ap_register_provider(p, AP_WATCHODG_PGROUP, name,
+    return ap_register_provider(p, AP_WATCHDOG_PGROUP, name,
                                 pver, *watchdog);
 }
 
@@ -473,16 +473,16 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
         apr_pool_userdata_set(wd_server_conf, pk, apr_pool_cleanup_null, pproc);
     }
     wd_server_conf->s = s;
-    if ((wl = ap_list_provider_names(pconf, AP_WATCHODG_PGROUP,
-                                            AP_WATCHODG_PVERSION))) {
+    if ((wl = ap_list_provider_names(pconf, AP_WATCHDOG_PGROUP,
+                                            AP_WATCHDOG_PVERSION))) {
         const ap_list_provider_names_t *wn;
         int i;
 
         wn = (ap_list_provider_names_t *)wl->elts;
         for (i = 0; i < wl->nelts; i++) {
-            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHODG_PGROUP,
+            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
                                                   wn[i].provider_name,
-                                                  AP_WATCHODG_PVERSION);
+                                                  AP_WATCHDOG_PVERSION);
             if (w) {
                 if (!w->active) {
                     int status = ap_run_watchdog_need(s, w->name, 1,
@@ -513,16 +513,16 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                      "Spawned %d parent worker threads.",
                      wd_server_conf->parent_workers);
     }
-    if ((wl = ap_list_provider_names(pconf, AP_WATCHODG_PGROUP,
-                                            AP_WATCHODG_CVERSION))) {
+    if ((wl = ap_list_provider_names(pconf, AP_WATCHDOG_PGROUP,
+                                            AP_WATCHDOG_CVERSION))) {
         const ap_list_provider_names_t *wn;
         int i;
 
         wn = (ap_list_provider_names_t *)wl->elts;
         for (i = 0; i < wl->nelts; i++) {
-            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHODG_PGROUP,
+            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
                                                   wn[i].provider_name,
-                                                  AP_WATCHODG_CVERSION);
+                                                  AP_WATCHDOG_CVERSION);
             if (w) {
                 if (!w->active) {
                     int status = ap_run_watchdog_need(s, w->name, 0,
@@ -570,15 +570,15 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
          */
         return;
     }
-    if ((wl = ap_list_provider_names(p, AP_WATCHODG_PGROUP,
-                                        AP_WATCHODG_CVERSION))) {
+    if ((wl = ap_list_provider_names(p, AP_WATCHDOG_PGROUP,
+                                        AP_WATCHDOG_CVERSION))) {
         const ap_list_provider_names_t *wn;
         int i;
         wn = (ap_list_provider_names_t *)wl->elts;
         for (i = 0; i < wl->nelts; i++) {
-            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHODG_PGROUP,
+            ap_watchdog_t *w = ap_lookup_provider(AP_WATCHDOG_PGROUP,
                                                   wn[i].provider_name,
-                                                  AP_WATCHODG_CVERSION);
+                                                  AP_WATCHDOG_CVERSION);
             if (w && w->active) {
                 /* We have some callbacks registered.
                  * Kick of the watchdog
