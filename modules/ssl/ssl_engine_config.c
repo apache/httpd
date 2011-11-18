@@ -1307,12 +1307,12 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
         }
 
         if (strcEQ(w, "SSLv2")) {
-#ifdef OPENSSL_NO_SSL2
-            if (action != '-') {
-                return "SSLv2 not supported by this version of OpenSSL";
+            if (action == '-') {
+                continue;
             }
-#endif
-            thisopt = SSL_PROTOCOL_SSLV2;
+            else {
+                return "SSLProtocol: SSLv2 is no longer supported";
+            }
         }
         else if (strcEQ(w, "SSLv3")) {
             thisopt = SSL_PROTOCOL_SSLV3;
