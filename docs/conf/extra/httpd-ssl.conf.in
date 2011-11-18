@@ -48,12 +48,19 @@ Listen @@SSLPort@@
 #   SSL Cipher Suite:
 #   List the ciphers that the client is permitted to negotiate.
 #   See the mod_ssl documentation for a complete list.
-SSLCipherSuite RC4-SHA:AES128-SHA:ALL:!aNULL:!EXP:!LOW:!MD5:!SSLV2:!NULL
+SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
 
-#   SSL Cipher Honor Order:
-#   On a busy HTTPS server you may want to enable this directive
-#   to force clients to use one of the faster ciphers like RC4-SHA
-#   or AES128-SHA in the order defined by SSLCipherSuite.
+#   Speed-optimized SSL Cipher configuration:
+#   If speed is your main concern (on busy HTTPS servers e.g.),
+#   you might want to force clients to specific, performance
+#   optimized ciphers. In this case, prepend those ciphers
+#   to the SSLCipherSuite list, and enable SSLHonorCipherOrder.
+#   Caveat: by giving precedence to RC4-SHA and AES128-SHA
+#   (as in the example below), most connections will no longer
+#   have perfect forward secrecy - if the server's key is
+#   compromised, captures of past or future traffic must be
+#   considered compromised, too.
+#SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5
 #SSLHonorCipherOrder on 
 
 #   Pass Phrase Dialog:

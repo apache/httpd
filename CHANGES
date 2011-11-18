@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_ssl: use a shorter setting for SSLCipherSuite in the default
+     default configuration file, and add some more information about
+     configuring a speed-optimized alternative.
+     [Kaspar Brand]
+
   *) mod_ssl: drop support for the SSLv2 protocol. [Kaspar Brand]
 
   *) mod_lua: Stop losing track of all but the most specific LuaHook* directives

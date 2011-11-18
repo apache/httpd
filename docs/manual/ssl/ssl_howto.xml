@@ -66,21 +66,17 @@ requires a strong cipher for access to a particular URL?</a></li>
 only?</title>
     <p>The following enables only the strongest ciphers:</p>
     <example><title>httpd.conf</title>
-      SSLProtocol all -SSLv2<br />
-      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!MD5<br />
     </example>
 
-    <p>While with the following configuration you enable two ciphers
-    which are resonably secure, and fast:</p>
+    <p>While with the following configuration you specify a preference
+    for specific speed-optimized ciphers (which will be selected by
+    mod_ssl, provided that they are supported by the client):</p>
 
     <example><title>httpd.conf</title>
-      SSLProtocol all -SSLv2<br />
-      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5<br />
       SSLHonorCipherOrder on
     </example>
-
-    <p>This strongly reflects the default value of <directive module="mod_ssl"
-    >SSLCipherSuite</directive> and is the recommanded way to configure it.</p>
 </section>
 
 <section id="strongurl">
@@ -101,7 +97,7 @@ URL?</title>
       &lt;Location /strong/area&gt;<br />
       # but https://hostname/strong/area/ and below<br />
       # requires strong ciphers<br />
-      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!MD5<br />
       &lt;/Location&gt;
     </example>
 </section>
