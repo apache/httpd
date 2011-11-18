@@ -886,7 +886,7 @@ handshake</td></tr>
 <tr><td><a href="mod_ssl.html#ssloptions">SSLOptions [+|-]<em>option</em> ...</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure various SSL engine run-time options</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog <em>type</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of pass phrase dialog for encrypted private
 keys</td></tr>
-<tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocol</em> ...</a></td><td> all </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL protocol versions</td></tr>
+<tr><td><a href="mod_ssl.html#sslprotocol">SSLProtocol [+|-]<em>protocol</em> ...</a></td><td> all </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL/TLS protocol versions</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <em>directory-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
