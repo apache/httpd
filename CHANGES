@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) mod_ssl: drop support for the SSLv2 protocol. [Kaspar Brand]
+
   *) mod_lua: Stop losing track of all but the most specific LuaHook* directives
      when multiple per-directory config sections are used.  Adds LuaInherit 
      directive to control how parent sections are merged.  [Eric Covener]
