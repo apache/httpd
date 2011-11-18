@@ -1481,16 +1481,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         }
 #endif
         rc = apr_pollset_poll(event_pollset, timeout_interval, &num, &out_pfd);
-        if (rc != APR_SUCCESS) {
-            if (APR_STATUS_IS_EINTR(rc)) {
-                continue;
-            }
-            if (!APR_STATUS_IS_TIMEUP(rc)) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf,
-                             "apr_pollset_poll failed.  Attempting to "
-                             "shutdown process gracefully");
-                signal_threads(ST_GRACEFUL);
-            }
+        if (rc != APR_SUCCESS
+            && !APR_STATUS_IS_EINTR(rc)
+            && !APR_STATUS_IS_TIMEUP(rc)) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf,
+                         "apr_pollset_poll failed.  Attempting to "
+                         "shutdown process gracefully");
+            signal_threads(ST_GRACEFUL);
         }
 
         if (listener_may_exit) {
