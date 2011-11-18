@@ -793,6 +793,11 @@ static void process_pollop(pollset_op_t *op)
 static int start_lingering_close(conn_state_t *cs, ap_equeue_t *eq)
 {
     apr_status_t rv;
+
+    cs->c->sbh = NULL;  /* prevent scoreboard updates from the listener 
+                         * worker will loop around soon and set SERVER_READY
+                         */
+
     if (ap_start_lingering_close(cs->c)) {
         apr_pool_clear(cs->p);
         ap_push_pool(worker_queue_info, cs->p);
