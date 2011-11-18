@@ -277,7 +277,8 @@
 
       <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: The default format of the <code>*_DN</code>
       variables has changed. The old format can still be used with the new
-      <code>LegacyDNStringFormat</code> argument to <code class="directive"><a href="./mod/mod_ssl.html#ssloptions">SSLOptions</a></code>.</li>
+      <code>LegacyDNStringFormat</code> argument to <code class="directive"><a href="./mod/mod_ssl.html#ssloptions">SSLOptions</a></code>. The SSLv2 protocol is
+      no longer supported.</li>
 
       <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> now uses MD5 hash by default on
       all platforms.</li>
