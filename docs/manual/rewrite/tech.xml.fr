@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1199568 -->
+<!-- English Revision : 1201690 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -85,18 +85,29 @@ correspondance</a></seealso>
     <p>Dans un contexte de niveau r&eacute;pertoire (autrement dit dans les
     fichiers <code>.htaccess</code> et les sections
     <code>Directory</code>), les r&egrave;gles de r&eacute;&eacute;criture s'appliquent apr&egrave;s
-    la traduction de l'URL en nom de fichier. C'est pourquoi mod_rewrite
-    retraduit temporairement le nom de fichier en URL en supprimant le
-    chemin de r&eacute;pertoire avant d'appliquer les r&egrave;gles (Reportez-vous &agrave;
-    la directive <directive module="mod_rewrite">RewriteBase</directive>
-    pour voir comment vous pourrez par la suite personnaliser la mani&egrave;re
-    dont tout ceci est trait&eacute;). Ensuite, une nouvelle sous-requ&ecirc;te
-    interne est initi&eacute;e avec la nouvelle URL, ce qui red&eacute;marre le
-    traitement des phases de la requ&ecirc;te. V&eacute;rifiez que vos r&egrave;gles ne
-    cr&eacute;ent pas de boucle infinie. Voir <a
-    href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans la
-    r&eacute;&eacute;criture</a> pour une discussion plus approfondie &agrave; propos de ce
-    probl&egrave;me.</p>
+    la traduction de l'URL en nom de fichier. C'est pourquoi le chemin
+    URL auquel mod_rewrite compare initialement les directives
+    <directive  module="mod_rewrite">RewriteRule</directive> est le
+    chemin complet vers le nom de fichier traduit amput&eacute; de la partie
+    r&eacute;pertoires (y compris le dernier slash).</p>
+
+    <p>Un exemple : si les r&egrave;gles se trouvent dans
+    /var/www/foo/.htaccess et si une requ&ecirc;te pour /foo/bar/baz est
+    trait&eacute;, une expression comme ^bar/baz$ correspondra.</p>
+
+    <p>Si une substitution intervient dans un contexte de r&eacute;pertoire,
+    une nouvelle sous-requ&ecirc;te interne est g&eacute;n&eacute;r&eacute;e avec la nouvelle URL,
+    ce qui relance le traitement des phases de la requ&ecirc;te. Si la
+    substitution est un chemin relatif, la directive <directive
+    module="mod_rewrite">RewriteBase</directive> d&eacute;termine le chemin URL
+    devant pr&eacute;fixer cette substitution. Dans un contexte de r&eacute;pertoire,
+    il faut s'assurer de cr&eacute;er des r&egrave;gles qui, dans certains cas,
+    n'effectueront pas de substitution afin d'&eacute;viter les bouclages (au
+    cours d'une passe ult&eacute;rieure du processus de r&eacute;&eacute;criture au niveau
+    r&eacute;pertoire). Voir <a
+    href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
+    processus de r&eacute;&eacute;criture</a> pour une discussion plus d&eacute;taill&eacute;e &agrave;
+    propos de ce probl&egrave;me.</p>
 
     <p>En cons&eacute;quence de cette manipulation de l'URL , vous devrez
     pensez &agrave; confectionner diff&eacute;remment vos r&egrave;gles de r&eacute;&eacute;criture dans un

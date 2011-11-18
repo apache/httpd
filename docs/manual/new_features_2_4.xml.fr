@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1189549 -->
+<!-- English Revision : 1202456 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -258,6 +258,20 @@ serveur HTTP Apache</title>
       <code>[END]</code> qui permettent de simplifier les sc&eacute;narios de
       r&eacute;&eacute;criture courants.</dd>
 
+      <dt><module>mod_ldap</module>, <module>mod_authnz_ldap</module></dt>
+      <dd><module>mod_authnz_ldap</module> ajoute le support des
+      groupes imbriqu&eacute;s.</dd>
+      <dd><module>mod_ldap</module> apporte les directives <directive
+      module="mod_ldap">LDAPConnectionPoolTTL</directive> et <directive
+      module="mod_ldap">LDAPTimeout</directive>, ainsi que d'autres
+      am&eacute;liorations dans le traitement des d&eacute;lais. Ceci s'av&egrave;re utile
+      pour les configurations o&ugrave; un pare-feu &agrave; m&eacute;moire d'&eacute;tat (stateful)
+      rej&egrave;te les connexions inactives vers le serveur LDAP.</dd>
+      <dd><module>mod_ldap</module> propose la directive <directive
+      module="mod_ldap">LDAPLibraryDebug</directive> qui permet de
+      journaliser les informations de d&eacute;bogage fournies par la bo&icirc;te &agrave;
+      outils LDAP utilis&eacute;e</dd>
+
     </dl>
   </section>
 
@@ -301,6 +315,13 @@ serveur HTTP Apache</title>
       <dd>Nous disposons &agrave; pr&eacute;sent d'un analyseur g&eacute;n&eacute;rique d'expressions, dont l'API
       est d&eacute;crite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <module>mod_ssl</module>.</dd>
+
+      <dd>L'analyseur d'expressions permet de sp&eacute;cifier des <a
+      href="expr.html">conditions complexes</a> dans des directives
+      comme <directive module="mod_setenvif">SetEnvIfExpr</directive>,
+      <directive module="mod_rewrite">RewriteCond</directive> et
+      <directive module="mod_headers">Header</directive>.
+      </dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
 

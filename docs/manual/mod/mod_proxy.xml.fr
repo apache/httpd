@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1179272 -->
+<!-- English Revision : 1202453 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1500,6 +1500,8 @@ r&eacute;&eacute;crit la cha&icirc;ne correspondant au domaine dans les en-t&eci
 <code>Set-Cookie</code>.</p>
 </usage>
 </directivesynopsis>
+
+
 <directivesynopsis>
 <name>ProxyPassReverseCookiePath</name>
 <description>Ajuste la cha&icirc;ne correspondant au chemin dans les en-t&ecirc;tes
@@ -1510,11 +1512,27 @@ Set-Cookie en provenance d'un serveur mandat&eacute;</description>
 <context>directory</context>
 </contextlist>
 <usage>
-<p>L'utilisation de cette directive est similaire &agrave; celle de la
-directive <directive module="mod_proxy">ProxyPassReverse</directive>,
-mais au lieu de r&eacute;&eacute;crire des en-t&ecirc;tes qui contiennent des URLs, elle
-r&eacute;&eacute;crit la cha&icirc;ne correspondant au <code>chemin</code> dans les en-t&ecirc;tes
-<code>Set-Cookie</code>.</p>
+<p>
+Cette directive s'av&egrave;re utile en conjonction avec la directive
+<directive module="mod_proxy">ProxyPassReverse</directive> dans les
+situations o&ugrave; les chemins d'URL d'arri&egrave;re-plan correspondent &agrave; des
+chemins publics sur le mandataire inverse. Cette directive permet de
+r&eacute;&eacute;crire la cha&icirc;ne <code>path</code> dans les en-t&ecirc;tes
+<code>Set-Cookie</code>. Si le d&eacute;but du chemin du cookie correspond &agrave;
+<var>chemin-interne</var>, le chemin du cookie sera remplac&eacute; par
+<var>chemin-public</var>.
+</p><p>
+Dans l'exemple fourni avec la directive <directive
+module="mod_proxy">ProxyPassReverse</directive>, la directive :
+</p>
+    <example>
+      ProxyPassReverseCookiePath  /  /mirror/foo/
+    </example>
+<p>
+va r&eacute;&eacute;crire un cookie poss&eacute;dant un chemin d'arri&egrave;re-plan <code>/</code>
+(ou <code>/example</code> ou en fait tout chemin)
+en <code>/mirror/foo/</code>..
+</p>
 </usage>
 </directivesynopsis>
 
@@ -1930,7 +1948,8 @@ les configurations de mandataires inverses</description>
     <directive>ProxyPassReverseCookiePath</directive>, en leur indiquant
     de remplacer la cha&icirc;ne <code>${nom_var}</code> dans les directives
     de configuration par la valeur de la variable d'environnement
-    <code>nom_var</code>.</p>
+    <code>nom_var</code> (si l'option <var>interpolate</var> est
+    sp&eacute;cifi&eacute;e).</p>
     <p>Conservez cette directive &agrave; off (pour les performances du
     serveur), sauf si vous en avez r&eacute;ellement besoin.</p>
 </usage>

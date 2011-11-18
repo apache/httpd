@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1200496 -->
+<!-- English Revision : 1203491 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -89,7 +89,7 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
 
       <li>configure: le jeu de modules "most" est compil&eacute; par d&eacute;faut</li>
 
-      <li>configure: le jeu de modules "realyall" ajoute les modules de
+      <li>configure: le jeu de modules "reallyall" ajoute les modules de
       d&eacute;veloppeur au jeu "all".</li>
     </ul>
 
@@ -317,7 +317,8 @@ n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la ver
       <code>*_DN</code> a chang&eacute;. Il est cependant encore possible
       d'utiliser l'ancien format via la nouvelle option
       <code>LegacyDNStringFormat</code> de la directive <directive
-      module="mod_ssl">SSLOptions</directive>.</li>
+      module="mod_ssl">SSLOptions</directive>. Le protocole SSLv2 n'est
+      plus support&eacute;.</li>
 
       <li><program>htpasswd</program> utilise maintenant par d&eacute;faut les
       condens&eacute;s MD5 sur toutes les plates-formes.</li>
