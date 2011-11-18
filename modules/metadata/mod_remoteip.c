@@ -136,11 +136,13 @@ static const char *proxies_set(cmd_parms *cmd, void *cfg,
     apr_status_t rv;
     char *ip = apr_pstrdup(cmd->temp_pool, arg);
     char *s = ap_strchr(ip, '/');
-    if (s)
+    if (s) {
         *s++ = '\0';
+    }
 
-    if (!config->proxymatch_ip)
+    if (!config->proxymatch_ip) {
         config->proxymatch_ip = apr_array_make(cmd->pool, 1, sizeof(*match));
+    }
     match = (remoteip_proxymatch_t *) apr_array_push(config->proxymatch_ip);
     match->internal = cmd->info;
 
@@ -164,8 +166,9 @@ static const char *proxies_set(cmd_parms *cmd, void *cfg,
         {
             apr_sockaddr_ip_get(&ip, temp_sa);
             rv = apr_ipsubnet_create(&match->ip, ip, NULL, cmd->pool);
-            if (!(temp_sa = temp_sa->next))
+            if (!(temp_sa = temp_sa->next)) {
                 break;
+            }
             match = (remoteip_proxymatch_t *)
                     apr_array_push(config->proxymatch_ip);
             match->internal = cmd->info;
@@ -203,8 +206,9 @@ static const char *proxylist_read(cmd_parms *cmd, void *cfg,
     while (!(ap_cfg_getline(lbuf, MAX_STRING_LEN, cfp))) {
         args = lbuf;
         while (*(arg = ap_getword_conf(cmd->temp_pool, &args)) != '\0') {
-            if (*arg == '#' || *arg == '\0')
+            if (*arg == '#' || *arg == '\0') {
                 break;
+            }
             errmsg = proxies_set(cmd, cfg, arg);
             if (errmsg) {
                 errmsg = apr_psprintf(cmd->pool, "%s at line %d of %s",
@@ -254,8 +258,9 @@ static int remoteip_modify_connection(request_rec *r)
         }
     }
 
-    if (!remote)
+    if (!remote) {
         return OK;
+    }
 
     remote = apr_pstrdup(r->pool, remote);
 
@@ -280,8 +285,9 @@ static int remoteip_modify_connection(request_rec *r)
                     break;
                 }
             }
-            if (i && i >= config->proxymatch_ip->nelts)
+            if (i && i >= config->proxymatch_ip->nelts) {
                 break;
+            }
         }
 
         if ((parse_remote = strrchr(remote, ',')) == NULL) {
@@ -292,18 +298,22 @@ static int remoteip_modify_connection(request_rec *r)
             *(parse_remote++) = '\0';
         }
 
-        while (*parse_remote == ' ')
+        while (*parse_remote == ' ') {
             ++parse_remote;
+        }
 
         eos = parse_remote + strlen(parse_remote) - 1;
-        while (eos >= parse_remote && *eos == ' ')
+        while (eos >= parse_remote && *eos == ' ') {
             *(eos--) = '\0';
+        }
 
         if (eos < parse_remote) {
-            if (remote)
+            if (remote) {
                 *(remote + strlen(remote)) = ',';
-            else
+            }
+            else {
                 remote = parse_remote;
+            }
             break;
         }
 
@@ -334,10 +344,12 @@ static int remoteip_modify_connection(request_rec *r)
                           "RemoteIP: Header %s value of %s cannot be parsed "
                           "as a client IP",
                           config->header_name, parse_remote);
-            if (remote)
+            if (remote) {
                 *(remote + strlen(remote)) = ',';
-            else
+            }
+            else {
                 remote = parse_remote;
+            }
             break;
         }
 
@@ -369,10 +381,12 @@ static int remoteip_modify_connection(request_rec *r)
                           "RemoteIP: Header %s value of %s appears to be "
                           "a private IP or nonsensical.  Ignored",
                           config->header_name, parse_remote);
-            if (remote)
+            if (remote) {
                 *(remote + strlen(remote)) = ',';
-            else
+            }
+            else {
                 remote = parse_remote;
+            }
             break;
         }
 
@@ -385,11 +399,13 @@ static int remoteip_modify_connection(request_rec *r)
 
         /* Set remote_ip string */
         if (!internal) {
-            if (proxy_ips)
+            if (proxy_ips) {
                 proxy_ips = apr_pstrcat(r->pool, proxy_ips, ", ",
                                         c->remote_ip, NULL);
-            else
+            }
+            else {
                 proxy_ips = c->remote_ip;
+            }
         }
 
         c->remote_addr = temp_sa;
@@ -397,8 +413,9 @@ static int remoteip_modify_connection(request_rec *r)
     }
 
     /* Nothing happened? */
-    if (!conn || (c->remote_addr == conn->orig_addr))
+    if (!conn || (c->remote_addr == conn->orig_addr)) {
         return OK;
+    }
 
     /* Fixups here, remote becomes the new Via header value, etc
      * In the heavy operations above we used request scope, to limit
@@ -413,13 +430,15 @@ static int remoteip_modify_connection(request_rec *r)
     conn->proxied_addr.pool = c->pool;
     c->remote_addr = &conn->proxied_addr;
 
-    if (remote)
+    if (remote) {
         remote = apr_pstrdup(c->pool, remote);
+    }
     conn->proxied_remote = remote;
     conn->prior_remote = apr_pstrdup(c->pool, apr_table_get(r->headers_in,
                                                       config->header_name));
-    if (proxy_ips)
+    if (proxy_ips) {
         proxy_ips = apr_pstrdup(c->pool, proxy_ips);
+    }
     conn->proxy_ips = proxy_ips;
 
     /* Unset remote_host string DNS lookups */
@@ -427,16 +446,19 @@ static int remoteip_modify_connection(request_rec *r)
     c->remote_logname = NULL;
 
 ditto_request_rec:
-    if (conn->proxied_remote)
+    if (conn->proxied_remote) {
         apr_table_setn(r->headers_in, config->header_name,
                        conn->proxied_remote);
-    else
+    }
+    else {
         apr_table_unset(r->headers_in, config->header_name);
+    }
     if (conn->proxy_ips) {
         apr_table_setn(r->notes, "remoteip-proxy-ip-list", conn->proxy_ips);
-        if (config->proxies_header_name)
+        if (config->proxies_header_name) {
             apr_table_setn(r->headers_in, config->proxies_header_name,
                            conn->proxy_ips);
+        }
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
