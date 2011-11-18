@@ -904,7 +904,7 @@ static int proxy_handler(request_rec *r)
                            "TRACE forbidden by server configuration");
             apr_table_setn(r->notes, "verbose-error-to", "*");
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "proxy: TRACE forbidden by server configuration");
+                          "TRACE forbidden by server configuration");
             return HTTP_METHOD_NOT_ALLOWED;
         }
 
@@ -922,7 +922,7 @@ static int proxy_handler(request_rec *r)
                            "TRACE with request body is not allowed");
             apr_table_setn(r->notes, "verbose-error-to", "*");
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "proxy: TRACE with request body is not allowed");
+                          "TRACE with request body is not allowed");
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
     }
@@ -996,8 +996,8 @@ static int proxy_handler(request_rec *r)
                                 strlen(ents[i].scheme)) == 0)) {
 
                     /* handle the scheme */
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                                 "Trying to run scheme_handler against proxy");
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                  "Trying to run scheme_handler against proxy");
                     access_status = proxy_run_scheme_handler(r, worker,
                                                              conf, url,
                                                              ents[i].hostname,
@@ -1048,9 +1048,9 @@ static int proxy_handler(request_rec *r)
         */
 
         /* handle the scheme */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "Running scheme %s handler (attempt %d)",
-                     scheme, attempts);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "Running scheme %s handler (attempt %d)",
+                      scheme, attempts);
         AP_PROXY_RUN(r, worker, conf, url, attempts);
         access_status = proxy_run_scheme_handler(r, worker, conf,
                                                  url, NULL, 0);
@@ -1090,11 +1090,11 @@ static int proxy_handler(request_rec *r)
              max_attempts > attempts++);
 
     if (DECLINED == access_status) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
-                    "proxy: No protocol handler was valid for the URL %s. "
-                    "If you are using a DSO version of mod_proxy, make sure "
-                    "the proxy submodules are included in the configuration "
-                    "using LoadModule.", r->uri);
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                      "No protocol handler was valid for the URL %s. "
+                      "If you are using a DSO version of mod_proxy, make sure "
+                      "the proxy submodules are included in the configuration "
+                      "using LoadModule.", r->uri);
         access_status = HTTP_INTERNAL_SERVER_ERROR;
         goto cleanup;
     }
