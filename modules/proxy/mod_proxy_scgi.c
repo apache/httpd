@@ -40,7 +40,6 @@
 
 
 #define SCHEME "scgi"
-#define PROXY_FUNCTION "SCGI"
 #define SCGI_MAGIC "SCGI"
 #define SCGI_PROTOCOL_VERSION "1"
 #define SCGI_DEFAULT_PORT (4000)
@@ -226,8 +225,8 @@ static int sendall(proxy_conn_rec *conn, const char *buf, apr_size_t length,
         written = length;
         if ((rv = apr_socket_send(conn->sock, buf, &written)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "proxy: " PROXY_FUNCTION ": sending data to "
-                          "%s:%u failed", conn->hostname, conn->port);
+                          "sending data to %s:%u failed",
+                          conn->hostname, conn->port);
             return HTTP_SERVICE_UNAVAILABLE;
         }
 
@@ -337,8 +336,7 @@ static int send_request_body(request_rec *r, proxy_conn_rec *conn)
         }
         if (readlen == -1) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "proxy: " PROXY_FUNCTION ": receiving request body "
-                          "failed");
+                          "receiving request body failed");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
@@ -373,8 +371,8 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
                                                   APLOG_MODULE_INDEX);
     if (status != OK) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "proxy: " PROXY_FUNCTION ": error reading response "
-                      "headers from %s:%u", conn->hostname, conn->port);
+                      "error reading response headers from %s:%u",
+                      conn->hostname, conn->port);
         r->status_line = NULL;
         apr_brigade_destroy(bb);
         return status;
@@ -393,8 +391,7 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
             scgi_request_config *req_conf = apr_palloc(r->pool,
                                                        sizeof(*req_conf));
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "proxy: " PROXY_FUNCTION ": Found %s: %s - "
-                          "preparing subrequest.",
+                          "Found %s: %s - preparing subrequest.",
                           conf->sendfile, location);
 
             if (err) {
@@ -445,8 +442,7 @@ static int scgi_request_status(int *status, request_rec *r)
         switch (req_conf->type) {
         case scgi_internal_redirect:
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "proxy: " PROXY_FUNCTION ": Internal redirect to %s",
-                          req_conf->location);
+                          "Internal redirect to %s", req_conf->location);
 
             r->status_line = NULL;
             if (r->method_number != M_GET) {
@@ -461,8 +457,7 @@ static int scgi_request_status(int *status, request_rec *r)
 
         case scgi_sendfile:
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "proxy: " PROXY_FUNCTION ": File subrequest to %s",
-                          req_conf->location);
+                          "File subrequest to %s", req_conf->location);
             do {
                 request_rec *rr;
 
@@ -511,12 +506,12 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
 
     if (strncasecmp(url, SCHEME "://", sizeof(SCHEME) + 2)) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "proxy: " PROXY_FUNCTION ": declining URL %s", url);
+                      "declining URL %s", url);
         return DECLINED;
     }
 
     /* Create space for state information */
-    status = ap_proxy_acquire_connection(PROXY_FUNCTION, &backend, worker,
+    status = ap_proxy_acquire_connection(__FUNCTION__, &backend, worker,
                                          r->server);
     if (status != OK) {
         goto cleanup;
@@ -532,10 +527,10 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Step Two: Make the Connection */
-    if (ap_proxy_connect_backend(PROXY_FUNCTION, backend, worker, r->server)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "proxy: " PROXY_FUNCTION ": failed to make connection "
-                     "to backend: %s:%u", backend->hostname, backend->port);
+    if (ap_proxy_connect_backend(__FUNCTION__, backend, worker, r->server)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "failed to make connection to backend: %s:%u",
+                      backend->hostname, backend->port);
         status = HTTP_SERVICE_UNAVAILABLE;
         goto cleanup;
     }
@@ -551,7 +546,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
 cleanup:
     if (backend) {
         backend->close = 1; /* always close the socket */
-        ap_proxy_release_connection(PROXY_FUNCTION, backend, r->server);
+        ap_proxy_release_connection(__FUNCTION__, backend, r->server);
     }
     return status;
 }

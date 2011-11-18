@@ -385,6 +385,7 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->notes           = apr_table_make(pool, 5);
 
     rp->server = r->server;
+    rp->log = r->log;
     rp->proxyreq = r->proxyreq;
     rp->request_time = r->request_time;
     rp->connection      = c;
@@ -502,8 +503,8 @@ PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *mes
     apr_table_setn(r->notes, "verbose-error-to", apr_pstrdup(r->pool, "*"));
 
     r->status_line = apr_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-             "proxy: %s returned by %s", message, r->uri);
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "%s returned by %s", message,
+                  r->uri);
     return statuscode;
 }
 
@@ -896,12 +897,14 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
         struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
         struct apr_sockaddr_t *conf_addr = npent[j].addr;
         uri_addr = src_uri_addr;
-        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
-                     "proxy: checking remote machine [%s] against [%s]", uri_addr->hostname, npent[j].name);
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "checking remote machine [%s] against [%s]",
+                      uri_addr->hostname, npent[j].name);
         if ((npent[j].name && ap_strstr_c(uri_addr->hostname, npent[j].name))
             || npent[j].name[0] == '*') {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
-                         "proxy: connect to remote machine %s blocked: name %s matched", uri_addr->hostname, npent[j].name);
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "connect to remote machine %s blocked: name %s "
+                          "matched", uri_addr->hostname, npent[j].name);
             return HTTP_FORBIDDEN;
         }
         while (conf_addr) {
@@ -911,11 +914,13 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
                 char *uri_ip;
                 apr_sockaddr_ip_get(&conf_ip, conf_addr);
                 apr_sockaddr_ip_get(&uri_ip, uri_addr);
-                ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
-                             "proxy: ProxyBlock comparing %s and %s", conf_ip, uri_ip);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                              "ProxyBlock comparing %s and %s", conf_ip,
+                              uri_ip);
                 if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
-                                 "proxy: connect to remote machine %s blocked: IP %s matched", uri_addr->hostname, conf_ip);
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                                 "connect to remote machine %s blocked: "
+                                 "IP %s matched", uri_addr->hostname, conf_ip);
                     return HTTP_FORBIDDEN;
                 }
                 uri_addr = uri_addr->next;
@@ -1492,7 +1497,7 @@ static apr_status_t connection_cleanup(void *theconn)
     /* Sanity check: Did we already return the pooled connection? */
     if (conn->inreslist) {
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conn->pool,
-                      "proxy: Pooled connection 0x%pp for worker %s has been"
+                      "Pooled connection 0x%pp for worker %s has been"
                       " already returned to the connection pool.", conn,
                       worker->s->name);
         return APR_SUCCESS;
@@ -1556,7 +1561,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn
 
             rv = apr_brigade_length(bb, 0, &len);
             ap_log_rerror(APLOG_MARK, APLOG_TRACE3, rv, r,
-                          "proxy: SSL cleanup brigade contained %"
+                          "SSL cleanup brigade contained %"
                           APR_OFF_T_FMT " bytes of data.", len);
         }
         apr_brigade_destroy(bb);
@@ -1855,7 +1860,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (worker->tmutex == NULL) {
             rv = apr_thread_mutex_create(&(worker->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                              "can not create worker thread mutex");
                 return rv;
             }
@@ -1863,8 +1868,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (worker->cp == NULL)
             init_conn_pool(p, worker);
         if (worker->cp == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                "can not create connection pool");
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                         "can not create connection pool");
             return APR_EGENERAL;
         }
 
@@ -1880,7 +1885,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                       apr_pool_cleanup_null);
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                "proxy: initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
+                "initialized pool in child %" APR_PID_T_FMT " for (%s) min=%d max=%d smax=%d",
                  getpid(), worker->s->hostname, worker->s->min,
                  worker->s->hmax, worker->s->smax);
 
@@ -1897,7 +1902,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             worker->cp->conn = conn;
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "proxy: initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
+                 "initialized single connection worker in child %" APR_PID_T_FMT " for (%s)",
                  getpid(), worker->s->hostname);
         }
     }
@@ -1917,13 +1922,13 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
             ++worker->s->retries;
             worker->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "proxy: %s: worker for (%s) has been marked for retry",
+                         "%s: worker for (%s) has been marked for retry",
                          proxy_function, worker->s->hostname);
             return OK;
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "proxy: %s: too soon to retry worker for (%s)",
+                         "%s: too soon to retry worker for (%s)",
                          proxy_function, worker->s->hostname);
             return DECLINED;
         }
@@ -1945,7 +1950,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
         *worker = ap_proxy_get_worker(r->pool, NULL, conf, *url);
         if (*worker) {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                          "proxy: %s: found worker %s for %s",
+                          "%s: found worker %s for %s",
                           (*worker)->s->scheme, (*worker)->s->name, *url);
 
             *balancer = NULL;
@@ -1954,8 +1959,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
         else if (r->proxyreq == PROXYREQ_PROXY) {
             if (conf->forward) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "proxy: *: found forward proxy worker for %s",
-                              *url);
+                              "*: found forward proxy worker for %s", *url);
                 *balancer = NULL;
                 *worker = conf->forward;
                 access_status = OK;
@@ -1970,8 +1974,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
         else if (r->proxyreq == PROXYREQ_REVERSE) {
             if (conf->reverse) {
                 ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                              "proxy: *: found reverse proxy worker for %s",
-                              *url);
+                              "*: found reverse proxy worker for %s", *url);
                 *balancer = NULL;
                 *worker = conf->reverse;
                 access_status = OK;
@@ -1987,8 +1990,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
     else if (access_status == DECLINED && *balancer != NULL) {
         /* All the workers are busy */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "proxy: all workers are busy.  Unable to serve %s",
-                      *url);
+                      "all workers are busy.  Unable to serve %s", *url);
         access_status = HTTP_SERVICE_UNAVAILABLE;
     }
     return access_status;
@@ -2028,10 +2030,8 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                                     SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_rerror(APLOG_MARK, loglevel, rv, r,
-                          "proxy: %s: error creating fam %d socket for target %s",
-                          proxy_function,
-                          backend_addr->family,
-                          backend_name);
+                          "%s: error creating fam %d socket for target %s",
+                          proxy_function, backend_addr->family, backend_name);
             /*
              * this could be an IPv6 address from the DNS but the
              * local machine won't give us an IPv6 socket; hopefully the
@@ -2065,14 +2065,14 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
         }
 
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                      "proxy: %s: fam %d socket created to connect to %s",
+                      "%s: fam %d socket created to connect to %s",
                       proxy_function, backend_addr->family, backend_name);
 
         if (conf->source_address) {
             rv = apr_socket_bind(*newsock, conf->source_address);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                              "proxy: %s: failed to bind socket to local address",
+                              "%s: failed to bind socket to local address",
                               proxy_function);
             }
         }
@@ -2085,10 +2085,8 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
             apr_socket_close(*newsock);
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_rerror(APLOG_MARK, loglevel, rv, r,
-                          "proxy: %s: attempt to connect to %pI (%s) failed",
-                          proxy_function,
-                          backend_addr,
-                          backend_name);
+                          "%s: attempt to connect to %pI (%s) failed",
+                          proxy_function, backend_addr, backend_name);
             backend_addr = backend_addr->next;
             continue;
         }
@@ -2110,7 +2108,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
         if (!PROXY_WORKER_IS_USABLE(worker)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                         "proxy: %s: disabled connection for (%s)",
+                         "%s: disabled connection for (%s)",
                          proxy_function, worker->s->hostname);
             return HTTP_SERVICE_UNAVAILABLE;
         }
@@ -2133,12 +2131,12 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "proxy: %s: failed to acquire connection for (%s)",
+                     "%s: failed to acquire connection for (%s)",
                      proxy_function, worker->s->hostname);
         return HTTP_SERVICE_UNAVAILABLE;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "proxy: %s: has acquired connection for (%s)",
+                 "%s: has acquired connection for (%s)",
                  proxy_function, worker->s->hostname);
 
     (*conn)->worker = worker;
@@ -2153,7 +2151,7 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                server_rec *s)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                "proxy: %s: has released connection for (%s)",
+                "%s: has released connection for (%s)",
                 proxy_function, conn->worker->s->hostname);
     connection_cleanup(conn);
 
@@ -2190,9 +2188,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         uri->port = apr_uri_port_of_scheme(uri->scheme);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: connecting %s to %s:%d", *url, uri->hostname,
-                 uri->port);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                 "connecting %s to %s:%d", *url, uri->hostname, uri->port);
 
     /*
      * allocate these out of the specified connection pool
@@ -2264,8 +2261,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     }
     else if (!worker->cp->addr) {
         if ((err = PROXY_THREAD_LOCK(worker)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
-                         "proxy: lock");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, err, r, "lock");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -2281,8 +2277,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     worker->cp->pool);
         conn->addr = worker->cp->addr;
         if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, uerr, r->server,
-                         "proxy: unlock");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, uerr, r, "unlock");
         }
     }
     else {
@@ -2316,9 +2311,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                              "Connect to remote machine blocked");
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: connected %s to %s:%d", *url, conn->hostname,
-                 conn->port);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                 "connected %s to %s:%d", *url, conn->hostname, conn->port);
     return OK;
 }
 
@@ -2411,7 +2405,7 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
     int len = 0;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "proxy: CONNECT: sending the CONNECT request for %s:%d "
+                 "CONNECT: sending the CONNECT request for %s:%d "
                  "to the remote proxy %pI (%s)",
                  forward->target_host, forward->target_port,
                  backend->addr, backend->hostname);
@@ -2508,7 +2502,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         if (!(connected = is_socket_connected(conn->sock))) {
             socket_cleanup(conn);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "proxy: %s: backend socket is disconnected.",
+                         "%s: backend socket is disconnected.",
                          proxy_function);
         }
     }
@@ -2518,7 +2512,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                 conn->scpool)) != APR_SUCCESS) {
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_error(APLOG_MARK, loglevel, rv, s,
-                         "proxy: %s: error creating fam %d socket for target %s",
+                         "%s: error creating fam %d socket for target %s",
                          proxy_function,
                          backend_addr->family,
                          worker->s->hostname);
@@ -2570,7 +2564,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             }
         }
         ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
-                     "proxy: %s: fam %d socket created to connect to %s",
+                     "%s: fam %d socket created to connect to %s",
                      proxy_function, backend_addr->family, worker->s->hostname);
 
         if (conf->source_address_set) {
@@ -2580,7 +2574,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             rv = apr_socket_bind(newsock, local_addr);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                    "proxy: %s: failed to bind socket to local address",
+                    "%s: failed to bind socket to local address",
                     proxy_function);
             }
         }
@@ -2593,7 +2587,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             apr_socket_close(newsock);
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_error(APLOG_MARK, loglevel, rv, s,
-                         "proxy: %s: attempt to connect to %pI (%s) failed",
+                         "%s: attempt to connect to %pI (%s) failed",
                          proxy_function,
                          backend_addr,
                          worker->s->hostname);
@@ -2628,7 +2622,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                     apr_socket_close(newsock);
                     loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
                     ap_log_error(APLOG_MARK, loglevel, rv, s,
-                                 "proxy: %s: attempt to connect to %s:%d "
+                                 "%s: attempt to connect to %s:%d "
                                  "via http CONNECT through %pI (%s) failed",
                                  proxy_function,
                                  forward->target_host, forward->target_port,
@@ -2698,7 +2692,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
          * closed the socket
          */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                     s, "proxy: %s: an error occurred creating a "
+                     s, "%s: an error occurred creating a "
                      "new connection to %pI (%s)", proxy_function,
                      backend_addr, conn->hostname);
         /* XXX: Will be closed when proxy_conn is closed */
@@ -2710,7 +2704,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     if (conn->is_ssl) {
         if (!ap_proxy_ssl_enable(conn->connection)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                         s, "proxy: %s: failed to enable ssl support "
+                         s, "%s: failed to enable ssl support "
                          "for %pI (%s)", proxy_function,
                          backend_addr, conn->hostname);
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -2722,7 +2716,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "proxy: %s: connection complete to %pI (%s)",
+                 "%s: connection complete to %pI (%s)",
                  proxy_function, backend_addr, conn->hostname);
 
     /*
@@ -2736,7 +2730,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     if (rc != OK && rc != DONE) {
         conn->connection->aborted = 1;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "proxy: %s: pre_connection setup failed (%d)",
+                     "%s: pre_connection setup failed (%d)",
                      proxy_function, rc);
         return rc;
     }
@@ -2819,7 +2813,7 @@ ap_proxy_buckets_lifetime_transform(request_rec *r, apr_bucket_brigade *from,
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "proxy: Unhandled bucket type of type %s in"
+                          "Unhandled bucket type of type %s in"
                           " ap_proxy_buckets_lifetime_transform", e->type->name);
             apr_bucket_delete(e);
             rv = APR_EGENERAL;
