@@ -130,7 +130,7 @@ compatibility variables.</p>
  <th>Description:</th>
 </tr>
 <tr><td><code>HTTPS</code></td>                         <td>flag</td>      <td>HTTPS is being used.</td></tr>
-<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
+<tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv3, TLSv1)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
 <tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
@@ -1184,7 +1184,7 @@ SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProtocol" id="SSLProtocol">SSLProtocol</a> <a name="sslprotocol" id="sslprotocol">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL protocol versions</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL/TLS protocol versions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProtocol [+|-]<em>protocol</em> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProtocol all</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
@@ -1192,17 +1192,11 @@ SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
-This directive can be used to control which versions of the SSL protocol
+This directive can be used to control which versions of the SSL/TLS protocol
 will be accepted in new connections.</p>
 <p>
 The available (case-insensitive) <em>protocol</em>s are:</p>
 <ul>
-<li><code>SSLv2</code>
-    <p>
-    This is the Secure Sockets Layer (SSL) protocol, version 2.0. It is the
-    original SSL protocol as designed by Netscape Corporation.  Though it's
-    use has been deprecated, because of weaknesses in the security of the protocol.</p></li>
-
 <li><code>SSLv3</code>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
@@ -1213,19 +1207,17 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
-    successor to SSLv3 and is defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>.
-    Which has been obsoleted by <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC4346</a>.</p></li>
+    successor to SSLv3 and was originally defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>
+    (obsoleted by <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>
+    and <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a> in
+    the meantime).</p></li>
 
-<li><code>All</code>
+<li><code>all</code>
     <p>
-    This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
-    convenient way for enabling all protocols except one when used in
-    combination with the minus sign on a protocol as the example above
-    shows.</p></li>
+    This is a shortcut for ``<code>+SSLv3 +TLSv1</code>''.</p></li>
 </ul>
 <div class="example"><h3>Example</h3><p><code>
-#   enable SSLv3 and TLSv1, but not SSLv2<br />
-SSLProtocol all -SSLv2
+SSLProtocol TLSv1
 </code></p></div>
 
 </div>
