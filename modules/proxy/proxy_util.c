@@ -1396,7 +1396,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     unsigned int num;
 
     if (!storage) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
                      "no provider for %s", balancer->name);
         return APR_EGENERAL;
     }
@@ -1405,7 +1405,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
      * mutex and then attach to the shared worker shm
      */
     if (!balancer->gmutex) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
                      "no mutex %s", balancer->name);
         return APR_EGENERAL;
     }
@@ -1424,7 +1424,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     /* now attach */
     storage->attach(&(balancer->slot), balancer->sname, &size, &num, p);
     if (!balancer->slot) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_attach failed");
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, "slotmem_attach failed");
         return APR_EGENERAL;
     }
     if (balancer->lbmethod && balancer->lbmethod->reset)
@@ -1433,7 +1433,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     if (balancer->tmutex == NULL) {
         rv = apr_thread_mutex_create(&(balancer->tmutex), APR_THREAD_MUTEX_DEFAULT, p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
                          "can not create balancer thread mutex");
             return rv;
         }
