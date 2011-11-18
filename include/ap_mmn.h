@@ -365,6 +365,7 @@
  * 20111025.1 (2.3.15-dev) Add ap_escape_urlencoded(), ap_escape_urlencoded_buffer()
  *                         and ap_unescape_urlencoded().
  * 20111025.2 (2.3.15-dev) Add ap_lua_ssl_val to mod_lua
+ * 20111118.0 (2.5.0-dev)  Add conn_rec to error_log hook
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

@@ -633,6 +633,7 @@ AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
  * @param level The level of this error message
  * @param status The status code from the previous command
  * @param s The server which we are logging for
+ * @param c The connection which we are logging for
  * @param r The request which we are logging for
  * @param pool Memory pool to allocate from
  * @param errstr message to log
@@ -640,8 +641,8 @@ AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
 AP_DECLARE_HOOK(void, error_log, (const char *file, int line,
                        int module_index, int level,
                        apr_status_t status, const server_rec *s,
-                       const request_rec *r, apr_pool_t *pool,
-                       const char *errstr))
+                       const conn_rec *c, const request_rec *r,
+                       apr_pool_t *pool, const char *errstr))
 
 /**
  * hook method to generate unique id for connection or request
