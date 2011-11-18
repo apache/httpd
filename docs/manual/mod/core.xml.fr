@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1199485 -->
+<!-- English Revision : 1200961 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -2642,7 +2642,7 @@ requ&ecirc;te HTTP</description>
     d'<var>octets</var> autoris&eacute;s dans un en-t&ecirc;te de requ&ecirc;te HTTP.</p>
 
     <p>La directive <directive>LimitRequestFieldSize</directive> permet
-    &agrave; l'administrateur du serveur de r&eacute;duire ou augmenter la taille
+    &agrave; l'administrateur du serveur de d&eacute;finir la taille
     maximale autoris&eacute;e d'un en-t&ecirc;te de requ&ecirc;te HTTP. Pour un serveur,
     cette valeur doit &ecirc;tre suffisamment grande pour contenir tout
     en-t&ecirc;te d'une requ&ecirc;te client normale. La taille d'un champ d'en-t&ecirc;te
@@ -2664,7 +2664,9 @@ requ&ecirc;te HTTP</description>
     </example>
 
     <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
-    directive ne doit pas &ecirc;tre modifi&eacute;e.</note>
+    directive ne doit pas &ecirc;tre modifi&eacute;e. En outre, vous ne
+    pouvez pas sp&eacute;cifier une valeur sup&eacute;rieure &agrave; 8190 sans modifier le
+    code source et recompiler.</note>
 
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de
@@ -2688,7 +2690,7 @@ HTTP</description>
     pour une ligne de requ&ecirc;te HTTP en <var>octets</var>.</p>
 
     <p>La directive <directive>LimitRequestLine</directive> permet &agrave;
-    l'administrateur du serveur de r&eacute;duire ou augmenter la taille
+    l'administrateur du serveur de d&eacute;finir la taille
     maximale autoris&eacute;e d'une ligne de requ&ecirc;te HTTP client. Comme une
     requ&ecirc;te comporte une m&eacute;thode HTTP, un URI, et une version de
     protocole, la directive <directive>LimitRequestLine</directive>
@@ -2710,7 +2712,9 @@ HTTP</description>
     </example>
 
     <note>Dans des conditions normales, la valeur par d&eacute;faut de cette
-    directive ne doit pas &ecirc;tre modifi&eacute;e.</note>
+    directive ne doit pas &ecirc;tre modifi&eacute;e. En outre, vous ne
+    pouvez pas sp&eacute;cifier une valeur sup&eacute;rieure &agrave; 8190 sans modifier le
+    code source et recompiler.</note>
 
     <note type="warning"><title>Avertissement</title>
      <p>Dans le cas des serveurs virtuels &agrave; base de noms, la valeur de

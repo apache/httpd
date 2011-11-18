@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1202456 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1197,6 +1197,8 @@ l'utilisateur.</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
+<compatibility>Disponible à partir de la version 2.3.0 du serveur HTTP
+Apache</compatibility>
 
 <usage>
    <p>Lorsque cette directive est définie à une valeur <code>X</code>
@@ -1304,6 +1306,8 @@ groupes.</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
+<compatibility>Disponible à partir de la version 2.3.0 du serveur HTTP
+Apache</compatibility>
 
 <usage>
     <p>Un objet groupe LDAP peut contenir des membres qui sont des
@@ -1329,6 +1333,8 @@ sous-groupes.</description>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
+<compatibility>Disponible à partir de la version 2.3.0 du serveur HTTP
+Apache</compatibility>
 
 <usage>
     <p>Un objet groupe LDAP peut contenir des membres qui sont des

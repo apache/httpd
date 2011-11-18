@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1174747 -->
+<!-- English Revision : 1202456 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -740,6 +740,8 @@ recherche et d'identification LDAP en secondes</description>
 <syntax>LDAPTimeout <var>secondes</var></syntax>
 <default>LDAPTimeout 60</default>
 <contextlist><context>server config</context></contextlist>
+<compatibility>Disponible &agrave; partir de la version 2.3.5 du serveur HTTP
+Apache</compatibility>
 
 <usage>
     <p>Cette directive permet de sp&eacute;cifier le d&eacute;lai d'attente pour les
