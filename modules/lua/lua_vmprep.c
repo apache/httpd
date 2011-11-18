@@ -390,18 +390,6 @@ static apr_status_t vm_construct(void **vm, void *params, apr_pool_t *lifecycle_
     return APR_SUCCESS;
 }
 
-static apr_status_t vm_destruct(void *vm, void *params, apr_pool_t *pool)
-{
-    lua_State *L = (lua_State *)vm;
-
-    (void)params;
-    (void)pool;
-
-    cleanup_lua(L);
-
-    return APR_SUCCESS;
-}
-
 /**
  * Function used to create a lua_State instance bound into the web
  * server in the appropriate scope.
