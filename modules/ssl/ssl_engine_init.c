@@ -499,7 +499,6 @@ static void ssl_init_ctx_protocol(server_rec *s,
     }
 
     cp = apr_pstrcat(p,
-                     (protocol & SSL_PROTOCOL_SSLV2 ? "SSLv2, " : ""),
                      (protocol & SSL_PROTOCOL_SSLV3 ? "SSLv3, " : ""),
                      (protocol & SSL_PROTOCOL_TLSV1 ? "TLSv1, " : ""),
                      NULL);
@@ -513,13 +512,6 @@ static void ssl_init_ctx_protocol(server_rec *s,
             SSLv3_client_method() : /* proxy */
             SSLv3_server_method();  /* server */
     }
-#ifndef OPENSSL_NO_SSL2
-    else if (protocol == SSL_PROTOCOL_SSLV2) {
-        method = mctx->pkp ?
-            SSLv2_client_method() : /* proxy */
-            SSLv2_server_method();  /* server */
-    }
-#endif
     else if (protocol == SSL_PROTOCOL_TLSV1) {
         method = mctx->pkp ?
             TLSv1_client_method() : /* proxy */
@@ -536,9 +528,8 @@ static void ssl_init_ctx_protocol(server_rec *s,
 
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 
-    if (!(protocol & SSL_PROTOCOL_SSLV2)) {
-        SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
-    }
+    /* always disable SSLv2, as per RFC 6176 */
+    SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
     if (!(protocol & SSL_PROTOCOL_SSLV3)) {
         SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv3);
