@@ -366,6 +366,7 @@
  *                         and ap_unescape_urlencoded().
  * 20111025.2 (2.3.15-dev) Add ap_lua_ssl_val to mod_lua
  * 20111118.0 (2.5.0-dev)  Add conn_rec to error_log hook
+ * 20111118.1 (2.5.0-dev)  Add reclvl to ap_expr_eval_ctx_t
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -373,7 +374,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20111118
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

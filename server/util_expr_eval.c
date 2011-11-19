@@ -56,10 +56,30 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
                            int loglevel, int indent);
 #endif
 
+/*
+ * To reduce counting overhead, we only count calls to
+ * ap_expr_eval_word() and ap_expr_eval(). This means the actual
+ * recursion may be twice as deep.
+ */
+#define AP_EXPR_MAX_RECURSION   20
+static int inc_rec(ap_expr_eval_ctx_t *ctx)
+{
+    if (ctx->reclvl < AP_EXPR_MAX_RECURSION) {
+        ctx->reclvl++;
+        return 0;
+    }
+    *ctx->err = "Recursion limit reached";
+    /* short circuit further evaluation */
+    ctx->reclvl = INT_MAX;
+    return 1;
+}
+
 static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
                                      const ap_expr_t *node)
 {
     const char *result = "";
+    if (inc_rec(ctx))
+        return result;
     switch (node->node_op) {
     case op_Digit:
     case op_String:
@@ -68,17 +88,41 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
     case op_Var:
         result = ap_expr_eval_var(ctx, node->node_arg1, node->node_arg2);
         break;
-    case op_Concat: {
-        const char *s1 = ap_expr_eval_word(ctx, node->node_arg1);
-        const char *s2 = ap_expr_eval_word(ctx, node->node_arg2);
-        if (!*s1)
-            result = s2;
-        else if (!*s2)
-            result = s1;
-        else
-            result = apr_pstrcat(ctx->p, s1, s2, NULL);
+    case op_Concat:
+        if (((ap_expr_t *)node->node_arg2)->node_op != op_Concat) {
+            const char *s1 = ap_expr_eval_word(ctx, node->node_arg1);
+            const char *s2 = ap_expr_eval_word(ctx, node->node_arg2);
+            if (!*s1)
+                result = s2;
+            else if (!*s2)
+                result = s1;
+            else
+                result = apr_pstrcat(ctx->p, s1, s2, NULL);
+        }
+        else {
+            const ap_expr_t *nodep = node;
+            int i = 1;
+            struct iovec *vec;
+            do {
+                nodep = nodep->node_arg2;
+                i++;
+            } while (nodep->node_op == op_Concat);
+            vec = apr_palloc(ctx->p, i * sizeof(struct iovec));
+            nodep = node;
+            i = 0;
+            do {
+                vec[i].iov_base = (void *)ap_expr_eval_word(ctx,
+                                                            nodep->node_arg1);
+                vec[i].iov_len = strlen(vec[i].iov_base);
+                i++;
+                nodep = nodep->node_arg2;
+            } while (nodep->node_op == op_Concat);
+            vec[i].iov_base = (void *)ap_expr_eval_word(ctx, nodep);
+            vec[i].iov_len = strlen(vec[i].iov_base);
+            i++;
+            result = apr_pstrcatv(ctx->p, vec, i, NULL);
+        }
         break;
-    }
     case op_StringFuncCall: {
         const ap_expr_t *info = node->node_arg1;
         const ap_expr_t *args = node->node_arg2;
@@ -96,6 +140,7 @@ static const char *ap_expr_eval_word(ap_expr_eval_ctx_t *ctx,
     }
     if (!result)
         result = "";
+    ctx->reclvl--;
     return result;
 }
 
@@ -657,30 +702,81 @@ static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
 {
     const ap_expr_t *e1 = node->node_arg1;
     const ap_expr_t *e2 = node->node_arg2;
-    switch (node->node_op) {
-    case op_True:
-        return 1;
-    case op_False:
-        return 0;
-    case op_Not:
-        return (!ap_expr_eval(ctx, e1));
-    case op_Or:
-        return (ap_expr_eval(ctx, e1) || ap_expr_eval(ctx, e2));
-    case op_And:
-        return (ap_expr_eval(ctx, e1) && ap_expr_eval(ctx, e2));
-    case op_UnaryOpCall:
-        return ap_expr_eval_unary_op(ctx, e1, e2);
-    case op_BinaryOpCall:
-        return ap_expr_eval_binary_op(ctx, e1, e2);
-    case op_Comp:
-        if (ctx->info->flags & AP_EXPR_FLAG_SSL_EXPR_COMPAT)
-            return ssl_expr_eval_comp(ctx, e1);
-        else
-            return ap_expr_eval_comp(ctx, e1);
-    default:
-        *ctx->err = "Internal evaluation error: Unknown expression node";
-        return FALSE;
+    int result = FALSE;
+    if (inc_rec(ctx))
+        return result;
+    while (1) {
+        switch (node->node_op) {
+        case op_True:
+            result ^= TRUE;
+            goto out;
+        case op_False:
+            ctx->reclvl--;
+            result ^= FALSE;
+            goto out;
+        case op_Not:
+            result = !result;
+            node = e1;
+            break;
+        case op_Or:
+            do {
+                if (e1->node_op == op_Not) {
+                    if (!ap_expr_eval(ctx, e1->node_arg1)) {
+                        result ^= TRUE;
+                        goto out;
+                    }
+                }
+                else {
+                    if (ap_expr_eval(ctx, e1)) {
+                        ctx->reclvl--;
+                        result ^= TRUE;
+                        goto out;
+                    }
+                }
+                node = node->node_arg2;
+                e1 = node->node_arg1;
+            } while (node->node_op == op_Or);
+            break;
+        case op_And:
+            do {
+                if (e1->node_op == op_Not) {
+                    if (ap_expr_eval(ctx, e1->node_arg1)) {
+                        result ^= FALSE;
+                        goto out;
+                    }
+                }
+                else {
+                    if (!ap_expr_eval(ctx, e1)) {
+                        result ^= FALSE;
+                        goto out;
+                    }
+                }
+                node = node->node_arg2;
+                e1 = node->node_arg1;
+            } while (node->node_op == op_And);
+            break;
+        case op_UnaryOpCall:
+            result ^= ap_expr_eval_unary_op(ctx, e1, e2);
+            goto out;
+        case op_BinaryOpCall:
+            result ^= ap_expr_eval_binary_op(ctx, e1, e2);
+            goto out;
+        case op_Comp:
+            if (ctx->info->flags & AP_EXPR_FLAG_SSL_EXPR_COMPAT)
+                result ^= ssl_expr_eval_comp(ctx, e1);
+            else
+                result ^= ap_expr_eval_comp(ctx, e1);
+            goto out;
+        default:
+            *ctx->err = "Internal evaluation error: Unknown expression node";
+            goto out;
+        }
+        e1 = node->node_arg1;
+        e2 = node->node_arg2;
     }
+out:
+    ctx->reclvl--;
+    return result;
 }
 
 AP_DECLARE(int) ap_expr_exec(request_rec *r, const ap_expr_info_t *info,
@@ -704,6 +800,7 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
         AP_DEBUG_ASSERT(ctx->re_source != NULL);
         AP_DEBUG_ASSERT(ctx->re_nmatch > 0);
     }
+    ctx->reclvl = 0;
 
     *ctx->err = NULL;
     if (ctx->info->flags & AP_EXPR_FLAG_STRING_RESULT) {
