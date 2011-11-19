@@ -4511,13 +4511,6 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     c->id = id;
     c->bucket_alloc = alloc;
 
-    c->cs = (conn_state_t *)apr_pcalloc(ptrans, sizeof(conn_state_t));
-    APR_RING_INIT(&(c->cs->timeout_list), conn_state_t, timeout_list);
-    c->cs->expiration_time = 0;
-    c->cs->state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
-    c->cs->c = c;
-    c->cs->p = ptrans;
-    c->cs->bucket_alloc = alloc;
     c->clogging_input_filters = 0;
 
     return c;

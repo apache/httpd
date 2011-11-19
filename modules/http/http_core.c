@@ -126,6 +126,7 @@ static int ap_process_http_async_connection(conn_rec *c)
     request_rec *r;
     conn_state_t *cs = c->cs;
 
+    AP_DEBUG_ASSERT(cs != NULL);
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {

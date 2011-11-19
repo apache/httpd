@@ -260,7 +260,8 @@ AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
      * already by the EOR bucket's cleanup function.
      */
 
-    c->cs->state = CONN_STATE_WRITE_COMPLETION;
+    if (c->cs)
+        c->cs->state = CONN_STATE_WRITE_COMPLETION;
     check_pipeline(c);
     AP_PROCESS_REQUEST_RETURN((uintptr_t)r, r->uri, r->status);
     if (ap_extended_status) {
@@ -325,7 +326,8 @@ void ap_process_async_request(request_rec *r)
         if (ap_extended_status) {
             ap_time_process_request(c->sbh, STOP_PREQUEST);
         }
-        c->cs->state = CONN_STATE_SUSPENDED;
+        if (c->cs)
+            c->cs->state = CONN_STATE_SUSPENDED;
 #if APR_HAS_THREADS
         apr_thread_mutex_unlock(r->invoke_mtx);
 #endif
