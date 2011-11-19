@@ -49,7 +49,6 @@ typedef struct disk_cache_object {
     const char *key;             /* On-disk prefix; URI with Vary bits (if present) */
     apr_off_t file_size;         /*  File size of the cached data file  */
     disk_cache_info_t disk_info; /* Header information. */
-    apr_bucket_brigade *bb;      /* Set aside brigade */
     apr_table_t *headers_in;     /* Input headers to save */
     apr_table_t *headers_out;    /* Output headers to save */
     apr_off_t offset;            /* Max size to set aside */
