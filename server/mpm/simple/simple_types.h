@@ -122,6 +122,10 @@ struct simple_conn_t
     apr_socket_t *sock;
     apr_bucket_alloc_t *ba;
     conn_rec *c;
+    /** poll file descriptor information */
+    apr_pollfd_t pfd;
+    /** public parts of the connection state */
+    conn_state_t cs;
 };
 
 simple_core_t *simple_core_get(void);

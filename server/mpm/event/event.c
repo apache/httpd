@@ -192,13 +192,31 @@ typedef enum {
     TIMEOUT_SHORT_LINGER
 } timeout_type_e;
 
+struct event_conn_state_t {
+    /** APR_RING of expiration timeouts */
+    APR_RING_ENTRY(event_conn_state_t) timeout_list;
+    /** the expiration time of the next keepalive timeout */
+    apr_time_t expiration_time;
+    /** connection record this struct refers to */
+    conn_rec *c;
+    /** memory pool to allocate from */
+    apr_pool_t *p;
+    /** bucket allocator */
+    apr_bucket_alloc_t *bucket_alloc;
+    /** poll file descriptor information */
+    apr_pollfd_t pfd;
+    /** public parts of the connection state */
+    conn_state_t pub;
+};
+
 typedef struct pollset_op_t {
     timeout_type_e timeout_type;
-    conn_state_t *cs;
+    event_conn_state_t *cs;
     const char *tag;
 } pollset_op_t;
 
-APR_RING_HEAD(timeout_head_t, conn_state_t);
+
+APR_RING_HEAD(timeout_head_t, event_conn_state_t);
 struct timeout_queue {
     struct timeout_head_t head;
     int count;
@@ -220,10 +238,10 @@ static apr_pollfd_t *listener_pollfd;
  * Macros for accessing struct timeout_queue.
  * For TO_QUEUE_APPEND and TO_QUEUE_REMOVE, timeout_mutex must be held.
  */
-#define TO_QUEUE_APPEND(q, el)                                            \
-    do {                                                                  \
-        APR_RING_INSERT_TAIL(&(q).head, el, conn_state_t, timeout_list);  \
-        (q).count++;                                                      \
+#define TO_QUEUE_APPEND(q, el)                                                  \
+    do {                                                                        \
+        APR_RING_INSERT_TAIL(&(q).head, el, event_conn_state_t, timeout_list);  \
+        (q).count++;                                                            \
     } while (0)
 
 #define TO_QUEUE_REMOVE(q, el)             \
@@ -232,10 +250,10 @@ static apr_pollfd_t *listener_pollfd;
         (q).count--;                       \
     } while (0)
 
-#define TO_QUEUE_INIT(q)                                            \
-    do {                                                            \
-            APR_RING_INIT(&(q).head, conn_state_t, timeout_list);   \
-            (q).tag = #q;                                           \
+#define TO_QUEUE_INIT(q)                                                  \
+    do {                                                                  \
+            APR_RING_INIT(&(q).head, event_conn_state_t, timeout_list);   \
+            (q).tag = #q;                                                 \
     } while (0)
 
 #define TO_QUEUE_ELEM_INIT(el) APR_RING_ELEM_INIT(el, timeout_list)
@@ -755,7 +773,7 @@ static void set_signals(void)
 static void process_pollop(pollset_op_t *op)
 {
     apr_status_t rv;
-    conn_state_t *cs = op->cs;
+    event_conn_state_t *cs = op->cs;
 
     switch (op->timeout_type) {
     case TIMEOUT_WRITE_COMPLETION:
@@ -790,7 +808,7 @@ static void process_pollop(pollset_op_t *op)
  * the eq may be null if called from the listener thread,
  * and the pollset operations are done directly by this function.
  */
-static int start_lingering_close(conn_state_t *cs, ap_equeue_t *eq)
+static int start_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
 {
     apr_status_t rv;
 
@@ -827,14 +845,14 @@ static int start_lingering_close(conn_state_t *cs, ap_equeue_t *eq)
                 apr_time_now() + apr_time_from_sec(SECONDS_TO_LINGER);
             v->timeout_type = TIMEOUT_SHORT_LINGER;
             v->tag = "start_lingering_close(short)";
-            cs->state = CONN_STATE_LINGER_SHORT;
+            cs->pub.state = CONN_STATE_LINGER_SHORT;
         }
         else {
             cs->expiration_time =
                 apr_time_now() + apr_time_from_sec(MAX_SECS_TO_LINGER);
             v->timeout_type = TIMEOUT_LINGER;
             v->tag = "start_lingering_close(normal)";
-            cs->state = CONN_STATE_LINGER_NORMAL;
+            cs->pub.state = CONN_STATE_LINGER_NORMAL;
         }
 
         cs->pfd.reqevents = APR_POLLIN | APR_POLLHUP | APR_POLLERR;
@@ -856,7 +874,7 @@ static int start_lingering_close(conn_state_t *cs, ap_equeue_t *eq)
  * Pre-condition: cs is not in any timeout queue and not in the pollset
  * return: irrelevant (need same prototype as start_lingering_close)
  */
-static int stop_lingering_close(conn_state_t *cs, ap_equeue_t *eq)
+static int stop_lingering_close(event_conn_state_t *cs, ap_equeue_t *eq)
 {
     apr_status_t rv;
     apr_socket_t *csd = ap_get_conn_socket(cs->c);
@@ -878,7 +896,7 @@ static int stop_lingering_close(conn_state_t *cs, ap_equeue_t *eq)
  *         0 if it is still open and waiting for some event
  */
 static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock,
-                          conn_state_t * cs,
+                          event_conn_state_t * cs,
                           ap_equeue_t *eq,
                           int my_child_num,
                           int my_thread_num)
@@ -892,7 +910,7 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
 
     if (cs == NULL) {           /* This is a new connection */
         listener_poll_type *pt = apr_pcalloc(p, sizeof(*pt));
-        cs = apr_pcalloc(p, sizeof(conn_state_t));
+        cs = apr_pcalloc(p, sizeof(event_conn_state_t));
         cs->bucket_alloc = apr_bucket_alloc_create(p);
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, sbh, cs->bucket_alloc);
@@ -906,7 +924,7 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
         apr_pool_cleanup_register(c->pool, NULL, decrement_connection_count, apr_pool_cleanup_null);
         c->current_thread = thd;
         cs->c = c;
-        c->cs = cs;
+        c->cs = &(cs->pub);
         cs->p = p;
         cs->pfd.desc_type = APR_POLL_SOCKET;
         cs->pfd.reqevents = APR_POLLIN;
@@ -937,7 +955,7 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
          * When the accept filter is active, sockets are kept in the
          * kernel until a HTTP request is received.
          */
-        cs->state = CONN_STATE_READ_REQUEST_LINE;
+        cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
 
     }
     else {
@@ -952,13 +970,13 @@ static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock
          * like the Worker MPM does.
          */
         ap_run_process_connection(c);
-        if (cs->state != CONN_STATE_SUSPENDED) {
-            cs->state = CONN_STATE_LINGER;
+        if (cs->pub.state != CONN_STATE_SUSPENDED) {
+            cs->pub.state = CONN_STATE_LINGER;
         }
     }
 
 read_request:
-    if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
+    if (cs->pub.state == CONN_STATE_READ_REQUEST_LINE) {
         if (!c->aborted) {
             ap_run_process_connection(c);
 
@@ -968,11 +986,11 @@ read_request:
              */
         }
         else {
-            cs->state = CONN_STATE_LINGER;
+            cs->pub.state = CONN_STATE_LINGER;
         }
     }
 
-    if (cs->state == CONN_STATE_WRITE_COMPLETION) {
+    if (cs->pub.state == CONN_STATE_WRITE_COMPLETION) {
         ap_filter_t *output_filter = c->output_filters;
         apr_status_t rv;
         ap_update_child_status_from_conn(sbh, SERVER_BUSY_WRITE, c);
@@ -983,7 +1001,7 @@ read_request:
         if (rv != APR_SUCCESS) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
                           "network write failure in core output filter");
-            cs->state = CONN_STATE_LINGER;
+            cs->pub.state = CONN_STATE_LINGER;
         }
         else if (c->data_in_output_filters) {
             /* Still in WRITE_COMPLETION_STATE:
@@ -1005,23 +1023,23 @@ read_request:
         }
         else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted ||
             listener_may_exit) {
-            c->cs->state = CONN_STATE_LINGER;
+            cs->pub.state = CONN_STATE_LINGER;
         }
         else if (c->data_in_input_filters) {
-            cs->state = CONN_STATE_READ_REQUEST_LINE;
+            cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
             goto read_request;
         }
         else {
-            cs->state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
+            cs->pub.state = CONN_STATE_CHECK_REQUEST_LINE_READABLE;
         }
     }
 
-    if (cs->state == CONN_STATE_LINGER) {
+    if (cs->pub.state == CONN_STATE_LINGER) {
         if (!start_lingering_close(cs, eq)) {
             return 0;
         }
     }
-    else if (cs->state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
+    else if (cs->pub.state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         pollset_op_t *v;
 
         /* It greatly simplifies the logic to use a single timeout value here
@@ -1189,7 +1207,7 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
                                 apr_pollset_t * pollset)
 {
     listener_poll_type *pt = (listener_poll_type *) pfd->client_data;
-    conn_state_t *cs = (conn_state_t *) pt->baton;
+    event_conn_state_t *cs = (event_conn_state_t *) pt->baton;
     apr_status_t rc;
 
     rc = ap_queue_push(worker_queue, cs->pfd.desc.s, cs, cs->p);
@@ -1311,14 +1329,14 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
  * Only to be called in the listener thread;
  * Pre-condition: cs is in one of the linger queues and in the pollset
  */
-static void process_lingering_close(conn_state_t *cs, const apr_pollfd_t *pfd)
+static void process_lingering_close(event_conn_state_t *cs, const apr_pollfd_t *pfd)
 {
     apr_socket_t *csd = ap_get_conn_socket(cs->c);
     char dummybuf[2048];
     apr_size_t nbytes;
     apr_status_t rv;
     struct timeout_queue *q;
-    q = (cs->state == CONN_STATE_LINGER_SHORT) ?  &short_linger_q : &linger_q;
+    q = (cs->pub.state == CONN_STATE_LINGER_SHORT) ?  &short_linger_q : &linger_q;
 
     /* socket is already in non-blocking state */
     do {
@@ -1349,18 +1367,18 @@ static void process_lingering_close(conn_state_t *cs, const apr_pollfd_t *pfd)
  */
 static void process_timeout_queue(struct timeout_queue *q,
                                   apr_time_t timeout_time,
-                                  int (*func)(conn_state_t *, ap_equeue_t *eq))
+                                  int (*func)(event_conn_state_t *, ap_equeue_t *eq))
 {
     int count = 0;
-    conn_state_t *first, *cs, *last;
+    event_conn_state_t *first, *cs, *last;
     apr_status_t rv;
     if (!q->count) {
         return;
     }
-    AP_DEBUG_ASSERT(!APR_RING_EMPTY(&q->head, conn_state_t, timeout_list));
+    AP_DEBUG_ASSERT(!APR_RING_EMPTY(&q->head, event_conn_state_t, timeout_list));
 
     cs = first = APR_RING_FIRST(&q->head);
-    while (cs != APR_RING_SENTINEL(&q->head, conn_state_t, timeout_list)
+    while (cs != APR_RING_SENTINEL(&q->head, event_conn_state_t, timeout_list)
            && cs->expiration_time < timeout_time) {
         last = cs;
         rv = apr_pollset_remove(event_pollset, &cs->pfd);
@@ -1398,7 +1416,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
     ap_listen_rec *lr;
     int have_idle_worker = 0;
-    conn_state_t *cs;
+    event_conn_state_t *cs;
     const apr_pollfd_t *out_pfd;
     apr_int32_t num = 0;
     apr_interval_time_t timeout_interval;
@@ -1520,10 +1538,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                 /* one of the sockets is readable */
                 struct timeout_queue *remove_from_q = &write_completion_q;
                 int blocking = 1;
-                cs = (conn_state_t *) pt->baton;
-                switch (cs->state) {
+                cs = (event_conn_state_t *)pt->baton;
+                switch (cs->pub.state) {
                 case CONN_STATE_CHECK_REQUEST_LINE_READABLE:
-                    cs->state = CONN_STATE_READ_REQUEST_LINE;
+                    cs->pub.state = CONN_STATE_READ_REQUEST_LINE;
                     remove_from_q = &keepalive_q;
                     /* don't wait for a worker for a keepalive request */
                     blocking = 0;
@@ -1573,7 +1591,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
                                  ap_server_conf,
                                  "event_loop: unexpected state %d",
-                                 cs->state);
+                                 cs->pub.state);
                     ap_assert(0);
                 }
             }
@@ -1768,7 +1786,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
     apr_socket_t *csd = NULL;
-    conn_state_t *cs;
+    event_conn_state_t *cs;
     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
     apr_status_t rv;
     int is_idle = 0;
