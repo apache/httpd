@@ -81,10 +81,10 @@
 %token  T_OP_AND
 %token  T_OP_NOT
 
-%left   T_OP_OR
-%left   T_OP_AND
-%left   T_OP_NOT
-%left   T_OP_CONCAT
+%right  T_OP_OR
+%right  T_OP_AND
+%right  T_OP_NOT
+%right  T_OP_CONCAT
 
 %type   <exVal>   expr
 %type   <exVal>   comparison
