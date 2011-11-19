@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1135241 -->
+<!-- English Revision : 1203752 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,22 +74,20 @@ que le chiffrement fort ?</title>
     <p>Les directives suivantes ne permettent que les
     chiffrements de plus haut niveau :</p>
     <example><title>httpd.conf</title>
-      SSLProtocol all -SSLv2<br />
-      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!MD5<br />
     </example>
 </section>
 
 
- <p>Avec la configuration qui suit, vous pouvez activer deux m&eacute;thodes de chiffrement relativement s&eacute;curis&eacute;es, et rapides :</p>
+ <p>Avec la configuration qui suit, vous indiquez une pr&eacute;f&eacute;rence pour
+ des algorityhmes de chiffrement sp&eacute;cifiques optimis&eacute;s en mati&egrave;re de
+ rapidit&eacute; (le choix final sera op&eacute;r&eacute; par mod_ssl, dans la mesure ou le
+ client les supporte) :</p>
 
     <example><title>httpd.conf</title>
-      SSLProtocol all -SSLv2<br />
-      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:!aNULL:!MD5<br />
       SSLHonorCipherOrder on
-      <br />
     </example>
-    <p>Ceci correspond largement &agrave; la valeur par d&eacute;faut de la directive <directive module="mod_ssl">SSLCipherSuite</directive>,
-    et repr&eacute;sente la pratique &agrave; conseiller.</p>
 </section>
 
 <section id="strongurl">
@@ -112,7 +110,7 @@ acc&eacute;der &agrave; une URL particuli&egrave;re ?</title>
       &lt;Location /strong/area&gt;<br />
       # sauf pour https://hostname/strong/area/ et ses sous-r&eacute;pertoires<br />
       # qui exigent des chiffrements forts<br />
-      SSLCipherSuite HIGH:!aNULL:!EXP:!MD5:!NULL<br />
+      SSLCipherSuite HIGH:!aNULL:!MD5<br />
       &lt;/Location&gt;
     </example>
 </section>
