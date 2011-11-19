@@ -58,8 +58,8 @@ static void expr_dump_tree(const ap_expr_t *e, const server_rec *s,
 
 /*
  * To reduce counting overhead, we only count calls to
- * ap_expr_eval_word() and ap_expr_eval(). This means the actual
- * recursion may be twice as deep.
+ * ap_expr_eval_word() and ap_expr_eval(). The max number of
+ * stack frames is larger by some factor.
  */
 #define AP_EXPR_MAX_RECURSION   20
 static int inc_rec(ap_expr_eval_ctx_t *ctx)
@@ -711,7 +711,6 @@ static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
             result ^= TRUE;
             goto out;
         case op_False:
-            ctx->reclvl--;
             result ^= FALSE;
             goto out;
         case op_Not:
@@ -728,7 +727,6 @@ static int ap_expr_eval(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
                 }
                 else {
                     if (ap_expr_eval(ctx, e1)) {
-                        ctx->reclvl--;
                         result ^= TRUE;
                         goto out;
                     }
