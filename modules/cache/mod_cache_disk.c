@@ -1075,9 +1075,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     disk_cache_dir_conf *dconf = ap_get_module_config(r->per_dir_config, &cache_disk_module);
     int seen_eos = 0;
 
-    if (!dobj->bb) {
-        dobj->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-    }
     if (!dobj->offset) {
         dobj->offset = dconf->readsize;
     }
@@ -1107,7 +1104,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             seen_eos = 1;
             dobj->done = 1;
             APR_BUCKET_REMOVE(e);
-            APR_BRIGADE_CONCAT(out, dobj->bb);
             APR_BRIGADE_INSERT_TAIL(out, e);
             break;
         }
@@ -1115,7 +1111,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         /* honour flush buckets, we'll get called again */
         if (APR_BUCKET_IS_FLUSH(e)) {
             APR_BUCKET_REMOVE(e);
-            APR_BRIGADE_CONCAT(out, dobj->bb);
             APR_BRIGADE_INSERT_TAIL(out, e);
             break;
         }
@@ -1123,21 +1118,20 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         /* metadata buckets are preserved as is */
         if (APR_BUCKET_IS_METADATA(e)) {
             APR_BUCKET_REMOVE(e);
-            APR_BRIGADE_INSERT_TAIL(dobj->bb, e);
+            APR_BRIGADE_INSERT_TAIL(out, e);
             continue;
         }
 
         /* read the bucket, write to the cache */
         rv = apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
         APR_BUCKET_REMOVE(e);
-        APR_BRIGADE_INSERT_TAIL(dobj->bb, e);
+        APR_BRIGADE_INSERT_TAIL(out, e);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                     "cache_disk: Error when reading bucket for URL %s",
                     h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             apr_pool_destroy(dobj->data.pool);
-            APR_BRIGADE_CONCAT(out, dobj->bb);
             return rv;
         }
 
@@ -1156,7 +1150,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                                  APR_BUFFERED | APR_EXCL, dobj->data.pool);
             if (rv != APR_SUCCESS) {
                 apr_pool_destroy(dobj->data.pool);
-                APR_BRIGADE_CONCAT(out, dobj->bb);
                 return rv;
             }
             dobj->file_size = 0;
@@ -1164,7 +1157,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                     dobj->data.tempfd);
             if (rv != APR_SUCCESS) {
                 apr_pool_destroy(dobj->data.pool);
-                APR_BRIGADE_CONCAT(out, dobj->bb);
                 return rv;
             }
             dobj->disk_info.device = finfo.device;
@@ -1180,7 +1172,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                     h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             apr_pool_destroy(dobj->data.pool);
-            APR_BRIGADE_CONCAT(out, dobj->bb);
             return rv;
         }
         dobj->file_size += written;
@@ -1191,7 +1182,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                     h->cache_obj->key, dobj->file_size, dconf->maxfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             apr_pool_destroy(dobj->data.pool);
-            APR_BRIGADE_CONCAT(out, dobj->bb);
             return APR_EGENERAL;
         }
 
@@ -1203,12 +1193,10 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         dobj->offset -= length;
         if (dobj->offset <= 0) {
             dobj->offset = 0;
-            APR_BRIGADE_CONCAT(out, dobj->bb);
             break;
         }
         if ((dconf->readtime && apr_time_now() > dobj->timeout)) {
             dobj->timeout = 0;
-            APR_BRIGADE_CONCAT(out, dobj->bb);
             break;
         }
 
