@@ -408,6 +408,7 @@ _build:
 	cd ..\..
 	cd modules\aaa
 	 $(MAKE) $(MAKEOPT) -f mod_access_compat.mak CFG="mod_access_compat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_allowmethods.mak CFG="mod_allowmethods - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_basic.mak  CFG="mod_auth_basic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_form.mak   CFG="mod_auth_form - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -698,6 +699,7 @@ _copybin:
 !ENDIF
 	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_allowmethods.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_form.$(src_so) 	"$(inst_so)" <.y
