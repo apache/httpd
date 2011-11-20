@@ -619,12 +619,10 @@
 
       <dt><code><var>-A string</var></code></dt>
       <dd><p>true if the URL represented by the string is accessible by
-      configuration, false otherwise. This test only has an effect if
-      <directive>SSIAccessEnable</directive> is on. This is useful
-      where content on a page is to be hidden from users who are not
-      authorized to view the URL, such as a link to that URL. Note
-      that the URL is only tested for whether access would be granted,
-      not whether the URL exists.</p>
+      configuration, false otherwise. This is useful where content on a
+      page is to be hidden from users who are not authorized to view the
+      URL, such as a link to that URL. Note that the URL is only tested
+      for whether access would be granted, not whether the URL exists.</p>
 
       <example><title>Example</title>
         &lt;!--#if expr="-A /private" --&gt;<br />
@@ -883,40 +881,6 @@ displayed</description>
 
     <p>The above directive would cause times to be displayed in the
     format "22:26, June 14, 2002".</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>SSIAccessEnable</name>
-<description>Enable the -A flag in legacy conditional expressions.</description>
-<syntax>SSIAccessEnable on|off</syntax>
-<default>SSIAccessEnable off</default>
-<contextlist><context>directory</context><context>.htaccess</context></contextlist>
-
-<usage>
-    <note><directive>SSIAccessEnable</directive> has no effect unless
-    <directive module="mod_include">SSILegacyExprParser</directive> is set to
-    <code>on</code>.
-    </note>
-
-    <p>The <directive>SSIAccessEnable</directive> directive controls whether
-    the -A test is enabled during conditional flow control processing when
-    using the 2.2.x compatible expression parser.
-    <directive>SSIAccessEnable</directive> can take on the following values:</p>
-
-    <dl>
-
-      <dt><code>off</code></dt>
-      <dd>&lt;!--#if expr="-A /foo"--&gt; will be interpreted as a series
-      of string and regular expression tokens, the -A has no special
-      meaning.</dd>
-
-      <dt><code>on</code></dt>
-      <dd>&lt;!--#if expr="-A /foo"--&gt; will evaluate to false if the
-      URL /foo is inaccessible by configuration, or true otherwise.</dd>
-
-    </dl>
-
 </usage>
 </directivesynopsis>
 

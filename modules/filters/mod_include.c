@@ -117,7 +117,6 @@ typedef struct {
     const char *default_time_fmt;
     const char *undefined_echo;
     xbithack_t  xbithack;
-    signed char accessenable;
     signed char lastmodified;
     signed char etag;
     signed char legacy_expr;
@@ -197,7 +196,6 @@ struct ssi_internal_ctx {
     const char   *undefined_echo;
     apr_size_t    undefined_echo_len;
 
-    char         accessenable;    /* is using the access tests allowed? */
     char         legacy_expr;     /* use ap_expr or legacy mod_include
                                     expression parser? */
 
@@ -1076,7 +1074,7 @@ static int get_ptoken(include_ctx_t *ctx, const char **parse, token_t *token, to
         TYPE_TOKEN(token, TOKEN_LT);
         return 0;
     case '-':
-        if (**parse == 'A' && (ctx->intern->accessenable)) {
+        if (**parse == 'A') {
             TYPE_TOKEN(token, TOKEN_ACCESS);
             ++*parse;
             return 0;
@@ -3834,7 +3832,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         if ((ap_allow_options(r) & OPT_INC_WITH_EXEC) == 0) {
             ctx->flags |= SSI_FLAG_NO_EXEC;
         }
-        intern->accessenable = (conf->accessenable > 0);
         intern->legacy_expr = (conf->legacy_expr > 0);
         intern->expr_eval_ctx = NULL;
         intern->expr_err = NULL;
@@ -3995,7 +3992,6 @@ static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
     include_dir_config *result = apr_pcalloc(p, sizeof(include_dir_config));
 
     result->xbithack          = XBITHACK_UNSET;
-    result->accessenable      = UNSET;
     result->lastmodified      = UNSET;
     result->etag              = UNSET;
     result->legacy_expr       = UNSET;
@@ -4013,7 +4009,6 @@ static void *merge_includes_dir_config(apr_pool_t *p, void *basev, void *overrid
     MERGE(base, over, new, default_time_fmt,  NULL);
     MERGE(base, over, new, undefined_echo,    NULL);
     MERGE(base, over, new, xbithack,          XBITHACK_UNSET);
-    MERGE(base, over, new, accessenable,      UNSET);
     MERGE(base, over, new, lastmodified,      UNSET);
     MERGE(base, over, new, etag,              UNSET);
     MERGE(base, over, new, legacy_expr,       UNSET);
@@ -4165,9 +4160,6 @@ static const command_rec includes_cmds[] =
                   "SSI End String Tag"),
     AP_INIT_TAKE1("SSIUndefinedEcho", set_undefined_echo, NULL, OR_ALL,
                   "String to be displayed if an echoed variable is undefined"),
-    AP_INIT_FLAG("SSIAccessEnable", ap_set_flag_slot_char,
-                  (void *)APR_OFFSETOF(include_dir_config, accessenable),
-                  OR_LIMIT, "Whether testing access is enabled. Limited to 'on' or 'off'"),
     AP_INIT_FLAG("SSILegacyExprParser", ap_set_flag_slot_char,
                   (void *)APR_OFFSETOF(include_dir_config, legacy_expr),
                   OR_LIMIT,
