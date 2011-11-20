@@ -1080,7 +1080,7 @@ struct conn_rec {
     void *sbh;
     /** The bucket allocator to use for all bucket/brigade creations */
     struct apr_bucket_alloc_t *bucket_alloc;
-    /** The current state of this connection */
+    /** The current state of this connection; may be NULL if not used by MPM */
     conn_state_t *cs;
     /** Is there data pending in the input filters? */
     int data_in_input_filters;
