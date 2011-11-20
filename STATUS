@@ -139,10 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                          http://svn.apache.org/viewvc?view=revision&revision=r1092076
                          http://svn.apache.org/viewvc?view=revision&revision=r1100513
     http://people.apache.org/~jfclere/patches/ajp_timeout.patch
-    +1: jfclere, rjung
-    rpluem says: Can you please update your proposal with the trunk revision numbers
-    that fix the check for the timeout status?
-    jfclere: Ooops see above.
+    +1: jfclere, rjung, rpluem
 
   * mod_ssl: Update default config (SSLProtocol, SSLCipherSuite, MSIE pattern)
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=1132793
