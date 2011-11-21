@@ -142,7 +142,6 @@ static apr_status_t split_header_line(apreq_param_t **p,
         ++iov;
     }
     *dest = 0;
-    nlen = dest - v->name;
 
     while ((f = APR_BRIGADE_FIRST(bb)) != e)
         apr_bucket_delete(f);
