@@ -300,6 +300,7 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
     autoindex_config_rec *dcfg = (autoindex_config_rec *) d;
     ai_desc_t *desc_entry;
     char *prefix = "";
+    int is_abspath = ap_os_is_path_absolute(cmd->temp_pool, to);
 
     desc_entry = (ai_desc_t *) apr_array_push(dcfg->desc_list);
     desc_entry->full_path = (ap_strchr_c(to, '/') == NULL) ? 0 : 1;
@@ -307,7 +308,12 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
                              || desc_entry->full_path
                              || apr_fnmatch_test(to));
     if (desc_entry->wildcards) {
-        prefix = desc_entry->full_path ? "*/" : "*";
+        if (desc_entry->full_path && !is_abspath) { 
+            prefix = "*/";
+        }
+        else if (WILDCARDS_REQUIRED) { 
+            prefix = "*";
+        }
         desc_entry->pattern = apr_pstrcat(dcfg->desc_list->pool,
                                           prefix, to, "*", NULL);
     }
