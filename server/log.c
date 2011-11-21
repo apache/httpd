@@ -1177,6 +1177,7 @@ static void log_error_core(const char *file, int line, int module_index,
 
     info.s             = s;
     info.c             = c;
+    info.pool          = pool;
     info.file          = NULL;
     info.line          = 0;
     info.status        = 0;
@@ -1268,8 +1269,7 @@ static void log_error_core(const char *file, int line, int module_index,
              * prefix and suffix.
              */
             errstr[errstr_end] = '\0';
-            ap_run_error_log(file, line, module_index, level, status, s, c, r,
-                             pool, errstr + errstr_start);
+            ap_run_error_log(&info, errstr + errstr_start);
         }
 
         *errstr = '\0';
@@ -1763,11 +1763,8 @@ AP_DECLARE(const char *) ap_parse_log_level(const char *str, int *val)
 }
 
 AP_IMPLEMENT_HOOK_VOID(error_log,
-                       (const char *file, int line, int module_index, int level,
-                        apr_status_t status, const server_rec *s,
-                        const conn_rec *c, const request_rec *r,
-                        apr_pool_t *pool, const char *errstr), (file, line,
-                        module_index, level, status, s, c, r, pool, errstr))
+                       (const ap_errorlog_info *info, const char *errstr),
+                       (info, errstr))
 
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, generate_log_id,
                             (const conn_rec *c, const request_rec *r,

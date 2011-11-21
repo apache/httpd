@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
-  *) error log hook: add conn_rec as a parameter.  [Jeff Trawick]
+  *) error log hook: Pass ap_errorlog_info struct.  [Stefan Fritsch]
 
   [Apache 2.5.0-dev includes those bug fixes and changes with the
    Apache 2.4.xx tree as documented below, except as noted.]
