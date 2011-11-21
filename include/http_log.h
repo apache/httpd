@@ -625,26 +625,6 @@ AP_DECLARE(apr_file_t *) ap_piped_log_read_fd(piped_log *pl);
 AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
 
 /**
- * hook method to log error messages
- * @ingroup hooks
- * @param file The file in which this function is called
- * @param line The line number on which this function is called
- * @param module_index The module_index of the module generating this message
- * @param level The level of this error message
- * @param status The status code from the previous command
- * @param s The server which we are logging for
- * @param c The connection which we are logging for
- * @param r The request which we are logging for
- * @param pool Memory pool to allocate from
- * @param errstr message to log
- */
-AP_DECLARE_HOOK(void, error_log, (const char *file, int line,
-                       int module_index, int level,
-                       apr_status_t status, const server_rec *s,
-                       const conn_rec *c, const request_rec *r,
-                       apr_pool_t *pool, const char *errstr))
-
-/**
  * hook method to generate unique id for connection or request
  * @ingroup hooks
  * @param c the conn_rec of the connections

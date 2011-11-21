@@ -776,14 +776,17 @@ typedef struct ap_errorlog_info {
     /** r->main if r is a subrequest, otherwise equal to r */
     const request_rec *rmain;
 
-    /** name of source file where the log message was produced. */
+    /** pool passed to ap_log_perror, NULL otherwise */
+    apr_pool_t *pool;
+
+    /** name of source file where the log message was produced, NULL if N/A. */
     const char *file;
     /** line number in the source file, 0 if N/A */
     int line;
 
     /** module index of module that produced the log message, APLOG_NO_MODULE if N/A. */
     int module_index;
-    /** log level of error message, -1 if N/A */
+    /** log level of error message (flags like APLOG_STARTUP have been removed), -1 if N/A */
     int level;
 
     /** apr error status related to the log message, 0 if no error */
@@ -843,6 +846,19 @@ typedef struct {
     /** only log item if the message's log level is higher than this */
     unsigned int min_loglevel;
 } ap_errorlog_format_item;
+
+/**
+ * hook method to log error messages
+ * @ingroup hooks
+ * @param info pointer to ap_errorlog_info struct which contains all
+ *        the details
+ * @param errstr message to log (unmodified
+ * @warning Allocating from the usual pools (pool, info->c->pool, info->p->pool)
+ *          must be avoided because it can cause memory leaks.
+ *          Use a subpool if necessary.
+ */
+AP_DECLARE_HOOK(void, error_log, (const ap_errorlog_info *info,
+                                  const char *errstr))
 
 AP_CORE_DECLARE(void) ap_register_log_hooks(apr_pool_t *p);
 AP_CORE_DECLARE(void) ap_register_config_hooks(apr_pool_t *p);
