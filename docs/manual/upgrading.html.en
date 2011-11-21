@@ -275,6 +275,10 @@
       display descriptions for .xhtml files, which were previously
       ignored.</li>
 
+      <li><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code>: AddDescription 'file' arguments
+      that contain wild-cards and slashes are no longer implicitly treated 
+      as if they began with a '*' character.</li>
+
       <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: The default format of the <code>*_DN</code>
       variables has changed. The old format can still be used with the new
       <code>LegacyDNStringFormat</code> argument to <code class="directive"><a href="./mod/mod_ssl.html#ssloptions">SSLOptions</a></code>. The SSLv2 protocol is
