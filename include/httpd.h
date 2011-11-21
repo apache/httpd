@@ -1080,7 +1080,7 @@ struct conn_rec {
     void *sbh;
     /** The bucket allocator to use for all bucket/brigade creations */
     struct apr_bucket_alloc_t *bucket_alloc;
-    /** The current state of this connection */
+    /** The current state of this connection; may be NULL if not used by MPM */
     conn_state_t *cs;
     /** Is there data pending in the input filters? */
     int data_in_input_filters;
@@ -1144,18 +1144,6 @@ typedef enum  {
  * @brief A structure to contain connection state information
  */
 struct conn_state_t {
-    /** APR_RING of expiration timeouts */
-    APR_RING_ENTRY(conn_state_t) timeout_list;
-    /** the expiration time of the next keepalive timeout */
-    apr_time_t expiration_time;
-    /** connection record this struct refers to */
-    conn_rec *c;
-    /** memory pool to allocate from */
-    apr_pool_t *p;
-    /** bucket allocator */
-    apr_bucket_alloc_t *bucket_alloc;
-    /** poll file descriptor information */
-    apr_pollfd_t pfd;
     /** Current state of the connection */
     conn_state_e state;
 };
