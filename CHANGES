@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_cache_disk: Make sure we check return codes on all writes and
+     attempts to close, and clean up after ourselves in these cases.
+     PR43589. [Graham Leggett]
+
   *) mod_cache_disk: Remove the unnecessary intermediate brigade while
      writing to disk. Fixes a problem where mod_disk_cache was leaving
      buckets in the intermediate brigade and not passing them to out on

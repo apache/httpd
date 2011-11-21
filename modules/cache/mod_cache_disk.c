@@ -969,23 +969,47 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
 
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
-                        "cache_disk: could not create temp file %s",
+                        "cache_disk: could not create vary file %s",
                         dobj->vary.tempfile);
                 return rv;
             }
 
             amt = sizeof(format);
-            apr_file_write(dobj->vary.tempfd, &format, &amt);
+            rv = apr_file_write(dobj->vary.tempfd, &format, &amt);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                        "cache_disk: could not write to vary file %s",
+                        dobj->vary.tempfile);
+                apr_file_close(dobj->vary.tempfd);
+                apr_pool_destroy(dobj->vary.pool);
+                return rv;
+            }
 
             amt = sizeof(h->cache_obj->info.expire);
-            apr_file_write(dobj->vary.tempfd, &h->cache_obj->info.expire, &amt);
+            rv = apr_file_write(dobj->vary.tempfd, &h->cache_obj->info.expire,
+                    &amt);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                        "cache_disk: could not write to vary file %s",
+                        dobj->vary.tempfile);
+                apr_file_close(dobj->vary.tempfd);
+                apr_pool_destroy(dobj->vary.pool);
+                return rv;
+            }
 
             varray = apr_array_make(r->pool, 6, sizeof(char*));
             tokens_to_array(r->pool, tmp, varray);
 
             store_array(dobj->vary.tempfd, varray);
 
-            apr_file_close(dobj->vary.tempfd);
+            rv = apr_file_close(dobj->vary.tempfd);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                        "cache_disk: could not close vary file %s",
+                        dobj->vary.tempfile);
+                apr_pool_destroy(dobj->vary.pool);
+                return rv;
+            }
 
             tmp = regen_key(r->pool, dobj->headers_in, varray, dobj->name);
             dobj->prefix = dobj->hdrs.file;
@@ -1002,7 +1026,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
 
     if (rv != APR_SUCCESS) {
        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
-                "cache_disk: could not create temp file %s",
+                "cache_disk: could not create header file %s",
                 dobj->hdrs.tempfile);
         return rv;
     }
@@ -1034,6 +1058,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
                 "cache_disk: could not write info to header file %s",
                 dobj->hdrs.tempfile);
         apr_file_close(dobj->hdrs.tempfd);
+        apr_pool_destroy(dobj->hdrs.pool);
         return rv;
     }
 
@@ -1044,6 +1069,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
                     "cache_disk: could not write out-headers to header file %s",
                     dobj->hdrs.tempfile);
             apr_file_close(dobj->hdrs.tempfd);
+            apr_pool_destroy(dobj->hdrs.pool);
             return rv;
         }
     }
@@ -1057,11 +1083,19 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r)
                     "cache_disk: could not write in-headers to header file %s",
                     dobj->hdrs.tempfile);
             apr_file_close(dobj->hdrs.tempfd);
+            apr_pool_destroy(dobj->hdrs.pool);
             return rv;
         }
     }
 
-    apr_file_close(dobj->hdrs.tempfd); /* flush and close */
+    rv = apr_file_close(dobj->hdrs.tempfd); /* flush and close */
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, r,
+                "cache_disk: could not close header file %s",
+                dobj->hdrs.tempfile);
+        apr_pool_destroy(dobj->hdrs.pool);
+        return rv;
+    }
 
     return APR_SUCCESS;
 }
@@ -1209,7 +1243,12 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
 
         if (dobj->data.tempfd) {
-            apr_file_close(dobj->data.tempfd);
+            rv = apr_file_close(dobj->data.tempfd);
+            if (rv != APR_SUCCESS) {
+                /* Buffered write failed, abandon attempt to write */
+                apr_pool_destroy(dobj->data.pool);
+                return rv;
+            }
         }
 
         if (r->connection->aborted || r->no_cache) {
