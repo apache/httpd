@@ -376,7 +376,7 @@ void ap_process_request(request_rec *r)
              * It is still safe to use r / r->pool here as the eor bucket
              * could not have been destroyed in the event of a timeout.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                           "Timeout while writing data for URI %s to the"
                           " client", r->unparsed_uri);
         }
