@@ -300,7 +300,6 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
     autoindex_config_rec *dcfg = (autoindex_config_rec *) d;
     ai_desc_t *desc_entry;
     char *prefix = "";
-    int is_abspath = ap_os_is_path_absolute(cmd->temp_pool, to);
 
     desc_entry = (ai_desc_t *) apr_array_push(dcfg->desc_list);
     desc_entry->full_path = (ap_strchr_c(to, '/') == NULL) ? 0 : 1;
@@ -308,12 +307,7 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
                              || desc_entry->full_path
                              || apr_fnmatch_test(to));
     if (desc_entry->wildcards) {
-        if (desc_entry->full_path && !is_abspath) { 
-            prefix = "*/";
-        }
-        else if (WILDCARDS_REQUIRED) { 
-            prefix = "*";
-        }
+        prefix = desc_entry->full_path ? "*/" : "*";
         desc_entry->pattern = apr_pstrcat(dcfg->desc_list->pool,
                                           prefix, to, "*", NULL);
     }
@@ -326,7 +320,7 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
 
 static const char *add_ignore(cmd_parms *cmd, void *d, const char *ext)
 {
-    push_item(((autoindex_config_rec *) d)->ign_list, cmd->info, ext, cmd->path, NULL);
+    push_item(((autoindex_config_rec *) d)->ign_list, 0, ext, cmd->path, NULL);
     return NULL;
 }
 
@@ -587,7 +581,7 @@ static const command_rec autoindex_cmds[] =
                       "one or more index options [+|-][]"),
     AP_INIT_TAKE2("IndexOrderDefault", set_default_order, NULL, DIR_CMD_PERMS,
                   "{Ascending,Descending} {Name,Size,Description,Date}"),
-    AP_INIT_ITERATE("IndexIgnore", add_ignore, BY_PATH, DIR_CMD_PERMS,
+    AP_INIT_ITERATE("IndexIgnore", add_ignore, NULL, DIR_CMD_PERMS,
                     "one or more file extensions"),
     AP_INIT_FLAG("IndexIgnoreReset", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(autoindex_config_rec, ign_noinherit),
@@ -876,13 +870,30 @@ static int ignore_entry(autoindex_config_rec *d, char *path)
 {
     apr_array_header_t *list = d->ign_list;
     struct item *items = (struct item *) list->elts;
+    char *tt;
     int i;
+
+    if ((tt = strrchr(path, '/')) == NULL) {
+        tt = path;
+    }
+    else {
+        tt++;
+    }
 
     for (i = 0; i < list->nelts; ++i) {
         struct item *p = &items[i];
+        char *ap;
+
+        if ((ap = strrchr(p->apply_to, '/')) == NULL) {
+            ap = p->apply_to;
+        }
+        else {
+            ap++;
+        }
 
 #ifndef CASE_BLIND_FILESYSTEM
-        if (!ap_strcmp_match(path, p->apply_to)) {
+        if (!ap_strcmp_match(path, p->apply_path)
+            && !ap_strcmp_match(tt, ap)) {
             return 1;
         }
 #else  /* !CASE_BLIND_FILESYSTEM */
@@ -891,7 +902,8 @@ static int ignore_entry(autoindex_config_rec *d, char *path)
          * a factor of the filesystem involved, but we can't detect that
          * reliably - so we have to granularise at the OS level.
          */
-        if (!ap_strcasecmp_match(path, p->apply_to)) {
+        if (!ap_strcasecmp_match(path, p->apply_path)
+            && !ap_strcasecmp_match(tt, ap)) {
             return 1;
         }
 #endif /* !CASE_BLIND_FILESYSTEM */
