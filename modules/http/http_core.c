@@ -126,6 +126,7 @@ static int ap_process_http_async_connection(conn_rec *c)
     request_rec *r;
     conn_state_t *cs = c->cs;
 
+    AP_DEBUG_ASSERT(cs != NULL);
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {
@@ -184,7 +185,8 @@ static int ap_process_http_sync_connection(conn_rec *c)
 
         ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         if (r->status == HTTP_OK) {
-            cs->state = CONN_STATE_HANDLER;
+            if (cs)
+                cs->state = CONN_STATE_HANDLER;
             ap_process_request(r);
             /* After the call to ap_process_request, the
              * request pool will have been deleted.  We set

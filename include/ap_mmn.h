@@ -366,14 +366,15 @@
  *                         and ap_unescape_urlencoded().
  * 20111025.2 (2.3.15-dev) Add ap_lua_ssl_val to mod_lua
  * 20111025.3 (2.4.0-dev)  Add reclvl to ap_expr_eval_ctx_t
+ * 20111122.0 (2.4.0-dev)  Remove parts of conn_state_t that are private to the MPM
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20111025
+#define MODULE_MAGIC_NUMBER_MAJOR 20111122
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
