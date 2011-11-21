@@ -517,7 +517,6 @@ static apr_status_t cgi_jar(apreq_handle_t *handle,
             p = apreq_cookie_make(handle->pool, name, strlen(name), val, strlen(val));
             apreq_cookie_tainted_on(p);
             apreq_value_table_add(&p->v, req->jar);
-            val = p->v.data;
         }
         req->jar_status = APR_SUCCESS;
     } /** Fallthrough */
