@@ -1261,8 +1261,12 @@ static void log_error_core(const char *file, int line, int module_index,
         }
         write_logline(errstr, len, logf, level_and_mask);
 
-        if (!log_format) {
-            /* only pass the real error string to the hook */
+        if (done) {
+            /*
+             * We don't call the error_log hook for per-request/per-conn
+             * lines, and we only pass the actual log message, not the
+             * prefix and suffix.
+             */
             errstr[errstr_end] = '\0';
             ap_run_error_log(file, line, module_index, level, status, s, c, r,
                              pool, errstr + errstr_start);
