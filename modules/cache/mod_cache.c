@@ -1292,7 +1292,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (lastmod != APR_DATE_BAD && lastmod > date) {
         /* if it's in the future, then replace by date */
         lastmod = date;
-        lastmods = dates;
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0,
                 r, "cache: Last modified is in the future, "
                 "replacing with now");
