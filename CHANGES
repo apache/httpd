@@ -1,15 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
-  *) mod_autoindex: Start respecting IndexIgnore inside DirectoryMatch.
-     PR51471 [Eric Covener]
-
-  *) mod_autoindex: Stop implicitly prefixing AddDescription "file" arguments 
-     that contain both slashes and wild-cards with a '*'.  [Eric Covener]
-
-  *) mod_autoindex: Allow AddDescription "file" arguments to be an
-     absolute path as previously documented. PR39923 [Eric Covener]
-
   *) mod_cache_disk: Remove the unnecessary intermediate brigade while
      writing to disk. Fixes a problem where mod_disk_cache was leaving
      buckets in the intermediate brigade and not passing them to out on
