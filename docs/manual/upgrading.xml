@@ -291,6 +291,10 @@
       display descriptions for .xhtml files, which were previously
       ignored.</li>
 
+      <li><module>mod_autoindex</module>: AddDescription 'file' arguments
+      that contain wild-cards and slashes are no longer implicitly treated 
+      as if they began with a '*' character.</li>
+
       <li><module>mod_ssl</module>: The default format of the <code>*_DN</code>
       variables has changed. The old format can still be used with the new
       <code>LegacyDNStringFormat</code> argument to <directive

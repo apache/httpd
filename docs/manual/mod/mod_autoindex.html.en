@@ -323,6 +323,10 @@ icon selected by MIME content-type</td></tr>
       element (such as cutting off the end of a bolded phrase), the
       results may affect the rest of the directory listing.</p>
     </div>
+    <div class="note"><h3>Compatibility</h3>
+    <p> Prior to version 2.4, any wild-card expression that contained slashes 
+    was treated as if it started with a '*'.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
