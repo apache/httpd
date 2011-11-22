@@ -102,7 +102,9 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
         return 1;
     }
 
-    ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
+    if (c->sbh) {
+        ap_update_child_status(c->sbh, SERVER_CLOSING, NULL);
+    }
 
 #ifdef NO_LINGCLOSE
     ap_flush_conn(c); /* just close it */
