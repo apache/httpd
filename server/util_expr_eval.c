@@ -29,6 +29,8 @@
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
 
+#include <limits.h>     /* for INT_MAX */
+
 /* we know core's module_index is 0 */
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
