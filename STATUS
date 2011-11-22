@@ -110,7 +110,16 @@ RELEASE SHOWSTOPPERS:
     (Either fixing it or removing it constitutes an API change, which is
     why it matters)
 
+  * Change the arguments to the error log hook, to allow access to the 
+    conn_rec. Or decide that we don't want it.
+
+  * Decide if we want something done about mod_request in the face of the
+    upcoming apreq integration. Maybe document that it will be obsoleted
+    within 2.4.x? Or remove it (but it is needed by mod_auth_form)?
+
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
+
+  * Configure code for luajit is broken (links to wrong library).
 
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
