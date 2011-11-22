@@ -98,6 +98,12 @@ RELEASE SHOWSTOPPERS:
     the hackathon seems to be that mod_lua should be released as experimental
     with a note that the API may change during 2.4.x.
 
+  * mod_remoteip works around httpd's non-existent IP address API by leaking
+    from c->pool and allowing pointers from r->pool to live beyond r->pool's
+    lifetime. Provide an actual API for mod_remoteip to use so these hacks
+    are no longer needed, or remove mod_remoteip (minfrin: which I really
+    don't want us to have to do).
+
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
   * The mod_session* modules need to be checked that their hooks respect
