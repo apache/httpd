@@ -1184,6 +1184,7 @@ static const char *conn_var_names[] = {
     "HTTPS",                    /*  0 */
     "IPV6",                     /*  1 */
     "CONN_LOG_ID",              /*  2 */
+    "CONN_REMOTE_ADDR",         /*  3 */
     NULL
 };
 
@@ -1215,6 +1216,8 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 #endif
     case 2:
         return c->log_id;
+    case 3:
+        return c->remote_ip;
     default:
         ap_assert(0);
         return NULL;
