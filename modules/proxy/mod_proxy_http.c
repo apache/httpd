@@ -858,7 +858,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             * determine, where the original request came from.
             */
            apr_table_mergen(r->headers_in, "X-Forwarded-For",
-                            c->remote_ip);
+                            r->remote_ip);
 
            /* Add X-Forwarded-Host: so that upstream knows what the
             * original request hostname was.

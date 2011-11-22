@@ -187,6 +187,8 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
                 result = r->uri;
             else if (strcEQ(var, "REQUEST_FILENAME"))
                 result = r->filename;
+            else if (strcEQ(var, "REMOTE_ADDR"))
+                result = r->remote_ip;
             else if (strcEQ(var, "REMOTE_HOST"))
                 result = ap_get_remote_host(r->connection, r->per_dir_config,
                                             REMOTE_NAME, NULL);
@@ -242,8 +244,6 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, c, r, var+4);
-        else if (strcEQ(var, "REMOTE_ADDR"))
-            result = c->remote_ip;
         else if (strcEQ(var, "HTTPS")) {
             if (sslconn && sslconn->ssl)
                 result = "on";

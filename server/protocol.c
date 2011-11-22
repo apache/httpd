@@ -979,6 +979,9 @@ request_rec *ap_read_request(conn_rec *conn)
      */
     r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
 
+    r->remote_addr = conn->remote_addr;
+    r->remote_ip = conn->remote_ip;
+
     tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
     ap_run_pre_read_request(r, conn);

@@ -271,7 +271,7 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
             return 1;
 
         case T_IP:
-            if (apr_ipsubnet_test(ap[i].x.ip, r->connection->remote_addr)) {
+            if (apr_ipsubnet_test(ap[i].x.ip, r->remote_addr)) {
                 return 1;
             }
             break;
