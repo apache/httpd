@@ -1,4 +1,4 @@
-﻿APACHE 2.3 STATUS:                                              -*-text-*-
+APACHE 2.5 STATUS:                                              -*-text-*-
 Last modified at [$Date$]
 
 The current version of this file can be found at:
@@ -13,12 +13,12 @@ Documentation status is maintained seperately and can be found at:
 Consult the following STATUS files for information on related projects:
 
   * http://svn.apache.org/repos/asf/apr/apr/trunk/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/trunk/STATUS
 
 Patches considered for backport are noted in their branches' STATUS:
 
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
 
 
 
@@ -26,23 +26,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.3.16  : In Development.
-    2.3.15  : Tagged on November 8, 2011.
-    2.3.14  : Tagged on August 1, 2011. Released Aug. 9, 2011.
-    2.3.13  : Tagged on June 28, 2011, not released.
-    2.3.12  : Tagged on May 11, 2011. Released May 23, 2011.
-    2.3.11  : Released as Beta on March 7, 2011.
-    2.3.10  : Tagged on December 13, 2010. Released Dec 21, 2010.
-    2.3.9   : Tagged on November 23, 2010, not released.
-    2.3.8   : Tagged on August 24, 2010.
-    2.3.7   : Tagged on August 19, 2010, not released.
-    2.3.6   : Released on June 21, 2010.
-    2.3.5   : Released on January 26, 2010.
-    2.3.4   : Released on December 8, 2009.
-    2.3.3   : Tagged on November 11, 2009, not released.
-    2.3.2   : Tagged on March 23, 2009, not released.
-    2.3.1   : Tagged on January 2, 2009, not released.
-    2.3.0   : Tagged on December 6, 2008, not released.
+    2.5.0   : In Development.
 
 Contributors looking for a mission:
 
@@ -64,56 +48,9 @@ Contributors looking for a mission:
 CURRENT RELEASE NOTES:
 
 
-GA PLAN:
-
- Jim proposes final beta release the mid/end of Sept, with a
- GA in October (at the latest). Jim volunteers to RM these.
-
 RELEASE SHOWSTOPPERS:
 
-  FOR GA:
-
-  * Modules that are not ready for production use must be removed.
-    The same for modules without documentation.
-
-    These modulese will be removed after branching 2.4.x from trunk.
-    If anyone disagrees, please comment.
-
-    - MPM simple (unfinished; buggy)
-    - mod_serf (which is optimal for async httpd anyways; didn't work
-      with MPM event last time sf tested it)
-    - mod_noloris (in experimental; obsoleted by mod_reqtimeout)
-    
-    See https://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS 
-    under 'modules docs' for a more comprehensive list of undocumented modules. 
-
-  * The mod_session* modules need to be checked that their hooks respect
-    the returning of int (HTTP status codes) and apr_status_t as appropriate,
-    and any anomolies fixed.
-    jim sez: from what I can see, mod_session* is no worse that other
-             modules that mix these 2 types... clean up is
-             forthcoming but should not be considered a blocker, imo
-    pgollucci: +1 jim
-    wrowe asks: what's the API change required?
-    wrowe asks; why are we shipping this if it requires apr_ssl
- 
-  * mod_ssl's proxy support only allows one proxy client certificate per
-    frontend virtual host. Lift this restriction.
-    jim sez: Why a blocker?, pgollucci +1 jim
-    wrowe asks: what's the API change required?
-
-  * INCLUDE mod_fcgid with 2.4.0, esp to help php users etc to enjoy
-    a painless event mpm experience.
-    sf: can be done in 2.4.x>0
-
-  * Decide and document the API guarantees for mod_lua. Current consensous at
-    the hackathon seems to be that mod_lua should be released as experimental
-    with a note that the API may change during 2.4.x.
-
-  FOR BETA:
-
-
-  OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.2 BUT OBVIOUSLY WEREN'T:
+  OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.4 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
@@ -384,14 +321,10 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
   * CRL callback should be pluggable
 
-  * session cache store should be pluggable
-
   * init functions should return status code rather than ssl_die()
 
   * ssl_engine_pphrase.c needs to be reworked so it is generic enough
     to also decrypt proxy keys
-
-  * output warning when allowing SSL v2.0 ? its so old
 
 WISH LIST
   * mod_proxy: Ability to run SSL over proxy gateway connections,
