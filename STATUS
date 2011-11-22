@@ -149,6 +149,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      and 2.4.x no longer support this version, see r1203491 and r1203495)
     +1: kbrand (non-binding), rjung
 
+  * mod_proxy_ajp: Missing support for ErrorOverride
+    Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
+	2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
+	+1: igalic
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
