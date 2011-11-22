@@ -8,7 +8,7 @@ The current version of this file can be found at:
 Documentation status is maintained separately and can be found at:
 
   * docs/STATUS in this source tree, or
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/docs/STATUS
 
 The current development branch of this software can be found at:
 
@@ -17,7 +17,8 @@ The current development branch of this software can be found at:
 Consult the following STATUS files for information on related projects:
 
   * http://svn.apache.org/repos/asf/apr/apr/trunk/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/trunk/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr/branches/1.4.x/STATUS
+  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.4.x/STATUS
 
 Patches considered for backport are noted in their branches' STATUS:
 
@@ -68,10 +69,20 @@ Contributors looking for a mission:
 
 CURRENT RELEASE NOTES:
 
+  * Forward binary compatibility is expected of Apache 2.4.x releases, such
+    that no MMN major number changes will occur after 2.4.0.  Such changes canr
+    only be made in the trunk.
+
+  * All commits to branches/2.4.x must be reflected in SVN trunk,
+    as well, if they apply.  Logical progression is commit to trunk
+    then merge into branches/2.4.x, as applicable. The 2.4.x branch is
+    still CTR.
+
 
 GA PLAN:
 
  Jim proposes GA in late November (at the latest). Jim volunteers to RM these.
+
 
 RELEASE SHOWSTOPPERS:
 
@@ -379,14 +390,10 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
   * CRL callback should be pluggable
 
-  * session cache store should be pluggable
-
   * init functions should return status code rather than ssl_die()
 
   * ssl_engine_pphrase.c needs to be reworked so it is generic enough
     to also decrypt proxy keys
-
-  * output warning when allowing SSL v2.0 ? its so old
 
 WISH LIST
   * mod_proxy: Ability to run SSL over proxy gateway connections,
