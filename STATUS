@@ -104,6 +104,10 @@ RELEASE SHOWSTOPPERS:
     are no longer needed, or remove mod_remoteip (minfrin: which I really
     don't want us to have to do).
 
+  * mod_cache: Either fix or remove http://svn.apache.org/viewvc?view=revision&revision=1070179
+    as per the following thread:
+    http://www.gossamer-threads.com/lists/apache/dev/395830?do=post_view_threaded#395830
+
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
   * The mod_session* modules need to be checked that their hooks respect
