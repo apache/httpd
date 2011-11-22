@@ -107,6 +107,8 @@ RELEASE SHOWSTOPPERS:
   * mod_cache: Either fix or remove http://svn.apache.org/viewvc?view=revision&revision=1070179
     as per the following thread:
     http://www.gossamer-threads.com/lists/apache/dev/395830?do=post_view_threaded#395830
+    (Either fixing it or removing it constitutes an API change, which is
+    why it matters)
 
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
