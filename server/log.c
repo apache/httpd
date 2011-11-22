@@ -561,7 +561,10 @@ static int cpystrn(char *buf, const char *arg, int buflen)
 static int log_remote_address(const ap_errorlog_info *info, const char *arg,
                               char *buf, int buflen)
 {
-    if (info->c)
+    if (info->r)
+        return apr_snprintf(buf, buflen, "%s:%d", info->r->remote_ip,
+                            info->r->remote_addr->port);
+    else if (info->c)
         return apr_snprintf(buf, buflen, "%s:%d", info->c->remote_ip,
                             info->c->remote_addr->port);
     else
@@ -574,6 +577,16 @@ static int log_local_address(const ap_errorlog_info *info, const char *arg,
     if (info->c)
         return apr_snprintf(buf, buflen, "%s:%d", info->c->local_ip,
                             info->c->local_addr->port);
+    else
+        return 0;
+}
+
+static int log_conn_remote_address(const ap_errorlog_info *info, const char *arg,
+                              char *buf, int buflen)
+{
+    if (info->c)
+        return apr_snprintf(buf, buflen, "%s:%d", info->c->remote_ip,
+                            info->c->remote_addr->port);
     else
         return 0;
 }
@@ -897,6 +910,7 @@ AP_DECLARE(void) ap_register_log_hooks(apr_pool_t *p)
     ap_register_errorlog_handler(p, "T", log_tid, 0);
     ap_register_errorlog_handler(p, "v", log_virtual_host, 0);
     ap_register_errorlog_handler(p, "V", log_server_name, 0);
+    ap_register_errorlog_handler(p, "d", log_conn_remote_address, 0);
 }
 
 /*
@@ -958,11 +972,16 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
         }
     }
 
-    if (info->c) {
-        /*
-         * remote_ip can be client or backend server. If we have a scoreboard
-         * handle, it is likely a client.
-         */
+    /*
+     * remote_ip can be client or backend server. If we have a scoreboard
+     * handle, it is likely a client.
+     */
+    if (info->r) {
+        len += apr_snprintf(buf + len, buflen - len,
+                            info->r->connection->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+                            info->r->remote_ip, info->r->remote_addr->port);
+    }
+    else if (info->c) {
         len += apr_snprintf(buf + len, buflen - len,
                             info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
                             info->c->remote_ip, info->c->remote_addr->port);

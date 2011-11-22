@@ -1003,6 +1003,12 @@ struct request_rec {
     apr_uri_t parsed_uri;
     /**  finfo.protection (st_mode) set to zero if no such file */
     apr_finfo_t finfo;
+
+    /** remote address information from conn_rec, can be overridden if
+     * necessary by a module.
+     */
+    apr_sockaddr_t *remote_addr;
+    char *remote_ip;
 };
 
 /**
