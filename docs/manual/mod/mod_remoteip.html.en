@@ -24,9 +24,9 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_remoteip.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the apparent client remote IP address and hostname
-for the request with the IP address list presented by a proxies or a load
-balancer via the request headers.
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the apparent client remote IP address for the request
+with the IP address list presented by a proxies or a load balancer via the
+request headers.
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>remoteip_module</td></tr>
@@ -38,22 +38,19 @@ balancer via the request headers.
     purposes of authorization and logging, even where that remote host is
     behind a load balancer, front end server, or proxy server.</p>
 
-    <p>The module replaces the apparent remote (client) IP/hostname for
+    <p>The module overrides the apparent remote (client) IP for
     the request with the IP address reported in the request header
     configured with the <code class="directive">RemoteIPHeader</code> directive.</p>
 
     <p>Once replaced as instructed, this apparent IP address is then used
-    for <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> features
-    <code class="directive"><a href="../mod/mod_authz_host.html#require host">&lt;Require host&gt;</a></code>
-    and <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code>,
+    for the <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
+    <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code> feature,
     is reported by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, and is recorded by
-    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> <code>%a</code> and <code>%h</code>
-    directives.  It also determines the machine probed for an inetd
-    identity by <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> based on the
-    <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> configuration.</p>
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> <code>%a</code> and <code class="module"><a href="../mod/core.html">core</a></code>
+    <code>%a</code> format strings. The original remote IP of the connection is
+    available in the <code>%{c}a</code> format string.</p>
 
     <div class="warning">It is critical to only enable this behavior from
-
     intermediate hosts (proxies, etc) which are trusted by this server, since
     it is trivial for the remote client to impersonate another client.</div>
 </div>
@@ -74,7 +71,6 @@ balancer via the request headers.
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 <li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
-<li><code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -87,13 +83,12 @@ balancer via the request headers.
 
     <p>mod_remoteip replaces the true remote_ip with the advertised remote_ip as
     provided by a proxy, for every evaluation of the client that occurs in the
-    server, and resets the remote_host and remote_logname values to trigger a
-    fresh dns or ident query of the remote IP address.</p>
+    server.</p>
 
     <p>When multiple, comma delimited remote IP addresses are listed in the
     header value, they are processed in Right-to-Left order.  Processing
     halts when a given remote IP address is not trusted to present the
-    preceeding IP address.  The header field is updated to this remaining
+    preceding IP address.  The header field is updated to this remaining
     list of unconfirmed IP addresses, or if all IP addresses were trusted,
     this header is removed from the request altogether.</p>
 

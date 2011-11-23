@@ -127,6 +127,8 @@
       <li>New function ap_get_server_name_for_url to support ipv6 literals.</li>
       <li>New function ap_register_errorlog_handler to register errorlog
           format string handlers.</li>
+      <li>Arguments of error_log hook have changed. Declaration has moved to
+          <code>http_core.h</code>.</li>
       <li>New function ap_state_query to determine if the server is in the
           initial configuration preflight phase or not. This is both easier to
           use and more correct than the old method of creating a pool userdata
