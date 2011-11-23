@@ -1424,56 +1424,59 @@ in case of an error</td></tr>
         <td>The percent sign</td></tr>
 <tr class="odd"><td><code>%a</code></td>
         <td>Remote IP-address and port</td></tr>
-<tr><td><code>%A</code></td>
+<tr><td><code>%{c}a</code></td>
+        <td>Actual remote IP-address and port (see the
+            <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module)</td></tr>
+<tr class="odd"><td><code>%A</code></td>
         <td>Local IP-address and port</td></tr>
-<tr class="odd"><td><code>%{<em>name</em>}e</code></td>
+<tr><td><code>%{<em>name</em>}e</code></td>
         <td>Request environment variable <em>name</em></td></tr>
-<tr><td><code>%E</code></td>
+<tr class="odd"><td><code>%E</code></td>
         <td>APR/OS error status code and string</td></tr>
-<tr class="odd"><td><code>%F</code></td>
+<tr><td><code>%F</code></td>
         <td>Source file name and line number of the log call</td></tr>
-<tr><td><code>%{<em>name</em>}i</code></td>
+<tr class="odd"><td><code>%{<em>name</em>}i</code></td>
         <td>Request header <em>name</em></td></tr>
-<tr class="odd"><td><code>%k</code></td>
+<tr><td><code>%k</code></td>
         <td>Number of keep-alive requests on this connection</td></tr>
-<tr><td><code>%l</code></td>
+<tr class="odd"><td><code>%l</code></td>
         <td>Loglevel of the message</td></tr>
-<tr class="odd"><td><code>%L</code></td>
+<tr><td><code>%L</code></td>
         <td>Log ID of the request</td></tr>
-<tr><td><code>%{c}L</code></td>
+<tr class="odd"><td><code>%{c}L</code></td>
         <td>Log ID of the connection</td></tr>
-<tr class="odd"><td><code>%{C}L</code></td>
+<tr><td><code>%{C}L</code></td>
         <td>Log ID of the connection if used in connection scope, empty otherwise</td></tr>
-<tr><td><code>%m</code></td>
+<tr class="odd"><td><code>%m</code></td>
         <td>Name of the module logging the message</td></tr>
-<tr class="odd"><td><code>%M</code></td>
+<tr><td><code>%M</code></td>
         <td>The actual log message</td></tr>
-<tr><td><code>%{<em>name</em>}n</code></td>
+<tr class="odd"><td><code>%{<em>name</em>}n</code></td>
         <td>Request note <em>name</em></td></tr>
-<tr class="odd"><td><code>%P</code></td>
+<tr><td><code>%P</code></td>
         <td>Process ID of current process</td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>Thread ID of current thread</td></tr>
-<tr class="odd"><td><code>%{g}T</code></td>
+<tr><td><code>%{g}T</code></td>
         <td>System unique thread ID of current thread (the same ID as
             displayed by e.g. <code>top</code>; currently Linux only)</td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>The current time</td></tr>
-<tr class="odd"><td><code>%{u}t</code></td>
+<tr><td><code>%{u}t</code></td>
         <td>The current time including micro-seconds</td></tr>
-<tr><td><code>%{cu}t</code></td>
+<tr class="odd"><td><code>%{cu}t</code></td>
         <td>The current time in compact ISO 8601 format, including
             micro-seconds</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="#servername">ServerName</a></code>
             of the current server.</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td>The server name of the server serving the request according to the
             <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>
             setting.</td></tr>
-<tr class="odd"><td><code>\&nbsp;</code> (backslash space)</td>
+<tr><td><code>\&nbsp;</code> (backslash space)</td>
         <td>Non-field delimiting space</td></tr>
-<tr><td><code>%&nbsp;</code> (percent space)</td>
+<tr class="odd"><td><code>%&nbsp;</code> (percent space)</td>
         <td>Field delimiter (no output)</td></tr>
 </table>
 

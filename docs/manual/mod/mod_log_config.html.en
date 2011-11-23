@@ -82,88 +82,91 @@
         <td>The percent sign.</td></tr>
 <tr class="odd"><td><code>%a</code></td>
         <td>Remote IP-address.</td></tr>
-<tr><td><code>%A</code></td>
+<tr><td><code>%{c}a</code></td>
+        <td>Actual remote IP-address and port (see the
+        <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module)</td></tr>
+<tr class="odd"><td><code>%A</code></td>
         <td>Local IP-address.</td></tr>
-<tr class="odd"><td><code>%B</code></td>
+<tr><td><code>%B</code></td>
         <td>Size of response in bytes, excluding HTTP headers.</td></tr>
-<tr><td><code>%b</code></td>
+<tr class="odd"><td><code>%b</code></td>
         <td>Size of response in bytes, excluding HTTP headers. In CLF format, <em>i.e.</em>
         a '<code>-</code>' rather than a 0 when no bytes are sent.</td></tr>
-<tr class="odd"><td><code>%{<var>VARNAME</var>}C</code></td>
+<tr><td><code>%{<var>VARNAME</var>}C</code></td>
         <td>The contents of cookie <var>VARNAME</var> in the request sent
         to the server. Only version 0 cookies are fully supported.</td></tr>
-<tr><td><code>%D</code></td>
+<tr class="odd"><td><code>%D</code></td>
         <td>The time taken to serve the request, in microseconds.</td></tr>
-<tr class="odd"><td><code>%{<var>VARNAME</var>}e</code></td>
+<tr><td><code>%{<var>VARNAME</var>}e</code></td>
         <td>The contents of the environment variable
         <var>VARNAME</var>.</td></tr>
-<tr><td><code>%f</code></td>
+<tr class="odd"><td><code>%f</code></td>
         <td>Filename.</td></tr>
-<tr class="odd"><td><code>%h</code></td>
+<tr><td><code>%h</code></td>
         <td>Remote hostname. Will log the IP address if <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> is set to
         <code>Off</code>, which is the default. If it logs the hostname
         for only a few hosts, you probably have access control
         directives mentioning them by name. See <a href="mod_authz_host.html#reqhost">the Require host
         documentation</a>.</td></tr>
-<tr><td><code>%H</code></td>
+<tr class="odd"><td><code>%H</code></td>
         <td>The request protocol.</td></tr>
-<tr class="odd"><td><code>%{<var>VARNAME</var>}i</code></td>
+<tr><td><code>%{<var>VARNAME</var>}i</code></td>
         <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the request sent to the server. Changes made by other
         modules (e.g. <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>) affect this.
         </td></tr>
-<tr><td><code>%k</code></td>
+<tr class="odd"><td><code>%k</code></td>
         <td>Number of keepalive requests handled on this connection.  Interesting if
           <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> is being used, so that,
           for example, a '1' means the first keepalive request after the initial
           one, '2' the second, etc...;
           otherwise this is always 0 (indicating the initial request).</td></tr>
-<tr class="odd"><td><code>%l</code></td>
+<tr><td><code>%l</code></td>
         <td>Remote logname (from identd, if supplied). This will return a
         dash unless <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> is present and <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> is set
         <code>On</code>.</td></tr>
-<tr><td><code>%L</code></td>
+<tr class="odd"><td><code>%L</code></td>
         <td>The request log ID from the error log (or '-' if nothing has been
             logged to the error log for this request). Look for the
             matching error log line to see what request caused what error.</td></tr>
-<tr class="odd"><td><code>%m</code></td>
+<tr><td><code>%m</code></td>
         <td>The request method.</td></tr>
-<tr><td><code>%{<var>VARNAME</var>}n</code></td>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}n</code></td>
         <td>The contents of note <var>VARNAME</var> from another
         module.</td></tr>
-<tr class="odd"><td><code>%{<var>VARNAME</var>}o</code></td>
+<tr><td><code>%{<var>VARNAME</var>}o</code></td>
         <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the reply.</td></tr>
-<tr><td><code>%p</code></td>
+<tr class="odd"><td><code>%p</code></td>
         <td>The canonical port of the server serving the request.</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}p</code></td>
+<tr><td><code>%{<var>format</var>}p</code></td>
         <td>The canonical port of the server serving the request, or the
         server's actual port, or the client's actual port. Valid formats
         are <code>canonical</code>, <code>local</code>, or <code>remote</code>.
         </td></tr>
-<tr><td><code>%P</code></td>
+<tr class="odd"><td><code>%P</code></td>
         <td>The process ID of the child that serviced the request.</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}P</code></td>
+<tr><td><code>%{<var>format</var>}P</code></td>
         <td>The process ID or thread ID of the child that serviced the
         request.  Valid formats are <code>pid</code>, <code>tid</code>,
         and <code>hextid</code>.  <code>hextid</code> requires APR 1.2.0 or
         higher.
         </td></tr>
-<tr><td><code>%q</code></td>
+<tr class="odd"><td><code>%q</code></td>
         <td>The query string (prepended with a <code>?</code> if a query
         string exists, otherwise an empty string).</td></tr>
-<tr class="odd"><td><code>%r</code></td>
+<tr><td><code>%r</code></td>
         <td>First line of request.</td></tr>
-<tr><td><code>%R</code></td>
+<tr class="odd"><td><code>%R</code></td>
         <td>The handler generating the response (if any).</td></tr>
-<tr class="odd"><td><code>%s</code></td>
+<tr><td><code>%s</code></td>
         <td>Status. For requests that have been internally redirected, this is
         the status of the <em>original</em> request. Use <code>%&gt;s</code>
         for the final status.</td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>Time the request was received, in the format <code>[18/Sep/2011:19:18:28 -0400]</code>.
         The last number indicates the timezone offset from GMT</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}t</code></td>
+<tr><td><code>%{<var>format</var>}t</code></td>
         <td>The time, in the form given by format, which should be in
         an extended <code>strftime(3)</code> format (potentially localized).
         If the format starts with <code>begin:</code> (default) the time is taken
@@ -183,19 +186,19 @@
         formatting in the same format string. You can use multiple
         <code>%{<var>format</var>}t</code> tokens instead.
         </td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>The time taken to serve the request, in seconds.</td></tr>
-<tr class="odd"><td><code>%u</code></td>
+<tr><td><code>%u</code></td>
         <td>Remote user if the request was authenticated. May be bogus if return status
         (<code>%s</code>) is 401 (unauthorized).</td></tr>
-<tr><td><code>%U</code></td>
+<tr class="odd"><td><code>%U</code></td>
         <td>The URL path requested, not including any query string.</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
         of the server serving the request.</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td>The server name according to the <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> setting.</td></tr>
-<tr class="odd"><td><code>%X</code></td>
+<tr><td><code>%X</code></td>
         <td>Connection status when response is completed:
 
         <table>
@@ -211,10 +214,10 @@
         </table>
 
         </td></tr>
-<tr><td><code>%I</code></td>
+<tr class="odd"><td><code>%I</code></td>
         <td>Bytes received, including request and headers. Cannot be zero.
         You need to enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
-<tr class="odd"><td><code>%O</code></td>
+<tr><td><code>%O</code></td>
         <td>Bytes sent, including headers. Cannot be zero. You need to
         enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
 </table>
