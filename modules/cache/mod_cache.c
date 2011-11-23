@@ -292,19 +292,11 @@ static int cache_quick_handler(request_rec *r, int lookup)
     out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     e = apr_bucket_eos_create(out->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(out, e);
-    rv = ap_pass_brigade(r->output_filters, out);
-    if (rv != APR_SUCCESS) {
-        if (rv != AP_FILTER_ERROR) {
-            /* no way to know what type of error occurred */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                          "cache_quick_handler(%s): ap_pass_brigade returned %i",
-                          cache->provider_name, rv);
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
-        return rv;
-    }
 
-    return OK;
+    return ap_pass_brigade_fchk(r, out,
+                                apr_psprintf(r->pool,
+                                             "cache_quick_handler(%s): ap_pass_brigade returned",
+                                             cache->provider_name));
 }
 
 /**
@@ -576,19 +568,10 @@ static int cache_handler(request_rec *r)
     out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     e = apr_bucket_eos_create(out->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(out, e);
-    rv = ap_pass_brigade(r->output_filters, out);
-    if (rv != APR_SUCCESS) {
-        if (rv != AP_FILTER_ERROR) {
-            /* no way to know what type of error occurred */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                          "cache_handler(%s): ap_pass_brigade returned %i",
-                          cache->provider_name, rv);
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
-        return rv;
-    }
-
-    return OK;
+    return ap_pass_brigade_fchk(r, out,
+                                apr_psprintf(r->pool,
+                                             "cache(%s): ap_pass_brigade returned",
+                                             cache->provider_name));
 }
 
 /*
