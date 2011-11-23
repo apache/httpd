@@ -591,6 +591,10 @@ SOURCE=.\include\util_mutex.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\util_regex.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\util_pcre.c
 # End Source File
 # Begin Source File
