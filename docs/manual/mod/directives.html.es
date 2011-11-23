@@ -504,7 +504,6 @@
 <li><a href="core.html#sethandler">SetHandler</a></li>
 <li><a href="core.html#setinputfilter">SetInputFilter</a></li>
 <li><a href="core.html#setoutputfilter">SetOutputFilter</a></li>
-<li><a href="mod_include.html#ssiaccessenable">SSIAccessEnable</a></li>
 <li><a href="mod_include.html#ssiendtag">SSIEndTag</a></li>
 <li><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></li>
 <li><a href="mod_include.html#ssietag">SSIETag</a></li>

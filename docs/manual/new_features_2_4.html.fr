@@ -253,6 +253,17 @@ serveur HTTP Apache</h1>
       <code>[END]</code> qui permettent de simplifier les scénarios de
       réécriture courants.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> ajoute le support des
+      groupes imbriqués.</dd>
+      <dd><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> apporte les directives <code class="directive"><a href="./mod/mod_ldap.html#ldapconnectionpoolttl">LDAPConnectionPoolTTL</a></code> et <code class="directive"><a href="./mod/mod_ldap.html#ldaptimeout">LDAPTimeout</a></code>, ainsi que d'autres
+      améliorations dans le traitement des délais. Ceci s'avère utile
+      pour les configurations où un pare-feu à mémoire d'état (stateful)
+      rejète les connexions inactives vers le serveur LDAP.</dd>
+      <dd><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> propose la directive <code class="directive"><a href="./mod/mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug</a></code> qui permet de
+      journaliser les informations de débogage fournies par la boîte à
+      outils LDAP utilisée</dd>
+
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -296,6 +307,12 @@ serveur HTTP Apache</h1>
       <dd>Nous disposons à présent d'un analyseur générique d'expressions, dont l'API
       est décrite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
+
+      <dd>L'analyseur d'expressions permet de spécifier des <a href="expr.html">conditions complexes</a> dans des directives
+      comme <code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code>,
+      <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> et
+      <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>.
+      </dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
 

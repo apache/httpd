@@ -1201,6 +1201,8 @@ l'utilisateur.</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.0 du serveur HTTP
+Apache</td></tr>
 </table>
    <p>Lorsque cette directive est définie à une valeur <code>X</code>
    non nulle, en combinaison avec l'utilisation de la directive
@@ -1309,6 +1311,8 @@ groupes.</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.0 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>Un objet groupe LDAP peut contenir des membres qui sont des
     utilisateurs et des membres qui sont eux-mêmes des groupes (appelés
@@ -1334,6 +1338,8 @@ sous-groupes.</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.0 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>Un objet groupe LDAP peut contenir des membres qui sont des
     utilisateurs et des membres qui sont eux-mêmes des groupes (appelés
