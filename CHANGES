@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) core: Pass ap_errorlog_info struct to error log hook. [Stefan Fritsch]
+
   *) mod_cache_disk: Make sure we check return codes on all writes and
      attempts to close, and clean up after ourselves in these cases.
      PR43589. [Graham Leggett]
