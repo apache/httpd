@@ -44,7 +44,8 @@ authorization</p>
 
 <note><code>mod_lua</code> is still in experimental state.
 Until it is declared stable, usage and behavior may change
-at any time.</note>
+at any time, even between stable releases of the 2.4.x series.
+Be sure to check the CHANGES file before upgrading.</note>
 
 </summary>
 
