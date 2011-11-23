@@ -94,10 +94,6 @@ RELEASE SHOWSTOPPERS:
     See https://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/docs/STATUS 
     under 'modules docs' for a comprehensive list of undocumented modules.
 
-  * Decide and document the API guarantees for mod_lua. Current consensous at
-    the hackathon seems to be that mod_lua should be released as experimental
-    with a note that the API may change during 2.4.x.
-
   * mod_remoteip works around httpd's non-existent IP address API by leaking
     from c->pool and allowing pointers from r->pool to live beyond r->pool's
     lifetime. Provide an actual API for mod_remoteip to use so these hacks
