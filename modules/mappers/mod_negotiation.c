@@ -2972,6 +2972,7 @@ static int handle_map_file(request_rec *r)
     int res;
     char *udir;
     const char *new_req;
+    apr_status_t rv;
 
     if(strcmp(r->handler,MAP_FILE_MAGIC_TYPE) && strcmp(r->handler,"type-map"))
         return DECLINED;
@@ -3050,7 +3051,16 @@ static int handle_map_file(request_rec *r)
         e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
-        return ap_pass_brigade(r->output_filters, bb);
+        rv = ap_pass_brigade(r->output_filters, bb);
+        if (rv != APR_SUCCESS) { 
+            if (rv != AP_FILTER_ERROR) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                              "ap_pass_brigade returned %d", rv);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+            return AP_FILTER_ERROR;
+        }
+        return OK;
     }
 
     if (r->path_info && *r->path_info) {
