@@ -852,7 +852,7 @@ typedef struct {
  * @ingroup hooks
  * @param info pointer to ap_errorlog_info struct which contains all
  *        the details
- * @param errstr message to log (unmodified
+ * @param errstr the (unformatted) message to log
  * @warning Allocating from the usual pools (pool, info->c->pool, info->p->pool)
  *          must be avoided because it can cause memory leaks.
  *          Use a subpool if necessary.
