@@ -56,7 +56,7 @@ once the timer hits.  From there the handler can continue to send data to the cl
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modem standard to simulate</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ModemStandard V.21|V.26bis|V.32|V.92</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dialup</td></tr>
 </table>
