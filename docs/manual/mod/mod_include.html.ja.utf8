@@ -42,7 +42,6 @@
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#ssiaccessenable">SSIAccessEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssietag">SSIETag</a></li>
@@ -643,34 +642,6 @@
     エスケープしなければなりません。
     正規表現の意味がどうであろうとエスケープは必要です。</p>
     </div>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIAccessEnable" id="SSIAccessEnable">SSIAccessEnable</a> <a name="ssiaccessenable" id="ssiaccessenable">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>条件分岐フローの制御で -A フラグが使えるようにする</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIAccessEnable on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSIAccessEnable off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
-</table>
-    <p><code class="directive">SSIAccessEnable</code> ディレクティブを使って、
-    条件分岐フローの制御で -A 検査が使えるようにします。
-    <code class="directive">SSIAccessEnable</code> は次の値を引数にとります:</p>
-
-    <dl>
-
-      <dt><code>off</code></dt>
-      <dd>&lt;!--#if expr="-A /foo"--&gt; では文字列や正規表現として
-      解釈され、-A は特別な意味は持ちません。</dd>
-
-      <dt><code>on</code></dt>
-      <dd>&lt;!--#if expr="-A /foo"--&gt; では、設定上 URL /foo
-      にアクセスできない場合 false で、アクセスできる場合は true</dd>
-
-    </dl>
-
-
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">ディレクティブ</a></h2>
