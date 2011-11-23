@@ -3051,16 +3051,7 @@ static int handle_map_file(request_rec *r)
         e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
-        rv = ap_pass_brigade(r->output_filters, bb);
-        if (rv != APR_SUCCESS) { 
-            if (rv != AP_FILTER_ERROR) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                              "ap_pass_brigade returned %d", rv);
-                return HTTP_INTERNAL_SERVER_ERROR;
-            }
-            return AP_FILTER_ERROR;
-        }
-        return OK;
+        return ap_pass_brigade_fchk(r, bb, NULL);
     }
 
     if (r->path_info && *r->path_info) {
