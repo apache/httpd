@@ -106,9 +106,6 @@ RELEASE SHOWSTOPPERS:
     (Either fixing it or removing it constitutes an API change, which is
     why it matters)
 
-  * Change the arguments to the error log hook, to allow access to the 
-    conn_rec. Or decide that we don't want it.
-
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
   * Configure code for luajit is broken (links to wrong library).
