@@ -73,17 +73,27 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a
     <p>Dans un contexte de niveau répertoire (autrement dit dans les
     fichiers <code>.htaccess</code> et les sections
     <code>Directory</code>), les règles de réécriture s'appliquent après
-    la traduction de l'URL en nom de fichier. C'est pourquoi mod_rewrite
-    retraduit temporairement le nom de fichier en URL en supprimant le
-    chemin de répertoire avant d'appliquer les règles (Reportez-vous à
-    la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>
-    pour voir comment vous pourrez par la suite personnaliser la manière
-    dont tout ceci est traité). Ensuite, une nouvelle sous-requête
-    interne est initiée avec la nouvelle URL, ce qui redémarre le
-    traitement des phases de la requête. Vérifiez que vos règles ne
-    créent pas de boucle infinie. Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans la
-    réécriture</a> pour une discussion plus approfondie à propos de ce
-    problème.</p>
+    la traduction de l'URL en nom de fichier. C'est pourquoi le chemin
+    URL auquel mod_rewrite compare initialement les directives
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est le
+    chemin complet vers le nom de fichier traduit amputé de la partie
+    répertoires (y compris le dernier slash).</p>
+
+    <p>Un exemple : si les règles se trouvent dans
+    /var/www/foo/.htaccess et si une requête pour /foo/bar/baz est
+    traité, une expression comme ^bar/baz$ correspondra.</p>
+
+    <p>Si une substitution intervient dans un contexte de répertoire,
+    une nouvelle sous-requête interne est générée avec la nouvelle URL,
+    ce qui relance le traitement des phases de la requête. Si la
+    substitution est un chemin relatif, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> détermine le chemin URL
+    devant préfixer cette substitution. Dans un contexte de répertoire,
+    il faut s'assurer de créer des règles qui, dans certains cas,
+    n'effectueront pas de substitution afin d'éviter les bouclages (au
+    cours d'une passe ultérieure du processus de réécriture au niveau
+    répertoire). Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
+    processus de réécriture</a> pour une discussion plus détaillée à
+    propos de ce problème.</p>
 
     <p>En conséquence de cette manipulation de l'URL , vous devrez
     pensez à confectionner différemment vos règles de réécriture dans un

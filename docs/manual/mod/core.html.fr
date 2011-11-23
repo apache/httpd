@@ -2574,7 +2574,7 @@ requête HTTP</td></tr>
     d'<var>octets</var> autorisés dans un en-tête de requête HTTP.</p>
 
     <p>La directive <code class="directive">LimitRequestFieldSize</code> permet
-    à l'administrateur du serveur de réduire ou augmenter la taille
+    à l'administrateur du serveur de définir la taille
     maximale autorisée d'un en-tête de requête HTTP. Pour un serveur,
     cette valeur doit être suffisamment grande pour contenir tout
     en-tête d'une requête client normale. La taille d'un champ d'en-tête
@@ -2596,7 +2596,9 @@ requête HTTP</td></tr>
     </code></p></div>
 
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
-    directive ne doit pas être modifiée.</div>
+    directive ne doit pas être modifiée. En outre, vous ne
+    pouvez pas spécifier une valeur supérieure à 8190 sans modifier le
+    code source et recompiler.</div>
 
     <div class="warning"><h3>Avertissement</h3>
      <p>Dans le cas des serveurs virtuels à base de noms, la valeur de
@@ -2621,7 +2623,7 @@ HTTP</td></tr>
     pour une ligne de requête HTTP en <var>octets</var>.</p>
 
     <p>La directive <code class="directive">LimitRequestLine</code> permet à
-    l'administrateur du serveur de réduire ou augmenter la taille
+    l'administrateur du serveur de définir la taille
     maximale autorisée d'une ligne de requête HTTP client. Comme une
     requête comporte une méthode HTTP, un URI, et une version de
     protocole, la directive <code class="directive">LimitRequestLine</code>
@@ -2643,7 +2645,9 @@ HTTP</td></tr>
     </code></p></div>
 
     <div class="note">Dans des conditions normales, la valeur par défaut de cette
-    directive ne doit pas être modifiée.</div>
+    directive ne doit pas être modifiée. En outre, vous ne
+    pouvez pas spécifier une valeur supérieure à 8190 sans modifier le
+    code source et recompiler.</div>
 
     <div class="warning"><h3>Avertissement</h3>
      <p>Dans le cas des serveurs virtuels à base de noms, la valeur de

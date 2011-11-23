@@ -721,6 +721,8 @@ recherche et d'identification LDAP en secondes</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.5 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>Cette directive permet de spécifier le délai d'attente pour les
     opérations de recherche et d'identification, ainsi que l'option

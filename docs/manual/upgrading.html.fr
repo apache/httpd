@@ -89,7 +89,7 @@ fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
 
       <li>configure: le jeu de modules "most" est compilé par défaut</li>
 
-      <li>configure: le jeu de modules "realyall" ajoute les modules de
+      <li>configure: le jeu de modules "reallyall" ajoute les modules de
       développeur au jeu "all".</li>
     </ul>
 
@@ -296,7 +296,8 @@ nécessiter une mise à jour des fichiers de configuration de la version
       <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> : le format par défaut des variables
       <code>*_DN</code> a changé. Il est cependant encore possible
       d'utiliser l'ancien format via la nouvelle option
-      <code>LegacyDNStringFormat</code> de la directive <code class="directive"><a href="./mod/mod_ssl.html#ssloptions">SSLOptions</a></code>.</li>
+      <code>LegacyDNStringFormat</code> de la directive <code class="directive"><a href="./mod/mod_ssl.html#ssloptions">SSLOptions</a></code>. Le protocole SSLv2 n'est
+      plus supporté.</li>
 
       <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> utilise maintenant par défaut les
       condensés MD5 sur toutes les plates-formes.</li>

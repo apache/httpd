@@ -1503,7 +1503,8 @@ les configurations de mandataires inverses</td></tr>
     <code class="directive">ProxyPassReverseCookiePath</code>, en leur indiquant
     de remplacer la chaîne <code>${nom_var}</code> dans les directives
     de configuration par la valeur de la variable d'environnement
-    <code>nom_var</code>.</p>
+    <code>nom_var</code> (si l'option <var>interpolate</var> est
+    spécifiée).</p>
     <p>Conservez cette directive à off (pour les performances du
     serveur), sauf si vous en avez réellement besoin.</p>
 
@@ -1690,11 +1691,26 @@ Set-Cookie en provenance d'un serveur mandaté</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-<p>L'utilisation de cette directive est similaire à celle de la
-directive <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>,
-mais au lieu de réécrire des en-têtes qui contiennent des URLs, elle
-réécrit la chaîne correspondant au <code>chemin</code> dans les en-têtes
-<code>Set-Cookie</code>.</p>
+<p>
+Cette directive s'avère utile en conjonction avec la directive
+<code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code> dans les
+situations où les chemins d'URL d'arrière-plan correspondent à des
+chemins publics sur le mandataire inverse. Cette directive permet de
+réécrire la chaîne <code>path</code> dans les en-têtes
+<code>Set-Cookie</code>. Si le début du chemin du cookie correspond à
+<var>chemin-interne</var>, le chemin du cookie sera remplacé par
+<var>chemin-public</var>.
+</p><p>
+Dans l'exemple fourni avec la directive <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>, la directive :
+</p>
+    <div class="example"><p><code>
+      ProxyPassReverseCookiePath  /  /mirror/foo/
+    </code></p></div>
+<p>
+va réécrire un cookie possédant un chemin d'arrière-plan <code>/</code>
+(ou <code>/example</code> ou en fait tout chemin)
+en <code>/mirror/foo/</code>..
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
