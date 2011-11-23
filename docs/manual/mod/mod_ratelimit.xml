@@ -33,14 +33,14 @@ the document to validate. -->
 
 <summary>
 
-<p>Provides a <code>rate_limit</code> filter to limit client bandwidth.
-The connection speed to be simulated is specified, in kb/s, using the environment
+<p>Provides a filter named <code>RATE_LIMIT</code> to limit client bandwidth.
+The connection speed to be simulated is specified, in KiB/s, using the environment
 variable <code>rate-limit</code>.</p>
 
 <example><title>Example Configuration</title>
 &lt;Location /downloads&gt;<br />
 <indent>
-SetHandler RATE_LIMIT<br />
+SetOutputFilter RATE_LIMIT<br />
 SetEnv rate-limit 400 <br />
 </indent>
 &lt;/Location&gt;
