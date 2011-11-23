@@ -315,6 +315,26 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
                                          apr_bucket_brigade *bucket);
 
 /**
+ * Pass the current bucket brigade down to the next filter on the filter
+ * stack checking for filter errors.  The filter returns an apr_status_t value.
+ * Returns ::OK if the brigade is successfully passed
+ *         ::AP_FILTER_ERROR on a filter error
+ *         ::HTTP_INTERNAL_SERVER_ERROR on all other errors
+ * @param r      The request rec
+ * @param bucket The current bucket brigade
+ * @param msg    Optional error msg; if NULL defaults to "ap_pass_brigade returned"
+ *
+ * @remark Ownership of the brigade is retained by the caller. On return,
+ *         the contents of the brigade are UNDEFINED, and the caller must
+ *         either call apr_brigade_cleanup or apr_brigade_destroy on
+ *         the brigade.
+ */
+AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
+                                              apr_bucket_brigade *bucket,
+                                              const char *msg);
+
+
+/**
  * This function is used to register an input filter with the system.
  * After this registration is performed, then a filter may be added
  * into the filter chain by using ap_add_input_filter() and simply
