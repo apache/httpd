@@ -60,6 +60,21 @@
       <dd>&lt;<directive module="core">If</directive>&gt; sections can be used to
       set the configuration based on per-request criteria</dd>
 
+      <dt>General-purpose expression parser</dt>
+      <dd>A new expression parser allows to specify
+          <a href="expr.html">complex conditions</a> using a common syntax
+          in directives like
+          <directive module="mod_setenvif">SetEnvIfExpr</directive>,
+          <directive module="mod_rewrite">RewriteCond</directive>,
+          <directive module="mod_headers">Header</directive>,
+          <directive module="mod_headers" type="section">If</directive>,
+          and others.
+      </dd>
+
+      <dt>Reduced memory usage</dt>
+      <dd>Despite many new features, 2.4.x tends to use less memory than
+      2.2.x.</dd>
+
       <dt>NameVirtualHost directive</dt>
       <dd>No longer needed and is now deprecated.</dd>
 
@@ -272,13 +287,6 @@
           exposed in <var>ap_expr.h</var>.  This is adapted from the
           expression parser previously implemented in
           <module>mod_ssl</module>.</dd>
-
-      <dd>The expression parser allows to specify
-          <a href="expr.html">complex conditions</a> in directives like
-          <directive module="mod_setenvif">SetEnvIfExpr</directive>,
-          <directive module="mod_rewrite">RewriteCond</directive>, and
-          <directive module="mod_headers">Header</directive>.
-      </dd>
 
       <dt>Authorization Logic Containers</dt>
 
