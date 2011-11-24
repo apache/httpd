@@ -294,9 +294,8 @@ static int cache_quick_handler(request_rec *r, int lookup)
     APR_BRIGADE_INSERT_TAIL(out, e);
 
     return ap_pass_brigade_fchk(r, out,
-                                apr_psprintf(r->pool,
-                                             "cache_quick_handler(%s): ap_pass_brigade returned",
-                                             cache->provider_name));
+                                "cache_quick_handler(%s): ap_pass_brigade returned",
+                                cache->provider_name);
 }
 
 /**
@@ -568,10 +567,8 @@ static int cache_handler(request_rec *r)
     out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     e = apr_bucket_eos_create(out->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(out, e);
-    return ap_pass_brigade_fchk(r, out,
-                                apr_psprintf(r->pool,
-                                             "cache(%s): ap_pass_brigade returned",
-                                             cache->provider_name));
+    return ap_pass_brigade_fchk(r, out, "cache(%s): ap_pass_brigade returned",
+                                cache->provider_name);
 }
 
 /*

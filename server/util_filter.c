@@ -544,17 +544,25 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next,
  */
 AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
                                               apr_bucket_brigade *bb,
-                                              const char *errmsg)
+                                              const char *fmt,
+                                              ...)
 {
     apr_status_t rv;
-    if (!errmsg)
-        errmsg = "ap_pass_brigade returned";
 
     rv = ap_pass_brigade(r->output_filters, bb);
     if (rv != APR_SUCCESS) {
         if (rv != AP_FILTER_ERROR) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
-                          "%s %d", errmsg, rv);
+            if (!fmt)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                              "ap_pass_brigade returned %d", rv);
+            else {
+                va_list ap;
+                const char *res;
+                va_start(ap, fmt);
+                res = apr_pvsprintf(r->pool, fmt, ap);
+                va_end(ap);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, res, NULL);
+            }
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         return AP_FILTER_ERROR;
