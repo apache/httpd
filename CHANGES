@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.0
 
+  *) ap_pass_brigade_fchk() added. [Jim Jagielski]
+
   *) error log hook: Pass ap_errorlog_info struct.  [Stefan Fritsch]
 
   [Apache 2.5.0-dev includes those bug fixes and changes with the
