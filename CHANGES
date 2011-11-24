@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) ap_pass_brigade_fchk() function added. [Jim Jagielski]
+
   *) core: Pass ap_errorlog_info struct to error log hook. [Stefan Fritsch]
 
   *) mod_cache_disk: Make sure we check return codes on all writes and
