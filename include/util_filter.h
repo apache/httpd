@@ -322,8 +322,8 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
  *         ::HTTP_INTERNAL_SERVER_ERROR on all other errors
  * @param r      The request rec
  * @param bucket The current bucket brigade
- * @param msg    Optional error msg; if NULL defaults to "ap_pass_brigade returned"
- *
+ * @param fmt The format string. If NULL defaults to "ap_pass_brigade returned"
+ * @param ... The arguments to use to fill out the format string
  * @remark Ownership of the brigade is retained by the caller. On return,
  *         the contents of the brigade are UNDEFINED, and the caller must
  *         either call apr_brigade_cleanup or apr_brigade_destroy on
@@ -331,7 +331,8 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
  */
 AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
                                               apr_bucket_brigade *bucket,
-                                              const char *msg);
+                                              const char *fmt,
+                                              ...);
 
 
 /**
@@ -574,7 +575,7 @@ AP_DECLARE_NONSTD(apr_status_t) ap_fputstrs(ap_filter_t *f,
  * @param f the filter we are writing to
  * @param bb The brigade to buffer into
  * @param fmt The format string
- * @param ... The argumets to use to fill out the format string
+ * @param ... The arguments to use to fill out the format string
  */
 AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
                                            apr_bucket_brigade *bb,
