@@ -126,13 +126,14 @@
 
       <li>The use of a threaded <a href="../mpm.html">mpm</a> may
       allow you to handle more simultaneous connections, thereby
-      mitigating DoS attacks.  Further, the experimental
+      mitigating DoS attacks.  Further, the 
       <code class="module"><a href="../mod/event.html">event</a></code> mpm
       uses asynchronous processing to avoid devoting a thread to each
-      connection. At the current point of time this
-      is work in progress and not fully implemented.  Especially the
+      connection. Due to the nature of the OpenSSL library the
       <code class="module"><a href="../mod/event.html">event</a></code> mpm is currently incompatible with
-      <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> and other input filters.</li>
+	  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> and other input filters. In these
+      cases it falls back to the behaviour of the
+      <code class="module"><a href="../mod/worker.html">worker</a></code> mpm.</li>
 
       <li>There are a number of third-party modules available through
       <a href="http://modules.apache.org/">http://modules.apache.org/</a>
