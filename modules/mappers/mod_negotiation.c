@@ -2972,7 +2972,6 @@ static int handle_map_file(request_rec *r)
     int res;
     char *udir;
     const char *new_req;
-    apr_status_t rv;
 
     if(strcmp(r->handler,MAP_FILE_MAGIC_TYPE) && strcmp(r->handler,"type-map"))
         return DECLINED;
