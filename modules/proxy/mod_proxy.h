@@ -304,9 +304,11 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #endif
 #ifndef PROXY_WORKER_MAX_NAME_SIZE
 #define PROXY_WORKER_MAX_NAME_SIZE      96
+#define PROXY_BALANCER_MAX_NAME_SIZE PROXY_WORKER_MAX_NAME_SIZE
 #endif
 #ifndef PROXY_WORKER_MAX_HOSTNAME_SIZE
 #define PROXY_WORKER_MAX_HOSTNAME_SIZE  64
+#define PROXY_BALANCER_MAX_HOSTNAME_SIZE PROXY_WORKER_MAX_HOSTNAME_SIZE
 #endif
 #ifndef PROXY_BALANCER_MAX_STICKY_SIZE
 #define PROXY_BALANCER_MAX_STICKY_SIZE  64
@@ -408,16 +410,21 @@ typedef struct {
     char      sticky_path[PROXY_BALANCER_MAX_STICKY_SIZE];     /* URL sticky session identifier */
     char      sticky[PROXY_BALANCER_MAX_STICKY_SIZE];          /* sticky session identifier */
     char      lbpname[PROXY_MAX_PROVIDER_NAME_SIZE];  /* lbmethod provider name */
-    char nonce[APR_UUID_FORMATTED_LENGTH + 1];
+    char      nonce[APR_UUID_FORMATTED_LENGTH + 1];
+    char      name[PROXY_BALANCER_MAX_NAME_SIZE];
+    char      sname[PROXY_BALANCER_MAX_NAME_SIZE];
+    char      alias[PROXY_BALANCER_MAX_NAME_SIZE];
     apr_interval_time_t timeout;  /* Timeout for waiting on free connection */
     apr_time_t      wupdated;     /* timestamp of last change to workers list */
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
+    int hash;
     unsigned int    sticky_force:1;   /* Disable failover for sticky sessions */
     unsigned int    scolonsep:1;      /* true if ';' seps sticky session paths */
     unsigned int    max_attempts_set:1;
     unsigned int    was_malloced:1;
     unsigned int    need_reset:1;
+    unsigned int    vhosted:1;
 } proxy_balancer_shared;
 
 #define ALIGNED_PROXY_BALANCER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_balancer_shared)))
@@ -429,12 +436,12 @@ struct proxy_balancer {
     ap_slotmem_provider_t *storage;
     int growth;                   /* number of post-config workers can added */
     int max_workers;              /* maximum number of allowed workers */
-    const char *name;             /* name of the load balancer */
-    const char *sname;            /* filesystem safe balancer name */
+    int hash;
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
     proxy_balancer_method *lbmethod;
     apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
     apr_thread_mutex_t  *tmutex; /* Thread lock for updating shm */
+    proxy_server_conf *sconf;
     void            *context;    /* general purpose storage */
     proxy_balancer_shared *s;    /* Shared data */
 };
@@ -652,6 +659,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
  * @param balancer the new balancer
  * @param conf   current proxy server configuration
  * @param url    url containing balancer name
+ * @param alias  alias/fake-path to this balancer
  * @param do_malloc true if shared struct should be malloced
  * @return       error message or NULL if successfull
  */
@@ -659,6 +667,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                proxy_balancer **balancer,
                                                proxy_server_conf *conf,
                                                const char *url,
+                                               const char *alias,
                                                int do_malloc);
 
 /**
