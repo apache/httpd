@@ -154,7 +154,7 @@ static int process_echo_connection(conn_rec *c)
             if (!APR_STATUS_IS_EOF(rv) && ! APR_STATUS_IS_TIMEUP(rv))
                 ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                              "ProtocolEcho: Failure reading from %s",
-                             c->remote_ip);
+                             c->peer_ip);
             break;
         }
 
@@ -163,7 +163,7 @@ static int process_echo_connection(conn_rec *c)
             apr_brigade_cleanup(bb);
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                          "ProtocolEcho: Error - read empty brigade from %s!",
-                         c->remote_ip);
+                         c->peer_ip);
             break;
         }
 
@@ -181,7 +181,7 @@ static int process_echo_connection(conn_rec *c)
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                          "ProtocolEcho: Failure writing to %s",
-                         c->remote_ip);
+                         c->peer_ip);
             break;
         }
         apr_brigade_cleanup(bb);

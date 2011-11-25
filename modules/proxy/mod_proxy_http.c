@@ -532,7 +532,7 @@ static int stream_reqbody_cl(apr_pool_t *p,
     if (bytes_streamed != cl_val) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "client %s given Content-Length did not match"
-                      " number of body bytes read", r->connection->remote_ip);
+                      " number of body bytes read", r->connection->peer_ip);
         return HTTP_BAD_REQUEST;
     }
 
@@ -858,7 +858,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             * determine, where the original request came from.
             */
            apr_table_mergen(r->headers_in, "X-Forwarded-For",
-                            r->remote_ip);
+                            r->client_ip);
 
            /* Add X-Forwarded-Host: so that upstream knows what the
             * original request hostname was.
@@ -1002,7 +1002,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "client %s (%s) requested Transfer-Encoding "
                       "chunked body with Content-Length (C-L ignored)",
-                      c->remote_ip, c->remote_host ? c->remote_host: "");
+                      c->peer_ip, c->remote_host ? c->remote_host: "");
         apr_table_unset(r->headers_in, "Content-Length");
         old_cl_val = NULL;
         origin->keepalive = AP_CONN_CLOSE;
@@ -1027,7 +1027,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                           "prefetch request body failed to %pI (%s)"
                           " from %s (%s)",
                           p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                          c->remote_ip, c->remote_host ? c->remote_host: "");
+                          c->peer_ip, c->remote_host ? c->remote_host: "");
             return HTTP_BAD_REQUEST;
         }
 
@@ -1049,7 +1049,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                           "processing prefetched request body failed"
                           " to %pI (%s) from %s (%s)",
                           p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                          c->remote_ip, c->remote_host ? c->remote_host: "");
+                          c->peer_ip, c->remote_host ? c->remote_host: "");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -1188,7 +1188,7 @@ skip_body:
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "pass request body failed to %pI (%s) from %s (%s)",
                       p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
-                      c->remote_ip, c->remote_host ? c->remote_host: "");
+                      c->peer_ip, c->remote_host ? c->remote_host: "");
         return rv;
     }
 

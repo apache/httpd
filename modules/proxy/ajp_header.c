@@ -247,7 +247,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         ajp_msg_append_uint8(msg, (apr_byte_t) method)           ||
         ajp_msg_append_string(msg, r->protocol)                  ||
         ajp_msg_append_string(msg, uri->path)                    ||
-        ajp_msg_append_string(msg, r->remote_ip)                 ||
+        ajp_msg_append_string(msg, r->client_ip)                 ||
         ajp_msg_append_string(msg, remote_host)                  ||
         ajp_msg_append_string(msg, ap_get_server_name(r))        ||
         ajp_msg_append_uint16(msg, (apr_uint16_t)r->connection->local_addr->port) ||
@@ -413,7 +413,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
      */
     {
         const char *key = SC_A_REQ_REMOTE_PORT;
-        char *val = apr_itoa(r->pool, r->remote_addr->port);
+        char *val = apr_itoa(r->pool, r->client_addr->port);
         if (ajp_msg_append_uint8(msg, SC_A_REQ_ATTRIBUTE) ||
             ajp_msg_append_string(msg, key)   ||
             ajp_msg_append_string(msg, val)) {

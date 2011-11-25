@@ -1832,8 +1832,8 @@ static request_rec *make_sub_request(const request_rec *r,
         rnew->output_filters = r->proto_output_filters;
     }
 
-    rnew->remote_addr = r->remote_addr;
-    rnew->remote_ip = r->remote_ip;
+    rnew->client_addr = r->client_addr;
+    rnew->client_ip = r->client_ip;
 
     /* no input filters for a subrequest */
 
