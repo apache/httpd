@@ -561,6 +561,10 @@ AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
                 va_start(ap, fmt);
                 res = apr_pvsprintf(r->pool, fmt, ap);
                 va_end(ap);
+                /*
+                 * Why the NULL?
+                 * handle: "error: format not a string literal and no format arguments"
+                 */
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, res, NULL);
             }
             return HTTP_INTERNAL_SERVER_ERROR;
