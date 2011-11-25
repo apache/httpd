@@ -829,7 +829,7 @@ static APR_INLINE void do_double_reverse (conn_rec *conn)
     rv = apr_sockaddr_info_get(&sa, conn->remote_host, APR_UNSPEC, 0, 0, conn->pool);
     if (rv == APR_SUCCESS) {
         while (sa) {
-            if (apr_sockaddr_equal(sa, conn->remote_addr)) {
+            if (apr_sockaddr_equal(sa, conn->peer_addr)) {
                 conn->double_reverse = 1;
                 return;
             }
@@ -871,7 +871,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
         && (type == REMOTE_DOUBLE_REV
         || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
 
-        if (apr_getnameinfo(&conn->remote_host, conn->remote_addr, 0)
+        if (apr_getnameinfo(&conn->remote_host, conn->peer_addr, 0)
             == APR_SUCCESS) {
             ap_str_tolower(conn->remote_host);
 
@@ -910,7 +910,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
         }
         else {
             *str_is_ip = 1;
-            return conn->remote_ip;
+            return conn->peer_ip;
         }
     }
 }
@@ -4497,7 +4497,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     }
 
     apr_sockaddr_ip_get(&c->local_ip, c->local_addr);
-    if ((rv = apr_socket_addr_get(&c->remote_addr, APR_REMOTE, csd))
+    if ((rv = apr_socket_addr_get(&c->peer_addr, APR_REMOTE, csd))
         != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
                      "apr_socket_addr_get(APR_REMOTE)");
@@ -4505,7 +4505,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
         return NULL;
     }
 
-    apr_sockaddr_ip_get(&c->remote_ip, c->remote_addr);
+    apr_sockaddr_ip_get(&c->peer_ip, c->peer_addr);
     c->base_server = server;
 
     c->id = id;

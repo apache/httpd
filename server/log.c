@@ -562,11 +562,11 @@ static int log_remote_address(const ap_errorlog_info *info, const char *arg,
                               char *buf, int buflen)
 {
     if (info->r && !(arg && *arg == 'c'))
-        return apr_snprintf(buf, buflen, "%s:%d", info->r->remote_ip,
-                            info->r->remote_addr->port);
+        return apr_snprintf(buf, buflen, "%s:%d", info->r->client_ip,
+                            info->r->client_addr->port);
     else if (info->c)
-        return apr_snprintf(buf, buflen, "%s:%d", info->c->remote_ip,
-                            info->c->remote_addr->port);
+        return apr_snprintf(buf, buflen, "%s:%d", info->c->peer_ip,
+                            info->c->peer_addr->port);
     else
         return 0;
 }
@@ -962,18 +962,18 @@ static int do_errorlog_default(const ap_errorlog_info *info, char *buf,
     }
 
     /*
-     * remote_ip can be client or backend server. If we have a scoreboard
+     * client_ip/peer_ip can be client or backend server. If we have a scoreboard
      * handle, it is likely a client.
      */
     if (info->r) {
         len += apr_snprintf(buf + len, buflen - len,
                             info->r->connection->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
-                            info->r->remote_ip, info->r->remote_addr->port);
+                            info->r->client_ip, info->r->client_addr->port);
     }
     else if (info->c) {
         len += apr_snprintf(buf + len, buflen - len,
                             info->c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
-                            info->c->remote_ip, info->c->remote_addr->port);
+                            info->c->peer_ip, info->c->peer_addr->port);
     }
 
     /* the actual error message */

@@ -406,7 +406,7 @@ static void child_errfn(apr_pool_t *pool, apr_status_t err, const char *descript
     apr_file_printf(stderr_log,
                     "[%s] [client %s] mod_ext_filter (%d)%s: %s\n",
                     time_str,
-                    r->remote_ip,
+                    r->client_ip,
                     err,
                     apr_strerror(err, errbuf, sizeof(errbuf)),
                     description);

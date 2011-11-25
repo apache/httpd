@@ -527,7 +527,7 @@ static int match_headers(request_rec *r)
                 last_name = b->name;
                 switch (b->special_type) {
                 case SPECIAL_REMOTE_ADDR:
-                    val = r->remote_ip;
+                    val = r->client_ip;
                     break;
                 case SPECIAL_SERVER_ADDR:
                     val = r->connection->local_ip;

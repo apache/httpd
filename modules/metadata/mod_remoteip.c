@@ -51,8 +51,8 @@ typedef struct {
 } remoteip_config_t;
 
 typedef struct {
-    apr_sockaddr_t *remote_addr;
-    char *remote_ip;
+    apr_sockaddr_t *client_addr;
+    char *client_ip;
     /** The list of proxy ip's ignored as remote ip's */
     const char *proxy_ips;
     /** The remaining list of untrusted proxied remote ip's */
@@ -243,18 +243,18 @@ static int remoteip_modify_request(request_rec *r)
     }
     remote = apr_pstrdup(r->pool, remote);
 
-    temp_sa = c->remote_addr;
+    temp_sa = c->peer_addr;
 
     while (remote) {
 
-        /* verify c->remote_addr is trusted if there is a trusted proxy list
+        /* verify c->peer_addr is trusted if there is a trusted proxy list
          */
         if (config->proxymatch_ip) {
             int i;
             remoteip_proxymatch_t *match;
             match = (remoteip_proxymatch_t *)config->proxymatch_ip->elts;
             for (i = 0; i < config->proxymatch_ip->nelts; ++i) {
-                if (apr_ipsubnet_test(match[i].ip, c->remote_addr)) {
+                if (apr_ipsubnet_test(match[i].ip, c->peer_addr)) {
                     internal = match[i].internal;
                     break;
                 }
@@ -356,19 +356,19 @@ static int remoteip_modify_request(request_rec *r)
             req = (remoteip_req_t *) apr_palloc(r->pool, sizeof(remoteip_req_t));
         }
 
-        /* Set remote_ip string */
+        /* Set peer_ip string */
         if (!internal) {
             if (proxy_ips) {
                 proxy_ips = apr_pstrcat(r->pool, proxy_ips, ", ",
-                                        c->remote_ip, NULL);
+                                        c->peer_ip, NULL);
             }
             else {
-                proxy_ips = c->remote_ip;
+                proxy_ips = c->peer_ip;
             }
         }
 
-        req->remote_addr = temp_sa;
-        apr_sockaddr_ip_get(&req->remote_ip, req->remote_addr);
+        req->client_addr = temp_sa;
+        apr_sockaddr_ip_get(&req->client_ip, req->client_addr);
     }
 
     /* Nothing happened? */
@@ -394,14 +394,14 @@ static int remoteip_modify_request(request_rec *r)
         }
     }
 
-    r->remote_addr = req->remote_addr;
-    r->remote_ip = req->remote_ip;
+    r->client_addr = req->client_addr;
+    r->client_ip = req->client_ip;
 
     ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
                   req->proxy_ips
                       ? "Using %s as client's IP by proxies %s"
                       : "Using %s as client's IP by internal proxies",
-                  req->remote_ip, req->proxy_ips);
+                  req->client_ip, req->proxy_ips);
     return OK;
 }
 

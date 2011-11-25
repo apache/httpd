@@ -743,7 +743,7 @@ AP_LUA_DECLARE(void) ap_lua_push_connection(lua_State *L, conn_rec *c)
     ap_lua_push_apr_table(L, c->notes);
     lua_setfield(L, -2, "notes");
 
-    lua_pushstring(L, c->remote_ip);
+    lua_pushstring(L, c->peer_ip);
     lua_setfield(L, -2, "remote_ip");
 
     lua_pop(L, 1);

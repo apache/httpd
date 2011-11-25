@@ -1860,7 +1860,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
             else if (!strcmp(var, "IPV6")) {
                 int flag = FALSE;
 #if APR_HAVE_IPV6
-                apr_sockaddr_t *addr = r->remote_addr;
+                apr_sockaddr_t *addr = r->client_addr;
                 flag = (addr->family == AF_INET6 &&
                         !IN6_IS_ADDR_V4MAPPED((struct in6_addr *)addr->ipaddr_ptr));
                 rewritelog((r, 1, ctx->perdir, "IPV6='%s'", flag ? "on" : "off"));
@@ -1966,7 +1966,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
             case 'D':
                 if (*var == 'R' && !strcmp(var, "REMOTE_ADDR")) {
-                    result = r->remote_ip;
+                    result = r->client_ip;
                 }
                 else if (!strcmp(var, "SERVER_ADDR")) {
                     result = r->connection->local_ip;
@@ -2005,7 +2005,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                                                 REMOTE_NAME, NULL);
                 }
                 else if (!strcmp(var, "REMOTE_PORT")) {
-                    return apr_itoa(r->pool, r->remote_addr->port);
+                    return apr_itoa(r->pool, r->client_addr->port);
                 }
                 break;
 

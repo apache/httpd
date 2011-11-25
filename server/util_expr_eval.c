@@ -1206,7 +1206,7 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     case 1:
 #if APR_HAVE_IPV6
         {
-            apr_sockaddr_t *addr = c->remote_addr;
+            apr_sockaddr_t *addr = c->peer_addr;
             if (addr->family == AF_INET6
                 && !IN6_IS_ADDR_V4MAPPED((struct in6_addr *)addr->ipaddr_ptr))
                 return "on";
@@ -1219,7 +1219,7 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     case 2:
         return c->log_id;
     case 3:
-        return c->remote_ip;
+        return c->peer_ip;
     default:
         ap_assert(0);
         return NULL;
@@ -1342,7 +1342,7 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
     case 27:
         return r->status ? apr_psprintf(ctx->p, "%d", r->status) : "";
     case 28:
-        return r->remote_ip;
+        return r->client_ip;
     default:
         ap_assert(0);
         return NULL;
@@ -1491,7 +1491,7 @@ static int op_R(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg1)
     if (!ctx->r)
         return FALSE;
 
-    return apr_ipsubnet_test(subnet, ctx->r->remote_addr);
+    return apr_ipsubnet_test(subnet, ctx->r->client_addr);
 }
 
 static int op_T(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)

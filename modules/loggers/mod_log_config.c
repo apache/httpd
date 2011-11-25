@@ -311,10 +311,10 @@ static const char *log_remote_host(request_rec *r, char *a)
 static const char *log_remote_address(request_rec *r, char *a)
 {
     if (a && !strcmp(a, "c")) {
-        return r->connection->remote_ip;
+        return r->connection->peer_ip;
     }
     else {
-        return r->remote_ip;
+        return r->client_ip;
     }
 }
 
@@ -763,7 +763,7 @@ static const char *log_server_port(request_rec *r, char *a)
         port = r->server->port ? r->server->port : ap_default_port(r);
     }
     else if (!strcasecmp(a, "remote")) {
-        port = r->remote_addr->port;
+        port = r->client_addr->port;
     }
     else if (!strcasecmp(a, "local")) {
         port = r->connection->local_addr->port;
