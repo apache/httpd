@@ -82,7 +82,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering byrequests for BALANCER (%s)",
-                 balancer->name);
+                 balancer->s->name);
 
     /* First try to see if we have available candidate */
     do {

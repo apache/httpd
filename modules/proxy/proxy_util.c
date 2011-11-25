@@ -1296,7 +1296,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     }
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
-        if (strcasecmp(balancer->name, uri) == 0) {
+        if (strcasecmp(balancer->s->name, uri) == 0) {
             return balancer;
         }
         balancer++;
@@ -1308,6 +1308,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                proxy_balancer **balancer,
                                                proxy_server_conf *conf,
                                                const char *url,
+                                               const char *alias,
                                                int do_malloc)
 {
     char nonce[APR_UUID_FORMATTED_LENGTH + 1];
@@ -1315,6 +1316,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     apr_uuid_t uuid;
     proxy_balancer_shared *bshared;
     char *c, *q, *uri = apr_pstrdup(p, url);
+    const char *sname;
 
     /* We should never get here without a valid BALANCER_PREFIX... */
 
@@ -1338,7 +1340,6 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
         return "Can't find 'byrequests' lb method";
     }
 
-    (*balancer)->name = uri;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     (*balancer)->gmutex = NULL;
     (*balancer)->tmutex = NULL;
@@ -1353,6 +1354,14 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
 
     bshared->was_malloced = (do_malloc != 0);
     PROXY_STRNCPY(bshared->lbpname, "byrequests");
+    PROXY_STRNCPY(bshared->name, uri);
+    ap_pstr2_alnum(p, bshared->name + sizeof(BALANCER_PREFIX) - 1,
+                   &sname);
+    sname = apr_pstrcat(p, conf->id, "_", sname, NULL);
+    PROXY_STRNCPY(bshared->sname, sname);
+    PROXY_STRNCPY(bshared->alias, alias);
+    bshared->hash = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_DEFAULT);    
+    (*balancer)->hash = bshared->hash;
 
     /* Retrieve a UUID and store the nonce for the lifetime of
      * the process. */
@@ -1397,7 +1406,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
 
     if (!storage) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "no provider for %s", balancer->name);
+                     "no provider for %s", balancer->s->name);
         return APR_EGENERAL;
     }
     /*
@@ -1406,7 +1415,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
      */
     if (!balancer->gmutex) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "no mutex %s", balancer->name);
+                     "no mutex %s", balancer->s->name);
         return APR_EGENERAL;
     }
 
@@ -1417,12 +1426,12 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "Failed to reopen mutex %s in child",
-                     balancer->name);
+                     balancer->s->name);
         return rv;
     }
 
     /* now attach */
-    storage->attach(&(balancer->wslot), balancer->sname, &size, &num, p);
+    storage->attach(&(balancer->wslot), balancer->s->sname, &size, &num, p);
     if (!balancer->wslot) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, "slotmem_attach failed");
         return APR_EGENERAL;
