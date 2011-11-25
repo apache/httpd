@@ -1450,7 +1450,7 @@ static const char *
     if (ap_proxy_valid_balancer_name(r, 9)) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
-            const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r, 0);
+            const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r, f, 0);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
@@ -1903,7 +1903,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     /* Try to find the balancer */
     balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path);
     if (!balancer) {
-        err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, path, 0);
+        err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, path, "/", 0);
         if (err)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
@@ -1913,12 +1913,12 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     if (!worker) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                      "Defining worker '%s' for balancer '%s'",
-                     name, balancer->name);
+                     name, balancer->s->name);
         if ((err = ap_proxy_define_worker(cmd->pool, &worker, balancer, conf, name, 0)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                      "Defined worker '%s' for balancer '%s'",
-                     worker->s->name, balancer->name);
+                     worker->s->name, balancer->s->name);
         PROXY_COPY_CONF_PARAMS(worker, conf);
     } else {
         reuse = 1;
@@ -1984,7 +1984,7 @@ static const char *
         balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
         if (!balancer) {
             if (in_proxy_section) {
-                err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, name, 0);
+                err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, name, "/", 0);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, "ProxySet ",
                                        err, NULL);
@@ -2133,7 +2133,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p);
             if (!balancer) {
                 err = ap_proxy_define_balancer(cmd->pool, &balancer,
-                                               sconf, conf->p, 0);
+                                               sconf, conf->p, "/", 0);
                 if (err)
                     return apr_pstrcat(cmd->temp_pool, thiscmd->name,
                                        " ", err, NULL);
@@ -2327,7 +2327,7 @@ static int proxy_status_hook(request_rec *r, int flags)
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
         ap_rputs("<hr />\n<h1>Proxy LoadBalancer Status for ", r);
-        ap_rvputs(r, balancer->name, "</h1>\n\n", NULL);
+        ap_rvputs(r, balancer->s->name, "</h1>\n\n", NULL);
         ap_rputs("\n\n<table border=\"0\"><tr>"
                  "<th>SSes</th><th>Timeout</th><th>Method</th>"
                  "</tr>\n<tr>", r);
