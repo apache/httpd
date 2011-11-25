@@ -239,7 +239,6 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
     apr_size_t decodedlen;
     char *decoded;
     apr_size_t blockSize = 0;
-    apr_uuid_t salt;
     apr_crypto_block_key_type_e *cipher;
     int i = 0;
 
@@ -540,8 +539,6 @@ static const char *set_crypto_driver(cmd_parms * cmd, void *config, const char *
 
 static const char *set_crypto_passphrase(cmd_parms * cmd, void *config, const char *arg)
 {
-    char *word, *val;
-    int passphrase_set = 0;
     const char **passphrase;
     session_crypto_dir_conf *dconf = (session_crypto_dir_conf *) config;
 
