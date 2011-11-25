@@ -162,7 +162,7 @@ typedef struct {
     } proxy_status;             /* Status display options */
     apr_sockaddr_t *source_address;
     apr_global_mutex_t  *mutex; /* global lock (needed??) */
-    ap_slotmem_instance_t *slot;  /* balancers shm data - runtime */
+    ap_slotmem_instance_t *bslot;  /* balancers shm data - runtime */
     ap_slotmem_provider_t *storage;
 
     unsigned int req_set:1;
@@ -296,13 +296,25 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_WORKER_DEFAULT_RETRY    60
 
 /* Some max char string sizes, for shm fields */
+#ifndef PROXY_WORKER_MAX_SCHEME_SIZE
 #define PROXY_WORKER_MAX_SCHEME_SIZE    16
+#endif
+#ifndef PROXY_WORKER_MAX_ROUTE_SIZE
 #define PROXY_WORKER_MAX_ROUTE_SIZE     64
+#endif
+#ifndef PROXY_WORKER_MAX_NAME_SIZE
 #define PROXY_WORKER_MAX_NAME_SIZE      96
+#endif
+#ifndef PROXY_WORKER_MAX_HOSTNAME_SIZE
 #define PROXY_WORKER_MAX_HOSTNAME_SIZE  64
+#endif
+#ifndef PROXY_BALANCER_MAX_STICKY_SIZE
 #define PROXY_BALANCER_MAX_STICKY_SIZE  64
+#endif
 
+#ifndef PROXY_MAX_PROVIDER_NAME_SIZE
 #define PROXY_MAX_PROVIDER_NAME_SIZE    16
+#endif
 
 #define PROXY_STRNCPY(dst, src) apr_cpystrn((dst), (src), sizeof(dst))
 
@@ -413,7 +425,7 @@ typedef struct {
 struct proxy_balancer {
     apr_array_header_t *workers;  /* initially configured workers */
     apr_array_header_t *errstatuses;  /* statuses to force members into error */
-    ap_slotmem_instance_t *slot;  /* worker shm data - runtime */
+    ap_slotmem_instance_t *wslot;  /* worker shm data - runtime */
     ap_slotmem_provider_t *storage;
     int growth;                   /* number of post-config workers can added */
     int max_workers;              /* maximum number of allowed workers */
