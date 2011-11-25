@@ -735,7 +735,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_create failed");
                 return !OK;
             }
-            conf->slot = new;
+            conf->bslot = new;
         }
         conf->storage = storage;
 
@@ -767,12 +767,12 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                       apr_pool_cleanup_null);
 
             /* setup shm for balancers */
-            if ((rv = storage->grab(conf->slot, &index)) != APR_SUCCESS) {
+            if ((rv = storage->grab(conf->bslot, &index)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_grab failed");
                 return !OK;
 
             }
-            if ((rv = storage->dptr(conf->slot, index, (void *)&bshm)) != APR_SUCCESS) {
+            if ((rv = storage->dptr(conf->bslot, index, (void *)&bshm)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_dptr failed");
                 return !OK;
             }
@@ -794,7 +794,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_create failed");
                 return !OK;
             }
-            balancer->slot = new;
+            balancer->wslot = new;
             balancer->storage = storage;
 
             /* sync all timestamps */
@@ -806,12 +806,12 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 proxy_worker_shared *shm;
 
                 worker = *workers;
-                if ((rv = storage->grab(balancer->slot, &index)) != APR_SUCCESS) {
+                if ((rv = storage->grab(balancer->wslot, &index)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_grab failed");
                     return !OK;
 
                 }
-                if ((rv = storage->dptr(balancer->slot, index, (void *)&shm)) != APR_SUCCESS) {
+                if ((rv = storage->dptr(balancer->wslot, index, (void *)&shm)) != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
                     return !OK;
                 }
@@ -1084,7 +1084,7 @@ static int balancer_handler(request_rec *r)
             char *ret;
             proxy_worker *nworker;
             nworker = ap_proxy_get_worker(conf->pool, bsel, conf, val);
-            if (!nworker && storage->num_free_slots(bsel->slot)) {
+            if (!nworker && storage->num_free_slots(bsel->wslot)) {
                 if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   "%s: Lock failed for adding worker",
@@ -1095,7 +1095,7 @@ static int balancer_handler(request_rec *r)
                     unsigned int index;
                     proxy_worker_shared *shm;
                     PROXY_COPY_CONF_PARAMS(nworker, conf);
-                    if ((rv = storage->grab(bsel->slot, &index)) != APR_SUCCESS) {
+                    if ((rv = storage->grab(bsel->wslot, &index)) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r,
                                       "worker slotmem_grab failed");
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
@@ -1105,7 +1105,7 @@ static int balancer_handler(request_rec *r)
                         }
                         return HTTP_BAD_REQUEST;
                     }
-                    if ((rv = storage->dptr(bsel->slot, index, (void *)&shm)) != APR_SUCCESS) {
+                    if ((rv = storage->dptr(bsel->wslot, index, (void *)&shm)) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r,
                                       "worker slotmem_dptr failed");
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
@@ -1209,7 +1209,7 @@ static int balancer_handler(request_rec *r)
             /* the below is a safe cast, since the number of slots total will
              * never be more than max_workers, which is restricted to int */
             ap_rprintf(r, "<td align='center'>%d [%d Used]</td>\n", balancer->max_workers,
-                       balancer->max_workers - (int)storage->num_free_slots(balancer->slot));
+                       balancer->max_workers - (int)storage->num_free_slots(balancer->wslot));
             if (*balancer->s->sticky) {
                 if (strcmp(balancer->s->sticky, balancer->s->sticky_path)) {
                     ap_rvputs(r, "<td align='center'>", balancer->s->sticky, " | ",
@@ -1340,7 +1340,7 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "value ='", bsel->s->sticky, NULL);
             }
             ap_rputs("'>&nbsp;&nbsp;&nbsp;&nbsp;(Use '-' to delete)</td></tr>\n", r);
-            if (storage->num_free_slots(bsel->slot) != 0) {
+            if (storage->num_free_slots(bsel->wslot) != 0) {
                 ap_rputs("<tr><td>Add New Worker:</td><td><input name='b_nwrkr' id='b_nwrkr' size=32 type=text>"
                          "&nbsp;&nbsp;&nbsp;&nbsp;Are you sure? <input name='b_wyes' id='b_wyes' type=checkbox value='1'>"
                          "</td></tr>", r);
@@ -1373,8 +1373,8 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
         if (conf->balancers->nelts) {
             apr_size_t size;
             unsigned int num;
-            storage->attach(&(conf->slot), conf->id, &size, &num, p);
-            if (!conf->slot) {
+            storage->attach(&(conf->bslot), conf->id, &size, &num, p);
+            if (!conf->bslot) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "slotmem_attach failed");
                 exit(1); /* Ugly, but what else? */
             }
