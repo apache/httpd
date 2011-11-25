@@ -1422,8 +1422,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balance
     }
 
     /* now attach */
-    storage->attach(&(balancer->slot), balancer->sname, &size, &num, p);
-    if (!balancer->slot) {
+    storage->attach(&(balancer->wslot), balancer->sname, &size, &num, p);
+    if (!balancer->wslot) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, "slotmem_attach failed");
         return APR_EGENERAL;
     }
@@ -2917,7 +2917,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
     for (index = 0; index < b->max_workers; index++) {
         int found;
         apr_status_t rv;
-        if ((rv = storage->dptr(b->slot, (unsigned int)index, (void *)&shm)) != APR_SUCCESS) {
+        if ((rv = storage->dptr(b->wslot, (unsigned int)index, (void *)&shm)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
             return APR_EGENERAL;
         }
