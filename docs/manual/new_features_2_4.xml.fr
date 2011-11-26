@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1202456 -->
+<!-- English Revision : 1205550 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -68,6 +68,21 @@ serveur HTTP Apache</title>
       <dd>Les sections &lt;<directive module="core">If</directive>&gt;
       permettent de d&eacute;finir une configuration en fonction de crit&egrave;res
       li&eacute;s &agrave; la requ&ecirc;te.</dd>
+
+      <dt>Interpr&eacute;teur d'expressions &agrave; usage g&eacute;n&eacute;ral</dt>
+      <dd>Un nouvel interpr&eacute;teur d'expressions permet de sp&eacute;cifier des
+      <a href="expr.html">conditions complexes</a> via des directives &agrave;
+      syntaxe commune comme <directive
+      module="mod_setenvif">SetEnvIfExpr</directive>, <directive
+      module="mod_rewrite">RewriteCond</directive>, <directive
+      module="mod_headers">Header</directive>, <directive
+      module="mod_headers" type="section">If</directive>, etc...
+      </dd>
+
+      <dt>Utilisation de la m&eacute;moire en baisse</dt>
+      <dd>Malgr&eacute; l'ajout de nombreuses nouvelles fonctionnalit&eacute;s, la
+      version 2.4.x tend &agrave; utiliser moins de m&eacute;moire que la version
+      2.2.x.</dd>
 
       <dt>NameVirtualHost directive</dt>
       <dd>Cette directive obsol&egrave;te n'est plus utile.</dd>
@@ -315,13 +330,6 @@ serveur HTTP Apache</title>
       <dd>Nous disposons &agrave; pr&eacute;sent d'un analyseur g&eacute;n&eacute;rique d'expressions, dont l'API
       est d&eacute;crite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <module>mod_ssl</module>.</dd>
-
-      <dd>L'analyseur d'expressions permet de sp&eacute;cifier des <a
-      href="expr.html">conditions complexes</a> dans des directives
-      comme <directive module="mod_setenvif">SetEnvIfExpr</directive>,
-      <directive module="mod_rewrite">RewriteCond</directive> et
-      <directive module="mod_headers">Header</directive>.
-      </dd>
 
       <dt>Conteneurs de logique d'autorisation</dt>
 

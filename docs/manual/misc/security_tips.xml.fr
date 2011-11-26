@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 1188200 -->
+<!-- English revision : 1205885 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -129,13 +129,13 @@
 
       <li>L'utilisation d'un <a href="../mpm.html">module mpm</a> thread&eacute;
       vous permet de traiter d'avantage de connexions simultan&eacute;es, ce qui
-      minimise l'effet des attaques DoS. Dans le futur, le module mpm exp&eacute;rimental
+      minimise l'effet des attaques DoS. Dans le futur, le module mpm
       <module>event</module> utilisera un traitement asynchrone afin de ne pas
-      d&eacute;dier un thread &agrave; chaque connexion. Il est en cours d'&eacute;tude &agrave;
-      l'heure actuelle et n'est pas encore enti&egrave;rement impl&eacute;ment&eacute;. En
-      particulier, le mpm <module>event</module> est actuellement incompatible
+      d&eacute;dier un thread &agrave; chaque connexion. De par la
+      nature de la biblioth&egrave;que OpenSSL, le module mpm <module>event</module> est actuellement incompatible
       avec le module <module>mod_ssl</module> ainsi que d'autres filtres
-      en entr&eacute;e.</li>
+      en entr&eacute;e. Dans ces cas, son comportement se ram&egrave;ne &agrave; celui
+      du module mpm <module>worker</module>.</li>
 
       <li>Il existe de nombreux modules tiers disponibles &agrave; <a
       href="http://modules.apache.org/">http://modules.apache.org/</a> qui
