@@ -759,7 +759,7 @@ static int hm_handler(request_rec *r)
     buf[len] = '\0';
     tbl = apr_table_make(r->pool, 10);
     qs_to_table(buf, tbl, r->pool);
-    apr_sockaddr_ip_get(&ip, r->connection->remote_addr);
+    apr_sockaddr_ip_get(&ip, r->connection->peer_addr);
     hmserver.ip = ip;
     hmserver.port = 80;
     if (apr_table_get(tbl, "port") != NULL)
