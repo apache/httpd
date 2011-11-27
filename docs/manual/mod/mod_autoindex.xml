@@ -531,6 +531,13 @@ a directory</description>
     <example>
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </example>
+
+    <note><title>Regular Expressions</title>
+      <p>This directive does not currently work in configuration sections
+      that have regular expression arguments, such as  <directive
+      module="core" type="section">DirectoryMatch</directive>
+      </p>
+    </note>
 </usage>
 </directivesynopsis>
 
