@@ -281,7 +281,7 @@ icon selected by MIME content-type</description>
 
     <example><title>Example</title>
       AddDescription "The planet Mars" mars.gif <br/>
-      AddDescription "My friend Marshall." friends/mars.gif
+      AddDescription "My friend Marshall" friends/mars.gif
     </example>
 
     <p>The typical, default description field is 23 bytes wide. 6
