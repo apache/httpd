@@ -280,7 +280,8 @@ icon selected by MIME content-type</description>
     <var>String</var> is enclosed in double quotes (<code>"</code>).</p>
 
     <example><title>Example</title>
-      AddDescription "The planet Mars" /web/pics/mars.gif
+      AddDescription "The planet Mars" mars.gif <br/>
+      AddDescription "My friend Marshall." friends/mars.gif
     </example>
 
     <p>The typical, default description field is 23 bytes wide. 6
@@ -314,6 +315,14 @@ icon selected by MIME content-type</description>
       element (such as cutting off the end of a bolded phrase), the
       results may affect the rest of the directory listing.</p>
     </note>
+
+    <note><title>Arguments with path information</title>
+      <p>Absolute paths are not currently supported and do not match
+      anything at runtime. Arguments with relative path information,
+      which would normally only be used in htaccess context, are implicitly 
+      prefixed with '*/' to avoid matching partial directory names.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
