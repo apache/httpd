@@ -95,6 +95,23 @@ static const char *socache_dbm_create(ap_socache_instance_t **context,
     return NULL;
 }
 
+static int try_chown(apr_pool_t *p, server_rec *s,
+                     const char *name, const char *suffix)
+{
+    if (suffix)
+        name = apr_pstrcat(p, name, suffix, NULL);
+    if (-1 == chown(name, ap_unixd_config.user_id,
+                    (gid_t)-1 /* no gid change */ ))
+    {
+        if (errno != ENOENT)
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(errno), s,
+                         "Can't change owner of %s", name);
+        return -1;
+    }
+    return 0;
+}
+
+
 static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
                                      const char *namespace,
                                      const struct ap_socache_hints *hints,
@@ -140,21 +157,13 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
      * cannot exactly determine the suffixes we try all possibilities.
      */
     if (geteuid() == 0 /* is superuser */) {
-        chown(ctx->data_file, ap_unixd_config.user_id, -1 /* no gid change */);
-        if (chown(apr_pstrcat(p, ctx->data_file, DBM_FILE_SUFFIX_DIR, NULL),
-                  ap_unixd_config.user_id, -1) == -1) {
-            if (chown(apr_pstrcat(p, ctx->data_file, ".db", NULL),
-                      ap_unixd_config.user_id, -1) == -1)
-                chown(apr_pstrcat(p, ctx->data_file, ".dir", NULL),
-                      ap_unixd_config.user_id, -1);
-        }
-        if (chown(apr_pstrcat(p, ctx->data_file, DBM_FILE_SUFFIX_PAG, NULL),
-                  ap_unixd_config.user_id, -1) == -1) {
-            if (chown(apr_pstrcat(p, ctx->data_file, ".db", NULL),
-                      ap_unixd_config.user_id, -1) == -1)
-                chown(apr_pstrcat(p, ctx->data_file, ".pag", NULL),
-                      ap_unixd_config.user_id, -1);
-        }
+        try_chown(p, s, ctx->data_file, NULL);
+        if (try_chown(p, s, ctx->data_file, DBM_FILE_SUFFIX_DIR))
+            if (try_chown(p, s, ctx->data_file, ".db"))
+                try_chown(p, s, ctx->data_file, ".dir");
+        if (try_chown(p, s, ctx->data_file, DBM_FILE_SUFFIX_PAG))
+            if (try_chown(p, s, ctx->data_file, ".db"))
+                try_chown(p, s, ctx->data_file, ".pag");
     }
 #endif
     socache_dbm_expire(ctx, s);
