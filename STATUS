@@ -108,8 +108,6 @@ RELEASE SHOWSTOPPERS:
 
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
-  * Configure code for luajit is broken (links to wrong library).
-
   * The mod_session* modules need to be checked that their hooks respect
     the returning of int (HTTP status codes) and apr_status_t as appropriate,
     and any anomolies fixed.
