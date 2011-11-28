@@ -1316,6 +1316,26 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     return NULL;
 }
 
+
+PROXY_DECLARE(char *) ap_proxy_update_balancer(apr_pool_t *p,
+                                                proxy_balancer *balancer,
+                                                const char *url)
+{
+    apr_uri_t puri;
+    if (apr_uri_parse(p, url, &puri) != APR_SUCCESS) {
+        return apr_psprintf(p, "unable to parse: %s", url);
+    }
+    if (puri.path && PROXY_STRNCPY(balancer->s->vpath, puri.path) != APR_SUCCESS) {
+        return apr_psprintf(p, "balancer %s front-end virtual-path (%s) too long",
+                            balancer->s->name, puri.path);
+    }
+    if (puri.hostname && PROXY_STRNCPY(balancer->s->vhost, puri.hostname) != APR_SUCCESS) {
+        return apr_psprintf(p, "balancer %s front-end vhost name (%s) too long",
+                            balancer->s->name, puri.hostname);
+    }
+    return NULL;
+}
+
 PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
                                                proxy_balancer **balancer,
                                                proxy_server_conf *conf,
@@ -1329,7 +1349,6 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     proxy_balancer_shared *bshared;
     char *c, *q, *uri = apr_pstrdup(p, url);
     const char *sname;
-    apr_uri_t puri;
 
     /* We should never get here without a valid BALANCER_PREFIX... */
 
@@ -1343,8 +1362,6 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     ap_str_tolower(uri);
     *balancer = apr_array_push(conf->balancers);
     memset(*balancer, 0, sizeof(proxy_balancer));
-
-    apr_uri_parse(p, alias, &puri);
 
     /*
      * NOTE: The default method is byrequests, which we assume
@@ -1378,9 +1395,6 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     if (PROXY_STRNCPY(bshared->sname, sname) != APR_SUCCESS) {
         return apr_psprintf(p, "balancer safe-name (%s) too long", sname);
     }
-    if (PROXY_STRNCPY(bshared->vpath, puri.path) != APR_SUCCESS) {
-        return apr_psprintf(p, "balancer front-end virtual-path (%s) too long", puri.path);
-    }
     bshared->hash = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_DEFAULT);    
     (*balancer)->hash = bshared->hash;
 
@@ -1394,7 +1408,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
 
     (*balancer)->s = bshared;
 
-    return NULL;
+    return ap_proxy_update_balancer(p, *balancer, alias);
 }
 
 /*
