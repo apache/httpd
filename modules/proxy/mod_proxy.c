@@ -1455,6 +1455,9 @@ static const char *
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
+        else {
+            ap_proxy_update_balancer(cmd->pool, balancer, f);
+        }
         for (i = 0; i < arr->nelts; i++) {
             const char *err = set_balancer_param(conf, cmd->pool, balancer, elts[i].key,
                                                  elts[i].val);
