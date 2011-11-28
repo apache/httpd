@@ -296,29 +296,17 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 #define PROXY_WORKER_DEFAULT_RETRY    60
 
 /* Some max char string sizes, for shm fields */
-#ifndef PROXY_WORKER_MAX_SCHEME_SIZE
 #define PROXY_WORKER_MAX_SCHEME_SIZE    16
-#endif
-#ifndef PROXY_WORKER_MAX_ROUTE_SIZE
 #define PROXY_WORKER_MAX_ROUTE_SIZE     64
-#endif
-#ifndef PROXY_WORKER_MAX_NAME_SIZE
 #define PROXY_WORKER_MAX_NAME_SIZE      96
 #define PROXY_BALANCER_MAX_NAME_SIZE PROXY_WORKER_MAX_NAME_SIZE
-#endif
-#ifndef PROXY_WORKER_MAX_HOSTNAME_SIZE
 #define PROXY_WORKER_MAX_HOSTNAME_SIZE  64
 #define PROXY_BALANCER_MAX_HOSTNAME_SIZE PROXY_WORKER_MAX_HOSTNAME_SIZE
-#endif
-#ifndef PROXY_BALANCER_MAX_STICKY_SIZE
 #define PROXY_BALANCER_MAX_STICKY_SIZE  64
-#endif
 
-#ifndef PROXY_MAX_PROVIDER_NAME_SIZE
 #define PROXY_MAX_PROVIDER_NAME_SIZE    16
-#endif
 
-#define PROXY_STRNCPY(dst, src) apr_cpystrn((dst), (src), sizeof(dst))
+#define PROXY_STRNCPY(dst, src) ap_proxy_strncpy((dst), (src), (sizeof(dst)))
 
 #define PROXY_COPY_CONF_PARAMS(w, c) \
 do {                             \
@@ -531,7 +519,8 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
 
 /* proxy_util.c */
 
-PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r);
+PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src, size_t dlen);
+PROXY_DECLARE(request_rec *) ap_proxy_make_fake_req(conn_rec *c, request_rec *r);
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
 PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
