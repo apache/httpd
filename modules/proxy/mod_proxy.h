@@ -298,6 +298,7 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 /* Some max char string sizes, for shm fields */
 #define PROXY_WORKER_MAX_SCHEME_SIZE    16
 #define PROXY_WORKER_MAX_ROUTE_SIZE     64
+#define PROXY_BALANCER_MAX_ROUTE_SIZE PROXY_WORKER_MAX_ROUTE_SIZE
 #define PROXY_WORKER_MAX_NAME_SIZE      96
 #define PROXY_BALANCER_MAX_NAME_SIZE PROXY_WORKER_MAX_NAME_SIZE
 #define PROXY_WORKER_MAX_HOSTNAME_SIZE  64
@@ -401,7 +402,8 @@ typedef struct {
     char      nonce[APR_UUID_FORMATTED_LENGTH + 1];
     char      name[PROXY_BALANCER_MAX_NAME_SIZE];
     char      sname[PROXY_BALANCER_MAX_NAME_SIZE];
-    char      alias[PROXY_BALANCER_MAX_NAME_SIZE];
+    char      vpath[PROXY_BALANCER_MAX_ROUTE_SIZE];
+    char      vhost[PROXY_BALANCER_MAX_HOSTNAME_SIZE];
     apr_interval_time_t timeout;  /* Timeout for waiting on free connection */
     apr_time_t      wupdated;     /* timestamp of last change to workers list */
     int             max_attempts;     /* Number of attempts before failing */
