@@ -77,6 +77,18 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    (request_rec *r, request_rec *pr), (r, pr),
                                    OK, DECLINED)
 
+PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src, size_t dlen)
+{
+    if ((strlen(src)+1) > dlen) {
+        /* APR_ENOSPACE would be better */
+        return APR_EGENERAL;
+    }
+    else {
+        apr_cpystrn(dst, src, dlen);
+    }
+    return APR_SUCCESS;
+}
+
 /* already called in the knowledge that the characters are hex digits */
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
 {
@@ -1354,12 +1366,18 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
 
     bshared->was_malloced = (do_malloc != 0);
     PROXY_STRNCPY(bshared->lbpname, "byrequests");
-    PROXY_STRNCPY(bshared->name, uri);
+    if (PROXY_STRNCPY(bshared->name, uri) != APR_SUCCESS) {
+        return apr_psprintf(p, "balancer name (%s) too long", uri);
+    }
     ap_pstr2_alnum(p, bshared->name + sizeof(BALANCER_PREFIX) - 1,
                    &sname);
     sname = apr_pstrcat(p, conf->id, "_", sname, NULL);
-    PROXY_STRNCPY(bshared->sname, sname);
-    PROXY_STRNCPY(bshared->alias, alias);
+    if (PROXY_STRNCPY(bshared->sname, sname) != APR_SUCCESS) {
+        return apr_psprintf(p, "balancer safe-name (%s) too long", sname);
+    }
+    if (PROXY_STRNCPY(bshared->alias, alias) != APR_SUCCESS) {
+        return apr_psprintf(p, "balancer front-end url (%s) too long", alias);
+    }
     bshared->hash = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_DEFAULT);    
     (*balancer)->hash = bshared->hash;
 
@@ -1367,7 +1385,9 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
      * the process. */
     apr_uuid_get(&uuid);
     apr_uuid_format(nonce, &uuid);
-    PROXY_STRNCPY(bshared->nonce, nonce);
+    if (PROXY_STRNCPY(bshared->nonce, nonce) != APR_SUCCESS) {
+        return apr_psprintf(p, "balancer nonce (%s) too long", nonce);
+    }
 
     (*balancer)->s = bshared;
 
@@ -1727,6 +1747,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     int rv;
     apr_uri_t uri;
     proxy_worker_shared *wshared;
+    char *ptr;
 
     rv = apr_uri_parse(p, url, &uri);
 
@@ -1774,9 +1795,16 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
 
     memset(wshared, 0, sizeof(proxy_worker_shared));
 
-    PROXY_STRNCPY(wshared->name, apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD));
-    PROXY_STRNCPY(wshared->scheme, uri.scheme);
-    PROXY_STRNCPY(wshared->hostname, uri.hostname);
+    ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
+    if (PROXY_STRNCPY(wshared->name, ptr) != APR_SUCCESS) {
+        return apr_psprintf(p, "worker name (%s) too long", ptr);
+    }
+    if (PROXY_STRNCPY(wshared->scheme, uri.scheme) != APR_SUCCESS) {
+        return apr_psprintf(p, "worker scheme (%s) too long", uri.scheme);
+    }
+    if (PROXY_STRNCPY(wshared->hostname, uri.hostname) != APR_SUCCESS) {
+        return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
+    }
     wshared->port = uri.port;
     wshared->flush_packets = flush_off;
     wshared->flush_wait = PROXY_FLUSH_WAIT;

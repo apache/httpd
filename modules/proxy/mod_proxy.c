@@ -327,8 +327,12 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
         if (provider) {
             balancer->lbmethod = provider;
-            PROXY_STRNCPY(balancer->s->lbpname, val);
-            return NULL;
+            if (PROXY_STRNCPY(balancer->s->lbpname, val) == APR_SUCCESS) {
+                return NULL;
+            }
+            else {
+                return "lbmethod name too large";
+            }
         }
         return "unknown lbmethod";
     }
@@ -371,11 +375,8 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             *balancer->s->nonce = '\0';
         }
         else {
-            if (strlen(val) > sizeof(balancer->s->nonce)-1) {
+            if (PROXY_STRNCPY(balancer->s->nonce, val) != APR_SUCCESS) {
                 return "Provided nonce is too large";
-            }
-            else {
-                PROXY_STRNCPY(balancer->s->nonce, val);
             }
         }
     }
