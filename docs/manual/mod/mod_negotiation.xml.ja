@@ -224,7 +224,7 @@
     以下のディレクティブが指定されていて、ユーザの <code>Accept-Language</code>
     が <code>es</code> 言語のみを許可していて、さらにそのような variant がないときには、
     以下の <directive module="mod_negotiation">LanguagePriority</directive>
-    のリストの最初の variant が送れれます。</p>
+    のリストの最初の variant が送られます。</p>
 
     <example>
       LanguagePriority en fr de<br />
