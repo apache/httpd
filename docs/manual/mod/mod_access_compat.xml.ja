@@ -262,7 +262,7 @@
     <directive module="mod_access_compat">Deny</directive> 行はもう一つのグループとみなされます。
     またデフォルト状態は単独で一つのグループとみなされます。</p>
 
-    <p><em>Order</em> 設定は以下の以下のどれかです。</p>
+    <p><em>Order</em> 設定は以下のどれかです。</p>
 
     <dl>
       <dt><code>Allow,Deny</code></dt>

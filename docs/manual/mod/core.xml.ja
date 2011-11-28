@@ -2665,7 +2665,7 @@ module="core">Directory</directive></seealso>
     <directive>ServerName</directive> はこのバーチャルホストにマッチするために
     何がリクエストの Host: ヘッダに現れる必要があるのかを指定します。</p>
 
-    <p>SSL を処理するデバイス、例えばリーバスプロクシやロードバランサや
+    <p>SSL を処理するデバイス、例えばリバースプロクシやロードバランサや
     SSL 処理軽減アプライアンスの裏側でサーバが稼動する場合もあるでしょう。
     そういった場合では、クライアントが接続するときに使う
     <code>https://</code> スキームとポート番号を <directive>ServerName</directive>
@@ -2761,9 +2761,9 @@ module="core">Directory</directive></seealso>
     <code>EMail</code> にした場合はさらに参照されたドキュメントに対する <a
     href="#serveradmin">ServerAdmin</a> を指す "mailto:" が追加されます。</p>
 
-    <p>バージョン 2.0.44 以降ではこのディレクティブは <directive
-    module="core">ServerSignature</directive>
-    ディレクティブにより表示される情報も制御します。</p>
+    <p>バージョン 2.0.44 以降では、表示されるサーバーのバージョン番号の詳細は<directive
+    module="core">ServerTokens</directive>
+    ディレクティブにより制御されます。</p>
 </usage>
 <seealso><directive module="core">ServerTokens</directive></seealso>
 </directivesynopsis>
