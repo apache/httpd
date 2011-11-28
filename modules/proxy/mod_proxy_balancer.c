@@ -1198,10 +1198,10 @@ static int balancer_handler(request_rec *r)
                       balancer->s->name + sizeof(BALANCER_PREFIX) - 1,
                       "&nonce=", balancer->s->nonce,
                       "'>", NULL);
-            ap_rvputs(r, balancer->s->name, "</a></h3>\n\n", NULL);
+            ap_rvputs(r, balancer->s->name, "</a></h3>\n", NULL);
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
-                "</tr>\n<tr>", r);
+                "<th>Path</th></tr>\n<tr>", r);
             /* the below is a safe cast, since the number of slots total will
              * never be more than max_workers, which is restricted to int */
             ap_rprintf(r, "<td align='center'>%d [%d Used]</td>\n", balancer->max_workers,
@@ -1225,6 +1225,11 @@ static int balancer_handler(request_rec *r)
             ap_rprintf(r, "<td align='center'>%d</td>\n", balancer->s->max_attempts);
             ap_rprintf(r, "<td align='center'>%s</td>\n",
                        balancer->s->lbpname);
+            ap_rputs("<td align='center'>", r);
+            if (balancer->s->vhost && *(balancer->s->vhost)) {
+                ap_rvputs(r, balancer->s->vhost, " -> ", NULL);
+            }
+            ap_rvputs(r, balancer->s->vpath, "</td>\n", NULL);
             ap_rputs("</table>\n<br />", r);
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
                 "<th>Worker URL</th>"
