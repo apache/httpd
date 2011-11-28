@@ -645,6 +645,17 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                       const char *url);
 
 /**
+ * Update the balancer's vhost related fields
+ * @param p     memory pool used for temporary storage while finding balancer
+ * @param balancer  balancer to be updated
+ * @param url   url to find vhost info
+ * @return      error string or NULL if OK
+ */
+PROXY_DECLARE(char *) ap_proxy_update_balancer(apr_pool_t *p,
+                                               proxy_balancer *balancer,
+                                               const char *url);
+
+/**
  * Define and Allocate space for the balancer to proxy configuration
  * @param p      memory pool to allocate balancer from
  * @param balancer the new balancer
