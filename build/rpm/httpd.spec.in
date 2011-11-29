@@ -1,7 +1,6 @@
 %define contentdir /var/www
 %define suexec_caller apache
 %define mmn APACHE_MMN
-%define mpms prefork event
 
 Summary: Apache HTTP Server
 Name: httpd
@@ -86,11 +85,7 @@ rm -rf srclib/{apr,apr-util,pcre}
 %{__perl} -pi -e "s:\@exp_installbuilddir\@:%{_libdir}/httpd/build:g" \
 	support/apxs.in
 
-function mpmbuild()
-{
-mpm=$1; shift
-mkdir $mpm; pushd $mpm
-../configure \
+%configure \
  	--prefix=%{_sysconfdir}/httpd \
         --with-apr=/usr/bin/apr-1-config \
         --with-apr-util=/usr/bin/apu-1-config \
@@ -105,7 +100,7 @@ mkdir $mpm; pushd $mpm
 	--libexecdir=%{_libdir}/httpd/modules \
 	--datadir=%{contentdir} \
         --with-installbuilddir=%{_libdir}/httpd/build \
-	--with-mpm=$mpm \
+        --enable-mpms-shared=all \
 	--enable-suexec --with-suexec \
 	--with-suexec-caller=%{suexec_caller} \
 	--with-suexec-docroot=%{contentdir} \
@@ -113,14 +108,6 @@ mkdir $mpm; pushd $mpm
 	--with-suexec-bin=%{_sbindir}/suexec \
 	--with-suexec-uidmin=500 --with-suexec-gidmin=500 \
         --enable-pie \
-	$*
-
-make %{?_smp_mflags}
-popd
-}
-
-# Build everything and the kitchen sink with the worker build
-mpmbuild worker \
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --enable-distcache \
         --enable-proxy \
@@ -133,22 +120,11 @@ mpmbuild worker \
         --enable-session-dbd \
         --disable-imagemap
 
-# For the other MPMs, just build httpd and no optional modules
-for f in %{mpms}; do
-   mpmbuild $f --enable-modules=none
-done
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-pushd worker
 make DESTDIR=$RPM_BUILD_ROOT install
-popd
-
-# install alternative MPMs
-for f in %{mpms}; do
-  install -m 755 ${f}/httpd $RPM_BUILD_ROOT%{_sbindir}/httpd.${f}
-done
 
 # for holding mod_dav lock database
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/dav
@@ -167,7 +143,6 @@ echo %{mmn} > $RPM_BUILD_ROOT%{_includedir}/httpd/.mmn
 mkdir $RPM_BUILD_ROOT%{contentdir}/html
 
 # Set up /var directories
-rmdir $RPM_BUILD_ROOT%{_sysconfdir}/httpd/logs
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/httpd
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/cache/httpd/cache-root
 
@@ -245,16 +220,6 @@ if readelf -d $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.so | grep TEXTREL; then
    exit 1
 fi
 
-# Verify that the same modules were built into the httpd binaries
-./worker/httpd -l | grep -v worker > worker.mods
-for mpm in %{mpms}; do
-  ./${mpm}/httpd -l | grep -v ${mpm} > ${mpm}.mods
-  if ! diff -u worker.mods ${mpm}.mods; then
-    : Different modules built into httpd binaries, will not proceed
-    exit 1
-  fi
-done
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -308,8 +273,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/htpasswd
 %{_sbindir}/logresolve
 %{_sbindir}/httpd
-%{_sbindir}/httpd.prefork
-%{_sbindir}/httpd.event
 %{_sbindir}/httxt2dbm
 %{_sbindir}/apachectl
 %{_sbindir}/rotatelogs
