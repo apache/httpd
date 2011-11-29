@@ -1,7 +1,6 @@
 %define contentdir /var/www
 %define suexec_caller apache
 %define mmn APACHE_MMN
-%define mpms prefork event
 
 Summary: Apache HTTP Server
 Name: httpd
@@ -14,15 +13,16 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
-BuildRequires: /usr/bin/apr-1-config, /usr/bin/apu-1-config
-Requires: apr >= 1.4.2, apr-util >= 1.3.10, pcre-devel >= 5.0, gawk, /usr/bin/find, openldap
-Requires: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
-Requires: sh-utils, textutils, /usr/sbin/useradd
+BuildRequires: autoconf, perl, pkgconfig, findutils
+BuildRequires: zlib-devel, libselinux-devel
+BuildRequires: apr-devel >= 1.4.0, apr-util-devel >= 1.3.0, pcre-devel >= 5.0, distcache-devel >= 1.4
+Requires: initscripts >= 8.36, /etc/mime.types
+Obsoletes: httpd-suexec
+Requires(pre): /usr/sbin/useradd
+Requires(post): chkconfig
 Provides: webserver
+Provides: mod_dav = %{version}-%{release}, httpd-suexec = %{version}-%{release}
 Provides: httpd-mmn = %{mmn}
-Conflicts: thttpd
-Obsoletes: apache, secureweb, mod_dav
 
 %description
 Apache is a powerful, full-featured, efficient, and freely-available
@@ -33,12 +33,13 @@ Internet.
 Group: Development/Libraries
 Summary: Development tools for the Apache HTTP server.
 Obsoletes: secureweb-devel, apache-devel
-Requires: libtool, httpd = %{epoch}:%{version}-%{release}
-Requires: apr-devel >= 1.4.2, apr-util-devel >= 1.3.10
+Requires: apr-devel, apr-util-devel, pkgconfig, libtool
+Requires: httpd = %{epoch}:%{version}-%{release}
 
 %description devel
 The httpd-devel package contains the APXS binary and other files
-that you need to build Dynamic Shared Objects (DSOs) for Apache.
+that you need to build Dynamic Shared Objects (DSOs) for the
+Apache HTTP Server.
 
 If you are installing the Apache HTTP server and you want to be
 able to compile or develop additional modules for Apache, you need
@@ -47,19 +48,63 @@ to install this package.
 %package manual
 Group: Documentation
 Summary: Documentation for the Apache HTTP server.
+Requires: httpd = %{epoch}:%{version}-%{release}
 Obsoletes: secureweb-manual, apache-manual
+BuildArch: noarch
 
 %description manual
 The httpd-manual package contains the complete manual and
 reference guide for the Apache HTTP server. The information can
 also be found at http://httpd.apache.org/docs/.
 
+%package tools
+Group: System Environment/Daemons
+Summary: Tools for use with the Apache HTTP Server
+
+%description tools
+The httpd-tools package contains tools which can be used with 
+the Apache HTTP Server.
+
+%package -n mod_authnz_ldap
+Group: System Environment/Daemons
+Summary: LDAP modules for the Apache HTTP server
+BuildRequires: openldap-devel
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+
+%description -n mod_authnz_ldap
+The mod_authnz_ldap module for the Apache HTTP server provides
+authentication and authorization against an LDAP server, while
+mod_ldap provides an LDAP cache.
+
+%package -n mod_lua
+Group: System Environment/Daemons
+Summary: Lua language module for the Apache HTTP server
+BuildRequires: lua-devel
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+
+%description -n mod_lua
+The mod_lua module for the Apache HTTP server allows the server to be
+extended with scripts written in the Lua programming language.
+
+%package -n mod_proxy_html
+Group: System Environment/Daemons
+Summary: Proxy HTML filter modules for the Apache HTTP server
+BuildRequires: libxml2-devel
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+
+%description -n mod_proxy_html
+The mod_proxy_html module for the Apache HTTP server provides
+a filter to rewrite HTML links within web content when used within
+a reverse proxy environment. The mod_xml2enc module provides
+enhanced charset/internationalisation support for mod_proxy_html.
+
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
 BuildRequires: openssl-devel
-Requires: openssl, dev, /bin/cat
-Requires: httpd, make, httpd-mmn = %{mmn}
+Requires(post): openssl, /bin/cat
+Requires(pre): httpd
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_ssl
 The mod_ssl module provides strong cryptography for the Apache Web
@@ -86,69 +131,33 @@ rm -rf srclib/{apr,apr-util,pcre}
 %{__perl} -pi -e "s:\@exp_installbuilddir\@:%{_libdir}/httpd/build:g" \
 	support/apxs.in
 
-function mpmbuild()
-{
-mpm=$1; shift
-mkdir $mpm; pushd $mpm
-../configure \
- 	--prefix=%{_sysconfdir}/httpd \
-        --with-apr=/usr/bin/apr-1-config \
-        --with-apr-util=/usr/bin/apu-1-config \
-        --with-pcre=/usr/bin/pcre-config \
-        --exec-prefix=%{_prefix} \
- 	--bindir=%{_bindir} \
- 	--sbindir=%{_sbindir} \
- 	--mandir=%{_mandir} \
+%configure \
+	--enable-layout=RPM \
 	--libdir=%{_libdir} \
 	--sysconfdir=%{_sysconfdir}/httpd/conf \
 	--includedir=%{_includedir}/httpd \
 	--libexecdir=%{_libdir}/httpd/modules \
 	--datadir=%{contentdir} \
         --with-installbuilddir=%{_libdir}/httpd/build \
-	--with-mpm=$mpm \
+        --enable-mpms-shared=all \
+        --with-apr=%{_prefix} --with-apr-util=%{_prefix} \
 	--enable-suexec --with-suexec \
 	--with-suexec-caller=%{suexec_caller} \
 	--with-suexec-docroot=%{contentdir} \
 	--with-suexec-logfile=%{_localstatedir}/log/httpd/suexec.log \
 	--with-suexec-bin=%{_sbindir}/suexec \
-	--with-suexec-uidmin=500 --with-suexec-gidmin=500 \
+	--with-suexec-uidmin=500 --with-suexec-gidmin=100 \
         --enable-pie \
-	$*
-
-make %{?_smp_mflags}
-popd
-}
-
-# Build everything and the kitchen sink with the worker build
-mpmbuild worker \
+        --with-pcre \
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --enable-distcache \
-        --enable-proxy \
-        --enable-cache \
-        --enable-disk-cache \
-        --enable-ldap --enable-authnz-ldap \
-        --enable-cgid \
-        --enable-authn-anon --enable-authn-alias \
-        --enable-session --enable-session-cookie \
-        --enable-session-dbd \
         --disable-imagemap
 
-# For the other MPMs, just build httpd and no optional modules
-for f in %{mpms}; do
-   mpmbuild $f --enable-modules=none
-done
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-pushd worker
 make DESTDIR=$RPM_BUILD_ROOT install
-popd
-
-# install alternative MPMs
-for f in %{mpms}; do
-  install -m 755 ${f}/httpd $RPM_BUILD_ROOT%{_sbindir}/httpd.${f}
-done
 
 # for holding mod_dav lock database
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/dav
@@ -157,17 +166,10 @@ mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/dav
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/cache/mod_ssl
 touch $RPM_BUILD_ROOT%{_localstatedir}/cache/mod_ssl/scache.{dir,pag,sem}
 
-# move the build directory to within the library directory
-mv $RPM_BUILD_ROOT%{contentdir}/build $RPM_BUILD_ROOT%{_libdir}/httpd/build
-
 # Make the MMN accessible to module packages
 echo %{mmn} > $RPM_BUILD_ROOT%{_includedir}/httpd/.mmn
 
-# docroot
-mkdir $RPM_BUILD_ROOT%{contentdir}/html
-
 # Set up /var directories
-rmdir $RPM_BUILD_ROOT%{_sysconfdir}/httpd/logs
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/httpd
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/cache/httpd/cache-root
 
@@ -245,16 +247,6 @@ if readelf -d $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.so | grep TEXTREL; then
    exit 1
 fi
 
-# Verify that the same modules were built into the httpd binaries
-./worker/httpd -l | grep -v worker > worker.mods
-for mpm in %{mpms}; do
-  ./${mpm}/httpd -l | grep -v ${mpm} > ${mpm}.mods
-  if ! diff -u worker.mods ${mpm}.mods; then
-    : Different modules built into httpd binaries, will not proceed
-    exit 1
-  fi
-done
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -282,6 +274,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-multilang-errordoc.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-userdir.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-vhosts.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/proxy-html.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-autoindex.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-dav.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-default.conf
@@ -292,44 +285,130 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-multilang-errordoc.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-userdir.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-vhosts.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/proxy-html.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/httpd.conf
 
 %config %{_sysconfdir}/logrotate.d/httpd
 %config %{_sysconfdir}/rc.d/init.d/httpd
 %config %{_sysconfdir}/rc.d/init.d/htcacheclean
 
-%{_sbindir}/ab
 %{_sbindir}/fcgistarter
 %{_sbindir}/htcacheclean
-%{_sbindir}/htdbm
-%{_sbindir}/htdigest
-%{_sbindir}/htpasswd
-%{_sbindir}/logresolve
 %{_sbindir}/httpd
-%{_sbindir}/httpd.prefork
-%{_sbindir}/httpd.event
-%{_sbindir}/httxt2dbm
 %{_sbindir}/apachectl
-%{_sbindir}/rotatelogs
 %attr(4510,root,%{suexec_caller}) %{_sbindir}/suexec
 
 %dir %{_libdir}/httpd
 %dir %{_libdir}/httpd/modules
-# everything but mod_ssl.so:
-%{_libdir}/httpd/modules/mod_[a-r]*.so
-%{_libdir}/httpd/modules/mod_s[lopetu]*.so
-%{_libdir}/httpd/modules/mod_[t-z]*.so
+%{_libdir}/httpd/modules/mod_access_compat.so
+%{_libdir}/httpd/modules/mod_actions.so
+%{_libdir}/httpd/modules/mod_alias.so
+%{_libdir}/httpd/modules/mod_allowmethods.so
+%{_libdir}/httpd/modules/mod_asis.so
+%{_libdir}/httpd/modules/mod_auth_basic.so
+%{_libdir}/httpd/modules/mod_auth_digest.so
+%{_libdir}/httpd/modules/mod_auth_form.so
+%{_libdir}/httpd/modules/mod_authn_anon.so
+%{_libdir}/httpd/modules/mod_authn_core.so
+%{_libdir}/httpd/modules/mod_authn_dbd.so
+%{_libdir}/httpd/modules/mod_authn_dbm.so
+%{_libdir}/httpd/modules/mod_authn_file.so
+%{_libdir}/httpd/modules/mod_authn_socache.so
+%{_libdir}/httpd/modules/mod_authz_core.so
+%{_libdir}/httpd/modules/mod_authz_dbd.so
+%{_libdir}/httpd/modules/mod_authz_dbm.so
+%{_libdir}/httpd/modules/mod_authz_groupfile.so
+%{_libdir}/httpd/modules/mod_authz_host.so
+%{_libdir}/httpd/modules/mod_authz_owner.so
+%{_libdir}/httpd/modules/mod_authz_user.so
+%{_libdir}/httpd/modules/mod_autoindex.so
+%{_libdir}/httpd/modules/mod_buffer.so
+%{_libdir}/httpd/modules/mod_cache_disk.so
+%{_libdir}/httpd/modules/mod_cache.so
+%{_libdir}/httpd/modules/mod_cgid.so
+%{_libdir}/httpd/modules/mod_charset_lite.so
+%{_libdir}/httpd/modules/mod_data.so
+%{_libdir}/httpd/modules/mod_dav_fs.so
+%{_libdir}/httpd/modules/mod_dav_lock.so
+%{_libdir}/httpd/modules/mod_dav.so
+%{_libdir}/httpd/modules/mod_dbd.so
+%{_libdir}/httpd/modules/mod_deflate.so
+%{_libdir}/httpd/modules/mod_dialup.so
+%{_libdir}/httpd/modules/mod_dir.so
+%{_libdir}/httpd/modules/mod_dumpio.so
+%{_libdir}/httpd/modules/mod_echo.so
+%{_libdir}/httpd/modules/mod_env.so
+%{_libdir}/httpd/modules/mod_expires.so
+%{_libdir}/httpd/modules/mod_ext_filter.so
+%{_libdir}/httpd/modules/mod_file_cache.so
+%{_libdir}/httpd/modules/mod_filter.so
+%{_libdir}/httpd/modules/mod_headers.so
+%{_libdir}/httpd/modules/mod_heartbeat.so
+%{_libdir}/httpd/modules/mod_heartmonitor.so
+%{_libdir}/httpd/modules/mod_include.so
+%{_libdir}/httpd/modules/mod_info.so
+%{_libdir}/httpd/modules/mod_lbmethod_bybusyness.so
+%{_libdir}/httpd/modules/mod_lbmethod_byrequests.so
+%{_libdir}/httpd/modules/mod_lbmethod_bytraffic.so
+%{_libdir}/httpd/modules/mod_lbmethod_heartbeat.so
+%{_libdir}/httpd/modules/mod_log_config.so
+%{_libdir}/httpd/modules/mod_log_debug.so
+%{_libdir}/httpd/modules/mod_log_forensic.so
+%{_libdir}/httpd/modules/mod_logio.so
+%{_libdir}/httpd/modules/mod_mime_magic.so
+%{_libdir}/httpd/modules/mod_mime.so
+%{_libdir}/httpd/modules/mod_mpm_event.so
+%{_libdir}/httpd/modules/mod_mpm_prefork.so
+%{_libdir}/httpd/modules/mod_mpm_worker.so
+%{_libdir}/httpd/modules/mod_negotiation.so
+%{_libdir}/httpd/modules/mod_proxy_ajp.so
+%{_libdir}/httpd/modules/mod_proxy_balancer.so
+%{_libdir}/httpd/modules/mod_proxy_connect.so
+%{_libdir}/httpd/modules/mod_proxy_express.so
+%{_libdir}/httpd/modules/mod_proxy_fcgi.so
+%{_libdir}/httpd/modules/mod_proxy_fdpass.so
+%{_libdir}/httpd/modules/mod_proxy_ftp.so
+%{_libdir}/httpd/modules/mod_proxy_http.so
+%{_libdir}/httpd/modules/mod_proxy_scgi.so
+%{_libdir}/httpd/modules/mod_proxy.so
+%{_libdir}/httpd/modules/mod_ratelimit.so
+%{_libdir}/httpd/modules/mod_reflector.so
+%{_libdir}/httpd/modules/mod_remoteip.so
+%{_libdir}/httpd/modules/mod_reqtimeout.so
+%{_libdir}/httpd/modules/mod_request.so
+%{_libdir}/httpd/modules/mod_rewrite.so
+%{_libdir}/httpd/modules/mod_sed.so
+%{_libdir}/httpd/modules/mod_session_cookie.so
+%{_libdir}/httpd/modules/mod_session_crypto.so
+%{_libdir}/httpd/modules/mod_session_dbd.so
+%{_libdir}/httpd/modules/mod_session.so
+%{_libdir}/httpd/modules/mod_setenvif.so
+%{_libdir}/httpd/modules/mod_slotmem_plain.so
+%{_libdir}/httpd/modules/mod_slotmem_shm.so
+%{_libdir}/httpd/modules/mod_socache_dbm.so
+%{_libdir}/httpd/modules/mod_socache_memcache.so
+%{_libdir}/httpd/modules/mod_socache_shmcb.so
+%{_libdir}/httpd/modules/mod_speling.so
+%{_libdir}/httpd/modules/mod_status.so
+%{_libdir}/httpd/modules/mod_substitute.so
+%{_libdir}/httpd/modules/mod_suexec.so
+%{_libdir}/httpd/modules/mod_unique_id.so
+%{_libdir}/httpd/modules/mod_unixd.so
+%{_libdir}/httpd/modules/mod_userdir.so
+%{_libdir}/httpd/modules/mod_usertrack.so
+%{_libdir}/httpd/modules/mod_version.so
+%{_libdir}/httpd/modules/mod_vhost_alias.so
+%{_libdir}/httpd/modules/mod_watchdog.so
 
 %dir %{contentdir}
 %dir %{contentdir}/cgi-bin
-%dir %{contentdir}/htdocs
 %dir %{contentdir}/html
 %dir %{contentdir}/icons
 %dir %{contentdir}/error
 %dir %{contentdir}/error/include
 %{contentdir}/icons/*
 %{contentdir}/error/README
-%{contentdir}/htdocs/index.html
+%{contentdir}/html/index.html
 %config(noreplace) %{contentdir}/error/*.var
 %config(noreplace) %{contentdir}/error/include/*.html
 
@@ -340,8 +419,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_mandir}/man1/*
 %{_mandir}/man8/ab*
-%{_mandir}/man8/rotatelogs*
-%{_mandir}/man8/logresolve*
 %{_mandir}/man8/suexec*
 %{_mandir}/man8/apachectl.8*
 %{_mandir}/man8/httpd.8*
@@ -351,6 +428,38 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{contentdir}/manual
 %{contentdir}/error/README
+
+%files tools
+%defattr(-,root,root)
+%{_sbindir}/ab
+%{_sbindir}/htdbm
+%{_sbindir}/htdigest
+%{_sbindir}/htpasswd
+%{_sbindir}/logresolve
+%{_sbindir}/httxt2dbm
+%{_sbindir}/rotatelogs
+%{_mandir}/man1/dbmmanage.1*
+%{_mandir}/man1/htdbm.1*
+%{_mandir}/man1/htdigest.1*
+%{_mandir}/man1/htpasswd.1*
+%{_mandir}/man8/ab.8*
+%{_mandir}/man8/logresolve.8*
+%{_mandir}/man8/rotatelogs.8*
+%doc LICENSE NOTICE
+
+%files -n mod_authnz_ldap
+%defattr(-,root,root)
+%{_libdir}/httpd/modules/mod_ldap.so
+%{_libdir}/httpd/modules/mod_authnz_ldap.so
+
+%files -n mod_lua
+%defattr(-,root,root)
+%{_libdir}/httpd/modules/mod_lua.so
+
+%files -n mod_proxy_html
+%defattr(-,root,root)
+%{_libdir}/httpd/modules/mod_proxy_html.so
+%{_libdir}/httpd/modules/mod_xml2enc.so
 
 %files -n mod_ssl
 %defattr(-,root,root)
