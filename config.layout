@@ -298,3 +298,28 @@
     installbuilddir: ${prefix}/usr/share/apache2/build
     errordir:      ${datadir}/error
 </Layout>
+
+# Generic RPM layout
+<Layout RPM>
+    prefix:        /usr
+    exec_prefix:   ${prefix}
+    bindir:        ${prefix}/bin
+    sbindir:       ${prefix}/sbin
+    libdir:        ${prefix}/lib
+    libexecdir:    ${libdir}/httpd/modules
+    mandir:        ${prefix}/share/man
+    sysconfdir:    /etc/httpd/conf
+    installbuilddir: ${libdir}/httpd/build
+    includedir:    ${prefix}/include/httpd
+    localstatedir: /var
+    datadir:       ${localstatedir}/www
+    errordir:      ${datadir}/error
+    iconsdir:      ${datadir}/icons
+    htdocsdir:     ${datadir}/html
+    manualdir:     ${datadir}/manual
+    cgidir:        ${datadir}/cgi-bin
+    runtimedir:    ${localstatedir}/run
+    logfiledir:    ${localstatedir}/log/httpd
+    proxycachedir: ${localstatedir}/cache/httpd/cache-root
+</Layout>
+
