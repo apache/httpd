@@ -1464,6 +1464,7 @@ static const char *
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
+        new->balancer = balancer;
     }
     else {
         proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, r);
