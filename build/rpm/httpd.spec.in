@@ -13,9 +13,9 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
+BuildRequires: apr-devel, apr-util-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
 BuildRequires: /usr/bin/apr-1-config, /usr/bin/apu-1-config
-Requires: apr >= 1.4.2, apr-util >= 1.3.10, pcre-devel >= 5.0, gawk, /usr/bin/find, openldap
+Requires: apr >= 1.4.2, apr-util >= 1.3.10, gawk, /usr/bin/find
 Requires: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Requires: sh-utils, textutils, /usr/sbin/useradd
 Provides: webserver
@@ -52,6 +52,29 @@ Obsoletes: secureweb-manual, apache-manual
 The httpd-manual package contains the complete manual and
 reference guide for the Apache HTTP server. The information can
 also be found at http://httpd.apache.org/docs/.
+
+%package -n mod_authnz_ldap
+Group: System Environment/Daemons
+Summary: LDAP modules for the Apache HTTP server
+BuildRequires: openldap-devel
+Requires: httpd, httpd-mmn = %{mmn}
+
+%description -n mod_authnz_ldap
+The mod_authnz_ldap module for the Apache HTTP server provides
+authentication and authorization against an LDAP server, while
+mod_ldap provides an LDAP cache.
+
+%package -n mod_proxy_html
+Group: System Environment/Daemons
+Summary: Proxy HTML filter modules for the Apache HTTP server
+BuildRequires: libxml2-devel
+Requires: httpd, httpd-mmn = %{mmn}
+
+%description -n mod_proxy_html
+The mod_proxy_html module for the Apache HTTP server provides
+a filter to rewrite HTML links within web content when used within
+a reverse proxy environment. The mod_xml2enc module provides
+enhanced charset/internationalisation support for mod_proxy_html.
 
 %package -n mod_ssl
 Group: System Environment/Daemons
@@ -272,10 +295,107 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{_libdir}/httpd
 %dir %{_libdir}/httpd/modules
-# everything but mod_ssl.so:
-%{_libdir}/httpd/modules/mod_[a-r]*.so
-%{_libdir}/httpd/modules/mod_s[lopetu]*.so
-%{_libdir}/httpd/modules/mod_[t-z]*.so
+%{_libdir}/httpd/modules/mod_access_compat.so
+%{_libdir}/httpd/modules/mod_actions.so
+%{_libdir}/httpd/modules/mod_alias.so
+%{_libdir}/httpd/modules/mod_allowmethods.so
+%{_libdir}/httpd/modules/mod_apreq.so
+%{_libdir}/httpd/modules/mod_asis.so
+%{_libdir}/httpd/modules/mod_auth_basic.so
+%{_libdir}/httpd/modules/mod_auth_digest.so
+%{_libdir}/httpd/modules/mod_auth_form.so
+%{_libdir}/httpd/modules/mod_authn_anon.so
+%{_libdir}/httpd/modules/mod_authn_core.so
+%{_libdir}/httpd/modules/mod_authn_dbd.so
+%{_libdir}/httpd/modules/mod_authn_dbm.so
+%{_libdir}/httpd/modules/mod_authn_file.so
+%{_libdir}/httpd/modules/mod_authn_socache.so
+%{_libdir}/httpd/modules/mod_authz_core.so
+%{_libdir}/httpd/modules/mod_authz_dbd.so
+%{_libdir}/httpd/modules/mod_authz_dbm.so
+%{_libdir}/httpd/modules/mod_authz_groupfile.so
+%{_libdir}/httpd/modules/mod_authz_host.so
+%{_libdir}/httpd/modules/mod_authz_owner.so
+%{_libdir}/httpd/modules/mod_authz_user.so
+%{_libdir}/httpd/modules/mod_autoindex.so
+%{_libdir}/httpd/modules/mod_buffer.so
+%{_libdir}/httpd/modules/mod_cache_disk.so
+%{_libdir}/httpd/modules/mod_cache.so
+%{_libdir}/httpd/modules/mod_cgid.so
+%{_libdir}/httpd/modules/mod_charset_lite.so
+%{_libdir}/httpd/modules/mod_data.so
+%{_libdir}/httpd/modules/mod_dav_fs.so
+%{_libdir}/httpd/modules/mod_dav_lock.so
+%{_libdir}/httpd/modules/mod_dav.so
+%{_libdir}/httpd/modules/mod_dbd.so
+%{_libdir}/httpd/modules/mod_deflate.so
+%{_libdir}/httpd/modules/mod_dialup.so
+%{_libdir}/httpd/modules/mod_dir.so
+%{_libdir}/httpd/modules/mod_dumpio.so
+%{_libdir}/httpd/modules/mod_echo.so
+%{_libdir}/httpd/modules/mod_env.so
+%{_libdir}/httpd/modules/mod_expires.so
+%{_libdir}/httpd/modules/mod_ext_filter.so
+%{_libdir}/httpd/modules/mod_file_cache.so
+%{_libdir}/httpd/modules/mod_filter.so
+%{_libdir}/httpd/modules/mod_headers.so
+%{_libdir}/httpd/modules/mod_heartbeat.so
+%{_libdir}/httpd/modules/mod_heartmonitor.so
+%{_libdir}/httpd/modules/mod_include.so
+%{_libdir}/httpd/modules/mod_info.so
+%{_libdir}/httpd/modules/mod_lbmethod_bybusyness.so
+%{_libdir}/httpd/modules/mod_lbmethod_byrequests.so
+%{_libdir}/httpd/modules/mod_lbmethod_bytraffic.so
+%{_libdir}/httpd/modules/mod_lbmethod_heartbeat.so
+%{_libdir}/httpd/modules/mod_log_config.so
+%{_libdir}/httpd/modules/mod_log_debug.so
+%{_libdir}/httpd/modules/mod_log_forensic.so
+%{_libdir}/httpd/modules/mod_logio.so
+%{_libdir}/httpd/modules/mod_mime_magic.so
+%{_libdir}/httpd/modules/mod_mime.so
+%{_libdir}/httpd/modules/mod_mpm_event.so
+%{_libdir}/httpd/modules/mod_mpm_prefork.so
+%{_libdir}/httpd/modules/mod_mpm_simple.so
+%{_libdir}/httpd/modules/mod_mpm_worker.so
+%{_libdir}/httpd/modules/mod_negotiation.so
+%{_libdir}/httpd/modules/mod_proxy_ajp.so
+%{_libdir}/httpd/modules/mod_proxy_balancer.so
+%{_libdir}/httpd/modules/mod_proxy_connect.so
+%{_libdir}/httpd/modules/mod_proxy_express.so
+%{_libdir}/httpd/modules/mod_proxy_fcgi.so
+%{_libdir}/httpd/modules/mod_proxy_fdpass.so
+%{_libdir}/httpd/modules/mod_proxy_ftp.so
+%{_libdir}/httpd/modules/mod_proxy_http.so
+%{_libdir}/httpd/modules/mod_proxy_scgi.so
+%{_libdir}/httpd/modules/mod_proxy.so
+%{_libdir}/httpd/modules/mod_ratelimit.so
+%{_libdir}/httpd/modules/mod_reflector.so
+%{_libdir}/httpd/modules/mod_remoteip.so
+%{_libdir}/httpd/modules/mod_reqtimeout.so
+%{_libdir}/httpd/modules/mod_request.so
+%{_libdir}/httpd/modules/mod_rewrite.so
+%{_libdir}/httpd/modules/mod_sed.so
+%{_libdir}/httpd/modules/mod_session_cookie.so
+%{_libdir}/httpd/modules/mod_session_crypto.so
+%{_libdir}/httpd/modules/mod_session_dbd.so
+%{_libdir}/httpd/modules/mod_session.so
+%{_libdir}/httpd/modules/mod_setenvif.so
+%{_libdir}/httpd/modules/mod_slotmem_plain.so
+%{_libdir}/httpd/modules/mod_slotmem_shm.so
+%{_libdir}/httpd/modules/mod_socache_dbm.so
+%{_libdir}/httpd/modules/mod_socache_memcache.so
+%{_libdir}/httpd/modules/mod_socache_shmcb.so
+%{_libdir}/httpd/modules/mod_speling.so
+%{_libdir}/httpd/modules/mod_status.so
+%{_libdir}/httpd/modules/mod_substitute.so
+%{_libdir}/httpd/modules/mod_suexec.so
+%{_libdir}/httpd/modules/mod_unique_id.so
+%{_libdir}/httpd/modules/mod_unixd.so
+%{_libdir}/httpd/modules/mod_userdir.so
+%{_libdir}/httpd/modules/mod_usertrack.so
+%{_libdir}/httpd/modules/mod_version.so
+%{_libdir}/httpd/modules/mod_vhost_alias.so
+%{_libdir}/httpd/modules/mod_watchdog.so
 
 %dir %{contentdir}
 %dir %{contentdir}/cgi-bin
@@ -308,6 +428,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{contentdir}/manual
 %{contentdir}/error/README
+
+%files -n mod_authnz_ldap
+%defattr(-,root,root)
+%{_libdir}/httpd/modules/mod_ldap.so
+%{_libdir}/httpd/modules/mod_authnz_ldap.so
+
+%files -n mod_proxy_html
+%defattr(-,root,root)
+%{_libdir}/httpd/modules/mod_proxy_html.so
+%{_libdir}/httpd/modules/mod_xml2enc.so
 
 %files -n mod_ssl
 %defattr(-,root,root)
