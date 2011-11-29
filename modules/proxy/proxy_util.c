@@ -1298,6 +1298,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     proxy_balancer *balancer;
     char *c, *uri = apr_pstrdup(p, url);
     int i;
+    unsigned int hash;
 
     c = strchr(uri, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
@@ -1307,9 +1308,10 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     if ((c = strchr(c + 3, '/'))) {
         *c = '\0';
     }
+    hash = ap_proxy_hashfunc(uri, PROXY_HASHFUNC_DEFAULT);
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
-        if (strcasecmp(balancer->s->name, uri) == 0) {
+        if (balancer->hash == hash) {
             if (!care || !balancer->s->inactive) {
                 return balancer;
             }
@@ -1410,6 +1412,7 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     }
 
     (*balancer)->s = bshared;
+    (*balancer)->sconf = conf;
 
     return ap_proxy_update_balancer(p, *balancer, alias);
 }

@@ -88,6 +88,11 @@ enum enctype {
  */
 #define DEFAULT_MAX_FORWARDS    -1
 
+typedef struct proxy_balancer  proxy_balancer;
+typedef struct proxy_worker    proxy_worker;
+typedef struct proxy_conn_pool proxy_conn_pool;
+typedef struct proxy_balancer_method proxy_balancer_method;
+
 /* static information about a remote proxy */
 struct proxy_remote {
     const char *scheme;     /* the schemes handled by this proxy, or '*' */
@@ -105,6 +110,7 @@ struct proxy_alias {
     const char  *fake;
     ap_regex_t  *regex;
     unsigned int flags;
+    proxy_balancer *balancer; /* only valid for reverse-proxys */
 };
 
 struct dirconn_entry {
@@ -118,11 +124,6 @@ struct noproxy_entry {
     const char *name;
     struct apr_sockaddr_t *addr;
 };
-
-typedef struct proxy_balancer  proxy_balancer;
-typedef struct proxy_worker    proxy_worker;
-typedef struct proxy_conn_pool proxy_conn_pool;
-typedef struct proxy_balancer_method proxy_balancer_method;
 
 typedef struct {
     apr_array_header_t *proxies;
@@ -408,7 +409,7 @@ typedef struct {
     apr_time_t      wupdated;     /* timestamp of last change to workers list */
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
-    int hash;
+    unsigned int hash;
     unsigned int    sticky_force:1;   /* Disable failover for sticky sessions */
     unsigned int    scolonsep:1;      /* true if ';' seps sticky session paths */
     unsigned int    max_attempts_set:1;
@@ -427,7 +428,7 @@ struct proxy_balancer {
     ap_slotmem_provider_t *storage;
     int growth;                   /* number of post-config workers can added */
     int max_workers;              /* maximum number of allowed workers */
-    int hash;
+    unsigned int hash;
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
     proxy_balancer_method *lbmethod;
     apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
