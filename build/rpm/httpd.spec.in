@@ -57,6 +57,14 @@ The httpd-manual package contains the complete manual and
 reference guide for the Apache HTTP server. The information can
 also be found at http://httpd.apache.org/docs/.
 
+%package tools
+Group: System Environment/Daemons
+Summary: Tools for use with the Apache HTTP Server
+
+%description tools
+The httpd-tools package contains tools which can be used with 
+the Apache HTTP Server.
+
 %package -n mod_authnz_ldap
 Group: System Environment/Daemons
 Summary: LDAP modules for the Apache HTTP server
@@ -284,17 +292,10 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/rc.d/init.d/httpd
 %config %{_sysconfdir}/rc.d/init.d/htcacheclean
 
-%{_sbindir}/ab
 %{_sbindir}/fcgistarter
 %{_sbindir}/htcacheclean
-%{_sbindir}/htdbm
-%{_sbindir}/htdigest
-%{_sbindir}/htpasswd
-%{_sbindir}/logresolve
 %{_sbindir}/httpd
-%{_sbindir}/httxt2dbm
 %{_sbindir}/apachectl
-%{_sbindir}/rotatelogs
 %attr(4510,root,%{suexec_caller}) %{_sbindir}/suexec
 
 %dir %{_libdir}/httpd
@@ -421,8 +422,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_mandir}/man1/*
 %{_mandir}/man8/ab*
-%{_mandir}/man8/rotatelogs*
-%{_mandir}/man8/logresolve*
 %{_mandir}/man8/suexec*
 %{_mandir}/man8/apachectl.8*
 %{_mandir}/man8/httpd.8*
@@ -432,6 +431,24 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{contentdir}/manual
 %{contentdir}/error/README
+
+%files tools
+%defattr(-,root,root)
+%{_sbindir}/ab
+%{_sbindir}/htdbm
+%{_sbindir}/htdigest
+%{_sbindir}/htpasswd
+%{_sbindir}/logresolve
+%{_sbindir}/httxt2dbm
+%{_sbindir}/rotatelogs
+%{_mandir}/man1/dbmmanage.1*
+%{_mandir}/man1/htdbm.1*
+%{_mandir}/man1/htdigest.1*
+%{_mandir}/man1/htpasswd.1*
+%{_mandir}/man8/ab.8*
+%{_mandir}/man8/logresolve.8*
+%{_mandir}/man8/rotatelogs.8*
+%doc LICENSE NOTICE
 
 %files -n mod_authnz_ldap
 %defattr(-,root,root)
