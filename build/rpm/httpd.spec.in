@@ -110,14 +110,6 @@ rm -rf srclib/{apr,apr-util,pcre}
         --enable-pie \
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --enable-distcache \
-        --enable-proxy \
-        --enable-cache \
-        --enable-disk-cache \
-        --enable-ldap --enable-authnz-ldap \
-        --enable-cgid \
-        --enable-authn-anon --enable-authn-alias \
-        --enable-session --enable-session-cookie \
-        --enable-session-dbd \
         --disable-imagemap
 
 make %{?_smp_mflags}
