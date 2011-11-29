@@ -122,11 +122,7 @@ rm -rf srclib/{apr,apr-util,pcre}
 	support/apxs.in
 
 %configure \
- 	--prefix=%{_sysconfdir}/httpd \
-        --exec-prefix=%{_prefix} \
- 	--bindir=%{_bindir} \
- 	--sbindir=%{_sbindir} \
- 	--mandir=%{_mandir} \
+	--enable-layout=RPM \
 	--libdir=%{_libdir} \
 	--sysconfdir=%{_sysconfdir}/httpd/conf \
 	--includedir=%{_includedir}/httpd \
@@ -160,14 +156,8 @@ mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/dav
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/cache/mod_ssl
 touch $RPM_BUILD_ROOT%{_localstatedir}/cache/mod_ssl/scache.{dir,pag,sem}
 
-# move the build directory to within the library directory
-mv $RPM_BUILD_ROOT%{contentdir}/build $RPM_BUILD_ROOT%{_libdir}/httpd/build
-
 # Make the MMN accessible to module packages
 echo %{mmn} > $RPM_BUILD_ROOT%{_includedir}/httpd/.mmn
-
-# docroot
-mkdir $RPM_BUILD_ROOT%{contentdir}/html
 
 # Set up /var directories
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/httpd
@@ -404,14 +394,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{contentdir}
 %dir %{contentdir}/cgi-bin
-%dir %{contentdir}/htdocs
 %dir %{contentdir}/html
 %dir %{contentdir}/icons
 %dir %{contentdir}/error
 %dir %{contentdir}/error/include
 %{contentdir}/icons/*
 %{contentdir}/error/README
-%{contentdir}/htdocs/index.html
+%{contentdir}/html/index.html
 %config(noreplace) %{contentdir}/error/*.var
 %config(noreplace) %{contentdir}/error/include/*.html
 
