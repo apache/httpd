@@ -306,7 +306,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/htpasswd
 %{_sbindir}/logresolve
 %{_sbindir}/httpd
-%{_sbindir}/httpd.worker
+%{_sbindir}/httpd.prefork
 %{_sbindir}/httpd.event
 %{_sbindir}/httxt2dbm
 %{_sbindir}/apachectl
