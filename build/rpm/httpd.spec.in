@@ -76,6 +76,16 @@ The mod_authnz_ldap module for the Apache HTTP server provides
 authentication and authorization against an LDAP server, while
 mod_ldap provides an LDAP cache.
 
+%package -n mod_lua
+Group: System Environment/Daemons
+Summary: Lua language module for the Apache HTTP server
+BuildRequires: lua-devel
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+
+%description -n mod_lua
+The mod_lua module for the Apache HTTP server allows the server to be
+extended with scripts written in the Lua programming language.
+
 %package -n mod_proxy_html
 Group: System Environment/Daemons
 Summary: Proxy HTML filter modules for the Apache HTTP server
@@ -443,6 +453,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_ldap.so
 %{_libdir}/httpd/modules/mod_authnz_ldap.so
+
+%files -n mod_lua
+%defattr(-,root,root)
+%{_libdir}/httpd/modules/mod_lua.so
 
 %files -n mod_proxy_html
 %defattr(-,root,root)
