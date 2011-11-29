@@ -282,6 +282,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-multilang-errordoc.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-userdir.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-vhosts.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/extra/proxy-html.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-autoindex.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-dav.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-default.conf
@@ -292,6 +293,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-multilang-errordoc.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-userdir.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-vhosts.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/proxy-html.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/httpd.conf
 
 %config %{_sysconfdir}/logrotate.d/httpd
