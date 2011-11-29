@@ -1091,7 +1091,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
          * to find which member actually handled this request.
          */
         if (ap_proxy_valid_balancer_name((char *)real, 0) &&
-            (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
+            (balancer = ap_proxy_get_balancer(r->pool, sconf, real, 1))) {
             int n, l3 = 0;
             proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
             const char *urlpart = ap_strchr_c(real, '/');
@@ -1292,7 +1292,8 @@ PROXY_DECLARE(int) ap_proxy_valid_balancer_name(char *name, int i)
 
 PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                       proxy_server_conf *conf,
-                                                      const char *url)
+                                                      const char *url,
+                                                      int care)
 {
     proxy_balancer *balancer;
     char *c, *uri = apr_pstrdup(p, url);
@@ -1309,7 +1310,9 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
         if (strcasecmp(balancer->s->name, uri) == 0) {
-            return balancer;
+            if (!care || !balancer->s->inactive) {
+                return balancer;
+            }
         }
         balancer++;
     }
