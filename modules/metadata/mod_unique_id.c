@@ -172,7 +172,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
      */
     if ((rv = apr_gethostname(str, sizeof(str) - 1, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
-          "mod_unique_id: unable to find hostname of the server");
+          "unable to find hostname of the server");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -181,14 +181,14 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
-                    "mod_unique_id: unable to find IPv4 address of \"%s\"", str);
+                    "unable to find IPv4 address of \"%s\"", str);
 #if APR_HAVE_IPV6
         if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET6, 0, 0, p)) == APR_SUCCESS) {
             memcpy(&global_in_addr,
                    (char *)sockaddr->ipaddr_ptr + sockaddr->ipaddr_len - sizeof(global_in_addr),
                    sizeof(global_in_addr));
             ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
-                         "mod_unique_id: using low-order bits of IPv6 address "
+                         "using low-order bits of IPv6 address "
                          "as if they were unique");
         }
         else
@@ -197,8 +197,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
     }
 
     apr_sockaddr_ip_get(&ipaddrstr, sockaddr);
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, main_server,
-                "mod_unique_id: using ip addr %s",
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, main_server, "using ip addr %s",
                  ipaddrstr);
 
     /*

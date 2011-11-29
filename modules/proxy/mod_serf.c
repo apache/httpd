@@ -533,7 +533,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
 
         rv = apr_file_mktemp(&fp, "mod_serf_buffer.XXXXXX", 0, pool);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mod_serf: Unable to create temp request body buffer file.");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "Unable to create temp request body buffer file.");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -543,14 +543,14 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
             if (rv > 0) {
                 rv = apr_file_write_full(fp, buf, rv, NULL);
                 if (rv) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mod_serf: failed to read request body");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "failed to read request body");
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
             }
         } while(rv > 0);
 
         if (rv < 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mod_serf: failed to read request body");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "failed to read request body");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -626,11 +626,11 @@ static const char *add_pass(cmd_parms *cmd, void *vconf,
     rv = apr_uri_parse(cmd->pool, argv[0], &conf->url);
 
     if (rv != APR_SUCCESS) {
-        return "mod_serf: Unable to parse SerfPass url.";
+        return "Unable to parse SerfPass url.";
     }
 
     if (!conf->url.scheme) {
-        return "mod_serf: Need scheme part in url.";
+        return "Need scheme part in url.";
     }
 
     /* XXXX: These are bugs in apr_uri_parse. Fixme. */

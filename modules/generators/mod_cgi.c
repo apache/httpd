@@ -588,7 +588,7 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     rv = apr_pollset_create(&data->pollset, 2, r->pool, 0);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                     "cgi: apr_pollset_create(); check system or user limits");
+                     "apr_pollset_create(); check system or user limits");
         return NULL;
     }
 
@@ -600,7 +600,7 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     rv = apr_pollset_add(data->pollset, &fd);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                     "cgi: apr_pollset_add(); check system or user limits");
+                     "apr_pollset_add(); check system or user limits");
         return NULL;
     }
 
@@ -609,7 +609,7 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     rv = apr_pollset_add(data->pollset, &fd);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                     "cgi: apr_pollset_add(); check system or user limits");
+                     "apr_pollset_add(); check system or user limits");
         return NULL;
     }
 
