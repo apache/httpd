@@ -13,15 +13,16 @@ Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildRequires: apr-devel, apr-util-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
-BuildRequires: /usr/bin/apr-1-config, /usr/bin/apu-1-config
-Requires: apr >= 1.4.2, apr-util >= 1.3.10, gawk, /usr/bin/find
-Requires: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
-Requires: sh-utils, textutils, /usr/sbin/useradd
+BuildRequires: autoconf, perl, pkgconfig, findutils
+BuildRequires: zlib-devel, libselinux-devel
+BuildRequires: apr-devel >= 1.4.0, apr-util-devel >= 1.3.0, pcre-devel >= 5.0, distcache-devel >= 1.4
+Requires: initscripts >= 8.36, /etc/mime.types
+Obsoletes: httpd-suexec
+Requires(pre): /usr/sbin/useradd
+Requires(post): chkconfig
 Provides: webserver
+Provides: mod_dav = %{version}-%{release}, httpd-suexec = %{version}-%{release}
 Provides: httpd-mmn = %{mmn}
-Conflicts: thttpd
-Obsoletes: apache, secureweb, mod_dav
 
 %description
 Apache is a powerful, full-featured, efficient, and freely-available
@@ -32,12 +33,13 @@ Internet.
 Group: Development/Libraries
 Summary: Development tools for the Apache HTTP server.
 Obsoletes: secureweb-devel, apache-devel
-Requires: libtool, httpd = %{epoch}:%{version}-%{release}
-Requires: apr-devel >= 1.4.2, apr-util-devel >= 1.3.10
+Requires: apr-devel, apr-util-devel, pkgconfig, libtool
+Requires: httpd = %{epoch}:%{version}-%{release}
 
 %description devel
 The httpd-devel package contains the APXS binary and other files
-that you need to build Dynamic Shared Objects (DSOs) for Apache.
+that you need to build Dynamic Shared Objects (DSOs) for the
+Apache HTTP Server.
 
 If you are installing the Apache HTTP server and you want to be
 able to compile or develop additional modules for Apache, you need
@@ -46,7 +48,9 @@ to install this package.
 %package manual
 Group: Documentation
 Summary: Documentation for the Apache HTTP server.
+Requires: httpd = %{epoch}:%{version}-%{release}
 Obsoletes: secureweb-manual, apache-manual
+BuildArch: noarch
 
 %description manual
 The httpd-manual package contains the complete manual and
@@ -57,7 +61,7 @@ also be found at http://httpd.apache.org/docs/.
 Group: System Environment/Daemons
 Summary: LDAP modules for the Apache HTTP server
 BuildRequires: openldap-devel
-Requires: httpd, httpd-mmn = %{mmn}
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_authnz_ldap
 The mod_authnz_ldap module for the Apache HTTP server provides
@@ -68,7 +72,7 @@ mod_ldap provides an LDAP cache.
 Group: System Environment/Daemons
 Summary: Proxy HTML filter modules for the Apache HTTP server
 BuildRequires: libxml2-devel
-Requires: httpd, httpd-mmn = %{mmn}
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_proxy_html
 The mod_proxy_html module for the Apache HTTP server provides
@@ -80,8 +84,9 @@ enhanced charset/internationalisation support for mod_proxy_html.
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
 BuildRequires: openssl-devel
-Requires: openssl, dev, /bin/cat
-Requires: httpd, make, httpd-mmn = %{mmn}
+Requires(post): openssl, /bin/cat
+Requires(pre): httpd
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
 
 %description -n mod_ssl
 The mod_ssl module provides strong cryptography for the Apache Web
@@ -110,9 +115,6 @@ rm -rf srclib/{apr,apr-util,pcre}
 
 %configure \
  	--prefix=%{_sysconfdir}/httpd \
-        --with-apr=/usr/bin/apr-1-config \
-        --with-apr-util=/usr/bin/apu-1-config \
-        --with-pcre=/usr/bin/pcre-config \
         --exec-prefix=%{_prefix} \
  	--bindir=%{_bindir} \
  	--sbindir=%{_sbindir} \
@@ -124,13 +126,15 @@ rm -rf srclib/{apr,apr-util,pcre}
 	--datadir=%{contentdir} \
         --with-installbuilddir=%{_libdir}/httpd/build \
         --enable-mpms-shared=all \
+        --with-apr=%{_prefix} --with-apr-util=%{_prefix} \
 	--enable-suexec --with-suexec \
 	--with-suexec-caller=%{suexec_caller} \
 	--with-suexec-docroot=%{contentdir} \
 	--with-suexec-logfile=%{_localstatedir}/log/httpd/suexec.log \
 	--with-suexec-bin=%{_sbindir}/suexec \
-	--with-suexec-uidmin=500 --with-suexec-gidmin=500 \
+	--with-suexec-uidmin=500 --with-suexec-gidmin=100 \
         --enable-pie \
+        --with-pcre \
         --enable-mods-shared=all \
         --enable-ssl --with-ssl --enable-distcache \
         --disable-imagemap
