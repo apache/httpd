@@ -103,7 +103,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
     rv = apr_memcache_create(p, nservers, 0, &ctx->mc);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "socache: Failed to create Memcache Object of '%d' size.",
+                     "Failed to create Memcache Object of '%d' size.",
                      nservers);
         return rv;
     }
@@ -120,13 +120,13 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
         rv = apr_parse_addr_port(&host_str, &scope_id, &port, split, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "socache: Failed to Parse memcache Server: '%s'", split);
+                         "Failed to Parse memcache Server: '%s'", split);
             return rv;
         }
 
         if (host_str == NULL) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "socache: Failed to Parse Server, "
+                         "Failed to Parse Server, "
                          "no hostname specified: '%s'", split);
             return APR_EINVAL;
         }
@@ -144,7 +144,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
                                         &st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "socache: Failed to Create memcache Server: %s:%d",
+                         "Failed to Create memcache Server: %s:%d",
                          host_str, port);
             return rv;
         }
@@ -152,7 +152,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
         rv = apr_memcache_add_server(ctx->mc, st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "socache: Failed to Add memcache Server: %s:%d",
+                         "Failed to Add memcache Server: %s:%d",
                          host_str, port);
             return rv;
         }
