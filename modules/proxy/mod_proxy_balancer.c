@@ -452,7 +452,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
      * for balancer, because this is failover attempt.
      */
     if (!*balancer &&
-        !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
+        !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url, 1)))
         return DECLINED;
 
     /* Step 2: Lock the LoadBalancer
@@ -951,7 +951,7 @@ static int balancer_handler(request_rec *r)
     }
     if ((name = apr_table_get(params, "b")))
         bsel = ap_proxy_get_balancer(r->pool, conf,
-            apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL));
+            apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL), 0);
 
     if ((name = apr_table_get(params, "w"))) {
         wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
@@ -1201,7 +1201,7 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, balancer->s->name, "</a></h3>\n", NULL);
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
                 "<th>MaxMembers</th><th>StickySession</th><th>DisableFailover</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
-                "<th>Path</th></tr>\n<tr>", r);
+                "<th>Path</th><th>Active</th></tr>\n<tr>", r);
             /* the below is a safe cast, since the number of slots total will
              * never be more than max_workers, which is restricted to int */
             ap_rprintf(r, "<td align='center'>%d [%d Used]</td>\n", balancer->max_workers,
@@ -1230,6 +1230,8 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, balancer->s->vhost, " -> ", NULL);
             }
             ap_rvputs(r, balancer->s->vpath, "</td>\n", NULL);
+            ap_rprintf(r, "<td align='center'>%s</td>\n",
+                       !balancer->s->inactive ? "Yes" : "No");
             ap_rputs("</table>\n<br />", r);
             ap_rputs("\n\n<table border='0' style='text-align: left;'><tr>"
                 "<th>Worker URL</th>"

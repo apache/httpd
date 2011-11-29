@@ -639,11 +639,13 @@ PROXY_DECLARE(int) ap_proxy_valid_balancer_name(char *name, int i);
  * @param p     memory pool used for temporary storage while finding balancer
  * @param conf  current proxy server configuration
  * @param url   url to find the worker from; must have balancer:// prefix
+ * @param careactive true if we care if the balancer is active or not
  * @return      proxy_balancer or NULL if not found
  */
 PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                       proxy_server_conf *conf,
-                                                      const char *url);
+                                                      const char *url,
+                                                      int careactive);
 
 /**
  * Update the balancer's vhost related fields
