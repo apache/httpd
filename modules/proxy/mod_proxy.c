@@ -1449,7 +1449,7 @@ static const char *
     elts = (const apr_table_entry_t *)arr->elts;
     /* Distinguish the balancer from worker */
     if (ap_proxy_valid_balancer_name(r, 9)) {
-        proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
+        proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r, 0);
         if (!balancer) {
             const char *err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, r, f, 0);
             if (err)
@@ -1905,7 +1905,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     ap_str_tolower(path);   /* lowercase scheme://hostname */
 
     /* Try to find the balancer */
-    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path);
+    balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, path, 0);
     if (!balancer) {
         err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, path, "/", 0);
         if (err)
@@ -1985,7 +1985,7 @@ static const char *
     }
 
     if (ap_proxy_valid_balancer_name(name, 9)) {
-        balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
+        balancer = ap_proxy_get_balancer(cmd->pool, conf, name, 0);
         if (!balancer) {
             if (in_proxy_section) {
                 err = ap_proxy_define_balancer(cmd->pool, &balancer, conf, name, "/", 0);
@@ -2134,7 +2134,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
                                "> arguments are not supported for non url.",
                                NULL);
         if (ap_proxy_valid_balancer_name((char *)conf->p, 9)) {
-            balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p);
+            balancer = ap_proxy_get_balancer(cmd->pool, sconf, conf->p, 0);
             if (!balancer) {
                 err = ap_proxy_define_balancer(cmd->pool, &balancer,
                                                sconf, conf->p, "/", 0);
