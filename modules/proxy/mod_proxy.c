@@ -670,8 +670,8 @@ static int proxy_trans(request_rec *r)
         }
     }
 
-    conf
-            = (proxy_server_conf *) ap_get_module_config(r->server->module_config, &proxy_module);
+    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &proxy_module);
 
     /* long way - walk the list of aliases, find a match */
     if (conf->aliases->nelts) {
@@ -1464,6 +1464,7 @@ static const char *
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
+        new->balancer = balancer;
     }
     else {
         proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, NULL, conf, r);
