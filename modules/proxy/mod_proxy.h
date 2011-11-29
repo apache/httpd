@@ -415,6 +415,7 @@ typedef struct {
     unsigned int    was_malloced:1;
     unsigned int    need_reset:1;
     unsigned int    vhosted:1;
+    unsigned int    inactive:1;
 } proxy_balancer_shared;
 
 #define ALIGNED_PROXY_BALANCER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_balancer_shared)))
