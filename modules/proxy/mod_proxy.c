@@ -670,8 +670,8 @@ static int proxy_trans(request_rec *r)
         }
     }
 
-    conf
-            = (proxy_server_conf *) ap_get_module_config(r->server->module_config, &proxy_module);
+    conf = (proxy_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &proxy_module);
 
     /* long way - walk the list of aliases, find a match */
     if (conf->aliases->nelts) {
