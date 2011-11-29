@@ -1300,6 +1300,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     int i;
     unsigned int hash;
 
+    ap_str_tolower(uri);
     c = strchr(uri, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0') {
         return NULL;
