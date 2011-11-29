@@ -435,7 +435,6 @@ static apr_status_t dbd_prepared_init(apr_pool_t *pool, dbd_cfg_t *cfg,
                                       ap_dbd_t *rec)
 {
     apr_hash_index_t *hi;
-    apr_status_t rv = APR_SUCCESS;
 
     rec->prepared = apr_hash_make(pool);
 
@@ -453,14 +452,14 @@ static apr_status_t dbd_prepared_init(apr_pool_t *pool, dbd_cfg_t *cfg,
         stmt = NULL;
         if (apr_dbd_prepare(rec->driver, pool, rec->handle, query,
                             label, &stmt)) {
-            rv = APR_EGENERAL;
+            return APR_EGENERAL;
         }
         else {
             apr_hash_set(rec->prepared, label, APR_HASH_KEY_STRING, stmt);
         }
     }
 
-    return rv;
+    return APR_SUCCESS;
 }
 
 static apr_status_t dbd_init_sql_init(apr_pool_t *pool, dbd_cfg_t *cfg,
