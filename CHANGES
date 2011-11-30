@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_session_crypto: Add a SessionCryptoPassphraseFile directive so that
+     the administrator can hide the keys from the configuration. [Graham
+     Leggett]
+
   *) Introduce a per request version of the remote IP address, which can be
      optionally modified by a module when the effective IP of the client
      is not the same as the real IP of the client (such as a load balancer).
