@@ -15,7 +15,7 @@ Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: autoconf, perl, pkgconfig, findutils
 BuildRequires: zlib-devel, libselinux-devel
-BuildRequires: apr-devel >= 1.4.0, apr-util-devel >= 1.3.0, pcre-devel >= 5.0, distcache-devel >= 1.4
+BuildRequires: apr-devel >= 1.4.0, apr-util-devel >= 1.3.0, pcre-devel >= 5.0
 Requires: initscripts >= 8.36, /etc/mime.types
 Obsoletes: httpd-suexec
 Requires(pre): /usr/sbin/useradd
@@ -98,6 +98,16 @@ a filter to rewrite HTML links within web content when used within
 a reverse proxy environment. The mod_xml2enc module provides
 enhanced charset/internationalisation support for mod_proxy_html.
 
+%package -n mod_socache_dc
+Group: System Environment/Daemons
+Summary: Distcache shared object cache module for the Apache HTTP server
+BuildRequires: distcache-devel
+Requires: httpd = %{epoch}:%{version}-%{release}, httpd-mmn = %{mmn}
+
+%description -n mod_socache_dc
+The mod_socache_dc module for the Apache HTTP server allows the shared
+object cache to use the distcache shared caching mechanism.
+
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
@@ -150,7 +160,7 @@ rm -rf srclib/{apr,apr-util,pcre}
         --enable-pie \
         --with-pcre \
         --enable-mods-shared=all \
-        --enable-ssl --with-ssl --enable-distcache \
+        --enable-ssl --with-ssl --enable-socache-dc \
         --disable-imagemap
 
 make %{?_smp_mflags}
@@ -462,6 +472,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_proxy_html.so
 %{_libdir}/httpd/modules/mod_xml2enc.so
+
+%files -n mod_socache_dc
+%defattr(-,root,root)
+%{_libdir}/httpd/modules/mod_socache_dc.so
 
 %files -n mod_ssl
 %defattr(-,root,root)
