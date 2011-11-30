@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.22
 
+  *) SECURITY: CVE-2011-3368 (cve.mitre.org)
+     Reject requests where the request-URI does not match the HTTP
+     specification, preventing unexpected expansion of target URLs in
+     some reverse proxy configurations.  [Joe Orton]
+
   *) mod_log_config: Prevent segfault. PR 50861. [Torsten Förtsch
      <torsten.foertsch gmx.net>]
 
@@ -9,11 +14,6 @@ Changes with Apache 2.2.22
      chars; all other vars will be fixed. This has the benefit that now also
      all vars from 3rd-party modules will be fixed. PR 13029 / 34985.
      [Guenter Knauf]
-
-  *) SECURITY: CVE-2011-3368 (cve.mitre.org)
-     Reject requests where the request-URI does not match the HTTP
-     specification, preventing unexpected expansion of target URLs in
-     some reverse proxy configurations.  [Joe Orton]
 
   *) core: Fix hook sorting for Perl modules, a regression introduced in
      2.2.21. PR: 45076. [Torsten Foertsch <torsten foertsch gmx net>]
