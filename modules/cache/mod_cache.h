@@ -109,17 +109,20 @@ typedef struct {
                            const char *urlkey);
     int (*remove_url) (cache_handle_t *h, request_rec *r);
     apr_status_t (*commit_entity)(cache_handle_t *h, request_rec *r);
+    apr_status_t (*invalidate_entity)(cache_handle_t *h, request_rec *r);
 } cache_provider;
 
 typedef enum {
     AP_CACHE_HIT,
     AP_CACHE_REVALIDATE,
-    AP_CACHE_MISS
+    AP_CACHE_MISS,
+    AP_CACHE_INVALIDATE
 } ap_cache_status_e;
 
 #define AP_CACHE_HIT_ENV "cache-hit"
 #define AP_CACHE_REVALIDATE_ENV "cache-revalidate"
 #define AP_CACHE_MISS_ENV "cache-miss"
+#define AP_CACHE_INVALIDATE_ENV "cache-invalidate"
 #define AP_CACHE_STATUS_ENV "cache-status"
 
 

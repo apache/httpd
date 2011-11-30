@@ -371,12 +371,13 @@
  *                         add pool to ap_errorlog_info.
  * 20111130.0 (2.4.0-dev)  c->remote_ip becomes c->peer_ip and r->client_ip,
  *                         c->remote_addr becomes c->peer_addr and r->client_addr
+ * 20111201.0 (2.5.0-dev)  Add invalidate_entity() to the cache provider.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20111130
+#define MODULE_MAGIC_NUMBER_MAJOR 20111201
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 
