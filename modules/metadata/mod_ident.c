@@ -101,14 +101,14 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
         return rv;
     }
 
-    if ((rv = apr_sockaddr_info_get(&destsa, conn->remote_ip,
+    if ((rv = apr_sockaddr_info_get(&destsa, conn->peer_ip,
                               localsa->family, /* has to match */
                               RFC1413_PORT, 0, conn->pool)) != APR_SUCCESS) {
         /* This should not fail since we have a numeric address string
          * as the host. */
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: apr_sockaddr_info_get(%s) failed",
-                     conn->remote_ip);
+                     conn->peer_ip);
         return rv;
     }
 
@@ -167,7 +167,7 @@ static apr_status_t rfc1413_query(apr_socket_t *sock, conn_rec *conn,
     apr_size_t buflen;
 
     sav_our_port = conn->local_addr->port;
-    sav_rmt_port = conn->remote_addr->port;
+    sav_rmt_port = conn->peer_addr->port;
 
     /* send the data */
     buflen = apr_snprintf(buffer, sizeof(buffer), "%hu,%hu\r\n", sav_rmt_port,

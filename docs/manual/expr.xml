@@ -237,6 +237,9 @@ listfunction ::= listfuncname "<strong>(</strong>" word "<strong>)</strong>"
     <tr><td><code>CONN_LOG_ID</code></td>
         <td>The error log id of the connection (see
             <directive module="core">ErrorLogFormat</directive>)</td></tr>
+    <tr><td><code>CONN_REMOTE_ADDR</code></td>
+        <td>The raw IP address of the remote host (see the
+            <module>mod_remoteip</module> module)</td></tr>
 
     </table>
 

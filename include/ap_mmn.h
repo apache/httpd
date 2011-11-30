@@ -369,12 +369,14 @@
  * 20111122.0 (2.4.0-dev)  Remove parts of conn_state_t that are private to the MPM
  * 20111123.0 (2.4.0-dev)  Pass ap_errorlog_info struct to error_log hook,
  *                         add pool to ap_errorlog_info.
+ * 20111130.0 (2.4.0-dev)  c->remote_ip becomes c->peer_ip and r->client_ip,
+ *                         c->remote_addr becomes c->peer_addr and r->client_addr
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20111123
+#define MODULE_MAGIC_NUMBER_MAJOR 20111130
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 

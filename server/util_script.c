@@ -235,7 +235,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
                   apr_psprintf(r->pool, "%u", ap_get_server_port(r)));
     add_unless_null(e, "REMOTE_HOST",
                     ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST, NULL));
-    apr_table_addn(e, "REMOTE_ADDR", c->remote_ip);
+    apr_table_addn(e, "REMOTE_ADDR", r->client_ip);
     apr_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));    /* Apache */
     apr_table_setn(e, "REQUEST_SCHEME", ap_http_scheme(r));
     apr_table_addn(e, "CONTEXT_PREFIX", ap_context_prefix(r));
@@ -243,7 +243,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin); /* Apache */
     apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
 
-    rport = c->remote_addr->port;
+    rport = c->peer_addr->port;
     apr_table_addn(e, "REMOTE_PORT", apr_itoa(r->pool, rport));
 
     if (r->user) {

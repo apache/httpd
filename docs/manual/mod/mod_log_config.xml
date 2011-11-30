@@ -73,6 +73,10 @@
     <tr><td><code>%a</code></td>
         <td>Remote IP-address.</td></tr>
 
+    <tr><td><code>%{c}a</code></td>
+        <td>Actual remote IP-address and port (see the
+        <module>mod_remoteip</module> module)</td></tr>
+
     <tr><td><code>%A</code></td>
         <td>Local IP-address.</td></tr>
 

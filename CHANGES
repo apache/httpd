@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) Introduce a per request version of the remote IP address, which can be
+     optionally modified by a module when the effective IP of the client
+     is not the same as the real IP of the client (such as a load balancer).
+     Introduce a per connection "peer_ip" and a per request "client_ip" to
+     distinguish between the raw IP address of the connection and the effective
+     IP address of the request. [Graham Leggett]
+
   *) ap_pass_brigade_fchk() function added. [Jim Jagielski]
 
   *) core: Pass ap_errorlog_info struct to error log hook. [Stefan Fritsch]

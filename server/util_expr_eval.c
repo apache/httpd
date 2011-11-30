@@ -1183,10 +1183,10 @@ APR_DECLARE_OPTIONAL_FN(int, ssl_is_https, (conn_rec *));
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *is_https = NULL;
 
 static const char *conn_var_names[] = {
-    "REMOTE_ADDR",              /*  0 */
-    "HTTPS",                    /*  1 */
-    "IPV6",                     /*  2 */
-    "CONN_LOG_ID",              /*  3 */
+    "HTTPS",                    /*  0 */
+    "IPV6",                     /*  1 */
+    "CONN_LOG_ID",              /*  2 */
+    "CONN_REMOTE_ADDR",         /*  3 */
     NULL
 };
 
@@ -1199,16 +1199,14 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 
     switch (index) {
     case 0:
-        return c->remote_ip;
-    case 1:
         if (is_https && is_https(c))
             return "on";
         else
             return "off";
-    case 2:
+    case 1:
 #if APR_HAVE_IPV6
         {
-            apr_sockaddr_t *addr = c->remote_addr;
+            apr_sockaddr_t *addr = c->peer_addr;
             if (addr->family == AF_INET6
                 && !IN6_IS_ADDR_V4MAPPED((struct in6_addr *)addr->ipaddr_ptr))
                 return "on";
@@ -1218,8 +1216,10 @@ static const char *conn_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
 #else
         return "off";
 #endif
-    case 3:
+    case 2:
         return c->log_id;
+    case 3:
+        return c->peer_ip;
     default:
         ap_assert(0);
         return NULL;
@@ -1255,6 +1255,7 @@ static const char *request_var_names[] = {
     "CONTEXT_PREFIX",           /* 25 */
     "CONTEXT_DOCUMENT_ROOT",    /* 26 */
     "REQUEST_STATUS",           /* 27 */
+    "REMOTE_ADDR",              /* 28 */
     NULL
 };
 
@@ -1340,6 +1341,8 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         return ap_context_document_root(r);
     case 27:
         return r->status ? apr_psprintf(ctx->p, "%d", r->status) : "";
+    case 28:
+        return r->client_ip;
     default:
         ap_assert(0);
         return NULL;
@@ -1485,10 +1488,10 @@ static int op_R(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg1)
 
     AP_DEBUG_ASSERT(subnet != NULL);
 
-    if (!ctx->c)
+    if (!ctx->r)
         return FALSE;
 
-    return apr_ipsubnet_test(subnet, ctx->c->remote_addr);
+    return apr_ipsubnet_test(subnet, ctx->r->client_addr);
 }
 
 static int op_T(ap_expr_eval_ctx_t *ctx, const void *data, const char *arg)
