@@ -1375,10 +1375,10 @@ in case of an error</description>
         <td>The percent sign</td></tr>
 
     <tr><td><code>%a</code></td>
-        <td>Remote IP-address and port</td></tr>
+        <td>Client IP address and port of the request</td></tr>
 
     <tr><td><code>%{c}a</code></td>
-        <td>Actual remote IP-address and port (see the
+        <td>Underlying peer IP address and port of the connection (see the
             <module>mod_remoteip</module> module)</td></tr>
 
     <tr><td><code>%A</code></td>
