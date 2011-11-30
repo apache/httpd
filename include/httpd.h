@@ -1003,6 +1003,12 @@ struct request_rec {
     apr_uri_t parsed_uri;
     /**  finfo.protection (st_mode) set to zero if no such file */
     apr_finfo_t finfo;
+
+    /** remote address information from conn_rec, can be overridden if
+     * necessary by a module.
+     */
+    apr_sockaddr_t *client_addr;
+    char *client_ip;
 };
 
 /**
@@ -1046,10 +1052,10 @@ struct conn_rec {
     /** local address */
     apr_sockaddr_t *local_addr;
     /** remote address */
-    apr_sockaddr_t *remote_addr;
+    apr_sockaddr_t *peer_addr;
 
     /** Client's IP address */
-    char *remote_ip;
+    char *peer_ip;
     /** Client's DNS name, if known.  NULL if DNS hasn't been checked,
      *  "" if it has and no address was found.  N.B. Only access this though
      * get_remote_host() */

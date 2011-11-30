@@ -23,9 +23,9 @@
 <modulesynopsis metafile="mod_remoteip.xml.meta">
 
 <name>mod_remoteip</name>
-<description>Replaces the apparent client remote IP address and hostname
-for the request with the IP address list presented by a proxies or a load
-balancer via the request headers.
+<description>Replaces the apparent client remote IP address for the request
+with the IP address list presented by a proxies or a load balancer via the
+request headers.
 </description>
 
 <status>Base</status>
@@ -38,22 +38,19 @@ balancer via the request headers.
     purposes of authorization and logging, even where that remote host is
     behind a load balancer, front end server, or proxy server.</p>
 
-    <p>The module replaces the apparent remote (client) IP/hostname for
+    <p>The module overrides the apparent remote (client) IP for
     the request with the IP address reported in the request header
     configured with the <directive>RemoteIPHeader</directive> directive.</p>
 
     <p>Once replaced as instructed, this apparent IP address is then used
-    for <module>mod_authz_host</module> features
-    <directive module="mod_authz_host" type="section">Require host</directive>
-    and <directive module="mod_authz_host" type="section">Require ip</directive>,
+    for the <module>mod_authz_host</module>
+    <directive module="mod_authz_host" type="section">Require ip</directive> feature,
     is reported by <module>mod_status</module>, and is recorded by
-    <module>mod_log_config</module> <code>%a</code> and <code>%h</code>
-    directives.  It also determines the machine probed for an inetd
-    identity by <module>mod_ident</module> based on the
-    <directive module="mod_ident">IdentityCheck</directive> configuration.</p>
+    <module>mod_log_config</module> <code>%a</code> and <module>core</module>
+    <code>%a</code> format strings. The original remote IP of the connection is
+    available in the <code>%{c}a</code> format string.</p>
 
     <note type="warning">It is critical to only enable this behavior from
-
     intermediate hosts (proxies, etc) which are trusted by this server, since
     it is trivial for the remote client to impersonate another client.</note>
 </summary>
@@ -61,7 +58,6 @@ balancer via the request headers.
 <seealso><module>mod_authz_host</module></seealso>
 <seealso><module>mod_status</module></seealso>
 <seealso><module>mod_log_config</module></seealso>
-<seealso><module>mod_ident</module></seealso>
 
 <section id="processing"><title>Remote IP Processing</title>
 
@@ -72,13 +68,12 @@ balancer via the request headers.
 
     <p>mod_remoteip replaces the true remote_ip with the advertised remote_ip as
     provided by a proxy, for every evaluation of the client that occurs in the
-    server, and resets the remote_host and remote_logname values to trigger a
-    fresh dns or ident query of the remote IP address.</p>
+    server.</p>
 
     <p>When multiple, comma delimited remote IP addresses are listed in the
     header value, they are processed in Right-to-Left order.  Processing
     halts when a given remote IP address is not trusted to present the
-    preceeding IP address.  The header field is updated to this remaining
+    preceding IP address.  The header field is updated to this remaining
     list of unconfirmed IP addresses, or if all IP addresses were trusted,
     this header is removed from the request altogether.</p>
 
