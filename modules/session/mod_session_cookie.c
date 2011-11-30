@@ -20,7 +20,6 @@
 #include "http_log.h"
 #include "util_cookies.h"
 
-#define LOG_PREFIX "mod_session_cookie: "
 #define MOD_SESSION_COOKIE "mod_session_cookie"
 
 module AP_MODULE_DECLARE_DATA session_cookie_module;
