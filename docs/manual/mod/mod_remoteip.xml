@@ -23,9 +23,9 @@
 <modulesynopsis metafile="mod_remoteip.xml.meta">
 
 <name>mod_remoteip</name>
-<description>Replaces the apparent client remote IP address for the request
-with the IP address list presented by a proxies or a load balancer via the
-request headers.
+<description>Replaces the original peer IP address for the connection
+with the client IP address list presented by a proxies or a load balancer
+via the request headers.
 </description>
 
 <status>Base</status>
@@ -33,22 +33,22 @@ request headers.
 <identifier>remoteip_module</identifier>
 
 <summary>
-    <p>This module is used to treat the remote host which initiated the
-    request as the originating remote host as identified by httpd for the
-    purposes of authorization and logging, even where that remote host is
+    <p>This module is used to treat the client which initiated the
+    request as the originating client as identified by httpd for the
+    purposes of authorization and logging, even where that client is
     behind a load balancer, front end server, or proxy server.</p>
 
-    <p>The module overrides the apparent remote (client) IP for
-    the request with the IP address reported in the request header
-    configured with the <directive>RemoteIPHeader</directive> directive.</p>
+    <p>The module overrides the peer IP address for the connection
+    with the client IP address reported in the request header configured
+    with the <directive>RemoteIPHeader</directive> directive.</p>
 
-    <p>Once replaced as instructed, this apparent IP address is then used
-    for the <module>mod_authz_host</module>
-    <directive module="mod_authz_host" type="section">Require ip</directive> feature,
-    is reported by <module>mod_status</module>, and is recorded by
+    <p>Once replaced as instructed, this overridden client IP address is
+    then used for the <module>mod_authz_host</module>
+    <directive module="mod_authz_host" type="section">Require ip</directive>
+    feature, is reported by <module>mod_status</module>, and is recorded by
     <module>mod_log_config</module> <code>%a</code> and <module>core</module>
-    <code>%a</code> format strings. The original remote IP of the connection is
-    available in the <code>%{c}a</code> format string.</p>
+    <code>%a</code> format strings. The underlying peer IP of the connection
+    is available in the <code>%{c}a</code> format string.</p>
 
     <note type="warning">It is critical to only enable this behavior from
     intermediate hosts (proxies, etc) which are trusted by this server, since
@@ -61,23 +61,27 @@ request headers.
 
 <section id="processing"><title>Remote IP Processing</title>
 
-    <p>Apache identifies the client with the connection's remote_ip value,
-    and the connection remote_host and remote_logname are derived from this
-    value.  These fields play a role in authentication, authorization and
-    logging and other purposes by other loadable modules.</p>
+    <p>Apache by default identifies the client with the connection's
+    peer_ip value, and the connection remote_host and remote_logname are
+    derived from this value. These fields play a role in authentication,
+    authorization and logging and other purposes by other loadable
+    modules.</p>
 
-    <p>mod_remoteip replaces the true remote_ip with the advertised remote_ip as
-    provided by a proxy, for every evaluation of the client that occurs in the
-    server.</p>
+    <p>mod_remoteip overrides the peer IP of the connection with the
+    advertised client IP as provided by a proxy or load balancer, for
+    the duration of the request. A load balancer might establish a long
+    lived keepalive connection with the server, and each request will
+    have the correct client IP, even though the underlying peer IP
+    address of the load balancer remains unchanged.</p>
 
-    <p>When multiple, comma delimited remote IP addresses are listed in the
+    <p>When multiple, comma delimited client IP addresses are listed in the
     header value, they are processed in Right-to-Left order.  Processing
-    halts when a given remote IP address is not trusted to present the
+    halts when a given client IP address is not trusted to present the
     preceding IP address.  The header field is updated to this remaining
     list of unconfirmed IP addresses, or if all IP addresses were trusted,
     this header is removed from the request altogether.</p>
 
-    <p>In replacing the remote_ip, the module stores the list of intermediate
+    <p>In overriding the client IP, the module stores the list of intermediate
     hosts in a remoteip-proxy-ip-list note, which <module>mod_log_config</module>
     can record using the <code>%{remoteip-proxy-ip-list}n</code> format token.
     If the administrator needs to store this as an additional header, this
@@ -181,9 +185,10 @@ request headers.
 <usage>
     <p>The <directive>RemoteIPProxiesHeader</directive> directive specifies
     a header into which <module>mod_remoteip</module> will collect a list of
-    all of the intermediate client IP addresses trusted to resolve the actual
-    remote IP.  Note that intermediate <directive>RemoteIPTrustedProxy</directive>
-    addresses are recorded in this header, while any intermediate
+    all of the intermediate client IP addresses trusted to resolve the client
+    IP of the request. Note that intermediate
+    <directive>RemoteIPTrustedProxy</directive> addresses are recorded in
+    this header, while any intermediate
     <directive>RemoteIPInternalProxy</directive> addresses are discarded.</p>
 
     <example><title>Example</title>
@@ -206,7 +211,7 @@ request headers.
     <directive>RemoteIPInternalProxy</directive> directive, any intranet
     or private IP address reported by such proxies, including the 10/8, 172.16/12,
     192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
-    2000::/3 block) are not trusted as the remote IP, and are left in the
+    2000::/3 block) are not trusted as the client IP, and are left in the
     <directive>RemoteIPHeader</directive> header's value.</p>
 
     <example><title>Trusted (Load Balancer) Example</title>
