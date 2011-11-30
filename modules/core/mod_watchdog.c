@@ -18,9 +18,6 @@
  */
 
 #include "apr.h"
-#if APR_HAVE_UNISTD_H
-#include <unistd.h>         /* for getpid() */
-#endif
 #if APR_HAVE_PROCESS_H
 #include <process.h>        /* for getpid() on Win32 */
 #endif
@@ -162,9 +159,8 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     if (w->is_running) {
         watchdog_list_t *wl = w->callbacks;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
-                     "%sWatchdog (%s) running (%" APR_PID_T_FMT ")",
-                     w->singleton ? "Singleton" : "",
-                     w->name, getpid());
+                     "%sWatchdog (%s) running",
+                     w->singleton ? "Singleton" : "", w->name);
         apr_time_clock_hires(w->pool);
         if (wl) {
             apr_pool_t *ctx = NULL;
@@ -259,9 +255,8 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
         }
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
-                 "%sWatchdog (%s) stopping (%" APR_PID_T_FMT ")",
-                 w->singleton ? "Singleton" : "",
-                 w->name, getpid());
+                 "%sWatchdog (%s) stopping",
+                 w->singleton ? "Singleton" : "", w->name);
 
     if (locked)
         apr_proc_mutex_unlock(w->mutex);

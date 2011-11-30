@@ -1917,9 +1917,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             {
                 apr_off_t readbytes;
                 apr_brigade_length(bb, 0, &readbytes);
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                             r->server, "proxy (PID %d): readbytes: %#x",
-                             getpid(), readbytes);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "proxy: readbytes: %#x", readbytes);
             }
 #endif
             /* sanity check */
