@@ -23,7 +23,6 @@
 #include "mod_dbd.h"
 #include "mpm_common.h"
 
-#define LOG_PREFIX "mod_session_dbd: "
 #define MOD_SESSION_DBD "mod_session_dbd"
 
 module AP_MODULE_DECLARE_DATA session_dbd_module;
@@ -67,7 +66,7 @@ static apr_status_t dbd_init(request_rec *r, const char *query, ap_dbd_t **dbdp,
         session_dbd_prepare_fn = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);
         session_dbd_acquire_fn = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_acquire);
         if (!session_dbd_prepare_fn || !session_dbd_acquire_fn) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "You must load mod_dbd to enable AuthDBD functions");
             return APR_EGENERAL;
         }
@@ -75,14 +74,14 @@ static apr_status_t dbd_init(request_rec *r, const char *query, ap_dbd_t **dbdp,
 
     dbd = session_dbd_acquire_fn(r);
     if (!dbd) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "failed to acquire database connection");
         return APR_EGENERAL;
     }
 
     statement = apr_hash_get(dbd->prepared, query, APR_HASH_KEY_STRING);
     if (!statement) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "failed to find the prepared statement called '%s'", query);
         return APR_EGENERAL;
     }
@@ -110,7 +109,7 @@ static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
                                                       &session_dbd_module);
 
     if (conf->selectlabel == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "no SessionDBDselectlabel has been specified");
         return APR_EGENERAL;
     }
@@ -122,7 +121,7 @@ static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
     rv = apr_dbd_pvbselect(dbd->driver, r->pool, dbd->handle, &res, statement,
                           0, key, &expiry, NULL);
     if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "query execution error saving session '%s' "
                       "in database using query '%s': %s", key, conf->selectlabel,
                       apr_dbd_error(dbd->driver, dbd->handle, rv));
@@ -132,7 +131,7 @@ static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
          rv != -1;
          rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1)) {
         if (rv != 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, LOG_PREFIX
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "error retrieving results while saving '%s' "
                           "in database using query '%s': %s", key, conf->selectlabel,
                            apr_dbd_error(dbd->driver, dbd->handle, rv));
@@ -264,7 +263,7 @@ static apr_status_t dbd_save(request_rec * r, const char *key, const char *val,
                                                       &session_dbd_module);
 
     if (conf->updatelabel == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "no SessionDBDupdatelabel has been specified");
         return APR_EGENERAL;
     }
@@ -276,7 +275,7 @@ static apr_status_t dbd_save(request_rec * r, const char *key, const char *val,
     rv = apr_dbd_pvbquery(dbd->driver, r->pool, dbd->handle, &rows, statement,
                           val, &expiry, key, NULL);
     if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "query execution error updating session '%s' "
                       "using database query '%s': %s", key, conf->updatelabel,
                       apr_dbd_error(dbd->driver, dbd->handle, rv));
@@ -292,7 +291,7 @@ static apr_status_t dbd_save(request_rec * r, const char *key, const char *val,
     }
 
     if (conf->insertlabel == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "no SessionDBDinsertlabel has been specified");
         return APR_EGENERAL;
     }
@@ -304,7 +303,7 @@ static apr_status_t dbd_save(request_rec * r, const char *key, const char *val,
     rv = apr_dbd_pvbquery(dbd->driver, r->pool, dbd->handle, &rows, statement,
                           val, &expiry, key, NULL);
     if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "query execution error inserting session '%s' "
                       "in database with '%s': %s", key, conf->insertlabel,
                       apr_dbd_error(dbd->driver, dbd->handle, rv));
@@ -319,7 +318,7 @@ static apr_status_t dbd_save(request_rec * r, const char *key, const char *val,
         return APR_SUCCESS;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "the session insert query did not cause any rows to be added "
                   "to the database for session '%s', session not inserted", key);
 
@@ -341,14 +340,14 @@ static apr_status_t dbd_remove(request_rec * r, const char *key)
                                                       &session_dbd_module);
     ap_dbd_t *dbd = session_dbd_acquire_fn(r);
     if (dbd == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "failed to acquire database connection to remove "
                       "session with key '%s'", key);
         return APR_EGENERAL;
     }
 
     if (conf->deletelabel == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "no SessionDBDdeletelabel has been specified");
         return APR_EGENERAL;
     }
@@ -356,7 +355,7 @@ static apr_status_t dbd_remove(request_rec * r, const char *key)
     statement = apr_hash_get(dbd->prepared, conf->deletelabel,
                              APR_HASH_KEY_STRING);
     if (statement == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "prepared statement could not be found for "
                       "SessionDBDdeletelabel with the label '%s'",
                       conf->deletelabel);
@@ -365,7 +364,7 @@ static apr_status_t dbd_remove(request_rec * r, const char *key)
     rv = apr_dbd_pvbquery(dbd->driver, r->pool, dbd->handle, &rows, statement,
                           key, NULL);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "query execution error removing session '%s' "
                       "from database", key);
         return rv;
@@ -462,7 +461,7 @@ static int session_dbd_save(request_rec * r, session_rec * z)
             return OK;
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                "peruser sessions can only be saved if a user is logged in, "
                           "session not saved: %s", r->uri);
         }
