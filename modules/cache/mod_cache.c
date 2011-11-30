@@ -1558,6 +1558,10 @@ static int cache_status(cache_handle_t *h, request_rec *r,
         apr_table_setn(r->subprocess_env, AP_CACHE_MISS_ENV, reason);
         break;
     }
+    case AP_CACHE_INVALIDATE: {
+        apr_table_setn(r->subprocess_env, AP_CACHE_INVALIDATE_ENV, reason);
+        break;
+    }
     }
 
     apr_table_setn(r->subprocess_env, AP_CACHE_STATUS_ENV, reason);
