@@ -370,12 +370,13 @@
  * 20111120.0 (2.5.0-dev)  Remove parts of conn_state_t that are private to the MPM
  * 20111121.0 (2.5.0-dev)  Pass ap_errorlog_info struct to error_log hook,
  *                         add pool to ap_errorlog_info.
+ * 20111201.0 (2.5.0-dev)  Add invalidate_entity() to the cache provider.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20111121
+#define MODULE_MAGIC_NUMBER_MAJOR 20111201
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 

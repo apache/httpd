@@ -109,6 +109,7 @@ typedef struct {
                            const char *urlkey);
     int (*remove_url) (cache_handle_t *h, request_rec *r);
     apr_status_t (*commit_entity)(cache_handle_t *h, request_rec *r);
+    apr_status_t (*invalidate_entity)(cache_handle_t *h, request_rec *r);
 } cache_provider;
 
 typedef enum {
