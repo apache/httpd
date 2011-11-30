@@ -316,6 +316,7 @@ $(OBJDIR)/mod_proxy.imp:
 	@echo $(DL) ap_proxy_ssl_enable,$(DL)>> $@
 	@echo $(DL) ap_proxy_ssl_val,$(DL)>> $@
 	@echo $(DL) ap_proxy_string_read,$(DL)>> $@
+	@echo $(DL) ap_proxy_strncpy,$(DL)>> $@
 	@echo $(DL) ap_proxy_sync_balancer,$(DL)>> $@
 	@echo $(DL) ap_proxy_table_unmerge,$(DL)>> $@
 	@echo $(DL) ap_proxy_trans_match,$(DL)>> $@
