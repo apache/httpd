@@ -549,6 +549,38 @@ static const char *set_crypto_passphrase(cmd_parms * cmd, void *config, const ch
     return NULL;
 }
 
+static const char *set_crypto_passphrase_file(cmd_parms *cmd, void *config,
+                                  const char *filename)
+{
+    char buffer[MAX_STRING_LEN];
+    char *arg;
+    const char *args;
+    ap_configfile_t *file;
+    apr_status_t rv;
+
+    filename = ap_server_root_relative(cmd->temp_pool, filename);
+    rv = ap_pcfg_openfile(&file, cmd->temp_pool, filename);
+    if (rv != APR_SUCCESS) {
+        return apr_psprintf(cmd->pool, "%s: Could not open file %s: %s",
+                            cmd->cmd->name, filename,
+                            apr_strerror(rv, buffer, sizeof(buffer)));
+    }
+
+    while (!(ap_cfg_getline(buffer, sizeof(buffer), file))) {
+        args = buffer;
+        while (*(arg = ap_getword_conf(cmd->temp_pool, &args)) != '\0') {
+            if (*arg == '#' || *arg == 0) {
+                break;
+            }
+            set_crypto_passphrase(cmd, config, arg);
+        }
+    }
+
+    ap_cfg_closefile(file);
+
+    return NULL;
+}
+
 static const char *set_crypto_cipher(cmd_parms * cmd, void *config, const char *cipher)
 {
     session_crypto_dir_conf *dconf = (session_crypto_dir_conf *) config;
@@ -563,6 +595,8 @@ static const command_rec session_crypto_cmds[] =
 {
     AP_INIT_ITERATE("SessionCryptoPassphrase", set_crypto_passphrase, NULL, RSRC_CONF|OR_AUTHCFG,
             "The passphrase(s) used to encrypt the session. First will be used for encryption, all phrases will be accepted for decryption"),
+    AP_INIT_TAKE1("SessionCryptoPassphraseFile", set_crypto_passphrase_file, NULL, RSRC_CONF|ACCESS_CONF,
+            "File containing passphrase(s) used to encrypt the session, one per line. First will be used for encryption, all phrases will be accepted for decryption"),
     AP_INIT_TAKE1("SessionCryptoCipher", set_crypto_cipher, NULL, RSRC_CONF|OR_AUTHCFG,
             "The underlying crypto cipher to use"),
     AP_INIT_RAW_ARGS("SessionCryptoDriver", set_crypto_driver, NULL, RSRC_CONF,
