@@ -114,14 +114,12 @@ typedef struct {
 typedef enum {
     AP_CACHE_HIT,
     AP_CACHE_REVALIDATE,
-    AP_CACHE_MISS,
-    AP_CACHE_INVALIDATE
+    AP_CACHE_MISS
 } ap_cache_status_e;
 
 #define AP_CACHE_HIT_ENV "cache-hit"
 #define AP_CACHE_REVALIDATE_ENV "cache-revalidate"
 #define AP_CACHE_MISS_ENV "cache-miss"
-#define AP_CACHE_INVALIDATE_ENV "cache-invalidate"
 #define AP_CACHE_STATUS_ENV "cache-status"
 
 
