@@ -95,6 +95,7 @@ static const char *socache_dbm_create(ap_socache_instance_t **context,
     return NULL;
 }
 
+#if AP_NEED_SET_MUTEX_PERMS
 static int try_chown(apr_pool_t *p, server_rec *s,
                      const char *name, const char *suffix)
 {
@@ -110,6 +111,7 @@ static int try_chown(apr_pool_t *p, server_rec *s,
     }
     return 0;
 }
+#endif
 
 
 static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
