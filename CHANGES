@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_rewrite: Add the AllowNoSlash RewriteOption, which makes it possible
+     for RewriteRules to be placed in .htaccess files that match the directory
+     with no trailing slash. PR 48304.
+     [Matthew Byng-Maddick <matthew byng-maddick bbc.co.uk>]
+
   *) mod_session_crypto: Add a SessionCryptoPassphraseFile directive so that
      the administrator can hide the keys from the configuration. [Graham
      Leggett]
