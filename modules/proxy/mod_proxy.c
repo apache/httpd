@@ -2428,9 +2428,11 @@ static void child_init(apr_pool_t *p, server_rec *s)
             PROXY_STRNCPY(conf->forward->s->name,     "proxy:forward");
             PROXY_STRNCPY(conf->forward->s->hostname, "*");
             PROXY_STRNCPY(conf->forward->s->scheme,   "*");
-            conf->forward->hash = conf->forward->s->hash =
+            conf->forward->hash.def = conf->forward->s->hash.def =
                 ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_DEFAULT);
-             /* Do not disable worker in case of errors */
+             conf->forward->hash.fnv = conf->forward->s->hash.fnv =
+                ap_proxy_hashfunc(conf->forward->s->name, PROXY_HASHFUNC_FNV);
+            /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Disable address cache for generic forward worker */
             conf->forward->s->is_address_reusable = 0;
@@ -2441,8 +2443,10 @@ static void child_init(apr_pool_t *p, server_rec *s)
             PROXY_STRNCPY(reverse->s->name,     "proxy:reverse");
             PROXY_STRNCPY(reverse->s->hostname, "*");
             PROXY_STRNCPY(reverse->s->scheme,   "*");
-            reverse->hash = reverse->s->hash =
+            reverse->hash.def = reverse->s->hash.def =
                 ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_DEFAULT);
+            reverse->hash.fnv = reverse->s->hash.fnv =
+                ap_proxy_hashfunc(reverse->s->name, PROXY_HASHFUNC_FNV);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Disable address cache for generic reverse worker */
