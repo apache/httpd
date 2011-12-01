@@ -189,6 +189,7 @@ static const char* really_last_key = "rewrite_really_last";
 #define OPTION_NONE                 1<<0
 #define OPTION_INHERIT              1<<1
 #define OPTION_INHERIT_BEFORE       1<<2
+#define OPTION_NOSLASH              1<<3
 
 #ifndef RAND_MAX
 #define RAND_MAX 32767
@@ -2882,6 +2883,9 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
         else if (!strcasecmp(w, "inheritbefore")) {
             options |= OPTION_INHERIT_BEFORE;
         }
+        else if (!strcasecmp(w, "allownoslash")) {
+            options |= OPTION_NOSLASH;
+        }
         else if (!strncasecmp(w, "MaxRedirects=", 13)) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                          "RewriteOptions: MaxRedirects option has been "
@@ -4698,9 +4702,10 @@ static int hook_fixup(request_rec *r)
     /*
      *  .htaccess file is called before really entering the directory, i.e.:
      *  URL: http://localhost/foo  and .htaccess is located in foo directory
-     *  Ignore such attempts, since they may lead to undefined behaviour.
+     *  Ignore such attempts, allowing mod_dir to direct the client to the
+     *  canonical URL. This can be controlled with the AllowNoSlash option.
      */
-    if (!is_proxyreq) {
+    if (!is_proxyreq && !(dconf->options & OPTION_NOSLASH)) {
         l = strlen(dconf->directory) - 1;
         if (r->filename && strlen(r->filename) == l &&
             (dconf->directory)[l] == '/' &&
