@@ -171,6 +171,21 @@ later</compatibility>
       Available in Apache HTTP Server 2.3.10 and later.</p>
       </dd>
 
+      <dt><code>AllowNoSlash</code></dt>
+      <dd>
+      <p>By default, <module>mod_rewrite</module> will ignore URLs that map to a
+      directory on disk but lack a trailing slash, in the expectation that
+      the <module>mod_dir</module> module will issue the client with a redirect to
+      the canonical URL with a trailing slash.</p>
+      
+      <p>When the <directive module="mod_dir">DirectorySlash</directive> directive
+      is set to off, the <code>AllowNoSlash</code> option can be enabled to ensure
+      that rewrite rules are no longer ignored. This option makes it possible to
+      apply rewrite rules within .htaccess files that match the directory without
+      a trailing slash, if so desired. Available in Apache HTTP Server 2.4.0 and
+      later.</p>
+      </dd>
+
       </dl>
 
 </usage>
