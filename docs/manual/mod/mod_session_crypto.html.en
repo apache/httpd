@@ -55,6 +55,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocipher">SessionCryptoCipher</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptodriver">SessionCryptoDriver</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrasefile">SessionCryptoPassphraseFile</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -184,6 +185,34 @@
 
     <p>Keys are more secure when they are long, and consist of truly random characters.
     Changing the key on a server has the effect of invalidating all existing sessions.</p>
+
+    <p>Multiple keys can be specified in order to support key rotation. The first key
+    listed will be used for encryption, while all keys listed will be attempted for
+    decryption. To rotate keys across multiple servers over a period of time, add a new
+    secret to the end of the list, and once rolled out completely to all servers, remove
+    the first key from the start of the list.</p>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoPassphraseFile" id="SessionCryptoPassphraseFile">SessionCryptoPassphraseFile</a> <a name="sessioncryptopassphrasefile" id="sessioncryptopassphrasefile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File containing keys used to encrypt the session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoPassphraseFile <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoPassphraseFile</code> directive specifies the
+    name of a configuration file containing the keys to use for encrypting or decrypting
+    the session, specified one per line. The file is read on server start, and a graceful
+    restart will be necessary for httpd to pick up changes to the keys.</p>
+
+    <p>Unlike the <code class="directive">SessionCryptoPassphrase</code> directive, the keys are
+    not exposed within the httpd configuration and can be hidden by protecting the file
+    appropriately.</p>
 
     <p>Multiple keys can be specified in order to support key rotation. The first key
     listed will be used for encryption, while all keys listed will be attempted for

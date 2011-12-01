@@ -24,31 +24,31 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_remoteip.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the apparent client remote IP address for the request
-with the IP address list presented by a proxies or a load balancer via the
-request headers.
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the original peer IP address for the connection
+with the client IP address list presented by a proxies or a load balancer
+via the request headers.
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>remoteip_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_remoteip.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module is used to treat the remote host which initiated the
-    request as the originating remote host as identified by httpd for the
-    purposes of authorization and logging, even where that remote host is
+    <p>This module is used to treat the client which initiated the
+    request as the originating client as identified by httpd for the
+    purposes of authorization and logging, even where that client is
     behind a load balancer, front end server, or proxy server.</p>
 
-    <p>The module overrides the apparent remote (client) IP for
-    the request with the IP address reported in the request header
-    configured with the <code class="directive">RemoteIPHeader</code> directive.</p>
+    <p>The module overrides the peer IP address for the connection
+    with the client IP address reported in the request header configured
+    with the <code class="directive">RemoteIPHeader</code> directive.</p>
 
-    <p>Once replaced as instructed, this apparent IP address is then used
-    for the <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
-    <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code> feature,
-    is reported by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, and is recorded by
+    <p>Once replaced as instructed, this overridden client IP address is
+    then used for the <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
+    <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code>
+    feature, is reported by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, and is recorded by
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> <code>%a</code> and <code class="module"><a href="../mod/core.html">core</a></code>
-    <code>%a</code> format strings. The original remote IP of the connection is
-    available in the <code>%{c}a</code> format string.</p>
+    <code>%a</code> format strings. The underlying peer IP of the connection
+    is available in the <code>%{c}a</code> format string.</p>
 
     <div class="warning">It is critical to only enable this behavior from
     intermediate hosts (proxies, etc) which are trusted by this server, since
@@ -76,23 +76,27 @@ request headers.
 <div class="section">
 <h2><a name="processing" id="processing">Remote IP Processing</a></h2>
 
-    <p>Apache identifies the client with the connection's remote_ip value,
-    and the connection remote_host and remote_logname are derived from this
-    value.  These fields play a role in authentication, authorization and
-    logging and other purposes by other loadable modules.</p>
+    <p>Apache by default identifies the client with the connection's
+    peer_ip value, and the connection remote_host and remote_logname are
+    derived from this value. These fields play a role in authentication,
+    authorization and logging and other purposes by other loadable
+    modules.</p>
 
-    <p>mod_remoteip replaces the true remote_ip with the advertised remote_ip as
-    provided by a proxy, for every evaluation of the client that occurs in the
-    server.</p>
+    <p>mod_remoteip overrides the peer IP of the connection with the
+    advertised client IP as provided by a proxy or load balancer, for
+    the duration of the request. A load balancer might establish a long
+    lived keepalive connection with the server, and each request will
+    have the correct client IP, even though the underlying peer IP
+    address of the load balancer remains unchanged.</p>
 
-    <p>When multiple, comma delimited remote IP addresses are listed in the
+    <p>When multiple, comma delimited client IP addresses are listed in the
     header value, they are processed in Right-to-Left order.  Processing
-    halts when a given remote IP address is not trusted to present the
+    halts when a given client IP address is not trusted to present the
     preceding IP address.  The header field is updated to this remaining
     list of unconfirmed IP addresses, or if all IP addresses were trusted,
     this header is removed from the request altogether.</p>
 
-    <p>In replacing the remote_ip, the module stores the list of intermediate
+    <p>In overriding the client IP, the module stores the list of intermediate
     hosts in a remoteip-proxy-ip-list note, which <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>
     can record using the <code>%{remoteip-proxy-ip-list}n</code> format token.
     If the administrator needs to store this as an additional header, this
@@ -200,9 +204,10 @@ request headers.
 </table>
     <p>The <code class="directive">RemoteIPProxiesHeader</code> directive specifies
     a header into which <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will collect a list of
-    all of the intermediate client IP addresses trusted to resolve the actual
-    remote IP.  Note that intermediate <code class="directive">RemoteIPTrustedProxy</code>
-    addresses are recorded in this header, while any intermediate
+    all of the intermediate client IP addresses trusted to resolve the client
+    IP of the request. Note that intermediate
+    <code class="directive">RemoteIPTrustedProxy</code> addresses are recorded in
+    this header, while any intermediate
     <code class="directive">RemoteIPInternalProxy</code> addresses are discarded.</p>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -226,7 +231,7 @@ request headers.
     <code class="directive">RemoteIPInternalProxy</code> directive, any intranet
     or private IP address reported by such proxies, including the 10/8, 172.16/12,
     192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
-    2000::/3 block) are not trusted as the remote IP, and are left in the
+    2000::/3 block) are not trusted as the client IP, and are left in the
     <code class="directive">RemoteIPHeader</code> header's value.</p>
 
     <div class="example"><h3>Trusted (Load Balancer) Example</h3><p><code>
