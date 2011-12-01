@@ -482,6 +482,7 @@
 <li><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher</a></li>
 <li><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver</a></li>
 <li><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
+<li><a href="mod_session_crypto.html#sessioncryptopassphrasefile">SessionCryptoPassphraseFile</a></li>
 <li><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName</a></li>
 <li><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2</a></li>
 <li><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove</a></li>
