@@ -1298,7 +1298,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     proxy_balancer *balancer;
     char *c, *uri = apr_pstrdup(p, url);
     int i;
-    unsigned int hash;
+    proxy_hashes hash;
 
     ap_str_tolower(uri);
     c = strchr(uri, ':');
@@ -1309,10 +1309,11 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     if ((c = strchr(c + 3, '/'))) {
         *c = '\0';
     }
-    hash = ap_proxy_hashfunc(uri, PROXY_HASHFUNC_DEFAULT);
+    hash.def = ap_proxy_hashfunc(uri, PROXY_HASHFUNC_DEFAULT);
+    hash.fnv = ap_proxy_hashfunc(uri, PROXY_HASHFUNC_FNV);
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
-        if (balancer->hash == hash) {
+        if (balancer->hash.def == hash.def && balancer->hash.fnv == hash.fnv) {
             if (!care || !balancer->s->inactive) {
                 return balancer;
             }
@@ -1401,7 +1402,8 @@ PROXY_DECLARE(char *) ap_proxy_define_balancer(apr_pool_t *p,
     if (PROXY_STRNCPY(bshared->sname, sname) != APR_SUCCESS) {
         return apr_psprintf(p, "balancer safe-name (%s) too long", sname);
     }
-    bshared->hash = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_DEFAULT);    
+    bshared->hash.def = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_DEFAULT);
+    bshared->hash.fnv = ap_proxy_hashfunc(bshared->name, PROXY_HASHFUNC_FNV);
     (*balancer)->hash = bshared->hash;
 
     /* Retrieve a UUID and store the nonce for the lifetime of
@@ -1835,7 +1837,8 @@ PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
     wshared->is_address_reusable = 1;
     wshared->lbfactor = 1;
     wshared->smax = -1;
-    wshared->hash = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
+    wshared->hash.def = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_DEFAULT);
+    wshared->hash.fnv = ap_proxy_hashfunc(wshared->name, PROXY_HASHFUNC_FNV);
     wshared->was_malloced = (do_malloc != 0);
 
     (*worker)->hash = wshared->hash;
@@ -2985,13 +2988,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
         /* account for possible "holes" in the slotmem
          * (eg: slots 0-2 are used, but 3 isn't, but 4-5 is)
          */
-        if (!shm->hash)
+        if (!shm->hash.def || !shm->hash.fnv)
             continue;
         found = 0;
         workers = (proxy_worker **)b->workers->elts;
         for (i = 0; i < b->workers->nelts; i++, workers++) {
             proxy_worker *worker = *workers;
-            if (worker->hash == shm->hash) {
+            if (worker->hash.def == shm->hash.def && worker->hash.fnv == shm->hash.fnv) {
                 found = 1;
                 break;
             }

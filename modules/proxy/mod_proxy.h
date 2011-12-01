@@ -320,6 +320,11 @@ do {                             \
 (w)->s->io_buffer_size_set   = (c)->io_buffer_size_set;    \
 } while (0)
 
+/* use 2 hashes */
+typedef struct {
+    unsigned int def;
+    unsigned int fnv;
+} proxy_hashes ;
 
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
@@ -338,7 +343,7 @@ typedef struct {
     int             hmax;       /* Hard maximum on the total number of connections */
     int             flush_wait; /* poll wait time in microseconds if flush_auto */
     int             index;      /* shm array index */
-    unsigned int    hash;       /* hash of worker name */
+    proxy_hashes    hash;       /* hash of worker name */
     unsigned int    status;     /* worker status bitfield */
     enum {
         flush_off,
@@ -381,7 +386,7 @@ typedef struct {
 
 /* Worker configuration */
 struct proxy_worker {
-    unsigned int    hash;       /* hash of worker name */
+    proxy_hashes    hash;       /* hash of worker name */
     unsigned int local_status;  /* status of per-process worker */
     proxy_conn_pool     *cp;    /* Connection pool to use */
     proxy_worker_shared   *s;   /* Shared data */
@@ -409,7 +414,7 @@ typedef struct {
     apr_time_t      wupdated;     /* timestamp of last change to workers list */
     int             max_attempts;     /* Number of attempts before failing */
     int             index;      /* shm array index */
-    unsigned int hash;
+    proxy_hashes hash;
     unsigned int    sticky_force:1;   /* Disable failover for sticky sessions */
     unsigned int    scolonsep:1;      /* true if ';' seps sticky session paths */
     unsigned int    max_attempts_set:1;
@@ -428,7 +433,7 @@ struct proxy_balancer {
     ap_slotmem_provider_t *storage;
     int growth;                   /* number of post-config workers can added */
     int max_workers;              /* maximum number of allowed workers */
-    unsigned int hash;
+    proxy_hashes hash;
     apr_time_t      wupdated;    /* timestamp of last change to workers list */
     proxy_balancer_method *lbmethod;
     apr_global_mutex_t  *gmutex; /* global lock for updating list of workers */
