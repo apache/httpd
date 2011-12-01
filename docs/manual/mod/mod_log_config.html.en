@@ -81,10 +81,10 @@
 <tr><td><code>%%</code></td>
         <td>The percent sign.</td></tr>
 <tr class="odd"><td><code>%a</code></td>
-        <td>Remote IP-address.</td></tr>
+        <td>Client IP address and port of the request.</td></tr>
 <tr><td><code>%{c}a</code></td>
-        <td>Actual remote IP-address and port (see the
-        <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module)</td></tr>
+        <td>Underlying peer IP address and port of the connection (see the
+        <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module).</td></tr>
 <tr class="odd"><td><code>%A</code></td>
         <td>Local IP-address.</td></tr>
 <tr><td><code>%B</code></td>

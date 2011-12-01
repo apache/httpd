@@ -1423,9 +1423,9 @@ in case of an error</td></tr>
 <tr><td><code>%%</code></td>
         <td>The percent sign</td></tr>
 <tr class="odd"><td><code>%a</code></td>
-        <td>Remote IP-address and port</td></tr>
+        <td>Client IP address and port of the request</td></tr>
 <tr><td><code>%{c}a</code></td>
-        <td>Actual remote IP-address and port (see the
+        <td>Underlying peer IP address and port of the connection (see the
             <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> module)</td></tr>
 <tr class="odd"><td><code>%A</code></td>
         <td>Local IP-address and port</td></tr>

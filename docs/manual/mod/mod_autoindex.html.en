@@ -294,7 +294,8 @@ icon selected by MIME content-type</td></tr>
     <var>String</var> is enclosed in double quotes (<code>"</code>).</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      AddDescription "The planet Mars" /web/pics/mars.gif
+      AddDescription "The planet Mars" mars.gif <br />
+      AddDescription "My friend Marshall" friends/mars.gif
     </code></p></div>
 
     <p>The typical, default description field is 23 bytes wide. 6
@@ -323,6 +324,14 @@ icon selected by MIME content-type</td></tr>
       element (such as cutting off the end of a bolded phrase), the
       results may affect the rest of the directory listing.</p>
     </div>
+
+    <div class="note"><h3>Arguments with path information</h3>
+      <p>Absolute paths are not currently supported and do not match
+      anything at runtime. Arguments with relative path information,
+      which would normally only be used in htaccess context, are implicitly 
+      prefixed with '*/' to avoid matching partial directory names.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -537,6 +546,12 @@ a directory</td></tr>
     <div class="example"><p><code>
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </code></p></div>
+
+    <div class="note"><h3>Regular Expressions</h3>
+      <p>This directive does not currently work in configuration sections
+      that have regular expression arguments, such as  <code class="directive"><a href="../mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>
+      </p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
