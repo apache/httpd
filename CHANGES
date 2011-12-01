@@ -28,7 +28,7 @@ Changes with Apache 2.4.0
   *) mod_cache_disk: Remove the unnecessary intermediate brigade while
      writing to disk. Fixes a problem where mod_disk_cache was leaving
      buckets in the intermediate brigade and not passing them to out on
-     exit. [Florian S. <f_los_ch@yahoo.com>, Graham Leggett]
+     exit. [Florian S. <f_los_ch yahoo.com>, Graham Leggett]
 
   *) mod_ssl: use a shorter setting for SSLCipherSuite in the default
      default configuration file, and add some more information about
@@ -634,7 +634,7 @@ Changes with Apache 2.3.11
 
   *) mod_cache: When a bad Expires date is present, we need to behave as if
      the Expires is in the past, not as if the Expires is missing. PR 16521.
-     [Co-Advisor <coad@measurement-factory.com>]
+     [Co-Advisor <coad measurement-factory.com>]
 
   *) mod_cache: We must ignore quoted-string values that appear in a
      Cache-Control header. PR 50199. [Graham Leggett]
