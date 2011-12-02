@@ -655,6 +655,18 @@ static int proxy_trans(request_rec *r)
         return OK;
     }
 
+    if (strcmp(r->unparsed_uri, "*") == 0) {
+        /* "*" cannot be proxied. */
+        return DECLINED;
+    }
+
+    /* Check that the URI is valid. */
+    if (!r->uri || r->uri[0] != '/') {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                     "Invalid URI in request %s", r->the_request);
+        return HTTP_BAD_REQUEST;
+    }
+
     /* XXX: since r->uri has been manipulated already we're not really
      * compliant with RFC1945 at this point.  But this probably isn't
      * an issue because this is a hybrid proxy/origin server.
