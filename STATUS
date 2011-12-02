@@ -96,16 +96,6 @@ RELEASE SHOWSTOPPERS:
 
   NEW ISSUES THAT WOULD BE NICE TO HAVE DONE IN 2.4 BUT ARE NOT BLOCKERS
 
-  * The mod_session* modules need to be checked that their hooks respect
-    the returning of int (HTTP status codes) and apr_status_t as appropriate,
-    and any anomolies fixed.
-    jim sez: from what I can see, mod_session* is no worse that other
-             modules that mix these 2 types... clean up is
-             forthcoming but should not be considered a blocker, imo
-    pgollucci: +1 jim
-    wrowe asks: what's the API change required?
-    wrowe asks; why are we shipping this if it requires apr_ssl
- 
   * mod_ssl's proxy support only allows one proxy client certificate per
     frontend virtual host. Lift this restriction.
     jim sez: Why a blocker?, pgollucci +1 jim
