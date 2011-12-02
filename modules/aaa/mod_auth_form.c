@@ -742,7 +742,7 @@ static int check_authn(request_rec * r, const char *sent_user, const char *sent_
                                           AUTHN_PROVIDER_VERSION);
 
             if (!provider || !provider->check_password) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01806)
                               "no authn provider configured");
                 auth_result = AUTH_GENERAL_ERROR;
                 break;
@@ -786,14 +786,14 @@ static int check_authn(request_rec * r, const char *sent_user, const char *sent_
 
         switch (auth_result) {
         case AUTH_DENIED:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01807)
                           "user '%s': authentication failure for \"%s\": "
                           "password Mismatch",
                           sent_user, r->uri);
             return_code = HTTP_UNAUTHORIZED;
             break;
         case AUTH_USER_NOT_FOUND:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01808)
                           "user '%s' not found: %s", sent_user, r->uri);
             return_code = HTTP_UNAUTHORIZED;
             break;
@@ -868,7 +868,7 @@ static int authenticate_form_authn(request_rec * r)
      */
     if (PROXYREQ_PROXY == r->proxyreq) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                      0, r, "form auth cannot be used for proxy "
+                      0, r, APLOGNO(01809) "form auth cannot be used for proxy "
                       "requests due to XSS risk, access denied: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -876,7 +876,7 @@ static int authenticate_form_authn(request_rec * r)
     /* We need an authentication realm. */
     if (!ap_auth_name(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR,
-                      0, r, "need AuthName: %s", r->uri);
+                      0, r, APLOGNO(01810) "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1068,7 +1068,7 @@ static int authenticate_form_login_handler(request_rec * r)
     }
 
     if (r->method_number != M_POST) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01811)
           "the " FORM_LOGIN_HANDLER " only supports the POST method for %s",
                       r->uri);
         return HTTP_METHOD_NOT_ALLOWED;
@@ -1170,7 +1170,7 @@ static int authenticate_form_redirect_handler(request_rec * r)
 
     if (r->kept_body && sent_method && sent_mimetype) {
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01812)
           "internal redirect to method '%s' and body mimetype '%s' for the "
                       "uri: %s", sent_method, sent_mimetype, r->uri);
 
@@ -1179,7 +1179,7 @@ static int authenticate_form_redirect_handler(request_rec * r)
 
     }
     else {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01813)
         "internal redirect requested but one or all of method, mimetype or "
                       "body are NULL: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;

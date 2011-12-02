@@ -198,7 +198,7 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     else {
         rv = apr_sockaddr_info_get(&my_addr, host, APR_UNSPEC, port, 0, p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, APLOGNO(00547)
                 "Could not resolve host name %s -- ignoring!", host);
             return NULL;
         }
@@ -255,7 +255,7 @@ AP_DECLARE_NONSTD(const char *)ap_set_name_virtual_host(cmd_parms *cmd,
 {
     static int warnonce = 0;
     if (++warnonce == 1) {
-        ap_log_error(APLOG_MARK, APLOG_NOTICE|APLOG_STARTUP, APR_SUCCESS, NULL,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE|APLOG_STARTUP, APR_SUCCESS, NULL, APLOGNO(00548)
                      "NameVirtualHost has no effect and will be removed in the "
                      "next release %s:%d",
                      cmd->directive->filename,
@@ -643,7 +643,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                     char *ipaddr_str;
 
                     apr_sockaddr_ip_get(&ipaddr_str, s->addrs->host_addr);
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, main_s,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, main_s, APLOGNO(00549)
                                  "Failed to resolve server name "
                                  "for %s (check DNS) -- or specify an explicit "
                                  "ServerName",
@@ -754,7 +754,7 @@ static void fix_hostname(request_rec *r)
 
 bad:
     r->status = HTTP_BAD_REQUEST;
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00550)
                   "Client sent malformed Host header");
     return;
 }

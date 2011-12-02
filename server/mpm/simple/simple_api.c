@@ -113,7 +113,7 @@ simple_open_logs(apr_pool_t * p,
 
     if (nsock < 1) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, 0,
-                     s,
+                     s, APLOGNO(00256)
                      "simple_open_logs: no listening sockets available, shutting down");
         return DONE;
     }
@@ -132,7 +132,7 @@ simple_pre_config(apr_pool_t * pconf, apr_pool_t * plog, apr_pool_t * ptemp)
     rv = simple_core_init_once();
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00257)
                      "simple_core_init_once: Fatal Error Encountered");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -161,7 +161,7 @@ simple_pre_config(apr_pool_t * pconf, apr_pool_t * plog, apr_pool_t * ptemp)
         }
 
         if (rv) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00258)
                          "simple_pre_config: apr_proc_detach(%s) failed",
                          sc->run_foreground ? "FOREGROUND" : "DAEMONIZE");
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -178,28 +178,28 @@ simple_check_config(apr_pool_t * p, apr_pool_t * plog,
     simple_core_t *sc = simple_core_get();
 
     if (sc->procmgr.proc_count > SIMPLE_MAX_PROC) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(00259)
                      "simple_check_config: SimpleProcCount must be at most %d",
                      SIMPLE_MAX_PROC);
         return !OK;
     }
 
     if (sc->procmgr.proc_count < SIMPLE_MIN_PROC) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(00260)
                      "simple_check_config: SimpleProcCount must be at least %d",
                      SIMPLE_MIN_PROC);
         return !OK;
     }
 
     if (sc->procmgr.thread_count > SIMPLE_MAX_THREADS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(00261)
                      "simple_check_config: SimpleThreadCount must be at most %d",
                      SIMPLE_MAX_THREADS);
         return !OK;
     }
 
     if (sc->procmgr.thread_count < SIMPLE_MIN_THREADS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(00262)
                      "simple_check_config: SimpleThreadCount must be at least %d",
                      SIMPLE_MIN_THREADS);
         return !OK;

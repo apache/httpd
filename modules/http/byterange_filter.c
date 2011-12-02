@@ -305,7 +305,7 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
 
     r->status = HTTP_PARTIAL_CONTENT;
     r->range = apr_array_pstrcat(r->pool, merged, ',');
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01583)
                   "Range: %s | %s (%d : %d : %"APR_OFF_T_FMT")",
                   it, r->range, *overlaps, *reversals, clength);
 
@@ -551,7 +551,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
         rv = copy_brigade_range(bb, tmpbb, range_start, range_end);
         if (rv != APR_SUCCESS ) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01584)
                           "copy_brigade_range() failed [%" APR_OFF_T_FMT
                           "-%" APR_OFF_T_FMT ",%" APR_OFF_T_FMT "]",
                           range_start, range_end, clength);

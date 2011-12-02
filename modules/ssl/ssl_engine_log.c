@@ -94,7 +94,7 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
         annotation = ssl_log_annotation(err);
 
         ap_log_error(file, line, APLOG_MODULE_INDEX, level, 0, s,
-                     "SSL Library Error: %s%s%s%s%s%s",
+                     APLOGNO(02021) "SSL Library Error: %s%s%s%s%s%s",
                      /* %s */
                      err,
                      /* %s%s%s */
@@ -135,7 +135,7 @@ static void ssl_log_cert_error(const char *file, int line, int level,
              */
             int maxdnlen = (HUGE_STRING_LEN - msglen - 300) / 2;
 
-            BIO_puts(bio, " [subject: ");
+            BIO_puts(bio, APLOGNO(02022) " [subject: ");
             name = SSL_X509_NAME_to_string(p, X509_get_subject_name(cert),
                                            maxdnlen);
             if (!strIsEmpty(name)) {
@@ -174,7 +174,7 @@ static void ssl_log_cert_error(const char *file, int line, int level,
     }
     else {
         apr_snprintf(buf + msglen, sizeof buf - msglen,
-                     " [certificate: -not available-]");
+                     APLOGNO(02023) " [certificate: -not available-]");
     }
 
     if (r) {

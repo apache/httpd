@@ -83,12 +83,12 @@ static void filter_trace(conn_rec *c, int debug, const char *fname,
     case 0:        /* normal, operational use */
         return;
     case 1:        /* mod_diagnostics level */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "%s", fname);
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01375) "%s", fname);
         for (b = APR_BRIGADE_FIRST(bb);
              b != APR_BRIGADE_SENTINEL(bb);
              b = APR_BUCKET_NEXT(b)) {
 
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01376)
                           "%s: type: %s, length: %" APR_SIZE_T_FMT,
                           fname, b->type->name ? b->type->name : "(unknown)",
                           b->length);
@@ -107,14 +107,14 @@ static int filter_init(ap_filter_t *f)
     harness_ctx *fctx = apr_pcalloc(f->r->pool, sizeof(harness_ctx));
     for (p = filter->providers; p; p = p->next) {
         if (p->frec->filter_init_func == filter_init) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(01377)
                           "Chaining of FilterProviders not supported");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         else if (p->frec->filter_init_func) {
             f->ctx = NULL;
             if ((err = p->frec->filter_init_func(f)) != OK) {
-                ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(01378)
                               "filter_init for %s failed", p->frec->name);
                 return err;   /* if anyone errors out here, so do we */
             }
@@ -150,7 +150,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
         if (provider->expr) {
             match = ap_expr_exec(r, provider->expr, &err);
             if (err) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01379)
                               "Error evaluating filter dispatch condition: %s",
                               err);
                 match = 0;
@@ -640,7 +640,7 @@ static void filter_insert(request_rec *r)
     for (p = cfg->chain; p; p = p->next) {
         filter = apr_hash_get(cfg->live_filters, p->fname, APR_HASH_KEY_STRING);
         if (filter == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01380)
                           "Unknown filter %s not added", p->fname);
             continue;
         }

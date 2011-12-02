@@ -91,7 +91,7 @@ static apr_status_t pod_signal_internal(ap_event_pod_t * pod, int graceful)
 
     rv = apr_file_write(pod->pod_out, &char_of_death, &one);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00522)
                      "write pipe_of_death");
     }
     return rv;

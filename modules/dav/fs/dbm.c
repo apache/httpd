@@ -97,7 +97,7 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
         errcode = 1;
         errstr = "Could not open property database.";
         if (APR_STATUS_IS_EDSOOPEN(status))
-            ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, status, ap_server_conf, APLOGNO(00576)
             "The DBM driver could not be loaded");
     }
     else {
@@ -494,8 +494,8 @@ static void dav_propdb_close(dav_db *db)
 
         err = dav_dbm_store(db, key, value);
         if (err != NULL)
-            ap_log_error(APLOG_MARK, APLOG_WARNING, err->aprerr,
-                         ap_server_conf, "Error writing propdb: %s", err->desc);
+            ap_log_error(APLOG_MARK, APLOG_WARNING, err->aprerr, ap_server_conf,
+                         APLOGNO(00577) "Error writing propdb: %s", err->desc);
     }
 
     dav_dbm_close(db);

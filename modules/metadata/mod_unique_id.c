@@ -171,7 +171,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
      * be unique as the physical address of the machine
      */
     if ((rv = apr_gethostname(str, sizeof(str) - 1, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server, APLOGNO(01563)
           "unable to find hostname of the server");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -180,14 +180,14 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
         global_in_addr = sockaddr->sa.sin.sin_addr.s_addr;
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server, APLOGNO(01564)
                     "unable to find IPv4 address of \"%s\"", str);
 #if APR_HAVE_IPV6
         if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET6, 0, 0, p)) == APR_SUCCESS) {
             memcpy(&global_in_addr,
                    (char *)sockaddr->ipaddr_ptr + sockaddr->ipaddr_len - sizeof(global_in_addr),
                    sizeof(global_in_addr));
-            ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
+            ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server, APLOGNO(01565)
                          "using low-order bits of IPv6 address "
                          "as if they were unique");
         }
@@ -197,7 +197,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
     }
 
     apr_sockaddr_ip_get(&ipaddrstr, sockaddr);
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, main_server, "using ip addr %s",
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, main_server, APLOGNO(01566) "using ip addr %s",
                  ipaddrstr);
 
     /*
@@ -240,7 +240,7 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * global_init ... but oh well.
      */
     if ((pid_t)cur_unique_id.pid != pid) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(01567)
                     "oh no! pids are greater than 32-bits!  I'm broken!");
     }
 

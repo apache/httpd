@@ -2023,7 +2023,7 @@ static int index_directory(request_rec *r,
     char *charset;
 
     if ((status = apr_dir_open(&thedir, name, r->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01275)
                       "Can't open directory for index: %s", r->filename);
         return HTTP_FORBIDDEN;
     }
@@ -2310,7 +2310,7 @@ static int handle_autoindex(request_rec *r)
     else {
         const char *index_names = apr_table_get(r->notes, "dir-index-names");
 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01276)
                       "Cannot serve directory %s: No matching DirectoryIndex (%s) found, and "
                       "server-generated directory index forbidden by "
                       "Options directive",

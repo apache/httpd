@@ -973,7 +973,7 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
             retval = r->hostname ? r->hostname : r->server->server_hostname;
             break;
         default:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00109)
                          "ap_get_server_name: Invalid UCN Option somehow");
             retval = "localhost";
             break;
@@ -1036,7 +1036,7 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
                        ap_default_port(r);
             break;
         default:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00110)
                          "ap_get_server_port: Invalid UCN Option somehow");
             port = ap_default_port(r);
             break;
@@ -1218,7 +1218,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
                 }
                 else {
                     if (ap_strchr(name, ':') == 0)
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+                        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL, APLOGNO(00111)
                                      "Config variable ${%s} is not defined",
                                      name);
                     current->string = s;
@@ -1416,7 +1416,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
         || !ap_is_directory(cmd->pool, arg)) {
         if (cmd->server->is_virtual) {
             ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0,
-                          cmd->pool,
+                          cmd->pool, APLOGNO(00112)
                           "Warning: DocumentRoot [%s] does not exist",
                           arg);
             conf->ap_document_root = arg;
@@ -1481,7 +1481,7 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
     /* The entry should be ignored if it is a full URL for a 401 error */
 
     if (error_number == 401 && what == REMOTE_PATH) {
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server, APLOGNO(00113)
                      "cannot use a full URL in a 401 ErrorDocument "
                      "directive --- ignoring!");
     }
@@ -1583,7 +1583,7 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
 
     /* Throw a warning if we're in <Location> or <Files> */
     if (ap_check_cmd_context(cmd, NOT_IN_LOCATION | NOT_IN_FILES)) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00114)
                      "Useless use of AllowOverride in line %d of %s.",
                      cmd->directive->line_num, cmd->directive->filename);
     }
@@ -1643,7 +1643,7 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
 
     /* Throw a warning if we're in <Location> or <Files> */
     if (ap_check_cmd_context(cmd, NOT_IN_LOCATION | NOT_IN_FILES)) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00115)
                      "Useless use of AllowOverrideList in line %d of %s.",
                      cmd->directive->line_num, cmd->directive->filename);
     }
@@ -1663,7 +1663,7 @@ static const char *set_override_list(cmd_parms *cmd, void *d_, int argc, char *c
             if (result)
                 apr_table_set(d->override_list, argv[i], "1");
             else
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00116)
                              "Discarding unrecognized directive `%s' in AllowOverrideList.",
                              argv[i]);
         }
@@ -1775,7 +1775,7 @@ static const char *set_default_type(cmd_parms *cmd, void *d_,
                                    const char *arg)
 {
     if ((strcasecmp(arg, "off") != 0) && (strcasecmp(arg, "none") != 0)) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00117)
               "Ignoring deprecated use of DefaultType in line %d of %s.",
                      cmd->directive->line_num, cmd->directive->filename);
     }
@@ -3362,7 +3362,7 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r)
 static const char *no_set_limit(cmd_parms *cmd, void *conf_,
                                 const char *arg, const char *arg2)
 {
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server, APLOGNO(00118)
                 "%s not supported on this platform", cmd->cmd->name);
 
     return NULL;
@@ -3420,7 +3420,7 @@ static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
         return "The recursion limit must be greater than zero.";
     }
     if (limit < 4) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00119)
                      "Limiting internal redirects to very low numbers may "
                      "cause normal requests to fail.");
     }
@@ -3434,7 +3434,7 @@ static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
             return "The recursion limit must be greater than zero.";
         }
         if (limit < 4) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00120)
                          "Limiting the subrequest depth to a very low level may"
                          " cause normal requests to fail.");
         }
@@ -3449,20 +3449,20 @@ static void log_backtrace(const request_rec *r)
 {
     const request_rec *top = r;
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00121)
                   "r->uri = %s", r->uri ? r->uri : "(unexpectedly NULL)");
 
     while (top && (top->prev || top->main)) {
         if (top->prev) {
             top = top->prev;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00122)
                           "redirected from r->uri = %s",
                           top->uri ? top->uri : "(unexpectedly NULL)");
         }
 
         if (!top->prev && top->main) {
             top = top->main;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00123)
                           "subrequested from r->uri = %s",
                           top->uri ? top->uri : "(unexpectedly NULL)");
         }
@@ -3490,7 +3490,7 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (top->prev) {
             if (++redirects >= rlimit) {
                 /* uuh, too much. */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00124)
                               "Request exceeded the limit of %d internal "
                               "redirects due to probable configuration error. "
                               "Use 'LimitInternalRecursion' to increase the "
@@ -3510,7 +3510,7 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
         if (!top->prev && top->main) {
             if (++subreqs >= slimit) {
                 /* uuh, too much. */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00125)
                               "Request exceeded the limit of %d subrequest "
                               "nesting levels due to probable configuration "
                               "error. Use 'LimitInternalRecursion' to increase "
@@ -4071,7 +4071,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         return HTTP_FORBIDDEN;
     }
     if (!r->uri || ((r->uri[0] != '/') && strcmp(r->uri, "*"))) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00126)
                      "Invalid URI in request %s", r->the_request);
         return HTTP_BAD_REQUEST;
     }
@@ -4102,7 +4102,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
                                  APR_FILEPATH_TRUENAME
                                | APR_FILEPATH_SECUREROOT, r->pool))
                 != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00127)
                      "Cannot map %s to file", r->the_request);
         return HTTP_FORBIDDEN;
     }
@@ -4202,7 +4202,7 @@ static int default_handler(request_rec *r)
 
     if (r->method_number == M_GET || r->method_number == M_POST) {
         if (r->finfo.filetype == APR_NOFILE) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00128)
                           "File does not exist: %s", r->filename);
             return HTTP_NOT_FOUND;
         }
@@ -4211,7 +4211,7 @@ static int default_handler(request_rec *r)
          * raw I/O on a dir.
          */
         if (r->finfo.filetype == APR_DIR) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00129)
                           "Attempt to serve directory: %s", r->filename);
             return HTTP_NOT_FOUND;
         }
@@ -4220,7 +4220,7 @@ static int default_handler(request_rec *r)
             r->path_info && *r->path_info)
         {
             /* default to reject */
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00130)
                           "File does not exist: %s",
                           apr_pstrcat(r->pool, r->filename, r->path_info, NULL));
             return HTTP_NOT_FOUND;
@@ -4240,7 +4240,7 @@ static int default_handler(request_rec *r)
             req_cfg = ap_get_core_module_config(r->request_config);
             if (!req_cfg->deliver_script) {
                 /* The flag hasn't been set for this request. Punt. */
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00131)
                               "This resource does not accept the %s method.",
                               r->method);
                 return HTTP_METHOD_NOT_ALLOWED;
@@ -4253,7 +4253,7 @@ static int default_handler(request_rec *r)
                             | AP_SENDFILE_ENABLED(d->enable_sendfile)
 #endif
                                     , 0, r->pool)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(00132)
                           "file permissions deny server access: %s", r->filename);
             return HTTP_FORBIDDEN;
         }
@@ -4295,7 +4295,7 @@ static int default_handler(request_rec *r)
         }
         else {
             /* no way to know what type of error occurred */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r, APLOGNO(00133)
                           "default_handler: ap_pass_brigade returned %i",
                           status);
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -4310,10 +4310,10 @@ static int default_handler(request_rec *r)
             if (r->the_request
                 && r->the_request[0] == 0x16
                 && (r->the_request[1] == 0x2 || r->the_request[1] == 0x3)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00134)
                               "Invalid method in request %s - possible attempt to establish SSL connection on non-SSL port", r->the_request);
             } else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00135)
                               "Invalid method in request %s", r->the_request);
             }
             return HTTP_NOT_IMPLEMENTED;
@@ -4369,7 +4369,7 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     ap_setup_make_content_type(pconf);
     ap_setup_auth_internal(ptemp);
     if (!sys_privileges) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL, APLOGNO(00136)
                      "Server MUST relinquish startup privileges before "
                      "accepting connections.  Please ensure mod_unixd "
                      "or other system security module is loaded.");
@@ -4490,7 +4490,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     c->pool = ptrans;
     if ((rv = apr_socket_addr_get(&c->local_addr, APR_LOCAL, csd))
         != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server, APLOGNO(00137)
                      "apr_socket_addr_get(APR_LOCAL)");
         apr_socket_close(csd);
         return NULL;
@@ -4499,7 +4499,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     apr_sockaddr_ip_get(&c->local_ip, c->local_addr);
     if ((rv = apr_socket_addr_get(&c->peer_addr, APR_REMOTE, csd))
         != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server, APLOGNO(00138)
                      "apr_socket_addr_get(APR_REMOTE)");
         apr_socket_close(csd);
         return NULL;
@@ -4533,7 +4533,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
         /* expected cause is that the client disconnected already,
          * hence the debug level
          */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00139)
                       "apr_socket_opt_set(APR_TCP_NODELAY)");
     }
 
@@ -4546,7 +4546,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
     rv = apr_socket_timeout_set(csd, c->base_server->timeout);
     if (rv != APR_SUCCESS) {
         /* expected cause is that the client disconnected already */
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(00140)
                       "apr_socket_timeout_set");
     }
 
@@ -4628,7 +4628,7 @@ AP_CORE_DECLARE(void) ap_init_rng(apr_pool_t *p)
     if (rv == APR_SUCCESS)
         return;
 error:
-    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00141)
                  "Could not initialize random number generator");
     exit(1);
 }

@@ -701,12 +701,12 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
 
         if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
             if (!readtty) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01965)
                              "Init: Creating pass phrase dialog pipe child "
                              "'%s'", sc->server->pphrase_dialog_path);
                 if (ssl_pipe_child_create(p, sc->server->pphrase_dialog_path)
                         != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01966)
                                  "Init: Failed to create pass phrase pipe '%s'",
                                  sc->server->pphrase_dialog_path);
                     PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
@@ -714,7 +714,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
                     return (-1);
                 }
             }
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01967)
                          "Init: Requesting pass phrase via piped dialog");
         }
         else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
@@ -731,7 +731,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
              */
             apr_file_open_stdout(&writetty, p);
 
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01968)
                          "Init: Requesting pass phrase via builtin terminal "
                          "dialog");
 #endif
@@ -790,7 +790,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
         const char **argv = apr_palloc(p, sizeof(char *) * 4);
         char *result;
 
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01969)
                      "Init: Requesting pass phrase from dialog filter "
                      "program (%s)", cmd);
 

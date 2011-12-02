@@ -79,7 +79,7 @@ static void timed_cleanup_callback(void *baton)
 
     /* Causes all serf connections to unregister from the event mpm */
     if (ctx->rstatus) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->rstatus, ctx->r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->rstatus, ctx->r, APLOGNO(01119)
                       "serf: request returned: %d", ctx->rstatus);
         ctx->r->status = HTTP_OK;
         apr_pool_destroy(ctx->serf_pool);
@@ -114,7 +114,7 @@ static void closed_connection(serf_connection_t *conn,
     if (why) {
         /* justin says that error handling isn't done yet. hah. */
         /* XXXXXX: review */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, why, ctx->r, "Closed Connection Error");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, why, ctx->r, APLOGNO(01120) "Closed Connection Error");
         ctx->rstatus = HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -281,7 +281,7 @@ static apr_status_t handle_response(serf_request_t *request,
             return APR_SUCCESS;
         }
 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, ctx->r, "serf_bucket_response_status...");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, ctx->r, APLOGNO(01121) "serf_bucket_response_status...");
 
         ctx->rstatus = HTTP_INTERNAL_SERVER_ERROR;
 
@@ -303,7 +303,7 @@ static apr_status_t handle_response(serf_request_t *request,
         rv = serf_bucket_read(response, AP_IOBUFSIZE, &data, &len);
 
         if (SERF_BUCKET_READ_ERROR(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, ctx->r, "serf_bucket_read(response)");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, ctx->r, APLOGNO(01122) "serf_bucket_read(response)");
             return rv;
         }
 
@@ -433,7 +433,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
                                conf->url.hostname,
                                APR_HASH_KEY_STRING);
         if (!cluster) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01123)
                           "SerfCluster: unable to find cluster %s", conf->url.hostname);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -441,13 +441,13 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         cp = ap_lookup_provider(AP_SERF_CLUSTER_PROVIDER, cluster->provider, "0");
 
         if (cp == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01124)
                           "SerfCluster: unable to find provider %s", cluster->provider);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
         if (cp->list_servers == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01125)
                           "SerfCluster: %s is missing list servers provider.", cluster->provider);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -458,13 +458,13 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
                               &servers);
 
         if (rc != OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(01126)
                           "SerfCluster: %s list servers returned failure", cluster->provider);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
         if (servers == NULL || apr_is_empty_array(servers)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r, APLOGNO(01127)
                           "SerfCluster: %s failed to provide a list of servers", cluster->provider);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -485,14 +485,14 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
     }
 
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "Unable to resolve: %s", conf->url.hostname);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01128) "Unable to resolve: %s", conf->url.hostname);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (mpm_supprts_serf) {
         serfme = ap_lookup_provider("mpm_serf", "instance", "0");
         if (!serfme) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mpm lied to us about supporting serf.");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01129) "mpm lied to us about supporting serf.");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
@@ -533,7 +533,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
 
         rv = apr_file_mktemp(&fp, "mod_serf_buffer.XXXXXX", 0, pool);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "Unable to create temp request body buffer file.");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01130) "Unable to create temp request body buffer file.");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -543,14 +543,14 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
             if (rv > 0) {
                 rv = apr_file_write_full(fp, buf, rv, NULL);
                 if (rv) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "failed to read request body");
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01131) "failed to read request body");
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
             }
         } while(rv > 0);
 
         if (rv < 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "failed to read request body");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01132) "failed to read request body");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
@@ -579,7 +579,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
             }
 
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "serf_context_run() for %pI", address);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01133) "serf_context_run() for %pI", address);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
 
@@ -961,7 +961,7 @@ static int hb_list_servers(void *baton,
     rv = read_heartbeats(path, tmpservers, tpool);
 
     if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01134)
                       "SerfCluster: Heartbeat unable to read '%s'", path);
         apr_pool_destroy(tpool);
         return HTTP_INTERNAL_SERVER_ERROR;

@@ -59,7 +59,7 @@ static apr_status_t simple_setup_workers(simple_core_t * sc)
                                 sc->procmgr.thread_count, sc->pool);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00235)
                      "simple_setup_workers: apr_thread_pool_create with %d threads failed",
                      sc->procmgr.thread_count);
         return rv;
@@ -89,7 +89,7 @@ static apr_status_t simple_setup_listeners(simple_core_t * sc)
 
         rv = apr_socket_opt_set(pfd->desc.s, APR_SO_NONBLOCK, 1);
         if (rv) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00236)
                          "simple_setup_workers: apr_socket_opt_set(APR_SO_NONBLOCK = 1) failed on %pI",
                          lr->bind_addr);
             return rv;
@@ -97,7 +97,7 @@ static apr_status_t simple_setup_listeners(simple_core_t * sc)
 
         rv = apr_pollcb_add(sc->pollcb, pfd);
         if (rv) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00237)
                          "simple_setup_workers: apr_pollcb_add failed on %pI",
                          lr->bind_addr);
             return rv;
@@ -236,7 +236,7 @@ void simple_single_process_hack(simple_core_t * sc)
     /* Normally this is only ran in the child processes, but we want to do it here too... */
     rv = simple_setup_listeners(sc);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00238)
                      "simple_single_child_hack: simple_setup_listeners failed");
     }
 }
@@ -246,7 +246,7 @@ static int simple_setup_privs(simple_core_t * sc)
     int rv = ap_run_drop_privileges(sc->pool, ap_server_conf);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00239)
                      "simple_setup_privs: ap_run_drop_privileges failed");
         return rv;
     }
@@ -269,7 +269,7 @@ static int simple_setup_pollcb(simple_core_t * sc)
         }
     }
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00240)
                    "simple_setup_pollcb: apr_pollcb_create failed for all possible backends!");
         return rv;
     }
@@ -292,14 +292,14 @@ int simple_child_loop(simple_core_t * sc)
 
     rv = simple_setup_workers(sc);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00241)
                      "simple_child_loop: simple_setup_workers failed");
         return !OK;
     }
 
     rv = simple_setup_listeners(sc);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00242)
                      "simple_child_loop: simple_setup_sockets failed");
         return !OK;
     }
@@ -326,14 +326,14 @@ int simple_main_loop(simple_core_t * sc)
 
     rv = simple_setup_workers(sc);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00243)
                      "simple_main_loop: simple_setup_workers failed");
         return !OK;
     }
 
     rv = simple_main_setup_timers(sc);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00244)
                      "simple_main_loop: simple_setup_timers failed");
         return !OK;
     }

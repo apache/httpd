@@ -237,7 +237,7 @@ static int spot_cookie(request_rec *r)
                     err = 1;
             }
             if (err) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01499)
                               "Failed to extract cookie value (out of mem?)");
                 return HTTP_INTERNAL_SERVER_ERROR;
             }

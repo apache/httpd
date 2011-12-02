@@ -64,7 +64,7 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01209)
                  "proxy: Entering bytraffic for BALANCER (%s)",
                  balancer->s->name);
 
@@ -112,7 +112,7 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
     } while (cur_lbset <= max_lbset && !mycandidate);
 
     if (mycandidate) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01210)
                      "proxy: bytraffic selected worker \"%s\" : busy %" APR_SIZE_T_FMT,
                      mycandidate->s->name, mycandidate->s->busy);
 

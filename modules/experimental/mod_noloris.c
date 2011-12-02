@@ -69,7 +69,7 @@ static int noloris_conn(conn_rec *conn)
     while (shm_rec[0] != '\0') {
         if (!strcmp(shm_rec, conn->peer_ip)) {
             apr_socket_t *csd = ap_get_conn_socket(conn);
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn, APLOGNO(02059)
                           "Dropping connection from banned IP %s",
                           conn->peer_ip);
             apr_socket_close(csd);
@@ -148,7 +148,7 @@ static int noloris_monitor(apr_pool_t *pool, server_rec *s)
         if (*n >= default_max_connections) {
             /* if this isn't a trusted proxy, we mark it as bad */
             if (!apr_hash_get(trusted, ip, APR_HASH_KEY_STRING)) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02060)
                        "noloris: banning %s with %d connections in READ state",
                        ip, *n);
                 strcpy(shm_rec, ip);
@@ -168,7 +168,7 @@ static int noloris_post(apr_pool_t *pconf, apr_pool_t *ptmp, apr_pool_t *plog,
 
     rv = apr_shm_create(&shm, shm_size, NULL, pconf);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(02061)
                      "Failed to create shm segment; mod_noloris disabled");
         apr_hash_clear(trusted);
         shm = NULL;

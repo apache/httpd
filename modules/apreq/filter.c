@@ -127,13 +127,13 @@ void apreq_filter_init_context(ap_filter_t *f)
         apr_uint64_t content_length = apr_strtoi64(cl_header,&dummy,0);
 
         if (dummy == NULL || *dummy != 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(02045)
                           "Invalid Content-Length header (%s)", cl_header);
             ctx->body_status = APREQ_ERROR_BADHEADER;
             return;
         }
         else if (content_length > ctx->read_limit) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(02046)
                           "Content-Length header (%s) exceeds configured "
                           "max_body limit (%" APR_UINT64_T_FMT ")",
                           cl_header, ctx->read_limit);
@@ -221,14 +221,14 @@ static apr_status_t apreq_filter_init(ap_filter_t *f)
             handle->f = f;
         }
         else if (r->input_filters->frec->filter_func.in_func == apreq_filter) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02047)
                           "removing intermediate apreq filter");
             if (handle->f == f)
                 handle->f = r->input_filters;
             ap_remove_input_filter(f);
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02048)
                           "relocating intermediate apreq filter");
             apreq_filter_relocate(f);
             handle->f = f;
@@ -240,7 +240,7 @@ static apr_status_t apreq_filter_init(ap_filter_t *f)
      * if it is, we must deregister it now.
      */
     if (handle->f == f) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02049)
                      "disabling stale protocol filter");
         if (ctx->body_status == APR_INCOMPLETE)
             ctx->body_status = APREQ_ERROR_INTERRUPT;
@@ -264,14 +264,14 @@ apr_status_t apreq_filter_prefetch(ap_filter_t *f, apr_off_t readbytes)
     if (ctx->body_status != APR_INCOMPLETE || readbytes == 0)
         return ctx->body_status;
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02050)
                   "prefetching %" APR_OFF_T_FMT " bytes", readbytes);
 
     rv = ap_get_brigade(f->next, ctx->bb, AP_MODE_READBYTES,
                        APR_BLOCK_READ, readbytes);
 
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02051)
                       "ap_get_brigade failed during prefetch");
         ctx->filter_error = rv;
         return ctx->body_status = APREQ_ERROR_GENERAL;
@@ -283,7 +283,7 @@ apr_status_t apreq_filter_prefetch(ap_filter_t *f, apr_off_t readbytes)
     rv = apreq_brigade_concat(r->pool, ctx->temp_dir, ctx->brigade_limit,
                               ctx->spool, ctx->bbtmp);
     if (rv != APR_SUCCESS && rv != APR_EOF) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(02052)
                       "apreq_brigade_concat failed; TempDir problem?");
         ctx->filter_error = APR_EGENERAL;
         return ctx->body_status = rv;
@@ -310,7 +310,7 @@ apr_status_t apreq_filter_prefetch(ap_filter_t *f, apr_off_t readbytes)
 
     if (ctx->bytes_read > ctx->read_limit) {
         ctx->body_status = APREQ_ERROR_OVERLIMIT;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->body_status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->body_status, r, APLOGNO(02053)
                       "Bytes read (%" APR_UINT64_T_FMT
                       ") exceeds configured read limit (%" APR_UINT64_T_FMT ")",
                       ctx->bytes_read, ctx->read_limit);
@@ -389,7 +389,7 @@ apr_status_t apreq_filter(ap_filter_t *f,
 
     if (ctx->bytes_read > ctx->read_limit) {
         ctx->body_status = APREQ_ERROR_OVERLIMIT;
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->body_status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->body_status, r, APLOGNO(02054)
                       "Bytes read (%" APR_UINT64_T_FMT
                       ") exceeds configured max_body limit (%"
                       APR_UINT64_T_FMT ")",
@@ -410,7 +410,7 @@ static int apreq_pre_init(apr_pool_t *p, apr_pool_t *plog,
 
     status = apreq_pre_initialize(p);
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, status, base_server,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, status, base_server, APLOGNO(02055)
                      "Failed to pre-initialize libapreq2");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -425,7 +425,7 @@ static int apreq_post_init(apr_pool_t *p, apr_pool_t *plog,
 
     status = apreq_post_initialize(p);
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, status, base_server,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, status, base_server, APLOGNO(02056)
                      "Failed to post-initialize libapreq2");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -502,7 +502,7 @@ void apreq_filter_make_context(ap_filter_t *f)
 
             }
 
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(02057)
                           "stealing filter context");
             f->ctx = ctx;
             r->proto_input_filters = f;
@@ -511,7 +511,7 @@ void apreq_filter_make_context(ap_filter_t *f)
             return;
 
         default:
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, ctx->body_status, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, ctx->body_status, r, APLOGNO(02058)
                           "cannot steal context: bad filter status");
         }
     }

@@ -68,14 +68,14 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
 
     rv = apr_sockaddr_info_get(&sa, uri->hostname, APR_UNSPEC, uri->port, 0, p);
     if (rv) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01972)
                       "could not resolve address of OCSP responder %s",
                       uri->hostinfo);
         return NULL;
     }
 
     /* establish a connection to the OCSP responder */
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01973)
                   "connecting to OCSP responder '%s'", uri->hostinfo);
 
     /* Cycle through address until a connect() succeeds. */
@@ -93,7 +93,7 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
     }
 
     if (sa == NULL) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01974)
                       "could not connect to OCSP responder '%s'",
                       uri->hostinfo);
         apr_socket_close(sd);
@@ -101,7 +101,7 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
     }
 
     /* send the request and get a response */
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01975)
                  "sending request to OCSP responder");
 
     while ((len = BIO_read(request, buf, sizeof buf)) > 0) {
@@ -118,7 +118,7 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
 
         if (rv) {
             apr_socket_close(sd);
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01976)
                           "failed to send request to OCSP responder '%s'",
                           uri->hostinfo);
             return NULL;
@@ -141,20 +141,20 @@ static char *get_line(apr_bucket_brigade *bbout, apr_bucket_brigade *bbin,
 
     rv = apr_brigade_split_line(bbout, bbin, APR_BLOCK_READ, 8192);
     if (rv) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01977)
                       "failed reading line from OCSP server");
         return NULL;
     }
 
     rv = apr_brigade_pflatten(bbout, &line, &len, p);
     if (rv) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01978)
                       "failed reading line from OCSP server");
         return NULL;
     }
 
     if (len && line[len-1] != APR_ASCII_LF) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01979)
                       "response header line too long from OCSP server");
         return NULL;
     }
@@ -193,7 +193,7 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
     if (!line || strncmp(line, "HTTP/", 5)
         || (line = ap_strchr(line, ' ')) == NULL
         || (code = apr_atoi64(++line)) < 200 || code > 299) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01980)
                       "bad response from OCSP server: %s",
                       line ? line : "(none)");
         return NULL;
@@ -205,18 +205,18 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
     count = 0;
     while ((line = get_line(tmpbb, bb, c, p)) != NULL && line[0]
            && ++count < MAX_HEADERS) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01981)
                       "OCSP response header: %s", line);
     }
 
     if (count == MAX_HEADERS) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01982)
                       "could not read response headers from OCSP server, "
                       "exceeded maximum count (%u)", MAX_HEADERS);
         return NULL;
     }
     else if (!line) {
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01983)
                       "could not read response header from OCSP server");
         return NULL;
     }
@@ -231,23 +231,23 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
 
         rv = apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
         if (rv == APR_EOF || (rv == APR_SUCCESS && len == 0)) {
-            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01984)
                           "OCSP response: got EOF");
             break;
         }
         if (rv != APR_SUCCESS) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01985)
                           "error reading response from OCSP server");
             return NULL;
         }
         count += len;
         if (count > MAX_CONTENT) {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(01986)
                           "OCSP response size exceeds %u byte limit",
                           MAX_CONTENT);
             return NULL;
         }
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, APLOGNO(01987)
                       "OCSP response: got %" APR_SIZE_T_FMT
                       " bytes, %" APR_SIZE_T_FMT " total", len, count);
 
@@ -263,7 +263,7 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
     response = d2i_OCSP_RESPONSE_bio(bio, NULL);
     if (response == NULL) {
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, mySrvFromConn(c));
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01988)
                       "failed to decode OCSP response data");
     }
 
@@ -282,7 +282,7 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
     bio = serialize_request(request, uri);
     if (bio == NULL) {
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, mySrvFromConn(c));
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(01989)
                       "could not serialize OCSP request");
         return NULL;
     }

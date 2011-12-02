@@ -49,7 +49,7 @@ static int proxy_fdpass_canon(request_rec *r, char *url)
 
     r->filename = apr_pstrcat(r->pool, "proxy:fd://", path, NULL);
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01151)
                   "set r->filename to %s", r->filename);
     return OK;
 }
@@ -195,7 +195,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
     rv = get_socket_from_path(r->pool, url, &sock);
 
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01152)
                       "Failed to connect to '%s'", url);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -208,7 +208,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
                                                        flush_method, "0");
 
         if (!flush) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01153)
                           "Unable to find configured flush provider '%s'",
                           flush_method);
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -224,7 +224,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
 
     rv = send_socket(r->pool, sock, clientsock);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "send_socket failed:");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01154) "send_socket failed:");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -237,7 +237,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
         rv = apr_socket_create(&dummy, APR_INET, SOCK_STREAM, APR_PROTO_TCP,
                                r->connection->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01155)
                           "failed to create dummy socket");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -264,7 +264,7 @@ static int standard_flush(request_rec *r)
     status = ap_pass_brigade(r->output_filters, bb);
 
     if (status != OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01156)
                       "ap_pass_brigade failed:");
         return status;
     }

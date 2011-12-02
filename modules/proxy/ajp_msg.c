@@ -151,7 +151,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
     if (!((head[0] == 0x41 && head[1] == 0x42) ||
           (head[0] == 0x12 && head[1] == 0x34))) {
 
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(01080)
                       "ajp_msg_check_header() got bad signature %02x%02x",
                       head[0], head[1]);
 
@@ -162,7 +162,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
     msglen += (head[3] & 0xFF);
 
     if (msglen > msg->max_size) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(01081)
                      "ajp_msg_check_header() incoming message is "
                      "too big %" APR_SIZE_T_FMT ", max is %" APR_SIZE_T_FMT,
                      msglen, msg->max_size);
@@ -578,7 +578,7 @@ apr_status_t ajp_msg_create(apr_pool_t *pool, apr_size_t size, ajp_msg_t **rmsg)
 apr_status_t ajp_msg_copy(ajp_msg_t *smsg, ajp_msg_t *dmsg)
 {
     if (smsg->len > smsg->max_size) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(01082)
                      "ajp_msg_copy(): destination buffer too "
                      "small %" APR_SIZE_T_FMT ", max size is %" APR_SIZE_T_FMT,
                      smsg->len, smsg->max_size);

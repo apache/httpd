@@ -433,7 +433,7 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
     r->handler = old_handler;
 
     if (result == DECLINED && r->handler && r->filename) {
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(00523)
             "handler \"%s\" not found for: %s", r->handler, r->filename);
     }
     if ((result != OK) && (result != DONE) && (result != DECLINED) && (result != SUSPENDED)
@@ -447,7 +447,7 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
          */
         ignore = apr_table_get(r->notes, "HTTP_IGNORE_RANGE");
         if (!ignore) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00524)
                           "Handler for %s returned invalid result code %d",
                           r->handler, result);
             result = HTTP_INTERNAL_SERVER_ERROR;
@@ -666,7 +666,7 @@ AP_DECLARE(void) ap_remove_module(module *m)
 
         if (!modp) {
             /* Uh-oh, this module doesn't exist */
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(00525)
                          "Cannot remove module %s: not found in module list",
                          m->name);
             return;
@@ -2004,11 +2004,11 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
     errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
     if (errmsg) {
         if (parms.err_directive)
-            ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
+            ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p, APLOGNO(00526)
                           "Syntax error on line %d of %s:",
                           parms.err_directive->line_num,
                           parms.err_directive->filename);
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p,
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p, APLOGNO(00527)
                      "%s", errmsg);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -2070,7 +2070,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
             ap_cfg_closefile(f);
 
             if (errmsg) {
-                ap_log_rerror(APLOG_MARK, APLOG_ALERT, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ALERT, 0, r, APLOGNO(00528)
                               "%s: %s", filename, errmsg);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -2081,7 +2081,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
         else {
             if (!APR_STATUS_IS_ENOENT(status)
                 && !APR_STATUS_IS_ENOTDIR(status)) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r,
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, r, APLOGNO(00529)
                               "%s pcfg_openfile: unable to check htaccess file, "
                               "ensure it is readable and that '%s' "
                               "is executable",
@@ -2272,7 +2272,7 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
                                NULL, APR_UNSPEC, 0, 0, p);
     if (rv != APR_SUCCESS) {
         /* should we test here for rv being an EAIERR? */
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, rv, NULL, APLOGNO(00530)
                      "initialisation: bug or getaddrinfo fail");
         return NULL;
     }
@@ -2337,7 +2337,7 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
     error = process_command_config(s, ap_server_pre_read_config, conftree,
                                    p, ptemp);
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, "%s: %s",
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, APLOGNO(00531) "%s: %s",
                      ap_server_argv0, error);
         return NULL;
     }
@@ -2349,21 +2349,21 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
 
     if (!confname) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT,
-                     APR_EBADPATH, NULL, "Invalid config file path %s",
+                     APR_EBADPATH, NULL, APLOGNO(00532) "Invalid config file path %s",
                      filename);
         return NULL;
     }
 
     error = ap_process_resource_config(s, confname, conftree, p, ptemp);
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, APLOGNO(00533)
                      "%s: %s", ap_server_argv0, error);
         return NULL;
     }
 
     error = ap_check_mpm();
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, APLOGNO(00534)
                      "%s: Configuration error: %s", ap_server_argv0, error);
         return NULL;
     }
@@ -2372,7 +2372,7 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
                                    p, ptemp);
 
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, "%s: %s",
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, APLOGNO(00535) "%s: %s",
                      ap_server_argv0, error);
         return NULL;
     }

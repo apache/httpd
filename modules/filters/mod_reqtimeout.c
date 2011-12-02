@@ -310,7 +310,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
 
 out:
     if (APR_STATUS_IS_TIMEUP(rv)) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c, APLOGNO(01382)
                       "Request %s read timeout", ccfg->type);
         /*
          * If we allow a normal lingering close, the client may keep this

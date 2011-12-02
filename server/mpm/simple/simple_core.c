@@ -64,7 +64,7 @@ apr_status_t simple_core_init_once(void)
     rv = apr_thread_mutex_create(&sc->mtx, 0, sc->pool);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00246)
                      "simple_core_init_once: apr_thread_mutex_create failed.");
         return rv;
     }

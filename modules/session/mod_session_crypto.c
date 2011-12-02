@@ -71,7 +71,7 @@ static apr_status_t crypt_init(request_rec *r,
 
     res = apr_crypto_get_block_key_types(&ciphers, f);
     if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01823)
                 "no ciphers returned by APR. "
                 "session encryption not possible");
         return res;
@@ -104,7 +104,7 @@ static apr_status_t crypt_init(request_rec *r,
         }
         options[offset] = 0;
 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01824)
                 "cipher '%s' not recognised by crypto driver. "
                 "session encryption not possible, options: %s", dconf->cipher, options);
 
@@ -158,26 +158,26 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
             (unsigned char *) (&salt), sizeof(apr_uuid_t),
             *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
     if (APR_STATUS_IS_ENOKEY(res)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01825)
                 "the passphrase '%s' was empty", passphrase);
     }
     if (APR_STATUS_IS_EPADDING(res)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01826)
                 "padding is not supported for cipher");
     }
     if (APR_STATUS_IS_EKEYTYPE(res)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01827)
                 "the key type is not known");
     }
     if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01828)
                 "encryption could not be configured.");
         return res;
     }
 
     res = apr_crypto_block_encrypt_init(&block, &iv, key, &blockSize, r->pool);
     if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01829)
                 "apr_crypto_block_encrypt_init failed");
         return res;
     }
@@ -186,13 +186,13 @@ static apr_status_t encrypt_string(request_rec * r, const apr_crypto_t *f,
     res = apr_crypto_block_encrypt(&encrypt, &encryptlen, (unsigned char *)in,
             strlen(in), block);
     if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01830)
                 "apr_crypto_block_encrypt failed");
         return res;
     }
     res = apr_crypto_block_encrypt_finish(encrypt + encryptlen, &tlen, block);
     if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01831)
                 "apr_crypto_block_encrypt_finish failed");
         return res;
     }
@@ -258,29 +258,29 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
                 (unsigned char *)decoded, sizeof(apr_uuid_t),
                 *cipher, APR_MODE_CBC, 1, 4096, f, r->pool);
         if (APR_STATUS_IS_ENOKEY(res)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01832)
                     "the passphrase '%s' was empty", passphrase);
             continue;
         }
         else if (APR_STATUS_IS_EPADDING(res)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01833)
                     "padding is not supported for cipher");
             continue;
         }
         else if (APR_STATUS_IS_EKEYTYPE(res)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01834)
                     "the key type is not known");
             continue;
         }
         else if (APR_SUCCESS != res) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01835)
                     "encryption could not be configured.");
             continue;
         }
 
         /* sanity check - decoded too short? */
         if (decodedlen < (sizeof(apr_uuid_t) + ivSize)) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(01836)
                     "too short to decrypt, skipping");
             res = APR_ECRYPT;
             continue;
@@ -293,7 +293,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
         res = apr_crypto_block_decrypt_init(&block, &blockSize, (unsigned char *)slider, key,
                 r->pool);
         if (APR_SUCCESS != res) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01837)
                     "apr_crypto_block_decrypt_init failed");
             continue;
         }
@@ -306,7 +306,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
         res = apr_crypto_block_decrypt(&decrypted, &decryptedlen,
                 (unsigned char *)slider, len, block);
         if (res) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01838)
                     "apr_crypto_block_decrypt failed");
             continue;
         }
@@ -314,7 +314,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
 
         res = apr_crypto_block_decrypt_finish(decrypted + decryptedlen, &tlen, block);
         if (APR_SUCCESS != res) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01839)
                     "apr_crypto_block_decrypt_finish failed");
             continue;
         }
@@ -325,7 +325,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
     }
 
     if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, res, r,
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, res, r, APLOGNO(01840)
                 "decryption failed");
     }
 
@@ -352,7 +352,7 @@ static apr_status_t session_crypto_encode(request_rec * r, session_rec * z)
         apr_pool_userdata_get((void **)&f, CRYPTO_KEY, r->server->process->pconf);
         res = encrypt_string(r, f, dconf, z->encoded, &encoded);
         if (res != OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(01841)
                     "encrypt session failed");
             return res;
         }
@@ -384,7 +384,7 @@ static apr_status_t session_crypto_decode(request_rec * r,
                 r->server->process->pconf);
         res = decrypt_string(r, f, dconf, z->encoded, &encoded);
         if (res != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, APLOGNO(01842)
                     "decrypt session failed, wrong passphrase?");
             return res;
         }
@@ -421,31 +421,31 @@ static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
 
         rv = apr_crypto_init(p);
         if (APR_SUCCESS != rv) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01843)
                     "APR crypto could not be initialised");
             return rv;
         }
 
         rv = apr_crypto_get_driver(&driver, conf->library, conf->params, &err, p);
         if (APR_EREINIT == rv) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(01844)
                     "warning: crypto for '%s' was already initialised, "
                     "using existing configuration", conf->library);
             rv = APR_SUCCESS;
         }
         if (APR_SUCCESS != rv && err) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01845)
                     "%s", err->msg);
             return rv;
         }
         if (APR_ENOTIMPL == rv) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01846)
                     "The crypto library '%s' could not be found",
                     conf->library);
             return rv;
         }
         if (APR_SUCCESS != rv || !driver) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01847)
                     "The crypto library '%s' could not be loaded",
                     conf->library);
             return rv;
@@ -453,13 +453,13 @@ static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
 
         rv = apr_crypto_make(&f, driver, conf->params, p);
         if (APR_SUCCESS != rv) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01848)
                     "The crypto library '%s' could not be initialised",
                     conf->library);
             return rv;
         }
 
-        ap_log_error(APLOG_MARK, APLOG_INFO, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, APLOGNO(01849)
                 "The crypto library '%s' was loaded successfully",
                 conf->library);
 

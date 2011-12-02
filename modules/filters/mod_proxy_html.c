@@ -385,12 +385,12 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
         }
     }
     if (!desc && enforce) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01416)
                       "Bogus HTML element %s dropped", name);
         return;
     }
     if (desc && desc->depr && (enforce == 2)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01417)
                       "Deprecated HTML element %s dropped", name);
         return;
     }
@@ -414,12 +414,12 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
             if (desc && enforce > 0) {
                 switch (htmlAttrAllowed(desc, (xmlChar*)*a, 2-enforce)) {
                 case HTML_INVALID:
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01418)
                                   "Bogus HTML attribute %s of %s dropped",
                                   *a, name);
                     continue;
                 case HTML_DEPRECATED:
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01419)
                                   "Deprecated HTML attribute %s of %s dropped",
                                   *a, name);
                     continue;
@@ -636,7 +636,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
 
     if ((enforce > 0) && (required_attrs > 0)) {
         /* if there are more required attributes than we found then complain */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01420)
                       "HTML element %s is missing %d required attributes",
                       name, required_attrs);
     }
@@ -753,7 +753,7 @@ static void fixup_rules(saxctxt *ctx)
             const char *err;
             int ok = ap_expr_exec(r, p->cond, &err);
             if (err) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01421)
                               "Error evaluating expr: %s", err);
             }
             if (ok == 0) {
@@ -887,7 +887,7 @@ static int proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 if (!xml2enc_charset ||
                     (xml2enc_charset(f->r, &enc, &cenc) != APR_SUCCESS)) {
                     if (!xml2enc_charset)
-                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r,
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01422)
                      "No i18n support found.  Install mod_xml2enc if required");
                     enc = XML_CHAR_ENCODING_NONE;
                     ap_set_content_type(f->r, "text/html;charset=utf-8");
@@ -924,7 +924,7 @@ static int proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                                           apr_pool_cleanup_null);
 #ifndef USE_OLD_LIBXML2
                 if (xmlopts = xmlCtxtUseOptions(ctxt->parser, xmlopts), xmlopts)
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r,
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO(01423)
                                   "Unsupported parser opts %x", xmlopts);
 #endif
                 if (ctxt->cfg->metafix)
@@ -942,7 +942,7 @@ static int proxy_html_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             }
         }
         else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01424)
                           "Error in bucket read");
         }
     }
@@ -1233,7 +1233,7 @@ static int mod_proxy_html(apr_pool_t *p, apr_pool_t *p1, apr_pool_t *p2)
     xml2enc_charset = APR_RETRIEVE_OPTIONAL_FN(xml2enc_charset);
     xml2enc_filter = APR_RETRIEVE_OPTIONAL_FN(xml2enc_filter);
     if (!xml2enc_charset) {
-        ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p2,
+        ap_log_perror(APLOG_MARK, APLOG_NOTICE, 0, p2, APLOGNO(01425)
                       "I18n support in mod_proxy_html requires mod_xml2enc. "
                       "Without it, non-ASCII characters in proxied pages are "
                       "likely to display incorrectly.");

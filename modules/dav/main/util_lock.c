@@ -718,7 +718,7 @@ DAV_DECLARE(int) dav_get_resource_state(request_rec *r,
         if (err != NULL) {
             /* ### don't log an error. return err. add higher-level desc. */
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00623)
                           "Failed to query lock-null status for %s",
                           r->filename);
 
