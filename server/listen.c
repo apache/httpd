@@ -416,7 +416,7 @@ static int open_listeners(apr_pool_t *pool)
              * listen (which would generate an error). IPv4 will be handled
              * on the established IPv6 socket.
              */
-            if (IS_INADDR_ANY(lr->bind_addr)) {
+            if (IS_INADDR_ANY(lr->bind_addr) && previous) {
                 for (cur = ap_listeners; cur != lr; cur = cur->next) {
                     if (lr->bind_addr->port == cur->bind_addr->port
                         && IS_IN6ADDR_ANY(cur->bind_addr)
