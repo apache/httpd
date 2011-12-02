@@ -262,6 +262,23 @@ static int uldap_connection_init(request_rec *r,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
         &ldap_module);
+    int have_client_certs = !apr_is_empty_array(ldc->client_certs);
+#if !APR_HAS_SOLARIS_LDAPSDK
+    /*
+     * Normally we enable SSL/TLS with apr_ldap_set_option(), except
+     * with Solaris LDAP, where this is broken.
+     */
+    int secure = APR_LDAP_NONE;
+#else
+    /*
+     * With Solaris LDAP, we enable TSL via the secure argument
+     * to apr_ldap_init(). This requires a fix from apr-util >= 1.4.0.
+     *
+     * Just in case client certificates ever get supported, we
+     * handle those as with the other LDAP SDKs.
+     */
+    int secure = have_client_certs ? APR_LDAP_NONE : ldc->secure;
+#endif
 
     /* Since the host will include a port if the default port is not used,
      * always specify the default ports for the port parameter.  This will
@@ -272,8 +289,7 @@ static int uldap_connection_init(request_rec *r,
     apr_ldap_init(r->pool, &(ldc->ldap),
                   ldc->host,
                   APR_LDAP_SSL == ldc->secure ? LDAPS_PORT : LDAP_PORT,
-                  APR_LDAP_NONE,
-                  &(result));
+                  secure, &(result));
 
     if (NULL == result) {
         /* something really bad happened */
@@ -318,7 +334,7 @@ static int uldap_connection_init(request_rec *r,
     ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
 
     /* set client certificates */
-    if (!apr_is_empty_array(ldc->client_certs)) {
+    if (have_client_certs) {
         apr_ldap_set_option(r->pool, ldc->ldap, APR_LDAP_OPT_TLS_CERT,
                             ldc->client_certs, &(result));
         if (LDAP_SUCCESS != result->rc) {
@@ -329,7 +345,12 @@ static int uldap_connection_init(request_rec *r,
     }
 
     /* switch on SSL/TLS */
-    if (APR_LDAP_NONE != ldc->secure) {
+    if (APR_LDAP_NONE != ldc->secure
+#if APR_HAS_SOLARIS_LDAPSDK
+        /* See comments near apr_ldap_init() above */
+        && have_client_certs
+#endif
+       ) {
         apr_ldap_set_option(r->pool, ldc->ldap,
                             APR_LDAP_OPT_TLS, &ldc->secure, &(result));
         if (LDAP_SUCCESS != result->rc) {
