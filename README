@@ -74,7 +74,10 @@
     general-purpose encryption library, such as OpenSSL, NSS, or the
     operating system's platform-specific facilities. This interface is
     known as the apr_crypto interface, with implementation beneath the
-    /crypto directory.
+    /crypto directory. The apr_crypto interface is used by the
+    mod_session_crypto module available under
+      modules/session
+    for optional encryption of session information.
 
     Some object code distributions of Apache httpd, indicated with the
     word "crypto" in the package name, may include object code for the
