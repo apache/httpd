@@ -41,10 +41,10 @@
 #define MOD_AUTH_FORM_HASH "site"
 
 static int (*ap_session_load_fn) (request_rec * r, session_rec ** z) = NULL;
-static void (*ap_session_get_fn) (request_rec * r, session_rec * z,
-                                  const char *key, const char **value) = NULL;
-static void (*ap_session_set_fn) (request_rec * r, session_rec * z,
-                                  const char *key, const char *value) = NULL;
+static apr_status_t (*ap_session_get_fn)(request_rec * r, session_rec * z,
+        const char *key, const char **value) = NULL;
+static apr_status_t (*ap_session_set_fn)(request_rec * r, session_rec * z,
+        const char *key, const char *value) = NULL;
 static void (*ap_request_insert_filter_fn) (request_rec * r) = NULL;
 static void (*ap_request_remove_filter_fn) (request_rec * r) = NULL;
 
