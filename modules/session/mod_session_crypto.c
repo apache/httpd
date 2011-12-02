@@ -57,11 +57,6 @@ typedef struct {
     int library_set;
 } session_crypto_conf;
 
-AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z);
-AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z);
-AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
-        apr_pool_t *ptemp, server_rec *s);
-
 /**
  * Initialise the encryption as per the current config.
  *
@@ -344,7 +339,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z)
+static apr_status_t session_crypto_encode(request_rec * r, session_rec * z)
 {
 
     char *encoded = NULL;
@@ -374,7 +369,8 @@ AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z)
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
+static apr_status_t session_crypto_decode(request_rec * r,
+        session_rec * z)
 {
 
     char *encoded = NULL;
@@ -402,7 +398,7 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
 /**
  * Initialise the SSL in the post_config hook.
  */
-AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
+static int session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
         apr_pool_t *ptemp, server_rec *s)
 {
     const apr_crypto_driver_t *driver = NULL;
@@ -605,9 +601,9 @@ static const command_rec session_crypto_cmds[] =
 
 static void register_hooks(apr_pool_t * p)
 {
-    ap_hook_session_encode(ap_session_crypto_encode, NULL, NULL, APR_HOOK_LAST);
-    ap_hook_session_decode(ap_session_crypto_decode, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_post_config(ap_session_crypto_init, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_session_encode(session_crypto_encode, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_session_decode(session_crypto_decode, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_post_config(session_crypto_init, NULL, NULL, APR_HOOK_LAST);
 }
 
 AP_DECLARE_MODULE(session_crypto) =
