@@ -125,8 +125,8 @@ typedef struct {
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_load,
-                          (request_rec * r, session_rec ** z))
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, apr_status_t, session_load,
+        (request_rec * r, session_rec ** z))
 
 /**
  * Hook to save the session.
@@ -137,8 +137,8 @@ APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_load,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_save,
-                          (request_rec * r, session_rec * z))
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, apr_status_t, session_save,
+        (request_rec * r, session_rec * z))
 
 /**
  * Hook to encode the session.
@@ -150,8 +150,8 @@ APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_save,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_encode,
-                          (request_rec * r, session_rec * z))
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, apr_status_t, session_encode,
+        (request_rec * r, session_rec * z))
 
 /**
  * Hook to decode the session.
@@ -163,15 +163,19 @@ APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_encode,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_decode,
-                          (request_rec * r, session_rec * z))
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, apr_status_t, session_decode,
+        (request_rec * r, session_rec * z))
 
-APR_DECLARE_OPTIONAL_FN(void, ap_session_get, (request_rec * r, session_rec * z,
-                                               const char *key, const char **value));
-APR_DECLARE_OPTIONAL_FN(void, ap_session_set, (request_rec * r, session_rec * z,
-                                               const char *key, const char *value));
-APR_DECLARE_OPTIONAL_FN(int, ap_session_load, (request_rec *, session_rec **));
-APR_DECLARE_OPTIONAL_FN(int, ap_session_save, (request_rec *, session_rec *));
+APR_DECLARE_OPTIONAL_FN(
+        apr_status_t,
+        ap_session_get,
+        (request_rec * r, session_rec * z, const char *key, const char **value));
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_session_set,
+        (request_rec * r, session_rec * z, const char *key, const char *value));
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_session_load,
+        (request_rec *, session_rec **));
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_session_save,
+        (request_rec *, session_rec *));
 
 /**
  * The name of the module.
