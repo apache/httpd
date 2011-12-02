@@ -19,6 +19,7 @@
 #include "apr_optional.h"
 #include "scoreboard.h"
 #include "mod_status.h"
+#include "proxy_util.h"
 
 #if (MODULE_MAGIC_NUMBER_MAJOR > 20020903)
 #include "mod_ssl.h"
@@ -2512,6 +2513,8 @@ static void register_hooks(apr_pool_t *p)
     /* child init handling */
     ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE);
 
+    /* register optional functions within proxy_util.c */
+    proxy_util_register_hooks(p);
 }
 
 AP_DECLARE_MODULE(proxy) =

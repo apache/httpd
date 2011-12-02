@@ -20,6 +20,7 @@
 #include "scoreboard.h"
 #include "apr_version.h"
 #include "apr_hash.h"
+#include "proxy_util.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
@@ -1977,9 +1978,8 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     return rv;
 }
 
-PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
-                                         proxy_worker *worker,
-                                         server_rec *s)
+static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worker,
+        server_rec *s)
 {
     if (worker->s->status & PROXY_WORKER_IN_ERROR) {
         if (apr_time_now() > worker->s->error_time + worker->s->retry) {
@@ -3024,3 +3024,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
     return APR_SUCCESS;
 }
 
+void proxy_util_register_hooks(apr_pool_t *p)
+{
+    APR_REGISTER_OPTIONAL_FN(ap_proxy_retry_worker);
+}
