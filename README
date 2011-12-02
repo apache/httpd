@@ -70,11 +70,11 @@
     SSL facilities.
 
     In addition, some versions of apr-util provide an abstract interface
-    for SSL encrypted network sockets in the files under the directory
-       srclib/apr-util/ssl/
-    that makes use of a general-purpose encryption library, such as
-    OpenSSL or the operating system's platform-specific SSL facilities.
-    Apache httpd currently does not use that apr-util interface.
+    for symmetrical cryptographic functions that make use of a
+    general-purpose encryption library, such as OpenSSL, NSS, or the
+    operating system's platform-specific facilities. This interface is
+    known as the apr_crypto interface, with implementation beneath the
+    /crypto directory.
 
     Some object code distributions of Apache httpd, indicated with the
     word "crypto" in the package name, may include object code for the
