@@ -88,8 +88,7 @@ static int session_included(request_rec * r, session_dir_conf * conf)
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-/* ??? We return errors but we ignore them thru-out. ??? */
-static int ap_session_load(request_rec * r, session_rec ** z)
+static apr_status_t ap_session_load(request_rec * r, session_rec ** z)
 {
 
     session_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
@@ -168,8 +167,7 @@ static int ap_session_load(request_rec * r, session_rec ** z)
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-/* ??? We return errors but we ignore them thru-out. ??? */
-static int ap_session_save(request_rec * r, session_rec * z)
+static apr_status_t ap_session_save(request_rec * r, session_rec * z)
 {
     if (z) {
         apr_time_t now = apr_time_now();
@@ -239,14 +237,21 @@ static int ap_session_save(request_rec * r, session_rec * z)
  * @param key The key to get.
  * @param value The buffer to write the value to.
  */
-static void ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value)
+static apr_status_t ap_session_get(request_rec * r, session_rec * z,
+        const char *key, const char **value)
 {
     if (!z) {
-        ap_session_load(r, &z); /* errors ignored?? */
+        apr_status_t rv;
+        rv = ap_session_load(r, &z);
+        if (APR_SUCCESS != rv) {
+            return rv;
+        }
     }
     if (z && z->entries) {
         *value = apr_table_get(z->entries, key);
     }
+
+    return OK;
 }
 
 /**
@@ -261,11 +266,15 @@ static void ap_session_get(request_rec * r, session_rec * z, const char *key, co
  * @param key The key to set. The existing key value will be replaced.
  * @param value The value to set.
  */
-static void ap_session_set(request_rec * r, session_rec * z,
-                                const char *key, const char *value)
+static apr_status_t ap_session_set(request_rec * r, session_rec * z,
+        const char *key, const char *value)
 {
     if (!z) {
-        ap_session_load(r, &z); /* errors ignored?? */
+        apr_status_t rv;
+        rv = ap_session_load(r, &z);
+        if (APR_SUCCESS != rv) {
+            return rv;
+        }
     }
     if (z) {
         if (value) {
@@ -276,6 +285,7 @@ static void ap_session_set(request_rec * r, session_rec * z,
         }
         z->dirty = 1;
     }
+    return APR_SUCCESS;
 }
 
 static int identity_count(int *count, const char *key, const char *val)
@@ -314,7 +324,7 @@ static int identity_concat(char *buffer, const char *key, const char *val)
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-static int session_identity_encode(request_rec * r, session_rec * z)
+static apr_status_t session_identity_encode(request_rec * r, session_rec * z)
 {
 
     char *buffer = NULL;
@@ -350,7 +360,7 @@ static int session_identity_encode(request_rec * r, session_rec * z)
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-static int session_identity_decode(request_rec * r, session_rec * z)
+static apr_status_t session_identity_decode(request_rec * r, session_rec * z)
 {
 
     char *last = NULL;
@@ -407,7 +417,7 @@ static int session_identity_decode(request_rec * r, session_rec * z)
  * attempt to save the session will be called
  */
 static apr_status_t session_output_filter(ap_filter_t * f,
-                                                    apr_bucket_brigade * in)
+        apr_bucket_brigade * in)
 {
 
     /* save all the sessions in all the requests */
@@ -421,7 +431,8 @@ static apr_status_t session_output_filter(ap_filter_t * f,
                                                       &session_module);
 
         /* load the session, or create one if necessary */
-        ap_session_load(r, &z); /* errors ignored?? */
+        /* when unset or on error, z will be NULL */
+        ap_session_load(r, &z);
         if (!z || z->written) {
             r = r->next;
             continue;
@@ -440,7 +451,8 @@ static apr_status_t session_output_filter(ap_filter_t * f,
         }
 
         /* save away the session, and we're done */
-        ap_session_save(r, z); /* errors ignored?? */
+        /* when unset or on error, we've complained to the log */
+        ap_session_save(r, z);
 
         r = r->next;
     }
@@ -478,9 +490,14 @@ static int session_fixups(request_rec * r)
                                                   &session_module);
 
     session_rec *z = NULL;
-    ap_session_load(r, &z); /* errors ignored?? */
 
-    if (conf->env) {
+    /* if an error occurs or no session has been configured, we ignore
+     * the broken session and allow it to be recreated from scratch on save
+     * if necessary.
+     */
+    ap_session_load(r, &z);
+
+    if (z && conf->env) {
         session_identity_encode(r, z);
         if (z->encoded) {
             apr_table_set(r->subprocess_env, HTTP_SESSION, z->encoded);

@@ -54,7 +54,7 @@ typedef struct {
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-static int session_cookie_save(request_rec * r, session_rec * z)
+static apr_status_t session_cookie_save(request_rec * r, session_rec * z)
 {
 
     session_cookie_dir_conf *conf = ap_get_module_config(r->per_dir_config,
@@ -109,7 +109,7 @@ static int session_cookie_save(request_rec * r, session_rec * z)
  *
  * On success, this returns APR_SUCCESS.
  */
-static int session_cookie_load(request_rec * r, session_rec ** z)
+static apr_status_t session_cookie_load(request_rec * r, session_rec ** z)
 {
 
     session_cookie_dir_conf *conf = ap_get_module_config(r->per_dir_config,
