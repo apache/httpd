@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.0
 
+  *) mod_ldap: Fix segfault with Solaris LDAP when enabling ldaps. This
+     requires an apr-util fix in which is available in apr-util >= 1.4.0.
+     PR 42682. [Stefan Fritsch]
+
   *) mod_rewrite: Add the AllowNoSlash RewriteOption, which makes it possible
      for RewriteRules to be placed in .htaccess files that match the directory
      with no trailing slash. PR 48304.
