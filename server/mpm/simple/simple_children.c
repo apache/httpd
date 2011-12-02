@@ -73,7 +73,7 @@ static int simple_spawn_child(simple_core_t * sc)
             pid = fork();
             if (pid == -1) {
                 rv = errno;
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00245)
                              "simple_spawn_child: Unable to fork new process");
                 return rv;
             }

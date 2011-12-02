@@ -40,7 +40,7 @@ static void simple_io_timeout_cb(simple_core_t * sc, void *baton)
     cs = NULL;
 #endif
 
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(00247)
                  "io timeout hit (?)");
 }
 
@@ -69,7 +69,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
         if (scon->pfd.reqevents != 0) {
             rv = apr_pollcb_remove(sc->pollcb, &scon->pfd);
             if (rv) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00248)
                              "simple_io_process: apr_pollcb_remove failure");
                 /*AP_DEBUG_ASSERT(rv == APR_SUCCESS);*/
             }
@@ -99,7 +99,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                                                            NULL);
 
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(00249)
                              "network write failure in core output filter");
                 scon->cs.state = CONN_STATE_LINGER;
             }
@@ -123,7 +123,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
 
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, rv,
-                                 ap_server_conf,
+                                 ap_server_conf, APLOGNO(00250)
                                  "apr_pollcb_add: failed in write completion");
                     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
                 }
@@ -160,7 +160,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
             rv = apr_pollcb_add(sc->pollcb, &scon->pfd);
 
             if (rv) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(00251)
                              "process_socket: apr_pollcb_add failure in read request line");
                 AP_DEBUG_ASSERT(rv == APR_SUCCESS);
             }
@@ -185,7 +185,7 @@ static void *simple_io_invoke(apr_thread_t * thread, void *baton)
     rv = simple_io_process(scon);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(00252)
                      "simple_io_invoke: simple_io_process failed (?)");
     }
 
@@ -227,7 +227,7 @@ static void *simple_io_setup_conn(apr_thread_t * thread, void *baton)
 
     rv = ap_run_pre_connection(scon->c, scon->sock);
     if (rv != OK && rv != DONE) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00253)
                      "simple_io_setup_conn: connection aborted");
         scon->c->aborted = 1;
     }
@@ -237,7 +237,7 @@ static void *simple_io_setup_conn(apr_thread_t * thread, void *baton)
     rv = simple_io_process(scon);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ap_server_conf, APLOGNO(00254)
                      "simple_io_setup_conn: simple_io_process failed (?)");
     }
 
@@ -265,7 +265,7 @@ apr_status_t simple_io_accept(simple_core_t * sc, simple_sb_t * sb)
          *
          * Need to discuss this on dev@
          */
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(00255)
                      "simple_io_accept: apr_socket_accept failed");
         return APR_SUCCESS;
     }

@@ -81,7 +81,7 @@ static int open_log(server_rec *s, apr_pool_t *p)
 
         pl = ap_open_piped_log(p, pname);
         if (pl == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00650)
                          "couldn't spawn forensic log pipe %s", cfg->logname);
             return 0;
         }
@@ -94,7 +94,7 @@ static int open_log(server_rec *s, apr_pool_t *p)
         if ((rv = apr_file_open(&cfg->fd, fname,
                                 APR_WRITE | APR_APPEND | APR_CREATE,
                                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00651)
                          "could not open forensic log file %s.", fname);
             return 0;
         }

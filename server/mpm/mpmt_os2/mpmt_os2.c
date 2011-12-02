@@ -161,7 +161,7 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         is_parent_process = TRUE;
 
         if (ap_setup_listeners(ap_server_conf) < 1) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s, APLOGNO(00200)
                          "no listening sockets available, shutting down");
             return 1;
         }
@@ -174,7 +174,7 @@ static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
         if (!restart) {
             ap_remove_pid(pconf, ap_pid_fname);
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00201)
                          "caught SIGTERM, shutting down");
             return 1;
         }
@@ -201,7 +201,7 @@ static char master_main()
     set_signals();
 
     if (ap_setup_listeners(ap_server_conf) < 1) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s, APLOGNO(00202)
                      "no listening sockets available, shutting down");
         return FALSE;
     }
@@ -217,7 +217,7 @@ static char master_main()
                            PAG_READ|PAG_WRITE|PAG_COMMIT);
 
     if (rc) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, APR_FROM_OS_ERROR(rc), s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, APR_FROM_OS_ERROR(rc), s, APLOGNO(00203)
                      "failure allocating shared memory, shutting down");
         return FALSE;
     }
@@ -234,7 +234,7 @@ static char master_main()
     rc = DosCreateMutexSem(NULL, &ap_mpm_accept_mutex, DC_SEM_SHARED, FALSE);
 
     if (rc) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, APR_FROM_OS_ERROR(rc), s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, APR_FROM_OS_ERROR(rc), s, APLOGNO(00204)
                      "failure creating accept mutex, shutting down");
         return FALSE;
     }
@@ -249,7 +249,7 @@ static char master_main()
                                PAG_COMMIT|PAG_READ|PAG_WRITE);
 
         if (rc) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(rc), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(rc), ap_server_conf, APLOGNO(00205)
                          "unable to allocate shared memory for scoreboard , exiting");
             return FALSE;
         }
@@ -258,10 +258,10 @@ static char master_main()
     }
 
     ap_scoreboard_image->global->restart_time = apr_time_now();
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00206)
                 "%s configured -- resuming normal operations",
                 ap_get_server_description());
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00207)
                 "Server built: %s", ap_get_server_built());
     if (one_process) {
         ap_scoreboard_image->parent[0].pid = getpid();
@@ -339,7 +339,7 @@ static void spawn_child(int slot)
                     ppib->pib_pchcmd, NULL, &proc_rc, progname);
 
     if (rc) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(rc), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(rc), ap_server_conf, APLOGNO(00208)
                      "error spawning child, slot %d", slot);
     }
 
@@ -382,17 +382,17 @@ static void set_signals()
     sa.sa_handler = sig_term;
 
     if (sigaction(SIGTERM, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00209) "sigaction(SIGTERM)");
 
     if (sigaction(SIGINT, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGINT)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00210) "sigaction(SIGINT)");
 
     sa.sa_handler = sig_restart;
 
     if (sigaction(SIGHUP, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00211) "sigaction(SIGHUP)");
     if (sigaction(SIGUSR1, &sa, NULL) < 0)
-        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGUSR1)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, APLOGNO(00212) "sigaction(SIGUSR1)");
 }
 
 
@@ -492,11 +492,11 @@ static int mpmt_os2_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (ap_daemons_to_start < 0) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00213)
                          "WARNING: StartServers of %d not allowed, "
                          "increasing to 1.", ap_daemons_to_start);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00214)
                          "StartServers of %d not allowed, increasing to 1",
                          ap_daemons_to_start);
         }
@@ -505,7 +505,7 @@ static int mpmt_os2_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (ap_min_spare_threads < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00215)
                          "WARNING: MinSpareThreads of %d not allowed, "
                          "increasing to 1", ap_min_spare_threads);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
@@ -513,7 +513,7 @@ static int mpmt_os2_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " Please read the documentation.");
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00216)
                          "MinSpareThreads of %d not allowed, increasing to 1",
                          ap_min_spare_threads);
         }

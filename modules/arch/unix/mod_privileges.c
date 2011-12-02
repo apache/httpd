@@ -150,22 +150,22 @@ static apr_status_t privileges_end_req(void *data)
     /* if either user or group are not the default, restore them */
     if (cfg->uid || cfg->gid) {
         if (setppriv(PRIV_ON, PRIV_EFFECTIVE, priv_setid) == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02136)
                           "PRIV_ON failed restoring default user/group");
         }
         if (cfg->uid && (setuid(ap_unixd_config.user_id) == -1)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02137)
                           "Error restoring default userid");
         }
         if (cfg->gid && (setgid(ap_unixd_config.group_id) == -1)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02138)
                           "Error restoring default group");
         }
     }
 
     /* restore default privileges */
     if (setppriv(PRIV_SET, PRIV_EFFECTIVE, priv_default) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, APLOGNO(02139)
                       "Error restoring default privileges");
     }
     return APR_SUCCESS;
@@ -216,14 +216,14 @@ static int privileges_req(request_rec *r)
        rv = apr_proc_fork(&proc, r->pool);
         switch (rv) {
         case APR_INPARENT:
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02140)
                           "parent waiting for child");
             /* FIXME - does the child need to run synchronously?
              * esp. if we enable mod_privileges with threaded MPMs?
              * We do need at least to ensure r outlives the child.
              */
             rv = apr_proc_wait(&proc, &exitcode, &exitwhy, APR_WAIT);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "parent: child %s",
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02141) "parent: child %s",
                           (rv == APR_CHILD_DONE) ? "done" : "notdone");
 
             /* The child has taken responsibility for reading all input
@@ -239,10 +239,10 @@ static int privileges_req(request_rec *r)
              */
             return DONE;
         case APR_INCHILD:
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "In child!");
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02142) "In child!");
             break;  /* now we'll drop privileges in the child */
         default:
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02143)
                           "Failed to fork secure child process!");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -256,38 +256,38 @@ static int privileges_req(request_rec *r)
     /* set user and group if configured */
     if (cfg->uid || cfg->gid) {
         if (setppriv(PRIV_ON, PRIV_EFFECTIVE, priv_setid) == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02144)
                           "No privilege to set user/group");
         }
         /* if we should be able to set these but can't, it could be
          * a serious security issue.  Bail out rather than risk it!
          */
         if (cfg->uid && (setuid(cfg->uid) == -1)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02145)
                           "Error setting userid");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         if (cfg->gid && (setgid(cfg->gid) == -1)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02146)
                           "Error setting group");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
     /* set vhost's privileges */
     if (setppriv(PRIV_SET, PRIV_EFFECTIVE, cfg->priv) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, APLOGNO(02147)
                       "Error setting effective privileges");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* ... including those of any subprocesses */
     if (setppriv(PRIV_SET, PRIV_INHERITABLE, cfg->child_priv) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, APLOGNO(02148)
                       "Error setting inheritable privileges");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     if (setppriv(PRIV_SET, PRIV_LIMIT, cfg->child_priv) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, APLOGNO(02149)
                       "Error setting limit privileges");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -295,7 +295,7 @@ static int privileges_req(request_rec *r)
     /* If we're in a child process, drop down PPERM too */
     if (fork_req) {
         if (setppriv(PRIV_SET, PRIV_PERMITTED, cfg->priv) == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, APLOGNO(02150)
                           "Error setting permitted privileges");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -304,7 +304,7 @@ static int privileges_req(request_rec *r)
     return OK;
 }
 #define PDROP_CHECK(x) if (x == -1) { \
-        ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s, \
+        ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s, APLOGNO(02151) \
                      "Error dropping privileges"); \
         return !OK; \
     }
@@ -380,7 +380,7 @@ static int privileges_postconf(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_cleanup_null);
     priv_emptyset(priv_setid);
     if (priv_addset(priv_setid, PRIV_PROC_SETID) == -1) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, errno, ptemp,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, errno, ptemp, APLOGNO(02152)
                       "priv_addset");
         return !OK;
     }
@@ -393,13 +393,13 @@ static int privileges_init(apr_pool_t *pconf, apr_pool_t *plog,
     int threaded;
     int rv = ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_NOTICE, rv, ptemp,
+        ap_log_perror(APLOG_MARK, APLOG_NOTICE, rv, ptemp, APLOGNO(02153)
                       "mod_privileges: unable to determine MPM characteristics."
                       "  Please ensure you are using a non-threaded MPM "
                       "with this module.");
     }
     if (threaded) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, ptemp,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, ptemp, APLOGNO(02154)
                       "mod_privileges is not compatible with a threaded MPM.");
         return !OK;
     }

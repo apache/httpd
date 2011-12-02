@@ -30,7 +30,7 @@ void ap_lua_rstack_dump(lua_State *L, request_rec *r, const char *msg)
     int i;
     int top = lua_gettop(L);
 
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Lua Stack Dump: [%s]", msg);
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01484) "Lua Stack Dump: [%s]", msg);
 
     for (i = 1; i <= top; i++) {
         int t = lua_type(L, i);
@@ -194,7 +194,7 @@ static int req_add_output_filter(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *name = luaL_checkstring(L, 2);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "adding output filter %s",
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01485) "adding output filter %s",
                   name);
     ap_add_output_filter(name, L, r, r->connection);
     return 0;
@@ -383,7 +383,7 @@ static int req_dispatch(lua_State *L)
         case APL_REQ_FUNTYPE_TABLE:{
                 apr_table_t *rs;
                 req_field_apr_table_f func = (req_field_apr_table_f)rft->fun;
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01486)
                               "request_rec->dispatching %s -> apr table",
                               name);
                 rs = (*func)(r);
@@ -393,7 +393,7 @@ static int req_dispatch(lua_State *L)
 
         case APL_REQ_FUNTYPE_LUACFUN:{
                 lua_CFunction func = (lua_CFunction)rft->fun;
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01487)
                               "request_rec->dispatching %s -> lua_CFunction",
                               name);
                 lua_pushcfunction(L, func);
@@ -402,7 +402,7 @@ static int req_dispatch(lua_State *L)
         case APL_REQ_FUNTYPE_STRING:{
                 req_field_string_f func = (req_field_string_f)rft->fun;
                 char *rs;
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01488)
                               "request_rec->dispatching %s -> string", name);
                 rs = (*func) (r);
                 lua_pushstring(L, rs);
@@ -411,7 +411,7 @@ static int req_dispatch(lua_State *L)
         case APL_REQ_FUNTYPE_INT:{
                 req_field_int_f func = (req_field_int_f)rft->fun;
                 int rs;
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01489)
                               "request_rec->dispatching %s -> int", name);
                 rs = (*func) (r);
                 lua_pushnumber(L, rs);
@@ -420,7 +420,7 @@ static int req_dispatch(lua_State *L)
         case APL_REQ_FUNTYPE_BOOLEAN:{
                 req_field_int_f func = (req_field_int_f)rft->fun;
                 int rs;
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01490)
                               "request_rec->dispatching %s -> boolean", name);
                 rs = (*func) (r);
                 lua_pushboolean(L, rs);
@@ -429,7 +429,7 @@ static int req_dispatch(lua_State *L)
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "nothing for %s", name);
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01491) "nothing for %s", name);
     return 0;
 }
 

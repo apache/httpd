@@ -294,7 +294,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             outf = r_filters;
         }
         else {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(00080)
                           "a content filter was added without a request: %s", frec->name);
             return NULL;
         }
@@ -304,7 +304,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             outf = p_filters;
         }
         else {
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(00081)
                           "a protocol filter was added without a request: %s", frec->name);
             return NULL;
         }
@@ -401,7 +401,7 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
         }
     }
 
-    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, r ? r->connection : c,
+    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, r ? r->connection : c, APLOGNO(00082)
                   "an unknown filter was not added: %s", name);
     return NULL;
 }
@@ -553,7 +553,7 @@ AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
     if (rv != APR_SUCCESS) {
         if (rv != AP_FILTER_ERROR) {
             if (!fmt)
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(00083)
                               "ap_pass_brigade returned %d", rv);
             else {
                 va_list ap;
@@ -561,7 +561,7 @@ AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
                 va_start(ap, fmt);
                 res = apr_pvsprintf(r->pool, fmt, ap);
                 va_end(ap);
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "%s", res);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(00084) "%s", res);
             }
             return HTTP_INTERNAL_SERVER_ERROR;
         }

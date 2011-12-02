@@ -405,7 +405,7 @@ void worker_main(void *arg)
 
             if (srv <= 0) {
                 if (srv < 0) {
-                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00217)
                         "select() failed on listen socket");
                     apr_thread_yield();
                 }
@@ -504,14 +504,14 @@ void worker_main(void *arg)
                         * Ben Hyde noted that temporary ENETDOWN situations
                         * occur in mobile IP.
                         */
-                        ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
+                        ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf, APLOGNO(00218)
                             "apr_socket_accept: giving up.");
                         clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans,
                                          bucket_alloc);
                 }
 #endif
                 else {
-                        ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
+                        ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf, APLOGNO(00219)
                             "apr_socket_accept: (client socket)");
                         clean_child_exit(1, my_worker_num, ptrans, bucket_alloc);
                 }
@@ -680,7 +680,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             static int reported = 0;
 
             if (!reported) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(00220)
                     "server reached MaxRequestWorkers setting, consider"
                     " raising the MaxRequestWorkers setting");
                 reported = 1;
@@ -689,7 +689,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
         }
         else {
             if (idle_spawn_rate >= 8) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00221)
                     "server seems busy, (you may need "
                     "to increase StartServers, or Min/MaxSpareServers), "
                     "spawning %d children, there are %d idle, and "
@@ -830,7 +830,7 @@ static int setup_listeners(server_rec *s)
     int sockdes;
 
     if (ap_setup_listeners(s) < 1 ) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s, APLOGNO(00222)
             "no listening sockets available, shutting down");
         return -1;
     }
@@ -870,7 +870,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_server_conf = s;
 
     if (setup_listeners(s)) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, status, s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, status, s, APLOGNO(00223)
             "no listening sockets available, shutting down");
         return -1;
     }
@@ -910,10 +910,10 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         hold_screen_on_exit = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00224)
             "%s configured -- resuming normal operations",
             ap_get_server_description());
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(00225)
             "Server built: %s", ap_get_server_built());
     ap_log_command_line(plog, s);
     show_server_data();
@@ -938,7 +938,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     shutdown_listeners();*/
 
     if (shutdown_pending) { /* Got an unload from the console */
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00226)
             "caught SIGTERM, shutting down");
 
         while (worker_thread_count > 0) {
@@ -958,7 +958,7 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ++ap_my_generation;
         ap_scoreboard_image->global->running_generation = ap_my_generation;
 
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00227)
                 "Graceful restart requested, doing restart");
 
         /* Wait for all of the threads to terminate before initiating the restart */
@@ -1018,7 +1018,7 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (ap_threads_limit > HARD_THREAD_LIMIT) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00228)
                          "WARNING: MaxThreads of %d exceeds compile-time "
                          "limit of", ap_threads_limit);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
@@ -1030,7 +1030,7 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " server/mpm/netware%s.", MPM_HARD_LIMITS_FILE);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00229)
                          "MaxThreads of %d exceeds compile-time limit "
                          "of %d, decreasing to match",
                          ap_threads_limit, HARD_THREAD_LIMIT);
@@ -1040,7 +1040,7 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
     else if (ap_threads_limit < 1) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         "WARNING: MaxThreads of %d not allowed, "
+                         APLOGNO(00230) "WARNING: MaxThreads of %d not allowed, "
                          "increasing to 1.", ap_threads_limit);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
@@ -1055,11 +1055,11 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
      */
     if (ap_threads_to_start < 0) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00231)
                          "WARNING: StartThreads of %d not allowed, "
                          "increasing to 1.", ap_threads_to_start);
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00232)
                          "StartThreads of %d not allowed, increasing to 1",
                          ap_threads_to_start);
         }
@@ -1068,7 +1068,7 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (ap_threads_min_free < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00233)
                          "WARNING: MinSpareThreads of %d not allowed, "
                          "increasing to 1", ap_threads_min_free);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
@@ -1076,7 +1076,7 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " Please read the documentation.");
         } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00234)
                          "MinSpareThreads of %d not allowed, increasing to 1",
                          ap_threads_min_free);
         }

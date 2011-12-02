@@ -160,7 +160,7 @@ static certinfo *stapling_get_cert_info(server_rec *s, modssl_ctx_t *mctx,
     cinf = X509_get_ex_data(x, stapling_ex_idx);
     if (cinf && cinf->cid)
         return cinf;
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01926)
                  "stapling_get_cert_info: stapling not supported for certificate");
     return NULL;
 }
@@ -189,13 +189,13 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
     resp_derlen = i2d_OCSP_RESPONSE(rsp, NULL) + 1;
 
     if (resp_derlen <= 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01927)
                      "OCSP stapling response encode error??");
         return FALSE;
     }
 
     if (resp_derlen > sizeof resp_der) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01928)
                      "OCSP stapling response too big (%u bytes)", resp_derlen);
         return FALSE;
     }
@@ -220,7 +220,7 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
                                    cinf->idx, sizeof(cinf->idx),
                                    expiry, resp_der, resp_derlen, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01929)
                      "stapling_cache_response: OCSP response session store error!");
         return FALSE;
     }
@@ -243,12 +243,12 @@ static BOOL stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
                                       cinf->idx, sizeof(cinf->idx),
                                       resp_der, &resp_derlen, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01930)
                      "stapling_get_cached_response: cache miss");
         return TRUE;
     }
     if (resp_derlen <= 1) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01931)
                      "stapling_get_cached_response: response length invalid??");
         return TRUE;
     }
@@ -263,11 +263,11 @@ static BOOL stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
     resp_derlen--;
     rsp = d2i_OCSP_RESPONSE(NULL, &p, resp_derlen);
     if (!rsp) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01932)
                      "stapling_get_cached_response: response parse error??");
         return TRUE;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01933)
                  "stapling_get_cached_response: cache hit");
 
     *prsp = rsp;
@@ -312,7 +312,7 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
     bs = OCSP_response_get1_basic(rsp);
     if (bs == NULL) {
         /* If we can't parse response just pass it to client */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01934)
                      "stapling_check_response: Error Parsing Response!");
         return SSL_TLSEXT_ERR_OK;
     }
@@ -320,7 +320,7 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
     if (!OCSP_resp_find_status(bs, cinf->cid, &status, &reason, &rev,
                                &thisupd, &nextupd)) {
         /* If ID not present just pass back to client */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01935)
                      "stapling_check_response: certificate ID not present in response!");
     }
     else {
@@ -336,11 +336,11 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
              * retrieved from cache and it is expected to subsequently expire
              */
             if (pok) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01936)
                              "stapling_check_response: response times invalid");
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01937)
                              "stapling_check_response: cached response expired");
             }
 
@@ -371,7 +371,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
 
     *prsp = NULL;
     /* Build up OCSP query from server certificate info */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01938)
                  "stapling_renew_response: querying responder");
 
     req = OCSP_REQUEST_new();
@@ -401,14 +401,14 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
 
     ok = apr_uri_parse(vpool, ocspuri, &uri);
     if (ok != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01939)
                      "stapling_renew_response: Error parsing uri %s",
                       ocspuri);
         rv = FALSE;
         goto done;
     }
     else if (strcmp(uri.scheme, "http")) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01940)
                      "stapling_renew_response: Unsupported uri %s", ocspuri);
         rv = FALSE;
         goto done;
@@ -424,7 +424,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
     apr_pool_destroy(vpool);
 
     if (!*prsp) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01941)
                      "stapling_renew_response: responder error");
         if (mctx->stapling_fake_trylater) {
             *prsp = OCSP_response_create(OCSP_RESPONSE_STATUS_TRYLATER, NULL);
@@ -437,22 +437,22 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         int response_status = OCSP_response_status(*prsp);
 
         if (response_status == OCSP_RESPONSE_STATUS_SUCCESSFUL) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01942)
                         "stapling_renew_response: query response received");
             stapling_check_response(s, mctx, cinf, *prsp, &ok);
             if (ok == FALSE) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01943)
                              "stapling_renew_response: error in retreived response!");
             }
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01944)
                          "stapling_renew_response: responder error %s",
                          OCSP_response_status_str(response_status));
         }
     }
     if (stapling_cache_response(s, mctx, *prsp, cinf, ok, pool) == FALSE) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01945)
                      "stapling_renew_response: error caching response!");
     }
 
@@ -504,12 +504,12 @@ int ssl_stapling_mutex_reinit(server_rec *s, apr_pool_t *p)
     if ((rv = apr_global_mutex_child_init(&mc->stapling_mutex,
                                           lockfile, p)) != APR_SUCCESS) {
         if (lockfile) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01946)
                          "Cannot reinit %s mutex with file `%s'",
                          SSL_STAPLING_MUTEX_TYPE, lockfile);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(01947)
                          "Cannot reinit %s mutex", SSL_STAPLING_MUTEX_TYPE);
         }
         return FALSE;
@@ -523,7 +523,7 @@ static int stapling_mutex_on(server_rec *s)
     apr_status_t rv;
 
     if ((rv = apr_global_mutex_lock(mc->stapling_mutex)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(01948)
                      "Failed to acquire OCSP stapling lock");
         return FALSE;
     }
@@ -536,7 +536,7 @@ static int stapling_mutex_off(server_rec *s)
     apr_status_t rv;
 
     if ((rv = apr_global_mutex_unlock(mc->stapling_mutex)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, APLOGNO(01949)
                      "Failed to release OCSP stapling lock");
         return FALSE;
     }
@@ -562,12 +562,12 @@ static int stapling_cb(SSL *ssl, void *arg)
     BOOL ok;
 
     if (sc->server->stapling_enabled != TRUE) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01950)
                      "stapling_cb: OCSP Stapling disabled");
         return SSL_TLSEXT_ERR_NOACK;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01951)
                  "stapling_cb: OCSP Stapling callback called");
 
     cinf = stapling_get_cert_info(s, mctx, ssl);
@@ -575,7 +575,7 @@ static int stapling_cb(SSL *ssl, void *arg)
         return SSL_TLSEXT_ERR_NOACK;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01952)
                  "stapling_cb: retrieved cached certificate data");
 
     /* Check to see if we already have a response for this certificate */
@@ -589,7 +589,7 @@ static int stapling_cb(SSL *ssl, void *arg)
 
     if (rsp) {
         /* see if response is acceptable */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01953)
                      "stapling_cb: retrieved cached response");
         rv = stapling_check_response(s, mctx, cinf, rsp, NULL);
         if (rv == SSL_TLSEXT_ERR_ALERT_FATAL) {
@@ -619,13 +619,13 @@ static int stapling_cb(SSL *ssl, void *arg)
     }
 
     if (rsp == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01954)
                      "stapling_cb: renewing cached response");
         rv = stapling_renew_response(s, mctx, ssl, cinf, &rsp, conn->pool);
 
         if (rv == FALSE) {
             stapling_mutex_off(s);
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01955)
                          "stapling_cb: fatal error");
             return SSL_TLSEXT_ERR_ALERT_FATAL;
         }
@@ -633,13 +633,13 @@ static int stapling_cb(SSL *ssl, void *arg)
     stapling_mutex_off(s);
 
     if (rsp) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01956)
                      "stapling_cb: setting response");
         if (!stapling_set_response(ssl, rsp))
             return SSL_TLSEXT_ERR_ALERT_FATAL;
         return SSL_TLSEXT_ERR_OK;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01957)
                  "stapling_cb: no response available");
 
     return SSL_TLSEXT_ERR_NOACK;
@@ -653,12 +653,12 @@ void modssl_init_stapling(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
     SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->stapling_cache == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01958)
                      "SSLStapling: no stapling cache available");
         ssl_die();
     }
     if (ssl_stapling_mutex_init(s, ptemp) == FALSE) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01959)
                      "SSLStapling: cannot initialise stapling mutex");
         ssl_die();
     }
@@ -682,7 +682,7 @@ void modssl_init_stapling(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
         mctx->stapling_responder_timeout = 10 * APR_USEC_PER_SEC;
     }
     SSL_CTX_set_tlsext_status_cb(ctx, stapling_cb);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "OCSP stapling initialized");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01960) "OCSP stapling initialized");
 }
 
 #endif

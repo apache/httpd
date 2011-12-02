@@ -423,7 +423,7 @@ static int set_expiration_fields(request_rec *r, const char *code,
         /* expecting the add_* routines to be case-hardened this
          * is just a reminder that module is beta
          */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01500)
                     "internal error: bad expires code: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }

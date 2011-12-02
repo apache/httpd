@@ -99,7 +99,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
          * next->frec == ap_http_header_filter
          */
         if (next) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01579)
                           "Custom error page caused AP_FILTER_ERROR");
             type = HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -208,7 +208,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
              * dying with a recursive server error...
              */
             recursive_error = HTTP_INTERNAL_SERVER_ERROR;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01580)
                         "Invalid error redirection directive: %s",
                         custom_response);
         }
@@ -376,7 +376,7 @@ void ap_process_request(request_rec *r)
              * It is still safe to use r / r->pool here as the eor bucket
              * could not have been destroyed in the event of a timeout.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r, APLOGNO(01581)
                           "Timeout while writing data for URI %s to the"
                           " client", r->unparsed_uri);
         }
@@ -500,7 +500,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
             nextf = f->next;
 
             if (f->r == r && f->frec != ap_subreq_core_filter_handle) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01582)
                               "dropping filter '%s' in internal redirect from %s to %s",
                               f->frec->name, r->unparsed_uri, new_uri);
 

@@ -128,7 +128,7 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
                          r->pool);
 
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01754)
                       "could not open dbm (type %s) auth file: %s",
                       conf->dbmtype, conf->pwfile);
         return AUTH_GENERAL_ERROR;
@@ -167,7 +167,7 @@ static authn_status get_dbm_realm_hash(request_rec *r, const char *user,
                          &dbm_hash, r->pool);
 
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01755)
                       "Could not open dbm (type %s) hash file: %s",
                       conf->dbmtype, conf->pwfile);
         return AUTH_GENERAL_ERROR;

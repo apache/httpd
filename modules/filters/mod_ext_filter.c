@@ -477,7 +477,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
                             ctx->procattr,
                             ctx->p);
     if (rc != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, f->r, APLOGNO(01458)
                       "couldn't create child process to run `%s'",
                       ctx->filter->command);
         return rc;
@@ -565,7 +565,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
     /* look for the user-defined filter */
     ctx->filter = find_filter_def(f->r->server, f->frec->name);
     if (!ctx->filter) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01459)
                       "couldn't find definition of filter '%s'",
                       f->frec->name);
         return APR_EINVAL;
@@ -655,7 +655,7 @@ static apr_status_t drain_available_output(ap_filter_t *f,
         rv = apr_file_read(ctx->proc->out, buf, &len);
         if (rv && !APR_STATUS_IS_EAGAIN(rv))
            lvl = APLOG_DEBUG;
-        ap_log_rerror(APLOG_MARK, lvl, rv, r,
+        ap_log_rerror(APLOG_MARK, lvl, rv, r, APLOGNO(01460)
                       "apr_file_read(child output), len %" APR_SIZE_T_FMT,
                       !rv ? len : -1);
         if (rv != APR_SUCCESS) {
@@ -686,7 +686,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
                        &tmplen);
         bytes_written += tmplen;
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(rv)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01461)
                           "apr_file_write(child input), len %" APR_SIZE_T_FMT,
                           tmplen);
             return rv;
@@ -705,7 +705,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
                 rv = apr_pollset_poll(ctx->pollset, f->r->server->timeout,
                                       &num_events, &pdesc);
                 if (rv != APR_SUCCESS && !APR_STATUS_IS_EINTR(rv)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, f->r,
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, rv, f->r, APLOGNO(01462)
                                   "apr_pollset_poll()");
                     /* some error such as APR_TIMEUP */
                     return rv;
@@ -760,7 +760,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
         rv = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "apr_bucket_read()");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01463) "apr_bucket_read()");
             return rv;
         }
 
@@ -781,7 +781,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          * that will cause the child to finish generating output
          */
         if ((rv = apr_file_close(ctx->proc->in)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01464)
                           "apr_file_close(child input)");
             return rv;
         }
@@ -791,7 +791,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         rv = apr_file_pipe_timeout_set(ctx->proc->out,
                                        r->server->timeout);
         if (rv) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01465)
                           "apr_file_pipe_timeout_set(child output)");
             return rv;
         }
@@ -803,7 +803,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         rv = apr_file_read(ctx->proc->out, buf, &len);
         if (rv && !APR_STATUS_IS_EOF(rv) && !APR_STATUS_IS_EAGAIN(rv))
             lvl = APLOG_ERR;
-        ap_log_rerror(APLOG_MARK, lvl, rv, r,
+        ap_log_rerror(APLOG_MARK, lvl, rv, r, APLOGNO(01466)
                       "apr_file_read(child output), len %" APR_SIZE_T_FMT,
                       !rv ? len : -1);
         if (APR_STATUS_IS_EAGAIN(rv)) {
@@ -841,7 +841,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (!ctx) {
         if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
             ctx = f->ctx;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01467)
                           "can't initialise output filter %s: %s",
                           f->frec->name,
                           (ctx->dc->onfail == 1) ? "removing" : "aborting");
@@ -873,12 +873,12 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
     rv = ef_unified_filter(f, bb);
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01468)
                       "ef_unified_filter() failed");
     }
 
     if ((rv = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(01469)
                       "ap_pass_brigade() failed");
     }
     return rv;
@@ -894,7 +894,7 @@ static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     if (!ctx) {
         if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
             ctx = f->ctx;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO(01470)
                           "can't initialise input filter %s: %s",
                           f->frec->name,
                           (ctx->dc->onfail == 1) ? "removing" : "aborting");

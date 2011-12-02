@@ -351,7 +351,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
          * configured successfully; the ap_server_root_relative call
          * above will return NULL for invalid paths. */
         if (ctx->data_file == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00818)
                          "Could not use default path '%s' for shmcb socache",
                          ctx->data_file);
             return APR_EINVAL;
@@ -365,7 +365,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     }
 
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00819)
                      "Could not allocate shared memory segment for shmcb "
                      "socache");
         return rv;
@@ -375,11 +375,11 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     shm_segsize = apr_shm_size_get(ctx->shm);
     if (shm_segsize < (5 * sizeof(SHMCBHeader))) {
         /* the segment is ridiculously small, bail out */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00820)
                      "shared memory segment too small");
         return APR_ENOSPC;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00821)
                  "shmcb_init allocated %" APR_SIZE_T_FMT
                  " bytes of shared memory",
                  shm_segsize);
@@ -393,14 +393,14 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     while ((num_idx / num_subcache) < (2 * num_subcache))
         num_subcache /= 2;
     num_idx /= num_subcache;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00822)
                  "for %" APR_SIZE_T_FMT " bytes (%" APR_SIZE_T_FMT
                  " including header), recommending %u subcaches, "
                  "%u indexes each", shm_segsize,
                  shm_segsize + sizeof(SHMCBHeader), num_subcache, num_idx);
     if (num_idx < 5) {
         /* we're still too small, bail out */
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00823)
                      "shared memory segment too small");
         return APR_ENOSPC;
     }
@@ -428,17 +428,17 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     header->index_num = num_idx;
 
     /* Output trace info */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00824)
                  "shmcb_init_memory choices follow");
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00825)
                  "subcache_num = %u", header->subcache_num);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00826)
                  "subcache_size = %u", header->subcache_size);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00827)
                  "subcache_data_offset = %u", header->subcache_data_offset);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00828)
                  "subcache_data_size = %u", header->subcache_data_size);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00829)
                  "index_num = %u", header->index_num);
     /* The header is done, make the caches empty */
     for (loop = 0; loop < header->subcache_num; loop++) {
@@ -446,7 +446,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
         subcache->idx_pos = subcache->idx_used = 0;
         subcache->data_pos = subcache->data_used = 0;
     }
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(00830)
                  "Shared memory socache initialised");
     /* Success ... */
 
@@ -472,19 +472,19 @@ static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx,
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
     int tryreplace;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00831)
                  "socache_shmcb_store (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
     /* XXX: Says who?  Why shouldn't this be acceptable, or padded if not? */
     if (idlen < 4) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short id provided "
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00832) "unusably short id provided "
                 "(%u bytes)", idlen);
         return APR_EINVAL;
     }
     tryreplace = shmcb_subcache_remove(s, header, subcache, id, idlen);
     if (shmcb_subcache_store(s, header, subcache, encoded,
                              len_encoded, id, idlen, expiry)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00833)
                      "can't store an socache entry!");
         return APR_ENOSPC;
     }
@@ -494,7 +494,7 @@ static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx,
     else {
         header->stat_stores++;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00834)
                  "leaving socache_shmcb_store successfully");
     return APR_SUCCESS;
 }
@@ -509,7 +509,7 @@ static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx,
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
     int rv;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00835)
                  "socache_shmcb_retrieve (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
 
@@ -520,7 +520,7 @@ static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx,
         header->stat_retrieves_hit++;
     else
         header->stat_retrieves_miss++;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00836)
                  "leaving socache_shmcb_retrieve successfully");
 
     return rv == 0 ? APR_SUCCESS : APR_NOTFOUND;
@@ -534,11 +534,11 @@ static apr_status_t socache_shmcb_remove(ap_socache_instance_t *ctx,
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
     apr_status_t rv;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00837)
                  "socache_shmcb_remove (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
     if (idlen < 4) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short id provided "
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00838) "unusably short id provided "
                 "(%u bytes)", idlen);
         return APR_EINVAL;
     }
@@ -549,7 +549,7 @@ static apr_status_t socache_shmcb_remove(ap_socache_instance_t *ctx,
         header->stat_removes_miss++;
         rv = APR_NOTFOUND;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00839)
                  "leaving socache_shmcb_remove successfully");
 
     return rv;
@@ -567,7 +567,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     int index_pct, cache_pct;
 
     AP_DEBUG_ASSERT(header->subcache_num > 0);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "inside shmcb_status");
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00840) "inside shmcb_status");
     /* Perform the iteration inside the mutex to avoid corruption or invalid
      * pointer arithmetic. The rest of our logic uses read-only header data so
      * doesn't need the lock. */
@@ -627,7 +627,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     ap_rprintf(r, "total removes since starting: <b>%lu</b> hit, "
                "<b>%lu</b> miss<br>", header->stat_removes_hit,
                header->stat_removes_miss);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "leaving shmcb_status");
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00841) "leaving shmcb_status");
 }
 
 static apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
@@ -680,7 +680,7 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
     if (!loop)
         /* Nothing to do */
         return;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00842)
                  "expiring %u and reclaiming %u removed socache entries",
                  expired, freed);
     if (loop == subcache->idx_used) {
@@ -700,7 +700,7 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
         subcache->data_pos = idx->data_pos;
     }
     header->stat_expiries += expired;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00843)
                  "we now have %u socache entries", subcache->idx_used);
 }
 
@@ -716,7 +716,7 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
 
     /* Sanity check the input */
     if (total_len > header->subcache_data_size) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00844)
                      "inserting socache entry larger (%d) than subcache data area (%d)",
                      total_len, header->subcache_data_size);
         return -1;
@@ -734,7 +734,7 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
         unsigned int loop = 0;
 
         idx = SHMCB_INDEX(subcache, subcache->idx_pos);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00845)
                      "about to force-expire, subcache: idx_used=%d, "
                      "data_used=%d", subcache->idx_used, subcache->data_used);
         do {
@@ -761,7 +761,7 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
             loop++;
         } while (header->subcache_data_size - subcache->data_used < total_len);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00846)
                      "finished force-expire, subcache: idx_used=%d, "
                      "data_used=%d", subcache->idx_used, subcache->data_used);
     }
@@ -797,10 +797,10 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
     idx->id_len = id_len;
     idx->removed = 0;
     subcache->idx_used++;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00847)
                  "insert happened at idx=%d, data=(%u:%u)", new_idx,
                  id_offset, data_offset);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00848)
                  "finished insert, subcache: idx_pos/idx_used=%d/%d, "
                  "data_pos/data_used=%d/%d",
                  subcache->idx_pos, subcache->idx_used,
@@ -833,7 +833,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
                                    idx->data_pos, id, idx->id_len) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00849)
                          "match at idx=%d, data=%d", pos, idx->data_pos);
             if (idx->expires > now) {
                 unsigned int data_offset;
@@ -855,7 +855,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
             else {
                 /* Already stale, quietly remove and treat as not-found */
                 idx->removed = 1;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00850)
                              "shmcb_subcache_retrieve discarding expired entry");
                 return -1;
             }
@@ -865,7 +865,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
         pos = SHMCB_CYCLIC_INCREMENT(pos, 1, header->index_num);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00851)
                  "shmcb_subcache_retrieve found no match");
     return -1;
 }
@@ -888,12 +888,12 @@ static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
                                    idx->data_pos, id, idx->id_len) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00852)
                          "possible match at idx=%d, data=%d", pos, idx->data_pos);
 
             /* Found the matching entry, remove it quietly. */
             idx->removed = 1;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00853)
                          "shmcb_subcache_remove removing matching entry");
             return 0;
         }
@@ -928,7 +928,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
         /* Only consider 'idx' if the "removed" flag isn't set. */
         if (!idx->removed) {
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00854)
                          "iterating idx=%d, data=%d", pos, idx->data_pos);
             if (idx->expires > now) {
                 unsigned char *id = *buf;
@@ -970,7 +970,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
 
                 rv = iterator(instance, s, userctx, id, idx->id_len,
                               dest, dest_len, pool);
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(00855)
                              "shmcb entry iterated");
                 if (rv != APR_SUCCESS)
                     return rv;
@@ -978,7 +978,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
             else {
                 /* Already stale, quietly remove and treat as not-found */
                 idx->removed = 1;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00856)
                              "shmcb_subcache_iterate discarding expired entry");
             }
         }

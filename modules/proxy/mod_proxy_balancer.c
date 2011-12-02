@@ -77,7 +77,7 @@ static int proxy_balancer_canon(request_rec *r, char *url)
      */
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01157)
                       "error parsing URL %s: %s",
                       url, err);
         return HTTP_BAD_REQUEST;
@@ -117,7 +117,7 @@ static void init_balancer_members(apr_pool_t *p, server_rec *s,
     for (i = 0; i < balancer->workers->nelts; i++) {
         int worker_is_initialized;
         proxy_worker *worker = *workers;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01158)
                      "Looking at %s -> %s initialized?", balancer->s->name, worker->s->name);
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(worker);
         if (!worker_is_initialized) {
@@ -278,7 +278,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
     /* Try to find the sticky route inside url */
     *route = get_path_param(r->pool, *url, balancer->s->sticky_path, balancer->s->scolonsep);
     if (*route) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01159)
                      "Found value %s for stickysession %s",
                      *route, balancer->s->sticky_path);
         *sticky_used =  balancer->s->sticky_path;
@@ -287,7 +287,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
         *route = get_cookie_param(r, balancer->s->sticky);
         if (*route) {
             *sticky_used =  balancer->s->sticky;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01160)
                          "Found value %s for stickysession %s",
                          *route, balancer->s->sticky);
         }
@@ -299,7 +299,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
     if ((*route) && ((*route = strchr(*route, '.')) != NULL ))
         (*route)++;
     if ((*route) && (**route)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "Found route %s", *route);
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01161) "Found route %s", *route);
         /* We have a route in path or in cookie
          * Find the worker that has this route defined.
          */
@@ -310,7 +310,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
              * the route supplied by the client.
              */
             apr_table_setn(r->subprocess_env, "BALANCER_ROUTE_CHANGED", "1");
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01162)
                           "Route changed from %s to %s",
                           *route, worker->s->route);
         }
@@ -327,7 +327,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
     apr_status_t rv;
 
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01163)
                       "%s: Lock failed for find_best_worker()",
                       balancer->s->name);
         return NULL;
@@ -339,7 +339,7 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
         candidate->s->elected++;
 
     if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01164)
                       "%s: Unlock failed for find_best_worker()",
                       balancer->s->name);
     }
@@ -430,7 +430,7 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
             ++(*worker)->s->retries;
             (*worker)->s->status &= ~PROXY_WORKER_IN_ERROR;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01165)
                          "%s: Forcing recovery for worker (%s)",
                          balancer->s->name, (*worker)->s->hostname);
         }
@@ -462,7 +462,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
      * XXX: perhaps we need the process lock here
      */
     if ((rv = PROXY_THREAD_LOCK(*balancer)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01166)
                       "%s: Lock failed for pre_request", (*balancer)->s->name);
         return DECLINED;
     }
@@ -523,11 +523,11 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
             workers++;
         }
         if (member_of) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01167)
                           "%s: All workers are in error state for route (%s)",
                           (*balancer)->s->name, route);
             if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01168)
                               "%s: Unlock failed for pre_request",
                               (*balancer)->s->name);
             }
@@ -536,7 +536,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     }
 
     if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01169)
                       "%s: Unlock failed for pre_request",
                       (*balancer)->s->name);
     }
@@ -544,11 +544,11 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         runtime = find_best_worker(*balancer, r);
         if (!runtime) {
             if ((*balancer)->workers->nelts) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01170)
                               "%s: All workers are in error state",
                               (*balancer)->s->name);
             } else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01171)
                               "%s: No workers in balancer",
                               (*balancer)->s->name);
             }
@@ -596,7 +596,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         apr_table_setn(r->subprocess_env,
                        "BALANCER_SESSION_ROUTE", route);
     }
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01172)
                   "%s: worker (%s) rewritten to %s",
                   (*balancer)->s->name, (*worker)->s->name, *url);
 
@@ -612,7 +612,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     apr_status_t rv;
 
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01173)
                       "%s: Lock failed for post_request",
                       balancer->s->name);
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -623,7 +623,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         for (i = 0; i < balancer->errstatuses->nelts; i++) {
             int val = ((int *)balancer->errstatuses->elts)[i];
             if (r->status == val) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01174)
                               "%s:  Forcing recovery for worker (%s), "
                               "failonstatus %d",
                               balancer->s->name, worker->s->name, val);
@@ -635,10 +635,10 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     }
 
     if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01175)
                       "%s: Unlock failed for post_request", balancer->s->name);
     }
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01176)
                   "proxy_balancer_post_request for (%s)", balancer->s->name);
 
     if (worker && worker->s->busy)
@@ -719,7 +719,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared",
                                  AP_SLOTMEM_PROVIDER_VERSION);
     if (!storage) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01177)
                      "ap_lookup_provider %s failed: is mod_slotmem_shm loaded??",
                      AP_SLOTMEM_PROVIDER_GROUP);
         return !OK;
@@ -738,7 +738,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
         if (conf->balancers->nelts) {
             conf->max_balancers = conf->balancers->nelts + conf->bgrowth;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing balancers create: %d, %d (%d)",
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01178) "Doing balancers create: %d, %d (%d)",
                          (int)ALIGNED_PROXY_BALANCER_SHARED_SIZE,
                          (int)conf->balancers->nelts, conf->max_balancers);
 
@@ -746,7 +746,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                  ALIGNED_PROXY_BALANCER_SHARED_SIZE,
                                  conf->max_balancers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_create failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01179) "balancer slotmem_create failed");
                 return !OK;
             }
             conf->bslot = new;
@@ -767,7 +767,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             rv = ap_global_mutex_create(&(balancer->gmutex), NULL, balancer_mutex_type,
                                         balancer->s->sname, s, pconf, 0);
             if (rv != APR_SUCCESS || !balancer->gmutex) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01180)
                              "mutex creation of %s : %s failed", balancer_mutex_type,
                              balancer->s->sname);
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -778,21 +778,21 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
             /* setup shm for balancers */
             if ((rv = storage->grab(conf->bslot, &index)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_grab failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01181) "balancer slotmem_grab failed");
                 return !OK;
 
             }
             if ((rv = storage->dptr(conf->bslot, index, (void *)&bshm)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "balancer slotmem_dptr failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01182) "balancer slotmem_dptr failed");
                 return !OK;
             }
             if ((rv = ap_proxy_share_balancer(balancer, bshm, index)) != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot share balancer");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01183) "Cannot share balancer");
                 return !OK;
             }
 
             /* create slotmem slots for workers */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Doing workers create: %s (%s), %d, %d",
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01184) "Doing workers create: %s (%s), %d, %d",
                          balancer->s->name, balancer->s->sname,
                          (int)ALIGNED_PROXY_WORKER_SHARED_SIZE,
                          (int)balancer->max_workers);
@@ -801,7 +801,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                  ALIGNED_PROXY_WORKER_SHARED_SIZE,
                                  balancer->max_workers, AP_SLOTMEM_TYPE_PREGRAB, pconf);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_create failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01185) "worker slotmem_create failed");
                 return !OK;
             }
             balancer->wslot = new;
@@ -817,16 +817,16 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
                 worker = *workers;
                 if ((rv = storage->grab(balancer->wslot, &index)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_grab failed");
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01186) "worker slotmem_grab failed");
                     return !OK;
 
                 }
                 if ((rv = storage->dptr(balancer->wslot, index, (void *)&shm)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "worker slotmem_dptr failed");
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01187) "worker slotmem_dptr failed");
                     return !OK;
                 }
                 if ((rv = ap_proxy_share_worker(worker, shm, index)) != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, "Cannot share worker");
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(01188) "Cannot share worker");
                     return !OK;
                 }
                 worker->s->updated = tstamp;
@@ -930,13 +930,13 @@ static int balancer_handler(request_rec *r)
     balancer = (proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
         if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01189)
                           "%s: Lock failed for balancer_handler",
                           balancer->s->name);
         }
         ap_proxy_sync_balancer(balancer, r->server, conf);
         if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01190)
                           "%s: Unlock failed for balancer_handler",
                           balancer->s->name);
         }
@@ -944,7 +944,7 @@ static int balancer_handler(request_rec *r)
 
     if (r->args && (r->method_number == M_GET)) {
         const char *allowed[] = { "w", "b", "nonce", NULL };
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "parsing r->args");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01191) "parsing r->args");
 
         push2table(r->args, params, allowed, r->pool);
     }
@@ -991,7 +991,7 @@ static int balancer_handler(request_rec *r)
         const char *val;
         int was_usable = PROXY_WORKER_IS_USABLE(wsel);
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "settings worker params");
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01192) "settings worker params");
 
         if ((val = apr_table_get(params, "w_lf"))) {
             int ival = atoi(val);
@@ -1041,7 +1041,7 @@ static int balancer_handler(request_rec *r)
     if (bsel && ok2change) {
         const char *val;
         int ival;
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01193)
                       "settings balancer params");
         if ((val = apr_table_get(params, "b_lbm"))) {
             if ((strlen(val) < (sizeof(bsel->s->lbpname)-1)) &&
@@ -1096,7 +1096,7 @@ static int balancer_handler(request_rec *r)
             nworker = ap_proxy_get_worker(conf->pool, bsel, conf, val);
             if (!nworker && storage->num_free_slots(bsel->wslot)) {
                 if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01194)
                                   "%s: Lock failed for adding worker",
                                   bsel->s->name);
                 }
@@ -1106,40 +1106,40 @@ static int balancer_handler(request_rec *r)
                     proxy_worker_shared *shm;
                     PROXY_COPY_CONF_PARAMS(nworker, conf);
                     if ((rv = storage->grab(bsel->wslot, &index)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01195)
                                       "worker slotmem_grab failed");
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01196)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = storage->dptr(bsel->wslot, index, (void *)&shm)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01197)
                                       "worker slotmem_dptr failed");
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01198)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = ap_proxy_share_worker(nworker, shm, index)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01199)
                                       "Cannot share worker");
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01200)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
                         return HTTP_BAD_REQUEST;
                     }
                     if ((rv = ap_proxy_initialize_worker(nworker, r->server, conf->pool)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01201)
                                       "Cannot init worker");
                         if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01202)
                                           "%s: Unlock failed for adding worker",
                                           bsel->s->name);
                         }
@@ -1151,7 +1151,7 @@ static int balancer_handler(request_rec *r)
                     ap_proxy_set_wstatus('D', 1, nworker);
                 }
                 if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01203)
                                   "%s: Unlock failed for adding worker",
                                   bsel->s->name);
                 }
@@ -1162,7 +1162,7 @@ static int balancer_handler(request_rec *r)
     }
 
     action = ap_construct_url(r->pool, r->uri, r);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "genning page");
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01204) "genning page");
 
     if (apr_table_get(params, "xml")) {
         ap_set_content_type(r, "text/xml");
@@ -1419,7 +1419,7 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
             unsigned int num;
             storage->attach(&(conf->bslot), conf->id, &size, &num, p);
             if (!conf->bslot) {
-                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "slotmem_attach failed");
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01205) "slotmem_attach failed");
                 exit(1); /* Ugly, but what else? */
             }
         }
@@ -1429,7 +1429,7 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
             rv = ap_proxy_initialize_balancer(balancer, s, p);
 
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01206)
                              "Failed to init balancer %s in child",
                              balancer->s->name);
                 exit(1); /* Ugly, but what else? */

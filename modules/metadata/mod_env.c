@@ -101,7 +101,7 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd, void *sconf_,
         apr_table_setn(vars, arg, apr_pstrdup(cmd->pool, env_var));
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(01506)
                      "PassEnv variable %s was undefined", arg);
     }
 

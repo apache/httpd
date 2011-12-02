@@ -635,7 +635,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             if (zRC != Z_OK) {
                 deflateEnd(&ctx->stream);
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01383)
                               "unable to init Zlib: "
                               "deflateInit2 returned %d: URL %s",
                               zRC, r->uri);
@@ -736,7 +736,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             b = apr_bucket_pool_create(buf, VALIDATION_SIZE, r->pool,
                                        f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01384)
                           "Zlib: Compressed %ld to %ld : URL %s",
                           ctx->stream.total_in, ctx->stream.total_out, r->uri);
 
@@ -788,7 +788,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate,
                                     Z_SYNC_FLUSH, NO_UPDATE_CRC);
             if (zRC != Z_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01385)
                               "Zlib error %d flushing zlib output buffer (%s)",
                               zRC, ctx->stream.msg);
                 return APR_EGENERAL;
@@ -847,7 +847,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             zRC = deflate(&(ctx->stream), Z_NO_FLUSH);
 
             if (zRC != Z_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01386)
                               "Zlib error %d deflating data (%s)", zRC,
                               ctx->stream.msg);
                 return APR_EGENERAL;
@@ -933,13 +933,13 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         if (len != 10 ||
             deflate_hdr[0] != deflate_magic[0] ||
             deflate_hdr[1] != deflate_magic[1]) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "Zlib: Invalid header");
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01387) "Zlib: Invalid header");
             return APR_EGENERAL;
         }
 
         /* We can't handle flags for now. */
         if (deflate_hdr[3] != 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01388)
                           "Zlib: Unsupported flags %02x", (int)deflate_hdr[3]);
             return APR_EGENERAL;
         }
@@ -949,7 +949,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         if (zRC != Z_OK) {
             f->ctx = NULL;
             inflateEnd(&ctx->stream);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01389)
                           "unable to init Zlib: "
                           "inflateInit2 returned %d: URL %s",
                           zRC, r->uri);
@@ -983,7 +983,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             /* If we actually see the EOS, that means we screwed up! */
             if (APR_BUCKET_IS_EOS(bkt)) {
                 inflateEnd(&ctx->stream);
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01390)
                               "Encountered EOS bucket in inflate filter (bug?)");
                 return APR_EGENERAL;
             }
@@ -993,7 +993,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
                 if (zRC != Z_OK) {
                     inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01391)
                                   "Zlib error %d inflating data (%s)", zRC,
                                   ctx->stream.msg);
                     return APR_EGENERAL;
@@ -1044,7 +1044,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
                 if (zRC != Z_OK) {
                     inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01392)
                                   "Zlib error %d inflating data (%s)", zRC,
                                   ctx->stream.msg);
                     return APR_EGENERAL;
@@ -1053,7 +1053,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             if (zRC == Z_STREAM_END) {
                 apr_bucket *tmp_heap, *eos;
 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01393)
                               "Zlib: Inflated %ld to %ld : URL %s",
                               ctx->stream.total_in, ctx->stream.total_out,
                               r->uri);
@@ -1072,7 +1072,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     compCRC = getLong(ctx->stream.next_in);
                     if (ctx->crc != compCRC) {
                         inflateEnd(&ctx->stream);
-                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01394)
                                       "Zlib: CRC error inflating data");
                         return APR_EGENERAL;
                     }
@@ -1080,7 +1080,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     compLen = getLong(ctx->stream.next_in);
                     if (ctx->stream.total_out != compLen) {
                         inflateEnd(&ctx->stream);
-                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01395)
                                       "Zlib: Length %ld of inflated data does "
                                       "not match expected value %ld",
                                       ctx->stream.total_out, compLen);
@@ -1091,7 +1091,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                     /* FIXME: We need to grab the 8 verification bytes
                      * from the wire! */
                     inflateEnd(&ctx->stream);
-                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01396)
                                   "Verification data not available (bug?)");
                     return APR_EGENERAL;
                 }
@@ -1202,7 +1202,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         if (zRC != Z_OK) {
             f->ctx = NULL;
             inflateEnd(&ctx->stream);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01397)
                           "unable to init Zlib: "
                           "inflateInit2 returned %d: URL %s",
                           zRC, r->uri);
@@ -1256,7 +1256,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
              */
             flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate, Z_SYNC_FLUSH,
                               UPDATE_CRC);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01398)
                           "Zlib: Inflated %ld to %ld : URL %s",
                           ctx->stream.total_in, ctx->stream.total_out, r->uri);
 
@@ -1264,20 +1264,20 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 unsigned long compCRC, compLen;
                 compCRC = getLong(ctx->validation_buffer);
                 if (ctx->crc != compCRC) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01399)
                                   "Zlib: Checksum of inflated stream invalid");
                     return APR_EGENERAL;
                 }
                 ctx->validation_buffer += VALIDATION_SIZE / 2;
                 compLen = getLong(ctx->validation_buffer);
                 if (ctx->stream.total_out != compLen) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01400)
                                   "Zlib: Length of inflated stream invalid");
                     return APR_EGENERAL;
                 }
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01401)
                               "Zlib: Validation bytes not present");
                 return APR_EGENERAL;
             }
@@ -1304,7 +1304,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate,
                                     Z_SYNC_FLUSH, UPDATE_CRC);
             if (zRC != Z_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01402)
                               "Zlib error %d flushing inflate buffer (%s)",
                               zRC, ctx->stream.msg);
                 return APR_EGENERAL;
@@ -1336,7 +1336,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         /* first bucket contains zlib header */
         if (!ctx->inflate_init++) {
             if (len < 10) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01403)
                               "Insufficient data for inflate");
                 return APR_EGENERAL;
             }
@@ -1344,7 +1344,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 zlib_method = data[2];
                 zlib_flags = data[3];
                 if (zlib_method != Z_DEFLATED) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01404)
                                   "inflate: data not deflated!");
                     ap_remove_output_filter(f);
                     return ap_pass_brigade(f->next, bb);
@@ -1352,7 +1352,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 if (data[0] != deflate_magic[0] ||
                     data[1] != deflate_magic[1] ||
                     (zlib_flags & RESERVED) != 0) {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01405)
                                       "inflate: bad header");
                     return APR_EGENERAL ;
                 }
@@ -1364,7 +1364,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                bytes += ((unsigned int)(data[1])) << 8;
                bytes += 2;
                if (len < bytes) {
-                   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                   ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01406)
                                  "inflate: extra field too big (not "
                                  "supported)");
                    return APR_EGENERAL;
@@ -1402,7 +1402,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 ctx->validation_buffer_length += copy_size;
             }
             if (ctx->stream.avail_in) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01407)
                               "Zlib: %d bytes of garbage at the end of "
                               "compressed stream.", ctx->stream.avail_in);
                 /*
@@ -1446,7 +1446,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                                                      VALIDATION_SIZE);
                 if (ctx->stream.avail_in > VALIDATION_SIZE) {
                     ctx->validation_buffer_length = VALIDATION_SIZE;
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01408)
                                   "Zlib: %d bytes of garbage at the end of "
                                   "compressed stream.",
                                   ctx->stream.avail_in - VALIDATION_SIZE);
@@ -1460,7 +1460,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             }
 
             if (zRC != Z_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01409)
                               "Zlib error %d inflating data (%s)", zRC,
                               ctx->stream.msg);
                 return APR_EGENERAL;

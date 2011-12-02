@@ -69,7 +69,7 @@ AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     limit = *plimit;
     if ((getrlimit(type, limit)) != 0)  {
         *plimit = NULL;
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, cmd->server, APLOGNO(02172)
                      "%s: getrlimit failed", cmd->cmd->name);
         return;
     }
@@ -83,7 +83,7 @@ AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
         }
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server, APLOGNO(02173)
                      "Invalid parameters for %s", cmd->cmd->name);
         return;
     }
@@ -96,7 +96,7 @@ AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     if (geteuid()) {
         limit->rlim_cur = cur;
         if (max && (max > limit->rlim_max)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server, APLOGNO(02174)
                          "Must be uid 0 to raise maximum %s", cmd->cmd->name);
         }
         else if (max) {
@@ -113,7 +113,7 @@ AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     }
 #else
 
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server, APLOGNO(02175)
                  "Platform does not support rlimit for %s", cmd->cmd->name);
 #endif
 }
@@ -307,7 +307,7 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
 #ifdef _OSD_POSIX
         apr_os_sock_get(&sockdes, csd);
         if (sockdes >= FD_SETSIZE) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf, APLOGNO(02176)
                          "new file descriptor %d is too large; you probably need "
                          "to rebuild Apache with a larger FD_SETSIZE "
                          "(currently %d)",
@@ -414,7 +414,7 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
              * Ben Hyde noted that temporary ENETDOWN situations
              * occur in mobile IP.
              */
-            ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf, APLOGNO(02177)
                          "apr_socket_accept: giving up.");
             return APR_EGENERAL;
 #endif /*ENETDOWN*/
@@ -425,11 +425,11 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
              * Do not print an error in this case.
              */
             if (!lr->active) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, status, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, status, ap_server_conf, APLOGNO(02178)
                              "apr_socket_accept failed for inactive listener");
                 return status;
             }
-            ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf, APLOGNO(02179)
                          "apr_socket_accept: (client socket)");
             return APR_EGENERAL;
     }
@@ -496,7 +496,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 
         type = forktype = bs2_noFORK;
 
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, server, APLOGNO(02180)
                      "The debug mode of Apache should only "
                      "be started by an unprivileged user!");
         return 0;
@@ -526,7 +526,7 @@ pid_t os_fork(const char *user)
         pid = ufork(username);
         if (pid == -1 && errno == EPERM) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
-                         ap_server_conf, "ufork: Possible mis-configuration "
+                         ap_server_conf, APLOGNO(02181) "ufork: Possible mis-configuration "
                          "for user %s - Aborting.", user);
             exit(1);
         }

@@ -322,7 +322,7 @@ static int uldap_connection_init(request_rec *r,
         /* Now that we have an ldap struct, add it to the referral list for rebinds. */
         rc = apr_ldap_rebind_add(ldc->rebind_pool, ldc->ldap, ldc->binddn, ldc->bindpw);
         if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server, APLOGNO(01277)
                     "LDAP: Unable to add rebind cross reference entry. Out of memory?");
             uldap_connection_unbind(ldc);
             ldc->reason = "LDAP: Unable to add rebind cross reference entry.";
@@ -366,7 +366,7 @@ static int uldap_connection_init(request_rec *r,
 
     if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* Set options for rebind and referrals. */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01278)
                 "LDAP: Setting referrals to %s.",
                 ((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ? "On" : "Off"));
         apr_ldap_set_option(r->pool, ldc->ldap,
@@ -375,7 +375,7 @@ static int uldap_connection_init(request_rec *r,
                     LDAP_OPT_ON : LDAP_OPT_OFF),
                 &(result));
         if (result->rc != LDAP_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01279)
                     "Unable to set LDAP_OPT_REFERRALS option to %s: %d.",
                     ((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ? "On" : "Off"),
                     result->rc);
@@ -387,7 +387,7 @@ static int uldap_connection_init(request_rec *r,
 
         if ((ldc->ReferralHopLimit != AP_LDAP_HOPLIMIT_UNSET) && ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
             /* Referral hop limit - only if referrals are enabled and a hop limit is explicitly requested */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01280)
                     "Setting referral hop limit to %d.",
                     ldc->ReferralHopLimit);
             apr_ldap_set_option(r->pool, ldc->ldap,
@@ -395,7 +395,7 @@ static int uldap_connection_init(request_rec *r,
                     (void *)&ldc->ReferralHopLimit,
                     &(result));
             if (result->rc != LDAP_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01281)
                         "Unable to set LDAP_OPT_REFHOPLIMIT option to %d: %d.",
                         ldc->ReferralHopLimit,
                         result->rc);
@@ -442,7 +442,7 @@ static int uldap_connection_init(request_rec *r,
         rc = apr_ldap_set_option(r->pool, ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT,
                                  (void *)&connectionTimeout, &(result));
         if (APR_SUCCESS != rc) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(01282)
                              "LDAP: Could not set the connection timeout");
         }
     }
@@ -461,7 +461,7 @@ static int uldap_connection_init(request_rec *r,
         rc = apr_ldap_set_option(r->pool, ldc->ldap, LDAP_OPT_TIMEOUT,
                                  st->opTimeout, &(result));
         if (APR_SUCCESS != rc) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(01283)
                              "LDAP: Could not set LDAP_OPT_TIMEOUT");
         }
     }
@@ -588,7 +588,7 @@ static int uldap_connection_open(request_rec *r,
                           "(try %d)", failures);
         }
         else if (rc == LDAP_TIMEOUT) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01284)
                           "ldap_simple_bind() timed out on %s "
                           "connection, dropped by firewall?",
                           new_connection ? "new" : "reused");
@@ -776,7 +776,7 @@ static util_ldap_connection_t *
     if (!l) {
         apr_pool_t *newpool;
         if (apr_pool_create(&newpool, NULL) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01285)
                           "util_ldap: Failed to create memory pool");
 #if APR_HAS_THREADS
             apr_thread_mutex_unlock(st->mutex);
@@ -823,7 +823,7 @@ static util_ldap_connection_t *
 
         if (l->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
             if (apr_pool_create(&(l->rebind_pool), l->pool) != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r, APLOGNO(01286)
                               "util_ldap: Failed to create memory pool");
 #if APR_HAS_THREADS
                 apr_thread_mutex_unlock(st->mutex);
@@ -1136,7 +1136,7 @@ start_over:
                 junk = util_ald_cache_insert(curl->compare_cache,
                                              &the_compare_node);
                 if (junk == NULL) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01287)
                                   "cache_compare: Cache insertion failure.");
                 }
             }
@@ -1427,7 +1427,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
                 if (compare_nodep->subgroupList) {
                     /* Make a local copy of the subgroup list */
                     int i;
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01288)
                                   "Making local copy of SGL for "
                                   "group (%s)(objectClass=%s) ",
                                   dn, (char *)sgc_ents[base_sgcIndex].name);
@@ -1453,13 +1453,13 @@ static int uldap_cache_check_subgroups(request_rec *r,
 
     if (!tmp_local_sgl && !sgl_cached_empty) {
         /* No Cached SGL, retrieve from LDAP */
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01289)
                       "no cached SGL for %s, retrieving from LDAP", dn);
         tmp_local_sgl = uldap_get_subgroups(r, ldc, url, dn, subgroupAttrs,
                                             subgroupclasses);
         if (!tmp_local_sgl) {
             /* No SGL aailable via LDAP either */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "no subgroups for %s",
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01290) "no subgroups for %s",
                           dn);
         }
 
@@ -1486,14 +1486,14 @@ static int uldap_cache_check_subgroups(request_rec *r,
              * based on the objectClass, but we can't call the compare function
              * while we already hold the cache lock -- only the insert.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01291)
                           "Cache entry for %s doesn't exist", dn);
             the_compare_node.result = LDAP_COMPARE_TRUE;
             util_ald_cache_insert(curl->compare_cache, &the_compare_node);
             compare_nodep = util_ald_cache_fetch(curl->compare_cache,
                                                  &the_compare_node);
             if (compare_nodep == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01292)
                               "util_ldap: Couldn't retrieve group entry "
                               "for %s from cache",
                               dn);
@@ -1514,7 +1514,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
             else {
                 util_compare_subgroup_t *sgl_copy =
                     util_ald_sgl_dup(curl->compare_cache, tmp_local_sgl);
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01293)
                              "Copying local SGL of len %d for group %s into cache",
                              tmp_local_sgl->len, dn);
                 if (sgl_copy) {
@@ -1526,7 +1526,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
                     compare_nodep->sgl_processed = 1;
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(01294)
                                  "Copy of SGL failed to obtain shared memory, "
                                  "couldn't update cache");
                 }
@@ -1559,7 +1559,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
              * 4.A. We found the user in the subgroup. Return
              * LDAP_COMPARE_TRUE.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01295)
                           "Found user %s in a subgroup (%s) at level %d of %d.",
                           r->user, group, cur_subgroup_depth+1,
                           max_subgroup_depth);
@@ -1569,7 +1569,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
              * 4.B. We didn't find the user in this subgroup, so recurse into
              * it and keep looking.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01296)
                           "User %s not found in subgroup (%s) at level %d of "
                           "%d.", r->user, group, cur_subgroup_depth+1,
                           max_subgroup_depth);
@@ -2082,7 +2082,7 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy,
 
     st->cache_bytes = atol(bytes);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01297)
                  "ldap cache: Setting shared memory cache size to "
                  "%" APR_SIZE_T_FMT " bytes.",
                  st->cache_bytes);
@@ -2109,7 +2109,7 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy,
         st->cache_file = NULL;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01298)
                  "LDAP cache: Setting shared memory cache file to %s bytes.",
                  st->cache_file);
 
@@ -2130,7 +2130,7 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
 
     st->search_cache_ttl = atol(ttl) * 1000000;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01299)
                  "ldap cache: Setting cache TTL to %ld microseconds.",
                  st->search_cache_ttl);
 
@@ -2154,7 +2154,7 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
         st->search_cache_size = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01300)
                  "ldap cache: Setting search cache size to %ld entries.",
                  st->search_cache_size);
 
@@ -2175,7 +2175,7 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
 
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01301)
                  "ldap cache: Setting operation cache TTL to %ld microseconds.",
                  st->compare_cache_ttl);
 
@@ -2199,7 +2199,7 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
         st->compare_cache_size = 0;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01302)
                  "ldap cache: Setting operation cache size to %ld entries.",
                  st->compare_cache_size);
 
@@ -2330,7 +2330,7 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd,
         return "Certificate type was not specified.";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01303)
                       "LDAP: SSL trusted global cert - %s (type %s)",
                        file, type);
 
@@ -2349,7 +2349,7 @@ static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd,
             ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool))
                 != APR_SUCCESS))
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server, APLOGNO(01304)
                          "LDAP: Could not open SSL trusted certificate "
                          "authority file - %s",
                          cert->path == NULL ? file : cert->path);
@@ -2410,7 +2410,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
         return "Certificate type was not specified.";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01305)
                       "LDAP: SSL trusted client cert - %s (type %s)",
                        file, type);
 
@@ -2429,7 +2429,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
             ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool))
                 != APR_SUCCESS))
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server, APLOGNO(01306)
                          "LDAP: Could not open SSL client certificate "
                          "file - %s",
                          cert->path == NULL ? file : cert->path);
@@ -2457,7 +2457,7 @@ static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy,
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01307)
                       "LDAP: SSL trusted mode - %s",
                        mode);
 
@@ -2493,7 +2493,7 @@ static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
         return err;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01308)
                       "LDAP: SSL verify server certificate - %s",
                       mode?"TRUE":"FALSE");
 
@@ -2521,11 +2521,11 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
     st->connectionTimeout = atol(ttl);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01309)
                  "ldap connection: Setting connection timeout to %ld seconds.",
                  st->connectionTimeout);
 #else
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server, APLOGNO(01310)
                  "LDAP: Connection timeout option not supported by the "
                  "LDAP SDK in use." );
 #endif
@@ -2540,7 +2540,7 @@ static const char *util_ldap_set_chase_referrals(cmd_parms *cmd,
 {
     util_ldap_config_t *dc =  config;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01311)
                       "LDAP: Setting referral chasing %s",
                       (mode == AP_LDAP_CHASEREFERRALS_ON) ? "ON" : "OFF");
 
@@ -2583,7 +2583,7 @@ static const char *util_ldap_set_referral_hop_limit(cmd_parms *cmd,
         return "LDAPReferralHopLimit must be greater than zero (Use 'LDAPReferrals Off' to disable referral chasing)";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01312)
                  "LDAP: Limit chased referrals to maximum of %d hops.",
                  dc->ReferralHopLimit);
 
@@ -2635,13 +2635,13 @@ static const char *util_ldap_set_op_timeout(cmd_parms *cmd,
         st->opTimeout = NULL;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01313)
                  "ldap connection: Setting op timeout to %ld seconds.",
                  timeout);
 
 #ifndef LDAP_OPT_TIMEOUT
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, APLOGNO(01314)
                  "LDAP: LDAP_OPT_TIMEOUT option not supported by the "
                  "LDAP library in use. Using LDAPTimeout value as search "
                  "timeout only." );
@@ -2879,7 +2879,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 #endif
         result = util_ldap_cache_init(p, st);
         if (result != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, result, s, APLOGNO(01315)
                          "LDAP cache: could not create shared memory segment");
             return DONE;
         }
@@ -2902,7 +2902,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st_vhost->cache_rmm = st->cache_rmm;
             st_vhost->cache_file = st->cache_file;
             st_vhost->util_ldap_cache = st->util_ldap_cache;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, result, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, result, s, APLOGNO(01316)
                          "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp "
                          "for VHOST: %s", st->cache_shm, st->cache_rmm,
                          s_vhost->server_hostname);
@@ -2912,7 +2912,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 #if APR_HAS_SHARED_MEMORY
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01317)
                      "LDAP cache: LDAPSharedCacheSize is zero, disabling "
                      "shared memory cache");
     }
@@ -2924,7 +2924,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         apr_ldap_err_t *result = NULL;
         apr_ldap_info(p, &(result));
         if (result != NULL) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "%s", result->reason);
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01318) "%s", result->reason);
         }
     }
 
@@ -2948,12 +2948,12 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
 
     if (APR_SUCCESS == rc) {
         st->ssl_supported = 1;
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01319)
                      "LDAP: SSL support available" );
     }
     else {
         st->ssl_supported = 0;
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01320)
                      "LDAP: SSL support unavailable%s%s",
                      result_err ? ": " : "",
                      result_err ? result_err->reason : "");
@@ -2977,7 +2977,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (st->debug_level > 0) {
         result = ldap_set_option(NULL, AP_LDAP_OPT_DEBUG, &st->debug_level);
         if (result != LDAP_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01321)
                     "LDAP: Could not set the LDAP library debug level to %d:(%d) %s",
                     st->debug_level, result, ldap_err2string(result));
         }
@@ -2998,7 +2998,7 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
     sts = apr_global_mutex_child_init(&st->util_ldap_cache_lock,
               apr_global_mutex_lockfile(st->util_ldap_cache_lock), p);
     if (sts != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(01322)
                      "Failed to initialise global mutex %s in child process",
                      ldap_cache_mutex_type);
     }

@@ -480,8 +480,8 @@ int main(int argc, const char * const argv[])
 
     error = ap_setup_prelinked_modules(process);
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_EMERG, 0, NULL, "%s: %s",
-                     ap_server_argv0, error);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_EMERG, 0, NULL, APLOGNO(00012)
+                     "%s: %s", ap_server_argv0, error);
         destroy_and_exit_process(process, 1);
     }
 
@@ -632,7 +632,7 @@ int main(int argc, const char * const argv[])
 
     if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
-                     NULL, "Pre-configuration failed");
+                     NULL, APLOGNO(00013) "Pre-configuration failed");
         destroy_and_exit_process(process, 1);
     }
 
@@ -650,7 +650,7 @@ int main(int argc, const char * const argv[])
 
         if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
-                         NULL, "Configuration check failed");
+                         NULL, APLOGNO(00014) "Configuration check failed");
             destroy_and_exit_process(process, 1);
         }
 
@@ -689,13 +689,13 @@ int main(int argc, const char * const argv[])
 
     if ( ap_run_open_logs(pconf, plog, ptemp, ap_server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
-                     0, NULL, "Unable to open logs");
+                     0, NULL, APLOGNO(00015) "Unable to open logs");
         destroy_and_exit_process(process, 1);
     }
 
     if ( ap_run_post_config(pconf, plog, ptemp, ap_server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
-                     NULL, "Configuration Failed");
+                     NULL, APLOGNO(00016) "Configuration Failed");
         destroy_and_exit_process(process, 1);
     }
 
@@ -732,7 +732,7 @@ int main(int argc, const char * const argv[])
 
         if (ap_run_pre_config(pconf, plog, ptemp) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
-                         0, NULL, "Pre-configuration failed");
+                         0, NULL, APLOGNO(00017) "Pre-configuration failed");
             destroy_and_exit_process(process, 1);
         }
 
@@ -751,20 +751,20 @@ int main(int argc, const char * const argv[])
 
         if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
-                         NULL, "Configuration check failed");
+                         NULL, APLOGNO(00018) "Configuration check failed");
             destroy_and_exit_process(process, 1);
         }
 
         apr_pool_clear(plog);
         if (ap_run_open_logs(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
-                         0, NULL, "Unable to open logs");
+                         0, NULL, APLOGNO(00019) "Unable to open logs");
             destroy_and_exit_process(process, 1);
         }
 
         if (ap_run_post_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
-                         0, NULL, "Configuration Failed");
+                         0, NULL, APLOGNO(00020) "Configuration Failed");
             destroy_and_exit_process(process, 1);
         }
 

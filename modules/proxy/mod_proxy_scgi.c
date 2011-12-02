@@ -184,7 +184,7 @@ static int scgi_canon(request_rec *r, char *url)
 
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
     if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00857)
                       "error parsing URL %s: %s", url, err);
         return HTTP_BAD_REQUEST;
     }
@@ -224,7 +224,7 @@ static int sendall(proxy_conn_rec *conn, const char *buf, apr_size_t length,
     while (length > 0) {
         written = length;
         if ((rv = apr_socket_send(conn->sock, buf, &written)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00858)
                           "sending data to %s:%u failed",
                           conn->hostname, conn->port);
             return HTTP_SERVICE_UNAVAILABLE;
@@ -335,7 +335,7 @@ static int send_request_body(request_rec *r, proxy_conn_rec *conn)
             readlen = ap_get_client_block(r, buf, AP_IOBUFSIZE);
         }
         if (readlen == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00859)
                           "receiving request body failed");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -370,7 +370,7 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
     status = ap_scan_script_header_err_brigade_ex(r, bb, NULL,
                                                   APLOG_MODULE_INDEX);
     if (status != OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00860)
                       "error reading response headers from %s:%u",
                       conn->hostname, conn->port);
         r->status_line = NULL;
@@ -390,7 +390,7 @@ static int pass_response(request_rec *r, proxy_conn_rec *conn)
         if (location) {
             scgi_request_config *req_conf = apr_palloc(r->pool,
                                                        sizeof(*req_conf));
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00861)
                           "Found %s: %s - preparing subrequest.",
                           conf->sendfile, location);
 
@@ -441,7 +441,7 @@ static int scgi_request_status(int *status, request_rec *r)
                                             &proxy_scgi_module))) {
         switch (req_conf->type) {
         case scgi_internal_redirect:
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00862)
                           "Internal redirect to %s", req_conf->location);
 
             r->status_line = NULL;
@@ -456,7 +456,7 @@ static int scgi_request_status(int *status, request_rec *r)
             /* break; */
 
         case scgi_sendfile:
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00863)
                           "File subrequest to %s", req_conf->location);
             do {
                 request_rec *rr;
@@ -472,7 +472,7 @@ static int scgi_request_status(int *status, request_rec *r)
                     ap_run_sub_req(rr);
                 }
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00864)
                                   "Subrequest to file '%s' not possible. "
                                   "(rr->status=%d, rr->finfo.filetype=%d)",
                                   req_conf->location, rr->status,
@@ -505,7 +505,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
     char dummy;
 
     if (strncasecmp(url, SCHEME "://", sizeof(SCHEME) + 2)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00865)
                       "declining URL %s", url);
         return DECLINED;
     }
@@ -528,7 +528,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Two: Make the Connection */
     if (ap_proxy_connect_backend(__FUNCTION__, backend, worker, r->server)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00866)
                       "failed to make connection to backend: %s:%u",
                       backend->hostname, backend->port);
         status = HTTP_SERVICE_UNAVAILABLE;

@@ -246,13 +246,13 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
         /* Um, problem, can't signal the parent, which means we can't
          * signal ourselves to die. Ignore for now...
          */
-        ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf, APLOGNO(00382)
                      "OpenEvent on %s event", signal_name);
         return;
     }
     if (SetEvent(e) == 0) {
         /* Same problem as above */
-        ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf, APLOGNO(00383)
                      "SetEvent on %s event", signal_name);
         CloseHandle(e);
         return;
@@ -286,7 +286,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     if (!ReadFile(pipe, &ready_event, sizeof(HANDLE),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(HANDLE))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00384)
                      "Child: Unable to retrieve the ready event from the parent");
         exit(APEXIT_CHILDINIT);
     }
@@ -297,7 +297,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     if (!ReadFile(pipe, child_exit_event, sizeof(HANDLE),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(HANDLE))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00385)
                      "Child: Unable to retrieve the exit event from the parent");
         exit(APEXIT_CHILDINIT);
     }
@@ -305,14 +305,14 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     if (!ReadFile(pipe, &os_start, sizeof(os_start),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(os_start))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00386)
                      "Child: Unable to retrieve the start_mutex from the parent");
         exit(APEXIT_CHILDINIT);
     }
     *child_start_mutex = NULL;
     if ((rv = apr_os_proc_mutex_put(child_start_mutex, &os_start, s->process->pool))
             != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00387)
                      "Child: Unable to access the start_mutex from the parent");
         exit(APEXIT_CHILDINIT);
     }
@@ -320,21 +320,21 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     if (!ReadFile(pipe, &hScore, sizeof(hScore),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(hScore))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00388)
                      "Child: Unable to retrieve the scoreboard from the parent");
         exit(APEXIT_CHILDINIT);
     }
     *scoreboard_shm = NULL;
     if ((rv = apr_os_shm_put(scoreboard_shm, &hScore, s->process->pool))
             != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00389)
                      "Child: Unable to access the scoreboard from the parent");
         exit(APEXIT_CHILDINIT);
     }
 
     rv = ap_reopen_scoreboard(s->process->pool, scoreboard_shm, 1);
     if (rv || !(sb_shared = apr_shm_baseaddr_get(*scoreboard_shm))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00390)
                      "Child: Unable to reopen the scoreboard from the parent");
         exit(APEXIT_CHILDINIT);
     }
@@ -343,7 +343,7 @@ static void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
      */
     ap_init_scoreboard(sb_shared);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00391)
                  "Child: Retrieved our scoreboard from the parent.");
 }
 
@@ -365,64 +365,64 @@ static int send_handles_to_child(apr_pool_t *p,
 
     if (!DuplicateHandle(hCurrentProcess, child_ready_event, hProcess, &hDup,
         EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00392)
                      "Parent: Unable to duplicate the ready event handle for the child");
         return -1;
     }
     if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
             != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00393)
                      "Parent: Unable to send the exit event handle to the child");
         return -1;
     }
     if (!DuplicateHandle(hCurrentProcess, child_exit_event, hProcess, &hDup,
                          EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00394)
                      "Parent: Unable to duplicate the exit event handle for the child");
         return -1;
     }
     if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
             != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00395)
                      "Parent: Unable to send the exit event handle to the child");
         return -1;
     }
     if ((rv = apr_os_proc_mutex_get(&os_start, child_start_mutex)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00396)
                      "Parent: Unable to retrieve the start mutex for the child");
         return -1;
     }
     if (!DuplicateHandle(hCurrentProcess, os_start, hProcess, &hDup,
                          SYNCHRONIZE, FALSE, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00397)
                      "Parent: Unable to duplicate the start mutex to the child");
         return -1;
     }
     if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
             != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00398)
                      "Parent: Unable to send the start mutex to the child");
         return -1;
     }
     if ((rv = apr_os_shm_get(&hScore, scoreboard_shm)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00399)
                      "Parent: Unable to retrieve the scoreboard handle for the child");
         return -1;
     }
     if (!DuplicateHandle(hCurrentProcess, hScore, hProcess, &hDup,
                          FILE_MAP_READ | FILE_MAP_WRITE, FALSE, 0)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00400)
                      "Parent: Unable to duplicate the scoreboard handle to the child");
         return -1;
     }
     if ((rv = apr_file_write_full(child_in, &hDup, sizeof(hDup), &BytesWritten))
             != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00401)
                      "Parent: Unable to send the scoreboard handle to the child");
         return -1;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00402)
                  "Parent: Sent the scoreboard to the child");
     return 0;
 }
@@ -458,12 +458,12 @@ static void get_listeners_from_parent(server_rec *s)
      * pipe = GetStdHandle(STD_INPUT_HANDLE);
      */
     for (lr = ap_listeners; lr; lr = lr->next, ++lcnt) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00403)
                      "Child: Waiting for data for listening socket %pI",
                      lr->bind_addr);
         if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO),
                       &BytesRead, (LPOVERLAPPED) NULL)) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00404)
                          "Child: Unable to read socket data from parent");
             exit(APEXIT_CHILDINIT);
         }
@@ -471,19 +471,19 @@ static void get_listeners_from_parent(server_rec *s)
         nsd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
                         &WSAProtocolInfo, 0, 0);
         if (nsd == INVALID_SOCKET) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf, APLOGNO(00405)
                          "Child: WSASocket failed to open the inherited socket");
             exit(APEXIT_CHILDINIT);
         }
 
         if (!SetHandleInformation((HANDLE)nsd, HANDLE_FLAG_INHERIT, 0)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf, APLOGNO(00406)
                          "Child: SetHandleInformation failed");
         }
         apr_os_sock_put(&lr->sd, &nsd, s->process->pool);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00407)
                  "Child: retrieved %d listeners from parent", lcnt);
 }
 
@@ -505,12 +505,12 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId,
         apr_os_sock_t nsd;
         lpWSAProtocolInfo = apr_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
         apr_os_sock_get(&nsd, lr->sd);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00408)
                      "Parent: Duplicating socket %d (%pI) and sending it to child process %lu",
                      nsd, lr->bind_addr, dwProcessId);
         if (WSADuplicateSocket(nsd, dwProcessId,
                                lpWSAProtocolInfo) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), ap_server_conf, APLOGNO(00409)
                          "Parent: WSADuplicateSocket failed for socket %d. Check the FAQ.", nsd);
             return -1;
         }
@@ -518,13 +518,13 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId,
         if ((rv = apr_file_write_full(child_in, lpWSAProtocolInfo,
                                       sizeof(WSAPROTOCOL_INFO), &BytesWritten))
                 != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00410)
                          "Parent: Unable to write duplicated socket %d to the child.", nsd);
             return -1;
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00411)
                  "Parent: Sent %d listeners to child %lu", lcnt, dwProcessId);
     return 0;
 }
@@ -564,7 +564,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     apr_procattr_detach_set(attr, 1);
     if (((rv = apr_filepath_get(&cwd, 0, ptemp)) != APR_SUCCESS)
            || ((rv = apr_procattr_dir_set(attr, cwd)) != APR_SUCCESS)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00412)
                      "Parent: Failed to get the current path");
     }
 
@@ -574,7 +574,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
          */
         if ((rv = ap_os_proc_filepath(&cmd, ptemp))
                 != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, ERROR_BAD_PATHNAME, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, ERROR_BAD_PATHNAME, ap_server_conf, APLOGNO(00413)
                          "Parent: Failed to get full path of %s",
                          ap_server_conf->process->argv[0]);
             apr_pool_destroy(ptemp);
@@ -595,7 +595,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     /* Create a pipe to send handles to the child */
     if ((rv = apr_procattr_io_set(attr, APR_FULL_BLOCK,
                                   APR_NO_PIPE, APR_NO_PIPE)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00414)
                         "Parent: Unable to create child stdin pipe.");
         apr_pool_destroy(ptemp);
         return -1;
@@ -604,7 +604,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     /* Create the child_ready_event */
     waitlist[waitlist_ready] = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!waitlist[waitlist_ready]) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00415)
                      "Parent: Could not create ready event for child process");
         apr_pool_destroy (ptemp);
         return -1;
@@ -613,7 +613,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     /* Create the child_exit_event */
     hExitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!hExitEvent) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00416)
                      "Parent: Could not create exit event for child process");
         apr_pool_destroy(ptemp);
         CloseHandle(waitlist[waitlist_ready]);
@@ -633,7 +633,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     rv = apr_proc_create(&new_child, cmd, (const char * const *)args,
                          (const char * const *)env, attr, ptemp);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00417)
                      "Parent: Failed to create the child process.");
         apr_pool_destroy(ptemp);
         CloseHandle(hExitEvent);
@@ -642,7 +642,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         return -1;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00418)
                  "Parent: Created child process %d", new_child.pid);
 
     if (send_handles_to_child(ptemp, waitlist[waitlist_ready], hExitEvent,
@@ -767,7 +767,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
                         &child_exit_event, &child_pid);
     if (rv < 0)
     {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00419)
                      "master_main: create child process failed. Exiting.");
         shutdown_pending = 1;
         goto die_now;
@@ -791,23 +791,23 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     cld = rv - WAIT_OBJECT_0;
     if (rv == WAIT_FAILED) {
         /* Something serious is wrong */
-        ap_log_error(APLOG_MARK,APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+        ap_log_error(APLOG_MARK,APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00420)
                      "master_main: WaitForMultipleObjects WAIT_FAILED -- doing server shutdown");
         shutdown_pending = 1;
     }
     else if (rv == WAIT_TIMEOUT) {
         /* Hey, this cannot happen */
-        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s, APLOGNO(00421)
                      "master_main: WaitForMultipleObjects with INFINITE wait exited with WAIT_TIMEOUT");
         shutdown_pending = 1;
     }
     else if (cld == SHUTDOWN_HANDLE) {
         /* shutdown_event signalled */
         shutdown_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, s,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, s, APLOGNO(00422)
                      "Parent: Received shutdown signal -- Shutting down the server.");
         if (ResetEvent(shutdown_event) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s, APLOGNO(00423)
                          "ResetEvent(shutdown_event)");
         }
     }
@@ -816,14 +816,14 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * then signal the child process to exit.
          */
         restart_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(00424)
                      "Parent: Received restart signal -- Restarting the server.");
         if (ResetEvent(restart_event) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s, APLOGNO(00425)
                          "Parent: ResetEvent(restart_event) failed.");
         }
         if (SetEvent(child_exit_event) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s, APLOGNO(00426)
                          "Parent: SetEvent for child process %pp failed.",
                          event_handles[CHILD_HANDLE]);
         }
@@ -843,14 +843,14 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         if (   exitcode == APEXIT_CHILDFATAL
             || exitcode == APEXIT_CHILDINIT
             || exitcode == APEXIT_INIT) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf, APLOGNO(00427)
                          "Parent: child process exited with status %lu -- Aborting.", exitcode);
             shutdown_pending = 1;
         }
         else {
             int i;
             restart_pending = 1;
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00428)
                          "Parent: child process exited with status %lu -- Restarting.", exitcode);
             for (i = 0; i < ap_threads_per_child; i++) {
                 ap_update_child_status_from_indexes(0, i, SERVER_DEAD, NULL);
@@ -885,20 +885,20 @@ die_now:
         }
         /* Signal the child processes to exit */
         if (SetEvent(child_exit_event) == 0) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), ap_server_conf,
+                ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), ap_server_conf, APLOGNO(00429)
                              "Parent: SetEvent for child process %pp failed",
                              event_handles[CHILD_HANDLE]);
         }
         if (event_handles[CHILD_HANDLE]) {
             rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
             if (rv == WAIT_OBJECT_0) {
-                ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+                ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00430)
                              "Parent: Child process exited successfully.");
                 CloseHandle(event_handles[CHILD_HANDLE]);
                 event_handles[CHILD_HANDLE] = NULL;
             }
             else {
-                ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+                ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00431)
                              "Parent: Forcing termination of child process %pp",
                              event_handles[CHILD_HANDLE]);
                 TerminateProcess(event_handles[CHILD_HANDLE], 1);
@@ -1108,7 +1108,7 @@ static void winnt_rewrite_args(process_rec *process)
      */
     if ((rv = ap_os_proc_filepath(&binpath, process->pconf))
             != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK,APLOG_CRIT, rv, NULL, APLOGNO(00432)
                      "Failed to get the full path of %s", process->argv[0]);
         exit(APEXIT_INIT);
     }
@@ -1255,7 +1255,7 @@ static void winnt_rewrite_args(process_rec *process)
     {
         if (service_set == APR_SUCCESS)
         {
-            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
+            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL, APLOGNO(00433)
                  "%s: Service is already installed.", service_name);
             exit(APEXIT_INIT);
         }
@@ -1281,26 +1281,26 @@ static void winnt_rewrite_args(process_rec *process)
             rv = mpm_merge_service_args(process->pool, mpm_new_argv,
                                         fixed_args);
             if (rv == APR_SUCCESS) {
-                ap_log_error(APLOG_MARK,APLOG_INFO, 0, NULL,
+                ap_log_error(APLOG_MARK,APLOG_INFO, 0, NULL, APLOGNO(00434)
                              "Using ConfigArgs of the installed service "
                              "\"%s\".", service_name);
             }
             else  {
-                ap_log_error(APLOG_MARK,APLOG_WARNING, rv, NULL,
+                ap_log_error(APLOG_MARK,APLOG_WARNING, rv, NULL, APLOGNO(00435)
                              "No installed ConfigArgs for the service "
                              "\"%s\", using Apache defaults.", service_name);
             }
         }
         else
         {
-            ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL,
+            ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL, APLOGNO(00436)
                  "No installed service named \"%s\".", service_name);
             exit(APEXIT_INIT);
         }
     }
     if (strcasecmp(signal_arg, "install") && service_set && service_set != SERVICE_UNSET)
     {
-        ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL,
+        ap_log_error(APLOG_MARK,APLOG_ERR, service_set, NULL, APLOGNO(00437)
              "No installed service named \"%s\".", service_name);
         exit(APEXIT_INIT);
     }
@@ -1367,7 +1367,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
 
     if (!strcasecmp(signal_arg, "runservice")
             && (service_to_start_success != APR_SUCCESS)) {
-        ap_log_error(APLOG_MARK,APLOG_CRIT, service_to_start_success, NULL,
+        ap_log_error(APLOG_MARK,APLOG_CRIT, service_to_start_success, NULL, APLOGNO(00438)
                      "%s: Unable to start the service manager.",
                      service_name);
         exit(APEXIT_INIT);
@@ -1415,14 +1415,14 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     if (thread_limit > MAX_THREAD_LIMIT) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00439)
                          "WARNING: ThreadLimit of %d exceeds compile-time "
                          "limit of", thread_limit);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
                          " %d threads, decreasing to %d.",
                          MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
         } else if (is_parent) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00440)
                          "ThreadLimit of %d exceeds compile-time limit "
                          "of %d, decreasing to match",
                          thread_limit, MAX_THREAD_LIMIT);
@@ -1431,11 +1431,11 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     else if (thread_limit < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00441)
                          "WARNING: ThreadLimit of %d not allowed, "
                          "increasing to 1.", thread_limit);
         } else if (is_parent) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00442)
                          "ThreadLimit of %d not allowed, increasing to 1",
                          thread_limit);
         }
@@ -1451,7 +1451,7 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     else if (thread_limit != first_thread_limit) {
         /* Don't need a startup console version here */
         if (is_parent) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00443)
                          "changing ThreadLimit to %d from original value "
                          "of %d not allowed during restart",
                          thread_limit, first_thread_limit);
@@ -1461,7 +1461,7 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     if (ap_threads_per_child > thread_limit) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00444)
                          "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
                          "of", ap_threads_per_child);
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
@@ -1471,7 +1471,7 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
                          " To increase, please see the ThreadLimit "
                          "directive.");
         } else if (is_parent) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00445)
                          "ThreadsPerChild of %d exceeds ThreadLimit "
                          "of %d, decreasing to match",
                          ap_threads_per_child, thread_limit);
@@ -1480,11 +1480,11 @@ static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
     else if (ap_threads_per_child < 1) {
         if (startup) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL, APLOGNO(00446)
                          "WARNING: ThreadsPerChild of %d not allowed, "
                          "increasing to 1.", ap_threads_per_child);
         } else if (is_parent) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(00447)
                          "ThreadsPerChild of %d not allowed, increasing to 1",
                          ap_threads_per_child);
         }
@@ -1571,7 +1571,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
              */
             shutdown_event = CreateEvent(sa, FALSE, FALSE, signal_shutdown_name);
             if (!shutdown_event) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00448)
                              "Parent: Cannot create shutdown event %s", signal_shutdown_name);
                 CleanNullACL((void *)sa);
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -1583,7 +1583,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
             restart_event = CreateEvent(sa, FALSE, FALSE, signal_restart_name);
             if (!restart_event) {
                 CloseHandle(shutdown_event);
-                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf, APLOGNO(00449)
                              "Parent: Cannot create restart event %s", signal_restart_name);
                 CleanNullACL((void *)sa);
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -1598,7 +1598,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
                                         APR_LOCK_DEFAULT,
                                         ap_server_conf->process->pool);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
+                ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf, APLOGNO(00450)
                              "%s: Unable to create the start_mutex.",
                              service_name);
                 return HTTP_INTERNAL_SERVER_ERROR;
@@ -1641,7 +1641,7 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
 
     if (ap_setup_listeners(s) < 1) {
         ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0,
-                     NULL, "no listening sockets available, shutting down");
+                     NULL, APLOGNO(00451) "no listening sockets available, shutting down");
         return DONE;
     }
 
@@ -1673,7 +1673,7 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
         rv = apr_proc_mutex_create(&start_mutex, signal_name_prefix,
                                    APR_LOCK_DEFAULT, s->process->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
+            ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf, APLOGNO(00452)
                          "%s child: Unable to init the start_mutex.",
                          service_name);
             exit(APEXIT_CHILDINIT);
@@ -1705,22 +1705,22 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     {
         /* The child process or in one_process (debug) mode
          */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00453)
                      "Child process is running");
 
         child_main(pconf);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, ap_server_conf, APLOGNO(00454)
                      "Child process is exiting");
         return DONE;
     }
     else
     {
         /* A real-honest to goodness parent */
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00455)
                      "%s configured -- resuming normal operations",
                      ap_get_server_description());
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00456)
                      "Server built: %s", ap_get_server_built());
         ap_log_command_line(plog, s);
 

@@ -46,7 +46,7 @@ int cache_remove_url(cache_request_rec *cache, request_rec *r)
     if (!h) {
        return OK;
     }
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00691)
                  "cache: Removing url %s from the cache", h->cache_obj->key);
 
     /* for each specified cache type, delete the URL */
@@ -78,7 +78,7 @@ int cache_create_entity(cache_request_rec *cache, request_rec *r,
 
     if (!cache) {
         /* This should never happen */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(00692)
                 "cache: No cache request information available for key"
                 " generation");
         return APR_EGENERAL;
@@ -203,7 +203,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
 
     if (!cache) {
         /* This should never happen */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(00693)
                 "cache: No cache request information available for key"
                 " generation");
         return DECLINED;
@@ -283,7 +283,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                 else {
                     /* headers do not match, so Vary failed */
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                            r, "cache_select_url(): Vary header mismatch.");
+                            r, APLOGNO(00694) "cache_select_url(): Vary header mismatch.");
                     mismatch = 1;
                 }
             }
@@ -317,7 +317,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                         r->headers_in);
                 cache->stale_handle = h;
 
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00695)
                         "Cached response for %s isn't fresh.  Adding/replacing "
                         "conditional request headers.", r->uri);
 
@@ -380,7 +380,7 @@ int cache_select(cache_request_rec *cache, request_rec *r)
 
     /* if Cache-Control: only-if-cached, and not cached, return 504 */
     if (cache->control_in.only_if_cached) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00696)
                 "cache: 'only-if-cached' requested and no cached entity, "
                 "returning 504 Gateway Timeout for: %s", r->uri);
         return HTTP_GATEWAY_TIME_OUT;
@@ -406,7 +406,7 @@ int cache_invalidate(cache_request_rec *cache, request_rec *r)
 
     if (!cache) {
         /* This should never happen */
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r, APLOGNO(00697)
                 "cache: No cache request information available for key"
                 " generation");
         return DECLINED;
@@ -668,7 +668,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * resource in the cache under a key where it is never found by the quick
      * handler during following requests.
      */
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r, APLOGNO(00698)
             "cache: Key for entity %s?%s is %s", r->uri,
             r->parsed_uri.query, *key);
 

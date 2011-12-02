@@ -806,7 +806,7 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
     if (ctx->info->flags & AP_EXPR_FLAG_STRING_RESULT) {
         *ctx->result_string = ap_expr_eval_word(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
+            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r, APLOGNO(00536)
                           "Evaluation of expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;
@@ -821,7 +821,7 @@ AP_DECLARE(int) ap_expr_exec_ctx(ap_expr_eval_ctx_t *ctx)
     else {
         rc = ap_expr_eval(ctx, ctx->info->root_node);
         if (*ctx->err != NULL) {
-            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r,
+            ap_log_rerror(LOG_MARK(ctx->info), APLOG_ERR, 0, ctx->r, APLOGNO(00537)
                           "Evaluation of expression from %s:%d failed: %s",
                           ctx->info->filename, ctx->info->line_number, *ctx->err);
             return -1;
@@ -1076,7 +1076,7 @@ static const char *unescape_func(ap_expr_eval_ctx_t *ctx, const void *data,
     int ret = ap_unescape_url_keep2f(result, 0);
     if (ret == OK)
         return result;
-    ap_log_rerror(LOG_MARK(ctx->info), APLOG_DEBUG, 0, ctx->r,
+    ap_log_rerror(LOG_MARK(ctx->info), APLOG_DEBUG, 0, ctx->r, APLOGNO(00538)
                   "%s %% escape in unescape('%s') at %s:%d",
                   ret == HTTP_BAD_REQUEST ? "Bad" : "Forbidden", arg,
                   ctx->info->filename, ctx->info->line_number);

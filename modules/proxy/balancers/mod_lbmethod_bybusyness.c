@@ -48,7 +48,7 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01211)
                  "proxy: Entering bybusyness for BALANCER (%s)",
                  balancer->s->name);
 
@@ -109,7 +109,7 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
 
     if (mycandidate) {
         mycandidate->s->lbstatus -= total_factor;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01212)
                      "proxy: bybusyness selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
                      mycandidate->s->name, mycandidate->s->busy, mycandidate->s->lbstatus);
 

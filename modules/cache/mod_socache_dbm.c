@@ -105,7 +105,7 @@ static int try_chown(apr_pool_t *p, server_rec *s,
                     (gid_t)-1 /* no gid change */ ))
     {
         if (errno != ENOENT)
-            ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(errno), s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_FROM_OS_ERROR(errno), s, APLOGNO(00802)
                          "Can't change owner of %s", name);
         return -1;
     }
@@ -130,7 +130,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
         ctx->data_file = ap_server_root_relative(p, path);
 
         if (ctx->data_file == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00803)
                          "could not use default path '%s' for DBM socache",
                          path);
             return APR_EINVAL;
@@ -142,7 +142,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file,
             APR_DBM_RWCREATE, DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00804)
                      "Cannot create socache DBM file `%s'",
                      ctx->data_file);
         return rv;
@@ -201,14 +201,14 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
     /* be careful: do not try to store too much bytes in a DBM file! */
 #ifdef PAIRMAX
     if ((idlen + nData) >= PAIRMAX) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00805)
                  "data size too large for DBM socache: %d >= %d",
                  (idlen + nData), PAIRMAX);
         return APR_ENOSPC;
     }
 #else
     if ((idlen + nData) >= 950 /* at least less than approx. 1KB */) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00806)
                  "data size too large for DBM socache: %d >= %d",
                  (idlen + nData), 950);
         return APR_ENOSPC;
@@ -230,7 +230,7 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file,
                            APR_DBM_RWCREATE, DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00807)
                      "Cannot open socache DBM file `%s' for writing "
                      "(store)",
                      ctx->data_file);
@@ -238,7 +238,7 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
         return rv;
     }
     if ((rv = apr_dbm_store(dbm, dbmkey, dbmval)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00808)
                      "Cannot store socache object to DBM file `%s'",
                      ctx->data_file);
         apr_dbm_close(dbm);
@@ -283,7 +283,7 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
     apr_pool_clear(ctx->pool);
     if ((rc = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rc, s, APLOGNO(00809)
                      "Cannot open socache DBM file `%s' for reading "
                      "(fetch)",
                      ctx->data_file);
@@ -339,7 +339,7 @@ static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx,
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00810)
                      "Cannot open socache DBM file `%s' for writing "
                      "(delete)",
                      ctx->data_file);
@@ -403,7 +403,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
         keyidx = 0;
         if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                                DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00811)
                          "Cannot open socache DBM file `%s' for "
                          "scanning",
                          ctx->data_file);
@@ -436,7 +436,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
         /* pass 2: delete expired elements */
         if (apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                          DBM_FILE_MODE, ctx->pool) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00812)
                          "Cannot re-open socache DBM file `%s' for "
                          "expiring",
                          ctx->data_file);
@@ -452,7 +452,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
             break;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00813)
                  "DBM socache expiry: "
                  "old: %d, new: %d, removed: %d",
                  elts, elts-deleted, deleted);
@@ -475,7 +475,7 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
     apr_pool_clear(ctx->pool);
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00814)
                      "Cannot open socache DBM file `%s' for status "
                      "retrival",
                      ctx->data_file);
@@ -522,7 +522,7 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
     now = apr_time_now();
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00815)
                      "Cannot open socache DBM file `%s' for "
                      "iterating", ctx->data_file);
         return rv;
@@ -543,7 +543,7 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
                              (unsigned char *)dbmkey.dptr, dbmkey.dsize,
                              (unsigned char *)dbmval.dptr + sizeof(apr_time_t),
                              dbmval.dsize - sizeof(apr_time_t), pool);
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(00816)
                          "dbm `%s' entry iterated", ctx->data_file);
             if (rv != APR_SUCCESS)
                 return rv;
@@ -553,7 +553,7 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
     apr_dbm_close(dbm);
 
     if (rv != APR_SUCCESS && rv != APR_EOF) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00817)
                      "Failure reading first/next socache DBM file `%s' record",
                      ctx->data_file);
         return rv;

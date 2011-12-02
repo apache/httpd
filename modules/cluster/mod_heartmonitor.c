@@ -81,14 +81,14 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
                            SOCK_DGRAM, APR_PROTO_UDP, ctx->p);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02068)
                      "Failed to create listening socket.");
         return rv;
     }
 
     rv = apr_socket_opt_set(ctx->sock, APR_SO_REUSEADDR, 1);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02069)
                      "Failed to set APR_SO_REUSEADDR to 1 on socket.");
         return rv;
     }
@@ -96,14 +96,14 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
 
     rv = apr_socket_opt_set(ctx->sock, APR_SO_NONBLOCK, 1);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02070)
                      "Failed to set APR_SO_NONBLOCK to 1 on socket.");
         return rv;
     }
 
     rv = apr_socket_bind(ctx->sock, ctx->mcast_addr);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02071)
                      "Failed to bind on socket.");
         return rv;
     }
@@ -111,14 +111,14 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
     rv = apr_mcast_join(ctx->sock, ctx->mcast_addr, NULL, NULL);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02072)
                      "Failed to join multicast group");
         return rv;
     }
 
     rv = apr_mcast_loopback(ctx->sock, 1);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02073)
                      "Failed to accept localhost mulitcast on socket.");
         return rv;
     }
@@ -240,7 +240,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
     rv = apr_file_mktemp(&fp, path, APR_CREATE | APR_WRITE, pool);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02074)
                      "Unable to open tmp file: %s", path);
         return rv;
     }
@@ -257,7 +257,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
 
         rv = apr_file_info_get(&fi, APR_FINFO_SIZE | APR_FINFO_MTIME, fpin);
         if (rv) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02075)
                          "Unable to read file: %s", ctx->storage_path);
             return rv;
         }
@@ -280,7 +280,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                                         APR_BLOCK_READ, sizeof(buf));
 
             if (rv) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02076)
                              "Unable to read from file: %s", ctx->storage_path);
                 return rv;
             }
@@ -350,14 +350,14 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
 
     rv = apr_file_flush(fp);
     if (rv) {
-      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02077)
                    "Unable to flush file: %s", path);
       return rv;
     }
 
     rv = apr_file_close(fp);
     if (rv) {
-      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02078)
                    "Unable to close file: %s", path);
       return rv;
     }
@@ -366,7 +366,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
     if (rv && rv != APR_INCOMPLETE && rv != APR_ENOTIMPL) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02079)
                      "Unable to set file permissions on %s",
                      path);
         return rv;
@@ -375,7 +375,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
     rv = apr_file_rename(path, ctx->storage_path, pool);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02080)
                      "Unable to move file: %s -> %s", path,
                      ctx->storage_path);
         return rv;
@@ -403,7 +403,7 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
     rv = apr_file_mktemp(&fp, path, APR_CREATE | APR_WRITE, p);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02081)
                      "Unable to open tmp file: %s", path);
         return rv;
     }
@@ -429,14 +429,14 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
 
     rv = apr_file_flush(fp);
     if (rv) {
-      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02082)
                    "Unable to flush file: %s", path);
       return rv;
     }
 
     rv = apr_file_close(fp);
     if (rv) {
-      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02083)
                    "Unable to close file: %s", path);
       return rv;
     }
@@ -445,7 +445,7 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
     if (rv && rv != APR_INCOMPLETE && rv != APR_ENOTIMPL) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02084)
                      "Unable to set file permissions on %s",
                      path);
         return rv;
@@ -454,7 +454,7 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
     rv = apr_file_rename(path, ctx->storage_path, p);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02085)
                      "Unable to move file: %s -> %s", path,
                      ctx->storage_path);
         return rv;
@@ -534,7 +534,7 @@ static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
         int port = 80;
         hm_server_t *s;
         /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(02086)
                      "%pI busy=%s ready=%s", from,
                      apr_table_get(tbl, "busy"), apr_table_get(tbl, "ready"));
 
@@ -550,7 +550,7 @@ static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
         s->seen = apr_time_now();
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ctx->s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ctx->s, APLOGNO(02087)
                      "malformed message from %pI",
                      from);
     }
@@ -570,11 +570,11 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
     rv = apr_socket_recvfrom(&from, ctx->sock, 0, buf, &len);
 
     if (APR_STATUS_IS_EAGAIN(rv)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, "would block");
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02088) "would block");
         return APR_SUCCESS;
     }
     else if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, "recvfrom failed");
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02089) "recvfrom failed");
         return rv;
     }
 
@@ -599,12 +599,12 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             rv = hm_listen(ctx);
             if (rv) {
                 ctx->status = rv;
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s, APLOGNO(02090)
                              "Unable to listen for connections!");
             }
             else {
                 ctx->keep_running = 1;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(02091)
                              "%s listener started.",
                              HM_WATHCHDOG_NAME);
             }
@@ -646,7 +646,7 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             }
         break;
         case AP_WATCHDOG_STATE_STOPPING:
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(02092)
                          "stopping %s listener.",
                          HM_WATHCHDOG_NAME);
 
@@ -672,7 +672,7 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     hm_watchdog_get_instance = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance);
     hm_watchdog_register_callback = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_register_callback);
     if (!hm_watchdog_get_instance || !hm_watchdog_register_callback) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, APLOGNO(02093)
                      "mod_watchdog is required");
         return !OK;
     }
@@ -702,7 +702,7 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                                   HM_WATHCHDOG_NAME,
                                   0, 1, p);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(02094)
                      "Failed to create watchdog instance (%s)",
                      HM_WATHCHDOG_NAME);
         return !OK;
@@ -713,12 +713,12 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                                        ctx,
                                        hm_watchdog_callback);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(02095)
                      "Failed to register watchdog callback (%s)",
                      HM_WATHCHDOG_NAME);
         return !OK;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02096)
                  "wd callback %s", HM_WATHCHDOG_NAME);
     return OK;
 }

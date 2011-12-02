@@ -56,7 +56,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #ifndef WIN32
     stat = apr_socket_opt_set(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(00067)
                       "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEADDR)",
                       server->bind_addr);
         apr_socket_close(s);
@@ -66,7 +66,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 
     stat = apr_socket_opt_set(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(00068)
                       "make_sock: for address %pI, apr_socket_opt_set: (SO_KEEPALIVE)",
                       server->bind_addr);
         apr_socket_close(s);
@@ -77,7 +77,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     if (server->bind_addr->family == APR_INET6) {
         stat = apr_socket_opt_set(s, APR_IPV6_V6ONLY, v6only_setting);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(00069)
                           "make_sock: for address %pI, apr_socket_opt_set: "
                           "(IPV6_V6ONLY)",
                           server->bind_addr);
@@ -109,7 +109,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     if (send_buffer_size) {
         stat = apr_socket_opt_set(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p, APLOGNO(00070)
                           "make_sock: failed to set SendBufferSize for "
                           "address %pI, using default",
                           server->bind_addr);
@@ -119,7 +119,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     if (receive_buffer_size) {
         stat = apr_socket_opt_set(s, APR_SO_RCVBUF, receive_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p, APLOGNO(00071)
                           "make_sock: failed to set ReceiveBufferSize for "
                           "address %pI, using default",
                           server->bind_addr);
@@ -132,7 +132,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #endif
 
     if ((stat = apr_socket_bind(s, server->bind_addr)) != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, stat, p,
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, stat, p, APLOGNO(00072)
                       "make_sock: could not bind to address %pI",
                       server->bind_addr);
         apr_socket_close(s);
@@ -140,7 +140,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     }
 
     if ((stat = apr_socket_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, stat, p,
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, stat, p, APLOGNO(00073)
                       "make_sock: unable to listen for connections "
                       "on address %pI",
                       server->bind_addr);
@@ -161,7 +161,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
      */
     stat = apr_socket_opt_set(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p, APLOGNO(00074)
                     "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEADDR)",
                      server->bind_addr);
         apr_socket_close(s);
@@ -216,14 +216,14 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
         rv = apr_socket_accept_filter(s, apr_pstrdup(p, accf),
                                       apr_pstrdup(p,""));
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p, APLOGNO(00075)
                           "Failed to enable the '%s' Accept Filter",
                           accf);
         }
 #else
         rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 30);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
-            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
+            ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p, APLOGNO(00076)
                               "Failed to enable APR_TCP_DEFER_ACCEPT");
         }
 #endif
@@ -282,7 +282,7 @@ static const char *alloc_listener(process_rec *process, char *addr,
     if ((status = apr_sockaddr_info_get(&sa, addr, APR_UNSPEC, port, 0,
                                         process->pool))
         != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool, APLOGNO(00077)
                       "alloc_listener: failed to set up sockaddr for %s",
                       addr);
         return "Listen setup failed";
@@ -320,7 +320,7 @@ static const char *alloc_listener(process_rec *process, char *addr,
         }
 #endif
         if (status != APR_SUCCESS) {
-            ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool, APLOGNO(00078)
                           "alloc_listener: failed to get a socket for %s",
                           addr);
             return "Listen setup failed";
@@ -498,7 +498,7 @@ static int open_listeners(apr_pool_t *pool)
 
         status = apr_socket_opt_set(lr->sd, APR_SO_NONBLOCK, use_nonblock);
         if (status != APR_SUCCESS) {
-            ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, status, pool,
+            ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, status, pool, APLOGNO(00079)
                           "unable to control socket non-blocking status");
             return -1;
         }

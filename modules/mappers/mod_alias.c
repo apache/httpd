@@ -137,7 +137,7 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
 
             if (  (!alias->regexp &&  alias_matches(fake, alias->fake) > 0)
                 || (alias->regexp && !ap_regexec(alias->regexp, fake, 0, NULL, 0))) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(00671)
                              "The %s directive in %s at line %d will probably "
                              "never match because it overlaps an earlier "
                              "%sAlias%s.",
@@ -383,7 +383,7 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                        }
                     }
                     else {
-                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00672)
                                       "Regex substitution in '%s' failed. "
                                       "Replacement too long?", alias->real);
                         return PREGSUB_ERROR;
@@ -454,14 +454,14 @@ static int translate_alias_redir(request_rec *r)
                 char *orig_target = ret;
 
                 ret = ap_construct_url(r->pool, ret, r);
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00673)
                               "incomplete redirection target of '%s' for "
                               "URI '%s' modified to '%s'",
                               orig_target, r->uri, ret);
             }
             if (!ap_is_url(ret)) {
                 status = HTTP_INTERNAL_SERVER_ERROR;
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00674)
                               "cannot redirect '%s' to '%s'; "
                               "target is not a valid absoluteURI or abs_path",
                               r->uri, ret);
@@ -505,14 +505,14 @@ static int fixup_redir(request_rec *r)
                 char *orig_target = ret;
 
                 ret = ap_construct_url(r->pool, ret, r);
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00675)
                               "incomplete redirection target of '%s' for "
                               "URI '%s' modified to '%s'",
                               orig_target, r->uri, ret);
             }
             if (!ap_is_url(ret)) {
                 status = HTTP_INTERNAL_SERVER_ERROR;
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00676)
                               "cannot redirect '%s' to '%s'; "
                               "target is not a valid absoluteURI or abs_path",
                               r->uri, ret);

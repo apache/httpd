@@ -55,7 +55,7 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
     /* create RFC2109 compliant cookie */
     rfc2109 = apr_pstrcat(r->pool, name, "=", val, ";", buffer,
                           attrs && *attrs ? attrs : DEFAULT_ATTRS, NULL);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00007) LOG_PREFIX
                   "user '%s' set cookie: '%s'", r->user, rfc2109);
 
     /* write the cookie to the header table(s) provided */
@@ -97,7 +97,7 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
     /* create RFC2965 compliant cookie */
     rfc2965 = apr_pstrcat(r->pool, name2, "=", val, ";", buffer,
                           attrs2 && *attrs2 ? attrs2 : DEFAULT_ATTRS, NULL);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00008) LOG_PREFIX
                   "user '%s' set cookie2: '%s'", r->user, rfc2965);
 
     /* write the cookie to the header table(s) provided */
@@ -125,7 +125,7 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, con
     /* create RFC2109 compliant cookie */
     const char *rfc2109 = apr_pstrcat(r->pool, name, "=;Max-Age=0;",
                                 attrs ? attrs : CLEAR_ATTRS, NULL);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00009) LOG_PREFIX
                   "user '%s' removed cookie: '%s'", r->user, rfc2109);
 
     /* write the cookie to the header table(s) provided */
@@ -153,7 +153,7 @@ AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, c
     /* create RFC2965 compliant cookie */
     const char *rfc2965 = apr_pstrcat(r->pool, name2, "=;Max-Age=0;",
                                 attrs2 ? attrs2 : CLEAR_ATTRS, NULL);
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00010) LOG_PREFIX
                   "user '%s' removed cookie2: '%s'", r->user, rfc2965);
 
     /* write the cookie to the header table(s) provided */
@@ -256,7 +256,7 @@ AP_DECLARE(apr_status_t) ap_cookie_read(request_rec * r, const char *name, const
                  extract_cookie_line, (void *) &v, r->headers_in,
                  "Cookie", "Cookie2", NULL);
     if (v.duplicated) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00011) LOG_PREFIX
          "client submitted cookie '%s' more than once: %s", v.name, r->uri);
         return APR_EGENERAL;
     }
