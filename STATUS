@@ -147,13 +147,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~kbrand/mod_ssl_config_defaults-2.2.x.patch
     (disabling SSLv2 in SSLProtocol is only required for 2.2.x, since trunk
      and 2.4.x no longer support this version, see r1203491 and r1203495)
-    +1: kbrand (non-binding), rjung
+    +1: kbrand (non-binding), rjung, jorton
 
   * mod_proxy_ajp: Missing support for ErrorOverride
     Trunk patch: http://svn.apache.org/viewvc?rev=1087864&view=rev
 	2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=27976
 	+1: igalic
 
+  * mod_rewrite, mod_proxy: Fix CVE-2011-4317
+      Trunk patch: http://svn.apache.org/viewvc?rev=1209432&view=rev
+      2.2.x patch: trunk patch works
+    +1: jorton
 
 PATCHES/ISSUES THAT ARE STALLED
 
