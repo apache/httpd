@@ -4419,6 +4419,18 @@ static int hook_uri2file(request_rec *r)
         return DECLINED;
     }
 
+    if (strcmp(r->unparsed_uri, "*") == 0) {
+        /* Don't apply rewrite rules to "*". */
+        return DECLINED;
+    }
+
+    /* Check that the URI is valid. */
+    if (!r->uri || r->uri[0] != '/') {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                     "Invalid URI in request %s", r->the_request);
+        return HTTP_BAD_REQUEST;
+    }
+    
     /*
      *  add the SCRIPT_URL variable to the env. this is a bit complicated
      *  due to the fact that apache uses subrequests and internal redirects
