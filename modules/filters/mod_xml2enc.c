@@ -50,6 +50,11 @@ module AP_MODULE_DECLARE_DATA xml2enc_module;
 #define HAVE_ENCODING(enc) \
         (((enc)!=XML_CHAR_ENCODING_NONE)&&((enc)!=XML_CHAR_ENCODING_ERROR))
 
+/*
+ * XXX: Check all those ap_assert()s ans replace those that should not happen
+ * XXX: with AP_DEBUG_ASSERT and those that may happen with proper error
+ * XXX: handling.
+ */
 typedef struct {
     xmlCharEncoding xml2enc;
     char* buf;
@@ -135,6 +140,7 @@ static void fix_skipto(request_rec* r, xml2ctx* ctx)
                     apr_bucket* bstart;
                     rv = apr_brigade_partition(ctx->bbsave, (p-ctx->buf),
                                                &bstart);
+                    ap_assert(rv == APR_SUCCESS);
                     while (b = APR_BRIGADE_FIRST(ctx->bbsave), b != bstart) {
                         APR_BUCKET_REMOVE(b);
                         apr_bucket_destroy(b);
@@ -199,7 +205,9 @@ static void sniff_encoding(request_rec* r, xml2ctx* ctx)
     if (ap_regexec(seek_meta_ctype, ctx->buf, 1, match, 0) == 0 ) {
         /* get markers on the start and end of the match */
         rv = apr_brigade_partition(ctx->bbsave, match[0].rm_eo, &cute);
+        ap_assert(rv == APR_SUCCESS);
         rv = apr_brigade_partition(ctx->bbsave, match[0].rm_so, &cutb);
+        ap_assert(rv == APR_SUCCESS);
         /* now set length of useful buf for start-of-data hooks */
         ctx->bytes = match[0].rm_so;
         if (ctx->encoding == NULL) {
@@ -329,7 +337,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         /* Turn all this off when post-processing */
 
         /* if we don't have enough data to sniff but more's to come, wait */
-        rv = apr_brigade_length(ctx->bbsave, 0, &ctx->bblen);
+        apr_brigade_length(ctx->bbsave, 0, &ctx->bblen);
         if ((ctx->bblen < BUF_MIN) && (ctx->bblen != -1)) {
             APR_BRIGADE_DO(b, ctx->bbsave) {
                 if (APR_BUCKET_IS_EOS(b)) {
@@ -340,7 +348,8 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
             if (!(ctx->flags & ENC_SEEN_EOS)) {
                 /* not enough data to sniff.  Wait for more */
                 APR_BRIGADE_DO(b, ctx->bbsave) {
-                    apr_bucket_setaside(b, f->r->pool);
+                    rv = apr_bucket_setaside(b, f->r->pool);
+                    ap_assert(rv == APR_SUCCESS);
                 }
                 return APR_SUCCESS;
             }
@@ -353,6 +362,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         ctx->buf = apr_palloc(f->r->pool, (apr_size_t)(ctx->bblen+1));
         ctx->bytes = (apr_size_t)ctx->bblen;
         rv = apr_brigade_flatten(ctx->bbsave, ctx->buf, &ctx->bytes);
+        ap_assert(rv == APR_SUCCESS);
         ctx->buf[ctx->bytes] = 0;
         sniff_encoding(f->r, ctx);
 
@@ -400,6 +410,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                 buf = fixbuf;
                 bytes = BUFLEN;
                 rv = apr_brigade_flatten(bb, buf, &bytes);
+                ap_assert(rv == APR_SUCCESS);
                 if (bytes == insz) {
                     /* this is only what we've already tried to convert.
                      * The brigade is exhausted.
@@ -412,7 +423,8 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                     rv = ap_fflush(f->next, ctx->bbnext);
                     APR_BRIGADE_CONCAT(ctx->bbsave, bb);
                     APR_BRIGADE_DO(b, ctx->bbsave) {
-                        apr_bucket_setaside(b, f->r->pool);
+                        ap_assert(apr_bucket_setaside(b, f->r->pool)
+                                  == APR_SUCCESS);
                     }
                     return rv;
                 }
@@ -441,6 +453,7 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                 xml2enc_run_preprocess(f, &buf, &bytes);
                 consumed = insz = bytes;
                 while (insz > 0) {
+                    apr_status_t rv2;
                     if (ctx->bytes == ctx->bblen) {
                         /* nothing was converted last time!
                          * break out of this loop! 
@@ -461,8 +474,13 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                                   "/%" APR_OFF_T_FMT " bytes", consumed - insz,
                                   ctx->bblen - ctx->bytes);
                     consumed = insz;
-                    ap_fwrite(f->next, ctx->bbnext, ctx->buf,
-                              (apr_size_t)ctx->bblen - ctx->bytes);
+                    rv2 = ap_fwrite(f->next, ctx->bbnext, ctx->buf,
+                                    (apr_size_t)ctx->bblen - ctx->bytes);
+                    if (rv2 != APR_SUCCESS) {
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv2, f->r,
+                                      "ap_fwrite failed");
+                        return rv2;
+                    }
                     switch (rv) {
                     case APR_SUCCESS:
                         continue;
@@ -485,17 +503,22 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                                       "Failed to convert input; trying it raw") ;
                         ctx->convset = NULL;
-                        ap_fflush(f->next, ctx->bbnext);
-                        return ap_pass_brigade(f->next, ctx->bbnext);
+                        rv = ap_fflush(f->next, ctx->bbnext);
+                        if (rv != APR_SUCCESS)
+                            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, f->r,
+                                          "ap_fflush failed");
+                        else
+                            rv = ap_pass_brigade(f->next, ctx->bbnext);
                     }
                 }
             } else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                               "xml2enc: error reading data") ;
             }
-            if (bdestroy) {
+            if (bdestroy)
                 apr_bucket_destroy(bdestroy);
-            }
+            if (rv != APR_SUCCESS)
+                return rv;
         }
     }
     return APR_SUCCESS;
