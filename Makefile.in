@@ -242,5 +242,9 @@ suexec:
 x-local-distclean:
 	@rm -rf autom4te.cache
 
+update-log-tags update-log-msg-tags:
+	find server modules os -name \*.c|xargs perl \
+		docs/log-message-tags/update-log-msg-tags
+
 # XXX: This looks awfully platform-specific [read: bad form and style]
 include $(top_srcdir)/os/os2/core.mk

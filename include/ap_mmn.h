@@ -372,6 +372,7 @@
  *                         add pool to ap_errorlog_info.
  * 20111201.0 (2.5.0-dev)  Add invalidate_entity() to the cache provider.
  * 20111202.0 (2.5.0-dev)  Use apr_status_t across mod_session API.
+ * 20111202.1 (2.5.0-dev)  add APLOGNO()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

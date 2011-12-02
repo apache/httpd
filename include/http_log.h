@@ -109,6 +109,14 @@ extern "C" {
 #endif
 
 /**
+ * APLOGNO() should be used at the start of the format string passed
+ * to ap_log_error() and friends. The argument must be a 5 digit decimal
+ * number. It creates a tag of the form "AH02182: "
+ * See docs/log-message-tags/README for details.
+ */
+#define APLOGNO(n)              "AH" #n ": "
+
+/**
  * APLOG_NO_MODULE may be passed as module_index to ap_log_error() and related
  * functions if the module causing the log message is not known. Normally this
  * should not be used directly. Use ::APLOG_MARK or ::APLOG_MODULE_INDEX
