@@ -567,7 +567,7 @@ static const char *set_crypto_passphrase_file(cmd_parms *cmd, void *config,
 
     while (!(ap_cfg_getline(buffer, sizeof(buffer), file))) {
         args = buffer;
-        while (*(arg = ap_getword_conf(cmd->temp_pool, &args)) != '\0') {
+        while (*(arg = ap_getword_conf(cmd->pool, &args)) != '\0') {
             if (*arg == '#' || *arg == 0) {
                 break;
             }
