@@ -161,7 +161,7 @@ static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
  *
  * On success, this returns OK.
  */
-static int session_dbd_load(request_rec * r, session_rec ** z)
+static apr_status_t session_dbd_load(request_rec * r, session_rec ** z)
 {
 
     session_dbd_dir_conf *conf = ap_get_module_config(r->per_dir_config,
@@ -402,7 +402,7 @@ static apr_status_t dbd_clean(apr_pool_t *p, server_rec *s)
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-static int session_dbd_save(request_rec * r, session_rec * z)
+static apr_status_t session_dbd_save(request_rec * r, session_rec * z)
 {
 
     char *buffer;
