@@ -22,6 +22,9 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_byrequests_module;
 
+static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
+        proxy_worker *worker, server_rec *s) = NULL;
+
 /*
  * The idea behind the find_best_byrequests scheduler is the following:
  *
@@ -80,6 +83,15 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
     int checking_standby;
     int checked_standby;
 
+    if (!ap_proxy_retry_worker_fn) {
+        ap_proxy_retry_worker_fn =
+                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
+        if (!ap_proxy_retry_worker_fn) {
+            /* can only happen if mod_proxy isn't loaded */
+            return NULL;
+        }
+    }
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering byrequests for BALANCER (%s)",
                  balancer->s->name);
@@ -109,7 +121,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
                  * anyway.
                  */
                 if (!PROXY_WORKER_IS_USABLE(*worker))
-                    ap_proxy_retry_worker("BALANCER", *worker, r->server);
+                    ap_proxy_retry_worker_fn("BALANCER", *worker, r->server);
                 /* Take into calculation only the workers that are
                  * not in error state or not disabled.
                  */

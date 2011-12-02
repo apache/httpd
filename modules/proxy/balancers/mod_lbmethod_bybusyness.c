@@ -22,6 +22,9 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module;
 
+static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
+        proxy_worker *worker, server_rec *s) = NULL;
+
 static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
                                 request_rec *r)
 {
@@ -35,6 +38,15 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
     int checked_standby;
 
     int total_factor = 0;
+
+    if (!ap_proxy_retry_worker_fn) {
+        ap_proxy_retry_worker_fn =
+                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
+        if (!ap_proxy_retry_worker_fn) {
+            /* can only happen if mod_proxy isn't loaded */
+            return NULL;
+        }
+    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering bybusyness for BALANCER (%s)",
@@ -66,8 +78,9 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
                  * The worker might still be unusable, but we try
                  * anyway.
                  */
-                if (!PROXY_WORKER_IS_USABLE(*worker))
-                    ap_proxy_retry_worker("BALANCER", *worker, r->server);
+                if (!PROXY_WORKER_IS_USABLE(*worker)) {
+                    ap_proxy_retry_worker_fn("BALANCER", *worker, r->server);
+                }
 
                 /* Take into calculation only the workers that are
                  * not in error state or not disabled.

@@ -31,6 +31,9 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_heartbeat_module;
 
+static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
+        proxy_worker *worker, server_rec *s) = NULL;
+
 static const ap_slotmem_provider_t *storage = NULL;
 static ap_slotmem_instance_t *hm_serversmem = NULL;
 
@@ -270,6 +273,15 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         ap_get_module_config(r->server->module_config,
                              &lbmethod_heartbeat_module);
 
+    if (!ap_proxy_retry_worker_fn) {
+        ap_proxy_retry_worker_fn =
+                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
+        if (!ap_proxy_retry_worker_fn) {
+            /* can only happen if mod_proxy isn't loaded */
+            return NULL;
+        }
+    }
+
     apr_pool_create(&tpool, r->pool);
 
     servers = apr_hash_make(tpool);
@@ -297,7 +309,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         }
 
         if (!PROXY_WORKER_IS_USABLE(*worker)) {
-            ap_proxy_retry_worker("BALANCER", *worker, r->server);
+            ap_proxy_retry_worker_fn("BALANCER", *worker, r->server);
         }
 
         if (PROXY_WORKER_IS_USABLE(*worker)) {
