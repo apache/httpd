@@ -523,7 +523,6 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
 /* proxy_util.c */
 
 PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src, size_t dlen);
-PROXY_DECLARE(request_rec *) ap_proxy_make_fake_req(conn_rec *c, request_rec *r);
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
 PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
