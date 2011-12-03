@@ -373,14 +373,23 @@
  * 20111201.0 (2.5.0-dev)  Add invalidate_entity() to the cache provider.
  * 20111202.0 (2.5.0-dev)  Use apr_status_t across mod_session API.
  * 20111202.1 (2.5.0-dev)  add APLOGNO()
+ * 20111303.0 (2.5.0-dev)  Optional ap_proxy_retry_worker(), remove
+ *                         ap_proxy_string_read(), ap_cache_liststr(),
+ *                         ap_proxy_buckets_lifetime_transform(),
+ *                         ap_proxy_date_canon(), ap_proxy_is_ipaddr(),
+ *                         ap_proxy_is_domainname(), ap_proxy_is_hostname(),
+ *                         ap_proxy_is_word(), ap_proxy_hex2sec(),
+ *                         ap_proxy_sec2hex(), ap_proxy_make_fake_req(),
+ *                         ap_proxy_strmatch_path, ap_proxy_strmatch_domain,
+ *                         ap_proxy_table_unmerge().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20111202
+#define MODULE_MAGIC_NUMBER_MAJOR 20111203
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                   /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                   /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
