@@ -391,56 +391,6 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     return rp;
 }
 
-/*
- * Converts 8 hex digits to a time integer
- */
-PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x)
-{
-    int i, ch;
-    unsigned int j;
-
-    for (i = 0, j = 0; i < 8; i++) {
-        ch = x[i];
-        j <<= 4;
-        if (apr_isdigit(ch)) {
-            j |= ch - '0';
-        }
-        else if (apr_isupper(ch)) {
-            j |= ch - ('A' - 10);
-        }
-        else {
-            j |= ch - ('a' - 10);
-        }
-    }
-    if (j == 0xffffffff) {
-        return -1;      /* so that it works with 8-byte ints */
-    }
-    else {
-        return j;
-    }
-}
-
-/*
- * Converts a time integer to 8 hex digits
- */
-PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y)
-{
-    int i, ch;
-    unsigned int j = t;
-
-    for (i = 7; i >= 0; i--) {
-        ch = j & 0xF;
-        j >>= 4;
-        if (ch >= 10) {
-            y[i] = ch + ('A' - 10);
-        }
-        else {
-            y[i] = ch + '0';
-        }
-    }
-    y[8] = '\0';
-}
-
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
     const char *uri = ap_escape_html(r->pool, r->uri);
