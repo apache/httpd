@@ -532,7 +532,6 @@ PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, cha
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message);
 PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
-PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key);
 /* DEPRECATED (will be replaced with ap_proxy_connect_backend */
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, request_rec *);
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
