@@ -483,13 +483,6 @@ struct proxy_balancer_method {
 #define PROXY_DECLARE_DATA             __declspec(dllimport)
 #endif
 
-/**
- * Hook an optional proxy hook.  Unlike static hooks, this uses a macro
- * instead of a function.
- */
-#define PROXY_OPTIONAL_HOOK(name,fn,pre,succ,order) \
-        APR_OPTIONAL_HOOK(proxy,name,fn,pre,succ,order)
-
 APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, scheme_handler, (request_rec *r,
                           proxy_worker *worker, proxy_server_conf *conf, char *url,
                           const char *proxyhost, apr_port_t proxyport))
@@ -530,26 +523,15 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
 /* proxy_util.c */
 
 PROXY_DECLARE(apr_status_t) ap_proxy_strncpy(char *dst, const char *src, size_t dlen);
-PROXY_DECLARE(request_rec *) ap_proxy_make_fake_req(conn_rec *c, request_rec *r);
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
 PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
                                        int forcedec, int proxyreq);
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
                                            char **passwordp, char **hostp, apr_port_t *port);
-PROXY_DECLARE(const char *)ap_proxy_date_canon(apr_pool_t *p, const char *x);
-PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val);
-PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x);
-PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y);
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message);
-PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
-PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
-PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
-PROXY_DECLARE(int) ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
-PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
-PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key);
 /* DEPRECATED (will be replaced with ap_proxy_connect_backend */
 PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, request_rec *);
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
@@ -837,28 +819,6 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);
 
 /**
- * Transform buckets from one bucket allocator to another one by creating a
- * transient bucket for each data bucket and let it use the data read from
- * the old bucket. Metabuckets are transformed by just recreating them.
- * Attention: Currently only the following bucket types are handled:
- *
- * All data buckets
- * FLUSH
- * EOS
- *
- * If an other bucket type is found its type is logged as a debug message
- * and APR_EGENERAL is returned.
- * @param r    current request record of client request. Only used for logging
- *             purposes
- * @param from the brigade that contains the buckets to transform
- * @param to   the brigade that will receive the transformed buckets
- * @return     APR_SUCCESS if all buckets could be transformed APR_EGENERAL
- *             otherwise
- */
-PROXY_DECLARE(apr_status_t) ap_proxy_buckets_lifetime_transform(request_rec *r,
-                                                                apr_bucket_brigade *from,
-                                                                apr_bucket_brigade *to);
-/**
  * Return a hash based on the passed string
  * @param str     string to produce hash from
  * @param method  hashing method to use
@@ -925,12 +885,7 @@ PROXY_DECLARE(int) ap_proxy_trans_match(request_rec *r,
  */
 int ap_proxy_lb_workers(void);
 
-/* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
-
-extern int PROXY_DECLARE_DATA proxy_lb_workers;
-extern const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_path;
-extern const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_domain;
 
 #endif /*MOD_PROXY_H*/
 /** @} */

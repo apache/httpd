@@ -688,6 +688,56 @@ static int spool_reqbody_cl(apr_pool_t *p,
     return(pass_brigade(bucket_alloc, r, p_conn, origin, header_brigade, 1));
 }
 
+/*
+ * Transform buckets from one bucket allocator to another one by creating a
+ * transient bucket for each data bucket and let it use the data read from
+ * the old bucket. Metabuckets are transformed by just recreating them.
+ * Attention: Currently only the following bucket types are handled:
+ *
+ * All data buckets
+ * FLUSH
+ * EOS
+ *
+ * If an other bucket type is found its type is logged as a debug message
+ * and APR_EGENERAL is returned.
+ */
+static apr_status_t proxy_buckets_lifetime_transform(request_rec *r,
+        apr_bucket_brigade *from, apr_bucket_brigade *to)
+{
+    apr_bucket *e;
+    apr_bucket *new;
+    const char *data;
+    apr_size_t bytes;
+    apr_status_t rv = APR_SUCCESS;
+
+    apr_brigade_cleanup(to);
+    for (e = APR_BRIGADE_FIRST(from);
+         e != APR_BRIGADE_SENTINEL(from);
+         e = APR_BUCKET_NEXT(e)) {
+        if (!APR_BUCKET_IS_METADATA(e)) {
+            apr_bucket_read(e, &data, &bytes, APR_BLOCK_READ);
+            new = apr_bucket_transient_create(data, bytes, r->connection->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(to, new);
+        }
+        else if (APR_BUCKET_IS_FLUSH(e)) {
+            new = apr_bucket_flush_create(r->connection->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(to, new);
+        }
+        else if (APR_BUCKET_IS_EOS(e)) {
+            new = apr_bucket_eos_create(r->connection->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(to, new);
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00964)
+                          "Unhandled bucket type of type %s in"
+                          " proxy_buckets_lifetime_transform", e->type->name);
+            apr_bucket_delete(e);
+            rv = APR_EGENERAL;
+        }
+    }
+    return rv;
+}
+
 static
 int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_conn_rec *p_conn, proxy_worker *worker,
@@ -1195,6 +1245,65 @@ skip_body:
     return OK;
 }
 
+/*
+ * If the date is a valid RFC 850 date or asctime() date, then it
+ * is converted to the RFC 1123 format.
+ */
+static const char *date_canon(apr_pool_t *p, const char *date)
+{
+    apr_status_t rv;
+    char* ndate;
+
+    apr_time_t time = apr_date_parse_http(date);
+    if (!time) {
+        return date;
+    }
+
+    ndate = apr_palloc(p, APR_RFC822_DATE_LEN);
+    rv = apr_rfc822_date(ndate, time);
+    if (rv != APR_SUCCESS) {
+        return date;
+    }
+
+    return ndate;
+}
+
+static request_rec *make_fake_req(conn_rec *c, request_rec *r)
+{
+    apr_pool_t *pool;
+    request_rec *rp;
+
+    apr_pool_create(&pool, c->pool);
+
+    rp = apr_pcalloc(pool, sizeof(*r));
+
+    rp->pool            = pool;
+    rp->status          = HTTP_OK;
+
+    rp->headers_in      = apr_table_make(pool, 50);
+    rp->subprocess_env  = apr_table_make(pool, 50);
+    rp->headers_out     = apr_table_make(pool, 12);
+    rp->err_headers_out = apr_table_make(pool, 5);
+    rp->notes           = apr_table_make(pool, 5);
+
+    rp->server = r->server;
+    rp->log = r->log;
+    rp->proxyreq = r->proxyreq;
+    rp->request_time = r->request_time;
+    rp->connection      = c;
+    rp->output_filters  = c->output_filters;
+    rp->input_filters   = c->input_filters;
+    rp->proto_output_filters  = c->output_filters;
+    rp->proto_input_filters   = c->input_filters;
+    rp->client_ip = c->peer_ip;
+    rp->client_addr = c->peer_addr;
+
+    rp->request_config  = ap_create_request_config(pool);
+    proxy_run_create_req(r, rp);
+
+    return rp;
+}
+
 static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
                                  const char *key, const char *value)
 {
@@ -1215,7 +1324,7 @@ static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
     for (i = 0; date_hdrs[i]; ++i) {
         if (!strcasecmp(date_hdrs[i], key)) {
             apr_table_add(r->headers_out, key,
-                          ap_proxy_date_canon(r->pool, value));
+                          date_canon(r->pool, value));
             return;
         }
     }
@@ -1444,7 +1553,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      * filter chain
      */
 
-    backend->r = ap_proxy_make_fake_req(origin, r);
+    backend->r = make_fake_req(origin, r);
     /* In case anyone needs to know, this is a fake request that is really a
      * response.
      */
@@ -1646,9 +1755,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
             /* strip connection listed hop-by-hop headers from response */
-            backend->close += ap_proxy_liststr(apr_table_get(r->headers_out,
-                                                             "Connection"),
-                                              "close");
+            backend->close += ap_find_token(p,
+                    apr_table_get(r->headers_out, "Connection"), "close");
             ap_proxy_clear_connection(p, r->headers_out);
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
@@ -1904,7 +2012,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
 
                     /* Switch the allocator lifetime of the buckets */
-                    ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+                    proxy_buckets_lifetime_transform(r, bb, pass_bb);
 
                     /* found the last brigade? */
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(pass_bb))) {
