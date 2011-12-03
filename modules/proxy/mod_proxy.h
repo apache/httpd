@@ -537,8 +537,6 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, en
                                        int forcedec, int proxyreq);
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
                                            char **passwordp, char **hostp, apr_port_t *port);
-PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x);
-PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y);
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message);
 PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
 PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
