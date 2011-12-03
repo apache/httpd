@@ -28,6 +28,9 @@ ap_slotmem_provider_t *storage = NULL;
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
+static int (*ap_proxy_retry_worker_fn)(const char *proxy_function,
+        proxy_worker *worker, server_rec *s) = NULL;
+
 /*
  * Register our mutex type before the config is read so we
  * can adjust the mutex settings using the Mutex directive.
@@ -224,7 +227,7 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
                      * The worker might still be unusable, but we try
                      * anyway.
                      */
-                    ap_proxy_retry_worker("BALANCER", worker, r->server);
+                    ap_proxy_retry_worker_fn("BALANCER", worker, r->server);
                     if (PROXY_WORKER_IS_USABLE(worker)) {
                             return worker;
                     } else {
@@ -248,7 +251,7 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
                                  * The worker might still be unusable, but we try
                                  * anyway.
                                  */
-                                ap_proxy_retry_worker("BALANCER", rworker, r->server);
+                                ap_proxy_retry_worker_fn("BALANCER", rworker, r->server);
                             }
                             if (rworker && PROXY_WORKER_IS_USABLE(rworker))
                                 return rworker;
@@ -413,7 +416,7 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
         }
         else {
             /* Try if we can recover */
-            ap_proxy_retry_worker("BALANCER", *worker, s);
+            ap_proxy_retry_worker_fn("BALANCER", *worker, s);
             if (!((*worker)->s->status & PROXY_WORKER_IN_ERROR)) {
                 ok = 1;
                 break;
@@ -696,8 +699,19 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     /* balancer_post_config() will be called twice during startup.  So, don't
      * set up the static data the 1st time through. */
-    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG) {
         return OK;
+    }
+
+    if (!ap_proxy_retry_worker_fn) {
+        ap_proxy_retry_worker_fn =
+                APR_RETRIEVE_OPTIONAL_FN(ap_proxy_retry_worker);
+        if (!ap_proxy_retry_worker_fn) {
+            ap_log_error(
+                    APLOG_MARK, APLOG_EMERG, 0, s, "mod_proxy must be loaded for mod_proxy_balancer");
+            return !OK;
+        }
+    }
 
     /*
      * Get slotmem setups
