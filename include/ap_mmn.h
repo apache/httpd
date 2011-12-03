@@ -381,7 +381,7 @@
  *                         ap_proxy_is_word(), ap_proxy_hex2sec(),
  *                         ap_proxy_sec2hex(), ap_proxy_make_fake_req(),
  *                         ap_proxy_strmatch_path, ap_proxy_strmatch_domain,
- *                         ap_proxy_table_unmerge().
+ *                         ap_proxy_table_unmerge(), proxy_lb_workers.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
