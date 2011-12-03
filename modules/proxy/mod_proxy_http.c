@@ -1646,9 +1646,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             te = apr_table_get(r->headers_out, "Transfer-Encoding");
             /* strip connection listed hop-by-hop headers from response */
-            backend->close += ap_proxy_liststr(apr_table_get(r->headers_out,
-                                                             "Connection"),
-                                              "close");
+            backend->close += ap_find_token(p,
+                    apr_table_get(r->headers_out, "Connection"), "close");
             ap_proxy_clear_connection(p, r->headers_out);
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));

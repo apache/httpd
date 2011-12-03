@@ -413,43 +413,6 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     return rp;
 }
 
-
-/*
- * list is a comma-separated list of case-insensitive tokens, with
- * optional whitespace around the tokens.
- * The return returns 1 if the token val is found in the list, or 0
- * otherwise.
- */
-PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val)
-{
-    int len, i;
-    const char *p;
-
-    len = strlen(val);
-
-    while (list != NULL) {
-        p = ap_strchr_c(list, ',');
-        if (p != NULL) {
-            i = p - list;
-            do {
-                p++;
-            } while (apr_isspace(*p));
-        }
-        else {
-            i = strlen(list);
-        }
-
-        while (i > 0 && apr_isspace(list[i - 1])) {
-            i--;
-        }
-        if (i == len && strncasecmp(list, val, len) == 0) {
-            return 1;
-        }
-        list = p;
-    }
-    return 0;
-}
-
 /*
  * Converts 8 hex digits to a time integer
  */
