@@ -27,6 +27,7 @@
  */
 
 #include "apr_hooks.h"
+#include "apr_optional.h"
 #include "apr.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
@@ -769,9 +770,8 @@ PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
  * @note The error status of the worker will cleared if the retry interval has
  * elapsed since the last error.
  */
-PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
-                                         proxy_worker *worker,
-                                         server_rec *s);
+APR_DECLARE_OPTIONAL_FN(int, ap_proxy_retry_worker,
+        (const char *proxy_function, proxy_worker *worker, server_rec *s));
 
 /**
  * Acquire a connection from worker connection pool
