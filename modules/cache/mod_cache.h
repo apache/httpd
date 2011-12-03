@@ -136,8 +136,6 @@ CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) ap_cache_generate_name(apr_pool_t *p, int dirlevels,
                                              int dirlength,
                                              const char *name);
-CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
-                                    const char *key, char **val);
 CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
 
 /* Create a new table consisting of those elements from an

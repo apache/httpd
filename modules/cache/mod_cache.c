@@ -1014,9 +1014,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "Authorization required";
     }
-    else if (ap_cache_liststr(NULL,
-                              apr_table_get(r->headers_out, "Vary"),
-                              "*", NULL)) {
+    else if (ap_find_token(NULL, apr_table_get(r->headers_out, "Vary"), "*")) {
         reason = "Vary header contains '*'";
     }
     else if (apr_table_get(r->subprocess_env, "no-cache") != NULL) {
