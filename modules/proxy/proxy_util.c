@@ -355,30 +355,6 @@ PROXY_DECLARE(char *)
     return NULL;
 }
 
-/*
- * If the date is a valid RFC 850 date or asctime() date, then it
- * is converted to the RFC 1123 format.
- */
-PROXY_DECLARE(const char *)
-     ap_proxy_date_canon(apr_pool_t *p, const char *date)
-{
-    apr_status_t rv;
-    char* ndate;
-
-    apr_time_t time = apr_date_parse_http(date);
-    if (!time) {
-        return date;
-    }
-
-    ndate = apr_palloc(p, APR_RFC822_DATE_LEN);
-    rv = apr_rfc822_date(ndate, time);
-    if (rv != APR_SUCCESS) {
-        return date;
-    }
-
-    return ndate;
-}
-
 PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
 {
     apr_pool_t *pool;
