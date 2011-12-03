@@ -806,35 +806,6 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
     return OK;
 }
 
-/* unmerge an element in the table */
-PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key)
-{
-    apr_off_t offset = 0;
-    apr_off_t count = 0;
-    char *value = NULL;
-
-    /* get the value to unmerge */
-    const char *initial = apr_table_get(t, key);
-    if (!initial) {
-        return;
-    }
-    value = apr_pstrdup(p, initial);
-
-    /* remove the value from the headers */
-    apr_table_unset(t, key);
-
-    /* find each comma */
-    while (value[count]) {
-        if (value[count] == ',') {
-            value[count] = 0;
-            apr_table_add(t, key, value + offset);
-            offset = count + 1;
-        }
-        count++;
-    }
-    apr_table_add(t, key, value + offset);
-}
-
 PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                               proxy_dir_conf *conf, const char *url)
 {
