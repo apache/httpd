@@ -1268,6 +1268,42 @@ static const char *date_canon(apr_pool_t *p, const char *date)
     return ndate;
 }
 
+static request_rec *make_fake_req(conn_rec *c, request_rec *r)
+{
+    apr_pool_t *pool;
+    request_rec *rp;
+
+    apr_pool_create(&pool, c->pool);
+
+    rp = apr_pcalloc(pool, sizeof(*r));
+
+    rp->pool            = pool;
+    rp->status          = HTTP_OK;
+
+    rp->headers_in      = apr_table_make(pool, 50);
+    rp->subprocess_env  = apr_table_make(pool, 50);
+    rp->headers_out     = apr_table_make(pool, 12);
+    rp->err_headers_out = apr_table_make(pool, 5);
+    rp->notes           = apr_table_make(pool, 5);
+
+    rp->server = r->server;
+    rp->log = r->log;
+    rp->proxyreq = r->proxyreq;
+    rp->request_time = r->request_time;
+    rp->connection      = c;
+    rp->output_filters  = c->output_filters;
+    rp->input_filters   = c->input_filters;
+    rp->proto_output_filters  = c->output_filters;
+    rp->proto_input_filters   = c->input_filters;
+    rp->client_ip = c->peer_ip;
+    rp->client_addr = c->peer_addr;
+
+    rp->request_config  = ap_create_request_config(pool);
+    proxy_run_create_req(r, rp);
+
+    return rp;
+}
+
 static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
                                  const char *key, const char *value)
 {
@@ -1517,7 +1553,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      * filter chain
      */
 
-    backend->r = ap_proxy_make_fake_req(origin, r);
+    backend->r = make_fake_req(origin, r);
     /* In case anyone needs to know, this is a fake request that is really a
      * response.
      */
