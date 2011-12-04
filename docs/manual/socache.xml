@@ -39,7 +39,7 @@
     must be present, and configured.</p>
     <p>The only configuration required is to select which cache provider
     to use.  This is the responsibility of modules using the cache, and
-    they enable selecton using directives such as
+    they enable selection using directives such as
     <directive module="authn_socache">AuthnCacheSOCache</directive>,
     <directive module="ssl">SSLSessionCache</directive>, and
     <directive module="ssl">SSLStaplingCache</directive>.</p>
@@ -47,7 +47,7 @@
     <dl>
     <dt>"dbm" (mod_socache_dbm)</dt>
     <dd>This makes use of a DBM hash file.
-     The choice of underlying DBM configuration may be configurable
+     The choice of underlying DBM used may be configurable
      if the installed APR version supports multiple DBM implementations.</dd>
     <dt>"dc" (mod_socache_dc)</dt>
     <dd>This makes use of the <a href="http://www.distcache.org/">distcache</a>
