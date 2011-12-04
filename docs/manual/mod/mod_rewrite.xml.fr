@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1180879 -->
+<!-- English Revision : 1209053 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -191,6 +191,30 @@ la version version 2.1</compatibility>
       enfant. Disponible depuis la version 2.3.10 du serveur HTTP
       Apache.</p>
       </dd>
+
+      <dt><code>AllowNoSlash</code></dt>
+      <dd>
+      <p>Par d&eacute;faut, <module>mod_rewrite</module> ignore les URLs qui
+      correspondent &agrave; un r&eacute;pertoire sur disque, mais ne comportent pas
+      de slash final, afin que le module <module>mod_dir</module>
+      redirige le client vers l'URL canonique avec un slash final.</p>
+      
+      <p>Lorsque la directive <directive
+      module="mod_dir">DirectorySlash</directive> est d&eacute;finie &agrave; off, il
+      est possible de sp&eacute;cifier l'option <code>AllowNoSlash</code> pour
+      s'assurer que les r&egrave;gles de r&eacute;&eacute;criture ne soient plus ignor&eacute;es.
+      Si on le souhaite, cette option permet de faire s'appliquer des
+      r&egrave;gles de r&eacute;&eacute;criture qui correspondent &agrave; un r&eacute;pertoire sans slash
+      final au sein de fichiers .htaccess. Elle est disponible &agrave;
+      partir de la version 2.4.0 du serveur HTTP Apache.
+      
+      When the <directive module="mod_dir">DirectorySlash</directive> directive
++      is set to off, the <code>AllowNoSlash</code> option can be enabled to ensure
++      that rewrite rules are no longer ignored. This option makes it possible to
++      apply rewrite rules within .htaccess files that match the directory without
++      a trailing slash, if so desired. Available in Apache HTTP Server 2.4.0 and
++      later.</p>
++      </dd>
 
       </dl>
 </usage>
