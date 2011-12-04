@@ -681,10 +681,13 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_CONFIG) {
         /* this is the real thing */
         if (maxworkers) {
-            storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared",
+            storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shm",
                                          AP_SLOTMEM_PROVIDER_VERSION);
             if (!storage) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "ap_lookup_provider %s failed", AP_SLOTMEM_PROVIDER_GROUP);
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s,
+                             "failed to lookup provider 'shm' for '%s', "
+                             "maybe you need to load mod_slotmem_shm?",
+                             AP_SLOTMEM_PROVIDER_GROUP);
                 return !OK;
             }
             storage->create(&slotmem, "mod_heartmonitor", sizeof(hm_slot_server_t), maxworkers, AP_SLOTMEM_TYPE_PREGRAB, p);
