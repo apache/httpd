@@ -561,7 +561,7 @@ AP_DECLARE(apr_status_t) ap_pass_brigade_fchk(request_rec *r,
                 va_start(ap, fmt);
                 res = apr_pvsprintf(r->pool, fmt, ap);
                 va_end(ap);
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(00084) "%s", res);
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "%s", res);
             }
             return HTTP_INTERNAL_SERVER_ERROR;
         }

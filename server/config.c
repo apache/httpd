@@ -2008,8 +2008,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
                           "Syntax error on line %d of %s:",
                           parms.err_directive->line_num,
                           parms.err_directive->filename);
-        ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p, APLOGNO(00527)
-                     "%s", errmsg);
+        ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, p, "%s", errmsg);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -2070,7 +2069,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
             ap_cfg_closefile(f);
 
             if (errmsg) {
-                ap_log_rerror(APLOG_MARK, APLOG_ALERT, 0, r, APLOGNO(00528)
+                ap_log_rerror(APLOG_MARK, APLOG_ALERT, 0, r,
                               "%s: %s", filename, errmsg);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -2337,7 +2336,7 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
     error = process_command_config(s, ap_server_pre_read_config, conftree,
                                    p, ptemp);
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, APLOGNO(00531) "%s: %s",
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, "%s: %s",
                      ap_server_argv0, error);
         return NULL;
     }
@@ -2356,7 +2355,7 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
 
     error = ap_process_resource_config(s, confname, conftree, p, ptemp);
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, APLOGNO(00533)
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL,
                      "%s: %s", ap_server_argv0, error);
         return NULL;
     }
@@ -2372,7 +2371,7 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
                                    p, ptemp);
 
     if (error) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, APLOGNO(00535) "%s: %s",
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, 0, NULL, "%s: %s",
                      ap_server_argv0, error);
         return NULL;
     }

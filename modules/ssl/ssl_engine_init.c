@@ -1204,7 +1204,7 @@ static void ssl_init_proxy_certs(server_rec *s,
 
     if ((ncerts = sk_X509_INFO_num(sk)) <= 0) {
         sk_X509_INFO_free(sk);
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, APLOGNO(02206)
                      "no client certs found for SSL proxy");
         return;
     }
@@ -1224,7 +1224,7 @@ static void ssl_init_proxy_certs(server_rec *s,
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02207)
                  "loaded %d client certs for SSL proxy",
                  ncerts);
     pkp->certs = sk;
@@ -1239,7 +1239,7 @@ static void ssl_init_proxy_certs(server_rec *s,
     sctx = X509_STORE_CTX_new();
 
     if (!sctx) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02208)
                      "SSL proxy client cert initialization failed");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
         ssl_die();
@@ -1464,7 +1464,7 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
     for (n = 0; n < sk_X509_NAME_num(sk); n++) {
         X509_NAME *name = sk_X509_NAME_value(sk, n);
 
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02209)
                      "CA certificate: %s",
                      SSL_X509_NAME_to_string(ptemp, name, 0));
 
@@ -1510,7 +1510,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
          * then the file failed to load, and users should hear about that.
          */
         if (sk_X509_NAME_num(ca_list) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02210)
                     "Failed to load SSLCACertificateFile: %s", ca_file);
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         }
@@ -1526,7 +1526,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
         apr_status_t rv;
 
         if ((rv = apr_dir_open(&dir, ca_path, ptemp)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02211)
                     "Failed to open Certificate Path `%s'",
                     ca_path);
             ssl_die();

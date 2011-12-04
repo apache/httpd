@@ -176,13 +176,13 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
         sc = mySrvConfig(pServ);
         cpVHostID = ssl_util_vhostid(p, pServ);
         if (!sc->enabled) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, pServ,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, pServ, APLOGNO(02199)
                          "SSL not enabled on vhost %s, skipping SSL setup",
                          cpVHostID);
             continue;
         }
 
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, pServ,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, pServ, APLOGNO(02200)
                      "Loading certificate & private key of SSL-aware server '%s'",
                      cpVHostID);
 
@@ -222,7 +222,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                             sizeof(szPath));
                 if ((rv = exists_and_readable(szPath, p, NULL))
                     != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(02201)
                                  "Init: Can't open server certificate file %s",
                                  szPath);
                     ssl_die();
@@ -234,7 +234,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     ssl_die();
                 }
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(02202)
                              "Init: Read server certificate from '%s'",
                              szPath);
             }
@@ -445,7 +445,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     }
                     else {
                         ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                                     pServ, "Init: Private key not found");
+                                     pServ, APLOGNO(02203) "Init: Private key not found");
                         ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, pServ);
                     }
                     if (writetty) {
@@ -454,7 +454,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     }
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, pServ,
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, pServ, APLOGNO(02204)
                                  "Init: Pass phrase incorrect for key of %s",
                                  cpVHostID);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, pServ);
@@ -569,7 +569,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
      */
     if (aPassPhrase->nelts) {
         pphrase_array_clear(aPassPhrase);
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(02205)
                      "Init: Wiped out the queried pass phrases from memory");
     }
 
