@@ -22,5 +22,11 @@
 
 #define AP_DECLARE_MODULE(foo)  module foo##_module
 
-#define BOOL                     int
-#define STACK_OF(x)              x
+#define BOOL                              int
+#define STACK_OF(x)                       x
+#define MODSSL_D2I_SSL_SESSION_CONST
+#define MODSSL_D2I_ASN1_type_bytes_CONST
+#define MODSSL_D2I_PrivateKey_CONST
+#define MODSSL_D2I_X509_CONST
+#define MODSSL_SSL_CIPHER_CONST
+#define MODSSL_SSL_METHOD_CONST
